@@ -1,0 +1,90 @@
+{
+  "version": 2,
+  "updated_at": "2026-09-02",
+  "changes": [
+    {
+      "version": 2,
+      "date": "2026-09-02",
+      "type": "breaking",
+      "summary": "快照移除 allowed_actions（客户端自研动作判定）",
+      "detail": "GET /api/games/{id}/state 快照不再含 allowed_actions——客户端须依 seat/phase/turn/responding_seats/drawn_tile/god.catch_play 自研判定可执行动作（phase ∈ deal|draw|response_peng|response_chi|settled|finished）；窗口「已响应」状态须客户端本地跟踪（重复提交 pass/动作返回 409 INVALID_ACTION）。旧 bot 按 allowed_actions 行动的逻辑全部失效，必须重写判定。"
+    },
+    {
+      "version": 2,
+      "date": "2026-09-02",
+      "type": "added",
+      "summary": "chi 支持 tiles 指定吃组合",
+      "detail": "POST /api/games/{id}/action 吃可附加 \"tiles\":[\"1w\",\"2w\"] 指定用哪两张手牌吃（多组合场景如 2w3w4w5w6w 吃 4w 可选 3 组；乱序容忍、等价匹配）；缺省回退第一组可行顺子（向后兼容）。"
+    },
+    {
+      "version": 2,
+      "date": "2026-09-02",
+      "type": "added",
+      "summary": "快照补充 seat 字段",
+      "detail": "快照新增 seat（本人座位号 0-3；观赛视角 -1），配合 phase/turn 自研判定——allowed_actions 移除后客户端自主决策的必要信息。"
+    },
+    {
+      "version": 1,
+      "date": "2026-09-02",
+      "type": "breaking",
+      "summary": "碰后禁止胡牌",
+      "detail": "胡牌新增「刚摸牌」门禁：碰/吃/杠动作后、摸牌前提交 {\"action\":\"hu\"} 返回 409 INVALID_ACTION。旧 bot 若依赖「碰后即胡」需改为先等摸牌事件再胡。"
+    },
+    {
+      "version": 1,
+      "date": "2026-09-01",
+      "type": "changed",
+      "summary": "state 轮询限速放宽 5/s → 8/s",
+      "detail": "GET /api/games/{id}/state 频率上限放宽（单 AI 同时 M=16 桌轮询需求 ≈6.4/s）。旧 bot 无需改动，但 8/s 是新上限。"
+    },
+    {
+      "version": 1,
+      "date": "2026-09-01",
+      "type": "breaking",
+      "summary": "番数计算按用户裁决体系重构",
+      "detail": "总番=1 → 分支（平胡/七对）→ 动作链（飘/杠每动作 ×2）→ 4 白板 ×2 → 爆头 ×2 最后统一加；七对×2×2^豪华组数。旧 bot 的得分预期模型（如庄家 ×8 递增）不再适用，须按新公式重算。"
+    },
+    {
+      "version": 1,
+      "date": "2026-09-01",
+      "type": "added",
+      "summary": "番型计算工具 fan-calc（免认证）",
+      "detail": "新增 POST /portal/api/tools/fan-calc：13 张手牌 + 1 张摸牌实时计算胡牌判定/爆头/番型/庄闲得分，免登录、每 IP 10/s。AI 可作离线试算与结算校验。"
+    },
+    {
+      "version": 1,
+      "date": "2026-09-01",
+      "type": "added",
+      "summary": "报名令牌作用域直达端点",
+      "detail": "新增 GET /api/tournaments/me/rules 与 POST /api/tournaments/me/ready：报名令牌免带锦标赛 id 直达规则与到位；全局令牌调用返回 400 TOKEN_NOT_SCOPED。"
+    },
+    {
+      "version": 1,
+      "date": "2026-09-01",
+      "type": "added",
+      "summary": "测试房间赛后数据 API（免认证）",
+      "detail": "新增 GET /api/test-rooms/{id}/games 与 /api/test-rooms/{id}/games/{batch}/events：房间 id 即凭证，拉取完整对战事件流（含四家手牌）供离线复盘与算法优化；running 场次 403 GAME_NOT_FINISHED。"
+    },
+    {
+      "version": 1,
+      "date": "2026-09-01",
+      "type": "changed",
+      "summary": "观战快照与复盘座位→玩家名映射",
+      "detail": "GET /portal/api/games/{id}/snapshot 与事件流响应新增 seats 字段（座位→玩家名映射），与实时排名玩家名可对应。"
+    },
+    {
+      "version": 1,
+      "date": "2026-09-01",
+      "type": "changed",
+      "summary": "对局七对胡牌判定修复",
+      "detail": "对局胡牌判定（含七对）与 fan-calc 工具口径对齐；旧 bot 若发现七对判定与预期不符，以本版本为准。"
+    },
+    {
+      "version": 1,
+      "date": "2026-09-01",
+      "type": "changed",
+      "summary": "4 白板判定描述更正",
+      "detail": "4 白板倍率条件明确为「手留 + 链内飘出的白板 = 4 张」（白板共 4 张不可能超过），普通打出/杠出的不算。"
+    }
+  ]
+}
