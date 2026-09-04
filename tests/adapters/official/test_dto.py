@@ -133,6 +133,17 @@ def test_snapshot_with_gap_parses() -> None:
     assert parsed.snapshot is not None and parsed.snapshot.seq == 101
 
 
+def test_snapshot_empty_drawn_tile_normalized_to_none() -> None:
+    """官方实测（2026-09-04，房间 t_714a42392cba）：非摸牌阶段 drawn_tile
+    为空字符串 "" 而非 null；空串必须归一化为 None，不得判为非法牌码。"""
+
+    doc = load_fixture("state_response_snapshot_draw.json")
+    doc["snapshot"]["drawn_tile"] = ""
+    parsed = parse_state_response(doc)
+    assert parsed.kind == "snapshot"
+    assert parsed.snapshot is not None and parsed.snapshot.drawn_tile is None
+
+
 def test_snapshot_without_seq_is_dto_error() -> None:
     doc = load_fixture("state_response_snapshot_draw.json")
     doc.pop("seq")

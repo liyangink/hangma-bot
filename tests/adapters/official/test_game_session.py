@@ -84,6 +84,34 @@ class TestNextItem:
         assert item.timeout_seconds == 3.0
         assert item.observation.my_hand[-1] == Tile("白")
 
+    async def test_last_discard_string_reconstructed_and_audited(self, transport, clock, audit) -> None:
+        """官方纯牌码 last_discard + 牌河交叉验证不一致：仍以 turn 重建并记审计。
+
+        回归背景：真实快照 last_discard 为纯牌码字符串时旧投影返回 None，
+        响应窗口只剩过。修复后观察携带重建的 PublicDiscard，提示进审计。
+        """
+
+        from hangma_bot.kernel.observation import PublicDiscard
+
+        doc = load_fixture("state_response_snapshot_peng.json")
+        doc["snapshot"]["last_discard"] = "2w"  # 纯牌码形态（官方实测形状）
+        doc["snapshot"]["turn"] = 0  # 座位 0 牌河末张 "1t" != "2w"：触发提示
+        transport.handler = _state_handler([_json(doc)])
+        session = make_game_session(transport=transport, clock=clock, audit=audit)
+        item = await asyncio.wait_for(session.next_item(), timeout=2)
+        assert isinstance(item, ObservedActionWindow)
+        assert item.window_key.phase is WindowPhase.RESPONSE_PENG
+        assert item.observation.last_discard == PublicDiscard(
+            seat=0, tile=Tile("2w"), seq=120
+        )
+        notes = [
+            record
+            for record in audit.records
+            if "last_discard_projection_note" in record.payload
+        ]
+        assert len(notes) == 1
+        assert "turn" in notes[0].payload["last_discard_projection_note"]
+
     async def test_pending_then_snapshot(self, transport, clock) -> None:
         transport.handler = _state_handler([
             _json(load_fixture("state_response_pending.json")),

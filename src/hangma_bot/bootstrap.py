@@ -53,6 +53,7 @@ from hangma_bot.application.ids import IdGenerator, PrefixedUuidIds
 from hangma_bot.application.participant_runtime import ParticipantRuntime
 from hangma_bot.application.tournament_supervisor import SupervisionPolicy
 from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.policy.claim_if_legal import ClaimIfLegalPolicy
 from hangma_bot.policy.interface import BotPolicy
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
 from hangma_bot.policy.weighted_heuristic import WeightedHeuristicPolicy
@@ -64,9 +65,11 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 DEFAULT_RULESET_VERSION = "hangma-mvp-v1"
 
 # 策略名 → 工厂；只有存在两个真实实现时才保留接缝（根 AGENTS.md 第 5 节）。
+# claim_if_legal 仅用于官方测试房验收（配置项选择），默认策略不变。
 _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "weighted_heuristic": lambda: WeightedHeuristicPolicy(),
     "safe_fallback": lambda: SafeFallbackPolicy(),
+    "claim_if_legal": lambda: ClaimIfLegalPolicy(),
 }
 
 

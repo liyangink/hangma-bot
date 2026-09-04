@@ -14,6 +14,13 @@
 - 官方可在快照响应附带 gap=true（指南 v10，跨局断链）：快照本身即
   权威全量，直接吸收并记录事实，无需额外重建。
 - 同场任意时刻最多一个在途 POST（ActionGate）。
+- 响应阶段（response_peng/response_chi）轮询时挂阶段边界定时器与长轮询
+  竞速：官方阶段切换不产生增量事件，定时器先到则主动 seq=0 刷新，捕获
+  无事件的 peng→chi 转换（集成阶段第二轮 R1）；定时器只在 response
+  阶段挂起，draw 阶段维持现状。
+- 响应窗口 WindowKey.trigger_seq 取触发弃牌事件序号（事件流最近一次
+  tile_discarded，重建后回退结构化 last_discard 的官方 seq），同物理窗口
+  身份稳定、每窗恰好交付一次（集成阶段第二轮 R2）。
 """
 
 from __future__ import annotations
@@ -63,6 +70,11 @@ from .errors import (
 from .scheduler import DeadlineExceeded, Priority, RequestScheduler
 from .sync_state import ProtocolSyncState, SyncDecision
 from .transport import OfficialTransport
+
+# 阶段边界定时器的余量（秒）：官方响应窗口（peng/chi）固定走满配置秒数后
+# 无事件切换阶段，定时器按"窗口秒数 + 本余量"与长轮询竞速，保证刷新落在
+# 下一阶段已经生效之后（捕获 peng->chi 转换）而不截断原窗口。
+_BOUNDARY_MARGIN_SEC = 0.05
 
 
 class OfficialGameSession:
@@ -202,7 +214,11 @@ class OfficialGameSession:
             if delivered is not None:
                 return delivered
             try:
-                response = await self._get_state(long_poll=True)
+                boundary_timeout = self._phase_boundary_timeout()
+                if boundary_timeout is None:
+                    response = await self._get_state(long_poll=True)
+                else:
+                    response = await self._long_poll_racing_boundary(boundary_timeout)
             except _PollFailure as failure:
                 return failure.item
             if response.kind == "pending":
@@ -312,6 +328,68 @@ class OfficialGameSession:
             if delivered is not None:
                 return delivered
 
+    def _phase_boundary_timeout(self) -> Optional[float]:
+        """当前权威快照处于响应阶段时的边界定时时长；其余阶段为 None。
+
+        官方响应阶段固定走满配置窗口秒数（peng/chi 各 1 秒）后才切换到
+        下一阶段，且 response_peng -> response_chi 的切换不产生任何增量
+        事件（集成阶段第二轮 R1 实测牌谱）——长轮询等不到事件，等看到
+        chi 窗口的 timeout 事件时窗口已结束。边界定时器与长轮询竞速，
+        定时先到则主动刷新权威快照，捕获无事件的阶段切换。
+
+        时长取对应窗口秒数 + 约 50ms 余量：太短会刷新到旧相位（多一次
+        浪费的普通优先级请求），太长会压缩下一窗口的可用决策时间。
+        仅在 response 阶段挂起，draw 阶段维持现状。
+        """
+
+        snapshot = self._sync.snapshot
+        if snapshot is None or self._sync.finished:
+            return None
+        if snapshot.phase == "response_peng":
+            return self._timing.peng_timeout_sec + _BOUNDARY_MARGIN_SEC
+        if snapshot.phase == "response_chi":
+            return self._timing.chi_timeout_sec + _BOUNDARY_MARGIN_SEC
+        return None
+
+    async def _long_poll_racing_boundary(self, timeout_seconds: float) -> StateResponse:
+        """长轮询与阶段边界定时器竞速；返回两者中先到的权威结果。
+
+        - 长轮询先到：取消定时器，结果（pending/events/snapshot/异常）原样返回；
+        - 定时器先到：取消挂起的长轮询，主动拉一次 seq=0 权威快照
+          （非阻塞刷新，恢复类请求走普通优先级，不挤占动作 POST 与
+          紧急恢复通道）。两个子任务都登记进 _active_tasks：
+          aclose 可以取消它们，不留下悬挂的长轮询或定时器。
+        """
+
+        poll_task = asyncio.ensure_future(self._get_state(long_poll=True))
+        timer_task = asyncio.ensure_future(self._boundary_timer(timeout_seconds))
+        for task in (poll_task, timer_task):
+            self._active_tasks.add(task)
+            task.add_done_callback(self._active_tasks.discard)
+        try:
+            done, _pending = await asyncio.wait(
+                (poll_task, timer_task), return_when=asyncio.FIRST_COMPLETED
+            )
+            if timer_task in done:
+                poll_task.cancel()
+                # 定时器先到：非阻塞权威刷新，捕获无事件的 peng->chi 切换
+                return await self._get_state(
+                    long_poll=False, force_full=True, priority=Priority.POLL
+                )
+            return poll_task.result()  # 轮询先到；异常（含 _PollFailure）原样传播
+        finally:
+            for task in (poll_task, timer_task):
+                if not task.done():
+                    task.cancel()
+            # 回收两个子任务的结果：被取消的挂起轮询与已完成的定时器都不得
+            # 留下未检索的取消/异常（避免事件循环告警与资源悬挂）。
+            await asyncio.gather(poll_task, timer_task, return_exceptions=True)
+
+    async def _boundary_timer(self, timeout_seconds: float) -> None:
+        """阶段边界定时器；用 retry_sleep 实现以支持测试注入假时钟。"""
+
+        await self._retry_sleep(timeout_seconds)
+
     def _apply_snapshot(self, response: StateResponse, *, finished: bool) -> None:
         if response.snapshot is None:
             raise DtoError("快照响应缺失 snapshot", recoverable=False)
@@ -342,6 +420,16 @@ class OfficialGameSession:
             if not finished:
                 self._sync.current_observation()  # 预热缓存（已验证必成功）
                 self._sync.current_window()
+                # last_discard 纯牌码形态的重建提示进审计（不改变观察内容）：
+                # 牌河与 turn 交叉验证不一致时记录，供赛后核对官方 turn 语义。
+                _, discard_notes = projector.project_last_discard(snapshot)
+                for note in discard_notes:
+                    self._emit_audit(
+                        AuditKind.AUTHORITATIVE_STATE,
+                        {"last_discard_projection_note": note},
+                        trigger_seq=snapshot.seq,
+                        round_no=snapshot.round_no,
+                    )
         except (DtoError, ValueError) as exc:
             return GameFailed(self.game_id, True, "snapshot_apply_failed:" + str(exc)[:100])
         return None
@@ -370,11 +458,25 @@ class OfficialGameSession:
         window = ObservedActionWindow(
             observation=observation,
             window_key=key,
-            authoritative_seq=key.trigger_seq,
+            # authoritative_seq 契约要求与 observation.snapshot_seq 一致
+            # （ObservedActionWindow.__post_init__）。响应窗口身份稳定化后
+            # trigger_seq 指向触发弃牌事件（如 182），而快照权威 seq 会随
+            # 他家 pass 推进（如 185）：二者语义不同，authoritative_seq
+            # 必须是本次观察所基于的权威状态序号。
+            authoritative_seq=observation.snapshot_seq,
             received_at_monotonic=self._monotonic(),
             timeout_seconds=detected.timeout_seconds,
         )
         self._delivered_windows.add(key)
+        if detected.trigger_projection_note is not None:
+            # 触发序号退化兜底（事件历史空 + 纯牌码 last_discard）：
+            # 与 last_discard_projection_note 同款审计，供赛后核对身份稳定性
+            self._emit_audit(
+                AuditKind.AUTHORITATIVE_STATE,
+                {"trigger_seq_projection_note": detected.trigger_projection_note},
+                trigger_seq=key.trigger_seq,
+                round_no=key.round_no,
+            )
         self._emit_audit(
             AuditKind.AUTHORITATIVE_STATE,
             {
@@ -408,6 +510,7 @@ class OfficialGameSession:
         long_poll: bool,
         force_full: bool = False,
         deadline_monotonic: Optional[float] = None,
+        priority: Optional[Priority] = None,
     ) -> StateResponse:
         """带预算内有界重试的 state 请求；失败升级为 _PollFailure。
 
@@ -415,10 +518,14 @@ class OfficialGameSession:
         重试耗尽前降级一次 seq=0 全量重建——增量损坏大概率可由权威快照修复。
         deadline_monotonic 绑定动作原始预算（409 恢复刷新使用）：预算耗尽
         立即停止重试并按可恢复失败上交，绝不越过 latest_send_at 等待。
+        priority 缺省时按 force_full 选 RECOVERY/POLL；边界定时刷新等
+        计划性恢复类请求可显式走普通优先级（POLL），不占紧急恢复通道。
         """
 
         seq = 0 if force_full else self._sync.last_seq
-        priority = Priority.RECOVERY if force_full else Priority.POLL
+        chosen_priority = priority if priority is not None else (
+            Priority.RECOVERY if force_full else Priority.POLL
+        )
         attempts = 0
         degraded_to_full = False
         while True:
@@ -427,7 +534,7 @@ class OfficialGameSession:
                 raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline")) from None
             try:
                 lease = await self._scheduler.acquire(
-                    priority, deadline_monotonic=deadline_monotonic
+                    chosen_priority, deadline_monotonic=deadline_monotonic
                 )
             except DeadlineExceeded:
                 # 冷却/槽竞争在预算内未让出许可：按预算耗尽上交，
@@ -729,7 +836,10 @@ class OfficialGameSession:
             refreshed = ObservedActionWindow(
                 observation=observation,
                 window_key=detected.window_key,
-                authoritative_seq=detected.window_key.trigger_seq,
+                # 与 _maybe_deliver_window 同口径：authoritative_seq 必须等于
+                # observation.snapshot_seq（契约校验），响应窗口 trigger_seq
+                # 稳定为触发弃牌序号后二者不再恒等。
+                authoritative_seq=observation.snapshot_seq,
                 received_at_monotonic=self._monotonic(),
                 timeout_seconds=detected.timeout_seconds,
             )

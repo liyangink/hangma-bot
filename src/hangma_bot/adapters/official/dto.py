@@ -12,7 +12,7 @@ v9–v11 变更依据 doc/references/official-guide-version-v11.json，2026-09-0
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Mapping, Optional, Sequence, Tuple
+from typing import Any, Mapping, Optional, Sequence, Tuple, Union
 
 from hangma_bot.kernel.actions import CANONICAL_TILE_CODES
 
@@ -303,7 +303,10 @@ class ParsedSnapshot:
     discards: Tuple[Tuple[str, ...], ...]  # 外层固定按座位 0-3
     melds_raw: Tuple[Tuple[Mapping[str, Any], ...], ...]  # 副露原始对象，projector 再映射
     hand_counts: Tuple[int, int, int, int]  # 四家剩余手牌张数，固定按座位 0-3
-    last_discard: Optional[Tuple[int, str, int]]  # (座位, 牌码, seq)，形状不全时为空
+    last_discard: Optional[Union[Tuple[int, str, int], str]]
+    # 两种官方形态：结构化 (座位, 牌码, seq)，或纯牌码字符串
+    # （2026-09 测试房间实测，captures/state-draw-phase-*.json）。
+    # 字符串形态的座位与序号由 projector 按响应阶段重建（turn 即弃牌者）。
     god_baotou: bool
     god_chain_count: int
     god_catch_play: bool
@@ -315,11 +318,24 @@ def _seat_vector(value: Any, what: str, *, length: int = 4) -> Tuple[int, ...]:
     return tuple(_require_int(item, what + " 项") for item in value)
 
 
-def _parse_last_discard(value: Any) -> Optional[Tuple[int, str, int]]:
-    """last_discard 官方形状未完整文档化：仅当 (seat, tile, seq) 齐备才采用。"""
+def _parse_last_discard(value: Any) -> Optional[Union[Tuple[int, str, int], str]]:
+    """last_discard 两种官方形态：结构化 (seat, tile, seq) 或纯牌码字符串。
 
-    if not isinstance(value, Mapping):
+    2026-09 测试房间实测（captures/state-draw-phase-t_714a42392cba.json）官方
+    返回纯牌码字符串（如 "6w"）；字符串保留给 projector 按响应阶段重建
+    （响应阶段 turn 即弃牌者，API 文档 §2.3/§5.3）。两种形态都做牌码校验；
+    空串与 drawn_tile 同口径归一化为 None。对象存在但字段坏、或出现第三
+    种未知形状，属协议错误而非"无弃牌"，不得静默丢弃。
+    """
+
+    if value is None or value == "":
         return None
+    if isinstance(value, str):
+        if value not in CANONICAL_TILE_CODES:
+            raise DtoError("last_discard 非法牌码 {!r}".format(value))
+        return value
+    if not isinstance(value, Mapping):
+        raise DtoError("last_discard 字段类型不符", recoverable=True)
     seat, tile, seq = value.get("seat"), value.get("tile"), value.get("seq")
     if seat is None and tile is None and seq is None:
         return None  # 字段缺失属协议允许：无最近弃牌

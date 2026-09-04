@@ -615,6 +615,74 @@ class TestGenerateCandidates:
         assert generate_candidates(_SETTLED) == FamilyOutcome((), ())
 
 
+class TestReconstructedDiscardFeedsClaims:
+    """投影层重建的 (座位,牌码,seq) 触发弃牌到位后，吃/碰/明杠正常生成。
+
+    回归背景：官方实测 last_discard 为纯牌码字符串，旧投影返回 None，
+    hangma 各族以「缺少触发弃牌」降级，真实对局只剩过。适配器在响应
+    阶段按 turn=弃牌者重建 PublicDiscard 后，各族不得再出现该降级。
+    """
+
+    def test_peng_with_reconstructed_discard(self):
+        context = _context(
+            phase="response_peng",
+            turn_seat=3,  # 弃牌者座位（与重建语义一致）
+            responding=(1,),
+            hand=_tiles("6w", "6w"),
+            last_discard=_discard_from(3, "6w", seq=374),
+        )
+        outcome = generate_candidates(context)
+        assert _keys(outcome) == ["peng:6w", "pass"]
+        assert outcome.issues == ()
+
+    def test_exposed_gang_with_reconstructed_discard(self):
+        context = _context(
+            phase="response_peng",
+            turn_seat=3,
+            responding=(1,),
+            hand=_tiles("6w", "6w", "6w"),
+            last_discard=_discard_from(3, "6w", seq=374),
+        )
+        outcome = generate_candidates(context)
+        assert _keys(outcome) == ["peng:6w", "gang:exposed:6w", "pass"]
+        assert outcome.issues == ()
+
+    def test_chi_with_reconstructed_discard(self):
+        context = _context(
+            phase="response_chi",
+            turn_seat=3,
+            responding=(1,),
+            hand=_tiles("2w", "3w"),
+            last_discard=_discard_from(3, "1w", seq=374),
+        )
+        outcome = generate_candidates(context)
+        assert _keys(outcome) == ["chi:1w,2w,3w", "pass"]
+        assert outcome.issues == ()
+
+    @pytest.mark.parametrize(
+        "phase,generator",
+        [
+            ("response_peng", peng_candidates),
+            ("response_peng", gang_candidates),
+            ("response_chi", chi_candidates),
+        ],
+    )
+    def test_missing_discard_still_degrades_with_issue(self, phase, generator):
+        # last_discard=None 时各族仍保守降级并给出可审计 RuleIssue（§7）。
+        context = _context(
+            phase=phase,
+            turn_seat=3,
+            responding=(1,),
+            hand=_tiles("6w", "6w", "6w", "2w", "3w"),
+            last_discard=None,
+        )
+        outcome = generator(context)
+        assert outcome.candidates == ()
+        assert len(outcome.issues) == 1
+        assert "缺少触发弃牌" in outcome.issues[0].reason
+        assert "pass" in _keys(pass_candidates(context))  # 过仍保底
+
+
 class TestInvariants:
     """跨场景性质：牌守恒、键唯一、证据非空、确定性。"""
 

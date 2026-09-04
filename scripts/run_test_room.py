@@ -316,8 +316,8 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
     )
 
     strategy = str(data.get("strategy", "weighted_heuristic"))
-    if strategy not in ("weighted_heuristic", "safe_fallback"):
-        raise ValueError(f"未知策略名 {strategy!r}；可用：weighted_heuristic / safe_fallback")
+    if strategy not in ("weighted_heuristic", "safe_fallback", "claim_if_legal"):
+        raise ValueError(f"未知策略名 {strategy!r}；可用：weighted_heuristic / safe_fallback / claim_if_legal")
     hosts = data.get("insecure_hosts", [])
     if not isinstance(hosts, (list, tuple)):
         raise ValueError("insecure_hosts 必须是数组")

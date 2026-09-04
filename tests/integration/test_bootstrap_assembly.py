@@ -121,6 +121,23 @@ class TestAssembly:
         assembled = build_runtime(config, session_factory=lambda: _StubSession())
         assert isinstance(assembled.policy, SafeFallbackPolicy)
 
+    def test_strategy_selection_claim_if_legal(self, tmp_path):
+        """claim_if_legal 经 bootstrap 可配置实例化（官方测试房验收冒烟）。"""
+
+        from hangma_bot.policy.claim_if_legal import ClaimIfLegalPolicy
+
+        config = runtime_config_from_mapping(
+            _valid(audit_root=str(tmp_path), strategy="claim_if_legal")
+        )
+        assembled = build_runtime(config, session_factory=lambda: _StubSession())
+        assert isinstance(assembled.policy, ClaimIfLegalPolicy)
+        # 默认策略仍为 weighted_heuristic，claim_if_legal 只按配置启用
+        default = runtime_config_from_mapping(_valid(audit_root=str(tmp_path)))
+        assert isinstance(
+            build_runtime(default, session_factory=lambda: _StubSession()).policy,
+            WeightedHeuristicPolicy,
+        )
+
     def test_policy_factory_override(self, tmp_path):
         config = runtime_config_from_mapping(_valid(audit_root=str(tmp_path)))
         marker = _StubPolicy()

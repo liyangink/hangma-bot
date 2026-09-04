@@ -1,5 +1,6 @@
 """线上策略接口与第一阶段两个真实策略实现。"""
 
+from .claim_if_legal import ClaimIfLegalPolicy
 from .errors import PolicyError, PolicyTimeoutError
 from .interface import (
     BotPolicy,
@@ -28,4 +29,5 @@ __all__ = [
     "DEFAULT_WEIGHTS",
     "SafeFallbackPolicy",
     "WeightedHeuristicPolicy",
+    "ClaimIfLegalPolicy",
 ]

@@ -197,21 +197,74 @@ def _meld(raw: object, seat_no: int) -> PublicMeld:
     )
 
 
+_RESPONSE_PHASES = ("response_peng", "response_chi")
+
+
+def project_last_discard(
+    snapshot: ParsedSnapshot,
+) -> Tuple[Optional[PublicDiscard], Tuple[str, ...]]:
+    """官方 last_discard 投影为 PublicDiscard(座位, 牌码, seq)，并返回审计提示。
+
+    官方两种形态（dto 已校验牌码）：
+
+    - 结构化 (座位, 牌码, seq)：直接采用，各阶段通用（既有行为）。
+    - 纯牌码字符串（2026-09 测试房间实测，captures/state-draw-phase-*.json）：
+      仅 response_peng / response_chi 阶段重建。响应阶段快照 turn 即
+      弃牌者——API 文档 §2.3 字段表 `turn` 为"当前行动座位"，§5.3 时序
+      中弃牌后行动权停留在弃牌者直到响应窗口走满、下家才摸牌；而 draw
+      阶段 turn 已转入下家（实测样本：turn=0 但牌河末张 "6w" 属座位 3），
+      语义不成立，故 draw 等其他阶段不强行造 last_discard，维持 None。
+    - 重建以 turn 为座位，并以"该座位牌河末张 == 牌码"交叉验证；不一致
+      仍以 turn 为准（响应阶段官方语义保证存在待认领弃牌），只记审计
+      提示，绝不因此返回 None。seq 取快照权威 seq：弃牌即最近事件，
+      误差可接受且只用于审计关联。
+    - turn 越界（如 -1）属协议畸形态：不伪造座位，返回 None + 提示，
+      交由 hangma 以"缺少触发弃牌"RuleIssue 保守降级（过仍保底）。
+    """
+
+    raw = snapshot.last_discard
+    if raw is None:
+        return None, ()
+    if isinstance(raw, str):
+        if snapshot.phase not in _RESPONSE_PHASES:
+            return None, ()  # 非响应阶段 turn 已不是弃牌者，不重建
+        seat_no = snapshot.turn
+        if not 0 <= seat_no <= 3:
+            return None, (
+                "response 阶段 turn={0} 越界，无法重建 last_discard({1})".format(
+                    snapshot.turn, raw
+                ),
+            )
+        river = snapshot.discards[seat_no]
+        river_tail = river[-1] if river else None
+        notes = ()
+        if river_tail != raw:
+            notes = (
+                "重建 last_discard：以 turn={0} 为弃牌者，该座位牌河末张 {1} != {2}，"
+                "按响应阶段语义保留 turn 为弃牌者座位".format(
+                    seat_no,
+                    river_tail if river_tail is not None else "空",
+                    raw,
+                ),
+            )
+        return PublicDiscard(seat=seat_no, tile=Tile(raw), seq=snapshot.seq), notes
+    seat_no, tile_code, seq = raw
+    return PublicDiscard(seat=seat_no, tile=Tile(tile_code), seq=seq), ()
+
+
 def observation(snapshot: ParsedSnapshot, history: Tuple[PublicEvent, ...], game_id: str) -> PlayerObservation:
     """官方全量快照 + 已累积公开事件转 PlayerObservation。
 
     只使用本人依法可见字段：my_hand/drawn_tile 是官方私有信息，
     他家手牌与未来牌墙从不出现（信息权限由 kernel 类型保证）。
+    last_discard 的投影规则见 :func:`project_last_discard`。
     """
 
     melds = tuple(
         tuple(_meld(m, seat_no) for m in row)
         for seat_no, row in enumerate(snapshot.melds_raw)
     )
-    last_discard = None
-    if snapshot.last_discard is not None:
-        seat_no, tile_code, seq = snapshot.last_discard
-        last_discard = PublicDiscard(seat=seat_no, tile=Tile(tile_code), seq=seq)
+    last_discard, _ = project_last_discard(snapshot)
     return PlayerObservation(
         game_id=game_id,
         seat=snapshot.seat,
@@ -247,35 +300,132 @@ class DetectedWindow:
 
     window_key: WindowKey
     timeout_seconds: float  # 官方配置的窗口持续秒数
+    trigger_projection_note: Optional[str] = None  # 触发序号退化兜底时的审计提示
+    # 解析命中的触发弃牌事实 (seq, 牌码, 座位)；调用方据此更新跨重建记忆
+    trigger_discard: Optional[Tuple[int, str, int]] = None
 
 
-def detect_window(snapshot: ParsedSnapshot, timing: TimingConfig, game_id: str) -> Optional[DetectedWindow]:
+def _structured_last_discard(snapshot: ParsedSnapshot) -> Optional[Tuple[int, str, int]]:
+    """结构化 last_discard (seat, tile, seq) 转触发弃牌事实 (seq, 牌码, 座位)。"""
+
+    raw = snapshot.last_discard
+    if isinstance(raw, tuple) and len(raw) == 3 and isinstance(raw[2], int):
+        seat_no, tile_code, seq = raw
+        if isinstance(seat_no, int) and isinstance(tile_code, str):
+            return (seq, tile_code, seat_no)
+    return None
+
+
+def _remembered_matches(
+    snapshot: ParsedSnapshot, remembered: Tuple[int, int, str, int]
+) -> bool:
+    """跨重建触发弃牌记忆与当前快照是否一致（第三级验证口径）。
+
+    验证条件（全部满足才采用记忆）：
+    - 记忆局号与快照 round_no 一致（防串局）；
+    - 快照处于 response_* 阶段（调用方已保证，双保险）；
+    - 快照 last_discard 为纯牌码形态且牌码与记忆一致（无牌码证据
+      （last_discard=None）时不得采用记忆——诚实退化）。
+
+    刻意不做牌河交叉验证：测试房实测牌河末张与 last_discard 存在
+    不一致样本（last_discard_projection_note 证据），牌河交叉会误伤
+    记忆，反而破坏身份稳定；牌码一致性已足以区分"同一弃牌"与"新弃牌"。
+    """
+
+    if remembered[0] != snapshot.round_no:
+        return False
+    if snapshot.phase not in _RESPONSE_PHASES:
+        return False
+    raw = snapshot.last_discard
+    return isinstance(raw, str) and raw == remembered[2]
+
+
+def _response_trigger(
+    snapshot: ParsedSnapshot,
+    event_stream_discard: Optional[Tuple[int, str, int]],
+    remembered_trigger: Optional[Tuple[int, int, str, int]],
+) -> Tuple[int, Optional[str], Optional[Tuple[int, str, int]]]:
+    """响应窗口触发弃牌的四级解析；返回 (trigger_seq, 审计提示, 弃牌事实)。
+
+    - 第一级：sync_state 已应用事件流中最近一次 tile_discarded（权威增量事实）；
+    - 第二级：快照结构化 last_discard 携带的官方弃牌 seq（全量重建后
+      唯一存活于快照内的权威来源）；
+    - 第三级：跨重建存活的触发弃牌记忆（纯牌码 last_discard 场景的
+      身份稳定来源，见 _remembered_matches 验证口径）；
+    - 第四级：退回快照 seq + 审计提示——响应窗口走满期间他家 pass 会
+      推进快照 seq，此级只能保证构造成功，不代表身份稳定（R2 残留风险，
+      提示必须进审计）。
+    """
+
+    if event_stream_discard is not None:
+        return event_stream_discard[0], None, event_stream_discard
+    structured = _structured_last_discard(snapshot)
+    if structured is not None:
+        return structured[0], None, structured
+    if remembered_trigger is not None and _remembered_matches(snapshot, remembered_trigger):
+        return (
+            remembered_trigger[1],
+            None,
+            (remembered_trigger[1], remembered_trigger[2], remembered_trigger[3]),
+        )
+    return snapshot.seq, (
+        "response 阶段缺少可解析的触发弃牌序号（事件历史为空、last_discard 无结构化序号、"
+        "跨重建记忆缺失或验证不通过），WindowKey.trigger_seq 退化为快照 seq={0}；"
+        "仅用于审计关联，不代表身份稳定".format(snapshot.seq)
+    ), None
+
+
+def detect_window(
+    snapshot: ParsedSnapshot,
+    timing: TimingConfig,
+    game_id: str,
+    *,
+    event_stream_discard: Optional[Tuple[int, str, int]] = None,
+    remembered_trigger: Optional[Tuple[int, int, str, int]] = None,
+) -> Optional[DetectedWindow]:
     """按官方动作判定下限（API 文档 §2.4）识别是否轮到本座行动。
 
     只判定"是否有动作权"，不判定具体合法动作——合法性属于 hangma 规则模块。
-    trigger_seq 使用快照权威 seq：窗口由该权威状态触发。
+    窗口身份（WindowKey.trigger_seq 即"触发本窗口的官方事件序号"）：
+
+    - draw 窗口：触发事件是本人摸牌，使用快照权威 seq（现状已稳定）。
+    - response_peng/response_chi 窗口：触发事件是他人弃牌，按四级解析
+      （事件流 -> 结构化 last_discard -> 跨重建记忆 -> 快照 seq），
+      详见 _response_trigger；解析命中时 trigger_discard 返回弃牌事实，
+      供 sync_state 更新跨重建记忆。
     """
 
     seat = snapshot.seat
     if seat < 0:
         return None  # 观赛视角无动作权
+    note: Optional[str] = None
+    trigger_discard: Optional[Tuple[int, str, int]] = None
     if snapshot.phase == "draw" and snapshot.turn == seat:
         phase, timeout = WindowPhase.DRAW, timing.discard_timeout_sec
+        trigger_seq = snapshot.seq
     elif snapshot.phase == "response_peng" and seat in snapshot.responding_seats:
         phase, timeout = WindowPhase.RESPONSE_PENG, timing.peng_timeout_sec
+        trigger_seq, note, trigger_discard = _response_trigger(
+            snapshot, event_stream_discard, remembered_trigger
+        )
     elif snapshot.phase == "response_chi" and seat in snapshot.responding_seats:
         phase, timeout = WindowPhase.RESPONSE_CHI, timing.chi_timeout_sec
+        trigger_seq, note, trigger_discard = _response_trigger(
+            snapshot, event_stream_discard, remembered_trigger
+        )
     else:
         return None
     return DetectedWindow(
         window_key=WindowKey(
             game_id=game_id,
             round_no=snapshot.round_no,
-            trigger_seq=snapshot.seq,
+            trigger_seq=trigger_seq,
             phase=phase,
             seat=seat,
         ),
         timeout_seconds=timeout,
+        trigger_projection_note=note,
+        trigger_discard=trigger_discard,
     )
 
 

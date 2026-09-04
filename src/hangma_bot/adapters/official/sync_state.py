@@ -5,6 +5,10 @@
 - 重复 seq 幂等忽略；
 - seq 缺口、gap=true、未知关键事件 → 返回 NEEDS_REBUILD，由调用方用 seq=0 全量重建；
 - 全量快照是规范真相：apply_full_snapshot 整体替换本地状态与公开历史；
+  唯一例外是跨重建存活的触发弃牌记忆 _response_trigger（(round_no, seq,
+  牌码, 座位)）：测试房响应阶段 last_discard 为纯牌码字符串（无 seq）且
+  每次交付前全量重建清空事件历史，该记忆是响应窗口 WindowKey.trigger_seq
+  身份稳定的兜底来源（集成阶段第二轮加固 R2）；仅在局号变化时重置。
 - 未知事件类型采取"保守重建一次 + 学习忽略"策略：第一次出现按关键事件处理
   （权威快照会吸收其效果，不丢状态），之后同类型仅记录，避免重建风暴。
   这是工程决策：官方未提供未知事件的可忽略性判据（API 文档 §2.3）。
@@ -27,10 +31,14 @@ from . import projector
 from .dto import ParsedEvent, ParsedSnapshot, StateResponse
 from .errors import DtoError
 
-# 官方门户已确认处理的事件类型（API 文档 §2.3）；新增官方事件进入"未知"路径。
+# 官方门户已确认处理的事件类型（API 文档 §2.3 与 2026-09 测试房间实测）；
+# 新增官方事件进入"未知"路径。pass 是响应窗口他家弃权事件：实测牌谱中
+# pass 事件推进权威 seq（182->183/184/185），缺它会把高频常规事件误判为
+# 未知关键事件，触发全量重建抖动（集成阶段第二轮 R3）。
 KNOWN_EVENT_TYPES = frozenset({
     "tile_drawn",
     "tile_discarded",
+    "pass",
     "chi",
     "peng",
     "gang",
@@ -72,14 +80,30 @@ class ProtocolSyncState:
         self.finished = False
         self.learned_event_types = set()  # 重建后学习到的可忽略未知事件类型
         self._observation_cache = None  # 延迟构造的权威观察缓存
+        # 跨重建存活的触发弃牌记忆 (round_no, seq, 牌码, 座位)。
+        # 应用全量快照不清空它（仅局号变化时重置）：全量重建会清空事件
+        # 历史，而测试房响应阶段 last_discard 是纯牌码字符串（无 seq），
+        # 此记忆是纯牌码场景下 WindowKey.trigger_seq 身份稳定的唯一来源
+        # （集成阶段第二轮加固 R2）。来源：apply_events 见到 tile_discarded、
+        # current_window 三级解析命中。
+        self._response_trigger: Optional[Tuple[int, int, str, int]] = None
 
     @property
     def has_snapshot(self) -> bool:
         return self.snapshot is not None
 
     def apply_full_snapshot(self, snapshot: ParsedSnapshot, *, finished: bool = False) -> None:
-        """seq=0 权威快照整体替换：历史重置，序号对齐。"""
+        """seq=0 权威快照整体替换：历史重置，序号对齐。
 
+        触发弃牌记忆跨重建存活，仅当局号变化时重置（新一轮弃牌出现前
+        旧局记忆不得串局参与第三级解析）。
+        """
+
+        if (
+            self._response_trigger is not None
+            and self._response_trigger[0] != snapshot.round_no
+        ):
+            self._response_trigger = None  # 局号变化：旧局记忆失效
         self.snapshot = snapshot
         self.last_seq = snapshot.seq
         self.history = []
@@ -134,6 +158,11 @@ class ProtocolSyncState:
         for event, public in projected:  # 预检全通过后统一应用
             self.history.append(public)
             self.last_seq = event.seq
+            if public.kind == "tile_discarded":
+                discard = self._event_discard_fact(public)
+                if discard is not None:
+                    # 新一轮弃牌出现：覆盖跨重建触发记忆（R2 加固来源 (a)）
+                    self._response_trigger = (self.snapshot.round_no,) + discard
             if event.type == "game_ended":
                 self.finished = True
         self._observation_cache = None  # 历史变化使观察缓存失效
@@ -145,11 +174,59 @@ class ProtocolSyncState:
         self.learned_event_types.add(event_type)
 
     def current_window(self):
-        """当前权威快照判定的我方动作窗口；无快照或无动作权时为 None。"""
+        """当前权威快照判定的我方动作窗口；无快照或无动作权时为 None。
+
+        响应窗口触发序号四级解析（projector._response_trigger）：事件流
+        tile_discarded -> 结构化 last_discard -> 跨重建记忆 -> 快照 seq。
+        解析命中（tier-1/2/3）时把触发弃牌事实写回跨重建记忆
+        （R2 加固来源 (b)：纯牌码场景下即使本次命中，也要为后续
+        重建后的事件历史空窗期保存稳定身份）。
+        """
 
         if self.snapshot is None:
             return None
-        return projector.detect_window(self.snapshot, self.timing, self.game_id)
+        detected = projector.detect_window(
+            self.snapshot,
+            self.timing,
+            self.game_id,
+            event_stream_discard=self._last_discarded_event(),
+            remembered_trigger=self._response_trigger,
+        )
+        if detected is not None and detected.trigger_discard is not None:
+            self._response_trigger = (
+                self.snapshot.round_no,
+            ) + detected.trigger_discard
+        return detected
+
+    def _last_discarded_event(self) -> Optional[Tuple[int, str, int]]:
+        """已应用事件流中最近一次弃牌事实 (seq, 牌码, 座位)；无记录时为 None。
+
+        PublicEvent.kind 保持官方事件名原样（projector.public_event），
+        故直接以官方名 "tile_discarded" 匹配。形状不合规（缺座位或
+        非单牌）时不采用——不伪造弃牌事实。
+        """
+
+        for event in reversed(self.history):
+            if event.kind != "tile_discarded":
+                continue
+            if not isinstance(event.seat, int) or isinstance(event.seat, bool):
+                continue
+            if len(event.tiles) != 1:
+                continue
+            # PublicEvent.tiles 元素是 kernel Tile 值对象，记忆存规范牌码
+            # 字符串（与 ParsedSnapshot.last_discard 纯牌码形态同构）
+            return (event.seq, event.tiles[0].code, event.seat)
+        return None
+
+    @staticmethod
+    def _event_discard_fact(public) -> Optional[Tuple[int, str, int]]:
+        """事件流弃牌 PublicEvent 转记忆事实 (seq, 牌码, 座位)；形状不合规为 None。"""
+
+        if not isinstance(public.seat, int) or isinstance(public.seat, bool):
+            return None
+        if len(public.tiles) != 1:
+            return None
+        return (public.seq, public.tiles[0].code, public.seat)
 
     def current_observation(self) -> Optional[PlayerObservation]:
         """当前权威观察（构造后缓存）；public_history 为最近全量快照之后的连续增量事件。"""
