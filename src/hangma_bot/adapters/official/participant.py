@@ -1,4 +1,4 @@
-"""官方赛事会话：TournamentSessionPort 的 v8 实现。
+"""官方赛事会话：TournamentSessionPort 的官方协议实现（v8 快照 + v9–v11 已审查变更）。
 
 一个实例对应一个 Token：内部恰好创建一个 OfficialTransport 与一个
 RequestScheduler，该 Token 的赛事与全部场次共享（接口协议 §6）。
@@ -36,7 +36,6 @@ from hangma_bot.application.contracts import (
     StageIdentity,
     TournamentSessionPort,
     TournamentSnapshot,
-    TournamentStatus,
 )
 from hangma_bot.kernel.config import TournamentConfig
 
@@ -420,10 +419,9 @@ class OfficialTournamentSession:
                     ParticipantTerminalReason.FATAL_PROTOCOL_ERROR,
                     "next_update projection: " + str(exc)[:120],
                 )
-            terminal = self._terminal_reason_for_status(snapshot.status)
-            if terminal is not None:
-                self._adopt(snapshot)
-                return self._terminal(terminal, "status=" + snapshot.status.value, last_snapshot=snapshot)
+            # finished/closed/void 一律作为普通变化快照返回：赛事何时退出
+            # 是应用层（supervisor）的生命周期判定（architecture.md 模块表），
+            # 适配器只做协议投影，不重复实现终态化。
             if self._snapshot_changed(snapshot):
                 self._adopt(snapshot)
                 return snapshot
@@ -547,16 +545,6 @@ class OfficialTournamentSession:
             or last.my_games != snapshot.my_games
             or last.competition.ranking != snapshot.competition.ranking
         )
-
-    @staticmethod
-    def _terminal_reason_for_status(status: TournamentStatus) -> Optional[ParticipantTerminalReason]:
-        if status is TournamentStatus.FINISHED:
-            return ParticipantTerminalReason.TOURNAMENT_FINISHED
-        if status is TournamentStatus.CLOSED:
-            return ParticipantTerminalReason.TOURNAMENT_CLOSED
-        if status is TournamentStatus.VOID:
-            return ParticipantTerminalReason.TOURNAMENT_VOID
-        return None
 
     def _terminal(
         self,

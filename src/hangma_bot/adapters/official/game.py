@@ -1,4 +1,4 @@
-"""官方场次会话：GameSessionPort 的 v8 实现。
+"""官方场次会话：GameSessionPort 的官方协议实现（v8 快照 + v9–v11 已审查变更）。
 
 同步与提交语义（接口协议 §5/§8、模块 AGENTS）：
 
@@ -8,7 +8,11 @@
 - GET 超时/可恢复 5xx/429 在预算内有界重试；动作 POST 绝不自动重放。
 - 409 固定流程：记录明确拒绝 → seq=0 全量刷新 → 比较 WindowKey →
   同窗仍需行动返回 SubmitRejectedRetryable，否则 SubmitRejectedClosed。
+- POST 429 与 409 后刷新失败/不可用 → SubmitRejectedNoRefresh：POST 已发出、
+  官方明确未执行、无权威刷新，终结原窗口且不允许追加提交（接口协议 §5）。
 - POST 结果不确定（超时/断连/5xx）→ SubmitAmbiguous 并封锁同窗。
+- 官方可在快照响应附带 gap=true（指南 v10，跨局断链）：快照本身即
+  权威全量，直接吸收并记录事实，无需额外重建。
 - 同场任意时刻最多一个在途 POST（ActionGate）。
 """
 
@@ -34,6 +38,7 @@ from hangma_bot.application.contracts import (
     SubmitNotSent,
     SubmitOutcome,
     SubmitRejectedClosed,
+    SubmitRejectedNoRefresh,
     SubmitRejectedRetryable,
 )
 from hangma_bot.kernel.actions import WindowKey
@@ -230,6 +235,17 @@ class OfficialGameSession:
                         return delivered
                 continue
             if response.kind in ("snapshot", "finished"):
+                if response.gap:
+                    # 指南 v10：官方可在（跨局）快照上附带 gap=true，表示事件流
+                    # 曾断链；快照本身即权威全量，直接吸收并记录事实，无需重建
+                    self._emit_audit(
+                        AuditKind.PROTOCOL_RECOVERED,
+                        {
+                            "trigger": "rebuild_snapshot_gap",
+                            "seq": response.snapshot.seq if response.snapshot else None,
+                        },
+                        trigger_seq=response.snapshot.seq if response.snapshot else None,
+                    )
                 apply_failure = self._apply_or_fail(response, finished=response.finished)
                 if apply_failure is not None:
                     return apply_failure
@@ -415,7 +431,7 @@ class OfficialGameSession:
                 )
             except DeadlineExceeded:
                 # 冷却/槽竞争在预算内未让出许可：按预算耗尽上交，
-                # 409 路径由调用方保守映射 SubmitRejectedClosed
+                # 409 路径由调用方保守映射 SubmitRejectedNoRefresh
                 raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline")) from None
             # acquire 等待（429 冷却/槽竞争）会消耗预算：拿到 lease 后必须
             # 复查截止并按最新剩余设置读取超时——不得用过期的估算值发请求
@@ -553,13 +569,18 @@ class OfficialGameSession:
                 return self._finish_submit(attempt, SubmitFatal(exc.official_code, "forbidden"))
             except RateLimitedError as exc:
                 self._scheduler.note_rate_limited(exc.retry_after_seconds)
-                # 契约缺口（已提变更请求 review/official-adapter/contract-change-request.md）：
-                # POST 已发出且官方确定未执行，冻结 union 无准确类型；
-                # 暂按 NotSent 停止旧计划（行为安全），审计直接携带发送事实
+                # 429：POST 已发出且官方明确未执行，但限速响应不含权威刷新。
+                # 按契约类型 SubmitRejectedNoRefresh 终结原窗口（不追加提交），
+                # 审计按实际发送计数（2026-09-04 集成阶段裁定，接口协议 §5）。
+                self._gate.mark_closed(attempt.window_key)
                 return self._finish_submit(
                     attempt,
-                    SubmitNotSent("official_rate_limited"),
-                    extra_payload={"post_sent": True, "official_code": "RATE_LIMITED"},
+                    SubmitRejectedNoRefresh(
+                        official_code=exc.official_code or "RATE_LIMITED",
+                        rejected_action_key=attempt.action_key,
+                        latest_local_seq=self._sync.last_seq,
+                        reason="official_rate_limited",
+                    ),
                 )
             except UncertainTransportError as exc:
                 return self._finish_submit(attempt, self._block_ambiguous(attempt, exc.detail))
@@ -616,7 +637,10 @@ class OfficialGameSession:
         return SubmitAmbiguous(recovery_id=recovery_id, reason=reason)
 
     async def _handle_conflict(self, attempt: ActionAttempt, error: ConflictError) -> SubmitOutcome:
-        """409 固定流程：权威刷新后按 WindowKey 判定 retryable 或 closed。"""
+        """409 固定流程：权威刷新后按 WindowKey 判定 retryable/closed；
+
+        刷新失败、不可用或不可解析时返回 SubmitRejectedNoRefresh（接口协议 §5）。
+        """
 
         try:
             response = await self._get_state(
@@ -642,8 +666,9 @@ class OfficialGameSession:
             )
             raise
         except _PollFailure:
-            # 官方已明确未执行动作；但无法确认窗口是否仍开放，保守按已关闭处理。
-            # 审计显式区分"刷新不可得"与"确认关闭"：不把本地保守停窗写成权威确认
+            # 官方已明确未执行动作（409 本身）；但权威刷新失败/不可得，
+            # 无法确认窗口是否仍开放：按 SubmitRejectedNoRefresh 终结原窗口，
+            # 不把本地保守停窗写成"权威确认关闭"（SubmitRejectedClosed 语义）。
             self._gate.mark_closed(attempt.window_key)
             self._emit_audit(
                 AuditKind.PROTOCOL_RECOVERED,
@@ -657,17 +682,34 @@ class OfficialGameSession:
                 attempt_no=attempt.attempt_no,
                 round_no=attempt.window_key.round_no,
             )
-            return SubmitRejectedClosed(
+            return SubmitRejectedNoRefresh(
                 official_code=error.official_code or "INVALID_ACTION",
-                latest_authoritative_seq=self._sync.last_seq,
+                rejected_action_key=attempt.action_key,
+                latest_local_seq=self._sync.last_seq,
+                reason="conflict_refresh_unavailable",
             )
         apply_failure = self._apply_or_fail(response, finished=response.finished)
         if apply_failure is not None:
-            # 刷新响应不可解析：与刷新失败同保守路径，绝不在未确认状态上重试
+            # 刷新响应不可用：与刷新失败同保守路径，绝不在未确认状态上重试
             self._gate.mark_closed(attempt.window_key)
-            return SubmitRejectedClosed(
+            self._emit_audit(
+                AuditKind.PROTOCOL_RECOVERED,
+                {
+                    "trigger": "rebuild_snapshot_apply_failed",
+                    "official_code": error.official_code,
+                    "rejected_action_key": attempt.action_key,
+                    "reason": apply_failure.reason,
+                },
+                trigger_seq=attempt.window_key.trigger_seq,
+                decision_id=attempt.decision_id,
+                attempt_no=attempt.attempt_no,
+                round_no=attempt.window_key.round_no,
+            )
+            return SubmitRejectedNoRefresh(
                 official_code=error.official_code or "INVALID_ACTION",
-                latest_authoritative_seq=self._sync.last_seq,
+                rejected_action_key=attempt.action_key,
+                latest_local_seq=self._sync.last_seq,
+                reason="conflict_refresh_invalid_snapshot",
             )
         self._emit_audit(
             AuditKind.PROTOCOL_RECOVERED,
@@ -724,6 +766,12 @@ class OfficialGameSession:
         reason = getattr(outcome, "reason", None)
         if reason:
             payload["reason"] = reason
+        # 契约字段按类型实际拥有情况入审计（接口协议 §5：rejected_action_key /
+        # latest_local_seq 属于 SubmitRejectedNoRefresh 等拒绝结果）
+        for field in ("rejected_action_key", "latest_local_seq", "latest_authoritative_seq"):
+            value = getattr(outcome, field, None)
+            if value is not None:
+                payload[field] = value
         self._emit_audit(
             AuditKind.SUBMISSION_OUTCOME,
             payload,

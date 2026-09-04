@@ -8,15 +8,18 @@
 
 ```text
 hangma/
-  interface.py        # 受控公开契约
+  interface.py        # 受控公开契约（含 CandidateFacts 候选牌效事实，2026-09-04）
   engine.py           # HangmaRules 受控签名与公开实现
   emergency.py        # 不依赖复杂搜索的紧急路径
-  internal_types.py   # 必要时放内部不可变结果，不对外暴露
+  internal_types.py   # 必要时放内部不可变结果，不对外暴露（牌序引用 kernel 权威常量）
   hand_analysis.py    # 普通型、七对、向听和有效牌
+  candidate_facts.py  # 为八类动作族候选生产 CandidateFacts（2026-09-04 新增）
   action_families.py  # 吃碰杠胡各动作族
   special_rules.py    # 财神、抓打圈、爆头和动作链约束
   settlement.py       # 财神链和四家结算
 ```
+
+牌效事实生产规则（接口协议 §4.1）：弃牌按打出后余牌、吃/碰按合法最佳后续弃牌后的等待状态（`best_followup_discard`）、杠按补牌前余牌口径（`replacement_draw_unknown=True`）、胡牌 `fact_kind=WIN` 且 `shanten_after=-1`、不适用或分析失败不伪造数值；紧急路径按设计不生产事实（`facts=None`）。
 
 内部可以继续拆分，但调用方只看 `HangmaRules`。不要为了每个算法文件增加端口。
 

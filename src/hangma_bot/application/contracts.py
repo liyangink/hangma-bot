@@ -230,6 +230,27 @@ class SubmitRejectedClosed:
 
 
 @dataclass(frozen=True)
+class SubmitRejectedNoRefresh:
+    """官方明确未执行动作且 POST 已发出，但没有取得权威刷新。
+
+    语义（2026-09-04 集成阶段裁定，批准 contract-change-request 方案 A）：
+
+    - 动作 POST 已实际发出（审计 sent_attempts 计数 +1）；
+    - 官方已明确该动作未执行（如 POST 429，或 409 后刷新失败/不可用——
+      409 本身已确认未执行）；
+    - 没有取得可用于重新规划的权威刷新；
+    - 应用层必须终结原窗口，不得在同一窗口追加提交；
+    - 不得记作 ``SubmitNotSent``（未发 POST）、``SubmitAmbiguous``
+      （结果不确定）或 ``SubmitRejectedClosed``（权威确认关闭）。
+    """
+
+    official_code: str
+    rejected_action_key: str
+    latest_local_seq: int  # 刷新失败时本地已确认的最后权威序号；不是刷新结果
+    reason: str
+
+
+@dataclass(frozen=True)
 class SubmitAmbiguous:
     """无法确认动作是否执行；相同窗口禁止追加动作。"""
 
@@ -256,6 +277,7 @@ SubmitOutcome = Union[
     SubmitAccepted,
     SubmitRejectedRetryable,
     SubmitRejectedClosed,
+    SubmitRejectedNoRefresh,
     SubmitAmbiguous,
     SubmitNotSent,
     SubmitFatal,

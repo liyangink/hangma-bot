@@ -20,15 +20,40 @@ from hangma_bot.adapters.official.errors import DtoError
 from _official_testkit import FIXTURE_DIR, load_fixture
 
 REFERENCE_GUIDE_V8 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v8.json"
+REFERENCE_GUIDE_V11 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v11.json"
 
 
 def test_reference_guide_v8_snapshot_parses() -> None:
-    """官方指南 v8 真实快照必须完整解析且无未知 breaking。"""
+    """官方指南 v8 历史快照必须完整解析且无未知 breaking。"""
 
     doc = json.loads(REFERENCE_GUIDE_V8.read_text(encoding="utf-8"))
     parsed = parse_guide_version(doc)
-    assert parsed.version == KNOWN_GUIDE_VERSION == 8
+    assert parsed.version == 8
     assert parsed.updated_at
+    assert parsed.has_unknown_breaking_change is False
+
+
+def test_reference_guide_v11_snapshot_parses() -> None:
+    """已审查基线 v11 真实快照（2026-09-04 抓取）完整解析且无未知 breaking。"""
+
+    doc = json.loads(REFERENCE_GUIDE_V11.read_text(encoding="utf-8"))
+    parsed = parse_guide_version(doc)
+    assert parsed.version == KNOWN_GUIDE_VERSION == 11
+    assert parsed.updated_at
+    assert parsed.has_unknown_breaking_change is False
+
+
+def test_guide_v10_v11_non_breaking_changes_accepted() -> None:
+    """指南 v10/v11 兼容变更（快照 gap=true、16/s 限速）不触发未知 breaking 判定。"""
+
+    doc = json.loads(REFERENCE_GUIDE_V8.read_text(encoding="utf-8"))
+    doc["version"] = 11
+    doc["changes"] = [
+        {"version": 11, "type": "changed", "summary": "state 轮询限速放宽 8/s → 16/s（每用户聚合）"},
+        {"version": 10, "type": "changed", "summary": "跨局断链时快照可携带 gap=true"},
+    ]
+    parsed = parse_guide_version(doc)
+    assert parsed.version == 11
     assert parsed.has_unknown_breaking_change is False
 
 
@@ -36,7 +61,7 @@ def test_future_breaking_guide_is_flagged() -> None:
     """高于已知版本的 breaking 变更必须被标记，供初始化拒绝。"""
 
     parsed = parse_guide_version(load_fixture("guide_breaking_future.json"))
-    assert parsed.version == 9
+    assert parsed.version == 12
     assert parsed.has_unknown_breaking_change is True
 
 
@@ -95,6 +120,17 @@ def test_state_response_classification() -> None:
     finished = parse_state_response(load_fixture("state_response_finished.json"))
     assert finished.kind == "finished"
     assert finished.snapshot.scores == (34, 12, -6, -40)
+
+
+def test_snapshot_with_gap_parses() -> None:
+    """指南 v10：快照响应可携带 gap=true（跨局断链）；解析保留该事实。"""
+
+    doc = load_fixture("state_response_snapshot_draw.json")
+    doc["gap"] = True
+    parsed = parse_state_response(doc)
+    assert parsed.kind == "snapshot"
+    assert parsed.gap is True
+    assert parsed.snapshot is not None and parsed.snapshot.seq == 101
 
 
 def test_snapshot_without_seq_is_dto_error() -> None:

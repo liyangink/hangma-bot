@@ -1,6 +1,491 @@
-"""唯一组合根。
+"""唯一组合根：把六个模块组装成可运行、可降级、可审计的单个参赛身份。
 
-实现 Agent 只能在这里创建具体 HTTP 客户端、规则实例、策略、记录器和运行时。
-第一阶段不得在业务模块内部建立隐式全局单例或服务定位器。
+设计边界（根 AGENTS.md 第 5 节、架构图第 3 节）：
+
+- 本文件是全仓唯一允许创建具体 HTTP 客户端、规则实例、策略、记录器与
+  运行时的地方；业务模块禁止在内部创建这些具体实现或全局单例。
+- 每次调用 :func:`build_runtime` 得到的 :class:`AssembledRuntime` 恰好对应
+  一个 Token（一个身份）：其官方赛事会话与最多 ``config.M`` 个场次共享
+  同一传输与限速器，审计目录按 ``runs/{run_id}`` 隔离；测试房间用四个
+  进程各组装一个实例（见 ``scripts/run_test_room.py``）。
+- Token 原文只进入 ``OfficialTransport`` 构造参数；任何导出类型的 repr、
+  日志与审计路径都不得包含 Token。
+- 可降级：规则/策略/审计任一环节失败都不阻断动作保底路径（由各模块
+  自身保证），本文件只负责把生产实现接在一起，不注入任何业务逻辑。
+
+组装产物关系（箭头为调用方向）：
+
+```text
+build_runtime(RuntimeConfig)
+  ├─ JsonlAuditSink(audit_root, run_id)          # 审计磁盘副作用
+  ├─ OfficialTournamentSession(token, ...)       # 官方赛事/场次端口实现
+  ├─ _IdentityAwareSession(inner)                # 初始化后发现身份并更新审计上下文
+  ├─ BotPolicy（weighted_heuristic / safe_fallback）
+  └─ ParticipantRuntime(session, policy, sink, target)
+```
+
+Token 与模式核对（scripts 验收）：``token_kind`` 与 ``mode`` 必须匹配，
+测试身份不得以正式赛事模式启动，正式身份不得以测试模式启动；
+错配在组装期即拒绝，不建立任何网络连接。
 """
 
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
+from typing import Callable, FrozenSet, Mapping, Optional
+from urllib.parse import urlsplit
+
+from hangma_bot.adapters.official import OfficialTournamentSession, TransportConfig
+from hangma_bot.adapters.recording import JsonlAuditSink
+from hangma_bot.application.contracts import (
+    AuditContext,
+    GameSessionPort,
+    RuntimeMode,
+    RuntimeTarget,
+    SessionBootstrap,
+    TournamentSessionPort,
+)
+from hangma_bot.application.deadline import BudgetPolicy, SystemClock
+from hangma_bot.application.ids import IdGenerator, PrefixedUuidIds
+from hangma_bot.application.participant_runtime import ParticipantRuntime
+from hangma_bot.application.tournament_supervisor import SupervisionPolicy
+from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.policy.interface import BotPolicy
+from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
+from hangma_bot.policy.weighted_heuristic import WeightedHeuristicPolicy
+
+DEFAULT_STRATEGY = "weighted_heuristic"
+
+# 本地规则语义版本（非官方字段）；进入官方会话的审计 manifest 与启动核对
+# 清单，用于区分「平台指南版本」与「本地规则引擎语义版本」。
+DEFAULT_RULESET_VERSION = "hangma-mvp-v1"
+
+# 策略名 → 工厂；只有存在两个真实实现时才保留接缝（根 AGENTS.md 第 5 节）。
+_STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
+    "weighted_heuristic": lambda: WeightedHeuristicPolicy(),
+    "safe_fallback": lambda: SafeFallbackPolicy(),
+}
+
+
+class TokenKind(str, Enum):
+    """Token 用途类别；与 RuntimeMode 交叉核对，防止测试/正式身份混接。"""
+
+    TEST = "test"
+    OFFICIAL = "official"
+
+
+# 允许的模式组合；正式赛事只能用正式 Token，测试房间/测试赛事只能用测试 Token。
+_MODE_TOKEN_KIND: Mapping[RuntimeMode, TokenKind] = {
+    RuntimeMode.TEST_ROOM: TokenKind.TEST,
+    RuntimeMode.TEST_TOURNAMENT: TokenKind.TEST,
+    RuntimeMode.OFFICIAL_TOURNAMENT: TokenKind.OFFICIAL,
+}
+
+
+def _require_non_empty_str(value: object, field_name: str) -> str:
+    """非空字符串校验；与 kernel 的校验口径一致，错误在组装期暴露。"""
+
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError("{0} 必须是非空字符串，得到 {1!r}".format(field_name, value))
+    return value
+
+
+def _require_positive_int(value: object, field_name: str) -> int:
+    """正整数校验；bool 是 int 子类，必须显式排除。"""
+
+    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+        raise ValueError("{0} 必须是正整数，得到 {1!r}".format(field_name, value))
+    return value
+
+
+@dataclass(frozen=True)
+class RuntimeConfig:
+    """单个身份启动所需的全部配置；Token 已解析为原文，仅存在于本值对象内。
+
+    ``repr`` 固定掩码 Token；任何日志、异常或审计路径都不得打印本对象之外
+    的 Token 副本。字段：
+
+    - ``mode``：运行模式，与 ``token_kind`` 交叉核对；
+    - ``base_url``：官方平台基址（http/https），仅对该主机白名单可关闭 TLS 校验；
+    - ``expected_tournament_id``：目标赛事；初始化时与平台事实核对；
+    - ``known_guide_version``：本地已适配的官方指南版本下限；
+    - ``token``：敏感凭证；只进入官方传输的认证头；
+    - ``token_kind``：Token 用途类别（test/official）；
+    - ``audit_root``：审计根目录（其下生成 runs/{run_id}/...）；
+    - ``strategy``：策略名，取值见 ``_STRATEGY_FACTORIES``；
+    - ``insecure_hosts``：允许关闭 TLS 校验的官方内网主机白名单（默认空）；
+    - ``slot``：可选身份槽位标签（测试房间 A—D），只用于日志定位。
+    """
+
+    mode: RuntimeMode
+    base_url: str
+    expected_tournament_id: str
+    known_guide_version: int
+    token: str
+    token_kind: TokenKind
+    audit_root: Path
+    strategy: str = DEFAULT_STRATEGY
+    insecure_hosts: FrozenSet[str] = frozenset()
+    slot: Optional[str] = None
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.mode, RuntimeMode):
+            raise ValueError("mode 必须是 RuntimeMode 枚举值，得到 {0!r}".format(self.mode))
+        _require_non_empty_str(self.base_url, "RuntimeConfig.base_url")
+        scheme = urlsplit(self.base_url).scheme.lower()
+        if scheme not in ("http", "https"):
+            raise ValueError("base_url 必须以 http:// 或 https:// 开头，得到 {0!r}".format(self.base_url))
+        _require_non_empty_str(self.expected_tournament_id, "RuntimeConfig.expected_tournament_id")
+        _require_positive_int(self.known_guide_version, "RuntimeConfig.known_guide_version")
+        _require_non_empty_str(self.token, "RuntimeConfig.token")
+        if not isinstance(self.token_kind, TokenKind):
+            raise ValueError("token_kind 必须是 TokenKind 枚举值，得到 {0!r}".format(self.token_kind))
+        if _MODE_TOKEN_KIND[self.mode] is not self.token_kind:
+            raise ValueError(
+                "模式与 Token 类别不匹配：mode={0} 要求 token_kind={1}，得到 {2}；"
+                "测试身份不得以正式赛事模式启动，正式身份不得以测试模式启动".format(
+                    self.mode.value, _MODE_TOKEN_KIND[self.mode].value, self.token_kind.value
+                )
+            )
+        if not isinstance(self.audit_root, Path):
+            raise ValueError("audit_root 必须是 Path，得到 {0!r}".format(self.audit_root))
+        _require_non_empty_str(self.strategy, "RuntimeConfig.strategy")
+        if self.strategy not in _STRATEGY_FACTORIES:
+            raise ValueError(
+                "未知策略名 {0!r}；可用：{1}".format(self.strategy, ", ".join(sorted(_STRATEGY_FACTORIES)))
+            )
+        if not isinstance(self.insecure_hosts, frozenset):
+            raise ValueError("insecure_hosts 必须是 frozenset，得到 {0!r}".format(self.insecure_hosts))
+        if self.slot is not None:
+            _require_non_empty_str(self.slot, "RuntimeConfig.slot")
+
+    def __repr__(self) -> str:
+        """掩码 Token 的结构化描述；可用于日志，不泄漏凭证。"""
+
+        return (
+            "RuntimeConfig(mode={mode!r}, base_url={url!r}, expected_tournament_id={tid!r}, "
+            "known_guide_version={guide!r}, token=<redacted>, token_kind={kind!r}, "
+            "audit_root={root!r}, strategy={strategy!r}, slot={slot!r})"
+        ).format(
+            mode=self.mode.value,
+            url=self.base_url,
+            tid=self.expected_tournament_id,
+            guide=self.known_guide_version,
+            kind=self.token_kind.value,
+            root=str(self.audit_root),
+            strategy=self.strategy,
+            slot=self.slot,
+        )
+
+
+_CONFIG_FIELDS = frozenset({
+    "mode",
+    "base_url",
+    "expected_tournament_id",
+    "known_guide_version",
+    "token",
+    "token_env",
+    "token_kind",
+    "audit_root",
+    "strategy",
+    "insecure_hosts",
+    "slot",
+})
+
+
+def runtime_config_from_mapping(
+    data: Mapping[str, object],
+    *,
+    environ: Optional[Mapping[str, str]] = None,
+) -> RuntimeConfig:
+    """把运行配置映射（JSON 解析结果）转成已校验的 :class:`RuntimeConfig`。
+
+    敏感凭证二选一：
+
+    - ``token``：内联 Token 原文（适合私有运行配置文件，注意权限）；
+    - ``token_env``：环境变量名，运行时从 ``environ``（缺省 ``os.environ``）读取，
+      适合测试房间四进程编排（Token 只经环境变量传给子进程，不落盘）。
+
+    未知键一律拒绝：启动配置是安全边界，拼写错误必须在组装期暴露，
+    而不是静默忽略后带着错配目标开赛。
+    """
+
+    if not isinstance(data, Mapping):
+        raise ValueError("运行配置必须是 JSON 对象")
+    unknown = sorted(set(data) - _CONFIG_FIELDS)
+    if unknown:
+        raise ValueError("运行配置包含未知字段: {0}".format(", ".join(unknown)))
+    env = os.environ if environ is None else environ
+
+    mode_value = data.get("mode")
+    try:
+        mode = RuntimeMode(mode_value)
+    except (ValueError, TypeError):
+        raise ValueError("未知运行模式 {0!r}；可用：{1}".format(
+            mode_value, ", ".join(item.value for item in RuntimeMode))) from None
+
+    kind_value = data.get("token_kind")
+    try:
+        token_kind = TokenKind(kind_value)
+    except (ValueError, TypeError):
+        raise ValueError("未知 Token 类别 {0!r}；可用：test/official".format(kind_value)) from None
+
+    inline_token = data.get("token")
+    token_env = data.get("token_env")
+    if inline_token is not None and token_env is not None:
+        raise ValueError("token 与 token_env 只能二选一")
+    if inline_token is not None:
+        token = _require_non_empty_str(inline_token, "token")
+    elif token_env is not None:
+        env_name = _require_non_empty_str(token_env, "token_env")
+        token = env.get(env_name)
+        if not token or not token.strip():
+            raise ValueError(
+                "环境变量 {0} 未提供非空 Token；Token 原文不进入错误文本".format(env_name)
+            )
+    else:
+        raise ValueError("运行配置必须提供 token 或 token_env 之一")
+
+    audit_root_value = data.get("audit_root")
+    audit_root = Path(_require_non_empty_str(audit_root_value, "audit_root"))
+    hosts = data.get("insecure_hosts", [])
+    if not isinstance(hosts, (list, tuple, frozenset, set)):
+        raise ValueError("insecure_hosts 必须是数组")
+    insecure_hosts = frozenset(_require_non_empty_str(item, "insecure_hosts 元素") for item in hosts)
+
+    return RuntimeConfig(
+        mode=mode,
+        base_url=_require_non_empty_str(data.get("base_url"), "base_url"),
+        expected_tournament_id=_require_non_empty_str(
+            data.get("expected_tournament_id"), "expected_tournament_id"
+        ),
+        known_guide_version=_require_positive_int(
+            data.get("known_guide_version"), "known_guide_version"
+        ),
+        token=token,
+        token_kind=token_kind,
+        audit_root=audit_root,
+        strategy=str(data.get("strategy", DEFAULT_STRATEGY)),
+        insecure_hosts=insecure_hosts,
+        slot=data.get("slot"),
+    )
+
+
+class _AuditContextProvider:
+    """官方适配器审计信封的上下文提供者；身份在初始化后发现。
+
+    适配器在 initialize 期间即可发射审计（如指南版本观察），此时
+    participant_id 尚不可知，按契约（接口协议第 7 节）以 "unknown" 占位；
+    初始化成功返回 :class:`SessionBootstrap` 后由装配胶水更新真实身份，
+    此后的记录都进入该身份的隔离目录。
+    """
+
+    def __init__(self, run_id: str, tournament_id: str) -> None:
+        self._run_id = run_id
+        self._tournament_id = tournament_id
+        self._participant_id = "unknown"
+
+    def set_identity(self, tournament_id: str, participant_id: str) -> None:
+        """初始化发现身份后更新；只调用一次（组合根内部使用）。"""
+
+        self._tournament_id = tournament_id
+        self._participant_id = participant_id
+
+    @property
+    def participant_id(self) -> Optional[str]:
+        """已发现的脱敏身份；尚未发现时为 None（占位 "unknown" 不对外）。"""
+
+        return None if self._participant_id == "unknown" else self._participant_id
+
+    def context(self) -> AuditContext:
+        """构造适配器层的审计上下文；不含 stage_attempt_id（适配器契约）。"""
+
+        return AuditContext(
+            run_id=self._run_id,
+            tournament_id=self._tournament_id,
+            participant_id=self._participant_id,
+        )
+
+
+class _FixedRunIds:
+    """返回组合根预生成的 run_id，其余标识照常委托生产实现。
+
+    为什么需要：审计目录 ``runs/{run_id}`` 在 sink 构造时就要确定，
+    而 ParticipantRuntime 在 run() 时才生成 run_id；预生成并固定二者
+    保证运行时使用的 run_id 与磁盘目录一致。
+    """
+
+    def __init__(self, delegate: IdGenerator, run_id: str) -> None:
+        self._delegate = delegate
+        self._run_id = run_id
+
+    def new_run_id(self) -> str:
+        return self._run_id
+
+    def new_decision_id(self, window_key) -> str:
+        return self._delegate.new_decision_id(window_key)
+
+    def new_stage_attempt_id(self, stage_no) -> str:
+        return self._delegate.new_stage_attempt_id(stage_no)
+
+
+class _IdentityAwareSession:
+    """协议级透明包装：初始化发现身份后更新审计上下文提供者。
+
+    这是组合根内部的装配胶水，不改变任何端口语义：initialize 之外的
+    所有调用原样转发。官方适配器按契约不得生成 stage_attempt_id，
+    因此上下文只更新 run_id / tournament_id / participant_id。
+    """
+
+    def __init__(self, inner: TournamentSessionPort, provider: _AuditContextProvider) -> None:
+        self._inner = inner
+        self._provider = provider
+
+    async def initialize(self, target: RuntimeTarget):
+        result = await self._inner.initialize(target)
+        if isinstance(result, SessionBootstrap):
+            self._provider.set_identity(result.tournament_id, result.participant_id)
+        return result
+
+    async def register(self):
+        return await self._inner.register()
+
+    async def ready(self, expected_stage):
+        return await self._inner.ready(expected_stage)
+
+    async def next_update(self):
+        return await self._inner.next_update()
+
+    def open_game(self, game_id: str) -> GameSessionPort:
+        return self._inner.open_game(game_id)
+
+    def participant_id(self) -> Optional[str]:
+        """初始化后发现的脱敏身份；未发现时为 None（供启动清单打印）。"""
+
+        return self._provider.participant_id
+
+    async def aclose(self) -> None:
+        await self._inner.aclose()
+
+
+@dataclass
+class AssembledRuntime:
+    """一次组装完成的单身份运行单元；只暴露可安全打印的状态。
+
+    - ``run()``：运行到参赛者终态（委托 ParticipantRuntime，出口统一
+      关闭会话并尽力冲刷审计）；
+    - ``audit_degraded`` / ``last_audit_summary``：审计链的诚实降级状态，
+      动作路径失败不影响其可审计性判定。
+    """
+
+    config: RuntimeConfig
+    run_id: str
+    sink: JsonlAuditSink
+    session: TournamentSessionPort
+    policy: BotPolicy
+    runtime: ParticipantRuntime
+
+    async def run(self):
+        """运行到当前身份的参赛者终态；返回值类型见应用层契约。"""
+
+        return await self.runtime.run()
+
+    @property
+    def audit_degraded(self) -> bool:
+        return self.runtime.audit_degraded
+
+    @property
+    def last_audit_summary(self):
+        return self.runtime.last_audit_summary
+
+    @property
+    def participant_id(self) -> Optional[str]:
+        """初始化后发现的脱敏身份；尚未发现时为 None（供启动清单打印）。"""
+
+        getter = getattr(self.session, "participant_id", None)
+        return getter() if callable(getter) else None
+
+
+def build_runtime(
+    config: RuntimeConfig,
+    *,
+    session_factory: Optional[Callable[[], TournamentSessionPort]] = None,
+    policy_factory: Optional[Callable[[], BotPolicy]] = None,
+) -> AssembledRuntime:
+    """按配置组装一个单身份运行时；这是全仓唯一的组装入口。
+
+    ``session_factory`` / ``policy_factory`` 仅用于集成测试注入 Fake 端口
+    （不连平台验证生命周期与审计）；生产脚本不得传这两个参数。
+    缺省组装官方会话、按 ``config.strategy`` 选择策略。
+    """
+
+    if not isinstance(config, RuntimeConfig):
+        raise TypeError("config 必须是 RuntimeConfig")
+
+    ids_source: IdGenerator = PrefixedUuidIds()
+    run_id = ids_source.new_run_id()
+    fixed_ids = _FixedRunIds(ids_source, run_id)
+
+    sink = JsonlAuditSink(config.audit_root, run_id)
+    provider = _AuditContextProvider(run_id, config.expected_tournament_id)
+    clock = SystemClock()
+
+    if session_factory is None:
+        inner: TournamentSessionPort = OfficialTournamentSession(
+            token=config.token,
+            transport_config=TransportConfig(
+                base_url=config.base_url,
+                insecure_hosts=config.insecure_hosts,
+            ),
+            monotonic_clock=clock.now,
+            wall_clock_unix_ms=clock.unix_ms,
+            audit=sink,
+            audit_context=provider.context,
+            ruleset_version=DEFAULT_RULESET_VERSION,
+        )
+    else:
+        inner = session_factory()
+    session = _IdentityAwareSession(inner, provider)
+
+    if policy_factory is not None:
+        policy = policy_factory()
+    else:
+        policy = _STRATEGY_FACTORIES[config.strategy]()
+
+    runtime = ParticipantRuntime(
+        session=session,
+        policy=policy,
+        audit_sink=sink,
+        target=RuntimeTarget(
+            mode=config.mode,
+            expected_tournament_id=config.expected_tournament_id,
+            known_guide_version=config.known_guide_version,
+        ),
+        rules_factory=HangmaRules,
+        clock=clock,
+        ids=fixed_ids,
+        budget_policy=BudgetPolicy(),
+        supervision=SupervisionPolicy(),
+    )
+    return AssembledRuntime(
+        config=config,
+        run_id=run_id,
+        sink=sink,
+        session=session,
+        policy=policy,
+        runtime=runtime,
+    )
+
+
+__all__ = [
+    "AssembledRuntime",
+    "DEFAULT_RULESET_VERSION",
+    "DEFAULT_STRATEGY",
+    "RuntimeConfig",
+    "TokenKind",
+    "build_runtime",
+    "runtime_config_from_mapping",
+]

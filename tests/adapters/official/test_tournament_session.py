@@ -141,12 +141,14 @@ class TestRegisterAndReady:
         transport.calls.clear()
         result = await asyncio.wait_for(session.ready(stale_stage), timeout=2)
         assert result.status is OperationStatus.REJECTED
-        assert result.official_code == "STAGE_STAGE".replace("STAGE_STAGE", "STALE_STAGE")
+        assert result.official_code == "STALE_STAGE"
         assert transport.calls == []
 
 
 class TestNextUpdate:
-    async def test_change_then_terminal(self, transport, clock) -> None:
+    async def test_change_then_finished_snapshot_in_test_room(self, transport, clock) -> None:
+        """测试房间 finished 非终态：适配器透传快照，由应用层按模式复用。"""
+
         _initialize_handler(transport)
         session = make_tournament_session(clock=clock, transport=transport)
         bootstrap = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
@@ -169,17 +171,55 @@ class TestNextUpdate:
         assert snapshot.status is TournamentStatus.STAGE_OPEN
         assert snapshot.stage.observed_revision == 2  # 观察修订号单调递增
 
-        # 终态：finished → ParticipantTerminal 且携带最后快照
+        # 测试房间 finished：不是适配器终态，快照透传（跨轮复用由应用层决定）。
         def finished_handler(*, path, **kw):
             if path == "/api/me":
                 return 200, json.dumps(load_fixture("me.json"))
             return 200, json.dumps(load_fixture("tournament_finished.json"))
 
         transport.handler = finished_handler
-        terminal = await asyncio.wait_for(session.next_update(), timeout=5)
-        assert isinstance(terminal, ParticipantTerminal)
-        assert terminal.reason is ParticipantTerminalReason.TOURNAMENT_FINISHED
-        assert terminal.last_snapshot is not None
+        update = await asyncio.wait_for(session.next_update(), timeout=5)
+        assert not isinstance(update, ParticipantTerminal)
+        assert update.status is TournamentStatus.FINISHED
+        assert update.stage.observed_revision == 3
+
+    async def test_terminal_statuses_are_plain_snapshots(self, transport, clock) -> None:
+        """finished/closed 在任何模式下都是普通变化快照：退出判定属于应用层。"""
+
+        _initialize_handler(transport)
+        session = make_tournament_session(clock=clock, transport=transport)
+        target = RuntimeTarget(
+            mode=RuntimeMode.TEST_TOURNAMENT,
+            expected_tournament_id="t_test_room_1",
+            known_guide_version=8,
+        )
+        bootstrap = await asyncio.wait_for(session.initialize(target), timeout=2)
+        assert not isinstance(bootstrap, ParticipantTerminal)
+
+        def finished_handler(*, path, **kw):
+            if path == "/api/me":
+                return 200, json.dumps(load_fixture("me.json"))
+            return 200, json.dumps(load_fixture("tournament_finished.json"))
+
+        transport.handler = finished_handler
+        update = await asyncio.wait_for(session.next_update(), timeout=5)
+        assert not isinstance(update, ParticipantTerminal)
+        assert update.status is TournamentStatus.FINISHED
+        assert update.stage.observed_revision == 2
+
+        # closed 同样透传快照（终态语义由 supervisor 判定，测试见 unit/application）。
+        def closed_handler(*, path, **kw):
+            if path == "/api/me":
+                return 200, json.dumps(load_fixture("me.json"))
+            doc = load_fixture("tournament_finished.json")
+            doc["status"] = "closed"
+            return 200, json.dumps(doc)
+
+        transport.handler = closed_handler
+        update = await asyncio.wait_for(session.next_update(), timeout=5)
+        assert not isinstance(update, ParticipantTerminal)
+        assert update.status is TournamentStatus.CLOSED
+        assert update.stage.observed_revision == 3
 
 
 class TestResourceSharing:

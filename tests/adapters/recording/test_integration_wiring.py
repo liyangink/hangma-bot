@@ -337,9 +337,12 @@ async def test_wired_run_passes_end_to_end(tmp_path):
     assert coverage["rule_degradations"] == 1
     assert coverage["manifest_present"] is True
 
-    # 双层记录只产生冗余提示，不影响完整判定。
+    # 双层记录（应用层 + 官方适配器各一次）是正常形态：不得报告为重复，
+    # 也不影响完整判定（三条及以上同层重复才识别，见 assembly 裁定测试）。
     warning_codes = {
         finding["code"] for finding in report["findings"] if finding["severity"] == "warning"
     }
-    assert {"duplicate_intent", "duplicate_outcome", "duplicate_game_finished"} <= warning_codes
+    assert "duplicate_intent" not in warning_codes
+    assert "duplicate_outcome" not in warning_codes
+    assert "duplicate_game_finished" not in warning_codes
     assert report["violation_count"] == 0

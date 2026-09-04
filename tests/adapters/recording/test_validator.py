@@ -292,8 +292,11 @@ async def test_dirty_run_reports_all_findings(tmp_path, capsys):
     assert {"dangling_intent", "orphan_outcome"} <= violations
     assert {"stage_attempt_mixing"} <= violations
     assert {"secret_found", "malformed_record"} <= violations
-    # 双层记录（应用层与官方适配器各记一次）是冗余提示，不构成完整性违规。
-    assert {"duplicate_intent", "duplicate_outcome", "duplicate_game_finished"} <= warnings
+    # 双层记录（应用层与官方适配器各记一次）是正常形态，不再报告；
+    # 三条及以上同层重复才会被识别（见 test_validator_assembly_rulings.py）。
+    assert "duplicate_intent" not in warnings
+    assert "duplicate_outcome" not in warnings
+    assert "duplicate_game_finished" not in warnings
     assert report["secret_scan_clean"] is False
     assert len(report["corrupt_lines"]) == 1
     assert report["corrupt_lines"][0]["file"].endswith("decisions.jsonl")

@@ -213,9 +213,17 @@ def make_bootstrap(
     )
 
 
-def make_target(known_guide_version: int = 8) -> RuntimeTarget:
+def make_target(
+    known_guide_version: int = 8,
+    mode: RuntimeMode = RuntimeMode.TEST_TOURNAMENT,
+) -> RuntimeTarget:
+    """测试目标缺省用官方测试赛事语义（finished=终态）；
+
+    测试房间跨轮复用场景显式传 mode=RuntimeMode.TEST_ROOM。
+    """
+
     return RuntimeTarget(
-        mode=RuntimeMode.TEST_ROOM,
+        mode=mode,
         expected_tournament_id="t1",
         known_guide_version=known_guide_version,
     )

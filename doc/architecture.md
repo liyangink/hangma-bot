@@ -1,7 +1,7 @@
 # 杭麻 AI Bot 架构与运行流程
 
-> 状态：当前目标架构 v0.5；第一阶段接口基线 v1（受控变更）  
-> 更新日期：2026-09-03  
+> 状态：当前目标架构 v0.5；第一阶段接口基线 v1.1（2026-09-04 集成阶段契约收口：`SubmitRejectedNoRefresh`、候选牌效事实 `CandidateFacts`、kernel 裁决与审计词表，见接口协议 §4.1/§5/§7.1/§10.1）  
+> 更新日期：2026-09-04  
 > 适用范围：官方测试房间、测试赛事、正式赛事，以及后续模拟、训练与评估  
 > 关联资料：[接口协议](./implementation/interface-contracts.md)、[第一阶段验收](./implementation/mvp-acceptance.md)、[统一术语表](../UBIQUITOUS_LANGUAGE.md)、[官方赛事流程](./official-tournament-flow-2026-09-03.md)
 
@@ -110,7 +110,7 @@ flowchart TB
 | `hangma` | `HangmaRules` | 合法动作、胡牌、向听、有效牌、财神和结算；独立紧急路径 | HTTP、磁盘、时钟、模型 |
 | `policy` | `BotPolicy.choose()` | 启发式评分、有序候选和超时降级 | 声明动作合法、提交 HTTP、读取 `WorldState` |
 | `application` | `ParticipantRuntime`；赛事/场次/审计端口 | 报名到位、参赛者终态、最多 `M` 场监督、预算和明确拒绝降级循环 | HTTP DTO、动作门、牌型算法 |
-| `adapters/official` | 实现赛事和场次端口 | v8 DTO、每 Token 传输/限速、状态投影、序号恢复、动作门 | 组装决策请求、策略评分、赛事何时退出 |
+| `adapters/official` | 实现赛事和场次端口 | 已审查指南 v11（快照 2026-09-04）、每 Token 传输/限速（state 轮询 16/s 每用户聚合）、状态投影、序号恢复（含 v10 跨局 gap 快照吸收）、动作门 | 组装决策请求、策略评分、赛事何时退出 |
 | `adapters/recording` | 实现 `AuditSink` | 队列、JSONL、脱敏、汇总和验证 | 业务判断、重试和阻塞动作 |
 | `bootstrap.py` | 组装函数 | 具体实现选择和配置注入 | 规则、生命周期或协议逻辑 |
 
@@ -324,7 +324,7 @@ src/hangma_bot/
   policy/                 # BotPolicy 与两个启发式实现
   application/            # 端口、ParticipantRuntime 和场次任务
   adapters/
-    official/             # 官方 v8 会话实现
+    official/             # 官方会话实现（已审查指南 v11）
     recording/            # AuditSink、汇总和验证器
   bootstrap.py            # 唯一组合根
 
@@ -334,7 +334,7 @@ scripts/
 
 tests/
   contracts/
-  fixtures/official/v8/
+  fixtures/official/     # v8 快照 + v9（fan-calc 金例）+ v11（指南版本）
 ```
 
 实施分工、各模块约束和验收入口见[第一阶段实施导航](./implementation/README.md)。

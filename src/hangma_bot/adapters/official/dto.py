@@ -1,6 +1,7 @@
-"""官方 v8 JSON 报文解析。
+"""官方 JSON 报文解析（协议基线 v8 快照 + 指南 v9–v11 已审查变更）。
 
-解析原则（依据 doc/official-platform-api-v2.md，指南 v8，抓取 2026-09-03）：
+解析原则（依据 doc/official-platform-api-v2.md，指南 v8 快照，抓取 2026-09-03；
+v9–v11 变更依据 doc/references/official-guide-version-v11.json，2026-09-04 抓取）：
 
 - 已确认必需字段缺失时抛 DtoError（默认可用 seq=0 快照重建修复）；
 - 未知新增字段一律忽略并保留（v8 的 Description 属于此类兼容新增）；
@@ -17,7 +18,10 @@ from hangma_bot.kernel.actions import CANONICAL_TILE_CODES
 
 from .errors import DtoError
 
-KNOWN_GUIDE_VERSION = 8  # 已审查指南版本；更高版本需检查未知 breaking 变更
+KNOWN_GUIDE_VERSION = 11  # 已审查指南版本；更高版本需检查未知 breaking 变更。
+# v9—v11 均为非破坏性 changed 条目，已逐条审查并同步实现：v9 测试房间数据 API
+# 限速粒度、v10 跨局 gap=true 全量快照、v11 state 轮询 16/s（每用户聚合）。
+# 依据：doc/references/official-guide-version-v11.json（2026-09-04 抓取）。
 
 
 def _require_mapping(doc: Any, what: str) -> Mapping[str, Any]:
@@ -368,6 +372,11 @@ def parse_snapshot(doc: Any, top_level_seq: Optional[int] = None) -> ParsedSnaps
             checked.append(meld)
         meld_rows.append(tuple(checked))
     drawn = body.get("drawn_tile")
+    # 官方实测（2026-09-04，房间 t_714a42392cba）：非摸牌阶段 drawn_tile
+    # 为空字符串 "" 而非 null。空串在此归一化为 None（无摸牌），其余
+    # 非法值仍然拒绝——与 kernel 裁决"摸牌单列、适配器归一化"一致。
+    if drawn == "":
+        drawn = None
     if drawn is not None:
         if not isinstance(drawn, str):
             raise DtoError("drawn_tile 应为字符串牌码或 null")
@@ -415,7 +424,7 @@ class StateResponse:
     kind: str  # pending / snapshot / events / finished
     snapshot: Optional[ParsedSnapshot] = None  # kind=snapshot 或 finished 时存在
     events: Tuple[ParsedEvent, ...] = ()  # kind=events 时存在，按官方顺序
-    gap: bool = False  # 官方显式 gap=true：必须 seq=0 重建
+    gap: bool = False  # 官方显式 gap=true：必须 seq=0 重建；指南 v10 起快照响应也可携带（跨局断链），此时快照即权威重建结果
     finished: bool = False
 
 

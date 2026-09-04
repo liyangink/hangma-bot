@@ -61,17 +61,17 @@ class TestWealthActionRestriction:
     """财神不能被吃/碰/杠；可主动打出（指南 1.1、§6）。"""
 
     def test_chi_with_wealth_claimed_tile_blocked(self):
-        # 被吃牌本身是白：财神不能被吃。
-        action = Chi((_tile("白"), _tile("1w"), _tile("2w")))
+        # 被吃牌本身是白：财神不能被吃（组合按规范牌序升序构造）。
+        action = Chi((_tile("1w"), _tile("2w"), _tile("白")))
         assert wealth_action_restriction(action) is not None
 
     def test_chi_with_wealth_hand_tile_blocked(self):
         # 两张手牌之一为白同样非法（吃牌组合不得含白）。
-        action = Chi((_tile("3w"), _tile("白"), _tile("2w")))
+        action = Chi((_tile("2w"), _tile("3w"), _tile("白")))
         assert wealth_action_restriction(action) is not None
 
     def test_normal_chi_allowed(self):
-        action = Chi((_tile("3w"), _tile("1w"), _tile("2w")))
+        action = Chi((_tile("1w"), _tile("2w"), _tile("3w")))
         assert wealth_action_restriction(action) is None
 
     def test_peng_wealth_blocked(self):
@@ -114,7 +114,7 @@ class TestCatchPlayRestriction:
 
     def test_chi_and_peng_blocked(self):
         drawn = _tile("5w")
-        chi = Chi((_tile("5w"), _tile("3w"), _tile("4w")))
+        chi = Chi((_tile("3w"), _tile("4w"), _tile("5w")))
         assert catch_play_restriction(chi, drawn) is not None
         assert catch_play_restriction(Peng(_tile("5w")), drawn) is not None
 

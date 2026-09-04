@@ -34,14 +34,15 @@ from .interface import (
     Settlement,
     WinDescription,
 )
-from .internal_types import WEALTH_CODE, WindowContext
+from .internal_types import TILE_INDEX, WEALTH_CODE, Counts34, WindowContext
 
-# 稳定 RuleIssue.area：与子模块命名（action_families.<族> / hand_analysis）对齐。
+# 稳定 RuleIssue.area：与子模块命名（action_families.<族> / hand_analysis / candidate_facts）对齐。
 _AREA_CONTEXT = "engine.context"
 _AREA_EMERGENCY = "engine.emergency"
 _AREA_HAND = "hand_analysis"
 _AREA_FAMILY = "action_families"
 _AREA_YOUCAI = "special_rules.youcai"
+_AREA_FACTS = "candidate_facts"
 
 _DRAW_PHASE = "draw"
 
@@ -82,6 +83,7 @@ class HangmaRules:
                 )
                 candidates = ()
             candidates = self._filter_youcai(observation, context, candidates, issues)
+            candidates = self._attach_facts(observation, context, candidates, issues)
 
         candidates = _ensure_emergency_membership(candidates, emergency)
 
@@ -287,6 +289,41 @@ class HangmaRules:
         issues.append(RuleIssue(_AREA_YOUCAI, block))
         return tuple(c for c in candidates if c.action_key != "hu")
 
+    def _attach_facts(
+        self,
+        observation: PlayerObservation,
+        context: WindowContext,
+        candidates: Tuple[RuleCandidate, ...],
+        issues: list,
+    ) -> Tuple[RuleCandidate, ...]:
+        """给合法候选附加动作后牌效事实（契约 §4.1）；失败兜底为未生产。
+
+        事实模块延迟导入（与 hand_analysis 同一故障隔离思路）：模块缺失
+        或整体异常时保留原候选（facts=None）并记 RuleIssue——消费方按
+        未知处理，不影响候选合法性与紧急路径。单个候选的分析失败由
+        candidate_facts 内部收敛为 ANALYSIS_FAILED 事实与对应 Issue。
+        """
+
+        try:
+            from . import candidate_facts
+
+            attached, fact_issues = candidate_facts.attach_facts(
+                context,
+                _public_counts(observation),
+                len(observation.melds[observation.seat]),
+                candidates,
+            )
+        except Exception as exc:
+            issues.append(
+                RuleIssue(
+                    _AREA_FACTS,
+                    "牌效事实生产异常: {0}: {1}".format(type(exc).__name__, exc),
+                )
+            )
+            return candidates
+        issues.extend(fact_issues)
+        return attached
+
 
 # ---------------------------------------------------------------------------
 # 纯装配助手
@@ -319,6 +356,23 @@ def _build_context(observation: PlayerObservation) -> WindowContext:
         catch_play=observation.rule_state.catch_play,
         remaining_tile_count=observation.remaining_tile_count,
     )
+
+
+def _public_counts(observation: PlayerObservation) -> Counts34:
+    """四家牌河与副露的 34 维可见牌计数（牌效事实的剩余张数口径）。
+
+    只统计公开可见的牌：本人视角合法；不含他家手牌与牌墙。
+    """
+
+    counts = [0] * 34
+    for river in observation.discards:
+        for tile in river:
+            counts[TILE_INDEX[tile.code]] += 1
+    for seat_melds in observation.melds:
+        for meld in seat_melds:
+            for tile in meld.tiles:
+                counts[TILE_INDEX[tile.code]] += 1
+    return tuple(counts)
 
 
 def _is_own_draw(context: WindowContext) -> bool:

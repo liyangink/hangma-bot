@@ -67,13 +67,16 @@ def is_high_priority(kind: AuditKind) -> bool:
     return kind not in _LOW_PRIORITY_KINDS
 
 
-# 提交结果的规范词表，与 ``SubmitOutcome`` 六种分类一一对应；
+# 提交结果的规范词表，与 ``SubmitOutcome`` 七种分类一一对应；
 # ``canonical_outcome`` 同时接受封闭结果类名作为别名。
+# ``rejected_no_refresh``：POST 已发出、官方明确未执行、无权威刷新、
+# 原窗口终结不追加（2026-09-04 契约收口新增）。
 CANONICAL_OUTCOME_VALUES = frozenset(
     {
         "accepted",
         "rejected_retryable",
         "rejected_closed",
+        "rejected_no_refresh",
         "ambiguous",
         "not_sent",
         "fatal",

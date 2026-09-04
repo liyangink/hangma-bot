@@ -17,9 +17,9 @@ class HeuristicWeights:
     gang_bonus: float = 40.0  # 第二层：杠动作的固定收益（番值潜力，保守取小）
     wealth_god_keep: float = 60.0  # 第二层：打出财神的惩罚（放弃万能牌并触发抓打圈）
     shanten_step: float = 100.0  # 第三层：向听数每差一步的分值
-    effective_tile: float = 1.0  # 第四层：每单位加权有效牌的分值
+    effective_tile: float = 1.0  # 第四层：每单位加权有效牌的分值（规则事实口径）
     win_potential: float = 5.0  # 第四层：动作后每保留一张财神的成牌收益分
-    flexibility: float = 2.0  # 第五层：每个可扩展结构（搭子/靠张）的灵活度分
+    flexibility: float = 2.0  # 保留字段：CandidateFacts 不携带结构分解，评分暂不使用
     claim_risk_peng: float = 6.0  # 第六层：碰牌暴露信息与节奏的固定风险分
     claim_risk_chi: float = 10.0  # 第六层：吃牌固定风险分（仅上家可吃，随后须弃牌）
     feed_risk: float = 6.0  # 第六层：弃牌喂牌风险每单位分值

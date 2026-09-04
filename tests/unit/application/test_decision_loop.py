@@ -27,6 +27,7 @@ from hangma_bot.application.contracts import (
     SubmitFatal,
     SubmitNotSent,
     SubmitRejectedClosed,
+    SubmitRejectedNoRefresh,
     SubmitRejectedRetryable,
     TournamentStatus,
 )
@@ -169,6 +170,51 @@ async def test_not_sent_stops_window():
         submit_handler=lambda attempt: SubmitNotSent(reason="window closed")
     )
     assert len(game.submitted) == 1
+
+
+async def test_malformed_candidate_action_does_not_break_fallback():
+    """策略返回联合外动作类型的候选：action_key 抛 TypeError 被隔离丢弃，
+
+    紧急保底候选仍被提交，窗口不因畸形候选击穿。
+    """
+
+    from hangma_bot.policy.interface import DecisionPlan, RankedCandidate
+
+    class MalformedAction:
+        def __eq__(self, other):
+            return True  # 穿透键/动作一致性首层比较，迫使 action_key 计算
+
+    def bad_plan(request):
+        return DecisionPlan(
+            decision_id=request.decision_id,
+            window_key=request.window_key,
+            based_on_authoritative_seq=request.observation.snapshot_seq,
+            revision=1,
+            candidates=(
+                RankedCandidate(
+                    action=MalformedAction(),
+                    action_key="discard:3w",  # 伪造为合法键
+                    rank=1,
+                    total_score=99.0,
+                    score_parts=(),
+                    reasons=(),
+                ),
+            ),
+            degraded_reasons=(),
+        )
+
+    terminal, game, sink, *_ = await _run_with_window(
+        policy=FakePolicy(plan_factory=bad_plan)
+    )
+    assert terminal.reason.value == "tournament_finished"
+    assert len(game.submitted) == 1
+    assert game.submitted[0].action_key == "pass"  # 紧急保底
+    planned = [
+        record.payload
+        for record in sink.records
+        if record.kind.value == "decision_planned"
+    ]
+    assert planned and planned[-1]["candidates"][0]["is_emergency"] is True
 
 
 async def test_submit_exception_is_treated_as_ambiguous():
@@ -505,17 +551,38 @@ async def test_deadline_zero_record_window_is_audited():
 
 
 
-async def test_post_sent_not_sent_counts_as_sent():
-    """携带 post_sent=True 的 NotSent（契约演进）按实际发送计数。"""
-
-    from dataclasses import dataclass
-
-    @dataclass(frozen=True)
-    class PostSentNotSent(SubmitNotSent):
-        post_sent: bool = True
+async def test_no_refresh_counts_as_sent_and_ends_window():
+    """SubmitRejectedNoRefresh：已发出 POST 按实际发送计数，窗口终结不追加。"""
 
     terminal, game, sink, *_ = await _run_with_window(
-        submit_handler=lambda attempt: PostSentNotSent(reason="429 已发出")
+        submit_handler=lambda attempt: SubmitRejectedNoRefresh(
+            official_code="RATE_LIMITED",
+            rejected_action_key=attempt.action_key,
+            latest_local_seq=10,
+            reason="official_rate_limited",
+        )
+    )
+    assert len(game.submitted) == 1
+    outcomes = [
+        record.payload for record in sink.records if record.kind.value == "submission_outcome"
+    ]
+    assert outcomes[-1]["outcome"] == "SubmitRejectedNoRefresh"
+    assert outcomes[-1]["rejected_action_key"] == "discard:3w"
+    assert outcomes[-1]["latest_local_seq"] == "10"
+    summaries = [
+        record.payload
+        for record in sink.records
+        if record.kind.value == "protocol_recovered"
+        and record.payload.get("area") == "decision_window"
+    ]
+    assert summaries and summaries[-1]["sent_attempts"] == 1
+
+
+async def test_not_sent_does_not_count_as_sent():
+    """未发出 POST 的 NotSent 不增加实际发送计数（与 NoRefresh 严格区分）。"""
+
+    terminal, game, sink, *_ = await _run_with_window(
+        submit_handler=lambda attempt: SubmitNotSent(reason="deadline passed")
     )
     assert len(game.submitted) == 1
     summaries = [
@@ -524,5 +591,5 @@ async def test_post_sent_not_sent_counts_as_sent():
         if record.kind.value == "protocol_recovered"
         and record.payload.get("area") == "decision_window"
     ]
-    assert summaries and summaries[-1]["sent_attempts"] == 1
+    assert summaries and summaries[-1]["sent_attempts"] == 0
 

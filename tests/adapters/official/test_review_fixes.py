@@ -15,11 +15,13 @@ from hangma_bot.application.contracts import (
     ActionAttempt,
     AuditKind,
     GameFailed,
+    GameFinished,
     ObservedActionWindow,
     SubmitAccepted,
     SubmitFatal,
     SubmitNotSent,
     SubmitRejectedClosed,
+    SubmitRejectedNoRefresh,
 )
 from hangma_bot.kernel.actions import Discard, Peng, Tile, WindowKey, WindowPhase
 
@@ -216,8 +218,11 @@ async def test_aclose_one_game_does_not_break_sibling(clock):
     assert again.authoritative_seq == 130
 
 
-async def test_post_429_returns_not_sent(transport, clock):
-    """F11：动作 POST 429 → SubmitNotSent（官方确定未执行）。"""
+async def test_post_429_returns_no_refresh_and_closes_window(transport, clock):
+    """F11（2026-09-04 契约收口）：动作 POST 429 → SubmitRejectedNoRefresh。
+
+    POST 已发出、官方明确未执行、无权威刷新：终结原窗口且不追加提交。
+    """
 
     transport.handler = lambda **kw: _json(load_fixture('state_response_snapshot_draw.json'))
     session = make_game_session(transport=transport, clock=clock)
@@ -230,8 +235,22 @@ async def test_post_429_returns_not_sent(transport, clock):
     outcome = await asyncio.wait_for(
         session.submit(_attempt(window.window_key, Discard(Tile('5w')), 'discard:5w')), timeout=3
     )
-    assert isinstance(outcome, SubmitNotSent)
+    assert isinstance(outcome, SubmitRejectedNoRefresh)
     assert outcome.reason == 'official_rate_limited'
+    assert outcome.official_code == 'RATE_LIMITED'
+    assert outcome.rejected_action_key == 'discard:5w'
+    assert outcome.latest_local_seq == 101  # 刷新失败前本地已确认的最后权威序号
+    # 原窗口被终结：同窗第二次提交被动作门拒绝，零追加 POST
+    second = await asyncio.wait_for(
+        session.submit(
+            _attempt(window.window_key, Discard(Tile('5w')), 'discard:5w', attempt_no=2)
+        ),
+        timeout=2,
+    )
+    assert isinstance(second, SubmitNotSent)
+    assert second.reason == 'window_already_finalized'
+    posts = [c for c in transport.calls if c.method == 'POST']
+    assert len(posts) == 1
 
 
 async def test_delivered_window_exactly_once(transport, clock):
@@ -679,23 +698,19 @@ async def test_rules_tournament_mismatch_is_terminal(clock):
 
 
 async def test_conflict_refresh_bound_to_budget(transport, clock):
-    """expert：409 刷新绑定原始预算，预算耗尽立即保守 closed，不超时等待。"""
+    """expert：409 刷新绑定原始预算，预算耗尽立即按无刷新拒绝终结，不超时等待。"""
 
+    from _official_testkit import FakeAuditSink
+
+    audit = FakeAuditSink()
     peng = load_fixture('state_response_snapshot_peng.json')
-
-    async def slow_refresh(**kw):
-        await asyncio.sleep(30)
-        return 200, '{}'
-
     transport.handler = lambda **kw: _json(peng)
-    session = make_game_session(transport=transport, clock=clock)
+    session = make_game_session(transport=transport, clock=clock, audit=audit)
     window = await asyncio.wait_for(session.next_item(), timeout=2)
-    # 快照已收；随后 409 + 刷新挂起：预算（latest_send=1005，clock≈1000）内
-    # 刷新无法完成 → 保守 SubmitRejectedClosed 快速返回
-    calls = {'n': 0}
+    # 快照已收；随后 409 + 刷新失败：预算（latest_send=1005，clock≈1000）内
+    # 刷新无法完成 → 保守 SubmitRejectedNoRefresh 快速返回
 
     def handler(method=None, **kw):
-        calls['n'] += 1
         if method == 'POST':
             raise ConflictError(409, 'INVALID_ACTION', 'no')
         raise UncertainTransportError('timeout:ReadTimeout')
@@ -705,7 +720,25 @@ async def test_conflict_refresh_bound_to_budget(transport, clock):
         session.submit(_attempt(window.window_key, Peng(Tile('2w')), 'peng:2w')),
         timeout=5,
     )
-    assert isinstance(outcome, SubmitRejectedClosed)
+    assert isinstance(outcome, SubmitRejectedNoRefresh)
+    assert outcome.reason == 'conflict_refresh_unavailable'
+    assert outcome.official_code == 'INVALID_ACTION'
+    assert outcome.rejected_action_key == 'peng:2w'
+    assert outcome.latest_local_seq == 120  # 本地最后权威序号，不是刷新结果
+    recovered = [
+        r for r in audit.records
+        if r.kind is AuditKind.PROTOCOL_RECOVERED
+        and r.payload.get('trigger') == 'conflict_refresh_unavailable'
+    ]
+    assert len(recovered) == 1
+    # 原窗口被终结：同窗第二次提交零追加 POST
+    second = await asyncio.wait_for(
+        session.submit(_attempt(window.window_key, Peng(Tile('2w')), 'peng:2w', attempt_no=2)),
+        timeout=2,
+    )
+    assert isinstance(second, SubmitNotSent)
+    posts = [c for c in transport.calls if c.method == 'POST']
+    assert len(posts) == 1
 
 
 async def test_next_update_forbidden_is_immediate_terminal(clock):
@@ -1549,8 +1582,50 @@ async def test_pending_with_gap_triggers_rebuild(transport, clock):
     assert item.window_key.trigger_seq == 130
 
 
-async def test_post_429_outcome_audit_carries_post_sent(transport, clock):
-    """wv9：429 的 SUBMISSION_OUTCOME 审计直接携带 post_sent=true。"""
+async def test_snapshot_with_gap_applied_authoritatively(transport, clock):
+    """v10：局终后以旧 seq 轮询 → 官方立即返回 gap=true 全量快照（跨局）。
+
+    权威快照（含新局 round_no/phase/my_hand/seat）直接吸收并留痕，
+    无需额外 seq=0 重建；下一轮继续用快照 seq 推进，不陷入重建循环。
+    """
+
+    from _official_testkit import FakeAuditSink
+
+    audit = FakeAuditSink()
+    transport.handler = lambda **kw: _json(load_fixture('state_response_snapshot_draw.json'))
+    session = make_game_session(transport=transport, clock=clock, audit=audit)
+    first = await asyncio.wait_for(session.next_item(), timeout=2)  # 首窗 W1
+    assert first.window_key.trigger_seq == 101
+
+    migrated = load_fixture('state_response_snapshot_draw.json')
+    migrated['seq'] = 130
+    migrated['gap'] = True  # v10：seq 落后当前局时官方直接给快照（gap:true）
+    migrated['snapshot']['round_no'] = 2  # 新局
+    transport.handler = lambda **kw: _json(migrated)
+    item = await asyncio.wait_for(session.next_item(), timeout=3)
+    assert isinstance(item, ObservedActionWindow)
+    assert item.window_key.trigger_seq == 130  # 快照被完整吸收为新权威
+    assert item.window_key.round_no == 2  # 新局窗口键
+    polls = [c.params for c in transport.calls if c.path.endswith('/state')]
+    assert {'seq': 101} in polls  # 局终后仍以旧 seq 轮询，由官方直接回快照
+    gap_records = [
+        r for r in audit.records
+        if r.kind is AuditKind.PROTOCOL_RECOVERED
+        and r.payload.get('trigger') == 'rebuild_snapshot_gap'
+    ]
+    assert len(gap_records) == 1
+    assert gap_records[0].payload.get('seq') == 130
+
+    # 吸收后本地序号前进到快照 seq：下一次轮询从 130 继续，不重建、不卡旧 seq。
+    transport.handler = lambda **kw: _json(load_fixture('state_response_finished.json'))
+    again = await asyncio.wait_for(session.next_item(), timeout=3)
+    assert isinstance(again, GameFinished)
+    polls = [c.params for c in transport.calls if c.path.endswith('/state')]
+    assert {'seq': 130} in polls
+
+
+async def test_post_429_outcome_audit_contract_fields(transport, clock):
+    """wv9 收口：429 的 SUBMISSION_OUTCOME 审计携带契约字段，不再用 post_sent 过渡。"""
 
     from _official_testkit import FakeAuditSink
 
@@ -1560,18 +1635,23 @@ async def test_post_429_outcome_audit_carries_post_sent(transport, clock):
     window = await asyncio.wait_for(session.next_item(), timeout=2)
 
     def limited(**kw):
-        raise ConflictError(429, 'RATE_LIMITED', 'slow') if False else RateLimitedError(429, 'RATE_LIMITED', 'slow', 0.1)
+        raise RateLimitedError(429, 'RATE_LIMITED', 'slow', 0.1)
 
     transport.handler = limited
     outcome = await asyncio.wait_for(
         session.submit(_attempt(window.window_key, Discard(Tile('5w')), 'discard:5w')),
         timeout=3,
     )
-    assert isinstance(outcome, SubmitNotSent)
+    assert isinstance(outcome, SubmitRejectedNoRefresh)
     outcomes = [
         r for r in audit.records
         if r.kind is AuditKind.SUBMISSION_OUTCOME and r.payload.get('attempt_no') == 1
     ]
     assert len(outcomes) == 1
-    assert outcomes[0].payload.get('post_sent') is True
+    payload = outcomes[0].payload
+    assert payload.get('outcome_type') == 'SubmitRejectedNoRefresh'
+    assert payload.get('official_code') == 'RATE_LIMITED'
+    assert payload.get('rejected_action_key') == 'discard:5w'
+    assert payload.get('latest_local_seq') == 101
+    assert 'post_sent' not in payload  # 过渡字段已按契约迁移移除
 

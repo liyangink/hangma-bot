@@ -7,11 +7,13 @@
 
 - 悬空动作尝试：``SUBMISSION_INTENT`` 没有配对的 ``SUBMISSION_OUTCOME``；
 - 孤立结果：没有 intent 的 outcome；
-- 重复记录（warning 级）：同一 ``(decision_id, attempt_no)`` 的 intent/outcome、
-  同一场次的 ``GAME_FINISHED`` 可能被应用层与官方适配器各记录一次，
-  双层记录属常态，仅作为冗余提示，不影响完整判定；
-- 阶段尝试混用：同一 ``(participant_id, game_id)`` 出现多个 ``stage_attempt_id``，
-  或缺失 ``stage_attempt_id`` 的记录与有值的记录混在同一局；
+- 重复记录（warning 级）：应用层与官方适配器双层各记录一次同一事实
+  （intent/outcome/GAME_FINISHED）是正常形态，不报告；同一关联键出现
+  三条及以上同层记录才识别为真正重复并报告 warning（接口协议 §7.1），
+  不影响完整判定；
+- 阶段尝试混用：同一 ``(participant_id, game_id)`` 出现两个及以上不同的
+  非空 ``stage_attempt_id``。缺失与非空共存的形态是双层记录的合法常态
+  （官方适配器按契约不生产 ``stage_attempt_id``，接口协议 §7.1），不算混用；
 - 损坏行：无法 JSON 解码或信封字段不完整的行，逐行报告位置；
 - 密文扫描：复用写入侧同一组形态判定，要求认证原文扫描结果为 0；
 - 覆盖率与统计：各类计数、规则降级、显式拒绝（409 族）、模糊提交、
@@ -398,13 +400,13 @@ class _RunScanner:
                             not_sent_timeouts += 1
 
         for key, entries in intents.items():
-            if len(entries) > 1:
-                # 应用层与官方适配器都会为同一次尝试记录意图：双层记录属常态，
-                # 只按冗余提示报告，不作为完整性违规。
+            if len(entries) >= 3:
+                # 应用层与官方适配器双层各记一次属常态（接口协议 §7.1）；
+                # 三条及以上同层重复才识别为异常，按 warning 报告。
                 self.findings.append(_Finding(
                     "warning",
                     "duplicate_intent",
-                    f"同一 decision_id+attempt_no 出现 {len(entries)} 条提交意图（双层记录常态）",
+                    f"同一 decision_id+attempt_no 出现 {len(entries)} 条提交意图，超过双层记录常态",
                     tuple(entry.location for entry in entries),
                 ))
             if key not in outcomes:
@@ -432,11 +434,12 @@ class _RunScanner:
                     latencies.append(latency)
 
         for key, entries in outcomes.items():
-            if len(entries) > 1:
+            if len(entries) >= 3:
+                # 双层各记一次属常态；三条及以上同层重复才识别为异常。
                 self.findings.append(_Finding(
                     "warning",
                     "duplicate_outcome",
-                    f"同一 decision_id+attempt_no 出现 {len(entries)} 条提交结果（双层记录常态）",
+                    f"同一 decision_id+attempt_no 出现 {len(entries)} 条提交结果，超过双层记录常态",
                     tuple(entry.location for entry in entries),
                 ))
             if key not in intents:
@@ -454,7 +457,11 @@ class _RunScanner:
             "outcomes": sum(len(v) for v in outcomes.values()),
             "outcome_histogram": dict(sorted(histogram.items())),
             "official_code_histogram": dict(sorted(official_codes.items())),
-            "rejected_total": histogram["rejected_retryable"] + histogram["rejected_closed"],
+            "rejected_total": (
+                histogram["rejected_retryable"]
+                + histogram["rejected_closed"]
+                + histogram["rejected_no_refresh"]
+            ),
             "ambiguous": histogram["ambiguous"],
             "not_sent": not_sent,
             "not_sent_timeouts": not_sent_timeouts,
@@ -516,14 +523,18 @@ class _RunScanner:
                     windows.add((pid, game_id, round_no, trigger_seq))
 
         for (pid, game_id), stages in sorted(game_stages.items()):
-            if len(stages) > 1:
+            # 混用判定只看「两个及以上不同的非空 stage_attempt_id」：
+            # 缺失与非空共存是双层记录的合法形态（官方适配器按契约
+            # 不生产 stage_attempt_id，接口协议 §7.1），不算混用。
+            named = sorted({key for key in stages if key != "(缺失)"})
+            if len(named) > 1:
                 locations: list[RecordLocation] = []
                 for entries in stages.values():
                     locations.append(entries[0].location)
                 self.findings.append(_Finding(
                     "violation",
                     "stage_attempt_mixing",
-                    f"同一 participant+game 混用多个 stage_attempt_id: {sorted(stages)}；中断尝试的成绩不得混入有效成绩",
+                    f"同一 participant+game 混用多个不同 stage_attempt_id: {named}；中断尝试的成绩不得混入有效成绩",
                     tuple(locations[:10]),
                 ))
 
@@ -537,18 +548,65 @@ class _RunScanner:
                 ))
 
         for (pid, game_id), entries in sorted(finished_games.items()):
-            if len(entries) > 1:
-                # 应用层与官方适配器各记录一次权威终局：双层记录属常态。
+            if len(entries) >= 3:
+                # 应用层与官方适配器各记一次权威终局属常态；三条及以上
+                # 同层重复才识别为异常（接口协议 §7.1）。
                 self.findings.append(_Finding(
                     "warning",
                     "duplicate_game_finished",
-                    f"同一场次出现 {len(entries)} 条 GAME_FINISHED 终局记录（双层记录常态）",
+                    f"同一场次出现 {len(entries)} 条 GAME_FINISHED 终局记录，超过双层记录常态",
                     tuple(entry.location for entry in entries),
                 ))
+
+        # 终局分数（接口协议 §7.1：双层终局分数一致性由验证器负责）。
+        # 合法形态为座位 0—3 的四个整数；双层记录必须一致，否则只报告
+        # 不一致而不猜测哪一层正确。
+        final_scores_by_game: dict[str, list[int]] = {}
+        malformed_scores = 0
+        for (pid, game_id), entries in sorted(finished_games.items()):
+            observed: list[tuple[int, int, int, int]] = []
+            for entry in entries:
+                raw = entry.payload.get("final_scores")
+                if (
+                    isinstance(raw, list)
+                    and len(raw) == 4
+                    and all(
+                        isinstance(value, int) and not isinstance(value, bool)
+                        for value in raw
+                    )
+                ):
+                    observed.append((raw[0], raw[1], raw[2], raw[3]))
+                else:
+                    malformed_scores += 1
+                    self.findings.append(_Finding(
+                        "warning",
+                        "malformed_final_scores",
+                        f"GAME_FINISHED 的 final_scores 不是座位 0—3 的四个整数: {raw!r}",
+                        (entry.location,),
+                    ))
+            distinct = set(observed)
+            if len(distinct) > 1:
+                self.findings.append(_Finding(
+                    "warning",
+                    "game_finished_score_mismatch",
+                    f"同一场次的双层 GAME_FINISHED 终局分数不一致: {sorted(distinct)}",
+                    tuple(entry.location for entry in entries),
+                ))
+                continue
+            if distinct:
+                final_scores_by_game[f"{pid}/{game_id}"] = list(distinct.pop())
+        if malformed_scores:
+            self.findings.append(_Finding(
+                "warning",
+                "malformed_final_scores_summary",
+                f"共 {malformed_scores} 条 GAME_FINISHED 记录携带无法解析的 final_scores，已从终局分数汇总中排除",
+                (),
+            ))
 
         return {
             "games_total": len(games),
             "games_finished": len(finished_games),
+            "final_scores_by_game": final_scores_by_game,
             "participants_total": len(participants),
             "participants_finished": len(finished_participants),
             "decisions_planned": len(planned_decisions),

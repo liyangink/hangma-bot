@@ -10,24 +10,24 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Optional, Tuple
 
-from hangma_bot.kernel.actions import Tile
+from hangma_bot.kernel.actions import (
+    CANONICAL_TILE_INDEX,
+    CANONICAL_TILE_ORDER,
+    Tile,
+)
 from hangma_bot.kernel.observation import PublicDiscard
 
 # ---------------------------------------------------------------------------
-# 牌编码：34 种牌的规范顺序（万筒条各 1-9 升序 + 东南西北中发白）。
-#Counts34 的下标即此顺序；白板（财神）固定为最后一位。
+# 牌编码：34 种牌的规范顺序。权威定义在 kernel（CANONICAL_TILE_ORDER，
+# 2026-09-04 集成阶段 kernel 裁决）；本模块只保留内部惯用别名，
+# 不维护第二份数据。Counts34 的下标即此顺序；白板（财神）固定为最后一位。
 # ---------------------------------------------------------------------------
 
-TILE_ORDER: Tuple[str, ...] = (
-    "1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w",
-    "1b", "2b", "3b", "4b", "5b", "6b", "7b", "8b", "9b",
-    "1t", "2t", "3t", "4t", "5t", "6t", "7t", "8t", "9t",
-    "东", "南", "西", "北", "中", "发", "白",
-)
-"""34 种牌值的规范顺序；计数向量与分解枚举都按此顺序。"""
+TILE_ORDER: Tuple[str, ...] = CANONICAL_TILE_ORDER
+"""34 种牌值的规范顺序（kernel 权威常量的别名）；计数向量与分解枚举都按此顺序。"""
 
-TILE_INDEX: Dict[str, int] = {code: idx for idx, code in enumerate(TILE_ORDER)}
-"""牌值 → 计数向量下标。"""
+TILE_INDEX: Dict[str, int] = CANONICAL_TILE_INDEX
+"""牌值 → 计数向量下标（kernel 权威映射的别名）。"""
 
 WEALTH_CODE: str = "白"
 """财神（万能牌）的牌值编码；白板共 4 张。"""

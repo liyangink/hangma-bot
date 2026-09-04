@@ -112,14 +112,10 @@ class WeightedHeuristicPolicy:
         if intake:
             observation = request.observation
             context = build_context(observation)
-            last_discard_code = (
-                observation.last_discard.tile.code if observation.last_discard is not None else None
-            )
             scored = await score_candidates(
                 tuple(intake),
                 context,
                 self._weights,
-                last_discard_code,
                 lambda: self._check_deadline(budget),
             )
             ordered = sorted(scored, key=lambda item: (-item.total, item.action_key))

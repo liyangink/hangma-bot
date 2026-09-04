@@ -235,6 +235,7 @@ class ParticipantRuntime:
                 services=services,
                 supervision=self._supervision,
                 sleep=self._sleep,
+                mode=self._target.mode,
             )
             terminal = await supervisor.run()
             trail.emit(

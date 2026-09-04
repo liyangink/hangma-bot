@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 from hangma_bot.kernel.actions import Peng, Tile, WindowPhase
+from hangma_bot.kernel.observation import PublicDiscard
 from hangma_bot.policy import (
     PolicyError,
     PolicyTimeoutError,
@@ -20,6 +21,7 @@ from .support import (
     make_observation,
     make_request,
     make_rules,
+    rules_from_engine,
     run_choose,
 )
 
@@ -115,22 +117,30 @@ class TimeoutContractTests(unittest.TestCase):
 
 
 class PolicyErrorContractTests(unittest.TestCase):
-    """非超时策略异常的契约：可捕获、可定位，应用层据此切换保底。"""
+    """极端输入的保守处理契约：不抛非预期异常，按可审计理由降级。"""
 
-    def test_empty_hand_after_claim_raises_policy_error(self) -> None:
-        """鸣牌后手牌为空（极端观察）抛 PolicyError 且文案含动作键。"""
+    def test_empty_hand_after_claim_scored_conservatively(self) -> None:
+        """鸣牌后手牌为空（极端观察）：规则侧事实标记 ANALYSIS_FAILED，
 
-        observation = make_observation(my_hand=(Tile("5w"), Tile("5w")))
-        request = make_request(
-            observation,
-            make_rules(candidates_for([Peng(Tile("5w"))])),
-            phase=WindowPhase.RESPONSE_PENG,
+        策略保守评分并记录原因，不抛异常也不推断任何数值分项。
+        """
+
+        observation = make_observation(
+            my_hand=(Tile("5w"), Tile("5w")),
+            phase="response_peng",
+            responding_seats=(0,),
+            turn_seat=2,
+            last_discard=PublicDiscard(seat=2, tile=Tile("5w"), seq=9),
         )
+        analysis = rules_from_engine(observation)
+        request = make_request(observation, analysis, phase=WindowPhase.RESPONSE_PENG)
         policy = WeightedHeuristicPolicy(monotonic=lambda: 0.0)
 
-        with self.assertRaises(PolicyError) as caught:
-            run_choose(policy, request, make_budget())
-        self.assertIn("peng:5w", str(caught.exception))
+        plan = run_choose(policy, request, make_budget())
+
+        peng = next(item for item in plan.candidates if item.action_key == "peng:5w")
+        self.assertTrue(any("牌效分析失败" in reason for reason in peng.reasons))
+        self.assertNotIn("第三层-向听数", [part.name for part in peng.score_parts])
 
 
 class ModulePurityTests(unittest.TestCase):

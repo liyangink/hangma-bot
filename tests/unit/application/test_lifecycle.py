@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import pytest
 
 from fakes import (
@@ -38,6 +40,141 @@ pytestmark = pytest.mark.asyncio
 
 def _finished_snapshot():
     return make_snapshot(TournamentStatus.FINISHED)
+
+
+async def test_registering_register_then_first_ready_then_running():
+    """阶段 1 生命周期：registering 报名 → 报名成功 → 首次 ready → 等待 running。
+
+    stage_no 为 None 且无 stage_open 确认点：报名成功后必须立即到位，
+    到位确认以 (stage_no, stage_role) 身份键记录，None 不再充当未确认哨兵。
+    """
+
+    from fakes import wait_for_condition
+
+    session = FakeTournamentSession(
+        bootstrap=make_bootstrap(make_snapshot(TournamentStatus.REGISTERING)),
+        updates=[
+            make_snapshot(TournamentStatus.RUNNING, my_games=["g1"]),
+            _finished_snapshot(),
+        ],
+        game_factory=lambda gid: FakeGameSession(items=[]),
+    )
+    runtime, sink, *_ = build_runtime(session=session)
+    run_task = asyncio.create_task(runtime.run())
+    # 报名成功 → 首次 ready 全程无需放行 update。
+    await wait_for_condition(lambda: "ready" in sink.lifecycle_events())
+    assert session.register_calls == 1
+    assert [(s.stage_no, s.observed_revision) for s in session.ready_calls] == [(None, 1)]
+    session.grant_updates(1)  # RUNNING(g1)
+    await wait_for_condition(lambda: session.game_opens == ["g1"])
+    session.grant_updates(1)  # FINISHED
+    terminal = await run_task
+
+    assert terminal.reason is ParticipantTerminalReason.TOURNAMENT_FINISHED
+
+
+async def test_test_room_boot_on_finished_reuses_register_ready():
+    """测试房间跨轮复用：启动时房间已 finished → 幂等报名 + ready 开启下一轮。
+
+    打完本轮后再次 finished 是该身份正常终态（下一轮由进程重启承接）。
+    """
+
+    from fakes import wait_for_condition
+
+    session = FakeTournamentSession(
+        bootstrap=make_bootstrap(make_snapshot(TournamentStatus.FINISHED)),
+        updates=[
+            make_snapshot(TournamentStatus.RUNNING, revision=2, my_games=["g1"]),
+            make_snapshot(TournamentStatus.FINISHED, revision=3),
+        ],
+        game_factory=lambda gid: FakeGameSession(items=[]),
+    )
+    runtime, sink, *_ = build_runtime(
+        session=session, target=make_target(mode=RuntimeMode.TEST_ROOM)
+    )
+    run_task = asyncio.create_task(runtime.run())
+    # 冷启动于 finished 房：幂等报名 → 首次 ready（无需放行 update）。
+    await wait_for_condition(lambda: len(session.ready_calls) >= 1)
+    assert session.register_calls == 1
+    session.grant_updates(1)  # RUNNING(g1)
+    await wait_for_condition(lambda: session.game_opens == ["g1"])
+    session.grant_updates(1)  # FINISHED：本轮完成 → 正常终态
+    terminal = await run_task
+
+    assert terminal.reason is ParticipantTerminalReason.TOURNAMENT_FINISHED
+    assert [(s.stage_no, s.observed_revision) for s in session.ready_calls] == [(None, 1)]
+    assert session.register_calls == 1  # 已报名令牌幂等：只报名一次
+
+
+async def test_test_room_finished_after_round_is_terminal():
+    """测试房间本进程已打完一轮后 finished：正常终态，不再 ready 下一轮。"""
+
+    from fakes import wait_for_condition
+
+    session = FakeTournamentSession(
+        bootstrap=make_bootstrap(make_snapshot(TournamentStatus.REGISTERING)),
+        updates=[
+            make_snapshot(TournamentStatus.RUNNING, revision=2, my_games=["g1"]),
+            _finished_snapshot(),
+        ],
+        game_factory=lambda gid: FakeGameSession(items=[]),
+    )
+    runtime, sink, *_ = build_runtime(
+        session=session, target=make_target(mode=RuntimeMode.TEST_ROOM)
+    )
+    run_task = asyncio.create_task(runtime.run())
+    await wait_for_condition(lambda: "ready" in sink.lifecycle_events())  # 阶段 1 首次 ready
+    session.grant_updates(1)  # RUNNING(g1)
+    await wait_for_condition(lambda: session.game_opens == ["g1"])
+    session.grant_updates(1)  # FINISHED
+    terminal = await run_task
+
+    assert terminal.reason is ParticipantTerminalReason.TOURNAMENT_FINISHED
+    assert len(session.ready_calls) == 1  # 打完一轮后零追加 ready
+
+
+async def test_test_room_finished_repeat_snapshot_no_duplicate_ready():
+    """同一轮 finished 的重复快照不重复 ready：身份键确认后幂等。"""
+
+    from fakes import wait_for_condition
+
+    session = FakeTournamentSession(
+        bootstrap=make_bootstrap(make_snapshot(TournamentStatus.FINISHED)),
+        updates=[
+            make_snapshot(TournamentStatus.FINISHED, revision=2),
+            make_snapshot(TournamentStatus.RUNNING, revision=3),
+            make_snapshot(TournamentStatus.CLOSED, revision=4),
+        ],
+    )
+    runtime, sink, *_ = build_runtime(
+        session=session, target=make_target(mode=RuntimeMode.TEST_ROOM)
+    )
+    run_task = asyncio.create_task(runtime.run())
+    await wait_for_condition(lambda: len(session.ready_calls) >= 1)
+    session.grant_updates(1)  # 仍是 FINISHED（同轮重复快照）
+    for _ in range(20):
+        await asyncio.sleep(0)
+    assert len(session.ready_calls) == 1  # 身份键已确认：零追加 ready
+    session.grant_updates(2)  # RUNNING + CLOSED
+    terminal = await run_task
+    assert terminal.reason is ParticipantTerminalReason.TOURNAMENT_CLOSED
+
+
+async def test_official_tournament_finished_at_startup_is_terminal():
+    """正式赛事（非测试房间）启动即 finished：立即终态，不报名不到位。"""
+
+    session = FakeTournamentSession(
+        bootstrap=make_bootstrap(make_snapshot(TournamentStatus.FINISHED))
+    )
+    runtime, sink, *_ = build_runtime(
+        session=session,
+        target=make_target(mode=RuntimeMode.OFFICIAL_TOURNAMENT),
+    )
+    terminal = await runtime.run()
+
+    assert terminal.reason is ParticipantTerminalReason.TOURNAMENT_FINISHED
+    assert session.register_calls == 0
+    assert session.ready_calls == []
 
 
 async def test_register_once_then_finish_with_game():
@@ -462,6 +599,72 @@ async def test_same_stage_revision_bump_single_ready_and_attempt():
     assert len(attempts) == 1
 
 
+async def test_ready_dispatched_then_snapshot_advances_keeps_captured_stage():
+    """NF4 定向回归：ready 任务在派发时点捕获阶段身份。
+
+    交错刻画：ready 任务已派发（捕获 (stage_no=1, revision=1)）、首次执行前
+    快照被推进到同阶段新修订 (1, rev2)——首次 ready 必须仍按派发时点的捕获
+    身份发出，而不是在任务开头重读快照把已派发命令静默丢弃（旧实现会在
+    此处把命令换成 rev2 甚至因状态变化直接放弃）。
+
+    本用例直接构造 supervisor 并手动推进两帧快照：公开运行时的任务 FIFO
+    调度无法确定性产生「派发后、协程首执行前快照推进」的交错（协程步骤
+    恒早于后续快照消费），因此对派发机制做白盒级定向验证；STALE 收敛路径
+    由 test_ready_stale_stage_waits_not_elimination 覆盖。
+    """
+
+    from hangma_bot.application.audit import AuditTrail
+    from hangma_bot.application.deadline import BudgetPolicy, ManualClock
+    from hangma_bot.application.decision_loop import RuntimeServices
+    from hangma_bot.application.tournament_supervisor import (
+        SupervisionPolicy,
+        TournamentSupervisor,
+    )
+    from fakes import FakePolicy, FakeRules, InMemoryAuditSink, SequencedIds, make_fake_sleep
+
+    bootstrap = make_bootstrap(
+        make_snapshot(TournamentStatus.STAGE_OPEN, stage_no=1, revision=1, qualified=True)
+    )
+    session = FakeTournamentSession(bootstrap=bootstrap)
+    clock = ManualClock()
+    sink = InMemoryAuditSink()
+    trail = AuditTrail(
+        sink, run_id="r-nf4", tournament_id="t1", participant_id="p1", clock=clock
+    )
+    supervisor = TournamentSupervisor(
+        bootstrap=bootstrap,
+        session=session,
+        services=RuntimeServices(
+            rules=FakeRules(candidates=(DISCARD_3W, PASS), emergency=PASS),
+            policy=FakePolicy(),
+            audit=trail,
+            clock=clock,
+            ids=SequencedIds(),
+            budget_policy=BudgetPolicy(),
+        ),
+        supervision=SupervisionPolicy(),
+        sleep=make_fake_sleep(),
+        mode=RuntimeMode.TEST_TOURNAMENT,
+    )
+
+    # 1) 启动快照处理：末尾派发 ready 任务，派发时点捕获 (1, rev1)。
+    await supervisor._handle_snapshot(bootstrap.initial_snapshot)
+    assert session.ready_calls == []  # 任务尚未执行
+    # 2) 任务首次执行前，快照被推进到同阶段新修订 (1, rev2)。
+    await supervisor._handle_snapshot(
+        make_snapshot(TournamentStatus.STAGE_OPEN, stage_no=1, revision=2, qualified=True)
+    )
+    # 3) 让派发的 ready 任务执行：首次 ready 必须携带捕获身份 (1, rev1)；
+    # 确认后身份键生效，不得出现第二次到位。
+    from fakes import wait_for_condition
+
+    await wait_for_condition(lambda: len(session.ready_calls) >= 1)
+    for _ in range(10):
+        await asyncio.sleep(0)
+    assert [(s.stage_no, s.observed_revision) for s in session.ready_calls] == [(1, 1)]
+    assert "ready" in sink.lifecycle_events()
+
+
 async def test_ready_stale_stage_waits_not_elimination():
     """STALE_STAGE 拒绝是阶段竞态，不是淘汰；等新快照后重新到位。"""
 
@@ -607,6 +810,49 @@ async def test_elimination_short_circuits_before_reconcile():
     assert session.game_opens == []
     assert "stage_attempt_started" not in sink.lifecycle_events()
 
+
+
+async def test_late_first_ready_rejection_stops_when_running_arrives():
+    """阶段 1 首次 ready 迟到被拒（赛事已推进）：退避等待后重新评估，
+
+    状态已 running 即停止到位，不把迟到拒绝重试成永久终态。
+    """
+
+    release = asyncio.Event()
+    delays = []
+
+    async def gated_sleep(seconds: float) -> None:
+        delays.append(seconds)
+        if not release.is_set():
+            await release.wait()
+
+    session = FakeTournamentSession(
+        bootstrap=make_bootstrap(make_snapshot(TournamentStatus.REGISTERING)),
+        ready_results=[
+            ReadyResult(status=OperationStatus.REJECTED, official_code="TOURNAMENT_STARTED")
+        ],
+        updates=[
+            make_snapshot(TournamentStatus.RUNNING, my_games=["g1"]),
+            _finished_snapshot(),
+        ],
+        game_factory=lambda gid: FakeGameSession(items=[]),
+    )
+    runtime, sink, *_ = build_runtime(session=session, sleep=gated_sleep)
+    run_task = asyncio.create_task(runtime.run())
+
+    from fakes import wait_for_condition
+
+    await wait_for_condition(lambda: len(delays) >= 1)  # 首次 ready 被拒进入退避
+    assert len(session.ready_calls) == 1
+    session.grant_updates(1)  # RUNNING：到位命令已过期
+    await wait_for_condition(lambda: session.game_opens == ["g1"])
+    release.set()  # 放行退避睡眠：重新评估后不得再发第二次 ready
+    for _ in range(20):
+        await asyncio.sleep(0)
+    assert len(session.ready_calls) == 1  # 迟到拒绝零追加重试
+    session.grant_updates(1)  # FINISHED
+    terminal = await run_task
+    assert terminal.reason is ParticipantTerminalReason.TOURNAMENT_FINISHED
 
 
 async def test_register_retry_waits_before_next_call():

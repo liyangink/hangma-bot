@@ -2,6 +2,8 @@
 
 夹具不依赖 hangma 真实实现——候选合法性属于规则模块，
 这里按冻结契约直接构造 RuleAnalysis（与应用层 Fake 同思路）。
+需要带规则牌效事实（CandidateFacts）的场景可用 rules_from_engine
+调用真实 HangmaRules 生成候选，再用 keep_keys 选取子集。
 """
 
 from __future__ import annotations
@@ -85,6 +87,43 @@ def make_rules(
     )
 
 
+def rules_from_engine(observation: PlayerObservation) -> RuleAnalysis:
+    """用真实规则引擎（HangmaRules）分析观察，返回带牌效事实的分析。
+
+    适用于需要 CandidateFacts 的排序语义测试：事实由 hangma 单一规则源
+    生产，夹具不复刻向听/有效牌数学（契约 §4.1）。
+    """
+
+    from hangma_bot.hangma.engine import HangmaRules
+    from hangma_bot.kernel.config import RuleConfig
+
+    rules = HangmaRules(
+        RuleConfig(ruleset_version="policy-test", base_score=1, you_cai_bi_kao=False)
+    )
+    return rules.analyze(observation)
+
+
+def keep_keys(analysis: RuleAnalysis, keys: Sequence[str]) -> RuleAnalysis:
+    """从分析中按动作键选候选子集（保序；紧急候选若被选中则保留）。"""
+
+    wanted = set(keys)
+    chosen = tuple(c for c in analysis.legal_candidates if c.action_key in wanted)
+    emergency = analysis.emergency_candidate
+    if emergency is not None and emergency.action_key in wanted:
+        emergency = next(
+            (c for c in chosen if c.action_key == emergency.action_key), emergency
+        )
+    else:
+        emergency = None
+    return RuleAnalysis(
+        legal_candidates=chosen,
+        emergency_candidate=emergency,
+        completeness=analysis.completeness,
+        ruleset_version=analysis.ruleset_version,
+        issues=analysis.issues,
+    )
+
+
 def make_request(
     observation: PlayerObservation,
     rules: RuleAnalysis,
@@ -130,7 +169,7 @@ def make_budget(
 
 
 def candidates_for(actions: Iterable[Action]) -> Tuple[RuleCandidate, ...]:
-    """把动作序列变成带规范键的规则候选。"""
+    """把动作序列变成带规范键的规则候选（facts 为空 = 未生产事实）。"""
 
     return tuple(
         RuleCandidate(action=action, action_key=action_key(action), evidence=())
@@ -139,7 +178,7 @@ def candidates_for(actions: Iterable[Action]) -> Tuple[RuleCandidate, ...]:
 
 
 def discards_for(codes: Iterable[str]) -> Tuple[RuleCandidate, ...]:
-    """按牌码生成弃牌候选。"""
+    """按牌码生成弃牌候选（facts 为空 = 未生产事实）。"""
 
     return candidates_for(Discard(Tile(code)) for code in codes)
 
@@ -165,3 +204,4 @@ def ranks_by_key(plan: DecisionPlan) -> dict:
     """动作键到排名的映射，便于断言相对顺序。"""
 
     return {item.action_key: item.rank for item in plan.candidates}
+

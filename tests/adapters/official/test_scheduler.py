@@ -54,6 +54,23 @@ async def test_priority_preemption() -> None:
     second.release()
 
 
+async def test_default_rate_matches_v11_16_per_second() -> None:
+    """指南 v11：默认限速 16/s/用户聚合（8/s → 16/s），突发 16 个立即授予。"""
+
+    clock = FakeClock()
+    scheduler = RequestScheduler(
+        clock=clock.monotonic, sleep=instant_sleep(clock), poll_interval=0.0
+    )
+    for _ in range(16):
+        lease = await asyncio.wait_for(scheduler.acquire(Priority.POLL), timeout=2)
+        lease.release()
+    # 第 17 个需要令牌回填：默认速率下约 62.5ms 后可得
+    task = asyncio.create_task(scheduler.acquire(Priority.POLL))
+    await asyncio.sleep(0.05)  # instant_sleep 推进假时钟直到令牌回填
+    lease = await asyncio.wait_for(task, timeout=2)
+    lease.release()
+
+
 async def test_rate_limit_cooldown_blocks_new_grants() -> None:
     """429 冷却期内不授予；冷却结束后恢复。"""
 

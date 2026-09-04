@@ -4,8 +4,8 @@
 不变量（接口协议第 4、5 节与 application 模块规范）：
 - 预算在窗口到达时创建一次，409 刷新复用原值，绝不延长；
 - 只有 SubmitRejectedRetryable 允许排除已拒绝动作后重新规划；
-- SubmitAmbiguous / RejectedClosed / NotSent / 候选耗尽 / 截止时间到达
-  都立即结束本窗口的追加提交；
+- SubmitAmbiguous / RejectedClosed / RejectedNoRefresh / NotSent /
+  候选耗尽 / 截止时间到达都立即结束本窗口的追加提交；
 - 同一场次的提交在本循环内串行 await，天然满足“最多一个在途 POST”。
 """
 
@@ -27,6 +27,7 @@ from hangma_bot.application.contracts import (
     SubmitNotSent,
     SubmitOutcome,
     SubmitRejectedClosed,
+    SubmitRejectedNoRefresh,
     SubmitRejectedRetryable,
     AuditKind,
 )
@@ -73,7 +74,7 @@ class WindowResult:
     decision_id: str
     window_key: WindowKey
     sent_attempts: int  # 实际发出的 POST 次数
-    outcome_kind: str  # accepted / rejected_closed / ambiguous / not_sent / deadline / exhausted / window_changed
+    outcome_kind: str  # accepted / rejected_closed / rejected_no_refresh / ambiguous / not_sent / deadline / exhausted / window_changed
 
 
 class FatalIdentityError(Exception):
@@ -259,7 +260,15 @@ def _sanitize_plan(
             if legal is None:
                 notes.append("丢弃不在规则合法集内的候选 {}".format(key))
                 continue
-            if candidate.action != legal.action or action_key(candidate.action) != key:
+            try:
+                # action_key 对联合外动作类型抛 TypeError（kernel 承重契约），
+                # 值不变量违规抛 ValueError：两类都必须在这里隔离成结构化丢弃，
+                # 不得击穿紧急保底路径。
+                mismatched = candidate.action != legal.action or action_key(candidate.action) != key
+            except (TypeError, ValueError):
+                notes.append("丢弃动作键无法计算的畸形候选 {}".format(key))
+                continue
+            if mismatched:
                 # 键合法但动作与键不一致（可伪造字段）：按畸形候选丢弃，
                 # 绝不让它在 ActionAttempt 构造处抛异常击穿保底路径。
                 notes.append("丢弃动作与键不一致的候选 {}".format(key))
@@ -442,8 +451,9 @@ async def run_action_window(
                     action_key=candidate.action_key,
                     latest_send_at_monotonic=budget.latest_send_at_monotonic,
                 )
-            except ValueError as exc:
-                # 兜底：任何残余的键/动作不一致在这里降级为换下一候选。
+            except (TypeError, ValueError) as exc:
+                # 兜底：ActionAttempt 构造内的 action_key（联合外类型抛
+                # TypeError）与值不变量（ValueError）同样降级为换下一候选。
                 loop_notes.append("动作尝试构造被拒 {}: {}".format(candidate.action_key, exc))
                 attempt_no -= 1
                 continue
@@ -556,15 +566,17 @@ async def run_action_window(
             if isinstance(outcome, SubmitRejectedClosed):
                 sent += 1
                 return _finish("rejected_closed")
+            if isinstance(outcome, SubmitRejectedNoRefresh):
+                # POST 已发出且官方明确未执行，但无权威刷新：按实际发送
+                # 计数并终结本窗口，不得追加动作（2026-09-04 契约收口）。
+                sent += 1
+                return _finish("rejected_no_refresh")
             if isinstance(outcome, SubmitAmbiguous):
                 sent += 1
                 return _finish("ambiguous")
             if isinstance(outcome, SubmitNotSent):
-                # 契约演进预留：适配器对"已发出 POST 的 429"计划携带
-                # post_sent=True（契约变更申请在途）；届时按实际发送计数，
-                # 保证 C4/C8 的发送口径不失真。当前冻结契约恒为 False。
-                if getattr(outcome, "post_sent", False):
-                    sent += 1
+                # 未发 POST，发送计数不增加；"已发出 + 官方明确未执行 + 无刷新"
+                # 由 SubmitRejectedNoRefresh 单独表达（2026-09-04 契约收口）。
                 return _finish("not_sent")
             if isinstance(outcome, SubmitFatal):
                 sent += 1
@@ -600,7 +612,13 @@ def _outcome_payload(outcome: SubmitOutcome, window_key: WindowKey) -> dict:
     official_code = getattr(outcome, "official_code", None)
     if official_code is not None:
         payload["official_code"] = official_code
-    for field in ("reason", "recovery_id", "rejected_action_key", "latest_authoritative_seq"):
+    for field in (
+        "reason",
+        "recovery_id",
+        "rejected_action_key",
+        "latest_authoritative_seq",
+        "latest_local_seq",
+    ):
         value = getattr(outcome, field, None)
         if value is not None:
             payload[field] = audit_text(str(value))

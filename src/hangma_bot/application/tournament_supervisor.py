@@ -6,6 +6,13 @@
   只用于审计，绝不驱动开场/关场；
 - 赛事终态（finished/closed/void）与参赛者终态（另含淘汰、认证、版本、
   目标错配）分开判定；身份级致命终态一经写入，不再被后续快照覆盖；
+- 生命周期：registering 报名 → 报名成功 → 首次 ready → 等待 running；
+  阶段 1 没有 stage_open 确认点且 stage_no 可为 None，到位确认用
+  (stage_no, stage_role) 身份键 + 哨兵，消除 None 的"未到位/已到位"歧义；
+- 测试房间（RuntimeMode.TEST_ROOM）启动时房间已 finished 是跨轮复用信号
+  （指南 v4/v5/v8：幂等报名 + 4 令牌各 ready 一次开启下一轮，空闲自动
+  close 是正常终态）；本进程已打过一轮后到达的 finished 仍是该身份正常
+  终态，下一轮由身份进程重启后的启动复用路径承接；正式赛事终态不变；
 - stage_crashed 关闭旧尝试任务并标记作废；stage_attempt_id 在每次
   阶段实际运行尝试开始时生成（按 stage_no 区分尝试，observed_revision
   只作为到位命令的防陈旧条件，不构成新尝试）。
@@ -26,6 +33,7 @@ from hangma_bot.application.contracts import (
     ParticipantTerminalReason,
     ReadyResult,
     RegistrationResult,
+    RuntimeMode,
     SessionBootstrap,
     StageIdentity,
     TournamentSessionPort,
@@ -39,6 +47,11 @@ from hangma_bot.kernel.config import TournamentConfig
 from hangma_bot.kernel.observation import CompetitionContext
 
 SleepFn = Callable[[float], Awaitable[None]]
+
+# 到位确认哨兵："从未确认到位"与"已确认 (stage_no=None 的阶段)"必须可区分。
+# 阶段 1 的 stage_no 可能为 None，None 不能再承担未确认哨兵职责（歧义）；
+# 确认键是 (stage_no, stage_role) 元组，(None, None) 是合法的已确认键。
+_READY_UNCONFIRMED = object()
 
 _TERMINAL_STATUS_REASON = {
     TournamentStatus.FINISHED: ParticipantTerminalReason.TOURNAMENT_FINISHED,
@@ -136,12 +149,14 @@ class TournamentSupervisor:
         services: RuntimeServices,
         supervision: SupervisionPolicy,
         sleep: SleepFn,
+        mode: RuntimeMode,
     ) -> None:
         self._bootstrap = bootstrap
         self._session = session
         self._services = services
         self._supervision = supervision
         self._sleep = sleep
+        self._mode = mode  # 决定 finished 的语义：正式赛事终态 / 测试房间跨轮复用
         self._config: TournamentConfig = bootstrap.config
         self._audit = services.audit
         self._competition: CompetitionContext = bootstrap.initial_snapshot.competition
@@ -151,9 +166,17 @@ class TournamentSupervisor:
         self._ready_backoff = supervision.new_ready_backoff()
         self._ready_call_timeout = supervision.ready_call_timeout_seconds
         self._register_succeeded = False
+        self._register_attempted = False  # 本次运行是否发出过报名请求（实例级，跨监督器不共享）
         self._register_task: Optional["asyncio.Task[None]"] = None
         self._ready_task: Optional["asyncio.Task[None]"] = None
-        self._ready_done_stage: Optional[int] = None  # 已成功到位的阶段号
+        # 已确认到位的阶段身份键 (stage_no, stage_role)；哨兵表示从未确认。
+        # 不用 Optional[int] stage_no：阶段 1 的 None 与"未到位"歧义必须消除。
+        self._ready_confirmed_key: object = _READY_UNCONFIRMED
+        # 本进程是否已观察到 running：测试房间 finished 的跨轮复用只服务
+        # "启动时房间已结束"场景（register+ready 进入下一轮）；本进程已打过
+        # 一轮后到达的 finished 是该身份的正常终态（子进程退出码 0），
+        # 下一轮由身份进程重启后的启动复用路径承接。
+        self._running_observed = False
         self._stage_attempt_id: Optional[str] = None
         self._stage_attempt_stage_no: Optional[int] = None
         # 到位命令代次：stage_crashed 作废与普通阶段号迁移都递增；
@@ -259,19 +282,38 @@ class TournamentSupervisor:
             self._snapshot_cond.notify_all()
         self._competition = snapshot.competition
         self._audit.emit(AuditKind.AUTHORITATIVE_STATE, _snapshot_payload(snapshot))
-        if snapshot.status is not self._last_status:
+        prev_status = self._last_status
+        if snapshot.status is not prev_status:
             self._audit.emit(
                 AuditKind.LIFECYCLE_CHANGED,
                 {
                     "event": "status_changed",
-                    "from": self._last_status.value if self._last_status else None,
+                    "from": prev_status.value if prev_status else None,
                     "to": snapshot.status.value,
                 },
             )
             self._last_status = snapshot.status
 
+        if snapshot.status is TournamentStatus.RUNNING:
+            self._running_observed = True
+
         terminal_reason = _TERMINAL_STATUS_REASON.get(snapshot.status)
-        if terminal_reason is not None:
+        if (
+            self._mode is RuntimeMode.TEST_ROOM
+            and snapshot.status is TournamentStatus.FINISHED
+            and not self._running_observed
+        ):
+            # 测试房间跨轮复用（指南 v4/v5/v8）：本进程启动时房间已 finished，
+            # 属于等待下一轮的身份——幂等报名（已报名令牌 register 放行）后
+            # ready 一次即可开启下一轮（4 令牌各 ready 一次，幂等累积）；
+            # 未开赛前房间空闲超时自动 close 是正常终态。本进程已打过一轮后
+            # 到达的 finished 不走此路径：是该身份的正常终态（见 _running_observed）。
+            if prev_status is not snapshot.status:
+                self._ready_confirmed_key = _READY_UNCONFIRMED
+                self._ready_backoff = self._supervision.new_ready_backoff()
+            if not self._register_succeeded:
+                self._maybe_start_register()
+        elif terminal_reason is not None:
             self._set_terminal(
                 ParticipantTerminal(
                     reason=terminal_reason,
@@ -303,11 +345,11 @@ class TournamentSupervisor:
         if snapshot.status is TournamentStatus.REGISTERING and not self._register_succeeded:
             self._maybe_start_register()
 
-        if (
-            snapshot.status is TournamentStatus.STAGE_OPEN
-            and snapshot.stage.stage_no is not None
-            and self._ready_done_stage != snapshot.stage.stage_no
-        ):
+        # 待到位的阶段判断统一收敛到 _pending_ready_stage：覆盖
+        # stage_open（阶段 2+ 确认）、registering 报名成功后的首次到位
+        # （阶段 1 无 stage_open 确认点，stage_no 可为 None）与测试房间
+        # finished 跨轮复用。
+        if self._pending_ready_stage() is not None:
             self._maybe_start_ready()
 
         if (
@@ -355,6 +397,15 @@ class TournamentSupervisor:
                 self._maybe_start_ready()
         if task is self._register_task:
             self._register_task = None
+            if (
+                not self._shutting_down
+                and self._terminal is None
+                and self._register_succeeded
+                and self._pending_ready_stage() is not None
+            ):
+                # 报名成功后立即推进首次到位（阶段 1 无 stage_open 确认点）；
+                # 测试房间冷启动于 finished 房同样经由此路径进入跨轮 ready。
+                self._maybe_start_ready()
         if not task.cancelled() and task.exception() is not None:
             # 协程内部已消化全部业务异常；这里是最后防线，防止残余异常静默丢失。
             exc = task.exception()
@@ -373,8 +424,6 @@ class TournamentSupervisor:
                 )
             )
         self._wake.set()
-
-    _register_attempted: bool = False
 
     async def _register_coro(self) -> None:
         try:
@@ -439,6 +488,12 @@ class TournamentSupervisor:
         snapshot = self._last_snapshot
         if snapshot is None or snapshot.status is TournamentStatus.REGISTERING:
             return False
+        if (
+            self._mode is RuntimeMode.TEST_ROOM
+            and snapshot.status is TournamentStatus.FINISHED
+        ):
+            # 测试房间 finished 仍接受幂等报名（跨轮复用冷启动）：报名不 moot。
+            return False
         self._register_succeeded = True  # 报名已无必要；编排交给权威快照
         if self._register_attempted:
             self._audit.emit(
@@ -485,18 +540,34 @@ class TournamentSupervisor:
     # ---- 到位 -----------------------------------------------------------
 
     def _pending_ready_stage(self) -> Optional[StageIdentity]:
-        """当前是否仍有待到位的阶段；按 stage_no 判断而非修订号。"""
+        """当前是否仍有待到位阶段；按阶段身份键判断而非仅 stage_no。
+
+        阶段身份键 = (stage_no, stage_role)；stage_no 为 None 的阶段（阶段 1）
+        以哨兵区分"从未确认"与"已确认 (None, ...)"。到位目标是：
+        - stage_open：阶段 2+ 确认（名单外永远不是目标）；
+        - registering 且报名已成功：阶段 1 直达 running 流程的首次到位；
+        - finished 且运行模式为测试房间：跨轮复用的下一轮到位（幂等）。
+        """
 
         snapshot = self._last_snapshot
-        if snapshot is None or snapshot.status is not TournamentStatus.STAGE_OPEN:
+        if snapshot is None or snapshot.qualified is False:
+            # 名单外身份永远不是待到位目标（即便终态尚未写入）。
             return None
-        if snapshot.qualified is False:
-            # 名单外阶段永远不是待到位目标（即便终态尚未写入）。
+        key = (snapshot.stage.stage_no, snapshot.stage_role)
+        if self._ready_confirmed_key == key:
             return None
-        stage_no = snapshot.stage.stage_no
-        if stage_no is None or self._ready_done_stage == stage_no:
-            return None
-        return snapshot.stage
+        if snapshot.status is TournamentStatus.STAGE_OPEN:
+            return snapshot.stage
+        if snapshot.status is TournamentStatus.REGISTERING and self._register_succeeded:
+            return snapshot.stage
+        if (
+            snapshot.status is TournamentStatus.FINISHED
+            and self._mode is RuntimeMode.TEST_ROOM
+            and not self._running_observed
+            and self._register_succeeded
+        ):
+            return snapshot.stage
+        return None
 
     def _retire_ready_task(self) -> None:
         """取消并退役当前 ready 任务：清引用让新命令可立即启动，
@@ -512,17 +583,33 @@ class TournamentSupervisor:
             task.add_done_callback(self._retired_side_tasks.discard)
 
     def _maybe_start_ready(self) -> None:
+        """派发当前待到位阶段的后台到位任务。
+
+        阶段身份在派发时点捕获：报名成功的 done 回调与 next_update 结果消费
+        之间没有先后保证，若 ready 任务首次执行前权威快照已被推进（如冷启动
+        房间直接进入 running），事后重读会丢失首次到位——捕获时点的身份才是
+        命令成立依据；重试路径仍每次重新评估。
+        """
+
         if self._shutting_down or self._ready_task is not None and not self._ready_task.done():
             return
-        self._ready_task = asyncio.ensure_future(self._ready_coro())
+        stage = self._pending_ready_stage()
+        if stage is None:
+            return
+        self._ready_task = asyncio.ensure_future(self._ready_coro(stage))
         self._ready_task.add_done_callback(self._on_side_task_done)
 
-    async def _ready_coro(self) -> None:
+    async def _ready_coro(self, stage: StageIdentity) -> None:
+        first_attempt = True  # 首次尝试使用派发时捕获的阶段身份
         try:
             while self._terminal is None:
-                stage = self._pending_ready_stage()
-                if stage is None:
-                    return
+                if not first_attempt:
+                    # 重试路径重新评估：状态推进/阶段迁移/崩溃作废后旧命令
+                    # 自然失效（迟到结果按代次判废，见下方分支）。
+                    stage = self._pending_ready_stage()
+                    if stage is None:
+                        return
+                first_attempt = False
                 # 命令基准：本条 ready 所依据的快照代次与阶段尝试代次；
                 # STALE 时等待前者变化，crash 作废后迟到结果按后者判废。
                 command_epoch = self._snapshot_epoch
@@ -607,8 +694,10 @@ class TournamentSupervisor:
                         return
                     await self._sleep(delay)
                     continue
-                # ACCEPTED / ALREADY_DONE：按阶段号记录，修订号变化不重新到位。
-                self._ready_done_stage = stage.stage_no
+                # ACCEPTED / ALREADY_DONE：按当前权威快照的阶段身份键确认，
+                # 修订号变化不重新到位；(None, None) 是合法的已确认键。
+                role = self._last_snapshot.stage_role if self._last_snapshot is not None else None
+                self._ready_confirmed_key = (stage.stage_no, role)
                 self._ready_backoff.reset()
                 self._audit.emit(
                     AuditKind.LIFECYCLE_CHANGED,
@@ -670,7 +759,7 @@ class TournamentSupervisor:
         # 否则其挂起调用占住唯一 worker，新尝试被阻塞到 30 秒超时。
         self._retire_ready_task()
         # 崩溃后即使同阶段号也要重新到位确认。
-        self._ready_done_stage = None
+        self._ready_confirmed_key = _READY_UNCONFIRMED
         self._retired_games.clear()
         self._reopen_budgets.clear()
         # 作废即新尝试的前奏：到位预算随之重置，不继承旧尝试的消耗。

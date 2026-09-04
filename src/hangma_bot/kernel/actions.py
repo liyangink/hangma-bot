@@ -10,21 +10,32 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import FrozenSet, Tuple, Union
+from typing import Dict, FrozenSet, Tuple, Union
 
 # 固定座位数；四家向量与所有座位下标的合法范围（0—3）由它决定。
 SEAT_COUNT = 4
 
-# 规范牌值全集（34 张）：1w-9w 万、1b-9b 筒、1t-9t 条与东南西北中发白。
-# 依据官方指南 v8 “牌码”表（doc/official-platform-api-v2.md，检查日期
-# 2026-09-03）；“白”是财神。官方扩充牌码时必须先更新本集合与契约测试，
-# 再调整适配器映射，禁止未映射的官方字符串直接流入业务模块。
-CANONICAL_TILE_CODES: FrozenSet[str] = frozenset(
-    ["{0}w".format(number) for number in range(1, 10)]
-    + ["{0}b".format(number) for number in range(1, 10)]
-    + ["{0}t".format(number) for number in range(1, 10)]
-    + ["东", "南", "西", "北", "中", "发", "白"]
+# 规范牌序（34 张）：万 1w-9w、筒 1b-9b、条 1t-9t 升序，字牌按东南西北中发白殿后。
+# 这是全仓唯一的规范牌序权威定义（2026-09-04 集成阶段 kernel 裁决）：
+# 计数向量下标、吃牌组合的规范顺序、排序与枚举都以此为准；hangma 等业务
+# 模块只能引用本常量，不得再维护平行牌序常量。官方扩充牌码时必须先更新
+# 本顺序与契约测试，再调整适配器映射，禁止未映射的官方字符串流入业务模块。
+CANONICAL_TILE_ORDER: Tuple[str, ...] = (
+    "1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w",
+    "1b", "2b", "3b", "4b", "5b", "6b", "7b", "8b", "9b",
+    "1t", "2t", "3t", "4t", "5t", "6t", "7t", "8t", "9t",
+    "东", "南", "西", "北", "中", "发", "白",
 )
+
+# 牌值 → 规范顺序下标；用于构造边界的顺序校验与稳定排序。
+CANONICAL_TILE_INDEX: Dict[str, int] = {
+    code: index for index, code in enumerate(CANONICAL_TILE_ORDER)
+}
+
+# 规范牌值全集（34 张）；由规范牌序派生，二者永远一致。
+# “白”是财神。依据官方指南 v8 “牌码”表（doc/official-platform-api-v2.md，
+# 检查日期 2026-09-03）。
+CANONICAL_TILE_CODES: FrozenSet[str] = frozenset(CANONICAL_TILE_ORDER)
 
 
 @dataclass(frozen=True, order=True)
@@ -119,10 +130,13 @@ class Discard:
 
 @dataclass(frozen=True)
 class Chi:
-    """使用三张牌组成顺子；`tiles` 按牌值顺序保存且包含被吃牌。
+    """使用三张牌组成顺子；`tiles` 按规范牌序升序保存且包含被吃牌。
 
-    顺序约定由构造方（规则/适配器）保证；本类只校验张数与类型，
-    是否构成合法顺子由 `hangma` 规则模块判断。
+    规范顺序契约（2026-09-04 集成阶段 kernel 裁决）：相同吃牌组合必须
+    产生相同 `action_key`，因此 `tiles` 必须严格按 `CANONICAL_TILE_ORDER`
+    升序排列；非规范顺序在构造边界直接拒绝，不在 `action_key()` 中静默
+    排序制造另一套规则。是否构成合法顺子（同花色连续、不含财神）仍由
+    `hangma` 规则模块判断——本类只拒绝顺序不规范的组合。
     """
 
     tiles: Tuple[Tile, Tile, Tile]
@@ -135,6 +149,14 @@ class Chi:
             )
         for tile in self.tiles:
             _validate_tile(tile, "Chi.tiles")
+        indexes = [CANONICAL_TILE_INDEX[tile.code] for tile in self.tiles]
+        if not indexes[0] < indexes[1] < indexes[2]:
+            raise ValueError(
+                "Chi.tiles 必须按规范牌序严格升序（得到 {0}）；"
+                "请在构造前按 CANONICAL_TILE_ORDER 排序".format(
+                    ",".join(tile.code for tile in self.tiles)
+                )
+            )
 
 
 @dataclass(frozen=True)
