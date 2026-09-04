@@ -1,0 +1,52 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/games/{id}/state",
+    "http_status": 200,
+    "guide_version": 8,
+    "captured": "2026-09-03",
+    "evidence": "官方 demo：res.get('finished') 与 snapshot.scores"
+  },
+  "finished": true,
+  "seq": 210,
+  "snapshot": {
+    "seat": 2,
+    "phase": "finished",
+    "turn": -1,
+    "responding_seats": [],
+    "dealer": 0,
+    "round_no": 1,
+    "drawn_tile": null,
+    "my_hand": [],
+    "wall_remaining": 0,
+    "scores": [
+      34,
+      12,
+      -6,
+      -40
+    ],
+    "last_discard": null,
+    "discards": [
+      [],
+      [],
+      [],
+      []
+    ],
+    "melds": [
+      [],
+      [],
+      [],
+      []
+    ],
+    "hand_counts": [
+      14,
+      14,
+      14,
+      14
+    ],
+    "god": {
+      "baotou": false,
+      "chain_count": 0,
+      "catch_play": false
+    }
+  }
+}

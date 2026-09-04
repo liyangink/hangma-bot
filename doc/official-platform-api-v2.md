@@ -1,10 +1,11 @@
 # 杭州麻将对战平台 API 与时间模型
 
 > 官方来源：`https://10.240.169.190:18080/portal/#guide-api`
-> 抓取时间：2026-09-02（Asia/Shanghai）
-> 官方指南版本：v2，`updated_at=2026-09-02`
+> 抓取时间：2026-09-03（Asia/Shanghai）
+> 官方指南版本：v8，`updated_at=2026-09-03`
 > 版本接口：`GET /portal/api/guide/version`
-> 注意：平台仍在迭代；本文是 v2 快照，不代替运行时版本自检。
+> 注意：文件名为兼容既有链接暂保留 `v2`；正文已更新到 v8。平台仍在迭代，本文不代替运行时版本自检。
+> 相关说明：[官方赛事流程](./official-tournament-flow-2026-09-03.md)、[架构与运行流程](./architecture.md)、[统一术语表](../UBIQUITOUS_LANGUAGE.md)
 
 ## 1. 接入边界
 
@@ -21,9 +22,9 @@ Authorization: Bearer <参赛令牌>
 Content-Type: application/json
 ```
 
-参赛令牌只显示一次，服务端只保存 SHA-256；丢失后需重新生成。不要把 Token 写入牌谱、日志或提交到代码仓库。
+参赛令牌只显示一次，服务端只保存 SHA-256；丢失后需重新生成。项目采用简化管理：Token 可集中保存在团队认可的私有运行配置中，但不得散落在代码、牌谱或日志里，所有 HTTP 日志必须移除 `Authorization`。
 
-当前部署使用自签名 HTTPS 证书。官方 Demo 使用“不校验证书”的方式接入；正式程序应优先安装赛事方 CA 或使用赛事方提供的证书信任方案。
+当前部署使用自签名 HTTPS 证书。结合一个月赛期和官方 Demo，本项目明确不建设正式证书申请/分发方案：`OfficialTransport` 允许仅对配置的赛事内网 `base_url` 关闭证书校验。禁止全局关闭 Python 或系统 TLS 校验；启动日志记录 `tls_verify=false` 即可。
 
 ## 2. 玩家 API
 
@@ -70,7 +71,8 @@ Content-Type: application/json
     "ChiTimeoutSec": 1,
     "DiscardTimeoutSec": 3,
     "StartAt": 1756656000,
-    "RegisterDeadlineAt": 0
+    "RegisterDeadlineAt": 0,
+    "Description": "本场赛程说明"
   }
 }
 ```
@@ -79,7 +81,7 @@ Content-Type: application/json
 
 | 字段 | 含义 |
 | --- | --- |
-| `M` | 该锦标赛内每人同时参赛场数上限 |
+| `M` | 该锦标赛内每名参赛者的同时场数/上限；正式赛事和测试房间都必须支持，实际运行集合以 `active_games` 为准 |
 | `Rounds` | 每场比赛局数 |
 | `BaseScore` | 底分 |
 | `YouCaiBiKao` | 有财必拷响：手上有财神时不能平胡，必须爆头或杠开 |
@@ -88,12 +90,21 @@ Content-Type: application/json
 | `DiscardTimeoutSec` | 出牌窗口，默认 3 秒 |
 | `StartAt` | 开赛时间，Unix 秒 |
 | `RegisterDeadlineAt` | 报名截止，Unix 秒；0 表示无截止 |
+| `Description` | v8 新增的赛程自由文本；可空、多行，只用于展示和记录，不应作为策略结构化输入 |
 
 这些配置每个锦标赛都可能不同，严禁在 Bot 中写死。
 
+`M`、Token 和 `Rounds` 是三个不同维度。一个正式参赛 Token 对应一个参赛身份，并按 `/api/me.active_games` 同时维护最多 `M` 个 `GameSession`；每个 `game_id` 再连续运行 `Rounds` 个单局。测试房间为凑齐四个玩家发放 4 个 Token，这 4 个身份共同参与同一批 `M` 个官方场次，不是每场重新发 4 个 Token。
+
 #### `POST /api/tournaments/me/ready`
 
-报名 Token 作用域内直接到位；全局 Token 返回 `400 TOKEN_NOT_SCOPED`。
+报名 Token 作用域内直接到位；全局 Token 返回 `400 TOKEN_NOT_SCOPED`。v7 起其语义取决于赛事状态：
+
+- `registering`：海选前到位。
+- `stage_open`：晋级者或候补确认下一阶段出席，且每个阶段都要重新确认。
+- 名单外：`409 NOT_QUALIFIED`。
+- `running / stage_done / finished / void`：`409 TOURNAMENT_STARTED`。
+- `closed`：`409 TOURNAMENT_CLOSED`。
 
 #### `POST /api/tournaments/{id}/register`
 
@@ -105,24 +116,48 @@ Content-Type: application/json
 
 #### `POST /api/tournaments/{id}/ready`
 
-指定锦标赛到位：
+指定锦标赛到位，状态语义与 `/api/tournaments/me/ready` 相同：
 
-- 开赛前可调用。
 - 必须先报名。
 - 幂等。
+- `stage_open` 只允许 `qualified=true` 的晋级者或候补调用。
 
 #### `GET /api/tournaments/{id}`
 
 返回锦标赛详情，包括：
 
-- `status`
+- `status`：v7 起可能为 `registering / running / stage_done / stage_open / finished / closed / void`
 - `config`
 - 报名与 ready 人数
-- `my_games`
-- 实时 `ranking`
+- `my_games`：跨阶段累计历史，新增场次和决赛加赛会追加
+- 实时 `ranking`：含 `user_id / total_score / place_points / god_count / games_played / rank`
 - `voided` 原因
+- 开赛后阶段字段组：`stage / stage_status / stage_crashed / qualified / qualify_role`
 
 仅该锦标赛参赛者可查询。
+
+v7 阶段字段：
+
+| 字段 | 含义 |
+| --- | --- |
+| `stage.no` | 当前阶段号 |
+| `stage.role` | `qualify` 晋级轮或 `final` 决赛 |
+| `stage.total` | 当前推断阶段总数；动态降档后可能缩小 |
+| `stage.name` | 当前阶段显示名 |
+| `stage_status` | `open / running / done` |
+| `stage_crashed` | `true` 表示本阶段中断并等待重赛 |
+| `qualified` | 当前 Token 是否具有本阶段确认资格 |
+| `qualify_role` | `finalist / backup`，分别表示晋级者和候补；阶段 1 通常为空 |
+
+重要语义：
+
+- `stage_open` 和 `stage_done` 期间 `active_games` 为空是正常状态，不能据此退出。
+- `finished / closed / void` 才是赛事终态。
+- 阶段 2 起 `ready_users` 固定返回 0，不能推断实时确认人数。
+- `games_played` 每个阶段清零，实际按完成的单局数累计；不能把它当整场赛事进度。
+- 平台中断时会出现 `stage_done + stage_crashed=true`；本阶段旧成绩作废，同名单重新确认后重赛。
+
+多阶段赛制、排序和决赛加赛的完整事实见[官方赛事流程](./official-tournament-flow-2026-09-03.md)。
 
 ### 2.3 对局状态
 
@@ -240,6 +275,8 @@ v2 动作判定下限：
 
 ### 2.5 测试房间赛后数据
 
+测试房间是 `kind=test` 的四人单阶段环境，可随时创建并配置 `M`、`Rounds`、底分和动作窗口。创建后获得 4 个测试参赛 Token：每个 Token 都应启动一个参赛者运行单元，而每个运行单元再按 `active_games` 并发管理最多 `M` 个场次。房间完成后四个 Token 再次各 `ready` 可开启下一次单阶段运行；这不等同于正式赛事的多阶段晋级。
+
 #### `GET /api/test-rooms/{id}/games`
 
 免认证。返回该测试房间的对局列表，按 `batch` 升序：
@@ -271,12 +308,12 @@ v2 动作判定下限：
 
 ```json
 {
-  "version": 2,
-  "updated_at": "2026-09-02",
+  "version": 8,
+  "updated_at": "2026-09-03",
   "changes": [
     {
-      "version": 2,
-      "date": "2026-09-02",
+      "version": 8,
+      "date": "2026-09-03",
       "type": "breaking|added|changed",
       "summary": "...",
       "detail": "..."
@@ -287,10 +324,10 @@ v2 动作判定下限：
 
 启动策略：
 
-1. 代码内声明 `KNOWN_GUIDE_VERSION=2`。
+1. 代码内声明 `KNOWN_GUIDE_VERSION=8`，并保存已审查的 breaking 变更集合；不能只比较一个数字后继续运行。
 2. Bot 启动、报名/ready 之前调用一次版本接口。
 3. 若服务器版本更高且存在 `type=breaking && version>KNOWN`，禁止进入新赛事并报警。
-4. 已开始的牌局不要每个动作重复检查版本；记录启动时版本，确保单局可追溯。
+4. 已开始的赛事不要每个动作重复检查版本；在阶段边界重新检查一次，并记录启动与阶段开始时版本，确保阶段尝试可追溯。
 5. 保存完整变更响应，便于回放时解释行为差异。
 
 ### 3.2 `POST /portal/api/tools/fan-calc`
@@ -312,8 +349,9 @@ v2 动作判定下限：
 
 - `hand` 恰好 13 张。
 - `draw` 恰好 1 张。
-- `chain.count` 为 0-3，每个动作 ×2。
+- `chain.count` 为 0-6，每个动作 ×2；这是 v6 起的工具约束。
 - `chain.piao <= chain.count`。
+- 手牌保留白板数与 `chain.piao` 之和不能超过 4。
 - `base` 为 1-10000，默认 1。
 
 响应示例：
@@ -353,6 +391,7 @@ v2 动作判定下限：
 | GET | `/portal/api/me` | 当前门户用户 |
 | GET | `/portal/api/tournaments` | 赛事大厅 |
 | POST | `/portal/api/tournaments/{id}/register` | 门户报名并显示一次 Token |
+| POST | `/portal/api/tournaments/{id}/qualify` | 门户在 `stage_open` 确认晋级/候补资格；玩家 Bot 仍使用 `/ready` |
 | POST | `/portal/api/tournaments/{id}/token` | 重新生成参赛 Token，旧 Token 失效 |
 | GET | `/portal/api/tournaments/{id}` | 门户锦标赛详情 |
 | GET | `/portal/api/tournaments/{id}/ranking` | 实时排名 |
@@ -382,6 +421,8 @@ v2 动作判定下限：
 ```
 
 Portal API 仅用于人工操作或理解平台行为；Bot 不应依赖其 Cookie 会话和未公开响应结构。
+
+v8 起大厅行和门户赛事详情新增 `description`；玩家接口的 `config.Description` 同值。赛事名称和描述可能在任意阶段由管理员修改，客户端必须允许变化。
 
 ## 5. 服务端时间模型
 
@@ -416,7 +457,7 @@ Portal API 仅用于人工操作或理解平台行为；Bot 不应依赖其 Cook
 internal_deadline = state_received_monotonic + max(0, DiscardTimeoutSec - 0.7s)
 ```
 
-这只是保守近似；一旦官方增加服务端绝对截止时间，应改用“服务端 deadline - 时钟偏差 - 网络余量”。
+这只是保守近似；一旦官方增加服务端绝对截止时间，应改用“服务端截止时间 - 时钟偏差 - 网络余量”。
 
 ### 5.3 弃牌后的响应窗口
 
@@ -436,7 +477,7 @@ response_chi，持续 ChiTimeoutSec，固定走满
 
 “固定走满”是平台防时间侧信道设计。即使玩家很早 `pass`，服务端也不会通过提前切换阶段暴露其决策。事件中的 `timeout(kind="response")` 表示“窗口走满”，不是玩家失联；不要计入模型超时率。
 
-吃/碰默认只有 1 秒，不能在窗口打开后才启动多 Agent 讨论。策略应在其他玩家行动期间预计算；窗口到达后只做合法性复核、缓存查找和提交。
+吃/碰默认只有 1 秒，不能在窗口打开后才启动多 Agent 讨论。策略应在其他玩家行动期间预计算；窗口到达后只做合法性复核、缓存查找和串行动作尝试。通常一次成功即结束；只有官方明确拒绝且刷新确认同窗仍开放时，才按原预算换下一候选。
 
 ### 5.4 抓打圈
 
@@ -464,13 +505,13 @@ Supervisor
   └─ ... 最多 M/16 场
 ```
 
-每场必须独立保存：
+每场适配器必须独立保存：
 
 - `last_seq`
 - 全量快照和本地衍生状态
 - 当前 phase/turn/responding_seats
-- 当前响应窗口是否已经提交
-- 当前决策 Task 及内部 deadline
+- 当前动作窗口、在途提交和模糊结果封锁状态
+- 当前决策任务及内部截止时间
 - API/指南版本
 
 ### 5.6 409 与竞态恢复
@@ -486,10 +527,10 @@ GET state?seq=0
     ↓
 替换本地状态
     ↓
-若新状态仍要求本人行动，重新计算；否则继续长轮询
+若同一 WindowKey 仍要求本人行动，排除已拒绝动作并按原截止时间重新计算；否则继续长轮询
 ```
 
-不能无条件重试同一动作，否则会在 1 秒窗口内制造重试风暴。
+不能无条件重试同一动作，否则会在 1 秒窗口内制造重试风暴。409 是官方明确拒绝，可以在权威刷新后换候选；POST 超时、断连或无法确认的 5xx 是结果不确定，必须进入 `AMBIGUOUS` 并封锁同一窗口，二者不能混用。
 
 ## 6. 推荐客户端时间预算
 
@@ -500,11 +541,11 @@ GET state?seq=0
 | 收包、解析、状态归并 | 100 ms |
 | 本地合法动作与规则计算 | 100 ms |
 | 牌效/危险度候选评分 | 150 ms |
-| 一次快速 LLM 选择 | 1000-1400 ms |
+| 可选快速模型或有界搜索 | 1000-1400 ms |
 | 校验、提交、必要的状态重建 | 300-500 ms |
 | 安全余量 | 至少 700 ms |
 
-在内部截止到达时立即取消 LLM，提交确定性兜底动作。
+在内部截止到达时立即取消增强计算，提交确定性保底动作。
 
 ### 吃/碰窗口默认 1 秒
 
@@ -512,16 +553,20 @@ GET state?seq=0
 
 1. 读取预计算决策。
 2. 用最新状态重新校验。
-3. 提交一次。
+3. 串行提交首选；只有明确拒绝且仍有预算时才降级下一候选。
 
 不要依赖在线 LLM，不要等待多 Agent 投票结束。
 
 ## 7. 官方 Demo 的使用边界
 
-官方 Demo 已原样保存在：
+仓库同时保存当前多阶段 Demo 与 v2 历史样例：
 
+- `references/official_minimal_bot_v7.py`：2026-09-03 门户当前示例，多阶段主循环为 v7 协议。
+- `references/official-guide-version-v8.json`：2026-09-03 完整版本接口响应。
 - `references/official_minimal_bot_v2.py`
 - `references/official-guide-version-v2.json`
+
+v2 Demo 没有多阶段主循环，**不能作为当前参赛入口**。v7 Demo 已改为按 `status` 循环：`running` 处理活跃场次、`stage_open` 重新 `ready`、`stage_done` 等待推进，并持续发现决赛加赛的新 `game_id`。两者都只是协议示例，正式实现仍应使用并发场次监督、版本门禁和仅限固定赛事地址的 `tls_verify=false` 配置。
 
 它适合确认：
 
@@ -539,7 +584,7 @@ GET state?seq=0
 4. 出牌只打第一张，响应窗口永远 pass。
 5. 没有在启动时执行指南版本自检。
 6. 没有真正维护“本窗口已经响应”的状态。
-7. 使用了关闭 TLS 校验的临时做法。
+7. v2 历史副本和当前 v7 Demo 都把一批场次串行执行；正式客户端仍必须并发监督每个场次。
 
 正式客户端应把 Demo 视为协议样例，而不是框架或策略基线。
 
@@ -553,14 +598,28 @@ GET state?seq=0
 | 403 | `GAME_NOT_FINISHED` | 试图读取进行中场次完整数据 | 等待比赛结束 |
 | 404 | `TOURNAMENT_NOT_FOUND` | 锦标赛不存在 | 停止该赛事任务 |
 | 404 | `GAME_NOT_FOUND` | 对局不存在 | 从 `/api/me` 重新发现 active_games |
-| 409 | `INVALID_ACTION` | 动作失效或不合法 | `seq=0` 重建，禁止盲重试 |
-| 409 | `TOURNAMENT_STARTED` | 开赛后报名/ready | 停止报名流程 |
+| 409 | `INVALID_ACTION` | 动作失效或不合法 | `seq=0` 重建；同窗仍开放时排除原动作并按原预算降级，否则结束旧窗口 |
+| 409 | `NOT_QUALIFIED` | `stage_open` 中当前身份不在晋级或候补名单 | 停止为该身份确认；记录正常淘汰，不做故障重试 |
+| 409 | `TOURNAMENT_STARTED` | 当前不在可报名/确认状态 | 刷新赛事状态；不要把它一律当作整赛已经开始 |
+| 409 | `TOURNAMENT_CLOSED` | 赛事已关闭 | 停止该赛事任务 |
+| 409 | `NOT_REGISTERED` | 阶段 1 到位前尚未报名 | 仅在 `registering` 中先幂等报名再到位 |
 | 409 | `MATCH_LIMIT_REACHED` | 达到同时 16 场上限 | 不再创建/加入更多比赛 |
 | 429 | `RATE_LIMITED` | 超频或并发挂起超限 | 带抖动退避；动作窗口内优先本地兜底，不能固定睡 2 秒 |
 
-## 9. v2 关键变更
+## 9. v7/v8 关键变更
 
-必须纳入兼容测试的 breaking 变更：
+截至 2026-09-03，当前指南为 v8。相对仓库历史 v2 快照，必须优先完成以下迁移：
+
+- v7：顶层新增 `stage_open / stage_done`，阶段间 `active_games` 为空不代表结束。
+- v7：`ready` 在每个新阶段表示出席确认，新增 `NOT_QUALIFIED`。
+- v7：新增 `stage / stage_status / stage_crashed / qualified / qualify_role`。
+- v7：`games_played` 改为当阶段按单局累计，每阶段清零。
+- v7：排名新增 `place_points / god_count`；晋级轮按三键排序。
+- v7：决赛同分自动追加新场次，无上限；必须持续发现新 `game_id`。
+- v7：赛制按到位人数动态生成并可能降档，不能写死固定四阶段。
+- v8：增加 `Description/description` 自由文本；属于兼容新增，但要允许中途修改并留档。
+
+仍需保留的基础 breaking 兼容测试：
 
 - v2：快照移除 `allowed_actions`，动作判定全部由客户端实现。
 - v1：碰后、摸牌前禁止胡牌。

@@ -1,0 +1,11 @@
+{
+  "_meta": {
+    "endpoint": "POST /api/games/{id}/action",
+    "http_status": 409,
+    "guide_version": 8,
+    "captured": "2026-09-03",
+    "evidence": "错误码依据 API 文档 §8 错误表；响应体形状为假设样本（官方未文档化）"
+  },
+  "code": "INVALID_ACTION",
+  "message": "action is not valid in current state"
+}

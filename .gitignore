@@ -1,0 +1,14 @@
+# Python 构建与测试产物
+.venv/
+.uv-cache/
+.uv-python/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+# 本地运行产物与私有配置（Token 只存在于私有运行配置，不入库）
+runs/
+*.local.json
+.team-work/

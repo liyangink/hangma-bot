@@ -1,0 +1,20 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/games/{id}/state?seq=N",
+    "http_status": 200,
+    "guide_version": 8,
+    "captured": "2026-09-03",
+    "evidence": "API 文档 §2.3：响应含 gap:true 时立即 seq=0 重建"
+  },
+  "gap": true,
+  "events": [
+    {
+      "seq": 140,
+      "type": "peng",
+      "seat": 1,
+      "tile": "9t",
+      "data": {},
+      "ts": 1756771250
+    }
+  ]
+}

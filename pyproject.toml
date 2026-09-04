@@ -1,0 +1,27 @@
+# 第一阶段最小构建与依赖基线（由官方适配工作包作为首个实现包建立，见 doc/implementation/README.md §2.1）。
+# 依赖升级必须先跑契约、官方 fixture 与时间故障测试。
+[project]
+name = "hangma-bot"
+version = "0.1.0"
+description = "接入官方杭麻竞赛平台的全自动赛事 Bot"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.27,<0.29",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hangma_bot"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

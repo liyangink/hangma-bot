@@ -1,0 +1,27 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/games/{id}/state?seq=N",
+    "http_status": 200,
+    "guide_version": 8,
+    "captured": "2026-09-03",
+    "evidence": "事件通用结构依据 API 文档 §2.3 已观察结构"
+  },
+  "events": [
+    {
+      "seq": 102,
+      "type": "tile_discarded",
+      "seat": 3,
+      "tile": "发",
+      "data": {},
+      "ts": 1756771200
+    },
+    {
+      "seq": 103,
+      "type": "tile_discarded",
+      "seat": 0,
+      "tile": "1b",
+      "data": {},
+      "ts": 1756771201
+    }
+  ]
+}

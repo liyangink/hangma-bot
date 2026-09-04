@@ -1,0 +1,98 @@
+{
+  "_meta": {
+    "endpoint": "GET /api/games/{id}/state?seq=0",
+    "http_status": 200,
+    "guide_version": 8,
+    "captured": "2026-09-03",
+    "evidence": "快照字段依据 API 文档 §2.3 字段表文档重建；权威 seq 位于顶层（官方 demo 行为）"
+  },
+  "seq": 101,
+  "snapshot": {
+    "seat": 2,
+    "phase": "draw",
+    "turn": 2,
+    "responding_seats": [],
+    "dealer": 0,
+    "round_no": 1,
+    "drawn_tile": "5w",
+    "my_hand": [
+      "1w",
+      "2w",
+      "3w",
+      "4w",
+      "5w",
+      "6w",
+      "7w",
+      "8w",
+      "9w",
+      "东",
+      "东",
+      "南",
+      "白"
+    ],
+    "wall_remaining": 40,
+    "scores": [
+      10,
+      4,
+      -2,
+      -12
+    ],
+    "last_discard": {
+      "seat": 1,
+      "tile": "9t",
+      "seq": 100
+    },
+    "discards": [
+      [
+        "1t",
+        "9t"
+      ],
+      [
+        "3b",
+        "9t",
+        "6w"
+      ],
+      [],
+      [
+        "东"
+      ]
+    ],
+    "melds": [
+      [],
+      [
+        {
+          "kind": "peng",
+          "tiles": [
+            "6w",
+            "6w",
+            "6w"
+          ],
+          "from_seat": 3
+        }
+      ],
+      [],
+      [
+        {
+          "kind": "chi",
+          "tiles": [
+            "1t",
+            "2t",
+            "3t"
+          ],
+          "from_seat": 0
+        }
+      ]
+    ],
+    "hand_counts": [
+      10,
+      10,
+      14,
+      10
+    ],
+    "god": {
+      "baotou": false,
+      "chain_count": 0,
+      "catch_play": false
+    }
+  }
+}
