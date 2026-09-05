@@ -68,7 +68,7 @@ application 新增 `AutoMatchRuntime`，只处理初始化、等待开赛、运�
 
 raw 增加 `source=match_response`，沿用 raw payload1 的 `endpoint/http_status/raw`，可选附客户端本地请求编号及请求上限；完整响应脱敏保留，不让 Token 入包。builder/validator 的来源登记由审计线在共享小提交提供；自由赛开发可在测试中使用固定响应，不需要等待完整审计增强。首个联合运行必须已合入该登记。
 
-结果交给审计转换和评估汇总；本线不生产另一套牌谱/统计代码。自动房下载能力未确认，只标 observed；若以后确认新接口，新增 adapters/official 的下载支持与 fixture，再由审计线提升相应覆盖，不能预设测试房间下载可用。
+结果交给审计转换和评估汇总；本线不生产另一套牌谱/统计代码。自动房下载能力已实测确认（2026-09-06，见[验收报告](./reviews/auto-match-live-acceptance-2026-09-06.md)）：沿用测试房间免认证端点 `GET /api/test-rooms/{room_id}/games[/{batch}/events]`，可拉完整四家事件流（blocks 含 start_hands）；门户 `GET /portal/api/games/{id}/events` 需门户登录态，不适用。赛后应尽快拉取（房关闭后平台可能级联删除）。审计线现有 `collect-test-room` 采集路径可用（注意内网 TLS 与命名中性化），无需本线新增下载适配器。
 
 ## 5. 文件、配置和验收
 

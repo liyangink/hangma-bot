@@ -12,5 +12,10 @@ build/
 runs/
 *.local.json
 .team-work/
+# 审计封存包与统一牌谱派生数据集（大文件，可从 runs/ 重新生成）
+bundles/
+derived/
 # 牌谱导出等派生分析产物（可用 scripts/export_game_records.py 从 runs/ 重新生成）
 exports/
+# 注：可共享的牌谱/训练制品提交到 datasets/（2026-09-06 起：自由赛完整牌谱）。
+# 大样本封存仍建议走审计线 bundle + exports 流程（大文件不进 Git 的一般原则）。
