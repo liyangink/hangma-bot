@@ -39,6 +39,7 @@ from typing import Callable, FrozenSet, Mapping, Optional
 from urllib.parse import urlsplit
 
 from hangma_bot.adapters.official import OfficialTournamentSession, TransportConfig
+from hangma_bot.adapters.official.notify import StreamBudget
 from hangma_bot.adapters.recording import JsonlAuditSink
 from hangma_bot.application.contracts import (
     AuditContext,
@@ -147,6 +148,9 @@ class RuntimeConfig:
     slot: Optional[str] = None
     audit_raw_gzip: bool = False
     audit_raw_rotate_bytes: int = 32 * 1024 * 1024
+    # SSE 帧驱动开关（2026-09-05 接入，默认关）：开启后各场次在长轮询之外
+    # 优先使用官方 /notify 帧驱动短拉；流终局自动降级回长轮询（sse_degraded）
+    sse_enabled: bool = False
 
     def __post_init__(self) -> None:
         if not isinstance(self.mode, RuntimeMode):
@@ -178,6 +182,8 @@ class RuntimeConfig:
             raise ValueError("insecure_hosts 必须是 frozenset，得到 {0!r}".format(self.insecure_hosts))
         if self.slot is not None:
             _require_non_empty_str(self.slot, "RuntimeConfig.slot")
+        if not isinstance(self.sse_enabled, bool):
+            raise ValueError("RuntimeConfig.sse_enabled 必须是布尔值，得到 {0!r}".format(self.sse_enabled))
         if not isinstance(self.audit_raw_gzip, bool):
             raise ValueError("audit_raw_gzip 必须是布尔，得到 {0!r}".format(self.audit_raw_gzip))
         _require_positive_int(self.audit_raw_rotate_bytes, "RuntimeConfig.audit_raw_rotate_bytes")
@@ -215,6 +221,7 @@ _CONFIG_FIELDS = frozenset({
     "strategy",
     "insecure_hosts",
     "slot",
+    "sse_enabled",
     "audit_raw_gzip",
     "audit_raw_rotate_bytes",
 })
@@ -296,6 +303,7 @@ def runtime_config_from_mapping(
         insecure_hosts=insecure_hosts,
         slot=data.get("slot"),
         audit_raw_gzip=_require_bool(data.get("audit_raw_gzip", False), "audit_raw_gzip"),
+        sse_enabled=_require_bool(data.get("sse_enabled", False), "sse_enabled"),
         audit_raw_rotate_bytes=_require_positive_int(
             data.get("audit_raw_rotate_bytes", 32 * 1024 * 1024),
             "audit_raw_rotate_bytes",
@@ -480,6 +488,10 @@ def build_runtime(
             audit=sink,
             audit_context=provider.context,
             ruleset_version=DEFAULT_RULESET_VERSION,
+            # SSE 帧驱动（可选）：每 Token 一个共享并发预算（官方上限 32/用户，
+            # 本地默认 24），M 场各持 1 流；关闭时零开销
+            sse_enabled=config.sse_enabled,
+            sse_budget=StreamBudget() if config.sse_enabled else None,
         )
     else:
         inner = session_factory()

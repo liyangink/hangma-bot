@@ -94,6 +94,12 @@ class ProtocolSyncState:
         # （集成阶段第二轮加固 R2）。来源：apply_events 见到 tile_discarded、
         # current_window 三级解析命中。
         self._response_trigger: Optional[Tuple[int, int, str, int]] = None
+        # 本人是否已对当前响应周期表态（F2，2026-09-05 取证修复）：官方
+        # responding_seats 不随 pass 收缩（取证：全员 pass 后快照仍列
+        # [1,2,3]），"已表态"只能由本人 pass 事件回显（pass 事件带座位，
+        # 实证 pass@4 s2）或本人 POST pass 接受回执得知。新弃牌/新局/draw
+        # 阶段重置。
+        self._self_responded = False
 
     @property
     def has_snapshot(self) -> bool:
@@ -111,6 +117,14 @@ class ProtocolSyncState:
             and self._response_trigger[0] != snapshot.round_no
         ):
             self._response_trigger = None  # 局号变化：旧局记忆失效
+        # 响应周期结束（进入 draw/新局）时清除本人表态标记；响应阶段内的
+        # 计划性刷新（边界定时/409 刷新）不清除——本人的 pass 覆盖整个
+        # 响应周期（peng+chi，2026-09-05 取证：peng 窗 pass 后 chi 窗再
+        # 提交吃 409）
+        if snapshot.phase == "draw" or (
+            self.snapshot is not None and snapshot.round_no != self.snapshot.round_no
+        ):
+            self._self_responded = False
         self.snapshot = snapshot
         self.last_seq = snapshot.seq
         self.history = []
@@ -170,6 +184,12 @@ class ProtocolSyncState:
                 if discard is not None:
                     # 新一轮弃牌出现：覆盖跨重建触发记忆（R2 加固来源 (a)）
                     self._response_trigger = (self.snapshot.round_no,) + discard
+                # 新弃牌开启新响应周期：本人表态标记重置（F2）
+                self._self_responded = False
+            if public.kind == "pass" and public.seat == self.snapshot.seat:
+                # 本人 pass 事件回显（官方事件带座位，2026-09-05 实证）：
+                # 本响应周期对我关闭（F2）
+                self._self_responded = True
             if event.type == "game_ended":
                 self.finished = True
         self._observation_cache = None  # 历史变化使观察缓存失效
@@ -222,6 +242,17 @@ class ProtocolSyncState:
             ):
                 return True
         return False
+
+    def note_self_response(self) -> None:
+        """本人对当前响应周期已表态（POST pass 被官方接受后由会话层调用）。"""
+
+        self._self_responded = True
+
+    @property
+    def response_suppressed_for_self(self) -> bool:
+        """当前响应周期是否已收到本人表态（pass 事件回显或接受回执）。"""
+
+        return self._self_responded
 
     def incremental_draw_window(self):
         """增量路径判定的本人摸牌窗口；事件流末条不是本人摸牌时返回 None。

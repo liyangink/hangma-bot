@@ -339,6 +339,9 @@ class ParsedSnapshot:
     god_baotou: bool
     god_chain_count: int
     god_catch_play: bool
+    # 官方响应窗绝对截止（墙上时钟毫秒；2026-09-05 实测在场，响应阶段快照
+    # 4264/4264 携带）。缺省 None：draw/deal 等无窗阶段或官方未提供时。
+    window_deadline_ms: Optional[int] = None
 
 
 def _seat_vector(value: Any, what: str, *, length: int = 4) -> Tuple[int, ...]:
@@ -357,7 +360,11 @@ def _parse_last_discard(value: Any) -> Optional[Union[Tuple[int, str, int], str]
     种未知形状，属协议错误而非"无弃牌"，不得静默丢弃。
     """
 
-    if value is None or value == "":
+    if value is None or value == "" or value == "0w":
+        # "0w" 是官方"本局尚无弃牌"的占位符（2026-09-05 测试房实测：开局
+        # 快照 16/16 场全部携带，见 doc/implementation/reviews/
+        # test-room-acceptance-result-2026-09-05.md §4.1）——牌码 0 不存在，
+        # 语义等同空串，按无弃牌归一化
         return None
     if isinstance(value, str):
         if value not in CANONICAL_TILE_CODES:
@@ -459,6 +466,13 @@ def parse_snapshot(doc: Any, top_level_seq: Optional[int] = None) -> ParsedSnaps
         god_baotou=_require_bool(god_raw.get("baotou") or False, "god.baotou"),
         god_chain_count=_require_int(god_raw.get("chain_count") or 0, "god.chain_count"),
         god_catch_play=_require_bool(god_raw.get("catch_play") or False, "god.catch_play"),
+        window_deadline_ms=(
+            body.get("window_deadline_ms")
+            if isinstance(body.get("window_deadline_ms"), int)
+            and not isinstance(body.get("window_deadline_ms"), bool)
+            and body.get("window_deadline_ms") > 0
+            else None
+        ),
     )
 
 

@@ -113,6 +113,7 @@ _ROOM_FIELDS = frozenset({
     "insecure_hosts",
     "identities",
     "restart",
+    "sse_enabled",
 })
 _RESTART_FIELDS = frozenset({
     "max_restarts",
@@ -192,6 +193,7 @@ class RoomConfig:
     insecure_hosts: frozenset
     identities: tuple
     restart: RoomRestart
+    sse_enabled: bool = False  # SSE 帧驱动开关（透传给每身份子进程）
 
 
 @dataclass
@@ -322,6 +324,9 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
     if not isinstance(hosts, (list, tuple)):
         raise ValueError("insecure_hosts 必须是数组")
 
+    sse_value = data.get("sse_enabled", False)
+    if not isinstance(sse_value, bool):
+        raise ValueError("sse_enabled 必须是布尔值，得到 {0!r}".format(sse_value))
     return RoomConfig(
         base_url=_require_non_empty_str(data.get("base_url"), "base_url"),
         expected_tournament_id=_require_non_empty_str(data.get("expected_tournament_id"), "expected_tournament_id"),
@@ -331,6 +336,7 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         insecure_hosts=frozenset(hosts),
         identities=tuple(identities),
         restart=restart,
+        sse_enabled=sse_value,
     )
 
 
@@ -346,6 +352,7 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
         "token_kind": "test",
         "audit_root": str(room.audit_root / ("slot-" + identity.slot)),
         "strategy": room.strategy,
+        "sse_enabled": room.sse_enabled,
     }
     if room.insecure_hosts:
         config["insecure_hosts"] = sorted(room.insecure_hosts)

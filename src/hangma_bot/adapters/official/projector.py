@@ -381,11 +381,20 @@ def _response_trigger(
             None,
             (remembered_trigger[1], remembered_trigger[2], remembered_trigger[3]),
         )
+    # F1（2026-09-05 取证修复）：tier-4 也回写弃牌事实——窗口出生时的
+    # 快照 seq 即触发弃牌 seq（实测出生快照 seq=2=弃牌事件 seq），把它连同
+    # 牌码与弃牌者座位写入跨重建记忆后，后续快照 seq 随 pass 推进时 tier-3
+    # 命中恒定键，不再漂移成"新窗口"（重复提交根治的主路径）。
+    birth_fact = (
+        (snapshot.seq, raw_ld, snapshot.turn)
+        if isinstance(raw_ld := snapshot.last_discard, str)
+        else None
+    )
     return snapshot.seq, (
         "response 阶段缺少可解析的触发弃牌序号（事件历史为空、last_discard 无结构化序号、"
         "跨重建记忆缺失或验证不通过），WindowKey.trigger_seq 退化为快照 seq={0}；"
-        "仅用于审计关联，不代表身份稳定".format(snapshot.seq)
-    ), None
+        "出生快照事实已回写跨重建记忆（F1），后续派生按 tier-3 恒定".format(snapshot.seq)
+    ), birth_fact
 
 
 def detect_window(

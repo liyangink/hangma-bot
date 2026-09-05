@@ -24,6 +24,7 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 import os
 import signal
@@ -58,9 +59,21 @@ def _newest_run_dir(audit_root: Path) -> Path | None:
 
 
 def _iter_jsonl(path: Path):
+    """逐行读取 JSONL 记录；raw/ 的 gzip 分段（*.jsonl.gz）透明解压。
+
+    损坏/截断文件（如进程被杀未写 gzip 尾部的段）按整文件容错跳过，
+    监控只看活跃度，最终完整性由离线验证器把关。
+    """
+
     try:
-        with path.open("r", encoding="utf-8") as fh:
-            for line in fh:
+        if path.name.endswith(".jsonl.gz"):
+            handle = gzip.open(
+                path, "rt", encoding="utf-8", errors="replace", newline="\n"
+            )
+        else:
+            handle = path.open("r", encoding="utf-8", errors="replace")
+        with handle:
+            for line in handle:
                 line = line.strip()
                 if not line:
                     continue
@@ -68,7 +81,8 @@ def _iter_jsonl(path: Path):
                     yield json.loads(line)
                 except json.JSONDecodeError:
                     continue
-    except OSError:
+    except (OSError, EOFError):
+        # EOFError：截断的 gzip 段在读取尾部抛出（不是 OSError 子类），一并容错
         return
 
 
@@ -93,6 +107,12 @@ def _collect(run_dir: Path):
     files += sorted((run_dir / "participants").glob("*/decisions.jsonl"))
     if (run_dir / "participants").exists():
         files += sorted((run_dir / "participants").glob("*/games/*.jsonl"))
+        # 原始协议事件（RAW_PROTOCOL_STATE）按场落在 raw/<game>.jsonl，
+        # 可 gzip 分段（*.NNNNN.jsonl.gz）。打牌间歇只有 /state 轮询原文
+        # 在写，漏扫 raw/ 会把运行误判为"审计停摆"（d6 返工登记项）：
+        # raw 文件的写入时间与记录墙钟一并计入活跃度统计。
+        files += sorted((run_dir / "participants").glob("*/raw/*.jsonl"))
+        files += sorted((run_dir / "participants").glob("*/raw/*.jsonl.gz"))
     for path in files:
         if not path.exists():
             continue
@@ -159,14 +179,14 @@ def _fmt_outcomes(outcomes: dict) -> str:
     return f"accepted={outcomes.get('SubmitAccepted', 0)} retry={invalid} nosent={notsent}{flag}{ns}"
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="杭麻 Bot 参赛运行监控（人工值守）")
     ap.add_argument("--audit-root", type=Path, help="审计根目录（自动发现最新 run）")
     ap.add_argument("--run-dir", type=Path, help="直接指定 run 目录")
     ap.add_argument("--pid", type=int, default=None, help="可选：监控进程存活")
     ap.add_argument("--interval", type=float, default=5.0, help="刷新间隔秒（默认 5）")
     ap.add_argument("--once", action="store_true", help="打印一次快照后退出（快速检查用）")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
     run_dir = args.run_dir
     if run_dir is None:

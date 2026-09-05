@@ -154,14 +154,96 @@ async def test_state_request_no_gap_is_violation(tmp_path):
 
 
 async def test_session_restart_renumbering_is_not_a_gap(tmp_path):
-    """会话重启从 1 重新计数：两次 1..N 并集连续，不得误报缺口。
+    """会话重启从 1 重新计数：按会话段对账，完整段不得误报缺口。
 
-    （官方适配器在监督重开会话时创建新 OfficialGameSession，计数器归零。）
+    （官方适配器在监督重开会话时创建新 OfficialGameSession，计数器归零；
+    记录顺序中严格回退 = 新会话段起点，段内 1..N 完整即干净。）
     """
 
     run_dir = await _build_raw_run(
         tmp_path,
         request_nos=(1, 2, 3, 1, 2),
+        adapter_outcomes=[("d1", 1, "SubmitAccepted", {})],
+        action_raw_keys=[("d1", 1)],
+    )
+    report = validate_run(run_dir)
+    codes = {f["code"] for f in report["findings"] if f["severity"] == "violation"}
+    assert "raw_state_gap" not in codes
+    assert report["audit_complete"] is True
+
+
+async def test_restart_segment_head_loss_is_violation(tmp_path):
+    """重启后新会话段首条记录整体丢失（数值恰被上一段覆盖）必须检出。
+
+    第一段 1..30 完整；重启后第二段前 5 条成功响应的原文丢失，只记录到
+    6..15。旧"全局取值集合连续"看到 1..30 ∪ 6..15 = 1..30 会漏报；按
+    会话段对账后第二段不从 1 起 = 段首缺失（d6 登记项盲区 b）。
+    """
+
+    run_dir = await _build_raw_run(
+        tmp_path,
+        request_nos=tuple(range(1, 31)) + tuple(range(6, 16)),
+        adapter_outcomes=[("d1", 1, "SubmitAccepted", {})],
+        action_raw_keys=[("d1", 1)],
+    )
+    report = validate_run(run_dir)
+    codes = {f["code"] for f in report["findings"] if f["severity"] == "violation"}
+    assert "raw_state_gap" in codes
+    gap = next(f for f in report["findings"] if f["code"] == "raw_state_gap")
+    assert "第2会话段段首缺失" in gap["detail"]
+    assert "request_no 缺失 [1, 2, 3, 4, 5]" in gap["detail"]
+    assert "raw_retention.dropped=" in gap["detail"]
+    assert report["audit_complete"] is False
+
+
+async def test_restart_with_error_placeholder_zeros_is_not_a_gap(tmp_path):
+    """重启段先落 request_no=0 的错误占位、成功后从 1 计数：不得误报。
+
+    official/game.py 非 2xx 失败用当前计数发射错误原文、不递增；新会话
+    首批请求失败时占位为 0，随后成功才从 1 编号。0 占位既不是段首缺失
+    也不产生缺号（正常重启不误报的补充形态：回退目标可能是 0 而非 1）。
+    """
+
+    run_dir = await _build_raw_run(
+        tmp_path,
+        request_nos=(1, 2, 3, 0, 0, 1, 2, 3),
+        adapter_outcomes=[("d1", 1, "SubmitAccepted", {})],
+        action_raw_keys=[("d1", 1)],
+    )
+    report = validate_run(run_dir)
+    codes = {f["code"] for f in report["findings"] if f["severity"] == "violation"}
+    assert "raw_state_gap" not in codes
+    assert report["audit_complete"] is True
+
+
+async def test_mid_segment_gap_after_restart_still_reported(tmp_path):
+    """重启后的新段内真缺仍报：段对账只放宽"回退"，不放宽"缺号"。
+
+    第二段 1..2、4..5 中缺 3（该次响应原文丢失），跨会话段也必须是
+    violation（登记项盲区 a 的反面：段内真缺仍报）。
+    """
+
+    run_dir = await _build_raw_run(
+        tmp_path,
+        request_nos=(1, 2, 3, 1, 2, 4, 5),
+        adapter_outcomes=[("d1", 1, "SubmitAccepted", {})],
+        action_raw_keys=[("d1", 1)],
+    )
+    report = validate_run(run_dir)
+    codes = {f["code"] for f in report["findings"] if f["severity"] == "violation"}
+    assert "raw_state_gap" in codes
+    gap = next(f for f in report["findings"] if f["code"] == "raw_state_gap")
+    assert "第2会话段段内缺号" in gap["detail"]
+    assert "request_no 缺失 [3]" in gap["detail"]
+    assert report["audit_complete"] is False
+
+
+async def test_multiple_complete_restart_segments_pass(tmp_path):
+    """多次重启且各段都完整（长短不一）：按段对账全部干净。"""
+
+    run_dir = await _build_raw_run(
+        tmp_path,
+        request_nos=(1, 2, 1, 2, 3, 4, 5, 1, 2, 3),
         adapter_outcomes=[("d1", 1, "SubmitAccepted", {})],
         action_raw_keys=[("d1", 1)],
     )

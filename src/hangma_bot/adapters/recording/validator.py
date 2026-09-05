@@ -22,8 +22,9 @@
 - 原始协议事件（RAW_PROTOCOL_STATE，2026-09-04 审计增强）：按
   source/endpoint/http_status 覆盖统计与原文字节数；运行级 summary.json
   声明 raw_retention 模式后启用严格完整性检查——做过状态请求的场必须有
-  state_response 原文流、request_no 连续无缺口、每个实际发出的动作 POST
-  都有 action_submit_response 原文。旧目录无该声明则整体跳过，验证结论
+  state_response 原文流、request_no 按会话段连续（进程重启归零 = 新段
+  起点，段首/段内缺失都报）、每个实际发出的动作 POST 都有
+  action_submit_response 原文。旧目录无该声明则整体跳过，验证结论
   与升级前一致（向后兼容回归锚点：run-29a71a10ad12441eb15e0ac4cfb55c1d）。
 
 结论语义：报告中的 ``audit_complete`` 只在没有任何 ``violation`` 级发现时为真；
@@ -713,7 +714,11 @@ class _RunScanner:
         - ``raw_state_stream_empty``：存在场次层 AUTHORITATIVE_STATE 证据的
           (participant, game) 必须有 state_response 原始事件；
         - ``raw_state_gap``：同一 (participant, game) 的 state_response
-          request_no 取值集合必须连续（缺中间值 = 该次响应原文丢失）；
+          request_no 按会话段连续——request_no 是每场次会话内的成功轮询
+          计数（official/game.py _state_request_no），会话/进程重启后归零
+          重新从 1 编号：记录顺序中严格回退即为新会话段起点而非缺口；
+          每段期望 1 起连续，段首缺失（段内不从 1 起）与段内缺号
+          （缺中间值 = 该次响应原文丢失）都按 violation 上报；
         - ``raw_action_missing``：每个实际发出的动作 POST（adapter 层
           SUBMISSION_OUTCOME 且 outcome_type != SubmitNotSent）必须有对应
           action_submit_response 原文；在途取消（submit_cancelled_in_flight）
@@ -809,17 +814,54 @@ class _RunScanner:
                     (),
                 ))
 
-        # 2) request_no 连续性：取值集合缺中间值即该次响应原文丢失。
+        # 2) request_no 会话分段连续性。request_no 是"每场次会话内成功
+        #    轮询计数"（official/game.py _state_request_no 注释：跨会话
+        #    重启归零安全），同 (participant, game) 的原始事件跨进程重启
+        #    后重新从 1 编号。记录按落盘顺序单调不减（失败事件复用当前
+        #    计数，允许相等重复），出现严格回退即新会话段起点——不是
+        #    缺口（d6-c3c77a 登记项：旧"全局取值集合连续"把重启误当断号，
+        #    且数值被上一段覆盖时检不出新段首段丢失）。每段期望 1 起
+        #    连续：段首缺失与段内缺号都按该段响应原文丢失上报。
         for (pid, game_id), numbers in sorted(state_request_nos.items()):
-            observed = set(numbers)
-            expected = set(range(min(observed), max(observed) + 1))
-            missing = sorted(expected - observed)
-            if missing:
+            segments: list[list[int]] = []
+            for number in numbers:
+                if segments and number < segments[-1][-1]:
+                    segments.append([number])  # 严格回退：新会话段起点
+                elif segments:
+                    segments[-1].append(number)
+                else:
+                    segments.append([number])
+            gap_parts: list[str] = []
+            for seg_index, segment in enumerate(segments, start=1):
+                seg_max = max(segment)
+                if seg_max <= 0:
+                    # 段内只有 request_no=0 的错误占位（重启后首批请求
+                    # 失败、成功计数尚未发生），无成功响应可对账
+                    continue
+                observed = set(segment)
+                # 期望覆盖 1..段内最大值；段首缺失与段内缺号统一列出
+                missing = sorted(n for n in range(1, seg_max + 1) if n not in observed)
+                if not missing:
+                    continue
+                sample = missing[:10]
+                ellipsis = "..." if len(missing) > 10 else ""
+                if 1 in observed:
+                    gap_parts.append(
+                        f"第{seg_index}会话段段内缺号：request_no 缺失 {sample}{ellipsis}"
+                    )
+                else:
+                    # 段内 request_no 不从 1 起 = 该段首条记录缺失（数值
+                    # 可能被上一段的同号记录掩盖，按段独立对账才能检出）
+                    gap_parts.append(
+                        f"第{seg_index}会话段段首缺失（request_no 不从 1 起）："
+                        f"request_no 缺失 {sample}{ellipsis}"
+                    )
+            if gap_parts:
                 self.findings.append(_Finding(
                     "violation",
                     "raw_state_gap",
                     f"participant={pid} game={game_id} 的 state 响应原文存在缺口："
-                    f"request_no 缺失 {missing[:10]}{'...' if len(missing) > 10 else ''}"
+                    + "；".join(gap_parts)
                     + self._raw_dropped_suffix(),
                     (),
                 ))

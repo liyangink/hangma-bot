@@ -259,8 +259,11 @@ class OfficialTransport:
             "GET", path, params=params, headers=headers
         )
         # httpx 0.28 的 AsyncClient.send 不接受 timeout 参数：按请求
-        # extensions 传递（与 client.request() 内部机制一致）
-        request.extensions = {"timeout": timeout}
+        # extensions 传递。extensions["timeout"] 必须是 dict（httpcore 用
+        # .get("pool") 读取）——直接放 httpx.Timeout 对象会 AttributeError
+        # （2026-09-05 活场实测：SSE 流首连即 client_error:AttributeError，
+        # 集成层降级兜住；回归见 test_sse_runtime.py）
+        request.extensions = {**request.extensions, "timeout": timeout.as_dict()}
         try:
             response = await self._client.send(request, stream=True)
         except asyncio.TimeoutError:
@@ -277,7 +280,10 @@ class OfficialTransport:
                     error_text = (await response.aread()).decode("utf-8", "replace")
             except (asyncio.TimeoutError, httpx.TransportError, UnicodeError):
                 error_text = ""
-            await response.aclose()
+            finally:
+                # F-04：取消也可能落在错误体读取上——aclose 必须兜底，
+                # 否则连接悬挂不回池（与成功路径 294-295 的 finally 同构）
+                await response.aclose()
             if self._token:
                 error_text = error_text.replace(self._token, "***")
             self._classify_error(response.status_code, response.headers, error_text)

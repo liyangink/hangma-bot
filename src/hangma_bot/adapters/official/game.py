@@ -53,7 +53,7 @@ from hangma_bot.application.contracts import (
     SubmitRejectedRetryable,
     SUBMISSION_CANCELLED_IN_FLIGHT,
 )
-from hangma_bot.kernel.actions import WindowKey
+from hangma_bot.kernel.actions import WindowKey, WindowPhase
 from hangma_bot.kernel.config import TimingConfig
 from hangma_bot.kernel.observation import PlayerObservation
 
@@ -76,6 +76,7 @@ from hangma_bot.adapters.recording import (
     build_action_response_payload,
     build_state_response_payload,
 )
+from .notify import SSENotifyClient, StreamBudget
 from .scheduler import DeadlineExceeded, Priority, RequestScheduler
 from .sync_state import ProtocolSyncState, SyncDecision
 from .transport import OfficialTransport
@@ -98,6 +99,10 @@ _BOUNDARY_MARGIN_SEC = 0.05
 _BOUNDARY_STALL_FAST_POLLS = 2
 _BOUNDARY_STALL_BACKOFF_SEC = (0.5, 1.0)
 
+# SSE 帧驱动模式下的静默对齐周期（秒）：帧通道无帧时按此周期短拉对齐水位，
+# 防御帧丢失（服务端 keepalive 30s 之外的极端静默）导致的漂移。
+_SSE_IDLE_POLL_SEC = 5.0
+
 
 class OfficialGameSession:
     """一个 game_id 的会话；共享所在 Token 的传输与调度器，独享同步状态与动作门。"""
@@ -116,6 +121,8 @@ class OfficialGameSession:
         max_get_retries: int = 3,
         retry_backoff_base_sec: float = 0.2,
         retry_sleep: Optional[Callable[[float], Any]] = None,  # 测试注入
+        sse_enabled: bool = False,  # SSE 帧驱动开关（默认关=行为与现状一致）
+        sse_budget: Optional[StreamBudget] = None,  # 每 Token 共享的 SSE 并发预算
     ) -> None:
         self.game_id = game_id
         self._transport = transport
@@ -137,6 +144,14 @@ class OfficialGameSession:
         self._close_reason = ""
         self._active_tasks = set()
         self._poll_active = False  # next_item 单消费者守卫
+        # SSE 帧驱动（可选能力，2026-09-05 接入）：帧到达 → 唤醒短拉增量；
+        # 流终局/异常 → 永久降级回长轮询（sse_degraded 审计）。任务登记进
+        # _active_tasks，aclose 统一取消；预算归还由 notify 客户端全出口保证
+        self._sse_enabled = sse_enabled
+        self._sse_budget = sse_budget
+        self._sse_event: Optional[asyncio.Event] = asyncio.Event() if sse_enabled else None
+        self._sse_healthy = sse_enabled
+        self._sse_task: Optional[asyncio.Future] = None
         self.audit_degraded_events = 0  # 审计回执降级计数（诊断用）
         self.audit_dropped_events = 0  # 审计发射异常计数（诊断用）
 
@@ -238,8 +253,13 @@ class OfficialGameSession:
             if delivered is not None:
                 return delivered
             try:
+                self._ensure_sse_task()
                 boundary_timeout = self._phase_boundary_timeout()
-                if boundary_timeout is None:
+                if self._sse_enabled and self._sse_healthy:
+                    # SSE 帧驱动（开关开启且流健康）：帧到短拉增量；
+                    # 静默/边界/降级路径见 _sse_or_boundary_wait
+                    response = await self._sse_or_boundary_wait(boundary_timeout)
+                elif boundary_timeout is None:
                     response = await self._get_state(long_poll=True)
                 else:
                     response = await self._long_poll_racing_boundary(boundary_timeout)
@@ -379,6 +399,84 @@ class OfficialGameSession:
             if delivered is not None:
                 return delivered
 
+    def _ensure_sse_task(self) -> None:
+        """SSE 帧监听任务懒启动（首次 next_item 时）；降级后不再重启。"""
+
+        if (
+            not self._sse_enabled
+            or not self._sse_healthy
+            or self._sse_task is not None
+            or self._closed
+        ):
+            return
+        client = SSENotifyClient(
+            self.game_id,
+            self._transport,
+            budget=self._sse_budget,
+            on_frame=self._on_sse_frame,
+        )
+        self._sse_task = asyncio.ensure_future(self._sse_run(client))
+        self._active_tasks.add(self._sse_task)
+        self._sse_task.add_done_callback(self._active_tasks.discard)
+
+    async def _on_sse_frame(self, frame) -> None:
+        """帧到达回调（notify 客户端以 await 调用，必须为协程）：唤醒帧驱动短拉。"""
+
+        if self._sse_event is not None:
+            self._sse_event.set()
+
+    async def _sse_run(self, client: SSENotifyClient) -> None:
+        """SSE 流生命周期守护；任何终局都降级为长轮询并留审计。
+
+        RECONNECTS_EXHAUSTED / BUDGET_UNAVAILABLE / TERMINAL / 异常一律
+        视为"本会话不再使用 SSE"——有界回退，不自动重开（重开交给监督层
+        重建会话的自然路径）；取消（aclose）原样传播。
+        """
+
+        try:
+            result = await client.run()
+            reason = result.kind.value
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:  # noqa: BLE001 - SSE 失败绝不阻塞动作路径
+            reason = "client_error:" + type(exc).__name__
+        self._sse_healthy = False
+        if self._sse_event is not None:
+            self._sse_event.set()  # 唤醒可能在等待的帧通道 → 走降级回退
+        self._emit_audit(
+            AuditKind.PROTOCOL_RECOVERED,
+            {"trigger": "sse_degraded", "reason": reason},
+            trigger_seq=self._sync.last_seq,
+        )
+
+    async def _sse_or_boundary_wait(self, boundary_timeout):
+        """帧驱动模式下的等待与拉取；静默/边界超时与降级自动回退长轮询。
+
+        - 帧到达 → 短拉增量（GET /state?seq=本地已消费游标，游标纪律不变）；
+        - 静默超时（无边界时 _SSE_IDLE_POLL_SEC）→ 短拉对齐水位（防帧丢失漂移）；
+        - 边界超时（响应阶段官方 deadline 推导）→ 对齐边界定时器语义，
+          主动 seq=0 权威刷新捕获无事件的阶段切换（普通优先级）；
+        - SSE 降级（等待期间流终局）→ 回退既有边界竞速/长轮询路径。
+        """
+
+        timeout = boundary_timeout if boundary_timeout is not None else _SSE_IDLE_POLL_SEC
+        assert self._sse_event is not None  # sse_enabled 时必有
+        self._sse_event.clear()
+        try:
+            await asyncio.wait_for(self._sse_event.wait(), timeout=timeout)
+        except asyncio.TimeoutError:
+            pass
+        if not self._sse_healthy:
+            fallback_boundary = self._phase_boundary_timeout()
+            if fallback_boundary is None:
+                return await self._get_state(long_poll=True)
+            return await self._long_poll_racing_boundary(fallback_boundary)
+        if boundary_timeout is not None:
+            return await self._get_state(
+                long_poll=False, force_full=True, priority=Priority.POLL
+            )
+        return await self._get_state(long_poll=False)
+
     def _phase_boundary_timeout(self) -> Optional[float]:
         """当前权威快照处于响应阶段时的边界定时时长；其余阶段为 None。
 
@@ -396,9 +494,16 @@ class OfficialGameSession:
         snapshot = self._sync.snapshot
         if snapshot is None or self._sync.finished:
             return None
-        if snapshot.phase == "response_peng":
-            return self._timing.peng_timeout_sec + _BOUNDARY_MARGIN_SEC
-        if snapshot.phase == "response_chi":
+        if snapshot.phase in ("response_peng", "response_chi"):
+            # F4（2026-09-05）：优先官方绝对截止 window_deadline_ms（实测
+            # 4264/4264 响应快照携带）——绝对值天然不被 pass 推进后的刷新
+            # 重置（旧相对猜测式的核心缺陷）；官方未提供时退回窗口秒数+余量
+            deadline = getattr(snapshot, "window_deadline_ms", None)
+            if isinstance(deadline, int) and deadline > 0:
+                remaining = (deadline - self._wall_ms()) / 1000.0
+                return max(remaining, 0.0) + _BOUNDARY_MARGIN_SEC
+            if snapshot.phase == "response_peng":
+                return self._timing.peng_timeout_sec + _BOUNDARY_MARGIN_SEC
             return self._timing.chi_timeout_sec + _BOUNDARY_MARGIN_SEC
         return None
 
@@ -515,6 +620,15 @@ class OfficialGameSession:
 
         detected = self._sync.current_window()
         if detected is None:
+            return None
+        if (
+            detected.window_key.phase in (WindowPhase.RESPONSE_PENG, WindowPhase.RESPONSE_CHI)
+            and self._sync.response_suppressed_for_self
+        ):
+            # F2（2026-09-05 取证修复）：本人已对当前响应周期表态（自己的
+            # pass 事件回显或 POST 接受回执）——官方 responding_seats 不随
+            # pass 收缩，此守卫是"我已表态"的唯一可靠判据，杜绝同窗二次
+            # 投递与二次提交
             return None
         key = detected.window_key
         if key in self._delivered_windows:
@@ -965,6 +1079,10 @@ class OfficialGameSession:
                 raise
             self._emit_raw_action(result.status, result.text, attempt)
             self._gate.mark_accepted(attempt.window_key)
+            if attempt.action_key == "pass":
+                # 本人 pass 被官方接受：本响应周期对我关闭（pass 覆盖
+                # peng+chi 两窗——2026-09-05 取证），登记以抑制后续投递（F2）
+                self._sync.note_self_response()
             return self._finish_submit(attempt, SubmitAccepted(official_code=None, authoritative_seq=None))
         finally:
             lease.release()
@@ -1088,6 +1206,17 @@ class OfficialGameSession:
                 received_at_monotonic=self._monotonic(),
                 timeout_seconds=detected.timeout_seconds,
             )
+            if attempt.action_key == "pass":
+                # F3（2026-09-05 取证修复）：本人 pass 被 409 = 官方确认我
+                # 已对本响应周期表态（pass 覆盖 peng+chi）。改提"下一个
+                # pass"只会再吃 409——按"本窗对我关闭"收口并登记表态，
+                # 抑制后续重复投递
+                self._sync.note_self_response()
+                self._gate.mark_closed(attempt.window_key)
+                return SubmitRejectedClosed(
+                    official_code=error.official_code or "INVALID_ACTION",
+                    latest_authoritative_seq=self._sync.last_seq,
+                )
             return SubmitRejectedRetryable(
                 official_code=error.official_code or "INVALID_ACTION",
                 rejected_action_key=attempt.action_key,
