@@ -1,0 +1,102 @@
+{
+  "intro": [
+    "统计单位：完整桌赛；聚类单位：同牌山根组（scenario_id）。",
+    "主指标：桌内积分差（桌内积分 口径，tie_method=strict）。",
+    "来源纪律：mock 结果只用于编排验证，不进入强度结论；作废/未完赛/未知分数逐条计数，不静默删除。",
+    "比较对象：稳定版本 weighted_heuristic 对候选版本 weighted_heuristic_v1。"
+  ],
+  "sections": [
+    {
+      "heading": "样本与排除",
+      "table": {
+        "columns": [
+          "指标",
+          "数值"
+        ],
+        "rows": [
+          [
+            "总结果行数",
+            16
+          ],
+          [
+            "complete",
+            16
+          ],
+          [
+            "partial",
+            0
+          ],
+          [
+            "void（作废尝试，默认不作效果证据）",
+            0
+          ],
+          [
+            "error",
+            0
+          ],
+          [
+            "mock（只用于编排验证）",
+            0
+          ],
+          [
+            "complete 但未完成/分数未确认",
+            0
+          ],
+          [
+            "未知分数",
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "来源分布",
+      "table": {
+        "columns": [
+          "source_kind",
+          "行数",
+          "是否进入强度结论"
+        ],
+        "rows": [
+          [
+            "simulation",
+            16,
+            "是"
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "配对统计（聚类 Bootstrap 置信区间）",
+      "paragraphs": [
+        "配对差定义：候选值 − 基线值；配对只发生在同一 pair_id 内，同一 scenario 的换座变体先取组内均值，再以 scenario 为抽样单位重采样。n_resamples=2000，seed=20260905（进 manifest）。"
+      ],
+      "table": {
+        "columns": [
+          "指标",
+          "样本",
+          "配对差均值与 95% 置信区间"
+        ],
+        "rows": [
+          [
+            "table_score_delta",
+            "2 scenario / 8 对（排除 0 对）",
+            "-75.000 [-90.000, -60.000] (95%)"
+          ],
+          [
+            "table_first_rate",
+            "2 scenario / 8 对（排除 0 对）",
+            "-0.500 [-1.000, +0.000] (95%)"
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "结论",
+      "paragraphs": [
+        "主指标 table_score_delta 的配对差均值 -75.000，置信区间 [-90.000, -60.000] 不含 0，方向为负。"
+      ]
+    }
+  ],
+  "title": "评估结果汇总"
+}

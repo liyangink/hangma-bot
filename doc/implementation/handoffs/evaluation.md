@@ -116,6 +116,18 @@ hand_id 与 split_group_id 派生、budget_translation（tests/offline/test_cont
 | 949dc181f034ff8bb6079def1a1bd1b108a91b2c8ff0b162117af3e6e2553fd1 | tests/offline/evidence/sample-decisions/dataset/decisions.jsonl |
 | 97e8c6b5e691bfb9d003f4ef99f3223909f5268a17e5552dbff4fa42923123ba | tests/offline/evidence/test-run.txt |
 
+E3 真实引擎冒烟实验（主审集成后实测，目录
+`tests/offline/evidence/e3-smoke-2026-09-05/`；复现命令：
+`.venv/bin/python scripts/evaluate.py matches --experiment <目录>/experiment.json --out <新目录>`）：
+
+| SHA-256 | 相对路径 | 说明 |
+| --- | --- | --- |
+| 1f97618a4214fbcc572450e6e938c2dd3eef627221de37498f7bbd56bded0749 | .../e3-smoke-2026-09-05/experiment.json | 实验配置：weighted_heuristic 对 weighted_heuristic_v1，2 牌山 × 4 换座 × 8 局 |
+| cb907b9dde677a6126db729b434c5e501b5e7677363d83de736969bf8f8b28a2 | .../e3-smoke-2026-09-05/manifest.json | 产物 manifest（rules_hash 与模拟行同源） |
+| b439625d72359a9e7f9307968ad54e3a86351b84ef0b71bd6e72c95e65cb77a7 | .../e3-smoke-2026-09-05/report.json | 汇总报告（结构） |
+| 3b4a4cbf3449ce408a8258887e0084b38f699fc50612b0fa073cbd7a357e3bbd | .../e3-smoke-2026-09-05/report.md | 汇总报告（人读）；16 桌赛 0 排除，V1 方向为负，不声称改进 |
+| f59b910ff0fade2c1e47c90b2b293bf5cadfd5229f83c0d2c40b30e933f0512b | .../e3-smoke-2026-09-05/results.jsonl | 16 行 MatchResult（source_kind=simulation） |
+
 缺失声明：样例数据的 guide_version/guide_captured_at、rules_hash、真实
 producer_commit/dirty 在 manifest 中为 null 或 missing_fields（fixture 运行无
 真实提交证据；真实实验由 CLI 的 _git_state() 填 git rev-parse HEAD 与 dirty，
