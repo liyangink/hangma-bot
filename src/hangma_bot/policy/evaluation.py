@@ -63,9 +63,7 @@ class ScoredCandidate:
 def build_context(observation: PlayerObservation) -> EvaluationContext:
     """从玩家观察构建评分上下文；不做任何合法性判断。"""
 
-    combined: List[str] = [tile.code for tile in observation.my_hand]
-    if observation.drawn_tile is not None:
-        combined.append(observation.drawn_tile.code)
+    combined: List[str] = _hand_codes_without_double_count(observation)
 
     meld_codes_by_seat: List[Tuple[str, ...]] = []
     for seat_melds in observation.melds:
@@ -99,6 +97,32 @@ def build_context(observation: PlayerObservation) -> EvaluationContext:
         table_rank=table_rank,
         catch_play=observation.rule_state.catch_play,
     )
+
+
+def _hand_codes_without_double_count(observation: PlayerObservation) -> List[str]:
+    """本人暗牌牌码（含刚摸牌，摸牌置尾），按两种官方形态归一化计数。
+
+    N-1 修复（与 hangma 引擎 _concealed_without_drawn 同口径，依据
+    doc/implementation/notes/rules-hu-gate-and-win-detection.md）：官方快照
+    实测形态「my_hand 已含刚摸牌」（长度 = 14−3×副露数）与契约形态
+    「my_hand 不含摸牌」（长度 = 13−3×副露数）并存；不归一化时 combined
+    会把刚摸牌双计（幻影副本）送进评分上下文（牌效计数、财神保留计数
+    失真）。归一化只做计数/顺序整理，不做任何合法性判断（模块边界不变）。
+    """
+
+    codes: List[str] = [tile.code for tile in observation.my_hand]
+    drawn = observation.drawn_tile
+    if drawn is None:
+        return codes
+    expected = 14 - 3 * len(observation.melds[observation.seat])
+    if len(codes) == expected:
+        # 官方形态：移除末尾同码实例（=刚摸的牌），下方再统一置尾
+        for index in range(len(codes) - 1, -1, -1):
+            if codes[index] == drawn.code:
+                del codes[index]
+                break
+    codes.append(drawn.code)
+    return codes
 
 
 def _near_meld(codes: Tuple[str, ...], target: str) -> bool:

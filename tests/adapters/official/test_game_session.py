@@ -226,7 +226,15 @@ class TestSubmit:
         )
         assert isinstance(outcome, SubmitAccepted)
         kinds = [r.kind for r in audit.records]
-        assert kinds == [AuditKind.AUTHORITATIVE_STATE, AuditKind.SUBMISSION_INTENT, AuditKind.SUBMISSION_OUTCOME]
+        # 原始事件全量保留接线（E1/E3）后：state 响应原文先于权威状态审计、
+        # POST 响应原文在 intent 与 outcome 之间——两者都是 RAW_PROTOCOL_STATE
+        assert kinds == [
+            AuditKind.RAW_PROTOCOL_STATE,       # E1：开桌 /state 响应原文
+            AuditKind.AUTHORITATIVE_STATE,
+            AuditKind.SUBMISSION_INTENT,
+            AuditKind.RAW_PROTOCOL_STATE,       # E3：动作 POST 响应原文
+            AuditKind.SUBMISSION_OUTCOME,
+        ]
         post = [c for c in transport.calls if c.method == "POST"]
         assert len(post) == 1 and post[0].json_body == {"action": "discard", "tile": "5w"}
         # 同窗再提交：已被终结

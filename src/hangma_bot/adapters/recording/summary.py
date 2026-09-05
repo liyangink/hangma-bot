@@ -12,6 +12,7 @@
 - ``missing_high_priority``：高优先级记录未能落盘的条数（入队被拒、写盘失败、
   关闭时限内未排空）；出现即视为本次运行不能宣称“完整可审计”。
 - ``serialization_failures``：校验或 JSON 编码失败、从未进入队列的条数。
+- ``raw_retention``：原始事件保留模式声明（存在即启用验证器严格检查）。
 - 丢失与失败计数为运行级全局值：入队阶段无法可靠归属到单个身份，
   身份级汇总原样引用全局值以避免制造虚假的精确性。
 """
@@ -55,9 +56,15 @@ def build_run_summary(
     write_failures: int,
     audit_degraded: bool,
     participants: Iterable[str],
+    raw_retention: Mapping[str, object] | None = None,
     extra_detail: Mapping[str, object] | None = None,
 ) -> dict[str, object]:
-    """组装运行级汇总内容；字段含义见模块 docstring 的计数语义。"""
+    """组装运行级汇总内容；字段含义见模块 docstring 的计数语义。
+
+    ``raw_retention`` 声明原始事件保留模式（mode/gzip/emitted/dropped）：
+    验证器只在存在该键时启用严格完整性检查（缺口/流缺失/动作响应缺失），
+    旧目录没有该键则跳过——向后兼容结论不变。缺省为 None（旧调用方）。
+    """
 
     summary: dict[str, object] = {
         "schema_version": AUDIT_SCHEMA_VERSION,
@@ -73,6 +80,8 @@ def build_run_summary(
         "audit_degraded": audit_degraded,
         "participants": sorted(participants),
     }
+    if raw_retention:
+        summary["raw_retention"] = dict(raw_retention)
     if extra_detail:
         summary["detail"] = dict(extra_detail)
     return summary

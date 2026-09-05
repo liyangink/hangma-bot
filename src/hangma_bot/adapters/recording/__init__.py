@@ -13,6 +13,17 @@
 """
 
 from hangma_bot.adapters.recording.jsonl_sink import JsonlAuditSink
+from hangma_bot.adapters.recording.raw_events import (
+    RAW_EVENT_SOURCES,
+    RAW_PAYLOAD_SCHEMA_VERSION,
+    RAW_SOURCE_ACTION_RESPONSE,
+    RAW_SOURCE_SSE_FRAME,
+    RAW_SOURCE_STATE_RESPONSE,
+    build_action_response_payload,
+    build_sse_frame_payload,
+    build_state_response_payload,
+    is_new_shape_raw_payload,
+)
 from hangma_bot.adapters.recording.redact import (
     REDACTED,
     redact_json_line,
@@ -34,10 +45,19 @@ from hangma_bot.adapters.recording.validator import main, validate_run
 __all__ = [
     "AUDIT_SCHEMA_VERSION",
     "JsonlAuditSink",
+    "RAW_EVENT_SOURCES",
+    "RAW_PAYLOAD_SCHEMA_VERSION",
+    "RAW_SOURCE_ACTION_RESPONSE",
+    "RAW_SOURCE_SSE_FRAME",
+    "RAW_SOURCE_STATE_RESPONSE",
     "REDACTED",
+    "build_action_response_payload",
     "build_participant_summary",
     "build_run_summary",
+    "build_sse_frame_payload",
+    "build_state_response_payload",
     "is_high_priority",
+    "is_new_shape_raw_payload",
     "main",
     "redact_json_line",
     "redact_value",

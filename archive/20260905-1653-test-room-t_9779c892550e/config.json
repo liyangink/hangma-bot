@@ -1,0 +1,36 @@
+{
+  "mode": "test_room",
+  "base_url": "https://10.240.169.190:18080",
+  "expected_tournament_id": "t_9779c892550e",
+  "known_guide_version": 15,
+  "audit_root": "runs",
+  "strategy": "claim_if_legal",
+  "insecure_hosts": [
+    "10.240.169.190"
+  ],
+  "identities": [
+    {
+      "slot": "qinglong",
+      "token_file": "archive/20260905-1653-test-room-t_9779c892550e/tokens/qinglong.txt"
+    },
+    {
+      "slot": "baihu",
+      "token_file": "archive/20260905-1653-test-room-t_9779c892550e/tokens/baihu.txt"
+    },
+    {
+      "slot": "zhuque",
+      "token_file": "archive/20260905-1653-test-room-t_9779c892550e/tokens/zhuque.txt"
+    },
+    {
+      "slot": "xuanwu",
+      "token_file": "archive/20260905-1653-test-room-t_9779c892550e/tokens/xuanwu.txt"
+    }
+  ],
+  "restart": {
+    "max_restarts": 2,
+    "base_delay_seconds": 1,
+    "factor": 2,
+    "max_delay_seconds": 8,
+    "finished_restart_delay_seconds": 2
+  }
+}

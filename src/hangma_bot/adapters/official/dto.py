@@ -1,7 +1,8 @@
-"""官方 JSON 报文解析（协议基线 v8 快照 + 指南 v9–v11 已审查变更）。
+"""官方 JSON 报文解析（协议基线 v8 快照 + 指南 v9–v15 已审查变更）。
 
 解析原则（依据 doc/official-platform-api-v2.md，指南 v8 快照，抓取 2026-09-03；
-v9–v11 变更依据 doc/references/official-guide-version-v11.json，2026-09-04 抓取）：
+v9–v11 变更依据 doc/references/official-guide-version-v11.json，2026-09-04 抓取；
+v12–v15 变更依据 doc/references/official-guide-version-v15.json，2026-09-05 抓取）：
 
 - 已确认必需字段缺失时抛 DtoError（默认可用 seq=0 快照重建修复）；
 - 未知新增字段一律忽略并保留（v8 的 Description 属于此类兼容新增）；
@@ -18,10 +19,33 @@ from hangma_bot.kernel.actions import CANONICAL_TILE_CODES
 
 from .errors import DtoError
 
-KNOWN_GUIDE_VERSION = 11  # 已审查指南版本；更高版本需检查未知 breaking 变更。
-# v9—v11 均为非破坏性 changed 条目，已逐条审查并同步实现：v9 测试房间数据 API
-# 限速粒度、v10 跨局 gap=true 全量快照、v11 state 轮询 16/s（每用户聚合）。
-# 依据：doc/references/official-guide-version-v11.json（2026-09-04 抓取）。
+KNOWN_GUIDE_VERSION = 15  # 已审查指南版本；更高版本需检查未知 breaking 变更。
+# v9—v11：非破坏性 changed 条目，已逐条审查并同步实现（v9 测试房间数据 API
+# 限速粒度、v10 跨局 gap=true 全量快照、v11 state 轮询 16/s 每用户聚合）。
+# v12（added）：GET /api/games/{id}/notify SSE 通知流，可选能力——当前实现继续
+# 用 /state 长轮询，不采纳 SSE；帧协议不影响既有轮询路径。
+# v13（breaking，已审查）：新建赛事分桌 = 「已确认 ∧ 开赛时刻在线」；报名=意向；
+# 在线证据 = 任意已认证 Bearer 请求 90s 内触达；config 新增 OnlineConfirm 键
+# （缺失或 false = 2026-09-05 前创建的存量赛，沿用旧分桌）。本 bot 用玩家 API
+# register→ready 且空转期以 2s 间隔轮询本赛端点，天然满足在线要求，无协议破坏。
+# v14（added）：GET /portal/api/guide 免认证全文端点（?format=text 给 LLM/终端），
+# 仅文档同步用途，运行时继续用 /portal/api/guide/version 做版本自检。
+# v12—v14 追加审查（2026-09-05 同步发现官方变更日志回溯扩充自动匹配条目）：
+#   v12 玩家 API 新增 POST /api/match（自动匹配房池入席，仅全局 token）；测试房间
+#   创建支持 match_seats（门户侧）；门户「我的 AI 身份」昵称+全局令牌轮换——
+#   本 bot 用报名 Token、不调用 /api/match、不支持全局 Token（initialize 直接
+#   TARGET_MISMATCH 拒绝），零协议影响，仅文档记录。
+#   v13 POST /api/match 改全自动语义；新增 404 NO_ROOM_AVAILABLE 与 409
+#   AUTO_MATCH_ONLY / MATCH_BUSY / MATCH_LIMIT_REACHED——仅在自动匹配路径出现，
+#   本 bot 不触发。
+#   v14 门户新增 GET /portal/api/leaderboard 排行榜与身份昵称修改——门户 API，
+#   玩家 API 契约零影响。
+# v15（breaking，已审查）：自动匹配房服务默认配置上调 M=1/Rounds=2 → M=10/Rounds=8。
+# breaking 面仅限 POST /api/match 显式声明上限低于新默认（M∈1..9 或 Rounds∈1..7）
+# 的调用方（→ 404 NO_ROOM_AVAILABLE）；无 body 协议不变。本 bot 不调用 /api/match，
+# 正式锦标赛/测试房间路径不受影响；16 场记账仅自动房入席时占用 cfg.M=10 格，
+# 与既有正式赛 M 上限互不叠加（同桶 16 上限仍由服务端统一校验）。
+# 依据：doc/references/official-guide-version-v15.json（2026-09-05 抓取）。
 
 
 def _require_mapping(doc: Any, what: str) -> Mapping[str, Any]:
@@ -161,6 +185,7 @@ class ParsedRulesConfig:
     chi_timeout_sec: float
     discard_timeout_sec: float
     description: Optional[str]  # v8 兼容新增；仅展示记录，不进入策略输入
+    online_confirm: bool  # v13：新建赛事「确认 ∧ 在线」分桌开关；缺失或 false = 存量赛旧分桌
 
 
 def parse_rules_config(doc: Any) -> ParsedRulesConfig:
@@ -169,6 +194,9 @@ def parse_rules_config(doc: Any) -> ParsedRulesConfig:
     description = config.get("Description")
     if description is not None and not isinstance(description, str):
         raise DtoError("Description 应为字符串")
+    online_confirm = config.get("OnlineConfirm")
+    if online_confirm is not None and not isinstance(online_confirm, bool):
+        raise DtoError("OnlineConfirm 应为布尔")
     return ParsedRulesConfig(
         tournament_id=_require_str(body.get("tournament_id"), "rules.tournament_id"),
         status=_require_str(body.get("status"), "rules.status"),
@@ -180,6 +208,7 @@ def parse_rules_config(doc: Any) -> ParsedRulesConfig:
         chi_timeout_sec=float(_require_int(config.get("ChiTimeoutSec"), "config.ChiTimeoutSec")),
         discard_timeout_sec=float(_require_int(config.get("DiscardTimeoutSec"), "config.DiscardTimeoutSec")),
         description=description,
+        online_confirm=bool(online_confirm or False),  # 缺键/False = 存量赛（v13 判别）
     )
 
 
@@ -310,6 +339,9 @@ class ParsedSnapshot:
     god_baotou: bool
     god_chain_count: int
     god_catch_play: bool
+    # 官方响应窗绝对截止（墙上时钟毫秒；2026-09-05 实测在场，响应阶段快照
+    # 4264/4264 携带）。缺省 None：draw/deal 等无窗阶段或官方未提供时。
+    window_deadline_ms: Optional[int] = None
 
 
 def _seat_vector(value: Any, what: str, *, length: int = 4) -> Tuple[int, ...]:
@@ -328,7 +360,11 @@ def _parse_last_discard(value: Any) -> Optional[Union[Tuple[int, str, int], str]
     种未知形状，属协议错误而非"无弃牌"，不得静默丢弃。
     """
 
-    if value is None or value == "":
+    if value is None or value == "" or value == "0w":
+        # "0w" 是官方"本局尚无弃牌"的占位符（2026-09-05 测试房实测：开局
+        # 快照 16/16 场全部携带，见 doc/implementation/reviews/
+        # test-room-acceptance-result-2026-09-05.md §4.1）——牌码 0 不存在，
+        # 语义等同空串，按无弃牌归一化
         return None
     if isinstance(value, str):
         if value not in CANONICAL_TILE_CODES:
@@ -430,6 +466,13 @@ def parse_snapshot(doc: Any, top_level_seq: Optional[int] = None) -> ParsedSnaps
         god_baotou=_require_bool(god_raw.get("baotou") or False, "god.baotou"),
         god_chain_count=_require_int(god_raw.get("chain_count") or 0, "god.chain_count"),
         god_catch_play=_require_bool(god_raw.get("catch_play") or False, "god.catch_play"),
+        window_deadline_ms=(
+            body.get("window_deadline_ms")
+            if isinstance(body.get("window_deadline_ms"), int)
+            and not isinstance(body.get("window_deadline_ms"), bool)
+            and body.get("window_deadline_ms") > 0
+            else None
+        ),
     )
 
 

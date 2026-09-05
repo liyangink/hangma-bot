@@ -1,10 +1,10 @@
 # 杭州麻将对战平台 API 与时间模型
 
 > 官方来源：`https://10.240.169.190:18080/portal/#guide-api`
-> 抓取时间：2026-09-03（Asia/Shanghai）
-> 官方指南版本：v8，`updated_at=2026-09-03`
-> 版本接口：`GET /portal/api/guide/version`
-> 注意：文件名为兼容既有链接暂保留 `v2`；正文已更新到 v8。平台仍在迭代，本文不代替运行时版本自检。
+> 抓取时间：2026-09-03（v8 基线）；2026-09-05 二次同步至 v15（v12–v15 变更见 [v15 指南版本快照](./references/official-guide-version-v15.json)，指南正文见 [v15 指南全文](./references/official-guide-v15-content.txt)，`/portal/api/guide` 原始响应见 [v15 指南原始响应](./references/official-guide-v15.txt)）
+> 官方指南版本：v15，`updated_at=2026-09-05`
+> 版本接口：`GET /portal/api/guide/version`；全文接口：`GET /portal/api/guide`（v14 起免认证）
+> 注意：文件名为兼容既有链接暂保留 `v2`。平台仍在迭代，本文不代替运行时版本自检。
 > 相关说明：[官方赛事流程](./official-tournament-flow-2026-09-03.md)、[架构与运行流程](./architecture.md)、[统一术语表](../UBIQUITOUS_LANGUAGE.md)
 
 ## 1. 接入边界
@@ -91,6 +91,7 @@ Content-Type: application/json
 | `StartAt` | 开赛时间，Unix 秒 |
 | `RegisterDeadlineAt` | 报名截止，Unix 秒；0 表示无截止 |
 | `Description` | v8 新增的赛程自由文本；可空、多行，只用于展示和记录，不应作为策略结构化输入 |
+| `OnlineConfirm` | v13 新增；`true` 表示新建赛事「已确认 ∧ 开赛时刻在线」分桌，缺键或 `false` 表示 2026-09-05 前创建的存量赛（沿用旧分桌）。只影响分桌，不影响动作协议 |
 
 这些配置每个锦标赛都可能不同，严禁在 Bot 中写死。
 
@@ -156,6 +157,8 @@ v7 阶段字段：
 - 阶段 2 起 `ready_users` 固定返回 0，不能推断实时确认人数。
 - `games_played` 每个阶段清零，实际按完成的单局数累计；不能把它当整场赛事进度。
 - 平台中断时会出现 `stage_done + stage_crashed=true`；本阶段旧成绩作废，同名单重新确认后重赛。
+- v13 新建赛事：`ready_users / stage_ready_count` 仍是「已确认累计」，不是分桌预测——分桌另受开赛时刻在线过滤，客户端不得据此推断同桌或晋级概率。
+- v13 新建赛事在线要求：空转期（`registering / stage_open / stage_done`）没有 SSE 可挂，必须对 `/api/tournaments/{id}` 等本赛端点保持轮询间隔 ≤90s（建议 ≤60s），否则开赛时刻会被判离线剔除。本 bot 空转期以 2s 间隔轮询，天然满足；多赛并行时按赛核对各 bot 进程存活。
 
 多阶段赛制、排序和决赛加赛的完整事实见[官方赛事流程](./official-tournament-flow-2026-09-03.md)。
 
@@ -224,6 +227,18 @@ v2 起快照**不再返回 `allowed_actions`**。客户端必须自己判定动�
 事件枚举可能继续扩充，解析器应允许未知事件透传并记录，不能因为未知 `type` 直接崩溃。
 
 私有信息规则：玩家事件流只包含自己的摸牌，他家手牌不会在实时玩家接口中出现。
+
+#### `GET /api/games/{id}/notify`（v12 起，可选 SSE 通知流）
+
+服务器推送「状态已变化」信号，替代高频轮询 `/state` 来发现他人动作；Bearer 认证，观赛者 403。
+
+- 连接即收初始帧 `{"seq": N}`（N = 当前事件水位，重连对齐点）。
+- 此后每次状态变更推 `{"seq": 新水位}`；帧只含 seq，不含牌面/动作内容——牌面仍须按需 `GET /state` 领取。
+- 每 30s 一行 `: keepalive`；场终/死场推 `{"seq":N,"closed":true}` 后关流，客户端应重连对齐或拉终态。
+- 上限每用户 32 并发连接（超限 429），不占用 `/state` 的 16/s 频率额度。
+- 游标纪律：初始帧的 seq 是包含式水位，不可直接当轮询游标；收到帧后若高于本地已消费 seq 且无缺口，用 `GET /state?seq=本地游标` 拉增量；游标未知/落后超 256/跨局用 `seq=0` 拿全量快照。
+
+工程决策（2026-09-05 评审）：运行链路继续使用 `/state` 长轮询——16/s 频率额度对 M=10-11 桌事件驱动 bot 已充裕（v11 放宽），SSE 只减少发现延迟，不改变动作窗口语义。SSE 客户端（`notify.py`）已交付但**未接入运行链路**（运行行为零变化，集成契约见 `doc/implementation/notes/sse-notify-client.md`）；待出现「16/s 不够用」或官方停用长轮询时再接入。
 
 ### 2.4 提交动作
 
@@ -300,6 +315,24 @@ v2 动作判定下限：
 
 房间 ID 相当于赛后数据凭证，不应公开分享。删除房间会级联删除对局与事件数据。
 
+### 2.6 自动匹配（`POST /api/match`，v12 起，v13 全自动语义，v15 默认配置上调）
+
+平台新增自由对战自动匹配池（`kind=auto`）。本端点**仅接受全局 Token**（`POST /api/users` 注册所得；报名 Token → `400 TOKEN_NOT_SCOPED`）。
+
+流程：`POST /api/match` → 服务端从自动匹配池按「就绪席多、开赛早者优先」选房入席，无兼容候选则自动建房并作为首位入席 → 成功返回 `{room_id, config, round_no}` → 之后用同一全局 Token 照常参赛（`GET /api/tournaments/{room_id}` 的 `my_games` 发现 `game_id`、`/state` 轮询、`/action` 出招）。等待期重复调用幂等返回原房，不会双房双席。
+
+关键语义：
+
+- 请求体可选 `{"M":10,"Rounds":8}`（小写键亦收）声明**可承受上限**；缺省/键 ≤0 = 不限。
+- v15 起服务默认配置为 **M=10 / Rounds=8**：显式声明上限低于默认（M∈1..9 或 Rounds∈1..7）→ **永久 404 `NO_ROOM_AVAILABLE`**（不重试）；无 body 恒不触发。
+- 满 4 人即开 **M=10 场并发对局 × 每场 8 局**（同一 4 人，座次逐场重洗，最晚场终后结算）——单会话样本 80 手/人，需按 10 桌并发核对轮询/动作节奏。
+- 整场打完（`finished` 约 60s 宽限）自动房自动关停（`closed`），此后该房玩家 API 一律 404；赛果以最后一次 `/state` 终局快照与门户复盘为准；想再打重新调 `/api/match`（每次新会话新房）。
+- 限速 10 次/分/用户；自动房在途上限 50（`409 MATCH_BUSY` 只挡建房、不挡入席）；自动房占 `config.M`（默认 10）格 16 场记账。
+- 自动房唯一入席入口是 `/api/match`：对其玩家 API 直连 `register/ready` → `409 AUTO_MATCH_ONLY`（在册参与者重复直连亦 409）。
+- 16 场上限：`409 MATCH_LIMIT_REACHED`（register/ready 与 match 同码）。
+
+工程决策（2026-09-05 评审）：本 bot 目前**不支持全局 Token**（initialize 按 `TARGET_MISMATCH` 拒绝，见技术方案），且不调用 `/api/match`——自动匹配对本项目零协议影响，仅文档记录；是否接入自动匹配作为持续评测渠道属独立功能决策。
+
 ## 3. 公共辅助 API
 
 ### 3.1 `GET /portal/api/guide/version`
@@ -308,12 +341,12 @@ v2 动作判定下限：
 
 ```json
 {
-  "version": 8,
-  "updated_at": "2026-09-03",
+  "version": 15,
+  "updated_at": "2026-09-05",
   "changes": [
     {
-      "version": 8,
-      "date": "2026-09-03",
+      "version": 15,
+      "date": "2026-09-05",
       "type": "breaking|added|changed",
       "summary": "...",
       "detail": "..."
@@ -324,11 +357,13 @@ v2 动作判定下限：
 
 启动策略：
 
-1. 代码内声明 `KNOWN_GUIDE_VERSION=8`，并保存已审查的 breaking 变更集合；不能只比较一个数字后继续运行。
+1. 代码内声明 `KNOWN_GUIDE_VERSION=15`（当前已审查基线，见 `adapters/official/dto.py`），并保存已审查的 breaking 变更集合；不能只比较一个数字后继续运行。
 2. Bot 启动、报名/ready 之前调用一次版本接口。
 3. 若服务器版本更高且存在 `type=breaking && version>KNOWN`，禁止进入新赛事并报警。
 4. 已开始的赛事不要每个动作重复检查版本；在阶段边界重新检查一次，并记录启动与阶段开始时版本，确保阶段尝试可追溯。
 5. 保存完整变更响应，便于回放时解释行为差异。
+
+v14 新增姊妹端点 `GET /portal/api/guide`（同样免认证、每 IP 5/s）：返回 `{version, updated_at, format, content}`，`content` 为与门户「接入指南」Tab 同源的完整接入指南正文（对战规则 / API 参考 / 最小 Bot）；`format` 缺省 `html`，`?format=text` 返回剥离标签的纯文本（LLM/终端友好）。本端点用于文档同步与人工核对，运行时版本自检继续使用 `/guide/version`。
 
 ### 3.2 `POST /portal/api/tools/fan-calc`
 
@@ -604,11 +639,18 @@ v2 Demo 没有多阶段主循环，**不能作为当前参赛入口**。v7 Demo 
 | 409 | `TOURNAMENT_CLOSED` | 赛事已关闭 | 停止该赛事任务 |
 | 409 | `NOT_REGISTERED` | 阶段 1 到位前尚未报名 | 仅在 `registering` 中先幂等报名再到位 |
 | 409 | `MATCH_LIMIT_REACHED` | 达到同时 16 场上限 | 不再创建/加入更多比赛 |
+| 404 | `NO_ROOM_AVAILABLE` | 自动匹配（`/api/match`）无可用房：显式上限低于服务默认（M=10/Rounds=8）为永久条件；或建房后入席失败的兜底瞬态 | 永久条件改上限或放弃、不重试；瞬态按 message 判定后自重试（本项目不调用此端点） |
+| 409 | `AUTO_MATCH_ONLY` | 对自动匹配房玩家 API 直连 register/ready（自动房唯一入席入口是 `/api/match`） | 自动房不走 register→ready 流程（本项目不进入自动房） |
+| 409 | `MATCH_BUSY` | 在途自动房达 50 上限且无半空房可入（只挡建房、不挡入席） | 延时后自重试（本项目不调用此端点） |
 | 429 | `RATE_LIMITED` | 超频或并发挂起超限 | 带抖动退避；动作窗口内优先本地兜底，不能固定睡 2 秒 |
 
-## 9. v7/v8 关键变更
+## 9. 关键变更时间线
 
-截至 2026-09-03，当前指南为 v8。相对仓库历史 v2 快照，必须优先完成以下迁移：
+截至 2026-09-05，当前指南为 v15。v7–v8 为多阶段/赛程变更，v9–v11 为限速与跨局轮询调整，v12–v15 为 SSE、分桌机制、指南全文端点与自动匹配机制（官方变更日志对 v12–v14 回溯扩充了自动匹配条目，2026-09-05 二次同步时一并收录）。
+
+### 9.1 v7/v8（截至 2026-09-03）
+
+相对仓库历史 v2 快照，必须优先完成以下迁移：
 
 - v7：顶层新增 `stage_open / stage_done`，阶段间 `active_games` 为空不代表结束。
 - v7：`ready` 在每个新阶段表示出席确认，新增 `NOT_QUALIFIED`。
@@ -632,3 +674,19 @@ v2 Demo 没有多阶段主循环，**不能作为当前参赛入口**。v7 Demo 
 - v1：`fan-calc`。
 - v1：报名 Token 作用域直达 rules/ready。
 - v1：测试房间完整赛后数据 API。
+
+### 9.2 v9–v11（2026-09-03～09-04）
+
+- v9：测试房间数据 API 限速按房间分桶（每房间 5/s + 每来源总量 1000/s 兜底），消除跨房间误伤。
+- v10：跨局边界轮询——局终后继续用上一局 seq 轮询立即返回新局全量快照（`gap:true`），不再挂起至庄家出牌超时。
+- v11：`/state` 轮询限速放宽 8/s → 16/s（每用户聚合，跨局共享一桶；并发挂起 ≤32 不变）。
+
+### 9.3 v12–v15（2026-09-04～09-05）
+
+- v12（added）：`GET /api/games/{id}/notify` SSE 通知流；帧只含 seq。本阶段不采纳（见 §2.3 工程决策），旧轮询不受影响。
+- v12（added，回溯扩充）：玩家 API 新增 `POST /api/match` 自动匹配入席（仅全局 Token）；测试房间创建支持 `match_seats`（门户侧）；门户「我的 AI 身份」昵称 + 全局令牌轮换。
+- v13（breaking，已审查）：新建赛事分桌修复——报名=意向，分桌实到 = 开赛时刻「已确认 ∧ 在线」（在线 = 任意已认证请求 90s 内触达）；按实到人数降档、不足 4 作废；`config.OnlineConfirm=true` 标记新建赛事，存量赛（缺键/`false`）沿用旧分桌；门户报名不再自动 ready（玩家 API 不变）；空转期必须 ≤90s 轮询本赛端点。本项目玩家 API `register→ready` 流程与 2s 空转轮询天然兼容，仅需解析并审计 `OnlineConfirm`。
+- v13（changed，回溯扩充）：`POST /api/match` 改全自动语义（自动建房与入席一体）；新增 `404 NO_ROOM_AVAILABLE` 与 `409 AUTO_MATCH_ONLY / MATCH_BUSY / MATCH_LIMIT_REACHED`。
+- v14（added）：`GET /portal/api/guide` 免认证全文端点（与门户「接入指南」Tab 同源，`?format=text` 给 LLM/终端），根治门户页与接口文档双份漂移。
+- v14（added，回溯扩充）：门户新增 `GET /portal/api/leaderboard` 自由对战排行榜（三榜，session 认证）与「我的 AI 身份」昵称修改——门户 API，玩家 API 契约零影响。
+- v15（breaking，已审查）：自动匹配服务默认房配置上调 `M=1/Rounds=2 → M=10/Rounds=8`（满员会话 = 10 场并发 × 每场 8 局）。breaking 面仅限 `/api/match` 显式声明上限低于新默认的调用方（→ 404 `NO_ROOM_AVAILABLE`）；无 body 协议不变；自动房占 `config.M` 格 16 场记账。本项目不调用 `/api/match`、不支持全局 Token，正式赛事/测试房间路径零影响（详见 §2.6 工程决策）。

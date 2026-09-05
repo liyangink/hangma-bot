@@ -24,8 +24,13 @@
 - ``LIFECYCLE_CHANGED``：``{"event": "status_changed", "from", "to"}``（状态迁移时）。
 - ``AUTHORITATIVE_STATE``：监督层发赛事快照（status/stage/qualified 等），
   官方场次适配器发窗口权威序号（seq/phase/turn/window）。
+- ``RAW_PROTOCOL_STATE``：2026-09-04 审计增强后由官方适配器按 raw_events 构造器
+  发射的原始协议事件（source=state_response/action_submit_response/sse_frame，
+  含 ``raw`` 原文）；历史冗余形态（任意 JSON 对象）仍按最小校验放行。
 - ``DECISION_PLANNED``：``{"plan_revision", "based_on_authoritative_seq", "window",
-  "candidates": [{"action_key", "is_emergency"}], "degraded_reasons", "rule_completeness"}``。
+  "candidates": [{"action_key", "is_emergency", "rank", "action", "reasons"}],
+  "observation_snapshot": {my_hand/drawn_tile/phase/responding/目标弃牌…},
+  "degraded_reasons", "rule_completeness"}``（2026-09-04 决策观察快照增强）。
 - ``SUBMISSION_INTENT``：双方各发一条（应用层含预算事实，适配器含请求 body），
   同一 ``(decision_id, attempt_no)`` 出现两条属双层记录常态。
 - ``SUBMISSION_OUTCOME``：应用层 ``{"outcome": <规范值或类名>, "official_code"?,
@@ -58,6 +63,9 @@ RUN_MANIFEST_PATH = "manifest.json"
 
 # 低优先级：唯一允许在队列压力下计数丢弃的冗余种类。
 # 其规范权威信息必须以 AUTHORITATIVE_STATE 高优先级另存，丢弃不损失可审计性。
+# 原始事件全量保留语义（audit-raw-retention）：不允许按体积抽样/丢弃；此处的
+# 低优先级只决定"队列压力下的最后一层背压"（见 jsonl_sink 淘汰顺序），
+# 任何一次丢弃都会进入 dropped_low_priority 计数并在汇总中可见。
 _LOW_PRIORITY_KINDS = frozenset({AuditKind.RAW_PROTOCOL_STATE})
 
 
@@ -111,6 +119,9 @@ _VALIDATOR_CONSUMED_FIELD_TYPES: Mapping[AuditKind, Mapping[str, type]] = {
     AuditKind.SUBMISSION_OUTCOME: {"outcome": str, "outcome_type": str},
     # 规则降级覆盖率统计消费该字段；存在时必须是数组。
     AuditKind.DECISION_PLANNED: {"degraded_reasons": list},
+    # 原始事件覆盖统计与完整性检查消费 source（来源词表见 raw_events）；
+    # 存在时必须是字符串，便于按来源分组统计与判定新/旧形态。
+    AuditKind.RAW_PROTOCOL_STATE: {"source": str},
 }
 
 _FIELD_TYPE_NAMES: Mapping[type, str] = {str: "字符串", list: "数组"}
@@ -140,14 +151,19 @@ def validate_payload(kind: AuditKind, payload: object) -> tuple[str, ...]:
 
 # 属于单场文件的种类；这些种类缺少 game_id 时回退到身份级 decisions.jsonl，
 # 记录不丢失，验证器仍可按信封内的 game_id 关联。
+# RAW_PROTOCOL_STATE 不在其中：原始事件走专属 raw/ 子目录（见 relative_path_for）。
 _GAME_SCOPED_KINDS = frozenset(
     {
         AuditKind.AUTHORITATIVE_STATE,
-        AuditKind.RAW_PROTOCOL_STATE,
         AuditKind.GAME_FINISHED,
         AuditKind.PROTOCOL_RECOVERED,
     }
 )
+
+# 原始事件文件目录名与无场次回退文件名（audit-raw-retention 设计）：
+# 原始事件体量大、增长快，与关键事实流分文件，便于 gzip 轮转与按需备份。
+_RAW_FILES_DIR = "raw"
+_RAW_GLOBAL_STEM = "global"
 
 _FILENAME_SAFE_RE = re.compile(r"[^A-Za-z0-9._-]")
 _MAX_COMPONENT_LENGTH = 120
@@ -177,6 +193,11 @@ def relative_path_for(kind: AuditKind, participant_id: str, game_id: str | None)
     - 场内事实 → ``participants/{pid}/games/{game_id}.jsonl``
     - 场内种类缺 ``game_id`` 时回退到 ``decisions.jsonl``，不丢弃记录
     - ``PARTICIPANT_FINISHED`` 属于身份级终局，写入 ``decisions.jsonl``
+    - ``RAW_PROTOCOL_STATE`` → ``participants/{pid}/raw/{game_id}.jsonl``；
+      缺 ``game_id`` 回退 ``participants/{pid}/raw/global.jsonl``。
+      为什么单独分文件：原始事件全量保留后体量最大（每场万级记录），
+      与关键事实流分离才能按场 gzip 轮转、按需清理而不动审计主干，
+      同时旧目录（原始事件散在 games/）仍被验证器整体扫描，向后兼容。
     """
 
     if kind is AuditKind.RUN_MANIFEST:
@@ -184,6 +205,9 @@ def relative_path_for(kind: AuditKind, participant_id: str, game_id: str | None)
     if kind is AuditKind.LIFECYCLE_CHANGED:
         return "lifecycle.jsonl"
     participant = sanitize_component(participant_id)
+    if kind is AuditKind.RAW_PROTOCOL_STATE:
+        component = sanitize_component(game_id) if game_id else _RAW_GLOBAL_STEM
+        return f"participants/{participant}/{_RAW_FILES_DIR}/{component}.jsonl"
     if kind in _GAME_SCOPED_KINDS and game_id:
         return f"participants/{participant}/games/{sanitize_component(game_id)}.jsonl"
     return f"participants/{participant}/decisions.jsonl"

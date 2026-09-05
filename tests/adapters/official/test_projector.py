@@ -142,7 +142,9 @@ def test_detect_window_response_bare_last_discard_falls_back_with_note() -> None
     assert detected is not None
     assert detected.window_key.trigger_seq == 185
     assert detected.trigger_projection_note is not None
-    assert detected.trigger_discard is None
+    # F1（2026-09-05 重复提交根治）：tier-4 退化时也回写出生快照事实
+    # （seq=出生快照 seq、牌码、弃牌者座位=turn），使后续派生经 tier-3 恒定键
+    assert detected.trigger_discard == (185, "2w", 1)
 
 
 def test_detect_window_remembered_trigger_used_for_bare_last_discard() -> None:
@@ -175,7 +177,9 @@ def test_detect_window_remembered_trigger_round_mismatch_rejected() -> None:
     assert detected is not None
     assert detected.window_key.trigger_seq == 185
     assert detected.trigger_projection_note is not None
-    assert detected.trigger_discard is None
+    # F1（2026-09-05 重复提交根治）：tier-4 退化时也回写出生快照事实
+    # （seq=出生快照 seq、牌码、弃牌者座位），使后续派生经 tier-3 恒定键
+    assert detected.trigger_discard == (185, "6w", 0)
 
 
 def test_detect_window_remembered_trigger_tile_mismatch_falls_back() -> None:
@@ -191,7 +195,9 @@ def test_detect_window_remembered_trigger_tile_mismatch_falls_back() -> None:
     assert detected is not None
     assert detected.window_key.trigger_seq == 185
     assert detected.trigger_projection_note is not None
-    assert detected.trigger_discard is None
+    # F1（2026-09-05 重复提交根治）：tier-4 退化时也回写出生快照事实
+    # （seq=出生快照 seq、牌码、弃牌者座位），使后续派生经 tier-3 恒定键
+    assert detected.trigger_discard == (185, "8w", 0)
 
 
 def test_detect_window_none_when_no_right_to_act() -> None:

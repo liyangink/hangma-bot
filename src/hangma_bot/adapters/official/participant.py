@@ -1,4 +1,4 @@
-"""官方赛事会话：TournamentSessionPort 的官方协议实现（v8 快照 + v9–v11 已审查变更）。
+"""官方赛事会话：TournamentSessionPort 的官方协议实现（v8 快照 + v9–v15 已审查变更）。
 
 一个实例对应一个 Token：内部恰好创建一个 OfficialTransport 与一个
 RequestScheduler，该 Token 的赛事与全部场次共享（接口协议 §6）。
@@ -61,6 +61,7 @@ from .errors import (
     sanitize,
 )
 from .game import OfficialGameSession
+from .notify import StreamBudget
 from .scheduler import Priority, RequestScheduler
 from .transport import OfficialTransport, TransportConfig
 
@@ -94,6 +95,8 @@ class OfficialTournamentSession:
         retry_backoff_base_sec: float = 0.3,
         scheduler: Optional[RequestScheduler] = None,
         retry_sleep: Optional[Callable[[float], Any]] = None,
+        sse_enabled: bool = False,  # SSE 帧驱动开关（透传给每场会话）
+        sse_budget: Optional[StreamBudget] = None,  # 每 Token 共享 SSE 预算
     ) -> None:
         self._transport = OfficialTransport(token, transport_config)
         self._scheduler = scheduler if scheduler is not None else RequestScheduler(clock=monotonic_clock)
@@ -105,6 +108,8 @@ class OfficialTournamentSession:
         self._poll_interval = tournament_poll_interval_sec
         self._max_retries = max_retries
         self._backoff_base = retry_backoff_base_sec
+        self._sse_enabled = sse_enabled
+        self._sse_budget = sse_budget
         self._retry_sleep = retry_sleep if retry_sleep is not None else asyncio.sleep
         self._registration: Optional[_Registration] = None
         self._last_snapshot: Optional[TournamentSnapshot] = None
@@ -275,6 +280,7 @@ class OfficialTournamentSession:
             {
                 "guide_version": guide.version,
                 "guide_updated_at": guide.updated_at,
+                "online_confirm": rules_parsed.online_confirm,  # v13 分桌语义判别（存量赛=false）
                 "guide_changes": [
                     {
                         "version": change.get("version"),
@@ -453,6 +459,8 @@ class OfficialTournamentSession:
             wall_clock_unix_ms=self._wall_ms,
             audit=self._audit,
             audit_context=self._audit_context,
+            sse_enabled=self._sse_enabled,
+            sse_budget=self._sse_budget,
         )
         self._games[game_id] = session
         return session

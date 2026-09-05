@@ -3,7 +3,7 @@
 优先级（official-adapter 实施说明）：
   动作 POST(0) > 409/缺口/模糊确认(1) > 场次长轮询(2) > 排名刷新(3)。
 
-限速依据官方约束（指南 v11，2026-09-04 变更记录）：state 轮询频率上限
+限速依据官方约束（指南 v15，2026-09-05 变更记录）：state 轮询频率上限
 16 次/秒/用户（每用户聚合，v2/v8 的 5/s→8/s 进一步放宽至 16/s）、
 同一用户并发挂起轮询最多 32 个。默认令牌桶 16 令牌、每秒回填 16、并发上限 32。
 
@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import asyncio
 import heapq
+import math
 import random
 from dataclasses import dataclass, field
 from enum import IntEnum
@@ -196,7 +197,12 @@ class RequestScheduler:
         Retry-After 不得缩短先前服务端明确要求的更长等待。
         """
 
-        base = retry_after_seconds if retry_after_seconds and retry_after_seconds > 0 else 0.5
+        # 防御（W2-1）：非有限值（inf/nan）会把冷却终点推成永不结束、
+        # 冻结整个 Token 的全部请求；任何来源的畸形值都按默认冷却处理。
+        # 传输层已在解析处拦截（isfinite + 非负），此处是第二道防线。
+        if retry_after_seconds is None or not math.isfinite(retry_after_seconds):
+            retry_after_seconds = 0.5
+        base = retry_after_seconds if retry_after_seconds > 0 else 0.5
         jitter = self._rng.uniform(0.0, 0.25)
         candidate = self._clock() + base + jitter
         if self._cooldown_until is None or candidate > self._cooldown_until:

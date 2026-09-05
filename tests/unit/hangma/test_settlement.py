@@ -231,6 +231,29 @@ class TestBaotouGuard:
         assert result.fan == 8
 
 
+class TestGlobalMaxFan:
+    """全局最大番型 ×512：三豪华七对 + 三财飘 + 4 白板 + 爆头。
+
+    指南 v3 修订（2026-09-02）：七对允许财飘，与飘/杠链叠加；2026-09-05 经
+    官方 fan-calc 实测确认（hand=3 组四张+1 白，draw=东，chain 3/3，baotou）：
+    fan=512、detail=["豪华七对×3", "三财飘", "4个白板", "爆头"]。
+    """
+
+    def test_max_fan_512(self):
+        win = WinSplit("七对", 3, 1, True, ())
+        result = compute_fan(win, 3, 3, True)
+        assert list(result.details) == ["豪华七对×3", "三财飘", "4个白板", "爆头"]
+        assert result.fan == 512
+        assert settle_scores(512, 1, 0, 0) == (12288, -4096, -4096, -4096)
+
+    def test_max_fan_non_dealer(self):
+        win = WinSplit("七对", 3, 1, True, ())
+        result = compute_fan(win, 3, 3, True)
+        assert result.fan == 512
+        # 闲家胡：庄家付 4096，另外两个闲家各付 512，胜者共得 5120（官方 fan-calc 实测）
+        assert settle_scores(512, 1, 2, 0) == (-4096, -512, 5120, -512)
+
+
 class TestSettleScores:
     """四家结算：庄家倍率恒 ×8、闲家 ×1、总分守恒、流局零支付（§4）。"""
 

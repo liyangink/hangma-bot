@@ -21,6 +21,8 @@ from _official_testkit import FIXTURE_DIR, load_fixture
 
 REFERENCE_GUIDE_V8 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v8.json"
 REFERENCE_GUIDE_V11 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v11.json"
+REFERENCE_GUIDE_V14 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v14.json"
+REFERENCE_GUIDE_V15 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v15.json"
 
 
 def test_reference_guide_v8_snapshot_parses() -> None:
@@ -38,9 +40,37 @@ def test_reference_guide_v11_snapshot_parses() -> None:
 
     doc = json.loads(REFERENCE_GUIDE_V11.read_text(encoding="utf-8"))
     parsed = parse_guide_version(doc)
-    assert parsed.version == KNOWN_GUIDE_VERSION == 11
+    assert parsed.version == 11
     assert parsed.updated_at
     assert parsed.has_unknown_breaking_change is False
+
+
+def test_reference_guide_v14_snapshot_parses() -> None:
+    """已审查基线 v14 真实快照（2026-09-05 抓取）完整解析且无未知 breaking。"""
+
+    doc = json.loads(REFERENCE_GUIDE_V14.read_text(encoding="utf-8"))
+    parsed = parse_guide_version(doc)
+    assert parsed.version == 14
+    assert parsed.updated_at
+    assert parsed.has_unknown_breaking_change is False
+    assert len(parsed.changes) >= 27  # v1—v14 全量变更
+
+
+def test_reference_guide_v15_snapshot_parses() -> None:
+    """已审查基线 v15 真实快照（2026-09-05 抓取）完整解析且无未知 breaking：
+
+    v15 自动匹配默认房配置上调（M=1/Rounds=2 → M=10/Rounds=8）为 breaking 条目，
+    但版本 ≤ KNOWN_GUIDE_VERSION 且 breaking 面仅限 POST /api/match 显式低上限
+    调用方——本 bot 不调用 /api/match、不支持全局 Token，正式赛事与测试房间
+    路径不受影响，因此不得触发未知 breaking 判定。
+    """
+
+    doc = json.loads(REFERENCE_GUIDE_V15.read_text(encoding="utf-8"))
+    parsed = parse_guide_version(doc)
+    assert parsed.version == KNOWN_GUIDE_VERSION == 15
+    assert parsed.updated_at
+    assert parsed.has_unknown_breaking_change is False
+    assert len(parsed.changes) >= 38  # v1—v15 全量变更（含回溯扩充的自动匹配条目）
 
 
 def test_guide_v10_v11_non_breaking_changes_accepted() -> None:
@@ -61,7 +91,7 @@ def test_future_breaking_guide_is_flagged() -> None:
     """高于已知版本的 breaking 变更必须被标记，供初始化拒绝。"""
 
     parsed = parse_guide_version(load_fixture("guide_breaking_future.json"))
-    assert parsed.version == 12
+    assert parsed.version == 16
     assert parsed.has_unknown_breaking_change is True
 
 
@@ -80,6 +110,21 @@ def test_rules_fixture_parses() -> None:
     assert rules.you_cai_bi_kao is False
     assert rules.discard_timeout_sec == 3.0
     assert rules.description and rules.description.startswith("本场赛程说明")
+    assert rules.online_confirm is False  # 缺键 = 存量赛（v13 判别）
+
+
+def test_rules_online_confirm_parses() -> None:
+    """指南 v13：config.OnlineConfirm=true 表示新建赛事「确认 ∧ 在线」分桌；
+    缺键/False 为存量赛旧分桌；非布尔按协议错误拒绝。"""
+
+    doc = load_fixture("rules.json")
+    doc["config"]["OnlineConfirm"] = True
+    assert parse_rules_config(doc).online_confirm is True
+    doc["config"]["OnlineConfirm"] = False
+    assert parse_rules_config(doc).online_confirm is False
+    doc["config"]["OnlineConfirm"] = "yes"
+    with pytest.raises(DtoError):
+        parse_rules_config(doc)
 
 
 def test_tournament_detail_fixtures_parse() -> None:

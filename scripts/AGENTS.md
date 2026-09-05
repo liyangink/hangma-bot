@@ -4,7 +4,8 @@
 
 - `run_participant.py`：一个 Token、一个 `ParticipantRuntime`，用于测试赛事或正式赛事。
 - `run_test_room.py`：恰好接收四个测试 Token，启动四个隔离子进程；每个子进程继续使用同一个正式运行入口。
-- 启动脚本只解析配置、核对模式并调用 `bootstrap.py`，不得实现规则、HTTP DTO、策略或生命周期。
+- `sync_official_guide.py`：文档同步工具（v14 起官方指南端点免认证）。拉取 `guide/version` 变更日志与 `guide?format=text` 全文到 `doc/references/`，并与 `dto.py` 的 `KNOWN_GUIDE_VERSION` 对比输出基线之后的新变更（breaking 醒目提示）；不携带 Token、不进线上动作闭环。
+- 启动脚本只解析配置、核对模式并调用 `bootstrap.py`，不得实现规则、HTTP DTO、策略或生命周期；同步脚本只做抓取、落盘与版本对比，不得修改 `dto.py` 或文档正文（人工审查后才可更新基线）。
 
 ## 第一阶段约束
 

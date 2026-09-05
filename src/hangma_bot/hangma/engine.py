@@ -66,6 +66,18 @@ class HangmaRules:
 
         emergency = self._safe_emergency(observation, issues)
         context = self._safe_context(observation, issues)
+        if _concealed_missing_drawn_instance(observation):
+            # P2-N1：官方「含摸牌」形态长度命中但 my_hand 缺 drawn 同码实例——
+            # 归一化静默跳过会把判定留在幻影双计口径。显式记 RuleIssue
+            # （DEGRADED 可审计），宁让消费方降级处理也不无标记通过。
+            issues.append(
+                RuleIssue(
+                    _AREA_CONTEXT,
+                    "手牌形态异常：my_hand 长度符合官方含摸牌形态（14−3×副露数）"
+                    "但未找到与 drawn_tile 同码实例，防双计归一化未生效，"
+                    "胡候选按未归一化口径判定（_concealed_missing_drawn_instance）",
+                )
+            )
 
         candidates: Tuple[RuleCandidate, ...] = ()
         if context is not None:
@@ -335,6 +347,8 @@ def _build_context(observation: PlayerObservation) -> WindowContext:
 
     副露种类按 kernel 约定（`PublicMeld.kind` 为 chi/peng/gang 前缀
     字符串，适配器负责映射）统计：吃次数用于两摊上限，碰牌值用于补杠。
+    hand_tiles 先经 _concealed_without_drawn 归一化（防御官方快照
+    「my_hand 含摸牌」形态的重复计数，见该函数 docstring）。
     """
 
     seat = observation.seat
@@ -348,7 +362,7 @@ def _build_context(observation: PlayerObservation) -> WindowContext:
         phase=observation.phase,
         turn_seat=observation.turn_seat,
         responding_seats=tuple(observation.responding_seats),
-        hand_tiles=tuple(observation.my_hand),
+        hand_tiles=_concealed_without_drawn(observation),
         drawn_tile=observation.drawn_tile,
         my_chi_count=chi_count,
         my_peng_codes=peng_codes,
@@ -382,11 +396,66 @@ def _is_own_draw(context: WindowContext) -> bool:
 
 
 def _full_hand(observation: PlayerObservation) -> Tuple[Tile, ...]:
-    """暗牌全集 = 手牌 + 刚摸牌；保留官方顺序，摸牌置尾。"""
+    """暗牌全集 = 手牌 + 刚摸牌；保留官方顺序，摸牌置尾。
 
+    手牌先经 _concealed_without_drawn 归一化：官方快照实测形态
+    「my_hand 含摸牌」与契约形态「my_hand 不含摸牌」并存时，
+    避免摸牌被重复计数（重复计数会把胡牌判定放宽出 409 误报）。
+    """
+
+    hand = _concealed_without_drawn(observation)
     if observation.drawn_tile is None:
-        return tuple(observation.my_hand)
-    return tuple(observation.my_hand) + (observation.drawn_tile,)
+        return hand
+    return hand + (observation.drawn_tile,)
+
+
+def _concealed_without_drawn(observation: PlayerObservation) -> Tuple[Tile, ...]:
+    """把 my_hand 归一化为「不含单列摸牌」的暗牌元组（防御性兼容两种官方形态）。
+
+    官方依据与为什么（2026-09-04 实测，tests/fixtures/official/captures/
+    state-draw-phase-t_714a42392cba.json）：官方快照在摸牌窗口把刚摸的牌
+    同时放进 my_hand 末尾（该形态下 my_hand 长度 = 14 - 3×副露数）并
+    单列 drawn_tile；而契约形态（interface-contracts §10.1）要求 my_hand
+    不含摸牌（长度 = 13 - 3×副露数）。引擎若不归一化，`my_hand + drawn_tile`
+    会把摸牌双计为 15 - 3×副露数 张暗牌——胡牌判定的「多余牌视为可弃」
+    语义会把摸牌幻影副本当作可用的对/刻/顺，产生官方不认可的胡候选
+    （2026-09-04 测试赛 97 次 409 INVALID_ACTION 的根因之一，差分复现见
+    tests/unit/hangma/test_hu_differential_replay.py）。
+
+    判定规则：drawn_tile 存在且 my_hand 长度恰为 14 - 3×副露数（即官方
+    「含摸牌」形态）时，从 my_hand 移除一个与摸牌同码的实例（物理张数
+    不因移除位置而变）；长度不符或未找到同码实例时原样返回（契约形态
+    或防御性兜底）。该归一化只影响计数，不改变牌面信息权限。
+    """
+
+    hand = tuple(observation.my_hand)
+    drawn = observation.drawn_tile
+    if drawn is None:
+        return hand
+    expected_concealed = 14 - 3 * len(observation.melds[observation.seat])
+    if len(hand) != expected_concealed:
+        return hand  # 契约形态（不含摸牌）或观察不完整：不做改动
+    for index in range(len(hand) - 1, -1, -1):
+        if hand[index].code == drawn.code:
+            return hand[:index] + hand[index + 1 :]
+    return hand  # 防御：长度吻合但无同码实例，原样返回（异常由
+    # _concealed_missing_drawn_instance 检出并在 analyze 层记 RuleIssue）
+
+
+def _concealed_missing_drawn_instance(observation: PlayerObservation) -> bool:
+    """长度命中官方「含摸牌」形态（14−3×副露数）但 my_hand 中没有与
+    drawn_tile 同码的实例（P2-N1）：官方形态假设被破坏、归一化静默跳过会
+    回到 15−3×副露数的幻影双计口径。analyze 层据此记 RuleIssue（DEGRADED），
+    不让异常形态无标记通过。
+    """
+
+    drawn = observation.drawn_tile
+    if drawn is None:
+        return False
+    expected = 14 - 3 * len(observation.melds[observation.seat])
+    if len(observation.my_hand) != expected:
+        return False
+    return not any(tile.code == drawn.code for tile in observation.my_hand)
 
 
 def _ensure_emergency_membership(

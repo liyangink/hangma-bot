@@ -2,9 +2,12 @@
 
 > 状态：接口基线 v1.1（2026-09-04 集成阶段契约收口）；实行受控变更  
 > 日期：2026-09-04  
-> 官方依据：指南/API v8 快照（doc/official-platform-api-v2.md）+ 指南版本 v11 变更记录
->（`/portal/api/guide/version` 只读检查日期 2026-09-04；v10 跨局 `gap=true` 快照、
-> v11 state 轮询 16/s 每用户聚合。适配器代码与 fixture 同步由 runtime_protocol 工作包负责）  
+> 官方依据：指南/API v8 快照（doc/official-platform-api-v2.md）+ 指南版本 v15 变更记录
+>（`/portal/api/guide/version` 只读检查日期 2026-09-05；v10 跨局 `gap=true` 快照、
+> v11 state 轮询 16/s 每用户聚合、v12 SSE 客户端已交付（notify.py，未接入运行链路、
+> 运行行为零变化，见 doc/implementation/notes/sse-notify-client.md）、v13 在线分桌已审查放行、
+> v14 guide 全文端点、v15 自动匹配默认房配置上调已审查（本项目不调用 /api/match，零影响）。
+> 适配器代码与 fixture 同步由 runtime_protocol 工作包负责）  
 > 代码定义：`src/hangma_bot/**/interface.py` 与 `application/contracts.py`
 
 ## 1. 设计决策
@@ -175,6 +178,8 @@ runs/{run_id}/
 
 `RAW_PROTOCOL_STATE` 为唯一低优先级种类（可计数丢弃），不进入本表——其规范权威信息必须以 `AUTHORITATIVE_STATE` 高优先级另存。双层终局分数一致性检查由 recording 汇总/验证器负责（应用层 `GAME_FINISHED` 与适配器快照终局对照）。
 
+**原始事件全量保留（2026-09-05 集成，E1/E2/E3 接线）**：adapter 层全部 `/state` 响应（含全量快照原文、坏报文）与动作提交响应（含 409/429 拒绝体，经 `errors.raw_text` 携带已脱敏原文；POST 结果不确定时省略 `http_status`、`raw` 为空串表示"原文不存在"）以 `source ∈ {state_response, action_submit_response}` 落 `RAW_PROTOCOL_STATE`，路由到独立 `participants/{pid}/raw/{game}.jsonl`（可选 gzip 分段，只分段不抽样）。`sse_frame` 为 SSE 接入预留词表（未接线不产生记录不算缺失）。验证器新增对账检查：`raw_state_gap`（request_no 连续性）、`raw_state_stream_empty`、`raw_action_missing`（每个实际发出的 POST 必须有响应原文记录；`SubmitNotSent` 与取消例外）。**决策观察快照**（同日）：`DECISION_PLANNED` 增加可选 `observation_snapshot`（`my_hand` 保留官方原始顺序、`drawn_tile` 单列、`phase`/`responding`/目标弃牌 seat+tile+seq、规则状态、本人副露与候选完整列表）——只含 `PlayerObservation` 口径可见信息。所有新增字段可选，旧 run 目录以 `retention_mode=legacy` 向后兼容。
+
 验证器裁定补充（2026-09-04 集成阶段登记）：
 
 - **stage_attempt 混用判定**：同一 `game_id` 出现两个及以上**不同非空** `stage_attempt_id` 才算违规；「缺失与非空共存」是应用层/适配器双层记录的合法形态（官方适配器按契约不生产该标识，按旧口径真实运行必误报）。
@@ -234,6 +239,6 @@ runs/{run_id}/
 - `WindowKey.phase` 继续使用**封闭的 `WindowPhase` 枚举**（draw/response_peng/response_chi）；裸字符串在构造期拒绝。
 - **不把官方任意 `data` 字典加入 `PublicEvent`**；原始数据留在协议审计（`RAW_PROTOCOL_STATE`/`PROTOCOL_RECOVERED`）。规则确实需要新事实时，先增加明确的规范字段并走契约变更。
 - `round_no` 不得假设每次运行都从 1 开始，只作为官方关联标识使用（非负整数校验不变）。
-- 内部统一语义：`PlayerObservation.my_hand` **不包含**单列的 `drawn_tile`；官方 DTO 若存在不同形态（如手牌含摸牌），由适配器统一规范化。
+- 内部统一语义（2026-09-05 修订，F-11）：官方快照实测形态（`my_hand` 含刚摸牌）与契约形态（不含）并存，适配器投影保留官方原样（紧急"最右一张"依赖官方顺序）；双计归一化由 hangma 引擎（`engine._concealed_without_drawn`，长度判据 14−3×副露数）与 policy 评分上下文（`evaluation._hand_codes_without_double_count`）按同口径防御性执行；适配器侧统一规范化列为后续工作线（rules-hu-gate-and-win-detection.md §6.1）。
 - **吃牌组合规范牌序**：`Chi.tiles` 必须严格按 `CANONICAL_TILE_ORDER` 升序，构造边界拒绝非规范顺序；相同吃牌组合必须产生相同 `action_key`，不得在 `action_key()` 中静默制造另一套排序规则。
 - **规范牌序唯一权威**：`kernel.actions.CANONICAL_TILE_ORDER`（含 `CANONICAL_TILE_INDEX`）是全仓唯一定义；`hangma` 等业务模块只允许引用，不得维护平行常量。

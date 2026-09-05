@@ -392,12 +392,22 @@ def gang_candidates(context: WindowContext) -> FamilyOutcome:
 def hu_candidates(
     context: WindowContext, hand: Optional[HandSummary] = None
 ) -> FamilyOutcome:
-    """胡族：本人摸牌窗口且完整手牌成胡时的自摸胡候选（§2/§6）。
+    """胡族：本人摸牌窗口、刚摸牌存在且完整手牌成胡时的自摸胡候选（§2/§6）。
 
     【官方】§2/§6：只能自摸、不允许点炮、禁止抢杠胡——响应窗口永不
-    产生胡候选；"碰/吃/杠后、下次摸牌前提交 hu 会 409"由阶段判定天然
-    排除；抓打圈内仍可自摸胡。胡牌形判定复用手牌数学
+    产生胡候选；抓打圈内仍可自摸胡。胡牌形判定复用手牌数学
     （`HandSummary.is_win`，摸牌含在内），本模块不复制分解算法。
+
+    【官方】「刚摸牌」门禁（指南变更日志 v1，2026-09-02「碰后禁止胡牌」；
+    API 记录 §2.4「碰、吃、杠后，在下一次摸牌之前提交 hu 会返回 409」）：
+    - 碰/吃/杠之后、下次摸牌之前，官方拒绝提交 hu（409 INVALID_ACTION）。
+      该窗口在快照上仍是 draw ∧ turn=me（出牌窗口），但 drawn_tile 为空——
+      阶段判定无法区分，必须显式建模：drawn_tile is None 时本族不产生
+      胡候选（规则性关闭而非降级，不记 Issue）。
+    - 杠后补牌（杠上摸）属于「已摸牌」：杠的补牌以 tile_drawn 事件与
+      非空 drawn_tile 呈现（杠开场景），门禁应正确放行。
+    - 庄家首局「发牌直抽」的第 14 张同样以 drawn_tile 呈现
+      （2026-09-04 实测，b6_t40 r1 首窗口审计），不受本门禁影响。
 
     YouCaiBiKao（§7）不在本族判断：需要 RuleConfig、爆头状态与杠上
     摸牌推断，由 special_rules/engine 在候选产出后过滤。hand 缺失
@@ -405,6 +415,14 @@ def hu_candidates(
     """
 
     if not _own_draw(context):
+        return _EMPTY
+    if context.drawn_tile is None:
+        # 「刚摸牌」门禁（指南变更日志 v1）：碰/吃/杠后、摸牌前提交
+        # hu 官方返回 409 INVALID_ACTION；drawn_tile 为空即本窗口
+        # 未发生摸牌，胡候选按规则性关闭（详见函数 docstring）。
+        # 注意：门禁早退先于下方 hand is None 的降级簿记（有意为之——
+        # 本窗口本就无胡候选，无需 hu 族降级噪声；手牌分析异常另有
+        # engine.hand_analysis Issue 覆盖）。勿调整两分支顺序。
         return _EMPTY
     if hand is None:
         return FamilyOutcome(

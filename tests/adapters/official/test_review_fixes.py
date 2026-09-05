@@ -798,7 +798,7 @@ def test_uppercase_secret_code_not_leaked():
 
 
 async def test_stage_boundary_breaking_guide_blocks_ready(clock):
-    """expert：阶段边界发现 breaking v9 → 拒绝发送 ready。"""
+    """expert：阶段边界发现 breaking v16（> 已审查 v15）→ 拒绝发送 ready。"""
 
     import json as _json
     from pathlib import Path

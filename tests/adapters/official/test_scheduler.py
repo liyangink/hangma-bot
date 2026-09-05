@@ -85,6 +85,23 @@ async def test_rate_limit_cooldown_blocks_new_grants() -> None:
     assert scheduler.cooldown_remaining == 0
 
 
+async def test_non_finite_retry_after_never_freezes_token() -> None:
+    """W2-1 回归：畸形 Retry-After（inf/nan/负值）不得把冷却推成永久挂起。"""
+
+    clock = FakeClock()
+    scheduler = _scheduler(clock)
+    for bad in (float("inf"), float("nan"), -3.0):
+        scheduler.note_rate_limited(bad)
+        remaining = scheduler.cooldown_remaining
+        assert 0.0 < remaining <= 1.0  # 默认冷却 0.5s + 抖动，绝不为 inf
+    # 冷却结束后许可照常授予（Token 未被冻结）
+    task = asyncio.create_task(scheduler.acquire(Priority.POLL))
+    await asyncio.sleep(0.05)  # instant_sleep 按冷却时长推进假时钟
+    lease = await asyncio.wait_for(task, timeout=2)
+    lease.release()
+    assert scheduler.cooldown_remaining == 0
+
+
 async def test_concurrent_slot_limit() -> None:
     clock = FakeClock()
     scheduler = _scheduler(clock, rate_per_second=100, burst=100, max_concurrent=2)

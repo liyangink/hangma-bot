@@ -1,6 +1,7 @@
 """每 Token 一个的官方 HTTP 传输（官方适配器内部实现）。
 
-职责：Bearer 认证注入、连接池生命周期、单次请求执行与错误分类。
+职责：Bearer 认证注入、连接池生命周期、单次请求执行与错误分类，
+以及 SSE 通知流的流式请求（GET /api/games/{id}/notify，指南 v12+）。
 不做重试（重试属于调用方与调度器的预算决策），不记录 Token——
 Token 只存在于实例属性与请求头，异常与结果对象均不携带。
 
@@ -11,8 +12,18 @@ TLS：仅当 base_url 主机命中配置的固定内网主机白名单时关闭�
 from __future__ import annotations
 
 import asyncio
+import math
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import Any, FrozenSet, Mapping, Optional, Tuple
+from typing import (
+    Any,
+    AsyncContextManager,
+    AsyncIterator,
+    FrozenSet,
+    Mapping,
+    Optional,
+    Tuple,
+)
 from urllib.parse import urlparse
 
 import httpx
@@ -41,6 +52,10 @@ class TransportConfig:
     connect_timeout_sec: float = 3.0
     read_timeout_sec: float = 10.0
     long_poll_read_timeout_sec: float = 35.0  # 30 秒长轮询挂起 + 余量（API 文档 §5.1）
+    # SSE 静默读超时：官方通知流每 30s 一行 ": keepalive" 维持连接
+    # （指南 v12 变更记录/v14 端点表），75s = 2 个 keepalive 周期 + 余量。
+    # 仅用于 open_sse_stream；普通请求不受影响。
+    sse_read_timeout_sec: float = 75.0
     write_timeout_sec: float = 5.0
     pool_timeout_sec: float = 5.0
     max_connections: int = 40  # 覆盖 1 赛事 + M 场并发（上限 16 场 × 轮询 + 动作）
@@ -162,30 +177,128 @@ class OfficialTransport:
             text = text.replace(self._token, "***")
         if 200 <= status < 300:
             return TransportResult(status=status, text=text)
+        self._classify_error(status, response.headers, text)
+        # 防御不可达：_classify_error 对全部非 2xx 状态必抛
+        raise AssertionError("unreachable: 非 2xx 未被分类")
+
+    def _classify_error(
+        self,
+        status: int,
+        headers: "httpx.Headers",
+        text: str,
+    ) -> None:
+        """把非 2xx 响应分类为 OfficialError 子类抛出；text 须已完成 Token 替换。
+
+        request() 与 open_sse_stream() 共用同一张分类表（接口协议 §8）：
+        401→AuthError；400/403/404/409→对应分类；429→RateLimitedError
+        （Retry-After 头只取数值、不进文本）；5xx→RecoverableServerError；
+        其余→OfficialError。detail 一律经 sanitize 脱敏。
+        """
+
         code = extract_error_code(status, text)
         detail = sanitize(text or "")
+        # raw_text 携带已脱敏原文（E2）：文本进入异常对象前已完成 Token
+        # 替换（见 request()/open_sse_stream() 的精确替换点），审计层据此
+        # 全量保留 409/429 等拒绝体；UncertainTransportError 无响应体不携带。
         if status == 401:
-            raise AuthError(status, code, detail)
+            raise AuthError(status, code, detail, raw_text=text)
         if status == 400:
-            raise BadRequestError(status, code, detail)
+            raise BadRequestError(status, code, detail, raw_text=text)
         if status == 403:
-            raise ForbiddenError(status, code, detail)
+            raise ForbiddenError(status, code, detail, raw_text=text)
         if status == 404:
-            raise NotFoundError(status, code, detail)
+            raise NotFoundError(status, code, detail, raw_text=text)
         if status == 409:
-            raise ConflictError(status, code, detail)
+            raise ConflictError(status, code, detail, raw_text=text)
         if status == 429:
+            # Retry-After 只取有限非负秒数（W2-1 修复）：inf（"1e999"）/
+            # nan/负值等畸形头会把调度器冷却推成永久挂起、冻结整个 Token；
+            # 非有限或负值按"未提供"处理（None），由调用方指数退避兜底。
             retry_after: Optional[float] = None
-            header_value = response.headers.get("Retry-After")
+            header_value = headers.get("Retry-After")
             if header_value:
                 try:
-                    retry_after = float(header_value)
+                    parsed = float(header_value)
                 except ValueError:
-                    retry_after = None
-            raise RateLimitedError(status, code, detail, retry_after)
+                    parsed = None
+                if parsed is not None and math.isfinite(parsed) and parsed >= 0:
+                    retry_after = parsed
+            raise RateLimitedError(status, code, detail, retry_after, raw_text=text)
         if 500 <= status < 600:
-            raise RecoverableServerError(status, code, detail)
-        raise OfficialError(status, code, detail)
+            raise RecoverableServerError(status, code, detail, raw_text=text)
+        raise OfficialError(status, code, detail, raw_text=text)
+
+    @asynccontextmanager
+    async def open_sse_stream(
+        self,
+        path: str,
+        *,
+        params: Optional[Mapping[str, Any]] = None,
+        with_auth: bool = True,
+    ) -> "AsyncContextManager[AsyncIterator[str]]":
+        """发起 GET 流式请求并逐行产出响应体（SSE 通知流专用，指南 v12+）。
+
+        进入上下文即完成状态码分类（与 request() 同一分类表）；迭代期间
+        的读超时/断连抛 UncertainTransportError，调用方按可恢复分类有界
+        重连。读超时使用 TransportConfig.sse_read_timeout_sec（官方 SSE
+        每 30s 一行 ": keepalive"，75s = 2 周期 + 余量），连接/写/池超时
+        复用普通配置。产出的行是服务器原文：调用方不得把原始行写入
+        日志/审计——通知帧解析层（notify.py）只提取 seq，其余一律丢弃。
+        """
+
+        headers = {"Accept": "text/event-stream"}
+        if with_auth:
+            headers["Authorization"] = "Bearer {}".format(self._token)
+        timeout = httpx.Timeout(
+            connect=self._config.connect_timeout_sec,
+            read=self._config.sse_read_timeout_sec,
+            write=self._config.write_timeout_sec,
+            pool=self._config.pool_timeout_sec,
+        )
+        request = self._client.build_request(
+            "GET", path, params=params, headers=headers
+        )
+        # httpx 0.28 的 AsyncClient.send 不接受 timeout 参数：按请求
+        # extensions 传递。extensions["timeout"] 必须是 dict（httpcore 用
+        # .get("pool") 读取）——直接放 httpx.Timeout 对象会 AttributeError
+        # （2026-09-05 活场实测：SSE 流首连即 client_error:AttributeError，
+        # 集成层降级兜住；回归见 test_sse_runtime.py）
+        request.extensions = {**request.extensions, "timeout": timeout.as_dict()}
+        try:
+            response = await self._client.send(request, stream=True)
+        except asyncio.TimeoutError:
+            raise UncertainTransportError("timeout:request_budget") from None
+        except httpx.TimeoutException as exc:
+            raise UncertainTransportError("timeout:{}".format(type(exc).__name__)) from None
+        except httpx.TransportError as exc:
+            raise UncertainTransportError("transport:{}".format(type(exc).__name__)) from None
+        if not 200 <= response.status_code < 300:
+            # 错误路径先收完响应体（官方错误体很小），做与 request() 相同的
+            # Token 精确替换后分类；响应体读取超时兜底为空 detail，不改变分类。
+            try:
+                async with asyncio.timeout(self._config.read_timeout_sec):
+                    error_text = (await response.aread()).decode("utf-8", "replace")
+            except (asyncio.TimeoutError, httpx.TransportError, UnicodeError):
+                error_text = ""
+            finally:
+                # F-04：取消也可能落在错误体读取上——aclose 必须兜底，
+                # 否则连接悬挂不回池（与成功路径 294-295 的 finally 同构）
+                await response.aclose()
+            if self._token:
+                error_text = error_text.replace(self._token, "***")
+            self._classify_error(response.status_code, response.headers, error_text)
+            # 防御不可达：_classify_error 对全部非 2xx 状态必抛
+            raise AssertionError("unreachable: 非 2xx 未被分类")
+        try:
+            yield response.aiter_lines()
+        except asyncio.TimeoutError:
+            raise UncertainTransportError("timeout:request_budget") from None
+        except httpx.TimeoutException as exc:
+            raise UncertainTransportError("timeout:{}".format(type(exc).__name__)) from None
+        except httpx.TransportError as exc:
+            raise UncertainTransportError("transport:{}".format(type(exc).__name__)) from None
+        finally:
+            await response.aclose()
 
     async def aclose(self) -> None:
         """释放当前 Token 的连接池；关闭后实例不可复用。"""
