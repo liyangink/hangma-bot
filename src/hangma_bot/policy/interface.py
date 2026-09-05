@@ -64,8 +64,8 @@ class RankedCandidate:
 
     action: Action
     action_key: str
-    rank: int  # 从 1 开始；同分按 ``action_key`` 确定性排序
-    total_score: float
+    rank: int  # 从 1 开始的执行顺序；策略层内同分按 action_key，全部未知可优先紧急候选
+    total_score: float  # 数值评分分项之和；跨优先层不能用此字段重新排序
     score_parts: Tuple[ScorePart, ...]
     reasons: Tuple[str, ...]
     is_emergency: bool = False

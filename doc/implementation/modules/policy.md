@@ -4,7 +4,11 @@
 
 实现确定性的 `WeightedHeuristicPolicy` 与只保留紧急动作的 `SafeFallbackPolicy`。输出完整 `DecisionPlan`，不执行提交。
 
-## 第一阶段排序（2026-09-04 集成阶段更新：牌效事实由规则模块生产）
+MVP 后续按[三个候选版本计划](../policy-iteration-plan.md)实施。当前保留 `weighted_heuristic` 为 V0；新增可选 `weighted_heuristic_v1`，分别使用独立的评分和权重源码，不影响并行调用方。V1 排序以 [接口协议 §4.2](../interface-contracts.md#42-v1-策略排序语义2026-09-05)为准：合法胡、可信候选、未知候选；全部未知时紧急候选优先。`rank` 是执行顺序，跨层不能按总分重排。
+
+V1 的固定参数、未知降级、数值失败和真实时限测试见[实施验收记录](../reviews/policy-v1-implementation-2026-09-05.md)。V2 的 Pass 规则事实尚未修改，当前不声称比赛强度提高。
+
+## 第一阶段排序设计记录（不是 V1 执行规范）
 
 向听与有效牌数学只存在于 `hangma`（接口协议 §4.1 候选牌效事实）。`policy` 消费 `RuleCandidate.facts`（`CandidateFacts`）并加权，不重新推演手牌合法性、向听或有效牌。分层规则：
 
@@ -31,4 +35,3 @@
 - 每个候选有总分、分项和中文可读原因。
 - 所有规则候选均出现在排序或有明确过滤原因；紧急候选不被普通 Top-K 删除。
 - 1 秒窗口基准和异常回退契约测试通过。
-

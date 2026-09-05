@@ -66,6 +66,8 @@ flowchart LR
 
 `await BotPolicy.choose(DecisionRequest, DecisionBudget) -> DecisionPlan` 保持不变。策略永远只排序规则候选。线上由 application、离线由评估器组装请求；两个调用方都先准备紧急动作，再运行增强。
 
+2026-09-05 增量：可选 `weighted_heuristic_v1` 已实现可靠分层排序，旧 `weighted_heuristic` 保留。消费方按计划 rank 执行/展示，不能自行按 total_score 重排；数值总分仍等于评分分项之和。详见[接口协议 §4.2](./interface-contracts.md#42-v1-策略排序语义2026-09-05)。这是策略选择语义登记，函数签名、JSON 格式及规则事实不变。
+
 离线行为实验使用注入时钟和确定的预算平移，不把不同机器的单调时钟直接相减；硬件耗时基准另跑实时时钟。每项实验标注 `clock_mode=logical/real`。逻辑时钟实验不能证明 1 秒窗口性能。
 
 候选牌效事实类型保持不变。后续要让 Pass 也携带 `HAND_PROGRESS` 等行为变化，需单独登记规则语义版本及回归案例，不能由 policy 自己补一套向听计算。

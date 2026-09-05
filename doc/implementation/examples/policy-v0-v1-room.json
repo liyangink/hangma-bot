@@ -1,0 +1,15 @@
+{
+  "mode": "test_room",
+  "base_url": "https://platform.invalid",
+  "expected_tournament_id": "REPLACE_WITH_TEST_ROOM_ID",
+  "known_guide_version": 15,
+  "audit_root": "./runs/policy-v0-v1",
+  "strategy": "weighted_heuristic",
+  "sse_enabled": true,
+  "identities": [
+    {"slot": "A", "token_env": "HM_ROOM_A", "strategy": "weighted_heuristic_v1"},
+    {"slot": "B", "token_env": "HM_ROOM_B"},
+    {"slot": "C", "token_env": "HM_ROOM_C"},
+    {"slot": "D", "token_env": "HM_ROOM_D"}
+  ]
+}

@@ -593,3 +593,29 @@ async def test_not_sent_does_not_count_as_sent():
     ]
     assert summaries and summaries[-1]["sent_attempts"] == 0
 
+
+
+async def test_v1_rank_drives_submission_even_when_total_score_is_lower():
+    """应用层遵守 V1 的 rank，不把未知候选的较高数值分重新排到第一。"""
+    from hangma_bot.hangma.interface import CandidateFacts, CandidateFactKind, RuleCandidate
+    from hangma_bot.policy import ReliableHeuristicPolicyV1
+    known = RuleCandidate(DISCARD_3W, 'discard:3w', (), CandidateFacts(CandidateFactKind.HAND_PROGRESS, 4))
+    unknown = RuleCandidate(PASS, 'pass', (), None)
+    rules = FakeRules(candidates=(unknown,known),emergency=unknown)
+    _, game, *_ = await _run_with_window(
+        policy=ReliableHeuristicPolicyV1(monotonic=lambda:0),rules=rules,
+    )
+    assert [a.action_key for a in game.submitted] == ['discard:3w']
+
+
+async def test_v1_numeric_overflow_uses_existing_emergency_path():
+    """真实 V1 数值失败可被现有应用层接住；不更改提交或审计协议。"""
+    from hangma_bot.hangma.interface import CandidateFacts, CandidateFactKind, RuleCandidate
+    from hangma_bot.policy import ReliableHeuristicPolicyV1, HeuristicWeightsV1
+    known = RuleCandidate(DISCARD_3W, 'discard:3w', (), CandidateFacts(CandidateFactKind.HAND_PROGRESS, 4))
+    rules = FakeRules(candidates=(known,),emergency=PASS)
+    policy = ReliableHeuristicPolicyV1(HeuristicWeightsV1(shanten_step=1e308),monotonic=lambda:0)
+    _, game, sink, *_ = await _run_with_window(policy=policy,rules=rules)
+    assert [a.action_key for a in game.submitted] == ['pass']
+    recovered = [r.payload for r in sink.records if r.kind.value == 'protocol_recovered']
+    assert any('策略异常' in str(p.get('reasons')) for p in recovered)

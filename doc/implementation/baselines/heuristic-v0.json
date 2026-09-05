@@ -1,0 +1,42 @@
+{
+  "baseline_id": "weighted_heuristic-v0",
+  "strategy": "weighted_heuristic",
+  "source_commit": "7768789b5accd8e5b6d9c66ab9bc7e7d5a128921",
+  "captured_at": "2026-09-05",
+  "note": "旧策略源码指纹；规则、依赖和完整运行配置另随实验记录。",
+  "files": {
+    "src/hangma_bot/policy/weighted_heuristic.py": "3228a68f544466d16bf5ab926fbb3a3ec7960509aed70bf56571f33d1af08bc5",
+    "src/hangma_bot/policy/evaluation.py": "92f68d0f0eb384cff1444bdc84937fb93d90f398c9ac7b803e00f23d800d86e1",
+    "src/hangma_bot/policy/weights.py": "385ecefe548eea7c4490e4efa2aa54d0c7a49911a729edcd06d1a5438c804b3f",
+    "src/hangma_bot/policy/safe_fallback.py": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281",
+    "src/hangma_bot/policy/claim_if_legal.py": "acd4c887d59cd5f84e9ea2a6ab6c698278110623af0e2bb26a2f1b992d6a8f43"
+  },
+  "default_weights": {
+    "win_now": 1000.0,
+    "gang_bonus": 40.0,
+    "wealth_god_keep": 60.0,
+    "shanten_step": 100.0,
+    "effective_tile": 1.0,
+    "win_potential": 5.0,
+    "flexibility": 2.0,
+    "claim_risk_peng": 6.0,
+    "claim_risk_chi": 10.0,
+    "feed_risk": 6.0,
+    "safe_tile_bonus": 3.0,
+    "style_adjust": 4.0
+  },
+  "fixture": {
+    "path": "tests/fixtures/policy/v0-decisions.jsonl",
+    "sha256": "6b7ff7ca892936ec6f0c590857af5a2f62ab41c27e9aad0df7b72de486b7c322",
+    "cases": 8,
+    "source": "本地构造观察及记录的规则事实，非官方比赛牌谱"
+  },
+  "capture_environment": {
+    "python": "3.11.15",
+    "dependencies": {
+      "httpx": "0.28.1",
+      "pytest": "9.1.1",
+      "pytest-asyncio": "1.4.0"
+    }
+  }
+}

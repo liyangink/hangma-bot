@@ -29,7 +29,7 @@ Token 安全：Token 只经环境变量 ``HM_IDENTITY_TOKEN`` 传给子进程，
   "strategy": "weighted_heuristic",   // 可选
   "insecure_hosts": ["<官方内网主机>"], // 可选
   "identities": [                // 必须恰好四个；token 与 token_env 二选一
-    {"slot": "A", "token": "..."},
+    {"slot": "A", "token": "...", "strategy": "weighted_heuristic_v1"},
     {"slot": "B", "token_env": "HM_ROOM_TOKEN_B"},
     {"slot": "C", "token_env": "HM_ROOM_TOKEN_C"},
     {"slot": "D", "token_env": "HM_ROOM_TOKEN_D"}
@@ -136,6 +136,15 @@ def _require_positive_int(value: object, field_name: str) -> int:
     return value
 
 
+def _require_strategy(value: object) -> str:
+    """校验启动器可装配的固定策略名；配置错误在启动子进程前报告。"""
+
+    choices = ("weighted_heuristic", "weighted_heuristic_v1", "safe_fallback", "claim_if_legal")
+    if not isinstance(value, str) or value not in choices:
+        raise ValueError("未知策略名；可用：" + " / ".join(choices))
+    return value
+
+
 @dataclass(frozen=True)
 class IdentitySlot:
     """一个测试身份的槽位与已解析 Token；Token 绝不进入 repr/日志。"""
@@ -143,6 +152,7 @@ class IdentitySlot:
     slot: str
     token: str
     token_source: str  # "inline" 或 "env:<变量名>"；用于审计启动来源，不含 Token
+    strategy: Optional[str] = None  # 未指定时继承房间策略；在本次进程生命周期内固定
 
     def __repr__(self) -> str:
         return f"IdentitySlot(slot={self.slot!r}, token=<redacted>, token_source={self.token_source!r})"
@@ -240,7 +250,7 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
     for item in identities_value:
         if not isinstance(item, Mapping):
             raise ValueError("每个身份槽位必须是 JSON 对象")
-        unknown_keys = sorted(set(item) - {"slot", "token", "token_env", "token_file"})
+        unknown_keys = sorted(set(item) - {"slot", "token", "token_env", "token_file", "strategy"})
         if unknown_keys:
             raise ValueError("身份槽位包含未知字段: " + ", ".join(unknown_keys))
         slot = _require_non_empty_str(item.get("slot"), "identity.slot")
@@ -274,7 +284,10 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
                 )
             token = lines[0]
             source = "file:" + file_path
-        identities.append(IdentitySlot(slot=slot, token=token, token_source=source))
+        identity_strategy = _require_strategy(item["strategy"]) if "strategy" in item else None
+        identities.append(IdentitySlot(
+            slot=slot, token=token, token_source=source, strategy=identity_strategy,
+        ))
     if len(set(slots)) != 4:
         raise ValueError("四个身份槽位标签必须互不相同，得到 " + ", ".join(slots))
 
@@ -317,9 +330,7 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         ),
     )
 
-    strategy = str(data.get("strategy", "weighted_heuristic"))
-    if strategy not in ("weighted_heuristic", "safe_fallback", "claim_if_legal"):
-        raise ValueError(f"未知策略名 {strategy!r}；可用：weighted_heuristic / safe_fallback / claim_if_legal")
+    strategy = _require_strategy(data.get("strategy", "weighted_heuristic"))
     hosts = data.get("insecure_hosts", [])
     if not isinstance(hosts, (list, tuple)):
         raise ValueError("insecure_hosts 必须是数组")
@@ -351,7 +362,7 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
         "token_env": TOKEN_ENV_VAR,
         "token_kind": "test",
         "audit_root": str(room.audit_root / ("slot-" + identity.slot)),
-        "strategy": room.strategy,
+        "strategy": identity.strategy if identity.strategy is not None else room.strategy,
         "sse_enabled": room.sse_enabled,
     }
     if room.insecure_hosts:
@@ -637,7 +648,8 @@ async def _amain(room: RoomConfig, environ: Mapping[str, str]) -> int:
         flush=True,
     )
     for identity in room.identities:
-        print(f"身份 {identity.slot}：Token 来源 {identity.token_source}", flush=True)
+        strategy = identity.strategy if identity.strategy is not None else room.strategy
+        print(f"身份 {identity.slot}：策略 {strategy}，Token 来源 {identity.token_source}", flush=True)
 
     try:
         with tempfile.TemporaryDirectory(prefix="hangma-room-") as tempdir:

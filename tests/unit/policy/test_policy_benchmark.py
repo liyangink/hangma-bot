@@ -1,83 +1,121 @@
-"""1 秒动作窗口基准：主启发式必须在保底截止时间前完成。
+"""真实预算基准：同一接收时刻起计算 emergency/analyze/choose/validate。
 
-2026-09-04 契约收口后，向听/有效牌数学由 hangma 的候选事实生产承担；
-本基准测量「规则引擎分析 + 主策略排序」的完整热路径（真实候选与事实），
-断言阈值取 0.5 秒（窗口预算的一半），远大于实际耗时；真实耗时写入
-失败消息，便于回归时报告。
+这是本地公开核心调用的时限门禁，不包含 HTTP、SSE 或审计磁盘开销。
+冷进程首个决策单列；并发 M 使用同一事件循环，不通过多线程掩盖阻塞。
 """
 
-from __future__ import annotations
-
 import asyncio
+from dataclasses import replace
+import json
+from pathlib import Path
+import subprocess
+import sys
 import time
-import unittest
+import random
 
-from hangma_bot.kernel.actions import Tile
-from hangma_bot.policy import WeightedHeuristicPolicy
-from hangma_bot.policy.interface import DecisionBudget
+import pytest
 
-from .support import make_observation, make_request, rules_from_engine, run_choose
+from hangma_bot.application.deadline import BudgetPolicy
+from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.kernel.actions import Tile, WindowPhase, CANONICAL_TILE_CODES
+from hangma_bot.kernel.config import RuleConfig
+from hangma_bot.kernel.observation import PublicDiscard
+from hangma_bot.policy import ReliableHeuristicPolicyV1, WeightedHeuristicPolicy
+from .support import make_observation, make_request
 
-# 14 张等效、多动作族的重负载窗口手牌：弃牌族全开 + 可杠/可胡分支。
-HEAVY_HAND = (
-    "1w", "2w", "4w", "5w", "7w", "8w",
-    "1b", "2b", "3b", "5b", "6b",
-    "3t", "4t", "6t",
-)
-
-
-class BenchmarkTests(unittest.TestCase):
-    """主启发式是分层评分，不允许出现复杂搜索。"""
-
-    def test_heavy_window_completes_well_within_budget(self) -> None:
-        """重负载窗口（引擎分析 + 主策略）多次运行，最差耗时远低于 0.5 秒。"""
-
-        observation = make_observation(
-            my_hand=tuple(Tile(code) for code in HEAVY_HAND[:13]),
-            drawn_tile=Tile(HEAVY_HAND[13]),
-        )
-        analysis = rules_from_engine(observation)
-        request = make_request(observation, analysis)
-        policy = WeightedHeuristicPolicy()
-
-        durations = []
-        for _ in range(5):
-            now = time.monotonic()
-            budget = DecisionBudget(now + 0.9, now + 1.8, now + 2.7)
-            start = time.perf_counter()
-            plan = run_choose(policy, request, budget)
-            durations.append(time.perf_counter() - start)
-            self.assertTrue(plan.candidates)
-
-        worst = max(durations)
-        self.assertLess(
-            worst,
-            0.5,
-            "重负载窗口最差耗时 {ms:.1f}ms 超过基准阈值".format(ms=worst * 1000),
-        )
-
-    def test_single_window_latency_reported(self) -> None:
-        """单次耗时基准：供验收报告引用（不做硬断言，只记下量级）。"""
-
-        observation = make_observation(
-            my_hand=tuple(Tile(code) for code in HEAVY_HAND[:13]),
-            drawn_tile=Tile(HEAVY_HAND[13]),
-        )
-        analysis = rules_from_engine(observation)
-        request = make_request(observation, analysis)
-        policy = WeightedHeuristicPolicy()
-
-        now = time.monotonic()
-        budget = DecisionBudget(now + 0.9, now + 1.8, now + 2.7)
-        start = time.perf_counter()
-        plan = run_choose(policy, request, budget)
-        elapsed = time.perf_counter() - start
-
-        self.assertTrue(plan.candidates)
-        # 防御性上限：正常应小于 0.2 秒；超过说明引入了复杂搜索。
-        self.assertLess(elapsed, 0.2)
+HEAVY_HAND = ('1w','2w','4w','5w','7w','8w','1b','2b','3b','5b','6b','3t','4t','6t')
 
 
-if __name__ == "__main__":
-    unittest.main()
+def window_observation(kind):
+    """构造真实规则可分析的弃牌或响应窗口，不预计算候选事实。"""
+    if kind == 'draw':
+        return make_observation(my_hand=tuple(Tile(c) for c in HEAVY_HAND[:13]), drawn_tile=Tile(HEAVY_HAND[-1]))
+    return make_observation(
+        phase='response_peng', turn_seat=1, responding_seats=(0,),
+        my_hand=tuple(Tile(c) for c in ('5w','5w','1t','2t','3t','4t','5t','6t','1b','2b','8t','9t','东')),
+        last_discard=PublicDiscard(seat=1,tile=Tile('5w'),seq=9),
+    )
 
+
+async def measure_batch(kind, concurrency, version):
+    """实时时钟秒计时；返回各窗口毫秒耗时与截止余量，无文件/网络副作用。"""
+    rules = HangmaRules(RuleConfig(ruleset_version='policy-benchmark', base_score=1, you_cai_bi_kao=False))
+    policy = ReliableHeuristicPolicyV1() if version == 'v1' else WeightedHeuristicPolicy()
+    observations = []
+    for i in range(concurrency):
+        if kind == 'varied_draw':
+            # 不同合法物理牌组，避免 M 场重复同一手牌仅测缓存命中。
+            rng = random.Random(9100+i)
+            tiles = tuple(Tile(c) for c in rng.sample(list(CANONICAL_TILE_CODES)*4,14))
+            obs = make_observation(my_hand=tiles[:13],drawn_tile=tiles[-1])
+        else:
+            obs = window_observation(kind)
+        observations.append(replace(obs,game_id='benchmark-'+str(i)))
+    timeout = 1.0 if kind == 'response' else 3.0
+    received = time.monotonic()
+    budget = BudgetPolicy().build(received, timeout)
+
+    async def one(obs):
+        start = time.monotonic()
+        emergency = rules.emergency_action(obs)
+        after_emergency = time.monotonic()
+        analysis = rules.analyze(obs)
+        after_analysis = time.monotonic()
+        assert emergency is not None
+        assert analysis.legal_candidates
+        phase = WindowPhase.RESPONSE_PENG if kind == 'response' else WindowPhase.DRAW
+        request = make_request(obs, analysis, phase=phase)
+        before_choose = time.monotonic()
+        plan = await policy.choose(request, budget)
+        after_choose = time.monotonic()
+        assert plan.candidates
+        assert after_choose <= budget.enhancement_deadline_monotonic
+        assert rules.validate(obs, plan.candidates[0].action).legal
+        after_validate = time.monotonic()
+        assert after_validate < budget.latest_send_at_monotonic
+        return {
+            'queued_ms': (start-received)*1000,
+            'emergency_ms': (after_emergency-start)*1000,
+            'analysis_ms': (after_analysis-after_emergency)*1000,
+            'choose_elapsed_ms': (after_choose-before_choose)*1000,
+            'validate_ms': (after_validate-after_choose)*1000,
+            'total_since_received_ms': (after_validate-received)*1000,
+            'enhancement_margin_ms': (budget.enhancement_deadline_monotonic-after_choose)*1000,
+            'send_margin_ms': (budget.latest_send_at_monotonic-after_validate)*1000,
+        }
+
+    return await asyncio.gather(*(one(obs) for obs in observations))
+
+
+@pytest.mark.parametrize('version', ['v0','v1'])
+@pytest.mark.parametrize('kind', ['draw','response'])
+@pytest.mark.parametrize('concurrency', [1,10])
+def test_local_path_meets_real_budget(version, kind, concurrency):
+    asyncio.run(measure_batch(kind,concurrency,version))  # 热路径计时前显式预热
+    runs = [asyncio.run(measure_batch(kind,concurrency,version)) for _ in range(3)]
+    rows = [row for batch in runs for row in batch]
+    print(json.dumps({'version':version,'kind':kind,'M':concurrency,
+                      'worst_total_ms':max(r['total_since_received_ms'] for r in rows),
+                      'min_enhancement_margin_ms':min(r['enhancement_margin_ms'] for r in rows),
+                      'min_send_margin_ms':min(r['send_margin_ms'] for r in rows)}))
+
+
+@pytest.mark.parametrize('kind,concurrency', [('draw',1),('response',1),('varied_draw',10)])
+def test_v1_first_decision_in_fresh_process(kind,concurrency):
+    # 子进程从导入到首个真实规则调用均不复用本 pytest 进程的规则缓存。
+    code = (
+        'import asyncio,json; '
+        'from tests.unit.policy.test_policy_benchmark import measure_batch; '
+        f'print(json.dumps(asyncio.run(measure_batch({kind!r},{concurrency},"v1"))))'
+    )
+    root = Path(__file__).resolve().parents[3]
+    started = time.monotonic()
+    result = subprocess.run([sys.executable,'-c',code],cwd=root,capture_output=True,text=True,timeout=20)
+    elapsed = time.monotonic()-started
+    assert result.returncode == 0, result.stderr
+    rows = json.loads(result.stdout)
+    assert all(r['enhancement_margin_ms'] > 0 for r in rows)
+    print(json.dumps({'version':'v1','kind':kind,'M':concurrency,
+                      'cold_process_total_ms':elapsed*1000,
+                      'worst_total_ms':max(r['total_since_received_ms'] for r in rows),
+                      'min_send_margin_ms':min(r['send_margin_ms'] for r in rows)}))

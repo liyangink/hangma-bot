@@ -1,0 +1,45 @@
+{
+  "config": null,
+  "contract_id": "parallel-v1",
+  "created_at_unix_ms": 1788617118723,
+  "dataset_id": "186fdbd1-88e5-46f0-8870-351a356743bc",
+  "dirty": null,
+  "evaluation_schema_version": 1,
+  "guide_captured_at": null,
+  "guide_version": null,
+  "inputs": [
+    {
+      "bundle_id": null,
+      "path": "decisions.jsonl",
+      "sha256": "949dc181f034ff8bb6079def1a1bd1b108a91b2c8ff0b162117af3e6e2553fd1"
+    }
+  ],
+  "manifest_schema_version": 1,
+  "missing_fields": [
+    "input_sha256",
+    "guide_version",
+    "guide_captured_at",
+    "rules_hash",
+    "producer_commit",
+    "dirty"
+  ],
+  "producer_commit": null,
+  "rules_hash": null,
+  "source_namespace": "hangma-official",
+  "versions": {
+    "clock_mode": "logical",
+    "decision_mode": "recorded_request",
+    "scoring_policies": {
+      "baseline": {
+        "name": "scripted",
+        "policy_id": "stable-v1",
+        "weights": {}
+      },
+      "challenger": {
+        "name": "scripted",
+        "policy_id": "candidate-v1",
+        "weights": {}
+      }
+    }
+  }
+}

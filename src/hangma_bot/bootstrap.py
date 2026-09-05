@@ -58,6 +58,7 @@ from hangma_bot.policy.claim_if_legal import ClaimIfLegalPolicy
 from hangma_bot.policy.interface import BotPolicy
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
 from hangma_bot.policy.weighted_heuristic import WeightedHeuristicPolicy
+from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
 
 DEFAULT_STRATEGY = "weighted_heuristic"
 
@@ -69,6 +70,7 @@ DEFAULT_RULESET_VERSION = "hangma-mvp-v1"
 # claim_if_legal 仅用于官方测试房验收（配置项选择），默认策略不变。
 _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "weighted_heuristic": lambda: WeightedHeuristicPolicy(),
+    "weighted_heuristic_v1": lambda: ReliableHeuristicPolicyV1(),
     "safe_fallback": lambda: SafeFallbackPolicy(),
     "claim_if_legal": lambda: ClaimIfLegalPolicy(),
 }
