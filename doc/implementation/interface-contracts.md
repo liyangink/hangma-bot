@@ -131,6 +131,8 @@ ActionAttempt
 
 ## 7. 审计协议
 
+本节 §7.1 描述现行 v1。拟实施的 v2 变更登记见 §7.2；生产代码升级前不得把 v2 字段视为已经存在。
+
 关联键统一为：
 
 ```text
@@ -178,6 +180,23 @@ runs/{run_id}/
 - **stage_attempt 混用判定**：同一 `game_id` 出现两个及以上**不同非空** `stage_attempt_id` 才算违规；「缺失与非空共存」是应用层/适配器双层记录的合法形态（官方适配器按契约不生产该标识，按旧口径真实运行必误报）。
 - **coverage 的 `final_scores_by_game`**：双层终局分数一致性检查结果；不一致只报 warning（应用层与适配器观察时点不同可能造成合法差异），进入验证报告供人工裁决。
 - **`rejected_no_refresh` 计入 rejected_total** 统计（提交结果分布七分类）。
+
+### 7.2 审计增强 v2 变更登记（2026-09-05，待实施）
+
+字段和验收的唯一详细定义见[审计增强实施方案](./audit-enhancement.md)。这次变更为补齐实际决策证据，不改变线上决策或提交语义。
+
+| 项目 | 拟实施变更 |
+| --- | --- |
+| 接口 | `AuditSink.emit/aclose` 签名不变；`TournamentSessionPort`、`GameSessionPort`、`BotPolicy` 不变 |
+| 信封 | 审计版本升级为 2；`AuditRecord` 新增 `source=application/official`；落盘时增加运行内 `record_no`，用于区分来源与定位缺失 |
+| 种类 | 新增 `PROTOCOL_MESSAGE`、`DECISION_INPUT`、`CANDIDATE_VALIDATED`；现有计划记录扩展为完整评分与实际采用候选 |
+| 优先级 | 独有协议原文使用高优先级 `PROTOCOL_MESSAGE`；低优先级 `RAW_PROTOCOL_STATE` 仅保存可替代的冗余副本 |
+| 关联 | 规划按 `run_id/decision_id/plan_revision`；提交按 `run_id/decision_id/attempt_no/source`；官方请求按 `request_id`；不靠消息相似度合并 |
+| 信息权限 | 决策输入只保留当时 `PlayerObservation` 和赛事上下文；赛后全信息独立归档，仅离线转换可读取 |
+| 兼容 | v1 保持可读，缺少输入的记录标为不可重建；v2 的生产方、Fake、编解码及契约测试须一并升级，不能只收紧记录器 |
+| 结果 | accepted 与权威执行确认分开；最后观测排名不等于最终排名；作废/未知结果显式保留 |
+
+影响文件与测试列于方案 §7；受控变更实施时同步所有 `AuditRecord` 构造位置、生产方、内存 sink 和版本常量。现有 §7.1 的宽松字段及双层重复容忍规则仅适用于旧 v1；v2 按 source 和实际事件角色验证，不因三条以下重复便自动放行。
 
 ## 8. 错误和取消契约
 
