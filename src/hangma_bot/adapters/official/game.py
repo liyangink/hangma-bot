@@ -152,6 +152,10 @@ class OfficialGameSession:
         self._sse_event: Optional[asyncio.Event] = asyncio.Event() if sse_enabled else None
         self._sse_healthy = sse_enabled
         self._sse_task: Optional[asyncio.Future] = None
+        # 唤醒挂起标志：帧/自唤醒置位后、等待方消费前的信号保留——
+        # 纯 Event 在"等待入口 clear()"时会把未消费的唤醒抹掉（回归
+        # test_sse_self_wake 行为用例锁定该竞态）
+        self._sse_wake_pending = False
         self.audit_degraded_events = 0  # 审计回执降级计数（诊断用）
         self.audit_dropped_events = 0  # 审计发射异常计数（诊断用）
 
@@ -423,6 +427,7 @@ class OfficialGameSession:
         """帧到达回调（notify 客户端以 await 调用，必须为协程）：唤醒帧驱动短拉。"""
 
         if self._sse_event is not None:
+            self._sse_wake_pending = True
             self._sse_event.set()
 
     async def _sse_run(self, client: SSENotifyClient) -> None:
@@ -461,11 +466,15 @@ class OfficialGameSession:
 
         timeout = boundary_timeout if boundary_timeout is not None else _SSE_IDLE_POLL_SEC
         assert self._sse_event is not None  # sse_enabled 时必有
-        self._sse_event.clear()
-        try:
-            await asyncio.wait_for(self._sse_event.wait(), timeout=timeout)
-        except asyncio.TimeoutError:
-            pass
+        if not self._sse_wake_pending:
+            # 无挂起唤醒才进入等待；挂起信号直接消费（clear 前置检查，
+            # 不会抹掉未消费的帧/自唤醒——回归 test_sse_self_wake）
+            self._sse_event.clear()
+            try:
+                await asyncio.wait_for(self._sse_event.wait(), timeout=timeout)
+            except asyncio.TimeoutError:
+                pass
+        self._sse_wake_pending = False
         if not self._sse_healthy:
             fallback_boundary = self._phase_boundary_timeout()
             if fallback_boundary is None:
@@ -931,9 +940,17 @@ class OfficialGameSession:
             return self._finish_submit(attempt, SubmitNotSent(reason))
         self._gate.enter()
         try:
-            return await self._submit_locked(attempt)
+            outcome = await self._submit_locked(attempt)
         finally:
             self._gate.leave()
+        if isinstance(outcome, SubmitAccepted) and self._sse_event is not None:
+            # 自唤醒（2026-09-05 r5 取证：暗杠后补牌出牌窗 3 秒被代打）：
+            # 服务端对"本人动作产生的事件"不推 SSE 帧（杠@341+补牌@342 无帧，
+            # 直到 3s 超时代打@344 才有帧）——自己动作被接受后立即唤醒短拉
+            # 增量，不等帧/不等 5s 静默周期
+            self._sse_wake_pending = True
+            self._sse_event.set()
+        return outcome
 
     async def _submit_locked(self, attempt: ActionAttempt) -> SubmitOutcome:
         detected = self._sync.current_window()
