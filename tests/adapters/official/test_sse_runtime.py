@@ -13,11 +13,18 @@ import json
 import pytest
 
 from hangma_bot.adapters.official import game as game_module
-from hangma_bot.adapters.official.notify import NotifyEndKind, NotifyRunResult
+from hangma_bot.adapters.official.notify import NotifyEndKind, NotifyFrame, NotifyRunResult
 from hangma_bot.application.contracts import AuditKind, ObservedActionWindow
 from hangma_bot.kernel.actions import WindowPhase
 
-from _official_testkit import FakeClock, FakeTransport, TIMING, load_fixture, make_audit_context
+from _official_testkit import (
+    FakeAuditSink,
+    FakeClock,
+    FakeTransport,
+    TIMING,
+    load_fixture,
+    make_audit_context,
+)
 from hangma_bot.adapters.official.game import OfficialGameSession
 from hangma_bot.adapters.official.scheduler import RequestScheduler
 
@@ -97,6 +104,42 @@ class TestSseFrameDriven:
         # 帧驱动路径：本轮 GET 必须是短拉（long_poll=False）
         gets = [m for m in poll_modes if m[0] == "GET"]
         assert gets and all(not lp for _, lp in gets), gets
+        await session.aclose("done")
+
+    async def test_frame_raw_recorded_as_audit_sse_frame(self, monkeypatch) -> None:
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        draw_doc = load_fixture("state_response_snapshot_draw.json")
+        transport = FakeTransport()
+        transport.handler = lambda **kw: (200, json.dumps(draw_doc))
+        clock = FakeClock()
+        audit = FakeAuditSink()
+        session = _make_session(transport, clock, audit=audit)
+
+        async def fire_frame_soon():
+            await asyncio.sleep(0.02)
+            assert FakeSseClient.instances, "SSE 任务应已启动"
+            await FakeSseClient.instances[0].on_frame(
+                NotifyFrame(seq=101, closed=False, raw='{"seq": 101}')
+            )
+
+        task = asyncio.create_task(fire_frame_soon())
+        window = await asyncio.wait_for(session.next_item(), timeout=2)
+        await task
+
+        assert isinstance(window, ObservedActionWindow)
+        frames = [
+            record
+            for record in audit.records
+            if record.kind == AuditKind.RAW_PROTOCOL_STATE
+            and record.payload.get("source") == "sse_frame"
+        ]
+        assert frames, "帧到达应产生 sse_frame 审计原文记录"
+        payload = frames[0].payload
+        assert payload["endpoint"] == "GET /api/games/{}/notify".format(session.game_id)
+        assert payload["seq"] == 101
+        assert payload["closed"] is False
+        assert payload["raw"] == '{"seq": 101}'
         await session.aclose("done")
 
     async def test_exhausted_stream_degrades_to_long_poll_with_audit(self, monkeypatch) -> None:

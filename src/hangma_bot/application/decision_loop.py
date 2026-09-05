@@ -15,6 +15,14 @@ import asyncio
 from dataclasses import dataclass, field
 
 from hangma_bot.application.audit import AuditTrail, audit_error_text, audit_text
+
+from hangma_bot.application.audit_codec import (
+    AUDIT_PRODUCER_APPLICATION,
+    CAPTURE_PROFILE_AUDIT_PLUS_V1,
+    decision_budget_to_json,
+    decision_plan_to_json,
+    decision_request_to_json,
+)
 from hangma_bot.application.contracts import (
     ActionAttempt,
     GameSessionPort,
@@ -372,6 +380,13 @@ async def run_action_window(
     """执行一个动作窗口的完整循环；返回封闭结果摘要。
 
     抛出 FatalIdentityError 表示当前身份永久故障，由监督层终止运行。
+
+    audit-plus-v1 采集（审计增强方案 §3.2）：每个规划版本各落一条
+    DECISION_INPUT（策略调用前）与 DECISION_PLANNED（候选集合复核后）；
+    每次最终复核落 CANDIDATE_VALIDATED（复核抛错时 legal=null，不冒充
+    规则否定）；无论提交、零提交、取消或错误，finally 尽力落一条
+    DECISION_ENDED。所有 codec 编码都经 AuditTrail.emit_safe：构造失败
+    只持久化最小 producer_failure，绝不打断动作路径。
     """
 
     audit = services.audit
@@ -385,14 +400,19 @@ async def run_action_window(
         loop_notes.append("窗口到达时刻晚于本地时钟，已钳制到当前时刻")
         received_at = clock.now()
     budget = services.budget_policy.build(received_at, window.timeout_seconds)
+    # DECISION_INPUT 的窗口接收单调秒基准：离线以该基准平移全部截止时间。
+    budget_origin = received_at
     current = window
     rejected: list[RejectedAttempt] = []
     attempt_no = 0
     plan_revision = 0
     sent = 0
     planned_records = 0  # 用于识别审计链上零记录的窗口结束
+    end_reason = "unknown"  # DECISION_ENDED 的终结原因；各出口在 _finish 前改写
 
-    def _finish(kind: str) -> WindowResult:
+    def _finish(kind: str, reason: str) -> WindowResult:
+        nonlocal end_reason
+        end_reason = reason
         if loop_notes:
             audit.emit(
                 AuditKind.PROTOCOL_RECOVERED,
@@ -426,163 +446,223 @@ async def run_action_window(
             outcome_kind=kind,
         )
 
-    while True:
-        if clock.now() >= budget.latest_send_at_monotonic:
-            return _finish("deadline")
+    def _decision_ended_payload() -> dict:
+        """DECISION_ENDED 的最小纯字典：不引用任何 codec，保证 finally 必可写。"""
+        return {
+            "plan_revision": plan_revision,
+            "end_reason": end_reason,
+            "attempt_count": attempt_no,
+            "sent_attempts": sent,
+            "window": _window_payload(window.window_key),
+        }
 
-        plan_revision += 1
-        emergency = _safe_emergency(services.rules, current.observation, loop_notes)
-        analysis = _safe_analyze(services.rules, current.observation, loop_notes)
-        analysis = _merge_emergency_into_analysis(analysis, emergency)
-        request = DecisionRequest(
-            observation=current.observation,
-            competition=competition,
-            rules=analysis,
-            decision_id=decision_id,
-            trigger_seq=window.window_key.trigger_seq,
-            window_key=window.window_key,
-            rejected_attempts=tuple(rejected),
-        )
-        plan = await _guarded_choose(services, request, budget, loop_notes)
-        rejected_keys = frozenset(item.action_key for item in rejected)
-        candidates = _sanitize_plan(
-            plan,
-            analysis,
-            rejected_keys,
-            emergency,
-            decision_id,
-            window.window_key,
-            current.authoritative_seq,
-            loop_notes,
-        )
-        issue_reasons = [issue.area + ":" + audit_text(issue.reason) for issue in analysis.issues]
-        if plan is None:
-            degraded_reasons = ["策略计划不可用"] + issue_reasons
-        else:
-            degraded_reasons = [audit_text(reason) for reason in plan.degraded_reasons] + issue_reasons
-        planned_records += 1
-        audit.emit(
-            AuditKind.DECISION_PLANNED,
-            {
-                "plan_revision": plan_revision,
-                "based_on_authoritative_seq": current.authoritative_seq,
-                "trigger_seq": window.window_key.trigger_seq,
-                "window": _window_payload(window.window_key),
-                # 决策观察快照（2026-09-04 增强）：被拒动作可本地复盘的最小可见事实。
-                "observation_snapshot": _observation_snapshot(
-                    current.observation, window.window_key
-                ),
-                # 完整候选列表：动作用 kernel 稳定序列化（action_to_json），
-                # 保证赛后可用 action_from_json 无损还原并复算规则合法性。
-                "candidates": [
-                    {
-                        "action_key": candidate.action_key,
-                        "is_emergency": candidate.is_emergency,
-                        "rank": candidate.rank,
-                        "action": action_to_json(candidate.action),
-                        "reasons": [
-                            audit_text(reason) for reason in candidate.reasons
-                        ],
-                    }
-                    for candidate in candidates
-                ],
-                "degraded_reasons": degraded_reasons,
-                "rule_completeness": analysis.completeness.value,
-            },
-            stage_attempt_id=stage_attempt_id,
-            game_id=window.window_key.game_id,
-            round_no=window.window_key.round_no,
-            trigger_seq=window.window_key.trigger_seq,
-            decision_id=decision_id,
-        )
-
-        replan_needed = False
-        for candidate in candidates:
+    try:
+        while True:
             if clock.now() >= budget.latest_send_at_monotonic:
-                return _finish("deadline")
-            if candidate.action_key in rejected_keys:
-                continue
-            try:
-                validation = services.rules.validate(current.observation, candidate.action)
-            except Exception as exc:  # noqa: BLE001 - 复核分支异常按不合法处理，换下一候选
-                loop_notes.append(
-                    "提交前复核异常 {}: {}".format(candidate.action_key, audit_error_text(exc))
-                )
-                continue
-            if not validation.legal:
-                loop_notes.append(
-                    "提交前复核不合法 {}: {}".format(candidate.action_key, validation.reason)
-                )
-                continue
+                return _finish("deadline", "deadline")
 
-            attempt_no += 1
-            try:
-                attempt = ActionAttempt(
-                    decision_id=decision_id,
-                    attempt_no=attempt_no,
-                    plan_revision=plan_revision,
-                    window_key=window.window_key,
-                    based_on_authoritative_seq=current.authoritative_seq,
-                    action=candidate.action,
-                    action_key=candidate.action_key,
-                    latest_send_at_monotonic=budget.latest_send_at_monotonic,
-                )
-            except (TypeError, ValueError) as exc:
-                # 兜底：ActionAttempt 构造内的 action_key（联合外类型抛
-                # TypeError）与值不变量（ValueError）同样降级为换下一候选。
-                loop_notes.append("动作尝试构造被拒 {}: {}".format(candidate.action_key, exc))
-                attempt_no -= 1
-                continue
-            audit.emit(
-                AuditKind.SUBMISSION_INTENT,
-                {
-                    "action_key": candidate.action_key,
-                    "is_emergency": candidate.is_emergency,
-                    "based_on_authoritative_seq": current.authoritative_seq,
+            plan_revision += 1
+            rules_started_at = clock.now()
+            emergency = _safe_emergency(services.rules, current.observation, loop_notes)
+            analysis = _safe_analyze(services.rules, current.observation, loop_notes)
+            analysis = _merge_emergency_into_analysis(analysis, emergency)
+            rule_elapsed_ms = (clock.now() - rules_started_at) * 1000.0
+            request = DecisionRequest(
+                observation=current.observation,
+                competition=competition,
+                rules=analysis,
+                decision_id=decision_id,
+                trigger_seq=window.window_key.trigger_seq,
+                window_key=window.window_key,
+                rejected_attempts=tuple(rejected),
+            )
+            # DECISION_INPUT：分析完成、策略调用前落完整当时输入。
+            # 刷新后另存新 plan_revision，截止时间（原预算）不变。
+            audit.emit_safe(
+                AuditKind.DECISION_INPUT,
+                payload_factory=lambda: {
                     "plan_revision": plan_revision,
-                    "latest_send_at_monotonic": budget.latest_send_at_monotonic,
+                    "budget_origin_monotonic": budget_origin,
+                    "rule_elapsed_ms": round(rule_elapsed_ms, 3),
+                    "request": decision_request_to_json(request),
+                    "budget": decision_budget_to_json(budget),
                     "window": _window_payload(window.window_key),
                 },
+                stage="decision_input_encode",
                 stage_attempt_id=stage_attempt_id,
                 game_id=window.window_key.game_id,
                 round_no=window.window_key.round_no,
                 trigger_seq=window.window_key.trigger_seq,
                 decision_id=decision_id,
-                attempt_no=attempt_no,
             )
-            try:
-                outcome: SubmitOutcome = await session.submit(attempt)
-            except asyncio.CancelledError:
-                # 运行关闭必须穿透，绝不重发；但在途 POST 结果未知，
-                # 尽力补一条合成 outcome，避免审计链上 intent 无配对。
-                try:
-                    audit.emit(
-                        AuditKind.SUBMISSION_OUTCOME,
+            policy_started_at = clock.now()
+            plan = await _guarded_choose(services, request, budget, loop_notes)
+            policy_elapsed_ms = (clock.now() - policy_started_at) * 1000.0
+            filter_start = len(loop_notes)
+            rejected_keys = frozenset(item.action_key for item in rejected)
+            candidates = _sanitize_plan(
+                plan,
+                analysis,
+                rejected_keys,
+                emergency,
+                decision_id,
+                window.window_key,
+                current.authoritative_seq,
+                loop_notes,
+            )
+            filter_reasons = [audit_text(note) for note in loop_notes[filter_start:]]
+            issue_reasons = [issue.area + ":" + audit_text(issue.reason) for issue in analysis.issues]
+            if plan is None:
+                degraded_reasons = ["策略计划不可用"] + issue_reasons
+            else:
+                degraded_reasons = [audit_text(reason) for reason in plan.degraded_reasons] + issue_reasons
+            planned_records += 1
+
+            def _planned_payload() -> dict:
+                """DECISION_PLANNED 载荷：returned_plan 编码失败单独留痕，不放弃有效候选。"""
+                returned = None
+                returned_error = None
+                if plan is not None:
+                    try:
+                        returned = decision_plan_to_json(plan)
+                    except (TypeError, ValueError) as exc:
+                        returned_error = audit_error_text(exc)
+                        loop_notes.append("returned_plan 编码失败: {}".format(returned_error))
+                effective = []
+                for candidate in candidates:
+                    effective.append(
                         {
-                            "outcome": "SubmitAmbiguous",
-                            "reason": "cancelled_in_flight",
-                            "window": _window_payload(window.window_key),
-                        },
-                        stage_attempt_id=stage_attempt_id,
-                        game_id=window.window_key.game_id,
-                        round_no=window.window_key.round_no,
-                        trigger_seq=window.window_key.trigger_seq,
+                            "action_key": candidate.action_key,
+                            "is_emergency": candidate.is_emergency,
+                            "rank": candidate.rank,
+                            "total_score": candidate.total_score,
+                            "score_parts": [
+                                {"name": part.name, "value": part.value}
+                                for part in candidate.score_parts
+                            ],
+                            "reasons": [audit_text(reason) for reason in candidate.reasons],
+                            "action": action_to_json(candidate.action),
+                        }
+                    )
+                return {
+                    "plan_revision": plan_revision,
+                    "based_on_authoritative_seq": current.authoritative_seq,
+                    "trigger_seq": window.window_key.trigger_seq,
+                    "window": _window_payload(window.window_key),
+                    # 决策观察快照（2026-09-04 增强）：被拒动作可本地复盘的最小可见事实。
+                    "observation_snapshot": _observation_snapshot(
+                        current.observation, window.window_key
+                    ),
+                    # 既有字段（v1 兼容读取）：完整候选列表。
+                    "candidates": [
+                        {
+                            "action_key": candidate.action_key,
+                            "is_emergency": candidate.is_emergency,
+                            "rank": candidate.rank,
+                            "action": action_to_json(candidate.action),
+                            "reasons": [
+                                audit_text(reason) for reason in candidate.reasons
+                            ],
+                        }
+                        for candidate in candidates
+                    ],
+                    # audit-plus-v1 新增：原计划（可空，不覆盖实际采用候选）、
+                    # 实际采用候选（含评分分项）、过滤/保底原因与策略耗时。
+                    "returned_plan": returned,
+                    "returned_plan_encode_error": returned_error,
+                    "effective_candidates": effective,
+                    "filter_reasons": filter_reasons,
+                    "policy_elapsed_ms": round(policy_elapsed_ms, 3),
+                    "degraded_reasons": degraded_reasons,
+                    "rule_completeness": analysis.completeness.value,
+                }
+
+            audit.emit_safe(
+                AuditKind.DECISION_PLANNED,
+                payload_factory=_planned_payload,
+                stage="decision_planned_encode",
+                stage_attempt_id=stage_attempt_id,
+                game_id=window.window_key.game_id,
+                round_no=window.window_key.round_no,
+                trigger_seq=window.window_key.trigger_seq,
+                decision_id=decision_id,
+            )
+
+            replan_needed = False
+            for candidate in candidates:
+                if clock.now() >= budget.latest_send_at_monotonic:
+                    return _finish("deadline", "deadline")
+                if candidate.action_key in rejected_keys:
+                    continue
+                validation_started_at = clock.now()
+                legal: bool | None
+                validation_reason: str | None = None
+                try:
+                    validation = services.rules.validate(current.observation, candidate.action)
+                    legal = validation.legal
+                    validation_reason = validation.reason
+                except Exception as exc:  # noqa: BLE001 - 复核分支异常按不合法处理，换下一候选
+                    # legal=null：复核抛出异常不等于规则否定（方案 §3.2），
+                    # 离线验证器据此区分"明确不合法"与"复核失败"。
+                    legal = None
+                    validation_reason = audit_error_text(exc)
+                    loop_notes.append(
+                        "提交前复核异常 {}: {}".format(candidate.action_key, validation_reason)
+                    )
+                audit.emit_safe(
+                    AuditKind.CANDIDATE_VALIDATED,
+                    payload_factory=lambda: {
+                        "plan_revision": plan_revision,
+                        "action_key": candidate.action_key,
+                        "action": action_to_json(candidate.action),
+                        "legal": legal,
+                        "reason": audit_text(validation_reason) if validation_reason else None,
+                        "elapsed_ms": round((clock.now() - validation_started_at) * 1000.0, 3),
+                        "window": _window_payload(window.window_key),
+                    },
+                    stage="candidate_validated_encode",
+                    stage_attempt_id=stage_attempt_id,
+                    game_id=window.window_key.game_id,
+                    round_no=window.window_key.round_no,
+                    trigger_seq=window.window_key.trigger_seq,
+                    decision_id=decision_id,
+                )
+                if not legal:
+                    if legal is False:
+                        loop_notes.append(
+                            "提交前复核不合法 {}: {}".format(candidate.action_key, validation_reason)
+                        )
+                    continue
+
+                attempt_no += 1
+                try:
+                    attempt = ActionAttempt(
                         decision_id=decision_id,
                         attempt_no=attempt_no,
+                        plan_revision=plan_revision,
+                        window_key=window.window_key,
+                        based_on_authoritative_seq=current.authoritative_seq,
+                        action=candidate.action,
+                        action_key=candidate.action_key,
+                        latest_send_at_monotonic=budget.latest_send_at_monotonic,
                     )
-                except Exception:  # noqa: BLE001 - 审计失败不得干扰取消
-                    pass
-                raise
-            except Exception as exc:  # noqa: BLE001 - POST 中途异常视为结果不确定
-                loop_notes.append(
-                    "submit 抛出异常，按模糊结果封锁本窗口: {}".format(audit_error_text(exc))
-                )
+                except (TypeError, ValueError) as exc:
+                    # 兜底：ActionAttempt 构造内的 action_key（联合外类型抛
+                    # TypeError）与值不变量（ValueError）同样降级为换下一候选。
+                    loop_notes.append("动作尝试构造被拒 {}: {}".format(candidate.action_key, exc))
+                    attempt_no -= 1
+                    continue
                 audit.emit(
-                    AuditKind.SUBMISSION_OUTCOME,
+                    AuditKind.SUBMISSION_INTENT,
                     {
-                        "outcome": "SubmitAmbiguous",
-                        "reason": audit_error_text(exc),
+                        "action_key": candidate.action_key,
+                        "is_emergency": candidate.is_emergency,
+                        "based_on_authoritative_seq": current.authoritative_seq,
+                        "plan_revision": plan_revision,
+                        "latest_send_at_monotonic": budget.latest_send_at_monotonic,
                         "window": _window_payload(window.window_key),
+                        "capture_profile": CAPTURE_PROFILE_AUDIT_PLUS_V1,
+                        "audit_producer": AUDIT_PRODUCER_APPLICATION,
                     },
                     stage_attempt_id=stage_attempt_id,
                     game_id=window.window_key.game_id,
@@ -591,100 +671,206 @@ async def run_action_window(
                     decision_id=decision_id,
                     attempt_no=attempt_no,
                 )
-                sent += 1
-                return _finish("ambiguous")
-
-            audit.emit(
-                AuditKind.SUBMISSION_OUTCOME,
-                _outcome_payload(outcome, window.window_key),
-                stage_attempt_id=stage_attempt_id,
-                game_id=window.window_key.game_id,
-                round_no=window.window_key.round_no,
-                trigger_seq=window.window_key.trigger_seq,
-                decision_id=decision_id,
-                attempt_no=attempt_no,
-            )
-
-            if isinstance(outcome, SubmitAccepted):
-                sent += 1
-                return _finish("accepted")
-            if isinstance(outcome, SubmitRejectedRetryable):
-                sent += 1
-                rejected_key = outcome.rejected_action_key
-                if rejected_key != attempt.action_key:
-                    # 适配器回传的拒绝键与本次尝试不一致：以我方实际发出的
-                    # 尝试键为准排除，防止把未尝试的动作错误排除或重发已拒动作。
+                if clock.now() >= budget.latest_send_at_monotonic:
+                    # S2（前次审查）：发送前同步审计已消耗时间，调用 HTTP 前
+                    # 必须重检原 latest_send_at_monotonic——越界时 POST 调用
+                    # 为 0，按 SubmitNotSent 语义终结窗口，预算不延长。
+                    audit.emit(
+                        AuditKind.SUBMISSION_OUTCOME,
+                        {
+                            "outcome": "SubmitNotSent",
+                            "reason": "deadline_passed_after_audit",
+                            "window": _window_payload(window.window_key),
+                            "capture_profile": CAPTURE_PROFILE_AUDIT_PLUS_V1,
+                            "audit_producer": AUDIT_PRODUCER_APPLICATION,
+                        },
+                        stage_attempt_id=stage_attempt_id,
+                        game_id=window.window_key.game_id,
+                        round_no=window.window_key.round_no,
+                        trigger_seq=window.window_key.trigger_seq,
+                        decision_id=decision_id,
+                        attempt_no=attempt_no,
+                    )
+                    return _finish("not_sent", "deadline")
+                try:
+                    outcome: SubmitOutcome = await session.submit(attempt)
+                except asyncio.CancelledError:
+                    # 运行关闭必须穿透，绝不重发；但在途 POST 结果未知，
+                    # 尽力补一条合成 outcome，避免审计链上 intent 无配对。
+                    try:
+                        audit.emit(
+                            AuditKind.SUBMISSION_OUTCOME,
+                            {
+                                "outcome": "SubmitAmbiguous",
+                                "reason": "cancelled_in_flight",
+                                "window": _window_payload(window.window_key),
+                                "capture_profile": CAPTURE_PROFILE_AUDIT_PLUS_V1,
+                                "audit_producer": AUDIT_PRODUCER_APPLICATION,
+                            },
+                            stage_attempt_id=stage_attempt_id,
+                            game_id=window.window_key.game_id,
+                            round_no=window.window_key.round_no,
+                            trigger_seq=window.window_key.trigger_seq,
+                            decision_id=decision_id,
+                            attempt_no=attempt_no,
+                        )
+                    except Exception:  # noqa: BLE001 - 审计失败不得干扰取消
+                        pass
+                    raise
+                except Exception as exc:  # noqa: BLE001 - POST 中途异常视为结果不确定
                     loop_notes.append(
-                        "拒绝键不一致：适配器回报 {}，本次尝试 {}，按尝试键排除".format(
-                            rejected_key, attempt.action_key
+                        "submit 抛出异常，按模糊结果封锁本窗口: {}".format(audit_error_text(exc))
+                    )
+                    audit.emit(
+                        AuditKind.SUBMISSION_OUTCOME,
+                        {
+                            "outcome": "SubmitAmbiguous",
+                            "reason": audit_error_text(exc),
+                            "window": _window_payload(window.window_key),
+                            "capture_profile": CAPTURE_PROFILE_AUDIT_PLUS_V1,
+                            "audit_producer": AUDIT_PRODUCER_APPLICATION,
+                        },
+                        stage_attempt_id=stage_attempt_id,
+                        game_id=window.window_key.game_id,
+                        round_no=window.window_key.round_no,
+                        trigger_seq=window.window_key.trigger_seq,
+                        decision_id=decision_id,
+                        attempt_no=attempt_no,
+                    )
+                    sent += 1
+                    return _finish("ambiguous", "unknown")
+
+                audit.emit(
+                    AuditKind.SUBMISSION_OUTCOME,
+                    _outcome_payload(outcome, window.window_key),
+                    stage_attempt_id=stage_attempt_id,
+                    game_id=window.window_key.game_id,
+                    round_no=window.window_key.round_no,
+                    trigger_seq=window.window_key.trigger_seq,
+                    decision_id=decision_id,
+                    attempt_no=attempt_no,
+                )
+
+                if isinstance(outcome, SubmitAccepted):
+                    sent += 1
+                    return _finish("accepted", "submitted")
+                if isinstance(outcome, SubmitRejectedRetryable):
+                    sent += 1
+                    rejected_key = outcome.rejected_action_key
+                    if rejected_key != attempt.action_key:
+                        # 适配器回传的拒绝键与本次尝试不一致：以我方实际发出的
+                        # 尝试键为准排除，防止把未尝试的动作错误排除或重发已拒动作。
+                        loop_notes.append(
+                            "拒绝键不一致：适配器回报 {}，本次尝试 {}，按尝试键排除".format(
+                                rejected_key, attempt.action_key
+                            )
+                        )
+                        rejected_key = attempt.action_key
+                    rejected.append(
+                        RejectedAttempt(
+                            action_key=rejected_key,
+                            official_code=outcome.official_code,
+                            attempt_no=attempt_no,
+                            based_on_authoritative_seq=current.authoritative_seq,
                         )
                     )
-                    rejected_key = attempt.action_key
-                rejected.append(
-                    RejectedAttempt(
-                        action_key=rejected_key,
-                        official_code=outcome.official_code,
-                        attempt_no=attempt_no,
-                        based_on_authoritative_seq=current.authoritative_seq,
+                    refreshed = outcome.refreshed_window
+                    if refreshed.window_key != window.window_key:
+                        # 适配器契约之外的异常现象：明确拒绝却带回不同窗口，
+                        # 为安全起见结束本窗口，等待权威状态迁移。
+                        loop_notes.append("retryable 拒绝携带了不同窗口键，放弃本窗口")
+                        return _finish("window_changed", "unknown")
+                    # 复用原预算重新规划；只更新观察与权威序号。
+                    current = refreshed
+                    rejected_keys = frozenset(item.action_key for item in rejected)
+                    replan_needed = True
+                    break
+                if isinstance(outcome, SubmitRejectedClosed):
+                    sent += 1
+                    return _finish("rejected_closed", "submitted")
+                if isinstance(outcome, SubmitRejectedNoRefresh):
+                    # POST 已发出且官方明确未执行，但无权威刷新：按实际发送
+                    # 计数并终结本窗口，不得追加动作（2026-09-04 契约收口）。
+                    sent += 1
+                    return _finish("rejected_no_refresh", "submitted")
+                if isinstance(outcome, SubmitAmbiguous):
+                    sent += 1
+                    return _finish("ambiguous", "unknown")
+                if isinstance(outcome, SubmitNotSent):
+                    # 未发 POST，发送计数不增加；"已发出 + 官方明确未执行 + 无刷新"
+                    # 由 SubmitRejectedNoRefresh 单独表达（2026-09-04 契约收口）。
+                    return _finish("not_sent", _not_sent_end_reason(outcome.reason))
+                if isinstance(outcome, SubmitFatal):
+                    sent += 1
+                    reason = (
+                        ParticipantTerminalReason.AUTHENTICATION_FAILED
+                        if outcome.official_code == "401"
+                        else ParticipantTerminalReason.FATAL_PROTOCOL_ERROR
                     )
-                )
-                refreshed = outcome.refreshed_window
-                if refreshed.window_key != window.window_key:
-                    # 适配器契约之外的异常现象：明确拒绝却带回不同窗口，
-                    # 为安全起见结束本窗口，等待权威状态迁移。
-                    loop_notes.append("retryable 拒绝携带了不同窗口键，放弃本窗口")
-                    return _finish("window_changed")
-                # 复用原预算重新规划；只更新观察与权威序号。
-                current = refreshed
-                rejected_keys = frozenset(item.action_key for item in rejected)
-                replan_needed = True
-                break
-            if isinstance(outcome, SubmitRejectedClosed):
-                sent += 1
-                return _finish("rejected_closed")
-            if isinstance(outcome, SubmitRejectedNoRefresh):
-                # POST 已发出且官方明确未执行，但无权威刷新：按实际发送
-                # 计数并终结本窗口，不得追加动作（2026-09-04 契约收口）。
-                sent += 1
-                return _finish("rejected_no_refresh")
-            if isinstance(outcome, SubmitAmbiguous):
-                sent += 1
-                return _finish("ambiguous")
-            if isinstance(outcome, SubmitNotSent):
-                # 未发 POST，发送计数不增加；"已发出 + 官方明确未执行 + 无刷新"
-                # 由 SubmitRejectedNoRefresh 单独表达（2026-09-04 契约收口）。
-                return _finish("not_sent")
-            if isinstance(outcome, SubmitFatal):
-                sent += 1
-                reason = (
-                    ParticipantTerminalReason.AUTHENTICATION_FAILED
-                    if outcome.official_code == "401"
-                    else ParticipantTerminalReason.FATAL_PROTOCOL_ERROR
-                )
-                raise FatalIdentityError(
-                    ParticipantTerminal(
-                        reason=reason,
-                        last_snapshot=None,
-                        detail="动作提交永久失败: code={} reason={}".format(
-                            outcome.official_code, outcome.reason
-                        ),
+                    raise FatalIdentityError(
+                        ParticipantTerminal(
+                            reason=reason,
+                            last_snapshot=None,
+                            detail="动作提交永久失败: code={} reason={}".format(
+                                outcome.official_code, outcome.reason
+                            ),
+                        )
                     )
+                # 未知结果类型（协议演进或适配器缺陷）：按结果不确定封锁本窗口。
+                loop_notes.append(
+                    "未知提交结果类型 {}，按模糊结果封锁本窗口".format(type(outcome).__name__)
                 )
-            # 未知结果类型（协议演进或适配器缺陷）：按结果不确定封锁本窗口。
-            loop_notes.append(
-                "未知提交结果类型 {}，按模糊结果封锁本窗口".format(type(outcome).__name__)
-            )
-            sent += 1
-            return _finish("ambiguous")
+                sent += 1
+                return _finish("ambiguous", "unknown")
 
-        if not replan_needed:
-            return _finish("exhausted")
+            if not replan_needed:
+                return _finish("exhausted", "exhausted")
+    except asyncio.CancelledError:
+        end_reason = "cancelled"
+        raise
+    except FatalIdentityError:
+        end_reason = "error"
+        raise
+    except Exception:  # noqa: BLE001 - 循环缺陷不能阻止终结证据落盘
+        end_reason = "error"
+        raise
+    finally:
+        # DECISION_ENDED：即使零提交、取消或错误也尽力记录（方案 §3.2）。
+        audit.emit_safe(
+            AuditKind.DECISION_ENDED,
+            payload_factory=_decision_ended_payload,
+            stage="decision_ended_encode",
+            stage_attempt_id=stage_attempt_id,
+            game_id=window.window_key.game_id,
+            round_no=window.window_key.round_no,
+            trigger_seq=window.window_key.trigger_seq,
+            decision_id=decision_id,
+        )
+
+
+def _not_sent_end_reason(reason: str) -> str:
+    """SubmitNotSent 到 DECISION_ENDED end_reason 的映射。
+
+    契约词表（parallel §5.1）：submitted/exhausted/deadline/cancelled/
+    error/unknown。not_sent 只可能由截止时间或窗口不再可提交导致，
+    按原因文本归并：deadline 类归 deadline，其余归 exhausted
+    （窗口已无可提交机会，无 POST 发出）。
+    """
+
+    if "deadline" in reason:
+        return "deadline"
+    return "exhausted"
 
 
 def _outcome_payload(outcome: SubmitOutcome, window_key: WindowKey) -> dict:
     """把封闭提交结果转成 JSON 载荷；只保留各类型实际拥有的字段。"""
 
-    payload: dict = {"outcome": type(outcome).__name__, "window": _window_payload(window_key)}
+    payload: dict = {
+        "outcome": type(outcome).__name__,
+        "window": _window_payload(window_key),
+        "capture_profile": CAPTURE_PROFILE_AUDIT_PLUS_V1,
+        "audit_producer": AUDIT_PRODUCER_APPLICATION,
+    }
     official_code = getattr(outcome, "official_code", None)
     if official_code is not None:
         payload["official_code"] = official_code

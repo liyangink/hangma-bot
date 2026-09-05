@@ -16,7 +16,8 @@ from typing import Optional
 _BEARER_PATTERN = re.compile(r"(?i)bearer[\s:]+[A-Za-z0-9._~+/=-]{8,}")
 _LONG_SECRET_PATTERN = re.compile(r"[A-Za-z0-9._~+/=-]{40,}")
 
-# 已知官方错误码集合（API 文档 §8 错误表，指南 v8，抓取 2026-09-03）。
+# 已知官方错误码集合（API 文档 §8 错误表，指南 v8 抓取 2026-09-03；
+# 自动匹配端点错误码 v13 起，见 API 文档 §2.6，2026-09-05）。
 # 异常服务端响应可能把任意文本塞进 code 字段（包括全大写凭证形态，
 # 形态正则无法区分），因此只放行已确认的官方码；未知值不进入异常与
 # 审计，只以脱敏形式并入 detail。官方新增错误码时同步维护此集合。
@@ -35,6 +36,10 @@ KNOWN_OFFICIAL_CODES = frozenset({
     "NOT_REGISTERED",
     "MATCH_LIMIT_REACHED",
     "RATE_LIMITED",
+    # ---- 自动匹配端点专用（v13 起；自由赛线 §5.1 受控差异）----
+    "NO_ROOM_AVAILABLE",  # 声明低于服务默认=永久；建房后入席失败=瞬态
+    "AUTO_MATCH_ONLY",  # 对自动房玩家 API 直连 register/ready
+    "MATCH_BUSY",  # 自动匹配忙（只挡建房，不挡入席）
 })
 
 _MAX_DETAIL_LENGTH = 300

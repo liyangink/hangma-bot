@@ -42,6 +42,17 @@ _LONG_SECRET_RE = re.compile(r"[A-Za-z0-9._~+/=-]{40,}")
 # 注：_LONG_SECRET_RE 对 40+ 连续 base64url 形态文本整体替换（宁杀勿漏）；
 # REDACTED 占位符与已替换文本不含该字符类，替换幂等。
 
+# endpoint 字段的键名：raw 事件 payload 保存官方端点原样（接口协议 §7）。
+ENDPOINT_KEY = "endpoint"
+
+# 端点豁免裸长串规则的原因：场次 URL 的路径段（如
+# /api/games/<40+ 字符 game_id>/state）会误命中 _LONG_SECRET_RE，把
+# "官方端点原样"抹成 GET/POST [REDACTED]，丢失端点级证据（如证明未调用
+# register/ready）。端点由我方代码生成、不含凭证（Token 在 Header 且
+# 传输层已替换），因此端点值只做弱形态扫描（Bearer/JWT/query=），
+# 仍保留纵深防御。
+_WEAK_SECRET_RES = (_BEARER_RE, _JWT_RE, _QUERY_SECRET_RE)
+
 
 def _redact_string(text: str) -> str:
     """对单个字符串值做凭证形态扫描；替换均保持文本可读且幂等。"""
@@ -50,6 +61,15 @@ def _redact_string(text: str) -> str:
     text = _JWT_RE.sub(REDACTED, text)
     text = _QUERY_SECRET_RE.sub(r"\1=" + REDACTED, text)
     text = _LONG_SECRET_RE.sub(REDACTED, text)
+    return text
+
+
+def _redact_string_weak(text: str) -> str:
+    """弱形态扫描：不应用裸长串规则（端点等非凭证长字段专用）。"""
+
+    text = _BEARER_RE.sub("Bearer " + REDACTED, text)
+    text = _JWT_RE.sub(REDACTED, text)
+    text = _QUERY_SECRET_RE.sub(r"\1=" + REDACTED, text)
     return text
 
 
@@ -65,6 +85,10 @@ def redact_value(value: Any) -> Any:
         for key, item in value.items():
             if isinstance(key, str) and _SENSITIVE_KEY_RE.search(key):
                 result[key] = REDACTED
+            elif key == ENDPOINT_KEY and isinstance(item, str):
+                # 端点保存官方端点原样：只做弱形态扫描，不应用裸长串规则
+                # （场次 URL 路径段会误命中 40+ 连续字符）。
+                result[key] = _redact_string_weak(item)
             else:
                 result[key] = redact_value(item)
         return result
@@ -75,14 +99,39 @@ def redact_value(value: Any) -> Any:
     return value
 
 
+# 序列化行内的端点值定位：精确匹配 "endpoint": "..."（值内允许转义）。
+_ENDPOINT_VALUE_RE = re.compile(r'"endpoint"\s*:\s*"((?:[^"\\]|\\.)*)"')
+
+# 行级兜底扫描时用于掩蔽端点原文的哨兵；\u0000 不属于任何凭证形态字符类，
+# 掩蔽后不会被误杀，扫描完精确还原。
+_ENDPOINT_SENTINEL = "\u0000{0}\u0000"
+
+
 def redact_json_line(line: str) -> str:
     """对序列化后的 JSON 行做最后一道形态扫描（纵深防御的兜底层）。
 
     所有凭证形态正则的字符类都不包含引号，因此替换只发生在字符串值内部，
     不会改变 JSON 结构。返回值仍是一行合法 JSON。
+
+    endpoint 值在结构级已做过弱扫描，行级兜底先用哨兵掩蔽其原文再扫描，
+    避免场次 URL 被裸长串规则误杀；掩蔽内容不匹配任何凭证形态，扫描后
+    精确还原（对已含 REDACTED 的行同样幂等）。
     """
 
-    return _redact_string(line)
+    masked: list[str] = []
+
+    def _mask(match: re.Match[str]) -> str:
+        masked.append(match.group(1))
+        return '"endpoint": "{0}"'.format(_ENDPOINT_SENTINEL.format(len(masked) - 1))
+
+    protected = _ENDPOINT_VALUE_RE.sub(_mask, line)
+    scanned = _redact_string(protected)
+    for index, value in enumerate(masked):
+        scanned = scanned.replace(
+            '"endpoint": "{0}"'.format(_ENDPOINT_SENTINEL.format(index)),
+            '"endpoint": "' + value + '"',
+        )
+    return scanned
 
 
 def is_sensitive_key(key: str) -> bool:
@@ -98,8 +147,20 @@ def unredacted_secret_matches(text: str) -> tuple[str, ...]:
     不再重复报告，保证本函数与写入侧扫描对同一文本幂等一致。
     """
 
+    return _unredacted_matches(text, (_BEARER_RE, _JWT_RE, _QUERY_SECRET_RE, _LONG_SECRET_RE))
+
+
+def unredacted_secret_matches_weak(text: str) -> tuple[str, ...]:
+    """弱形态判定：不应用裸长串规则（验证器扫描 endpoint 值专用）。"""
+
+    return _unredacted_matches(text, _WEAK_SECRET_RES)
+
+
+def _unredacted_matches(text: str, patterns: tuple[re.Pattern[str], ...]) -> tuple[str, ...]:
+    """共享实现：对给定形态集合返回仍未脱敏的命中片段。"""
+
     matches: list[str] = []
-    for pattern in (_BEARER_RE, _JWT_RE, _QUERY_SECRET_RE, _LONG_SECRET_RE):
+    for pattern in patterns:
         for match in pattern.finditer(text):
             if REDACTED not in match.group(0):
                 matches.append(match.group(0))

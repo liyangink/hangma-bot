@@ -208,6 +208,12 @@ class TestParseNotifyFrame:
         assert parse_notify_frame('{"seq": 3, "closed": true}').closed is True
         assert parse_notify_frame('{"seq": 3, "closed": false}').closed is False
 
+    def test_raw_passthrough_for_audit(self) -> None:
+        # 原文只随 NotifyFrame.raw 进入审计；缺省 None 兼容既有调用方
+        frame = parse_notify_frame('{"seq": 7}', raw='{"seq": 7}')
+        assert frame.raw == '{"seq": 7}'
+        assert parse_notify_frame('{"seq": 7}').raw is None
+
     def test_unknown_keys_tolerated_for_forward_compat(self) -> None:
         # v12 引入后官方可能修订帧格式：未知键忽略（与 dto.py 同原则）
         frame = parse_notify_frame('{"seq": 1, "extra": {"a": 1}, "note": "x"}')
@@ -257,6 +263,33 @@ class TestStreamBudget:
 
 
 class TestHappyPath:
+    async def test_frame_raw_preserved_for_audit(self) -> None:
+        seen: List[NotifyFrame] = []
+
+        async def on_frame(frame: NotifyFrame) -> None:
+            seen.append(frame)
+
+        client, _fake, _clock = make_client(
+            [
+                sse_response(
+                    [
+                        'data: {"seq": 3}',
+                        "",
+                        'data: {"seq": 4, "closed": true}',
+                        "",
+                    ]
+                ),
+                NOT_FOUND,  # closed 后按官方语义重连对齐：404 终态
+            ],
+            on_frame=on_frame,
+        )
+        result = await client.run()
+        assert result.kind is NotifyEndKind.TERMINAL
+        assert result.frames_delivered == 2
+        # 每条帧的 data 原文随 raw 完整保留（审计原文接缝）
+        assert [frame.raw for frame in seen] == ['{"seq": 3}', '{"seq": 4, "closed": true}']
+        assert seen[1].closed is True
+
     async def test_initial_change_keepalive_then_game_gone(self) -> None:
         frames = FrameRecorder()
         events = EventRecorder()

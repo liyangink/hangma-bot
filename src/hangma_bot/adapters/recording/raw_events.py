@@ -33,6 +33,7 @@ from typing import Any
 RAW_SOURCE_STATE_RESPONSE = "state_response"  # GET /api/games/{id}/state 响应原文（含全量快照/增量事件/pending）
 RAW_SOURCE_ACTION_RESPONSE = "action_submit_response"  # POST /api/games/{id}/action 响应原文（含 409/429 拒绝体）
 RAW_SOURCE_SSE_FRAME = "sse_frame"  # 预留：GET /api/games/{id}/notify SSE 帧（另一工作线 notify 客户端接入）
+RAW_SOURCE_MATCH_RESPONSE = "match_response"  # POST /api/match 完整匹配响应原文（自由赛线，parallel-v1 契约扩展）
 
 # 原始事件 payload 子结构版本：未来收紧/新增必填字段时递增，
 # 与信封 schema_version（=1）解耦——信封兼容旧读取器，子结构自演进。
@@ -43,6 +44,7 @@ RAW_EVENT_SOURCES = frozenset(
         RAW_SOURCE_STATE_RESPONSE,
         RAW_SOURCE_ACTION_RESPONSE,
         RAW_SOURCE_SSE_FRAME,
+        RAW_SOURCE_MATCH_RESPONSE,
     }
 )
 
@@ -159,6 +161,33 @@ def build_sse_frame_payload(
     if closed is not None:
         payload["closed"] = closed
     return payload
+
+def build_match_response_payload(
+    *,
+    endpoint: str,
+    http_status: int | None,
+    raw: str,
+    attempt: int | None = None,
+) -> dict[str, Any]:
+    """构造一条 POST /api/match 完整匹配响应的原始事件 payload。
+
+    parallel-v1 契约扩展（§3.3）：自由赛线用 raw 的新增来源
+    match_response 记录完整匹配响应原文（创建/入席/幂等返回），
+    采用现有 payload_schema_version=1。验证器只按 source 统计，不要求
+    连续性（/api/match 非逐场轮询，无 request_no 语义）；attempt 为
+    匹配操作的本地尝试序号（可选，便于对账退避路径）。
+    """
+
+    payload = _base(
+        source=RAW_SOURCE_MATCH_RESPONSE,
+        endpoint=endpoint,
+        http_status=http_status,
+        raw=raw,
+    )
+    if attempt is not None:
+        payload["attempt"] = attempt
+    return payload
+
 
 def is_new_shape_raw_payload(payload: object) -> bool:
     """判断 payload 是否为新版原始事件形态（携带子结构版本号）。

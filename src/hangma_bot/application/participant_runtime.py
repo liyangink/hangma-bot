@@ -9,9 +9,14 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Callable, Optional
+import platform
+from typing import Callable, Mapping, Optional
 
 from hangma_bot.application.audit import AuditTrail, audit_error_text, audit_text
+from hangma_bot.application.audit_codec import (
+    AUDIT_PRODUCER_APPLICATION,
+    CAPTURE_PROFILE_AUDIT_PLUS_V1,
+)
 from hangma_bot.application.contracts import (
     AuditKind,
     AuditSink,
@@ -35,6 +40,36 @@ from hangma_bot.policy.interface import BotPolicy
 DEFAULT_SLEEP = asyncio.sleep
 
 
+def _audit_plus_manifest_fields(
+    source_namespace: Optional[str],
+    manifest_extra: Optional[Mapping[str, object]],
+) -> dict:
+    """RUN_MANIFEST 的 audit-plus-v1 增强字段（方案 §3.2）。
+
+    初始化阶段未知的事实（源码提交/哈希、策略版本与完整权重等）可空：
+    由组合根经 manifest_extra 注入，缺省为 null。保留键不允许覆盖。
+    """
+
+    fields: dict[str, object] = {
+        "capture_profile": CAPTURE_PROFILE_AUDIT_PLUS_V1,
+        "audit_producer": AUDIT_PRODUCER_APPLICATION,
+        "source_namespace": source_namespace,
+        "python_version": platform.python_version(),
+        "git_commit": None,
+        "git_dirty": None,
+        "source_file_hashes": None,
+        "policy_version": None,
+        "policy_weights": None,
+        "redaction_configured": True,
+    }
+    if manifest_extra:
+        for key, value in manifest_extra.items():
+            if key in fields:
+                raise ValueError("manifest_extra 不得覆盖保留键: " + str(key))
+            fields[key] = value
+    return fields
+
+
 class ParticipantRuntime:
     """恰好对应一个 Token 的运行时；测试房间用四个隔离进程各启动一个。"""
 
@@ -51,6 +86,8 @@ class ParticipantRuntime:
         budget_policy: Optional[BudgetPolicy] = None,
         supervision: Optional[SupervisionPolicy] = None,
         sleep=DEFAULT_SLEEP,
+        source_namespace: Optional[str] = None,
+        manifest_extra: Optional[Mapping[str, object]] = None,
     ) -> None:
         self._session = session
         self._policy = policy
@@ -67,6 +104,11 @@ class ParticipantRuntime:
         self._last_audit_summary: Optional[AuditSummary] = None
         # 硬截止放弃的策略任务：动作路径不等待，运行出口限期回收。
         self._abandoned_policy_tasks: set = set()
+        # audit-plus-v1 manifest 增强来源（方案 §3.2）：source_namespace 是
+        # 部署配置中的逻辑平台实例名；manifest_extra 由组合根注入源码提交、
+        # 策略版本等初始化期事实，缺省可空。
+        self._source_namespace = source_namespace
+        self._manifest_extra = manifest_extra
 
     @property
     def run_id(self) -> Optional[str]:
@@ -106,6 +148,7 @@ class ParticipantRuntime:
                 trail.emit(
                     AuditKind.RUN_MANIFEST,
                     {
+                        **_audit_plus_manifest_fields(self._source_namespace, self._manifest_extra),
                         "run_id": self._run_id,
                         "mode": self._target.mode.value,
                         "expected_tournament_id": self._target.expected_tournament_id,
@@ -129,6 +172,7 @@ class ParticipantRuntime:
                 trail.emit(
                     AuditKind.RUN_MANIFEST,
                     {
+                        **_audit_plus_manifest_fields(self._source_namespace, self._manifest_extra),
                         "run_id": self._run_id,
                         "mode": self._target.mode.value,
                         "expected_tournament_id": self._target.expected_tournament_id,
@@ -148,6 +192,7 @@ class ParticipantRuntime:
                 trail.emit(
                     AuditKind.RUN_MANIFEST,
                     {
+                        **_audit_plus_manifest_fields(self._source_namespace, self._manifest_extra),
                         "run_id": self._run_id,
                         "mode": self._target.mode.value,
                         "expected_tournament_id": self._target.expected_tournament_id,
@@ -176,6 +221,7 @@ class ParticipantRuntime:
                 trail.emit(
                     AuditKind.RUN_MANIFEST,
                     {
+                        **_audit_plus_manifest_fields(self._source_namespace, self._manifest_extra),
                         "run_id": self._run_id,
                         "mode": self._target.mode.value,
                         "expected_tournament_id": self._target.expected_tournament_id,
@@ -202,6 +248,7 @@ class ParticipantRuntime:
             trail.emit(
                 AuditKind.RUN_MANIFEST,
                 {
+                    **_audit_plus_manifest_fields(self._source_namespace, self._manifest_extra),
                     "run_id": self._run_id,
                     "mode": self._target.mode.value,
                     "expected_tournament_id": self._target.expected_tournament_id,

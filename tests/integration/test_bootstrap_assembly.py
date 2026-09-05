@@ -11,11 +11,13 @@ from pathlib import Path
 import pytest
 
 from hangma_bot.adapters.recording import JsonlAuditSink
+from hangma_bot.application.auto_match_runtime import AutoMatchRuntime, AutoMatchSettings
 from hangma_bot.application.contracts import RuntimeMode
 from hangma_bot.application.participant_runtime import ParticipantRuntime
 from hangma_bot.bootstrap import (
     RuntimeConfig,
     TokenKind,
+    build_auto_match_runtime,
     build_runtime,
     runtime_config_from_mapping,
 )
@@ -174,6 +176,58 @@ class TestAssembly:
         config = runtime_config_from_mapping(_valid(audit_root=str(tmp_path)))
         assembled = build_runtime(config)
         assert isinstance(assembled.policy, WeightedHeuristicPolicy)
+        await assembled.session.aclose()
+
+
+class TestAutoMatchAssembly:
+    """AUTO_MATCH 组合根（parallel-v1 §3.3 受控扩展）：只服务自动匹配模式。"""
+
+    def _auto_config(self, tmp_path, **overrides) -> RuntimeConfig:
+        data = {
+            "mode": "auto_match",
+            "base_url": "https://platform.invalid",
+            "known_guide_version": 15,
+            "token": SECRET,
+            "token_kind": "official",
+            "audit_root": str(tmp_path),
+        }
+        data.update(overrides)
+        return runtime_config_from_mapping(data)
+
+    def test_rejects_non_auto_match_mode(self, tmp_path):
+        config = runtime_config_from_mapping(_valid(audit_root=str(tmp_path)))
+        with pytest.raises(ValueError, match="auto_match"):
+            build_auto_match_runtime(config, AutoMatchSettings())
+
+    def test_empty_target_allowed_only_for_auto_match(self, tmp_path):
+        config = self._auto_config(tmp_path, expected_tournament_id="")
+        assert config.expected_tournament_id == ""
+        assembled = build_auto_match_runtime(
+            config, AutoMatchSettings(), session_factory=lambda: _StubSession()
+        )
+        assert isinstance(assembled.runtime, AutoMatchRuntime)
+
+    def test_object_graph(self, tmp_path):
+        config = self._auto_config(tmp_path)
+        settings = AutoMatchSettings(declared_max_games=10, declared_rounds=8)
+        assembled = build_auto_match_runtime(
+            config, settings, session_factory=lambda: _StubSession()
+        )
+        assert isinstance(assembled.runtime, AutoMatchRuntime)
+        assert isinstance(assembled.sink, JsonlAuditSink)
+        assert isinstance(assembled.policy, WeightedHeuristicPolicy)
+        assert assembled.settings is settings
+        # run_id 在组装期固定：运行时与审计目录一致。
+        assert assembled.sink.run_dir == tmp_path / "runs" / assembled.run_id
+        assert assembled.config is config
+        assert SECRET not in repr(assembled)
+
+    async def test_default_auto_match_session_builds_and_closes(self, tmp_path):
+        """默认组装路径创建自动匹配会话与连接池；关闭释放资源，不发请求。"""
+
+        config = self._auto_config(tmp_path)
+        assembled = build_auto_match_runtime(config, AutoMatchSettings())
+        assert isinstance(assembled.runtime, AutoMatchRuntime)
         await assembled.session.aclose()
 
 

@@ -43,7 +43,12 @@ async def _drive(runtime, session, condition, grants: int = 1):
 
 
 async def test_manifest_and_participant_finished_bracket_run():
-    """运行以 RUN_MANIFEST 开始、PARTICIPANT_FINISHED 结束。"""
+    """运行以 RUN_MANIFEST 开始、PARTICIPANT_FINISHED 结束、producer_summary 收尾。
+
+    audit-plus-v1（2026-09-05）：关闭前 AuditTrail 发射一次
+    LIFECYCLE_CHANGED(area=audit, event=producer_summary) 作为关闭证据，
+    因此最后一条记录是 lifecycle_changed 而非 participant_finished。
+    """
 
     game = FakeGameSession(items=[make_window(make_observation(game_id="g1", seq=10))])
     session = FakeTournamentSession(
@@ -57,7 +62,9 @@ async def test_manifest_and_participant_finished_bracket_run():
     assert terminal.reason.value == "tournament_finished"
     kinds = [kind.value for kind in sink.kinds()]
     assert kinds[0] == "run_manifest"
-    assert kinds[-1] == "participant_finished"
+    assert kinds[-1] == "lifecycle_changed"
+    assert kinds[-2] == "participant_finished"
+    assert sink.records[-1].payload["event"] == "producer_summary"
     assert "authoritative_state" in kinds
 
 

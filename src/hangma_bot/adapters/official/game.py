@@ -74,6 +74,7 @@ from .errors import (
 )
 from hangma_bot.adapters.recording import (
     build_action_response_payload,
+    build_sse_frame_payload,
     build_state_response_payload,
 )
 from .notify import SSENotifyClient, StreamBudget
@@ -424,8 +425,23 @@ class OfficialGameSession:
         self._sse_task.add_done_callback(self._active_tasks.discard)
 
     async def _on_sse_frame(self, frame) -> None:
-        """帧到达回调（notify 客户端以 await 调用，必须为协程）：唤醒帧驱动短拉。"""
+        """帧到达回调（notify 客户端以 await 调用，必须为协程）：唤醒帧驱动短拉。
 
+        顺手把帧原文留进审计原文流（RAW_PROTOCOL_STATE，source=sse_frame）：
+        raw 只进审计、不进异常与日志（notify 模块契约）；发射在 SSE 监听
+        任务上且非阻塞，不触碰动作窗口的提交路径。
+        """
+
+        self._emit_audit(
+            AuditKind.RAW_PROTOCOL_STATE,
+            build_sse_frame_payload(
+                endpoint="GET /api/games/{}/notify".format(self.game_id),
+                seq=frame.seq,
+                closed=frame.closed,
+                raw=getattr(frame, "raw", None) or "",
+            ),
+            trigger_seq=frame.seq,
+        )
         if self._sse_event is not None:
             self._sse_wake_pending = True
             self._sse_event.set()

@@ -17,15 +17,28 @@ class RuntimeMode(str, Enum):
     TEST_ROOM = "test_room"
     TEST_TOURNAMENT = "test_tournament"
     OFFICIAL_TOURNAMENT = "official_tournament"
+    AUTO_MATCH = "auto_match"
 
 
 @dataclass(frozen=True)
 class RuntimeTarget:
-    """启动时必须核对的运行目标；不包含 Token 原文。"""
+    """启动时必须核对的运行目标；不包含 Token 原文。
+
+    AUTO_MATCH 模式下 ``expected_tournament_id`` 允许为空字符串，表示尚未
+    发现目标自动房（由显式 POST /api/match 入席后发现并回填）；非空表示
+    只恢复该已知自动房、不创建新房。其他模式仍必须指定非空目标。
+    """
 
     mode: RuntimeMode
     expected_tournament_id: str
     known_guide_version: int
+
+    def __post_init__(self) -> None:
+        if not self.expected_tournament_id and self.mode is not RuntimeMode.AUTO_MATCH:
+            raise ValueError(
+                "非 AUTO_MATCH 模式必须指定非空 expected_tournament_id；"
+                "只有 AUTO_MATCH 允许空值表示尚未发现自动房"
+            )
 
 
 @dataclass(frozen=True)
@@ -87,6 +100,9 @@ class ParticipantTerminalReason(str, Enum):
     INCOMPATIBLE_GUIDE = "incompatible_guide"
     TARGET_MISMATCH = "target_mismatch"
     FATAL_PROTOCOL_ERROR = "fatal_protocol_error"
+    # 以下两个是自动匹配（AUTO_MATCH）初始化停止的专用终态（parallel-v1 受控扩展）：
+    MATCHING_UNAVAILABLE = "matching_unavailable"  # 暂不可匹配，或入席结果不确定且恢复证据不足
+    CAPACITY_LIMIT = "capacity_limit"  # 资源/声明上限不符（如 MATCH_LIMIT_REACHED）；不误标淘汰或鉴权失败
 
 
 @dataclass(frozen=True)
@@ -100,7 +116,15 @@ class ParticipantTerminal:
 
 @dataclass(frozen=True)
 class SessionBootstrap:
-    """版本、身份、目标和规则发现结果；初始化本身不报名或到位。"""
+    """版本、身份、目标和规则发现结果。
+
+    旧三种模式的初始化本身不报名或到位；AUTO_MATCH 模式（parallel-v1
+    受控例外）的 OfficialAutoMatchSession 在目标为空且已确认无已有自动房
+    归属时，允许一次显式 POST /api/match 入席。无论哪种模式，成功返回的
+    ``tournament_id``/``participant_id`` 必须是已核实的非空事实：自动房以
+    经确认的 room_id 作为 ``tournament_id`` 值，不得存放空占位或假造
+    官方 ID。
+    """
 
     guide: GuideVersion
     participant_id: str
@@ -292,6 +316,12 @@ class AuditKind(str, Enum):
     AUTHORITATIVE_STATE = "authoritative_state"
     RAW_PROTOCOL_STATE = "raw_protocol_state"
     DECISION_PLANNED = "decision_planned"
+    # audit-plus-v1 增强种类（2026-09-05 并行契约登记，方案 §3.2）：完整
+    # 决策输入、提交前复核与决策终结证据。生产方为 application 层，payload
+    # 带 capture_profile=audit-plus-v1（词表见 application/audit_codec.py）。
+    DECISION_INPUT = "decision_input"
+    CANDIDATE_VALIDATED = "candidate_validated"
+    DECISION_ENDED = "decision_ended"
     SUBMISSION_INTENT = "submission_intent"
     SUBMISSION_OUTCOME = "submission_outcome"
     PROTOCOL_RECOVERED = "protocol_recovered"

@@ -24,10 +24,13 @@ from hangma_bot.adapters.recording.raw_events import (
 
 class TestVocabulary:
     def test_sources_are_frozen_vocabulary(self):
+        # match_response 为 parallel-v1 契约扩展（§3.3）：自由赛线完整匹配
+        # 响应原文的新来源，与既有三种来源同处冻结词表。
         assert RAW_EVENT_SOURCES == frozenset({
             "state_response",
             "action_submit_response",
             "sse_frame",
+            "match_response",
         })
         assert RAW_PAYLOAD_SCHEMA_VERSION == 1
 
