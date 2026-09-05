@@ -2,10 +2,12 @@
 
 > 状态：接口基线 v1.1（2026-09-04 集成阶段契约收口）；实行受控变更  
 > 日期：2026-09-04  
-> 官方依据：指南/API v8 快照（doc/official-platform-api-v2.md）+ 指南版本 v14 变更记录
+> 官方依据：指南/API v8 快照（doc/official-platform-api-v2.md）+ 指南版本 v15 变更记录
 >（`/portal/api/guide/version` 只读检查日期 2026-09-05；v10 跨局 `gap=true` 快照、
-> v11 state 轮询 16/s 每用户聚合、v12 SSE 不采纳、v13 在线分桌已审查放行、
-> v14 guide 全文端点。适配器代码与 fixture 同步由 runtime_protocol 工作包负责）  
+> v11 state 轮询 16/s 每用户聚合、v12 SSE 客户端已交付（notify.py，未接入运行链路、
+> 运行行为零变化，见 doc/implementation/notes/sse-notify-client.md）、v13 在线分桌已审查放行、
+> v14 guide 全文端点、v15 自动匹配默认房配置上调已审查（本项目不调用 /api/match，零影响）。
+> 适配器代码与 fixture 同步由 runtime_protocol 工作包负责）  
 > 代码定义：`src/hangma_bot/**/interface.py` 与 `application/contracts.py`
 
 ## 1. 设计决策
@@ -218,6 +220,6 @@ runs/{run_id}/
 - `WindowKey.phase` 继续使用**封闭的 `WindowPhase` 枚举**（draw/response_peng/response_chi）；裸字符串在构造期拒绝。
 - **不把官方任意 `data` 字典加入 `PublicEvent`**；原始数据留在协议审计（`RAW_PROTOCOL_STATE`/`PROTOCOL_RECOVERED`）。规则确实需要新事实时，先增加明确的规范字段并走契约变更。
 - `round_no` 不得假设每次运行都从 1 开始，只作为官方关联标识使用（非负整数校验不变）。
-- 内部统一语义：`PlayerObservation.my_hand` **不包含**单列的 `drawn_tile`；官方 DTO 若存在不同形态（如手牌含摸牌），由适配器统一规范化。
+- 内部统一语义（2026-09-05 修订，F-11）：官方快照实测形态（`my_hand` 含刚摸牌）与契约形态（不含）并存，适配器投影保留官方原样（紧急"最右一张"依赖官方顺序）；双计归一化由 hangma 引擎（`engine._concealed_without_drawn`，长度判据 14−3×副露数）与 policy 评分上下文（`evaluation._hand_codes_without_double_count`）按同口径防御性执行；适配器侧统一规范化列为后续工作线（rules-hu-gate-and-win-detection.md §6.1）。
 - **吃牌组合规范牌序**：`Chi.tiles` 必须严格按 `CANONICAL_TILE_ORDER` 升序，构造边界拒绝非规范顺序；相同吃牌组合必须产生相同 `action_key`，不得在 `action_key()` 中静默制造另一套排序规则。
 - **规范牌序唯一权威**：`kernel.actions.CANONICAL_TILE_ORDER`（含 `CANONICAL_TILE_INDEX`）是全仓唯一定义；`hangma` 等业务模块只允许引用，不得维护平行常量。

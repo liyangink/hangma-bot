@@ -61,6 +61,11 @@ DEFAULT_LOCAL_STREAM_BUDGET = 24
 # SSE data 事件行前缀（SSE 规范）；官方帧为单行 JSON。
 _DATA_PREFIX = "data:"
 
+# 单条 data 载荷长度上限（W2-3 修复）：防超长/毒化帧拖垮解析与内存。
+# 官方帧只有 seq/closed 两个标量，64KB 已是正常帧的数千倍余量；
+# 超限按可恢复 DtoError 处理（断开重连），绝不静默截断解析。
+_MAX_FRAME_DATA_BYTES = 64 * 1024
+
 
 @dataclass(frozen=True)
 class NotifyFrame:
@@ -96,10 +101,18 @@ def parse_notify_frame(data_payload: str) -> NotifyFrame:
     调用方断开重连，绝不吞帧也绝不解析 seq 以外的任何内容。
     """
 
+    if len(data_payload) > _MAX_FRAME_DATA_BYTES:
+        # W2-3：超长 data 载荷（毒化/异常帧）按可恢复分类，不做截断解析。
+        raise DtoError("通知帧 data 载荷超长（>{} 字节）".format(_MAX_FRAME_DATA_BYTES))
     try:
         doc = json.loads(data_payload)
     except ValueError:
         raise DtoError("通知帧不是合法 JSON") from None
+    except RecursionError:
+        # W2-3：深嵌套毒化帧 json.loads 抛 RecursionError（ValueError 之外），
+        # 必须同样收敛为可恢复 DtoError，否则会穿过 run() 裸抛、违反
+        # "官方分类错误绝不裸抛/封闭结果"承诺。
+        raise DtoError("通知帧 JSON 嵌套过深") from None
     if not isinstance(doc, Mapping):
         raise DtoError("通知帧应为 JSON 对象")
     closed = doc.get("closed")
@@ -242,7 +255,14 @@ class NotifyEndKind(str, Enum):
 
 @dataclass(frozen=True)
 class NotifyRunResult:
-    """run() 的封闭终局；全部字段已脱敏，绝不含 Token。"""
+    """run() 的封闭终局；全部字段已脱敏，绝不含 Token。
+
+    ``error``（OfficialError 实例）的载体边界（F-14/wv6 注明）：
+    ``error.raw_text`` 是传输层已完成 Token 精确替换、未截断的 HTTP
+    错误体原文——仅供审计落盘使用（原始事件全量保留），**不得**写入
+    日志、异常串或任何面向人的输出；`detail` 与模块其余字段已过
+    sanitize、不携带原始行文本。
+    """
 
     kind: NotifyEndKind
     detail: str = ""  # 已脱敏描述

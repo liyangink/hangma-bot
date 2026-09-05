@@ -21,9 +21,12 @@ import pytest
 from hangma_bot.application.contracts import (
     ActionAttempt,
     AuditKind,
+    GameFailed,
     ObservedActionWindow,
     SubmitAccepted,
     SubmitNotSent,
+    SubmitRejectedClosed,
+    SubmitRejectedRetryable,
 )
 from hangma_bot.kernel.actions import Discard, Tile, WindowKey, WindowPhase
 from hangma_bot.kernel.observation import PublicDiscard
@@ -179,8 +182,7 @@ async def test_poll_cancel_reconnect_cursor_never_regresses(transport, clock):
 
     get_calls = [c.params["seq"] for c in transport.calls if c.method == "GET"]
     # 取消前挂起于 seq=102；重连后首次轮询仍用 102（不回退 0），再按新游标 103
-    assert get_calls == [0, 101, 102, 102, 103]
-    assert session._sync.last_seq == 103  # 内部游标同样只进不退
+    assert get_calls == [0, 101, 102, 102, 103]  # 游标只进不退（公开行为口径）
 
 
 async def test_v10_boundary_exactly_one_snapshot_then_incremental(transport, clock, audit):
@@ -259,8 +261,8 @@ async def test_v10_boundary_no_progress_backoff_bounded(transport, clock, audit)
 
     elapsed = clock.monotonic() - start
     # 第 1~2 次无进度快照原速轮询（不延迟边界后响应窗口发现），第 3~6 次
-    # 按 (0.5, 1.0, 2.0, 2.0) 退避：假时钟精确推进 5.5 秒
-    assert elapsed == pytest.approx(0.5 + 1.0 + 2.0 + 2.0)
+    # 按 (0.5, 1.0, 1.0, 1.0) 退避（封顶 1.0s，P2-N4）：假时钟精确推进 3.5 秒
+    assert elapsed == pytest.approx(0.5 + 1.0 + 1.0 + 1.0)
     assert stall_polls["n"] == 6
     assert _recovered_gap_count(audit) == 7  # 6 次无进度 + 1 次前进，总量有界
 
@@ -485,3 +487,215 @@ class TestIncrementalDrawWindow:
         # 牌河按事件流追加公开弃牌（估算口径与真实牌河一致）
         assert observation.discards[1][-1] == Tile("3b")
         assert observation.snapshot_seq == 101  # 权威水位仍为最后快照 seq（契约口径）
+
+
+# ---------- 返工回归：F-02 / P3-01 / F-15 ----------
+
+
+async def test_conflict_on_incremental_window_refresh_same_seq_retryable(transport, clock):
+    """F-02 回归 v1：增量摸牌窗口 409 后，权威刷新快照水位 == 摸牌事件 seq
+    （恒等成立）→ 同窗判定为 SubmitRejectedRetryable，可排除 hu 换弃牌。"""
+
+    from hangma_bot.adapters.official.errors import ConflictError
+
+    base = _snapshot_doc(101, turn=0)
+    refreshed = _snapshot_doc(102, turn=MY_SEAT, drawn="1w")  # 409 后刷新：同窗仍开
+    stage = {"n": 0}
+
+    def handler(*, method: str, path: str, params=None, json_body=None, long_poll=False):
+        if method == "POST":
+            raise ConflictError(409, "INVALID_ACTION", "hu rejected")
+        seq = (params or {}).get("seq")
+        stage["n"] += 1
+        if stage["n"] == 1:
+            return _json(base)
+        if stage["n"] == 2:
+            return _json(_events(_event(102, "tile_drawn", MY_SEAT, "1w")))
+        if stage["n"] == 3:
+            assert seq == 0  # 409 后权威刷新
+            return _json(refreshed)
+        raise AssertionError("unexpected stage={}".format(stage["n"]))
+
+    transport.handler = handler
+    session = make_game_session(transport=transport, clock=clock)
+    window = await asyncio.wait_for(session.next_item(), timeout=2)
+    assert isinstance(window, ObservedActionWindow)
+    assert window.window_key.trigger_seq == 102  # 增量投递
+
+    outcome = await asyncio.wait_for(
+        session.submit(_attempt(window.window_key, "1w", trigger=102, attempt_no=1)),
+        timeout=2,
+    )
+    assert isinstance(outcome, SubmitRejectedRetryable), outcome
+    assert outcome.refreshed_window.window_key == window.window_key  # 同窗可换动作重试
+    assert outcome.refreshed_window.observation.drawn_tile == Tile("1w")
+
+
+async def test_conflict_on_incremental_window_migrated_is_closed(transport, clock):
+    """F-02 回归 v2：增量窗口 409 后权威刷新显示窗口已迁移（水位前进、无我方
+    窗口）→ SubmitRejectedClosed，绝不在未确认状态上重试。"""
+
+    from hangma_bot.adapters.official.errors import ConflictError
+
+    base = _snapshot_doc(101, turn=0)
+    migrated = _snapshot_doc(103, turn=0)  # 窗口已迁移：他人在行动
+    stage = {"n": 0}
+
+    def handler(*, method: str, path: str, params=None, json_body=None, long_poll=False):
+        if method == "POST":
+            raise ConflictError(409, "INVALID_ACTION", "hu rejected")
+        seq = (params or {}).get("seq")
+        stage["n"] += 1
+        if stage["n"] == 1:
+            return _json(base)
+        if stage["n"] == 2:
+            return _json(_events(_event(102, "tile_drawn", MY_SEAT, "1w")))
+        if stage["n"] == 3:
+            assert seq == 0
+            return _json(migrated)
+        raise AssertionError("unexpected stage={}".format(stage["n"]))
+
+    transport.handler = handler
+    session = make_game_session(transport=transport, clock=clock)
+    window = await asyncio.wait_for(session.next_item(), timeout=2)
+    assert isinstance(window, ObservedActionWindow)
+
+    outcome = await asyncio.wait_for(
+        session.submit(_attempt(window.window_key, "1w", trigger=102)),
+        timeout=2,
+    )
+    assert isinstance(outcome, SubmitRejectedClosed), outcome
+    # 同窗不再接受任何提交
+    again = await asyncio.wait_for(
+        session.submit(_attempt(window.window_key, "1w", trigger=102, attempt_no=2)),
+        timeout=2,
+    )
+    assert isinstance(again, SubmitNotSent)
+
+
+async def test_delivered_window_never_delivered_twice_across_paths(transport, clock):
+    """P3-01 回归：同一物理窗口经增量路径投递后，权威快照再次携带同窗状态时
+    不得二次投递（exactly-once 双路径护栏）。"""
+
+    base = _snapshot_doc(101, turn=0)
+    redeliver = _snapshot_doc(102, turn=MY_SEAT, drawn="1w")  # 快照形态重复同窗
+    stage = {"n": 0}
+    windows = []
+
+    async def handler(*, method: str, path: str, params=None, json_body=None, long_poll=False):
+        if method == "POST":
+            return 200, "{}"
+        seq = (params or {}).get("seq")
+        stage["n"] += 1
+        if stage["n"] == 1:
+            return _json(base)
+        if stage["n"] == 2:
+            return _json(_events(_event(102, "tile_drawn", MY_SEAT, "1w")))
+        if stage["n"] == 3:
+            assert seq == 102
+            return _json(redeliver)  # 同水位快照重送（含同窗状态）
+        if stage["n"] == 4:
+            assert seq == 102
+            return _json({"pending": True})
+        await asyncio.sleep(30)
+        return _json({"pending": True})
+
+    transport.handler = handler
+    session = make_game_session(transport=transport, clock=clock)
+    first = await asyncio.wait_for(session.next_item(), timeout=2)
+    assert isinstance(first, ObservedActionWindow)
+    windows.append(first.window_key)
+
+    task = asyncio.ensure_future(session.next_item())
+    await asyncio.sleep(0.15)  # 让重送快照/pending 被消费（不产生二次投递）
+    task.cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await task
+
+    assert len(windows) == 1  # 快照重送未造成第二次窗口投递
+    get_calls = [c.params["seq"] for c in transport.calls if c.method == "GET"]
+    assert get_calls[:4] == [0, 101, 102, 102]  # 全程零重建、无回退
+    assert get_calls.count(0) == 1
+
+
+async def test_pending_gap_stall_bounded_by_rebuild_loop_guard(transport, clock):
+    """F-15 回归：连续 pending+gap 且重建快照无进度 → 两次无进度重建后按
+    rebuild_loop 保护上交可恢复故障（有界快速失败，无退避睡眠依赖、绝不
+    无限轮询）；快照+gap 边界路径的退避由 snapshot-gap 分支承担（v10
+    真实路径，见 test_v10_boundary_no_progress_backoff_bounded）。"""
+
+    base = _snapshot_doc(101, turn=0)
+    stall = _snapshot_doc(101, turn=0, round_no=2, gap=True)  # 重建后仍无进度
+    stage = {"n": 0}
+
+    def handler(*, method: str, path: str, params=None, json_body=None, long_poll=False):
+        if method == "POST":
+            return 200, "{}"
+        seq = (params or {}).get("seq")
+        stage["n"] += 1
+        if stage["n"] == 1:
+            return _json(base)
+        # 偶数序号 = 长轮询返回 pending+gap；奇数序号 = 对应 seq=0 重建快照
+        if stage["n"] % 2 == 0:
+            assert seq == 101 or seq == 0, "pending 轮询游标不应回退: seq={}".format(seq)
+            return _json({"pending": True, "gap": True})
+        assert seq == 0  # 重建请求
+        return _json(stall)
+
+    transport.handler = handler
+    session = make_game_session(transport=transport, clock=clock)
+    start = clock.monotonic()
+    item = await asyncio.wait_for(session.next_item(), timeout=5)
+    elapsed = clock.monotonic() - start
+    assert isinstance(item, GameFailed)
+    assert item.recoverable is True
+    assert item.reason == "rebuild_loop"  # 第 3 次 pending+gap（streak=3 > 2）保护性上交
+    assert elapsed == 0.0  # 无退避睡眠：保护性快速失败，可恢复重入
+
+
+async def test_pending_gap_progress_restores_incremental(transport, clock):
+    """F-15/wv6 回归：pending+gap 重建后水位前进 → 恢复计数清零并恢复增量投递。
+
+    第二轮 pending+gap 用于锁定 wv6 的 rebuild_streak 清零：若进度后不清零，
+    第二轮首个 pending+gap 的 streak 累积到 3 会误判 rebuild_loop 提前上交。
+    """
+
+    base = _snapshot_doc(101, turn=0)
+    boundary_r1 = _snapshot_doc(101, turn=0, round_no=2, gap=True)  # 第一轮无进度
+    water_200 = _snapshot_doc(200, turn=0, round_no=2, gap=True)  # 第一轮进展到 200
+    boundary_r2 = _snapshot_doc(200, turn=0, round_no=2, gap=True)  # 第二轮无进度
+    water_300 = _snapshot_doc(300, turn=0, round_no=2, gap=True)  # 第二轮进展到 300
+    stage = {"n": 0}
+
+    def handler(*, method: str, path: str, params=None, json_body=None, long_poll=False):
+        if method == "POST":
+            return 200, "{}"
+        seq = (params or {}).get("seq")
+        stage["n"] += 1
+        if stage["n"] == 1:
+            return _json(base)
+        if stage["n"] in (2, 4, 6, 8):
+            # 偶数位（除事件位 10）= 长轮询返回 pending+gap（两轮）
+            return _json({"pending": True, "gap": True})
+        if stage["n"] == 3:
+            return _json(boundary_r1)  # 第一轮重建：无进度（水位 101 不变）
+        if stage["n"] == 5:
+            return _json(water_200)  # 第一轮进展：水位 200（streak 必须清零）
+        if stage["n"] == 7:
+            return _json(boundary_r2)  # 第二轮重建：无进度（水位 200 不变）
+        if stage["n"] == 9:
+            return _json(water_300)  # 第二轮进展：水位 300（streak 再次清零）
+        if stage["n"] == 10:
+            assert seq == 300
+            return _json(_events(_event(301, "tile_drawn", MY_SEAT, "8w")))
+        raise AssertionError("unexpected stage={}".format(stage["n"]))
+
+    transport.handler = handler
+    session = make_game_session(transport=transport, clock=clock)
+    item = await asyncio.wait_for(session.next_item(), timeout=5)
+    get_calls = [c.params["seq"] for c in transport.calls if c.method == "GET"]
+    assert isinstance(item, ObservedActionWindow)
+    assert item.window_key.round_no == 2
+    assert item.window_key.trigger_seq == 301  # 第二轮进展后恢复增量直达
+    assert get_calls == [0, 101, 0, 101, 0, 200, 0, 200, 0, 300]
+

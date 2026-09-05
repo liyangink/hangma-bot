@@ -90,6 +90,26 @@ def test_unknown_event_rebuilds_once_then_learned() -> None:
     assert state.last_seq == 102
 
 
+def test_learned_unknown_event_type_requires_authoritative_refresh():
+    """P2-N3 回归：已学习忽略的未知事件类型行为不可知，每次出现都必须
+    触发权威刷新（防止手牌/窗口状态静默漂移），但不触发重建风暴。"""
+
+    state = ProtocolSyncState("g", TIMING)
+    state.apply_full_snapshot(_snapshot())
+    assert not state.events_need_authoritative_refresh(
+        (_event(102, "tile_drawn"),)
+    )  # 已知可忽略行（他家摸牌）不受影响
+    state.note_rebuild_absorbed("future_event")
+    assert state.events_need_authoritative_refresh((_event(102, "future_event"),))
+    # 学习前（首见）该类型在 apply 层走 NEEDS_REBUILD，不进入本谓词
+    other = ProtocolSyncState("g", TIMING)
+    other.apply_full_snapshot(_snapshot())
+    assert not other.events_need_authoritative_refresh((_event(102, "future_event"),))
+    assert other.apply_events(
+        (_event(102, "future_event"),)
+    ).decision is SyncDecision.NEEDS_REBUILD
+
+
 def test_game_ended_marks_finished() -> None:
     state = ProtocolSyncState("g", TIMING)
     state.apply_full_snapshot(_snapshot())
@@ -289,3 +309,119 @@ def test_memory_tile_mismatch_falls_back_with_note():
     assert window.window_key.trigger_seq == 185  # 记忆 "6w" != 快照 "8w"
     assert window.trigger_projection_note is not None
     assert "185" in window.trigger_projection_note
+
+
+
+
+
+def test_memory_rejected_when_other_seat_discards_same_tile():
+    """Expert major 回归：跨重建触发记忆必须校验弃牌者座位。
+
+    序列：座位 1 弃 5w（seq 101，结构化 last_discard）→ 记忆写入
+    (round, 101, "5w", seat=1) → 全量重建清空事件历史（409/gap）→
+    座位 0 再弃 5w（seq 130，官方纯牌码形态、快照 turn=0）：
+    修复前记忆只按"局号+牌码"命中 → 新窗 trigger_seq 误用 101，与
+    已投递旧窗 WindowKey 完全碰撞（_delivered_windows/ActionGate 抑制
+    → 整窗零投递，R2 exactly-once 欠交付方向）；修复后座位交叉校验
+    不通过 → 降级 tier-4（快照 seq=130 + 审计提示），两窗不碰撞且
+    新窗正常投递。
+    """
+
+    from hangma_bot.kernel.actions import WindowPhase
+
+    state = ProtocolSyncState("g", TIMING)
+    # 阶段 1：座位 1 结构化弃牌 5w@101 开启我方响应窗口 → 记忆写回
+    state.apply_full_snapshot(
+        _snapshot_with(
+            seq=101, last_discard={"seat": 1, "tile": "5w", "seq": 101}, turn=1
+        )
+    )
+    first = state.current_window()
+    assert first is not None
+    assert first.window_key.phase is WindowPhase.RESPONSE_PENG
+    assert first.window_key.trigger_seq == 101
+    # 阶段 2：重建清史后，他座（座位 0）再弃同码 5w（纯牌码形态）
+    state.apply_full_snapshot(_snapshot_with(seq=130, last_discard="5w", turn=0))
+    second = state.current_window()
+    assert second is not None
+    assert second.window_key.phase is WindowPhase.RESPONSE_PENG
+    assert second.window_key.trigger_seq == 130  # 不再误用旧弃牌 seq=101
+    assert second.window_key != first.window_key  # 两物理窗口不碰撞
+    assert second.trigger_projection_note is not None  # tier-4 降级提示进审计
+    assert "130" in second.trigger_projection_note
+
+
+def test_memory_still_hits_when_same_seat_discards_same_tile_after_rebuild():
+    """座位校验不误伤 R2 主场景：同座（同一次弃牌）清史重建后记忆继续命中。"""
+
+    from hangma_bot.kernel.actions import WindowPhase
+
+    state = ProtocolSyncState("g", TIMING)
+    state.apply_full_snapshot(
+        _snapshot_with(
+            seq=101, last_discard={"seat": 1, "tile": "5w", "seq": 101}, turn=1
+        )
+    )
+    first = state.current_window()
+    assert first is not None and first.window_key.trigger_seq == 101
+    # 同一弃牌、pass 推进水位后清史重建（纯牌码、turn 仍=弃牌者 1）
+    state.apply_full_snapshot(_snapshot_with(seq=105, last_discard="5w", turn=1))
+    second = state.current_window()
+    assert second is not None
+    assert second.window_key == first.window_key  # 身份稳定：同窗同 key
+    assert second.trigger_projection_note is None
+
+
+def test_incremental_draw_observation_keeps_counts_consistent() -> None:
+    """N-2 回归：增量摸牌窗口的观察自洽性——快照 hand_counts[本人] 不含刚摸牌
+    时，增量送达必须本人手数 +1、墙余 -1（否则 my_hand+drawn 与 hand_counts
+    口径互相矛盾，污染牌效估算/审计快照）。"""
+
+    from hangma_bot.adapters.official.dto import parse_snapshot
+
+    doc = load_fixture("state_response_snapshot_draw.json")
+    body = dict(doc["snapshot"])
+    body["turn"] = 0  # 无窗基础快照（正常增量流程形态：本人弃牌后、下次摸牌前）
+    body["drawn_tile"] = ""
+    body["hand_counts"] = [10, 10, 13, 10]  # 本人(seat 2) 13 张：不含刚摸
+    body["wall_remaining"] = 40
+    state = ProtocolSyncState("g", TIMING)
+    state.apply_full_snapshot(parse_snapshot(body, doc.get("seq")))
+    state.apply_events(
+        (
+            _event(102),  # 他家弃牌（_event 默认 seat=0）
+            ParsedEvent(
+                seq=103, type="tile_drawn", seat=2, tiles=("7w",),
+                occurred_at_unix_sec=1756771200,
+            ),
+        )
+    )
+    observation = state.incremental_draw_observation()
+    assert observation is not None
+    assert observation.hand_counts[2] == 14  # 含刚摸的 7w
+    assert observation.remaining_tile_count == 39  # 墙余减 1
+    assert observation.hand_counts[0] == 10  # 他家不变
+
+
+def test_incremental_observation_counts_unchanged_when_base_already_drawn() -> None:
+    """N-2 防御分支：基础快照已是本人摸牌形态（含 drawn）时不做 +1/-1。"""
+
+    from hangma_bot.adapters.official.dto import parse_snapshot
+
+    doc = load_fixture("state_response_snapshot_draw.json")
+    state = ProtocolSyncState("g", TIMING)
+    state.apply_full_snapshot(parse_snapshot(doc["snapshot"], doc.get("seq")))
+    state.apply_events(
+        (
+            ParsedEvent(
+                seq=102, type="tile_drawn", seat=2, tiles=("7w",),
+                occurred_at_unix_sec=1756771200,
+            ),
+        )
+    )
+    observation = state.incremental_draw_observation()
+    assert observation is not None
+    # 基础快照 hand_counts[2]=14（官方含摸牌形态口径）：换牌等量，不再 +1
+    assert observation.hand_counts[2] == 14
+    assert observation.drawn_tile is not None and observation.drawn_tile.code == "7w"
+

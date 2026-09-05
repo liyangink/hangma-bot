@@ -293,11 +293,13 @@ self._emit_audit(
 - 记录接缝已就绪：build_sse_frame_payload(endpoint="GET /api/games/{gid}/notify",
   seq=<帧水位>, closed=<场终标记>, raw=<帧原文>)；帧协议只含 seq（指南 v12/14，
   API §2.3：初始帧 {"seq": N}、变化帧、{"seq":N,"closed":true} 场终、: keepalive）。
-- 对接现实现（本任务不拥有、只读对照，2026-09-05 并行工作线
-  adapters/official/notify.py）：notify.NotifyFrameProcessor.feed(line) 处
-  （约 notify.py:133，data: 行解析点）持有原始行文本，把 value 与解析出的
-  NotifyFrame(seq, closed) 传入本构造器即可；若选择在 _deliver_frame
-  （约 notify.py:663）接入则只有 seq/closed、raw 传空串。
+- 对接现实现（本任务不拥有、只读对照；**wv6 修订**：notify.py 中不存在
+  名为 NotifyFrameProcessor 的符号——实际为私有 _SseEventAccumulator
+  （notify.py:111-152，feed 在约 :122，data 行解析在约 :133-138），且
+  累加器不保留原始行文本（只留存 data 载荷、注释/空行丢弃）：接线时需先
+  在累加器回传 data 原文（或直接在 _deliver_frame 传 raw 空串降级），
+  本文档此前引用的符号与"持有原始行文本"的假设均不成立。若选择在
+  _deliver_frame（约 notify.py:663）接入则只有 seq/closed、raw 传空串。
   注意 notify.py 现有 docstring 声明"绝不携带 SSE 原始行文本"——接线时
   该约束须修订为"原文只进审计、不进异常与日志"。
 - 记录时 game_id 传所在场；验证器按 source 统计、不要求帧完整性（SSE 是
@@ -345,7 +347,7 @@ DECISION_PLANNED 的 payload 新增（2026-09-04 增强，均为可选增量字�
 
 ## 10. 测试与验收结果
 
-- tests/adapters/recording/：77 项全过（新增 test_raw_events、test_raw_retention、
+- tests/adapters/recording/：79 项全过（wv3 增补截断 gzip 回归后；新增 test_raw_events、test_raw_retention、
   test_raw_validator、test_decision_snapshot、test_baseline_regression；
   更新 test_schema/test_jsonl_sink/test_validator/test_integration_wiring/
   test_validator_assembly_rulings 到接线后现实形态）。

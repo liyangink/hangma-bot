@@ -131,6 +131,58 @@ class TestHuFreshDrawGate:
         assert _hu_keys(obs) == ["hu"]
 
 
+class TestNormalizationAnomaly:
+    """P2-N1 回归：官方「含摸牌」形态长度命中但 my_hand 缺 drawn 同码实例时，
+    必须产出 RuleIssue（DEGRADED 可审计），不得静默回到幻影双计口径。"""
+
+    def test_missing_drawn_instance_marks_issue(self):
+        obs = _observation(
+            ["1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w", "东", "南", "西", "北", "中"],
+            drawn="发",  # 14 张长度命中官方形态，但手牌中没有「发」
+        )
+        analysis = _rules().analyze(obs)
+        assert analysis.completeness.value == "degraded"
+        assert any(
+            issue.area == "engine.context" and "形态异常" in issue.reason
+            for issue in analysis.issues
+        )
+        # 其余动作族照常可用（降级不丢行动能力）
+        assert any(c.action_key.startswith("discard:") for c in analysis.legal_candidates)
+        assert analysis.emergency_candidate is not None
+
+    def test_normal_official_form_has_no_anomaly_issue(self):
+        # 官方形态但 drawn 同码实例存在（正常）→ 无异常 Issue、不降级
+        obs = _observation(
+            ["1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w", "东", "东", "南", "白", "白"],
+            drawn="白",
+        )
+        analysis = _rules().analyze(obs)
+        assert not any(
+            issue.area == "engine.context" and "形态异常" in issue.reason
+            for issue in analysis.issues
+        )
+
+    def test_contract_form_has_no_anomaly_issue(self):
+        obs = _observation(
+            ["1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w", "东", "东", "南", "白"],
+            drawn="白",  # 契约形态：13 张不含摸牌
+        )
+        analysis = _rules().analyze(obs)
+        assert not any(
+            issue.area == "engine.context" and "形态异常" in issue.reason
+            for issue in analysis.issues
+        )
+
+    def test_no_drawn_has_no_anomaly_issue(self):
+        obs = _observation(
+            ["1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w", "东", "东", "南", "白"],
+            drawn="",
+        )
+        analysis = _rules().analyze(obs)
+        assert analysis.completeness.value == "complete"
+
+
+
 class TestDrawnTileDoubleCountNormalization:
     """官方 my_hand 含摸牌形态与契约形态（不含摸牌）判定必须一致。"""
 

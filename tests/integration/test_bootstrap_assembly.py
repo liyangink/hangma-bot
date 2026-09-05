@@ -98,6 +98,26 @@ class TestConfigValidation:
         assert SECRET not in repr(config)
         assert SECRET not in str(config)
 
+    def test_audit_raw_gzip_defaults_off(self):
+        """F-08：新配置项默认关闭/默认 32MB，旧配置零改动兼容。"""
+
+        config = runtime_config_from_mapping(_valid())
+        assert config.audit_raw_gzip is False
+        assert config.audit_raw_rotate_bytes == 32 * 1024 * 1024
+
+    def test_audit_raw_gzip_parsed(self):
+        config = runtime_config_from_mapping(
+            _valid(audit_raw_gzip=True, audit_raw_rotate_bytes=4096)
+        )
+        assert config.audit_raw_gzip is True
+        assert config.audit_raw_rotate_bytes == 4096
+
+    def test_audit_raw_gzip_type_rejected(self):
+        with pytest.raises(ValueError, match="audit_raw_gzip"):
+            runtime_config_from_mapping(_valid(audit_raw_gzip="true"))
+        with pytest.raises(ValueError, match="audit_raw_rotate_bytes"):
+            runtime_config_from_mapping(_valid(audit_raw_rotate_bytes=0))
+
 
 class TestAssembly:
     def test_build_runtime_object_graph(self, tmp_path):
@@ -155,6 +175,85 @@ class TestAssembly:
         assembled = build_runtime(config)
         assert isinstance(assembled.policy, WeightedHeuristicPolicy)
         await assembled.session.aclose()
+
+
+class TestAuditRawGzipWiring:
+    """F-08 回归：RuntimeConfig 的 gzip 开关真实透传到组合根的 JsonlAuditSink。"""
+
+    async def test_raw_gzip_wired_into_assembled_sink(self, tmp_path):
+        from hangma_bot.adapters.recording import build_state_response_payload
+        from hangma_bot.application.contracts import (
+            AuditContext,
+            AuditKind,
+            AuditRecord,
+        )
+
+        config = runtime_config_from_mapping(
+            _valid(audit_root=str(tmp_path), audit_raw_gzip=True, audit_raw_rotate_bytes=4096)
+        )
+        assembled = build_runtime(config, session_factory=lambda: _StubSession())
+        record = AuditRecord(
+            schema_version=1,
+            kind=AuditKind.RAW_PROTOCOL_STATE,
+            context=AuditContext(
+                run_id=assembled.run_id,
+                tournament_id="t1",
+                participant_id="P1",
+                game_id="G1",
+            ),
+            wall_time_unix_ms=1_750_000_000_000,
+            monotonic_ns=1_750_000_000_000_000_000,
+            payload=build_state_response_payload(
+                endpoint="GET /api/games/G1/state",
+                http_status=200,
+                seq_requested=0,
+                seq_observed=1,
+                request_no=1,
+                raw='{"seq": 1, "snapshot": {}}',
+            ),
+        )
+        assert assembled.sink.emit(record).queued
+        await assembled.sink.aclose(timeout_seconds=5.0)
+        raw_dir = assembled.sink.run_dir / "participants" / "P1" / "raw"
+        gz_segments = list(raw_dir.glob("*.jsonl.gz"))
+        assert len(gz_segments) == 1  # gzip 接线生效：落盘为压缩段而非 .jsonl
+
+    async def test_raw_gzip_off_keeps_plain_jsonl(self, tmp_path):
+        from hangma_bot.adapters.recording import build_state_response_payload
+        from hangma_bot.application.contracts import (
+            AuditContext,
+            AuditKind,
+            AuditRecord,
+        )
+
+        config = runtime_config_from_mapping(_valid(audit_root=str(tmp_path)))
+        assert config.audit_raw_gzip is False
+        assembled = build_runtime(config, session_factory=lambda: _StubSession())
+        record = AuditRecord(
+            schema_version=1,
+            kind=AuditKind.RAW_PROTOCOL_STATE,
+            context=AuditContext(
+                run_id=assembled.run_id,
+                tournament_id="t1",
+                participant_id="P1",
+                game_id="G1",
+            ),
+            wall_time_unix_ms=1_750_000_000_000,
+            monotonic_ns=1_750_000_000_000_000_000,
+            payload=build_state_response_payload(
+                endpoint="GET /api/games/G1/state",
+                http_status=200,
+                seq_requested=0,
+                seq_observed=1,
+                request_no=1,
+                raw='{"seq": 1, "snapshot": {}}',
+            ),
+        )
+        assert assembled.sink.emit(record).queued
+        await assembled.sink.aclose(timeout_seconds=5.0)
+        raw_dir = assembled.sink.run_dir / "participants" / "P1" / "raw"
+        assert list(raw_dir.glob("*.jsonl.gz")) == []
+        assert (raw_dir / "G1.jsonl").exists()
 
 
 class _StubSession:

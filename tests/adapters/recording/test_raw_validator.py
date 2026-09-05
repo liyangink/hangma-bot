@@ -147,6 +147,9 @@ async def test_state_request_no_gap_is_violation(tmp_path):
     report = validate_run(run_dir)
     codes = {f["code"] for f in report["findings"] if f["severity"] == "violation"}
     assert "raw_state_gap" in codes
+    # F-21：violation 附注背压丢弃计数，接线缺失与背压丢弃两种红因可区分
+    gap = next(f for f in report["findings"] if f["code"] == "raw_state_gap")
+    assert "raw_retention.dropped=" in gap["detail"]
     assert report["audit_complete"] is False
 
 

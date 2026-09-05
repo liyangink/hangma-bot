@@ -108,8 +108,9 @@ def _observation_snapshot(observation: PlayerObservation, window_key: WindowKey)
 
     - ``my_hand`` 保留官方原始顺序（kernel 契约：紧急“最右一张”依赖该顺序）；
     - ``drawn_tile`` 单列、不并入手牌（2026-09-04 kernel 裁决）；
-    - ``target_discard`` 即触发本窗口的弃牌（PublicDiscard 座位+牌+事件序号），
-      吃/碰窗口复盘动作归属必需；
+    - ``target_discard`` = 最近公开弃牌（PublicDiscard 座位+牌+事件序号）；
+      响应窗口即触发本窗口的弃牌（吃/碰归属复盘必需），draw 窗口为本窗口
+      之前的最近公开弃牌、并非触发者（窗口触发者为本人摸牌）；
     - ``rule_state``（爆头/动作链/抓打/财神）与本人副露是胡牌合法性复算输入；
     - ``responding`` 由窗口键与 responding_seats 交叉得出，复盘响应权限。
 

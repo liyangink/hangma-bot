@@ -12,7 +12,7 @@
   "mode": "official_tournament",
   "base_url": "https://<官方平台内网地址>",
   "expected_tournament_id": "<目标赛事 id>",
-  "known_guide_version": 14,
+  "known_guide_version": 15,
   // Token 二选一：token 内联（私有配置注意权限）或 token_env 环境变量名
   "token_env": "HM_PARTICIPANT_TOKEN",
   "token_kind": "official",   // test / official

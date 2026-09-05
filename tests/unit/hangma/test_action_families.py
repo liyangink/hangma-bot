@@ -505,6 +505,16 @@ class TestHuFamily:
         assert outcome.candidates == ()
         assert outcome.issues[0].area == "action_families.hu"
 
+    def test_gate_early_return_precedes_hand_degraded_bookkeeping(self):
+        """F-18 意图锁定：drawn=None ∧ hand=None 时门禁早退先于降级簿记——
+        返回空且不记 hu 族 Issue（该窗口本就无胡候选，降级噪声无意义；
+        手牌分析异常由 engine.hand_analysis Issue 覆盖）。"""
+
+        outcome = hu_candidates(
+            _context(hand=_tiles("1w"), drawn=None), hand=None
+        )
+        assert outcome == FamilyOutcome((), ())
+
     def test_never_generated_in_response_window(self):
         # 只能自摸、不允许点炮（§2）：响应窗口无胡候选。
         context = _context(

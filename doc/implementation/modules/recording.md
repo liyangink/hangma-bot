@@ -18,7 +18,7 @@ adapters/recording/
 ## 优先级
 
 - 高：除 `RAW_PROTOCOL_STATE` 外的第一阶段审计种类，包括规范权威观察、决策计划、提交 intent/outcome、同步恢复和终局。
-- 低：`RAW_PROTOCOL_STATE`，即可以由规范权威状态替代的重复原始快照。
+- 低：`RAW_PROTOCOL_STATE`（2026-09-05 语义修订，F-20）：不再是"可由权威状态替代的重复快照"，而是 adapter 层协议原文的**全量保留存证**（/state 响应、动作提交响应与 409/429 拒绝体，含坏报文），路由到按场分文件的 `raw/*.jsonl`（可选 gzip 分段，只分段不抽样）；它是背压下的最后一层（可计数丢弃并以 `raw_retention` 汇总诚实声明），规范权威信息仍须以 `AUTHORITATIVE_STATE` 高优先级另存。严格对账检查（`raw_state_gap`/`raw_state_stream_empty`/`raw_action_missing`）在收到新形态原始事件后才启用（auto-evidence 门控）。
 
 优先级由记录器按种类确定，调用方不能自行降级。队列满时优先移除低优先级记录；若无法接收高优先级记录，立刻返回 `audit_degraded=true` 并增加缺失计数。不要为“100% 不丢”阻塞 1 秒动作窗口。
 

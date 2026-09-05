@@ -88,6 +88,14 @@ _MODE_TOKEN_KIND: Mapping[RuntimeMode, TokenKind] = {
 }
 
 
+def _require_bool(value: object, field_name: str) -> bool:
+    """严格布尔校验：拒绝字符串 "true"/"false" 等隐式转换形态。"""
+
+    if not isinstance(value, bool):
+        raise ValueError("{0} 必须是布尔，得到 {1!r}".format(field_name, value))
+    return value
+
+
 def _require_non_empty_str(value: object, field_name: str) -> str:
     """非空字符串校验；与 kernel 的校验口径一致，错误在组装期暴露。"""
 
@@ -120,7 +128,11 @@ class RuntimeConfig:
     - ``audit_root``：审计根目录（其下生成 runs/{run_id}/...）；
     - ``strategy``：策略名，取值见 ``_STRATEGY_FACTORIES``；
     - ``insecure_hosts``：允许关闭 TLS 校验的官方内网主机白名单（默认空）；
-    - ``slot``：可选身份槽位标签（测试房间 A—D），只用于日志定位。
+    - ``slot``：可选身份槽位标签（测试房间 A—D），只用于日志定位；
+    - ``audit_raw_gzip``：原始事件（RAW_PROTOCOL_STATE）gzip 分段落盘开关
+      （F-08；默认关——普通盘位无需压缩，长期/多赛事运行建议开启）；
+    - ``audit_raw_rotate_bytes``：gzip 单段未压缩字节上限（默认 32MB，
+      只分段不丢弃；仅 audit_raw_gzip=True 时生效）。
     """
 
     mode: RuntimeMode
@@ -133,6 +145,8 @@ class RuntimeConfig:
     strategy: str = DEFAULT_STRATEGY
     insecure_hosts: FrozenSet[str] = frozenset()
     slot: Optional[str] = None
+    audit_raw_gzip: bool = False
+    audit_raw_rotate_bytes: int = 32 * 1024 * 1024
 
     def __post_init__(self) -> None:
         if not isinstance(self.mode, RuntimeMode):
@@ -164,6 +178,9 @@ class RuntimeConfig:
             raise ValueError("insecure_hosts 必须是 frozenset，得到 {0!r}".format(self.insecure_hosts))
         if self.slot is not None:
             _require_non_empty_str(self.slot, "RuntimeConfig.slot")
+        if not isinstance(self.audit_raw_gzip, bool):
+            raise ValueError("audit_raw_gzip 必须是布尔，得到 {0!r}".format(self.audit_raw_gzip))
+        _require_positive_int(self.audit_raw_rotate_bytes, "RuntimeConfig.audit_raw_rotate_bytes")
 
     def __repr__(self) -> str:
         """掩码 Token 的结构化描述；可用于日志，不泄漏凭证。"""
@@ -171,7 +188,7 @@ class RuntimeConfig:
         return (
             "RuntimeConfig(mode={mode!r}, base_url={url!r}, expected_tournament_id={tid!r}, "
             "known_guide_version={guide!r}, token=<redacted>, token_kind={kind!r}, "
-            "audit_root={root!r}, strategy={strategy!r}, slot={slot!r})"
+            "audit_root={root!r}, strategy={strategy!r}, slot={slot!r}, audit_raw_gzip={gzip!r}, audit_raw_rotate_bytes={rotate!r})"
         ).format(
             mode=self.mode.value,
             url=self.base_url,
@@ -181,6 +198,8 @@ class RuntimeConfig:
             root=str(self.audit_root),
             strategy=self.strategy,
             slot=self.slot,
+            gzip=self.audit_raw_gzip,
+            rotate=self.audit_raw_rotate_bytes,
         )
 
 
@@ -196,6 +215,8 @@ _CONFIG_FIELDS = frozenset({
     "strategy",
     "insecure_hosts",
     "slot",
+    "audit_raw_gzip",
+    "audit_raw_rotate_bytes",
 })
 
 
@@ -274,6 +295,11 @@ def runtime_config_from_mapping(
         strategy=str(data.get("strategy", DEFAULT_STRATEGY)),
         insecure_hosts=insecure_hosts,
         slot=data.get("slot"),
+        audit_raw_gzip=_require_bool(data.get("audit_raw_gzip", False), "audit_raw_gzip"),
+        audit_raw_rotate_bytes=_require_positive_int(
+            data.get("audit_raw_rotate_bytes", 32 * 1024 * 1024),
+            "audit_raw_rotate_bytes",
+        ),
     )
 
 
@@ -432,7 +458,13 @@ def build_runtime(
     run_id = ids_source.new_run_id()
     fixed_ids = _FixedRunIds(ids_source, run_id)
 
-    sink = JsonlAuditSink(config.audit_root, run_id)
+    # F-08：原始事件 gzip 分段按配置透传（默认关；笔记 E5 接线落地）
+    sink = JsonlAuditSink(
+        config.audit_root,
+        run_id,
+        raw_gzip=config.audit_raw_gzip,
+        raw_rotate_bytes=config.audit_raw_rotate_bytes,
+    )
     provider = _AuditContextProvider(run_id, config.expected_tournament_id)
     clock = SystemClock()
 

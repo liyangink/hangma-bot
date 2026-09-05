@@ -5,7 +5,7 @@
 > 权威依据：指南 v14 全文 `doc/references/official-guide-v14-content.txt`（2026-09-05 抓取）与
 > v12 变更记录 `doc/references/official-guide-version-v14.json`（2026-09-04）  
 > 代码：`src/hangma_bot/adapters/official/notify.py`、`transport.py`（新增 `open_sse_stream`）  
-> 测试：`tests/adapters/official/test_notify.py`（48 用例，fake 流，无网络依赖）
+> 测试：`tests/adapters/official/test_notify.py`（56 例，wv3 增补分类矩阵/毒化帧回归后；fake 流，无网络依赖）
 
 ## 0. 结论
 
@@ -14,7 +14,7 @@
   维护每用户本地并发预算，错误全部映射回 `errors.py` 现有分类体系。
 - **运行行为零变化**：本模块不被任何运行链路（bootstrap/application/game/participant）引用，
   不改变既有 `/state` 长轮询路径；`transport.py` 只新增方法与带默认值字段，`request()`
-  分类行为不变（官方适配器测试 215 例全绿）。
+  分类行为不变（官方适配器测试现 268 例全绿，wv6 口径）。
 - **冻结契约零改动**：`WindowKey`、`ObservedActionWindow`、`TournamentSessionPort`、
   `GameSessionPort`、`BotPolicy`、`AuditSink` 公共签名均未触碰（§6）。
 

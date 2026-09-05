@@ -66,6 +66,18 @@ class HangmaRules:
 
         emergency = self._safe_emergency(observation, issues)
         context = self._safe_context(observation, issues)
+        if _concealed_missing_drawn_instance(observation):
+            # P2-N1：官方「含摸牌」形态长度命中但 my_hand 缺 drawn 同码实例——
+            # 归一化静默跳过会把判定留在幻影双计口径。显式记 RuleIssue
+            # （DEGRADED 可审计），宁让消费方降级处理也不无标记通过。
+            issues.append(
+                RuleIssue(
+                    _AREA_CONTEXT,
+                    "手牌形态异常：my_hand 长度符合官方含摸牌形态（14−3×副露数）"
+                    "但未找到与 drawn_tile 同码实例，防双计归一化未生效，"
+                    "胡候选按未归一化口径判定（_concealed_missing_drawn_instance）",
+                )
+            )
 
         candidates: Tuple[RuleCandidate, ...] = ()
         if context is not None:
@@ -426,7 +438,24 @@ def _concealed_without_drawn(observation: PlayerObservation) -> Tuple[Tile, ...]
     for index in range(len(hand) - 1, -1, -1):
         if hand[index].code == drawn.code:
             return hand[:index] + hand[index + 1 :]
-    return hand  # 防御：长度吻合但无同码实例，原样返回
+    return hand  # 防御：长度吻合但无同码实例，原样返回（异常由
+    # _concealed_missing_drawn_instance 检出并在 analyze 层记 RuleIssue）
+
+
+def _concealed_missing_drawn_instance(observation: PlayerObservation) -> bool:
+    """长度命中官方「含摸牌」形态（14−3×副露数）但 my_hand 中没有与
+    drawn_tile 同码的实例（P2-N1）：官方形态假设被破坏、归一化静默跳过会
+    回到 15−3×副露数的幻影双计口径。analyze 层据此记 RuleIssue（DEGRADED），
+    不让异常形态无标记通过。
+    """
+
+    drawn = observation.drawn_tile
+    if drawn is None:
+        return False
+    expected = 14 - 3 * len(observation.melds[observation.seat])
+    if len(observation.my_hand) != expected:
+        return False
+    return not any(tile.code == drawn.code for tile in observation.my_hand)
 
 
 def _ensure_emergency_membership(

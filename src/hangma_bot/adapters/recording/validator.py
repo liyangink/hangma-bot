@@ -58,7 +58,10 @@ from hangma_bot.adapters.recording.redact import (
     unredacted_secret_matches,
 )
 from hangma_bot.adapters.recording.schema import AUDIT_SCHEMA_VERSION, canonical_outcome
-from hangma_bot.application.contracts import AuditKind
+from hangma_bot.application.contracts import (
+    AuditKind,
+    SUBMISSION_CANCELLED_IN_FLIGHT,
+)
 
 
 def _percentile(sorted_values: list[int], pct: float) -> int | None:
@@ -221,6 +224,8 @@ class _RunScanner:
             with handle:
                 # gzip.BadGzipFile 等错误在读取时抛出（open 只建句柄）：
                 # try 必须覆盖整个读取循环，损坏段报 violation 而不是崩溃。
+                # 截断段（进程被杀、无 gzip trailer）在读取尾部抛 EOFError，
+                # 不是 OSError 子类（F-10 修复，实测实证）：一并捕获。
                 for line_no, raw in enumerate(handle, start=1):
                     line = raw.rstrip("\n")
                     if not line.strip():
@@ -237,7 +242,9 @@ class _RunScanner:
                         self._scan_text_secrets(line, self._location(path, line_no), "corrupt_line")
                         continue
                     self._accept_envelope(envelope, self._location(path, line_no))
-        except OSError as exc:
+        except (OSError, EOFError) as exc:
+            # EOFError：截断的 gzip 段（F-10）；报 unreadable_audit_file
+            # violation 而不是让 validate_run 裸抛。
             self.findings.append(_Finding(
                 "violation",
                 "unreadable_audit_file",
@@ -797,7 +804,8 @@ class _RunScanner:
                 self.findings.append(_Finding(
                     "violation",
                     "raw_state_stream_empty",
-                    f"场次存在状态请求证据但没有 state_response 原始事件记录：participant={pid} game={game_id}",
+                    f"场次存在状态请求证据但没有 state_response 原始事件记录：participant={pid} game={game_id}"
+                    + self._raw_dropped_suffix(),
                     (),
                 ))
 
@@ -811,7 +819,8 @@ class _RunScanner:
                     "violation",
                     "raw_state_gap",
                     f"participant={pid} game={game_id} 的 state 响应原文存在缺口："
-                    f"request_no 缺失 {missing[:10]}{'...' if len(missing) > 10 else ''}",
+                    f"request_no 缺失 {missing[:10]}{'...' if len(missing) > 10 else ''}"
+                    + self._raw_dropped_suffix(),
                     (),
                 ))
 
@@ -824,7 +833,7 @@ class _RunScanner:
             outcome_type = record.payload.get("outcome_type")
             if outcome_type == "SubmitNotSent":
                 continue  # 未发 POST：没有响应可录
-            if outcome_type == "SubmitAmbiguous" and record.payload.get("reason") == "submit_cancelled_in_flight":
+            if outcome_type == "SubmitAmbiguous" and record.payload.get("reason") == SUBMISSION_CANCELLED_IN_FLIGHT:
                 continue  # 在途取消：POST 是否发出未知，响应原文不存在属预期
             pid = record.context.get("participant_id") or ""
             decision_id = record.context.get("decision_id")
@@ -836,7 +845,8 @@ class _RunScanner:
                         "violation",
                         "raw_action_missing",
                         f"动作 POST 已发出但没有 action_submit_response 原始事件："
-                        f"decision_id={decision_id} attempt_no={attempt_no}",
+                        f"decision_id={decision_id} attempt_no={attempt_no}"
+                        + self._raw_dropped_suffix(),
                         (record.location,),
                     ))
 
@@ -853,6 +863,16 @@ class _RunScanner:
             "state_stream_games": len(state_request_nos),
             "action_responses": len(action_raw_keys),
         }
+    def _raw_dropped_suffix(self) -> str:
+        """violation 报告附注背压丢弃计数（F-21）：接线缺失与背压丢弃两种红因可区分。"""
+
+        if self.raw_retention is None:
+            return ""
+        dropped = self.raw_retention.get("dropped")
+        if not isinstance(dropped, int):
+            return ""
+        return "；raw_retention.dropped={0}".format(dropped)
+
 
 
 def validate_run(run_dir: str | Path) -> dict[str, Any]:

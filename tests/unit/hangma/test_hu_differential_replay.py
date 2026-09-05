@@ -280,9 +280,12 @@ def test_archived_room_hu_differential():
                 )
             )
             checked_draws += 1
+    # 下界与归档实测量级对齐（F-16）：3 场共约 180 个摸牌窗口、4 个副露后
+    # 未摸牌窗口、1 例官方胡；下限收紧到接近实测，夹具被截断/替换时测试
+    # 必须红而不是静默缩水（杠窗口当前样本为 0，见 F-03 待补样本）。
     assert total_official_wins >= 1, "归档场次应至少含一场官方胡牌用于正例锚定"
-    assert checked_draws >= 50, "对拍样本过少，夹具可能损坏"
-    assert checked_meld_windows >= 2, "缺少碰/吃后未摸牌窗口，门禁回归无覆盖"
+    assert checked_draws >= 120, "对拍样本过少（实测约 180），夹具可能损坏"
+    assert checked_meld_windows >= 4, "碰/吃后未摸牌窗口不足（实测 4），门禁回归无覆盖"
 
 
 def test_golden_hu_shapes_after_fix():

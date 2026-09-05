@@ -346,6 +346,14 @@ class AuditSummary:
     audit_degraded: bool
 
 
+# 适配器层 SUBMISSION_OUTCOME 的规范 reason 值（wv6 契约钉死）：POST 在途
+# 被取消（task.cancel）时官方适配器以 SubmitAmbiguous + 本 reason 落审计，
+# 记录器验证器据此豁免"每个实际发出的 POST 必须有响应原文"的对账
+# （响应是否到达不可知、无原文可录）。game.py 生产与 validator.py 消费
+# 必须引用同一常量：任一侧漂移即对账契约违约（回归测试锁定）。
+SUBMISSION_CANCELLED_IN_FLIGHT = "submit_cancelled_in_flight"
+
+
 class GameSessionPort(Protocol):
     """一个 ``game_id`` 的权威窗口、同步恢复与串行动作提交接缝。"""
 

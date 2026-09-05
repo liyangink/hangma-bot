@@ -325,11 +325,22 @@ def _remembered_matches(
     - 记忆局号与快照 round_no 一致（防串局）；
     - 快照处于 response_* 阶段（调用方已保证，双保险）；
     - 快照 last_discard 为纯牌码形态且牌码与记忆一致（无牌码证据
-      （last_discard=None）时不得采用记忆——诚实退化）。
+      （last_discard=None）时不得采用记忆——诚实退化）；
+    - 弃牌者座位一致：快照 turn 即弃牌者座位（响应阶段语义，
+      v8 fixture state_response_snapshot_peng.json 实证：response_peng
+      下 turn=1 且 last_discard.seat=1），记忆第 4 元素（写回时取自
+      事件流/结构化弃牌的座位）必须与之一致——跨座同码再弃（Expert
+      wv6 复现的 key 碰撞：同局他座再弃同码且期间清史）在此被挡下，
+      降级 tier-4（快照 seq + 审计提示），两物理窗口不碰撞。
 
     刻意不做牌河交叉验证：测试房实测牌河末张与 last_discard 存在
     不一致样本（last_discard_projection_note 证据），牌河交叉会误伤
-    记忆，反而破坏身份稳定；牌码一致性已足以区分"同一弃牌"与"新弃牌"。
+    记忆，反而破坏身份稳定；牌码+座位一致性已足以区分"同一弃牌"与
+    "他家新弃牌"。已知残余：同座同码再弃（同一弃牌者两轮弃同码且
+    期间发生清史重建）在纯牌码形态下与"pass 推进的同一弃牌"信息
+    不可分（官方未提供结构化序号），记忆仍会命中旧 seq——方向保守
+    （窗口抑制=欠交付、官方超时兜底，绝不双投/重复行动）；彻底消除
+    需官方 last_discard 携带序号或 SSE 接入后的水位对齐（R2 附注）。
     """
 
     if remembered[0] != snapshot.round_no:
@@ -337,7 +348,9 @@ def _remembered_matches(
     if snapshot.phase not in _RESPONSE_PHASES:
         return False
     raw = snapshot.last_discard
-    return isinstance(raw, str) and raw == remembered[2]
+    if not isinstance(raw, str) or raw != remembered[2]:
+        return False
+    return remembered[3] == snapshot.turn
 
 
 def _response_trigger(

@@ -1,8 +1,8 @@
 # 官方赛事流程与多阶段晋级规则
 
 > 官方来源：`https://10.240.169.190:18080/portal/#flow-stage`  
-> 抓取时间：2026-09-03（v8 基线）；2026-09-05 同步至指南 v14（v13 分桌在线过滤见 §6.6）  
-> 同步检查：`GET /portal/api/guide/version` 返回 `version=14`、`updated_at=2026-09-05`；多阶段协议本身由 v7 于 2026-09-02 引入，v8 另新增赛程 `description` 字段。完整响应见[官方 v14 指南版本快照](./references/official-guide-version-v14.json)，指南正文见[官方 v14 指南全文](./references/official-guide-v14-content.txt)，当前示例见[官方 v7 多阶段最小 Bot](./references/official_minimal_bot_v7.py)。  
+> 抓取时间：2026-09-03（v8 基线）；2026-09-05 二次同步至指南 v15（v13 分桌在线过滤见 §6.6；v15 自动匹配默认房配置上调见 §6.7）  
+> 同步检查：`GET /portal/api/guide/version` 返回 `version=15`、`updated_at=2026-09-05`；多阶段协议本身由 v7 于 2026-09-02 引入，v8 另新增赛程 `description` 字段。完整响应见[官方 v15 指南版本快照](./references/official-guide-version-v15.json)，指南正文见[官方 v15 指南全文](./references/official-guide-v15-content.txt)，当前示例见[官方 v7 多阶段最小 Bot](./references/official_minimal_bot_v7.py)。  
 > 证据边界：第 1—6 节记录官方事实；第 7—9 节是本项目的工程分析与建议。
 
 ## 1. 结论摘要
@@ -175,6 +175,19 @@ registering
 - `kind=test` 测试房间全程豁免（满员即开语义不变）。
 
 对本项目的影响：玩家 API `register→ready` 流程不变；`TournamentSupervisor` 空转期以 2s 间隔轮询本赛详情端点（`next_update`），天然满足 90s 在线要求。适配器仅需解析并审计 `OnlineConfirm` 键（`ParsedRulesConfig.online_confirm`），无需改变应用层状态机。
+
+### 6.7 v15 自动匹配默认房配置上调（2026-09-05；v12 起自动匹配机制）
+
+官方在正式锦标赛与测试房间之外新增**自由对战自动匹配池**（`kind=auto`），并随 v15 上调默认房配置：
+
+- `POST /api/match`（仅全局 Token，限速 10 次/分/用户）：从自动匹配池选房入席，无可兼容候选则自动建房；等待期重复调用幂等返回原房，绝不双房双席。
+- v15 起服务默认 **M=10 / Rounds=8**（原 M=1/Rounds=2）：满 4 人即开 10 场并发对局 × 每场 8 局，同一 4 人、座次逐场重洗——单会话样本 80 手/人。
+- 显式声明上限低于新默认（M∈1..9 或 Rounds∈1..7）→ 永久 `404 NO_ROOM_AVAILABLE`（不重试）；无 body 协议不变。
+- 整场打完（`finished` 约 60s 宽限）自动房自动关停，该房玩家 API 一律 404；再打重新调 `/api/match`（每次新会话新房）。
+- 自动房自 `registering` 起占 `config.M`（默认 10）格 16 场记账；入席唯一入口是 `/api/match`（直连 register/ready → `409 AUTO_MATCH_ONLY`）。
+- 门户侧配套：自由对战排行榜 `GET /portal/api/leaderboard`（三榜，session 认证）、「我的 AI 身份」昵称与全局令牌轮换——均不改变玩家 API 契约。
+
+对本项目的影响：**零协议影响**。本 bot 使用报名 Token（不支持全局 Token，initialize 即 `TARGET_MISMATCH` 拒绝），不调用 `/api/match`，正式赛事/测试房间路径不受 v15 波及；`KNOWN_GUIDE_VERSION` 已审查升级至 15。自动匹配（10 桌并发、80 手/会话）是潜在的高吞吐评测渠道，是否接入属独立功能决策，需另行设计全局 Token 会话与重匹配循环。
 
 ## 7. 对现有架构的影响
 

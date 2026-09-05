@@ -90,7 +90,9 @@ GameSessionPort / BotPolicy / AuditSink 签名均未触碰）；hand_analysis.py
 
 ## 4. 测试与夹具
 
-- 新增 tests/unit/hangma/test_hu_gate_and_double_count.py（9 例）：
+- 新增 tests/unit/hangma/test_hu_gate_and_double_count.py（13 例，wv3 增补
+  TestNormalizationAnomaly 4 例——P2-N1：官方「含摸牌」形态长度命中但缺 drawn
+  同码实例时产 RuleIssue/DEGRADED，不再静默回到幻影口径）：
   门禁（碰后/吃后禁胡、杠上摸放行、庄家直抽放行、普通摸牌不变）+
   双计归一化（两类金例假阳性被拦、真实胡两种形态都判胡、契约形态不误删）。
 - 新增 tests/unit/hangma/test_hu_differential_replay.py（2 例）：
@@ -106,7 +108,7 @@ GameSessionPort / BotPolicy / AuditSink 签名均未触碰）；hand_analysis.py
   0.25s/请求节流，可重跑刷新夹具）。
 - 修改 1 处既有测试（test_action_families.py::test_missing_summary_degrades_with_issue
   补 drawn_tile 以越过新门禁，测试意图不变）。
-- 全套 hangma 单测 588 例全绿；fan-calc 600 例差分 0 差异。
+- 全套 hangma 单测 592 例全绿（wv3 增补后）；fan-calc 600 例差分 0 差异。
 
 ## 5. 验收对照
 
@@ -115,17 +117,29 @@ GameSessionPort / BotPolicy / AuditSink 签名均未触碰）；hand_analysis.py
 - 2026-09-04 测试赛 97 次 409 的归因：9 例门禁 + 88 例双计放宽
   （同一轮内真假胡混杂 13 轮与「97 个不同 decision 各试一次」均与双计
   机制一致：十番级手牌每轮摸牌都可能被幻影副本补成假胡）。
-- 不改变 policy 评分与 kernel 契约：本次改动全部在 hangma 内部；
-  候选集合变化（少产生非法 hu）不影响 policy 对合法候选的加权逻辑。
+- 不改变 policy 评分与 kernel 契约：候选集合变化（少产生非法 hu）不影响
+  policy 对合法候选的加权逻辑。
+
+> **wv3/wv6 补记（N-1）**：「改动全部在 hangma 内部」的表述已失真——
+> 复审发现 policy/evaluation.py 的 `build_context` 仍按 `my_hand + drawn_tile`
+> 双计组合 `combined_codes`（官方含摸牌形态下幻影副本进入评分上下文），
+> 已在 `src/hangma_bot/policy/evaluation.py::_hand_codes_without_double_count`
+> 复刻引擎同款长度判据（14−3×副露数）归一化，并有
+> `tests/unit/policy/test_evaluation_context_normalization.py`（5 例）锁定。
+> 引擎侧归一化保留作防御；两侧判据同源，改动任一侧须同步另一侧与契约句
+> （interface-contracts §10.1 修订见 reviews/rework-d3-e30211-record.md）。
 
 ## 6. 遗留风险与建议（按任务要求列出）
 
 1. **适配器未按契约归一化**：interface-contracts.md §10.1 规定
    my_hand 不含摸牌、由适配器统一规范化；当前 adapters/official/projector.py
-   原样透传官方 my_hand（含摸牌形态）。本次按纪律不改适配器，改为引擎
-   防御性归一化（对两种形态均正确）。建议后续由适配器工作线在
-   projector.observation() 中按同规则去重，并新增投影测试固化；引擎侧
-   归一化可保留作防御。
+   原样透传官方 my_hand（含摸牌形态）。wv3 起防御性归一化落在**两侧**：
+   hangma 引擎（_concealed_without_drawn）与 policy 评分上下文
+   （evaluation._hand_codes_without_double_count）按同一长度判据执行；
+   适配器侧统一规范化仍未做。建议后续由适配器工作线在
+   projector.observation() 中按同规则去重，并新增投影测试固化（届时
+   引擎/策略侧归一化可降级为纯防御）；契约句修订文本见
+   reviews/rework-d3-e30211-record.md §1（F-11，需主会话落笔）。
 2. **「刚摸牌」门禁的判据是 drawn_tile 非空**：若官方未来窗口形态变化
    （如碰后窗口携带脏 drawn_tile），门禁会失效——建议下次官方测试赛用
    审计对拍再核一遍门禁放行/拦截方向。

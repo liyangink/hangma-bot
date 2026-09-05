@@ -199,10 +199,18 @@ class ProtocolSyncState:
 
         其余事件（他家摸牌、pass、round_ended、game_ended）不触发刷新：
         摸牌窗口由增量事实直接送达（游标纪律目标：正常事件流零重建）。
+
+        另：已学习忽略的官方新增未知事件类型（P2-N3）一律触发刷新——官方
+        未提供其可忽略性判据，它是否改变本人权威事实不可知；保守刷新一次
+        （区别于 NEEDS_REBUILD：增量照常接受、只是跟一次 seq=0 快照吸收），
+        防止未知事件静默漂移手牌/窗口状态。
         """
 
         my_seat = self.snapshot.seat if self.snapshot is not None else None
         for event in events:
+            if event.type in self.learned_event_types:
+                # P2-N3：见 docstring——已学习未知类型的行为不可知，保守刷新。
+                return True
             if event.type in ("tile_discarded", "timeout"):
                 return True
             if event.type in ("chi", "peng", "gang") and event.seat == my_seat:
@@ -291,6 +299,16 @@ class ProtocolSyncState:
             rows[event.seat].append(event.tiles[0])
         if rows is not None:
             discards = tuple(tuple(row) for row in rows)
+        # N-2：观察自洽性——快照 hand_counts[本人]/墙余以"含刚摸牌"口径计数，
+        # 增量送达把新摸的 drawn 单列进观察时，本人手数 +1、墙余 -1；
+        # 基础快照已是本人摸牌形态（base.drawn_tile 非空）时不变
+        # （换牌等量，正常流程不可达，防御性处理）。
+        counts = list(base.hand_counts)
+        remaining = base.remaining_tile_count
+        if base.drawn_tile is None:
+            counts[self.snapshot.seat] += 1
+            if remaining is not None:
+                remaining -= 1
         return replace(
             base,
             phase="draw",
@@ -299,6 +317,8 @@ class ProtocolSyncState:
             drawn_tile=drawn,
             last_discard=last_discard,
             discards=discards,
+            hand_counts=tuple(counts),
+            remaining_tile_count=remaining,
         )
 
     def current_window(self):

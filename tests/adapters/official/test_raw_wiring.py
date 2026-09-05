@@ -18,7 +18,13 @@ from __future__ import annotations
 import asyncio
 import json
 
-from hangma_bot.adapters.official.errors import ConflictError, UncertainTransportError
+import pytest
+
+from hangma_bot.adapters.official.errors import (
+    ConflictError,
+    RateLimitedError,
+    UncertainTransportError,
+)
 from hangma_bot.application.contracts import (
     ActionAttempt,
     AuditKind,
@@ -92,6 +98,55 @@ class TestStateRawRetention:
         assert raw["seq_observed"] == 101  # 与窗口 authoritative_seq 同源
         assert raw["seq_requested"] == 0  # 首拉为 seq=0 全量
         assert "snapshot" in raw["raw"]  # 响应原文（非二次加工）
+
+
+    async def test_failed_state_response_body_is_recorded(self, transport, clock, audit) -> None:
+        """F-05 回归：GET /state 非 2xx（429 限速拒绝体）也发射原始事件，
+        request_no 不递增（连续性对账口径不变），原文完整保留。"""
+
+        snapshot = json.dumps(load_fixture("state_response_snapshot_draw.json"))
+        throttle_body = '{"code":"RATE_LIMITED","message":"slow down please"}'
+        stage = {"n": 0}
+
+        async def handler(*, method: str, path: str, params=None, json_body=None, long_poll=False):
+            if method == "POST":
+                return 200, "{}"
+            stage["n"] += 1
+            if stage["n"] == 1:
+                return 200, snapshot
+            if stage["n"] == 2:
+                raise RateLimitedError(
+                    429, "RATE_LIMITED", "slow down",
+                    retry_after_seconds=0.2, raw_text=throttle_body,
+                )
+            if stage["n"] == 3:
+                return 200, snapshot  # 重试成功
+            if stage["n"] == 4:
+                return 200, json.dumps({"pending": True})
+            await asyncio.sleep(30)  # 挂起长轮询：测试取消
+            return 200, json.dumps({"pending": True})
+
+        transport.handler = handler
+        session = make_game_session(transport=transport, clock=clock, audit=audit)
+        first = await asyncio.wait_for(session.next_item(), timeout=2)
+        assert isinstance(first, ObservedActionWindow)
+
+        task = asyncio.ensure_future(session.next_item())
+        await asyncio.sleep(0.1)
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+
+        payloads = _raw_payloads(audit, "GET /api/games/")
+        statuses = [p["http_status"] for p in payloads]
+        # 首拉 200 → 429 失败 → 重试 200 → pending 200：失败响应原文不缺席
+        assert statuses == [200, 429, 200, 200]
+        throttled = payloads[1]
+        assert throttled["raw"] == throttle_body  # 429 拒绝体完整保留
+        assert throttled["request_no"] == 1  # request_no 只随成功递增
+        assert throttled.get("seq_observed") is None
+        assert payloads[2]["request_no"] == 2  # 重试成功后计数 +1
+        # 验证器连续性语义：取值集合 {1, 1, 2, 3} 连续，无缺口误报
 
     async def test_unparseable_state_body_still_recorded(self, transport, clock, audit) -> None:
         """坏报文（200 + 非 state 契约 JSON）：解析失败也必须留原文供诊断。"""
@@ -184,3 +239,107 @@ class TestActionRawRetention:
         assert len(post_raw) == 1
         assert post_raw[0].get("http_status") is None  # 构造器对 None 省略键
         assert post_raw[0]["raw"] == ""
+
+class TestRealChainToDisk:
+    """F-01 回归：真实传输（精确替换在生产代码路径）→ 真实会话 → 真实 sink → 落盘无 Token。
+
+    wv1 结论：raw_text 链路的唯一实质防线是 transport 的精确替换，而既有测试
+    （手工构造 ConflictError）绕过该层。本用例用真实 OfficialTransport + httpx.
+    MockTransport 驱动官方错误体回显我方 Token（冒号 Bearer 形态），经真实
+    JsonlAuditSink 落盘后整目录扫描 + 验证器离线扫描双断言。
+    """
+
+    async def test_token_echo_in_409_never_reaches_disk(self, tmp_path) -> None:
+        import httpx
+
+        from hangma_bot.adapters.recording import JsonlAuditSink, validate_run
+        from hangma_bot.adapters.official.transport import OfficialTransport, TransportConfig
+        from _official_testkit import FakeClock, instant_sleep, make_game_session
+
+        token = "e2e-secret-token-abcdef123456789012345678901234"
+        clock = FakeClock()
+        sink = JsonlAuditSink(tmp_path, "run-e2e")
+        snapshot = json.dumps(load_fixture("state_response_snapshot_draw.json"))
+        reject_body = json.dumps({"code": "INVALID_ACTION", "message": "rejected Bearer: " + token})
+        queue = [
+            (200, snapshot),  # 首次 seq=0 快照：投递 draw 窗口
+            (409, reject_body),  # 动作 1：官方 409，错误体回显我方 Token（冒号形态）
+            (200, snapshot),  # 409 后权威刷新：同窗仍开
+            (200, '{"ok": true}'),  # 动作 2：同窗重规划被接受
+        ]
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            item = queue.pop(0)
+            return httpx.Response(item[0], text=item[1])
+
+        transport = OfficialTransport(
+            token=token,
+            config=TransportConfig(
+                base_url="https://h.example", insecure_hosts=frozenset()
+            ),
+            transport_handler=httpx.MockTransport(handler),
+        )
+        session = make_game_session(
+            transport=transport,  # type: ignore[arg-type]
+            clock=clock,
+            audit=sink,  # type: ignore[arg-type]
+        )
+
+        window = await asyncio.wait_for(session.next_item(), timeout=5)
+        assert isinstance(window, ObservedActionWindow)
+        first = await asyncio.wait_for(
+            session.submit(
+                ActionAttempt(
+                    decision_id="d-e2e-1",
+                    attempt_no=1,
+                    plan_revision=1,
+                    window_key=window.window_key,
+                    based_on_authoritative_seq=window.authoritative_seq,
+                    action=Discard(Tile("5w")),
+                    action_key="discard:5w",
+                    latest_send_at_monotonic=1005.0,
+                )
+            ),
+            timeout=5,
+        )
+        assert isinstance(first, SubmitRejectedRetryable), first
+        second = await asyncio.wait_for(
+            session.submit(
+                ActionAttempt(
+                    decision_id="d-e2e-1",
+                    attempt_no=2,
+                    plan_revision=2,
+                    window_key=window.window_key,
+                    based_on_authoritative_seq=first.refreshed_window.authoritative_seq,
+                    action=Discard(Tile("5w")),
+                    action_key="discard:5w",
+                    latest_send_at_monotonic=1005.0,
+                )
+            ),
+            timeout=5,
+        )
+        assert isinstance(second, SubmitAccepted), second
+
+        summary = await asyncio.wait_for(sink.aclose(timeout_seconds=5.0), timeout=6)
+        del summary
+        await transport.aclose()
+
+        run_dir = tmp_path / "runs" / "run-e2e"
+        # 1) 整目录文件内容扫描：Token 原文绝不落盘
+        found = []
+        for path in run_dir.rglob("*"):
+            if path.is_file() and path.name.endswith((".jsonl", ".jsonl.gz", ".json")):
+                content = path.read_text(encoding="utf-8", errors="replace")
+                if token in content:
+                    found.append(str(path.relative_to(run_dir)))
+        assert not found, "Token 原文落盘: {}".format(found)
+        # 2) 验证器离线扫描同样干净，且原始事件对账完整
+        report = validate_run(str(run_dir))
+        assert report["secret_scan_clean"] is True
+        codes = {f["code"] for f in report["findings"]}
+        assert "secret_found" not in codes
+        assert "raw_state_gap" not in codes
+        assert "raw_state_stream_empty" not in codes
+        assert "raw_action_missing" not in codes
+        assert report["raw_events"]["retention_mode"] == "per_game_files"
+        assert report["raw_events"]["records_legacy"] == 0

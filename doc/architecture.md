@@ -93,6 +93,7 @@ flowchart TB
     BOOT --> POLICY2
     BOOT --> HANGMA2
     OFFICIAL2 --> APPLICATION
+    OFFICIAL2 --> RECORDING2
     RECORDING2 --> APPLICATION
     APPLICATION --> POLICY2
     APPLICATION --> HANGMA2
@@ -110,8 +111,9 @@ flowchart TB
 | `hangma` | `HangmaRules` | 合法动作、胡牌、向听、有效牌、财神和结算；独立紧急路径 | HTTP、磁盘、时钟、模型 |
 | `policy` | `BotPolicy.choose()` | 启发式评分、有序候选和超时降级 | 声明动作合法、提交 HTTP、读取 `WorldState` |
 | `application` | `ParticipantRuntime`；赛事/场次/审计端口 | 报名到位、参赛者终态、最多 `M` 场监督、预算和明确拒绝降级循环 | HTTP DTO、动作门、牌型算法 |
-| `adapters/official` | 实现赛事和场次端口 | 已审查指南 v14（快照 2026-09-05；v13 在线分桌审查结论见 `doc/official-tournament-flow-2026-09-03.md` §6.6）、每 Token 传输/限速（state 轮询 16/s 每用户聚合）、状态投影、序号恢复（含 v10 跨局 gap 快照吸收）、动作门 | 组装决策请求、策略评分、赛事何时退出 |
+| `adapters/official` | 实现赛事和场次端口 | 已审查指南 v15（快照 2026-09-05；v13 在线分桌审查结论见 `doc/official-tournament-flow-2026-09-03.md` §6.6，v15 自动匹配零影响见 §6.7）、每 Token 传输/限速（state 轮询 16/s 每用户聚合）、状态投影、序号恢复（含 v10 跨局 gap 快照吸收）、动作门 | 组装决策请求、策略评分、赛事何时退出 |
 | `adapters/recording` | 实现 `AuditSink` | 队列、JSONL、脱敏、汇总和验证 | 业务判断、重试和阻塞动作 |
+| （上游依赖边） | `adapters/official → adapters/recording` | RAW_PROTOCOL_STATE 原始事件经 build_state_response_payload / build_action_response_payload 落审计（2026-09-05 起，errors.raw_text 载体语义见接口协议 §7.1） | — |
 | `bootstrap.py` | 组装函数 | 具体实现选择和配置注入 | 规则、生命周期或协议逻辑 |
 
 ### 3.2 四个冻结接缝
@@ -326,7 +328,7 @@ src/hangma_bot/
   policy/                 # BotPolicy 与两个启发式实现
   application/            # 端口、ParticipantRuntime 和场次任务
   adapters/
-    official/             # 官方会话实现（已审查指南 v14）
+    official/             # 官方会话实现（已审查指南 v15）
     recording/            # AuditSink、汇总和验证器
   bootstrap.py            # 唯一组合根
 
@@ -336,7 +338,7 @@ scripts/
 
 tests/
   contracts/
-  fixtures/official/     # v8 快照 + v9（fan-calc 金例）+ v11/v14（指南版本）
+  fixtures/official/     # v8 快照 + v9（fan-calc 金例）+ v11/v14/v15（指南版本）
 ```
 
 实施分工、各模块约束和验收入口见[第一阶段实施导航](./implementation/README.md)。

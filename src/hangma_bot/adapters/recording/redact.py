@@ -29,12 +29,18 @@ REDACTED = "[REDACTED]"
 _SENSITIVE_KEY_RE = re.compile(r"authorization|cookie|token|secret|password", re.IGNORECASE)
 
 # 常见凭证形态。字符类均排除双引号与控制字符，保证对序列化后的 JSON 行安全。
-_BEARER_RE = re.compile(r"(?i)\bbearer\s+[A-Za-z0-9._~+/=-]{4,}")
+# 形态集合与 errors.sanitize 对齐（F-01 修复）：除空白分隔的 Bearer 外，
+# 还覆盖 "Bearer:" 冒号形态与 40+ 字符裸长串（errors 侧 _LONG_SECRET_PATTERN
+# 同款字符类）；两处缺一即可能让"非我方 Token 形态"的凭证随 raw 原文落盘。
+_BEARER_RE = re.compile(r"(?i)\bbearer[\s:]+[A-Za-z0-9._~+/=-]{8,}")
 _JWT_RE = re.compile(r"eyJ[A-Za-z0-9_-]{6,}\.[A-Za-z0-9_-]{6,}(?:\.[A-Za-z0-9_-]{4,})?")
 _QUERY_SECRET_RE = re.compile(
     r"(?i)\b((?:access_)?refresh_token|(?:access_)?token|authorization|cookie)"
     r"=([^\s&\"'<>]{3,})"
 )
+_LONG_SECRET_RE = re.compile(r"[A-Za-z0-9._~+/=-]{40,}")
+# 注：_LONG_SECRET_RE 对 40+ 连续 base64url 形态文本整体替换（宁杀勿漏）；
+# REDACTED 占位符与已替换文本不含该字符类，替换幂等。
 
 
 def _redact_string(text: str) -> str:
@@ -43,6 +49,7 @@ def _redact_string(text: str) -> str:
     text = _BEARER_RE.sub("Bearer " + REDACTED, text)
     text = _JWT_RE.sub(REDACTED, text)
     text = _QUERY_SECRET_RE.sub(r"\1=" + REDACTED, text)
+    text = _LONG_SECRET_RE.sub(REDACTED, text)
     return text
 
 
@@ -71,7 +78,7 @@ def redact_value(value: Any) -> Any:
 def redact_json_line(line: str) -> str:
     """对序列化后的 JSON 行做最后一道形态扫描（纵深防御的兜底层）。
 
-    所有三条正则的字符类都不包含引号，因此替换只发生在字符串值内部，
+    所有凭证形态正则的字符类都不包含引号，因此替换只发生在字符串值内部，
     不会改变 JSON 结构。返回值仍是一行合法 JSON。
     """
 
@@ -92,7 +99,7 @@ def unredacted_secret_matches(text: str) -> tuple[str, ...]:
     """
 
     matches: list[str] = []
-    for pattern in (_BEARER_RE, _JWT_RE, _QUERY_SECRET_RE):
+    for pattern in (_BEARER_RE, _JWT_RE, _QUERY_SECRET_RE, _LONG_SECRET_RE):
         for match in pattern.finditer(text):
             if REDACTED not in match.group(0):
                 matches.append(match.group(0))

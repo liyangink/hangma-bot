@@ -55,11 +55,13 @@ class FakeSseStream(httpx.AsyncByteStream):
         lines: List[str],
         *,
         fail_after: Optional[int] = None,
+        fail_with: Optional[BaseException] = None,
         repeat: bool = False,
         block_event: Optional[asyncio.Event] = None,
     ) -> None:
         self._lines = lines
         self._fail_after = fail_after
+        self._fail_with = fail_with
         self._repeat = repeat
         self._block_event = block_event
 
@@ -72,6 +74,8 @@ class FakeSseStream(httpx.AsyncByteStream):
         index = 0
         while True:
             if self._fail_after is not None and index >= self._fail_after:
+                if self._fail_with is not None:
+                    raise self._fail_with  # 模拟指定传输故障（如读超时）
                 raise httpx.ReadError("connection reset by peer")
             line = (
                 self._lines[index % len(self._lines)]
@@ -89,7 +93,11 @@ class FakeSseStream(httpx.AsyncByteStream):
 
 
 def sse_response(lines: List[str], **stream_kw) -> httpx.Response:
-    """构造 SSE 200 假响应（Content-Type: text/event-stream）。"""
+    """构造 SSE 200 假响应（Content-Type: text/event-stream）。
+
+    stream_kw 透传 FakeSseStream：fail_after 产出行数后抛故障
+    （默认 httpx.ReadError，可用 fail_with 指定如 httpx.ReadTimeout）。
+    """
 
     return httpx.Response(
         200,
@@ -727,3 +735,157 @@ class TestTransportSseStream:
     def test_sse_read_timeout_default(self) -> None:
         config = TransportConfig(base_url="https://x", insecure_hosts=frozenset())
         assert config.sse_read_timeout_sec == 75.0  # 30s keepalive × 2 + 余量
+
+class TestRecoverableServerErrorRow:
+    """F-13 回归：5xx → RecoverableServerError → 有界重连（分类矩阵缺行补齐）。"""
+
+    async def test_503_reconnects_with_backoff(self) -> None:
+        frames = FrameRecorder()
+        events = EventRecorder()
+        client, fake, clock = make_client(
+            [
+                lambda attempt: httpx.Response(503, json={"code": "SERVER_BUSY"}),
+                sse_response([closed_line(1), "", closed_line(1, closed=True), ""]),
+                NOT_FOUND,
+            ],
+            frames=frames,
+            events=events,
+            config=NotifyStreamConfig(max_reconnects=2, backoff_base_sec=0.5),
+        )
+        result = await client.run()
+        assert frames.frames == [(1, False), (1, True)]  # 5xx 后重连成功
+        assert result.reconnects == 2
+        assert result.kind is NotifyEndKind.TERMINAL  # 末次 404 终态
+        scheduled = [e for e in events.events if e.kind == NotifyEventKind.RECONNECT_SCHEDULED.value]
+        assert scheduled[0].error_kind == "RecoverableServerError"
+        assert scheduled[0].backoff_sec == 0.5
+        assert clock.monotonic() == 1000.0 + 0.5 + 1.0
+
+
+class TestBackoffCap:
+    """F-13 回归：指数退避到达 backoff_max 后封顶（此前默认 30s 不可达的死分支）。"""
+
+    async def test_exponential_backoff_caps_at_max(self) -> None:
+        events = EventRecorder()
+        # 首连 + 6 次重连全部 EOF 断连：退避序列应封顶在 2.0
+        # （每个脚本项必须是独立流实例：httpx 流只能消费一次）
+        script = [sse_response([]) for _ in range(7)]
+        client, fake, clock = make_client(
+            script,
+            events=events,
+            config=NotifyStreamConfig(
+                max_reconnects=6, backoff_base_sec=0.5, backoff_max_sec=2.0
+            ),
+        )
+        result = await client.run()
+        assert result.kind is NotifyEndKind.RECONNECTS_EXHAUSTED
+        assert result.reconnects == 6
+        scheduled = [e for e in events.events if e.kind == NotifyEventKind.RECONNECT_SCHEDULED.value]
+        assert [s.backoff_sec for s in scheduled] == [0.5, 1.0, 2.0, 2.0, 2.0, 2.0]
+        assert clock.monotonic() == 1000.0 + 0.5 + 1.0 + 2.0 * 4
+
+
+class TestReadTimeoutRow:
+    """F-13 回归：流中途读超时（httpx.ReadTimeout）分类为可恢复并重连。"""
+
+    async def test_midstream_read_timeout_maps_to_uncertain_and_reconnects(self) -> None:
+        frames = FrameRecorder()
+        events = EventRecorder()
+        client, fake, clock = make_client(
+            [
+                # 产出 1 帧（含空行分隔）后抛 httpx.ReadTimeout（模拟服务端
+                # 静默断流、读超时）：fail_after=2 先让首帧完成分发
+                sse_response([closed_line(1), ""], fail_after=2, fail_with=httpx.ReadTimeout("read timed out")),
+                sse_response([closed_line(3), "", closed_line(3, closed=True), ""]),
+                NOT_FOUND,
+            ],
+            frames=frames,
+            events=events,
+            config=NotifyStreamConfig(max_reconnects=2, backoff_base_sec=0.5),
+        )
+        result = await client.run()
+        assert frames.frames == [(1, False), (3, False), (3, True)]
+        assert result.kind is NotifyEndKind.TERMINAL
+        scheduled = [e for e in events.events if e.kind == NotifyEventKind.RECONNECT_SCHEDULED.value]
+        assert scheduled[0].error_kind == "UncertainTransportError"
+
+
+class TestEventHookFailure:
+    """F-13 回归：观察者钩子抛异常只计数，不影响信号流。"""
+
+    async def test_event_hook_exception_counts_and_stream_continues(self) -> None:
+        events = EventRecorder()
+
+        class BrokenObserver:
+            def __init__(self, recorder) -> None:
+                self.recorder = recorder
+
+            async def __call__(self, event: NotifyStreamEvent) -> None:
+                self.recorder.events.append(event)
+                raise RuntimeError("observer broken")
+
+        client, fake, clock = make_client(
+            [sse_response([closed_line(5), "", closed_line(5, closed=True), ""]), NOT_FOUND],
+            events=BrokenObserver(events),
+            config=NotifyStreamConfig(max_reconnects=1, backoff_base_sec=0.5),
+        )
+        result = await client.run()
+        assert result.kind is NotifyEndKind.TERMINAL
+        assert result.frames_delivered == 2  # 钩子故障不影响帧投递
+        assert client.event_hook_errors > 0  # 异常被计数而非传播
+
+
+class TestBudgetWaitTimeout:
+    """F-13 回归：预算等待超时（到点未获槽）返回 BUDGET_UNAVAILABLE。"""
+
+    async def test_budget_wait_times_out_without_slot(self) -> None:
+        budget = StreamBudget(max_streams=1)
+        assert budget.try_acquire() is True  # 同 Token 他场长期占满
+        frames = FrameRecorder()
+        client, fake, clock = make_client(
+            [sse_response([closed_line(1), closed_line(1, closed=True)]), NOT_FOUND],
+            budget=budget,
+            frames=frames,
+            config=NotifyStreamConfig(budget_wait_sec=0.2, backoff_base_sec=0.5),
+        )
+        result = await client.run()
+        assert result.kind is NotifyEndKind.BUDGET_UNAVAILABLE
+        assert result.reconnects == 0
+        assert frames.frames == []
+        assert fake.open_count == 0  # 等待超时全程未发起连接
+        assert budget.active == 1  # 测试占用的槽不受影响
+        assert clock.monotonic() >= 1000.0 + 0.2  # 等待耗尽预算窗口
+
+
+class TestPoisonFrame:
+    """W2-3 回归：毒化帧（超长/深嵌套）不得击穿 run() 的封闭结果承诺。"""
+
+    def test_oversized_data_payload_rejected(self) -> None:
+        payload = " " + "x" * (64 * 1024)  # 超过 64KB 上限
+        with pytest.raises(DtoError):
+            parse_notify_frame(payload)
+
+    def test_deeply_nested_json_rejected_as_dto_error(self) -> None:
+        # 60KB 深嵌套：低于长度上限但远超解释器递归深度
+        deep = "[" * 30000 + "0" + "]" * 30000
+        with pytest.raises(DtoError):
+            parse_notify_frame(deep)
+
+    async def test_poison_frame_is_recoverable_and_reconnects(self) -> None:
+        frames = FrameRecorder()
+        events = EventRecorder()
+        deep = "data: " + "[" * 30000 + "0" + "]" * 30000
+        client, fake, clock = make_client(
+            [
+                sse_response([deep]),  # 深嵌套毒化帧：解析抛 DtoError(recoverable)
+                sse_response([closed_line(7), "", closed_line(7, closed=True), ""]),
+                NOT_FOUND,
+            ],
+            frames=frames,
+            events=events,
+        )
+        result = await client.run()
+        assert frames.frames == [(7, False), (7, True)]  # 毒化帧后重连成功
+        assert result.kind is NotifyEndKind.TERMINAL
+        scheduled = [e for e in events.events if e.kind == NotifyEventKind.RECONNECT_SCHEDULED.value]
+        assert scheduled[0].error_kind == "DtoError"

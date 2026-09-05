@@ -420,6 +420,9 @@ def hu_candidates(
         # 「刚摸牌」门禁（指南变更日志 v1）：碰/吃/杠后、摸牌前提交
         # hu 官方返回 409 INVALID_ACTION；drawn_tile 为空即本窗口
         # 未发生摸牌，胡候选按规则性关闭（详见函数 docstring）。
+        # 注意：门禁早退先于下方 hand is None 的降级簿记（有意为之——
+        # 本窗口本就无胡候选，无需 hu 族降级噪声；手牌分析异常另有
+        # engine.hand_analysis Issue 覆盖）。勿调整两分支顺序。
         return _EMPTY
     if hand is None:
         return FamilyOutcome(

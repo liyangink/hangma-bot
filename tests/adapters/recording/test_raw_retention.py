@@ -156,6 +156,27 @@ async def test_corrupt_gzip_segment_reported_not_crash(tmp_path):
     assert "unreadable_audit_file" in codes
 
 
+async def test_truncated_gzip_tail_reported_not_crash(tmp_path):
+    """F-10 回归：截断的 gzip 段（进程被杀、无 trailer）读取抛 EOFError
+    （非 OSError），验证器必须报 unreadable_audit_file 而不是裸抛崩溃。"""
+
+    import gzip as _gzip
+
+    sink = JsonlAuditSink(tmp_path, "run-gz-trunc", raw_gzip=True, raw_rotate_bytes=10 ** 9)
+    sink.emit(_raw_state(1))
+    sink.emit(_raw_state(2))
+    await sink.aclose(timeout_seconds=5.0)
+    run_dir = tmp_path / "runs" / "run-gz-trunc"
+    segments = list((run_dir / "participants" / "P1" / "raw").glob("*.jsonl.gz"))
+    assert len(segments) == 1
+    data = segments[0].read_bytes()
+    # 截掉尾部 40%：gzip trailer 缺失，读取到截断点抛 EOFError。
+    segments[0].write_bytes(data[: int(len(data) * 0.6)])
+    report = validate_run(run_dir)
+    codes = {f["code"] for f in report["findings"] if f["severity"] == "violation"}
+    assert "unreadable_audit_file" in codes
+
+
 async def test_raw_stream_is_nonblocking_at_scale(tmp_path):
     """规模模拟：大量原始事件不阻塞动作路径，计数诚实无静默丢失。
 

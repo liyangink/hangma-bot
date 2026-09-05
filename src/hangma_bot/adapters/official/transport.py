@@ -12,6 +12,7 @@ TLS：仅当 base_url 主机命中配置的固定内网主机白名单时关闭�
 from __future__ import annotations
 
 import asyncio
+import math
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import (
@@ -210,13 +211,18 @@ class OfficialTransport:
         if status == 409:
             raise ConflictError(status, code, detail, raw_text=text)
         if status == 429:
+            # Retry-After 只取有限非负秒数（W2-1 修复）：inf（"1e999"）/
+            # nan/负值等畸形头会把调度器冷却推成永久挂起、冻结整个 Token；
+            # 非有限或负值按"未提供"处理（None），由调用方指数退避兜底。
             retry_after: Optional[float] = None
             header_value = headers.get("Retry-After")
             if header_value:
                 try:
-                    retry_after = float(header_value)
+                    parsed = float(header_value)
                 except ValueError:
-                    retry_after = None
+                    parsed = None
+                if parsed is not None and math.isfinite(parsed) and parsed >= 0:
+                    retry_after = parsed
             raise RateLimitedError(status, code, detail, retry_after, raw_text=text)
         if 500 <= status < 600:
             raise RecoverableServerError(status, code, detail, raw_text=text)

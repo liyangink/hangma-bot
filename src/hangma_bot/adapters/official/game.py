@@ -1,4 +1,4 @@
-"""官方场次会话：GameSessionPort 的官方协议实现（v8 快照 + v9–v14 已审查变更）。
+"""官方场次会话：GameSessionPort 的官方协议实现（v8 快照 + v9–v15 已审查变更）。
 
 同步与提交语义（接口协议 §5/§8、模块 AGENTS）：
 
@@ -51,6 +51,7 @@ from hangma_bot.application.contracts import (
     SubmitRejectedClosed,
     SubmitRejectedNoRefresh,
     SubmitRejectedRetryable,
+    SUBMISSION_CANCELLED_IN_FLIGHT,
 )
 from hangma_bot.kernel.actions import WindowKey
 from hangma_bot.kernel.config import TimingConfig
@@ -89,9 +90,13 @@ _BOUNDARY_MARGIN_SEC = 0.05
 # 新局首事件产生前，反复原速轮询只会重复收到同 seq 快照（2026-09-04 测试赛
 # 实测同一边界重复 5~47 次），既浪费 16/s 限速额度也刷爆恢复审计。
 # 前 FAST 次保持原速：覆盖庄家常规思考窗口，保证边界后他家弃牌所开启的
-# 响应窗口发现时延不回退；此后按表指数退避（秒）直至首事件推进快照水位。
+# 响应窗口发现时延不回退；此后按表退避（秒）直至首事件推进快照水位。
+# 封顶取 1.0s（P2-N4 修复）：原 2.0s 封顶使"庄家长考后弃牌"的窗口发现时延
+# 最坏 ≈2s，1s 吃碰响应窗口在退避睡眠内开启时必然错过；封顶 1.0s 后最坏
+# 发现时延 ≈1s+往返，错过概率显著下降（SSE 帧唤醒接入前的最优工程折衷；
+# 无进度重复轮询在 16/s 限速预算内仍收敛到个位数）。
 _BOUNDARY_STALL_FAST_POLLS = 2
-_BOUNDARY_STALL_BACKOFF_SEC = (0.5, 1.0, 2.0)
+_BOUNDARY_STALL_BACKOFF_SEC = (0.5, 1.0)
 
 
 class OfficialGameSession:
@@ -269,11 +274,15 @@ class OfficialGameSession:
                     delivered = self._maybe_deliver_window()
                     if delivered is not None:
                         return delivered
-                    if self._sync.last_seq <= pre_seq:
-                        boundary_stalls += 1
-                        await self._boundary_stall_sleep(boundary_stalls)
-                    else:
+                    # pending+gap 连续无进度由上方 rebuild_streak>2 保护性上交
+                    # （有界快速失败，可恢复重入）；v10 边界无进度的退避只走
+                    # snapshot+gap 分支。此处不做退避睡眠，避免与 rebuild_loop
+                    # 保护重复实现造成语义漂移（F-15 复核结论）。
+                    if self._sync.last_seq > pre_seq:
+                        # wv6：水位前进 = 断链已修复，重置恢复计数，防跨轮累积
+                        # （否则间歇性进展的长边界会因 streak 累积误判 rebuild_loop）
                         boundary_stalls = 0
+                        rebuild_streak = 0
                 continue
             if response.kind in ("snapshot", "finished"):
                 pre_seq = self._sync.last_seq
@@ -452,14 +461,6 @@ class OfficialGameSession:
         )
         await self._retry_sleep(_BOUNDARY_STALL_BACKOFF_SEC[index])
 
-    def _apply_snapshot(self, response: StateResponse, *, finished: bool) -> None:
-        if response.snapshot is None:
-            raise DtoError("快照响应缺失 snapshot", recoverable=False)
-        self._sync.apply_full_snapshot(response.snapshot, finished=finished)
-        self._gate.observe_authoritative_window(
-            self._sync.current_window().window_key if self._sync.current_window() else None
-        )
-
     def _apply_or_fail(self, response: StateResponse, *, finished: bool) -> Optional[GameFailed]:
         """应用快照；解析/校验失败转分类故障而非裸异常。
 
@@ -481,7 +482,13 @@ class OfficialGameSession:
             self._sync.apply_full_snapshot(snapshot, finished=finished)
             if not finished:
                 self._sync.current_observation()  # 预热缓存（已验证必成功）
-                self._sync.current_window()
+                window_key = self._sync.current_window()
+                # F-23：每个权威快照归并后通知动作门——窗口已迁移时解除
+                # 模糊封锁标记（ActionGate.observe_authoritative_window；
+                # 已响应集合保留，"同窗零次追加提交"不变量不受影响）。
+                self._gate.observe_authoritative_window(
+                    window_key.window_key if window_key is not None else None
+                )
                 # last_discard 纯牌码形态的重建提示进审计（不改变观察内容）：
                 # 牌河与 turn 交叉验证不一致时记录，供赛后核对官方 turn 语义。
                 _, discard_notes = projector.project_last_discard(snapshot)
@@ -640,6 +647,28 @@ class OfficialGameSession:
             round_no=snapshot.round_no if snapshot is not None else None,
         )
 
+    def _emit_raw_state_error(self, exc: OfficialError, seq_requested: int) -> None:
+        """F-05：非 2xx / 响应未到达的 /state 失败也发射原始事件。
+
+        429/401/403/404/5xx 等失败响应体（传输层已完成 Token 精确替换的
+        原文在 exc.raw_text）是限速与认证故障诊断的关键证据；超时/断连
+        （UncertainTransportError，无响应体）记 http_status=None + raw=""
+        表示"原文不存在"（与 E3 同口径）。request_no 沿用当前成功计数、
+        不递增——验证器连续性检查只按成功响应集合判定，不受影响。
+        """
+
+        self._emit_audit(
+            AuditKind.RAW_PROTOCOL_STATE,
+            build_state_response_payload(
+                endpoint="GET /api/games/{}/state".format(self.game_id),
+                http_status=exc.http_status,
+                seq_requested=seq_requested,
+                seq_observed=None,
+                request_no=self._state_request_no,
+                raw=exc.raw_text or "",
+            ),
+        )
+
     def _emit_raw_action(
         self,
         http_status: Optional[int],
@@ -732,21 +761,31 @@ class OfficialGameSession:
                 self._emit_raw_state(result, seq, parsed)
                 return parsed
             except RateLimitedError as exc:
+                # F-05：非 2xx 响应原文（限速拒绝体等诊断证据）也落审计，
+                # request_no 不递增（只随成功计数，连续性检查不受影响）
+                self._emit_raw_state_error(exc, seq)
                 self._scheduler.note_rate_limited(exc.retry_after_seconds)
-            except (UncertainTransportError, RecoverableServerError):
-                pass
-            except AuthError:
+            except (UncertainTransportError, RecoverableServerError) as exc:
+                # 超时/断连无响应体：raw="" + http_status=None 记录"原文不存在"
+                self._emit_raw_state_error(exc, seq)
+            except AuthError as exc:
+                self._emit_raw_state_error(exc, seq)
                 raise _PollFailure(GameFailed(self.game_id, False, "authentication_failed")) from None
-            except ForbiddenError:
+            except ForbiddenError as exc:
+                self._emit_raw_state_error(exc, seq)
                 raise _PollFailure(GameFailed(self.game_id, False, "forbidden")) from None
-            except NotFoundError:
+            except NotFoundError as exc:
+                self._emit_raw_state_error(exc, seq)
                 raise _PollFailure(GameFailed(self.game_id, True, "game_not_found")) from None
-            except BadRequestError:
+            except BadRequestError as exc:
+                self._emit_raw_state_error(exc, seq)
                 raise _PollFailure(GameFailed(self.game_id, False, "bad_request")) from None
-            except ConflictError:
+            except ConflictError as exc:
                 # state GET 不在官方 409 语义内；按不可恢复协议错误终止本场
+                self._emit_raw_state_error(exc, seq)
                 raise _PollFailure(GameFailed(self.game_id, False, "state_conflict")) from None
             except OfficialError as exc:
+                self._emit_raw_state_error(exc, seq)
                 raise _PollFailure(
                     GameFailed(self.game_id, False, "protocol_error_" + str(exc.http_status))
                 ) from None
@@ -916,7 +955,7 @@ class OfficialGameSession:
                         "attempt_no": attempt.attempt_no,
                         "action_key": attempt.action_key,
                         "outcome_type": "SubmitAmbiguous",
-                        "reason": "submit_cancelled_in_flight",
+                        "reason": SUBMISSION_CANCELLED_IN_FLIGHT,
                     },
                     decision_id=attempt.decision_id,
                     attempt_no=attempt.attempt_no,
@@ -1020,6 +1059,20 @@ class OfficialGameSession:
         )
         detected = self._sync.current_window()
         observation = self._sync.current_observation()
+        if (
+            detected is None
+            or observation is None
+            or detected.window_key != attempt.window_key
+        ):
+            # 增量摸牌窗口（F-02 防御，wv6 注释按实际控制流改写）：本回退在
+            # 409 刷新路径**实际不可达**——_apply_or_fail 的 apply_full_snapshot
+            # 已清空事件历史，incremental_draw_window 依赖"事件流末条=本人
+            # tile_drawn"，刷新后恒为 None。保留它是为与 _submit_locked 的
+            # 同款回退对称（免疫未来重构：若快照吸收语义变化不再清史，此处
+            # 仍能识别增量窗口身份，恒等前提不依赖单一路径推导）；命中即按
+            # stale 同口径保守不误放行。
+            detected = self._sync.incremental_draw_window()
+            observation = self._sync.incremental_draw_observation()
         if (
             detected is not None
             and observation is not None

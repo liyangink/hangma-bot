@@ -1,4 +1,4 @@
-"""官方赛事会话：TournamentSessionPort 的官方协议实现（v8 快照 + v9–v14 已审查变更）。
+"""官方赛事会话：TournamentSessionPort 的官方协议实现（v8 快照 + v9–v15 已审查变更）。
 
 一个实例对应一个 Token：内部恰好创建一个 OfficialTransport 与一个
 RequestScheduler，该 Token 的赛事与全部场次共享（接口协议 §6）。

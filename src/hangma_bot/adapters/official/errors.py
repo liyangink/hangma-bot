@@ -2,7 +2,9 @@
 
 分类只服务于封闭结果契约（SubmitOutcome / ParticipantTerminal / 有界重试判定），
 不把官方错误文本原样透传给上层。所有 detail 都经过 :func:'sanitize' 脱敏，
-保证 Token 与 Authorization 原文不会进入异常、日志或审计。
+保证 Token 与 Authorization 原文不会进入异常、日志或审计（唯一例外：
+raw_text 是传输层完成 Token 精确替换后的响应原文，只供审计原始事件
+落盘使用（E2），不进入异常串/日志/详情）。
 """
 
 from __future__ import annotations

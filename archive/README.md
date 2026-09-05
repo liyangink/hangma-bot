@@ -24,6 +24,7 @@
 | `20260904-1641-test-room-t_714a42392cba` | `t_714a42392cba` | 2026-09-04 16:41 | weighted_heuristic | 原 M=1/Rounds=1 冒烟房间（前身 `test-room-m1r1`）；对应抓取样例存于 `tests/fixtures/official/captures/` |
 | `20260904-1730-test-room-t_cee1db65a074` | `t_cee1db65a074` | 2026-09-04 17:30 | weighted_heuristic | 跨轮复用验收房间（runs 内 r6/r7 记录） |
 | `20260904-1900-test-room-t_6c121bfda7e8` | `t_6c121bfda7e8` | 2026-09-04 19:00 | claim_if_legal | 测试房间验收房间（runs 内 r1—r4 记录） |
+| `20260905-1653-test-room-t_9779c892550e` | `t_9779c892550e` | 2026-09-05 16:53 | claim_if_legal | 四线修复活场验收房（M=2 双桌；验收报告见 doc/implementation/reviews/test-room-acceptance-result-2026-09-05.md） |
 
 ## 安全提醒
 
