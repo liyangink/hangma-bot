@@ -1,0 +1,323 @@
+{
+  "contract_id": "parallel-v1",
+  "vector_schema_version": 1,
+  "purpose": "固定跨节点标识和真实分块形态；预期值是实施验收输入，不代表新增运行代码已通过测试。",
+  "identity_algorithm": {
+    "json": "UTF-8 / ensure_ascii=false / separators=(comma,colon) / allow_nan=false",
+    "digest": "SHA-256 full lowercase hex",
+    "hand_prefix": "hand-",
+    "split_prefix": "split-",
+    "official_split_fields": [
+      "source_namespace",
+      "tournament_id"
+    ],
+    "simulation_split_fields": [
+      "source_namespace",
+      "scenario_id"
+    ]
+  },
+  "identity_cases": [
+    {
+      "key": [
+        "hangma-official",
+        "t_6c121bfda7e8",
+        "t_6c121bfda7e8_r4_b0_t0",
+        1
+      ],
+      "hand_id": "hand-769903c4f23a976a785f84c8d473d55096ae2c0d81b2d83bc4b4d7688cbaac5f",
+      "official_split_group_id": "split-a831f13ecba08e85003af46ce73eb7201d9b834629023a09aab823caf3bccad1"
+    },
+    {
+      "key": [
+        "hangma-official",
+        "t_6c121bfda7e8",
+        "t_6c121bfda7e8_r4_b0_t0",
+        2
+      ],
+      "hand_id": "hand-732a35ca7a46f323262f698c0de859f53be86cd0b12d996feb4675ef0b557199",
+      "official_split_group_id": "split-a831f13ecba08e85003af46ce73eb7201d9b834629023a09aab823caf3bccad1"
+    },
+    {
+      "key": [
+        "hangma-official",
+        "t_6c121bfda7e8",
+        "t_6c121bfda7e8_r4_b0_t0-another-generation",
+        1
+      ],
+      "hand_id": "hand-032b3498149a0e6f051a173a4a04e1ea4a2478a98d75662089ce9a66bc4feece",
+      "official_split_group_id": "split-a831f13ecba08e85003af46ce73eb7201d9b834629023a09aab823caf3bccad1"
+    },
+    {
+      "key": [
+        "杭麻-平台甲",
+        "房间-一",
+        "场次-完整ID",
+        1
+      ],
+      "hand_id": "hand-f4f56bca336c475fa07cbfbe1511a5ff8ab5f474f7bea4ffee5337697b22e60d",
+      "official_split_group_id": "split-c28c14c899fd12d8d5cc0974611a662e546681e8c627275a9ba6d190939f4e82"
+    }
+  ],
+  "invalid_identity_cases": [
+    {
+      "key": [
+        "ns",
+        "room",
+        "game",
+        true
+      ],
+      "error": "ValueError"
+    },
+    {
+      "key": [
+        "ns",
+        "room",
+        "game",
+        0
+      ],
+      "error": "ValueError"
+    },
+    {
+      "key": [
+        "ns",
+        "room",
+        "game",
+        1.0
+      ],
+      "error": "ValueError"
+    },
+    {
+      "key": [
+        "",
+        "room",
+        "game",
+        1
+      ],
+      "error": "ValueError"
+    }
+  ],
+  "multi_process_merge": {
+    "key": [
+      "hangma-official",
+      "t_6c121bfda7e8",
+      "t_6c121bfda7e8_r4_b0_t0",
+      1
+    ],
+    "views": [
+      {
+        "run_id": "fixture-run-0",
+        "participant_id": "fixture-player-0",
+        "seat": 0,
+        "local_stage_attempt_id": "fixture-attempt-0"
+      },
+      {
+        "run_id": "fixture-run-1",
+        "participant_id": "fixture-player-1",
+        "seat": 1,
+        "local_stage_attempt_id": "fixture-attempt-1"
+      },
+      {
+        "run_id": "fixture-run-2",
+        "participant_id": "fixture-player-2",
+        "seat": 2,
+        "local_stage_attempt_id": "fixture-attempt-2"
+      },
+      {
+        "run_id": "fixture-run-3",
+        "participant_id": "fixture-player-3",
+        "seat": 3,
+        "local_stage_attempt_id": "fixture-attempt-3"
+      },
+      {
+        "run_id": "fixture-run-4",
+        "participant_id": "fixture-player-0",
+        "seat": 0,
+        "local_stage_attempt_id": "fixture-attempt-4"
+      }
+    ],
+    "expected_hand_count": 1,
+    "expected_view_count": 5,
+    "expected_split_group_count": 1,
+    "status_without_authoritative_end": "unknown"
+  },
+  "archived_room_cases": [
+    {
+      "path": "tests/fixtures/hangma/archived-rooms/t_6c121bfda7e8_b0.json",
+      "sha256": "2d6a9c4d24b451fd912a2bf6d9c7f17a8d689688e6c494d91f147a9a4d621ef0",
+      "guide_version": 14,
+      "captured_at": "2026-09-05",
+      "room_id": "t_6c121bfda7e8",
+      "game_id": "t_6c121bfda7e8_r4_b0_t0",
+      "batch": 0,
+      "hands": [
+        {
+          "round_no": 1,
+          "hand_id": "hand-769903c4f23a976a785f84c8d473d55096ae2c0d81b2d83bc4b4d7688cbaac5f",
+          "split_group_id": "split-a831f13ecba08e85003af46ce73eb7201d9b834629023a09aab823caf3bccad1",
+          "block_count": 4,
+          "seq_ranges": [
+            [
+              1,
+              129
+            ],
+            [
+              130,
+              258
+            ],
+            [
+              259,
+              386
+            ],
+            [
+              387,
+              448
+            ]
+          ],
+          "event_count": 448,
+          "first_hand_lengths": [
+            14,
+            13,
+            13,
+            13
+          ],
+          "later_start_hands_are_null": true,
+          "max_coverage_without_extra_evidence": "full_history",
+          "wall": null,
+          "draw_identity_known": false,
+          "world_import_allowed": false
+        }
+      ]
+    },
+    {
+      "path": "tests/fixtures/hangma/archived-rooms/t_714a42392cba_b0.json",
+      "sha256": "f0e00e4dcee3dc4bb522f562bca7179be682e0cf7432553f530268e51cc484aa",
+      "guide_version": 14,
+      "captured_at": "2026-09-05",
+      "room_id": "t_714a42392cba",
+      "game_id": "t_714a42392cba_r4_b0_t0",
+      "batch": 0,
+      "hands": [
+        {
+          "round_no": 1,
+          "hand_id": "hand-308c85fe578ae567df2a04fc763e48052a59f192f33d1dfdc02ad8f64580d851",
+          "split_group_id": "split-7f890dde395c067a3a4e24588e5ce388ceb57d04e813768df8ed189d0fecda38",
+          "block_count": 3,
+          "seq_ranges": [
+            [
+              1,
+              128
+            ],
+            [
+              129,
+              258
+            ],
+            [
+              259,
+              346
+            ]
+          ],
+          "event_count": 346,
+          "first_hand_lengths": [
+            14,
+            13,
+            13,
+            13
+          ],
+          "later_start_hands_are_null": true,
+          "max_coverage_without_extra_evidence": "full_history",
+          "wall": null,
+          "draw_identity_known": false,
+          "world_import_allowed": false
+        }
+      ]
+    },
+    {
+      "path": "tests/fixtures/hangma/archived-rooms/t_cee1db65a074_b0.json",
+      "sha256": "d53f7a453a1531faaf2ed15d6ed1413280a1aea779dbe1e8227d482c45d80aa8",
+      "guide_version": 14,
+      "captured_at": "2026-09-05",
+      "room_id": "t_cee1db65a074",
+      "game_id": "t_cee1db65a074_r7_b0_t0",
+      "batch": 0,
+      "hands": [
+        {
+          "round_no": 1,
+          "hand_id": "hand-57d58cc3aefeb28be0de5ee2ed798b6645a54e1624fdbc3f6504a57dcae0a010",
+          "split_group_id": "split-556c4ad72ac4f5303358e1802deaaed07edeffeb4b2d7d3f373492f409866692",
+          "block_count": 4,
+          "seq_ranges": [
+            [
+              1,
+              128
+            ],
+            [
+              129,
+              257
+            ],
+            [
+              258,
+              386
+            ],
+            [
+              387,
+              408
+            ]
+          ],
+          "event_count": 408,
+          "first_hand_lengths": [
+            14,
+            13,
+            13,
+            13
+          ],
+          "later_start_hands_are_null": true,
+          "max_coverage_without_extra_evidence": "full_history",
+          "wall": null,
+          "draw_identity_known": false,
+          "world_import_allowed": false
+        }
+      ]
+    }
+  ],
+  "budget_translation": {
+    "clock_unit": "monotonic_seconds",
+    "old_origin": 100.0,
+    "old_deadlines": [
+      100.5,
+      100.7,
+      100.85
+    ],
+    "new_origin": 800.0,
+    "new_deadlines": [
+      800.5,
+      800.7,
+      800.85
+    ]
+  },
+  "behaviour_cases": [
+    {
+      "id": "codec-fails-before-emit",
+      "expected": "producer_failure durable or missing closure; never report decision_complete=true"
+    },
+    {
+      "id": "audit-crosses-send-deadline",
+      "expected": "HTTP action calls=0; SubmitNotSent; original budget unchanged"
+    },
+    {
+      "id": "full-history-without-wall",
+      "expected": "history may be checked; from_replay must reject world import"
+    },
+    {
+      "id": "auto-resume-known-room",
+      "expected": "POST match calls=0; register/ready calls=0"
+    },
+    {
+      "id": "auto-404-without-finish-evidence",
+      "expected": "partial/unknown result; never zero-score complete"
+    },
+    {
+      "id": "unknown-replay-major",
+      "expected": "reject conversion and keep original bytes"
+    }
+  ]
+}

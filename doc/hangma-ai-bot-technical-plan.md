@@ -232,7 +232,7 @@ response_window_id   # 吃/碰响应窗口的唯一标识，用于防止重复�
 - 当前应行动玩家；
 - 可用于结算的完整信息。
 
-唯一允许的投影：
+模拟内部的唯一可见信息投影如下；对外统一通过 SimulationEngine.frame 返回观察，不要求评估直接调用该内部函数：
 
 ```python
 def observe(world: WorldState, seat: Seat) -> PlayerObservation:
@@ -324,22 +324,7 @@ class HangmaRules:
 
 #### 接口
 
-```python
-class SimulationGame:
-    """在内存中推进完整牌局，不访问网络、文件或系统时间。"""
-
-    def reset(self, seed: int, config: RuleConfig) -> WorldState:
-        """按指定随机种子和规则配置创建可完全重放的初始世界。"""
-        ...
-
-    def observe(self, world: WorldState, seat: Seat) -> PlayerObservation:
-        """把完整世界投影为指定座位当时能够看到的信息。"""
-        ...
-
-    def step(self, world: WorldState, action: Action, rng: RNG) -> StepResult:
-        """校验并应用一个动作，返回新世界、公开事件和终局信息。"""
-        ...
-```
+2026-09-05 已由[parallel-v1 §6](./implementation/parallel-contracts.md#6-模拟模块接口-simulation-v1)取代早期 SimulationGame/reset/step 草案。唯一具体接口为 SimulationEngine.start/frame/advance/export_hand/from_replay；MatchSpec 使用完整 TournamentConfig，按 Rounds 完成桌赛；同帧响应统一裁决，advance 不修改原世界。实施见[模拟指南](./implementation/simulation-start.md)，历史路径另走 check_hand，评估不读 WorldState 字段。
 
 #### 实现要求
 
@@ -350,6 +335,8 @@ class SimulationGame:
 - 首版优先多进程批量模拟，不要求本月完成 JAX/GPU 向量化。
 
 #### `BeliefSampler`
+
+以下是后续训练阶段的方向，不在本批 simulation-v1 首版交付范围；缺牌墙的官方记录先明确拒绝反事实导入，不能把采样能力当成已存在。
 
 ```python
 class BeliefSampler(Protocol):
@@ -662,7 +649,7 @@ game_id         # 官方场次标识
 
 ### 6.8 `adapters/recording`：非阻塞记录（P0）
 
-2026-09-05 后续设计：按[审计增强实施方案](./implementation/audit-enhancement.md)升级 v2（尚未实施）。复用 `AuditSink` 和现有 JSONL，补齐协议原文、完整决策输入/评分、逐候选复核和执行证据；赛后以文件清单和哈希封存为可迁移证据包。详细字段、接口、文件清单与门禁统一维护在该方案。
+2026-09-05 后续设计：按[审计增强实施方案](./implementation/audit-enhancement.md)和[parallel-v1](./implementation/parallel-contracts.md)实施（新增部分尚未实现）。保持 v1 信封和已经合入的原文留存/SSE，以 audit-plus-v1 profile 补齐完整输入、评分、复核、结束证据和生产端失败持久化；赛后以文件清单和哈希封存为可迁移证据包。实施分工见[并行施工导航](./implementation/parallel-workstreams.md)。
 
 审计不是普通调试日志，而是 MVP 的正式输出。所有记录使用以下关联键串起“赛事生命周期 → 对局事件 → 决策 → 提交 → 结果”：
 
@@ -695,15 +682,19 @@ runs/{run_id}/
   summary.json                  # 运行级汇总
 ```
 
-写入必须经过有界后台队列；磁盘慢、磁盘满或序列化失败不能阻塞合法动作。低优先级重复快照可以计数丢弃；提交 intent/outcome 等高优先级信封缺失时必须把运行标记为 `audit_degraded`，不得继续宣称完整可审计。`SUBMISSION_INTENT` 在调用 `submit()` 前入队，结果返回后入队 `SUBMISSION_OUTCOME`。运行结束时尽力刷新并由验证器检查悬空 `decision_id + attempt_no`。Token 必须在进入记录模块前移除，记录端再次防御性脱敏。
+写入必须经过有界后台队列；磁盘慢、磁盘满或序列化失败不能阻塞合法动作。低优先级协议原文在背压下可以计数丢弃；提交 intent/outcome 等高优先级信封缺失时必须把运行标记为 `audit_degraded`，不得继续宣称完整可审计。`SUBMISSION_INTENT` 在调用 `submit()` 前入队，结果返回后入队 `SUBMISSION_OUTCOME`。运行结束时尽力刷新并由验证器检查悬空 `decision_id + attempt_no`。Token 必须在进入记录模块前移除，记录端再次防御性脱敏。
 
-v2 的独有协议原文进入高优先级 `PROTOCOL_MESSAGE`，不套用冗余快照的丢弃规则。监控作为独立只读命令消费同一份记录，首版为终端/JSON，展示实际观察、候选和已有异常，不执行自动决策或新增平台轮询。
+独有协议原文沿用低优先级 RAW_PROTOCOL_STATE，背压丢失必须如实计数；规范权威状态与决策证据保持高优先级，不重复建设协议存储。监控作为独立只读命令消费同一份记录，首版为终端/JSON，展示实际观察、候选和已有异常，不执行自动决策或新增平台轮询。
+
+### 6.9 自动匹配生命周期（MVP 后，待实施）
+
+用户已确认接入 `/api/match`，详见[开工指南](./implementation/free-match-start.md)。新增 OfficialAutoMatchSession 复用现有 TournamentSessionPort/GameSessionPort，application 的专用运行单元负责单自动房等待、最多实际 M 场并发和关闭前收尾；不调用 register/ready，不重写动作门或 SSE。仅显式 AUTO_MATCH 模式允许 initialize 有一次匹配入席副作用，旧模式保持发现与 Token 作用域约束。该受控例外及初始化重试安全见[接口协议 §6](./implementation/interface-contracts.md#6-赛事与参赛者终态)。v15 默认 M=10/Rounds=8，当前修复后的 M=2 测试房间验收不替代本入口的目标并发验收。
 
 ## 7. 离线模块与训练闭环
 
 ### 7.1 `offline/replay.py`：证据整理与统一牌谱（P1，待实施）
 
-具体实施范围和数据格式见[审计增强实施方案 §5](./implementation/audit-enhancement.md#5-统一牌谱-v1)。本次首次进入具体离线数据整理工作，不预建训练/模拟空接口。职责：
+具体字段见[parallel-v1 §4—5](./implementation/parallel-contracts.md#4-数据身份来源及版本)，采集和命令见[审计方案](./implementation/audit-enhancement.md)。本批具体开发 simulation 与 offline，评估通过公开 SimulationEngine 驱动完整桌赛；各线指南和文件所有权见[施工导航](./implementation/parallel-workstreams.md)。不预建训练空接口。职责：
 
 - 消费已封存证据包，保留不可变的原始审计和可取得的官方牌谱；
 - 优先从保存的决策输入恢复当时的 `PlayerObservation`、原始规则候选及实际行为；新规则重算另存为实验，不覆盖历史；
@@ -711,7 +702,7 @@ v2 的独有协议原文进入高优先级 `PROTOCOL_MESSAGE`，不套用冗余�
 - 保存最终结算，但不把未来信息放入输入特征；
 - 保存实际存在的赛事、阶段和阶段尝试标识，以及实际取得的 `total_score/place_points/god_count/rank`；测试房间无对应赛事信息时保留缺失；
 - 将 `stage_crashed` 后被平台清空的旧阶段尝试标为作废，默认排除训练标签和正式成绩；
-- 按赛事/阶段尝试/时间划分训练集和验证集，避免同一赛事跨集合泄漏。
+- 按共同契约 split_group_id 划分训练集和验证集；四身份和重启视角共享稳定 hand_id，不能按本地阶段尝试 UUID 切分同一单局。
 
 自动泄漏测试：改变未公开手牌和未来牌墙、保持 `PlayerObservation` 不变，线上特征编码和模型输出必须完全一致。
 
@@ -972,7 +963,7 @@ Portal Cookie 接口不属于稳定 Bot 契约，线上 Bot 不依赖。
 
 #### 交付
 
-- 与线上规则同源、可固定随机种子的 `SimulationGame` 和 `UniformLegalSampler`；
+- 与线上规则同源、可固定随机种子的 `SimulationEngine`；`UniformLegalSampler` 在后续训练阶段有具体需求时实现，不属于 parallel-v1 首版；
 - 数据化 `CompetitionFormat/CompetitionObjective`，覆盖海选前 16/8/4、组内前 2、候补/降档和决赛加赛；
 - 固定牌山、换座位、对手池版本化和完整赛事 seed 的 A/B 评测；
 - 官方测试房间重复赛统计，以及官方测试赛事的生命周期回归；
@@ -1031,7 +1022,7 @@ Portal Cookie 接口不属于稳定 Bot 契约，线上 Bot 不依赖。
 
 ### P1 应在冻结前完成
 
-- 同规则 SimulationGame；
+- 同规则 SimulationEngine（接口以 parallel-v1 为准）；
 - UniformLegalSampler；
 - 数据化赛事目标和完整阶段/赛事评测；
 - 海选榜单缓存和保守降级；

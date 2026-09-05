@@ -4,9 +4,9 @@
 > 日期：2026-09-04  
 > 官方依据：指南/API v8 快照（doc/official-platform-api-v2.md）+ 指南版本 v15 变更记录
 >（`/portal/api/guide/version` 只读检查日期 2026-09-05；v10 跨局 `gap=true` 快照、
-> v11 state 轮询 16/s 每用户聚合、v12 SSE 客户端已交付（notify.py，未接入运行链路、
-> 运行行为零变化，见 doc/implementation/notes/sse-notify-client.md）、v13 在线分桌已审查放行、
-> v14 guide 全文端点、v15 自动匹配默认房配置上调已审查（本项目不调用 /api/match，零影响）。
+> v11 state 轮询 16/s 每用户聚合、v12 SSE 已随 631c85b 接入运行链路（开关默认关闭，
+> 见 doc/implementation/notes/sse-runtime-integration.md）、v13 在线分桌已审查放行、
+> v14 guide 全文端点、v15 自动匹配默认房配置上调已审查。新增 /api/match 接入按 parallel-v1 待实施）。
 > 适配器代码与 fixture 同步由 runtime_protocol 工作包负责）  
 > 代码定义：`src/hangma_bot/**/interface.py` 与 `application/contracts.py`
 
@@ -119,6 +119,8 @@ ActionAttempt
 
 `TournamentSessionPort.initialize()` 只完成指南版本、身份、目标赛事、规则和初始状态发现，不自动报名、到位或启动场次。初始化、报名和到位都可以返回 `ParticipantTerminal` 形式的永久失败；何时 `register()`、`ready()`、打开/关闭场次由应用层决定。`ready()` 携带 `StageIdentity.observed_revision`，防止等待期间把旧阶段命令提交到新阶段。
 
+**MVP 后 AUTO_MATCH 条件化例外（parallel-v1，待实现）**：仅新 OfficialAutoMatchSession 在显式 AUTO_MATCH、expected_tournament_id 为空且已排除现有自动房归属时，允许 initialize 完成一次 POST /api/match 入席操作。非空目标只恢复，不调用 match；旧三种模式的发现/作用域/报名流程不变。match 可创建房、占席并触发开赛，因此这个初始化不能作为只读幂等调用盲目重试。application 决定开始一次操作，适配器在该操作内按配置有界处理协议恢复；分类终态后不再自动 initialize。完整定义与受控类型扩展见[共同契约 §3.3](./parallel-contracts.md#33-本次批准的增量扩展)，必须同步 SessionBootstrap 注释、Fake、调用方和模式契约测试。
+
 必须区分：
 
 - 赛事终态：官方 `finished/closed/void`；
@@ -186,22 +188,24 @@ runs/{run_id}/
 - **coverage 的 `final_scores_by_game`**：双层终局分数一致性检查结果；不一致只报 warning（应用层与适配器观察时点不同可能造成合法差异），进入验证报告供人工裁决。
 - **`rejected_no_refresh` 计入 rejected_total** 统计（提交结果分布七分类）。
 
-### 7.2 审计增强 v2 变更登记（2026-09-05，待实施）
+### 7.2 审计增强 audit-plus-v1 变更登记（2026-09-05，待实施）
 
-字段和验收的唯一详细定义见[审计增强实施方案](./audit-enhancement.md)。这次变更为补齐实际决策证据，不改变线上决策或提交语义。
+字段和验收的详细定义见[审计增强实施方案](./audit-enhancement.md)，数据交换见[parallel-v1](./parallel-contracts.md)。本次在已合入的原文留存上增补真实决策证据，取代旧文档拟议的信封 v2，不改变动作提交语义。
 
 | 项目 | 拟实施变更 |
 | --- | --- |
-| 接口 | `AuditSink.emit/aclose` 签名不变；`TournamentSessionPort`、`GameSessionPort`、`BotPolicy` 不变 |
-| 信封 | 审计版本升级为 2；`AuditRecord` 新增 `source=application/official`；落盘时增加运行内 `record_no`，用于区分来源与定位缺失 |
-| 种类 | 新增 `PROTOCOL_MESSAGE`、`DECISION_INPUT`、`CANDIDATE_VALIDATED`；现有计划记录扩展为完整评分与实际采用候选 |
-| 优先级 | 独有协议原文使用高优先级 `PROTOCOL_MESSAGE`；低优先级 `RAW_PROTOCOL_STATE` 仅保存可替代的冗余副本 |
-| 关联 | 规划按 `run_id/decision_id/plan_revision`；提交按 `run_id/decision_id/attempt_no/source`；官方请求按 `request_id`；不靠消息相似度合并 |
+| 接口 | AuditSink/AuditRecord/AuditReceipt/AuditSummary 签名不变；动作和策略接口不变。自动匹配初始化例外单独按 §6 登记 |
+| 信封 | 审计 schema_version=1、raw payload_schema_version=1；增强 payload 声明 capture_profile=audit-plus-v1，生产方字段用 audit_producer，不与 raw.source 冲突 |
+| 种类 | 新增 DECISION_INPUT、CANDIDATE_VALIDATED、DECISION_ENDED；现有计划保存完整原计划、有效候选及评分，不新增 PROTOCOL_MESSAGE |
+| 优先级 | 独有原文继续 RAW_PROTOCOL_STATE 低优先级，背压丢失计数；权威状态和决策高优先级。缺失不能宣称完整 |
+| 关联 | 规划按 run_id/decision_id/plan_revision；提交加 attempt_no/audit_producer；迁移引用用相对文件/行号，跨进程单局按稳定 hand_id/index 映射 |
 | 信息权限 | 决策输入只保留当时 `PlayerObservation` 和赛事上下文；赛后全信息独立归档，仅离线转换可读取 |
-| 兼容 | v1 保持可读，缺少输入的记录标为不可重建；v2 的生产方、Fake、编解码及契约测试须一并升级，不能只收紧记录器 |
+| 兼容 | 旧 v1 保持可读；缺输入的记录不可完整重算。新校验以 profile 开启，生产方/codec/Fake/测试一起更新，不收紧旧日志 |
 | 结果 | accepted 与权威执行确认分开；最后观测排名不等于最终排名；作废/未知结果显式保留 |
+| 失败 | codec 构造失败以最小失败记录及 producer_summary 持久化，并合并关闭报告；无闭合证明不能判断尾部完整 |
+| 时间 | 新增同步审计之后仍须检查原发送截止时间；超时返回 SubmitNotSent，HTTP 调用为 0 |
 
-影响文件与测试列于方案 §7；受控变更实施时同步所有 `AuditRecord` 构造位置、生产方、内存 sink 和版本常量。现有 §7.1 的宽松字段及双层重复容忍规则仅适用于旧 v1；v2 按 source 和实际事件角色验证，不因三条以下重复便自动放行。
+影响文件与测试列于方案 §7；现有 §7.1 的兼容读取继续保留，新 profile 按 audit_producer 和实际事件角色验证，不因三条以下重复便自动放行。模拟具体方法、历史 check_hand、统一牌谱和评估结果由[并行契约](./parallel-contracts.md)冻结；共享变更按[施工导航](./parallel-workstreams.md)集中集成。
 
 ## 8. 错误和取消契约
 

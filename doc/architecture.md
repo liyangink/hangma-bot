@@ -129,13 +129,19 @@ flowchart TB
 
 ### 3.3 后续模块边界
 
-MVP 通过后再创建 `simulation`、`competition`、`learning` 和 `offline`：
+MVP 后按实际任务创建目标模块。2026-09-05 的[并行契约](./implementation/parallel-contracts.md)已启动 simulation/offline 设计，详见[施工导航](./implementation/parallel-workstreams.md)；competition/learning 待具体能力进入时实现：
 
 - `simulation` 拥有 `WorldState`，每一步调用 `hangma`，禁止第二套规则；
 - `competition` 只把结构化阶段事实和可能结果转换为赛事效用，不读取 HTTP；
 - `learning` 统一训练/推理编码、网络、校准和模型兼容性；
 - `offline` 可以调用生产核心，线上代码不能反向依赖训练任务；
 - 若线上确需模拟结果，只向策略提供深的 `OutcomeEstimator`，不得暴露 `WorldState` 或让策略直接操纵模拟器。
+
+本批具体调用与文件契约见[parallel-v1](./implementation/parallel-contracts.md)。审计拥有原文整理与统一牌谱 codec；模拟拥有不透明 WorldState 和具体 SimulationEngine；评估只读文件并调用公开 frame/advance，策略仍仅消费 DecisionRequest。历史 check_hand 与完整世界 from_replay 分开；缺牌墙的官方记录不自动成为可分叉世界。
+
+### 3.4 自动匹配入口（待实施）
+
+用户已确认 `/api/match`。新增 OfficialAutoMatchSession 作为 TournamentSessionPort 的第二个真实实现，application 用专用自动房生命周期复用现有 GameTask/SSE/动作门。显式 AUTO_MATCH 初始化可有一次入席副作用；旧模式保持发现与 Token 作用域检查。匹配操作内协议重试归适配器，是否开始会话、运行场次、终局收尾归应用层，默认只完成一个自动房。详见[自由赛指南](./implementation/free-match-start.md)，不能把这段流程只归到可观测模块。
 
 ## 4. 赛事生命周期与终态
 
@@ -269,7 +275,7 @@ sequenceDiagram
 
 ## 8. 审计边界
 
-MVP 后续增强设计见[审计增强实施方案](./implementation/audit-enhancement.md)（2026-09-05，待实施）。现行文件布局继续使用；`AuditSink` 签名保持不变，拟新增高优先级协议原文、完整决策输入和候选复核记录。实际生成的候选/评分必须留存，不用修复后的规则重算值覆盖历史事实。
+MVP 后续增强设计见[审计增强实施方案](./implementation/audit-enhancement.md)（2026-09-05 修订，新增部分待实施）。保持 v1 信封、现行 raw 留存与 AuditSink 签名，以 profile 补齐完整决策输入、候选复核、结束证据和构造失败持久化。实际生成的候选/评分必须留存，不用修复后的规则重算值覆盖历史事实。
 
 审计不是普通调试日志，而是第一阶段正式产物。应用层记录生命周期、规则分析、策略计划、提交 intent/outcome 和最终结果；官方适配器记录协议同步与恢复事实。双方只发送已脱敏的 `AuditRecord`。
 
@@ -286,15 +292,15 @@ runs/{run_id}/
   summary.json
 ```
 
-高优先级动作信封不设计为正常丢弃；磁盘问题导致缺失时运行必须标记 `audit_degraded`，不能继续声称完整可审计。低优先级重复原始快照可以在队列压力下计数丢弃。Token 和 `Authorization` 在进入记录器前移除，记录器再次防御性脱敏。
+高优先级动作信封不设计为正常丢弃；磁盘问题导致缺失时运行必须标记 `audit_degraded`，不能继续声称完整可审计。低优先级协议原文可以在队列压力下计数丢弃。Token 和 `Authorization` 在进入记录器前移除，记录器再次防御性脱敏。
 
-审计 v2 下，独有原文使用 `PROTOCOL_MESSAGE`，可丢弃的 `RAW_PROTOCOL_STATE` 仅表示可替代副本。应用层提供决策编解码；官方适配器留存协议并映射赛后格式；记录模块负责文件、共用读取器、校验与封存；离线模块负责具体统一牌谱转换，线上不依赖离线模块。只读监控使用记录中的牌桌快照和决策，不维护第二套协议状态机或规则。
+本批复用现有独有原文 RAW_PROTOCOL_STATE，低优先级背压丢失仍需计数，不能宣称原文完整。应用层提供决策编解码；官方适配器留存协议并映射赛后格式；记录模块负责文件、共用读取器、校验与封存；离线模块负责具体统一牌谱转换，线上不依赖离线模块。只读监控使用记录中的牌桌快照和决策，不维护第二套协议状态机或规则。
 
 证据包包含互不改写的各进程运行目录、可取得的官方赛后原文和文件哈希。统一牌谱写入独立派生目录；测试房间完整事件流与测试赛事/自由赛玩家观察按数据能力区分。缺少未来牌墙时只声明完整历史轨迹，不声明完整世界或反事实分叉能力。实时排名按实际环境采集，缺失保留未知。
 
 ## 9. 模拟、训练与评估的后续边界
 
-第一阶段不实现这些模块，但现在确定以下方向以避免返工：
+以下为长期数据边界。第一阶段已经完成，本批 simulation/offline 的具体接口和验收以 parallel-v1 为准；训练模块仍待相应阶段。箭头表示数据消费方向，教师和学生的信息权限不同：
 
 ```mermaid
 flowchart LR

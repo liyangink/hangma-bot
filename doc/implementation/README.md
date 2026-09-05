@@ -6,7 +6,7 @@
 
 ## 1. 结论
 
-MVP 后的审计增强实施入口为[审计增强实施方案](./audit-enhancement.md)（2026-09-05，待实施）：先补齐线上记录，再做跨节点归档与统一牌谱转换，最后补只读实时查看。本导航下文保留第一阶段基线；新的具体离线整理任务依该方案开展，不预建训练或模拟基础设施。
+MVP 已完成并参加测试赛事，后续 adapter/rule 修复已合入并通过所述测试房间验收。2026-09-05 起按[并行施工导航](./parallel-workstreams.md)和[parallel-v1 契约](./parallel-contracts.md)开展审计、模拟、评估及自动匹配接入；策略迭代由主审负责。新增部分尚未实现。下文保留第一阶段历史基线，新的真实 simulation/offline 工作不再受第一阶段“暂不创建”范围限制；learning 等仍按具体阶段启动。
 
 第一阶段只实现六个生产模块和两个启动入口：`kernel`、`hangma`、`policy`、`application`、`adapters/official`、`adapters/recording`、正式单身份入口和测试房间四身份入口。模拟、训练、模型、复杂赛事效用和通用基础设施暂不建目录、不冻结接口。
 

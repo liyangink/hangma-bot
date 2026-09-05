@@ -331,7 +331,7 @@ v2 动作判定下限：
 - 自动房唯一入席入口是 `/api/match`：对其玩家 API 直连 `register/ready` → `409 AUTO_MATCH_ONLY`（在册参与者重复直连亦 409）。
 - 16 场上限：`409 MATCH_LIMIT_REACHED`（register/ready 与 match 同码）。
 
-工程决策（2026-09-05 评审）：本 bot 目前**不支持全局 Token**（initialize 按 `TARGET_MISMATCH` 拒绝，见技术方案），且不调用 `/api/match`——自动匹配对本项目零协议影响，仅文档记录；是否接入自动匹配作为持续评测渠道属独立功能决策。
+工程状态与后续决定（2026-09-05）：当前已合入的运行入口仍**不支持全局 Token**（initialize 按 `TARGET_MISMATCH` 拒绝），不调用 `/api/match`。用户已明确委派其接入设计，新增能力按[parallel-v1](./implementation/parallel-contracts.md)和[自由赛开工指南](./implementation/free-match-start.md)开发，尚未实现。旧赛事/测试房间模式保持原作用域和流程；自动匹配的全局身份、入席副作用、每分钟配额及 M=10 容量需单独验收。
 
 ## 3. 公共辅助 API
 
