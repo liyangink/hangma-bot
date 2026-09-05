@@ -2,7 +2,9 @@
 
 > 状态：第一阶段实现依据；区分「官方已确认 / 当前观察 / 工程假设」
 > 官方依据：门户指南 v9（2026-09-03 抓取，`tests/fixtures/official/v9/portal-guide-rules-extract.md`）、
-> `doc/official-platform-api-v2.md`（v8 快照）、官方 fan-calc 实测金例
+> `doc/official-platform-api-v2.md`（v8 快照）、官方 fan-calc 实测金例；
+> 2026-09-05 补记：指南 v14 + 变更日志 v1（碰后禁止胡牌/七对判定修复）、
+> 归档测试房间事件流差分（§11，夹具 `tests/fixtures/hangma/`）
 > 金例夹具：`tests/fixtures/official/v9/fan-calc/cases*.jsonl`（61 例胡牌 = 定向 38 + 随机对拍 23，另含反例与 400 校验；含 chain-4-4 实测补录）
 
 本文件是 `hangma` 模块三个子包（手牌数学、动作族、财神与结算）共享的规则依据。
@@ -104,3 +106,18 @@
 - 【官方】= 门户指南/API/fan-calc 实测直接确认；
 - 【观察】= 金例拟合、无官方条文（现已全部升级为【官方】或【假设】）；
 - 【假设】= 文档语义推演、需要测试房间验证（YouCaiBiKao 判定细节、piao 历史推断）。
+
+## 11. 胡牌窗口事实与防双计归一化（官方已确认，2026-09-05 差分工作包补记）
+
+- 「刚摸牌」门禁（指南变更日志 v1，2026-09-02「碰后禁止胡牌」；API §2.4 同句）：
+  碰/吃/杠后、下次摸牌前提交 hu 返回 409 INVALID_ACTION。实现：胡候选要求
+  `drawn_tile` 非空（action_families.hu_candidates）；碰/吃后未摸牌的出牌窗口
+  drawn_tile 为空 → 无胡候选。杠后补牌（杠上摸）与庄家首局发牌直抽均以非空
+  drawn_tile 呈现（2026-09-04 测试赛审计实测），门禁正确放行。
+- 官方快照形态（2026-09-04 实测，tests/fixtures/official/captures/
+  state-draw-phase-t_714a42392cba.json）：摸牌窗口 `my_hand` 已含刚摸的牌
+  （长度 = 14 - 3×副露数）且 `drawn_tile` 再单列；契约形态（interface-contracts
+  §10.1）要求 my_hand 不含摸牌（长度 = 13 - 3×副露数）。两种形态并存，
+  引擎在 _build_context/_full_hand 按长度判定归一化，防止摸牌双计放宽
+  胡牌判定（2026-09-04 测试赛 97 次 hu 409 的根因之一，差分复现见
+  tests/unit/hangma/test_hu_differential_replay.py 与 tests/fixtures/hangma/）。

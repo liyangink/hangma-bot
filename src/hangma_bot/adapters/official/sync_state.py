@@ -9,6 +9,13 @@
   牌码, 座位)）：测试房响应阶段 last_discard 为纯牌码字符串（无 seq）且
   每次交付前全量重建清空事件历史，该记忆是响应窗口 WindowKey.trigger_seq
   身份稳定的兜底来源（集成阶段第二轮加固 R2）；仅在局号变化时重置。
+- 增量优先的摸牌窗口（游标纪律修复）：客户端局面 = 快照 + 后续增量事件
+  （指南 v14 §2.1），事件流只含自己的摸牌。本人 tile_drawn 是事件流最后
+  一条时，摸牌窗口直接由增量事实送达（incremental_draw_window /
+  incremental_draw_observation），不再逐批 seq=0 刷新；快照刷新只在事件
+  流无法推导权威事实时发生（见 events_need_authoritative_refresh 的
+  「为什么」），因此增量送达时 my_hand 与最后快照必然一致（本人改牌动作
+  全部落入刷新触发集），无需本地推演手牌。
 - 未知事件类型采取"保守重建一次 + 学习忽略"策略：第一次出现按关键事件处理
   （权威快照会吸收其效果，不丢状态），之后同类型仅记录，避免重建风暴。
   这是工程决策：官方未提供未知事件的可忽略性判据（API 文档 §2.3）。
@@ -19,13 +26,13 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import Enum
 from typing import Optional, Tuple
 
-from hangma_bot.kernel.actions import WindowKey
+from hangma_bot.kernel.actions import Tile, WindowKey, WindowPhase
 from hangma_bot.kernel.config import TimingConfig
-from hangma_bot.kernel.observation import PlayerObservation, PublicEvent
+from hangma_bot.kernel.observation import PlayerObservation, PublicDiscard, PublicEvent
 
 from . import projector
 from .dto import ParsedEvent, ParsedSnapshot, StateResponse
@@ -172,6 +179,127 @@ class ProtocolSyncState:
         """权威重建完成后登记"已吸收的未知事件类型"，后续不再触发重建。"""
 
         self.learned_event_types.add(event_type)
+
+    def events_need_authoritative_refresh(self, events) -> bool:
+        """增量事件是否需要紧跟一次权威快照刷新才能继续投递窗口。
+
+        为什么（官方依据，指南 v14 §2.1）：快照是规范真相，阶段
+        （phase/responding_seats/turn）、神位状态（baotou/chain_count/
+        catch_play）与本人手牌张数的权威表达只在快照中出现；事件流只含
+        自己的摸牌与公开动作。以下事件改变无法从增量可靠推导的权威事实：
+
+        - 任意 tile_discarded：响应窗口（peng/chi 成员与相位）随弃牌开启，
+          且本人爆头/动作链/抓打圈状态都只在弃牌动作上变化（无对应增量
+          字段）——必须刷新才能给出合法窗口与新鲜神位状态；
+        - 任意 timeout：官方自动代打（自动胡/自动出最右一张/自动弃权）
+          改变的手牌与阶段无法从事件流推导；
+        - 本人 chi/peng/gang：副露消耗的本人手牌张数与牌面不进入事件流，
+          不刷新则后续摸牌窗口的 my_hand 不可信；
+        - 本人 tile_drawn 缺牌码：畸形事件无法构造 drawn_tile，快照兜底。
+
+        其余事件（他家摸牌、pass、round_ended、game_ended）不触发刷新：
+        摸牌窗口由增量事实直接送达（游标纪律目标：正常事件流零重建）。
+        """
+
+        my_seat = self.snapshot.seat if self.snapshot is not None else None
+        for event in events:
+            if event.type in ("tile_discarded", "timeout"):
+                return True
+            if event.type in ("chi", "peng", "gang") and event.seat == my_seat:
+                return True
+            if (
+                event.type == "tile_drawn"
+                and event.seat == my_seat
+                and len(event.tiles) != 1
+            ):
+                return True
+        return False
+
+    def incremental_draw_window(self):
+        """增量路径判定的本人摸牌窗口；事件流末条不是本人摸牌时返回 None。
+
+        官方依据（指南 v14 §2.1）：draw 且 turn==seat 可出牌/胡/杠；事件流
+        只含自己的摸牌；本人摸牌事件产生后，直到本人出牌/超时前不会有任何
+        其他事件。因此「事件流最后一条是本人 tile_drawn」等价于「当前处于
+        本人摸牌窗口」。触发序号直接取摸牌事件 seq：与快照路径同值（摸牌
+        窗口期间无其他事件推进水位），且是真正的触发事件序号。
+        """
+
+        snapshot = self.snapshot
+        if snapshot is None or self.finished or snapshot.seat < 0:
+            return None
+        if not self.history:
+            return None
+        last = self.history[-1]
+        if (
+            last.kind != "tile_drawn"
+            or last.seat != snapshot.seat
+            or len(last.tiles) != 1
+        ):
+            return None
+        return projector.DetectedWindow(
+            window_key=WindowKey(
+                game_id=self.game_id,
+                round_no=snapshot.round_no,
+                trigger_seq=last.seq,
+                phase=WindowPhase.DRAW,
+                seat=snapshot.seat,
+            ),
+            timeout_seconds=self.timing.discard_timeout_sec,
+            trigger_projection_note=None,
+            trigger_discard=None,
+        )
+
+    def incremental_draw_observation(self) -> Optional[PlayerObservation]:
+        """本人摸牌窗口的增量观察：快照权威字段 + 增量摸牌/弃牌事实。
+
+        只允许在 incremental_draw_window 命中时使用。为什么 my_hand 可以
+        直接沿用快照：本人一切改牌动作（弃牌/副露/超时）都在
+        events_need_authoritative_refresh 的刷新触发集内，摸牌事件成为事件
+        流末条时，自最后快照以来本人未发生任何改牌动作，快照 my_hand 即
+        当前手牌；drawn_tile 取本人摸牌事件牌码（指南 v14 §2.1：事件流
+        只含自己的摸牌）。牌河按事件流追加公开弃牌，保持估算口径与真实
+        牌河一致；phase/turn/responding_seats 由摸牌语义推导（draw 阶段、
+        本人行动、无响应成员）。
+        """
+
+        base = self.current_observation()
+        if base is None or self.snapshot is None or not self.history:
+            return None
+        last = self.history[-1]
+        if (
+            last.kind != "tile_drawn"
+            or last.seat != self.snapshot.seat
+            or len(last.tiles) != 1
+        ):
+            return None
+        drawn = last.tiles[0]
+        # 最新弃牌以事件流增量事实为准；无增量弃牌时退回快照投影
+        fact = self._last_discarded_event()
+        if fact is not None:
+            seq, code, seat = fact
+            last_discard = PublicDiscard(seat=seat, tile=Tile(code), seq=seq)
+        else:
+            last_discard = base.last_discard
+        discards = base.discards
+        rows = None
+        for event in self.history:
+            if event.kind != "tile_discarded" or len(event.tiles) != 1:
+                continue
+            if rows is None:
+                rows = [list(row) for row in discards]
+            rows[event.seat].append(event.tiles[0])
+        if rows is not None:
+            discards = tuple(tuple(row) for row in rows)
+        return replace(
+            base,
+            phase="draw",
+            turn_seat=self.snapshot.seat,
+            responding_seats=(),
+            drawn_tile=drawn,
+            last_discard=last_discard,
+            discards=discards,
+        )
 
     def current_window(self):
         """当前权威快照判定的我方动作窗口；无快照或无动作权时为 None。

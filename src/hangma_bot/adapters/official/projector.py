@@ -450,8 +450,13 @@ def action_request_body(
     """
 
     if isinstance(action, Discard):
-        # 官方快照把刚摸的牌单列在 drawn_tile（my_hand 是否并入未文档化）：
-        # 出牌合法性按 hand ∪ {drawn_tile} 判定，避免拒绝打刚摸的牌
+        # 官方快照把刚摸的牌单列在 drawn_tile，且实测 my_hand 已并入该牌
+        # （tests/fixtures/official/captures/state-draw-phase-t_714a42392cba.json，
+        # 2026-09-04 实测抓取）：kernel 契约要求 my_hand 保留官方原样（顺序与
+        # 内容），双计口径由 hangma 引擎按张数归一化（见
+        # doc/implementation/notes/rules-hu-gate-and-win-detection.md）；
+        # 此处出牌合法性按 hand ∪ {drawn_tile} 并集判定，两种官方形态都
+        # 不会拒绝打刚摸的牌
         available = set(hand) | ({drawn_tile} if drawn_tile is not None else set())
         if catch_play:
             # 抓打圈硬约束：只能打刚摸到的牌（API 文档 §5.4）。

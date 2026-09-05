@@ -1,9 +1,13 @@
-"""官方场次会话：GameSessionPort 的官方协议实现（v8 快照 + v9–v11 已审查变更）。
+"""官方场次会话：GameSessionPort 的官方协议实现（v8 快照 + v9–v14 已审查变更）。
 
 同步与提交语义（接口协议 §5/§8、模块 AGENTS）：
 
-- 权威观察永远来自全量快照；增量事件只归并进公开历史并触发快照刷新。
-  这与官方 demo 一致：私有字段（my_hand/drawn_tile）只在快照中出现。
+- 客户端局面 = 全量快照 + 后续增量事件（指南 v14 §2.1）：增量事件是
+  权威公开事实，事件流只含自己的摸牌。本人摸牌窗口直接由增量事件送达
+  （游标纪律修复，量化与口径见 doc/implementation/notes/cursor-discipline.md），
+  不再逐批 seq=0 刷新；快照刷新只在事件流无法推导权威事实时发生：
+  弃牌/timeout（响应窗口与神位状态）、本人副露（手牌张数不进入事件流）、
+  跨局边界 v10 快照与失步重建。
 - 重复 seq 幂等忽略；缺口、gap=true、未知关键事件用 seq=0 整体重建。
 - GET 超时/可恢复 5xx/429 在预算内有界重试；动作 POST 绝不自动重放。
 - 409 固定流程：记录明确拒绝 → seq=0 全量刷新 → 比较 WindowKey →
@@ -67,6 +71,10 @@ from .errors import (
     RecoverableServerError,
     UncertainTransportError,
 )
+from hangma_bot.adapters.recording import (
+    build_action_response_payload,
+    build_state_response_payload,
+)
 from .scheduler import DeadlineExceeded, Priority, RequestScheduler
 from .sync_state import ProtocolSyncState, SyncDecision
 from .transport import OfficialTransport
@@ -75,6 +83,15 @@ from .transport import OfficialTransport
 # 无事件切换阶段，定时器按"窗口秒数 + 本余量"与长轮询竞速，保证刷新落在
 # 下一阶段已经生效之后（捕获 peng->chi 转换）而不截断原窗口。
 _BOUNDARY_MARGIN_SEC = 0.05
+
+# 跨局边界无进度 gap 快照的轮询退避（官方依据：指南 v14 §2.1——round_ended
+# 后新局发牌不产生事件，旧游标轮询会立即收到 gap=true 全量快照且不会挂起）。
+# 新局首事件产生前，反复原速轮询只会重复收到同 seq 快照（2026-09-04 测试赛
+# 实测同一边界重复 5~47 次），既浪费 16/s 限速额度也刷爆恢复审计。
+# 前 FAST 次保持原速：覆盖庄家常规思考窗口，保证边界后他家弃牌所开启的
+# 响应窗口发现时延不回退；此后按表指数退避（秒）直至首事件推进快照水位。
+_BOUNDARY_STALL_FAST_POLLS = 2
+_BOUNDARY_STALL_BACKOFF_SEC = (0.5, 1.0, 2.0)
 
 
 class OfficialGameSession:
@@ -107,6 +124,7 @@ class OfficialGameSession:
         self._backoff_base = retry_backoff_base_sec
         self._retry_sleep = retry_sleep if retry_sleep is not None else asyncio.sleep
         self._sync = ProtocolSyncState(game_id, timing)
+        self._state_request_no = 0  # /state 请求单调计数（原始事件对账键，跨会话重启归零安全）
         self._gate = ActionGate()
         self._delivered_windows = set()
         self._final: Optional[GameFinished] = None
@@ -202,6 +220,7 @@ class OfficialGameSession:
         """一个完整轮询周期：持续到产出窗口、终局或故障。"""
 
         rebuild_streak = 0
+        boundary_stalls = 0  # 跨局边界连续无进度 gap 快照计数（退避用，见 _boundary_stall_sleep）
         while True:
             if self._closed:
                 return GameFailed(self.game_id, False, "session_closed:" + self._close_reason)
@@ -225,6 +244,7 @@ class OfficialGameSession:
                 if response.gap:
                     # pending 响应携带 gap=true：权威序号已断链，必须重建
                     # 而不是继续用旧 seq 长轮询（wv9 阻断项）
+                    pre_seq = self._sync.last_seq
                     rebuild_streak += 1
                     self._emit_audit(
                         AuditKind.PROTOCOL_RECOVERED,
@@ -249,8 +269,14 @@ class OfficialGameSession:
                     delivered = self._maybe_deliver_window()
                     if delivered is not None:
                         return delivered
+                    if self._sync.last_seq <= pre_seq:
+                        boundary_stalls += 1
+                        await self._boundary_stall_sleep(boundary_stalls)
+                    else:
+                        boundary_stalls = 0
                 continue
             if response.kind in ("snapshot", "finished"):
+                pre_seq = self._sync.last_seq
                 if response.gap:
                     # 指南 v10：官方可在（跨局）快照上附带 gap=true，表示事件流
                     # 曾断链；快照本身即权威全量，直接吸收并记录事实，无需重建
@@ -270,8 +296,18 @@ class OfficialGameSession:
                 delivered = self._maybe_deliver_window()
                 if delivered is not None:
                     return delivered
+                if response.gap and self._sync.last_seq <= pre_seq:
+                    # v10 跨局边界无进度快照：新局首事件尚未产生，旧游标轮询
+                    # 会立即再次命中同一规则返回同 seq 快照（实测同边界重复
+                    # 5~47 次）。前 FAST 次原速、此后退避（见常量注释）。
+                    boundary_stalls += 1
+                    await self._boundary_stall_sleep(boundary_stalls)
+                else:
+                    boundary_stalls = 0
                 continue
-            # 增量事件：归并后立即刷新全量快照（私有信息只在快照中出现）
+            # 增量事件：按事件是否可推导权威事实决定投递路径（游标纪律修复）。
+            # 弃牌/timeout/本人副露等触发权威快照刷新；否则直接走增量投递，
+            # 正常事件流（连续摸牌/过牌）零重建，摸牌窗口不再依赖快照送达。
             result = self._sync.apply_events(response.events, gap=response.gap)
             if result.decision is SyncDecision.NEEDS_REBUILD:
                 rebuild_streak += 1
@@ -311,20 +347,26 @@ class OfficialGameSession:
                     return delivered
                 continue
             rebuild_streak = 0
-            try:
-                snapshot_response = await self._get_state(long_poll=False, force_full=True)
-            except _PollFailure as failure:
-                return failure.item
-            if snapshot_response.kind not in ("snapshot", "finished"):
-                return GameFailed(
-                    self.game_id, True, "snapshot_expected_got_" + snapshot_response.kind
-                )
-            apply_failure = self._apply_or_fail(snapshot_response, finished=snapshot_response.finished)
-            if apply_failure is not None:
-                return apply_failure
-            if snapshot_response.finished:
-                return self._finish_game()
-            delivered = self._maybe_deliver_window()
+            boundary_stalls = 0
+            if self._sync.events_need_authoritative_refresh(response.events):
+                try:
+                    snapshot_response = await self._get_state(long_poll=False, force_full=True)
+                except _PollFailure as failure:
+                    return failure.item
+                if snapshot_response.kind not in ("snapshot", "finished"):
+                    return GameFailed(
+                        self.game_id, True, "snapshot_expected_got_" + snapshot_response.kind
+                    )
+                apply_failure = self._apply_or_fail(snapshot_response, finished=snapshot_response.finished)
+                if apply_failure is not None:
+                    return apply_failure
+                if snapshot_response.finished:
+                    return self._finish_game()
+                delivered = self._maybe_deliver_window()
+                if delivered is not None:
+                    return delivered
+                continue
+            delivered = self._maybe_deliver_incremental_draw_window()
             if delivered is not None:
                 return delivered
 
@@ -389,6 +431,26 @@ class OfficialGameSession:
         """阶段边界定时器；用 retry_sleep 实现以支持测试注入假时钟。"""
 
         await self._retry_sleep(timeout_seconds)
+
+    async def _boundary_stall_sleep(self, stalls: int) -> None:
+        """跨局边界无进度 gap 快照后的轮询退避；前 FAST 次原速，此后指数退避。
+
+        官方依据（指南 v14 §2.1）：round_ended 后新局发牌不产生任何事件，
+        此时旧游标轮询会立即收到 gap=true 全量快照且不会挂起——新局首事件
+        （庄家出牌）产生前，每次原速轮询都重复收到同 seq 快照。退避把边界
+        等待的请求数收敛到个位数（2026-09-04 测试赛实测同边界重复 5~47 次），
+        并保留前 FAST 次原速轮询：覆盖庄家常规思考窗口，不延迟边界后他家
+        弃牌所开启响应窗口的发现。任何进度（事件流或快照 seq 前进）由调用
+        方清零计数。sleep 用 retry_sleep 注入，测试假时钟可精确推进。
+        """
+
+        if stalls <= _BOUNDARY_STALL_FAST_POLLS:
+            return
+        index = min(
+            stalls - _BOUNDARY_STALL_FAST_POLLS - 1,
+            len(_BOUNDARY_STALL_BACKOFF_SEC) - 1,
+        )
+        await self._retry_sleep(_BOUNDARY_STALL_BACKOFF_SEC[index])
 
     def _apply_snapshot(self, response: StateResponse, *, finished: bool) -> None:
         if response.snapshot is None:
@@ -490,6 +552,57 @@ class OfficialGameSession:
         )
         return window
 
+    def _maybe_deliver_incremental_draw_window(self) -> Optional[ObservedActionWindow]:
+        """投递增量事件流判定的本人摸牌窗口；与快照窗口同享 exactly-once。
+
+        摸牌窗口的权威事实来自增量事件（指南 v14 §2.1：事件流只含自己的
+        摸牌；客户端局面 = 快照 + 后续增量事件），不再等待全量快照送达——
+        这是游标纪律修复的核心：胡牌/出牌决策不再常态性依赖 seq=0 重建。
+        交付身份（WindowKey.trigger_seq = 摸牌事件 seq）与快照路径同值，
+        审计口径与 _maybe_deliver_window 完全一致。
+        """
+
+        detected = self._sync.incremental_draw_window()
+        if detected is None:
+            return None
+        key = detected.window_key
+        if key in self._delivered_windows:
+            return None
+        if self._gate.is_finalized(key):
+            return None  # 防御双保险：已终结窗口绝不投递
+        observation = self._sync.incremental_draw_observation()
+        if observation is None:
+            return None
+        window = ObservedActionWindow(
+            observation=observation,
+            window_key=key,
+            # 契约要求 authoritative_seq == observation.snapshot_seq：
+            # 增量观察的 snapshot_seq 仍是最后吸收快照的权威水位，本次窗口
+            # 的增量事实（摸牌）由 drawn_tile 与 public_history 表达。
+            authoritative_seq=observation.snapshot_seq,
+            received_at_monotonic=self._monotonic(),
+            timeout_seconds=detected.timeout_seconds,
+        )
+        self._delivered_windows.add(key)
+        self._emit_audit(
+            AuditKind.AUTHORITATIVE_STATE,
+            {
+                "seq": window.authoritative_seq,
+                "phase": observation.phase,
+                "turn": observation.turn_seat,
+                "window": {
+                    "game_id": key.game_id,
+                    "round_no": key.round_no,
+                    "trigger_seq": key.trigger_seq,
+                    "phase": key.phase.value,
+                    "seat": key.seat,
+                },
+            },
+            trigger_seq=key.trigger_seq,
+            round_no=key.round_no,
+        )
+        return window
+
     def _finish_game(self) -> GameFinished:
         scores = self._sync.final_scores() or (0, 0, 0, 0)
         final = GameFinished(
@@ -503,6 +616,57 @@ class OfficialGameSession:
             {"final_scores": list(final.final_scores), "seq": final.authoritative_seq},
         )
         return final
+
+    def _emit_raw_state(self, result, seq_requested: int, parsed: Optional[StateResponse]) -> None:
+        """E1：/state 响应原文全量落审计；解析失败时 parsed=None 只记原文。
+
+        raw 是未经解析的官方原文（传输层已做 Token 精确替换，记录层入队
+        前还有第二层脱敏）；坏报文照样落盘供赛后诊断。非阻塞：RAW 类走
+        低优先级队列，绝不影响动作窗口。
+        """
+
+        snapshot = parsed.snapshot if parsed is not None else None
+        self._emit_audit(
+            AuditKind.RAW_PROTOCOL_STATE,
+            build_state_response_payload(
+                endpoint="GET /api/games/{}/state".format(self.game_id),
+                http_status=result.status,
+                seq_requested=seq_requested,
+                seq_observed=snapshot.seq if snapshot is not None else None,
+                request_no=self._state_request_no,
+                raw=result.text,
+            ),
+            trigger_seq=snapshot.seq if snapshot is not None else None,
+            round_no=snapshot.round_no if snapshot is not None else None,
+        )
+
+    def _emit_raw_action(
+        self,
+        http_status: Optional[int],
+        raw_text: Optional[str],
+        attempt: ActionAttempt,
+    ) -> None:
+        """E3：动作提交响应原文落审计；409/429 拒绝体完整保留。
+
+        raw_text 为 None/空串表示响应从未到达（如 POST 超时/断连），记录
+        本身证明"该次尝试的响应原文不存在"，验证器按 SubmitAmbiguous
+        语义要求该键存在、对账不悬空。
+        """
+
+        self._emit_audit(
+            AuditKind.RAW_PROTOCOL_STATE,
+            build_action_response_payload(
+                endpoint="POST /api/games/{}/action".format(self.game_id),
+                http_status=http_status,
+                decision_id=attempt.decision_id,
+                attempt_no=attempt.attempt_no,
+                raw=raw_text or "",
+            ),
+            decision_id=attempt.decision_id,
+            attempt_no=attempt.attempt_no,
+            trigger_seq=attempt.window_key.trigger_seq,
+            round_no=attempt.window_key.round_no,
+        )
 
     async def _get_state(
         self,
@@ -557,7 +721,16 @@ class OfficialGameSession:
                     long_poll=long_poll,
                     request_budget_sec=read_timeout,
                 )
-                return parse_state_response(_loads(result.text))
+                self._state_request_no += 1
+                try:
+                    parsed = parse_state_response(_loads(result.text))
+                except DtoError:
+                    # 坏报文也必须留原文（E1）：seq_observed 未知记 None，
+                    # 异常沿原分支继续处理（可恢复降级/重试/终态判定不变）
+                    self._emit_raw_state(result, seq, None)
+                    raise
+                self._emit_raw_state(result, seq, parsed)
+                return parsed
             except RateLimitedError as exc:
                 self._scheduler.note_rate_limited(exc.retry_after_seconds)
             except (UncertainTransportError, RecoverableServerError):
@@ -613,6 +786,12 @@ class OfficialGameSession:
         detected = self._sync.current_window()
         observation = self._sync.current_observation()
         if detected is None or observation is None or detected.window_key != attempt.window_key:
+            # 增量摸牌窗口：投递后快照仍是旧相位（摸牌送达不依赖快照），提交
+            # 复核必须能识别同一窗口身份与增量观察，否则所有增量摸牌窗口都会
+            # 被 stale_window 本地拒绝、动作永远发不出去。
+            detected = self._sync.incremental_draw_window()
+            observation = self._sync.incremental_draw_observation()
+        if detected is None or observation is None or detected.window_key != attempt.window_key:
             return self._finish_submit(attempt, SubmitNotSent("stale_window"))
         body = projector.action_request_body(
             attempt.action,
@@ -656,26 +835,31 @@ class OfficialGameSession:
                 # 调度等待可能耗时；越过截止时间一律不再发出 POST
                 return self._finish_submit(attempt, SubmitNotSent("deadline_passed_after_schedule"))
             try:
-                await self._transport.request(
+                result = await self._transport.request(
                     "POST",
                     "/api/games/{}/action".format(self.game_id),
                     json_body=body,
                 )
             except ConflictError as exc:
                 # 409 已确认动作未执行：先释放动作槽再刷新，避免在持有
-                # ACTION lease 时嵌套等待 RECOVERY 槽造成调度自锁
+                # ACTION lease 时嵌套等待 RECOVERY 槽造成调度自锁；
+                # 拒绝体原文在释放动作槽前落审计（E3）
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
                 lease.release()
                 outcome = await self._handle_conflict(attempt, exc)
                 return self._finish_submit(attempt, outcome)
             except AuthError as exc:
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
                 return self._finish_submit(
                     attempt,
                     SubmitFatal(exc.official_code, "authentication_failed"),
                 )
             except ForbiddenError as exc:
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
                 return self._finish_submit(attempt, SubmitFatal(exc.official_code, "forbidden"))
             except RateLimitedError as exc:
                 self._scheduler.note_rate_limited(exc.retry_after_seconds)
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
                 # 429：POST 已发出且官方明确未执行，但限速响应不含权威刷新。
                 # 按契约类型 SubmitRejectedNoRefresh 终结原窗口（不追加提交），
                 # 审计按实际发送计数（2026-09-04 集成阶段裁定，接口协议 §5）。
@@ -690,16 +874,22 @@ class OfficialGameSession:
                     ),
                 )
             except UncertainTransportError as exc:
+                # 响应从未到达：http_status=None + raw="" 记录"原文不存在"，
+                # 对账不悬空（E3；验证器按 SubmitAmbiguous 语义要求该键存在）
+                self._emit_raw_action(None, "", attempt)
                 return self._finish_submit(attempt, self._block_ambiguous(attempt, exc.detail))
             except RecoverableServerError as exc:
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
                 return self._finish_submit(attempt, self._block_ambiguous(attempt, "server_error_" + str(exc.http_status)))
             except BadRequestError as exc:
                 # 400（如 TOKEN_NOT_SCOPED）：请求/作用域配置错误，重试无意义
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
                 return self._finish_submit(attempt, SubmitFatal(exc.official_code, "bad_request"))
             except NotFoundError as exc:
                 # 404：官方明确未执行动作且窗口必然失效；身份未坏，
                 # 后续 next_item 的可恢复 game_not_found 会触发重新发现。
                 # 门同步终结：窗口关闭后同窗不再接受任何提交
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
                 self._gate.mark_closed(attempt.window_key)
                 return self._finish_submit(
                     attempt,
@@ -710,6 +900,7 @@ class OfficialGameSession:
                 )
             except OfficialError as exc:
                 # 未分类官方状态：保守终止当前身份的提交通道，不误当网络故障重试
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
                 return self._finish_submit(
                     attempt,
                     SubmitFatal(exc.official_code, "protocol_error_" + str(exc.http_status)),
@@ -733,6 +924,7 @@ class OfficialGameSession:
                     round_no=attempt.window_key.round_no,
                 )
                 raise
+            self._emit_raw_action(result.status, result.text, attempt)
             self._gate.mark_accepted(attempt.window_key)
             return self._finish_submit(attempt, SubmitAccepted(official_code=None, authoritative_seq=None))
         finally:

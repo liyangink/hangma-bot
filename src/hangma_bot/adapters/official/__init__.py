@@ -1,4 +1,4 @@
-"""官方竞赛平台适配器（协议基线 v8 快照 + 指南 v9–v11 已审查变更，2026-09-04）。
+"""官方竞赛平台适配器（协议基线 v8 快照 + 指南 v9–v14 已审查变更，2026-09-05）。
 
 公开面：OfficialTournamentSession（TournamentSessionPort）与
 OfficialGameSession（GameSessionPort）。传输、调度器、同步状态与动作门

@@ -1,9 +1,8 @@
 # 官方赛事流程与多阶段晋级规则
 
 > 官方来源：`https://10.240.169.190:18080/portal/#flow-stage`  
-> 抓取时间：2026-09-03（Asia/Shanghai）  
-> 页面标注：赛事流程 2026-09-03 版  
-> 同步检查：`GET /portal/api/guide/version` 返回 `version=8`、`updated_at=2026-09-03`；多阶段协议本身由 v7 于 2026-09-02 引入，v8 另新增赛程 `description` 字段。完整响应见[官方 v8 指南版本快照](./references/official-guide-version-v8.json)，当前示例见[官方 v7 多阶段最小 Bot](./references/official_minimal_bot_v7.py)。  
+> 抓取时间：2026-09-03（v8 基线）；2026-09-05 同步至指南 v14（v13 分桌在线过滤见 §6.6）  
+> 同步检查：`GET /portal/api/guide/version` 返回 `version=14`、`updated_at=2026-09-05`；多阶段协议本身由 v7 于 2026-09-02 引入，v8 另新增赛程 `description` 字段。完整响应见[官方 v14 指南版本快照](./references/official-guide-version-v14.json)，指南正文见[官方 v14 指南全文](./references/official-guide-v14-content.txt)，当前示例见[官方 v7 多阶段最小 Bot](./references/official_minimal_bot_v7.py)。  
 > 证据边界：第 1—6 节记录官方事实；第 7—9 节是本项目的工程分析与建议。
 
 ## 1. 结论摘要
@@ -25,6 +24,8 @@
 ## 2. 按到位人数生成的阶段结构
 
 系统按开赛时已经确认到位的人数定档；只报名但未到位的人不计入。报名截止后不接受新人，后续阶段也不允许补报。
+
+> v13 起（2026-09-05 后新建赛事）：定档人数 = 「已确认（`ready`）∧ 开赛时刻在线」的实到人数，而不只是已确认数——开赛时刻前 90s 内无任何已认证请求的参赛者会被剔除（详情见 §6.6）。2026-09-05 前创建的存量赛（`config.OnlineConfirm` 缺键或 `false`）沿用旧口径。
 
 | 开赛时到位人数 | 自动形成的阶段 | 晋级方式 |
 | ---: | --- | --- |
@@ -65,6 +66,7 @@
 - 第 `G+1..2G` 名进入候补池；若上一阶段人数不足 `2G`，其余未晋级者全部列为候补。
 - 晋级者和候补进入每个新阶段前都必须重新确认到位，确认不会跨阶段继承。
 - 到开赛时刻按“已经确认者中的上一阶段名次”取足名额；确认先后不影响顺序。晋级者漏确认会自动让位给已确认的高顺位候补。
+- v13 起（新建赛事）：取足名额前还要过「开赛时刻在线」过滤——空转期必须对本赛端点保持 ≤90s 轮询，否则连上又断开的身份会被剔除（§6.6）。
 - 平台不向参赛者公开实时确认人数；不能根据确认人数做策略判断。
 
 异常人数处理：
@@ -151,8 +153,28 @@ registering
 ### 6.5 官方测试环境
 
 - **测试房间**：官方门户确认 `kind=test` 保持单阶段，可随时创建，配置同时场数 `M`、每场单局数 `Rounds`、底分和动作窗口；一次发放 4 个测试参赛 Token，并提供完整赛后数据。完成后四个 Token 再次各 `ready` 只是开启下一次单阶段运行，不会产生正式多阶段晋级状态。
-- **测试赛事**：赛事方补充提供模拟正式赛事完整流程的测试赛事，用于验证海选、阶段推进、确认和晋级应对。公开玩家指南尚未定义单独的 `test_tournament` 类型或识别字段，待最小可用 Bot 完成后，以实际 `GET /api/tournaments/{id}` 响应固化其外显协议。
+- **测试赛事**：赛事方补充提供模拟正式赛事完整流程的测试赛事，用于验证海选、阶段推进、确认和晋级应对。公开玩家指南尚未定义单独的 `test_tournament` 类型或识别字段，以实际 `GET /api/tournaments/{id}` 响应固化其外显协议。
 - **正式赛事**：同样读取 `config.M`，一个参赛 Token 按 `active_games` 并发参与最多 `M` 个场次；实际场次数可能在阶段间暂时少于 `M`，因此不能预创建固定数量的场次会话。
+
+当前赛事观察（2026-09-05 抓取，参赛令牌脱敏快照见 [references/official-tournament-t_dee58824c308-2026-09-05.json](./references/official-tournament-t_dee58824c308-2026-09-05.json)）：
+
+- `t_dee58824c308`「9月4日杭麻竞技一测」：`M=10 / Rounds=16 / BaseScore=1 / YouCaiBiKao=false`，205 人报名；`config.OnlineConfirm=false`，属 2026-09-05 前创建的存量赛，沿用旧分桌规则。
+- 抓取时 `status=stage_open`、`stage{no=2, role=qualify, total=4}`，第 1 轮（海选）已结算（榜首 `total_score=1703 / place_points=27 / god_count=120 / games_played=160`，与 M=10 场 × 16 局口径一致）；本项目参赛身份 `qualified=false`，已正常淘汰。
+
+### 6.6 v13 分桌在线过滤与「报名=意向」（2026-09-05 起的新建赛事）
+
+官方修复 2026-09-04 正式赛事故（报名后不上线的玩家仍被分桌，真人被配幽灵同桌）后，分桌语义对**部署后新建**的锦标赛改变：
+
+- 报名（含门户报名）只表示意向，不再自动到位；玩家 API `register` 本就不自动 `ready`（不变）。
+- 分桌实到 = 开赛时刻（`StartAt` 整点冻结）同时满足「显式到位（`ready`）」与「在线」的参赛者；按实到人数沿用档位表降档，不足 4 直接作废（`no_players`）。
+- 「在线」证据 = 该用户任意已认证 Bearer 请求（`GET /api/me`、`/api/tournaments/{id}`、`/state`、POST 动作等）在最近 90s 内触达服务器；开赛前连上又断开的会被自动剔除。
+- 判别：`GET /api/tournaments/{id}`（或 `/me/rules`）的 `config` 含 `OnlineConfirm=true` 为新建赛事；缺键或 `false` 为 2026-09-05 前创建的存量赛，全流程沿用旧规则。
+- `ready_users / stage_ready_count` 仍是「已确认累计」，不是分桌预测。
+- 空转期（`registering / stage_open / stage_done`）没有 SSE 流可挂，必须对 `/api/tournaments/{id}` 等本赛端点保持轮询间隔 ≤90s（建议 ≤60s），否则开赛时刻会被判离线剔除；同一用户报名多赛时按赛核对各 bot 进程存活。
+- 服务重启后若开赛时刻已过或邻近（90s 内），冻结自动顺延 ≤90s 给 bot 重连窗口。
+- `kind=test` 测试房间全程豁免（满员即开语义不变）。
+
+对本项目的影响：玩家 API `register→ready` 流程不变；`TournamentSupervisor` 空转期以 2s 间隔轮询本赛详情端点（`next_update`），天然满足 90s 在线要求。适配器仅需解析并审计 `OnlineConfirm` 键（`ParsedRulesConfig.online_confirm`），无需改变应用层状态机。
 
 ## 7. 对现有架构的影响
 

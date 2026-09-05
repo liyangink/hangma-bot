@@ -2,9 +2,10 @@
 
 > 状态：接口基线 v1.1（2026-09-04 集成阶段契约收口）；实行受控变更  
 > 日期：2026-09-04  
-> 官方依据：指南/API v8 快照（doc/official-platform-api-v2.md）+ 指南版本 v11 变更记录
->（`/portal/api/guide/version` 只读检查日期 2026-09-04；v10 跨局 `gap=true` 快照、
-> v11 state 轮询 16/s 每用户聚合。适配器代码与 fixture 同步由 runtime_protocol 工作包负责）  
+> 官方依据：指南/API v8 快照（doc/official-platform-api-v2.md）+ 指南版本 v14 变更记录
+>（`/portal/api/guide/version` 只读检查日期 2026-09-05；v10 跨局 `gap=true` 快照、
+> v11 state 轮询 16/s 每用户聚合、v12 SSE 不采纳、v13 在线分桌已审查放行、
+> v14 guide 全文端点。适配器代码与 fixture 同步由 runtime_protocol 工作包负责）  
 > 代码定义：`src/hangma_bot/**/interface.py` 与 `application/contracts.py`
 
 ## 1. 设计决策
@@ -172,6 +173,8 @@ runs/{run_id}/
 | `PARTICIPANT_FINISHED` | 应用层（runtime 出口，覆盖取消/异常/早退） | run_id | `reason`（ParticipantTerminalReason 值或 `cancelled`）、`detail` |
 
 `RAW_PROTOCOL_STATE` 为唯一低优先级种类（可计数丢弃），不进入本表——其规范权威信息必须以 `AUTHORITATIVE_STATE` 高优先级另存。双层终局分数一致性检查由 recording 汇总/验证器负责（应用层 `GAME_FINISHED` 与适配器快照终局对照）。
+
+**原始事件全量保留（2026-09-05 集成，E1/E2/E3 接线）**：adapter 层全部 `/state` 响应（含全量快照原文、坏报文）与动作提交响应（含 409/429 拒绝体，经 `errors.raw_text` 携带已脱敏原文；POST 结果不确定时省略 `http_status`、`raw` 为空串表示"原文不存在"）以 `source ∈ {state_response, action_submit_response}` 落 `RAW_PROTOCOL_STATE`，路由到独立 `participants/{pid}/raw/{game}.jsonl`（可选 gzip 分段，只分段不抽样）。`sse_frame` 为 SSE 接入预留词表（未接线不产生记录不算缺失）。验证器新增对账检查：`raw_state_gap`（request_no 连续性）、`raw_state_stream_empty`、`raw_action_missing`（每个实际发出的 POST 必须有响应原文记录；`SubmitNotSent` 与取消例外）。**决策观察快照**（同日）：`DECISION_PLANNED` 增加可选 `observation_snapshot`（`my_hand` 保留官方原始顺序、`drawn_tile` 单列、`phase`/`responding`/目标弃牌 seat+tile+seq、规则状态、本人副露与候选完整列表）——只含 `PlayerObservation` 口径可见信息。所有新增字段可选，旧 run 目录以 `retention_mode=legacy` 向后兼容。
 
 验证器裁定补充（2026-09-04 集成阶段登记）：
 

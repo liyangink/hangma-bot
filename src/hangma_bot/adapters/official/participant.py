@@ -1,4 +1,4 @@
-"""官方赛事会话：TournamentSessionPort 的官方协议实现（v8 快照 + v9–v11 已审查变更）。
+"""官方赛事会话：TournamentSessionPort 的官方协议实现（v8 快照 + v9–v14 已审查变更）。
 
 一个实例对应一个 Token：内部恰好创建一个 OfficialTransport 与一个
 RequestScheduler，该 Token 的赛事与全部场次共享（接口协议 §6）。
@@ -275,6 +275,7 @@ class OfficialTournamentSession:
             {
                 "guide_version": guide.version,
                 "guide_updated_at": guide.updated_at,
+                "online_confirm": rules_parsed.online_confirm,  # v13 分桌语义判别（存量赛=false）
                 "guide_changes": [
                     {
                         "version": change.get("version"),

@@ -500,7 +500,8 @@ class TestHuFamily:
         assert hu_candidates(context, _summary(is_win=False)) == FamilyOutcome((), ())
 
     def test_missing_summary_degrades_with_issue(self):
-        outcome = hu_candidates(_context(hand=_tiles("1w")))
+        # 需要携带 drawn_tile 越过「刚摸牌」门禁（v1），才能走到手牌分析缺失的降级分支。
+        outcome = hu_candidates(_context(hand=_tiles("1w"), drawn=Tile("2w")))
         assert outcome.candidates == ()
         assert outcome.issues[0].area == "action_families.hu"
 

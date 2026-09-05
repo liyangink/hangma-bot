@@ -63,6 +63,28 @@ async def _build_layer_run(base, *, conflicting_scores: bool = False) -> None:
             trigger_seq=10,
         )
     )
+    # 场次层权威状态出现即声明"该场做过状态请求"：raw_retention 模式下
+    # 必须有 state_response 原文流（request_no 连续），否则验证器报
+    # raw_state_stream_empty。这里按接线后现实补两条原文记录。
+    from hangma_bot.adapters.recording import build_state_response_payload
+
+    for request_no in (1, 2):
+        sink.emit(
+            make_record(
+                AuditKind.RAW_PROTOCOL_STATE,
+                build_state_response_payload(
+                    endpoint="GET /api/games/G1/state",
+                    http_status=200,
+                    seq_requested=0,
+                    seq_observed=10,
+                    request_no=request_no,
+                    raw='{"seq": 10, "snapshot": {"phase": "draw"}}',
+                ),
+                game_id="G1",
+                round_no=1,
+                trigger_seq=10,
+            )
+        )
     # 一次完整动作尝试：应用层 intent/outcome 成对。
     sink.emit(
         make_record(

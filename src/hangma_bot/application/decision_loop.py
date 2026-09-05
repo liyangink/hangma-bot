@@ -42,6 +42,7 @@ from hangma_bot.hangma.interface import (
 )
 from hangma_bot.kernel.actions import WindowKey, action_key
 from hangma_bot.kernel.observation import CompetitionContext, PlayerObservation
+from hangma_bot.kernel.serialization import KERNEL_VALUE_SCHEMA_VERSION, action_to_json
 from hangma_bot.policy.interface import (
     BotPolicy,
     DecisionBudget,
@@ -94,6 +95,69 @@ def _window_payload(window_key: WindowKey) -> dict:
         "trigger_seq": window_key.trigger_seq,
         "phase": window_key.phase.value,
         "seat": window_key.seat,
+    }
+
+
+def _observation_snapshot(observation: PlayerObservation, window_key: WindowKey) -> dict:
+    """DECISION_PLANNED 的决策观察快照：只含我方依法可见信息。
+
+    为什么存在（2026-09-04 测试赛审计复盘）：旧词表只有候选动作键，
+    97 次胡牌被拒无法本地复盘——没有手牌就无法复算规则合法性。
+    本快照按 PlayerObservation 口径选取字段，**绝不引入他家手牌、
+    未来牌墙或赛后结果**（信息权限与 kernel 观察一致）：
+
+    - ``my_hand`` 保留官方原始顺序（kernel 契约：紧急“最右一张”依赖该顺序）；
+    - ``drawn_tile`` 单列、不并入手牌（2026-09-04 kernel 裁决）；
+    - ``target_discard`` 即触发本窗口的弃牌（PublicDiscard 座位+牌+事件序号），
+      吃/碰窗口复盘动作归属必需；
+    - ``rule_state``（爆头/动作链/抓打/财神）与本人副露是胡牌合法性复算输入；
+    - ``responding`` 由窗口键与 responding_seats 交叉得出，复盘响应权限。
+
+    体量取舍：不含公开牌河与事件史（完整原始快照由 RAW_PROTOCOL_STATE
+    state_response 原文全量保留），单条约数百字节，不会显著增大决策流。
+    """
+
+    last_discard = observation.last_discard
+    return {
+        "schema_version": KERNEL_VALUE_SCHEMA_VERSION,
+        "game_id": observation.game_id,
+        "seat": observation.seat,
+        "round_no": observation.round_no,
+        "snapshot_seq": observation.snapshot_seq,
+        "phase": observation.phase,
+        "turn_seat": observation.turn_seat,
+        "responding_seats": list(observation.responding_seats),
+        "responding": window_key.seat in observation.responding_seats,
+        "my_hand": [tile.code for tile in observation.my_hand],
+        "drawn_tile": (
+            None if observation.drawn_tile is None else observation.drawn_tile.code
+        ),
+        "target_discard": (
+            None
+            if last_discard is None
+            else {
+                "seat": last_discard.seat,
+                "tile": last_discard.tile.code,
+                "seq": last_discard.seq,
+            }
+        ),
+        "my_melds": [
+            {
+                "kind": meld.kind,
+                "tiles": [tile.code for tile in meld.tiles],
+                "from_seat": meld.from_seat,
+            }
+            for meld in observation.melds[observation.seat]
+        ],
+        "hand_counts": list(observation.hand_counts),
+        "remaining_tile_count": observation.remaining_tile_count,
+        "scores": list(observation.scores),
+        "rule_state": {
+            "wealth_god": observation.rule_state.wealth_god.code,
+            "baotou": observation.rule_state.baotou,
+            "chain_count": observation.rule_state.chain_count,
+            "catch_play": observation.rule_state.catch_play,
+        },
     }
 
 
@@ -403,10 +467,21 @@ async def run_action_window(
                 "based_on_authoritative_seq": current.authoritative_seq,
                 "trigger_seq": window.window_key.trigger_seq,
                 "window": _window_payload(window.window_key),
+                # 决策观察快照（2026-09-04 增强）：被拒动作可本地复盘的最小可见事实。
+                "observation_snapshot": _observation_snapshot(
+                    current.observation, window.window_key
+                ),
+                # 完整候选列表：动作用 kernel 稳定序列化（action_to_json），
+                # 保证赛后可用 action_from_json 无损还原并复算规则合法性。
                 "candidates": [
                     {
                         "action_key": candidate.action_key,
                         "is_emergency": candidate.is_emergency,
+                        "rank": candidate.rank,
+                        "action": action_to_json(candidate.action),
+                        "reasons": [
+                            audit_text(reason) for reason in candidate.reasons
+                        ],
                     }
                     for candidate in candidates
                 ],

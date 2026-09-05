@@ -48,7 +48,17 @@ _REAL_PRODUCER_PAYLOADS = {
         "my_games": ["G1"],
         "observed_at_unix_ms": 1800000000000,
     },
-    AuditKind.RAW_PROTOCOL_STATE: {"raw": {"any": ["shape"]}},
+    # 2026-09-04 审计增强后的新形态（raw_events 构造器）；旧形态照常放行。
+    AuditKind.RAW_PROTOCOL_STATE: {
+        "payload_schema_version": 1,
+        "source": "state_response",
+        "endpoint": "GET /api/games/G1/state",
+        "http_status": 200,
+        "seq_requested": 0,
+        "seq_observed": 10,
+        "request_no": 1,
+        "raw": '{"seq": 10}',
+    },
     AuditKind.DECISION_PLANNED: {
         "plan_revision": 1,
         "based_on_authoritative_seq": 10,
@@ -182,6 +192,28 @@ class TestRoutingAndSanitize:
             relative_path_for(AuditKind.AUTHORITATIVE_STATE, "P1", None)
             == "participants/P1/decisions.jsonl"
         )
+
+    def test_raw_protocol_state_routes_to_raw_directory(self):
+        # 原始事件全量保留：与关键事实流分文件，便于 gzip 轮转与按需备份。
+        assert (
+            relative_path_for(AuditKind.RAW_PROTOCOL_STATE, "P1", "G1")
+            == "participants/P1/raw/G1.jsonl"
+        )
+        assert (
+            relative_path_for(AuditKind.RAW_PROTOCOL_STATE, "P1", None)
+            == "participants/P1/raw/global.jsonl"
+        )
+        # 路径穿越防护对 raw 组件同样生效。
+        assert (
+            relative_path_for(AuditKind.RAW_PROTOCOL_STATE, "../../x", "..")
+            == "participants/.._.._x/raw/unnamed.jsonl"
+        )
+
+    def test_raw_source_field_type_checked_only_when_present(self):
+        # 验证器按 source 分组统计：存在时必须是字符串，缺失（旧形态）放行。
+        assert validate_payload(AuditKind.RAW_PROTOCOL_STATE, {"source": "sse_frame"}) == ()
+        assert validate_payload(AuditKind.RAW_PROTOCOL_STATE, {"source": 7})
+        assert validate_payload(AuditKind.RAW_PROTOCOL_STATE, {"raw": "legacy"}) == ()
 
     def test_sanitize_blocks_traversal_and_empty(self):
         assert sanitize_component("../../etc") == ".._.._etc"

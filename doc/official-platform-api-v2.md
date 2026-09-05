@@ -1,10 +1,10 @@
 # 杭州麻将对战平台 API 与时间模型
 
 > 官方来源：`https://10.240.169.190:18080/portal/#guide-api`
-> 抓取时间：2026-09-03（Asia/Shanghai）
-> 官方指南版本：v8，`updated_at=2026-09-03`
-> 版本接口：`GET /portal/api/guide/version`
-> 注意：文件名为兼容既有链接暂保留 `v2`；正文已更新到 v8。平台仍在迭代，本文不代替运行时版本自检。
+> 抓取时间：2026-09-03（v8 基线）；2026-09-05 同步至 v14（v12–v14 变更见 [v14 指南版本快照](./references/official-guide-version-v14.json)，指南正文见 [v14 指南全文](./references/official-guide-v14-content.txt)，`/portal/api/guide` 原始响应见 [v14 指南原始响应](./references/official-guide-v14.txt)）
+> 官方指南版本：v14，`updated_at=2026-09-05`
+> 版本接口：`GET /portal/api/guide/version`；全文接口：`GET /portal/api/guide`（v14 起免认证）
+> 注意：文件名为兼容既有链接暂保留 `v2`。平台仍在迭代，本文不代替运行时版本自检。
 > 相关说明：[官方赛事流程](./official-tournament-flow-2026-09-03.md)、[架构与运行流程](./architecture.md)、[统一术语表](../UBIQUITOUS_LANGUAGE.md)
 
 ## 1. 接入边界
@@ -91,6 +91,7 @@ Content-Type: application/json
 | `StartAt` | 开赛时间，Unix 秒 |
 | `RegisterDeadlineAt` | 报名截止，Unix 秒；0 表示无截止 |
 | `Description` | v8 新增的赛程自由文本；可空、多行，只用于展示和记录，不应作为策略结构化输入 |
+| `OnlineConfirm` | v13 新增；`true` 表示新建赛事「已确认 ∧ 开赛时刻在线」分桌，缺键或 `false` 表示 2026-09-05 前创建的存量赛（沿用旧分桌）。只影响分桌，不影响动作协议 |
 
 这些配置每个锦标赛都可能不同，严禁在 Bot 中写死。
 
@@ -156,6 +157,8 @@ v7 阶段字段：
 - 阶段 2 起 `ready_users` 固定返回 0，不能推断实时确认人数。
 - `games_played` 每个阶段清零，实际按完成的单局数累计；不能把它当整场赛事进度。
 - 平台中断时会出现 `stage_done + stage_crashed=true`；本阶段旧成绩作废，同名单重新确认后重赛。
+- v13 新建赛事：`ready_users / stage_ready_count` 仍是「已确认累计」，不是分桌预测——分桌另受开赛时刻在线过滤，客户端不得据此推断同桌或晋级概率。
+- v13 新建赛事在线要求：空转期（`registering / stage_open / stage_done`）没有 SSE 可挂，必须对 `/api/tournaments/{id}` 等本赛端点保持轮询间隔 ≤90s（建议 ≤60s），否则开赛时刻会被判离线剔除。本 bot 空转期以 2s 间隔轮询，天然满足；多赛并行时按赛核对各 bot 进程存活。
 
 多阶段赛制、排序和决赛加赛的完整事实见[官方赛事流程](./official-tournament-flow-2026-09-03.md)。
 
@@ -224,6 +227,18 @@ v2 起快照**不再返回 `allowed_actions`**。客户端必须自己判定动�
 事件枚举可能继续扩充，解析器应允许未知事件透传并记录，不能因为未知 `type` 直接崩溃。
 
 私有信息规则：玩家事件流只包含自己的摸牌，他家手牌不会在实时玩家接口中出现。
+
+#### `GET /api/games/{id}/notify`（v12 起，可选 SSE 通知流）
+
+服务器推送「状态已变化」信号，替代高频轮询 `/state` 来发现他人动作；Bearer 认证，观赛者 403。
+
+- 连接即收初始帧 `{"seq": N}`（N = 当前事件水位，重连对齐点）。
+- 此后每次状态变更推 `{"seq": 新水位}`；帧只含 seq，不含牌面/动作内容——牌面仍须按需 `GET /state` 领取。
+- 每 30s 一行 `: keepalive`；场终/死场推 `{"seq":N,"closed":true}` 后关流，客户端应重连对齐或拉终态。
+- 上限每用户 32 并发连接（超限 429），不占用 `/state` 的 16/s 频率额度。
+- 游标纪律：初始帧的 seq 是包含式水位，不可直接当轮询游标；收到帧后若高于本地已消费 seq 且无缺口，用 `GET /state?seq=本地游标` 拉增量；游标未知/落后超 256/跨局用 `seq=0` 拿全量快照。
+
+工程决策（2026-09-05 评审）：本阶段不采纳 SSE，继续使用 `/state` 长轮询——16/s 频率额度对 M=10-11 桌事件驱动 bot 已充裕（v11 放宽），SSE 只减少发现延迟，不改变动作窗口语义；待出现「16/s 不够用」或官方停用长轮询时再迁移。
 
 ### 2.4 提交动作
 
@@ -308,12 +323,12 @@ v2 动作判定下限：
 
 ```json
 {
-  "version": 8,
-  "updated_at": "2026-09-03",
+  "version": 14,
+  "updated_at": "2026-09-05",
   "changes": [
     {
-      "version": 8,
-      "date": "2026-09-03",
+      "version": 14,
+      "date": "2026-09-05",
       "type": "breaking|added|changed",
       "summary": "...",
       "detail": "..."
@@ -324,11 +339,13 @@ v2 动作判定下限：
 
 启动策略：
 
-1. 代码内声明 `KNOWN_GUIDE_VERSION=8`，并保存已审查的 breaking 变更集合；不能只比较一个数字后继续运行。
+1. 代码内声明 `KNOWN_GUIDE_VERSION=14`（当前已审查基线，见 `adapters/official/dto.py`），并保存已审查的 breaking 变更集合；不能只比较一个数字后继续运行。
 2. Bot 启动、报名/ready 之前调用一次版本接口。
 3. 若服务器版本更高且存在 `type=breaking && version>KNOWN`，禁止进入新赛事并报警。
 4. 已开始的赛事不要每个动作重复检查版本；在阶段边界重新检查一次，并记录启动与阶段开始时版本，确保阶段尝试可追溯。
 5. 保存完整变更响应，便于回放时解释行为差异。
+
+v14 新增姊妹端点 `GET /portal/api/guide`（同样免认证、每 IP 5/s）：返回 `{version, updated_at, format, content}`，`content` 为与门户「接入指南」Tab 同源的完整接入指南正文（对战规则 / API 参考 / 最小 Bot）；`format` 缺省 `html`，`?format=text` 返回剥离标签的纯文本（LLM/终端友好）。本端点用于文档同步与人工核对，运行时版本自检继续使用 `/guide/version`。
 
 ### 3.2 `POST /portal/api/tools/fan-calc`
 
@@ -606,9 +623,13 @@ v2 Demo 没有多阶段主循环，**不能作为当前参赛入口**。v7 Demo 
 | 409 | `MATCH_LIMIT_REACHED` | 达到同时 16 场上限 | 不再创建/加入更多比赛 |
 | 429 | `RATE_LIMITED` | 超频或并发挂起超限 | 带抖动退避；动作窗口内优先本地兜底，不能固定睡 2 秒 |
 
-## 9. v7/v8 关键变更
+## 9. 关键变更时间线
 
-截至 2026-09-03，当前指南为 v8。相对仓库历史 v2 快照，必须优先完成以下迁移：
+截至 2026-09-05，当前指南为 v14。v7–v8 为多阶段/赛程变更，v9–v11 为限速与跨局轮询调整，v12–v14 为 SSE、分桌机制与指南全文端点。
+
+### 9.1 v7/v8（截至 2026-09-03）
+
+相对仓库历史 v2 快照，必须优先完成以下迁移：
 
 - v7：顶层新增 `stage_open / stage_done`，阶段间 `active_games` 为空不代表结束。
 - v7：`ready` 在每个新阶段表示出席确认，新增 `NOT_QUALIFIED`。
@@ -632,3 +653,15 @@ v2 Demo 没有多阶段主循环，**不能作为当前参赛入口**。v7 Demo 
 - v1：`fan-calc`。
 - v1：报名 Token 作用域直达 rules/ready。
 - v1：测试房间完整赛后数据 API。
+
+### 9.2 v9–v11（2026-09-03～09-04）
+
+- v9：测试房间数据 API 限速按房间分桶（每房间 5/s + 每来源总量 1000/s 兜底），消除跨房间误伤。
+- v10：跨局边界轮询——局终后继续用上一局 seq 轮询立即返回新局全量快照（`gap:true`），不再挂起至庄家出牌超时。
+- v11：`/state` 轮询限速放宽 8/s → 16/s（每用户聚合，跨局共享一桶；并发挂起 ≤32 不变）。
+
+### 9.3 v12–v14（2026-09-04～09-05）
+
+- v12（added）：`GET /api/games/{id}/notify` SSE 通知流；帧只含 seq。本阶段不采纳（见 §2.3 工程决策），旧轮询不受影响。
+- v13（breaking，已审查）：新建赛事分桌修复——报名=意向，分桌实到 = 开赛时刻「已确认 ∧ 在线」（在线 = 任意已认证请求 90s 内触达）；按实到人数降档、不足 4 作废；`config.OnlineConfirm=true` 标记新建赛事，存量赛（缺键/`false`）沿用旧分桌；门户报名不再自动 ready（玩家 API 不变）；空转期必须 ≤90s 轮询本赛端点。本项目玩家 API `register→ready` 流程与 2s 空转轮询天然兼容，仅需解析并审计 `OnlineConfirm`。
+- v14（added）：`GET /portal/api/guide` 免认证全文端点（与门户「接入指南」Tab 同源，`?format=text` 给 LLM/终端），根治门户页与接口文档双份漂移。

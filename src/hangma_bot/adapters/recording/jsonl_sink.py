@@ -34,6 +34,7 @@ from __future__ import annotations
 
 import asyncio
 import dataclasses
+import gzip
 import json
 import os
 import threading
@@ -41,6 +42,7 @@ from collections import Counter, deque
 from pathlib import Path
 from typing import IO, Callable, NamedTuple
 
+from hangma_bot.adapters.recording.raw_events import is_new_shape_raw_payload
 from hangma_bot.adapters.recording.redact import redact_json_line, redact_value
 from hangma_bot.adapters.recording.schema import (
     AUDIT_SCHEMA_VERSION,
@@ -88,17 +90,29 @@ class JsonlAuditSink:
         audit_root: str | os.PathLike[str],
         run_id: str,
         *,
-        max_queue: int = 4096,
+        max_queue: int = 16384,
         before_batch_write: Callable[[], None] | None = None,
+        raw_gzip: bool = False,
+        raw_rotate_bytes: int = 32 * 1024 * 1024,
     ) -> None:
         """``before_batch_write`` 是写线程在每次取出批次前调用的观察点。
 
         默认为 None（生产行为不受影响）；故障注入测试用它确定性阻塞写线程，
         从而复现队列满、淘汰与拒绝路径。观察点内部不允许抛异常。
+
+        ``raw_gzip`` 开启后，``RAW_PROTOCOL_STATE`` 原始事件改按 gzip 压缩
+        分段落盘，每段上限 ``raw_rotate_bytes`` 字节（轮转只是分段，绝不丢弃）。
+        为什么默认关闭：普通盘位无需压缩，保持验证器与运维工具可读；
+        官方快照原文约 1KB/条、每场万级记录，长期运行建议开启（体量测算见
+        doc/implementation/notes/audit-raw-retention.md）。
         """
 
         if max_queue <= 0:
             raise ValueError("max_queue 必须为正数")
+        if raw_gzip and raw_rotate_bytes <= 0:
+            raise ValueError("raw_rotate_bytes 必须为正数")
+        self._raw_gzip = raw_gzip
+        self._raw_rotate_bytes = raw_rotate_bytes
         self._before_batch_write = before_batch_write
         self._run_id = run_id
         self._run_dir = Path(audit_root) / "runs" / sanitize_component(run_id)
@@ -117,10 +131,16 @@ class JsonlAuditSink:
         self._missing_high = 0
         self._serialization_failures = 0
         self._write_failures = 0
+        self._raw_attempts = 0  # 收到的原始事件尝试总数（含被淘汰/拒绝的）
+        # 是否见到过新形态原始事件：见 _emit_inner 的 auto-evidence 说明。
+        self._raw_new_shape_seen = False
         self._degraded = False
         self._participants: set[str] = set()
         self._failed_paths: set[str] = set()
         self._handles: dict[str, IO[str]] = {}
+        # gzip 轮转状态：base 相对路径 → [当前段号, gzip 句柄, 本段已写字节]。
+        # 只被唯一写线程访问，无需加锁。
+        self._raw_gz: dict[str, list[object]] = {}
         self._write_error_notes: list[str] = []
 
         self._stopping = False
@@ -170,6 +190,15 @@ class JsonlAuditSink:
         kind = record.kind
         if not isinstance(kind, AuditKind):
             raise TypeError("record.kind 必须是 AuditKind")
+        if kind is AuditKind.RAW_PROTOCOL_STATE:
+            with self._cond:
+                self._raw_attempts += 1
+                if is_new_shape_raw_payload(record.payload):
+                    # 自动门控（auto-evidence）：只有真正收到过新形态原始事件
+                    # 才在汇总中声明 raw_retention，验证器才启用严格完整性
+                    # 检查。旧目录与"适配器尚未接线"的运行不声明 → legacy
+                    # 检查整体跳过，验证结论与升级前一致、不产生误报。
+                    self._raw_new_shape_seen = True
         if record.schema_version != AUDIT_SCHEMA_VERSION:
             raise ValueError(
                 f"schema_version {record.schema_version!r} 与当前版本 {AUDIT_SCHEMA_VERSION} 不符"
@@ -277,6 +306,9 @@ class JsonlAuditSink:
                     # manifest 是运行级单对象文件：后写覆盖（last-wins），
                     # 保持"一个 JSON 文档"语义，重复发射不会产生多行损坏。
                     self._overwrite_manifest(pending.line)
+                elif self._raw_gzip and pending.kind == AuditKind.RAW_PROTOCOL_STATE.value:
+                    # 原始事件全量保留：压缩分段落盘，段满只轮转不丢弃。
+                    self._write_raw_gzip(pending)
                 else:
                     handle = self._handle_for(pending.path)
                     handle.write(pending.line)
@@ -329,6 +361,53 @@ class JsonlAuditSink:
         handle = absolute.open("a", encoding="utf-8", newline="\n")
         self._handles[path] = handle
         return handle
+
+    # ------------------------------------------------------ raw gzip rotation
+
+    @staticmethod
+    def _raw_gz_segment_path(base: str, segment_no: int) -> str:
+        """把 raw 基础路径映射到第 N 段的压缩文件名。
+
+        约定：基础路径形如 participants/P1/raw/G1.jsonl，第 N 段为
+        participants/P1/raw/G1.NNNNN.jsonl.gz（五位数补零保证字典序）。
+        验证器按 .jsonl.gz 后缀透明解压扫描，段文件名不需再登记。
+        """
+
+        stem = base[: -len(".jsonl")]
+        return f"{stem}.{segment_no:05d}.jsonl.gz"
+
+    def _write_raw_gzip(self, pending: _PendingRecord) -> None:
+        """把一条原始事件写入 gzip 段；超过段上限先关旧段再开新段。
+
+        轮转是分段而非丢弃：所有段都追加保留，aclose 关闭最后一个段
+        写出 gzip 尾部。段号与字节计数只被唯一写线程访问（见 __init__）。
+        """
+
+        entry = self._raw_gz.get(pending.path)
+        if entry is None or entry[1].closed:
+            segment_no = 1
+            entry = [segment_no, self._open_raw_gz_segment(pending.path, segment_no), 0]
+            self._raw_gz[pending.path] = entry
+        line_bytes = (pending.line + "\n").encode("utf-8")
+        segment_no, handle, written = entry
+        if written > 0 and written + len(line_bytes) > self._raw_rotate_bytes:
+            handle.close()
+            segment_no += 1
+            handle = self._open_raw_gz_segment(pending.path, segment_no)
+            written = 0
+            entry[0], entry[1], entry[2] = segment_no, handle, written
+        handle.write(pending.line)
+        handle.write("\n")
+        handle.flush()
+        entry[2] = written + len(line_bytes)
+
+    def _open_raw_gz_segment(self, base: str, segment_no: int):
+        """打开一个 gzip 文本追加段；目录按需创建。调用方需捕获 OSError。"""
+
+        relative = self._raw_gz_segment_path(base, segment_no)
+        absolute = self._run_dir / Path(*relative.split("/"))
+        os.makedirs(absolute.parent, exist_ok=True)
+        return gzip.open(absolute, "at", encoding="utf-8", newline="\n")
 
     # ---------------------------------------------------------------- aclose
 
@@ -394,7 +473,23 @@ class JsonlAuditSink:
         detail: dict[str, object] = {}
         if self._write_error_notes:
             detail["write_errors"] = list(self._write_error_notes)
-        return {
+        # 原始事件保留模式声明：验证器据此启用严格完整性检查
+        # （缺口/流缺失/动作响应缺失）。声明条件 = auto-evidence：
+        # 收到过新形态原始事件（适配器已接线）或显式开启 raw_gzip。
+        # 旧目录与未接线运行没有该键，检查整体跳过，保证向后兼容的
+        # 验证结论不变（audit-raw-retention 设计）。
+        if self._raw_new_shape_seen or self._raw_gzip:
+            raw_retention: dict[str, object] = {
+                "mode": "per_game_files_gzip" if self._raw_gzip else "per_game_files",
+                "gzip": self._raw_gzip,
+                "emitted_attempts": self._raw_attempts,
+                "dropped": self._dropped_low,
+            }
+            if self._raw_gzip:
+                raw_retention["rotate_bytes"] = self._raw_rotate_bytes
+        else:
+            raw_retention = None
+        state: dict[str, object] = {
             "run_id": self._run_id,
             "written": self._written,
             "written_by_kind": dict(self._written_by_kind),
@@ -410,6 +505,9 @@ class JsonlAuditSink:
             },
             "detail": detail,
         }
+        if raw_retention is not None:
+            state["raw_retention"] = raw_retention
+        return state
 
     def _write_summary_files(self, state: dict[str, object]) -> bool:
         """尽力写入运行级与身份级 ``summary.json``；失败返回 False 由上层降级。"""
@@ -429,6 +527,7 @@ class JsonlAuditSink:
                         write_failures=state["write_failures"],
                         audit_degraded=state["audit_degraded"],
                         participants=state["participants"],
+                        raw_retention=state.get("raw_retention"),
                         extra_detail=state["detail"],
                     ),
                 )
@@ -478,3 +577,12 @@ class JsonlAuditSink:
             except OSError:
                 pass
         self._handles.clear()
+        # gzip 段关闭写出 gzip 尾部，保证验证器/运维工具可独立解压。
+        for entry in self._raw_gz.values():
+            handle = entry[1]
+            if not handle.closed:
+                try:
+                    handle.close()
+                except OSError:
+                    pass
+        self._raw_gz.clear()

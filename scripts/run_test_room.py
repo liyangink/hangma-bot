@@ -24,7 +24,7 @@ Token 安全：Token 只经环境变量 ``HM_IDENTITY_TOKEN`` 传给子进程，
   "mode": "test_room",           // 固定；本入口只接受测试房间模式
   "base_url": "<官方平台基址>",
   "expected_tournament_id": "<目标赛事 id>",
-  "known_guide_version": 11,
+  "known_guide_version": 14,
   "audit_root": "./room-runs",   // 每身份生成 audit_root/slot-{X}/runs/{run_id}/...
   "strategy": "weighted_heuristic",   // 可选
   "insecure_hosts": ["<官方内网主机>"], // 可选

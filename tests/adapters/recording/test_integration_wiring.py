@@ -9,7 +9,12 @@
 
 import json
 
-from hangma_bot.adapters.recording import JsonlAuditSink, validate_run
+from hangma_bot.adapters.recording import (
+    JsonlAuditSink,
+    build_action_response_payload,
+    build_state_response_payload,
+    validate_run,
+)
 from hangma_bot.application.audit import AuditTrail
 from hangma_bot.application.contracts import AuditKind, AuditReceipt
 
@@ -99,8 +104,13 @@ def _emit_adapter_outcome(
     attempt_no: int,
     outcome_type: str,
     **extra: str,
-) -> AuditReceipt:
-    """官方适配器 SUBMISSION_OUTCOME（adapters/official/game.py:442，outcome_type 键）。"""
+) -> tuple[AuditReceipt, AuditReceipt]:
+    """官方适配器 SUBMISSION_OUTCOME（adapters/official/game.py:442，outcome_type 键）。
+
+    同时发射 action_submit_response 原始事件（接线清单 E3）：POST 已发出的
+    每次尝试都必须有响应原文，验证器的 raw_action_missing 检查以此为对账依据。
+    返回 (outcome 回执, 原始事件回执)。
+    """
 
     payload = {
         "decision_id": decision_id,
@@ -110,7 +120,21 @@ def _emit_adapter_outcome(
         "outcome_type": outcome_type,
     }
     payload.update(extra)
-    return trail.emit(AuditKind.SUBMISSION_OUTCOME, payload, **_attempt_ctx(decision_id, attempt_no))
+    outcome_receipt = trail.emit(
+        AuditKind.SUBMISSION_OUTCOME, payload, **_attempt_ctx(decision_id, attempt_no)
+    )
+    raw_receipt = trail.emit(
+        AuditKind.RAW_PROTOCOL_STATE,
+        build_action_response_payload(
+            endpoint="POST /api/games/G1/action",
+            http_status=200,
+            decision_id=decision_id,
+            attempt_no=attempt_no,
+            raw='{"ok": true}',
+        ),
+        **_attempt_ctx(decision_id, attempt_no),
+    )
+    return outcome_receipt, raw_receipt
 
 
 async def test_wired_run_passes_end_to_end(tmp_path):
@@ -187,6 +211,38 @@ async def test_wired_run_passes_end_to_end(tmp_path):
         round_no=1,
         trigger_seq=10,
     )
+    # 同一场的 state 响应原文（接线清单 E1/E2）：request_no 连续覆盖
+    # "每个状态请求都有原始事件"的完整性对账。
+    emit(
+        AuditKind.RAW_PROTOCOL_STATE,
+        build_state_response_payload(
+            endpoint="GET /api/games/G1/state",
+            http_status=200,
+            seq_requested=0,
+            seq_observed=10,
+            request_no=1,
+            raw='{"seq": 10, "snapshot": {"phase": "response_peng"}}',
+        ),
+        stage_attempt_id="st-1",
+        game_id="G1",
+        round_no=1,
+        trigger_seq=10,
+    )
+    emit(
+        AuditKind.RAW_PROTOCOL_STATE,
+        build_state_response_payload(
+            endpoint="GET /api/games/G1/state",
+            http_status=200,
+            seq_requested=10,
+            seq_observed=10,
+            request_no=2,
+            raw='{"pending": true}',
+        ),
+        stage_attempt_id="st-1",
+        game_id="G1",
+        round_no=1,
+        trigger_seq=10,
+    )
 
     # 尝试 d1#1： accepted，尝试级时延 102ms（1000 → 1102）。
     emit(
@@ -196,7 +252,36 @@ async def test_wired_run_passes_end_to_end(tmp_path):
             "based_on_authoritative_seq": 10,
             "trigger_seq": 10,
             "window": dict(_WINDOW),
-            "candidates": [{"action_key": "peng:1w", "is_emergency": False}],
+            "observation_snapshot": {
+                "schema_version": 1,
+                "game_id": "G1",
+                "seat": 2,
+                "round_no": 1,
+                "snapshot_seq": 10,
+                "phase": "response_peng",
+                "turn_seat": 0,
+                "responding_seats": [2],
+                "responding": True,
+                "my_hand": ["1w", "1w", "3w", "东", "东", "南", "白"],
+                "drawn_tile": None,
+                "target_discard": {"seat": 0, "tile": "1w", "seq": 10},
+                "my_melds": [],
+                "hand_counts": [10, 10, 13, 10],
+                "remaining_tile_count": 40,
+                "scores": [10, 4, -2, -12],
+                "rule_state": {
+                    "wealth_god": "白", "baotou": False, "chain_count": 0, "catch_play": False,
+                },
+            },
+            "candidates": [
+                {
+                    "action_key": "peng:1w",
+                    "is_emergency": False,
+                    "rank": 1,
+                    "action": {"schema_version": 1, "kind": "peng", "tile": "1w"},
+                    "reasons": [],
+                }
+            ],
             "degraded_reasons": [],
             "rule_completeness": "complete",
         },
@@ -208,7 +293,7 @@ async def test_wired_run_passes_end_to_end(tmp_path):
     )
     receipts.extend(_emit_attempt(trail, clock, "d1", 1))
     clock.advance_ms(98)
-    receipts.append(_emit_adapter_outcome(trail, clock, "d1", 1, "SubmitAccepted"))
+    receipts.extend(_emit_adapter_outcome(trail, clock, "d1", 1, "SubmitAccepted"))
     clock.advance_ms(2)
     # 应用层 SUBMISSION_OUTCOME（decision_loop.py:421 → _outcome_payload:483，类名形态）。
     emit(
@@ -225,7 +310,36 @@ async def test_wired_run_passes_end_to_end(tmp_path):
             "based_on_authoritative_seq": 10,
             "trigger_seq": 10,
             "window": dict(_WINDOW),
-            "candidates": [{"action_key": "peng:5w", "is_emergency": False}],
+            "observation_snapshot": {
+                "schema_version": 1,
+                "game_id": "G1",
+                "seat": 2,
+                "round_no": 1,
+                "snapshot_seq": 10,
+                "phase": "response_peng",
+                "turn_seat": 0,
+                "responding_seats": [2],
+                "responding": True,
+                "my_hand": ["5w", "5w", "5w", "东", "东", "南", "白"],
+                "drawn_tile": None,
+                "target_discard": {"seat": 0, "tile": "5w", "seq": 10},
+                "my_melds": [],
+                "hand_counts": [10, 10, 13, 10],
+                "remaining_tile_count": 40,
+                "scores": [10, 4, -2, -12],
+                "rule_state": {
+                    "wealth_god": "白", "baotou": False, "chain_count": 0, "catch_play": False,
+                },
+            },
+            "candidates": [
+                {
+                    "action_key": "peng:5w",
+                    "is_emergency": False,
+                    "rank": 1,
+                    "action": {"schema_version": 1, "kind": "peng", "tile": "5w"},
+                    "reasons": [],
+                }
+            ],
             "degraded_reasons": ["peng_family_failed"],
             "rule_completeness": "degraded",
         },
@@ -237,7 +351,7 @@ async def test_wired_run_passes_end_to_end(tmp_path):
     )
     receipts.extend(_emit_attempt(trail, clock, "d2", 1))
     clock.advance_ms(298)
-    receipts.append(_emit_adapter_outcome(
+    receipts.extend(_emit_adapter_outcome(
         trail,
         clock,
         "d2",
@@ -303,12 +417,12 @@ async def test_wired_run_passes_end_to_end(tmp_path):
     )
 
     # 全部入队且无降级：修复前 6/8 种类在这里被拒（blocker 的实测现象）。
-    assert len(receipts) == 20
+    assert len(receipts) == 24
     assert all(receipt.queued for receipt in receipts)
     assert all(not receipt.audit_degraded for receipt in receipts)
 
     summary = await trail.aclose(timeout_seconds=5.0)
-    assert summary.written == 20
+    assert summary.written == 24
     assert summary.serialization_failures == 0
     assert summary.missing_high_priority == 0
     assert summary.dropped_low_priority == 0
@@ -319,6 +433,16 @@ async def test_wired_run_passes_end_to_end(tmp_path):
     assert report["secret_scan_clean"] is True
     assert report["counts_by_kind"]["submission_intent"] == 4
     assert report["counts_by_kind"]["submission_outcome"] == 4
+    assert report["counts_by_kind"]["raw_protocol_state"] == 4
+    # 原始事件覆盖统计与严格检查（raw_retention 模式声明后启用）。
+    assert report["raw_events"]["retention_mode"] == "per_game_files"
+    assert report["raw_events"]["by_source"] == {
+        "action_submit_response": 2,
+        "state_response": 2,
+    }
+    assert report["raw_events"]["state_polled_games"] == 1
+    assert report["raw_events"]["state_stream_games"] == 1
+    assert report["raw_events"]["action_responses"] == 2
 
     submissions = report["submissions"]
     assert submissions["distinct_attempts"] == 2

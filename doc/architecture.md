@@ -110,7 +110,7 @@ flowchart TB
 | `hangma` | `HangmaRules` | 合法动作、胡牌、向听、有效牌、财神和结算；独立紧急路径 | HTTP、磁盘、时钟、模型 |
 | `policy` | `BotPolicy.choose()` | 启发式评分、有序候选和超时降级 | 声明动作合法、提交 HTTP、读取 `WorldState` |
 | `application` | `ParticipantRuntime`；赛事/场次/审计端口 | 报名到位、参赛者终态、最多 `M` 场监督、预算和明确拒绝降级循环 | HTTP DTO、动作门、牌型算法 |
-| `adapters/official` | 实现赛事和场次端口 | 已审查指南 v11（快照 2026-09-04）、每 Token 传输/限速（state 轮询 16/s 每用户聚合）、状态投影、序号恢复（含 v10 跨局 gap 快照吸收）、动作门 | 组装决策请求、策略评分、赛事何时退出 |
+| `adapters/official` | 实现赛事和场次端口 | 已审查指南 v14（快照 2026-09-05；v13 在线分桌审查结论见 `doc/official-tournament-flow-2026-09-03.md` §6.6）、每 Token 传输/限速（state 轮询 16/s 每用户聚合）、状态投影、序号恢复（含 v10 跨局 gap 快照吸收）、动作门 | 组装决策请求、策略评分、赛事何时退出 |
 | `adapters/recording` | 实现 `AuditSink` | 队列、JSONL、脱敏、汇总和验证 | 业务判断、重试和阻塞动作 |
 | `bootstrap.py` | 组装函数 | 具体实现选择和配置注入 | 规则、生命周期或协议逻辑 |
 
@@ -269,6 +269,8 @@ sequenceDiagram
 
 审计不是普通调试日志，而是第一阶段正式产物。应用层记录生命周期、规则分析、策略计划、提交 intent/outcome 和最终结果；官方适配器记录协议同步与恢复事实。双方只发送已脱敏的 `AuditRecord`。
 
+原始事件全量保留（2026-09-05 起）：adapter 层全部协议原文（/state 响应、动作提交响应与 409/429 拒绝体）经低优先级 `RAW_PROTOCOL_STATE` 路由到按场分文件的 `raw/*.jsonl`（可选 gzip 分段，只分段不抽样）；决策计划（`DECISION_PLANNED`）携带观察快照（我方手牌/摸牌/相位/目标弃牌），任何被拒动作可本地复盘。词表与对账检查见接口协议 §7.1。摸牌窗口自当日起由增量事件直达（不再逐批全量刷新），口径见 doc/implementation/notes/cursor-discipline.md。
+
 ```text
 runs/{run_id}/
   manifest.json
@@ -324,7 +326,7 @@ src/hangma_bot/
   policy/                 # BotPolicy 与两个启发式实现
   application/            # 端口、ParticipantRuntime 和场次任务
   adapters/
-    official/             # 官方会话实现（已审查指南 v11）
+    official/             # 官方会话实现（已审查指南 v14）
     recording/            # AuditSink、汇总和验证器
   bootstrap.py            # 唯一组合根
 
@@ -334,7 +336,7 @@ scripts/
 
 tests/
   contracts/
-  fixtures/official/     # v8 快照 + v9（fan-calc 金例）+ v11（指南版本）
+  fixtures/official/     # v8 快照 + v9（fan-calc 金例）+ v11/v14（指南版本）
 ```
 
 实施分工、各模块约束和验收入口见[第一阶段实施导航](./implementation/README.md)。

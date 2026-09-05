@@ -71,12 +71,17 @@ class OfficialError(Exception):
         http_status: Optional[int],
         official_code: Optional[str],
         detail: str,
+        raw_text: Optional[str] = None,
     ) -> None:
         self.http_status = http_status
         # 未知 code 值不并入 detail：全大写凭证等任意文本即使脱敏后
         # 也无审计价值，直接丢弃（安全优先于信息保留）
         self.official_code = sanitize_official_code(official_code)
         self.detail = sanitize(detail)
+        # 错误响应原文（已由传输层完成 Token 替换）：仅供审计原始事件全量
+        # 保留（接线清单 E2），不进入异常串与日志。此处刻意不再过 sanitize——
+        # 其 300 字符截断会破坏"原文完整保留"；记录层入队前另有第二层脱敏。
+        self.raw_text = raw_text
         super().__init__(
             "status={} code={} detail={}".format(http_status, self.official_code, self.detail)
         )
@@ -115,8 +120,9 @@ class RateLimitedError(OfficialError):
         official_code: Optional[str],
         detail: str,
         retry_after_seconds: Optional[float] = None,
+        raw_text: Optional[str] = None,
     ) -> None:
-        super().__init__(http_status, official_code, detail)
+        super().__init__(http_status, official_code, detail, raw_text=raw_text)
         self.retry_after_seconds = retry_after_seconds
 
 
