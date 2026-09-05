@@ -30,7 +30,6 @@ derived/{dataset_id}/ 数据集：
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import uuid
@@ -47,6 +46,8 @@ from hangma_bot.adapters.official.replay import (
 from hangma_bot.adapters.recording.bundle import verify_bundle
 from hangma_bot.adapters.recording.reader import read_bundle_manifest, read_records
 from hangma_bot.adapters.recording.schema import canonical_outcome
+from hangma_bot.kernel.identity import hand_id as _kernel_hand_id
+from hangma_bot.kernel.identity import split_group_id as _kernel_split_group_id
 
 REPLAY_SCHEMA_VERSION = 1
 MANIFEST_SCHEMA_VERSION = 1
@@ -72,16 +73,8 @@ _EXECUTION_STATUS = {
 }
 
 
-def _encode_identity(fields: Sequence[object]) -> str:
-    """契约 §4.1 的稳定身份编码：JSON 数组 → UTF-8 SHA-256 全长十六进制。"""
-
-    text = json.dumps(
-        list(fields), ensure_ascii=False, separators=(",", ":"), allow_nan=False
-    )
-    return hashlib.sha256(text.encode("utf-8")).hexdigest()
-
-
 def _require_identity_component(value: object, label: str) -> str:
+    """审计侧身份字段校验：比 kernel.identity 多拒绝纯空白串（硬化口径）。"""
     if not isinstance(value, str) or not value or not value.strip():
         raise ValueError(label + " 必须是非空字符串（不做 strip/大小写改写）")
     return value
@@ -90,28 +83,27 @@ def _require_identity_component(value: object, label: str) -> str:
 def hand_id(source_namespace: str, tournament_id: str, game_id: str, round_no: int) -> str:
     """从权威场次身份生成跨机器稳定单局标识，不包含本地 run/attempt。
 
-    round_no 是排除 bool 的正整数；牌谱缺失时不得猜测，错误输入抛
-    ValueError。直接使用返回的完整 game_id，不解析其命名规律。
+    唯一算法实现位于 kernel.identity（契约 §4.1）；本函数保留审计侧的
+    更严格输入校验（拒绝纯空白串）后委托。round_no 是排除 bool 的
+    正整数；牌谱缺失时不得猜测，错误输入抛 ValueError。
     """
 
     namespace = _require_identity_component(source_namespace, "source_namespace")
     tournament = _require_identity_component(tournament_id, "tournament_id")
     game = _require_identity_component(game_id, "game_id")
-    if isinstance(round_no, bool) or not isinstance(round_no, int) or round_no <= 0:
-        raise ValueError("round_no 必须是排除 bool 的正整数，得到 {!r}".format(round_no))
-    return "hand-" + _encode_identity([namespace, tournament, game, round_no])
+    return _kernel_hand_id(namespace, tournament, game, round_no)
 
 
 def split_group_id(source_namespace: str, tournament_id: str) -> str:
     """官方口径的训练划分键：同一赛事/测试房间不跨训练划分。
 
     模拟线使用 [source_namespace, scenario_id] 的独立口径（契约 §4.1），
-    本函数只实现官方分支。
+    本函数只实现官方分支；唯一算法实现位于 kernel.identity。
     """
 
     namespace = _require_identity_component(source_namespace, "source_namespace")
     tournament = _require_identity_component(tournament_id, "tournament_id")
-    return "split-" + _encode_identity([namespace, tournament])
+    return _kernel_split_group_id([namespace, tournament])
 
 
 def _jsonl_lines(rows: Sequence[Mapping[str, Any]]) -> list[str]:

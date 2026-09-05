@@ -64,6 +64,12 @@ from hangma_bot.policy.interface import BotPolicy
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
 from hangma_bot.policy.weighted_heuristic import WeightedHeuristicPolicy
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
+from hangma_bot.application.audit_codec import (
+    decision_budget_from_json,
+    decision_request_from_json,
+)
+from hangma_bot.simulation import MatchSpec, SimulationChoice, SimulationEngine
+from hangma_bot.simulation.artifacts import compute_rules_hash
 
 DEFAULT_STRATEGY = "weighted_heuristic"
 
@@ -688,6 +694,58 @@ def build_auto_match_runtime(
     )
 
 
+# ---------------------------------------------------------------------------
+# 评估线装配钩子（parallel-v1 C1/S-E 集成；2026-09-05）
+# ---------------------------------------------------------------------------
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def build_decision_codec() -> Mapping[str, Callable]:
+    """评估线 decisions 命令的生产解码入口（审计 C1 codec 注入）。
+
+    返回 {"decode_request", "decode_budget"}：decode_request 还原完整
+    DecisionRequest；decode_budget 只恢复原预算三值（第二参数
+    budget_origin_monotonic 由评估器单独用于截止时间平移，本钩子
+    不延长任何截止时间）。
+    """
+
+    def decode_budget(payload: object, budget_origin_monotonic: float) -> object:
+        # 原点平移由评估器 translate_budget 以 budget_origin_monotonic 为
+        # 基准执行；本钩子只恢复 DecisionBudget 原值。
+        return decision_budget_from_json(payload)
+
+    return {
+        "decode_request": decision_request_from_json,
+        "decode_budget": decode_budget,
+    }
+
+
+def build_evaluation_runtime(kind: str, experiment) -> Optional[Mapping]:
+    """评估线 matches 命令的真实运行时装配（E3：接真实 SimulationEngine）。
+
+    只实现 kind="matches"：返回真实引擎与 MatchSpec/SimulationChoice
+    值对象工厂；策略由评估脚本按实验声明的权重自行构建（不从本机
+    默认配置继承未知权重），保底与紧急动作仍在评估器内按同一规则源
+    准备。kind="decisions" 返回 None，脚本走显式装配回退。
+    """
+    if kind != "matches":
+        return None
+    rules = HangmaRules(experiment.tournament_config.rules)
+    engine = SimulationEngine(rules, rules_hash=compute_rules_hash(_REPO_ROOT))
+
+    def spec_factory(**kwargs):
+        # 评估器传入的 initial_scores 是列表；MatchSpec 契约要求座位向量元组。
+        kwargs["initial_scores"] = tuple(kwargs["initial_scores"])
+        return MatchSpec(**kwargs)
+
+    return {
+        "engine": engine,
+        "spec_factory": spec_factory,
+        "choice_factory": SimulationChoice,
+    }
+
+
 __all__ = [
     "AssembledAutoMatchRuntime",
     "AssembledRuntime",
@@ -696,6 +754,8 @@ __all__ = [
     "RuntimeConfig",
     "TokenKind",
     "build_auto_match_runtime",
+    "build_decision_codec",
+    "build_evaluation_runtime",
     "build_runtime",
     "runtime_config_from_mapping",
 ]

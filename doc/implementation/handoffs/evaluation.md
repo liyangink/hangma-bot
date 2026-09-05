@@ -123,11 +123,11 @@ guide 字段当前无来源、恒写入 missing_fields——修订轮修复项 1
 
 ## 6. 未通过或未验证事项（含环境/资料限制）
 
-- **E3 仅等主审组合根装配（模拟线已交付）**：simulation/engine.py 的
-  SimulationEngine 与 simulation/interface.py 冻结值对象已落盘（见
-  handoffs/simulation.md），本线驱动与其消费字段核对一致。CLI matches 在组合根
-  钩子缺失时仍输出明确错误（不伪造引擎）；主审装配真实
-  engine/spec_factory/choice_factory 后即可复跑 matches 实验，本线无需改代码。
+- **E3 组合根已装配（主审集成 2026-09-05）**：bootstrap.py 已提供
+  build_evaluation_runtime(kind="matches")（真实 SimulationEngine +
+  MatchSpec/SimulationChoice 工厂）与 build_decision_codec()（审计 C1 codec
+  注入）；真实 matches 实验经 scripts/evaluate.py 复跑验证（见主审集成记录）。
+  钩子缺失时的明确报错路径保留不变（不伪造引擎）。
 - **decisions CLI 生产路径依赖审计 codec（C1）**：本线只定义注入接缝
   decode_request/decode_budget，生产解码器由组合根 build_decision_codec() 提供；
   测试使用公开类型构造的 fixture codec（tests/offline/support.py），fixture 不是
@@ -142,6 +142,18 @@ guide 字段当前无来源、恒写入 missing_fields——修订轮修复项 1
   共享 checkout 中其他线在途新增测试，与 §4/§10 一致）。
 - **mock/Fake 数据纪律**：tests/offline/evidence 与全部测试的合成数据只用于
   编排与格式验证；summarize_results 对 mock 来源隔离且结论只写「未证明改进」。
+
+## 6.1 主审集成完成记录（2026-09-05）
+
+- 组合根钩子已落地：bootstrap.build_decision_codec()（审计 C1 codec）与
+  bootstrap.build_evaluation_runtime(kind="matches")（真实引擎 + 工厂）
+  均已提供；decisions/matches 生产路径不再依赖脚本内置回退。
+- CLI 测试同步更新：钩子缺失的防御分支改为进程内测试（monkeypatch），
+  新增「真实 codec 下坏行排除计数」与「真实引擎完整桌赛实验跑通」两条
+  集成测试；scripts/evaluate.py 的 build_policy 补 weighted_heuristic_v1
+  装配（E3 可用稳定版对比 V1 候选）。
+- 身份哈希与 rules_hash 唯一落点见 §7.3（已裁定）。tests/offline 97 passed，
+  全套 1648 passed, 1 skipped。
 
 ## 7. 需要主审集成的共享文件差异（具体符号/调用点）
 
@@ -167,11 +179,13 @@ guide 字段当前无来源、恒写入 missing_fields——修订轮修复项 1
      "decode_budget": Callable[[Mapping, float], DecisionBudget]}，内部委托
      审计线 C1 交付的 audit codec。
 
-3. **身份哈希落点（契约 §4.1，建议主审裁定唯一实现位置）**
-   本线在 evaluation_results.py 实现了 hand_id / split_group_id / identity_digest
-   （消费副本，contract-vectors 全部通过）。审计线（index.jsonl）与模拟线
-   （export_hand）也需要同一算法；建议主审把唯一实现放在 kernel 或 offline
-   共享模块，本文件改为 re-export（或切换调用点），避免三线同义副本共存。
+3. **身份哈希与 rules_hash 落点（契约 §4.1/§4.2，主审已裁定并落盘 2026-09-05）**
+   - hand_id / split_group_id / identity_digest 唯一实现已提升到
+     kernel.identity（无文件/业务依赖）；本模块与 simulation.identity、
+     offline.replay 均已改为 re-export，三线同值（集成冒烟实测一致）。
+   - compute_rules_hash 唯一实现位于 simulation.artifacts，口径为契约字面的
+     「仓库相对 POSIX 路径」（旧双实现分别产出 d008d0a9…/78d9ac7e…，已收敛为
+     后者 78d9ac7e…）；本模块改 re-export，与模拟导出行的 rules_hash 同源同值。
 
 4. **策略版本标识**：scripts/evaluate.py 的 build_policy 在策略实例上设置
    policy_id 属性（仅诊断标识，不参与评分）。主审若希望统一策略版本口径

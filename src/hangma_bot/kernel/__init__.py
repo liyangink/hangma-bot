@@ -6,4 +6,6 @@
 - ``config``：启动后不可变的规则、时间和赛事配置。
 - ``observation``：玩家依法可见的牌局信息与已观察赛事上下文。
 - ``serialization``：带显式 schema version 的稳定 JSON 序列化。
+- ``identity``：契约 §4.1 冻结的跨机器稳定标识算法（hand_id/split_group_id
+  唯一实现），无文件、网络或业务依赖。
 """

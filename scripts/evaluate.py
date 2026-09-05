@@ -59,6 +59,7 @@ from hangma_bot.offline.evaluation_results import (  # noqa: E402
     write_results_jsonl,
 )
 from hangma_bot.offline.evaluation_statistics import summarize_results  # noqa: E402
+from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1  # noqa: E402
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy  # noqa: E402
 from hangma_bot.policy.weighted_heuristic import WeightedHeuristicPolicy  # noqa: E402
 from hangma_bot.policy.weights import HeuristicWeights  # noqa: E402
@@ -82,10 +83,14 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         policy = SafeFallbackPolicy()
         policy.policy_id = declaration.policy_id
         return policy
+    if declaration.name == "weighted_heuristic_v1":
+        # V1 策略无权重声明（固定参数）；weights 若有值按未知键拒绝（PolicyDeclaration 已校验）。
+        policy = ReliableHeuristicPolicyV1()
+        policy.policy_id = declaration.policy_id
+        return policy
     raise ValueError(
-        "未知策略名 {0!r}；本脚本只装配 weighted_heuristic / safe_fallback".format(
-            declaration.name
-        )
+        "未知策略名 {0!r}；本脚本只装配 weighted_heuristic / safe_fallback / "
+        "weighted_heuristic_v1".format(declaration.name)
     )
 
 

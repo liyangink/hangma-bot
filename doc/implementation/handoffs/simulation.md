@@ -117,15 +117,19 @@
 
 ## 6. 样例产物路径、SHA-256、来源与缺失
 
-- 规则源哈希（本机此刻，compute_rules_hash 于 src/hangma_bot/hangma）：
-  d008d0a9618d6542d192dd00b987d5cc178138f0918bb518b6984accaaf32606。
+- 规则源哈希（本机此刻，唯一实现 simulation/artifacts.compute_rules_hash，
+  契约 §4.2 仓库相对 POSIX 路径口径）：
+  78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f。
+  主审集成记录（2026-09-05）：哈希口径由「包内相对路径」改为契约字面的
+  「仓库相对路径」，并收敛为全仓唯一实现（评估线 manifest 同用此值）。
 - 样例导出（仓库内可追溯，生成命令：.venv/bin/python tests/simulation/make_evidence.py）：
   tests/simulation/evidence/sample-hand-20260905.json
   （seed=20260905、scenario=sample-scenario、match=sample-match，1 局流局、385 事件，
   末事件 game_ended），SHA-256：
-  e1229e3b343eb018984941d0e2ee9adb6bc559ddc5a5acb0053b5a417696a654。
-  主审修正记录（2026-09-05）：生成器原对 sort_keys 变体算摘要、写未排序变体落盘，
-  声明哈希与产物不符；已改为对实际落盘字节算摘要并加读回自校验，本哈希为修正后实测值。
+  9a26b5a929e43b0df213008e2a1f2e8c3dbb9ecf9dc24f0c68c75c90fae7673a。
+  主审修正记录（2026-09-05）：①生成器原对 sort_keys 变体算摘要、写未排序
+  变体落盘，声明哈希与产物不符；已改为对实际落盘字节算摘要并加读回自校验。
+  ②rules_hash 口径收敛为契约字面的仓库相对路径后重新生成，本哈希为更新后的实测值。
 - 来源：本机模拟生成（origin=simulated、coverage=full_world、world_schema=simulation-world/1）；
   round_ended.data.scores 为增量、game_ended.final_scores 为累计、末局含 game_ended。
 - 缺失：事件 ts=null（逻辑时间）；评估线可直接 from_replay 该行复现。
@@ -166,3 +170,22 @@ application/contracts.py、hangma/interface.py、policy/interface.py、既有 sc
   路径完全隔离，hangma 依旧无网络/文件/时钟/随机依赖；(d) hangma/engine.py、internal_types.py
   等共享文件零改动。progression 的内部接口不对评估线冻结（契约 §6 口径）。
 - 无线上接口、kernel、hangma 公开契约、policy 接口的任何变更。
+
+## 9. 主审集成完成记录（2026-09-05）
+
+- 身份哈希唯一落点：hand_id/split_group_id/identity_digest 已提升到
+  kernel.identity（全仓唯一实现）；simulation/identity.py 改为转导出 +
+  模拟专用包装，offline/replay.py 与 offline/evaluation_results.py 改为
+  转导出/委托。三线同值经集成冒烟实测一致。
+- rules_hash 唯一落点：simulation/artifacts.compute_rules_hash 为全仓唯一
+  实现，口径改为契约字面的「仓库相对 POSIX 路径」（78d9ac7e…）；评估线
+  manifest 改 re-export，与模拟导出行同源同值。
+- 组合根装配：bootstrap.py 提供 build_evaluation_runtime(kind="matches")
+  （真实 SimulationEngine + MatchSpec/SimulationChoice 工厂）与
+  build_decision_codec()（审计 C1 codec 注入）；本线 handoff §7.1 的
+  装配建议已落盘，engine.py 保持零改动。
+- 证据链修正：tests/simulation/make_evidence.py 摘要改为对实际落盘字节
+  计算并加读回自校验；样例产物随 rules_hash 口径更新重新生成，§6 哈希
+  为实测值（9a26b5a9…）。
+- 集成验证：全套测试 1648 passed, 1 skipped；E3 真实 matches 实验经
+  scripts/evaluate.py 跑通（真实引擎 + 换座聚类）。

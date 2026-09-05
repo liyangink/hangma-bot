@@ -27,7 +27,7 @@ from simulation._helpers import make_rules, make_spec, simple_chooser, drive
 
 def main() -> None:
     rules = make_rules()
-    engine = SimulationEngine(rules, rules_hash=compute_rules_hash(_SRC / "hangma_bot" / "hangma"))
+    engine = SimulationEngine(rules, rules_hash=compute_rules_hash(_SRC.parent))
     spec = make_spec(
         rules, rounds=1, seed=20260905,
         scenario_id="sample-scenario", match_id="sample-match",

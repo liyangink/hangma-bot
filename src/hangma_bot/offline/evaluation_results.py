@@ -18,7 +18,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 import uuid
 from dataclasses import dataclass
@@ -59,20 +58,15 @@ ResultJson = Union[None, bool, int, float, str, List["ResultJson"], Dict[str, "R
 
 
 # ---------------------------------------------------------------------------
-# 身份哈希（契约 §4.1；本线消费实现，落点由主审集成时裁定）
+# 身份哈希与规则源哈希（契约 §4.1/§4.2；主审集成裁定 2026-09-05）
+#
+# hand_id / split_group_id 唯一实现位于 kernel.identity；compute_rules_hash
+# 唯一实现位于 simulation.artifacts（仓库相对路径口径）。本模块只做
+# re-export，不再维护同义副本，避免同一算法在多处静默共存。
 # ---------------------------------------------------------------------------
 
-
-def identity_digest(parts: list) -> str:
-    """按契约 §4.1 的编码与摘要算法对 JSON 数组取 SHA-256 全量十六进制。
-
-    编码固定：UTF-8、ensure_ascii=False、separators=(",", ":")、
-    allow_nan=False。任何平台实现必须逐字节一致，不得改键序或编码参数。
-    """
-    payload = json.dumps(
-        parts, ensure_ascii=False, separators=(",", ":"), allow_nan=False
-    )
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+from hangma_bot.kernel.identity import hand_id, identity_digest, split_group_id
+from hangma_bot.simulation.artifacts import compute_rules_hash
 
 
 def _require_identity_str(value: object, field_name: str) -> str:
@@ -89,55 +83,6 @@ def _require_round_no(value: object) -> int:
             "round_no 必须是排除 bool 的正整数，得到 {0!r}；牌谱缺失时不得猜测".format(value)
         )
     return value
-
-
-def hand_id(source_namespace: str, tournament_id: str, game_id: str, round_no: int) -> str:
-    """从权威场次身份生成跨机器稳定单局标识，不包含本地 run/attempt。
-
-    将四项按给定顺序编码为 JSON 数组：ensure_ascii=False、
-    separators=(',', ':')、allow_nan=False，再取 UTF-8 SHA-256 全长十六进制，
-    前缀 hand-。前三项是非空字符串且不做 strip/大小写改写；round_no 是
-    排除 bool 的正整数，牌谱缺失时不得猜测；错误输入抛 ValueError。
-    （契约 §4.1 冻结语义；本函数是本线消费实现，唯一验收依据是
-    contract-vectors.json 的 identity_cases。）
-    """
-    fields = (
-        _require_identity_str(source_namespace, "source_namespace"),
-        _require_identity_str(tournament_id, "tournament_id"),
-        _require_identity_str(game_id, "game_id"),
-        _require_round_no(round_no),
-    )
-    return "hand-" + identity_digest(list(fields))
-
-
-def split_group_id(fields: list) -> str:
-    """按契约 §4.1 生成数据划分组标识（前缀 split-）。
-
-    官方取 [source_namespace, tournament_id]，模拟取
-    [source_namespace, scenario_id]；键序固定，分组不包含策略版本。
-    """
-    if len(fields) != 2:
-        raise ValueError("split_group_id 必须恰好两个字段，得到 {0} 项".format(len(fields)))
-    cleaned = [_require_identity_str(item, "split 字段") for item in fields]
-    return "split-" + identity_digest(cleaned)
-
-
-def compute_rules_hash(repo_root: Path) -> str:
-    """按契约 §4.2 计算规则源文件清单的稳定哈希（无前缀全量十六进制）。
-
-    范围为 src/hangma_bot/hangma 下全部 .py 文件，按仓库相对 POSIX 路径
-    排序，将 [path, 文件字节 SHA-256] 数组按 §4.1 编码再哈希；规则
-    配置另存，不混入源文件 hash。跨机器复制不受 mtime 影响。
-    """
-    rules_dir = repo_root / "src" / "hangma_bot" / "hangma"
-    entries = []
-    for path in sorted(rules_dir.glob("*.py")):
-        relative = path.relative_to(repo_root).as_posix()
-        file_hash = hashlib.sha256(path.read_bytes()).hexdigest()
-        entries.append([relative, file_hash])
-    if not entries:
-        raise ValueError("规则源文件清单为空: {0}".format(rules_dir))
-    return identity_digest(entries)
 
 
 # ---------------------------------------------------------------------------

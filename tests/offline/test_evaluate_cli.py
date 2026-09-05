@@ -87,7 +87,8 @@ def test_summarize_subprocess_end_to_end(tmp_path):
     assert report["title"] == "评估结果汇总"
 
 
-def test_decisions_cli_without_codec_hook_fails_clearly(tmp_path):
+def test_decisions_cli_bad_row_excluded_with_real_codec(tmp_path):
+    """集成后（bootstrap 提供 build_decision_codec）：坏行被排除并计数，不伪造决策。"""
     dataset = tmp_path / "dataset"
     dataset.mkdir()
     (dataset / "decisions.jsonl").write_text("{}\n", encoding="utf-8")
@@ -117,11 +118,43 @@ def test_decisions_cli_without_codec_hook_fails_clearly(tmp_path):
         text=True,
         timeout=120,
     )
-    assert process.returncode != 0
-    assert "codec" in process.stderr
+    assert process.returncode == 0, process.stderr
+    assert "排除 1 行" in process.stdout
+    assert (tmp_path / "out" / "manifest.json").is_file()
 
 
-def test_matches_cli_without_simulation_hook_fails_clearly(tmp_path):
+def test_decisions_cli_missing_codec_hook_fails_in_process(tmp_path, monkeypatch):
+    """组合根缺失 codec 钩子时的防御分支：进程内清晰失败（C1 前的旧契约行为）。"""
+    import argparse
+
+    import hangma_bot.bootstrap as bootstrap_module
+
+    monkeypatch.setattr(bootstrap_module, "build_decision_codec", lambda: None, raising=False)
+    dataset = tmp_path / "dataset"
+    dataset.mkdir()
+    (dataset / "decisions.jsonl").write_text("{}\n", encoding="utf-8")
+    experiment = write_experiment(
+        tmp_path / "exp.json",
+        {
+            "experiment_schema_version": 1,
+            "kind": "decisions",
+            "decision_mode": "recorded_request",
+            "clock_mode": "logical",
+            "baseline_policy": {"policy_id": "b", "name": "safe_fallback", "weights": {}},
+            "challenger_policy": {"policy_id": "c", "name": "safe_fallback", "weights": {}},
+        },
+    )
+    module = load_script_module()
+    args = argparse.Namespace(
+        dataset=str(dataset), experiment=str(experiment), out=str(tmp_path / "out")
+    )
+    with pytest.raises(SystemExit) as excinfo:
+        module.cmd_decisions(args)
+    assert "codec" in str(excinfo.value)
+
+
+def test_matches_cli_end_to_end_with_real_engine(tmp_path):
+    """集成后（bootstrap 提供 build_evaluation_runtime）：真实引擎完整桌赛实验跑通。"""
     config = tournament_config_to_json(make_tournament_config(rounds_per_game=8))
     experiment = write_experiment(
         tmp_path / "exp.json",
@@ -155,10 +188,56 @@ def test_matches_cli_without_simulation_hook_fails_clearly(tmp_path):
         ],
         capture_output=True,
         text=True,
-        timeout=120,
+        timeout=300,
     )
-    assert process.returncode != 0
-    assert "build_evaluation_runtime" in process.stderr or "E3" in process.stderr
+    assert process.returncode == 0, process.stderr
+    out_dir = tmp_path / "out"
+    assert (out_dir / "results.jsonl").is_file()
+    assert (out_dir / "report.json").is_file()
+    assert (out_dir / "report.md").is_file()
+    from hangma_bot.offline.evaluation_results import read_results_jsonl
+
+    rows = read_results_jsonl(out_dir / "results.jsonl")
+    assert len(rows) == 2  # 1 seed × 1 换座 × 稳定/候选两个完整桌赛
+    assert all(row.source_kind == "simulation" for row in rows)
+
+
+def test_matches_cli_missing_runtime_hook_fails_in_process(tmp_path, monkeypatch):
+    """组合根缺失运行时钩子时的防御分支：进程内清晰失败（E3 前的旧契约行为）。"""
+    import argparse
+
+    import hangma_bot.bootstrap as bootstrap_module
+
+    monkeypatch.setattr(
+        bootstrap_module, "build_evaluation_runtime", lambda kind, experiment: None, raising=False
+    )
+    config = tournament_config_to_json(make_tournament_config(rounds_per_game=8))
+    experiment = write_experiment(
+        tmp_path / "exp.json",
+        {
+            "experiment_schema_version": 1,
+            "kind": "matches",
+            "clock_mode": "logical",
+            "baseline_policy": {"policy_id": "stable", "name": "safe_fallback", "weights": {}},
+            "challenger_policy": {"policy_id": "candidate", "name": "safe_fallback", "weights": {}},
+            "opponent_pool": [
+                {"policy_id": "opp-1", "name": "safe_fallback", "weights": {}},
+                {"policy_id": "opp-2", "name": "safe_fallback", "weights": {}},
+                {"policy_id": "opp-3", "name": "safe_fallback", "weights": {}},
+            ],
+            "tournament_config": config,
+            "seeds": [{"seed": 1, "scenario_id": "sc-1"}],
+            "seat_permutations": [[0, 1, 2, 3]],
+            "initial_dealer": 0,
+            "initial_scores": [0, 0, 0, 0],
+        },
+    )
+    module = load_script_module()
+    args = argparse.Namespace(out=str(tmp_path / "out"), experiment=str(experiment))
+    with pytest.raises(SystemExit) as excinfo:
+        module.cmd_matches(args)
+    message = str(excinfo.value)
+    assert "build_evaluation_runtime" in message or "E3" in message
 
 
 def test_decisions_cli_end_to_end_in_process(tmp_path, monkeypatch):
