@@ -422,7 +422,9 @@ async def test_wired_run_passes_end_to_end(tmp_path):
     assert all(not receipt.audit_degraded for receipt in receipts)
 
     summary = await trail.aclose(timeout_seconds=5.0)
-    assert summary.written == 24
+    # 24 条业务记录 + 1 条关闭证据 LIFECYCLE_CHANGED(producer_summary)
+    # （audit-plus-v1，2026-09-05：关闭前必发，见 audit.py aclose）。
+    assert summary.written == 25
     assert summary.serialization_failures == 0
     assert summary.missing_high_priority == 0
     assert summary.dropped_low_priority == 0

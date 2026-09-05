@@ -28,7 +28,9 @@
 EOF→UncertainTransportError（可恢复）；帧解析失败→DtoError(recoverable)。
 重连有界（max_reconnects + 指数退避），耗尽返回 RECONNECTS_EXHAUSTED
 可恢复失败，绝不无限自动重连。所有异常 detail、观察事件与运行结果
-均经脱敏，绝不含 Token 与 SSE 原始行文本。
+均经脱敏，绝不含 Token；SSE 原始行文本只随 NotifyFrame.raw 进入
+审计原文（RAW_PROTOCOL_STATE，build_sse_frame_payload），不进异常
+与日志。
 """
 
 from __future__ import annotations
@@ -69,17 +71,21 @@ _MAX_FRAME_DATA_BYTES = 64 * 1024
 
 @dataclass(frozen=True)
 class NotifyFrame:
-    """一条通知帧：官方事件水位与关流标记，绝不携带牌面信息。
+    """一条通知帧：官方事件水位与关流标记，绝不解析牌面信息。
 
     seq：与 /state 同一全局递增水位，包含式（服务器已发到 seq）；
     不是轮询游标——/state?seq= 的语义是「N 之后的事件」，游标永远是
     本地已消费 seq（指南 v14 §2.1；游标纪律由同步工作线维护）。
     closed：官方在流终止（场终/死场/慢消费者断流）前推送的关流标记；
     收到后客户端应重连对齐或按需拉终态（指南 v12 变更记录）。
+    raw：本条事件 data 载荷原文（多行 data 拼接后的完整文本）；只供
+    审计原文留存（RAW_PROTOCOL_STATE，build_sse_frame_payload），
+    不进异常、日志与 NotifyStreamEvent。缺省 None 兼容既有调用方。
     """
 
     seq: int
     closed: bool = False
+    raw: Optional[str] = None
 
     def __post_init__(self) -> None:
         # seq 非负纯 int（bool 拒绝），与 kernel 序号不变量同口径；
@@ -92,13 +98,15 @@ class NotifyFrame:
             raise DtoError("通知帧 closed 应为布尔")
 
 
-def parse_notify_frame(data_payload: str) -> NotifyFrame:
+def parse_notify_frame(data_payload: str, *, raw: Optional[str] = None) -> NotifyFrame:
     """解析一条 data 载荷（官方帧为单行 JSON 对象）；非法抛 DtoError(recoverable)。
 
     未知新增键一律忽略：v12 引入后官方可能修订帧格式，前向兼容原则与
     dto.py 一致。seq 必须为非负纯 int；closed 存在时必须为布尔。JSON
     非法/形状不符按可恢复协议错误处理（默认 recoverable=True），由
     调用方断开重连，绝不吞帧也绝不解析 seq 以外的任何内容。
+    ``raw`` 透传到 NotifyFrame.raw：单条事件 data 载荷原文只供审计
+    原文留存，不进异常与日志；缺省 None。
     """
 
     if len(data_payload) > _MAX_FRAME_DATA_BYTES:
@@ -118,7 +126,7 @@ def parse_notify_frame(data_payload: str) -> NotifyFrame:
     closed = doc.get("closed")
     if closed is not None and not isinstance(closed, bool):
         raise DtoError("通知帧 closed 应为布尔")
-    return NotifyFrame(seq=doc.get("seq"), closed=bool(closed or False))
+    return NotifyFrame(seq=doc.get("seq"), closed=bool(closed or False), raw=raw)
 
 
 class _SseEventAccumulator:
@@ -127,6 +135,8 @@ class _SseEventAccumulator:
     SSE 规范：事件以空行结束；": keepalive" 是注释行，不参与分发；
     data 可跨多行（官方帧是单行，多行拼接仅为 SSE 规范兼容）；
     event:/id:/retry: 等字段行官方流不使用，容忍忽略。
+    返回的 NotifyFrame 携带 raw（拼接后的 data 原文），只供审计
+    原文留存，不进异常与日志。
     """
 
     def __init__(self) -> None:
@@ -140,7 +150,7 @@ class _SseEventAccumulator:
                 return None
             payload = "\n".join(self._data_lines)
             self._data_lines.clear()
-            return parse_notify_frame(payload)
+            return parse_notify_frame(payload, raw=payload)
         if line.startswith(":"):
             return None  # 注释行（官方 ": keepalive"）
         if line.startswith(_DATA_PREFIX):
@@ -162,7 +172,7 @@ class _SseEventAccumulator:
             return None
         payload = "\n".join(self._data_lines)
         self._data_lines.clear()
-        return parse_notify_frame(payload)
+        return parse_notify_frame(payload, raw=payload)
 
 
 class StreamBudget:

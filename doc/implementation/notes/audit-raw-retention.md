@@ -288,22 +288,26 @@ self._emit_audit(
   取消例外）必须有同键 action_submit_response 原文，否则验证器报
   raw_action_missing。
 
-### E4. SSE 预留接缝（另一工作线的 notify 客户端，本次不接线）
+### E4. SSE 原文接缝（2026-09-06 已接线）
 
-- 记录接缝已就绪：build_sse_frame_payload(endpoint="GET /api/games/{gid}/notify",
+- 记录接缝：build_sse_frame_payload(endpoint="GET /api/games/{gid}/notify",
   seq=<帧水位>, closed=<场终标记>, raw=<帧原文>)；帧协议只含 seq（指南 v12/14，
   API §2.3：初始帧 {"seq": N}、变化帧、{"seq":N,"closed":true} 场终、: keepalive）。
-- 对接现实现（本任务不拥有、只读对照；**wv6 修订**：notify.py 中不存在
-  名为 NotifyFrameProcessor 的符号——实际为私有 _SseEventAccumulator
-  （notify.py:111-152，feed 在约 :122，data 行解析在约 :133-138），且
-  累加器不保留原始行文本（只留存 data 载荷、注释/空行丢弃）：接线时需先
-  在累加器回传 data 原文（或直接在 _deliver_frame 传 raw 空串降级），
-  本文档此前引用的符号与"持有原始行文本"的假设均不成立。若选择在
-  _deliver_frame（约 notify.py:663）接入则只有 seq/closed、raw 传空串。
-  注意 notify.py 现有 docstring 声明"绝不携带 SSE 原始行文本"——接线时
-  该约束须修订为"原文只进审计、不进异常与日志"。
-- 记录时 game_id 传所在场；验证器按 source 统计、不要求帧完整性（SSE 是
-  可选能力，未采纳时不产生记录不算缺失）。
+- 接线实现（自由赛实盘验收后补做）：
+  1. notify.py：`_SseEventAccumulator.feed/flush` 把拼接后的 data 原文随
+     `NotifyFrame.raw` 带出（`parse_notify_frame(..., raw=...)` 透传）；
+     模块 docstring 的"绝不携带 SSE 原始行文本"已修订为"原文只进审计
+     （RAW_PROTOCOL_STATE），不进异常与日志"；NotifyStreamEvent/异常/日志
+     仍不携带原文。
+  2. game.py `_on_sse_frame`：帧到达即发射 `RAW_PROTOCOL_STATE`
+     （source=sse_frame），endpoint 用 `GET /api/games/{gid}/notify`、
+     seq/closed 取帧、raw 取 `frame.raw`（缺省空串）。发射在 SSE 监听
+     任务上且非阻塞，不触碰动作窗口提交路径。
+  3. 回归：tests/adapters/official/test_notify.py 新增原文透传与流内原文
+     保真用例；tests/adapters/official/test_sse_runtime.py 新增帧到达产生
+     sse_frame 审计记录用例。
+- 验证器按 source 统计、不要求帧完整性（SSE 是可选能力，未采纳时不产生
+  记录不算缺失）；下一场实盘运行即可核对 sse_frame 计数与 `closed:true` 真样。
 
 ### E5. 组合根（bootstrap.py，主会话）— 记录器构造
 

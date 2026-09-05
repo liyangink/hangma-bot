@@ -4,6 +4,9 @@ import unittest
 
 from hangma_bot.application.contracts import (
     ActionAttempt,
+    ParticipantTerminalReason,
+    RuntimeMode,
+    RuntimeTarget,
     SubmitAmbiguous,
     SubmitRejectedRetryable,
 )
@@ -71,6 +74,29 @@ class ValueContractTests(unittest.TestCase):
                 action_key="discard:2w",
                 latest_send_at_monotonic=3.0,
             )
+
+    def test_auto_match_mode_vocabulary(self) -> None:
+        """AUTO_MATCH 及其专用终态原因按 parallel-v1 冻结值存在（§3.3）。"""
+
+        self.assertEqual(RuntimeMode.AUTO_MATCH.value, "auto_match")
+        self.assertEqual(
+            ParticipantTerminalReason.MATCHING_UNAVAILABLE.value, "matching_unavailable"
+        )
+        self.assertEqual(ParticipantTerminalReason.CAPACITY_LIMIT.value, "capacity_limit")
+
+    def test_runtime_target_requires_target_outside_auto_match(self) -> None:
+        """只有 AUTO_MATCH 允许空 expected_tournament_id 表示尚未发现自动房。"""
+
+        with self.assertRaises(ValueError):
+            RuntimeTarget(
+                mode=RuntimeMode.OFFICIAL_TOURNAMENT,
+                expected_tournament_id="",
+                known_guide_version=15,
+            )
+        target = RuntimeTarget(
+            mode=RuntimeMode.AUTO_MATCH, expected_tournament_id="", known_guide_version=15
+        )
+        self.assertEqual(target.expected_tournament_id, "")
 
 
 if __name__ == "__main__":

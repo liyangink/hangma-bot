@@ -102,3 +102,48 @@ class TestLineSweepAndDetection:
         assert is_sensitive_key("Set-Cookie")
         assert not is_sensitive_key("authoritative_seq")
         assert not is_sensitive_key("game_id")
+
+
+class TestEndpointExemption:
+    """端点字段豁免裸长串规则：URL 保存原样，凭证形态仍被脱敏。"""
+
+    LONG_ENDPOINT = "GET /api/games/a_cd5c88f494b2_r1_b0_t0/state"
+
+    def test_endpoint_survives_structural_scan(self):
+        payload = {"source": "state_response", "endpoint": self.LONG_ENDPOINT}
+        result = redact_value(payload)
+        assert result["endpoint"] == self.LONG_ENDPOINT
+
+    def test_endpoint_still_redacts_credential_forms(self):
+        payload = {"endpoint": "POST /x?token=supersecretvalue"}
+        result = redact_value(payload)
+        assert result["endpoint"] == "POST /x?token=[REDACTED]"
+
+    def test_endpoint_survives_line_sweep(self):
+        line = redact_json_line(
+            json.dumps(
+                {"source": "state_response", "endpoint": self.LONG_ENDPOINT, "raw": "body"},
+                ensure_ascii=False,
+            )
+        )
+        assert json.loads(line)["endpoint"] == self.LONG_ENDPOINT
+
+    def test_line_sweep_endpoint_idempotent(self):
+        once = redact_json_line(json.dumps({"endpoint": self.LONG_ENDPOINT}, ensure_ascii=False))
+        twice = redact_json_line(once)
+        assert once == twice
+
+    def test_long_secret_still_redacted_outside_endpoint(self):
+        # 豁免只针对 endpoint：raw 等其他字段的 40+ 裸长串照旧整体替换
+        long_token = "A" * 48
+        payload = {"endpoint": self.LONG_ENDPOINT, "raw": long_token}
+        line = redact_json_line(json.dumps(redact_value(payload), ensure_ascii=False))
+        doc = json.loads(line)
+        assert doc["endpoint"] == self.LONG_ENDPOINT
+        assert doc["raw"] == REDACTED
+
+    def test_weak_matcher_reports_credentials_but_not_long_runs(self):
+        from hangma_bot.adapters.recording.redact import unredacted_secret_matches_weak
+
+        assert unredacted_secret_matches_weak(self.LONG_ENDPOINT) == ()
+        assert len(unredacted_secret_matches_weak("token=abcdef123")) == 1

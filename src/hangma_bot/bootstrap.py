@@ -38,9 +38,14 @@ from pathlib import Path
 from typing import Callable, FrozenSet, Mapping, Optional
 from urllib.parse import urlsplit
 
-from hangma_bot.adapters.official import OfficialTournamentSession, TransportConfig
+from hangma_bot.adapters.official import (
+    OfficialAutoMatchSession,
+    OfficialTournamentSession,
+    TransportConfig,
+)
 from hangma_bot.adapters.official.notify import StreamBudget
 from hangma_bot.adapters.recording import JsonlAuditSink
+from hangma_bot.application.auto_match_runtime import AutoMatchRuntime, AutoMatchSettings
 from hangma_bot.application.contracts import (
     AuditContext,
     GameSessionPort,
@@ -82,10 +87,13 @@ class TokenKind(str, Enum):
 
 
 # 允许的模式组合；正式赛事只能用正式 Token，测试房间/测试赛事只能用测试 Token。
+# AUTO_MATCH（自动匹配）仅用于全局 Token 的新入口；不把全局 Token 放行到旧赛事流程
+# （旧流程作用域检查由对应会话实现执行）。
 _MODE_TOKEN_KIND: Mapping[RuntimeMode, TokenKind] = {
     RuntimeMode.TEST_ROOM: TokenKind.TEST,
     RuntimeMode.TEST_TOURNAMENT: TokenKind.TEST,
     RuntimeMode.OFFICIAL_TOURNAMENT: TokenKind.OFFICIAL,
+    RuntimeMode.AUTO_MATCH: TokenKind.OFFICIAL,
 }
 
 
@@ -123,6 +131,8 @@ class RuntimeConfig:
     - ``mode``：运行模式，与 ``token_kind`` 交叉核对；
     - ``base_url``：官方平台基址（http/https），仅对该主机白名单可关闭 TLS 校验；
     - ``expected_tournament_id``：目标赛事；初始化时与平台事实核对；
+      AUTO_MATCH 模式允许为空字符串（尚未发现自动房，由显式 match 入席发现），
+      非空表示只恢复该已知自动房；其他模式必须非空；
     - ``known_guide_version``：本地已适配的官方指南版本下限；
     - ``token``：敏感凭证；只进入官方传输的认证头；
     - ``token_kind``：Token 用途类别（test/official）；
@@ -159,7 +169,8 @@ class RuntimeConfig:
         scheme = urlsplit(self.base_url).scheme.lower()
         if scheme not in ("http", "https"):
             raise ValueError("base_url 必须以 http:// 或 https:// 开头，得到 {0!r}".format(self.base_url))
-        _require_non_empty_str(self.expected_tournament_id, "RuntimeConfig.expected_tournament_id")
+        if self.mode is not RuntimeMode.AUTO_MATCH:
+            _require_non_empty_str(self.expected_tournament_id, "RuntimeConfig.expected_tournament_id")
         _require_positive_int(self.known_guide_version, "RuntimeConfig.known_guide_version")
         _require_non_empty_str(self.token, "RuntimeConfig.token")
         if not isinstance(self.token_kind, TokenKind):
@@ -287,12 +298,20 @@ def runtime_config_from_mapping(
         raise ValueError("insecure_hosts 必须是数组")
     insecure_hosts = frozenset(_require_non_empty_str(item, "insecure_hosts 元素") for item in hosts)
 
+    # AUTO_MATCH 允许缺省/空目标（尚未发现自动房）；提供了值则必须是非空字符串
+    # （非空 = 只恢复该已知自动房）。其他模式必须提供非空目标。
+    expected_tid_value = data.get("expected_tournament_id")
+    if mode is RuntimeMode.AUTO_MATCH and expected_tid_value in (None, ""):
+        expected_tournament_id = ""
+    else:
+        expected_tournament_id = _require_non_empty_str(
+            expected_tid_value, "expected_tournament_id"
+        )
+
     return RuntimeConfig(
         mode=mode,
         base_url=_require_non_empty_str(data.get("base_url"), "base_url"),
-        expected_tournament_id=_require_non_empty_str(
-            data.get("expected_tournament_id"), "expected_tournament_id"
-        ),
+        expected_tournament_id=expected_tournament_id,
         known_guide_version=_require_positive_int(
             data.get("known_guide_version"), "known_guide_version"
         ),
@@ -322,7 +341,10 @@ class _AuditContextProvider:
 
     def __init__(self, run_id: str, tournament_id: str) -> None:
         self._run_id = run_id
-        self._tournament_id = tournament_id
+        # AUTO_MATCH 发现模式允许空目标（尚未发现自动房）：身份发现前的
+        # 审计记录以 "unknown" 占位（与 participant_id 同一约定），避免
+        # 验证器把空 tournament_id 判为信封不完整（审计线校验规则）。
+        self._tournament_id = tournament_id or "unknown"
         self._participant_id = "unknown"
 
     def set_identity(self, tournament_id: str, participant_id: str) -> None:
@@ -527,12 +549,151 @@ def build_runtime(
     )
 
 
+@dataclass
+class AssembledAutoMatchRuntime:
+    """一次 AUTO_MATCH 自动房运行的组装单元；字段语义与 AssembledRuntime 一致。
+
+    - ``run()``：运行一次自动房操作到参赛者终态（委托 AutoMatchRuntime，
+      出口统一关闭会话并限时冲刷审计）；
+    - ``audit_degraded`` / ``last_audit_summary`` / ``participant_id``：
+      与 AssembledRuntime 同名同义，供启动脚本与守护打印核对清单。
+    """
+
+    config: RuntimeConfig
+    settings: AutoMatchSettings
+    run_id: str
+    sink: JsonlAuditSink
+    session: TournamentSessionPort
+    policy: BotPolicy
+    runtime: AutoMatchRuntime
+
+    async def run(self):
+        """运行一次自动房操作；返回值类型见应用层契约。"""
+
+        return await self.runtime.run()
+
+    @property
+    def audit_degraded(self) -> bool:
+        return self.runtime.audit_degraded
+
+    @property
+    def last_audit_summary(self):
+        return self.runtime.last_audit_summary
+
+    @property
+    def participant_id(self) -> Optional[str]:
+        """初始化后发现的脱敏身份；尚未发现时为 None（供启动清单打印）。"""
+
+        getter = getattr(self.session, "participant_id", None)
+        return getter() if callable(getter) else None
+
+
+def build_auto_match_runtime(
+    config: RuntimeConfig,
+    settings: AutoMatchSettings,
+    *,
+    session_factory: Optional[Callable[[], TournamentSessionPort]] = None,
+    policy_factory: Optional[Callable[[], BotPolicy]] = None,
+) -> AssembledAutoMatchRuntime:
+    """装配一次 AUTO_MATCH 自动房运行（一个进程一个全局 Token，默认单会话）。
+
+    注入顺序与 :func:`build_runtime` 一致：固定 run_id → JsonlAuditSink →
+    _AuditContextProvider（身份发现前占位，initialize 成功后由
+    _IdentityAwareSession 回填 user_id/room_id）→ OfficialAutoMatchSession
+    （同一 Token 的 transport/scheduler/SSE 预算；settings 提供声明上限与
+    match 重试参数）→ 策略工厂 → AutoMatchRuntime。
+
+    本函数只服务 mode=AUTO_MATCH；旧三种模式请使用 :func:`build_runtime`。
+    ``session_factory`` / ``policy_factory`` 仅用于集成测试注入 Fake。
+    """
+
+    if not isinstance(config, RuntimeConfig):
+        raise TypeError("config 必须是 RuntimeConfig")
+    if config.mode is not RuntimeMode.AUTO_MATCH:
+        raise ValueError(
+            "build_auto_match_runtime 只服务 mode=auto_match，得到 {0!r}".format(config.mode.value)
+        )
+
+    ids_source: IdGenerator = PrefixedUuidIds()
+    run_id = ids_source.new_run_id()
+    fixed_ids = _FixedRunIds(ids_source, run_id)
+
+    # F-08：原始事件 gzip 分段按配置透传（与 build_runtime 同口径）
+    sink = JsonlAuditSink(
+        config.audit_root,
+        run_id,
+        raw_gzip=config.audit_raw_gzip,
+        raw_rotate_bytes=config.audit_raw_rotate_bytes,
+    )
+    provider = _AuditContextProvider(run_id, config.expected_tournament_id)
+    clock = SystemClock()
+
+    if session_factory is None:
+        inner: TournamentSessionPort = OfficialAutoMatchSession(
+            token=config.token,
+            transport_config=TransportConfig(
+                base_url=config.base_url,
+                insecure_hosts=config.insecure_hosts,
+            ),
+            monotonic_clock=clock.now,
+            wall_clock_unix_ms=clock.unix_ms,
+            audit=sink,
+            audit_context=provider.context,
+            ruleset_version=DEFAULT_RULESET_VERSION,
+            sse_enabled=config.sse_enabled,
+            sse_budget=StreamBudget() if config.sse_enabled else None,
+            # 自动匹配操作参数（运行配置注入；不是官方字段）
+            declared_max_games=settings.declared_max_games,
+            declared_rounds=settings.declared_rounds,
+            match_min_interval_sec=settings.match_min_interval_sec,
+            match_max_attempts=settings.match_max_attempts,
+            match_busy_wait_cap_sec=settings.match_busy_wait_cap_sec,
+            room_poll_interval_sec=settings.room_poll_interval_sec,
+        )
+    else:
+        inner = session_factory()
+    session = _IdentityAwareSession(inner, provider)
+
+    if policy_factory is not None:
+        policy = policy_factory()
+    else:
+        policy = _STRATEGY_FACTORIES[config.strategy]()
+
+    runtime = AutoMatchRuntime(
+        session=session,
+        policy=policy,
+        audit_sink=sink,
+        target=RuntimeTarget(
+            mode=config.mode,
+            expected_tournament_id=config.expected_tournament_id,
+            known_guide_version=config.known_guide_version,
+        ),
+        settings=settings,
+        rules_factory=HangmaRules,
+        clock=clock,
+        ids=fixed_ids,
+        budget_policy=BudgetPolicy(),
+        supervision=SupervisionPolicy(),
+    )
+    return AssembledAutoMatchRuntime(
+        config=config,
+        settings=settings,
+        run_id=run_id,
+        sink=sink,
+        session=session,
+        policy=policy,
+        runtime=runtime,
+    )
+
+
 __all__ = [
+    "AssembledAutoMatchRuntime",
     "AssembledRuntime",
     "DEFAULT_RULESET_VERSION",
     "DEFAULT_STRATEGY",
     "RuntimeConfig",
     "TokenKind",
+    "build_auto_match_runtime",
     "build_runtime",
     "runtime_config_from_mapping",
 ]

@@ -31,6 +31,7 @@ from hangma_bot.application.contracts import (
     TournamentSnapshot,
     TournamentStatus,
 )
+from hangma_bot.application.auto_match_runtime import AutoMatchRuntime, AutoMatchSettings
 from hangma_bot.application.deadline import BudgetPolicy, BoundedBackoff, SystemClock
 from hangma_bot.application.participant_runtime import ParticipantRuntime
 from hangma_bot.application.tournament_supervisor import SupervisionPolicy
@@ -38,6 +39,8 @@ from hangma_bot.application.tournament_supervisor import SupervisionPolicy
 __all__ = [
     "ActionAttempt",
     "AuditContext",
+    "AutoMatchRuntime",
+    "AutoMatchSettings",
     "AuditKind",
     "AuditRecord",
     "AuditReceipt",

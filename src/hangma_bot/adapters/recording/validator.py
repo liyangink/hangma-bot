@@ -54,9 +54,11 @@ from hangma_bot.adapters.recording.raw_events import (
     is_new_shape_raw_payload,
 )
 from hangma_bot.adapters.recording.redact import (
+    ENDPOINT_KEY,
     REDACTED,
     is_sensitive_key,
     unredacted_secret_matches,
+    unredacted_secret_matches_weak,
 )
 from hangma_bot.adapters.recording.schema import AUDIT_SCHEMA_VERSION, canonical_outcome
 from hangma_bot.application.contracts import (
@@ -130,8 +132,13 @@ def _walk_secrets(
     hits: list[dict[str, Any]],
     location: RecordLocation,
     path: str,
+    endpoint_value: bool = False,
 ) -> None:
-    """递归扫描结构：敏感键未脱敏或字符串值残留凭证形态都算命中。"""
+    """递归扫描结构：敏感键未脱敏或字符串值残留凭证形态都算命中。
+
+    endpoint 键的值只做弱形态扫描（不应用裸长串规则）：场次 URL 的
+    40+ 字符路径段不是凭证，写入侧已同样豁免（见 redact.py）。
+    """
 
     if isinstance(node, dict):
         for key, value in node.items():
@@ -147,12 +154,21 @@ def _walk_secrets(
                     "kind": "sensitive_key",
                     "path": child_path,
                 })
-            _walk_secrets(value, hits, location, child_path)
+            _walk_secrets(
+                value,
+                hits,
+                location,
+                child_path,
+                endpoint_value=(key_text == ENDPOINT_KEY),
+            )
     elif isinstance(node, list):
         for index, value in enumerate(node):
-            _walk_secrets(value, hits, location, f"{path}[{index}]")
+            _walk_secrets(
+                value, hits, location, f"{path}[{index}]", endpoint_value=endpoint_value
+            )
     elif isinstance(node, str):
-        for match in unredacted_secret_matches(node):
+        matcher = unredacted_secret_matches_weak if endpoint_value else unredacted_secret_matches
+        for match in matcher(node):
             # 只报告形态与长度，不回显原文，避免验证报告本身泄漏秘密。
             hits.append({
                 "location": {"file": location.file, "line_no": location.line_no},
@@ -178,6 +194,9 @@ class _RunScanner:
         # 运行级 summary.json 中的原始事件保留模式声明；None = 旧目录（legacy），
         # 严格完整性检查整体跳过，保证向后兼容的验证结论不变。
         self.raw_retention: dict[str, Any] | None = None
+        # manifest 声明的增强覆盖 profile；None = 旧目录（legacy），
+        # audit-plus-v1 校验（producer_summary/决策输入配对）只在开启时生效。
+        self.capture_profile: str | None = None
 
     # ---- 解析 ----------------------------------------------------------
 
@@ -274,6 +293,12 @@ class _RunScanner:
                 f"manifest schema_version={observed_schema!r} 与验证器基线 {AUDIT_SCHEMA_VERSION} 不同，按已知结构尽力检查",
                 (self._location(path, 0),),
             ))
+        if isinstance(document, dict):
+            payload = document.get("payload")
+            if isinstance(payload, dict) and isinstance(payload.get("capture_profile"), str):
+                # audit-plus-v1 profile 声明：启用增强校验（producer_summary
+                # 关闭证据与决策输入/终结配对）。旧 manifest 无该字段 → legacy。
+                self.capture_profile = payload["capture_profile"]
         hits: list[dict[str, Any]] = []
         _walk_secrets(document, hits, self._location(path, 0), "manifest")
         self._collect_secret_hits(hits)
@@ -915,6 +940,119 @@ class _RunScanner:
             return ""
         return "；raw_retention.dropped={0}".format(dropped)
 
+    def check_audit_plus(self) -> dict[str, Any]:
+        """audit-plus-v1 增强校验；profile 未声明时返回 legacy 不收紧旧日志。
+
+        只在 manifest 声明 capture_profile=audit-plus-v1 时执行（方案
+        §7.2）：旧目录结论与升级前完全一致。检查项：
+
+        - missing_producer_summary（violation）：profile 运行必须有
+          LIFECYCLE_CHANGED(area=audit, event=producer_summary) 关闭证据，
+          否则尾部完整性未知——不能从文件没有报错推断完整（方案 §3.4，
+          审查 S1）；
+        - decision_input_without_end（violation）：同一决策输入没有
+          终结证据，说明进程在决策中途死亡或终结记录丢失；
+        - ended_without_input（warning）：终结无输入属合法形态（窗口在
+          规划前到达截止），只提示不失败。
+        """
+
+        if self.capture_profile != "audit-plus-v1":
+            return {"profile": "legacy"}
+        producer_summaries: list[_Parsed] = []
+        producer_failures: list[_Parsed] = []
+        inputs: dict[tuple[str, str], _Parsed] = {}
+        ended: dict[tuple[str, str], _Parsed] = {}
+        for record in self.records:
+            if record.kind != AuditKind.LIFECYCLE_CHANGED.value:
+                if record.kind == AuditKind.DECISION_INPUT.value:
+                    pid = record.context.get("participant_id") or ""
+                    decision_id = record.context.get("decision_id")
+                    if isinstance(decision_id, str) and decision_id:
+                        inputs.setdefault((pid, decision_id), record)
+                elif record.kind == AuditKind.DECISION_ENDED.value:
+                    pid = record.context.get("participant_id") or ""
+                    decision_id = record.context.get("decision_id")
+                    if isinstance(decision_id, str) and decision_id:
+                        ended.setdefault((pid, decision_id), record)
+                continue
+            payload = record.payload
+            if payload.get("area") != "audit":
+                continue
+            event = payload.get("event")
+            if event == "producer_summary":
+                producer_summaries.append(record)
+            elif event == "producer_failure":
+                producer_failures.append(record)
+        tail_complete = False
+        if producer_failures:
+            # S1（前次审查）：构造失败持久化后，运行必须标记不完整——
+            # 高优先级决策记录已丢失，不能靠"没有报错"推断完整。
+            self.findings.append(_Finding(
+                "violation",
+                "producer_failure_occurred",
+                "profile=audit-plus-v1 运行存在 {} 条生产端构造失败（producer_failure），关键决策记录缺失，不能宣称完整可审计".format(len(producer_failures)),
+                tuple(record.location for record in producer_failures[:10]),
+            ))
+        if not producer_summaries:
+            self.findings.append(_Finding(
+                "violation",
+                "missing_producer_summary",
+                "profile=audit-plus-v1 运行缺少 producer_summary 关闭证据：尾部完整性未知，不能从文件没有报错推断完整",
+                (),
+            ))
+        else:
+            # 关闭证据存在且 summary.json 已写入（missing_summary 检查
+            # 另行负责）即可判断尾部已完整关闭。
+            tail_complete = self.summary_files > 0
+            summary_payload = producer_summaries[-1].payload
+            attempts = summary_payload.get("attempts")
+            construction = summary_payload.get("construction_failures")
+            if not isinstance(attempts, int) or not isinstance(construction, int):
+                self.findings.append(_Finding(
+                    "warning",
+                    "malformed_producer_summary",
+                    "producer_summary 的 attempts/construction_failures 缺失或不是整数，无法对账",
+                    (producer_summaries[-1].location,),
+                ))
+            elif attempts < construction or construction != len(producer_failures):
+                # producer_failure 最小失败记录自身写不下时允许少计数
+                # （方案 §3.4：依靠失败计数和缺失关闭证明报告不完整），
+                # 不一致按 warning 提示人工裁决。
+                self.findings.append(_Finding(
+                    "warning",
+                    "producer_summary_mismatch",
+                    "producer_summary 计数与 producer_failure 记录数不一致：attempts={} construction_failures={} failure_records={}".format(
+                        attempts, construction, len(producer_failures)
+                    ),
+                    (producer_summaries[-1].location,),
+                ))
+        for (pid, decision_id), record in sorted(inputs.items()):
+            if (pid, decision_id) not in ended:
+                self.findings.append(_Finding(
+                    "violation",
+                    "decision_input_without_end",
+                    f"DECISION_INPUT 没有配对的 DECISION_ENDED：participant={pid} decision_id={decision_id}，决策中途死亡或终结记录丢失",
+                    (record.location,),
+                ))
+        for (pid, decision_id), record in sorted(ended.items()):
+            if (pid, decision_id) not in inputs:
+                self.findings.append(_Finding(
+                    "warning",
+                    "ended_without_input",
+                    f"DECISION_ENDED 没有对应的 DECISION_INPUT：participant={pid} decision_id={decision_id}（窗口在规划前到达截止属合法形态）",
+                    (record.location,),
+                ))
+        return {
+            "profile": "audit-plus-v1",
+            "tail_complete": tail_complete,
+            "producer_summary": (
+                producer_summaries[-1].payload if producer_summaries else None
+            ),
+            "producer_failure_records": len(producer_failures),
+            "decisions_with_input": len(inputs),
+            "decisions_ended": len(ended),
+        }
+
 
 
 def validate_run(run_dir: str | Path) -> dict[str, Any]:
@@ -928,6 +1066,7 @@ def validate_run(run_dir: str | Path) -> dict[str, Any]:
     submissions = scanner.check_submissions()
     coverage = scanner.check_stage_and_games()
     raw_events = scanner.check_raw_events()
+    audit_plus = scanner.check_audit_plus()
     scanner.check_required_files()
 
     counts_by_kind = Counter(record.kind for record in scanner.records)
@@ -943,6 +1082,7 @@ def validate_run(run_dir: str | Path) -> dict[str, Any]:
         "submissions": submissions,
         "coverage": coverage,
         "raw_events": raw_events,
+        "audit_plus": audit_plus,
         "findings": [
             {
                 "severity": finding.severity,
