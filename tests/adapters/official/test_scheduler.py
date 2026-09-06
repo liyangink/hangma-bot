@@ -64,7 +64,7 @@ async def test_default_rate_matches_v11_16_per_second() -> None:
     for _ in range(16):
         lease = await asyncio.wait_for(scheduler.acquire(Priority.POLL), timeout=2)
         lease.release()
-    # 第 17 个需要令牌回填：默认速率下约 62.5ms 后可得
+    # 第 17 个需等滚动1秒窗口让出额度，不能在62.5ms回填时突破16/s
     task = asyncio.create_task(scheduler.acquire(Priority.POLL))
     await asyncio.sleep(0.05)  # instant_sleep 推进假时钟直到令牌回填
     lease = await asyncio.wait_for(task, timeout=2)
@@ -93,7 +93,7 @@ async def test_non_finite_retry_after_never_freezes_token() -> None:
     for bad in (float("inf"), float("nan"), -3.0):
         scheduler.note_rate_limited(bad)
         remaining = scheduler.cooldown_remaining
-        assert 0.0 < remaining <= 1.0  # 默认冷却 0.5s + 抖动，绝不为 inf
+        assert 1.0 <= remaining <= 1.25  # 缺有效头至少冷却完整1s窗口，绝不为 inf
     # 冷却结束后许可照常授予（Token 未被冻结）
     task = asyncio.create_task(scheduler.acquire(Priority.POLL))
     await asyncio.sleep(0.05)  # instant_sleep 按冷却时长推进假时钟

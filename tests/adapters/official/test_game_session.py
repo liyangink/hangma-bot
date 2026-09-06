@@ -328,31 +328,27 @@ class TestSubmit:
     async def test_deadline_checked_again_after_scheduling(self, transport, clock) -> None:
         """调度等待越过截止时间：POST 发送次数为 0（排队不豁免截止）。"""
 
-        from hangma_bot.adapters.official.scheduler import Priority, RequestScheduler
+        from hangma_bot.adapters.official.scheduler import Priority, RequestKind, RequestScheduler
 
         from _official_testkit import instant_sleep
 
-        # 回填率 0.001/s：排队等待会把假时钟推进 1000 秒，越过截止线
+        # state额度不再阻塞POST；用占满共享并发槽验证排队仍服从截止。
         slow_scheduler = RequestScheduler(
-            rate_per_second=0.001,
-            burst=8.0,
+            max_concurrent=1,
             clock=clock.monotonic,
             sleep=instant_sleep(clock),
-            poll_interval=0.0,
+            poll_interval=0.01,
         )
         session = self._open_window(transport, clock)
         session._scheduler = slow_scheduler
         window = await asyncio.wait_for(session.next_item(), timeout=2)
-        leases = []
-        for _ in range(7):  # next_item 已消耗 1 个令牌；再取 7 个耗尽桶容量
-            leases.append(await asyncio.wait_for(slow_scheduler.acquire(Priority.POLL), timeout=2))
+        lease = await slow_scheduler.acquire(Priority.BACKGROUND, request_kind=RequestKind.OTHER)
         transport.handler = lambda **kw: (200, "{}")
         outcome = await asyncio.wait_for(
             session.submit(_attempt(window.window_key, Discard(Tile("5w")), "discard:5w")),
             timeout=3,
         )
-        for lease in leases:
-            lease.release()
+        lease.release()
         assert isinstance(outcome, SubmitNotSent)
         # 排队期间预算耗尽：deadline-aware acquire 更早终止（POST 从未发出）
         assert outcome.reason == "deadline_passed_in_schedule"

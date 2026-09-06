@@ -48,7 +48,9 @@ adapters/official/
 
 当前两个生产组合根固定 state-only；先前 SSE 可选运行说明保留为历史，低层 notify 客户端不参与本次生产路径。同步与提交共用 `current_observation`，保留当前单局已收到的可见历史；增量只应用快照之后的事件。未知关键事件每次都需恢复，同序号载荷冲突不当幂等重复；恢复后的缺史状态明确保留。
 
-活动态 god 必须按真实类型提供；空值不能默认关闭。事件保留吃组合、杠/超时类别，无牌 pass/终局正常解析。所有人的副露及无法完整推出的响应事实仍查询快照；本人摸牌仅在前态完整时由 hangma 重算爆头。简单 god 转移核验输出审计，抓打圈范围仍 not_checked。窗口缓存单调截止并只收紧；poll 与 timer 同时完成时优先保留已返回权威数据。
+活动态 god 必须按真实类型提供；空值不能默认关闭。事件保留吃组合、杠/超时类别，无牌 pass/终局正常解析。所有人的副露及无法完整推出的响应事实仍查询快照；本人摸牌在前态完整时由 hangma 按旧爆头和补牌来源推进，来源未知且影响结果时恢复权威快照。简单 god 转移核验输出审计，抓打圈范围仍 not_checked。窗口缓存单调截止并只收紧；poll 与 timer 同时完成时优先保留已返回权威数据。
+
+同日 v18 限流核对：`RequestKind.STATE` 在同 Token 下严格共享滚动 16 次/秒，长轮询、快照恢复、补史都计次；`OTHER` 不扣 state 额度。资源可用的请求按优先级及先后顺序授予；动作不被 state 额度等待者阻塞。全部请求共享并发槽和 429 冷却，无有效 Retry-After 时至少等待 1 秒再加抖动。`match` 保留独立 10 次/分钟限制，SSE 保留独立连接预算。依据及现场五次超频证据见[限流评审](../../../review/official-adapter/chain-rate-alignment/rate-runtime-review.md)。
 
 验收策略、独立评审和剩余官方验证事项见 [修复策略](../../../review/official-adapter/repair-plan-2026-09-06.md)；新增字段和未知值语义见 [接口增补](../interface-contracts.md#观察完整性与截止契约增补2026-09-06)。
 
@@ -63,3 +65,8 @@ adapters/official/
 `ProtocolSyncState.history_missing_ranges()` 按已证明起点与快照水位计算缺失闭区间；`merge_history(events, round_no=...)` 只补同手旧历史，整批校验后提交。未知前缀独立表示。空牌值他家摸牌合法，非空私有牌不允许通过补史进入观察。
 
 `OfficialGameSession` 在next_item原循环中协调有界补领和三次退避，复用调度器，不创建独立任务。未提交、可重试和模糊动作优先；未来权威响应优先正常推进；同点快照不销账。收尾使用现有AUTHORITATIVE_STATE高优先级记录，旧手封存不依赖后续策略动作。字段、预算和不可恢复边界统一见[接口契约](../interface-contracts.md#延后补史与单局收尾契约2026-09-06)。
+
+
+### 单局封存完整性补充（2026-09-06）
+
+`history_closure.closure_issues` 记录附带旧尾中的未知事件、关键字段缺失、违规他家摸牌，以及未收到 `round_ended` / 场次终态未收到 `game_ended` 的原因。封存 `history_complete=true` 除要求起点、序号及原有观察完整外，还要求这些原因为空。`missing_ranges` 仅覆盖已知 `history_through_seq`，缺少更晚的尾事件不能只靠此区间表判断；不从积分或新快照捏造终局事件。该检查只影响赛后封存，不重新推进牌面、创建动作窗口或改变策略输入。

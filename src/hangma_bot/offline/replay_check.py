@@ -28,7 +28,9 @@ from typing import List, Mapping, Optional, Tuple
 
 from hangma_bot.hangma import hand_analysis, settlement
 from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.hangma.observation_rules import enrich_observation
 from hangma_bot.hangma.progression import (
+    baotou_after_draw,
     chain_after_discard,
     chain_after_gang,
     recompute_baotou,
@@ -181,8 +183,17 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
     seats = [_Seat() for _ in range(4)]
     for seat_no, row in enumerate(hands_raw):
         seats[seat_no].hand = list(row)
+        # 闲家起手已任意听时，首次摸牌前的吃碰杠也须继承；庄家直抽在下方处理。
+        if len(row) == 13:
+            seats[seat_no].baotou = recompute_baotou(
+                tuple(Tile(code) for code in row), 0, row.count(_WEALTH),
+            )
     if len(seats[dealer].hand) >= 14:
         seats[dealer].drawn = seats[dealer].hand.pop()
+        seats[dealer].baotou = baotou_after_draw(
+            False, tuple(Tile(code) for code in seats[dealer].hand), 0,
+            Tile(seats[dealer].drawn), replacement=False,
+        )
     wall_raw = initial.get("wall")
     wall_known = isinstance(wall_raw, list) and wall_raw
     wall_drawable = len(wall_raw) - _RESERVE_TILES if wall_known else None
@@ -236,6 +247,7 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
             if not paired_prev and not paired_next:
                 issues.append(_issue(seq, "conflict.timeout_discard_unpaired",
                     "timeout(kind=discard) 没有相邻的同座位 tile_discarded，无法定位自动出牌"))
+            history.append(dict(event))
             event_index += 1
             continue
         if kind == "timeout" and data.get("kind") == "response":
@@ -250,12 +262,29 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
                 break
             # hand 恒为「不含当前摸牌」的暗牌：摸牌只置 drawn（与推进模型同口径）。
             seats[seat_no].drawn = tile
-            whites = seats[seat_no].hand.count(_WEALTH) + (1 if tile == _WEALTH else 0)
-            seats[seat_no].baotou = recompute_baotou(
-                tuple(Tile(c) for c in seats[seat_no].hand),
-                len(seats[seat_no].melds),
-                whites,
-            )
+            # 明确事件字段优先；旧牌谱只有连续相邻本人杠→摸才能确认杠补。
+            # 缺前史时不把“没有看见杠”解释成普通摸牌。
+            replacement = data.get("gang_replenish")
+            if not isinstance(replacement, bool):
+                previous = history[-1] if history else None
+                replacement = None
+                if previous is not None and previous.get("seq") == seq - 1:
+                    if previous.get("type") == "gang":
+                        replacement = previous.get("seat") == seat_no
+                    elif previous.get("type") in ("pass", "tile_discarded", "tile_drawn") or (
+                        previous.get("type") == "timeout"
+                        and isinstance(previous.get("data"), Mapping)
+                        and previous["data"].get("kind") == "response"
+                    ):
+                        replacement = False
+            try:
+                seats[seat_no].baotou = baotou_after_draw(
+                    seats[seat_no].baotou, tuple(Tile(c) for c in seats[seat_no].hand),
+                    len(seats[seat_no].melds), Tile(tile), replacement=replacement,
+                )
+            except ValueError as error:
+                issues.append(_issue(seq, "not_checked.baotou_draw_source", str(error)))
+                break
             consumed += 1
             window = ("discard", seat_no)
             history.append(dict(event))
@@ -280,6 +309,11 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
                 seats[seat_no].baotou, Tile(tile),
             )
             seats[seat_no].chain_count, seats[seat_no].chain_piao = chain_count, chain_piao
+            # 飘的计数使用动作前爆头；弃后完整暗牌决定下一听牌态。
+            seats[seat_no].baotou = recompute_baotou(
+                tuple(Tile(code) for code in combined), len(seats[seat_no].melds),
+                combined.count(_WEALTH),
+            )
             history.append(dict(event))
             if tile == _WEALTH:
                 # 弃白本身不开响应窗口（v14 夹具 4/4：下一事件直接是下家摸牌）。
@@ -400,7 +434,6 @@ def _apply_meld(
                     "peng {0} 暗牌不足 2 张".format(tile)))
                 return False, window, last_discard, seats
         seat.drawn = None
-        seat.baotou = False
         seat.melds.append({
             "kind": "peng", "tiles": [tile, tile, tile], "from_seat": discarder,
         })
@@ -436,7 +469,6 @@ def _apply_meld(
                     "chi 组合缺手牌 {0}".format(partner)))
                 return False, window, last_discard, seats
         seat.drawn = None
-        seat.baotou = False
         seat.melds.append({
             "kind": "chi", "tiles": list(chi_tiles), "from_seat": discarder,
         })
@@ -475,7 +507,6 @@ def _apply_meld(
                     "明杠 {0} 暗牌不足 3 张".format(tile)))
                 return False, window, last_discard, seats
         seat.drawn = None
-        seat.baotou = False
         seat.chain_count, seat.chain_piao = chain_after_gang(seat.chain_count, seat.chain_piao)
         seat.melds.append({
             "kind": "gang", "gang_kind": "ming",
@@ -568,7 +599,7 @@ def _shadow_observation(
     seats, seat_no, phase, responding, last_discard, history,
     wall_known, wall_drawable, consumed, hand_id, dealer, round_no, game_id,
 ) -> PlayerObservation:
-    """影子状态 → PlayerObservation（信息权限与线上一致：他家摸牌不入史）。
+    """影子状态 → PlayerObservation（他家摸牌保留事件序号，隐藏牌值）。
 
     dealer/round_no/game_id 取单局行真实值（缺局号已在入口按 not_checked
     口径回退），不硬编码 0/1——避免未来 analyze 消费这些字段时静默失真。
@@ -597,19 +628,29 @@ def _shadow_observation(
     catch_play = seat.catch_play or (circle_active and in_response)
     public_history = []
     for event in history:
-        if event.get("type") == "tile_drawn" and event.get("seat") != seat_no:
-            continue
         event_seat = event.get("seat")
-        if event_seat is not None and not isinstance(event_seat, int):
+        if isinstance(event_seat, bool) or not isinstance(event_seat, int) or not 0 <= event_seat <= 3:
             event_seat = None
         tile_value = event.get("tile") or ""
+        data = event.get("data") if isinstance(event.get("data"), Mapping) else {}
+        masked_draw = event.get("type") == "tile_drawn" and event_seat != seat_no
+        tiles = data.get("tiles") if event.get("type") == "chi" else None
         public_history.append(PublicEvent(
             seq=event["seq"],
             kind=event.get("type"),
-            seat=event_seat if 0 <= (event_seat or -1) <= 3 else None,
-            tiles=(Tile(tile_value),) if tile_value else (),
+            seat=event_seat,
+            tiles=() if masked_draw else (
+                tuple(Tile(code) for code in tiles) if isinstance(tiles, list)
+                else (Tile(tile_value),) if tile_value else ()
+            ),
+            detail_kind=data.get("kind"),
+            catch_play=data.get("catch_play") if isinstance(data.get("catch_play"), bool) else None,
+            # 完整牌谱可能含在线他家摸牌未公开的 data，不能投影给该座位。
+            gang_replenish=(data.get("gang_replenish") if not masked_draw and isinstance(data.get("gang_replenish"), bool) else None),
+            response_window=data.get("window"),
         ))
-    return PlayerObservation(
+    continuous = all(right.seq == left.seq + 1 for left, right in zip(public_history, public_history[1:]))
+    return enrich_observation(PlayerObservation(
         game_id=game_id,
         seat=seat_no,
         round_no=round_no,
@@ -633,7 +674,10 @@ def _shadow_observation(
             catch_play=catch_play,
         ),
         public_history=tuple(public_history),
-    )
+        consumed_seq=seq_of_last(history),
+        history_complete=continuous,
+        chain_piao=seat.chain_piao if continuous else None,
+    ))
 
 
 def seq_of_last(history) -> int:

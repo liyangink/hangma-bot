@@ -474,7 +474,7 @@ class ProtocolSyncState:
             try:
                 self._observation_cache = self.incremental_draw_observation()
             except ValueError:
-                # 摸牌前手牌形态不可靠，不能把陈旧 god 交给应用层。
+                # 前态不完整或补牌来源不足，不能把猜测的 god 交给应用层。
                 return True
         return False
 
@@ -582,7 +582,7 @@ class ProtocolSyncState:
             counts[self.snapshot.seat] += 1
             if remaining is not None:
                 remaining -= 1
-        return enrich_observation(replace(
+        drawn_observation = enrich_observation(replace(
             base,
             phase="draw",
             turn_seat=self.snapshot.seat,
@@ -592,8 +592,9 @@ class ProtocolSyncState:
             discards=discards,
             hand_counts=tuple(counts),
             remaining_tile_count=remaining,
-            rule_state=recompute_draw_rule_state(base, drawn),
         ))
+        return replace(drawn_observation, rule_state=recompute_draw_rule_state(
+            base, drawn, replacement=drawn_observation.gang_draw))
 
     def current_window(self):
         """当前权威快照判定的我方动作窗口；无快照或无动作权时为 None。

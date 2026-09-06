@@ -118,6 +118,10 @@ V0 与依赖 V0 的 `claim_if_legal` 在线上组合根和已有离线入口通�
 
 ## 5. 动作提交协议
 
+2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；手留四白排除，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。
+
+内部请求调度的 `RequestKind.STATE` 与 `OTHER` 独立于优先级：只有 STATE 扣每用户滚动 16 次/秒，全部请求仍共享并发槽、冷却和原始截止时间。恢复、补史、长轮询一律属于 STATE；动作、赛事和匹配属于 OTHER，匹配另受其专属 10 次/分钟限制。变更不新增外部端口或后台任务。行为回归见 `test_action_chain_lifecycle.py`、`test_official_action_chain_trace.py`、`test_replay_check_lifecycle.py` 和 `test_scheduler_rate_alignment.py`。
+
 安全不变量是“同一场任意时刻最多一个在途动作 POST”，不是“整个窗口永远只允许尝试一次”。
 
 ```text
@@ -329,3 +333,8 @@ kernel JSON 编码保留 schema_version=1 的可选字段增补；新编码完�
 单局切换成功、场次结束和会话关闭会经现有高优先级 `AUTHORITATIVE_STATE` 保存一次 `history_closure`，无需另建策略窗口。记录包含：`round_no`、`state_seq`（末次牌面吸收水位）、`snapshot_seq`、`history_through_seq`（已归属本手的历史检查上界，可晚于末次牌面）、`snapshot_phase`、座位0—3的`scores`、起点元信息、缺口闭区间、`public_history`、重试原因及可空`observation`。官方终态无法构造合法玩家观察时，`observation=null`，不伪造行动座位；历史和公开结算仍单独保存。未知前缀或未确认终局不能因封存自动变成完整。新快照校验失败不封存旧手；跨手混包尾事件仅在能证明归属时并入旧手封存。
 
 `kernel.serialization.public_event_to_json(PublicEvent)` 公开复用既有事件JSON编码，供无策略窗口的终局审计使用，字段与玩家观察内事件编码相同；没有新增信息权限或schema版本。
+
+
+### 单局封存完整性补充（2026-09-06）
+
+`history_closure.closure_issues` 记录附带旧尾中的未知事件、关键字段缺失、违规他家摸牌，以及未收到 `round_ended` / 场次终态未收到 `game_ended` 的原因。封存 `history_complete=true` 除要求起点、序号及原有观察完整外，还要求这些原因为空。`missing_ranges` 仅覆盖已知 `history_through_seq`，缺少更晚的尾事件不能只靠此区间表判断；不从积分或新快照捏造终局事件。该检查只影响赛后封存，不重新推进牌面、创建动作窗口或改变策略输入。

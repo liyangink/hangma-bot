@@ -80,8 +80,8 @@ from hangma_bot.adapters.recording import (
     build_state_response_payload,
 )
 from .notify import SSENotifyClient, StreamBudget
-from .scheduler import DeadlineExceeded, Priority, RequestScheduler
-from .sync_state import ProtocolSyncState, SyncDecision
+from .scheduler import DeadlineExceeded, Priority, RequestKind, RequestScheduler
+from .sync_state import KNOWN_EVENT_TYPES, ProtocolSyncState, SyncDecision
 from .transport import OfficialTransport
 
 # 阶段边界定时器的余量（秒）：官方响应窗口（peng/chi）固定走满配置秒数后
@@ -898,13 +898,27 @@ class OfficialGameSession:
         if snapshot is None or snapshot.round_no in self._sealed_history_rounds:
             return None
         history = {e.seq: e for e in self._sync.history}
+        closure_issues = set()
         for event in extra_events:
             public = projector.public_event(event)
+            if event.type not in KNOWN_EVENT_TYPES:
+                closure_issues.add("unknown_snapshot_event")
+            if (public.kind == "chi" and len(public.tiles) != 3) or (
+                    public.kind in ("gang", "timeout") and public.detail_kind is None):
+                closure_issues.add("event_detail_incomplete:" + public.kind)
             if public.kind == "tile_drawn" and public.seat != snapshot.seat:
+                if public.tiles:
+                    closure_issues.add("unexpected_other_draw")
                 public = replace(public, tiles=())
             if public.seq in history and history[public.seq] != public:
                 raise DtoError("收尾事件与已有历史冲突")
             history[public.seq] = public
+        # 水位以内连续只证明已知区间完整；封存整手还须实际收到终局原事件。
+        kinds = {event.kind for event in history.values()}
+        if "round_ended" not in kinds:
+            closure_issues.add("round_ended_not_observed")
+        if (reason == "game_finished" or self._sync.finished) and "game_ended" not in kinds:
+            closure_issues.add("game_ended_not_observed")
         through = max([self._sync.last_seq] + list(history))
         floor = self._sync.history_floor_seq
         missing = []
@@ -928,7 +942,8 @@ class OfficialGameSession:
             "snapshot_phase": snapshot.phase, "scores": list(snapshot.scores),
             "history_origin_known": self._sync.history_origin_known,
             "history_floor_seq": floor,
-            "history_complete": self._sync.history_complete and not missing,
+            "history_complete": self._sync.history_complete and not missing and not closure_issues,
+            "closure_issues": sorted(closure_issues),
             "missing_ranges": missing,
             "public_history": [public_event_to_json(history[seq]) for seq in sorted(history)],
             "observation": encoded,
@@ -1131,7 +1146,7 @@ class OfficialGameSession:
                 raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline")) from None
             try:
                 lease = await self._scheduler.acquire(
-                    chosen_priority, deadline_monotonic=deadline_monotonic
+                    chosen_priority, deadline_monotonic=deadline_monotonic, request_kind=RequestKind.STATE
                 )
             except DeadlineExceeded:
                 # 冷却/槽竞争在预算内未让出许可：按预算耗尽上交，
@@ -1282,7 +1297,7 @@ class OfficialGameSession:
         )
         try:
             lease = await self._scheduler.acquire(
-                Priority.ACTION, deadline_monotonic=attempt.latest_send_at_monotonic
+                Priority.ACTION, deadline_monotonic=attempt.latest_send_at_monotonic, request_kind=RequestKind.OTHER
             )
         except DeadlineExceeded:
             # 全局冷却/槽竞争未在预算内让出许可：POST 从未发出，

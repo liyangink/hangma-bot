@@ -1,6 +1,7 @@
 """从依法可见事实补足当前规则状态；不读取完整世界、网络或时钟。
 
-依据：官方指南 v15（2026-09-05）§1.2、§1.3、§2.1。官方 god 是权威
+依据：官方指南 v18（2026-09-06）§1.2、§1.3、§2.1 及 RULES_EVIDENCE
+动作链生命周期修订。官方 god 是权威
 事实；本模块只补充未提供的链内飘次数、当前摸牌来源，未知保留为空。
 """
 
@@ -73,24 +74,23 @@ def enrich_observation(observation: PlayerObservation) -> PlayerObservation:
 
 
 def recompute_draw_rule_state(
-    base: PlayerObservation, drawn: Tile
+    base: PlayerObservation, drawn: Tile, *, replacement: Optional[bool] = False
 ) -> RulePublicState:
-    """由摸牌前暗牌和新增摸牌重算爆头，其余官方 god 字段保持不变。
+    """由摸牌前暗牌、既有爆头与补牌来源推进爆头，其余官方 god 字段保持不变。
 
     输入 base 必须是本次摸牌前观察，my_hand 为摸牌前实际暗牌（13−3×副露
     张），不能传摸牌后的快照。缺少正确前态抛 ValueError，让适配器恢复
     快照，不能把不完整手牌当成非爆头。链和抓打状态若可能变化须另行恢复。
     """
-    from .progression import recompute_baotou
+    from .progression import baotou_after_draw
 
     meld_count = len(base.melds[base.seat])
     hand = tuple(base.my_hand)
     if len(hand) != 13 - 3 * meld_count:
         raise ValueError("增量摸牌缺少完整摸牌前暗牌，须恢复权威快照")
-    whites = sum(tile.code == "白" for tile in hand) + (drawn.code == "白")
     return replace(
         base.rule_state,
-        baotou=recompute_baotou(hand, meld_count, whites),
+        baotou=baotou_after_draw(base.rule_state.baotou, hand, meld_count, drawn, replacement=replacement),
     )
 
 
@@ -107,7 +107,7 @@ def compare_observation_transition(
     不推进完整牌桌。返回 god_mismatch:<字段>:原因 或 not_checked:<字段>:原因；
     空缺的字段表示已检查且一致。抓打圈作用范围仍待官方验证，始终明确跳过。
     """
-    from .progression import chain_after_discard, chain_after_gang, recompute_baotou
+    from .progression import baotou_after_draw, chain_after_discard, chain_after_gang, recompute_baotou
 
     skipped_catch = "not_checked:catch_play:官方四座位作用范围尚未核实"
     def skip(reason: str) -> tuple[str, ...]:
@@ -133,7 +133,7 @@ def compare_observation_transition(
         return skip("存在自动动作或未知类别的超时，不能当作单纯响应")
     own = tuple(event for event in events if event.seat == before.seat and not is_passive_observation_event(event))
     kinds = tuple(event.kind for event in own)
-    if kinds not in ((), ("tile_drawn",), ("tile_discarded",), ("gang",), ("gang", "tile_drawn")):
+    if kinds not in ((), ("tile_drawn",), ("tile_discarded",), ("chi",), ("peng",), ("gang",), ("gang", "tile_drawn")):
         return skip("本人动作组合超出已验证的简单转移")
     result = []
     count = before.rule_state.chain_count
@@ -146,8 +146,22 @@ def compare_observation_transition(
     if count != after.rule_state.chain_count:
         result.append("god_mismatch:chain_count:本地推导={0},官方={1}".format(count, after.rule_state.chain_count))
 
-    # 弃牌后的爆头是否即时重算依官方时机；这里不假设。补牌终态有完整
-    # 本人暗牌及明确摸牌，按已有手牌数学直接核验，无需模拟杠的中间牌桌。
+    # 与模拟推进共用相同边界：吃碰杠继承；弃牌按弃后听牌态更新。
+    if kinds in (("chi",), ("peng",), ("gang",)):
+        if before.rule_state.baotou != after.rule_state.baotou:
+            result.append("god_mismatch:baotou:连续吃碰杠未保留动作前状态")
+        result.append(skipped_catch)
+        return tuple(result)
+    if kinds == ("tile_discarded",):
+        meld_count = len(after.melds[after.seat])
+        if len(after.my_hand) == 13 - 3 * meld_count:
+            predicted = recompute_baotou(tuple(after.my_hand), meld_count, sum(t.code == "白" for t in after.my_hand))
+            if predicted != after.rule_state.baotou:
+                result.append("god_mismatch:baotou:弃牌后听牌态与官方不符")
+        else:
+            result.append("not_checked:baotou:缺少完整弃牌后暗牌")
+        result.append(skipped_catch)
+        return tuple(result)
     if not kinds or kinds[-1] != "tile_drawn" or after.phase != "draw" or after.turn_seat != after.seat:
         result.append("not_checked:baotou:终态不是可验证的本人摸牌窗口")
     elif after.drawn_tile is None or own[-1].tiles != (after.drawn_tile,):
@@ -169,8 +183,11 @@ def compare_observation_transition(
         if len(hand) != 13 - 3 * meld_count:
             result.append("not_checked:baotou:终态缺少完整摸牌前暗牌")
         else:
-            whites = sum(tile.code == "白" for tile in hand) + (after.drawn_tile.code == "白")
-            predicted = recompute_baotou(tuple(hand), meld_count, whites)
+            replacement = source if source is not None else (True if kinds == ("gang", "tile_drawn") else infer_gang_draw(after))
+            try:
+                predicted = baotou_after_draw(before.rule_state.baotou, tuple(hand), meld_count, after.drawn_tile, replacement=replacement)
+            except ValueError:
+                return tuple(result + ["not_checked:baotou:摸牌来源不足以确定连续状态", skipped_catch])
             if predicted != after.rule_state.baotou:
                 result.append("god_mismatch:baotou:本地推导={0},官方={1}".format(predicted, after.rule_state.baotou))
     result.append(skipped_catch)

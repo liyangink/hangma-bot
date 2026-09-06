@@ -3,16 +3,14 @@
 优先级（official-adapter 实施说明）：
   动作 POST(0) > 409/缺口/模糊确认(1) > 场次长轮询(2) > 排名刷新(3)。
 
-限速依据官方约束（指南 v15，2026-09-05 变更记录）：state 轮询频率上限
-16 次/秒/用户（每用户聚合，v2/v8 的 5/s→8/s 进一步放宽至 16/s）、
-同一用户并发挂起轮询最多 32 个。默认令牌桶 16 令牌、每秒回填 16、并发上限 32。
+官方依据：指南 v18 §2.3（2026-09-06 抓取）规定 state 每用户 16 次/秒，
+挂起轮询最多 32 个；SSE 不占 state 频率额度，未声明 state 长轮询免计次。
+工程实现采用滚动窗口，避免令牌桶突发和回填叠出同秒 31 次请求。令牌桶仅
+保留用于可选的小 burst 平滑，不能突破滚动上限。动作与赛事查询不占 state
+额度；全部请求仍共享并发槽及 429 冷却。match 的 10/分钟另由匹配会话管理。
 
-取舍：令牌桶约束全部优先级（含动作 POST）。M 场并发把桶打满时动作请求
-最多等待约 1/rate 秒（默认 62.5ms）；在 1 秒窗口与 0.7 秒安全余量下可接受，
-且保证动作请求绝不越过官方全局限速（宁可控延迟，不冒 429 风险）。
-
-实现说明：单线程 asyncio 事件循环内运行，无锁；等待者只在自己位于堆顶时
-被授予，避免跨等待者唤醒。clock 与 sleep 均可注入，时间测试不依赖真实等待。
+实现说明：单线程 asyncio 事件循环内运行，无锁；在资源可用的等待者中按
+优先级授予，动作可越过被 state 额度阻塞的请求。clock 与 sleep 可注入。
 """
 
 from __future__ import annotations
@@ -21,8 +19,9 @@ import asyncio
 import heapq
 import math
 import random
+from collections import deque
 from dataclasses import dataclass, field
-from enum import IntEnum
+from enum import Enum, IntEnum
 from typing import Awaitable, Callable, List, Optional
 
 
@@ -35,6 +34,13 @@ class Priority(IntEnum):
     BACKGROUND = 3
 
 
+class RequestKind(Enum):
+    """适配器内部按端点区分额度；优先级不代表端点类别。"""
+
+    STATE = "state"
+    OTHER = "other"
+
+
 class DeadlineExceeded(Exception):
     """调度等待在预算内未获得许可；调用方必须按预算耗尽处理。"""
 
@@ -45,6 +51,7 @@ class _Waiter:
 
     priority: int
     seq: int
+    request_kind: RequestKind = field(compare=False)
     active: bool = field(default=True, compare=False)
 
 
@@ -88,6 +95,15 @@ class RequestScheduler:
     ) -> None:
         self._rate = float(rate_per_second)
         self._capacity = float(burst if burst is not None else rate_per_second)
+        if not math.isfinite(self._rate) or self._rate <= 0:
+            raise ValueError("rate_per_second 必须为有限正数")
+        if not math.isfinite(self._capacity) or self._capacity < 1:
+            raise ValueError("burst 必须为至少 1 的有限数")
+        if max_concurrent < 1:
+            raise ValueError("max_concurrent 必须为正数")
+        self._window_capacity = max(1, math.floor(self._rate))
+        self._window_seconds = self._window_capacity / self._rate
+        self._state_grants = deque()  # 已许可 state 的单调时钟秒；跨场次共享
         self._tokens = self._capacity
         self._last_refill = clock()
         self._max_concurrent = max_concurrent
@@ -124,11 +140,11 @@ class RequestScheduler:
         self._last_refill = now
 
     def _claim_if_top(self, waiter: _Waiter) -> bool:
-        """当且仅当自己是当前最高优先级等待者且资源可用时授予自己。"""
+        """只授予资源就绪的最高优先级等待者；state 额度不能阻塞其他端点。"""
 
         while self._waiters and not self._waiters[0].active:
             heapq.heappop(self._waiters)  # 清理已取消的等待者
-        if not self._waiters or self._waiters[0] is not waiter:
+        if not self._waiters:
             return False
         if self._active >= self._max_concurrent:
             return False
@@ -137,10 +153,16 @@ class RequestScheduler:
             if now < self._cooldown_until:
                 return False
             self._cooldown_until = None  # 冷却结束
-        if self._tokens < 1.0:
+        state_ready = self._state_quota_delay() <= 0
+        eligible = (w for w in self._waiters if w.active and
+                    (w.request_kind is RequestKind.OTHER or state_ready))
+        if min(eligible, default=None) is not waiter:
             return False
-        heapq.heappop(self._waiters)
-        self._tokens -= 1.0
+        self._waiters.remove(waiter)
+        heapq.heapify(self._waiters)
+        if waiter.request_kind is RequestKind.STATE:
+            self._tokens -= 1.0
+            self._state_grants.append(now)
         self._active += 1
         return True
 
@@ -148,16 +170,21 @@ class RequestScheduler:
         self,
         priority: Priority,
         deadline_monotonic: Optional[float] = None,
+        *,
+        request_kind: RequestKind = RequestKind.STATE,
     ) -> SchedulerLease:
         """按优先级获取发送许可；支持异步取消与预算截止。
 
         deadline_monotonic 绑定动作原始预算：等待（冷却/槽竞争）不会
         超过预算，到点抛 DeadlineExceeded 而不是继续排队——保证 1 秒
         窗口内的恢复请求不会在 429 冷却上阻塞到预算外才返回。
+        request_kind 必须由调用方按实际端点传入；默认 STATE 仅兼容旧调用。
         """
 
         self._seq += 1
-        waiter = _Waiter(priority=int(priority), seq=self._seq)
+        if not isinstance(request_kind, RequestKind):
+            raise ValueError("request_kind 必须为 RequestKind")
+        waiter = _Waiter(priority=int(priority), seq=self._seq, request_kind=request_kind)
         heapq.heappush(self._waiters, waiter)
         try:
             while True:
@@ -169,7 +196,7 @@ class RequestScheduler:
                 self._refill()
                 if self._claim_if_top(waiter):
                     return SchedulerLease(self, priority)
-                delay = self._next_chance_delay()
+                delay = self._next_chance_delay(waiter)
                 if deadline_monotonic is not None:
                     delay = min(delay, remaining)
                 await self._sleep(delay)
@@ -177,14 +204,26 @@ class RequestScheduler:
             waiter.active = False
             raise
 
-    def _next_chance_delay(self) -> float:
+    def _state_quota_delay(self) -> float:
+        """state 滚动计次和可选平滑桶均允许时才可发送；单位秒。"""
+        now = self._clock()
+        while self._state_grants and now >= self._state_grants[0] + self._window_seconds:
+            self._state_grants.popleft()
+        token_delay = max(0.0, (1.0 - self._tokens) / self._rate)
+        window_delay = (max(0.0, self._state_grants[0] + self._window_seconds - now)
+                        if len(self._state_grants) >= self._window_capacity else 0.0)
+        return max(token_delay, window_delay)
+
+    def _next_chance_delay(self, waiter: _Waiter) -> float:
         """计算下一次尝试前应等待的秒数。"""
 
         now = self._clock()
         if self._cooldown_until is not None and now < self._cooldown_until:
             return self._cooldown_until - now
-        if self._tokens < 1.0:
-            return (1.0 - self._tokens) / self._rate
+        if waiter.request_kind is RequestKind.STATE:
+            quota_delay = self._state_quota_delay()
+            if quota_delay > 0:
+                return quota_delay
         return self._poll_interval
 
     def _release_slot(self) -> None:
@@ -200,11 +239,14 @@ class RequestScheduler:
         # 防御（W2-1）：非有限值（inf/nan）会把冷却终点推成永不结束、
         # 冻结整个 Token 的全部请求；任何来源的畸形值都按默认冷却处理。
         # 传输层已在解析处拦截（isfinite + 非负），此处是第二道防线。
-        if retry_after_seconds is None or not math.isfinite(retry_after_seconds):
-            retry_after_seconds = 0.5
-        base = retry_after_seconds if retry_after_seconds > 0 else 0.5
+        if (retry_after_seconds is None or not math.isfinite(retry_after_seconds)
+                or retry_after_seconds < 0):
+            # 官方未保证携带 Retry-After；无有效值时至少跨过完整1秒额度窗口。
+            # b1 白虎两次429仅隔565ms；审计未存响应头，不能确认当时用了默认值。
+            retry_after_seconds = 1.0
+        self._refill()
+        base = max(retry_after_seconds, self._state_quota_delay())
         jitter = self._rng.uniform(0.0, 0.25)
         candidate = self._clock() + base + jitter
         if self._cooldown_until is None or candidate > self._cooldown_until:
             self._cooldown_until = candidate
-

@@ -123,8 +123,13 @@ def test_compare_detects_chain_reset_and_preserves_official_observation():
 
 def test_compare_white_piao_increments_only_when_before_baotou():
     from hangma_bot.hangma.observation_rules import compare_observation_transition
-    before = observation(rule_state=RulePublicState(Tile("白"), True, 2, False))
-    after = replace(before, consumed_seq=11, phase="response_peng", rule_state=replace(before.rule_state, chain_count=3))
+    before = observation(
+        my_hand=tuple(Tile(t) for t in ("1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w", "东", "东", "东", "白")),
+        drawn_tile=Tile("南"), rule_state=RulePublicState(Tile("白"), True, 2, False))
+    # 弃白按动作前爆头计飘；弃后剩单南，当前听牌态不再是任意听。
+    after = replace(before, consumed_seq=11, phase="response_peng", drawn_tile=None,
+                    my_hand=before.my_hand[:-1] + (Tile("南"),),
+                    rule_state=replace(before.rule_state, chain_count=3, baotou=False))
     events = (event(11, "tile_discarded", tile="白"),)
     assert not any(x.startswith("god_mismatch:") for x in compare_observation_transition(before, events, after))
     normal_white = replace(before, rule_state=replace(before.rule_state, baotou=False))

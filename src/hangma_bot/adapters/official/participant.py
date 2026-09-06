@@ -62,7 +62,7 @@ from .errors import (
 )
 from .game import OfficialGameSession
 from .notify import StreamBudget
-from .scheduler import Priority, RequestScheduler
+from .scheduler import Priority, RequestKind, RequestScheduler
 from .transport import OfficialTransport, TransportConfig
 
 
@@ -167,7 +167,7 @@ class OfficialTournamentSession:
         while True:
             attempts += 1
             try:
-                lease = await self._scheduler.acquire(priority)
+                lease = await self._scheduler.acquire(priority, request_kind=RequestKind.OTHER)
                 try:
                     result = await self._transport.request(method, path, json_body=json_body, with_auth=with_auth)
                 finally:

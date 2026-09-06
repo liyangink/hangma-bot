@@ -15,7 +15,8 @@ hangma/
   hand_analysis.py    # 普通型、七对、向听和有效牌
   candidate_facts.py  # 为八类动作族候选生产 CandidateFacts（2026-09-04 新增）
   action_families.py  # 吃碰杠胡各动作族
-  special_rules.py    # 财神、抓打圈、爆头和动作链约束
+  special_rules.py    # 财神、抓打圈等合法性约束
+  progression.py     # 连续动作、爆头生命周期、飘杠链和断链的唯一推进规则
   settlement.py       # 财神链和四家结算
 ```
 
@@ -52,6 +53,7 @@ emergency ───────────────────────�
 
 - 普通型使用花色分解、动态规划或记忆化搜索；七对单独计算后取合法最优。
 - 财神数量、公开组合限制、抓打圈、爆头/飘/杠链必须由同一规则状态解释。
+- `hangma-mvp-v3-action-chain`：四家起手即初始化听牌态，吃碰杠继承爆头；杠补牌可继承或新进入，四白排除优先。弃牌先按旧状态判飘，再更新听牌态；断链不等同退出爆头。官方增量、模拟和牌谱复用 `progression` 的纯规则，依据和已确认/推演范围见 [RULES_EVIDENCE.md](../../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。
 - 吃、碰、杠、胡、弃牌/过分别在故障边界中计算；分支异常形成 `RuleIssue`，不能让整个 `analyze()` 崩溃。
 - 紧急路径不调用向听、有效牌、番数网络服务或 `fan-calc`。
 

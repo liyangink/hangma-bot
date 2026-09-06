@@ -9,6 +9,7 @@
 v15/2026-09-05 快照（doc/references/official-guide-v15.txt），夹具为
 v14/2026-09-05。逐项证据与“未确认即 blocked”口径见各函数 docstring 与
 doc/implementation/handoffs/simulation.md 支持矩阵。
+爆头生命周期另按 RULES_EVIDENCE.md 的 v18/2026-09-06 修订实现。
 
 设计（engine 与 progression 的分工）：
 
@@ -66,7 +67,7 @@ class SeatProgression:
     catch_play: bool  # 该座位抓打圈旗标（打出财神后、下次弃牌前为 True）
     chain_count: int  # 动作链次数（飘/杠各计 1，断链清零）
     chain_piao: int  # 链内飘出白板数（结算精确口径）
-    baotou: bool  # 该座位当前爆头状态（每次摸牌时按静态公式重算）
+    baotou: bool  # 该座位持续爆头状态；吃碰杠继承，弃牌更新听牌态
 
 
 @dataclass(frozen=True)
@@ -205,7 +206,7 @@ def chain_after_gang(chain_count: int, chain_piao: int) -> Tuple[int, int]:
 def recompute_baotou(
     pre_draw_hand: Tuple[Tile, ...], meld_count: int, whites_after_draw: int
 ) -> bool:
-    """摸牌后的爆头状态按静态公式重算（模拟世界的权威 god.baotou）。
+    """计算静态爆头条件；持续状态须经 baotou_after_draw 或弃牌边界更新。
 
     【官方】指南 1.2 / RULES_EVIDENCE §5：爆头 ⟺ 摸牌前 13 张暗牌 + 任意一张
     牌都胡（hand_analysis.any_tile_win，含副露折算）∧ 胡牌时手留白板 ≠ 4。
@@ -214,6 +215,25 @@ def recompute_baotou(
     if not hand_analysis.any_tile_win(pre_draw_hand, meld_count):
         return False
     return whites_after_draw != 4
+
+
+def baotou_after_draw(
+    previous: bool, pre_draw_hand: Tuple[Tile, ...], meld_count: int,
+    drawn: Tile, *, replacement: Optional[bool] = False,
+) -> bool:
+    """普通摸牌计算听牌条件，杠补继承连续动作状态并允许形成新爆头。
+
+    指南v18 §1.2/1.3：手留四白排除爆头；飘杠连续、普通弃牌断链。
+    连续动作继承按本项目确认口径，不把吃碰后的暂态暗牌当作退出依据。
+    replacement未知且会改变结果时拒绝猜测，交官方适配器恢复快照。
+    """
+    whites = sum(is_wealth(tile) for tile in pre_draw_hand) + is_wealth(drawn)
+    static = recompute_baotou(pre_draw_hand, meld_count, whites)
+    if whites == 4:
+        return False
+    if replacement is None and previous and not static:
+        raise ValueError("摸牌来源未知，无法确定爆头是否继承；须恢复权威快照")
+    return static or (bool(replacement) and previous)
 
 
 def next_dealer(dealer_seat: int, winner_seat: Optional[int], is_draw: bool) -> int:
@@ -249,23 +269,14 @@ def deal_state(
     起手四家暗牌 13 张；庄家第 14 张为发牌直抽（官方 v10：无摸牌事件），
     由 engine 注入牌值后进入庄家摸牌窗口。
     """
-    seats = (
+    # 闲家可能首次摸牌前就吃碰杠；起手已任意听时不能等待 attach_draw 才初始化。
+    seats = tuple(
         SeatProgression(
-            hand=hands[0], melds=(), discards=(), drawn=None,
-            catch_play=False, chain_count=0, chain_piao=0, baotou=False,
-        ),
-        SeatProgression(
-            hand=hands[1], melds=(), discards=(), drawn=None,
-            catch_play=False, chain_count=0, chain_piao=0, baotou=False,
-        ),
-        SeatProgression(
-            hand=hands[2], melds=(), discards=(), drawn=None,
-            catch_play=False, chain_count=0, chain_piao=0, baotou=False,
-        ),
-        SeatProgression(
-            hand=hands[3], melds=(), discards=(), drawn=None,
-            catch_play=False, chain_count=0, chain_piao=0, baotou=False,
-        ),
+            hand=hand, melds=(), discards=(), drawn=None,
+            catch_play=False, chain_count=0, chain_piao=0,
+            baotou=recompute_baotou(hand, 0, sum(is_wealth(tile) for tile in hand)),
+        )
+        for hand in hands
     )
     return ProgressionState(
         round_no=round_no,
@@ -290,7 +301,7 @@ def deal_state(
 
 
 def attach_draw(state: ProgressionState, tile: Tile) -> Transition:
-    """摸牌落地：牌入暗牌尾、drawn 置位、爆头重算，进入该座位摸牌窗口。
+    """摸牌落地：drawn置位，按普通摸牌或连续杠补更新爆头，进入动作窗口。
 
     仅允许在 pending_draw 状态调用；庄家直抽（emit_event=False）不发
     tile_drawn 事件，窗口触发序号取当前 seq 水位。
@@ -307,12 +318,11 @@ def attach_draw(state: ProgressionState, tile: Tile) -> Transition:
             raise ValueError("摸牌事件缺少预留 seq")
         events = (_ev(request.seq, EVENT_KIND_DRAWN, seat, tile),)
         new_seq = request.seq
-    whites = sum(1 for t in s.hand if is_wealth(t)) + (1 if is_wealth(tile) else 0)
     # hand 恒为「不含当前摸牌」的暗牌：摸牌只置 drawn，弃/杠时合并（摸牌置尾）。
     new_seat = replace(
         s,
         drawn=tile,
-        baotou=recompute_baotou(s.hand, len(s.melds), whites),
+        baotou=baotou_after_draw(s.baotou, s.hand, len(s.melds), tile, replacement=request.replacement),
     )
     return Transition(
         events=events,
@@ -484,15 +494,19 @@ def _resolve_draw(state: ProgressionState, choices: Tuple[Tuple[int, Action], ..
 
     if isinstance(action, Discard):
         new_hand, new_drawn = _remove_from_hand(s, action.tile)
-        is_piao = s.baotou and is_wealth(action.tile)
+        # 本次是否飘取动作前爆头；弃后可新入爆头，但不能反向把本次打白算飘。
+        chain_count, chain_piao = chain_after_discard(
+            s.chain_count, s.chain_piao, s.baotou, action.tile,
+        )
         new_seat = replace(
             s,
             hand=new_hand,
             drawn=new_drawn,
             discards=s.discards + (action.tile,),
             catch_play=is_wealth(action.tile),
-            chain_count=s.chain_count + 1 if is_piao else 0,
-            chain_piao=s.chain_piao + 1 if is_piao else 0,
+            baotou=recompute_baotou(new_hand, len(s.melds), sum(is_wealth(t) for t in new_hand)),
+            chain_count=chain_count,
+            chain_piao=chain_piao,
         )
         state = _replace_seat(state, seat, new_seat)
         seq = state.seq + 1
@@ -564,12 +578,14 @@ def _resolve_gang(
         events = (_ev(seq, EVENT_KIND_GANG, seat, action.tile, (("kind", "bu"),)),)
     else:
         raise ValueError("摸牌窗口不允许明杠")
+    chain_count, chain_piao = chain_after_gang(s.chain_count, s.chain_piao)
     new_seat = replace(
         s,
         hand=new_hand,
         drawn=new_drawn,
         melds=tuple(melds) if action.kind is GangKind.ADDED else s.melds + (meld,),
-        chain_count=s.chain_count + 1,
+        chain_count=chain_count,
+        chain_piao=chain_piao,
     )
     return Transition(events, replace(
         _replace_seat(state, seat, new_seat),
@@ -634,7 +650,7 @@ def _resolve_peng_window(
         new_hand, _ = _remove_n_from_hand(s, tile, 2)
         meld = MeldRecord(kind="peng", gang_kind=None, tiles=(tile,) * 3, from_seat=discarder)
         new_seat = replace(
-            s, hand=new_hand, drawn=None, melds=s.melds + (meld,), baotou=False
+            s, hand=new_hand, drawn=None, melds=s.melds + (meld,)
         )
         # 碰后、摸牌前的出牌窗口：drawn 为空（v1「碰后禁止胡牌」门禁的载体）。
         return Transition(tuple(events), replace(
@@ -651,13 +667,14 @@ def _resolve_peng_window(
         events.append(_ev(seq, EVENT_KIND_GANG, seat, tile, (("kind", "ming"),)))
         new_hand, _ = _remove_n_from_hand(s, tile, 3)
         meld = MeldRecord(kind="gang", gang_kind="ming", tiles=(tile,) * 4, from_seat=discarder)
+        chain_count, chain_piao = chain_after_gang(s.chain_count, s.chain_piao)
         new_seat = replace(
             s,
             hand=new_hand,
             drawn=None,
             melds=s.melds + (meld,),
-            chain_count=s.chain_count + 1,
-            baotou=False,
+            chain_count=chain_count,
+            chain_piao=chain_piao,
         )
         return Transition(tuple(events), replace(
             _replace_seat(state, seat, new_seat),
@@ -722,7 +739,7 @@ def _resolve_chi_window(
                 )
         meld = MeldRecord(kind="chi", gang_kind=None, tiles=action.tiles, from_seat=discarder)
         new_seat = replace(
-            s, hand=tuple(hand), drawn=None, melds=s.melds + (meld,), baotou=False
+            s, hand=tuple(hand), drawn=None, melds=s.melds + (meld,)
         )
         events = (_ev(
             seq, EVENT_KIND_CHI, seat, x,

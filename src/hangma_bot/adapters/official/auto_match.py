@@ -73,7 +73,7 @@ from .errors import (
 )
 from .game import OfficialGameSession
 from .notify import StreamBudget
-from .scheduler import Priority, RequestScheduler
+from .scheduler import Priority, RequestKind, RequestScheduler
 from .transport import OfficialTransport, TransportConfig
 
 # 服务端 v15 自动房默认配置（API 文档 §2.6，抓取 2026-09-05）：显式声明上限
@@ -311,7 +311,7 @@ class OfficialAutoMatchSession:
         while True:
             attempts += 1
             try:
-                lease = await self._scheduler.acquire(priority)
+                lease = await self._scheduler.acquire(priority, request_kind=RequestKind.OTHER)
                 try:
                     result = await self._transport.request(
                         method, path, json_body=json_body, with_auth=with_auth
@@ -611,7 +611,7 @@ class OfficialAutoMatchSession:
             if self._declared_rounds > 0:
                 body["Rounds"] = self._declared_rounds
             try:
-                lease = await self._scheduler.acquire(Priority.RECOVERY)
+                lease = await self._scheduler.acquire(Priority.RECOVERY, request_kind=RequestKind.OTHER)
                 try:
                     result = await self._transport.request(
                         "POST", "/api/match", json_body=body or None
