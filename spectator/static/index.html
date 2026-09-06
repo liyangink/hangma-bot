@@ -16,19 +16,20 @@
     </header>
 
     <main>
-      <section class="selectors" aria-label="观战来源与官方场次选择">
-        <label>Token 身份
-          <select id="source-select" disabled></select>
-        </label>
-        <label>官方场次
+      <section class="selectors" aria-label="活跃官方场次与观战角色选择">
+        <label>活跃官方场次
           <select id="game-select" disabled></select>
+        </label>
+        <label>观战角色
+          <select id="source-select" disabled></select>
         </label>
         <button id="refresh-button" type="button">立即刷新</button>
       </section>
 
       <section id="empty-state" class="empty-state">
-        未识别到审计运行目录。请检查 <code>--watch-dir</code> 是否指向运行目录、
-        <code>audit_root</code> 或测试房间 slot 的父目录。
+        当前没有可展示的活跃官方场次。若比赛正在进行，请稍候等待下一份审计记录；
+        否则请检查 <code>--watch-dir</code> 是否指向运行目录、<code>audit_root</code>
+        或测试房间 slot 的父目录。
       </section>
 
       <section id="game-view" hidden>

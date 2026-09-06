@@ -202,7 +202,7 @@ def test_trailing_jsonl_line_is_not_visible_until_writer_completes_it(tmp_path):
     repository = SpectatorRepository((tmp_path,))
 
     first = repository.snapshot()
-    assert first["sources"][0]["games"] == []
+    assert first["sources"] == []
 
     with path.open("a", encoding="utf-8") as handle:
         handle.write("\n")
@@ -212,8 +212,59 @@ def test_trailing_jsonl_line_is_not_visible_until_writer_completes_it(tmp_path):
     assert game["observation"]["my_hand"] == ["1w", "2w", "白"]
 
 
+def test_snapshot_only_exposes_active_games_and_their_sources(tmp_path):
+    """P0 不混入历史场次；同一活跃场次可由多个角色同时提供视角。"""
+
+    first = _make_run(tmp_path, slot="slot-baihu")
+    second = _make_run(tmp_path, slot="slot-qinglong")
+    finished = _make_run(tmp_path, slot="slot-xuanwu")
+
+    for run_dir in (first, second):
+        _write_line(
+            run_dir / "participants" / "player-a" / "decisions.jsonl",
+            _record(
+                "decision_input",
+                {"request": {"observation": _observation("g-live"), "rules": {}}},
+                game_id="g-live",
+            ),
+        )
+    _write_line(
+        first / "participants" / "player-a" / "decisions.jsonl",
+        _record(
+            "decision_input",
+            {"request": {"observation": _observation("g-old"), "rules": {}}},
+            game_id="g-old",
+        ),
+    )
+    _write_line(
+        first / "participants" / "player-a" / "decisions.jsonl",
+        _record("game_finished", {"final_scores": [1, 2, 3, 4]}, game_id="g-old"),
+    )
+    _write_line(
+        finished / "participants" / "player-a" / "decisions.jsonl",
+        _record(
+            "decision_input",
+            {
+                "request": {
+                    "observation": {**_observation("g-finished"), "phase": "finished"},
+                    "rules": {},
+                }
+            },
+            game_id="g-finished",
+        ),
+    )
+
+    snapshot = SpectatorRepository((tmp_path,)).snapshot()
+
+    assert [source["role"] for source in snapshot["sources"]] == [
+        "slot-baihu",
+        "slot-qinglong",
+    ]
+    assert all([game["game_id"] for game in source["games"]] == ["g-live"] for source in snapshot["sources"])
+
+
 def test_discovers_checked_in_legacy_test_room_audit_layout():
-    """真实归档仍用 bot-audit/{角色}/run-*，P0 必须把它当作观战来源。"""
+    """真实归档仍能被发现；但结束的历史牌局不进入实时观战快照。"""
 
     repository_root = Path(__file__).resolve().parents[2]
     audit_root = (
@@ -224,11 +275,5 @@ def test_discovers_checked_in_legacy_test_room_audit_layout():
 
     assert target_run.resolve() in discover_run_directories((audit_root,))
     snapshot = SpectatorRepository((audit_root,)).snapshot()
-    target = next(item for item in snapshot["sources"] if item["run_id"] == target_run.name)
 
-    assert target["role"] == "xuanwu"
-    assert {game["game_id"] for game in target["games"]} == {
-        "t_74a7c2d75d5e_r1_b0_t0",
-        "t_74a7c2d75d5e_r1_b1_t0",
-    }
-    assert any(game["observation"] is not None for game in target["games"])
+    assert all(item["run_id"] != target_run.name for item in snapshot["sources"])

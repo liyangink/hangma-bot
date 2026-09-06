@@ -47,7 +47,11 @@ python3 spectator/server.py \
   --watch-dir ./game-records/test-room/20260906-1444-t_74a7c2d75d5e/bot-audit
 ```
 
-页面中的“Token 身份”下拉框按测试房间 `slot-*`、归档角色目录（如 `xuanwu`）或审计 `participant_id` 标识来源；“官方场次”下拉框列出该身份审计里已发现的全部 `game_id`，因而可在 `M > 1` 时切换。
+P0 目前只面向实时观战，不列出历史牌局：它会排除已经记录 `game_finished` 或完整
+观察已处于 `phase=finished` 的官方场次。页面先按去重后的“活跃官方场次”选择
+`game_id`，再只列出该场次有审计的“观战角色”（测试房间 `slot-*`、归档角色目录如
+`xuanwu` 或审计 `participant_id`）。同一场次被四个 Token 同时记录时也只出现一次，
+因而可在 `M > 1` 时先切换场次、再切换视角。
 
 排查目录识别时可只输出一次 JSON，而不启动网页：
 

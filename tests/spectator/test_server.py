@@ -46,7 +46,8 @@ def test_server_binds_loopback_and_serves_json(tmp_path):
         with opener.open(f"http://{host}:{port}/", timeout=2) as response:
             page = response.read().decode("utf-8")
             policy = response.headers["Content-Security-Policy"]
-        assert "Token 身份" in page
+        assert "活跃官方场次" in page
+        assert "观战角色" in page
         assert "connect-src 'self'" in policy
     finally:
         server.shutdown()

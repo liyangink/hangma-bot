@@ -71,9 +71,8 @@ function actionText(action) {
   return action.kind;
 }
 function sourceLabel(source) {
-  const pid = source.participant_id ? " · " + source.participant_id : "";
-  const mode = source.mode ? " · " + source.mode : "";
-  return source.role + pid + mode + " · " + source.run_id;
+  // 同一场次下每个角色只保留一个来源；run_id 是审计实现细节，不增加选择负担。
+  return source.role || source.participant_id || "未命名角色";
 }
 function updateOptions(select, items, getId, getLabel, selectedId) {
   const prior = selectedId;
@@ -87,8 +86,28 @@ function updateOptions(select, items, getId, getLabel, selectedId) {
   select.value = exists ? prior : (items.length ? getId(items[0]) : "");
   return select.value || null;
 }
-function selectedSource() { return (current?.sources || []).find(source => source.source_id === selectedSourceId) || null; }
-function selectedGame() { return selectedSource()?.games?.find(game => game.game_id === selectedGameId) || null; }
+function activeGames() {
+  // 四个 Token 可能都记录同一个官方场次；按 game_id 聚合后让人只选一次。
+  const byId = new Map();
+  for (const source of (current?.sources || [])) {
+    for (const game of (source.games || [])) {
+      if (!game.finished && !byId.has(game.game_id)) byId.set(game.game_id, game);
+    }
+  }
+  return [...byId.values()].sort((left, right) => left.game_id.localeCompare(right.game_id));
+}
+function sourcesForSelectedGame() {
+  if (!selectedGameId) return [];
+  return (current?.sources || []).filter(source =>
+    (source.games || []).some(game => game.game_id === selectedGameId && !game.finished)
+  );
+}
+function selectedSource() {
+  return sourcesForSelectedGame().find(source => source.source_id === selectedSourceId) || null;
+}
+function selectedGame() {
+  return selectedSource()?.games?.find(game => game.game_id === selectedGameId && !game.finished) || null;
+}
 
 function renderTiles(id, tiles, drawnTile) {
   const node = document.querySelector(id);
@@ -232,14 +251,15 @@ function renderIssues(source) {
   issues.appendChild(ul);
 }
 function render() {
-  const sources = current?.sources || [];
+  const games = activeGames();
+  selectedGameId = updateOptions(gameSelect, games, item => item.game_id, item => item.game_id, selectedGameId);
+  gameSelect.disabled = !games.length;
+  const sources = sourcesForSelectedGame();
   selectedSourceId = updateOptions(sourceSelect, sources, item => item.source_id, sourceLabel, selectedSourceId);
   sourceSelect.disabled = !sources.length;
   const source = selectedSource();
-  selectedGameId = updateOptions(gameSelect, source?.games || [], item => item.game_id, item => item.game_id, selectedGameId);
-  gameSelect.disabled = !(source?.games?.length);
   const game = selectedGame();
-  emptyState.hidden = Boolean(sources.length && game?.observation);
+  emptyState.hidden = Boolean(games.length && game?.observation);
   gameView.hidden = !game?.observation;
   if (game) renderGame(game);
   renderIssues(source);
@@ -257,8 +277,8 @@ async function refresh() {
     text(connection, "读取失败 · " + error.message);
   }
 }
-sourceSelect.addEventListener("change", () => { selectedSourceId = sourceSelect.value; selectedGameId = null; render(); });
-gameSelect.addEventListener("change", () => { selectedGameId = gameSelect.value; render(); });
+gameSelect.addEventListener("change", () => { selectedGameId = gameSelect.value; selectedSourceId = null; render(); });
+sourceSelect.addEventListener("change", () => { selectedSourceId = sourceSelect.value; render(); });
 refreshButton.addEventListener("click", refresh);
 refresh();
 refreshTimer = window.setInterval(refresh, 750);

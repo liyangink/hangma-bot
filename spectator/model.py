@@ -239,6 +239,19 @@ class _GameProjection:
     final_scores: list[Any] | None = None
     finished: bool = False
 
+    @property
+    def is_active(self) -> bool:
+        """判断该官方场次是否仍可用于实时观战。
+
+        ``game_finished`` 是审计的终局事实；完整玩家观察也可能先于该记录到达
+        ``phase=finished``。两者任一出现就不把场次混入实时选择器，避免历史审计
+        与正在进行的牌局并列。
+        """
+
+        if self.finished:
+            return False
+        return self.observation is None or self.observation.get("phase") != "finished"
+
     def set_observation(
         self,
         observation: Mapping[str, Any],
@@ -512,8 +525,12 @@ class _RunProjection:
             for record in records:
                 self._apply(record)
 
-    def as_json(self, now_unix_ms: int) -> dict[str, Any]:
-        """输出一个可供前端选择的 Token 身份来源。"""
+    def as_json(self, now_unix_ms: int, *, active_games_only: bool = False) -> dict[str, Any]:
+        """输出一个可供前端选择的 Token 身份来源。
+
+        P0 只服务实时观战时，调用方传入 ``active_games_only=True``。历史牌局
+        仍保留在内存投影中以便持续尾随同一运行目录，但不会随每次轮询传给浏览器。
+        """
 
         mode = _str_or_none(self.manifest_payload.get("mode"))
         return {
@@ -528,6 +545,7 @@ class _RunProjection:
             "games": [
                 game.as_json(now_unix_ms)
                 for _game_id, game in sorted(self.games.items())
+                if not active_games_only or game.is_active
             ],
         }
 
@@ -576,7 +594,13 @@ class SpectatorRepository:
         self.refresh()
         now_unix_ms = int(time.time() * 1000)
         with self._lock:
-            sources = [projection.as_json(now_unix_ms) for projection in self._runs.values()]
+            # P0 尚未提供历史牌谱或赛后回放，因而 API 只暴露实时场次。这样既使
+            # 选择器保持简洁，也不会在浏览器轮询中重复传输完整历史牌局。
+            sources = [
+                source
+                for projection in self._runs.values()
+                if (source := projection.as_json(now_unix_ms, active_games_only=True))["games"]
+            ]
         sources.sort(
             key=lambda item: (
                 item.get("role") or "",
