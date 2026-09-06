@@ -1,0 +1,108 @@
+{
+  "config": {
+    "max_games": 1,
+    "rounds_per_game": 8,
+    "rules": {
+      "base_score": 1,
+      "ruleset_version": "hangma-mvp-v2-pass-progress",
+      "you_cai_bi_kao": false
+    },
+    "schema_version": 1,
+    "timing": {
+      "chi_timeout_sec": 1.0,
+      "discard_timeout_sec": 3.0,
+      "peng_timeout_sec": 1.0
+    }
+  },
+  "contract_id": "parallel-v1",
+  "created_at_unix_ms": 1788678156105,
+  "dataset_id": "58efc275-7637-4810-8fe6-165e38de7c1b",
+  "dirty": true,
+  "evaluation_schema_version": 1,
+  "guide_captured_at": null,
+  "guide_version": null,
+  "inputs": [],
+  "manifest_schema_version": 1,
+  "missing_fields": [
+    "input_sha256",
+    "guide_version",
+    "guide_captured_at"
+  ],
+  "producer_commit": "3ee9eefc6ea5c3f06fa25d576b2f33c440bffc09",
+  "rules_hash": "c5ac2530f82e7638ab9585760023f18dbf8e88eea541a8dbc3ccc96ee391d4a9",
+  "source_namespace": "hangma-simulation",
+  "versions": {
+    "clock_mode": "logical",
+    "experiment_kind": "matches",
+    "n_resamples": 2000,
+    "primary_metric": "table_score_delta",
+    "resample_seed": 20260906,
+    "scoring_policies": {
+      "baseline": {
+        "name": "weighted_heuristic_v1",
+        "policy_id": "weighted_heuristic_v1",
+        "weights": {}
+      },
+      "challenger": {
+        "name": "weighted_heuristic_v2",
+        "policy_id": "weighted_heuristic_v2",
+        "weights": {}
+      },
+      "opponent_pool": [
+        {
+          "name": "weighted_heuristic",
+          "policy_id": "opp-0",
+          "weights": {}
+        },
+        {
+          "name": "weighted_heuristic",
+          "policy_id": "opp-1",
+          "weights": {}
+        },
+        {
+          "name": "weighted_heuristic",
+          "policy_id": "opp-2",
+          "weights": {}
+        }
+      ]
+    },
+    "seat_permutations": [
+      [
+        0,
+        1,
+        2,
+        3
+      ],
+      [
+        1,
+        2,
+        3,
+        0
+      ],
+      [
+        2,
+        3,
+        0,
+        1
+      ],
+      [
+        3,
+        0,
+        1,
+        2
+      ]
+    ],
+    "seeds": [
+      {
+        "scenario_id": "v2-smoke-0",
+        "seed": 2026090650
+      },
+      {
+        "scenario_id": "v2-smoke-1",
+        "seed": 2026090651
+      }
+    ],
+    "simulation_version": null,
+    "tie_method": "strict"
+  }
+}

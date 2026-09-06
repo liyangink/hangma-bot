@@ -1,0 +1,95 @@
+{
+  "experiment_schema_version": 1,
+  "kind": "matches",
+  "clock_mode": "logical",
+  "baseline_policy": {
+    "policy_id": "weighted_heuristic_v1",
+    "name": "weighted_heuristic_v1",
+    "weights": {}
+  },
+  "challenger_policy": {
+    "policy_id": "weighted_heuristic_v2",
+    "name": "weighted_heuristic_v2",
+    "weights": {}
+  },
+  "opponent_pool": [
+    {
+      "policy_id": "opp-0",
+      "name": "weighted_heuristic",
+      "weights": {}
+    },
+    {
+      "policy_id": "opp-1",
+      "name": "weighted_heuristic",
+      "weights": {}
+    },
+    {
+      "policy_id": "opp-2",
+      "name": "weighted_heuristic",
+      "weights": {}
+    }
+  ],
+  "tournament_config": {
+    "schema_version": 1,
+    "max_games": 1,
+    "rounds_per_game": 8,
+    "rules": {
+      "ruleset_version": "hangma-mvp-v2-pass-progress",
+      "base_score": 1,
+      "you_cai_bi_kao": false
+    },
+    "timing": {
+      "peng_timeout_sec": 1.0,
+      "chi_timeout_sec": 1.0,
+      "discard_timeout_sec": 3.0
+    }
+  },
+  "seeds": [
+    {
+      "seed": 2026090650,
+      "scenario_id": "v2-smoke-0"
+    },
+    {
+      "seed": 2026090651,
+      "scenario_id": "v2-smoke-1"
+    }
+  ],
+  "seat_permutations": [
+    [
+      0,
+      1,
+      2,
+      3
+    ],
+    [
+      1,
+      2,
+      3,
+      0
+    ],
+    [
+      2,
+      3,
+      0,
+      1
+    ],
+    [
+      3,
+      0,
+      1,
+      2
+    ]
+  ],
+  "initial_dealer": 0,
+  "initial_scores": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "match_id_prefix": "v2-implementation-smoke",
+  "primary_metric": "table_score_delta",
+  "tie_method": "strict",
+  "n_resamples": 2000,
+  "resample_seed": 20260906
+}

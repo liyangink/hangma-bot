@@ -20,7 +20,8 @@ from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.kernel.actions import Tile, WindowPhase, CANONICAL_TILE_CODES
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.observation import PublicDiscard
-from hangma_bot.policy import ReliableHeuristicPolicyV1, WeightedHeuristicPolicy
+from hangma_bot.policy import ReliableHeuristicPolicyV1, ComparableHeuristicPolicyV2
+from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy
 from .support import make_observation, make_request
 
 HEAVY_HAND = ('1w','2w','4w','5w','7w','8w','1b','2b','3b','5b','6b','3t','4t','6t')
@@ -40,18 +41,23 @@ def window_observation(kind):
 async def measure_batch(kind, concurrency, version):
     """实时时钟秒计时；返回各窗口毫秒耗时与截止余量，无文件/网络副作用。"""
     rules = HangmaRules(RuleConfig(ruleset_version='policy-benchmark', base_score=1, you_cai_bi_kao=False))
-    policy = ReliableHeuristicPolicyV1() if version == 'v1' else WeightedHeuristicPolicy()
+    policy = {'v0':LegacyWeightedHeuristicPolicy,'v1':ReliableHeuristicPolicyV1,'v2':ComparableHeuristicPolicyV2}[version]()
     observations = []
     for i in range(concurrency):
-        if kind == 'varied_draw':
+        if kind in ('varied_draw', 'varied_response'):
             # 不同合法物理牌组，避免 M 场重复同一手牌仅测缓存命中。
             rng = random.Random(9100+i)
             tiles = tuple(Tile(c) for c in rng.sample(list(CANONICAL_TILE_CODES)*4,14))
-            obs = make_observation(my_hand=tiles[:13],drawn_tile=tiles[-1])
+            if kind == 'varied_response':
+                obs = make_observation(phase='response_peng',turn_seat=1,responding_seats=(0,),
+                    my_hand=tiles[:13],last_discard=PublicDiscard(1,tiles[-1],9),
+                    discards=((),(tiles[-1],),(),()))
+            else:
+                obs = make_observation(my_hand=tiles[:13],drawn_tile=tiles[-1])
         else:
             obs = window_observation(kind)
         observations.append(replace(obs,game_id='benchmark-'+str(i)))
-    timeout = 1.0 if kind == 'response' else 3.0
+    timeout = 1.0 if kind in ('response','varied_response') else 3.0
     received = time.monotonic()
     budget = BudgetPolicy().build(received, timeout)
 
@@ -63,7 +69,7 @@ async def measure_batch(kind, concurrency, version):
         after_analysis = time.monotonic()
         assert emergency is not None
         assert analysis.legal_candidates
-        phase = WindowPhase.RESPONSE_PENG if kind == 'response' else WindowPhase.DRAW
+        phase = WindowPhase.RESPONSE_PENG if kind in ('response','varied_response') else WindowPhase.DRAW
         request = make_request(obs, analysis, phase=phase)
         before_choose = time.monotonic()
         plan = await policy.choose(request, budget)
@@ -87,7 +93,7 @@ async def measure_batch(kind, concurrency, version):
     return await asyncio.gather(*(one(obs) for obs in observations))
 
 
-@pytest.mark.parametrize('version', ['v0','v1'])
+@pytest.mark.parametrize('version', ['v0','v1','v2'])
 @pytest.mark.parametrize('kind', ['draw','response'])
 @pytest.mark.parametrize('concurrency', [1,10])
 def test_local_path_meets_real_budget(version, kind, concurrency):
@@ -100,13 +106,14 @@ def test_local_path_meets_real_budget(version, kind, concurrency):
                       'min_send_margin_ms':min(r['send_margin_ms'] for r in rows)}))
 
 
-@pytest.mark.parametrize('kind,concurrency', [('draw',1),('response',1),('varied_draw',10)])
-def test_v1_first_decision_in_fresh_process(kind,concurrency):
+@pytest.mark.parametrize('version', ['v1','v2'])
+@pytest.mark.parametrize('kind,concurrency', [('draw',1),('response',1),('varied_draw',10),('varied_response',10)])
+def test_v1_first_decision_in_fresh_process(kind,concurrency,version):
     # 子进程从导入到首个真实规则调用均不复用本 pytest 进程的规则缓存。
     code = (
         'import asyncio,json; '
         'from tests.unit.policy.test_policy_benchmark import measure_batch; '
-        f'print(json.dumps(asyncio.run(measure_batch({kind!r},{concurrency},"v1"))))'
+        f'print(json.dumps(asyncio.run(measure_batch({kind!r},{concurrency},{version!r}))))'
     )
     root = Path(__file__).resolve().parents[3]
     started = time.monotonic()
@@ -115,7 +122,7 @@ def test_v1_first_decision_in_fresh_process(kind,concurrency):
     assert result.returncode == 0, result.stderr
     rows = json.loads(result.stdout)
     assert all(r['enhancement_margin_ms'] > 0 for r in rows)
-    print(json.dumps({'version':'v1','kind':kind,'M':concurrency,
+    print(json.dumps({'version':version,'kind':kind,'M':concurrency,
                       'cold_process_total_ms':elapsed*1000,
                       'worst_total_ms':max(r['total_since_received_ms'] for r in rows),
                       'min_send_margin_ms':min(r['send_margin_ms'] for r in rows)}))

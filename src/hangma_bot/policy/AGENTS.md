@@ -21,6 +21,7 @@
 
 - 保留原 `weighted_heuristic.py`、`evaluation.py`、`weights.py` 和默认策略名；冻结指纹见 `doc/implementation/baselines/heuristic-v0.json`，固定历史输入见 `tests/fixtures/policy/`。
 - V1 使用 `heuristic_v1.py`、`evaluation_v1.py`、`weights_v1.py` 独立实现，配置名 `weighted_heuristic_v1`，开发验收后同样冻结。规则已提供响应 Pass 等待事实；V0/claim_if_legal 装配使用 `legacy_pass.py` 的显式旧视图，保留原始请求及异常事实。继续施工先读 `doc/implementation/policy-iteration-plan.md` 与接口协议 §4.3。
+- V2 配置名 `weighted_heuristic_v2`，复用 V1 的非 Pass 评分与权重，仅增加可比过牌等待分项。缺基线时按接口协议 §4.4 执行合法胡、未拒过牌、其余候选的顺序。变更 V2 不修改冻结 V0/V1；完整桌赛评估通过前保持默认 V0。
 
 ## 验收标准
 

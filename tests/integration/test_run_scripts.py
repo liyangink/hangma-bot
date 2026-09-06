@@ -400,13 +400,14 @@ if __name__ == "__main__":
     pytest.main([__file__])
 
 
-def test_room_can_mix_v1_with_default_v0(tmp_path):
+@pytest.mark.parametrize('candidate', ['weighted_heuristic_v1', 'weighted_heuristic_v2'])
+def test_room_can_mix_v1_with_default_v0(tmp_path, candidate):
     """身份覆盖透传 V1，其余身份继续继承 V0；Token 和审计目录保持隔离。"""
     data = _room_config()
-    data['identities'][0]['strategy'] = 'weighted_heuristic_v1'
+    data['identities'][0]['strategy'] = candidate
     cfg = room.load_room_config(_write_config(tmp_path,data),environ={'HM_ROOM_A':SECRET_A,'HM_ROOM_B':SECRET_B})
     children = [room.child_config_mapping(cfg, identity) for identity in cfg.identities]
-    assert [c['strategy'] for c in children] == ['weighted_heuristic_v1'] + ['weighted_heuristic']*3
+    assert [c['strategy'] for c in children] == [candidate] + ['weighted_heuristic']*3
     assert len({c['audit_root'] for c in children}) == 4
     assert all('token' not in c for c in children)
     assert all(secret not in json.dumps(children) for secret in (SECRET_A,SECRET_B,SECRET_C,SECRET_D))

@@ -60,6 +60,7 @@ from hangma_bot.offline.evaluation_results import (  # noqa: E402
 )
 from hangma_bot.offline.evaluation_statistics import summarize_results  # noqa: E402
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1  # noqa: E402
+from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2  # noqa: E402
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy  # noqa: E402
 from hangma_bot.policy.weights import HeuristicWeights  # noqa: E402
 from hangma_bot.policy.weights_v1 import HeuristicWeightsV1  # noqa: E402
@@ -84,15 +85,16 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         policy = SafeFallbackPolicy()
         policy.policy_id = declaration.policy_id
         return policy
-    if declaration.name == "weighted_heuristic_v1":
+    if declaration.name in ("weighted_heuristic_v1", "weighted_heuristic_v2"):
         # 与 V0 使用同一实验时钟；逻辑预算不能与主机单调时钟比较。
         weights = HeuristicWeightsV1(**dict(declaration.weights))
-        policy = ReliableHeuristicPolicyV1(weights=weights, monotonic=monotonic)
+        policy_type = ReliableHeuristicPolicyV1 if declaration.name == "weighted_heuristic_v1" else ComparableHeuristicPolicyV2
+        policy = policy_type(weights=weights, monotonic=monotonic)
         policy.policy_id = declaration.policy_id
         return policy
     raise ValueError(
         "未知策略名 {0!r}；本脚本只装配 weighted_heuristic / safe_fallback / "
-        "weighted_heuristic_v1".format(declaration.name)
+        "weighted_heuristic_v1 / weighted_heuristic_v2".format(declaration.name)
     )
 
 

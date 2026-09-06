@@ -62,6 +62,7 @@ from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.policy.interface import BotPolicy
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
+from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
@@ -81,6 +82,7 @@ DEFAULT_RULESET_VERSION = "hangma-mvp-v2-pass-progress"
 _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "weighted_heuristic": lambda: LegacyWeightedHeuristicPolicy(),
     "weighted_heuristic_v1": lambda: ReliableHeuristicPolicyV1(),
+    "weighted_heuristic_v2": lambda: ComparableHeuristicPolicyV2(),
     "safe_fallback": lambda: SafeFallbackPolicy(),
     "claim_if_legal": lambda: LegacyClaimIfLegalPolicy(),
 }

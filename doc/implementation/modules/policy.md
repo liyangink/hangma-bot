@@ -6,7 +6,9 @@
 
 MVP 后续按[三个候选版本计划](../policy-iteration-plan.md)实施。当前保留 `weighted_heuristic` 为 V0；新增可选 `weighted_heuristic_v1`，分别使用独立的评分和权重源码，不影响并行调用方。V1 排序以 [接口协议 §4.2](../interface-contracts.md#42-v1-策略排序语义2026-09-05)为准：合法胡、可信候选、未知候选；全部未知时紧急候选优先。`rank` 是执行顺序，跨层不能按总分重排。
 
-V1 的固定参数、未知降级、数值失败和真实时限测试见[实施验收记录](../reviews/policy-v1-implementation-2026-09-05.md)。响应 Pass 已提供新等待事实；V0 装配使用 `LegacyWeightedHeuristicPolicy`，测试房鸣牌策略使用 `LegacyClaimIfLegalPolicy`，两者只适配输入而不改变冻结源码。新事实与旧版消费边界以[接口协议 §4.3](../interface-contracts.md#43-响应过牌的等待事实与冻结策略兼容2026-09-06)为准。V2 评分待实施，当前不声称比赛强度提高。
+V1 的固定参数、未知降级、数值失败和真实时限测试见[实施验收记录](../reviews/policy-v1-implementation-2026-09-05.md)。响应 Pass 已提供新等待事实；V0 装配使用 `LegacyWeightedHeuristicPolicy`，测试房鸣牌策略使用 `LegacyClaimIfLegalPolicy`，两者只适配输入而不改变冻结源码。新事实与旧版消费边界以[接口协议 §4.3](../interface-contracts.md#43-响应过牌的等待事实与冻结策略兼容2026-09-06)为准。
+
+V2 使用 `heuristic_v2.py`、`evaluation_v2.py`，配置名 `weighted_heuristic_v2`。非 Pass 评分复用冻结 V1 的公开函数，权重复用 `HeuristicWeightsV1`；缺可比等待基线时合法胡先于过牌退路，见接口协议 §4.4。线上默认仍为 V0；实现与时限检查不等于完整桌赛强度提高。
 
 ## 第一阶段排序设计记录（不是 V1 执行规范）
 

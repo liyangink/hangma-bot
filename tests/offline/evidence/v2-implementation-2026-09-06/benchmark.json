@@ -1,0 +1,64 @@
+{
+  "command": ".venv/bin/python -m pytest -q -s tests/unit/policy/test_policy_benchmark.py -k v2",
+  "platform": "macOS-26.4.1-arm64-arm-64bit",
+  "result": "8 passed, 12 deselected",
+  "measurements": [
+    {
+      "kind": "draw",
+      "M": 1,
+      "fresh_process": false,
+      "worst_total_since_received_ms": 3.819249977823347,
+      "min_send_margin_ms": 2546.180750010535
+    },
+    {
+      "kind": "response",
+      "M": 1,
+      "fresh_process": false,
+      "worst_total_since_received_ms": 2.2791249793954194,
+      "min_send_margin_ms": 847.7208749973215
+    },
+    {
+      "kind": "draw",
+      "M": 10,
+      "fresh_process": false,
+      "worst_total_since_received_ms": 33.70433300733566,
+      "min_send_margin_ms": 2516.295666981023
+    },
+    {
+      "kind": "response",
+      "M": 10,
+      "fresh_process": false,
+      "worst_total_since_received_ms": 21.53175004059449,
+      "min_send_margin_ms": 828.4682499361224
+    },
+    {
+      "kind": "draw",
+      "M": 1,
+      "fresh_process": true,
+      "worst_total_since_received_ms": 50.97629100782797,
+      "min_send_margin_ms": 2499.0237089805305
+    },
+    {
+      "kind": "response",
+      "M": 1,
+      "fresh_process": true,
+      "worst_total_since_received_ms": 22.107542026787996,
+      "min_send_margin_ms": 827.8924579499289
+    },
+    {
+      "kind": "varied_draw",
+      "M": 10,
+      "fresh_process": true,
+      "worst_total_since_received_ms": 915.557499974966,
+      "min_send_margin_ms": 1634.4425000133924
+    },
+    {
+      "kind": "varied_response",
+      "M": 10,
+      "fresh_process": true,
+      "worst_total_since_received_ms": 46.25695903087035,
+      "min_send_margin_ms": 803.7430409458466
+    }
+  ],
+  "note": "实时时钟测 emergency/analyze/choose/validate；进程启动不含在窗口耗时中。固定样例及十组不同手牌，不代表最坏界限或真实网络。"
+}

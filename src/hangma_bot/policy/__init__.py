@@ -14,6 +14,7 @@ from .interface import (
 from .safe_fallback import SafeFallbackPolicy
 from .weighted_heuristic import WeightedHeuristicPolicy
 from .heuristic_v1 import ReliableHeuristicPolicyV1
+from .heuristic_v2 import ComparableHeuristicPolicyV2
 from .weights_v1 import HeuristicWeightsV1, DEFAULT_WEIGHTS_V1
 from .weights import DEFAULT_WEIGHTS, HeuristicWeights
 
@@ -32,6 +33,7 @@ __all__ = [
     "SafeFallbackPolicy",
     "WeightedHeuristicPolicy",
     "ReliableHeuristicPolicyV1",
+    "ComparableHeuristicPolicyV2",
     "HeuristicWeightsV1",
     "DEFAULT_WEIGHTS_V1",
     "ClaimIfLegalPolicy",

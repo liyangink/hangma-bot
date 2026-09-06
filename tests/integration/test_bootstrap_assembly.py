@@ -147,12 +147,14 @@ class TestAssembly:
         """claim_if_legal 经 bootstrap 可配置实例化（官方测试房验收冒烟）。"""
 
         from hangma_bot.policy.claim_if_legal import ClaimIfLegalPolicy
+        from hangma_bot.policy.legacy_pass import LegacyClaimIfLegalPolicy
 
         config = runtime_config_from_mapping(
             _valid(audit_root=str(tmp_path), strategy="claim_if_legal")
         )
         assembled = build_runtime(config, session_factory=lambda: _StubSession())
         assert isinstance(assembled.policy, ClaimIfLegalPolicy)
+        assert isinstance(assembled.policy, LegacyClaimIfLegalPolicy)
         # 默认策略仍为 weighted_heuristic，claim_if_legal 只按配置启用
         default = runtime_config_from_mapping(_valid(audit_root=str(tmp_path)))
         assert isinstance(
@@ -355,3 +357,13 @@ def test_v1_is_opt_in_and_v0_default_is_preserved(tmp_path):
     assert isinstance(v0.policy, WeightedHeuristicPolicy)
     assert isinstance(v0.policy, LegacyWeightedHeuristicPolicy)
     assert v1.sink.run_dir != v0.sink.run_dir
+
+
+def test_v2_can_be_selected_without_changing_default(tmp_path):
+    """V2 通过原策略名配置接入组合根，默认仍为 V0。"""
+    from hangma_bot.policy import ComparableHeuristicPolicyV2
+    runtime=build_runtime(runtime_config_from_mapping(_valid(
+        audit_root=str(tmp_path/'v2'),strategy='weighted_heuristic_v2',
+    )),session_factory=lambda:_StubSession())
+    assert isinstance(runtime.policy,ComparableHeuristicPolicyV2)
+    assert runtime_config_from_mapping(_valid()).strategy=='weighted_heuristic'

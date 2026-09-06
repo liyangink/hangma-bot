@@ -1,0 +1,45 @@
+{
+  "config": null,
+  "contract_id": "parallel-v1",
+  "created_at_unix_ms": 1788677995605,
+  "dataset_id": "593bc496-57d3-43f4-a113-6b8cd632bd20",
+  "dirty": true,
+  "evaluation_schema_version": 1,
+  "guide_captured_at": null,
+  "guide_version": null,
+  "inputs": [
+    {
+      "bundle_id": null,
+      "path": "decisions.jsonl",
+      "sha256": "0e97070529af887275719c9b7b75af918aaa8ebc83114f271769721edba6b53a"
+    }
+  ],
+  "manifest_schema_version": 1,
+  "missing_fields": [
+    "input_sha256",
+    "guide_version",
+    "guide_captured_at",
+    "config"
+  ],
+  "producer_commit": "3ee9eefc6ea5c3f06fa25d576b2f33c440bffc09",
+  "rules_hash": "c5ac2530f82e7638ab9585760023f18dbf8e88eea541a8dbc3ccc96ee391d4a9",
+  "source_namespace": "hangma-policy-fixture",
+  "versions": {
+    "clock_mode": "logical",
+    "decision_mode": "recorded_request",
+    "experiment_kind": "decisions",
+    "scoring_policies": {
+      "baseline": {
+        "name": "weighted_heuristic_v1",
+        "policy_id": "weighted_heuristic_v1",
+        "weights": {}
+      },
+      "challenger": {
+        "name": "weighted_heuristic_v2",
+        "policy_id": "weighted_heuristic_v2",
+        "weights": {}
+      },
+      "opponent_pool": []
+    }
+  }
+}
