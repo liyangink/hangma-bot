@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>杭麻 Bot · 本地观战器</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">只读 · 本机 · P0</p>
+        <h1>杭麻 Bot 观战器</h1>
+      </div>
+      <div id="connection" class="connection">正在读取审计目录…</div>
+    </header>
+
+    <main>
+      <section class="selectors" aria-label="观战来源与官方场次选择">
+        <label>Token 身份
+          <select id="source-select" disabled></select>
+        </label>
+        <label>官方场次
+          <select id="game-select" disabled></select>
+        </label>
+        <button id="refresh-button" type="button">立即刷新</button>
+      </section>
+
+      <section id="empty-state" class="empty-state">
+        未识别到审计运行目录。请检查 <code>--watch-dir</code> 是否指向运行目录、
+        <code>audit_root</code> 或测试房间 slot 的父目录。
+      </section>
+
+      <section id="game-view" hidden>
+        <section class="game-summary">
+          <div>
+            <p class="eyebrow">官方场次</p>
+            <h2 id="game-title">—</h2>
+          </div>
+          <div id="freshness" class="freshness"></div>
+        </section>
+
+        <section id="warning" class="warning" hidden></section>
+
+        <section class="perspective-table" aria-label="以本家为底边的第一视角麻将牌桌">
+          <article id="player-top" class="table-seat seat-top">
+            <div class="seat-heading"><span id="seat-label-top">对家</span><strong id="score-top">—</strong></div>
+            <div id="hand-top" class="concealed-tiles" aria-label="对家手牌张数"></div>
+            <div id="melds-top" class="seat-melds"></div>
+            <div id="river-top" class="river-grid" aria-label="对家牌河"></div>
+          </article>
+
+          <article id="player-left" class="table-seat seat-left">
+            <div class="seat-heading"><span id="seat-label-left">左侧座位</span><strong id="score-left">—</strong></div>
+            <div id="hand-left" class="concealed-tiles" aria-label="左侧座位手牌张数"></div>
+            <div id="melds-left" class="seat-melds"></div>
+            <div id="river-left" class="river-grid" aria-label="左侧座位牌河"></div>
+          </article>
+
+          <article class="table-center">
+            <p class="eyebrow">牌桌中心</p>
+            <strong id="turn-state" class="turn-indicator">—</strong>
+            <p id="last-discard" class="last-discard">最近弃牌：—</p>
+            <dl id="table-facts" class="facts center-facts"></dl>
+            <dl id="rule-state" class="facts center-facts"></dl>
+          </article>
+
+          <article id="player-right" class="table-seat seat-right">
+            <div class="seat-heading"><span id="seat-label-right">右侧座位</span><strong id="score-right">—</strong></div>
+            <div id="hand-right" class="concealed-tiles" aria-label="右侧座位手牌张数"></div>
+            <div id="melds-right" class="seat-melds"></div>
+            <div id="river-right" class="river-grid" aria-label="右侧座位牌河"></div>
+          </article>
+
+          <article id="player-bottom" class="table-seat seat-bottom">
+            <div class="seat-heading"><span id="seat-label-bottom">本家</span><strong id="score-bottom">—</strong></div>
+            <div id="melds-bottom" class="seat-melds"></div>
+            <div id="river-bottom" class="river-grid" aria-label="本家牌河"></div>
+            <div id="my-hand" class="tiles own-hand" aria-label="本家手牌"></div>
+            <p id="drawn-tile" class="muted"></p>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading"><h3>本次决策提示</h3><span class="muted">仅展示规则模块当时已产生的事实</span></div>
+          <div id="candidates" class="candidates"></div>
+        </section>
+
+        <section class="two-column">
+          <article class="panel">
+            <div class="panel-heading"><h3>最新提交</h3></div>
+            <div id="submission" class="muted">暂无提交审计。</div>
+          </article>
+          <article class="panel">
+            <div class="panel-heading"><h3>最新增量事件</h3><span class="muted">未用事件猜造完整牌桌</span></div>
+            <ol id="events" class="events"></ol>
+          </article>
+        </section>
+      </section>
+
+      <section id="issues" class="issues" hidden></section>
+    </main>
+
+    <footer>观战器只读取已写入的审计记录；不会请求官方平台，也不能提交动作。</footer>
+    <script src="/app.js"></script>
+  </body>
+</html>
