@@ -21,6 +21,7 @@ from hangma_bot.kernel.actions import (
 )
 from hangma_bot.kernel.observation import PublicDiscard
 from hangma_bot.policy import ClaimIfLegalPolicy, WeightedHeuristicPolicy
+from hangma_bot.policy.legacy_pass import LegacyClaimIfLegalPolicy, LegacyWeightedHeuristicPolicy
 
 from .support import (
     candidates_for,
@@ -37,13 +38,13 @@ from .support import (
 
 
 def _policy() -> ClaimIfLegalPolicy:
-    """注入固定时钟，避免读取真实时间。"""
+    """与组合根使用相同旧过牌兼容视图，注入固定时钟。"""
 
-    return ClaimIfLegalPolicy(monotonic=lambda: 0.0)
+    return LegacyClaimIfLegalPolicy(monotonic=lambda: 0.0)
 
 
 def _weighted() -> WeightedHeuristicPolicy:
-    return WeightedHeuristicPolicy(monotonic=lambda: 0.0)
+    return LegacyWeightedHeuristicPolicy(monotonic=lambda: 0.0)
 
 
 def _hand(codes) -> tuple:
@@ -84,10 +85,12 @@ class ClaimPromotionTests(unittest.TestCase):
             responding_seats=(0,),
             turn_seat=1,
             my_hand=_hand(
-                ("5w", "5w", "1t", "2t", "3t", "4t", "5t", "6t", "1b", "2b", "8t", "9t", "东")
+                ("5w", "5w", "9b", "8t", "4t", "6w", "北", "7b", "9t", "4b", "7t", "8t", "8b")
             ),
             last_discard=PublicDiscard(seat=1, tile=Tile("5w"), seq=9),
         )
+        # 原样本在完整舍牌计算后碰可直接听牌；改用碰后仍两向听的
+        # 真实牌形，继续验证加权策略不愿碰时 claim_if_legal 的提升行为。
         # 对照：默认加权启发式在此输入下过排在碰之前
         analysis = rules_from_engine(observation)
         weighted_plan = run_choose(

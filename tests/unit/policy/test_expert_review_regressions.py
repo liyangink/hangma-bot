@@ -55,10 +55,11 @@ class HandMathRegressionTests(unittest.TestCase):
     """规则事实驱动的排序回归（原向听/有效牌估计回归的延续）。"""
 
     def test_garbage_hand_shanten_facts_order_discards(self) -> None:
-        """原对子牌眼反例：打 3b（向听 4）排在打 3t（向听 5）之前。
+        """规则事实修复后，保留3b对子的两向听路线优于拆对三向听。
 
-        旧策略估计器曾把"拆对子 3b3b"误排在"打孤张 3t"之后；现在
-        排序由 hangma 单一规则源的向听事实驱动，原因文本写明数值。
+        原测试的4/5向听来自错误舍牌剪枝，曾反向锁定拆对子优先。
+        保留对子后摸4w/7b/5t，舍1w/4b即可组成456w+789b+456t+789t+33b，
+        因此至多两向听；策略应消费修正事实，原因文本必须与数值一致。
         """
 
         hand = ("1w", "3b", "3b", "3t", "4b", "4t", "5w", "6t", "6w", "7t", "8b", "8t", "9b")
@@ -75,10 +76,10 @@ class HandMathRegressionTests(unittest.TestCase):
         )
         ranks = ranks_by_key(plan)
 
-        self.assertLess(ranks["discard:3b"], ranks["discard:3t"])
+        self.assertLess(ranks["discard:3t"], ranks["discard:3b"])
         by_key = {item.action_key: item for item in plan.candidates}
-        self.assertTrue(any("向听数 4" in r for r in by_key["discard:3b"].reasons))
-        self.assertTrue(any("向听数 5" in r for r in by_key["discard:3t"].reasons))
+        self.assertTrue(any("向听数 3" in r for r in by_key["discard:3b"].reasons))
+        self.assertTrue(any("向听数 2" in r for r in by_key["discard:3t"].reasons))
 
     def test_chiitoi_tenpai_discard_preferred_over_breaking_pair(self) -> None:
         """七对听牌：弃单张（保 6 对，向听 0）排在拆对（向听 1）之前。"""

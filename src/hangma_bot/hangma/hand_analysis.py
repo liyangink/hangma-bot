@@ -7,7 +7,7 @@ internal_types 内部契约，不访问网络、文件、时钟、随机源或�
 
 核心算法（前任原型验证过的骨架）：把暗牌转成 34 维计数向量后，
 白板（财神）单独抽出作为可任意垫牌的资源；标准型按
-「枚举将 → 取最低非空位 i → 刻子 / 顺子窗口 s∈{i-2,i-1,i} / 纯白刻」
+「枚举将 → 取最低非空位 i → 刻子 / 顺子窗口 s∈{i-2,i-1,i} / 纯白刻 / 舍牌」
 递归分解。白可垫顺子任意位置（含起始位，如 白+8w+9w=789w）、
 可垫刻子、可作将眼；白白可自将对、白白白可自刻；4 白在手可胡。
 
@@ -122,11 +122,12 @@ def _need_std(
     - 取最低非空位 i，枚举含 i 的块：将（自然对 / 自然+白 / 白白 /
       带虚牌变体）、刻子（自然优先、白垫补足）、顺子窗口 s∈{i-2,i-1,i}
       （空位白垫或虚牌——白可垫起始位是官方语义，最易错点）、
-      纯白刻（白白白自刻）。消耗虚牌的分支必须校验并扣减 budget。
+      纯白刻（白白白自刻），以及舍弃当前牌后选择其余子集。
+      消耗虚牌的分支必须校验并扣减 budget；仅在达到槽位缺口下界、
+      或分支已付进张成本无法改善 best 时剪枝。
     """
 
-    # 用 <= 0：将未定而面子已齐时，后续分支会继续把 sets_left 减为负数，
-    # 此时只有将眼分支有意义（其余分支代价被自然抬高，不影响最优值）。
+    # 面子与将已齐：多余实牌可舍，不再占用目标槽位。
     if sets_left <= 0 and not pair_needed:
         return 0
     index = -1
@@ -137,18 +138,10 @@ def _need_std(
     if index == -1:
         return max(0, 3 * sets_left + 2 * int(pair_needed) - whites)
 
-    # 弃牌分支：need 按子集语义取最小。仅当该种虚牌配额为 0（在手
-    # 满 4 张）时弃牌才可能占优——有配额的牌恒能以 ≤ 弃牌的代价并入
-    # 某块（等价于替下一张虚牌，评审 d5-a0c5d8：东×4 手的将眼虚牌被
-    # 堵死后须可弃掉余张）。限定触发条件避免子集枚举状态爆炸。
-    # 残留近似：邻位四张耗尽导致顺子搭子全部受阻的极端牌型可能仍差
-    # 一张，不进金例与实战牌谱范围。
-    if _budget_left(budget, index) == 0:
-        best = _need_std(
-            _dec(counts, index, 1), whites, sets_left, pair_needed, budget
-        )
-    else:
-        best = _INF
+    # 每张实牌或白板至多填一个槽位；不足部分必需进张。这是可证明的
+    # 下界，仅找到达到下界的分解时才允许提前返回，不能按牌种跳过舍牌。
+    lower_bound = max(0, 3 * sets_left + 2 * int(pair_needed) - sum(counts) - whites)
+    best = _INF
 
     if pair_needed:
         held = counts[index]
@@ -160,6 +153,8 @@ def _need_std(
                     _dec(counts, index, 2), whites, sets_left, False, budget
                 ),
             )
+        if best == lower_bound:
+            return best
         if held >= 1 and whites >= 1:
             best = min(
                 best,
@@ -167,7 +162,9 @@ def _need_std(
                     _dec(counts, index, 1), whites - 1, sets_left, False, budget
                 ),
             )
-        if held >= 1 and _budget_left(budget, index) >= 1:
+        if best == lower_bound:
+            return best
+        if best > 1 and held >= 1 and _budget_left(budget, index) >= 1:
             # 虚牌配对消耗该种 1 张配额（手牌原计数 + 1 虚牌 ≤ 4）。
             best = min(
                 best,
@@ -179,24 +176,35 @@ def _need_std(
                     _budget_dec(budget, index, 1),
                 ),
             )
+        if best == lower_bound:
+            return best
         if whites >= 2:
             best = min(
                 best, _need_std(counts, whites - 2, sets_left, False, budget)
             )
-        if whites >= 1:
+        if best == lower_bound:
+            return best
+        if best > 1 and whites >= 1:
             best = min(
                 best, 1 + _need_std(counts, whites - 1, sets_left, False, budget)
             )
+        if best == lower_bound:
+            return best
         # 纯虚牌将按"全新种类"计，不占现有种类配额。
-        best = min(best, 2 + _need_std(counts, whites, sets_left, False, budget))
-    if sets_left <= 0:
-        # 面子已齐（或超发）：只剩将眼分支有意义，直接返回当前最优。
+        if best > 2:
+            best = min(best, 2 + _need_std(counts, whites, sets_left, False, budget))
+    if best == lower_bound:
         return best
+    if sets_left <= 0:
+        # 面子已齐：仍可跳过当前牌，在后方寻找更好的将眼。
+        return min(best, _need_std(
+            _dec(counts, index, 1), whites, sets_left, pair_needed, budget
+        ))
     # 刻子：自然张优先（自然牌永不吃亏），缺口由白垫 / 虚牌补。
     natural = min(counts[index], 3)
     pad_white = min(3 - natural, whites)
     phantom = 3 - natural - pad_white
-    if phantom == 0 or _budget_left(budget, index) >= phantom:
+    if phantom < best and (phantom == 0 or _budget_left(budget, index) >= phantom):
         triplet_budget = (
             budget if phantom == 0 else _budget_dec(budget, index, phantom)
         )
@@ -211,15 +219,20 @@ def _need_std(
                 triplet_budget,
             ),
         )
+    if best == lower_bound:
+        return best
     # 纯白刻：白白白可自刻（不消耗自然牌，面子数减一保证递归前进）。
     white_trip = min(3, whites)
-    best = min(
-        best,
-        (3 - white_trip)
-        + _need_std(
-            counts, whites - white_trip, sets_left - 1, pair_needed, budget
-        ),
-    )
+    if 3 - white_trip < best:
+        best = min(
+            best,
+            (3 - white_trip)
+            + _need_std(
+                counts, whites - white_trip, sets_left - 1, pair_needed, budget
+            ),
+        )
+    if best == lower_bound:
+        return best
     # 顺子窗口：s∈{i-2,i-1,i} 且同花色 1-9 内；空位白垫——含起始位垫白
     # （纯 8w9w + 白 = 789w 合法，官方指南 1.2 爆头反例锚点）。
     if index < 27:
@@ -250,7 +263,7 @@ def _need_std(
                         break
                 else:
                     phantom_slots.append(pos)
-            if feasible and len(phantom_slots) >= phantoms_needed:
+            if phantoms_needed < best and feasible and len(phantom_slots) >= phantoms_needed:
                 run_budget = budget
                 for pos in phantom_slots[:phantoms_needed]:
                     run_budget = _budget_dec(run_budget, pos, 1)
@@ -265,7 +278,14 @@ def _need_std(
                         run_budget,
                     ),
                 )
-    return best
+                if best == lower_bound:
+                    return best
+    # 当前牌可能阻碍更好的组合，必须允许舍弃。放在完整块枚举之后，
+    # 让已经达到下界的分解先返回；不再使用“有虚牌额度即可强制入组”的
+    # 错误假设（真实摸白拆南对子反例，2026-09-07）。
+    return min(best, _need_std(
+        _dec(counts, index, 1), whites, sets_left, pair_needed, budget
+    ))
 
 
 def _chiitoi_pairs(counts: Tuple[int, ...], whites: int) -> int:
