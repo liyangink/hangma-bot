@@ -737,6 +737,22 @@ def build_auto_match_runtime(
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
+def build_public_archive_client(config: Mapping):
+    """离线免认证采集客户端；仅对配置中明确列出的目标主机关闭 TLS 校验。
+
+    不加载 Token，不跟随重定向，不使用隐式代理；调用方负责 with 关闭连接。
+    """
+    import httpx
+    from urllib.parse import urlsplit
+
+    base = str(config.get("base_url", ""))
+    parsed = urlsplit(base)
+    if parsed.scheme not in ("http", "https") or not parsed.hostname or parsed.username or parsed.password:
+        raise ValueError("采集配置需要不含凭证的 HTTP(S) base_url")
+    verify = parsed.hostname not in config.get("insecure_hosts", [])
+    return httpx.Client(base_url=base, verify=verify, trust_env=False, follow_redirects=False, timeout=30)
+
+
 def _git_state() -> Tuple[Optional[str], Optional[bool]]:
     """组装期代码版本事实（HEAD 提交与工作树 dirty）；取不到为 None。"""
 

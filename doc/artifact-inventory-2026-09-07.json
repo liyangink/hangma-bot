@@ -1,0 +1,557 @@
+{
+  "recorded_date": "2026-09-07",
+  "catalog": {
+    "schema_version": 1,
+    "sessions": [
+      {
+        "session": "legacy/runs/adapter-chain-0952d65cc38d",
+        "report": "legacy/runs/adapter-chain-0952d65cc38d/postgame/20260906T171550Z-f066d039/report.json",
+        "report_sha256": "adcddc01aa404d823b70dd4a597cd8c4d1bfadb5370535739213c083f9117167",
+        "run_count": 4,
+        "official_documents": 1,
+        "audit_complete": true,
+        "decisions": 1787,
+        "hands": 0
+      },
+      {
+        "session": "legacy/runs/adapter-history-eb9cca5794da-b0",
+        "report": "legacy/runs/adapter-history-eb9cca5794da-b0/postgame/20260906T171604Z-fd749a67/report.json",
+        "report_sha256": "c975360c6fc8d794d6ce85dcebd62e5871766f198d72983948b7b65ae7515bef",
+        "run_count": 4,
+        "official_documents": 1,
+        "audit_complete": true,
+        "decisions": 2215,
+        "hands": 0
+      },
+      {
+        "session": "legacy/runs/adapter-history-eb9cca5794da-b1",
+        "report": "legacy/runs/adapter-history-eb9cca5794da-b1/postgame/20260906T171623Z-1e18ecf1/report.json",
+        "report_sha256": "677b8a8e6e5032130d4df8dc55fafdfbfd1e8facbce84407bbbf4b129762b0f2",
+        "run_count": 4,
+        "official_documents": 1,
+        "audit_complete": true,
+        "decisions": 2343,
+        "hands": 0
+      },
+      {
+        "session": "legacy/runs/adapter-live-cefa004df3c5",
+        "report": "legacy/runs/adapter-live-cefa004df3c5/postgame/20260906T171646Z-8a836289/report.json",
+        "report_sha256": "737f338db9dc626bca6636be571991f4622ce2545d5518beeb7be04163d82e59",
+        "run_count": 4,
+        "official_documents": 1,
+        "audit_complete": true,
+        "decisions": 1928,
+        "hands": 0
+      },
+      {
+        "session": "legacy/runs/adapter-live-d69073e76b58",
+        "report": "legacy/runs/adapter-live-d69073e76b58/postgame/20260906T171701Z-6317ebd2/report.json",
+        "report_sha256": "721f05cc0d895588fee63f53549b10fe9bf88c329275c87cc92a87f8784c0458",
+        "run_count": 4,
+        "official_documents": 1,
+        "audit_complete": true,
+        "decisions": 1564,
+        "hands": 0
+      },
+      {
+        "session": "sessions/history",
+        "report": "sessions/history/postgame/20260906T172120Z-dc88f91c/report.json",
+        "report_sha256": "c8aee56102cd000d82e1f49653c3372b989156dce2473ebb96a3b3d26b7f345d",
+        "run_count": 20,
+        "official_documents": 29,
+        "audit_complete": false,
+        "decisions": 2976,
+        "hands": 9
+      }
+    ],
+    "note": "历史集可能覆盖同一场次，禁止直接合计训练样本；按场次键和来源筛选"
+  },
+  "history": {
+    "unique_documents": 29,
+    "source_copies": 50,
+    "errors": []
+  },
+  "official_sources": [
+    {
+      "sha256": "6ded9847d0358a2f0c6711418c4bd25f507510e95650be7631a84b93cfe3b738",
+      "game_id": "t_0952d65cc38d_r1_b0_t0",
+      "room_id": "t_0952d65cc38d",
+      "batch": 0,
+      "sources": [
+        "artifacts/legacy/runs/adapter-chain-0952d65cc38d/official/download-20260907/batch-0/events.json"
+      ],
+      "bytes": 205971,
+      "guide_version": 18,
+      "captured_at": "2026-09-06T16:17:06.194535+00:00"
+    },
+    {
+      "sha256": "582177ad2ce3b487ba1a28003e62c933c8fb069a7ae5724f2d64bbd3c8a847b0",
+      "game_id": "t_eb9cca5794da_r1_b0_t0",
+      "room_id": "t_eb9cca5794da",
+      "batch": 0,
+      "sources": [
+        "artifacts/legacy/runs/adapter-history-eb9cca5794da-b0/official/download-20260906/batch-0/events.json"
+      ],
+      "bytes": 254936,
+      "guide_version": 18,
+      "captured_at": "2026-09-06T14:27:03.663228+00:00"
+    },
+    {
+      "sha256": "fddda431c46694928254d857d180888762e93a36806310d7921c626c476c6f12",
+      "game_id": "t_eb9cca5794da_r2_b0_t0",
+      "room_id": "t_eb9cca5794da",
+      "batch": 0,
+      "sources": [
+        "artifacts/legacy/runs/adapter-history-eb9cca5794da-b1/official/download-20260906/batch-1/events.json",
+        "artifacts/legacy/runs/adapter-history-eb9cca5794da-b1/official/download-20260906/batch0-response-candidate.json"
+      ],
+      "bytes": 270038,
+      "guide_version": 18,
+      "captured_at": "2026-09-06T14:44:17.708328+00:00"
+    },
+    {
+      "sha256": "5aaf8254442bf9c12d37c3113a74ced7983b829af138bf4fec897943f98c29fa",
+      "game_id": "t_cefa004df3c5_r1_b0_t0",
+      "room_id": "t_cefa004df3c5",
+      "batch": 0,
+      "sources": [
+        "artifacts/legacy/runs/adapter-live-cefa004df3c5/official/download-20260906/batch-0/events.json"
+      ],
+      "bytes": 224118,
+      "guide_version": 17,
+      "captured_at": "2026-09-06T13:19:15.256795+00:00"
+    },
+    {
+      "sha256": "a93e36161d84579b08e0182a595944c86ce196235ec6315c2f1c18d910f8d4a2",
+      "game_id": "t_d69073e76b58_r1_b0_t0",
+      "room_id": "t_d69073e76b58",
+      "batch": 0,
+      "sources": [
+        "artifacts/legacy/runs/adapter-live-d69073e76b58/official/download-20260906/batch-0/events.json"
+      ],
+      "bytes": 201986,
+      "guide_version": 17,
+      "captured_at": "2026-09-06T11:48:41.485403+00:00"
+    },
+    {
+      "sha256": "c287bd901bd54bf1e7d9eee95442a2ad9193909aa3a0acfa75842c49bd4a681b",
+      "game_id": "a_cd5c88f494b2_r1_b4_t0",
+      "room_id": "a_cd5c88f494b2",
+      "batch": 4,
+      "sources": [
+        "datasets/official-auto-match/a_cd5c88f494b2/official/dl-04912cf0e3414722a75fa571021e9b6a/events.json",
+        "game-records/auto-match/20260905-a_cd5c88f494b2/official/dl-04912cf0e3414722a75fa571021e9b6a.json"
+      ],
+      "bytes": 172516,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788617638153,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_cd5c88f494b2/meta.json"
+    },
+    {
+      "sha256": "73cbb62024118da3b4c2e9a3227ea978387082d7b3f9ced9182379786b8decbb",
+      "game_id": "a_cd5c88f494b2_r1_b5_t0",
+      "room_id": "a_cd5c88f494b2",
+      "batch": 5,
+      "sources": [
+        "datasets/official-auto-match/a_cd5c88f494b2/official/dl-16a664e9a7924fafb1e4e598dc4a061d/events.json",
+        "game-records/auto-match/20260905-a_cd5c88f494b2/official/dl-16a664e9a7924fafb1e4e598dc4a061d.json"
+      ],
+      "bytes": 203779,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788617638498,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_cd5c88f494b2/meta.json"
+    },
+    {
+      "sha256": "ad76eb3901c02c364846c10c29a314cb128ab3e5456c30097248ea5ff4d23f2f",
+      "game_id": "a_cd5c88f494b2_r1_b2_t0",
+      "room_id": "a_cd5c88f494b2",
+      "batch": 2,
+      "sources": [
+        "datasets/official-auto-match/a_cd5c88f494b2/official/dl-54f75f18de59487e99739bb15d3dfc7b/events.json",
+        "game-records/auto-match/20260905-a_cd5c88f494b2/official/dl-54f75f18de59487e99739bb15d3dfc7b.json"
+      ],
+      "bytes": 205067,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788617637487,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_cd5c88f494b2/meta.json"
+    },
+    {
+      "sha256": "72a522b24bd5a2bacdf33fd6eec52498f277349ddd74128f75fe56f6d2f87d9c",
+      "game_id": "a_cd5c88f494b2_r1_b6_t0",
+      "room_id": "a_cd5c88f494b2",
+      "batch": 6,
+      "sources": [
+        "datasets/official-auto-match/a_cd5c88f494b2/official/dl-569cd821e6634a278bc6f2bc822483bd/events.json",
+        "game-records/auto-match/20260905-a_cd5c88f494b2/official/dl-569cd821e6634a278bc6f2bc822483bd.json"
+      ],
+      "bytes": 156653,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788617638832,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_cd5c88f494b2/meta.json"
+    },
+    {
+      "sha256": "c54d11ccc67cee9e75f4c4a8d2a048c177c6b6df84224beb017339e16646c65e",
+      "game_id": "a_cd5c88f494b2_r1_b0_t0",
+      "room_id": "a_cd5c88f494b2",
+      "batch": 0,
+      "sources": [
+        "datasets/official-auto-match/a_cd5c88f494b2/official/dl-8d3bbe9fa9ef4e3e91e9c546bf65a397/events.json",
+        "game-records/auto-match/20260905-a_cd5c88f494b2/official/dl-8d3bbe9fa9ef4e3e91e9c546bf65a397.json"
+      ],
+      "bytes": 149023,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788617636789,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_cd5c88f494b2/meta.json"
+    },
+    {
+      "sha256": "2fd395ac1b0a2de4070741d34971fe0bda8fd5d3728b41dfae3361cd9eb2963b",
+      "game_id": "a_cd5c88f494b2_r1_b8_t0",
+      "room_id": "a_cd5c88f494b2",
+      "batch": 8,
+      "sources": [
+        "datasets/official-auto-match/a_cd5c88f494b2/official/dl-9f55af6419154885bde9e6d333775ee7/events.json",
+        "game-records/auto-match/20260905-a_cd5c88f494b2/official/dl-9f55af6419154885bde9e6d333775ee7.json"
+      ],
+      "bytes": 188618,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788617639517,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_cd5c88f494b2/meta.json"
+    },
+    {
+      "sha256": "a0334d31b6cbc6bc328b633ff1e61bd04fde734f97b89a425637c6bb67f5d0da",
+      "game_id": "a_cd5c88f494b2_r1_b7_t0",
+      "room_id": "a_cd5c88f494b2",
+      "batch": 7,
+      "sources": [
+        "datasets/official-auto-match/a_cd5c88f494b2/official/dl-9fd47d43b05c4be9a666ba0e897d696d/events.json",
+        "game-records/auto-match/20260905-a_cd5c88f494b2/official/dl-9fd47d43b05c4be9a666ba0e897d696d.json"
+      ],
+      "bytes": 175293,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788617639176,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_cd5c88f494b2/meta.json"
+    },
+    {
+      "sha256": "e9c4876997a6163c8864bf289b590ff697a47d4e2ddfc21ad045a985622b8fc1",
+      "game_id": "a_cd5c88f494b2_r1_b3_t0",
+      "room_id": "a_cd5c88f494b2",
+      "batch": 3,
+      "sources": [
+        "datasets/official-auto-match/a_cd5c88f494b2/official/dl-a00bec29a5f845bd8d6a0df66e41cec6/events.json",
+        "game-records/auto-match/20260905-a_cd5c88f494b2/official/dl-a00bec29a5f845bd8d6a0df66e41cec6.json"
+      ],
+      "bytes": 173419,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788617637819,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_cd5c88f494b2/meta.json"
+    },
+    {
+      "sha256": "aeeb557af03be89557a0ba2b32d5c6dbcd1620ebde228df11d016ced5ba1a76f",
+      "game_id": "a_cd5c88f494b2_r1_b9_t0",
+      "room_id": "a_cd5c88f494b2",
+      "batch": 9,
+      "sources": [
+        "datasets/official-auto-match/a_cd5c88f494b2/official/dl-c5cb09190d6c444ba4eb29dd8da748d3/events.json",
+        "game-records/auto-match/20260905-a_cd5c88f494b2/official/dl-c5cb09190d6c444ba4eb29dd8da748d3.json"
+      ],
+      "bytes": 148074,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788617639849,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_cd5c88f494b2/meta.json"
+    },
+    {
+      "sha256": "2af6e594848a398b9eea819294536f0324b9450492ccadd048382f70b86ce4e8",
+      "game_id": "a_cd5c88f494b2_r1_b1_t0",
+      "room_id": "a_cd5c88f494b2",
+      "batch": 1,
+      "sources": [
+        "datasets/official-auto-match/a_cd5c88f494b2/official/dl-ec0a7b5f00b240e3b54afbf0c65071b7/events.json",
+        "game-records/auto-match/20260905-a_cd5c88f494b2/official/dl-ec0a7b5f00b240e3b54afbf0c65071b7.json"
+      ],
+      "bytes": 202861,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788617637137,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_cd5c88f494b2/meta.json"
+    },
+    {
+      "sha256": "aed77da66ec1eb9815374999b889c759deeff3f8a6b8aec288793cc009a0345e",
+      "game_id": "a_fb47fc10cd1a_r1_b0_t0",
+      "room_id": "a_fb47fc10cd1a",
+      "batch": 0,
+      "sources": [
+        "datasets/official-auto-match/a_fb47fc10cd1a/official/dl-044695a2e1a046e3b699b7a6188f0ba5/events.json",
+        "game-records/auto-match/20260905-a_fb47fc10cd1a/official/dl-044695a2e1a046e3b699b7a6188f0ba5.json"
+      ],
+      "bytes": 167864,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788621064298,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_fb47fc10cd1a/meta.json"
+    },
+    {
+      "sha256": "5c005d5f3f1ae483fd75135ff786c6898cf5fd316ec8fad73723dd46ea6ce553",
+      "game_id": "a_fb47fc10cd1a_r1_b1_t0",
+      "room_id": "a_fb47fc10cd1a",
+      "batch": 1,
+      "sources": [
+        "datasets/official-auto-match/a_fb47fc10cd1a/official/dl-05ca07ff7f3d4ef18d2c3feb7a8a3490/events.json",
+        "game-records/auto-match/20260905-a_fb47fc10cd1a/official/dl-05ca07ff7f3d4ef18d2c3feb7a8a3490.json"
+      ],
+      "bytes": 141120,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788621064645,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_fb47fc10cd1a/meta.json"
+    },
+    {
+      "sha256": "d674c19fc1ae94245de352f90ef93a5358609f99f42bee336859021b9de56366",
+      "game_id": "a_fb47fc10cd1a_r1_b2_t0",
+      "room_id": "a_fb47fc10cd1a",
+      "batch": 2,
+      "sources": [
+        "datasets/official-auto-match/a_fb47fc10cd1a/official/dl-25a9d3669a0c4f49b51e333c1393ffeb/events.json",
+        "game-records/auto-match/20260905-a_fb47fc10cd1a/official/dl-25a9d3669a0c4f49b51e333c1393ffeb.json"
+      ],
+      "bytes": 146497,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788621064988,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_fb47fc10cd1a/meta.json"
+    },
+    {
+      "sha256": "24db953251b489783fd3179af09be6466cba78dc35ecd68dfaa340219b3462e8",
+      "game_id": "a_fb47fc10cd1a_r1_b8_t0",
+      "room_id": "a_fb47fc10cd1a",
+      "batch": 8,
+      "sources": [
+        "datasets/official-auto-match/a_fb47fc10cd1a/official/dl-7dda266a3a7b488f95e2efe854ad3367/events.json",
+        "game-records/auto-match/20260905-a_fb47fc10cd1a/official/dl-7dda266a3a7b488f95e2efe854ad3367.json"
+      ],
+      "bytes": 136111,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788621067074,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_fb47fc10cd1a/meta.json"
+    },
+    {
+      "sha256": "ee34fbf1448b483ff663926cfb917e93fe8d9628948d035c29cc7680fac7a2dd",
+      "game_id": "a_fb47fc10cd1a_r1_b7_t0",
+      "room_id": "a_fb47fc10cd1a",
+      "batch": 7,
+      "sources": [
+        "datasets/official-auto-match/a_fb47fc10cd1a/official/dl-8a3d12c29b4b4f0a90b8b3fcb1fdf151/events.json",
+        "game-records/auto-match/20260905-a_fb47fc10cd1a/official/dl-8a3d12c29b4b4f0a90b8b3fcb1fdf151.json"
+      ],
+      "bytes": 163455,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788621066741,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_fb47fc10cd1a/meta.json"
+    },
+    {
+      "sha256": "d88980d40de2f66e89f397d2ba6e267b0fb5c80f4d69ca9ec768b7a339aa4919",
+      "game_id": "a_fb47fc10cd1a_r1_b9_t0",
+      "room_id": "a_fb47fc10cd1a",
+      "batch": 9,
+      "sources": [
+        "datasets/official-auto-match/a_fb47fc10cd1a/official/dl-9120176e02f6449282965ddf0bdd5fb6/events.json",
+        "game-records/auto-match/20260905-a_fb47fc10cd1a/official/dl-9120176e02f6449282965ddf0bdd5fb6.json"
+      ],
+      "bytes": 186872,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788621067423,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_fb47fc10cd1a/meta.json"
+    },
+    {
+      "sha256": "deb62f7bfff7cdeda6d6f983cb0f0cf0f0e007ea411be2d2639d2eb92141f862",
+      "game_id": "a_fb47fc10cd1a_r1_b4_t0",
+      "room_id": "a_fb47fc10cd1a",
+      "batch": 4,
+      "sources": [
+        "datasets/official-auto-match/a_fb47fc10cd1a/official/dl-a2c697609b2841a9998fd6f3da6337df/events.json",
+        "game-records/auto-match/20260905-a_fb47fc10cd1a/official/dl-a2c697609b2841a9998fd6f3da6337df.json"
+      ],
+      "bytes": 161029,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788621065688,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_fb47fc10cd1a/meta.json"
+    },
+    {
+      "sha256": "9c2921ddf7997a82e78c9237d7063e57de4746701469ec691550ec3fc3498cbb",
+      "game_id": "a_fb47fc10cd1a_r1_b5_t0",
+      "room_id": "a_fb47fc10cd1a",
+      "batch": 5,
+      "sources": [
+        "datasets/official-auto-match/a_fb47fc10cd1a/official/dl-b9aeae933bf044d5bd3f0df2b58620dc/events.json",
+        "game-records/auto-match/20260905-a_fb47fc10cd1a/official/dl-b9aeae933bf044d5bd3f0df2b58620dc.json"
+      ],
+      "bytes": 209910,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788621066050,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_fb47fc10cd1a/meta.json"
+    },
+    {
+      "sha256": "73511b5f802e24c6f6dfd17c935301ec9e0491d47ebbc48df3183295d0c9e01c",
+      "game_id": "a_fb47fc10cd1a_r1_b3_t0",
+      "room_id": "a_fb47fc10cd1a",
+      "batch": 3,
+      "sources": [
+        "datasets/official-auto-match/a_fb47fc10cd1a/official/dl-cbe8e788345c4f548ee7d14eee0e5591/events.json",
+        "game-records/auto-match/20260905-a_fb47fc10cd1a/official/dl-cbe8e788345c4f548ee7d14eee0e5591.json"
+      ],
+      "bytes": 152381,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788621065338,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_fb47fc10cd1a/meta.json"
+    },
+    {
+      "sha256": "f054b2bf0f1b11c3a4ccbf7c7db764dc7dbd3c01a2952a2f9367f1ba584c7ae6",
+      "game_id": "a_fb47fc10cd1a_r1_b6_t0",
+      "room_id": "a_fb47fc10cd1a",
+      "batch": 6,
+      "sources": [
+        "datasets/official-auto-match/a_fb47fc10cd1a/official/dl-e58efad6f6524c9487bffc1e27e1b564/events.json",
+        "game-records/auto-match/20260905-a_fb47fc10cd1a/official/dl-e58efad6f6524c9487bffc1e27e1b564.json"
+      ],
+      "bytes": 196084,
+      "guide_version": 15,
+      "captured_at_unix_ms": 1788621066399,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/auto-match/20260905-a_fb47fc10cd1a/meta.json"
+    },
+    {
+      "sha256": "904309e89205dc77f50b84767aee7da7cc180332cda2bafbac54a886ce0fa45f",
+      "game_id": "t_6813013f7778_r1_b0_t0",
+      "room_id": "t_6813013f7778",
+      "batch": 0,
+      "sources": [
+        "game-records/test-room/20260906-1141-t_6813013f7778/official/official_batch_0.json"
+      ],
+      "bytes": 31380,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/test-room/20260906-1141-t_6813013f7778/meta.json"
+    },
+    {
+      "sha256": "7a231ad4e878c63e2de90be979069bb9841f68e41976592729b201cf9a2d2791",
+      "game_id": "t_6813013f7778_r1_b1_t0",
+      "room_id": "t_6813013f7778",
+      "batch": 1,
+      "sources": [
+        "game-records/test-room/20260906-1141-t_6813013f7778/official/official_batch_1.json"
+      ],
+      "bytes": 78894,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/test-room/20260906-1141-t_6813013f7778/meta.json"
+    },
+    {
+      "sha256": "f2d14e85f4c4da60aaafa90d7f115eea3c2ebddf833bd704d745019de52b361e",
+      "game_id": "t_74a7c2d75d5e_r5_b0_t0",
+      "room_id": "t_74a7c2d75d5e",
+      "batch": 0,
+      "sources": [
+        "game-records/test-room/20260906-1444-t_74a7c2d75d5e/official/official_batch_0.json"
+      ],
+      "bytes": 64921,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/test-room/20260906-1444-t_74a7c2d75d5e/meta.json"
+    },
+    {
+      "sha256": "355598e40d8385e7e9ddcaa5c9a80d15b0f7041384aa2dc94f4b62e169657744",
+      "game_id": "t_74a7c2d75d5e_r5_b1_t0",
+      "room_id": "t_74a7c2d75d5e",
+      "batch": 1,
+      "sources": [
+        "game-records/test-room/20260906-1444-t_74a7c2d75d5e/official/official_batch_1.json"
+      ],
+      "bytes": 43775,
+      "rule_config": {
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "rule_config_source": "game-records/test-room/20260906-1444-t_74a7c2d75d5e/meta.json"
+    }
+  ]
+}

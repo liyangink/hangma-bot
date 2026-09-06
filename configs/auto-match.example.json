@@ -2,15 +2,15 @@
   "mode": "auto_match",
   "base_url": "https://10.240.169.190:18080",
   "expected_tournament_id": null,
-  "known_guide_version": 15,
+  "known_guide_version": 18,
   "token_kind": "official",
   "token_env": "HM_AUTO_MATCH_TOKEN",
-  "audit_root": "runs",
+  "audit_root": "artifacts/sessions/auto-match-example/audit",
   "strategy": "weighted_heuristic",
   "insecure_hosts": [
     "10.240.169.190"
   ],
-  "sse_enabled": true,
+  "sse_enabled": false,
   "source_namespace": "hangma-official",
   "auto_match": {
     "declared_max_games": 10,

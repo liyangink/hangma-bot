@@ -313,7 +313,7 @@ def main(argv=None):
     parser.add_argument("--base-url", default="https://10.240.169.190:18080")
     parser.add_argument("--insecure-host", action="append", default=["10.240.169.190"],
                         help="允许关闭 TLS 校验的官方内网主机（默认测试平台）")
-    parser.add_argument("--out-dir", default="runs/probe")
+    parser.add_argument("--out-dir", default="artifacts/probes/event-stream")
     parser.add_argument("--duration-sec", type=int, default=3600, help="最长观察秒数")
     parser.add_argument("--idle-exit-sec", type=int, default=120,
                         help="active_games 清空且观察器全部结束后再等待的秒数")

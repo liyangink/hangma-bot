@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# 从本地审计目录导出对局完整牌谱（数据流），用于牌效分析与规则核对。
+# 从本地审计目录导出多身份审计视图，用于牌效分析与规则核对。
 #
 # 用途：
 # - 读取若干 run 目录（测试房四身份各自的 runs/slot-*/runs/run-*），按官方 gameId
-#   合并四个座位视角的原始协议留痕（raw_protocol_state），导出可独立回放的 JSON 牌谱。
-# - events：官方事件流（按 seq 去重合并）。事件流是稀疏的：摸牌大多不附事件、
-#   超时代打只附 timeout 事件、吃/碰/杠/胡的认领动作不附事件，只反映在快照的
-#   melds/discards/scores 变化里。分析时以快照为权威。
+#   合并四个座位视角的原始协议留痕（raw_protocol_state），导出供人工定位的 JSON 视图。
+# - events：只合并本机实际收到的事件，不代表官方完整牌谱；快照超前/跨手可能缺史。
+#   多身份视角不能直接作为学生观察。正式制品优先使用 audit_tool.py postgame。
 # - snapshots：四座位各自观察到的官方快照原样保留（my_hand 是观察权限字段，仅记录
 #   观察者本人手牌），按 (seq, 观察座位) 去重。牌效分析以 my_hand 演进 + 全桌
 #   discards/melds 为输入。
@@ -14,7 +13,7 @@
 #   字段说明见 doc/implementation/notes/test-room-20260905-retrospective.md。
 #
 # 约束：纯标准库；只读审计目录，不访问网络，不读取/输出任何 Token；
-#       输出写入 exports/game-records/<game_id>.json（exports/ 不入库）。
+#       输出写入 artifacts/exports/game-records/<game_id>.json（不入库）。
 
 import argparse
 import glob
@@ -150,6 +149,8 @@ def collect_game(run_dirs, game_id):
                         }
     meta = {
         'game_id': game_id,
+        'information_scope': 'merged_player_views_not_official_replay',
+        'training_eligible': False,
         'tournament_id': tournament_id,
         'source_runs': {slot: os.path.basename(d.rstrip('/')) for slot, d in run_dirs.items()},
         'participants': {slot: pid_of_slot.get(slot) for slot in sorted(run_dirs)},
@@ -161,11 +162,11 @@ def collect_game(run_dirs, game_id):
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description='导出对局完整牌谱（数据流）')
+    parser = argparse.ArgumentParser(description='导出多身份审计视图')
     parser.add_argument('--run', action='append', required=True,
                         help='run 目录，可重复；格式 slot=path（如 baihu=runs/slot-baihu/runs/run-xxx）')
     parser.add_argument('--game', action='append', required=True, help='官方 gameId，可重复')
-    parser.add_argument('--out-dir', default='exports/game-records', help='输出目录（默认 exports/game-records）')
+    parser.add_argument('--out-dir', default='artifacts/exports/game-records', help='输出目录（默认 artifacts/exports/game-records）')
     args = parser.parse_args(argv)
 
     run_dirs = {}

@@ -648,10 +648,12 @@ def build_hand_rows_and_index(
                         "game_id": game_id,
                     },
                     "round_no": round_no,
-                    "rule_config": None,
+                    # 旧来源可能只有计分开关，缺规则版本时不能伪装成完整 RuleConfig。
+                    "rule_config": source.get("rule_config") if isinstance(source.get("rule_config"), dict)
+                    and {"ruleset_version", "base_score", "you_cai_bi_kao"} <= source["rule_config"].keys() else None,
                     "rules_hash": None,
-                    "guide_version": guide_version,
-                    "guide_captured_at": guide_captured_at,
+                    "guide_version": source.get("guide_version") or guide_version,
+                    "guide_captured_at": (source.get("captured_at") or guide_captured_at or "")[:10] or None,
                     "initial": data["initial"],
                     "events": events,
                     "scores_before": data["scores_before"],
@@ -969,7 +971,7 @@ def build_dataset(
     }
     rule_consistency = {
         "status": "not_checked",
-        "reason": "模拟线 replay-check 未交付；结构检查可 passed，规则一致性不做负标签",
+        "reason": "convert 只检查结构与覆盖；规则复核见 postgame 的独立 diagnostic 制品，不把未检查记作通过",
     }
     validation: dict[str, Any] = {
         "file_integrity": file_integrity,

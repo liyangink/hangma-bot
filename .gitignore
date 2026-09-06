@@ -10,6 +10,7 @@ dist/
 build/
 # 本地运行产物与私有配置（Token 只存在于私有运行配置，不入库）
 runs/
+/runs
 *.local.json
 .team-work/
 # 审计封存包与本地派生数据集（大文件；runs/ 不入库，故本地派生无法由仓库重建）
@@ -19,5 +20,8 @@ derived/
 !datasets/derived/
 # 牌谱导出等派生分析产物（可用 scripts/export_game_records.py 从 runs/ 重新生成）
 exports/
+# 统一本机制品与凭证；迁移须另外复制 artifacts，不能只 git clone。
+artifacts/
+.private/
 # 注：可共享的牌谱/训练制品提交到 datasets/（2026-09-06 起：自由赛完整牌谱）。
 # 大样本封存仍建议走审计线 bundle + exports 流程（大文件不进 Git 的一般原则）。

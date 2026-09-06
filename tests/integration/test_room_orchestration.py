@@ -31,6 +31,35 @@ SECRET_C = "orch-secret-token-C-0123456789abcdef"
 SECRET_D = "orch-secret-token-D-0123456789abcdef"
 
 
+def test_example_room_config_accepts_batch_limit_and_rejects_invalid_values(tmp_path):
+    data = json.loads((SCRIPTS_DIR.parent / "configs/test-room.example.json").read_text())
+    for item in data["identities"]:
+        item.pop("token_file")
+        item["token_env"] = "TEST_ROOM_TOKEN"
+    path = tmp_path / "config.json"
+    path.write_text(json.dumps(data))
+    config = room.load_room_config(path, environ={"TEST_ROOM_TOKEN": SECRET_A})
+    assert config.max_completed_batches == 1
+    for invalid in (0, -1, True, 1.5):
+        data["max_completed_batches"] = invalid
+        path.write_text(json.dumps(data))
+        with pytest.raises(ValueError, match="正整数"):
+            room.load_room_config(path, environ={"TEST_ROOM_TOKEN": SECRET_A})
+
+
+async def test_bounded_batch_finishes_without_spawning_a_new_registration(tmp_path):
+    from dataclasses import replace
+    config = replace(_room_config(tmp_path), max_completed_batches=1)
+    calls = []
+    async def spawn(*args, **kwargs):
+        calls.append(args)
+        return _FakeProcess(0, _result("tournament_finished"))
+    result = await room._run_identity(config, config.identities[0], {}, str(tmp_path), asyncio.Event(), spawn=spawn)
+    assert result.outcome == "completed"
+    assert result.rounds_completed == 1
+    assert len(calls) == 1
+
+
 def _result(terminal_reason: str, prefix=None) -> str:
     payload = {
         "slot": "X",

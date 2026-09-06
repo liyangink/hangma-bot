@@ -1,0 +1,17 @@
+{
+  "mode": "test_room",
+  "base_url": "https://10.240.169.190:18080",
+  "expected_tournament_id": "t_REPLACE_ME",
+  "known_guide_version": 18,
+  "audit_root": "artifacts/sessions/test-room-example/audit",
+  "strategy": "weighted_heuristic",
+  "insecure_hosts": ["10.240.169.190"],
+  "sse_enabled": false,
+  "max_completed_batches": 1,
+  "identities": [
+    {"slot": "qinglong", "token_file": ".private/qinglong.token"},
+    {"slot": "baihu", "token_file": ".private/baihu.token"},
+    {"slot": "zhuque", "token_file": ".private/zhuque.token"},
+    {"slot": "xuanwu", "token_file": ".private/xuanwu.token"}
+  ]
+}

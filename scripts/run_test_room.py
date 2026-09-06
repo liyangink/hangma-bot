@@ -24,8 +24,8 @@ Token 安全：Token 只经环境变量 ``HM_IDENTITY_TOKEN`` 传给子进程，
   "mode": "test_room",           // 固定；本入口只接受测试房间模式
   "base_url": "<官方平台基址>",
   "expected_tournament_id": "<目标赛事 id>",
-  "known_guide_version": 15,
-  "audit_root": "./room-runs",   // 每身份生成 audit_root/slot-{X}/runs/{run_id}/...
+  "known_guide_version": 18,
+  "audit_root": "artifacts/sessions/test-room-example/audit",   // 每身份生成 audit_root/slot-{X}/runs/{run_id}/...
   "strategy": "weighted_heuristic",   // 可选
   "insecure_hosts": ["<官方内网主机>"], // 可选
   "identities": [                // 必须恰好四个；token 与 token_env 二选一
@@ -45,6 +45,9 @@ Token 安全：Token 只经环境变量 ``HM_IDENTITY_TOKEN`` 传给子进程，
 ```
 
 守护语义：
+
+- --once 或 max_completed_batches 限定每身份完成批次数；达到上限正常退出，
+  不再 register/ready。未配置上限时才使用下述持续续赛行为。
 
 - 退出码 0 + 终态 tournament_finished：测试房间完赛一轮的正常出口，不消耗
   失败预算，按 finished_restart_delay_seconds 节奏重启新进程承接下一轮。
@@ -104,6 +107,7 @@ EXIT_CHILD_COMPLETED = 0
 EXIT_CHILD_PERMANENT = 10
 
 _ROOM_FIELDS = frozenset({
+    "max_completed_batches",
     "mode",
     "base_url",
     "expected_tournament_id",
@@ -204,6 +208,7 @@ class RoomConfig:
     identities: tuple
     restart: RoomRestart
     sse_enabled: bool = False  # SSE 帧驱动开关（透传给每身份子进程）
+    max_completed_batches: Optional[int] = None  # 每身份完成批次数上限；None 沿用持续续赛
 
 
 @dataclass
@@ -348,6 +353,8 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         identities=tuple(identities),
         restart=restart,
         sse_enabled=sse_value,
+        max_completed_batches=(_require_positive_int(data["max_completed_batches"], "max_completed_batches")
+                               if data.get("max_completed_batches") is not None else None),
     )
 
 
@@ -523,6 +530,9 @@ async def _run_identity(
                 # 若房间仍 finished 则存活轮询等待下一轮）。其余 exit 0 终态
                 # （eliminated / tournament_closed / tournament_void）为最终结果。
                 report.rounds_completed += 1
+                if room.max_completed_batches is not None and report.rounds_completed >= room.max_completed_batches:
+                    report.outcome = "completed"
+                    return report
                 print(
                     f"[{identity.slot}] 完赛第 {report.rounds_completed} 轮，"
                     f"{room.restart.finished_restart_delay_seconds:.1f} 秒后重启承接下一轮",
@@ -616,6 +626,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         description="用四个隔离子进程运行官方测试房间四 Token 身份",
     )
     parser.add_argument("--config", required=True, help="JSON 房间配置路径")
+    parser.add_argument("--once", action="store_true", help="每身份只完成一个批次，完赛不重新报名")
     return parser
 
 
@@ -687,6 +698,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     args = build_arg_parser().parse_args(argv)
     try:
         room = load_room_config(Path(args.config))
+        if args.once:
+            from dataclasses import replace
+            room = replace(room, max_completed_batches=1)
     except Exception as exc:  # noqa: BLE001 - 配置错误统一转为退出码 2
         print(f"配置错误: {type(exc).__name__}: {exc}", file=sys.stderr)
         return EXIT_ROOM_USAGE

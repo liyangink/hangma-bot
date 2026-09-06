@@ -1,22 +1,9 @@
 #!/usr/bin/env python3
-"""审计离线工具：validate / inspect / watch / collect-test-room / convert / pack。
+"""审计与赛后工具统一入口，操作说明见 doc/operations.md。
 
-只解析参数并调用组合根装配的实际用例（审计增强方案 §6）：
-
-    python scripts/audit_tool.py validate PATH
-    python scripts/audit_tool.py inspect PATH --game GAME_ID [--json]
-    python scripts/audit_tool.py watch RUNS_ROOT [--json] [--interval 1]
-    python scripts/audit_tool.py collect-test-room --runtime-config CONFIG --room ROOM --batch BATCH --out DIR
-    python scripts/audit_tool.py convert BUNDLE --out DATASET --source-namespace NS
-    python scripts/audit_tool.py pack BUNDLE --out ARCHIVE
-
-- validate：离线审计验证器（recording.validator）；
-- inspect：只读查看某场次的决策链（与 watch 共用读取器）；
-- watch：轮询审计根，只输出状态变化；--json 输出逐行 JSON；
-- collect-test-room：免认证下载测试房间赛后数据（指南 v14 §2.5）到
-  bundle 的 official/{download_id}/（先写 .partial，校验后原子改名）；
-- convert：bundle → 统一牌谱数据集（offline.replay.build_dataset）；
-- pack：封存 bundle 为 tar.gz + .sha256。
+watch / inspect / validate 只读本机证据；collect-test-room 下载官方原文；
+postgame 封存并生成数据集、规则和观察诊断；pack / unpack 校验迁移；
+import-history / migrate-runs 整理旧制品。退出成功不等于所有检查通过。
 """
 
 from __future__ import annotations
@@ -25,9 +12,6 @@ import argparse
 import json
 import sys
 import time
-import urllib.error
-import urllib.request
-import uuid
 from pathlib import Path
 from typing import Optional, Sequence
 
@@ -170,61 +154,18 @@ def _cmd_inspect(args: argparse.Namespace) -> int:
 # ---------------------------------------------------------------------------
 
 
-def _run_snapshot(run_dir: Path) -> dict:
-    """一个 run 目录的只读快照：种类计数、最近提交、数据更新时间。"""
-
-    result = read_records(run_dir)
-    counts = {}
-    last_outcome = None
-    ended = None
-    for record in result.records:
-        if record.kind is None or record.error is not None:
-            continue
-        counts[record.kind] = counts.get(record.kind, 0) + 1
-        if record.kind == "submission_outcome":
-            last_outcome = (record.payload or {}).get("outcome") or (record.payload or {}).get("outcome_type")
-        elif record.kind == "decision_ended":
-            ended = (record.payload or {}).get("end_reason")
-    summary_file = run_dir / "summary.json"
-    closed = summary_file.is_file()
-    return {
-        "run_id": run_dir.name,
-        "counts": counts,
-        "closed": closed,
-        "last_outcome": last_outcome,
-        "last_end_reason": ended,
-        "issues": len(result.issues),
-    }
-
-
 def _cmd_watch(args: argparse.Namespace) -> int:
-    root = Path(args.runs_root)
-    interval = args.interval if args.interval and args.interval > 0 else 1
-    previous: dict[str, dict] = {}
+    from hangma_bot.offline.postgame import session_status
+    previous = None
     try:
         while True:
-            runs_dir = root / "runs"
-            current: dict[str, dict] = {}
-            if runs_dir.is_dir():
-                for run_dir in sorted(runs_dir.iterdir()):
-                    if run_dir.is_dir():
-                        try:
-                            current[run_dir.name] = _run_snapshot(run_dir)
-                        except OSError:
-                            continue
-            for run_id in sorted(current):
-                snapshot = current[run_id]
-                if previous.get(run_id) != snapshot:
-                    if args.json:
-                        print(json.dumps(snapshot, ensure_ascii=False, sort_keys=True))
-                    else:
-                        print("[{}] counts={} closed={} outcome={} end={} issues={}".format(
-                            run_id, snapshot["counts"], snapshot["closed"],
-                            snapshot["last_outcome"], snapshot["last_end_reason"],
-                            snapshot["issues"],
-                        ))
+            current = session_status(Path(args.runs_root))
+            if current != previous or args.once:
+                print(json.dumps(current, ensure_ascii=False, indent=None if args.json else 2), flush=True)
             previous = current
-            time.sleep(interval)
+            if args.once or (args.until_closed and current["all_closed"]):
+                return EXIT_OK
+            time.sleep(max(.5, args.interval))
     except KeyboardInterrupt:
         return EXIT_OK
 
@@ -234,98 +175,30 @@ def _cmd_watch(args: argparse.Namespace) -> int:
 # ---------------------------------------------------------------------------
 
 
-def _load_base_url(config_path: Path) -> str:
-    with config_path.open("r", encoding="utf-8") as handle:
-        data = json.load(handle)
-    if not isinstance(data, dict):
-        raise ValueError("运行配置必须是 JSON 对象")
-    base_url = data.get("base_url")
-    if not isinstance(base_url, str) or not base_url.startswith(("http://", "https://")):
-        raise ValueError("运行配置缺少合法 base_url（http/https）")
-    return base_url.rstrip("/")
-
-
-def _http_get_json(base_url: str, path: str, timeout: float = 30.0):
-    """GET JSON；失败抛出可读异常（保留响应原文供诊断）。"""
-
-    request = urllib.request.Request(base_url + path)
-    try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            return json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        body = exc.read().decode("utf-8", errors="replace")
-        raise RuntimeError(
-            "GET {} -> HTTP {}: {}".format(path, exc.code, body[:300])
-        ) from None
-    except (urllib.error.URLError, TimeoutError) as exc:
-        raise RuntimeError("GET {} -> {}".format(path, exc)) from None
-
-
-def _write_partial_then_commit(path: Path, text: str) -> None:
-    """先写 .partial，JSON 校验通过后原子改名；失败保留诊断不伪造空牌谱。"""
-
-    partial = Path(str(path) + ".partial")
-    partial.write_text(text, encoding="utf-8")
-    json.loads(text)  # 校验失败保留 .partial 供诊断
-    partial.replace(path)
-
-
 def _cmd_collect_test_room(args: argparse.Namespace) -> int:
-    base_url = _load_base_url(Path(args.runtime_config))
-    out_dir = Path(args.out)
-    download_id = "dl-" + uuid.uuid4().hex
-    official_dir = out_dir / "official" / download_id
-    official_dir.mkdir(parents=True, exist_ok=True)
-    guide_version = None
-    try:
-        with Path(args.runtime_config).open("r", encoding="utf-8") as handle:
-            config = json.load(handle)
-            if isinstance(config, dict) and isinstance(config.get("known_guide_version"), int):
-                guide_version = config["known_guide_version"]
-    except (OSError, json.JSONDecodeError):
-        pass
-    games_raw = _http_get_json(base_url, "/api/test-rooms/{}/games".format(args.room))
-    games_text = json.dumps(games_raw, ensure_ascii=False)
-    _write_partial_then_commit(official_dir / "games.json", games_text)
-    game_id = None
-    if isinstance(games_raw, dict) and isinstance(games_raw.get("games"), list):
-        for game in games_raw["games"]:
-            if game.get("batch") == args.batch:
-                game_id = game.get("game_id")
-    try:
-        events = _http_get_json(
-            base_url,
-            "/api/test-rooms/{}/games/{}/events".format(args.room, args.batch),
-        )
-    except RuntimeError as exc:
-        # 403 GAME_NOT_FINISHED / 404：记录事实与诊断，不伪造空牌谱。
-        diagnostic = {"error": str(exc)}
-        (official_dir / "events.download_error.json").write_text(
-            json.dumps(diagnostic, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
-        print("下载失败: {}".format(exc), file=sys.stderr)
-        return EXIT_FAILED
-    events_text = json.dumps(events, ensure_ascii=False)
-    _write_partial_then_commit(official_dir / "events.json", events_text)
-    if game_id is None and isinstance(events, dict) and isinstance(events.get("game_id"), str):
-        game_id = events["game_id"]
-    source = {
-        "download_id": download_id,
-        "room_id": args.room,
-        "batch": args.batch,
-        "game_id": game_id,
-        "guide_version": guide_version,
-        "captured_at_unix_ms": int(time.time() * 1000),
-    }
-    # 与 games/events 一致：先写 .partial，JSON 校验通过后原子改名。
-    _write_partial_then_commit(
-        official_dir / "source.json", json.dumps(source, ensure_ascii=False, indent=2)
-    )
-    print(
-        "已采集: room={} batch={} game={} -> {}/official/{}/".format(
-            args.room, args.batch, game_id, out_dir, download_id
-        )
-    )
+    from hangma_bot.bootstrap import build_public_archive_client
+    from hangma_bot.adapters.official.archive_download import collect_test_room
+    config = json.loads(Path(args.runtime_config).read_text())
+    with build_public_archive_client(config) as client:
+        result = collect_test_room(client, args.room, args.batch, Path(args.out))
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return EXIT_OK
+
+
+def _cmd_postgame(args: argparse.Namespace) -> int:
+    from hangma_bot.bootstrap import DEFAULT_RULESET_VERSION, build_public_archive_client
+    from hangma_bot.adapters.official.archive_download import collect_test_room
+    from hangma_bot.offline.postgame import finalize_session
+    if args.download:
+        if not args.runtime_config or not args.room or args.batch is None:
+            raise ValueError("--download 需要 --runtime-config、--room 和 --batch")
+        with build_public_archive_client(json.loads(Path(args.runtime_config).read_text())) as client:
+            collect_test_room(client, args.room, args.batch, Path(args.session))
+    config = json.loads(Path(args.rule_config).read_text()) if args.rule_config else None
+    result = finalize_session(Path(args.session), source_namespace=args.source_namespace,
+        ruleset_version=args.ruleset_version or DEFAULT_RULESET_VERSION, rule_config=config)
+    print(json.dumps({k: result[k] for k in ("job", "run_count", "official_documents", "audit_complete", "bundle_verified")}, ensure_ascii=False, indent=2))
+    print("数据用途与未检查项：" + str(Path(result["job"]) / "report.json"))
     return EXIT_OK
 
 
@@ -376,13 +249,16 @@ def build_arg_parser() -> argparse.ArgumentParser:
     watch_parser = subparsers.add_parser("watch", help="监控审计根的状态变化")
     watch_parser.add_argument("runs_root", help="审计根目录（含 runs/）")
     watch_parser.add_argument("--json", action="store_true", help="逐行 JSON 输出")
-    watch_parser.add_argument("--interval", type=float, default=1.0, help="轮询间隔秒数")
+    watch_parser.add_argument("--interval", type=float, default=5.0, help="轮询间隔秒数")
+
+    watch_parser.add_argument("--once", action="store_true", help="只读一次状态后退出")
+    watch_parser.add_argument("--until-closed", action="store_true", help="所有已发现运行关闭后退出")
 
     collect_parser = subparsers.add_parser("collect-test-room", help="下载测试房间赛后数据")
     collect_parser.add_argument("--runtime-config", required=True, help="运行配置 JSON（取 base_url）")
     collect_parser.add_argument("--room", required=True, help="房间 id")
     collect_parser.add_argument("--batch", required=True, type=int, help="批次号")
-    collect_parser.add_argument("--out", required=True, help="bundle 根目录")
+    collect_parser.add_argument("--out", required=True, help="session 目录；原文写入其 official/ 子目录")
 
     convert_parser = subparsers.add_parser("convert", help="bundle → 统一牌谱数据集")
     convert_parser.add_argument("bundle", help="bundle 目录")
@@ -397,12 +273,53 @@ def build_arg_parser() -> argparse.ArgumentParser:
     pack_parser.add_argument("bundle", help="bundle 目录")
     pack_parser.add_argument("--out", required=True, help="归档输出路径")
 
+    post = subparsers.add_parser("postgame", help="下载（可选）并生成证据包、数据集和规则诊断")
+    post.add_argument("session", help="含 audit/ 或 slot-*/runs/ 和 official/ 的会话目录")
+    post.add_argument("--source-namespace", default="hangma-official")
+    post.add_argument("--ruleset-version", help="本次重分析的规则版本；默认当前实现版本")
+    post.add_argument("--rule-config", help="JSON：base_score 与 you_cai_bi_kao；缺失时不猜历史配置")
+    post.add_argument("--download", action="store_true")
+    post.add_argument("--runtime-config")
+    post.add_argument("--room")
+    post.add_argument("--batch", type=int)
+    migrate = subparsers.add_parser("migrate-runs", help="关闭旧运行后迁入规范根，保留兼容路径")
+    migrate.add_argument("--legacy", default="runs")
+    migrate.add_argument("--artifacts", default="artifacts")
+    history = subparsers.add_parser("import-history", help="按原文哈希归并历史官方牌谱")
+    history.add_argument("sources", nargs="+", type=Path)
+    history.add_argument("--out", type=Path, default=Path("artifacts/sessions/history"))
+    unpack = subparsers.add_parser("unpack", help="核验归档并安全解包到新目录")
+    unpack.add_argument("archive")
+    unpack.add_argument("--out", required=True)
+    catalog = subparsers.add_parser("catalog", help="更新全部会话的相对路径索引")
+    catalog.add_argument("--artifacts", type=Path, default=Path("artifacts"))
     return parser
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     args = build_arg_parser().parse_args(argv)
     try:
+        if args.command == "catalog":
+            from hangma_bot.offline.artifact_store import catalog_sessions
+            result = catalog_sessions(args.artifacts)
+            print(json.dumps({"sessions": len(result["sessions"]), "catalog": str(args.artifacts / "catalog.json")}, ensure_ascii=False))
+            return EXIT_OK
+        if args.command == "postgame":
+            return _cmd_postgame(args)
+        if args.command == "migrate-runs":
+            from hangma_bot.offline.artifact_store import migrate_runs
+            print(json.dumps(migrate_runs(args.legacy, args.artifacts), ensure_ascii=False))
+            return EXIT_OK
+        if args.command == "import-history":
+            from hangma_bot.offline.artifact_store import import_official_history
+            result = import_official_history(args.sources, args.out, project_root=Path.cwd().resolve())
+            print(json.dumps({"unique_documents": result["unique_documents"], "source_copies": result["source_copies"],
+                "partial_runs": len(result["partial_audit_runs"]), "errors": result["errors"], "report": str(args.out / "history-import.json")}, ensure_ascii=False))
+            return EXIT_OK
+        if args.command == "unpack":
+            from hangma_bot.adapters.recording.bundle import extract_bundle
+            print(json.dumps(extract_bundle(args.archive, args.out), ensure_ascii=False))
+            return EXIT_OK
         if args.command == "validate":
             return _cmd_validate(args)
         if args.command == "inspect":
