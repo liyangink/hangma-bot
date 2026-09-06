@@ -12,6 +12,9 @@
 - F2 本人 pass（事件回显带座位 / POST 接受回执）抑制本响应周期再投递；
 - F3 409-on-pass 按"本窗对我关闭"收口（不再改提下一个 pass）；
 - F4 window_deadline_ms 官方绝对截止驱动边界定时。
+
+2026-09-06：碰阶段 pass 只做本地延后，不发 HTTP；涉及 pass 已接受/409
+的保护回归使用吃阶段，保留旧取证针对的重复键、已响应与截止不变量。
 """
 
 from __future__ import annotations
@@ -34,13 +37,14 @@ from hangma_bot.kernel.actions import Pass, WindowKey, WindowPhase
 from _official_testkit import load_fixture, make_game_session
 
 
-def _peng_doc(seq: int, *, deadline_ms=None, last_discard="6b", responding=(1, 2, 3)):
+def _peng_doc(seq: int, *, deadline_ms=None, last_discard="6b", responding=(1, 2, 3), phase="response_peng"):
     doc = load_fixture("state_response_snapshot_peng.json")
     doc["seq"] = seq
     snap = doc["snapshot"]
+    snap["phase"] = phase
     snap["last_discard"] = last_discard
-    snap["responding_seats"] = list(responding)
-    snap["turn"] = 0  # 弃牌者=座位 0（取证样本）
+    snap["responding_seats"] = [2] if phase == "response_chi" else list(responding)
+    snap["turn"] = 1 if phase == "response_chi" else 0  # 吃阶段座位2承接前家座位1弃牌
     if deadline_ms is not None:
         snap["window_deadline_ms"] = deadline_ms
     return doc
@@ -87,7 +91,10 @@ class TestKeyStabilityF1:
             (200, json.dumps(_peng_doc(2))),
             (200, json.dumps(_events_doc(3, [_pass_event(3, 3)]))),
             (200, json.dumps(_peng_doc(5))),
+            # 快照5超前：从旧游标3补领已知公开过牌，不再应用到牌面。
+            (200, json.dumps(_events_doc(5, [_pass_event(4, 1), _pass_event(5, 0)]))),
             (200, json.dumps(load_fixture("state_response_snapshot_draw.json"))),
+            (200, json.dumps({"pending": True})),  # 从旧游标5尝试一次补领
         ]
         transport.handler = _state_handler(queue)
         session = make_game_session(transport=transport, clock=clock)
@@ -107,9 +114,9 @@ class TestSelfPassSuppressionF2:
     async def test_forensic_replay_no_duplicate_after_own_pass(
         self, transport, clock
     ) -> None:
-        """完整取证序列：pass 接受 → 三连 pass 事件（含本人）→ 快照@5 → 零二次提交。"""
+        """真实吃窗口 pass 接受 → 回显含本人 → 快照@5 → 零二次提交。"""
 
-        queue = [(200, json.dumps(_peng_doc(2)))]
+        queue = [(200, json.dumps(_peng_doc(2, phase="response_chi")))]
         transport.handler = _state_handler(queue)
         session = make_game_session(transport=transport, clock=clock)
 
@@ -122,8 +129,9 @@ class TestSelfPassSuppressionF2:
             (200, json.dumps(_events_doc(5, [
                 _pass_event(3, 3), _pass_event(4, 2), _pass_event(5, 1),
             ]))),
-            (200, json.dumps(_peng_doc(5))),
+            (200, json.dumps(_peng_doc(5, phase="response_chi"))),
             (200, json.dumps(load_fixture("state_response_snapshot_draw.json"))),
+            (200, json.dumps({"pending": True})),  # 从旧游标5补领，不循环
         ]
         transport.handler = _state_handler(queue2)
         nxt = await asyncio.wait_for(session.next_item(), timeout=2)
@@ -137,13 +145,13 @@ class TestConflictPassAbsorbF3:
     async def test_409_on_pass_closes_window_for_self(self, transport, clock) -> None:
         """pass 被 409（官方确认已表态）→ Closed 收口，不改提下一个 pass。"""
 
-        transport.handler = _state_handler([(200, json.dumps(_peng_doc(2)))])
+        transport.handler = _state_handler([(200, json.dumps(_peng_doc(2, phase="response_chi")))])
         session = make_game_session(transport=transport, clock=clock)
         window = await asyncio.wait_for(session.next_item(), timeout=2)
 
         transport.handler = _state_handler([
             ConflictError(409, "INVALID_ACTION", "dup", raw_text='{"code":"INVALID_ACTION"}'),
-            (200, json.dumps(_peng_doc(2))),  # 刷新：同窗仍开（官方口径）
+            (200, json.dumps(_peng_doc(2, phase="response_chi"))),  # 刷新：真实吃窗口仍开
         ])
         outcome = await asyncio.wait_for(session.submit(_attempt(window.window_key)), timeout=2)
         assert isinstance(outcome, SubmitRejectedClosed), "pass 的 409 应按本窗关闭收口"

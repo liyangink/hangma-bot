@@ -69,6 +69,7 @@ async def test_409_closed_migrated_window_still_delivered(transport, clock):
         ('GET', _json(peng)),
         ('POST', ConflictError(409, 'INVALID_ACTION', 'no')),
         ('GET', _json(_migrated_draw_snapshot())),
+        ('GET', _json({'pending': True})),  # 旧游标120补领一次，窗口仍必须交付
     ]
 
     def handler(method=None, **kw):

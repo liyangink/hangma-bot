@@ -34,6 +34,17 @@ EVENT_KIND_DISCARDED = "tile_discarded"
 EVENT_KIND_GANG = "gang"
 
 
+def is_passive_observation_event(event: PublicEvent) -> bool:
+    """确认仅表态、不会代替本人出牌的事件；未知 timeout 不能视为无副作用。
+
+    官方 v15 归档的响应超时为 data.kind=response；kind=discard 是自动
+    弃牌后的通知。缺 kind 或新增 kind 尚无法排除自动动作，必须保留未知。
+    """
+    return event.kind == "pass" or (
+        event.kind == "timeout" and event.detail_kind == "response"
+    )
+
+
 def wealth_action_restriction(action: Action) -> Optional[str]:
     """财神对单个动作的硬限制；返回 None 表示不受限，否则返回可审计原因。
 

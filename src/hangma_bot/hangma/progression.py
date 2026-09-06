@@ -408,8 +408,8 @@ def _remove_n_from_hand(
 def _settle_win_exact(state: ProgressionState, winner: int) -> HandResult:
     """胡牌结算：同一 settlement 规则源，链/piao/爆头取推进状态的精确值。
 
-    与线上 score() 的差异：线上 piao 只能按公共历史 best-effort 推断
-    （settlement.infer_piao_count），模拟世界持有精确链状态，直接传入。
+    线上 score() 只接受可见连续历史或已知字段确认的精确 piao；模拟世界
+    持有精确链状态，直接传入。未知链内飘数不能用于确定结算。
     分解失败属内部不一致（胡候选已通过 hand_analysis 验证），立即失败。
     """
     s = state.seats[winner]

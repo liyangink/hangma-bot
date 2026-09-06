@@ -1,27 +1,9 @@
-"""每 game_id 的序号与快照同步状态机（官方适配器内部实现）。
+"""官方场次的串行观察同步状态机。
 
-核心语义（接口协议 §8 与模块规范）：
-
-- 重复 seq 幂等忽略；
-- seq 缺口、gap=true、未知关键事件 → 返回 NEEDS_REBUILD，由调用方用 seq=0 全量重建；
-- 全量快照是规范真相：apply_full_snapshot 整体替换本地状态与公开历史；
-  唯一例外是跨重建存活的触发弃牌记忆 _response_trigger（(round_no, seq,
-  牌码, 座位)）：测试房响应阶段 last_discard 为纯牌码字符串（无 seq）且
-  每次交付前全量重建清空事件历史，该记忆是响应窗口 WindowKey.trigger_seq
-  身份稳定的兜底来源（集成阶段第二轮加固 R2）；仅在局号变化时重置。
-- 增量优先的摸牌窗口（游标纪律修复）：客户端局面 = 快照 + 后续增量事件
-  （指南 v14 §2.1），事件流只含自己的摸牌。本人 tile_drawn 是事件流最后
-  一条时，摸牌窗口直接由增量事实送达（incremental_draw_window /
-  incremental_draw_observation），不再逐批 seq=0 刷新；快照刷新只在事件
-  流无法推导权威事实时发生（见 events_need_authoritative_refresh 的
-  「为什么」），因此增量送达时 my_hand 与最后快照必然一致（本人改牌动作
-  全部落入刷新触发集），无需本地推演手牌。
-- 未知事件类型采取"保守重建一次 + 学习忽略"策略：第一次出现按关键事件处理
-  （权威快照会吸收其效果，不丢状态），之后同类型仅记录，避免重建风暴。
-  这是工程决策：官方未提供未知事件的可忽略性判据（API 文档 §2.3）。
-- 官方哨兵值（如事件 seat=-1）能通过 DTO 校验但会被 kernel 值对象拒绝：
-  事务性预检中的投影构造将其转为 NEEDS_REBUILD，连续出现收敛到
-  rebuild_loop 分类故障（安全，不会裸抛）。
+当前牌面来自权威快照及可证明的后续增量；当前单局已收到的可见历史
+独立保存，不因快照刷新被删除，也不重复应用到牌面。未知关键事件、序号
+缺口与冲突重复须恢复；恢复不能补造缺失历史或自动学习未知事件语义。
+所有窗口和提交复核使用 current_observation 的同一份不可变观察。
 """
 
 from __future__ import annotations
@@ -33,6 +15,9 @@ from typing import Optional, Tuple
 from hangma_bot.kernel.actions import Tile, WindowKey, WindowPhase
 from hangma_bot.kernel.config import TimingConfig
 from hangma_bot.kernel.observation import PlayerObservation, PublicDiscard, PublicEvent
+from hangma_bot.hangma.observation_rules import (
+    enrich_observation, recompute_draw_rule_state, compare_observation_transition,
+)
 
 from . import projector
 from .dto import ParsedEvent, ParsedSnapshot, StateResponse
@@ -83,9 +68,16 @@ class ProtocolSyncState:
         self.timing = timing
         self.last_seq = 0
         self.snapshot = None  # Optional[ParsedSnapshot]
-        self.history = []  # PublicEvent 列表；全量快照替换时重置
+        self.history = []  # 当前单局已接收的可见历史；快照吸收不删除
+        self.history_complete = False
+        self.history_origin_known = False
+        # 排除式下界：本手需核对的已知历史范围为 (floor, snapshot.seq]。
+        # 中途首次接入取当前水位作锚点，但 origin_known=False 保留未知前缀。
+        self.history_floor_seq: Optional[int] = None
+        self._observation_issues = set()
+        self.last_transition_checks = ()  # 本次快照与可推导前态的核对结果，供审计
+        self._trigger_is_estimated = False
         self.finished = False
-        self.learned_event_types = set()  # 重建后学习到的可忽略未知事件类型
         self._observation_cache = None  # 延迟构造的权威观察缓存
         # 跨重建存活的触发弃牌记忆 (round_no, seq, 牌码, 座位)。
         # 应用全量快照不清空它（仅局号变化时重置）：全量重建会清空事件
@@ -100,36 +92,260 @@ class ProtocolSyncState:
         # 实证 pass@4 s2）或本人 POST pass 接受回执得知。新弃牌/新局/draw
         # 阶段重置。
         self._self_responded = False
+        self._frozen_response_trigger = None
 
     @property
     def has_snapshot(self) -> bool:
         return self.snapshot is not None
 
-    def apply_full_snapshot(self, snapshot: ParsedSnapshot, *, finished: bool = False) -> None:
-        """seq=0 权威快照整体替换：历史重置，序号对齐。
+    def apply_full_snapshot(self, snapshot: ParsedSnapshot, *, finished: bool = False, events=()) -> None:
+        """快照替换桌面，保留同单局已接收历史；缺失历史不能由快照补造。"""
+        previous = self.snapshot
+        previous_round_end = max((e.seq for e in self.history if e.kind == "round_ended"), default=None)
+        new_round = previous is None or previous.round_no != snapshot.round_no
+        if previous is not None and snapshot.seq < self.last_seq:
+            raise DtoError("snapshot.seq 早于已消费水位")
+        # 全量报文可同时带事件，也可能已串行补领。先校验整批，再仅补历史。
+        # 快照前事件绝不能再推进手牌/牌河；快照水位不代表事件已经接收。
+        incoming = {}
+        for event in events:
+            if event.seq > snapshot.seq:
+                raise DtoError("快照附带事件超出快照水位")
+            public = projector.public_event(event)
+            if public.kind == "tile_drawn" and public.seat != snapshot.seat and public.tiles:
+                public = replace(public, tiles=())
+            if public.seq in incoming and incoming[public.seq] != public:
+                raise DtoError("快照附带事件存在冲突重复")
+            incoming[public.seq] = public
+        if (not finished and snapshot.phase not in ("finished", "settled")
+                and any(event.kind == "game_ended" for event in incoming.values())):
+            raise DtoError("活动快照与场次终局事件矛盾")
+        scope_unknown = False
+        if new_round:
+            # 事件没有单局标识：只能用公开终局边界隔开，不能把上一手混进新手。
+            endings = sorted(seq for seq, event in incoming.items() if event.kind == "round_ended")
+            terminal = finished or snapshot.phase in ("finished", "settled")
+            if endings:
+                boundary = (endings[-2] if len(endings) > 1 else None) if terminal else endings[-1]
+                if boundary is not None:
+                    incoming = {seq: event for seq, event in incoming.items() if seq > boundary}
+                elif terminal:
+                    # 终态只有一个终局标识，终局之前的事件不能可靠归属。
+                    incoming = {seq: event for seq, event in incoming.items() if seq >= endings[-1]}
+                    scope_unknown = True
+            elif incoming:
+                initial_contiguous = (previous is None and snapshot.round_no == 1
+                                      and min(incoming) == 1 and len(incoming) == snapshot.seq)
+                if not initial_contiguous:
+                    incoming = {}
+                    scope_unknown = True
+        retained = {} if new_round else {event.seq: event for event in self.history}
+        for seq, public in incoming.items():
+            if seq in retained and retained[seq] != public:
+                raise DtoError("补领事件与已接收历史冲突")
+        old_trigger = self._response_trigger
+        self.last_transition_checks = ()
+        if not new_round:
+            retained.update(incoming)
+            self.history = [retained[seq] for seq in sorted(retained)]
+        if previous is not None and not new_round and not finished:
+            before = replace(projector.observation(previous, tuple(e for e in self.history if e.seq <= previous.seq), self.game_id), consumed_seq=previous.seq)
+            after = replace(projector.observation(snapshot, tuple(self.history), self.game_id), consumed_seq=snapshot.seq)
+            self.last_transition_checks = compare_observation_transition(
+                before, tuple(e for e in self.history if e.seq > previous.seq), after)
+            self._observation_issues.update(check for check in self.last_transition_checks if check.startswith("god_mismatch:"))
+        if new_round:
+            self.history = [incoming[seq] for seq in sorted(incoming)]
+            self._observation_issues.clear()
+            # 无弃牌/副露、无链且处于发牌或庄家初始摸牌，才可证明单局起点。
+            self.history_complete = (
+                not any(snapshot.discards) and not any(snapshot.melds_raw)
+                and snapshot.god_chain_count == 0
+                and (snapshot.phase == "deal" or
+                     (snapshot.phase == "draw" and snapshot.turn == snapshot.dealer))
+            )
+            initial_position = self.history_complete
+            origin = None
+            raw_endings = sorted({e.seq for e in events if e.type == "round_ended"})
+            terminal = finished or snapshot.phase in ("finished", "settled")
+            if raw_endings and not terminal:
+                origin = raw_endings[-1]
+            elif len(raw_endings) > 1 and terminal:
+                origin = raw_endings[-2]
+            elif previous is None and snapshot.round_no == 1 and incoming and min(incoming) == 1 and len(incoming) == snapshot.seq:
+                origin = 0
+            if (origin is None and previous is not None
+                    and snapshot.round_no == previous.round_no + 1):
+                if previous_round_end is not None:
+                    origin = previous_round_end
+            self.history_origin_known = origin is not None or initial_position
+            self.history_floor_seq = origin if origin is not None else snapshot.seq
+        elif snapshot.seq > self.last_seq:
+            covered = {seq for seq in incoming if self.last_seq < seq <= snapshot.seq}
+            if len(covered) != snapshot.seq - self.last_seq:
+                self.history_complete = False
+                self._observation_issues.add("history_gap_snapshot")
 
-        触发弃牌记忆跨重建存活，仅当局号变化时重置（新一轮弃牌出现前
-        旧局记忆不得串局参与第三级解析）。
-        """
+        if scope_unknown:
+            self.history_complete = False
+            self._observation_issues.add("new_round_event_scope_unknown")
 
+        # 结构化触发序号能证明新周期；纯牌码则结合牌河变化识别同座同码再弃。
+        raw = snapshot.last_discard
+        new_trigger = None
+        if isinstance(raw, tuple):
+            new_trigger = (snapshot.round_no, raw[2], raw[1], raw[0])
+            self._trigger_is_estimated = False
+        elif isinstance(raw, str) and snapshot.phase in ("response_peng", "response_chi"):
+            same_board = previous is not None and previous.discards == snapshot.discards and previous.melds_raw == snapshot.melds_raw
+            if (old_trigger is not None and old_trigger[0] == snapshot.round_no
+                    and old_trigger[2:] == (raw, snapshot.turn) and same_board):
+                new_trigger = old_trigger
+            else:
+                matching = self._last_discarded_event()
+                if matching is not None and matching[1:] == (raw, snapshot.turn) and matching[0] > (old_trigger[1] if old_trigger else -1):
+                    new_trigger = (snapshot.round_no,) + matching
+                    self._trigger_is_estimated = False
+                else:
+                    new_trigger = (snapshot.round_no, snapshot.seq, raw, snapshot.turn)
+                    self._trigger_is_estimated = True
+        frozen = self._frozen_response_trigger
+        same_cycle = (previous is not None and previous.round_no == snapshot.round_no
+                      and previous.discards == snapshot.discards
+                      and previous.melds_raw == snapshot.melds_raw
+                      and snapshot.phase in ("response_peng", "response_chi"))
+        if frozen is not None and same_cycle and new_trigger is not None and new_trigger[2:] == frozen[2:]:
+            new_trigger = frozen
+            self._trigger_is_estimated = True
+        elif not same_cycle or (new_trigger is not None and frozen is not None and new_trigger[2:] != frozen[2:]):
+            self._frozen_response_trigger = None
+        if new_round or snapshot.phase == "draw" or (new_trigger is not None and new_trigger != old_trigger):
+            self._self_responded = False
         if (
             self._response_trigger is not None
             and self._response_trigger[0] != snapshot.round_no
         ):
             self._response_trigger = None  # 局号变化：旧局记忆失效
         # 响应周期结束（进入 draw/新局）时清除本人表态标记；响应阶段内的
-        # 计划性刷新（边界定时/409 刷新）不清除——本人的 pass 覆盖整个
-        # 响应周期（peng+chi，2026-09-05 取证：peng 窗 pass 后 chi 窗再
-        # 提交吃 409）
+        # 计划性刷新（边界定时/409 刷新）不清除。此前显式碰阶段 pass
+        # 后吃提交曾遇到 409，因此新路径不在碰阶段发送 pass；不能只靠
+        # 切换 phase 清标记并假定官方重新授予动作权。
         if snapshot.phase == "draw" or (
             self.snapshot is not None and snapshot.round_no != self.snapshot.round_no
         ):
             self._self_responded = False
+        if any(e.type == "tile_drawn" and e.seat != snapshot.seat and e.tiles for e in events):
+            self.history_complete = False
+            self._observation_issues.add("unexpected_other_draw")
+        if any(e.type not in KNOWN_EVENT_TYPES for e in events):
+            self.history_complete = False
+            self._observation_issues.add("unknown_snapshot_event")
+        for public in incoming.values():
+            if (public.kind == "chi" and len(public.tiles) != 3) or (
+                    public.kind in ("gang", "timeout") and public.detail_kind is None):
+                self._observation_issues.add("event_detail_incomplete:" + public.kind)
         self.snapshot = snapshot
         self.last_seq = snapshot.seq
-        self.history = []
+        if new_trigger is not None:
+            self._response_trigger = new_trigger
+        self._restore_current_pass()
         self._observation_cache = None
         self.finished = self.finished or finished
+        self._refresh_history_completeness()
+
+    def history_missing_ranges(self) -> Tuple[Tuple[int, int], ...]:
+        """返回当前快照已吸收但未收到原事件的闭区间，不遍历大段序号。
+
+        未知前缀由 history_origin_known 单独表达；本方法空结果不代表完整。
+        晚于快照的正常增量尚未被快照吸收，不属于此补史账本。
+        """
+        if self.snapshot is None or self.history_floor_seq is None:
+            return ()
+        cursor = self.history_floor_seq + 1
+        upper = self.snapshot.seq
+        ranges = []
+        for seq in sorted({e.seq for e in self.history if cursor <= e.seq <= upper}):
+            if seq > cursor:
+                ranges.append((cursor, seq - 1))
+            cursor = seq + 1
+        if cursor <= upper:
+            ranges.append((cursor, upper))
+        return tuple(ranges)
+
+    def _refresh_history_completeness(self) -> None:
+        """只有真实补齐且起点可证明时恢复完整性，其他降级原因不可洗掉。"""
+        missing = self.history_missing_ranges()
+        other_issues = self._observation_issues - {"history_gap_snapshot"}
+        if missing:
+            self._observation_issues.add("history_gap_snapshot")
+            self.history_complete = False
+        elif self.history_origin_known and not other_issues:
+            self._observation_issues.discard("history_gap_snapshot")
+            self.history_complete = True
+        else:
+            self.history_complete = False
+
+    def merge_history(self, events: Tuple[ParsedEvent, ...], *, round_no: int) -> None:
+        """补入调用方已证明属于当前手、且不晚于快照的事件；不重放牌面。
+
+        全批验证后才提交。未知事件、冲突、越界或私有牌泄漏抛 DtoError，
+        交会话恢复；原始证据由调用方审计保存。仅补齐当前弃牌的本人pass
+        动作权事实，禁止借补史重新建立已发出的窗口身份。
+        """
+        if self.snapshot is None or round_no != self.snapshot.round_no:
+            raise DtoError("补史单局与当前权威快照不一致")
+        retained = {e.seq: e for e in self.history}
+        incoming = {}
+        issues = set()
+        for event in events:
+            if event.seq <= 0 or event.seq > self.snapshot.seq:
+                raise DtoError("补史事件不在当前快照已吸收范围")
+            if self.history_origin_known and self.history_floor_seq is not None and event.seq <= self.history_floor_seq:
+                raise DtoError("补史事件早于已证明的本手起点")
+            if event.type not in KNOWN_EVENT_TYPES:
+                raise DtoError("未知补史事件:" + event.type)
+            public = projector.public_event(event)
+            if public.kind == "tile_drawn" and public.seat != self.snapshot.seat and public.tiles:
+                raise DtoError("补史事件包含他家私有摸牌")
+            if (event.seq in retained and retained[event.seq] != public) or (event.seq in incoming and incoming[event.seq] != public):
+                raise DtoError("补史事件存在冲突重复")
+            incoming[event.seq] = public
+            if (public.kind == "chi" and len(public.tiles) != 3) or (public.kind in ("gang", "timeout") and public.detail_kind is None):
+                issues.add("event_detail_incomplete:" + public.kind)
+        merged = {**retained, **incoming}
+        ordered = [merged[seq] for seq in sorted(merged)]
+        ended = False
+        game_ended = False
+        for event in ordered:
+            if game_ended or (ended and event.kind != "game_ended"):
+                raise DtoError("补史终局边界后仍有活动事件")
+            ended = ended or event.kind == "round_ended"
+            game_ended = event.kind == "game_ended"
+        if self.snapshot.phase not in ("settled", "finished") and any(e.kind in ("round_ended", "game_ended") for e in incoming.values()):
+            raise DtoError("活动快照与补史终局事件矛盾")
+        if self._trigger_is_estimated and self._response_trigger is not None:
+            self._frozen_response_trigger = self._response_trigger
+        self.history = ordered
+        self._observation_issues.update(issues)
+        self._restore_current_pass()
+        self._refresh_history_completeness()
+        self._observation_cache = None
+
+    def _restore_current_pass(self) -> None:
+        """由完整的当前弃牌后缀恢复本人表态，窗口身份仍使用原冻结序号。"""
+        if self.snapshot is None:
+            return
+        trigger = self._response_trigger
+        if trigger is not None and self.snapshot.phase in ("response_peng", "response_chi"):
+            # 最后的当前弃牌事件可能刚补到，比估算触发序号更早；仅用于绑定pass。
+            fact = self._last_discarded_event()
+            trigger_seq = trigger[1]
+            tail_complete = (fact is not None and
+                             sum(fact[0] <= e.seq <= self.snapshot.seq for e in self.history) == self.snapshot.seq - fact[0] + 1)
+            if self._trigger_is_estimated and fact is not None and tail_complete and fact[1:] == trigger[2:] and fact[0] <= trigger_seq:
+                trigger_seq = fact[0]
+            if any(e.kind == "pass" and e.seat == self.snapshot.seat and e.seq > trigger_seq for e in self.history):
+                self._self_responded = True
 
     def apply_events(self, events, *, gap: bool = False) -> SyncResult:
         """按序归并增量事件；返回同步决策，绝不抛出网络/协议异常。
@@ -148,8 +364,19 @@ class ProtocolSyncState:
         ordered = sorted(events, key=lambda e: e.seq)
         expected = self.last_seq
         projected = []
+        seen = {event.seq: event for event in self.history}
+        ended = False
+        game_ended = False
         for event in ordered:
+            if game_ended or (ended and event.type != "game_ended"):
+                return SyncResult(SyncDecision.NEEDS_REBUILD, ("events_after_round_ended",))
+            try:
+                public = projector.public_event(event)
+            except (ValueError, DtoError) as exc:
+                return SyncResult(SyncDecision.NEEDS_REBUILD, ("projection_failed:" + str(exc)[:80],))
             if event.seq <= expected:
+                if event.seq in seen and seen[event.seq] != public:
+                    return SyncResult(SyncDecision.NEEDS_REBUILD, ("conflicting_duplicate:{}".format(event.seq),))
                 duplicates.append(event.seq)  # 重复 seq 幂等忽略
                 continue
             if event.seq != expected + 1:
@@ -158,8 +385,8 @@ class ProtocolSyncState:
                     ("seq_gap:{}".format(event.seq),),
                     tuple(duplicates),
                 )
-            if event.type not in KNOWN_EVENT_TYPES and event.type not in self.learned_event_types:
-                # 未知关键事件：保守重建一次，重建成功后学习忽略该类型
+            if event.type not in KNOWN_EVENT_TYPES:
+                # 未知关键事件每次都需权威吸收；一次恢复不证明该类型安全
                 return SyncResult(
                     SyncDecision.NEEDS_REBUILD,
                     ("unknown_event:{}".format(event.type),),
@@ -168,7 +395,8 @@ class ProtocolSyncState:
             try:
                 # 投影构造在预检内完成：构造失败（非法牌码/座位等）整批
                 # 拒绝且游标不推进，保持事务性
-                projected.append((event, projector.public_event(event)))
+                projected.append((event, public))
+                seen[event.seq] = public
             except (ValueError, DtoError) as exc:
                 return SyncResult(
                     SyncDecision.NEEDS_REBUILD,
@@ -176,14 +404,28 @@ class ProtocolSyncState:
                     tuple(duplicates),
                 )
             expected = event.seq
+            ended = ended or event.type == "round_ended"
+            game_ended = event.type == "game_ended"
         for event, public in projected:  # 预检全通过后统一应用
-            self.history.append(public)
+            if public.kind == "tile_drawn" and public.seat != self.snapshot.seat and public.tiles:
+                # 玩家端不应收到他家摸牌的牌值；空牌值摸牌合法，私有牌不可送给策略。
+                self.history_complete = False
+                self._observation_issues.add("unexpected_other_draw")
+            else:
+                self.history.append(public)
+            if (public.kind == "chi" and len(public.tiles) != 3) or (
+                public.kind in ("gang", "timeout") and public.detail_kind is None
+            ):
+                self.history_complete = False
+                self._observation_issues.add("event_detail_incomplete:" + public.kind)
             self.last_seq = event.seq
             if public.kind == "tile_discarded":
                 discard = self._event_discard_fact(public)
                 if discard is not None:
                     # 新一轮弃牌出现：覆盖跨重建触发记忆（R2 加固来源 (a)）
                     self._response_trigger = (self.snapshot.round_no,) + discard
+                    self._trigger_is_estimated = False
+                    self._frozen_response_trigger = None
                 # 新弃牌开启新响应周期：本人表态标记重置（F2）
                 self._self_responded = False
             if public.kind == "pass" and public.seat == self.snapshot.seat:
@@ -196,50 +438,43 @@ class ProtocolSyncState:
         return SyncResult(SyncDecision.ACCEPTED, (), tuple(duplicates))
 
     def note_rebuild_absorbed(self, event_type: str) -> None:
-        """权威重建完成后登记"已吸收的未知事件类型"，后续不再触发重建。"""
-
-        self.learned_event_types.add(event_type)
+        """只记录未知类型已被快照吸收；不能据一次成功将类型升级为可忽略。"""
+        self.history_complete = False
+        self._observation_issues.add("unknown_event:" + event_type)
+        self._observation_cache = None
 
     def events_need_authoritative_refresh(self, events) -> bool:
-        """增量事件是否需要紧跟一次权威快照刷新才能继续投递窗口。
+        """只在当前实现不能完整推进必要事实时查询快照。
 
-        为什么（官方依据，指南 v14 §2.1）：快照是规范真相，阶段
-        （phase/responding_seats/turn）、神位状态（baotou/chain_count/
-        catch_play）与本人手牌张数的权威表达只在快照中出现；事件流只含
-        自己的摸牌与公开动作。以下事件改变无法从增量可靠推导的权威事实：
-
-        - 任意 tile_discarded：响应窗口（peng/chi 成员与相位）随弃牌开启，
-          且本人爆头/动作链/抓打圈状态都只在弃牌动作上变化（无对应增量
-          字段）——必须刷新才能给出合法窗口与新鲜神位状态；
-        - 任意 timeout：官方自动代打（自动胡/自动出最右一张/自动弃权）
-          改变的手牌与阶段无法从事件流推导；
-        - 本人 chi/peng/gang：副露消耗的本人手牌张数与牌面不进入事件流，
-          不刷新则后续摸牌窗口的 my_hand 不可信；
-        - 本人 tile_drawn 缺牌码：畸形事件无法构造 drawn_tile，快照兜底。
-
-        其余事件（他家摸牌、pass、round_ended、game_ended）不触发刷新：
-        摸牌窗口由增量事实直接送达（游标纪律目标：正常事件流零重建）。
-
-        另：已学习忽略的官方新增未知事件类型（P2-N3）一律触发刷新——官方
-        未提供其可忽略性判据，它是否改变本人权威事实不可知；保守刷新一次
-        （区别于 NEEDS_REBUILD：增量照常接受、只是跟一次 seq=0 快照吸收），
-        防止未知事件静默漂移手牌/窗口状态。
+        弃牌后的响应资格、所有人的副露/牌河变化、超时及单局边界仍由
+        权威快照确认。正常 pass 不刷新；本人普通摸牌仅在完整前态能
+        通过 hangma 重算规则状态时直接交付，否则恢复。减少请求不能以
+        丢失牌面或陈旧 god 为代价。
         """
 
         my_seat = self.snapshot.seat if self.snapshot is not None else None
         for event in events:
-            if event.type in self.learned_event_types:
+            if event.type == "tile_drawn" and event.seat != my_seat and event.tiles:
+                # 违规他家摸牌可能证明此前本人的窗口已结束；不可只脱敏后继续决策。
+                return True
+            if event.type not in KNOWN_EVENT_TYPES:
                 # P2-N3：见 docstring——已学习未知类型的行为不可知，保守刷新。
                 return True
-            if event.type in ("tile_discarded", "timeout"):
+            if event.type in ("tile_discarded", "timeout", "round_ended", "game_ended"):
                 return True
-            if event.type in ("chi", "peng", "gang") and event.seat == my_seat:
+            if event.type in ("chi", "peng", "gang"):
                 return True
             if (
                 event.type == "tile_drawn"
                 and event.seat == my_seat
                 and len(event.tiles) != 1
             ):
+                return True
+        if self.incremental_draw_window() is not None:
+            try:
+                self._observation_cache = self.incremental_draw_observation()
+            except ValueError:
+                # 摸牌前手牌形态不可靠，不能把陈旧 god 交给应用层。
                 return True
         return False
 
@@ -254,13 +489,17 @@ class ProtocolSyncState:
 
         return self._self_responded
 
+    @property
+    def response_cycle_key(self):
+        """当前弃牌周期身份，供适配器内部边界计时使用；不传给策略。"""
+        return self._response_trigger
+
     def incremental_draw_window(self):
         """增量路径判定的本人摸牌窗口；事件流末条不是本人摸牌时返回 None。
 
-        官方依据（指南 v14 §2.1）：draw 且 turn==seat 可出牌/胡/杠；事件流
-        只含自己的摸牌；本人摸牌事件产生后，直到本人出牌/超时前不会有任何
-        其他事件。因此「事件流最后一条是本人 tile_drawn」等价于「当前处于
-        本人摸牌窗口」。触发序号直接取摸牌事件 seq：与快照路径同值（摸牌
+        官方 draw 且 turn==seat 可出牌/胡/杠；v17 实测他家摸牌保留事件但
+        隐藏牌值。仅当事件流最后一条是本人且牌值完整的 tile_drawn，
+        才把它作为当前本人摸牌窗口；后续弃牌、超时等必须先刷新。触发序号直接取摸牌事件 seq：与快照路径同值（摸牌
         窗口期间无其他事件推进水位），且是真正的触发事件序号。
         """
 
@@ -271,7 +510,8 @@ class ProtocolSyncState:
             return None
         last = self.history[-1]
         if (
-            last.kind != "tile_drawn"
+            last.seq <= snapshot.seq or last.seq != self.last_seq
+            or last.kind != "tile_drawn"
             or last.seat != snapshot.seat
             or len(last.tiles) != 1
         ):
@@ -296,18 +536,18 @@ class ProtocolSyncState:
         直接沿用快照：本人一切改牌动作（弃牌/副露/超时）都在
         events_need_authoritative_refresh 的刷新触发集内，摸牌事件成为事件
         流末条时，自最后快照以来本人未发生任何改牌动作，快照 my_hand 即
-        当前手牌；drawn_tile 取本人摸牌事件牌码（指南 v14 §2.1：事件流
-        只含自己的摸牌）。牌河按事件流追加公开弃牌，保持估算口径与真实
+        当前手牌；drawn_tile 仅取本人摸牌事件牌码，他家摸牌不得提供牌值。牌河按事件流追加公开弃牌，保持估算口径与真实
         牌河一致；phase/turn/responding_seats 由摸牌语义推导（draw 阶段、
         本人行动、无响应成员）。
         """
 
-        base = self.current_observation()
+        base = self._snapshot_observation()
         if base is None or self.snapshot is None or not self.history:
             return None
         last = self.history[-1]
         if (
-            last.kind != "tile_drawn"
+            last.seq <= self.snapshot.seq or last.seq != self.last_seq
+            or last.kind != "tile_drawn"
             or last.seat != self.snapshot.seat
             or len(last.tiles) != 1
         ):
@@ -315,7 +555,7 @@ class ProtocolSyncState:
         drawn = last.tiles[0]
         # 最新弃牌以事件流增量事实为准；无增量弃牌时退回快照投影
         fact = self._last_discarded_event()
-        if fact is not None:
+        if fact is not None and fact[0] > self.snapshot.seq:
             seq, code, seat = fact
             last_discard = PublicDiscard(seat=seat, tile=Tile(code), seq=seq)
         else:
@@ -323,6 +563,8 @@ class ProtocolSyncState:
         discards = base.discards
         rows = None
         for event in self.history:
+            if event.seq <= self.snapshot.seq:
+                continue  # 已吸收的历史只供规则与审计，不重复追加牌河
             if event.kind != "tile_discarded" or len(event.tiles) != 1:
                 continue
             if rows is None:
@@ -340,7 +582,7 @@ class ProtocolSyncState:
             counts[self.snapshot.seat] += 1
             if remaining is not None:
                 remaining -= 1
-        return replace(
+        return enrich_observation(replace(
             base,
             phase="draw",
             turn_seat=self.snapshot.seat,
@@ -350,7 +592,8 @@ class ProtocolSyncState:
             discards=discards,
             hand_counts=tuple(counts),
             remaining_tile_count=remaining,
-        )
+            rule_state=recompute_draw_rule_state(base, drawn),
+        ))
 
     def current_window(self):
         """当前权威快照判定的我方动作窗口；无快照或无动作权时为 None。
@@ -364,17 +607,31 @@ class ProtocolSyncState:
 
         if self.snapshot is None:
             return None
+        incremental = self.incremental_draw_window()
+        if incremental is not None:
+            return incremental
+        if self._masked_draws_since_snapshot():
+            # 他家开始摸牌已证明旧响应结束；不能继续使用快照里的我方响应资格。
+            return None
         detected = projector.detect_window(
             self.snapshot,
             self.timing,
             self.game_id,
-            event_stream_discard=self._last_discarded_event(),
+            event_stream_discard=self._current_discard_event(),
             remembered_trigger=self._response_trigger,
         )
         if detected is not None and detected.trigger_discard is not None:
+            frozen = self._frozen_response_trigger
+            if frozen is not None and frozen[0] == self.snapshot.round_no and detected.trigger_discard[1:] == frozen[2:]:
+                detected = replace(detected,
+                                   window_key=replace(detected.window_key, trigger_seq=frozen[1]),
+                                   trigger_discard=(frozen[1], frozen[2], frozen[3]))
             self._response_trigger = (
                 self.snapshot.round_no,
             ) + detected.trigger_discard
+        if detected is not None and self._trigger_is_estimated and detected.window_key.phase in (WindowPhase.RESPONSE_PENG, WindowPhase.RESPONSE_CHI):
+            self._frozen_response_trigger = self._response_trigger
+            detected = replace(detected, trigger_projection_note="response 触发序号使用首次匹配快照 seq={} 估计；缺少官方弃牌序号".format(detected.window_key.trigger_seq))
         return detected
 
     def _last_discarded_event(self) -> Optional[Tuple[int, str, int]]:
@@ -408,15 +665,54 @@ class ProtocolSyncState:
         return (public.seq, public.tiles[0].code, public.seat)
 
     def current_observation(self) -> Optional[PlayerObservation]:
-        """当前权威观察（构造后缓存）；public_history 为最近全量快照之后的连续增量事件。"""
+        """同一水位唯一观察；快照和增量窗口共用该入口，不存在第二份陈旧观察。"""
 
         if self.snapshot is None:
             return None
         if self._observation_cache is None:
-            self._observation_cache = projector.observation(
-                self.snapshot, tuple(self.history), self.game_id
-            )
+            if self.incremental_draw_window() is not None:
+                self._observation_cache = self.incremental_draw_observation()
+            else:
+                self._observation_cache = enrich_observation(self._snapshot_observation())
         return self._observation_cache
+
+    def _snapshot_observation(self) -> Optional[PlayerObservation]:
+        """快照牌面与已收历史的基底；尚未重复应用快照前事件。"""
+        if self.snapshot is None:
+            return None
+        base = projector.observation(self.snapshot, tuple(self.history), self.game_id)
+        masked = self._masked_draws_since_snapshot()
+        if masked:
+            counts = list(base.hand_counts)
+            for event in masked:
+                counts[event.seat] += 1
+            base = replace(base, phase="draw", turn_seat=masked[-1].seat,
+                           responding_seats=(), drawn_tile=None,
+                           hand_counts=tuple(counts),
+                           remaining_tile_count=(None if base.remaining_tile_count is None
+                                                 else base.remaining_tile_count - len(masked)))
+        return replace(base, consumed_seq=self.last_seq, history_complete=self.history_complete,
+                       observation_issues=tuple(sorted(self._observation_issues)))
+
+    def _masked_draws_since_snapshot(self):
+        """只推进快照之后的他家公开摸牌数量，绝不需要或推测其牌值。"""
+        if self.snapshot is None:
+            return ()
+        return tuple(e for e in self.history if e.seq > self.snapshot.seq
+                     and e.kind == "tile_drawn" and e.seat != self.snapshot.seat and not e.tiles)
+
+    def _current_discard_event(self) -> Optional[Tuple[int, str, int]]:
+        """只让与当前触发身份一致的历史参与窗口识别；旧历史不能覆盖新快照。"""
+        fact = self._last_discarded_event()
+        if fact is None or self.snapshot is None:
+            return None
+        raw = self.snapshot.last_discard
+        if isinstance(raw, tuple):
+            return fact if fact == (raw[2], raw[1], raw[0]) or fact[0] > self.snapshot.seq else None
+        if isinstance(raw, str) and fact[1:] == (raw, self.snapshot.turn):
+            if self._response_trigger is None or fact[0] >= self._response_trigger[1]:
+                return fact
+        return None
 
     def final_scores(self) -> Optional[Tuple[int, int, int, int]]:
         """终局积分，固定按座位 0-3；仅终局快照有效。"""
@@ -424,4 +720,3 @@ class ProtocolSyncState:
         if self.snapshot is None:
             return None
         return self.snapshot.scores
-

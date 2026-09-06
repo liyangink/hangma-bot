@@ -174,6 +174,15 @@ def public_event(event: ParsedEvent) -> PublicEvent:
         seat=event.seat,
         tiles=tuple(Tile(code) for code in event.tiles),
         occurred_at_unix_sec=event.occurred_at_unix_sec,
+        detail_kind=event.detail_kind,
+        catch_play=event.catch_play,
+        gang_replenish=event.gang_replenish,
+        response_window=event.response_window,
+        result_draw=event.result_draw,
+        result_fan=event.result_fan,
+        result_details=event.result_details,
+        result_scores=event.result_scores,
+        final_scores=event.final_scores,
     )
 
 
@@ -360,7 +369,8 @@ def _response_trigger(
 ) -> Tuple[int, Optional[str], Optional[Tuple[int, str, int]]]:
     """响应窗口触发弃牌的四级解析；返回 (trigger_seq, 审计提示, 弃牌事实)。
 
-    - 第一级：sync_state 已应用事件流中最近一次 tile_discarded（权威增量事实）；
+    - 第一级：比较事件流最近弃牌与结构化 last_discard，采用较新的官方 seq；
+      纯牌码快照只采用座位、牌码匹配的历史弃牌或快照后的新事件；
     - 第二级：快照结构化 last_discard 携带的官方弃牌 seq（全量重建后
       唯一存活于快照内的权威来源）；
     - 第三级：跨重建存活的触发弃牌记忆（纯牌码 last_discard 场景的
@@ -370,9 +380,21 @@ def _response_trigger(
       提示必须进审计）。
     """
 
-    if event_stream_discard is not None:
-        return event_stream_discard[0], None, event_stream_discard
     structured = _structured_last_discard(snapshot)
+    if event_stream_discard is not None:
+        # 同单局刷新保留历史后，末条弃牌可能比快照中的新弃牌旧。结构化
+        # 官方 seq 不得被保留历史覆盖；真正更新的增量仍优先于旧快照。
+        if structured is not None:
+            if structured[0] >= event_stream_discard[0]:
+                return structured[0], None, structured
+            return event_stream_discard[0], None, event_stream_discard
+        raw = snapshot.last_discard
+        if event_stream_discard[0] > snapshot.seq or (
+            isinstance(raw, str)
+            and raw == event_stream_discard[1]
+            and snapshot.turn == event_stream_discard[2]
+        ):
+            return event_stream_discard[0], None, event_stream_discard
     if structured is not None:
         return structured[0], None, structured
     if remembered_trigger is not None and _remembered_matches(snapshot, remembered_trigger):
@@ -412,7 +434,7 @@ def detect_window(
 
     - draw 窗口：触发事件是本人摸牌，使用快照权威 seq（现状已稳定）。
     - response_peng/response_chi 窗口：触发事件是他人弃牌，按四级解析
-      （事件流 -> 结构化 last_discard -> 跨重建记忆 -> 快照 seq），
+      （比较事件流与结构化 last_discard -> 跨重建记忆 -> 快照 seq），
       详见 _response_trigger；解析命中时 trigger_discard 返回弃牌事实，
       供 sync_state 更新跨重建记忆。
     """

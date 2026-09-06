@@ -27,13 +27,16 @@ def test_full_snapshot_replaces_state() -> None:
     assert state.has_snapshot and state.last_seq == 101
     assert state.current_observation() is not None
 
-    # 第二次全量替换：序号回退也整体替换（快照是规范真相）
+    # 迟到旧快照不能让游标倒退或复活已处理动作。
     doc = load_fixture("state_response_snapshot_draw.json")
     doc["seq"] = 90
     from hangma_bot.adapters.official.dto import parse_snapshot
 
-    state.apply_full_snapshot(parse_snapshot(doc["snapshot"], doc["seq"]))
-    assert state.last_seq == 90
+    import pytest
+    from hangma_bot.adapters.official.errors import DtoError
+    with pytest.raises(DtoError, match="早于已消费"):
+        state.apply_full_snapshot(parse_snapshot(doc["snapshot"], doc["seq"]))
+    assert state.last_seq == 101
 
 
 def test_consecutive_events_accepted() -> None:
@@ -75,7 +78,7 @@ def test_events_without_snapshot_rebuild() -> None:
     assert state.apply_events((_event(1),)).decision is SyncDecision.NEEDS_REBUILD
 
 
-def test_unknown_event_rebuilds_once_then_learned() -> None:
+def test_unknown_event_is_not_learned_as_safe() -> None:
     """未知关键事件重建一次；学习后同类型不再触发重建风暴。"""
 
     state = ProtocolSyncState("g", TIMING)
@@ -86,8 +89,8 @@ def test_unknown_event_rebuilds_once_then_learned() -> None:
 
     state.note_rebuild_absorbed("future_event")
     second = state.apply_events((_event(102, "future_event"),))
-    assert second.decision is SyncDecision.ACCEPTED
-    assert state.last_seq == 102
+    assert second.decision is SyncDecision.NEEDS_REBUILD
+    assert state.last_seq == 101
 
 
 def test_learned_unknown_event_type_requires_authoritative_refresh():
@@ -96,15 +99,15 @@ def test_learned_unknown_event_type_requires_authoritative_refresh():
 
     state = ProtocolSyncState("g", TIMING)
     state.apply_full_snapshot(_snapshot())
-    assert not state.events_need_authoritative_refresh(
+    assert state.events_need_authoritative_refresh(
         (_event(102, "tile_drawn"),)
-    )  # 已知可忽略行（他家摸牌）不受影响
+    )  # 玩家端异常他家摸牌必须恢复，不能静默推进旧窗口
     state.note_rebuild_absorbed("future_event")
     assert state.events_need_authoritative_refresh((_event(102, "future_event"),))
     # 学习前（首见）该类型在 apply 层走 NEEDS_REBUILD，不进入本谓词
     other = ProtocolSyncState("g", TIMING)
     other.apply_full_snapshot(_snapshot())
-    assert not other.events_need_authoritative_refresh((_event(102, "future_event"),))
+    assert other.events_need_authoritative_refresh((_event(102, "future_event"),))
     assert other.apply_events(
         (_event(102, "future_event"),)
     ).decision is SyncDecision.NEEDS_REBUILD

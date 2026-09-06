@@ -1,8 +1,8 @@
 """玩家依法可见的牌局信息与已观察赛事上下文。
 
 本文件是第一阶段共享接口基线：不得单方面改名、删除字段或改变语义，
-尤其不得扩大信息权限——他家手牌、未来牌墙和赛后结果不得进入
-``PlayerObservation``。构造函数只做廉价结构校验（座位范围 0—3、
+尤其不得扩大信息权限——他家手牌、未来牌墙和尚未公开的结果不得进入
+``PlayerObservation``；已经收到的公开终局事件可以保留。构造函数只做廉价结构校验（座位范围 0—3、
 四家向量长度、动作参数和牌值域），昂贵业务校验属于规则模块。
 """
 
@@ -56,10 +56,40 @@ class PublicEvent:
     seat: Optional[int]  # 动作发起座位，0—3；与座位无关的事件为空
     tiles: Tuple[Tile, ...] = ()  # 事件涉及的牌
     occurred_at_unix_sec: Optional[int] = None  # 官方 ``ts``；墙上时钟 Unix 秒
+    detail_kind: Optional[str] = None  # 公开 gang/timeout 的 data.kind；未提供时为空
+
+    catch_play: Optional[bool] = None  # 弃牌事件公开的抓打圈标记；缺失不等于 False
+    gang_replenish: Optional[bool] = None  # 摸牌事件明确声明杠补牌；缺失须另行推导
+    response_window: Optional[str] = None  # 超时所属 peng/chi 阶段；保留官方扩展值
+    result_draw: Optional[bool] = None  # 已公开的本单局终局是否流局
+    result_fan: Optional[int] = None  # 已公开的本单局终局番数，非负
+    result_details: Optional[Tuple[str, ...]] = None  # 已公开的终局计番明细，顺序不变
+    result_scores: Optional[Tuple[int, int, int, int]] = None  # 终局积分增量，座位 0—3
+    final_scores: Optional[Tuple[int, int, int, int]] = None  # 终场公开积分，座位 0—3；不从赛后隐藏数据填入
 
     def __post_init__(self) -> None:
         _require_non_negative_int(self.seq, "PublicEvent.seq")
         _require_non_empty_str(self.kind, "PublicEvent.kind")
+        if self.detail_kind is not None:
+            _require_non_empty_str(self.detail_kind, "PublicEvent.detail_kind")
+        for name in ("catch_play", "gang_replenish", "result_draw"):
+            value = getattr(self, name)
+            if value is not None and not isinstance(value, bool):
+                raise ValueError("PublicEvent." + name + " 必须是布尔值或空")
+        if self.response_window is not None:
+            _require_non_empty_str(self.response_window, "PublicEvent.response_window")
+        if self.result_fan is not None:
+            _require_non_negative_int(self.result_fan, "PublicEvent.result_fan")
+        if self.result_details is not None:
+            _require_tuple(self.result_details, "PublicEvent.result_details")
+            for item in self.result_details:
+                _require_non_empty_str(item, "PublicEvent.result_details")
+        for name in ("result_scores", "final_scores"):
+            value = getattr(self, name)
+            if value is not None:
+                _require_tuple(value, "PublicEvent." + name)
+                if len(value) != 4 or any(isinstance(x, bool) or not isinstance(x, int) for x in value):
+                    raise ValueError("PublicEvent." + name + " 必须按座位 0—3 保存四个整数")
         if self.seat is not None:
             _validate_seat(self.seat, "PublicEvent.seat")
         _require_tuple(self.tiles, "PublicEvent.tiles")
@@ -130,6 +160,11 @@ class PlayerObservation:
     scores: ScoreVector  # 当前桌内积分，固定按座位 0—3
     rule_state: RulePublicState
     public_history: Tuple[PublicEvent, ...]
+    consumed_seq: Optional[int] = None  # 已消费的官方事件水位；snapshot_seq 仍为快照基线，旧记录为空
+    history_complete: bool = False  # 当前单局可见事件是否从已知起点完整保存；重连缺史时为 False
+    chain_piao: Optional[int] = None  # 当前本人动作链内的飘白次数；依据不足时为空，不等于零
+    gang_draw: Optional[bool] = None  # 当前本人摸牌是否为杠补牌；缺少可靠来源时为空
+    observation_issues: Tuple[str, ...] = ()  # 观察核对/缺失原因，不含私密协议原文
 
     def __post_init__(self) -> None:
         # 以下均为 O(字段数+牌数) 的廉价结构校验，可在适配器热路径执行；
@@ -137,6 +172,21 @@ class PlayerObservation:
         _require_non_empty_str(self.game_id, "PlayerObservation.game_id")
         _require_non_empty_str(self.phase, "PlayerObservation.phase")
         _require_non_negative_int(self.snapshot_seq, "PlayerObservation.snapshot_seq")
+        if self.consumed_seq is not None:
+            _require_non_negative_int(self.consumed_seq, "PlayerObservation.consumed_seq")
+            if self.consumed_seq < self.snapshot_seq:
+                raise ValueError("consumed_seq 不能早于快照基线")
+        if not isinstance(self.history_complete, bool):
+            raise ValueError("history_complete 必须是布尔值")
+        if self.chain_piao is not None:
+            _require_non_negative_int(self.chain_piao, "PlayerObservation.chain_piao")
+            if self.chain_piao > self.rule_state.chain_count:
+                raise ValueError("chain_piao 不能超过 chain_count")
+        if self.gang_draw is not None and not isinstance(self.gang_draw, bool):
+            raise ValueError("gang_draw 必须是布尔值或空")
+        _require_tuple(self.observation_issues, "PlayerObservation.observation_issues")
+        for issue in self.observation_issues:
+            _require_non_empty_str(issue, "PlayerObservation.observation_issues")
         _require_non_negative_int(self.round_no, "PlayerObservation.round_no")
         _validate_seat(self.seat, "PlayerObservation.seat")
         _validate_seat(self.dealer_seat, "PlayerObservation.dealer_seat")

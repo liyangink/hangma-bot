@@ -17,14 +17,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Tuple
+from typing import Optional, Tuple
 
 from hangma_bot.kernel.actions import SEAT_COUNT
 from hangma_bot.kernel.observation import PublicEvent, ScoreVector
 
 from .interface import Settlement
 from .internal_types import WinSplit, is_wealth
-from .special_rules import EVENT_KIND_DISCARDED
+from .special_rules import is_passive_observation_event
 
 _BRANCH_PLAIN = "平胡"
 _BRANCH_CHIITOI = "七对"
@@ -41,29 +41,42 @@ class FanResult:
 
 
 def infer_piao_count(
-    public_history: Tuple[PublicEvent, ...], seat: int, chain_count: int
-) -> int:
-    """从公共历史 best-effort 推断结算所需「链内飘出白板数」（piao）。
+    public_history: Tuple[PublicEvent, ...], seat: int, chain_count: int,
+    consumed_seq: Optional[int] = None,
+) -> Optional[int]:
+    """用权威链次数约束连续历史后缀，精确求链内飘次数；缺证据返回 None。
 
-    【假设】§8：god 状态未直接暴露链内飘出的白板数，按公共历史中
-    本人弃白次数（`tile_discarded` 且含白）推断，上限 `chain_count`。
-    该口径在「链开始前曾普通打出过白板」时会高估 piao（例如链纯由杠
-    构成但此前弃过白）——score() 属审计路径，允许该误差，调用方应在
-    RuleIssue/注释标明 best-effort 性质。
-
-    `chain_count` 运行时取 `observation.rule_state.chain_count`；
-    链已断（0）时恒为 0。
+    官方指南 v15（2026-09-05）§1.3：飘/杠各累计一次，普通弃牌断链。
+    从当前已消费水位反向找最近 chain_count 次本人白弃/杠；官方非零链
+    计数约束其中白弃属于飘。收齐前遇断点不能借旧链补数。
     """
-
-    if chain_count <= 0:
+    if chain_count == 0:
         return 0
-    discarded_whites = 0
-    for event in public_history:
-        if event.seat != seat or event.kind != EVENT_KIND_DISCARDED:
+    if consumed_seq is None or not public_history:
+        return None
+    expected = consumed_seq
+    found = piao = 0
+    harmless = {"tile_drawn", "tile_discarded", "gang", "chi", "peng", "pass", "timeout"}
+    for event in reversed(public_history):
+        if event.seq != expected or event.kind not in harmless:
+            return None
+        expected -= 1
+        if event.kind == "timeout" and not is_passive_observation_event(event):
+            return None
+        if event.seat != seat:
             continue
-        if any(is_wealth(tile) for tile in event.tiles):
-            discarded_whites += 1
-    return min(discarded_whites, chain_count)
+        if event.kind == "gang":
+            found += 1
+        elif event.kind == "tile_discarded":
+            if len(event.tiles) != 1 or not is_wealth(event.tiles[0]):
+                return None
+            found += 1
+            piao += 1
+        elif event.kind in ("chi", "peng"):
+            return None
+        if found == chain_count:
+            return piao
+    return None
 
 
 def _validate_chain(chain_count: int, piao: int, whites_held: int) -> None:
@@ -115,7 +128,7 @@ def compute_fan(
       win：hand_analysis 产出的胡牌分解元数据（分支/豪华组数/手留白板）；
       chain_count：链动作数（飘/杠各计 1）；运行时取
         `rule_state.chain_count`；
-      piao：链内飘出白板数；运行时取 `infer_piao_count` 的推断值；
+      piao：链内飘出白板数；运行时取观察中已确认的链内飘次数，缺失不得估计；
       baotou：爆头标志。运行时传平台权威 `rule_state.baotou`，
         对拍/审计可传 `special_rules.static_baotou(win)`（注意先覆盖
         win_split 的 any_tile_tenpai=False 占位，警示见该函数）；

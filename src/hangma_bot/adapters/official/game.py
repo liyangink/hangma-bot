@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import asyncio
 import uuid
+from dataclasses import replace
 from typing import Any, Callable, Mapping, Optional, Tuple
 
 from hangma_bot.application.contracts import (
@@ -53,9 +54,10 @@ from hangma_bot.application.contracts import (
     SubmitRejectedRetryable,
     SUBMISSION_CANCELLED_IN_FLIGHT,
 )
-from hangma_bot.kernel.actions import WindowKey, WindowPhase
+from hangma_bot.kernel.actions import Pass, WindowKey, WindowPhase
 from hangma_bot.kernel.config import TimingConfig
 from hangma_bot.kernel.observation import PlayerObservation
+from hangma_bot.kernel.serialization import observation_to_json, public_event_to_json
 
 from . import projector
 from .action_gate import ActionGate
@@ -140,10 +142,16 @@ class OfficialGameSession:
         self._state_request_no = 0  # /state 请求单调计数（原始事件对账键，跨会话重启归零安全）
         self._gate = ActionGate()
         self._delivered_windows = set()
+        self._window_expiries = {}  # 每 WindowKey 首次单调截止，只允许收紧；单位秒
+        self._boundary_expiries = {}  # 同弃牌同阶段的边界截止，防无事件/重复 pass 重开计时
         self._final: Optional[GameFinished] = None
         self._closed = False
         self._close_reason = ""
         self._active_tasks = set()
+        self._history_retries = {}  # (单局, 缺口起点) -> (尝试次数, 下次单调时钟秒, 原因)
+        self._history_idle_windows = set()  # 明确本地等待的碰窗口，不等同官方已接受
+        self._sealed_history_rounds = set()
+        self._pending_history_events = []  # 补领超出快照基线的事件；先串行消费再交付窗口
         self._poll_active = False  # next_item 单消费者守卫
         # SSE 帧驱动（可选能力，2026-09-05 接入）：帧到达 → 唤醒短拉增量；
         # 流终局/异常 → 永久降级回长轮询（sse_degraded 审计）。任务登记进
@@ -234,6 +242,7 @@ class OfficialGameSession:
     async def aclose(self, reason: str) -> None:
         """取消本场挂起轮询；不触碰同 Token 共享传输与其他场次。"""
 
+        self._seal_history("session_closed:" + reason)
         self._closed = True
         self._close_reason = reason
         for task in list(self._active_tasks):
@@ -259,8 +268,14 @@ class OfficialGameSession:
                 return delivered
             try:
                 self._ensure_sse_task()
+                deferred = None if self._pending_history_events else await self._try_recover_history()
                 boundary_timeout = self._phase_boundary_timeout()
-                if self._sse_enabled and self._sse_healthy:
+                if self._pending_history_events:
+                    response = StateResponse(kind="events", events=tuple(self._pending_history_events))
+                    self._pending_history_events.clear()
+                elif deferred is not None:
+                    response = deferred
+                elif self._sse_enabled and self._sse_healthy:
                     # SSE 帧驱动（开关开启且流健康）：帧到短拉增量；
                     # 静默/边界/降级路径见 _sse_or_boundary_wait
                     response = await self._sse_or_boundary_wait(boundary_timeout)
@@ -284,7 +299,7 @@ class OfficialGameSession:
                     if rebuild_streak > 2:
                         return GameFailed(self.game_id, True, "rebuild_loop")
                     try:
-                        snapshot_response = await self._get_state(long_poll=False, force_full=True)
+                        snapshot_response = await self._get_state(long_poll=False, force_full=True, recover_history=False)
                     except _PollFailure as failure:
                         return failure.item
                     if snapshot_response.kind not in ("snapshot", "finished"):
@@ -311,6 +326,8 @@ class OfficialGameSession:
                 continue
             if response.kind in ("snapshot", "finished"):
                 pre_seq = self._sync.last_seq
+                pre_round = self._sync.snapshot.round_no if self._sync.snapshot else None
+                pre_phase = self._sync.snapshot.phase if self._sync.snapshot else None
                 if response.gap:
                     # 指南 v10：官方可在（跨局）快照上附带 gap=true，表示事件流
                     # 曾断链；快照本身即权威全量，直接吸收并记录事实，无需重建
@@ -330,7 +347,9 @@ class OfficialGameSession:
                 delivered = self._maybe_deliver_window()
                 if delivered is not None:
                     return delivered
-                if response.gap and self._sync.last_seq <= pre_seq:
+                if (response.gap and self._sync.last_seq <= pre_seq
+                        and self._sync.snapshot.round_no == pre_round
+                        and self._sync.snapshot.phase == pre_phase):
                     # v10 跨局边界无进度快照：新局首事件尚未产生，旧游标轮询
                     # 会立即再次命中同一规则返回同 seq 快照（实测同边界重复
                     # 5~47 次）。前 FAST 次原速、此后退避（见常量注释）。
@@ -360,7 +379,7 @@ class OfficialGameSession:
                     if reason.startswith("unknown_event:")
                 ]
                 try:
-                    snapshot_response = await self._get_state(long_poll=False, force_full=True)
+                    snapshot_response = await self._get_state(long_poll=False, force_full=True, recover_history=False)
                 except _PollFailure as failure:
                     return failure.item
                 if snapshot_response.kind not in ("snapshot", "finished"):
@@ -383,6 +402,11 @@ class OfficialGameSession:
             rebuild_streak = 0
             boundary_stalls = 0
             if self._sync.events_need_authoritative_refresh(response.events):
+                self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                    "snapshot_refresh_reason": "events_require_snapshot",
+                    "event_types": sorted({event.type for event in response.events}),
+                    "consumed_seq": self._sync.last_seq,
+                }, trigger_seq=self._sync.last_seq)
                 try:
                     snapshot_response = await self._get_state(long_poll=False, force_full=True)
                 except _PollFailure as failure:
@@ -523,14 +547,55 @@ class OfficialGameSession:
             # F4（2026-09-05）：优先官方绝对截止 window_deadline_ms（实测
             # 4264/4264 响应快照携带）——绝对值天然不被 pass 推进后的刷新
             # 重置（旧相对猜测式的核心缺陷）；官方未提供时退回窗口秒数+余量
-            deadline = getattr(snapshot, "window_deadline_ms", None)
-            if isinstance(deadline, int) and deadline > 0:
-                remaining = (deadline - self._wall_ms()) / 1000.0
-                return max(remaining, 0.0) + _BOUNDARY_MARGIN_SEC
-            if snapshot.phase == "response_peng":
-                return self._timing.peng_timeout_sec + _BOUNDARY_MARGIN_SEC
-            return self._timing.chi_timeout_sec + _BOUNDARY_MARGIN_SEC
+            expiry, _ = self._snapshot_expiry()
+            return max(expiry - self._monotonic(), 0.0) + _BOUNDARY_MARGIN_SEC
         return None
+
+    def _snapshot_expiry(self):
+        """把同阶段官方 Unix 毫秒截止只向单调时钟收紧；无字段时显式估计。
+
+        时钟偏差仍需部署监测；这里防止本机墙钟调整和重复快照延长已知期限。
+        """
+        snapshot = self._sync.snapshot
+        phase = snapshot.phase
+        duration = (self._timing.peng_timeout_sec if phase == "response_peng" else
+                    self._timing.chi_timeout_sec if phase == "response_chi" else
+                    self._timing.discard_timeout_sec)
+        identity = (self._sync.response_cycle_key if phase.startswith("response_") else snapshot.seq)
+        key = (snapshot.round_no, phase, snapshot.turn, identity)
+        official = snapshot.window_deadline_ms
+        estimated = official is None or official <= 0
+        expiry = self._monotonic() + (duration if estimated else (official - self._wall_ms()) / 1000.0)
+        previous = self._boundary_expiries.get(key)
+        if previous is not None:
+            expiry = min(previous[0], expiry)
+            estimated = previous[1] and estimated
+        result = (expiry, estimated)
+        self._boundary_expiries[key] = result
+        return result
+
+    def _window_timing(self, detected):
+        """统一投递和409刷新截止；旧响应阶段截止不能借给增量摸牌。"""
+        key = detected.window_key
+        snapshot = self._sync.snapshot
+        if (snapshot is not None and snapshot.phase == key.phase.value
+                and snapshot.round_no == key.round_no
+                and key.trigger_seq <= snapshot.seq):
+            expiry, estimated = self._snapshot_expiry()
+        else:
+            # 只有事件且无权威截止时仍是估计；事件 Unix 秒可提供保守起点。
+            expiry = self._monotonic() + detected.timeout_seconds
+            estimated = True
+            event = next((e for e in reversed(self._sync.history) if e.seq == key.trigger_seq), None)
+            if event is not None and event.occurred_at_unix_sec is not None:
+                expiry = min(expiry, self._monotonic() + event.occurred_at_unix_sec
+                             + detected.timeout_seconds - self._wall_ms() / 1000.0)
+        previous = self._window_expiries.get(key)
+        if previous is not None:
+            expiry = min(expiry, previous[0])
+            estimated = estimated and previous[1]
+        self._window_expiries[key] = (expiry, estimated)
+        return {"expires_at_monotonic": expiry, "deadline_is_estimated": estimated}
 
     async def _long_poll_racing_boundary(self, timeout_seconds: float) -> StateResponse:
         """长轮询与阶段边界定时器竞速；返回两者中先到的权威结果。
@@ -551,8 +616,16 @@ class OfficialGameSession:
             done, _pending = await asyncio.wait(
                 (poll_task, timer_task), return_when=asyncio.FIRST_COMPLETED
             )
+            if poll_task in done:
+                # 同时完成时先消费已收到的权威事件，不能被边界计时器丢弃。
+                # 新状态若仍过边界，下一次等待会立即进行边界查询。
+                return poll_task.result()
             if timer_task in done:
                 poll_task.cancel()
+                self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                    "snapshot_refresh_reason": "phase_boundary",
+                    "consumed_seq": self._sync.last_seq,
+                }, trigger_seq=self._sync.last_seq)
                 # 定时器先到：非阻塞权威刷新，捕获无事件的 peng->chi 切换
                 return await self._get_state(
                     long_poll=False, force_full=True, priority=Priority.POLL
@@ -609,9 +682,35 @@ class OfficialGameSession:
                 # GameFinished 只需要积分；非终局快照做完整验证
                 projector.observation(snapshot, tuple(self._sync.history), self.game_id)
                 projector.detect_window(snapshot, self._timing, self.game_id)
-            self._sync.apply_full_snapshot(snapshot, finished=finished)
+            previous = self._sync.snapshot
+            closing_payload = None
+            if previous is not None and previous.round_no != snapshot.round_no:
+                tail = ()
+                if snapshot.round_no == previous.round_no + 1:
+                    endings = sorted({e.seq for e in response.events if e.type == "round_ended"})
+                    end = None
+                    if endings and not finished and snapshot.phase not in ("settled", "finished"):
+                        end = endings[-1]
+                    elif len(endings) > 1:
+                        end = endings[-2]
+                    if end is not None:
+                        floor = self._sync.history_floor_seq
+                        tail = tuple(e for e in response.events if (floor is None or e.seq > floor) and e.seq <= end)
+                closing_payload = self._history_closure_payload("round_changed", extra_events=tail)
+            self._sync.apply_full_snapshot(snapshot, finished=finished, events=response.events)
+            if closing_payload is not None:
+                self._commit_history_closure(closing_payload)
+            if previous is not None and previous.round_no != snapshot.round_no:
+                self._history_retries.clear()
+                self._history_idle_windows.clear()
             if not finished:
+                self._snapshot_expiry()
                 self._sync.current_observation()  # 预热缓存（已验证必成功）
+                if self._sync.last_transition_checks:
+                    self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                        "observation_transition_checks": list(self._sync.last_transition_checks),
+                        "consumed_seq": self._sync.last_seq,
+                    }, trigger_seq=self._sync.last_seq, round_no=snapshot.round_no)
                 window_key = self._sync.current_window()
                 # F-23：每个权威快照归并后通知动作门——窗口已迁移时解除
                 # 模糊封锁标记（ActionGate.observe_authoritative_window；
@@ -643,6 +742,8 @@ class OfficialGameSession:
         （409 刷新发现的迁移窗口）。
         """
 
+        if self._pending_history_events:
+            return None  # 已知更晚事件必须先消费，不能在旧快照上决策
         detected = self._sync.current_window()
         if detected is None:
             return None
@@ -674,6 +775,7 @@ class OfficialGameSession:
             authoritative_seq=observation.snapshot_seq,
             received_at_monotonic=self._monotonic(),
             timeout_seconds=detected.timeout_seconds,
+            **self._window_timing(detected),
         )
         self._delivered_windows.add(key)
         if detected.trigger_projection_note is not None:
@@ -699,57 +801,11 @@ class OfficialGameSession:
         return window
 
     def _maybe_deliver_incremental_draw_window(self) -> Optional[ObservedActionWindow]:
-        """投递增量事件流判定的本人摸牌窗口；与快照窗口同享 exactly-once。
-
-        摸牌窗口的权威事实来自增量事件（指南 v14 §2.1：事件流只含自己的
-        摸牌；客户端局面 = 快照 + 后续增量事件），不再等待全量快照送达——
-        这是游标纪律修复的核心：胡牌/出牌决策不再常态性依赖 seq=0 重建。
-        交付身份（WindowKey.trigger_seq = 摸牌事件 seq）与快照路径同值，
-        审计口径与 _maybe_deliver_window 完全一致。
-        """
-
-        detected = self._sync.incremental_draw_window()
-        if detected is None:
-            return None
-        key = detected.window_key
-        if key in self._delivered_windows:
-            return None
-        if self._gate.is_finalized(key):
-            return None  # 防御双保险：已终结窗口绝不投递
-        observation = self._sync.incremental_draw_observation()
-        if observation is None:
-            return None
-        window = ObservedActionWindow(
-            observation=observation,
-            window_key=key,
-            # 契约要求 authoritative_seq == observation.snapshot_seq：
-            # 增量观察的 snapshot_seq 仍是最后吸收快照的权威水位，本次窗口
-            # 的增量事实（摸牌）由 drawn_tile 与 public_history 表达。
-            authoritative_seq=observation.snapshot_seq,
-            received_at_monotonic=self._monotonic(),
-            timeout_seconds=detected.timeout_seconds,
-        )
-        self._delivered_windows.add(key)
-        self._emit_audit(
-            AuditKind.AUTHORITATIVE_STATE,
-            {
-                "seq": window.authoritative_seq,
-                "phase": observation.phase,
-                "turn": observation.turn_seat,
-                "window": {
-                    "game_id": key.game_id,
-                    "round_no": key.round_no,
-                    "trigger_seq": key.trigger_seq,
-                    "phase": key.phase.value,
-                    "seat": key.seat,
-                },
-            },
-            trigger_seq=key.trigger_seq,
-            round_no=key.round_no,
-        )
-        return window
+        """增量与快照共用一个观察、窗口和截止投递入口。"""
+        return self._maybe_deliver_window()
 
     def _finish_game(self) -> GameFinished:
+        self._seal_history("game_finished")
         scores = self._sync.final_scores() or (0, 0, 0, 0)
         final = GameFinished(
             game_id=self.game_id,
@@ -836,13 +892,222 @@ class OfficialGameSession:
             round_no=attempt.window_key.round_no,
         )
 
+    def _history_closure_payload(self, reason: str, *, extra_events=()):
+        """在换手提交前构造旧手封存数据；尾事件须由调用方证明属于旧手。"""
+        snapshot = self._sync.snapshot
+        if snapshot is None or snapshot.round_no in self._sealed_history_rounds:
+            return None
+        history = {e.seq: e for e in self._sync.history}
+        for event in extra_events:
+            public = projector.public_event(event)
+            if public.kind == "tile_drawn" and public.seat != snapshot.seat:
+                public = replace(public, tiles=())
+            if public.seq in history and history[public.seq] != public:
+                raise DtoError("收尾事件与已有历史冲突")
+            history[public.seq] = public
+        through = max([self._sync.last_seq] + list(history))
+        floor = self._sync.history_floor_seq
+        missing = []
+        if floor is not None:
+            cursor = floor + 1
+            for seq in sorted(seq for seq in history if floor < seq <= through):
+                if seq > cursor:
+                    missing.append([cursor, seq - 1])
+                cursor = seq + 1
+            if cursor <= through:
+                missing.append([cursor, through])
+        try:
+            observation = self._sync.current_observation()
+            encoded = observation_to_json(observation) if observation is not None else None
+        except (ValueError, DtoError):
+            encoded = None  # 官方终态可能 turn=-1，不能伪造成可行动的玩家观察
+        return {
+            "history_closure": reason, "round_no": snapshot.round_no,
+            "state_seq": self._sync.last_seq, "snapshot_seq": snapshot.seq,
+            "history_through_seq": through,
+            "snapshot_phase": snapshot.phase, "scores": list(snapshot.scores),
+            "history_origin_known": self._sync.history_origin_known,
+            "history_floor_seq": floor,
+            "history_complete": self._sync.history_complete and not missing,
+            "missing_ranges": missing,
+            "public_history": [public_event_to_json(history[seq]) for seq in sorted(history)],
+            "observation": encoded,
+            "recovery_attempts": [{"from_seq": key[1], "attempts": value[0], "reason": value[2]}
+                                  for key, value in self._history_retries.items() if key[0] == snapshot.round_no],
+        }
+
+    def _commit_history_closure(self, payload) -> None:
+        """新快照确认成功后才提交旧手封存；错误响应不得提前标记旧手已关闭。"""
+        if payload is None:
+            return
+        self._emit_audit(AuditKind.AUTHORITATIVE_STATE, payload,
+                         trigger_seq=payload["history_through_seq"], round_no=payload["round_no"])
+        self._sealed_history_rounds.add(payload["round_no"])
+
+    def _seal_history(self, reason: str) -> None:
+        """高优先级封存本手已知事实与缺口；不为终局伪造一个策略动作窗口。"""
+        self._commit_history_closure(self._history_closure_payload(reason))
+
+    async def _try_recover_history(self) -> Optional[StateResponse]:
+        """主循环空闲机会有界补旧历史；每次最多一个请求，未来权威结果交回正常同步。
+
+        未提交/409待重试/模糊动作优先。总预算100ms且保留已知截止350ms；
+        失败按单调时间退避，最多三次，不能通过快照或pending假装销账。
+        """
+        snapshot = self._sync.snapshot
+        if snapshot is None or self._sync.finished or self._gate.in_flight or self._gate.blocked_window is not None:
+            return None
+        window = self._sync.current_window()
+        if window is not None and not (self._gate.is_finalized(window.window_key)
+                                      or window.window_key in self._history_idle_windows):
+            return None
+        now = self._monotonic()
+        limit = now + 0.1
+        if window is not None:
+            cached = self._window_expiries.get(window.window_key)
+            if cached is not None:
+                limit = min(limit, cached[0] - 0.35)
+        if snapshot.window_deadline_ms is not None:
+            remaining = (snapshot.window_deadline_ms - self._wall_ms()) / 1000.0
+            limit = min(limit, now + remaining - 0.35)
+        if limit <= now:
+            return None
+        for start, end in self._sync.history_missing_ranges():
+            key = (snapshot.round_no, start)
+            count, retry_at, _ = self._history_retries.get(key, (0, 0.0, "unattempted"))
+            if start <= 1 or self._sync.last_seq - (start - 1) > 256:
+                reason = "zero_cursor_not_history" if start <= 1 else "outside_event_cache"
+                self._history_retries[key] = (count, retry_at, reason)
+                continue
+            if count >= 3 or now < retry_at:
+                continue
+            self._history_retries[key] = (count + 1, now + 0.25 * 2 ** count, "attempted")
+            try:
+                response = await self._request_state(
+                    long_poll=False, seq_override=start - 1, deadline_monotonic=limit,
+                    priority=Priority.POLL, one_shot=True)
+            except _PollFailure as failure:
+                if not failure.item.recoverable:
+                    raise
+                reason = failure.item.reason
+                self._history_retries[key] = (count + 1, now + 0.25 * 2 ** count, reason)
+                self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                    "history_recovery": "unavailable", "from_seq": start, "through_seq": end,
+                    "attempt": count + 1, "reason": reason,
+                }, round_no=snapshot.round_no)
+                return None
+            if response.snapshot is not None:
+                # 同点或更新快照仍是权威牌面；它自身并不能偿还缺失原事件。
+                self._history_retries[key] = (3, now, "snapshot_only")
+                self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                    "history_recovery": "snapshot_only", "from_seq": start, "through_seq": end,
+                }, round_no=snapshot.round_no)
+                if response.snapshot.seq < self._sync.last_seq:
+                    return None
+                return response
+            if response.gap:
+                self._history_retries[key] = (3, now, "gap")
+                return response  # 走正常权威恢复，不能用补领前牌面继续决策
+            if response.kind != "events" or not response.events:
+                return None
+            historical = tuple(e for e in response.events if e.seq <= snapshot.seq)
+            future = tuple(e for e in response.events if e.seq > snapshot.seq)
+            try:
+                self._sync.merge_history(historical, round_no=snapshot.round_no)
+            except (DtoError, ValueError) as exc:
+                self._history_retries[key] = (3, now, "invalid_history")
+                self._emit_audit(AuditKind.PROTOCOL_RECOVERED, {
+                    "trigger": "history_merge", "reason": str(exc)[:120],
+                }, round_no=snapshot.round_no)
+                return StateResponse(kind="events", gap=True)
+            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                "history_recovery": "received", "from_seq": start, "through_seq": end,
+                "received_seqs": [e.seq for e in historical],
+                "missing_ranges": [list(pair) for pair in self._sync.history_missing_ranges()],
+            }, round_no=snapshot.round_no)
+            if future:
+                return StateResponse(kind="events", events=future, finished=response.finished)
+            return None
+        return None
+
     async def _get_state(
+        self, *, long_poll: bool, force_full: bool = False,
+        deadline_monotonic: Optional[float] = None,
+        priority: Optional[Priority] = None,
+        recover_history: bool = True,
+    ) -> StateResponse:
+        """快照与事件进度分开处理；同单局快照超前时最多补领一次。
+
+        补领总预算最多 100ms，且保留当前窗口至少 350ms，不延长官方截止。
+        seq=0/跨单局/超出缓存范围不可保证补回；保留原快照并明确缺史。
+        晚于快照的已收到事件暂存后优先消费，禁止拿已知陈旧牌面决策。
+        """
+        response = await self._request_state(
+            long_poll=long_poll, force_full=force_full,
+            deadline_monotonic=deadline_monotonic, priority=priority)
+        snapshot = response.snapshot
+        previous = self._sync.snapshot
+        cursor = self._sync.last_seq
+        if (not recover_history or response.gap or response.finished
+                or snapshot is None or previous is None or snapshot.round_no != previous.round_no
+                or cursor == 0 or snapshot.seq <= cursor or snapshot.seq - cursor > 256):
+            return response
+        supplied = {e.seq for e in response.events if cursor < e.seq <= snapshot.seq}
+        if len(supplied) == snapshot.seq - cursor:
+            return response
+        limit = self._monotonic() + 0.1
+        if deadline_monotonic is not None:
+            limit = min(limit, deadline_monotonic - 0.35)
+        if (snapshot.phase == previous.phase and snapshot.discards == previous.discards
+                and snapshot.last_discard == previous.last_discard):
+            current = self._sync.current_window()
+            cached = self._window_expiries.get(current.window_key) if current is not None else None
+            if cached is not None:
+                limit = min(limit, cached[0] - 0.35)
+        if snapshot.window_deadline_ms is not None:
+            limit = min(limit, self._monotonic() + (snapshot.window_deadline_ms - self._wall_ms()) / 1000.0 - 0.35)
+        if limit <= self._monotonic():
+            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {"history_backfill": "budget_unavailable", "event_cursor": cursor, "snapshot_seq": snapshot.seq})
+            return response
+        try:
+            recovered = await self._request_state(
+                long_poll=False, seq_override=cursor, deadline_monotonic=limit,
+                priority=Priority.POLL, one_shot=True)
+        except _PollFailure as failure:
+            if not failure.item.recoverable:
+                raise  # 鉴权或协议永久错误不能被可选补领吞掉
+            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {"history_backfill": "unavailable", "reason": failure.item.reason, "event_cursor": cursor, "snapshot_seq": snapshot.seq})
+            return response
+        if recovered.snapshot is not None:
+            # 官方只能返回快照时，不循环追赶；采用更新的权威响应并保留可归属的旧事件。
+            if recovered.snapshot.seq < snapshot.seq:
+                return response
+            if recovered.snapshot.round_no == snapshot.round_no:
+                recovered = replace(recovered, events=response.events + recovered.events)
+            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {"history_backfill": "snapshot_only", "event_cursor": cursor, "snapshot_seq": recovered.snapshot.seq})
+            return recovered
+        if recovered.gap:
+            # 补领本身发现断链是新的权威失步信号，不能退回更早快照继续行动。
+            # 走正常恢复通道并保留原截止；这不是可选历史补领的重试。
+            return await self._request_state(
+                long_poll=False, force_full=True,
+                deadline_monotonic=deadline_monotonic, priority=Priority.RECOVERY)
+        if recovered.kind != "events":
+            return response
+        before = tuple(e for e in recovered.events if e.seq <= snapshot.seq)
+        self._pending_history_events.extend(e for e in recovered.events if e.seq > snapshot.seq)
+        self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {"history_backfill": "received", "event_cursor": cursor, "snapshot_seq": snapshot.seq, "received_seqs": [e.seq for e in before]})
+        return replace(response, events=response.events + before)
+
+    async def _request_state(
         self,
         *,
         long_poll: bool,
         force_full: bool = False,
         deadline_monotonic: Optional[float] = None,
         priority: Optional[Priority] = None,
+        seq_override: Optional[int] = None,
+        one_shot: bool = False,
     ) -> StateResponse:
         """带预算内有界重试的 state 请求；失败升级为 _PollFailure。
 
@@ -854,7 +1119,7 @@ class OfficialGameSession:
         计划性恢复类请求可显式走普通优先级（POLL），不占紧急恢复通道。
         """
 
-        seq = 0 if force_full else self._sync.last_seq
+        seq = seq_override if seq_override is not None else (0 if force_full else self._sync.last_seq)
         chosen_priority = priority if priority is not None else (
             Priority.RECOVERY if force_full else Priority.POLL
         )
@@ -931,6 +1196,8 @@ class OfficialGameSession:
             except DtoError as exc:
                 if not exc.recoverable:
                     raise _PollFailure(GameFailed(self.game_id, False, "fatal_protocol:" + str(exc)[:120])) from None
+                if one_shot:
+                    raise _PollFailure(GameFailed(self.game_id, True, "history_dto_invalid")) from None
                 if seq != 0 and not degraded_to_full:
                     # 增量负载损坏：降级为 seq=0 权威重建（只降一次）
                     degraded_to_full = True
@@ -940,7 +1207,7 @@ class OfficialGameSession:
                     raise _PollFailure(GameFailed(self.game_id, True, "dto_invalid")) from None
             finally:
                 lease.release()  # 幂等：deadline 分支已手动释放时为 no-op
-            if attempts > self._max_retries:
+            if one_shot or attempts > self._max_retries:
                 raise _PollFailure(GameFailed(self.game_id, True, "get_exhausted")) from None
             await self._retry_sleep(self._backoff_base * (2 ** (attempts - 1)))
 
@@ -969,16 +1236,16 @@ class OfficialGameSession:
         return outcome
 
     async def _submit_locked(self, attempt: ActionAttempt) -> SubmitOutcome:
+        if self._pending_history_events:
+            return self._finish_submit(attempt, SubmitNotSent("newer_events_pending"))
         detected = self._sync.current_window()
         observation = self._sync.current_observation()
         if detected is None or observation is None or detected.window_key != attempt.window_key:
-            # 增量摸牌窗口：投递后快照仍是旧相位（摸牌送达不依赖快照），提交
-            # 复核必须能识别同一窗口身份与增量观察，否则所有增量摸牌窗口都会
-            # 被 stale_window 本地拒绝、动作永远发不出去。
-            detected = self._sync.incremental_draw_window()
-            observation = self._sync.incremental_draw_observation()
-        if detected is None or observation is None or detected.window_key != attempt.window_key:
             return self._finish_submit(attempt, SubmitNotSent("stale_window"))
+        # 即使调用方误传更宽预算，协议出口也不能越过本会话已知截止。
+        timing = self._window_timing(detected)
+        attempt = replace(attempt, latest_send_at_monotonic=min(
+            attempt.latest_send_at_monotonic, timing["expires_at_monotonic"]))
         body = projector.action_request_body(
             attempt.action,
             last_discard_tile=observation.last_discard.tile if observation.last_discard else None,
@@ -992,6 +1259,11 @@ class OfficialGameSession:
             return self._finish_submit(attempt, SubmitNotSent("malformed_action_body"))
         if self._monotonic() >= attempt.latest_send_at_monotonic:
             return self._finish_submit(attempt, SubmitNotSent("deadline_passed"))
+        # 碰阶段的过只表示本阶段无动作；不提前向官方声明整个响应周期放弃。
+        # 等官方真实吃阶段再提交，避免依赖“peng pass 后还能 chi”的未确认语义。
+        if isinstance(attempt.action, Pass) and attempt.window_key.phase is WindowPhase.RESPONSE_PENG:
+            self._history_idle_windows.add(attempt.window_key)
+            return self._finish_submit(attempt, SubmitNotSent("pass_deferred_until_chi"))
         self._emit_audit(
             AuditKind.SUBMISSION_INTENT,
             {
@@ -1200,6 +1472,14 @@ class OfficialGameSession:
                 latest_local_seq=self._sync.last_seq,
                 reason="conflict_refresh_invalid_snapshot",
             )
+        if self._pending_history_events:
+            self._gate.mark_closed(attempt.window_key)
+            return SubmitRejectedNoRefresh(
+                official_code=error.official_code or "INVALID_ACTION",
+                rejected_action_key=attempt.action_key,
+                latest_local_seq=self._sync.last_seq,
+                reason="newer_events_pending",
+            )
         self._emit_audit(
             AuditKind.PROTOCOL_RECOVERED,
             {"trigger": "conflict_refresh", "official_code": error.official_code, "rejected_action_key": attempt.action_key},
@@ -1210,20 +1490,6 @@ class OfficialGameSession:
         )
         detected = self._sync.current_window()
         observation = self._sync.current_observation()
-        if (
-            detected is None
-            or observation is None
-            or detected.window_key != attempt.window_key
-        ):
-            # 增量摸牌窗口（F-02 防御，wv6 注释按实际控制流改写）：本回退在
-            # 409 刷新路径**实际不可达**——_apply_or_fail 的 apply_full_snapshot
-            # 已清空事件历史，incremental_draw_window 依赖"事件流末条=本人
-            # tile_drawn"，刷新后恒为 None。保留它是为与 _submit_locked 的
-            # 同款回退对称（免疫未来重构：若快照吸收语义变化不再清史，此处
-            # 仍能识别增量窗口身份，恒等前提不依赖单一路径推导）；命中即按
-            # stale 同口径保守不误放行。
-            detected = self._sync.incremental_draw_window()
-            observation = self._sync.incremental_draw_observation()
         if (
             detected is not None
             and observation is not None
@@ -1238,6 +1504,7 @@ class OfficialGameSession:
                 authoritative_seq=observation.snapshot_seq,
                 received_at_monotonic=self._monotonic(),
                 timeout_seconds=detected.timeout_seconds,
+                **self._window_timing(detected),
             )
             if attempt.action_key == "pass":
                 # F3（2026-09-05 取证修复）：本人 pass 被 409 = 官方确认我
@@ -1315,4 +1582,3 @@ def _loads(text: str) -> Any:
         return json.loads(text)
     except ValueError:
         raise DtoError("state 响应不是合法 JSON", recoverable=True) from None
-

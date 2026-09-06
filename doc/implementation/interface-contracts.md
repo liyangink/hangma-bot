@@ -4,7 +4,7 @@
 > 日期：2026-09-04  
 > 官方依据：指南/API v8 快照（doc/official-platform-api-v2.md）+ 指南版本 v15 变更记录
 >（`/portal/api/guide/version` 只读检查日期 2026-09-05；v10 跨局 `gap=true` 快照、
-> v11 state 轮询 16/s 每用户聚合、v12 SSE 已随 631c85b 接入运行链路（开关默认关闭，
+> v11 state 轮询 16/s 每用户聚合、v12 SSE 低层客户端已实现（2026-09-06 两个生产入口固定关闭，
 > 见 doc/implementation/notes/sse-runtime-integration.md）、v13 在线分桌已审查放行、
 > v14 guide 全文端点、v15 自动匹配默认房配置上调已审查。新增 /api/match 接入按 parallel-v1 待实施）。
 > 适配器代码与 fixture 同步由 runtime_protocol 工作包负责）  
@@ -270,3 +270,62 @@ runs/{run_id}/
 - 内部统一语义（2026-09-05 修订，F-11）：官方快照实测形态（`my_hand` 含刚摸牌）与契约形态（不含）并存，适配器投影保留官方原样（紧急"最右一张"依赖官方顺序）；双计归一化由 hangma 引擎（`engine._concealed_without_drawn`，长度判据 14−3×副露数）与 policy 评分上下文（`evaluation._hand_codes_without_double_count`）按同口径防御性执行；适配器侧统一规范化列为后续工作线（rules-hu-gate-and-win-detection.md §6.1）。
 - **吃牌组合规范牌序**：`Chi.tiles` 必须严格按 `CANONICAL_TILE_ORDER` 升序，构造边界拒绝非规范顺序；相同吃牌组合必须产生相同 `action_key`，不得在 `action_key()` 中静默制造另一套排序规则。
 - **规范牌序唯一权威**：`kernel.actions.CANONICAL_TILE_ORDER`（含 `CANONICAL_TILE_INDEX`）是全仓唯一定义；`hangma` 等业务模块只允许引用，不得维护平行常量。
+
+## 观察完整性与截止契约增补（2026-09-06）
+
+本次受控增补保持四个外部接缝与旧字段语义。官方依据为 v15 指南（2026-09-05 保存原文），设计及交叉评审见 [修复策略](../../review/official-adapter/repair-plan-2026-09-06.md)。以下可空项的空值均表示未知，不等于零或 False。
+
+| 类型.字段 | 用途与语义 | 兼容性 |
+| --- | --- | --- |
+| `PublicEvent.detail_kind` | 官方公开 `gang/timeout` 的 `data.kind`；未提供为空 | 旧事件默认空；吃组合完整保存在 `tiles`，不与顶层单牌重复拼接 |
+| `PlayerObservation.consumed_seq` | 本场已处理事件水位，非负整数；`snapshot_seq` 仍是快照基线 | 旧记录为空，不能默认断言与快照后事件对齐 |
+| `PlayerObservation.history_complete` | 当前单局依法可见历史是否有完整起点且无缺口 | 默认 False；快照恢复不会凭空补齐历史 |
+| `PlayerObservation.chain_piao` | 本人当前动作链内飘白次数；非负且不超过 `rule_state.chain_count` | 默认空；不能把普通弃白/旧链弃白计入 |
+| `PlayerObservation.gang_draw` | 当前本人摸牌是否为杠后补牌 | 默认空；证据不足不能伪装普通摸牌 |
+| `PlayerObservation.observation_issues` | 可见观察缺失、协议异常或 god 核对差异的稳定原因元组 | 默认空；不保存隐藏牌和原始协议字典 |
+| `ObservedActionWindow.expires_at_monotonic` | 本机单调时钟秒表示的截止；可为明确标注的估计，旧调用为空 | `timeout_seconds` 仍为官方配置总时长 |
+| `ObservedActionWindow.deadline_is_estimated` | True 表示缺乏可对齐官方截止；False 必须同时有截止值 | 默认 True；不得把新摸牌套用旧碰阶段截止 |
+
+kernel JSON 编码保留 schema_version=1 的可选字段增补；新编码完整保存字段，旧记录缺字段解码为上述默认未知值。接收端忽略兼容新增字段不代表它能够证明观察完整。规则和策略仍支持既有“手牌含摸牌/摸牌单列”表示，保留官方顺序；本次不迁移手牌语义。
+
+应用层先取得紧急动作，再用同一 `PlayerObservation` 调用规则分析并组装 `DecisionRequest`。规则纯函数 `enrich_observation` 补充有依据的链内飘数和摸牌来源；适配器在投递前调用，使策略也获得同样事实。`HangmaRules.score()` 对非零链但无法确认飘数的输入抛 `ValueError`，含义是无法精确核验，不能把猜测分数当作结果。规则分析的完整性与历史完整性分别表达，不相互替代。
+
+`BudgetPolicy.build(received_at_monotonic, timeout_seconds, expires_at_monotonic=None)` 在配置时长和实际剩余时间中取更短值分配三段预算；过期预算为零。`tighten` 将 409 新边界与原预算逐项取最小值。刷新即使更晚也不能延长；提交出口还检查会话已知截止。官方 Unix 截止转换后的单调值按同一窗口缓存且只收紧，时间准确性仍受主机与服务端时钟偏差约束。
+
+离线观察核对使用 `compare_observations(actual, reference, boundary_verified=True)`，调用方须先凭独立取证确认边界；同 seq/phase 不是充分依据。结果含 `status/state_status/history_status`、字段路径差异和未检查项，分别使用 `passed/failed/not_checked`。未知字段或缺史不能因两边都为空而通过。本工具不进入线上路径，不使用隐藏牌重写策略输入。
+
+## 实测事件与恢复契约增补（2026-09-06）
+
+依据为当日保存的官方 v17 指南及测试房实测；两者的证据性质分开记录于[实测报告](../../review/official-adapter/live-validation-2026-09-06.md)。本次保持四个外部接口，补充以下可选公开事实；所有 `None` 表示未提供，显式 `False` 和零不得丢失。
+
+| `PublicEvent` 字段 | 来源与含义 |
+| --- | --- |
+| `catch_play` | 该次 `tile_discarded.data.catch_play`；不自动解释为本座位当前 `god.catch_play` |
+| `gang_replenish` | 该次 `tile_drawn.data.gang_replenish`；用于确认对应本人摸牌来源 |
+| `response_window` | `timeout.data.window`；公开的超时阶段，开放字符串 |
+| `result_draw` / `result_fan` | `round_ended.data.draw/fan`；已结束单局的流局标记与官方番值 |
+| `result_details` | `round_ended.data.detail` 的不可变字符串元组；官方公开结算明细 |
+| `result_scores` | `round_ended.data.scores`；座位 0、1、2、3 顺序的本单局积分变化 |
+| `final_scores` | `game_ended.data.final_scores`；同座位顺序的场次最终积分 |
+
+这些字段经 DTO、事件投影、`PlayerObservation.public_history` 和审计 JSON 编解码传递。schema_version 仍为 1，旧记录缺字段解码为 `None`。不透传任意 `data`，不扩大隐藏牌权限。他家无牌值 `tile_drawn` 是合法可见事件，必须保留；收到他家私有牌值须隔离并标记异常。
+
+`consumed_seq` 表示已被事件或权威快照吸收的状态水位，**不证明每条原始事件均已保存**；证明历史连续性须同时检查 `history_complete`。同单局快照超前时，适配器先尝试从旧水位串行补领一次：最多 100 毫秒，已知窗口至少保留 350 毫秒，序号跨度不超过 256。不新增异步同步任务。无预算、缓存缺口、跨单局或补领失败时使用权威快照并明确缺史。快照前事件仅补历史，不重复推进牌河或手牌；已收到的快照后事件先消费，禁止提交已知陈旧窗口。快照与事件可在同一个响应内出现，包括终局响应。
+
+碰阶段选择 `Pass` 返回 `SubmitNotSent("pass_deferred_until_chi")`，不发送 POST，不标记本人已表态。应用层结束本次计划，等待权威状态提供真实吃窗口；吃窗口独立建立预算。该做法避免显式碰阶段 pass 提前关闭后续吃资格，是否能在官方超时后完整获得吃机会仍需下一批实测。409 刷新若同时获得更晚事件，则返回 `SubmitRejectedNoRefresh`，原因 `newer_events_pending`；先同步后重新取得窗口，不在旧快照上重试。
+
+赛后牌谱的结果摘要须与对应 `round_ended` 核对；冲突拒绝转换并报告 `official_result_conflict`，不足以核验的字段列为 `not_checked`，不得静默替换官方原文或拿错配单局结果评估规则。
+
+补领若返回新的 `gap=true`，必须按原截止进入正常权威恢复；不得用补领前快照继续行动。跨单局附带事件只按可证明的终局边界归属，无法归属时标记 `new_round_event_scope_unknown` 并保留原始审计。
+
+## 延后补史与单局收尾契约（2026-09-06）
+
+修复后的四个外部端口不变。`consumed_seq` 继续表示事件或快照已经吸收的牌面水位；它不再决定旧历史是否还要补领。官方适配器内部按当前单局维护 `history_floor_seq`（排除式事件下界）、`history_origin_known`（是否能证明单局起点）和缺失序号闭区间。前缀未知与可计算缺口分别保存；区间为空不能把未知起点变成完整。
+
+原动作路径的一次 100ms 补领保留。该次失败或预算不足后，原始事件缺口不会被快照水位抹掉：后续 `next_item()` 在当前动作已接受、明确关闭或碰阶段本地等待时，最多增加一次旧游标 GET；未提交动作、409可重试或结果模糊状态优先。总请求预算含排队和网络，仍不超过100ms并为已知窗口保留350ms。每个缺口最多三次延后尝试，以本机单调时钟进行0.25/0.5/1秒退避；退避期间继续正常state流程，不新增后台同步任务。
+
+仅收到真实事件才能消除对应缺口。同点快照、pending或失败都不能销账；seq=0无法表达历史查询、落后超过已知256缓存范围、接口只返回快照等情况保留原因并停止对应追赶。新快照或快照后的事件先进入正常权威同步再决策。补回旧事件不重复推进牌面，不回滚当前水位；冲突、未知关键事件或私有他家摸牌使本批补史原子拒绝并触发恢复。已建立窗口使用的估算触发身份保持稳定，真实弃牌序号保存在历史；迟到的本人pass只影响它确实所属的当前弃牌周期。
+
+单局切换成功、场次结束和会话关闭会经现有高优先级 `AUTHORITATIVE_STATE` 保存一次 `history_closure`，无需另建策略窗口。记录包含：`round_no`、`state_seq`（末次牌面吸收水位）、`snapshot_seq`、`history_through_seq`（已归属本手的历史检查上界，可晚于末次牌面）、`snapshot_phase`、座位0—3的`scores`、起点元信息、缺口闭区间、`public_history`、重试原因及可空`observation`。官方终态无法构造合法玩家观察时，`observation=null`，不伪造行动座位；历史和公开结算仍单独保存。未知前缀或未确认终局不能因封存自动变成完整。新快照校验失败不封存旧手；跨手混包尾事件仅在能证明归属时并入旧手封存。
+
+`kernel.serialization.public_event_to_json(PublicEvent)` 公开复用既有事件JSON编码，供无策略窗口的终局审计使用，字段与玩家观察内事件编码相同；没有新增信息权限或schema版本。

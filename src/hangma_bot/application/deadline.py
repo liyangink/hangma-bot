@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
+from math import isfinite
 from typing import Optional, Protocol
 
 from hangma_bot.policy.interface import DecisionBudget
@@ -98,16 +99,51 @@ class BudgetPolicy:
         if not (self.fallback_fraction <= self.latest_send_fraction < 1.0):
             raise ValueError("预算比例必须满足 保底 <= 最晚发送 < 1，为在途 POST 留余量")
 
-    def build(self, received_at_monotonic: float, timeout_seconds: float) -> DecisionBudget:
-        """按窗口到达时刻创建一次性预算；409 刷新必须复用原值，不得重建。"""
+    def build(
+        self,
+        received_at_monotonic: float,
+        timeout_seconds: float,
+        expires_at_monotonic: Optional[float] = None,
+    ) -> DecisionBudget:
+        """按收到窗口时的剩余时间分配预算；未知官方截止才使用配置时长。
+
+        输入均为本机单调时钟秒或持续秒数，不能传 Unix 时间。已过期窗口
+        返回零可用预算，不能通过收到旧状态重新获得一个完整动作窗口。
+        """
+
+        if not isfinite(received_at_monotonic) or not isfinite(timeout_seconds) or timeout_seconds <= 0:
+            raise ValueError("预算需要有限接收时刻与正持续秒数")
+        span = timeout_seconds
+        if expires_at_monotonic is not None:
+            if not isfinite(expires_at_monotonic):
+                raise ValueError("预算截止必须是有限单调时钟秒数")
+            span = max(0.0, min(span, expires_at_monotonic - received_at_monotonic))
 
         return DecisionBudget(
             enhancement_deadline_monotonic=received_at_monotonic
-            + timeout_seconds * self.enhancement_fraction,
+            + span * self.enhancement_fraction,
             fallback_deadline_monotonic=received_at_monotonic
-            + timeout_seconds * self.fallback_fraction,
+            + span * self.fallback_fraction,
             latest_send_at_monotonic=received_at_monotonic
-            + timeout_seconds * self.latest_send_fraction,
+            + span * self.latest_send_fraction,
+        )
+
+    def tighten(
+        self,
+        original: DecisionBudget,
+        received_at_monotonic: float,
+        timeout_seconds: float,
+        expires_at_monotonic: Optional[float],
+    ) -> DecisionBudget:
+        """409 同窗口刷新只允许收紧原预算；缺少新截止时原样保留。"""
+
+        if expires_at_monotonic is None:
+            return original
+        refreshed = self.build(received_at_monotonic, timeout_seconds, expires_at_monotonic)
+        return DecisionBudget(
+            enhancement_deadline_monotonic=min(original.enhancement_deadline_monotonic, refreshed.enhancement_deadline_monotonic),
+            fallback_deadline_monotonic=min(original.fallback_deadline_monotonic, refreshed.fallback_deadline_monotonic),
+            latest_send_at_monotonic=min(original.latest_send_at_monotonic, refreshed.latest_send_at_monotonic),
         )
 
 

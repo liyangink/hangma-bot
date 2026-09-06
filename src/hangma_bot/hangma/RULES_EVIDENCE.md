@@ -121,3 +121,11 @@
   引擎在 _build_context/_full_hand 按长度判定归一化，防止摸牌双计放宽
   胡牌判定（2026-09-04 测试赛 97 次 hu 409 的根因之一，差分复现见
   tests/unit/hangma/test_hu_differential_replay.py 与 tests/fixtures/hangma/）。
+
+## 2026-09-06 观察核验修订
+
+上述旧版 piao best-effort 假设被替换：当前链只按权威 chain_count 与连续当前历史后缀确定；不足为未知，score 不输出近似结算。新增 observation_rules 复用既有链更新和爆头函数检查简单本人动作转移，以官方快照恢复而不覆盖官方值。catch_play 的四座位作用范围仍未核验。来源仍为官方指南 v15、2026-09-05 原文；本地测试不能代替官方逐状态验证。
+
+## 2026-09-06 v17 实测公开事件输入补充
+
+当日测试房玩家响应证实 `tile_drawn.data.gang_replenish` 明确描述该次杠补牌，`tile_discarded.data.catch_play` 是该次弃牌公开标记。规则模块可用前者补充对应本人摸牌来源，并核对 god；后者与本人当前抓打圈字段的作用范围尚无足够独立证据，不能直接等同。正常他家摸牌仅隐藏牌值，事件连续性核验应保留它。该修订不改变计番规则，证据与测试见[修复验证](../../../review/official-adapter/live-fix-validation-2026-09-06.md)和 `tests/unit/hangma/test_live_event_facts.py`。

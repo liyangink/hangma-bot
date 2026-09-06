@@ -421,6 +421,7 @@ class TestScore:
             seat=winner,
             turn_seat=winner,
             rule_state=_rule_state(chain_count=chain),
+            chain_piao=0,  # 此结算夹具明确构造纯杠链，非从未知历史补零。
         )
 
     def test_dealer_win_payments(self):

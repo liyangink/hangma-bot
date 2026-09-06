@@ -129,10 +129,12 @@ class TestNextItem:
 
         base = load_fixture("state_response_snapshot_draw.json")
         base["snapshot"]["turn"] = 0  # 首快照无窗口（他人回合）
+        refreshed = load_fixture("state_response_snapshot_draw.json")
+        refreshed["seq"] = 103  # 权威快照必须吸收本批事件
         transport.handler = _state_handler([
             _json(base),
             _json(load_fixture("state_response_events.json")),
-            _json(load_fixture("state_response_snapshot_draw.json")),
+            _json(refreshed),
         ])
         session = make_game_session(transport=transport, clock=clock)
         item = await asyncio.wait_for(session.next_item(), timeout=2)
@@ -271,16 +273,19 @@ class TestSubmit:
     async def test_conflict_window_closed(self, transport, clock) -> None:
         session = self._open_window(transport, clock, "state_response_snapshot_peng.json")
         window = await asyncio.wait_for(session.next_item(), timeout=2)
+        migrated = load_fixture("state_response_snapshot_draw.json")
+        migrated["seq"] = 121
         transport.handler = _state_handler([
             ConflictError(409, "INVALID_ACTION", "no"),
-            _json(load_fixture("state_response_snapshot_draw.json")),  # 窗口已迁移
+            _json(migrated),  # 窗口已迁移且水位向前
+            _json({"pending": True}),  # 从旧游标120最多一次补领
         ])
         outcome = await asyncio.wait_for(
             session.submit(_attempt(window.window_key, Peng(Tile("2w")), "peng:2w")),
             timeout=2,
         )
         assert isinstance(outcome, SubmitRejectedClosed)
-        assert outcome.latest_authoritative_seq == 101
+        assert outcome.latest_authoritative_seq == 121
         # 原窗口已终结：同窗再提交被拒
         again = await asyncio.wait_for(
             session.submit(_attempt(window.window_key, Peng(Tile("2w")), "peng:2w", attempt_no=2)),

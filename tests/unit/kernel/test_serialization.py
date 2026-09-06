@@ -241,6 +241,7 @@ class ObservationSerializationTests(unittest.TestCase):
             "scores",
             "rule_state",
             "public_history",
+            "consumed_seq", "history_complete", "chain_piao", "gang_draw", "observation_issues",
         }
         self.assertEqual(set(observation_to_json(_observation())), expected_keys)
 

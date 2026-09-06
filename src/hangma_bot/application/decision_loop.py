@@ -393,13 +393,15 @@ async def run_action_window(
     clock = services.clock
     decision_id = services.ids.new_decision_id(window.window_key)
     loop_notes: list[str] = []  # 防御路径回收说明，窗口结束时一次性审计
-    # 预算只创建一次：原始窗口的到达时刻 + 官方窗口时长；刷新不延长。
+    # 首次按官方剩余时间创建预算；后续权威刷新只能收紧，不能延长。
     # 适配器给的到达时刻不得晚于本地时钟（防御钳制，防止预算越过官方截止）。
     received_at = window.received_at_monotonic
     if received_at > clock.now():
         loop_notes.append("窗口到达时刻晚于本地时钟，已钳制到当前时刻")
         received_at = clock.now()
-    budget = services.budget_policy.build(received_at, window.timeout_seconds)
+    budget = services.budget_policy.build(
+        received_at, window.timeout_seconds, window.expires_at_monotonic
+    )
     # DECISION_INPUT 的窗口接收单调秒基准：离线以该基准平移全部截止时间。
     budget_origin = received_at
     current = window
@@ -486,6 +488,10 @@ async def run_action_window(
                     "rule_elapsed_ms": round(rule_elapsed_ms, 3),
                     "request": decision_request_to_json(request),
                     "budget": decision_budget_to_json(budget),
+                    "window_deadline": {
+                        "expires_at_monotonic": current.expires_at_monotonic,
+                        "deadline_is_estimated": current.deadline_is_estimated,
+                    },
                     "window": _window_payload(window.window_key),
                 },
                 stage="decision_input_encode",
@@ -780,7 +786,13 @@ async def run_action_window(
                         # 为安全起见结束本窗口，等待权威状态迁移。
                         loop_notes.append("retryable 拒绝携带了不同窗口键，放弃本窗口")
                         return _finish("window_changed", "unknown")
-                    # 复用原预算重新规划；只更新观察与权威序号。
+                    # 官方更早截止必须收紧；更晚截止、晚到快照不得重开预算。
+                    budget = services.budget_policy.tighten(
+                        budget,
+                        min(refreshed.received_at_monotonic, clock.now()),
+                        refreshed.timeout_seconds,
+                        refreshed.expires_at_monotonic,
+                    )
                     current = refreshed
                     rejected_keys = frozenset(item.action_key for item in rejected)
                     replan_needed = True

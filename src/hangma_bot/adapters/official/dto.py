@@ -312,6 +312,15 @@ class ParsedEvent:
     seat: Optional[int]
     tiles: Tuple[str, ...]
     occurred_at_unix_sec: Optional[int]  # 官方 ts；墙上时钟 Unix 秒
+    detail_kind: Optional[str] = None  # gang/timeout 的 data.kind；缺失表示未提供，不推测
+    catch_play: Optional[bool] = None  # 弃牌事件公开的抓打圈标记；缺失不等于 False
+    gang_replenish: Optional[bool] = None  # 摸牌事件明确声明杠补牌；缺失须另行推导
+    response_window: Optional[str] = None  # 超时所属 peng/chi 阶段；保留官方扩展值
+    result_draw: Optional[bool] = None  # 已公开的本单局终局是否流局
+    result_fan: Optional[int] = None  # 已公开的本单局终局番数，非负
+    result_details: Optional[Tuple[str, ...]] = None  # 已公开的终局计番明细，顺序不变
+    result_scores: Optional[Tuple[int, int, int, int]] = None  # 终局积分增量，座位 0—3
+    final_scores: Optional[Tuple[int, int, int, int]] = None  # 终场公开积分，座位 0—3；不从赛后隐藏数据填入
 
 
 @dataclass(frozen=True)
@@ -392,9 +401,18 @@ def parse_snapshot(doc: Any, top_level_seq: Optional[int] = None) -> ParsedSnaps
 
     body = _require_mapping(doc, "snapshot")
     phase = _require_str(body.get("phase"), "snapshot.phase")
-    god_raw = body.get("god") or {}
+    # god 是活动玩家决策依据，缺失不能静默变成三个关闭值。终态不再
+    # 投递动作窗口，允许旧平台省略整个对象；部分对象仍严格逐项验证。
+    god_raw = body.get("god")
+    if god_raw is None and phase in ("settled", "finished"):
+        god_raw = {"baotou": False, "chain_count": 0, "catch_play": False}
     if not isinstance(god_raw, Mapping):
-        raise DtoError("snapshot.god 应为对象")
+        raise DtoError("snapshot.god 应为完整对象")
+    god_baotou = _require_bool(god_raw.get("baotou"), "god.baotou")
+    god_chain_count = _require_int(god_raw.get("chain_count"), "god.chain_count")
+    god_catch_play = _require_bool(god_raw.get("catch_play"), "god.catch_play")
+    if god_chain_count < 0:
+        raise DtoError("god.chain_count 不能为负数")
     responding_raw = body.get("responding_seats") or []
     if not isinstance(responding_raw, Sequence):
         raise DtoError("responding_seats 应为数组")
@@ -463,9 +481,9 @@ def parse_snapshot(doc: Any, top_level_seq: Optional[int] = None) -> ParsedSnaps
         melds_raw=tuple(meld_rows),
         hand_counts=_seat_vector(body.get("hand_counts"), "hand_counts"),
         last_discard=_parse_last_discard(body.get("last_discard")),
-        god_baotou=_require_bool(god_raw.get("baotou") or False, "god.baotou"),
-        god_chain_count=_require_int(god_raw.get("chain_count") or 0, "god.chain_count"),
-        god_catch_play=_require_bool(god_raw.get("catch_play") or False, "god.catch_play"),
+        god_baotou=god_baotou,
+        god_chain_count=god_chain_count,
+        god_catch_play=god_catch_play,
         window_deadline_ms=(
             body.get("window_deadline_ms")
             if isinstance(body.get("window_deadline_ms"), int)
@@ -478,11 +496,11 @@ def parse_snapshot(doc: Any, top_level_seq: Optional[int] = None) -> ParsedSnaps
 
 @dataclass(frozen=True)
 class StateResponse:
-    """GET /api/games/{id}/state 的四种互斥响应分类。"""
+    """GET /api/games/{id}/state 的主响应分类；快照可同时携带事件。"""
 
     kind: str  # pending / snapshot / events / finished
     snapshot: Optional[ParsedSnapshot] = None  # kind=snapshot 或 finished 时存在
-    events: Tuple[ParsedEvent, ...] = ()  # kind=events 时存在，按官方顺序
+    events: Tuple[ParsedEvent, ...] = ()  # 各类响应均可附带，按官方顺序，快照不可遮蔽它们
     gap: bool = False  # 官方显式 gap=true：必须 seq=0 重建；指南 v10 起快照响应也可携带（跨局断链），此时快照即权威重建结果
     finished: bool = False
 
@@ -500,6 +518,12 @@ def parse_state_response(doc: Any) -> StateResponse:
     gap = body.get("gap") is True
     if body.get("pending") is True:
         return StateResponse(kind="pending", gap=gap)
+    events_raw = body.get("events")
+    if events_raw is None:
+        events_raw = []
+    if not isinstance(events_raw, (list, tuple)):
+        raise DtoError("events 应为数组")
+    events = tuple(_parse_event(item) for item in events_raw)
     if isinstance(body.get("snapshot"), Mapping):
         top_seq = body.get("seq")
         if top_seq is not None and (isinstance(top_seq, bool) or not isinstance(top_seq, int)):
@@ -509,39 +533,107 @@ def parse_state_response(doc: Any) -> StateResponse:
         return StateResponse(
             kind="finished" if finished else "snapshot",
             snapshot=snapshot,
+            events=events,
             finished=finished,
             gap=gap,
         )
-    events_raw = body.get("events")
-    if events_raw is None:
-        events_raw = []
-    if not isinstance(events_raw, Sequence):
-        raise DtoError("events 应为数组")
-    events = []
-    for item in events_raw:
-        entry = _require_mapping(item, "events 项")
-        seat = entry.get("seat")
-        ts = entry.get("ts")
-        tiles = _tile_list(entry.get("tiles"), "event.tiles")
-        single = entry.get("tile")
-        if single is not None:
-            # 单数字段同样走牌码校验：非法值在 DTO 边界拦截，
-            # 不得在投影层以 ValueError 裸抛
-            tiles = tiles + _tile_list((single,), "event.tile")
-        if seat is not None:
-            seat = _require_seat(seat, "event.seat", allow_negative=True)
-        # bool 是 int 子类：ts=true 不得当作合法 Unix 秒
-        valid_ts = ts if isinstance(ts, int) and not isinstance(ts, bool) else None
-        events.append(
-            ParsedEvent(
-                seq=_require_int(entry.get("seq"), "event.seq"),
-                type=_require_str(entry.get("type"), "event.type"),
-                seat=seat,
-                tiles=tiles,
-                occurred_at_unix_sec=valid_ts,
-            )
-        )
-    return StateResponse(kind="events", events=tuple(events), gap=gap)
+    return StateResponse(kind="events", events=events, gap=gap, finished=body.get("finished") is True)
+
+
+_TILE_ACTIONS = frozenset({"tile_drawn", "tile_discarded", "chi", "peng", "gang"})
+_TERMINAL_EVENTS = frozenset({"round_ended", "game_ended"})
+
+
+def _parse_event(item: Any) -> ParsedEvent:
+    """规范化玩家可见事件的牌与动作细节，不透传未声明的 data 字典。
+
+    官方 v15 本地归档（2026-09-05）：pass/timeout/终局携带空 tile，
+    chi 的 data.tiles 携带完整组合，gang/timeout 用 data.kind 描述类别。
+    归档仅用于确认字段形状，运行时信息权限仍由玩家会话边界保证。
+    """
+
+    entry = _require_mapping(item, "events 项")
+    event_type = _require_str(entry.get("type"), "event.type")
+    seat = entry.get("seat")
+    if event_type in _TERMINAL_EVENTS and seat == -1:
+        seat = None
+    elif seat is not None:
+        seat = _require_seat(seat, "event.seat")
+    if event_type in _TILE_ACTIONS | {"pass", "timeout"} and seat is None:
+        raise DtoError("event.seat 动作事件不可缺失")
+    single = entry.get("tile")
+    single_tiles = () if single is None or single == "" else _tile_list((single,), "event.tile")
+    tiles = _tile_list(entry.get("tiles"), "event.tiles")
+    data_raw = entry.get("data")
+    data = {} if data_raw is None else _require_mapping(data_raw, "event.data")
+    if event_type == "chi" and "tiles" in data:
+        tiles = _tile_list(data["tiles"], "event.data.tiles")
+        if len(tiles) != 3 or (single_tiles and single not in tiles):
+            raise DtoError("chi data.tiles 应为包含被吃牌的三张完整组合")
+    elif not tiles:
+        tiles = single_tiles
+    elif single_tiles:
+        # 顶层完整组合不再拼接被吃牌；旧两张自有牌形状补上顶层 tile。
+        if event_type == "chi" and len(tiles) == 2:
+            tiles = tiles + single_tiles
+        elif single not in tiles:
+            raise DtoError("event.tile 与 event.tiles 不一致")
+    # 无牌摸牌可能是脱敏事件；DTO 不知道本人座位，由会话判断本人
+    # 缺牌需恢复、他家异常摸牌不公开牌值并恢复权威快照。
+    if event_type in _TILE_ACTIONS - {"tile_drawn"} and not tiles:
+        raise DtoError("{} 事件缺少必要牌码".format(event_type))
+    if event_type in {"tile_drawn", "tile_discarded"} and tiles and len(tiles) != 1:
+        raise DtoError("{} 事件应恰有一张牌".format(event_type))
+    detail_kind = None
+    if event_type in ("gang", "timeout") and data.get("kind") is not None:
+        detail_kind = _require_str(data["kind"], "event.data.kind")
+        if not detail_kind:
+            raise DtoError("event.data.kind 不可为空字符串")
+    # v17 实测白名单：仅接收对应事件已公开的强类型字段，不透传私有 data。
+    facts = {}
+    specification = {
+        "tile_discarded": (("catch_play", "catch_play", "bool"),),
+        "tile_drawn": (("gang_replenish", "gang_replenish", "bool"),),
+        "timeout": (("window", "response_window", "str"),),
+        "round_ended": (("draw", "result_draw", "bool"), ("fan", "result_fan", "int"),
+                        ("detail", "result_details", "strings"), ("scores", "result_scores", "scores")),
+        "game_ended": (("final_scores", "final_scores", "scores"),),
+    }
+    for key, name, kind in specification.get(event_type, ()):
+        if key not in data:
+            continue
+        value = data[key]
+        label = "event.data." + key
+        if kind == "bool":
+            value = _require_bool(value, label)
+        elif kind == "str":
+            value = _require_str(value, label)
+            if not value:
+                raise DtoError(label + " 不可为空")
+        elif kind == "int":
+            value = _require_int(value, label)
+            if value < 0:
+                raise DtoError(label + " 不可为负")
+        else:
+            if not isinstance(value, (list, tuple)):
+                raise DtoError(label + " 应为数组")
+            if kind == "scores" and len(value) != 4:
+                raise DtoError(label + " 应按座位 0—3 保存四个整数")
+            value = tuple((_require_str if kind == "strings" else _require_int)(x, label) for x in value)
+            if kind == "strings" and any(not x for x in value):
+                raise DtoError(label + " 不可含空明细")
+        facts[name] = value
+    ts = entry.get("ts")
+    valid_ts = ts if isinstance(ts, int) and not isinstance(ts, bool) else None
+    return ParsedEvent(
+        seq=_require_int(entry.get("seq"), "event.seq"),
+        type=event_type,
+        seat=seat,
+        tiles=tiles,
+        occurred_at_unix_sec=valid_ts,
+        detail_kind=detail_kind,
+        **facts,
+    )
 
 
 def extract_error_code(status: int, text: str) -> Optional[str]:

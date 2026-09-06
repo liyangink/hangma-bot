@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+from math import isfinite
 from typing import Mapping, Optional, Protocol, Tuple, Union
 
 from hangma_bot.kernel.actions import Action, WindowKey, action_key as canonical_action_key
@@ -173,10 +174,20 @@ class ObservedActionWindow:
     authoritative_seq: int
     received_at_monotonic: float  # 本机单调时钟秒数
     timeout_seconds: float  # 官方配置的窗口持续秒数
+    expires_at_monotonic: Optional[float] = None  # 本机单调时钟秒；缺少可对齐的官方截止时为空
+    deadline_is_estimated: bool = True  # True 表示仅有本地估计；不得冒充官方剩余时间
 
     def __post_init__(self) -> None:
-        if self.timeout_seconds <= 0:
+        if not isfinite(self.received_at_monotonic):
+            raise ValueError("窗口接收时间必须是有限单调时钟秒数")
+        if not isfinite(self.timeout_seconds) or self.timeout_seconds <= 0:
             raise ValueError("动作窗口持续时间必须为正数")
+        if self.expires_at_monotonic is not None and not isfinite(self.expires_at_monotonic):
+            raise ValueError("动作窗口截止必须是有限单调时钟秒数")
+        if not isinstance(self.deadline_is_estimated, bool):
+            raise ValueError("截止估计标记必须是布尔值")
+        if not self.deadline_is_estimated and self.expires_at_monotonic is None:
+            raise ValueError("官方明确截止不得为空")
         if self.authoritative_seq != self.observation.snapshot_seq:
             raise ValueError("窗口权威序号必须与玩家观察一致")
         if (

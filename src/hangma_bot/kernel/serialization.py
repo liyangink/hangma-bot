@@ -273,6 +273,11 @@ def _meld_from_json(payload: object) -> PublicMeld:
     )
 
 
+def public_event_to_json(event: PublicEvent) -> Dict[str, JSONValue]:
+    """编码本座位可见事件，供无策略窗口的单局收尾审计使用；不扩大信息权限。"""
+    return _event_to_json(event)
+
+
 def _event_to_json(event: PublicEvent) -> Dict[str, JSONValue]:
     """单条公开事件的嵌套负载；`occurred_at_unix_sec` 为墙上时钟 Unix 秒。"""
     return {
@@ -281,6 +286,15 @@ def _event_to_json(event: PublicEvent) -> Dict[str, JSONValue]:
         "seat": event.seat,
         "tiles": [tile.code for tile in event.tiles],
         "occurred_at_unix_sec": event.occurred_at_unix_sec,
+        "detail_kind": event.detail_kind,
+        "catch_play": event.catch_play,
+        "gang_replenish": event.gang_replenish,
+        "response_window": event.response_window,
+        "result_draw": event.result_draw,
+        "result_fan": event.result_fan,
+        "result_details": None if event.result_details is None else list(event.result_details),
+        "result_scores": None if event.result_scores is None else list(event.result_scores),
+        "final_scores": None if event.final_scores is None else list(event.final_scores),
     }
 
 
@@ -299,6 +313,16 @@ def _event_from_json(payload: object) -> PublicEvent:
             if occurred_raw is None
             else _as_int(occurred_raw, type_name, "occurred_at_unix_sec")
         ),
+        detail_kind=(None if data.get("detail_kind") is None else
+                     _as_str(data["detail_kind"], type_name, "detail_kind")),
+        catch_play=None if data.get("catch_play") is None else _as_bool(data["catch_play"], type_name, "catch_play"),
+        gang_replenish=None if data.get("gang_replenish") is None else _as_bool(data["gang_replenish"], type_name, "gang_replenish"),
+        response_window=None if data.get("response_window") is None else _as_str(data["response_window"], type_name, "response_window"),
+        result_draw=None if data.get("result_draw") is None else _as_bool(data["result_draw"], type_name, "result_draw"),
+        result_fan=None if data.get("result_fan") is None else _as_int(data["result_fan"], type_name, "result_fan"),
+        result_details=None if data.get("result_details") is None else tuple(_as_str(x, type_name, "result_details") for x in _as_list(data["result_details"], type_name, "result_details")),
+        result_scores=None if data.get("result_scores") is None else tuple(_as_int(x, type_name, "result_scores") for x in _as_list(data["result_scores"], type_name, "result_scores")),
+        final_scores=None if data.get("final_scores") is None else tuple(_as_int(x, type_name, "final_scores") for x in _as_list(data["final_scores"], type_name, "final_scores")),
     )
 
 
@@ -346,6 +370,11 @@ def observation_to_json(observation: PlayerObservation) -> Dict[str, JSONValue]:
         "seat": observation.seat,
         "round_no": observation.round_no,
         "snapshot_seq": observation.snapshot_seq,
+        "consumed_seq": observation.consumed_seq,
+        "history_complete": observation.history_complete,
+        "chain_piao": observation.chain_piao,
+        "gang_draw": observation.gang_draw,
+        "observation_issues": list(observation.observation_issues),
         "phase": observation.phase,
         "dealer_seat": observation.dealer_seat,
         "turn_seat": observation.turn_seat,
@@ -387,6 +416,13 @@ def observation_from_json(payload: object) -> PlayerObservation:
         seat=_as_int(_get(data, "seat", type_name), type_name, "seat"),
         round_no=_as_int(_get(data, "round_no", type_name), type_name, "round_no"),
         snapshot_seq=_as_int(_get(data, "snapshot_seq", type_name), type_name, "snapshot_seq"),
+        consumed_seq=_decode_optional_int(data.get("consumed_seq"), type_name, "consumed_seq"),
+        history_complete=_as_bool(data.get("history_complete", False), type_name, "history_complete"),
+        chain_piao=_decode_optional_int(data.get("chain_piao"), type_name, "chain_piao"),
+        gang_draw=(None if data.get("gang_draw") is None else
+                   _as_bool(data["gang_draw"], type_name, "gang_draw")),
+        observation_issues=tuple(_as_str(item, type_name, "observation_issues") for item in
+                                _as_list(data.get("observation_issues", []), type_name, "observation_issues")),
         phase=_as_str(_get(data, "phase", type_name), type_name, "phase"),
         dealer_seat=_as_int(_get(data, "dealer_seat", type_name), type_name, "dealer_seat"),
         turn_seat=_as_int(_get(data, "turn_seat", type_name), type_name, "turn_seat"),

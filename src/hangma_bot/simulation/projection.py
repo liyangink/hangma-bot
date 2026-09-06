@@ -100,6 +100,12 @@ def observation(world: WorldState, seat: int) -> PlayerObservation:
             catch_play=catch_play,
         ),
         public_history=public_history_for(world.events, seat),
+        consumed_seq=state.seq,
+        history_complete=True,  # 模拟器从本单局起点持有全部可见事件
+        chain_piao=s.chain_piao,  # 本人链内飘数；不读取他家暗牌
+        gang_draw=(phase == "draw" and state.turn_seat == seat and len(world.events) >= 2
+                   and world.events[-1].kind == "tile_drawn" and world.events[-1].seat == seat
+                   and world.events[-2].kind == "gang" and world.events[-2].seat == seat),
     )
 
 

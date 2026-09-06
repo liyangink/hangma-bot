@@ -61,11 +61,9 @@ def _decide(observation: PlayerObservation) -> Optional[Action]:
         if observation.turn_seat != seat:
             return None
         if observation.rule_state.catch_play:
-            # 抓打圈：只能打刚摸牌；缺失时保守退回最右一张。
+            # 抓打圈只能打刚摸牌；缺失时无法证明最右牌就是摸牌，不能伪造。
             if observation.drawn_tile is not None:
                 return Discard(observation.drawn_tile)
-            if observation.my_hand:
-                return Discard(_rightmost(observation.my_hand))
             return None
         # 普通出牌：打官方顺序最右一张；手牌为空但存在刚摸牌时打摸牌。
         if observation.my_hand:

@@ -306,7 +306,7 @@ class TestSettleScores:
 
 
 class TestInferPiaoCount:
-    """链内飘出白板数 best-effort 推断（§8 假设：弃白次数，上限链计数）。"""
+    """链内飘出白板数按权威链计数与连续后缀精确推断。"""
 
     @staticmethod
     def _event(seq, kind, seat, tiles=()):
@@ -321,30 +321,30 @@ class TestInferPiaoCount:
             self._event(2, "tile_discarded", 1, ("白",)),  # 他家弃白不计
             self._event(3, "tile_discarded", 0, ("白",)),
         )
-        assert infer_piao_count(history, 0, 2) == 2
+        assert infer_piao_count(history, 0, 2, 3) == 2
 
     def test_capped_by_chain_count(self):
-        # 链开始前的普通弃白会高估 piao；按链计数封顶（best-effort 口径）。
+        # 只读取当前链最近一次动作，更早的白弃不混入。
         history = (
             self._event(1, "tile_discarded", 0, ("白",)),
             self._event(2, "tile_discarded", 0, ("白",)),
         )
-        assert infer_piao_count(history, 0, 1) == 1
+        assert infer_piao_count(history, 0, 1, 2) == 1
 
     def test_zero_chain_means_zero_piao(self):
         history = (self._event(1, "tile_discarded", 0, ("白",)),)
         assert infer_piao_count(history, 0, 0) == 0
 
-    def test_normal_discards_ignored(self):
+    def test_normal_discard_blocks_reaching_an_older_chain(self):
         history = (
             self._event(1, "tile_discarded", 0, ("5w",)),
             self._event(2, "gang", 0, ("9b",)),
             self._event(3, "tile_drawn", 0),
         )
-        assert infer_piao_count(history, 0, 2) == 0
+        assert infer_piao_count(history, 0, 2, 3) is None
 
     def test_empty_history(self):
-        assert infer_piao_count((), 2, 3) == 0
+        assert infer_piao_count((), 2, 3) is None
 
 
 class TestSettleWin:

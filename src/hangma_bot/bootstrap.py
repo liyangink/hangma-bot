@@ -43,7 +43,6 @@ from hangma_bot.adapters.official import (
     OfficialTournamentSession,
     TransportConfig,
 )
-from hangma_bot.adapters.official.notify import StreamBudget
 from hangma_bot.adapters.recording import JsonlAuditSink
 from hangma_bot.application.auto_match_runtime import AutoMatchRuntime, AutoMatchSettings
 from hangma_bot.application.contracts import (
@@ -168,7 +167,7 @@ class RuntimeConfig:
     audit_raw_gzip: bool = False
     audit_raw_rotate_bytes: int = 32 * 1024 * 1024
     # SSE 帧驱动开关（2026-09-05 接入，默认关）：开启后各场次在长轮询之外
-    # 优先使用官方 /notify 帧驱动短拉；流终局自动降级回长轮询（sse_degraded）
+    # 兼容旧配置；生产组合根固定使用 state，实际生效值写入运行清单。
     sse_enabled: bool = False
     # 部署配置中的逻辑平台实例名（契约 §4.1）：同一官方平台跨地址/节点
     # 保持相同，进入审计 RUN_MANIFEST 与统一牌谱身份；不是 Token、主机名
@@ -528,10 +527,9 @@ def build_runtime(
             audit=sink,
             audit_context=provider.context,
             ruleset_version=DEFAULT_RULESET_VERSION,
-            # SSE 帧驱动（可选）：每 Token 一个共享并发预算（官方上限 32/用户，
-            # 本地默认 24），M 场各持 1 流；关闭时零开销
-            sse_enabled=config.sse_enabled,
-            sse_budget=StreamBudget() if config.sse_enabled else None,
+            # 官方 SSE 可选；观察完整性修复期仅运行 state 与阶段边界查询。
+            sse_enabled=False,
+            sse_budget=None,
         )
     else:
         inner = session_factory()
@@ -551,6 +549,9 @@ def build_runtime(
         "policy_version": config.strategy,
         "policy_weights": _effective_weights_snapshot(policy),
         "ruleset_version": DEFAULT_RULESET_VERSION,
+        "official_sync_mode": "state",
+        "sse_requested": config.sse_enabled,
+        "sse_effective": False,
     }
     runtime = ParticipantRuntime(
         session=session,
@@ -630,7 +631,7 @@ def build_auto_match_runtime(
     注入顺序与 :func:`build_runtime` 一致：固定 run_id → JsonlAuditSink →
     _AuditContextProvider（身份发现前占位，initialize 成功后由
     _IdentityAwareSession 回填 user_id/room_id）→ OfficialAutoMatchSession
-    （同一 Token 的 transport/scheduler/SSE 预算；settings 提供声明上限与
+    （同一 Token 的 transport/scheduler；settings 提供声明上限与
     match 重试参数）→ 策略工厂 → AutoMatchRuntime。
 
     本函数只服务 mode=AUTO_MATCH；旧三种模式请使用 :func:`build_runtime`。
@@ -670,8 +671,8 @@ def build_auto_match_runtime(
             audit=sink,
             audit_context=provider.context,
             ruleset_version=DEFAULT_RULESET_VERSION,
-            sse_enabled=config.sse_enabled,
-            sse_budget=StreamBudget() if config.sse_enabled else None,
+            sse_enabled=False,
+            sse_budget=None,
             # 自动匹配操作参数（运行配置注入；不是官方字段）
             declared_max_games=settings.declared_max_games,
             declared_rounds=settings.declared_rounds,
@@ -697,6 +698,9 @@ def build_auto_match_runtime(
         "policy_version": config.strategy,
         "policy_weights": _effective_weights_snapshot(policy),
         "ruleset_version": DEFAULT_RULESET_VERSION,
+        "official_sync_mode": "state",
+        "sse_requested": config.sse_enabled,
+        "sse_effective": False,
     }
     runtime = AutoMatchRuntime(
         session=session,

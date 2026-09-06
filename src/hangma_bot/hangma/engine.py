@@ -25,6 +25,7 @@ from hangma_bot.kernel.observation import PlayerObservation
 
 from . import action_families, settlement, special_rules
 from .emergency import emergency_action
+from .observation_rules import enrich_observation
 from .interface import (
     ActionValidation,
     RuleAnalysis,
@@ -62,7 +63,12 @@ class HangmaRules:
     def analyze(self, observation: PlayerObservation) -> RuleAnalysis:
         """先构造紧急动作，再隔离分析各动作族；不访问网络或时钟。"""
 
-        issues: list = []
+        issues: list = [
+            RuleIssue("observation", message) for message in observation.observation_issues
+        ]
+        observation = enrich_observation(observation)
+        if observation.rule_state.chain_count > 0 and observation.chain_piao is None:
+            issues.append(RuleIssue("observation.chain_piao", "当前链历史不足，链内飘次数未知，结算不可核验"))
 
         emergency = self._safe_emergency(observation, issues)
         context = self._safe_context(observation, issues)
@@ -146,13 +152,13 @@ class HangmaRules:
     def score(self, win: WinDescription) -> Settlement:
         """按绑定规则计算四家结算；不读取运行时外部状态。
 
-        爆头与链计数取 `rule_state` 平台权威状态；链内飘出白板数按
-        公共历史 best-effort 推断（settlement.infer_piao_count，【假设】
-        口径见 RULES_EVIDENCE §8）。未成胡（分解为空）返回流局口径的
+        爆头与链计数取 `rule_state` 平台权威状态；链内飘次数须有明确
+        观察事实或连续历史后缀证据，未知时抛 ValueError，不臆造分数。
+        未成胡（分解为空）返回流局口径的
         全零结算，供审计路径防御性调用。
         """
 
-        observation = win.observation
+        observation = enrich_observation(win.observation)
         full_hand = _full_hand(observation)
         meld_count = len(observation.melds[observation.seat])
         split = None
@@ -166,9 +172,9 @@ class HangmaRules:
             return Settlement(score_delta=(0, 0, 0, 0), fan=0, details=())
 
         chain_count = observation.rule_state.chain_count
-        piao = settlement.infer_piao_count(
-            observation.public_history, observation.seat, chain_count
-        )
+        piao = observation.chain_piao
+        if piao is None:
+            raise ValueError("当前链内飘次数未知，不能给出确定结算")
         return settlement.settle_win(
             split,
             chain_count,
@@ -288,13 +294,13 @@ class HangmaRules:
                 )
             )
             return tuple(c for c in candidates if c.action_key != "hu")
+        if observation.gang_draw is None and not observation.rule_state.baotou:
+            issues.append(RuleIssue("observation.gang_draw", "当前摸牌来源未知，无法确认有财必拷响的杠补牌豁免"))
         block = special_rules.you_cai_bi_kao_block(
             True,
             split,
             observation.rule_state.baotou,
-            special_rules.is_gang_draw(
-                observation.public_history, observation.seat
-            ),
+            observation.gang_draw is True,
         )
         if block is None:
             return candidates

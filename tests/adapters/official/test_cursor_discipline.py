@@ -153,14 +153,14 @@ async def test_poll_cancel_reconnect_cursor_never_regresses(transport, clock):
             return _json(base)
         if stage["n"] == 2:
             assert seq == 101
-            return _json(_events(_event(102, "tile_drawn", 0)))  # 他家摸牌：无窗无刷新
+            return _json(_events(_event(102, "pass", 0)))  # 正常无牌事件：无窗无刷新
         if stage["n"] == 3:
             hanging.set()
             await asyncio.sleep(30)  # 挂起长轮询：被外部取消
             return _json({"pending": True})
         if stage["n"] == 4:
             assert seq == 102, "重连后的轮询必须沿用取消前游标，不得回退"
-            return _json(_events(_event(103, "tile_drawn", 1)))
+            return _json(_events(_event(103, "pass", 1)))
         await asyncio.sleep(30)
         return _json({"pending": True})
 
@@ -231,11 +231,16 @@ async def test_v10_boundary_no_progress_backoff_bounded(transport, clock, audit)
     progress = _snapshot_doc(200, turn=0, round_no=2, gap=True)  # 首事件已产生：水位前进
     stage = {"n": 0}
     stall_polls = {"n": 0}
+    history_polls = {"n": 0}
 
     def handler(*, method: str, path: str, params=None, json_body=None, long_poll=False):
         if method == "POST":
             return 200, "{}"
         seq = (params or {}).get("seq")
+        if seq == 101 and not long_poll and stage["n"] == 8:
+            history_polls["n"] += 1
+            assert history_polls["n"] == 1
+            return _json({"pending": True})  # 水位200后补领102..200，旧事件暂未可得
         stage["n"] += 1
         if stage["n"] == 1:
             return _json(base)
@@ -262,10 +267,12 @@ async def test_v10_boundary_no_progress_backoff_bounded(transport, clock, audit)
     elapsed = clock.monotonic() - start
     # 第 1~2 次无进度快照原速轮询（不延迟边界后响应窗口发现），第 3~6 次
     # 按 (0.5, 1.0, 1.0, 1.0) 退避（封顶 1.0s，P2-N4）：假时钟精确推进 3.5 秒
-    assert elapsed == pytest.approx(0.5 + 1.0 + 1.0 + 1.0)
+    assert elapsed == pytest.approx(0.5 + 1.0 + 1.0)  # 首次同seq换单局属于进展
     assert stall_polls["n"] == 6
     assert _recovered_gap_count(audit) == 7  # 6 次无进度 + 1 次前进，总量有界
 
+
+    assert history_polls["n"] == 1
 
 async def test_post_keeps_cursor_at_last_consumed_seq(transport, clock):
     """动作 POST 完成后游标语义：不重置为 0，动作效果由后续增量事件送达。"""
@@ -371,7 +378,7 @@ async def test_own_discard_refreshes_hand_before_next_incremental_draw(transport
     """本人弃牌触发权威刷新：下一次增量摸牌送达时 my_hand 与官方快照一致。"""
 
     base = _snapshot_doc(101, turn=0, my_hand=_HAND)
-    hand_after = [c for c in _HAND if c != "5w"]  # 出掉 "5w" 后剩 12 张
+    hand_after = [c for c in _HAND if c != "5w"] + ["东"]  # 本次摸东后弃5w，仍有13张暗牌
     refreshed = _snapshot_doc(103, turn=0, my_hand=hand_after)
     stage = {"n": 0}
 
@@ -431,19 +438,20 @@ class TestRefreshPredicate:
         assert state.events_need_authoritative_refresh((_parsed_event(102, "tile_discarded", 1, "3b"),))
         assert state.events_need_authoritative_refresh((_parsed_event(102, "timeout", 1),))
 
-    def test_own_meld_requires_refresh_others_not(self):
+    def test_any_meld_requires_refresh_until_public_board_is_projected(self):
         state = _sync_state()
         assert state.events_need_authoritative_refresh((_parsed_event(102, "peng", MY_SEAT, "3b"),))
-        assert not state.events_need_authoritative_refresh((_parsed_event(102, "peng", 1, "3b"),))
-        assert not state.events_need_authoritative_refresh((_parsed_event(102, "chi", 0),))
-        assert not state.events_need_authoritative_refresh((_parsed_event(102, "gang", 3),))
+        assert state.events_need_authoritative_refresh((_parsed_event(102, "peng", 1, "3b"),))
+        assert state.events_need_authoritative_refresh((_parsed_event(102, "chi", 0),))
+        assert state.events_need_authoritative_refresh((_parsed_event(102, "gang", 3),))
 
     def test_draws_and_pass_do_not_require_refresh(self):
         state = _sync_state()
         assert not state.events_need_authoritative_refresh((_parsed_event(102, "tile_drawn", MY_SEAT, "1w"),))
         assert not state.events_need_authoritative_refresh((_parsed_event(102, "tile_drawn", 0),))
+        assert state.events_need_authoritative_refresh((_parsed_event(102, "tile_drawn", 0, "9t"),))
         assert not state.events_need_authoritative_refresh((_parsed_event(102, "pass", 1),))
-        assert not state.events_need_authoritative_refresh((_parsed_event(102, "round_ended", 0),))
+        assert state.events_need_authoritative_refresh((_parsed_event(102, "round_ended", 0),))
 
     def test_own_draw_without_tile_requires_refresh(self):
         state = _sync_state()
@@ -553,6 +561,9 @@ async def test_conflict_on_incremental_window_migrated_is_closed(transport, cloc
         if stage["n"] == 3:
             assert seq == 0
             return _json(migrated)
+        if stage["n"] == 4:
+            assert seq == 102 and not long_poll
+            return _json({"pending": True})  # 当前快照超前一条，只补领一次
         raise AssertionError("unexpected stage={}".format(stage["n"]))
 
     transport.handler = handler
@@ -666,11 +677,16 @@ async def test_pending_gap_progress_restores_incremental(transport, clock):
     boundary_r2 = _snapshot_doc(200, turn=0, round_no=2, gap=True)  # 第二轮无进度
     water_300 = _snapshot_doc(300, turn=0, round_no=2, gap=True)  # 第二轮进展到 300
     stage = {"n": 0}
+    history_polls = {"n": 0}
 
     def handler(*, method: str, path: str, params=None, json_body=None, long_poll=False):
         if method == "POST":
             return 200, "{}"
         seq = (params or {}).get("seq")
+        if seq == 101 and not long_poll and stage["n"] == 5:
+            history_polls["n"] += 1
+            assert history_polls["n"] == 1
+            return _json({"pending": True})  # 第一次水位前进后补领；普通poll仍需继续
         stage["n"] += 1
         if stage["n"] == 1:
             return _json(base)
@@ -697,5 +713,6 @@ async def test_pending_gap_progress_restores_incremental(transport, clock):
     assert isinstance(item, ObservedActionWindow)
     assert item.window_key.round_no == 2
     assert item.window_key.trigger_seq == 301  # 第二轮进展后恢复增量直达
-    assert get_calls == [0, 101, 0, 101, 0, 200, 0, 200, 0, 300]
+    assert get_calls == [0, 101, 0, 101, 0, 101, 200, 0, 200, 0, 300]
+    assert history_polls["n"] == 1
 

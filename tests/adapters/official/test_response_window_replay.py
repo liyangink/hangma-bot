@@ -6,7 +6,7 @@
 1. 弃牌（seq 182）触发 response_peng，我方（座位 1）在响应座位；
 2. 他家 pass 推进权威 seq（183、184）——响应窗口固定走满期间快照 seq
    前进；测试房实测响应阶段 last_discard 为纯牌码字符串（无 seq），且
-   每次交付前全量重建清空事件历史。本回放全部用纯牌码形态：旧实现会
+   旧实现每次交付前全量重建会清空事件历史。本回放全部用纯牌码形态：旧实现会
    退回快照 seq，为同一物理窗口产出多个 WindowKey（R2：重复提交 pass
    -> 409 级联）；加固后的跨重建触发弃牌记忆（由 tile_discarded 事件
    写入）保证 seq 182->185 期间 WindowKey 恒为 trigger_seq=182；
@@ -14,7 +14,8 @@
    长轮询等不到事件，等看到 chi 的 timeout 事件时窗口已结束）——本回放
    中该段长轮询永久挂起，由阶段边界定时器竞速取胜后主动 seq=0 刷新捕获
    chi 窗口；
-4. 我方在吃响应座位时捕获吃窗口；随后弃权吃、终局推进到 draw 阶段。
+4. 碰阶段选择 pass 仅本地延后；我方在真实吃响应座位时捕获吃窗口，
+   此时提交 pass；随后权威事件推进到 draw 阶段。
 
 断言：触发窗口唯一 WindowKey(trigger_seq=182)；吃窗口可见；同物理窗口
 零重复提交（每窗最多一次 POST、绝无重复交付）；全程无触发序号退化提示
@@ -149,6 +150,7 @@ async def test_official_replay_response_chi_window(transport: FakeTransport, clo
     ]
     posts = []
     seq187_polls = {"n": 0}
+    history186_polls = {"n": 0}
 
     async def handler(*, method: str, path: str, params=None, json_body=None, long_poll=False):
         if method == "POST":
@@ -164,10 +166,17 @@ async def test_official_replay_response_chi_window(transport: FakeTransport, clo
         if seq == 182:
             return 200, json.dumps(_events(_event(183, "pass", 2), _event(184, "pass", 3)))
         if seq == 184:
+            if not long_poll:
+                return 200, json.dumps({"pending": True})  # 快照185的有界补领
             await asyncio.sleep(30)
             return 200, json.dumps({"pending": True})
         if seq == 185:
             return 200, json.dumps(_events(_event(186, "pass", 1), _event(187, "tile_drawn", 2, "9t")))
+        if seq == 186 and not long_poll:
+            history186_polls["n"] += 1
+            assert history186_polls["n"] == 1
+            # 补回此前因非空他家私牌异常而未入历史的公开摸牌事件。
+            return 200, json.dumps(_events(_event(187, "tile_drawn", 2)))
         if seq == 187:
             seq187_polls["n"] += 1
             if seq187_polls["n"] == 1:
@@ -186,6 +195,11 @@ async def test_official_replay_response_chi_window(transport: FakeTransport, clo
     assert item1.timeout_seconds == 1.0
     # 纯牌码 last_discard 按响应阶段语义重建（turn=0 即弃牌者）
     assert item1.observation.last_discard == PublicDiscard(seat=0, tile=Tile("6w"), seq=182)
+
+    deferred = await session.submit(_attempt(peng_key))
+    assert isinstance(deferred, SubmitNotSent)
+    assert deferred.reason == "pass_deferred_until_chi"
+    assert posts == []
 
     item2 = await asyncio.wait_for(session.next_item(), timeout=2)
     assert isinstance(item2, ObservedActionWindow)
@@ -217,6 +231,7 @@ async def test_official_replay_response_chi_window(transport: FakeTransport, clo
     assert isinstance(item3, GameFailed)
     assert item3.recoverable is True
     assert item3.reason == "get_exhausted"
+    assert history186_polls["n"] == 1
 
     # 全程无触发序号退化提示：纯牌码窗口的触发序号全部由跨重建记忆命中
     notes = [

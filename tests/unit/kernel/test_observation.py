@@ -191,6 +191,7 @@ class InformationPermissionTests(unittest.TestCase):
             "scores",
             "rule_state",
             "public_history",
+            "consumed_seq", "history_complete", "chain_piao", "gang_draw", "observation_issues",
         }
         self.assertEqual({field.name for field in fields(PlayerObservation)}, expected_fields)
 
