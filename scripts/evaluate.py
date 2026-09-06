@@ -166,21 +166,49 @@ def _git_state() -> Tuple[Optional[str], Optional[bool]]:
     return (commit or None), dirty
 
 
+def _effective_weights_snapshot(policy: Any) -> Optional[dict]:
+    """策略生效权重快照（类声明字段的当前值）；无权重参数的策略返回 None。
+
+    声明权重为空时实际生效的是类默认权重，manifest 必须记录生效值
+    才能事后复现（E3 诊断教训 2026-09-06）。
+    """
+    weights = getattr(policy, "_weights", None)
+    if weights is None:
+        return None
+    cls = type(weights)
+    return {
+        name: getattr(weights, name)
+        for name, value in vars(cls).items()
+        if not name.startswith("_") and not callable(value)
+    }
+
+
 def _manifest_versions(
     *,
     experiment: Any,
     baseline: PolicyDeclaration,
     challenger: PolicyDeclaration,
     opponents: Tuple[PolicyDeclaration, ...] = (),
+    effective_weights_by_id: Optional[Mapping] = None,
 ) -> list:
+    scoring_entries = {
+        "baseline": baseline.to_json(),
+        "challenger": challenger.to_json(),
+        "opponent_pool": [item.to_json() for item in opponents],
+    }
+    for entry in (
+        [scoring_entries["baseline"], scoring_entries["challenger"]]
+        + scoring_entries["opponent_pool"]
+    ):
+        entry["effective_weights"] = (
+            effective_weights_by_id.get(entry["policy_id"])
+            if effective_weights_by_id is not None
+            else None
+        )
     versions = {
         "experiment_kind": experiment.kind,
         "clock_mode": experiment.clock_mode,
-        "scoring_policies": {
-            "baseline": baseline.to_json(),
-            "challenger": challenger.to_json(),
-            "opponent_pool": [item.to_json() for item in opponents],
-        },
+        "scoring_policies": scoring_entries,
     }
     if isinstance(experiment, DecisionExperiment):
         versions["decision_mode"] = experiment.decision_mode
@@ -319,6 +347,10 @@ def cmd_decisions(args: argparse.Namespace) -> int:
             experiment=experiment,
             baseline=experiment.baseline,
             challenger=experiment.challenger,
+            effective_weights_by_id={
+                experiment.baseline.policy_id: _effective_weights_snapshot(baseline_policy),
+                experiment.challenger.policy_id: _effective_weights_snapshot(challenger_policy),
+            },
         ),
     )
     write_manifest(out_dir / "manifest.json", manifest)
@@ -403,6 +435,10 @@ def cmd_matches(args: argparse.Namespace) -> int:
             baseline=experiment.baseline,
             challenger=experiment.challenger,
             opponents=experiment.opponents,
+            effective_weights_by_id={
+                policy_id: _effective_weights_snapshot(policy)
+                for policy_id, policy in policies_by_id.items()
+            },
         ),
     )
     write_manifest(out_dir / "manifest.json", manifest)

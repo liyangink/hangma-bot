@@ -151,3 +151,41 @@ async def test_aclose_repeat_does_not_duplicate_summary():
     ]
     assert len(summaries) == 1
     assert first.missing_high_priority == second.missing_high_priority
+
+
+def test_audit_plus_manifest_version_facts_injectable():
+    """版本事实键（git/策略）可由组合根注入；主审集成修正（2026-09-06）。"""
+
+    from hangma_bot.application.participant_runtime import _audit_plus_manifest_fields
+
+    fields = _audit_plus_manifest_fields(
+        "hangma-official",
+        {
+            "git_commit": "abc123",
+            "git_dirty": True,
+            "policy_version": "weighted_heuristic_v1",
+            "policy_weights": {"win_now": 1000.0},
+            "ruleset_version": "hangma-mvp-v1",
+        },
+    )
+    assert fields["git_commit"] == "abc123"
+    assert fields["git_dirty"] is True
+    assert fields["policy_version"] == "weighted_heuristic_v1"
+    assert fields["policy_weights"] == {"win_now": 1000.0}
+    assert fields["ruleset_version"] == "hangma-mvp-v1"
+    assert fields["source_namespace"] == "hangma-official"
+
+
+def test_audit_plus_manifest_identity_keys_still_protected():
+    """身份/安全键禁止覆盖；版本事实键缺省仍为 null（不冒充已提交代码）。"""
+
+    from hangma_bot.application.participant_runtime import _audit_plus_manifest_fields
+
+    with pytest.raises(ValueError, match="保留键"):
+        _audit_plus_manifest_fields("hangma-official", {"source_namespace": "evil"})
+    with pytest.raises(ValueError, match="保留键"):
+        _audit_plus_manifest_fields("hangma-official", {"capture_profile": "x"})
+    defaults = _audit_plus_manifest_fields(None, None)
+    assert defaults["git_commit"] is None
+    assert defaults["policy_weights"] is None
+    assert defaults["redaction_configured"] is True

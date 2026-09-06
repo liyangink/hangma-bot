@@ -143,6 +143,7 @@ class AutoMatchRuntime:
         budget_policy: Optional[BudgetPolicy] = None,
         supervision: Optional[SupervisionPolicy] = None,
         sleep: Callable[[float], Awaitable[None]] = DEFAULT_SLEEP,
+        manifest_extra: Optional[Mapping[str, object]] = None,
     ) -> None:
         if target.mode is not RuntimeMode.AUTO_MATCH:
             raise ValueError("AutoMatchRuntime 只服务 RuntimeMode.AUTO_MATCH")
@@ -157,6 +158,8 @@ class AutoMatchRuntime:
         self._budget_policy = budget_policy if budget_policy is not None else BudgetPolicy()
         self._supervision = supervision if supervision is not None else SupervisionPolicy()
         self._sleep = sleep
+        # audit-plus-v1 版本事实注入（git/策略版本与生效权重）；缺省 null。
+        self._manifest_extra = manifest_extra
         self._run_id: Optional[str] = None
         self._audit_trail: Optional[AuditTrail] = None
         self._last_audit_summary: Optional[AuditSummary] = None
@@ -254,7 +257,7 @@ class AutoMatchRuntime:
                     AuditKind.RUN_MANIFEST,
                     {
                         **_audit_plus_manifest_fields(
-                            self._settings.source_namespace, None
+                            self._settings.source_namespace, self._manifest_extra
                         ),
                         "run_id": self._run_id,
                         "mode": self._target.mode.value,
@@ -287,7 +290,7 @@ class AutoMatchRuntime:
                 AuditKind.RUN_MANIFEST,
                 {
                     **_audit_plus_manifest_fields(
-                        self._settings.source_namespace, None
+                        self._settings.source_namespace, self._manifest_extra
                     ),
                     "run_id": self._run_id,
                     "mode": self._target.mode.value,
@@ -1067,7 +1070,7 @@ class AutoMatchRuntime:
             AuditKind.RUN_MANIFEST,
             {
                 **_audit_plus_manifest_fields(
-                    self._settings.source_namespace, None
+                    self._settings.source_namespace, self._manifest_extra
                 ),
                 "run_id": self._run_id,
                 "mode": self._target.mode.value,

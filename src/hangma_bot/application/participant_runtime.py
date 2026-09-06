@@ -62,9 +62,21 @@ def _audit_plus_manifest_fields(
         "policy_weights": None,
         "redaction_configured": True,
     }
+    # 保留键分两类：身份/安全键（capture_profile、audit_producer、
+    # source_namespace、python_version、redaction_configured）禁止覆盖；
+    # 版本事实键（git_commit、git_dirty、source_file_hashes、policy_version、
+    # policy_weights）默认 null、允许组合根注入——否则这些字段永远无法
+    # 记录真实版本事实（主审集成修正 2026-09-06）。
+    injectable = {
+        "git_commit",
+        "git_dirty",
+        "source_file_hashes",
+        "policy_version",
+        "policy_weights",
+    }
     if manifest_extra:
         for key, value in manifest_extra.items():
-            if key in fields:
+            if key in fields and key not in injectable:
                 raise ValueError("manifest_extra 不得覆盖保留键: " + str(key))
             fields[key] = value
     return fields

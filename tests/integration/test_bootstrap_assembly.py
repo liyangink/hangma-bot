@@ -120,6 +120,16 @@ class TestConfigValidation:
         with pytest.raises(ValueError, match="audit_raw_rotate_bytes"):
             runtime_config_from_mapping(_valid(audit_raw_rotate_bytes=0))
 
+    def test_source_namespace_default_and_override(self):
+        config = runtime_config_from_mapping(_valid())
+        assert config.source_namespace == "hangma-official"
+        custom = runtime_config_from_mapping(_valid(source_namespace="hangma-test-internal"))
+        assert custom.source_namespace == "hangma-test-internal"
+
+    def test_source_namespace_empty_rejected(self):
+        with pytest.raises(ValueError, match="source_namespace"):
+            runtime_config_from_mapping(_valid(source_namespace=""))
+
 
 class TestAssembly:
     def test_build_runtime_object_graph(self, tmp_path):
@@ -310,6 +320,23 @@ class TestAuditRawGzipWiring:
         raw_dir = assembled.sink.run_dir / "participants" / "P1" / "raw"
         assert list(raw_dir.glob("*.jsonl.gz")) == []
         assert (raw_dir / "G1.jsonl").exists()
+
+
+def test_version_fact_helpers(tmp_path):
+    """审计版本事实助手：git 状态与策略生效权重快照（2026-09-06 集成）。"""
+
+    from hangma_bot.bootstrap import _effective_weights_snapshot, _git_state
+    from hangma_bot.policy.weighted_heuristic import WeightedHeuristicPolicy
+
+    commit, dirty = _git_state()
+    assert isinstance(commit, str) and len(commit) == 40
+    assert isinstance(dirty, bool)
+
+    snapshot = _effective_weights_snapshot(WeightedHeuristicPolicy())
+    assert snapshot is not None
+    assert snapshot["win_now"] == 1000.0
+    assert snapshot["shanten_step"] == 100.0
+    assert _effective_weights_snapshot(SafeFallbackPolicy()) is None
 
 
 class _StubSession:

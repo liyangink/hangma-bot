@@ -170,6 +170,10 @@ class RuntimeConfig:
     # SSE 帧驱动开关（2026-09-05 接入，默认关）：开启后各场次在长轮询之外
     # 优先使用官方 /notify 帧驱动短拉；流终局自动降级回长轮询（sse_degraded）
     sse_enabled: bool = False
+    # 部署配置中的逻辑平台实例名（契约 §4.1）：同一官方平台跨地址/节点
+    # 保持相同，进入审计 RUN_MANIFEST 与统一牌谱身份；不是 Token、主机名
+    # 或 Git 分支。默认 hangma-official，按部署覆盖。
+    source_namespace: str = "hangma-official"
 
     def __post_init__(self) -> None:
         if not isinstance(self.mode, RuntimeMode):
@@ -204,6 +208,7 @@ class RuntimeConfig:
             _require_non_empty_str(self.slot, "RuntimeConfig.slot")
         if not isinstance(self.sse_enabled, bool):
             raise ValueError("RuntimeConfig.sse_enabled 必须是布尔值，得到 {0!r}".format(self.sse_enabled))
+        _require_non_empty_str(self.source_namespace, "RuntimeConfig.source_namespace")
         if not isinstance(self.audit_raw_gzip, bool):
             raise ValueError("audit_raw_gzip 必须是布尔，得到 {0!r}".format(self.audit_raw_gzip))
         _require_positive_int(self.audit_raw_rotate_bytes, "RuntimeConfig.audit_raw_rotate_bytes")
@@ -244,6 +249,7 @@ _CONFIG_FIELDS = frozenset({
     "sse_enabled",
     "audit_raw_gzip",
     "audit_raw_rotate_bytes",
+    "source_namespace",
 })
 
 
@@ -335,6 +341,9 @@ def runtime_config_from_mapping(
         audit_raw_rotate_bytes=_require_positive_int(
             data.get("audit_raw_rotate_bytes", 32 * 1024 * 1024),
             "audit_raw_rotate_bytes",
+        ),
+        source_namespace=_require_non_empty_str(
+            data.get("source_namespace", "hangma-official"), "source_namespace"
         ),
     )
 
@@ -533,6 +542,16 @@ def build_runtime(
     else:
         policy = _STRATEGY_FACTORIES[config.strategy]()
 
+    # audit-plus-v1 版本事实（契约 §4.2）：代码提交/脏状态、策略版本与
+    # 生效权重、本地规则语义版本；缺省取不到为 null，不冒充已提交代码。
+    git_commit, git_dirty = _git_state()
+    manifest_extra: Mapping[str, object] = {
+        "git_commit": git_commit,
+        "git_dirty": git_dirty,
+        "policy_version": config.strategy,
+        "policy_weights": _effective_weights_snapshot(policy),
+        "ruleset_version": DEFAULT_RULESET_VERSION,
+    }
     runtime = ParticipantRuntime(
         session=session,
         policy=policy,
@@ -547,6 +566,8 @@ def build_runtime(
         ids=fixed_ids,
         budget_policy=BudgetPolicy(),
         supervision=SupervisionPolicy(),
+        source_namespace=config.source_namespace,
+        manifest_extra=manifest_extra,
     )
     return AssembledRuntime(
         config=config,
@@ -668,6 +689,15 @@ def build_auto_match_runtime(
     else:
         policy = _STRATEGY_FACTORIES[config.strategy]()
 
+    # 与 build_runtime 同一口径的版本事实注入（audit-plus-v1 RUN_MANIFEST）。
+    git_commit, git_dirty = _git_state()
+    manifest_extra: Mapping[str, object] = {
+        "git_commit": git_commit,
+        "git_dirty": git_dirty,
+        "policy_version": config.strategy,
+        "policy_weights": _effective_weights_snapshot(policy),
+        "ruleset_version": DEFAULT_RULESET_VERSION,
+    }
     runtime = AutoMatchRuntime(
         session=session,
         policy=policy,
@@ -683,6 +713,7 @@ def build_auto_match_runtime(
         ids=fixed_ids,
         budget_policy=BudgetPolicy(),
         supervision=SupervisionPolicy(),
+        manifest_extra=manifest_extra,
     )
     return AssembledAutoMatchRuntime(
         config=config,
@@ -700,6 +731,51 @@ def build_auto_match_runtime(
 # ---------------------------------------------------------------------------
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def _git_state() -> Tuple[Optional[str], Optional[bool]]:
+    """组装期代码版本事实（HEAD 提交与工作树 dirty）；取不到为 None。"""
+
+    import subprocess
+
+    try:
+        commit = subprocess.run(
+            ["git", "-C", str(_REPO_ROOT), "rev-parse", "HEAD"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        ).stdout.strip()
+    except (OSError, subprocess.SubprocessError):
+        commit = ""
+    try:
+        status = subprocess.run(
+            ["git", "-C", str(_REPO_ROOT), "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        ).stdout
+        dirty = bool(status.strip())
+    except (OSError, subprocess.SubprocessError):
+        dirty = None
+    return (commit or None), dirty
+
+
+def _effective_weights_snapshot(policy: object) -> Optional[Mapping[str, object]]:
+    """策略生效权重快照（类声明字段的当前值）；无权重参数的策略返回 None。
+
+    审计制品必须记录「生效」参数而非仅声明值：声明为空时实际使用的是
+    类默认权重，不落盘会破坏事后复现（E3 诊断教训 2026-09-06）。
+    """
+
+    weights = getattr(policy, "_weights", None)
+    if weights is None:
+        return None
+    cls = type(weights)
+    return {
+        name: getattr(weights, name)
+        for name, value in vars(cls).items()
+        if not name.startswith("_") and not callable(value)
+    }
 
 
 def build_decision_codec() -> Mapping[str, Callable]:
