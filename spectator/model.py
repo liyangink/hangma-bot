@@ -53,11 +53,12 @@ def _list(value: object) -> list[Any]:
 
 
 def discover_run_directories(watch_dirs: Iterable[str | Path]) -> tuple[Path, ...]:
-    """从用户配置的观战目录自动发现 ``runs/{run_id}``。
+    """从用户配置的观战目录自动发现新旧两种运行审计目录。
 
     ``watch_dirs`` 可直接是某个运行目录、通常的 ``audit_root``，或测试房间
-    的父目录（其中有 ``slot-*/runs/{run_id}``）。只把含审计 ``manifest.json``
-    的目录认作来源；不读取运行配置文件，从而不会接触 Token。
+    的父目录。支持当前 ``runs/{run_id}`` 布局和已归档测试房的
+    ``bot-audit/{角色}/run-*`` 布局。只把内容是 ``run_manifest`` 审计信封的
+    ``manifest.json`` 认作来源；不读取运行配置文件，从而不会接触 Token。
     """
 
     found: dict[str, Path] = {}
@@ -73,9 +74,7 @@ def discover_run_directories(watch_dirs: Iterable[str | Path]) -> tuple[Path, ..
         candidates = [direct] if direct.is_file() else sorted(resolved.rglob("manifest.json"))
         for manifest in candidates:
             run_dir = manifest.parent
-            # bundle/derived 里的 manifest 不是运行审计根；只有存在 participants
-            # 或正在创建中的 run 目录才接受，后者允许观战器先启动后接入。
-            if not (run_dir / "participants").exists() and run_dir.parent.name != "runs":
+            if not _is_audit_run_manifest(manifest):
                 continue
             try:
                 key = str(run_dir.resolve())
@@ -83,6 +82,17 @@ def discover_run_directories(watch_dirs: Iterable[str | Path]) -> tuple[Path, ..
                 key = str(run_dir)
             found[key] = run_dir
     return tuple(sorted(found.values(), key=lambda item: str(item)))
+
+
+def _is_audit_run_manifest(path: Path) -> bool:
+    """只接受运行审计清单，排除 bundle、derived 与数据集的同名文件。"""
+
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return False
+    envelope = _mapping(document)
+    return envelope is not None and envelope.get("schema_version") == 1 and envelope.get("kind") == "run_manifest"
 
 
 @dataclass
@@ -331,7 +341,7 @@ class _RunProjection:
         return "source-" + digest
 
     def _role_label(self) -> str:
-        """优先显示测试房间 slot，否则显示审计参赛身份或运行目录名。"""
+        """优先显示测试房间角色目录，否则显示审计参赛身份或运行目录名。"""
 
         try:
             parts = self.run_dir.relative_to(self.configured_root).parts
@@ -340,6 +350,10 @@ class _RunProjection:
         for part in parts:
             if part.startswith("slot-"):
                 return part
+        # 已归档测试房使用 bot-audit/{xuanwu,baihu,...}/run-*，没有 slot-*。
+        # 父目录名是人工配置的角色标签，优先级高于不可读的 participant_id。
+        if self.run_dir.name.startswith("run-") and self.run_dir.parent.name != "runs":
+            return self.run_dir.parent.name
         return self.participant_id or self.run_dir.name
 
     def _note(self, issue: str) -> None:

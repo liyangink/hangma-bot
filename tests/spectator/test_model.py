@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 from spectator.model import SpectatorRepository, discover_run_directories
 
@@ -209,3 +210,25 @@ def test_trailing_jsonl_line_is_not_visible_until_writer_completes_it(tmp_path):
     game = second["sources"][0]["games"][0]
     assert game["game_id"] == "g-live"
     assert game["observation"]["my_hand"] == ["1w", "2w", "白"]
+
+
+def test_discovers_checked_in_legacy_test_room_audit_layout():
+    """真实归档仍用 bot-audit/{角色}/run-*，P0 必须把它当作观战来源。"""
+
+    repository_root = Path(__file__).resolve().parents[2]
+    audit_root = (
+        repository_root
+        / "game-records/test-room/20260906-1444-t_74a7c2d75d5e/bot-audit"
+    )
+    target_run = audit_root / "xuanwu/run-8c975e27eaa14429973671b841c88923"
+
+    assert target_run.resolve() in discover_run_directories((audit_root,))
+    snapshot = SpectatorRepository((audit_root,)).snapshot()
+    target = next(item for item in snapshot["sources"] if item["run_id"] == target_run.name)
+
+    assert target["role"] == "xuanwu"
+    assert {game["game_id"] for game in target["games"]} == {
+        "t_74a7c2d75d5e_r1_b0_t0",
+        "t_74a7c2d75d5e_r1_b1_t0",
+    }
+    assert any(game["observation"] is not None for game in target["games"])

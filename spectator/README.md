@@ -23,6 +23,7 @@ python3 spectator/server.py --watch-dir /path/to/audit-root
 - 单个运行目录：`.../runs/{run_id}/`；
 - 普通赛事或自由赛的 `audit_root`（其下有 `runs/{run_id}/`）；
 - 测试房间父目录（其下有 `slot-*/runs/{run_id}/`）。
+- 已归档测试房目录：`bot-audit/{角色}/run-*/`（例如 `xuanwu/run-*`）。
 
 例如，测试房间可以直接传入统一父目录：
 
@@ -30,7 +31,14 @@ python3 spectator/server.py --watch-dir /path/to/audit-root
 python3 spectator/server.py --watch-dir ./room-runs
 ```
 
-页面中的“Token 身份”下拉框按测试房间 `slot-*` 或审计 `participant_id` 标识来源；“官方场次”下拉框列出该身份审计里已发现的全部 `game_id`，因而可在 `M > 1` 时切换。
+仓库内现有测试房归档可直接这样查看：
+
+```bash
+python3 spectator/server.py \
+  --watch-dir ./game-records/test-room/20260906-1444-t_74a7c2d75d5e/bot-audit
+```
+
+页面中的“Token 身份”下拉框按测试房间 `slot-*`、归档角色目录（如 `xuanwu`）或审计 `participant_id` 标识来源；“官方场次”下拉框列出该身份审计里已发现的全部 `game_id`，因而可在 `M > 1` 时切换。
 
 排查目录识别时可只输出一次 JSON，而不启动网页：
 
