@@ -111,9 +111,9 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--watch-dir",
         action="append",
-        required=True,
+        default=None,
         metavar="PATH",
-        help="运行目录、audit_root 或测试房间 slot 父目录；可重复，自动发现 runs/{run_id}",
+        help="运行目录、audit_root 或测试房间 slot 父目录；可重复。省略时默认 ./runs",
     )
     parser.add_argument(
         "--port",
@@ -135,7 +135,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = build_arg_parser().parse_args(argv)
     if args.port < 0 or args.port > 65535:
         raise SystemExit("--port 必须在 0—65535")
-    repository = SpectatorRepository(args.watch_dir)
+    # 普通开发与赛事运行目录默认都放在仓库 ./runs；显式传参则完全由用户选择，
+    # 不把默认目录混进多目录观察列表，以免误显示无关审计。
+    repository = SpectatorRepository(args.watch_dir or ("runs",))
     if args.once:
         print(json.dumps(repository.snapshot(), ensure_ascii=False, indent=2))
         return 0

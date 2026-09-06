@@ -13,12 +13,12 @@ P0 的可见性固定为单一玩家观察（`PlayerObservation`，本家手牌�
 在仓库根目录执行：
 
 ```bash
-python3 spectator/server.py --watch-dir /path/to/audit-root
+python3 spectator/server.py
 ```
 
-默认仅监听 `http://127.0.0.1:8765/`。浏览器页面每 750 毫秒请求一次本机快照；观战程序会增量读取 JSONL 尾部，不反复扫描已读原始事件。
+默认审计目录是仓库根目录下的 `./runs`，服务仅监听 `http://127.0.0.1:8765/`。浏览器页面每 750 毫秒请求一次本机快照；观战程序会增量读取 JSONL 尾部，不反复扫描已读原始事件。
 
-`--watch-dir` 可重复指定，并自动识别以下任意层级：
+用 `--watch-dir` 可选择其他审计目录，也可重复指定多个目录。显式传入后只观察指定目录，不会混入默认 `./runs`。观战器自动识别以下任意层级：
 
 - 单个运行目录：`.../runs/{run_id}/`；
 - 普通赛事或自由赛的 `audit_root`（其下有 `runs/{run_id}/`）；

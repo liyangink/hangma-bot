@@ -3,11 +3,29 @@
 from __future__ import annotations
 
 import json
+from contextlib import redirect_stdout
+from io import StringIO
 import threading
 import urllib.request
 
 from spectator.model import SpectatorRepository
-from spectator.server import create_server
+from spectator.server import build_arg_parser, create_server, main
+
+
+def test_watch_directory_defaults_to_runs_and_explicit_values_replace_it():
+    """命令行无目录时观察 ./runs；显式目录不与默认值混合。"""
+
+    parser = build_arg_parser()
+    assert parser.parse_args([]).watch_dir is None
+    assert parser.parse_args(["--watch-dir", "one", "--watch-dir", "two"]).watch_dir == [
+        "one",
+        "two",
+    ]
+
+    output = StringIO()
+    with redirect_stdout(output):
+        assert main(["--once"]) == 0
+    assert json.loads(output.getvalue())["schema_version"] == 1
 
 
 def test_server_binds_loopback_and_serves_json(tmp_path):
