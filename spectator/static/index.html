@@ -42,31 +42,43 @@
 
         <section id="warning" class="warning" hidden></section>
 
-        <section class="score-grid" aria-label="桌内积分，座位顺序 0 到 3">
-          <article class="score-card"><span>座位 0</span><strong id="score-0">—</strong></article>
-          <article class="score-card"><span>座位 1</span><strong id="score-1">—</strong></article>
-          <article class="score-card"><span>座位 2</span><strong id="score-2">—</strong></article>
-          <article class="score-card"><span>座位 3</span><strong id="score-3">—</strong></article>
-        </section>
+        <section class="perspective-table" aria-label="以本家为底边的第一视角麻将牌桌">
+          <article id="player-top" class="table-seat seat-top">
+            <div class="seat-heading"><span id="seat-label-top">对家</span><strong id="score-top">—</strong></div>
+            <div id="hand-top" class="concealed-tiles" aria-label="对家手牌张数"></div>
+            <div id="melds-top" class="seat-melds"></div>
+            <div id="river-top" class="river-grid" aria-label="对家牌河"></div>
+          </article>
 
-        <section class="board-grid">
-          <article class="panel hand-panel">
-            <div class="panel-heading"><h3>本家手牌</h3><span id="my-seat" class="badge">—</span></div>
-            <div id="my-hand" class="tiles" aria-label="本家手牌"></div>
+          <article id="player-left" class="table-seat seat-left">
+            <div class="seat-heading"><span id="seat-label-left">左侧座位</span><strong id="score-left">—</strong></div>
+            <div id="hand-left" class="concealed-tiles" aria-label="左侧座位手牌张数"></div>
+            <div id="melds-left" class="seat-melds"></div>
+            <div id="river-left" class="river-grid" aria-label="左侧座位牌河"></div>
+          </article>
+
+          <article class="table-center">
+            <p class="eyebrow">牌桌中心</p>
+            <strong id="turn-state" class="turn-indicator">—</strong>
+            <p id="last-discard" class="last-discard">最近弃牌：—</p>
+            <dl id="table-facts" class="facts center-facts"></dl>
+            <dl id="rule-state" class="facts center-facts"></dl>
+          </article>
+
+          <article id="player-right" class="table-seat seat-right">
+            <div class="seat-heading"><span id="seat-label-right">右侧座位</span><strong id="score-right">—</strong></div>
+            <div id="hand-right" class="concealed-tiles" aria-label="右侧座位手牌张数"></div>
+            <div id="melds-right" class="seat-melds"></div>
+            <div id="river-right" class="river-grid" aria-label="右侧座位牌河"></div>
+          </article>
+
+          <article id="player-bottom" class="table-seat seat-bottom">
+            <div class="seat-heading"><span id="seat-label-bottom">本家</span><strong id="score-bottom">—</strong></div>
+            <div id="melds-bottom" class="seat-melds"></div>
+            <div id="river-bottom" class="river-grid" aria-label="本家牌河"></div>
+            <div id="my-hand" class="tiles own-hand" aria-label="本家手牌"></div>
             <p id="drawn-tile" class="muted"></p>
-            <dl id="rule-state" class="facts"></dl>
           </article>
-
-          <article class="panel table-panel">
-            <div class="panel-heading"><h3>牌桌公开信息</h3><span id="turn-state" class="badge">—</span></div>
-            <dl id="table-facts" class="facts"></dl>
-            <div id="melds" class="melds"></div>
-          </article>
-        </section>
-
-        <section class="panel">
-          <div class="panel-heading"><h3>四家牌河</h3><span class="muted">座位顺序 0—3</span></div>
-          <div id="discards" class="rivers"></div>
         </section>
 
         <section class="panel">

@@ -43,26 +43,40 @@ button:hover { filter: brightness(1.06); }
 .game-summary { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; margin: 26px 0 12px; }
 .freshness { max-width: 440px; color: var(--muted); text-align: right; font-size: .88rem; }
 .warning { margin: 12px 0; color: var(--alert); border-color: #9b5e54; background: #442d2b; }
-.score-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
-.score-card { min-height: 78px; padding: 13px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel-soft); }
-.score-card span { color: var(--muted); display: block; font-size: .83rem; }
-.score-card strong { color: var(--accent); display: block; font-size: 1.5rem; margin-top: 2px; }
-.board-grid, .two-column { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 12px 0; }
+.two-column { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 12px 0; }
 .panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
 .muted { color: var(--muted); font-size: .88rem; }
 .tiles { display: flex; flex-wrap: wrap; gap: 5px; min-height: 37px; }
 .tile { min-width: 32px; text-align: center; padding: 6px 5px; border-radius: 6px; background: #f1eee8; color: #242322; font-weight: 800; font-family: "PingFang SC", sans-serif; }
 .tile.drawn { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tile.last-discard { background: #ffd98a; outline: 2px solid #ff8e6c; outline-offset: 1px; }
+.tile.tile-back { min-width: 17px; width: 17px; height: 28px; padding: 0; border: 1px solid #b5d0c7; background: repeating-linear-gradient(45deg, #37665e 0 3px, #244a44 3px 6px); color: transparent; }
 .facts { display: grid; grid-template-columns: max-content 1fr; gap: 5px 13px; margin: 15px 0 0; font-size: .9rem; }
 .facts dt { color: var(--muted); }
 .facts dd { margin: 0; overflow-wrap: anywhere; }
-.melds { display: grid; gap: 7px; }
-.meld-row { display: flex; gap: 8px; align-items: center; color: var(--muted); font-size: .86rem; }
-.meld-row .tiles { min-height: 0; }
-.rivers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-.river { min-height: 86px; border: 1px solid var(--line); border-radius: 8px; padding: 8px; background: #14302c; }
-.river-title { display: block; color: var(--muted); font-size: .78rem; margin-bottom: 6px; }
-.river .tile { min-width: 26px; font-size: .82rem; padding: 3px; }
+
+/* 牌桌以本家为底边：暗手只用牌背和张数表达，他家绝不暴露牌码。 */
+.perspective-table { display: grid; grid-template: minmax(120px, auto) minmax(230px, auto) minmax(185px, auto) / minmax(160px, 1fr) minmax(320px, 2fr) minmax(160px, 1fr); gap: 10px; margin: 12px 0; padding: 14px; border: 1px solid #3d7067; border-radius: 20px; background: radial-gradient(ellipse at center, #285d51 0, #1d463f 52%, #14342f 100%); box-shadow: inset 0 0 0 8px #12302b, inset 0 0 34px rgb(0 0 0 / 25%); }
+.table-seat, .table-center { min-width: 0; border: 1px solid rgb(176 227 210 / 24%); border-radius: 12px; background: rgb(10 34 30 / 36%); padding: 10px; }
+.table-seat.is-turn { border-color: var(--accent); box-shadow: 0 0 0 2px rgb(243 189 85 / 24%); }
+.seat-top { grid-area: 1 / 2; }
+.seat-left { grid-area: 2 / 1; }
+.table-center { grid-area: 2 / 2; display: grid; align-content: center; justify-items: center; text-align: center; padding: 20px; border-radius: 50%; background: radial-gradient(circle, rgb(42 105 88 / 72%), rgb(18 59 51 / 65%)); }
+.seat-right { grid-area: 2 / 3; }
+.seat-bottom { grid-area: 3 / 1 / 4 / 4; background: rgb(8 28 25 / 56%); }
+.seat-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: var(--muted); font-size: .82rem; }
+.seat-heading strong { color: var(--accent); font-size: 1.25rem; }
+.concealed-tiles { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px; min-height: 30px; margin: 8px 0; }
+.seat-melds { display: flex; flex-wrap: wrap; gap: 5px; min-height: 0; margin: 5px 0; }
+.seat-meld { display: flex; gap: 2px; padding: 3px; border-radius: 5px; background: rgb(242 245 239 / 10%); }
+.seat-meld .tile { min-width: 21px; padding: 2px; font-size: .71rem; }
+.river-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 3px; min-height: 28px; }
+.river-grid .tile { min-width: 0; padding: 3px 1px; font-size: .73rem; }
+.turn-indicator { color: var(--accent); font-size: 1rem; }
+.last-discard { margin: 8px 0 0; color: #f2ddad; font-size: .88rem; }
+.center-facts { width: min(100%, 270px); margin-top: 10px; text-align: left; font-size: .82rem; }
+.own-hand { justify-content: center; min-height: 45px; margin-top: 9px; }
+.own-hand .tile { min-width: 35px; padding: 8px 6px; font-size: 1rem; }
 
 .candidates { display: grid; gap: 9px; }
 .candidate { border-left: 3px solid var(--accent); padding: 9px 11px; background: #15342f; border-radius: 0 8px 8px 0; }
@@ -79,6 +93,12 @@ code { color: var(--accent); }
 @media (max-width: 780px) {
   .topbar, .game-summary { align-items: flex-start; flex-direction: column; }
   .freshness { text-align: left; }
-  .score-grid, .rivers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .board-grid, .two-column { grid-template-columns: 1fr; }
+  .two-column { grid-template-columns: 1fr; }
+  .perspective-table { grid-template: auto auto auto auto / 1fr; padding: 9px; }
+  .table-center { grid-area: 1 / 1; border-radius: 14px; }
+  .seat-bottom { grid-area: 2 / 1; }
+  .seat-top { grid-area: 3 / 1; }
+  .seat-left { grid-area: 4 / 1; }
+  .seat-right { grid-area: 5 / 1; }
+  .river-grid { grid-template-columns: repeat(9, minmax(0, 1fr)); }
 }

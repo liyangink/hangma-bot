@@ -21,8 +21,9 @@ function element(tag, className, value) {
   if (value !== undefined) text(node, value);
   return node;
 }
-function appendTile(parent, tile, drawn = false) {
-  const node = element("span", "tile" + (drawn ? " drawn" : ""), tile);
+function appendTile(parent, tile, drawn = false, lastDiscard = false) {
+  const classes = "tile" + (drawn ? " drawn" : "") + (lastDiscard ? " last-discard" : "");
+  const node = element("span", classes, tile);
   parent.appendChild(node);
 }
 function formatTime(ms) {
@@ -73,36 +74,54 @@ function renderFacts(id, pairs) {
     node.appendChild(element("dd", "", value));
   }
 }
-function renderScores(scores) {
-  for (let seat = 0; seat < 4; seat += 1) text(document.querySelector("#score-" + seat), scores?.[seat]);
-}
-function renderMelds(melds) {
-  const node = document.querySelector("#melds");
+function renderConcealedHand(id, count) {
+  const node = document.querySelector(id);
   clear(node);
-  let count = 0;
-  (melds || []).forEach((seatMelds, seat) => {
-    (seatMelds || []).forEach(meld => {
-      count += 1;
-      const row = element("div", "meld-row");
-      row.appendChild(element("span", "", "座位 " + seat + " · " + (meld.kind || "副露")));
-      const tiles = element("span", "tiles");
-      (meld.tiles || []).forEach(tile => appendTile(tiles, tile));
-      row.appendChild(tiles);
-      node.appendChild(row);
-    });
-  });
-  if (!count) node.appendChild(element("p", "muted", "暂无副露。"));
+  const safeCount = Number.isInteger(count) && count > 0 ? count : 0;
+  for (let index = 0; index < safeCount; index += 1) {
+    const back = element("span", "tile tile-back", "");
+    back.setAttribute("aria-label", "暗牌");
+    node.appendChild(back);
+  }
+  node.appendChild(element("span", "muted", safeCount ? "暗手 " + safeCount + " 张" : "暗手张数未知"));
 }
-function renderDiscards(discards) {
-  const node = document.querySelector("#discards");
+function renderSeatMelds(id, melds) {
+  const node = document.querySelector(id);
   clear(node);
-  for (let seat = 0; seat < 4; seat += 1) {
-    const river = element("article", "river");
-    river.appendChild(element("span", "river-title", "座位 " + seat));
-    const tiles = element("div", "tiles");
-    for (const tile of (discards?.[seat] || [])) appendTile(tiles, tile);
-    river.appendChild(tiles);
-    node.appendChild(river);
+  for (const meld of (melds || [])) {
+    const group = element("div", "seat-meld");
+    group.setAttribute("aria-label", meld.kind || "副露");
+    for (const tile of (meld.tiles || [])) appendTile(group, tile);
+    node.appendChild(group);
+  }
+}
+function renderRiver(id, tiles, lastDiscard) {
+  const node = document.querySelector(id);
+  clear(node);
+  const lastIndex = lastDiscard && tiles ? tiles.lastIndexOf(lastDiscard.tile) : -1;
+  (tiles || []).forEach((tile, index) => appendTile(node, tile, false, index === lastIndex));
+}
+function relativeSeat(mySeat, offset) {
+  return Number.isInteger(mySeat) ? (mySeat + offset) % 4 : null;
+}
+function renderPerspective(observation) {
+  const placements = [
+    ["bottom", 0, "本家"],
+    ["right", 1, "右侧座位"],
+    ["top", 2, "对家"],
+    ["left", 3, "左侧座位"],
+  ];
+  const mySeat = observation.seat;
+  for (const [position, offset, name] of placements) {
+    const seat = relativeSeat(mySeat, offset);
+    const isMe = position === "bottom";
+    const holder = document.querySelector("#player-" + position);
+    holder.classList.toggle("is-turn", seat !== null && seat === observation.turn_seat);
+    text(document.querySelector("#seat-label-" + position), name + " · 座位 " + (seat ?? "—"));
+    text(document.querySelector("#score-" + position), seat === null ? null : observation.scores?.[seat]);
+    renderSeatMelds("#melds-" + position, seat === null ? [] : observation.melds?.[seat]);
+    renderRiver("#river-" + position, seat === null ? [] : observation.discards?.[seat], seat === null || observation.last_discard?.seat !== seat ? null : observation.last_discard);
+    if (!isMe) renderConcealedHand("#hand-" + position, seat === null ? null : observation.hand_counts?.[seat]);
   }
 }
 function usefulText(usefulTiles) {
@@ -154,21 +173,19 @@ function renderGame(game) {
   if (!observation) return;
   emptyState.hidden = true;
   text(document.querySelector("#game-title"), game.game_id + " · 单局 " + (observation.round_no ?? "—"));
-  text(document.querySelector("#my-seat"), "本家座位 " + (observation.seat ?? "—"));
   const freshness = game.freshness || {};
   text(document.querySelector("#freshness"), "牌桌 seq " + (freshness.snapshot_seq ?? "—") + " · 事件 seq " + (freshness.latest_event_seq ?? "—") + " · " + freshness.message);
   const warning = document.querySelector("#warning");
   warning.hidden = !freshness.event_ahead_of_table_snapshot;
   text(warning, freshness.event_ahead_of_table_snapshot ? "收到更晚的增量事件。为避免错误推演，牌桌仍展示最后一份完整观察；请结合右侧事件列表阅读。" : "");
-  renderScores(observation.scores);
   renderTiles("#my-hand", observation.my_hand, observation.drawn_tile);
   text(document.querySelector("#drawn-tile"), observation.drawn_tile ? "刚摸牌（黄框）：" + observation.drawn_tile : "当前没有单列摸牌。");
+  renderPerspective(observation);
   const rule = observation.rule_state || {};
   renderFacts("#rule-state", [["财神", rule.wealth_god], ["爆头", rule.baotou === true ? "是" : rule.baotou === false ? "否" : "未知"], ["动作链", rule.chain_count], ["抓打圈", rule.catch_play === true ? "是" : rule.catch_play === false ? "否" : "未知"]]);
   text(document.querySelector("#turn-state"), (observation.phase || "未知阶段") + " · 行动座位 " + (observation.turn_seat ?? "—"));
-  renderFacts("#table-facts", [["庄家", observation.dealer_seat], ["响应座位", (observation.responding_seats || []).join("，") || "无"], ["牌墙余量", observation.remaining_tile_count], ["最近弃牌", observation.last_discard ? (observation.last_discard.tile || observation.last_discard) : "无"], ["观察来源", game.observation_source]]);
-  renderMelds(observation.melds);
-  renderDiscards(observation.discards);
+  text(document.querySelector("#last-discard"), observation.last_discard ? "最近弃牌：座位 " + (observation.last_discard.seat ?? "—") + " · " + (observation.last_discard.tile || "未知") : "最近弃牌：无");
+  renderFacts("#table-facts", [["庄家", observation.dealer_seat], ["响应座位", (observation.responding_seats || []).join("，") || "无"], ["牌墙余量", observation.remaining_tile_count], ["观察来源", game.observation_source]]);
   renderCandidates(game.candidates);
   const submission = game.latest_submission;
   text(document.querySelector("#submission"), submission ? [submission.action_key || "动作键未知", submission.outcome || "结果未知", submission.official_code || ""].filter(Boolean).join(" · ") : "暂无提交审计。");
