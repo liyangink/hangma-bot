@@ -318,3 +318,13 @@ def test_decision_report_lists_change_matrix():
     assert report["sections"][1]["table"]["rows"][0][1] == 1
     matrix = report["sections"][2]["table"]["rows"]
     assert ["discard:1w", "discard:2w", 1] in matrix
+
+
+def test_policy_deadline_error_is_timeout_in_decision_comparison():
+    from hangma_bot.policy.errors import PolicyTimeoutError
+    row = make_decision_source_row(make_observation(),two_discard_rules())
+    result = run_row(row,make_experiment(),
+        ScriptedPolicy(pick_key('discard:2w'),raise_error=PolicyTimeoutError('deadline')),
+        ScriptedPolicy(pick_key('discard:2w')))
+    assert result.baseline.fallback_reason == 'timeout'
+    assert result.baseline.action_key == 'discard:1w'

@@ -396,6 +396,19 @@ def summarize_results(
         }
     )
 
+    # 完整桌赛可以由异常保底撑完；不能把完赛率误读为策略正常执行率。
+    runtime_fields = ("timeouts", "illegal_choices", "fallbacks", "auto_actions", "audit_missing")
+    runtime_totals = {name: sum(getattr(r.runtime_counts, name) for r in results) for name in runtime_fields}
+    sections.append({
+        "heading": "运行可靠性（全部结果行）",
+        "paragraphs": [
+            "计数覆盖全部结果行及四个座位，不是仅待测策略。timeouts、illegal_choices 与 fallbacks "
+            "按驱动现有互斥分类分别统计。不能仅凭 complete 或零排除认定策略正常执行；"
+            "非零项须核对故障来源及实验装配，再判断能否用于策略强度归因。"
+        ],
+        "table": {"columns": ["计数", "次数"], "rows": [[name, runtime_totals[name]] for name in runtime_fields]},
+    })
+
     conclusion: List[str] = []
     pairing_outcome = None
     if baseline_policy_id and challenger_policy_id:
@@ -508,6 +521,8 @@ def summarize_results(
         conclusion.append("未声明比较对象：无法评估（只做描述性汇总）。")
 
     if conclusion:
+        if any(runtime_totals.values()):
+            conclusion.append("本批存在运行故障或降级计数；统计值包含这些影响，尚不能直接归因于策略评分优劣。")
         sections.append({"heading": "结论", "paragraphs": conclusion})
 
     return {

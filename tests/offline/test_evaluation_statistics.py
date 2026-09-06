@@ -241,3 +241,16 @@ def test_summarize_positive_direction_with_gates_note():
     conclusion = "；".join(report["sections"][-1]["paragraphs"])
     assert "支持候选版本" in conclusion
     assert "人工审核" in conclusion
+
+
+def test_completed_match_runtime_failures_are_visible_in_report():
+    """complete 不代表策略正常执行；汇总必须显示运行故障而非只报零排除。"""
+    from hangma_bot.offline.evaluation_results import RuntimeCounts
+    result = make_match_result(runtime_counts=RuntimeCounts(timeouts=3,illegal_choices=1,fallbacks=5,auto_actions=0,audit_missing=0))
+    report = summarize_results([result])
+    section = next(s for s in report['sections'] if s['heading']=='运行可靠性（全部结果行）')
+    values = dict(section['table']['rows'])
+    assert values['timeouts'] == 3
+    assert values['fallbacks'] == 5
+    assert values['illegal_choices'] == 1
+    assert '不能仅凭 complete' in ' '.join(section['paragraphs'])

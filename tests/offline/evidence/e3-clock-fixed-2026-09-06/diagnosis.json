@@ -1,0 +1,46 @@
+{
+  "original_artifacts": "tests/offline/evidence/e3-smoke-2026-09-05",
+  "base_commit": "ad6443bdf1179a1e9d59800b055b75474e193e03",
+  "match_run_changes": "仅应用 match-run-fix.patch（实验时钟和声明权重装配）；V0/V1 算法、规则、配置和随机源未改。",
+  "post_run_changes": "随后修复 PolicyTimeoutError 计数并增加运行可靠性汇总；report 由同一 results.jsonl 重新 summarize，不重新生成积分。",
+  "effective_default_weights": {
+    "weighted_heuristic": {
+      "win_now": 1000.0,
+      "gang_bonus": 40.0,
+      "wealth_god_keep": 60.0,
+      "shanten_step": 100.0,
+      "effective_tile": 1.0,
+      "win_potential": 5.0,
+      "flexibility": 2.0,
+      "claim_risk_peng": 6.0,
+      "claim_risk_chi": 10.0,
+      "feed_risk": 6.0,
+      "safe_tile_bonus": 3.0,
+      "style_adjust": 4.0
+    },
+    "weighted_heuristic_v1": {
+      "win_now": 1000.0,
+      "gang_bonus": 40.0,
+      "wealth_god_keep": 60.0,
+      "shanten_step": 100.0,
+      "effective_tile": 1.0,
+      "win_potential": 5.0,
+      "flexibility": 2.0,
+      "claim_risk_peng": 6.0,
+      "claim_risk_chi": 10.0,
+      "feed_risk": 6.0,
+      "safe_tile_bonus": 3.0,
+      "style_adjust": 4.0
+    }
+  },
+  "sha256": {
+    "experiment.json": "1f97618a4214fbcc572450e6e938c2dd3eef627221de37498f7bbd56bded0749",
+    "results.jsonl": "36d40dd1983ba9e8281a45884716649d588cf40e6c55ffc37d6ee89d817a6afe",
+    "report.json": "9599603d7307b3d7f9e5f97d0d43c1c611994641a9e619ebcb443904e36f5e14",
+    "report.md": "c1048123a129a12b74e8a85357c53a350c0dd3457ad8b6c960d5c68ecdd6cf8a",
+    "manifest.json": "661485b044f0e8cd0a15f4e7f818f7c33966108dd2137df6cea251de07f1ef21",
+    "match-run-fix.patch": "0f4aa0781552adcd30bf0c14c4fe9fac393719b289c88dc78d113ebe01286406"
+  },
+  "original_results_sha256": "f59b910ff0fade2c1e47c90b2b293bf5cadfd5229f83c0d2c40b30e933f0512b",
+  "note": "旧产物原样保留用于集成故障诊断，不再作为 V1 正常策略强度证据；两个 scenario 不足以证明总体等效。"
+}

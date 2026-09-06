@@ -370,3 +370,29 @@ def test_build_policy_weighted_heuristic_and_unknown_name():
     assert policy._weights.win_now == 5.0
     with pytest.raises(ValueError):
         module.build_policy(PolicyDeclaration("x", "mystery"), time.monotonic)
+
+
+@pytest.mark.parametrize('name', ['weighted_heuristic', 'weighted_heuristic_v1'])
+def test_policy_factory_uses_experiment_clock_and_declared_weights(name):
+    """真实 CLI 工厂必须把同一实验时钟及权重送入策略，不能退化为保底实验。"""
+    import asyncio
+    from hangma_bot.application.deadline import BudgetPolicy
+    from tests.unit.policy.test_v0_baseline import recorded_request, rows
+    module = load_script_module()
+    calls = []
+    def clock():
+        calls.append(1)
+        return 800.0
+    policy = module.build_policy(PolicyDeclaration(name,name,(('shanten_step',50.0),)),clock)
+    request = recorded_request(rows()[0])
+    plan = asyncio.run(policy.choose(request,BudgetPolicy().build(800.0,3.0)))
+    assert calls, '策略必须读取注入时钟'
+    candidate = next(c for c in plan.candidates if c.action_key == 'discard:3b')
+    shanten = next(c.facts.shanten_after for c in request.rules.legal_candidates if c.action_key == 'discard:3b')
+    assert next(p.value for p in candidate.score_parts if p.name == '第三层-向听数') == -50.0*shanten
+
+
+def test_v1_factory_rejects_unrecognized_weights_instead_of_ignoring():
+    module = load_script_module()
+    with pytest.raises(TypeError):
+        module.build_policy(PolicyDeclaration('v1','weighted_heuristic_v1',(('typo_weight',10.0),)),lambda:800.0)

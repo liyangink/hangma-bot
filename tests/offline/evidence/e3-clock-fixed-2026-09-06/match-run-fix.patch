@@ -1,0 +1,24 @@
+diff --git a/scripts/evaluate.py b/scripts/evaluate.py
+index 70f3679..66cc9b9 100644
+--- a/scripts/evaluate.py
++++ b/scripts/evaluate.py
+@@ -63,6 +63,7 @@ from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1  # noqa: E4
+ from hangma_bot.policy.safe_fallback import SafeFallbackPolicy  # noqa: E402
+ from hangma_bot.policy.weighted_heuristic import WeightedHeuristicPolicy  # noqa: E402
+ from hangma_bot.policy.weights import HeuristicWeights  # noqa: E402
++from hangma_bot.policy.weights_v1 import HeuristicWeightsV1  # noqa: E402
+ 
+ _REPO_ROOT = Path(__file__).resolve().parents[1]
+ 
+@@ -84,8 +85,9 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
+         policy.policy_id = declaration.policy_id
+         return policy
+     if declaration.name == "weighted_heuristic_v1":
+-        # V1 策略无权重声明（固定参数）；weights 若有值按未知键拒绝（PolicyDeclaration 已校验）。
+-        policy = ReliableHeuristicPolicyV1()
++        # 与 V0 使用同一实验时钟；逻辑预算不能与主机单调时钟比较。
++        weights = HeuristicWeightsV1(**dict(declaration.weights))
++        policy = ReliableHeuristicPolicyV1(weights=weights, monotonic=monotonic)
+         policy.policy_id = declaration.policy_id
+         return policy
+     raise ValueError(

@@ -44,6 +44,7 @@ from hangma_bot.policy.interface import (
     DecisionPlan,
     DecisionRequest,
 )
+from hangma_bot.policy.errors import PolicyTimeoutError
 
 from .evaluation_results import (
     EVALUATION_SCHEMA_VERSION,
@@ -408,7 +409,7 @@ async def _run_policy_on_request(
     try:
         remaining = max(0.0, budget.fallback_deadline_monotonic - now_monotonic())
         plan = await asyncio.wait_for(policy.choose(request, budget), timeout=remaining)
-    except asyncio.TimeoutError:
+    except (asyncio.TimeoutError, PolicyTimeoutError):
         fallback_reason = "timeout"
     except Exception as exc:  # 故障边界：策略异常不得崩溃整批比较
         fallback_reason = "error"
@@ -1275,7 +1276,7 @@ async def _resolve_window(
     try:
         remaining = max(0.0, budget.fallback_deadline_monotonic - now_monotonic())
         plan = await asyncio.wait_for(policy.choose(request, budget), timeout=remaining)
-    except asyncio.TimeoutError:
+    except (asyncio.TimeoutError, PolicyTimeoutError):
         fallback_reason = "timeout"
     except Exception as exc:
         fallback_reason = "policy_error"

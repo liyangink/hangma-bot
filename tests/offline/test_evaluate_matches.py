@@ -401,3 +401,14 @@ def test_real_hangma_rules_and_safe_fallback_integration():
     assert record.is_emergency is True
     assert record.action_key.startswith("discard:")
     assert record.legal is True
+
+
+def test_policy_deadline_error_is_counted_as_timeout():
+    """策略主动发现预算超限也属于 timeout，不能掩盖在普通异常保底里。"""
+    from hangma_bot.policy.errors import PolicyTimeoutError
+    policies = (ScriptedPolicy(pick_key('discard:2w'),raise_error=PolicyTimeoutError('deadline')),)+make_policies()[1:]
+    engine = FakeEngine(lambda spec:[draw_frame(1,[0]),final_frame(2,[5,0,0,0],completed_hands=1)])
+    outcome = run_drive(engine,policies,FakeRules(rules_with_emergency()))
+    assert outcome.decisions[0].fallback_reason == 'timeout'
+    assert outcome.runtime_counts.timeouts == 1
+    assert outcome.runtime_counts.fallbacks == 0  # 现有计数定义为互斥类别
