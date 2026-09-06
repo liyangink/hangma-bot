@@ -108,8 +108,8 @@ class FactsProductionContractTests(unittest.TestCase):
         self.assertEqual(hu.shanten_after, -1)
         self.assertEqual(hu.useful_tiles, ())
 
-    def test_pass_candidate_facts_are_not_applicable(self) -> None:
-        """过候选事实为 NOT_APPLICABLE：不带任何数值字段。"""
+    def test_pass_candidate_facts_describe_current_waiting_hand(self) -> None:
+        """过候选给出当前等待牌效，不领取触发弃牌或模拟后续弃牌。"""
 
         observation = make_observation(
             phase="response_peng",
@@ -122,9 +122,8 @@ class FactsProductionContractTests(unittest.TestCase):
         analysis = _rules().analyze(observation)
         facts = _facts_by_key(analysis)["pass"]
 
-        self.assertIs(facts.fact_kind, CandidateFactKind.NOT_APPLICABLE)
-        self.assertIsNone(facts.shanten_after)
-        self.assertEqual(facts.useful_tiles, ())
+        self.assertIs(facts.fact_kind, CandidateFactKind.HAND_PROGRESS)
+        self.assertIsInstance(facts.shanten_after, int)
         self.assertIsNone(facts.best_followup_discard)
 
     def test_peng_facts_carry_best_followup_discard(self) -> None:
@@ -254,7 +253,7 @@ class FactsProductionContractTests(unittest.TestCase):
         self.assertIsNotNone(family_version)
 
     def test_analysis_failed_degrades_only_that_candidate(self) -> None:
-        """鸣牌后手牌为空（极端观察）：该候选 ANALYSIS_FAILED，过不受影响。"""
+        """畸形短手牌使吃碰和等待事实都失败，但过仍是合法紧急动作。"""
 
         observation = make_observation(
             phase="response_peng",
@@ -271,7 +270,8 @@ class FactsProductionContractTests(unittest.TestCase):
         self.assertIs(by_key["peng:5w"].fact_kind, CandidateFactKind.ANALYSIS_FAILED)
         self.assertIsNone(by_key["peng:5w"].shanten_after)
         self.assertTrue(by_key["peng:5w"].note)
-        self.assertIs(by_key["pass"].fact_kind, CandidateFactKind.NOT_APPLICABLE)
+        self.assertIs(by_key["pass"].fact_kind, CandidateFactKind.ANALYSIS_FAILED)
+        self.assertEqual(analysis.emergency_candidate.action_key, "pass")
         self.assertTrue(any(issue.area == "candidate_facts" for issue in analysis.issues))
 
     def test_facts_module_failure_degrades_to_unproduced(self) -> None:

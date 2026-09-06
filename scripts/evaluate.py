@@ -61,9 +61,9 @@ from hangma_bot.offline.evaluation_results import (  # noqa: E402
 from hangma_bot.offline.evaluation_statistics import summarize_results  # noqa: E402
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1  # noqa: E402
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy  # noqa: E402
-from hangma_bot.policy.weighted_heuristic import WeightedHeuristicPolicy  # noqa: E402
 from hangma_bot.policy.weights import HeuristicWeights  # noqa: E402
 from hangma_bot.policy.weights_v1 import HeuristicWeightsV1  # noqa: E402
+from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy  # noqa: E402
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 
@@ -77,7 +77,7 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
     """按声明装配第一阶段两个真实策略；未知名称立即失败。"""
     if declaration.name == "weighted_heuristic":
         weights = HeuristicWeights(**dict(declaration.weights))
-        policy = WeightedHeuristicPolicy(weights=weights, monotonic=monotonic)
+        policy = LegacyWeightedHeuristicPolicy(weights=weights, monotonic=monotonic)
         policy.policy_id = declaration.policy_id  # 诊断标识，不进评分
         return policy
     if declaration.name == "safe_fallback":

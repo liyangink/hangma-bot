@@ -59,11 +59,10 @@ from hangma_bot.application.ids import IdGenerator, PrefixedUuidIds
 from hangma_bot.application.participant_runtime import ParticipantRuntime
 from hangma_bot.application.tournament_supervisor import SupervisionPolicy
 from hangma_bot.hangma.engine import HangmaRules
-from hangma_bot.policy.claim_if_legal import ClaimIfLegalPolicy
 from hangma_bot.policy.interface import BotPolicy
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
-from hangma_bot.policy.weighted_heuristic import WeightedHeuristicPolicy
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
+from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
     decision_request_from_json,
@@ -75,15 +74,15 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 
 # 本地规则语义版本（非官方字段）；进入官方会话的审计 manifest 与启动核对
 # 清单，用于区分「平台指南版本」与「本地规则引擎语义版本」。
-DEFAULT_RULESET_VERSION = "hangma-mvp-v1"
+DEFAULT_RULESET_VERSION = "hangma-mvp-v2-pass-progress"
 
 # 策略名 → 工厂；只有存在两个真实实现时才保留接缝（根 AGENTS.md 第 5 节）。
 # claim_if_legal 仅用于官方测试房验收（配置项选择），默认策略不变。
 _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
-    "weighted_heuristic": lambda: WeightedHeuristicPolicy(),
+    "weighted_heuristic": lambda: LegacyWeightedHeuristicPolicy(),
     "weighted_heuristic_v1": lambda: ReliableHeuristicPolicyV1(),
     "safe_fallback": lambda: SafeFallbackPolicy(),
-    "claim_if_legal": lambda: ClaimIfLegalPolicy(),
+    "claim_if_legal": lambda: LegacyClaimIfLegalPolicy(),
 }
 
 

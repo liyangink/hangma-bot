@@ -12,7 +12,7 @@ import unittest
 
 from hangma_bot.kernel.actions import Tile, WindowPhase
 from hangma_bot.kernel.observation import PublicDiscard, RulePublicState
-from hangma_bot.policy import WeightedHeuristicPolicy
+from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy
 
 from .support import (
     keep_keys,
@@ -25,10 +25,10 @@ from .support import (
 )
 
 
-def _policy() -> WeightedHeuristicPolicy:
-    """使用注入时钟，避免读取真实时间。"""
+def _policy() -> LegacyWeightedHeuristicPolicy:
+    """新规则输入走正式 V0 兼容入口；冻结原类另由历史请求回归验证。"""
 
-    return WeightedHeuristicPolicy(monotonic=lambda: 0.0)
+    return LegacyWeightedHeuristicPolicy(monotonic=lambda: 0.0)
 
 
 def _hand(codes) -> tuple:
@@ -252,4 +252,3 @@ class FamilyPreferenceTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

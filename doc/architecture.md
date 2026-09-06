@@ -139,7 +139,7 @@ MVP 后按实际任务创建目标模块。2026-09-05 的[并行契约](./implem
 
 本批具体调用与文件契约见[parallel-v1](./implementation/parallel-contracts.md)。审计拥有原文整理与统一牌谱 codec；模拟拥有不透明 WorldState 和具体 SimulationEngine；评估只读文件并调用公开 frame/advance，策略仍仅消费 DecisionRequest。历史 check_hand 与完整世界 from_replay 分开；缺牌墙的官方记录不自动成为可分叉世界。
 
-启发式后续施工按[三个候选版本计划](./implementation/policy-iteration-plan.md)：先可靠排序，再由 hangma 补齐 Pass 等待牌效，最后有限调参。V0 已原样保留，V1 以 weighted_heuristic_v1 独立实现且默认不启用；排序语义已登记，策略接口和数据格式不扩展，Pass 候选分析仍待 V2。策略不依赖离线评估器或模拟器。
+启发式后续施工按[三个候选版本计划](./implementation/policy-iteration-plan.md)：先可靠排序，再由 hangma 补齐 Pass 等待牌效，最后有限调参。V0/V1 源码保持冻结，线上默认 V0；hangma 已按本地语义 `hangma-mvp-v2-pass-progress` 提供响应 Pass 等待事实。组合根与离线装配使用显式旧视图保持 V0/claim_if_legal 的正常评分，审计仍记录原事实，V1 已兼容可信新事实。策略接口和数据格式不扩展，策略不依赖离线评估器或模拟器。V2 可比评分待实施，见接口协议 §4.3。
 
 ### 3.4 自动匹配入口（待实施）
 

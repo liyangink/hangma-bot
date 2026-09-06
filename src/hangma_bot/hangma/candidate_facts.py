@@ -10,7 +10,7 @@
 关键不变量（与受控契约一致）：
 
 - 事实与 RuleCandidate.action_key 一一对应，随候选一起传递；
-- 胡 → WIN（shanten_after=-1）；过 → NOT_APPLICABLE；其余动作族 → HAND_PROGRESS；
+- 胡 → WIN（shanten_after=-1）；响应过牌与其余动作族 → HAND_PROGRESS；
 - 吃/碰必须给出采用最佳合法后续弃牌后的最佳等待状态（best_followup_discard
   即该弃牌的规范牌值）；选择键 (向听, -剩余张数估计和, 规范牌序下标) 完全确定；
 - 杠候选 replacement_draw_unknown=True：杠上补牌未知，shanten_after 与
@@ -279,14 +279,17 @@ def _facts_for_candidate(
             completeness=RuleCompleteness.COMPLETE,
         )
     if isinstance(action, Pass):
-        # 口径选择：过不改变手牌，但契约把 NOT_APPLICABLE 的示例定为"过"
-        # （interface-contracts §4.1 与冻结的 CandidateFactKind 注释），
-        # 因此不给出"手牌不变的当前等待状态"数值，避免与契约示例冲突；
-        # 策略侧把过按中性基线（无牌效分项）处理。
-        return CandidateFacts(
-            fact_kind=CandidateFactKind.NOT_APPLICABLE,
-            shanten_after=None,
-            completeness=RuleCompleteness.COMPLETE,
+        # 本地候选分析语义 v2（interface-contracts §4.3）：过保留当前等待手牌。
+        # 沿用吃碰的公开计数来源；不把 last_discard 加入手牌或再次扣减。
+        if context.phase not in ("response_peng", "response_chi") or context.seat not in context.responding_seats:
+            raise FactsAnalysisError("过牌缺少响应窗口等待语义")
+        if context.drawn_tile is not None:
+            raise FactsAnalysisError("响应过牌仍携带摸牌，无法确认等待手牌")
+        if len(context.hand_tiles) != 13 - 3 * meld_blocks:
+            raise FactsAnalysisError("响应过牌暗牌张数与副露数不符")
+        return _waiting_facts(
+            context.hand_tiles, meld_blocks, public_counts, {},
+            followup=None, replacement_unknown=False,
         )
     if isinstance(action, Discard):
         code = action.tile.code
@@ -384,4 +387,3 @@ def attach_facts(
             )
         )
     return tuple(attached), tuple(issues)
-

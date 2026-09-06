@@ -344,6 +344,7 @@ if __name__ == "__main__":
 def test_v1_is_opt_in_and_v0_default_is_preserved(tmp_path):
     """同一运行框架分别装配两个实现，不通过覆盖默认工厂切换策略。"""
     from hangma_bot.policy import ReliableHeuristicPolicyV1
+    from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy
     v1 = build_runtime(runtime_config_from_mapping(_valid(
         audit_root=str(tmp_path/'v1'), strategy='weighted_heuristic_v1',
     )), session_factory=lambda: _StubSession())
@@ -352,4 +353,5 @@ def test_v1_is_opt_in_and_v0_default_is_preserved(tmp_path):
     )), session_factory=lambda: _StubSession())
     assert isinstance(v1.policy, ReliableHeuristicPolicyV1)
     assert isinstance(v0.policy, WeightedHeuristicPolicy)
+    assert isinstance(v0.policy, LegacyWeightedHeuristicPolicy)
     assert v1.sink.run_dir != v0.sink.run_dir

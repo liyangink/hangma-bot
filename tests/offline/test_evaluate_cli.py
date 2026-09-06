@@ -34,6 +34,21 @@ def load_script_module():
     return module
 
 
+def test_cli_v0_factory_preserves_neutral_pass_under_new_rules():
+    """实际离线装配入口必须使用旧事实视图，不能只在直接构造测试中适配。"""
+    import asyncio
+    from hangma_bot.hangma.engine import HangmaRules
+    from hangma_bot.kernel.config import RuleConfig
+    from tests.unit.hangma.test_pass_progress import response
+    from tests.unit.policy.support import make_request, make_budget
+    obs = response()
+    request = make_request(obs, HangmaRules(RuleConfig("pass-cli", 1, False)).analyze(obs))
+    policy = load_script_module().build_policy(PolicyDeclaration("v0", "weighted_heuristic"), lambda: 0)
+    plan = asyncio.run(policy.choose(request, make_budget()))
+    assert next(c for c in plan.candidates if c.action_key == "pass").total_score == 0
+    assert "legacy-pass-neutral-v1" in " ".join(plan.degraded_reasons)
+
+
 def write_experiment(path: Path, payload: dict) -> Path:
     path.write_text(json.dumps(payload, ensure_ascii=False), encoding="utf-8")
     return path

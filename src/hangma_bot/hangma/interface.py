@@ -26,7 +26,7 @@ class CandidateFactKind(str, Enum):
 
     HAND_PROGRESS = "hand_progress"  # 动作后等待状态已按规则引擎口径估计
     WIN = "win"                      # 胡牌候选：动作后即成牌，shanten_after=-1
-    NOT_APPLICABLE = "not_applicable"  # 该动作无动作后等待语义（如过）
+    NOT_APPLICABLE = "not_applicable"  # 无等待语义；旧版响应过牌事实仍可读取
     ANALYSIS_FAILED = "analysis_failed"  # 分析异常；数值字段不可信，全部为空
 
 
@@ -165,5 +165,4 @@ class Settlement:
     score_delta: ScoreVector
     fan: int
     details: Tuple[str, ...]
-
 
