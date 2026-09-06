@@ -1,0 +1,3714 @@
+[
+  {
+    "directory": "seed-00",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788665544450,
+      "dataset_id": "9fe339b4-f6a3-4215-ac95-e7afc45b1987",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-00",
+            "seed": 2026090600
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "456307dc3f9f52b0290f3ef5a12fdac051677be0b546af724b9e4bfac258f439",
+      "completed.json": "39273d1640279bd23199538289a24163f82a1ecfa200b58cd30f002424eb6b93",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "f8a11a1d2794f5eb287476bd87a3c409f5b536d990c0c475a92bdc08710e73d2",
+      "manifest.json": "f237ddaa892ed48944f2e7cb954f01951b975f3e4df8dbc7d388f1520e406a10",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "0ff5ceaaf8ef8f3bb3d78b7d6421d9d76eda117a0e5cb06e1fd7e3ee41b1d711"
+    }
+  },
+  {
+    "directory": "seed-01",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788665593508,
+      "dataset_id": "7d1688b0-985f-4333-86f1-c73472324e0f",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-01",
+            "seed": 2026090601
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "7bc667afdf8dc0ece07f3ade301c98dbe105955195c60e89e44d4d2f32fa75df",
+      "completed.json": "bfc21572c39f211867fe0d36fdf076d8cbf53ca20c2febb56c20cb9148ce7fa3",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "3ccde4eff2b467a68b8b197740b9f34d0c7f9cb45cc2c011df806d2c0223a2c0",
+      "manifest.json": "b042874b655e61d2b60d234cd92e9f6af04ee5a888471d6b21d26384f6bdf723",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "8de05c0848acd9124e4759060680cee440db84158f58baefdf56434c09188ac8"
+    }
+  },
+  {
+    "directory": "seed-02",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788665779088,
+      "dataset_id": "56697666-22aa-471b-bdf9-ccdfb6183947",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-02",
+            "seed": 2026090602
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "6cd6d2042ec428367043735602eb5dfaa01fedfd049128d274fb99036f2b63fc",
+      "completed.json": "04fcfdfc02824353a42ff1840a5ddc257b4b93dd452dcd54bf843ba72db0c8b9",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "313d0214e3c96362554df9c2961b37a6d4c8c558643136ed342705216adc6cb6",
+      "manifest.json": "53e378072e105186e85a724af9a969a29f7d1c85a8ceaa54b672a74e10f90215",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "4a7de248e5cdf17a40f2f0b7a6a75686f5e984b95f1a0df0f44bd01ff310c05e"
+    }
+  },
+  {
+    "directory": "seed-03",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788665759637,
+      "dataset_id": "01126dc7-ad57-4fb3-a7d3-02f55c0fb733",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-03",
+            "seed": 2026090603
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "6d0806b19faa772bd603137e01309bf5776fdb508be747450c4be897588328c1",
+      "completed.json": "eb1de9efd680b9ff85a6ec284ef3e6216b5c1c316b79e4b98869aab008e8092c",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "636ef71b77e69c15324046ae80a63f303c027f6bedcf4b3059e6ec91f1630db5",
+      "manifest.json": "0d8c3a7a68a829ca6f5977f0625c80870f536ffebd7ae4c1cb0e9150bb476572",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "114ac18ed04e0d7b5aed3d0cd723f8612bd18bcf004728762c59491aa9f1780d"
+    }
+  },
+  {
+    "directory": "seed-04",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788665766301,
+      "dataset_id": "bff209e8-0279-47ab-9d3f-ddc90ae251f5",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-04",
+            "seed": 2026090604
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "10ae0b0bf5ecc3ffb4edf9aa9594e545ce2c3818aa7072fa2675f2c03f9bf39d",
+      "completed.json": "59844cb84592708018cef82fec8425945eb452139ea694d7c0f7287a16a02a13",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "73063794627e5e92c65385bb04fc598e994a73814375b9fe51790e4040d6bb7f",
+      "manifest.json": "03468dd37e38cd5dfebb5bc6af969dc1a42370a094e5f68cf5f86b3c68d58cd1",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "abd93b7f871e2f14cf1a8af4a38d12770e59e1c25255a38155b00d55e9795ffb"
+    }
+  },
+  {
+    "directory": "seed-05",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788665771110,
+      "dataset_id": "baed1db1-2ebb-4661-828d-c7c292729898",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-05",
+            "seed": 2026090605
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "df020e30676fad74c0298af1169151c98447abf505265b2e664e3377db82b73f",
+      "completed.json": "9c6fd77c94076788fcb1e031d94ab09c32e6f0ee4d672d1caf7f9ff3127bdc22",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "203384844b7c3d3edf957e0fa507c795a9fa54e6a2911ad7499b94498490b61d",
+      "manifest.json": "9d79019518d04bf0bef47ca466419683680857ac8d61028d1729777b879a274b",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "fee894194ee441b5a41b6f05df8c59c7b7174554ffcf3fa1392a939a21e613ab"
+    }
+  },
+  {
+    "directory": "seed-06",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788665906234,
+      "dataset_id": "844ebf9f-778f-4403-a604-ad77832a6e48",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-06",
+            "seed": 2026090606
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "cf0179bc26de2dc51c9331199b587230534595bd3bfd75cbec7cfd56c7a13b78",
+      "completed.json": "7c1969ff19b6758d83ffe08d492c66b80e5bf87f5d90982686d3114aa8d75f2c",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "f149ccdb26381c76d4908f7d3e65f95bab1a817ff4b6148d6d58df9c86b08d07",
+      "manifest.json": "3b5844bb6998b01bdf7d693dd3bbc3090f858ea2ba46d8fd376dd8b389441b3d",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "e477d24b79bd203ea53d7bfb81e901abd1b973fb8d1c7a528cb47938a5b91a17"
+    }
+  },
+  {
+    "directory": "seed-07",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788665903038,
+      "dataset_id": "7613c9fa-f4ee-41e8-a9ee-f765220f0701",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-07",
+            "seed": 2026090607
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "bdad3a1b8f64bb57dbce369b243b2a64921e21a3288a08531bb13e116cb68310",
+      "completed.json": "81d6f1ab283387eeb2fee95b3bff36b35dfaf2b930816cd2a2f33ec3a0f8df55",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "3db4dbc235c29affafe7ebaccdf50292ea9d9855d28c8e94f2b7f735f2f33303",
+      "manifest.json": "9744af17356bbc4ef24ffaa114eb4353d6d5722c319e4988ed97665b36300c81",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "d01514ce2ced0d5aab18e3b6e63f6dc959a39f5c0796da1b423c6dd2f6598af6"
+    }
+  },
+  {
+    "directory": "seed-08",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788665937819,
+      "dataset_id": "a332bb57-11c4-4c66-bd15-1d9744056280",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-08",
+            "seed": 2026090608
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "2a61390f5a4d78d2877889232cf4865742c722798a09e37684d881c9a8e96603",
+      "completed.json": "e0065c2666e5c24fa94e4c43bc4621bac683fdecafa78dc6e4999e9be4fafe82",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "5c2d74cb1238d9e8ab1ae2d62a3f75f1c0838b960c5cdcab4926b395ec58b4c1",
+      "manifest.json": "3d376ee42b5609543694d9ba07aecc76614cde5afd40083d6f6dcb629444f2ba",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "7443d0687da5bd2f8d169e58aea54937c5cfbb46ee25c3a36b486546d6b9cf5d"
+    }
+  },
+  {
+    "directory": "seed-09",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788665922525,
+      "dataset_id": "b6e13dbd-9e06-4210-8811-5c1091b33c2e",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-09",
+            "seed": 2026090609
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "dcb7eae9ed0699e7c4660b9b48427789d61cd548212408bfd924789220634a1b",
+      "completed.json": "3b42ee265596b3e985e50e0fe5cc2ed1f487e54f546194df540728b804acadb5",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "62e67a5f452e80ae2c129f6c67ce13b5d890b98618cf2e9c6d69c0277f09aa86",
+      "manifest.json": "35e0cbe09f56594f5bb73631a840b2e505d90a1edb5d773f2fac2693e96a748c",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "e459435279aa91c5de7fa93929eca4de19cc0f56316a07d05a6b7f420b6ece01"
+    }
+  },
+  {
+    "directory": "seed-10",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666017360,
+      "dataset_id": "d1092985-e2d1-4339-a6d5-7103631763d5",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-10",
+            "seed": 2026090610
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "b9916445dd198dd6800b0dd46375a9660a076dcb9fdec7fdfd790cccf9cacea8",
+      "completed.json": "30655bbc09ea00319aa9d3712241384af65d77e6ae21c5ead812cc6da6fde90a",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "0a076a53df26a59add902190f5087ddb8afb965082e05613d0ddf69e4826a551",
+      "manifest.json": "7b5a31ac6205f7184a9d817349f5649269a423f01e327c43007c0ac3c06cdd06",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "df586696944b6c04e766ee68d69025ccdd8d6a566edf16120e2816b6d01ec348"
+    }
+  },
+  {
+    "directory": "seed-11",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666025380,
+      "dataset_id": "4336bff9-2852-4c7d-9e71-19d1376b3ce3",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-11",
+            "seed": 2026090611
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "d6ce906cf033b505a17a81f6cefe59335586d0daf099e5997a87d2e8fa3b8660",
+      "completed.json": "6164c166e671cb625fb134a3b72e7537899820e409a20e349bd6e11807efec90",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "c93becbf7362456964b3e1e63e90588a00da50ea9a160b60c2db31c6168cff85",
+      "manifest.json": "67635d620d9fa6425748f56607d2607e09ec851bf3cf0c5c837cc39c051d7e8b",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "d92fe7d8dcccb7fb5f0e8a3630f7dddf960126943f2852b256eeb4e93021ce0d"
+    }
+  },
+  {
+    "directory": "seed-12",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666035947,
+      "dataset_id": "cb37bc78-d725-4cea-b85c-c1b53df8de8b",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-12",
+            "seed": 2026090612
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "a105e3b82dc076c3b5dfa0eb93f51d3d2b6a5480df0d2e9977a5497d95d8d5a9",
+      "completed.json": "a0555f3dd256331323bc33751e92afffc7a2d5fa1d56e849c05f9d3f5c625172",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "914d1c54c2036e8574398ec2388878b266a515319c43f830b9bf81b1c3a67676",
+      "manifest.json": "af18377094f512eb0e0d5899daf3b8beb0096ef3caa23899bf8ae4af7654fbe3",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "ca859b40c6aa4977806dae1068bb4576e6663ef700433a520f11b8418074424c"
+    }
+  },
+  {
+    "directory": "seed-13",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666102241,
+      "dataset_id": "a75d867d-4f60-45b9-b7c9-33b258c80760",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-13",
+            "seed": 2026090613
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "bd829708ed66b4d1899ea5a1d348f4d7da3cf016dae1405c27ac4a551c8f7045",
+      "completed.json": "0674fa04bc98134e96d7f243644fcc1c44479067d340dd6d4ff2e60b7423a7f9",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "67ea54e9998534b1719fd6c814c7915ea72f661122895062dd8f19c05233f716",
+      "manifest.json": "3b8f7126cad4591afb5b27a8b004e7359be71c0323bfff644a124f6e697bdb63",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "7246079e2722e005ea03f26c89d57cd50bfd3f2db35087dcbdfe913c99f8377b"
+    }
+  },
+  {
+    "directory": "seed-14",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666150311,
+      "dataset_id": "97e68289-5cd1-4419-9212-e23d5c1b88bb",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-14",
+            "seed": 2026090614
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "bdd3cbabd41177afb5e50652defdebf78ed7aa0e87eb2e325ded83618346f196",
+      "completed.json": "4dec6d1f8f94e98de431f6475e05a1ba8251d96469d9b8c0da9d45b632afa272",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "1fb7f4805e89a2fafc856e5e9f4f76f5037591c4130ea4a390fcaa0f1ebf3084",
+      "manifest.json": "4f0d9874deec4b206bbdf186e8ebad67542aecdf0a95c1147ef5a1f13f865dc9",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "8f98b8546733146191da7fea85c8c534fd961770046ffd2ced3b0cd7760ab101"
+    }
+  },
+  {
+    "directory": "seed-15",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666164807,
+      "dataset_id": "c8d01d18-c38b-42d8-9262-2be1f4745be1",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-15",
+            "seed": 2026090615
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "5bc5e207263131954ad841d385676acdb51518dc0465754a87c451679164932e",
+      "completed.json": "b4ce62600aacb03e2a38cf9a72f01e2a2a3d1837ecafce851921d5c4b249d667",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "6613acac85c059047e1deaa1a336d9e312bc64667da341389316aff4c4c252fd",
+      "manifest.json": "90e76b55dd24f7dfad02b5696556c279bb0da777d69d038dc94bd41345ab1d5c",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "45eb5a75558fbf3e1c84882e068e5d6b258e049a14e6d26ad82d938c2ef5dfec"
+    }
+  },
+  {
+    "directory": "seed-16",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666162666,
+      "dataset_id": "df87017e-355a-457d-abe7-18635a102c8b",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-16",
+            "seed": 2026090616
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "10f35761c947facde25edc110e6ab68ee7fe434f1f78bfc55e6de6bcd296644b",
+      "completed.json": "27ef17a99d5e6475a608215e5ad42c0555fc88984a12a6d29c5125aeb4f731f8",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "6b145092ededbb76044c461dea973acd81666c737e329eabf46989fab006117a",
+      "manifest.json": "3ab94968c660a1665daf59f9076cde7f20eeebd53cab9d942fa4e89da9ca31f2",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "d6e8b573e41a850fe99568312e84b37a5bee8b1fa58c8cc39bc8f07a6481d409"
+    }
+  },
+  {
+    "directory": "seed-17",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666231915,
+      "dataset_id": "66ce7e93-b540-45fb-9878-c38ef77a5c8e",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-17",
+            "seed": 2026090617
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "86dbf62ed39d07ac35d672325707568f12a8758e7507558455fc26b8aa81bc3b",
+      "completed.json": "e39747b4f08958406d11d3741b1c07cf081136fd97df238efca18f20d3d7bc5c",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "31258cc38414e637751570d90eec0feb256e37a1c9427c67819f0fbe6076994e",
+      "manifest.json": "6c06a91675e38033a977645bcf24b03d97441f7c23090e108741039b06ac77c6",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "a0ceb26fcbdac3f89c432c9b458e1278d1c4a8c17d034a54037c6305ba523ec6"
+    }
+  },
+  {
+    "directory": "seed-18",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666284499,
+      "dataset_id": "d2c3d007-b77f-47f5-aca5-cae45b263268",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-18",
+            "seed": 2026090618
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "e9a05bbde166341f39770af47bd9f2ae0b434506a14d3c9f7bb48c7b21a48d13",
+      "completed.json": "092770a32b89ba472d09e317fc073c72e9d5ceee49de0c02ebbbc9054c762c75",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "0e7530d5b13cf88a68f047731f0f601cb8aa1d6cb10e9360036cf0e17b5e8bee",
+      "manifest.json": "72d8cc05e274d31972d356f534ec46909361daf6d3e06318090be2567c251367",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "c40d7b372f52f6adc688ccf75b90da769021cb8133bf9331eb5c7cd7fdce7902"
+    }
+  },
+  {
+    "directory": "seed-19",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666325149,
+      "dataset_id": "8c8eb7c5-d3ee-4965-b640-07904802c7ff",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-19",
+            "seed": 2026090619
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "d62b3e69be005f9d5f687ba32181051e678c495eb498dc2de3886ed2f8f4f02c",
+      "completed.json": "8c06b281547d44941c7c0cfd83969d36710f5b25cb24e0be71b1d12980bb57fc",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "23a8cdfd34ac4c3d11d6d8345faf11b8ab10846aaa156c312ac8f73848c12dfa",
+      "manifest.json": "24e37394e55a64c8c421ebfad58e3d357f01470e07f71e9f54c5ba3e1e3a0cf1",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "56373aa917755592574df4613192dbe1651a29073e9112cd71bf748f7d90cc28"
+    }
+  },
+  {
+    "directory": "seed-20",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666280047,
+      "dataset_id": "8774795e-8ceb-433c-9ad3-2f706bdee0d4",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-20",
+            "seed": 2026090620
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "bcdcbe5d7ac89bcffcc5b97fdd3e85fcd35a44747a790d52ed8c71adae1d53a6",
+      "completed.json": "b43da51785c02c9c229f5192faea1c524b1de444e679982b367fbf17d6a93ac3",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "1d8f12ed6eaf6ea58bf98f3071927bb869ec80f4ca098ae3df9a0ccf327a5206",
+      "manifest.json": "e990b96f2e3c47dfe452e7a68897266f5e58a6ddad84373dfec9014f956bcf65",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "4abfaec4a96449f2f9bad72d4a7667496e4fce49a595ab3d42c86e822c2ba6d9"
+    }
+  },
+  {
+    "directory": "seed-21",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666342816,
+      "dataset_id": "0cde97af-f1a4-44f2-b0ad-64120013f33b",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-21",
+            "seed": 2026090621
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "6afc7515f0003f5f956facd22fd713497db9f789196527fdae63e81970c8dcc2",
+      "completed.json": "a703b3f8e5c7f75116e098e6f66381fdba93deccf443336259fd62870a348953",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "c06685150451d891fa40e6d0d2a3704280b662a4522b59368112f55e2f2b0cd6",
+      "manifest.json": "3e7933c447c1bdf17dc97ef9f37ed4a91ee62e4b68684251eb26b2940fd07bbf",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "235e22903ce8f19e8f3f1520bf8f815be5a8b176c4ccecb0fa029b3769f0a1aa"
+    }
+  },
+  {
+    "directory": "seed-22",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666410990,
+      "dataset_id": "af41e277-90cc-4755-92c4-f03db7ea5ea4",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-22",
+            "seed": 2026090622
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "2fbf8bab334318970f458d83dbde8f1db0450dd2e7845b467d042eb14c00d702",
+      "completed.json": "0b20e60e6c3f7bd36a82586a645d3bf7e60fe18c5e99174dbbdba8dfa354b6bf",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "ddd56995e418d47971000bfe5bf5581276ded801cff276a7779d130776575052",
+      "manifest.json": "fef59d776d9bc66f1657541d1a373dc0dd5c375abcfc10f6d066d63eb19826fd",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "f6f1fe8054a2e667e80075a044371c3761e17d51cffe520a43687b5d24e0e384"
+    }
+  },
+  {
+    "directory": "seed-23",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666426031,
+      "dataset_id": "e0c659c7-ccfa-4b0c-8715-968025acc9a0",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-23",
+            "seed": 2026090623
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "e95296db14d22783eafddb90a674a9748c6ac4dab354cafa131441910a166451",
+      "completed.json": "88eb498018a8f8c1444eefe5b5bf33160c2201ff4878b1dbb126a862c5a34291",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "96fe0c98315f114bb7465bcb287b65b3a51bd8952e1ad3e45c331429640a3582",
+      "manifest.json": "65456559dbe28a0d17084e6165c52fec54f089a7aeca70846c0d2797f0ded4e3",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "87cc18e1fc94a220437e861158de931a3901ab38cc23fd74f4840edae2a2b3c4"
+    }
+  },
+  {
+    "directory": "seed-24",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666431349,
+      "dataset_id": "7eddd705-5900-470f-87ad-3f8d012c24da",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-24",
+            "seed": 2026090624
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "cf75e1ce1f40b62162edd779b408ac679c4e5f433bf3b560e0d4c8b92d1474ab",
+      "completed.json": "d419a6082572b124f254f2de2b83937d30b8ed81377c1cf81d6395b759f2bf51",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "ae20dddcee601788f8fdb34c7678207a08c3a673b881c29d67b58e12cb8ccfdd",
+      "manifest.json": "e001b37ca343272ac6ffca551762a7be052e0fd171f6663e8a23e4f2d6299421",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "088b87f812141024c3c19227ad751c09aa2d7d7853768f13eebcfc6ae97b1cde"
+    }
+  },
+  {
+    "directory": "seed-25",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666498280,
+      "dataset_id": "4a6abaf1-f1c2-4a5d-a646-6d436a4e587b",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-25",
+            "seed": 2026090625
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "28de1693ea01c8e83f685bc08d2ccc40a58ad423e18dc5ae76765111e9281da4",
+      "completed.json": "e87f751a6bf5a43b014cded4c55fdca38f606d6bc5386d6be3d10089842b6686",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "66afe90dc0583d905aac2d4084cd8c781cfc8e5c620702df9d7aa4c1c7d46012",
+      "manifest.json": "17b5b7b09d52eccf985243b64c0747a659ca7359310e2e95473c34d6149da2a2",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "189bccab4f1e5070d36ed5ff8ad240ccec08ab547eff4db1f1283e9bcb30a06e"
+    }
+  },
+  {
+    "directory": "seed-26",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666570417,
+      "dataset_id": "568adbb5-1fe1-48cb-9868-97872f4bf2a1",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-26",
+            "seed": 2026090626
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "b13f7b21ad97f4130e7c17ad02247c1c1d75694dbde2c470286cdfb4a658761d",
+      "completed.json": "f1cef2dd3d4dd968f71723acc29ae1861cbf186c4e25177142b6d503ae969d9e",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "968c6ba7f1d23e6dc3d1ca7b4982eafcc38b97ad9f213531fd6b56061e80945c",
+      "manifest.json": "6d2c92fc2ae0b9ced18e5e6f9486449526471502910beaab645fa5f1a52121bf",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "55f3c66f9f2127dc025c9339239834ea7819928c91d2b5ee7ca3dd8215ef1484"
+    }
+  },
+  {
+    "directory": "seed-27",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666545292,
+      "dataset_id": "9a9814d8-59ca-47e6-b7cb-46109e8a2c7c",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-27",
+            "seed": 2026090627
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "ce77104fd6579dc59381bf11fd8f3a6b51a434a9fd6f1b9f897b906225fccecc",
+      "completed.json": "f9357a834e75404c1275009505283869b77cd551661b3e2a594e96a2983a1239",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "752337ea43af405a729e3ee91b4d0b4acc988d043e6c489ebe8b3b0c721be5d8",
+      "manifest.json": "a63b2be253bf75ffa975f18f1e5fb2ed87c6648723f199cbbfe3af2009ca1fc4",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "11888bc0a45c85b4eeebb4640e3aadb77549acf4ab89dd10a494a90706b026cc"
+    }
+  },
+  {
+    "directory": "seed-28",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666605682,
+      "dataset_id": "6940508b-a1d2-41a5-9558-a3321df62f1b",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-28",
+            "seed": 2026090628
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "145ac41ac15b10db2f0f0e6eeec462ae001426e0992c48ae3e11c18daf54beec",
+      "completed.json": "045b1daa1e8edebf04e07ae4ba8befa90d27e5c3ec3ae5c4e156756e5de44f9a",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "5a4157054c532b29e338da8cbf455aed5dabe2c12049ac5935f5f9bb373cce43",
+      "manifest.json": "a5f74f10f055b5ce3207d6d6106ac152652509f5e8121f249b84d4d2e43f5c38",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "885d0679177d372a8fd4c2c47c830151d1be3e1977d5ef29218c930b10ba96c6"
+    }
+  },
+  {
+    "directory": "seed-29",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666624295,
+      "dataset_id": "ee2dc09b-0589-464b-b4de-037c8484b767",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-29",
+            "seed": 2026090629
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "50da6ee4da83db5ecde5b5ad22d26c748b76c37ed0e5dd43e58f51d4c9b92567",
+      "completed.json": "37e405d5742bd531d53ad71f37390a651ee3e9150ccf4f833d037b6716a94051",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "ecedc1bb32155cc75352255508f5b8ff0e48ef2d68890563a6b76d734714f9b9",
+      "manifest.json": "cff0c156c8d97b723c8b74f5de4d61503874b6a0e128032f216801760ff1f28c",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "7ce7d3707505209f5f6f096b8bba4536bc5f3712999541dc4d7dee73f6e3b679"
+    }
+  },
+  {
+    "directory": "seed-30",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666693419,
+      "dataset_id": "32ff9628-2e3a-4626-a178-4799894d29d0",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-30",
+            "seed": 2026090630
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "4824a084f68e1c0ba473ee6fa28a7ee35d56d83043e763822b42394199e533c8",
+      "completed.json": "d80137f7740bafc8f221e370f4e52c83f7d692d03e4766b4f22fcce798c19c53",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "38749c413488b33f31ea8b2a2ad248f7dd1a044a3afe4731f0808bb36ca90027",
+      "manifest.json": "36ba3df952162cbe06c18f31a93badc6060346790432559d166025b40e8b9823",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "50c48e9a02254d43ec96ad3e3e3e06b03e0f44746a3798e62e660c3c65a1287f"
+    }
+  },
+  {
+    "directory": "seed-31",
+    "manifest": {
+      "config": {
+        "max_games": 1,
+        "rounds_per_game": 8,
+        "rules": {
+          "base_score": 1,
+          "ruleset_version": "fixture-rules",
+          "you_cai_bi_kao": false
+        },
+        "schema_version": 1,
+        "timing": {
+          "chi_timeout_sec": 1.0,
+          "discard_timeout_sec": 3.0,
+          "peng_timeout_sec": 1.0
+        }
+      },
+      "contract_id": "parallel-v1",
+      "created_at_unix_ms": 1788666716737,
+      "dataset_id": "f414b0d6-0b50-4be1-a7f2-20b374f49408",
+      "dirty": true,
+      "evaluation_schema_version": 1,
+      "guide_captured_at": null,
+      "guide_version": null,
+      "inputs": [],
+      "manifest_schema_version": 1,
+      "missing_fields": [
+        "input_sha256",
+        "guide_version",
+        "guide_captured_at"
+      ],
+      "producer_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
+      "rules_hash": "78d9ac7ef014d5bdc1076571ff7741fa616e827a2c01d4f6022a8c6f5ae1b53f",
+      "source_namespace": "hangma-simulation",
+      "versions": {
+        "clock_mode": "logical",
+        "experiment_kind": "matches",
+        "n_resamples": 2000,
+        "primary_metric": "table_score_delta",
+        "resample_seed": 20260906,
+        "scoring_policies": {
+          "baseline": {
+            "name": "weighted_heuristic",
+            "policy_id": "weighted_heuristic",
+            "weights": {}
+          },
+          "challenger": {
+            "name": "weighted_heuristic_v1",
+            "policy_id": "weighted_heuristic_v1",
+            "weights": {}
+          },
+          "opponent_pool": [
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w0",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic",
+              "policy_id": "opp-w1",
+              "weights": {}
+            },
+            {
+              "name": "weighted_heuristic_v1",
+              "policy_id": "opp-v0",
+              "weights": {}
+            }
+          ]
+        },
+        "seat_permutations": [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          [
+            1,
+            2,
+            3,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            1
+          ],
+          [
+            3,
+            0,
+            1,
+            2
+          ]
+        ],
+        "seeds": [
+          {
+            "scenario_id": "v1-acceptance-31",
+            "seed": 2026090631
+          }
+        ],
+        "simulation_version": null,
+        "tie_method": "strict"
+      }
+    },
+    "file_sha256": {
+      "comparison.json": "68e6b73b69f410267ed1f9cddb5af6085b01140b4a51936c52f924fecc3a063c",
+      "completed.json": "b18a49b09de77ca914846e441c9b58f39cb66eefe15b0940dab6cd96cfc63c3c",
+      "decisions.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "experiment.json": "3686a3be7e89afb6eee89d589f8a373ea3ddf1512652dd51bfda0b22bf72ed1c",
+      "manifest.json": "be9f96d29232b6ab0841fb5ba0d99c35f07e142dd083da1576acb5c61d83be24",
+      "report.json": "f6a3d11badfc118b76cc750fce85b87de1808ccc25911770ba182156b58f1a71",
+      "results.jsonl": "928b3d3db541a5f435466b3111a08e45935d93efeb2f09b6753e4f8bc765b83c"
+    }
+  }
+]

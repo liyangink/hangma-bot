@@ -1,0 +1,1640 @@
+{
+  "evidence_kind": "synthetic_fault_injection",
+  "source_test": "tests/unit/policy/test_heuristic_v1.py::test_real_fault_injection_does_not_promote_failed_discard",
+  "note": "本地构造观察，唯一规则引擎生成事实后注入单候选分析失败；不是官方牌谱，不进入桌赛效果或训练统计。",
+  "request": {
+    "codec_version": 1,
+    "decision_id": "d1",
+    "trigger_seq": 10,
+    "window_key": {
+      "schema_version": 1,
+      "game_id": "g1",
+      "round_no": 1,
+      "trigger_seq": 10,
+      "phase": "draw",
+      "seat": 0
+    },
+    "observation": {
+      "schema_version": 1,
+      "game_id": "g1",
+      "seat": 0,
+      "round_no": 1,
+      "snapshot_seq": 10,
+      "phase": "draw",
+      "dealer_seat": 0,
+      "turn_seat": 0,
+      "responding_seats": [],
+      "my_hand": [
+        "1w",
+        "2w",
+        "4w",
+        "5w",
+        "7w",
+        "8w",
+        "1b",
+        "2b",
+        "3b",
+        "5b",
+        "6b",
+        "3t",
+        "4t"
+      ],
+      "drawn_tile": "6t",
+      "discards": [
+        [],
+        [],
+        [],
+        []
+      ],
+      "melds": [
+        [],
+        [],
+        [],
+        []
+      ],
+      "hand_counts": [
+        13,
+        13,
+        13,
+        13
+      ],
+      "last_discard": null,
+      "remaining_tile_count": 60,
+      "scores": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "rule_state": {
+        "wealth_god": "白",
+        "baotou": false,
+        "chain_count": 0,
+        "catch_play": false
+      },
+      "public_history": []
+    },
+    "competition": {
+      "schema_version": 1,
+      "tournament_id": "t1",
+      "stage_no": null,
+      "stage_role": null,
+      "stage_total": null,
+      "participant_rank": null,
+      "ranking": [],
+      "observed_at_unix_ms": 0
+    },
+    "rules": {
+      "codec_version": 1,
+      "legal_candidates": [
+        {
+          "codec_version": 1,
+          "action_key": "discard:1w",
+          "action": {
+            "kind": "discard",
+            "tile": "1w",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "2w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "5w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "8w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "4b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "7b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:2w",
+          "action": {
+            "kind": "discard",
+            "tile": "2w",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "1w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "4b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "7b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:4w",
+          "action": {
+            "kind": "discard",
+            "tile": "4w",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "5w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "8w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "4b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "7b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:5w",
+          "action": {
+            "kind": "discard",
+            "tile": "5w",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "1w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "4w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "4b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "7b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:7w",
+          "action": {
+            "kind": "discard",
+            "tile": "7w",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "8w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "4b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "7b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:8w",
+          "action": {
+            "kind": "discard",
+            "tile": "8w",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "1w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "4w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "7w",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "4b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "7b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:1b",
+          "action": {
+            "kind": "discard",
+            "tile": "1b",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 4,
+            "useful_tiles": [
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "1b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "2b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "4b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "5b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:2b",
+          "action": {
+            "kind": "discard",
+            "tile": "2b",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 4,
+            "useful_tiles": [
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "1b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "2b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "4b",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "5b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:3b",
+          "action": {
+            "kind": "discard",
+            "tile": "3b",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "analysis_failed",
+            "shanten_after": null,
+            "useful_tiles": [],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "degraded",
+            "note": "验收故障注入：仅 discard:3b 的分析事实失败，合法候选集合不变"
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:5b",
+          "action": {
+            "kind": "discard",
+            "tile": "5b",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "6b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:6b",
+          "action": {
+            "kind": "discard",
+            "tile": "6b",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "5b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:3t",
+          "action": {
+            "kind": "discard",
+            "tile": "3t",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "5b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:4t",
+          "action": {
+            "kind": "discard",
+            "tile": "4t",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "5b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        },
+        {
+          "codec_version": 1,
+          "action_key": "discard:6t",
+          "action": {
+            "kind": "discard",
+            "tile": "6t",
+            "schema_version": 1
+          },
+          "evidence": [
+            "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+          ],
+          "facts": {
+            "codec_version": 1,
+            "fact_kind": "hand_progress",
+            "shanten_after": 3,
+            "useful_tiles": [
+              {
+                "code": "3w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "6w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "9w",
+                "remaining_estimate": 4
+              },
+              {
+                "code": "5b",
+                "remaining_estimate": 3
+              },
+              {
+                "code": "白",
+                "remaining_estimate": 4
+              }
+            ],
+            "best_followup_discard": null,
+            "replacement_draw_unknown": false,
+            "completeness": "complete",
+            "note": null
+          }
+        }
+      ],
+      "emergency_candidate": {
+        "codec_version": 1,
+        "action_key": "discard:4t",
+        "action": {
+          "kind": "discard",
+          "tile": "4t",
+          "schema_version": 1
+        },
+        "evidence": [
+          "emergency:rightmost-discard"
+        ],
+        "facts": null
+      },
+      "completeness": "complete",
+      "ruleset_version": "policy-test",
+      "issues": []
+    },
+    "rejected_attempts": []
+  },
+  "budget": {
+    "codec_version": 1,
+    "enhancement_deadline_monotonic": 100.0,
+    "fallback_deadline_monotonic": 200.0,
+    "latest_send_at_monotonic": 300.0
+  },
+  "budget_origin_monotonic": 0,
+  "plans": {
+    "weighted_heuristic": {
+      "codec_version": 1,
+      "decision_id": "d1",
+      "window_key": {
+        "schema_version": 1,
+        "game_id": "g1",
+        "round_no": 1,
+        "trigger_seq": 10,
+        "phase": "draw",
+        "seat": 0
+      },
+      "based_on_authoritative_seq": 10,
+      "revision": 1,
+      "candidates": [
+        {
+          "action_key": "discard:3b",
+          "action": {
+            "kind": "discard",
+            "tile": "3b",
+            "schema_version": 1
+          },
+          "rank": 1,
+          "total_score": 0.0,
+          "score_parts": [
+            {
+              "name": "第二层-保守兜底",
+              "value": 0.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "牌效分析失败：验收故障注入：仅 discard:3b 的分析事实失败，合法候选集合不变"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:1w",
+          "action": {
+            "kind": "discard",
+            "tile": "1w",
+            "schema_version": 1
+          },
+          "rank": 2,
+          "total_score": -267.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 33.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌9种、剩余估计 33 张",
+            "有效牌样例：2w、3w、5w、6w、8w、9w、4b、7b…"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:4w",
+          "action": {
+            "kind": "discard",
+            "tile": "4w",
+            "schema_version": 1
+          },
+          "rank": 3,
+          "total_score": -270.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 30.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌8种、剩余估计 30 张",
+            "有效牌样例：3w、5w、6w、8w、9w、4b、7b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:5w",
+          "action": {
+            "kind": "discard",
+            "tile": "5w",
+            "schema_version": 1
+          },
+          "rank": 4,
+          "total_score": -270.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 30.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌8种、剩余估计 30 张",
+            "有效牌样例：1w、3w、4w、6w、9w、4b、7b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:8w",
+          "action": {
+            "kind": "discard",
+            "tile": "8w",
+            "schema_version": 1
+          },
+          "rank": 5,
+          "total_score": -271.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 29.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌8种、剩余估计 29 张",
+            "有效牌样例：1w、3w、4w、6w、7w、4b、7b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:2w",
+          "action": {
+            "kind": "discard",
+            "tile": "2w",
+            "schema_version": 1
+          },
+          "rank": 6,
+          "total_score": -273.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 27.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌7种、剩余估计 27 张",
+            "有效牌样例：1w、3w、6w、9w、4b、7b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:7w",
+          "action": {
+            "kind": "discard",
+            "tile": "7w",
+            "schema_version": 1
+          },
+          "rank": 7,
+          "total_score": -277.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 23.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌6种、剩余估计 23 张",
+            "有效牌样例：3w、6w、8w、4b、7b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:3t",
+          "action": {
+            "kind": "discard",
+            "tile": "3t",
+            "schema_version": 1
+          },
+          "rank": 8,
+          "total_score": -281.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 19.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌5种、剩余估计 19 张",
+            "有效牌样例：3w、6w、9w、5b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:4t",
+          "action": {
+            "kind": "discard",
+            "tile": "4t",
+            "schema_version": 1
+          },
+          "rank": 9,
+          "total_score": -281.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 19.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌5种、剩余估计 19 张",
+            "有效牌样例：3w、6w、9w、5b、白"
+          ],
+          "is_emergency": true
+        },
+        {
+          "action_key": "discard:5b",
+          "action": {
+            "kind": "discard",
+            "tile": "5b",
+            "schema_version": 1
+          },
+          "rank": 10,
+          "total_score": -281.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 19.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌5种、剩余估计 19 张",
+            "有效牌样例：3w、6w、9w、6b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:6b",
+          "action": {
+            "kind": "discard",
+            "tile": "6b",
+            "schema_version": 1
+          },
+          "rank": 11,
+          "total_score": -281.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 19.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌5种、剩余估计 19 张",
+            "有效牌样例：3w、6w、9w、5b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:6t",
+          "action": {
+            "kind": "discard",
+            "tile": "6t",
+            "schema_version": 1
+          },
+          "rank": 12,
+          "total_score": -281.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 19.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 3；有效牌5种、剩余估计 19 张",
+            "有效牌样例：3w、6w、9w、5b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:1b",
+          "action": {
+            "kind": "discard",
+            "tile": "1b",
+            "schema_version": 1
+          },
+          "rank": 13,
+          "total_score": -371.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -400.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 29.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 4；有效牌8种、剩余估计 29 张",
+            "有效牌样例：3w、6w、9w、1b、2b、4b、5b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:2b",
+          "action": {
+            "kind": "discard",
+            "tile": "2b",
+            "schema_version": 1
+          },
+          "rank": 14,
+          "total_score": -371.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -400.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 29.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "动作后向听数 4；有效牌8种、剩余估计 29 张",
+            "有效牌样例：3w、6w、9w、1b、2b、4b、5b、白"
+          ],
+          "is_emergency": false
+        }
+      ],
+      "degraded_reasons": []
+    },
+    "weighted_heuristic_v1": {
+      "codec_version": 1,
+      "decision_id": "d1",
+      "window_key": {
+        "schema_version": 1,
+        "game_id": "g1",
+        "round_no": 1,
+        "trigger_seq": 10,
+        "phase": "draw",
+        "seat": 0
+      },
+      "based_on_authoritative_seq": 10,
+      "revision": 1,
+      "candidates": [
+        {
+          "action_key": "discard:1w",
+          "action": {
+            "kind": "discard",
+            "tile": "1w",
+            "schema_version": 1
+          },
+          "rank": 1,
+          "total_score": -267.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 33.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌9种、剩余估计 33 张",
+            "有效牌样例：2w、3w、5w、6w、8w、9w、4b、7b…"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:4w",
+          "action": {
+            "kind": "discard",
+            "tile": "4w",
+            "schema_version": 1
+          },
+          "rank": 2,
+          "total_score": -270.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 30.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌8种、剩余估计 30 张",
+            "有效牌样例：3w、5w、6w、8w、9w、4b、7b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:5w",
+          "action": {
+            "kind": "discard",
+            "tile": "5w",
+            "schema_version": 1
+          },
+          "rank": 3,
+          "total_score": -270.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 30.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌8种、剩余估计 30 张",
+            "有效牌样例：1w、3w、4w、6w、9w、4b、7b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:8w",
+          "action": {
+            "kind": "discard",
+            "tile": "8w",
+            "schema_version": 1
+          },
+          "rank": 4,
+          "total_score": -271.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 29.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌8种、剩余估计 29 张",
+            "有效牌样例：1w、3w、4w、6w、7w、4b、7b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:2w",
+          "action": {
+            "kind": "discard",
+            "tile": "2w",
+            "schema_version": 1
+          },
+          "rank": 5,
+          "total_score": -273.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 27.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌7种、剩余估计 27 张",
+            "有效牌样例：1w、3w、6w、9w、4b、7b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:7w",
+          "action": {
+            "kind": "discard",
+            "tile": "7w",
+            "schema_version": 1
+          },
+          "rank": 6,
+          "total_score": -277.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 23.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌6种、剩余估计 23 张",
+            "有效牌样例：3w、6w、8w、4b、7b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:3t",
+          "action": {
+            "kind": "discard",
+            "tile": "3t",
+            "schema_version": 1
+          },
+          "rank": 7,
+          "total_score": -281.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 19.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌5种、剩余估计 19 张",
+            "有效牌样例：3w、6w、9w、5b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:4t",
+          "action": {
+            "kind": "discard",
+            "tile": "4t",
+            "schema_version": 1
+          },
+          "rank": 8,
+          "total_score": -281.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 19.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌5种、剩余估计 19 张",
+            "有效牌样例：3w、6w、9w、5b、白"
+          ],
+          "is_emergency": true
+        },
+        {
+          "action_key": "discard:5b",
+          "action": {
+            "kind": "discard",
+            "tile": "5b",
+            "schema_version": 1
+          },
+          "rank": 9,
+          "total_score": -281.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 19.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌5种、剩余估计 19 张",
+            "有效牌样例：3w、6w、9w、6b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:6b",
+          "action": {
+            "kind": "discard",
+            "tile": "6b",
+            "schema_version": 1
+          },
+          "rank": 10,
+          "total_score": -281.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 19.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌5种、剩余估计 19 张",
+            "有效牌样例：3w、6w、9w、5b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:6t",
+          "action": {
+            "kind": "discard",
+            "tile": "6t",
+            "schema_version": 1
+          },
+          "rank": 11,
+          "total_score": -281.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -300.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 19.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 3；有效牌5种、剩余估计 19 张",
+            "有效牌样例：3w、6w、9w、5b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:1b",
+          "action": {
+            "kind": "discard",
+            "tile": "1b",
+            "schema_version": 1
+          },
+          "rank": 12,
+          "total_score": -371.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -400.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 29.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 4；有效牌8种、剩余估计 29 张",
+            "有效牌样例：3w、6w、9w、1b、2b、4b、5b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:2b",
+          "action": {
+            "kind": "discard",
+            "tile": "2b",
+            "schema_version": 1
+          },
+          "rank": 13,
+          "total_score": -371.0,
+          "score_parts": [
+            {
+              "name": "第三层-向听数",
+              "value": -400.0
+            },
+            {
+              "name": "第四层-有效牌",
+              "value": 29.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：可信候选，按原权重评分",
+            "动作后向听数 4；有效牌8种、剩余估计 29 张",
+            "有效牌样例：3w、6w、9w、1b、2b、4b、5b、白"
+          ],
+          "is_emergency": false
+        },
+        {
+          "action_key": "discard:3b",
+          "action": {
+            "kind": "discard",
+            "tile": "3b",
+            "schema_version": 1
+          },
+          "rank": 14,
+          "total_score": 0.0,
+          "score_parts": [
+            {
+              "name": "第二层-未知事实",
+              "value": 0.0
+            },
+            {
+              "name": "第四层-成牌收益",
+              "value": 0.0
+            }
+          ],
+          "reasons": [
+            "V1 排序层：未知事实，排在可信候选之后；零分不代表良好牌效",
+            "事实不完整、不适用或不可信：analysis_failed",
+            "验收故障注入：仅 discard:3b 的分析事实失败，合法候选集合不变"
+          ],
+          "is_emergency": false
+        }
+      ],
+      "degraded_reasons": []
+    }
+  },
+  "conclusion": "V0 将失败候选提升到首选；V1 保持可信候选优先并将失败候选置末。此证据不证明首选是牌局最优。"
+}

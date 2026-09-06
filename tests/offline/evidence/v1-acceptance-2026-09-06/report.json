@@ -1,0 +1,136 @@
+{
+  "intro": [
+    "统计单位：完整桌赛；聚类单位：同牌山根组（scenario_id）。",
+    "主指标：桌内积分差（桌内积分 口径，tie_method=strict）。",
+    "来源纪律：mock 结果只用于编排验证，不进入强度结论；作废/未完赛/未知分数逐条计数，不静默删除。",
+    "比较对象：稳定版本 weighted_heuristic 对候选版本 weighted_heuristic_v1。"
+  ],
+  "sections": [
+    {
+      "heading": "样本与排除",
+      "table": {
+        "columns": [
+          "指标",
+          "数值"
+        ],
+        "rows": [
+          [
+            "总结果行数",
+            256
+          ],
+          [
+            "complete",
+            256
+          ],
+          [
+            "partial",
+            0
+          ],
+          [
+            "void（作废尝试，默认不作效果证据）",
+            0
+          ],
+          [
+            "error",
+            0
+          ],
+          [
+            "mock（只用于编排验证）",
+            0
+          ],
+          [
+            "complete 但未完成/分数未确认",
+            0
+          ],
+          [
+            "未知分数",
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "来源分布",
+      "table": {
+        "columns": [
+          "source_kind",
+          "行数",
+          "是否进入强度结论"
+        ],
+        "rows": [
+          [
+            "simulation",
+            256,
+            "是"
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "运行可靠性（全部结果行）",
+      "paragraphs": [
+        "计数覆盖全部结果行及四个座位，不是仅待测策略。timeouts、illegal_choices 与 fallbacks 按驱动现有互斥分类分别统计。不能仅凭 complete 或零排除认定策略正常执行；非零项须核对故障来源及实验装配，再判断能否用于策略强度归因。"
+      ],
+      "table": {
+        "columns": [
+          "计数",
+          "次数"
+        ],
+        "rows": [
+          [
+            "timeouts",
+            0
+          ],
+          [
+            "illegal_choices",
+            0
+          ],
+          [
+            "fallbacks",
+            0
+          ],
+          [
+            "auto_actions",
+            0
+          ],
+          [
+            "audit_missing",
+            0
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "配对统计（聚类 Bootstrap 置信区间）",
+      "paragraphs": [
+        "配对差定义：候选值 − 基线值；配对只发生在同一 pair_id 内，同一 scenario 的换座变体先取组内均值，再以 scenario 为抽样单位重采样。n_resamples=2000，seed=20260906（进 manifest）。"
+      ],
+      "table": {
+        "columns": [
+          "指标",
+          "样本",
+          "配对差均值与 95% 置信区间"
+        ],
+        "rows": [
+          [
+            "table_score_delta",
+            "32 scenario / 128 对（排除 0 对）",
+            "+0.000 [+0.000, +0.000] (95%)"
+          ],
+          [
+            "table_first_rate",
+            "32 scenario / 128 对（排除 0 对）",
+            "+0.000 [+0.000, +0.000] (95%)"
+          ]
+        ]
+      }
+    },
+    {
+      "heading": "结论",
+      "paragraphs": [
+        "主指标 table_score_delta 的配对差均值 +0.000，95% 聚类 Bootstrap 置信区间 [+0.000, +0.000] 包含 0：未证明改进（不等同于无差异）。"
+      ]
+    }
+  ],
+  "title": "评估结果汇总"
+}

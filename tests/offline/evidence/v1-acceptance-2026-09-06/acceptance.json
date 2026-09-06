@@ -1,0 +1,27 @@
+{
+  "status": "accepted_for_v2_development",
+  "production_default": "weighted_heuristic",
+  "v1_experimental_control": "weighted_heuristic_v1",
+  "production_release_approved": false,
+  "scenario_count": 32,
+  "completed_matches": 256,
+  "completed_hands": 2048,
+  "paired_matches": 128,
+  "runtime_counts": {
+    "audit_missing": 0,
+    "auto_actions": 0,
+    "fallbacks": 0,
+    "illegal_choices": 0,
+    "timeouts": 0
+  },
+  "compared_requests_including_rotations_and_paired_trajectories": 100824,
+  "plan_differences": 0,
+  "tests_passed": 475,
+  "source_and_harness_freeze_verified": true,
+  "limits": [
+    "不证明总体等效、统计不劣或积分提高",
+    "逻辑时钟不证明实际机器与目标 M 下的动作时限",
+    "固定对手池、固定初始逻辑庄家和规则开关",
+    "decisions.jsonl 仅保存分歧输入，不是完整训练牌谱"
+  ]
+}
