@@ -21,9 +21,39 @@ function element(tag, className, value) {
   if (value !== undefined) text(node, value);
   return node;
 }
+function tileFace(tile) {
+  const matched = /^([1-9])([wbt])$/.exec(tile || "");
+  if (!matched) {
+    const character = tile || "?";
+    return {
+      kind: "honor" + (character === "中" || character === "发" ? " honor-red" : ""),
+      character,
+      label: character === "?" ? "未知牌" : character,
+    };
+  }
+  const suits = {
+    w: {character: "萬", label: "万"},
+    b: {character: "筒", label: "筒"},
+    t: {character: "索", label: "条"},
+  };
+  return {
+    kind: "number " + matched[2],
+    rank: matched[1],
+    character: suits[matched[2]].character,
+    label: matched[1] + suits[matched[2]].label,
+  };
+}
 function appendTile(parent, tile, drawn = false, lastDiscard = false) {
-  const classes = "tile" + (drawn ? " drawn" : "") + (lastDiscard ? " last-discard" : "");
-  const node = element("span", classes, tile);
+  const face = tileFace(tile);
+  const classes = "tile tile-" + face.kind.replace(" ", " tile-") + (drawn ? " drawn" : "") + (lastDiscard ? " last-discard" : "");
+  const node = element("span", classes);
+  node.setAttribute("aria-label", face.label);
+  if (face.rank) {
+    node.appendChild(element("span", "tile-rank", face.rank));
+    node.appendChild(element("span", "tile-suit", face.character));
+  } else {
+    node.appendChild(element("span", "tile-honor", face.character));
+  }
   parent.appendChild(node);
 }
 function formatTime(ms) {
