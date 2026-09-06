@@ -49,6 +49,7 @@ class GameProbe:
         self._out = open(out_path, "a", encoding="utf-8")
         self.cursor = 0
         self.finished = False
+        self._backoff = 0.5
         self.stats = {
             "game_id": game_id,
             "events_received": 0,
@@ -84,12 +85,14 @@ class GameProbe:
                     params={"seq": self.cursor}, long_poll=True,
                 )
                 body = json.loads(res.text or "{}")
-            except Exception as exc:  # 诊断工具：错误记录后退避重试
+            except Exception as exc:  # 诊断工具：错误记录后指数退避（429/超时都不能硬砸）
                 self.stats["errors"] += 1
-                self._log("poll_error", {"error": str(exc)[:160]})
-                await asyncio.sleep(0.5)
+                self._backoff = min(getattr(self, "_backoff", 0.5) * 2, 10.0)
+                self._log("poll_error", {"error": str(exc)[:160], "backoff_sec": self._backoff})
+                await asyncio.sleep(self._backoff)
                 continue
             self.stats["polls"] += 1
+            self._backoff = 0.5  # 成功响应把退避复位
             self._consume(body)
             await asyncio.sleep(0)
         self.stats["final_seq"] = self.cursor
@@ -193,7 +196,7 @@ async def discover_and_observe(args, transport, out_dir):
 
 async def main_async(args):
     token = read_token(args.token_file)
-    config = TransportConfig(base_url=args.base_url, insecure_hosts=frozenset(args.insecure_hosts))
+    config = TransportConfig(base_url=args.base_url, insecure_hosts=frozenset(args.insecure_host))
     transport = OfficialTransport(token, config)
     out_dir = os.path.join(args.out_dir, time.strftime("%Y%m%d-%H%M%S"))
     os.makedirs(out_dir, exist_ok=True)
