@@ -40,10 +40,29 @@ def read_token(path):
     return text
 
 
+class _GlobalRateLimiter:
+    """全局限速：所有探针请求共享（与 bot 共用 Token 令牌桶，必须谦让）。
+    任意两次请求间隔不小于 min_interval 秒；用简单的时间片排队实现。"""
+
+    def __init__(self, min_interval: float = 1.2):
+        self._min_interval = min_interval
+        self._next_slot = 0.0
+        self._lock = asyncio.Lock()
+
+    async def wait(self, clock=time.monotonic, sleep=asyncio.sleep):
+        async with self._lock:
+            now = clock()
+            wait_sec = max(0.0, self._next_slot - now)
+            self._next_slot = max(now, self._next_slot) + self._min_interval
+        if wait_sec > 0:
+            await sleep(wait_sec)
+
+
 class GameProbe:
     """单场观察器：严格游标连续增量；记录一切响应。"""
 
-    def __init__(self, transport, game_id, out_path, wall_ms):
+    def __init__(self, transport, game_id, out_path, wall_ms, limiter=None):
+        self._limiter = limiter
         self._transport = transport
         self.game_id = game_id
         self._out = open(out_path, "a", encoding="utf-8")
@@ -80,6 +99,8 @@ class GameProbe:
         self._log("probe_start", {"game_id": self.game_id})
         while not self.finished:
             try:
+                if self._limiter is not None:
+                    await self._limiter.wait()
                 res = await self._transport.request(
                     "GET", "/api/games/{}/state".format(self.game_id),
                     params={"seq": self.cursor}, long_poll=True,
@@ -162,11 +183,12 @@ def percentile(sorted_vals, q):
 async def discover_and_observe(args, transport, out_dir):
     """轮询 /api/me 发现 active_games；为新场次启动观察器；全部结束后汇总。"""
     observers = {}
-    token_hint = "probe"
+    limiter = _GlobalRateLimiter(min_interval=args.min_req_interval)
     last_active_wall = int(time.time() * 1000)
     deadline = time.time() + args.duration_sec
     while time.time() < deadline:
         try:
+            await limiter.wait()
             res = await transport.request("GET", "/api/me")
             me = json.loads(res.text or "{}")
             games = [g.get("game_id") for g in (me.get("active_games") or []) if g.get("game_id")]
@@ -176,7 +198,7 @@ async def discover_and_observe(args, transport, out_dir):
         for gid in games:
             if gid and gid not in observers:
                 path = os.path.join(out_dir, gid + ".jsonl")
-                probe = GameProbe(transport, gid, path, int(time.time() * 1000))
+                probe = GameProbe(transport, gid, path, int(time.time() * 1000), limiter=limiter)
                 observers[gid] = asyncio.ensure_future(probe.run())
                 print("observing", gid, flush=True)
         if games:
@@ -295,6 +317,8 @@ def main(argv=None):
     parser.add_argument("--duration-sec", type=int, default=3600, help="最长观察秒数")
     parser.add_argument("--idle-exit-sec", type=int, default=120,
                         help="active_games 清空且观察器全部结束后再等待的秒数")
+    parser.add_argument("--min-req-interval", type=float, default=1.2,
+                        help="探针全局最小请求间隔秒数（与 bot 共用令牌桶的谦让限速）")
     args = parser.parse_args(argv)
     asyncio.run(main_async(args))
     return 0
