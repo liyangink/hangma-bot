@@ -10,7 +10,16 @@ P0 的可见性固定为单一玩家观察（`PlayerObservation`，本家手牌�
 
 ## 启动
 
-在仓库根目录执行：
+推荐从任意目录执行仓库自带启动脚本：
+
+```bash
+./scripts/run_spectator.sh
+```
+
+脚本会先切换至仓库根目录，默认审计目录就是该仓库的 `./runs`。也可把观战器参数
+直接附在脚本后，例如 `./scripts/run_spectator.sh --port 8766`。
+
+也可以在仓库根目录直接执行：
 
 ```bash
 python3 spectator/server.py
