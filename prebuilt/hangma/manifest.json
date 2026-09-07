@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "artifacts": [
+    {
+      "path": "cp311-macosx_11_0_arm64/_grouped_native.cpython-311-darwin.so",
+      "platform": "darwin",
+      "architecture": "arm64",
+      "python_implementation": "cpython",
+      "python_version": [
+        3,
+        11
+      ],
+      "soabi": "cpython-311-darwin",
+      "extension_suffix": ".cpython-311-darwin.so",
+      "minimum_macos": [
+        11,
+        0
+      ],
+      "semantics_version": "hangma-standard-grouped-v1",
+      "binary_sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6",
+      "sources": {
+        "src/hangma_bot/hangma/_grouped_native.c": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b",
+        "src/hangma_bot/hangma/_standard_python.py": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+      },
+      "provenance": {
+        "built_from_commit": "6b342c251f5d679d5f0d797aa4f4c0d5f0f0b9b7",
+        "captured_date": "2026-09-07",
+        "validation": "review/grouped-dp-integration-2026-09-07/validation-native/validation.json",
+        "note": "复用此前已通过7007输入校验的同一二进制；最低macOS来自Mach-O LC_BUILD_VERSION，跨机器尚未实测"
+      }
+    }
+  ]
+}

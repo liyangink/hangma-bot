@@ -28,8 +28,8 @@ exclude = ["**/*.so", "**/*.pyd", "**/*.dylib"]
 path = "hatch_build.py"
 
 [tool.hatch.build.targets.sdist]
-include = ["src/hangma_bot", "pyproject.toml", "hatch_build.py", "README.md"]
-exclude = ["**/*.so", "**/*.pyd", "**/*.dylib", "**/__pycache__"]
+include = ["src/hangma_bot", "prebuilt/hangma", "pyproject.toml", "hatch_build.py", "README.md"]
+exclude = ["src/**/*.so", "src/**/*.pyd", "src/**/*.dylib", "**/__pycache__"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

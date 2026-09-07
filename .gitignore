@@ -9,6 +9,8 @@ __pycache__/
 *.so
 *.pyd
 *.dylib
+# 经过清单与源码摘要校验的共享制品允许入库；开发目录产物仍忽略。
+!prebuilt/hangma/**/*.so
 dist/
 build/
 # 本地运行产物与私有配置（Token 只存在于私有运行配置，不入库）

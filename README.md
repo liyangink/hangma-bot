@@ -12,11 +12,15 @@ python3 -m venv .venv
 .venv/bin/python -m pytest -q
 ```
 
-安装时会尝试编译规则模块的 C 分组扩展，运行时直接加载，不在动作窗口
-编译。macOS 需要 Xcode Command Line Tools，Linux 需要 GCC/Clang 和
-对应 Python 开发头文件；没有可用编译器时使用同语义的 Python 分组实现。
+安装时优先复用仓库内经过源码与二进制摘要校验的 C 分组扩展。当前预编译
+制品覆盖 macOS 11+、arm64、CPython 3.11，兼容的 M 系列 Mac 无需编译器。
+不匹配时再尝试源码构建：macOS 需要 Xcode Command Line Tools，Linux 需要
+GCC/Clang 和对应 Python 开发头文件；默认允许同语义的 Python 退路。
+运行时直接加载，不在动作窗口编译。
 部署若要求必须有 C 加速，使用 `HANGMA_NATIVE=required .venv/bin/python -m pip install -e '.[dev]'`；
-`HANGMA_NATIVE=off` 可构建纯 Python 包。修改 C 源码后须重新执行安装。
+若要求完全免编译，使用 `HANGMA_NATIVE=prebuilt .venv/bin/python -m pip install -e '.[dev]'`，
+不匹配会明确报错；`HANGMA_NATIVE=off` 构建纯 Python 包。修改 C 源码后须重新安装。
+制品与维护方式见[预编译规则制品](prebuilt/hangma/README.md)。
 
 同架构机器可以复用兼容的 wheel 或扩展，但操作系统、Python 二进制接口
 （Application Binary Interface，ABI，决定扩展能否被当前解释器加载）和系统库也须匹配。
