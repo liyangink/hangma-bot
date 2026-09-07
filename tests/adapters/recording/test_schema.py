@@ -133,7 +133,7 @@ class TestMinimalPayloadValidation:
         assert validate_payload(AuditKind.SUBMISSION_OUTCOME, {"outcome_type": "SubmitFatal"}) == ()
         assert validate_payload(AuditKind.SUBMISSION_OUTCOME, {"outcome": 409})
         assert validate_payload(AuditKind.SUBMISSION_OUTCOME, {"outcome_type": None})
-        # degraded_reasons 存在时必须是数组（规则降级覆盖率统计消费）。
+        # degraded_reasons 存在时必须是数组（计划提示统计消费，不等同规则降级）。
         assert validate_payload(AuditKind.DECISION_PLANNED, {"degraded_reasons": ["x"]}) == ()
         assert validate_payload(AuditKind.DECISION_PLANNED, {"degraded_reasons": "x"})
         # 缺省一律放行。

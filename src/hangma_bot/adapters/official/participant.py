@@ -39,6 +39,7 @@ from hangma_bot.application.contracts import (
 )
 from hangma_bot.kernel.config import TournamentConfig
 
+from .request_audit import audited_request
 from . import projector
 from .dto import (
     KNOWN_GUIDE_VERSION,
@@ -99,9 +100,9 @@ class OfficialTournamentSession:
         sse_budget: Optional[StreamBudget] = None,  # 每 Token 共享 SSE 预算
     ) -> None:
         self._transport = OfficialTransport(token, transport_config)
-        # v18 官方上限16/s；M=4 实测边界429，生产以14/s、单请求突发保留余量。
+        # 赛事控制独立调度；open_game 按实际 M 静态分配每场额度和并发槽。
         self._scheduler = scheduler if scheduler is not None else RequestScheduler(
-            clock=monotonic_clock, rate_per_second=14.0, burst=1.0)
+            clock=monotonic_clock, rate_per_second=14.0, burst=1.0, max_concurrent=2)
         self._monotonic = monotonic_clock
         self._wall_ms = wall_clock_unix_ms
         self._audit = audit
@@ -171,7 +172,7 @@ class OfficialTournamentSession:
             try:
                 lease = await self._scheduler.acquire(priority, request_kind=RequestKind.OTHER)
                 try:
-                    result = await self._transport.request(method, path, json_body=json_body, with_auth=with_auth)
+                    result = await audited_request(self._transport, self._emit_audit, self._monotonic,method, path, json_body=json_body, with_auth=with_auth)
                 finally:
                     lease.release()
                 import json
@@ -455,7 +456,7 @@ class OfficialTournamentSession:
         session = OfficialGameSession(
             game_id=game_id,
             transport=self._transport,
-            scheduler=self._scheduler,
+            scheduler=self._scheduler.for_game(game_id, max_games=reg.config.max_games),
             timing=reg.config.timing,
             monotonic_clock=self._monotonic,
             wall_clock_unix_ms=self._wall_ms,
@@ -568,4 +569,3 @@ class OfficialTournamentSession:
             {"reason": reason.value, "detail": sanitize(detail)},
         )
         return ParticipantTerminal(reason=reason, last_snapshot=snapshot, detail=sanitize(detail))
-

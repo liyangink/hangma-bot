@@ -326,6 +326,7 @@ class AuditKind(str, Enum):
     LIFECYCLE_CHANGED = "lifecycle_changed"
     AUTHORITATIVE_STATE = "authoritative_state"
     RAW_PROTOCOL_STATE = "raw_protocol_state"
+    HTTP_REQUEST = "http_request"  # 每次真实 HTTP 调用开始/终结；正文另存原始事件，以 request_id 对账
     DECISION_PLANNED = "decision_planned"
     # audit-plus-v1 增强种类（2026-09-05 并行契约登记，方案 §3.2）：完整
     # 决策输入、提交前复核与决策终结证据。生产方为 application 层，payload

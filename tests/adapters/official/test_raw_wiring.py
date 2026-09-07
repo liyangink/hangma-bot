@@ -138,9 +138,9 @@ class TestStateRawRetention:
             await task
 
         payloads = _raw_payloads(audit, "GET /api/games/")
-        statuses = [p["http_status"] for p in payloads]
+        statuses = [p.get("http_status") for p in payloads]
         # 首拉 200 → 429 失败 → 重试 200 → pending 200：失败响应原文不缺席
-        assert statuses == [200, 429, 200, 200]
+        assert statuses == [200, 429, 200, 200, None]
         throttled = payloads[1]
         assert throttled["raw"] == throttle_body  # 429 拒绝体完整保留
         assert throttled["request_no"] == 1  # request_no 只随成功递增

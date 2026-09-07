@@ -64,8 +64,9 @@ async def deliver(documents):
 
 
 @pytest.mark.asyncio
-async def test_snapshot_refresh_preserves_gang_draw_hu():
-    """本人明杠+补牌触发全量刷新后，有财必拷响的杠开豁免必须保留。"""
+@pytest.mark.parametrize('enabled', [False, True])
+async def test_snapshot_refresh_preserves_gang_draw_and_room_hu_restriction(enabled):
+    """刷新保留杠补来源，但非爆头有财胡只在房规开关关闭时允许。"""
     pre = load_fixture("state_response_snapshot_peng.json")
     pre["seq"] = 100
     hand = ["1w", "2w", "白", "4w", "5w", "6w", "7b", "8b", "9b", "东"]
@@ -89,12 +90,13 @@ async def test_snapshot_refresh_preserves_gang_draw_hu():
         assert isinstance(await session.next_item(), ObservedActionWindow)
         window = await asyncio.wait_for(session.next_item(), 1)
         assert isinstance(window, ObservedActionWindow)
-        rules = HangmaRules(RuleConfig(ruleset_version="audit-v15", base_score=1, you_cai_bi_kao=True))
+        rules = HangmaRules(RuleConfig(ruleset_version="audit-v18", base_score=1, you_cai_bi_kao=enabled))
         control = replace(window.observation, public_history=tuple(
             public_event(e) for e in parse_state_response(events).events))
-        assert "hu" in [c.action_key for c in rules.analyze(control).legal_candidates]
+        assert ("hu" in [c.action_key for c in rules.analyze(control).legal_candidates]) is (not enabled)
+        assert window.observation.gang_draw is True
         analysis = rules.analyze(window.observation)
-        assert "hu" in [c.action_key for c in analysis.legal_candidates], (
+        assert ("hu" in [c.action_key for c in analysis.legal_candidates]) is (not enabled), (
             window.observation.public_history, analysis.issues)
     finally:
         await session.aclose("audit_done")

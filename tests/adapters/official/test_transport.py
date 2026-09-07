@@ -177,3 +177,22 @@ class TestRawTextSanitization:
         assert "secret-token-abcdef123456" not in exc_info.value.raw_text
         assert '"RATE_LIMITED"' in exc_info.value.raw_text
         assert exc_info.value.retry_after_seconds == 2.0
+
+
+async def test_retry_after_http_date_and_diagnostic_headers_are_retained_without_credentials():
+    token = 'secret-token-abcdef123456'
+    transport = _transport('https://h.example', set(), httpx.MockTransport(lambda req: httpx.Response(
+        429, headers={'Date': 'Mon, 07 Sep 2026 05:00:00 GMT',
+                      'Retry-After': 'Mon, 07 Sep 2026 05:00:02 GMT',
+                      'X-Request-ID': token, 'Set-Cookie': token, 'Authorization': token},
+        text='rate limited')))
+    try:
+        with pytest.raises(RateLimitedError) as raised:
+            await transport.request('GET', '/api/me')
+        error = raised.value
+        assert error.retry_after_seconds == 2
+        assert error.response_headers['retry-after'].endswith('05:00:02 GMT')
+        assert 'authorization' not in error.response_headers and 'set-cookie' not in error.response_headers
+        assert token not in str(error.response_headers)
+    finally:
+        await transport.aclose()

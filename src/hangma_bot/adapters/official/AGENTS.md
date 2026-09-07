@@ -4,7 +4,7 @@
 
 本模块实现 `TournamentSessionPort` 与 `GameSessionPort`，隐藏官方 HTTP、DTO、长轮询、序号恢复和非幂等动作状态。先阅读根规范、官方 API v8 记录、接口协议和 `doc/implementation/modules/official-adapter.md`。
 
-- 每 Token 恰好创建一个 `OfficialTransport`、连接池、请求调度器和限速器；该 Token 的赛事及最多 `M` 个场次共享它们。
+- 每Token共享一个OfficialTransport及连接池；赛事控制与每场各自拥有调度、并发、频率和429冷却。每场最多2个在途HTTP且state最多1个；静态分配state速率以满足每用户总上限，不能以共享队列让其他场抢占预算。
 - 四个测试 Token 之间不得共享认证头、限速状态、动作门或审计身份。
 - 适配器只输出 `ObservedActionWindow`，只接收 `ActionAttempt`；禁止导入 `DecisionRequest`、`DecisionPlan` 或启发式评分类型。
 - `StageIdentity.observed_revision` 只用于防止陈旧 `ready` 调用；应用层审计使用的 `stage_attempt_id` 不由适配器生成。
@@ -25,7 +25,7 @@
 ## 验收标准
 
 - 官方 v8 保存响应 fixture 全部解析；允许兼容新增字段但拒绝未知破坏性指南版本。
-- 每 Token 请求共享与四 Token 隔离均有并发测试。
+- 同Token的M场之间及四Token之间均有额度、冷却、并发隔离测试。
 - 覆盖 `seq` 重复/缺口、`gap=true`、兼容未知事件、关键未知事件、409、429、401、超时和断连。
 - 任意时刻每场最多一个在途 POST；模糊结果后同窗零次追加提交。
 - `aclose()` 能取消最长 30 秒长轮询且不误关同 Token 的其他场次。

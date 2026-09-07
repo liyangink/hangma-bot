@@ -91,7 +91,9 @@ async def test_inflight_cancel_blocks_window_and_audits_shared_reason(transport,
         if r.kind is AuditKind.RAW_PROTOCOL_STATE
         and str(r.payload.get("endpoint", "")).startswith("POST")
     ]
-    assert raws == [], "在途取消无响应可录：不得发射 POST 原文记录"
+    assert len(raws) == 1
+    assert raws[0].payload["raw"] == ""
+    assert raws[0].payload["request_timing"]["outcome"] == "cancelled"
 
 
 async def test_inflight_cancel_passes_validator_raw_accounting(tmp_path):
@@ -118,4 +120,4 @@ async def test_inflight_cancel_passes_validator_raw_accounting(tmp_path):
     report = validate_run(str(tmp_path / "runs" / "run-cancel"))
     codes = {f["code"] for f in report["findings"]}
     assert "raw_action_missing" not in codes, "在途取消不得误报缺响应原文"
-    assert report["raw_events"]["action_responses"] == 0
+    assert report["raw_events"]["action_responses"] == 1

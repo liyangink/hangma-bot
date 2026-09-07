@@ -26,15 +26,34 @@ def collect_test_room(client, room: str, batch: int, out: Path, *, sleep=time.sl
         raise ValueError(f"官方数据下载失败：{reason}，已保存诊断")
 
     def get(name, endpoint):
+        request_id = uuid.uuid4().hex
+        started = time.monotonic()
+        def record(phase, **fields):
+            # 公共下载不携认证；只存诊断白名单头，原始正文独立成文件。
+            row = {"request_id": request_id, "method": "GET", "endpoint": endpoint,
+                   "phase": phase, "wall_time_unix_ms": int(time.time() * 1000),
+                   "elapsed_sec": time.monotonic() - started, **fields}
+            with (folder / "http-requests.jsonl").open("a", encoding="utf-8") as stream:
+                stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+        record("started")
         try:
             response = client.get(endpoint)
         except httpx.HTTPError as exc:
+            record("finished", outcome="error", error_type=type(exc).__name__, http_status=None)
             fail(endpoint, type(exc).__name__)
+        except BaseException as exc:
+            record("finished", outcome="interrupted", error_type=type(exc).__name__, http_status=None)
+            raise
+        raw_name = name if response.status_code == 200 else name + ".http-error"
+        partial = folder / (raw_name + ".partial")
+        partial.write_bytes(response.content)
+        partial.replace(folder / raw_name)
+        record("finished", outcome="response", http_status=response.status_code,
+               response_headers={key: response.headers[key] for key in ("date", "retry-after", "content-type")
+                                 if key in response.headers},
+               raw_file=raw_name, raw_sha256=hashlib.sha256(response.content).hexdigest())
         if response.status_code != 200:
             fail(endpoint, f"HTTP {response.status_code}", response.status_code)
-        partial = folder / (name + ".partial")
-        partial.write_bytes(response.content)
-        partial.replace(folder / name)
         sleep(.21)
         try:
             data = response.json()

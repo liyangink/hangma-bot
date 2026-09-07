@@ -223,8 +223,8 @@ class TestNextUpdate:
 
 
 class TestResourceSharing:
-    async def test_open_game_shares_scheduler_and_transport(self, transport, clock) -> None:
-        """同 Token 场次会话共享传输与限速器（接口协议 §6）。"""
+    async def test_open_game_isolates_scheduler_and_shares_transport(self, transport, clock) -> None:
+        """同 Token 复用传输；每场独立调度与限频，同场重复打开保留预算。"""
 
         _initialize_handler(transport)
         session = make_tournament_session(clock=clock, transport=transport)
@@ -233,7 +233,7 @@ class TestResourceSharing:
         g1 = session.open_game("g_room1_batch1")
         g2 = session.open_game("g_room1_batch2")
         assert g1 is session.open_game("g_room1_batch1")  # 同场会话复用
-        assert g1._scheduler is g2._scheduler
+        assert g1._scheduler is not g2._scheduler
         assert g1._transport is g2._transport
 
     async def test_four_tokens_are_isolated(self, clock) -> None:

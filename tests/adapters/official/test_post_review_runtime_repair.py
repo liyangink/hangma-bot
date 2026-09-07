@@ -62,7 +62,7 @@ async def test_unexpected_other_draw_forces_recovery_before_delivering_old_self_
         assert isinstance(window, ObservedActionWindow)
         assert window.window_key.trigger_seq == 103
         assert window.observation.drawn_tile == Tile("东")
-        assert [call.params["seq"] for call in transport.calls] == [0, 100, 0, 102]
+        assert [call.params["seq"] for call in transport.calls] == [0, 100, 0]
         assert not any(e.seat == 0 and e.kind == "tile_drawn" for e in window.observation.public_history)
     finally:
         await session.aclose("test_done")

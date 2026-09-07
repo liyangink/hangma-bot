@@ -27,6 +27,7 @@ class TestVocabulary:
         # match_response 为 parallel-v1 契约扩展（§3.3）：自由赛线完整匹配
         # 响应原文的新来源，与既有三种来源同处冻结词表。
         assert RAW_EVENT_SOURCES == frozenset({
+            "http_response", "notify_response",
             "state_response",
             "action_submit_response",
             "sse_frame",

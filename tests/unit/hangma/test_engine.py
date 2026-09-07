@@ -298,8 +298,9 @@ class TestAnalyzeInvariants:
         assert any(c.action_key == "hu" for c in with_hu.legal_candidates)
         blocked = self._rules(youcai=True).analyze(obs)
         assert not any(c.action_key == "hu" for c in blocked.legal_candidates)
-        assert blocked.completeness is RuleCompleteness.DEGRADED
-        assert any("拷响" in i.reason for i in blocked.issues)
+        assert blocked.completeness is RuleCompleteness.COMPLETE
+        assert blocked.issues == ()
+        assert any("拷响" in e for c in blocked.legal_candidates for e in c.evidence)
 
     def test_analysis_is_deterministic(self):
         rules = self._rules()

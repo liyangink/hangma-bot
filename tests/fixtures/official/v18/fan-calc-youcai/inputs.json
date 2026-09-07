@@ -1,0 +1,8649 @@
+[
+  {
+    "tags": [
+      "v9:std-2white-literal-pair"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "白",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "2b",
+        "3b"
+      ],
+      "draw": "1b",
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou.jsonl"
+  },
+  {
+    "tags": [
+      "v9:std-1white-as-pair"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "2b",
+        "3b",
+        "4b"
+      ],
+      "draw": "东",
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou.jsonl"
+  },
+  {
+    "tags": [
+      "v9:std-2white-in-runs"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "1w",
+        "2w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "白",
+        "7b",
+        "8b",
+        "东"
+      ],
+      "draw": "东",
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou.jsonl"
+  },
+  {
+    "tags": [
+      "v9:std-1white-in-triplet"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "1w",
+        "1w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "2b",
+        "3b",
+        "4b",
+        "东"
+      ],
+      "draw": "东",
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou.jsonl"
+  },
+  {
+    "tags": [
+      "v9:chiitoi-3white-held"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "2w",
+        "2w",
+        "3w",
+        "3w",
+        "4w",
+        "4w",
+        "5w",
+        "5w",
+        "白",
+        "白",
+        "白"
+      ],
+      "draw": "6w",
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou.jsonl"
+  },
+  {
+    "tags": [
+      "v9:std-win-draw-is-white"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "1b",
+        "2b",
+        "3b"
+      ],
+      "draw": "白",
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou.jsonl"
+  },
+  {
+    "tags": [
+      "v9:chiitoi-1white-sub-pair-noquad"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "2w",
+        "2w",
+        "3w",
+        "3w",
+        "4w",
+        "4w",
+        "5w",
+        "5w",
+        "6w",
+        "6w",
+        "白"
+      ],
+      "draw": "7w",
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou.jsonl"
+  },
+  {
+    "tags": [
+      "v9:held4-white-pair-decomp"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "白",
+        "白",
+        "白",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "9b"
+      ],
+      "draw": "9b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou2.jsonl"
+  },
+  {
+    "tags": [
+      "v9:held3-no-white-pair"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "白",
+        "白",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "4w",
+        "5w",
+        "5w",
+        "6w",
+        "6w",
+        "7w"
+      ],
+      "draw": "7w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou2.jsonl"
+  },
+  {
+    "tags": [
+      "v9:chiitoi-held4"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "白",
+        "白",
+        "白",
+        "1w",
+        "1w",
+        "2w",
+        "2w",
+        "3w",
+        "3w",
+        "4w",
+        "4w",
+        "5w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou2.jsonl"
+  },
+  {
+    "tags": [
+      "v9:held2-sets-only"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "白",
+        "1w",
+        "1w",
+        "2w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w"
+      ],
+      "draw": "9w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou2.jsonl"
+  },
+  {
+    "tags": [
+      "v9:held3-piao1-no-white-pair"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "白",
+        "白",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "4w",
+        "5w",
+        "5w",
+        "6w",
+        "6w",
+        "7w"
+      ],
+      "draw": "7w",
+      "chain": {
+        "count": 1,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-baotou2.jsonl"
+  },
+  {
+    "tags": [
+      "v9:chain-4-4"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 4
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-chain4.jsonl"
+  },
+  {
+    "tags": [
+      "v9:chain-5-4"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 5,
+        "piao": 4
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-chain4.jsonl"
+  },
+  {
+    "tags": [
+      "v9:chain-6-4"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 4
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-chain4.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-1"
+    ],
+    "request": {
+      "hand": [
+        "8t",
+        "7b",
+        "1w",
+        "7b",
+        "南",
+        "3b",
+        "9w",
+        "8w",
+        "西",
+        "3b",
+        "东",
+        "白",
+        "6b"
+      ],
+      "draw": "2t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-2"
+    ],
+    "request": {
+      "hand": [
+        "2t",
+        "5w",
+        "6b",
+        "3t",
+        "1t",
+        "5b",
+        "9w",
+        "9t",
+        "7b",
+        "9w",
+        "8t",
+        "9w",
+        "7t"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-3"
+    ],
+    "request": {
+      "hand": [
+        "3w",
+        "4t",
+        "3w",
+        "9w",
+        "白",
+        "3t",
+        "2t",
+        "3w",
+        "9w",
+        "3b",
+        "9w",
+        "2b",
+        "发"
+      ],
+      "draw": "发",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-4"
+    ],
+    "request": {
+      "hand": [
+        "5w",
+        "1w",
+        "4t",
+        "1b",
+        "4t",
+        "4w",
+        "3b",
+        "1t",
+        "3t",
+        "3w",
+        "2w",
+        "发",
+        "白"
+      ],
+      "draw": "2t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-5"
+    ],
+    "request": {
+      "hand": [
+        "3w",
+        "8t",
+        "9t",
+        "1t",
+        "8t",
+        "9w",
+        "9b",
+        "9w",
+        "中",
+        "3w",
+        "8t",
+        "1b",
+        "6w"
+      ],
+      "draw": "5t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-6"
+    ],
+    "request": {
+      "hand": [
+        "6w",
+        "3b",
+        "8b",
+        "3b",
+        "9b",
+        "5w",
+        "2b",
+        "6b",
+        "西",
+        "9b",
+        "中",
+        "3w",
+        "5t"
+      ],
+      "draw": "4w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-7"
+    ],
+    "request": {
+      "hand": [
+        "5t",
+        "6t",
+        "5t",
+        "发",
+        "3b",
+        "3b",
+        "5t",
+        "发",
+        "白",
+        "发",
+        "3b",
+        "5t",
+        "6t"
+      ],
+      "draw": "6t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-8"
+    ],
+    "request": {
+      "hand": [
+        "5b",
+        "2t",
+        "白",
+        "5b",
+        "4t",
+        "8w",
+        "6w",
+        "4w",
+        "3t",
+        "中",
+        "8t",
+        "中",
+        "3t"
+      ],
+      "draw": "3t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-9"
+    ],
+    "request": {
+      "hand": [
+        "2t",
+        "白",
+        "2w",
+        "8t",
+        "2t",
+        "3b",
+        "发",
+        "4b",
+        "7w",
+        "7b",
+        "南",
+        "7w",
+        "中"
+      ],
+      "draw": "西",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-10"
+    ],
+    "request": {
+      "hand": [
+        "6t",
+        "东",
+        "2b",
+        "1t",
+        "5w",
+        "4b",
+        "8w",
+        "7w",
+        "5t",
+        "3w",
+        "西",
+        "白",
+        "2t"
+      ],
+      "draw": "7t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-11"
+    ],
+    "request": {
+      "hand": [
+        "8t",
+        "北",
+        "北",
+        "6t",
+        "2w",
+        "7t",
+        "3w",
+        "4w",
+        "2w",
+        "3w",
+        "5w",
+        "北",
+        "4w"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-12"
+    ],
+    "request": {
+      "hand": [
+        "东",
+        "7t",
+        "7w",
+        "7w",
+        "5w",
+        "5b",
+        "3w",
+        "4t",
+        "白",
+        "8b",
+        "中",
+        "5t",
+        "北"
+      ],
+      "draw": "7t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-13"
+    ],
+    "request": {
+      "hand": [
+        "3t",
+        "北",
+        "5t",
+        "5t",
+        "8w",
+        "3t",
+        "2t",
+        "8w",
+        "8w",
+        "5t",
+        "4t",
+        "白",
+        "1t"
+      ],
+      "draw": "北",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-14"
+    ],
+    "request": {
+      "hand": [
+        "9t",
+        "发",
+        "4b",
+        "6t",
+        "8t",
+        "4w",
+        "4w",
+        "2t",
+        "7w",
+        "3t",
+        "7t",
+        "4b",
+        "2w"
+      ],
+      "draw": "6t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-15"
+    ],
+    "request": {
+      "hand": [
+        "9b",
+        "5t",
+        "2w",
+        "2t",
+        "4b",
+        "2b",
+        "1t",
+        "南",
+        "8w",
+        "西",
+        "3w",
+        "3w",
+        "5t"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-16"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "7t",
+        "西",
+        "3t",
+        "4w",
+        "西",
+        "8b",
+        "7t",
+        "5w",
+        "1t",
+        "8b",
+        "5w",
+        "3t"
+      ],
+      "draw": "4w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-17"
+    ],
+    "request": {
+      "hand": [
+        "7b",
+        "8t",
+        "南",
+        "4t",
+        "东",
+        "白",
+        "中",
+        "4w",
+        "东",
+        "5b",
+        "中",
+        "1b",
+        "5b"
+      ],
+      "draw": "3w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-18"
+    ],
+    "request": {
+      "hand": [
+        "1t",
+        "1t",
+        "1t",
+        "4w",
+        "4w",
+        "1t",
+        "3t",
+        "2t",
+        "4b",
+        "4b",
+        "3b",
+        "4b",
+        "4w"
+      ],
+      "draw": "3b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-19"
+    ],
+    "request": {
+      "hand": [
+        "7b",
+        "6t",
+        "7w",
+        "4b",
+        "西",
+        "4w",
+        "8b",
+        "9w",
+        "1b",
+        "1w",
+        "6t",
+        "2b",
+        "2t"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-20"
+    ],
+    "request": {
+      "hand": [
+        "4b",
+        "8t",
+        "5w",
+        "南",
+        "中",
+        "1t",
+        "1t",
+        "5t",
+        "1w",
+        "7t",
+        "1b",
+        "西",
+        "1w"
+      ],
+      "draw": "6t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-21"
+    ],
+    "request": {
+      "hand": [
+        "1t",
+        "2w",
+        "1t",
+        "2w",
+        "7t",
+        "3w",
+        "6t",
+        "9t",
+        "3w",
+        "1t",
+        "8t",
+        "1w",
+        "4w"
+      ],
+      "draw": "6t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-22"
+    ],
+    "request": {
+      "hand": [
+        "西",
+        "7w",
+        "6w",
+        "5b",
+        "白",
+        "发",
+        "6b",
+        "发",
+        "发",
+        "4w",
+        "5w",
+        "5w",
+        "7b"
+      ],
+      "draw": "西",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-23"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "6t",
+        "9b",
+        "8t",
+        "2w",
+        "1b",
+        "9w",
+        "发",
+        "北",
+        "7b",
+        "9b",
+        "8t",
+        "7b"
+      ],
+      "draw": "5t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-24"
+    ],
+    "request": {
+      "hand": [
+        "7t",
+        "4b",
+        "发",
+        "1w",
+        "8t",
+        "3w",
+        "2w",
+        "6b",
+        "5b",
+        "7b",
+        "8b",
+        "6t",
+        "白"
+      ],
+      "draw": "发",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-25"
+    ],
+    "request": {
+      "hand": [
+        "8t",
+        "5w",
+        "8w",
+        "3t",
+        "9t",
+        "1b",
+        "1b",
+        "中",
+        "7b",
+        "1t",
+        "3b",
+        "3w",
+        "7w"
+      ],
+      "draw": "4w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-26"
+    ],
+    "request": {
+      "hand": [
+        "8w",
+        "发",
+        "6w",
+        "2t",
+        "8w",
+        "2w",
+        "6w",
+        "3b",
+        "2w",
+        "7w",
+        "9w",
+        "4w",
+        "4w"
+      ],
+      "draw": "9w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-27"
+    ],
+    "request": {
+      "hand": [
+        "北",
+        "3w",
+        "北",
+        "6w",
+        "7w",
+        "2t",
+        "2t",
+        "白",
+        "2b",
+        "1w",
+        "8w",
+        "东",
+        "6b"
+      ],
+      "draw": "1t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-28"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "7t",
+        "8t",
+        "白",
+        "8t",
+        "东",
+        "发",
+        "西",
+        "2b",
+        "4t",
+        "南",
+        "6t",
+        "3t"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-29"
+    ],
+    "request": {
+      "hand": [
+        "5b",
+        "9b",
+        "白",
+        "中",
+        "2t",
+        "5b",
+        "中",
+        "5b",
+        "中",
+        "2t",
+        "3w",
+        "7b",
+        "8b"
+      ],
+      "draw": "3w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-30"
+    ],
+    "request": {
+      "hand": [
+        "中",
+        "9w",
+        "2t",
+        "中",
+        "1w",
+        "8w",
+        "8t",
+        "2t",
+        "8t",
+        "中",
+        "7w",
+        "8t",
+        "2t"
+      ],
+      "draw": "1w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-31"
+    ],
+    "request": {
+      "hand": [
+        "发",
+        "5w",
+        "6b",
+        "6b",
+        "7w",
+        "3w",
+        "3t",
+        "4t",
+        "1w",
+        "5t",
+        "6b",
+        "2w",
+        "6w"
+      ],
+      "draw": "发",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-32"
+    ],
+    "request": {
+      "hand": [
+        "3w",
+        "3w",
+        "南",
+        "3b",
+        "3b",
+        "4b",
+        "3w",
+        "南",
+        "3t",
+        "5b",
+        "南",
+        "3t",
+        "3t"
+      ],
+      "draw": "3b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-33"
+    ],
+    "request": {
+      "hand": [
+        "5b",
+        "白",
+        "7t",
+        "3b",
+        "1w",
+        "5t",
+        "8b",
+        "1t",
+        "8w",
+        "9b",
+        "东",
+        "6t",
+        "7w"
+      ],
+      "draw": "2t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-34"
+    ],
+    "request": {
+      "hand": [
+        "2t",
+        "6t",
+        "5t",
+        "南",
+        "2t",
+        "6w",
+        "白",
+        "南",
+        "5w",
+        "3t",
+        "4t",
+        "7w",
+        "2t"
+      ],
+      "draw": "3t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-35"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "7w",
+        "9w",
+        "6b",
+        "5t",
+        "5t",
+        "白",
+        "9b",
+        "1b",
+        "5w",
+        "9w",
+        "8w",
+        "9b"
+      ],
+      "draw": "3b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-36"
+    ],
+    "request": {
+      "hand": [
+        "6t",
+        "5w",
+        "2t",
+        "2t",
+        "9b",
+        "1t",
+        "9b",
+        "9b",
+        "1t",
+        "3t",
+        "6t",
+        "3t",
+        "6t"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-37"
+    ],
+    "request": {
+      "hand": [
+        "2t",
+        "7w",
+        "7t",
+        "2t",
+        "6w",
+        "1w",
+        "2t",
+        "5t",
+        "6t",
+        "7w",
+        "2w",
+        "8w",
+        "3w"
+      ],
+      "draw": "7w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-38"
+    ],
+    "request": {
+      "hand": [
+        "5b",
+        "4w",
+        "中",
+        "白",
+        "白",
+        "5b",
+        "7t",
+        "白",
+        "6t",
+        "5t",
+        "中",
+        "6w",
+        "5b"
+      ],
+      "draw": "4w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-39"
+    ],
+    "request": {
+      "hand": [
+        "3t",
+        "5w",
+        "5t",
+        "5t",
+        "8w",
+        "8w",
+        "7t",
+        "2w",
+        "9w",
+        "4t",
+        "发",
+        "8b",
+        "1w"
+      ],
+      "draw": "9b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-40"
+    ],
+    "request": {
+      "hand": [
+        "1b",
+        "4b",
+        "2t",
+        "7w",
+        "2w",
+        "东",
+        "5w",
+        "9w",
+        "中",
+        "东",
+        "5b",
+        "7b",
+        "东"
+      ],
+      "draw": "中",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-41"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "6t",
+        "5t",
+        "1t",
+        "6w",
+        "9w",
+        "6w",
+        "9w",
+        "1t",
+        "发",
+        "发",
+        "5t"
+      ],
+      "draw": "9w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-42"
+    ],
+    "request": {
+      "hand": [
+        "7b",
+        "4w",
+        "中",
+        "3w",
+        "5t",
+        "6w",
+        "4b",
+        "6b",
+        "7t",
+        "1w",
+        "东",
+        "1b",
+        "1w"
+      ],
+      "draw": "8w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-43"
+    ],
+    "request": {
+      "hand": [
+        "6b",
+        "8b",
+        "南",
+        "3w",
+        "7t",
+        "4w",
+        "1w",
+        "东",
+        "5t",
+        "4w",
+        "白",
+        "南",
+        "7w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-44"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "东",
+        "2b",
+        "5w",
+        "5b",
+        "6t",
+        "9b",
+        "7t",
+        "4b",
+        "9t",
+        "8t",
+        "西",
+        "北"
+      ],
+      "draw": "8w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-45"
+    ],
+    "request": {
+      "hand": [
+        "中",
+        "3b",
+        "9w",
+        "7t",
+        "5w",
+        "1t",
+        "7b",
+        "6w",
+        "1t",
+        "4t",
+        "7w",
+        "8t",
+        "7t"
+      ],
+      "draw": "4t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-46"
+    ],
+    "request": {
+      "hand": [
+        "1b",
+        "南",
+        "南",
+        "4b",
+        "发",
+        "4t",
+        "4t",
+        "2w",
+        "1b",
+        "6b",
+        "6b",
+        "发",
+        "4b"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-47"
+    ],
+    "request": {
+      "hand": [
+        "发",
+        "1t",
+        "东",
+        "3t",
+        "西",
+        "3t",
+        "3t",
+        "东",
+        "2t",
+        "3t",
+        "东",
+        "西",
+        "西"
+      ],
+      "draw": "发",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-48"
+    ],
+    "request": {
+      "hand": [
+        "8w",
+        "3b",
+        "5b",
+        "9w",
+        "8w",
+        "3w",
+        "4b",
+        "4b",
+        "8w",
+        "2b",
+        "6b",
+        "1w",
+        "2w"
+      ],
+      "draw": "9w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-49"
+    ],
+    "request": {
+      "hand": [
+        "7b",
+        "4w",
+        "6w",
+        "3t",
+        "4w",
+        "中",
+        "6w",
+        "中",
+        "7b",
+        "3t",
+        "8b",
+        "8b",
+        "东"
+      ],
+      "draw": "3t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-50"
+    ],
+    "request": {
+      "hand": [
+        "7t",
+        "3b",
+        "1t",
+        "7w",
+        "8t",
+        "9w",
+        "8t",
+        "白",
+        "5t",
+        "5b",
+        "7t",
+        "东",
+        "8w"
+      ],
+      "draw": "7t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-51"
+    ],
+    "request": {
+      "hand": [
+        "2t",
+        "9w",
+        "8b",
+        "7b",
+        "5t",
+        "4t",
+        "9w",
+        "北",
+        "发",
+        "西",
+        "东",
+        "4w",
+        "8w"
+      ],
+      "draw": "7w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-52"
+    ],
+    "request": {
+      "hand": [
+        "9b",
+        "1b",
+        "9b",
+        "3t",
+        "北",
+        "西",
+        "4w",
+        "8t",
+        "9t",
+        "1w",
+        "3b",
+        "5w",
+        "4t"
+      ],
+      "draw": "2b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-53"
+    ],
+    "request": {
+      "hand": [
+        "5t",
+        "8b",
+        "6w",
+        "8b",
+        "5t",
+        "4b",
+        "7t",
+        "8b",
+        "7t",
+        "5w",
+        "白",
+        "7t",
+        "5t"
+      ],
+      "draw": "4b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-54"
+    ],
+    "request": {
+      "hand": [
+        "6t",
+        "7b",
+        "8t",
+        "6t",
+        "9b",
+        "4b",
+        "6t",
+        "3b",
+        "5b",
+        "8t",
+        "8t",
+        "6b",
+        "2b"
+      ],
+      "draw": "9b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-55"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "1b",
+        "中",
+        "2t",
+        "北",
+        "9t",
+        "8t",
+        "2b",
+        "8t",
+        "5b",
+        "9t",
+        "8w",
+        "东"
+      ],
+      "draw": "2b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-56"
+    ],
+    "request": {
+      "hand": [
+        "1b",
+        "6w",
+        "北",
+        "6t",
+        "5t",
+        "南",
+        "1b",
+        "白",
+        "2t",
+        "9b",
+        "9b",
+        "9b",
+        "中"
+      ],
+      "draw": "北",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-57"
+    ],
+    "request": {
+      "hand": [
+        "7w",
+        "6b",
+        "5t",
+        "7w",
+        "8w",
+        "5b",
+        "1w",
+        "4w",
+        "1t",
+        "9w",
+        "白",
+        "9t",
+        "东"
+      ],
+      "draw": "7w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-58"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "9t",
+        "1w",
+        "9t",
+        "2b",
+        "3b",
+        "4b",
+        "1w",
+        "东",
+        "3b",
+        "9t",
+        "东",
+        "东"
+      ],
+      "draw": "3b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:random-cv-59"
+    ],
+    "request": {
+      "hand": [
+        "7b",
+        "1b",
+        "东",
+        "6w",
+        "6w",
+        "1b",
+        "1b",
+        "9b",
+        "6w",
+        "8b",
+        "9t",
+        "东",
+        "东"
+      ],
+      "draw": "9t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases-random-crossval.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-chain-0-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-chain-1-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 1,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-chain-2-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 2,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-chain-3-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-chain-6-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-chain-1-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 1,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-chain-2-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 2,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-chain-2-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 2,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-chain-3-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-chain-4-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-base-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 2
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:plain-base-10"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 10
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:chiitoi-basic"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "2w",
+        "2w",
+        "3w",
+        "3w",
+        "4w",
+        "4w",
+        "5w",
+        "5w",
+        "6w",
+        "6w",
+        "7w"
+      ],
+      "draw": "7w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:chiitoi-2lux"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "2w",
+        "2w",
+        "2w",
+        "3w",
+        "3w",
+        "4w",
+        "4w",
+        "5w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:chiitoi-3lux-white"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "2w",
+        "2w",
+        "2w",
+        "3w",
+        "3w",
+        "3w",
+        "3w",
+        "白"
+      ],
+      "draw": "4w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:chiitoi-white-pair"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "2w",
+        "2w",
+        "3w",
+        "3w",
+        "4w",
+        "4w",
+        "5w",
+        "5w",
+        "6w",
+        "6w",
+        "白"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:four-white-kept"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "白",
+        "白",
+        "白",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "东",
+        "东",
+        "9w"
+      ],
+      "draw": "9w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:three-white-kept-one-piao"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "白",
+        "白",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "东",
+        "东",
+        "9w",
+        "8w"
+      ],
+      "draw": "9w",
+      "chain": {
+        "count": 1,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:wild-complete-run",
+      "v9:youcai-plain-hu-shape"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东",
+        "东",
+        "2b"
+      ],
+      "draw": "3b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:wild-pair-completes"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "2b",
+        "3b",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:not-hu"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "1b",
+        "2b",
+        "3b",
+        "4b"
+      ],
+      "draw": "5b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:tenpai-only-wild-wins"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "2w",
+        "2w",
+        "3w",
+        "3w",
+        "4w",
+        "4w",
+        "5w",
+        "5w",
+        "6w",
+        "6w",
+        "7w"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:three-white-triplet"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "白",
+        "白",
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7w",
+        "8w",
+        "9w",
+        "东"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "v9:four-white-plus-lux"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "白",
+        "白",
+        "白",
+        "1w",
+        "1w",
+        "1w",
+        "2w",
+        "2w",
+        "2w",
+        "3w",
+        "3w",
+        "3w"
+      ],
+      "draw": "4w",
+      "chain": {
+        "count": 3,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "tests/fixtures/official/v9/fan-calc/cases.jsonl"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-0-0"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-1-0"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 1,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-1-1"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 1,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-2-0"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 2,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-2-1"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 2,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-2-2"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 2,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-3-0"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 3,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-3-1"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 3,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-3-2"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 3,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-3-3"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 3,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-4-0"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 4,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-4-1"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 4,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-4-2"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 4,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-4-3"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 4,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-5-0"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 5,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-5-1"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 5,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-5-2"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 5,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-5-3"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 5,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-6-0"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 6,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-6-1"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 6,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-6-2"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 6,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:chain-6-3"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 6,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:draw-东"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向进张对照"
+  },
+  {
+    "tags": [
+      "rejected-A-expanded:draw-白"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "6t",
+        "4w",
+        "5w",
+        "6w",
+        "1b",
+        "1b",
+        "1b",
+        "白",
+        "1w",
+        "6w",
+        "7w"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向进张对照"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-0-0"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-1-0"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 1,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-1-1"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 1,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-2-0"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 2,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-2-1"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 2,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-2-2"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 2,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-3-0"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 3,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-3-1"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 3,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-3-2"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 3,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-4-0"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 4,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-4-1"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 4,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-4-2"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 4,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-5-0"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 5,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-5-1"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 5,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-5-2"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 5,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-6-0"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 6,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-6-1"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 6,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:chain-6-2"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 6,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:draw-东"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向进张对照"
+  },
+  {
+    "tags": [
+      "rejected-B-expanded:draw-白"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "4w",
+        "4w",
+        "4t",
+        "6w",
+        "6w",
+        "6w",
+        "7w",
+        "2t",
+        "白",
+        "6b",
+        "白",
+        "5w"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向进张对照"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-0-0",
+      "plain-baotou:draw-东"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-1-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 1,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-1-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 1,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-2-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 2,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-2-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 2,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-2-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 2,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-3-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-3-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-3-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-3-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-4-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-4-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-4-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-4-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-5-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 5,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-5-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 5,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-5-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 5,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-5-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 5,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-6-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-6-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-6-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:chain-6-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "plain-baotou:draw-白"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "2t",
+        "3t",
+        "4t",
+        "白"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向进张对照"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-0-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-1-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 1,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-1-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 1,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-2-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 2,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-2-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 2,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-2-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 2,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-3-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 3,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-3-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 3,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-3-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 3,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-3-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 3,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-4-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 4,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-4-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 4,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-4-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 4,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-4-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 4,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-5-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 5,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-5-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 5,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-5-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 5,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-5-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 5,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-6-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 6,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-6-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 6,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-6-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 6,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:chain-6-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 6,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:draw-东"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向进张对照"
+  },
+  {
+    "tags": [
+      "seven-pairs-baotou:draw-白"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "3w",
+        "3w",
+        "5b",
+        "5b",
+        "7b",
+        "7b",
+        "2t",
+        "2t",
+        "东",
+        "东",
+        "白"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向进张对照"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-0-0",
+      "three-lux-baotou:draw-东"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-1-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 1,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-1-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 1,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-2-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 2,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-2-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 2,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-2-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 2,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-3-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-3-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-3-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-3-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-4-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-4-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-4-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-4-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-5-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 5,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-5-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 5,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-5-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 5,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-5-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 5,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-6-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-6-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 1
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-6-2"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 2
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:chain-6-3"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 3
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "three-lux-baotou:draw-白"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "1w",
+        "1w",
+        "1w",
+        "3b",
+        "3b",
+        "3b",
+        "3b",
+        "5t",
+        "5t",
+        "5t",
+        "5t",
+        "白"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向进张对照"
+  },
+  {
+    "tags": [
+      "four-white:chain-0-0",
+      "four-white:draw-东"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "白",
+        "白",
+        "白",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "four-white:chain-1-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "白",
+        "白",
+        "白",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 1,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "four-white:chain-2-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "白",
+        "白",
+        "白",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 2,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "four-white:chain-3-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "白",
+        "白",
+        "白",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 3,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "four-white:chain-4-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "白",
+        "白",
+        "白",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 4,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "four-white:chain-5-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "白",
+        "白",
+        "白",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 5,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "four-white:chain-6-0"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5w",
+        "6w",
+        "7b",
+        "8b",
+        "9b",
+        "白",
+        "白",
+        "白",
+        "白"
+      ],
+      "draw": "东",
+      "chain": {
+        "count": 6,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "定向计算器矩阵；展开副露与七对杠链不宣称为原赛事可达状态"
+  },
+  {
+    "tags": [
+      "random-0"
+    ],
+    "request": {
+      "hand": [
+        "南",
+        "5b",
+        "白",
+        "1b",
+        "5w",
+        "5t",
+        "8t",
+        "南",
+        "5t",
+        "3b",
+        "8w",
+        "1w",
+        "2w"
+      ],
+      "draw": "发",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-1"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "7b",
+        "7w",
+        "南",
+        "4t",
+        "1w",
+        "8t",
+        "中",
+        "2t",
+        "东",
+        "5w",
+        "8b",
+        "8w"
+      ],
+      "draw": "4w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-2"
+    ],
+    "request": {
+      "hand": [
+        "1t",
+        "8w",
+        "6w",
+        "6w",
+        "发",
+        "1t",
+        "9t",
+        "西",
+        "9w",
+        "南",
+        "7w",
+        "6w",
+        "5t"
+      ],
+      "draw": "9b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-3"
+    ],
+    "request": {
+      "hand": [
+        "5w",
+        "5b",
+        "6b",
+        "1w",
+        "5t",
+        "7w",
+        "5w",
+        "7b",
+        "5b",
+        "7t",
+        "8w",
+        "5w",
+        "6w"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-4"
+    ],
+    "request": {
+      "hand": [
+        "8b",
+        "7t",
+        "1w",
+        "6b",
+        "2t",
+        "6w",
+        "8w",
+        "1b",
+        "1t",
+        "4t",
+        "9w",
+        "中",
+        "8t"
+      ],
+      "draw": "发",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-5"
+    ],
+    "request": {
+      "hand": [
+        "9b",
+        "1t",
+        "2t",
+        "2w",
+        "2w",
+        "西",
+        "5w",
+        "7b",
+        "3w",
+        "1b",
+        "9w",
+        "8b",
+        "8t"
+      ],
+      "draw": "1b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-6"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "9w",
+        "中",
+        "3b",
+        "发",
+        "8t",
+        "4b",
+        "5w",
+        "6t",
+        "6t",
+        "5w",
+        "8w",
+        "发"
+      ],
+      "draw": "1w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-7"
+    ],
+    "request": {
+      "hand": [
+        "5w",
+        "5w",
+        "北",
+        "1w",
+        "5b",
+        "3t",
+        "9b",
+        "西",
+        "5w",
+        "7t",
+        "3w",
+        "北",
+        "1w"
+      ],
+      "draw": "发",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-8"
+    ],
+    "request": {
+      "hand": [
+        "6t",
+        "6b",
+        "1w",
+        "发",
+        "中",
+        "发",
+        "9w",
+        "北",
+        "1b",
+        "7b",
+        "9b",
+        "7b",
+        "5w"
+      ],
+      "draw": "1w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-9"
+    ],
+    "request": {
+      "hand": [
+        "西",
+        "1b",
+        "3b",
+        "1t",
+        "7w",
+        "5w",
+        "8t",
+        "6t",
+        "4t",
+        "7b",
+        "8t",
+        "西",
+        "2t"
+      ],
+      "draw": "4t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-10"
+    ],
+    "request": {
+      "hand": [
+        "9t",
+        "7w",
+        "5w",
+        "中",
+        "9t",
+        "7b",
+        "南",
+        "2t",
+        "7t",
+        "6b",
+        "2t",
+        "6b",
+        "9b"
+      ],
+      "draw": "1t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-11"
+    ],
+    "request": {
+      "hand": [
+        "中",
+        "3b",
+        "7b",
+        "8b",
+        "9w",
+        "7b",
+        "西",
+        "8t",
+        "8w",
+        "5w",
+        "西",
+        "北",
+        "5b"
+      ],
+      "draw": "5b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-12"
+    ],
+    "request": {
+      "hand": [
+        "6b",
+        "7t",
+        "3w",
+        "8b",
+        "8b",
+        "东",
+        "8t",
+        "南",
+        "中",
+        "北",
+        "8t",
+        "中",
+        "9b"
+      ],
+      "draw": "4w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-13"
+    ],
+    "request": {
+      "hand": [
+        "9t",
+        "3b",
+        "8b",
+        "发",
+        "2w",
+        "8b",
+        "发",
+        "5t",
+        "5w",
+        "1t",
+        "7b",
+        "白",
+        "3b"
+      ],
+      "draw": "5t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-14"
+    ],
+    "request": {
+      "hand": [
+        "8t",
+        "3t",
+        "6b",
+        "8t",
+        "3b",
+        "8t",
+        "6b",
+        "1b",
+        "北",
+        "9w",
+        "白",
+        "8b",
+        "4b"
+      ],
+      "draw": "6t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-15"
+    ],
+    "request": {
+      "hand": [
+        "5b",
+        "4t",
+        "5b",
+        "8t",
+        "东",
+        "3t",
+        "5b",
+        "3t",
+        "南",
+        "4t",
+        "9w",
+        "西",
+        "6w"
+      ],
+      "draw": "9b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-16"
+    ],
+    "request": {
+      "hand": [
+        "9t",
+        "2w",
+        "5b",
+        "8b",
+        "5t",
+        "3b",
+        "4w",
+        "东",
+        "北",
+        "8w",
+        "3t",
+        "7b",
+        "4b"
+      ],
+      "draw": "4b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-17"
+    ],
+    "request": {
+      "hand": [
+        "9w",
+        "南",
+        "白",
+        "4b",
+        "7w",
+        "5t",
+        "1w",
+        "8b",
+        "5b",
+        "7b",
+        "4b",
+        "4w",
+        "白"
+      ],
+      "draw": "7w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-18"
+    ],
+    "request": {
+      "hand": [
+        "7w",
+        "7t",
+        "白",
+        "9w",
+        "4t",
+        "5b",
+        "7b",
+        "5t",
+        "1w",
+        "5b",
+        "2w",
+        "2w",
+        "2w"
+      ],
+      "draw": "7t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-19"
+    ],
+    "request": {
+      "hand": [
+        "5t",
+        "3t",
+        "9t",
+        "8t",
+        "8w",
+        "4w",
+        "1t",
+        "9w",
+        "3b",
+        "1b",
+        "3w",
+        "南",
+        "6w"
+      ],
+      "draw": "6w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-20"
+    ],
+    "request": {
+      "hand": [
+        "3b",
+        "9t",
+        "7b",
+        "5w",
+        "9t",
+        "5t",
+        "8b",
+        "3w",
+        "6w",
+        "南",
+        "白",
+        "西",
+        "9w"
+      ],
+      "draw": "3b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-21"
+    ],
+    "request": {
+      "hand": [
+        "7b",
+        "5b",
+        "9b",
+        "4t",
+        "9w",
+        "1b",
+        "2b",
+        "1b",
+        "3w",
+        "4t",
+        "1b",
+        "8t",
+        "白"
+      ],
+      "draw": "8t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-22"
+    ],
+    "request": {
+      "hand": [
+        "6w",
+        "3b",
+        "9w",
+        "4t",
+        "1t",
+        "6w",
+        "9t",
+        "1b",
+        "1b",
+        "7b",
+        "5w",
+        "白",
+        "4t"
+      ],
+      "draw": "北",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-23"
+    ],
+    "request": {
+      "hand": [
+        "7b",
+        "8t",
+        "3b",
+        "9t",
+        "2t",
+        "南",
+        "3w",
+        "5w",
+        "东",
+        "5b",
+        "4w",
+        "8b",
+        "5w"
+      ],
+      "draw": "6b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-24"
+    ],
+    "request": {
+      "hand": [
+        "9t",
+        "南",
+        "9w",
+        "7w",
+        "4w",
+        "7b",
+        "4w",
+        "北",
+        "9w",
+        "1w",
+        "9w",
+        "5t",
+        "1t"
+      ],
+      "draw": "发",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-25"
+    ],
+    "request": {
+      "hand": [
+        "3b",
+        "发",
+        "6b",
+        "9w",
+        "8t",
+        "8w",
+        "西",
+        "白",
+        "5w",
+        "中",
+        "发",
+        "6t",
+        "3w"
+      ],
+      "draw": "8w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-26"
+    ],
+    "request": {
+      "hand": [
+        "7t",
+        "1t",
+        "4t",
+        "8t",
+        "3t",
+        "6w",
+        "6t",
+        "发",
+        "2t",
+        "7b",
+        "发",
+        "2t",
+        "1b"
+      ],
+      "draw": "中",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-27"
+    ],
+    "request": {
+      "hand": [
+        "8w",
+        "西",
+        "6w",
+        "发",
+        "3b",
+        "5b",
+        "7b",
+        "中",
+        "发",
+        "7t",
+        "6t",
+        "西",
+        "白"
+      ],
+      "draw": "9w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-28"
+    ],
+    "request": {
+      "hand": [
+        "3b",
+        "9b",
+        "2b",
+        "9b",
+        "南",
+        "2t",
+        "4t",
+        "5t",
+        "7t",
+        "4w",
+        "6w",
+        "2t",
+        "1b"
+      ],
+      "draw": "9w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-29"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "1w",
+        "2t",
+        "发",
+        "北",
+        "发",
+        "3w",
+        "9b",
+        "南",
+        "5t",
+        "6b",
+        "7w",
+        "4w"
+      ],
+      "draw": "中",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-30"
+    ],
+    "request": {
+      "hand": [
+        "4b",
+        "3t",
+        "中",
+        "7t",
+        "9b",
+        "东",
+        "3b",
+        "9b",
+        "8t",
+        "东",
+        "5t",
+        "1b",
+        "发"
+      ],
+      "draw": "6t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-31"
+    ],
+    "request": {
+      "hand": [
+        "4b",
+        "2w",
+        "6t",
+        "中",
+        "5w",
+        "白",
+        "南",
+        "3w",
+        "白",
+        "1w",
+        "6b",
+        "2t",
+        "6w"
+      ],
+      "draw": "发",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-32"
+    ],
+    "request": {
+      "hand": [
+        "9b",
+        "1w",
+        "2w",
+        "4w",
+        "北",
+        "3w",
+        "2w",
+        "白",
+        "6w",
+        "东",
+        "1b",
+        "4b",
+        "2b"
+      ],
+      "draw": "2t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-33"
+    ],
+    "request": {
+      "hand": [
+        "8t",
+        "7w",
+        "5t",
+        "8w",
+        "北",
+        "7t",
+        "3b",
+        "1w",
+        "2t",
+        "2t",
+        "3t",
+        "9w",
+        "北"
+      ],
+      "draw": "1b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-34"
+    ],
+    "request": {
+      "hand": [
+        "6b",
+        "白",
+        "5b",
+        "5t",
+        "西",
+        "9t",
+        "9t",
+        "6b",
+        "5t",
+        "中",
+        "1t",
+        "7t",
+        "7b"
+      ],
+      "draw": "3w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-35"
+    ],
+    "request": {
+      "hand": [
+        "7w",
+        "西",
+        "5b",
+        "7b",
+        "2b",
+        "5t",
+        "7w",
+        "9w",
+        "4b",
+        "北",
+        "7t",
+        "5w",
+        "6b"
+      ],
+      "draw": "8b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-36"
+    ],
+    "request": {
+      "hand": [
+        "西",
+        "9b",
+        "7b",
+        "7w",
+        "2w",
+        "4w",
+        "白",
+        "8b",
+        "1t",
+        "中",
+        "2t",
+        "2b",
+        "7w"
+      ],
+      "draw": "5b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-37"
+    ],
+    "request": {
+      "hand": [
+        "8w",
+        "西",
+        "3b",
+        "5t",
+        "5b",
+        "5b",
+        "8b",
+        "3w",
+        "3t",
+        "7b",
+        "3b",
+        "9w",
+        "4t"
+      ],
+      "draw": "8t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-38"
+    ],
+    "request": {
+      "hand": [
+        "8w",
+        "6w",
+        "东",
+        "7t",
+        "8t",
+        "5b",
+        "4t",
+        "7w",
+        "4w",
+        "3t",
+        "7b",
+        "3w",
+        "6w"
+      ],
+      "draw": "南",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-39"
+    ],
+    "request": {
+      "hand": [
+        "9t",
+        "5b",
+        "7w",
+        "7w",
+        "9b",
+        "1b",
+        "4b",
+        "7b",
+        "4t",
+        "6b",
+        "4w",
+        "8t",
+        "6b"
+      ],
+      "draw": "4t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-40"
+    ],
+    "request": {
+      "hand": [
+        "2w",
+        "北",
+        "白",
+        "9w",
+        "8w",
+        "7w",
+        "北",
+        "白",
+        "8w",
+        "7w",
+        "2w",
+        "白",
+        "9w"
+      ],
+      "draw": "2w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-41"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "4w",
+        "东",
+        "4t",
+        "7t",
+        "4w",
+        "6t",
+        "5t",
+        "8b",
+        "3t",
+        "9b",
+        "白",
+        "4t"
+      ],
+      "draw": "5t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-42"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "6b",
+        "2w",
+        "3b",
+        "6b",
+        "白",
+        "6b",
+        "发",
+        "发",
+        "9b",
+        "白",
+        "2b",
+        "2w"
+      ],
+      "draw": "7b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-43"
+    ],
+    "request": {
+      "hand": [
+        "白",
+        "5t",
+        "5b",
+        "白",
+        "5t",
+        "4b",
+        "7t",
+        "7b",
+        "5t",
+        "4b",
+        "7t",
+        "3w",
+        "6b"
+      ],
+      "draw": "7t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-44"
+    ],
+    "request": {
+      "hand": [
+        "9t",
+        "7t",
+        "6t",
+        "9t",
+        "白",
+        "中",
+        "4t",
+        "白",
+        "5t",
+        "8w",
+        "7w",
+        "4t",
+        "9t"
+      ],
+      "draw": "4t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-45"
+    ],
+    "request": {
+      "hand": [
+        "6b",
+        "4b",
+        "9w",
+        "5b",
+        "5b",
+        "2t",
+        "5b",
+        "1t",
+        "3t",
+        "4w",
+        "9t",
+        "6w",
+        "5b"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-46"
+    ],
+    "request": {
+      "hand": [
+        "6t",
+        "9t",
+        "9t",
+        "7t",
+        "8t",
+        "白",
+        "6b",
+        "9t",
+        "5b",
+        "5b",
+        "5b",
+        "5b",
+        "白"
+      ],
+      "draw": "9t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-47"
+    ],
+    "request": {
+      "hand": [
+        "中",
+        "3w",
+        "2b",
+        "白",
+        "2b",
+        "7b",
+        "中",
+        "中",
+        "6w",
+        "7b",
+        "2t",
+        "白",
+        "白"
+      ],
+      "draw": "2t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-48"
+    ],
+    "request": {
+      "hand": [
+        "西",
+        "白",
+        "3t",
+        "8w",
+        "白",
+        "5w",
+        "白",
+        "5w",
+        "西",
+        "7w",
+        "7b",
+        "2t",
+        "5w"
+      ],
+      "draw": "7b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-49"
+    ],
+    "request": {
+      "hand": [
+        "8t",
+        "白",
+        "2t",
+        "8b",
+        "6b",
+        "7t",
+        "8t",
+        "7b",
+        "4w",
+        "7t",
+        "2t",
+        "9t",
+        "7b"
+      ],
+      "draw": "2w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-50"
+    ],
+    "request": {
+      "hand": [
+        "5b",
+        "3b",
+        "3b",
+        "3b",
+        "5b",
+        "6t",
+        "4b",
+        "2b",
+        "5b",
+        "4b",
+        "白",
+        "白",
+        "6t"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-51"
+    ],
+    "request": {
+      "hand": [
+        "东",
+        "5w",
+        "白",
+        "7t",
+        "9t",
+        "东",
+        "7t",
+        "7t",
+        "白",
+        "白",
+        "1b",
+        "中",
+        "中"
+      ],
+      "draw": "7w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-52"
+    ],
+    "request": {
+      "hand": [
+        "7b",
+        "8b",
+        "5t",
+        "白",
+        "中",
+        "6w",
+        "白",
+        "5t",
+        "5t",
+        "8w",
+        "9b",
+        "8b",
+        "7b"
+      ],
+      "draw": "7w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-53"
+    ],
+    "request": {
+      "hand": [
+        "8b",
+        "1t",
+        "6w",
+        "白",
+        "6w",
+        "2t",
+        "3w",
+        "7w",
+        "3w",
+        "5w",
+        "3t",
+        "7w",
+        "5b"
+      ],
+      "draw": "8w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-54"
+    ],
+    "request": {
+      "hand": [
+        "4b",
+        "2b",
+        "5b",
+        "1t",
+        "2t",
+        "2b",
+        "9t",
+        "7t",
+        "白",
+        "2w",
+        "2w",
+        "2w",
+        "3t"
+      ],
+      "draw": "6b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-55"
+    ],
+    "request": {
+      "hand": [
+        "3t",
+        "5w",
+        "5t",
+        "4t",
+        "6t",
+        "5w",
+        "4b",
+        "5t",
+        "2b",
+        "3b",
+        "4t",
+        "5t",
+        "白"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-56"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "5t",
+        "9t",
+        "白",
+        "9t",
+        "4t",
+        "2t",
+        "3t",
+        "白",
+        "8t",
+        "9t",
+        "6t",
+        "7t"
+      ],
+      "draw": "8w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-57"
+    ],
+    "request": {
+      "hand": [
+        "5t",
+        "1t",
+        "4w",
+        "3t",
+        "5t",
+        "南",
+        "2b",
+        "5t",
+        "2b",
+        "4w",
+        "3t",
+        "3t",
+        "2b"
+      ],
+      "draw": "4w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-58"
+    ],
+    "request": {
+      "hand": [
+        "7t",
+        "7t",
+        "7t",
+        "6b",
+        "8b",
+        "6b",
+        "6b",
+        "7b",
+        "2w",
+        "东",
+        "6b",
+        "东",
+        "东"
+      ],
+      "draw": "2w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-59"
+    ],
+    "request": {
+      "hand": [
+        "3b",
+        "北",
+        "1b",
+        "5b",
+        "白",
+        "9b",
+        "2b",
+        "北",
+        "2t",
+        "9t",
+        "2t",
+        "4b",
+        "3b"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-60"
+    ],
+    "request": {
+      "hand": [
+        "3w",
+        "5t",
+        "9b",
+        "9b",
+        "5t",
+        "8t",
+        "7t",
+        "6t",
+        "9t",
+        "1w",
+        "9t",
+        "9t",
+        "2w"
+      ],
+      "draw": "5t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-61"
+    ],
+    "request": {
+      "hand": [
+        "2b",
+        "白",
+        "4b",
+        "5b",
+        "北",
+        "6t",
+        "北",
+        "2b",
+        "3b",
+        "中",
+        "中",
+        "4b",
+        "白"
+      ],
+      "draw": "7t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-62"
+    ],
+    "request": {
+      "hand": [
+        "西",
+        "9t",
+        "西",
+        "西",
+        "8b",
+        "3t",
+        "9t",
+        "4t",
+        "9t",
+        "8b",
+        "3w",
+        "2t",
+        "2w"
+      ],
+      "draw": "1w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-63"
+    ],
+    "request": {
+      "hand": [
+        "1w",
+        "6w",
+        "2b",
+        "北",
+        "3b",
+        "北",
+        "白",
+        "1b",
+        "北",
+        "1w",
+        "2b",
+        "1w",
+        "2b"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-64"
+    ],
+    "request": {
+      "hand": [
+        "6t",
+        "5t",
+        "2w",
+        "5t",
+        "5t",
+        "2t",
+        "5b",
+        "7b",
+        "7t",
+        "6b",
+        "2w",
+        "3t",
+        "1t"
+      ],
+      "draw": "2w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-65"
+    ],
+    "request": {
+      "hand": [
+        "6b",
+        "西",
+        "3b",
+        "3b",
+        "白",
+        "1w",
+        "白",
+        "1w",
+        "白",
+        "西",
+        "1w",
+        "1w",
+        "6b"
+      ],
+      "draw": "4b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-66"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "白",
+        "5w",
+        "7t",
+        "7t",
+        "4w",
+        "2t",
+        "4t",
+        "4w",
+        "2t",
+        "3w",
+        "4t",
+        "白"
+      ],
+      "draw": "4t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-67"
+    ],
+    "request": {
+      "hand": [
+        "4b",
+        "6t",
+        "2w",
+        "6b",
+        "9w",
+        "白",
+        "7b",
+        "6t",
+        "7b",
+        "3b",
+        "5b",
+        "5b",
+        "白"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-68"
+    ],
+    "request": {
+      "hand": [
+        "9t",
+        "白",
+        "5t",
+        "2t",
+        "东",
+        "东",
+        "2t",
+        "5t",
+        "6t",
+        "东",
+        "7t",
+        "5t",
+        "9t"
+      ],
+      "draw": "5t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-69"
+    ],
+    "request": {
+      "hand": [
+        "2w",
+        "3t",
+        "8b",
+        "东",
+        "2w",
+        "3t",
+        "东",
+        "1w",
+        "1w",
+        "2w",
+        "东",
+        "1w",
+        "8b"
+      ],
+      "draw": "1w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-70"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "白",
+        "6w",
+        "6w",
+        "2w",
+        "6w",
+        "3t",
+        "9b",
+        "3t",
+        "3w",
+        "2t",
+        "1t",
+        "白"
+      ],
+      "draw": "1w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-71"
+    ],
+    "request": {
+      "hand": [
+        "2b",
+        "4w",
+        "9t",
+        "白",
+        "3t",
+        "2t",
+        "8w",
+        "3w",
+        "4t",
+        "8w",
+        "2t",
+        "3t",
+        "白"
+      ],
+      "draw": "5w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-72"
+    ],
+    "request": {
+      "hand": [
+        "3w",
+        "白",
+        "9w",
+        "白",
+        "白",
+        "1w",
+        "7w",
+        "7w",
+        "9w",
+        "6b",
+        "1w",
+        "7w",
+        "3w"
+      ],
+      "draw": "9w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-73"
+    ],
+    "request": {
+      "hand": [
+        "7b",
+        "7b",
+        "8b",
+        "8b",
+        "白",
+        "白",
+        "1t",
+        "发",
+        "1t",
+        "9w",
+        "1t",
+        "发",
+        "8b"
+      ],
+      "draw": "7b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-74"
+    ],
+    "request": {
+      "hand": [
+        "9b",
+        "2w",
+        "9b",
+        "8w",
+        "8w",
+        "北",
+        "3b",
+        "9b",
+        "北",
+        "8w",
+        "1w",
+        "北",
+        "3w"
+      ],
+      "draw": "3b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-75"
+    ],
+    "request": {
+      "hand": [
+        "4w",
+        "5w",
+        "4w",
+        "3w",
+        "4w",
+        "3w",
+        "白",
+        "7b",
+        "9w",
+        "9w",
+        "南",
+        "2w",
+        "9w"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-76"
+    ],
+    "request": {
+      "hand": [
+        "3w",
+        "3w",
+        "4w",
+        "5w",
+        "7t",
+        "2w",
+        "3w",
+        "8w",
+        "7w",
+        "9t",
+        "9w",
+        "8t",
+        "2w"
+      ],
+      "draw": "2w",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-77"
+    ],
+    "request": {
+      "hand": [
+        "4t",
+        "4t",
+        "2t",
+        "中",
+        "中",
+        "中",
+        "7w",
+        "4t",
+        "7t",
+        "3t",
+        "白",
+        "白",
+        "白"
+      ],
+      "draw": "4t",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-78"
+    ],
+    "request": {
+      "hand": [
+        "8t",
+        "白",
+        "4t",
+        "6b",
+        "5t",
+        "6t",
+        "白",
+        "5t",
+        "7b",
+        "7t",
+        "4t",
+        "发",
+        "白"
+      ],
+      "draw": "5b",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  },
+  {
+    "tags": [
+      "random-79"
+    ],
+    "request": {
+      "hand": [
+        "4b",
+        "白",
+        "3b",
+        "7t",
+        "中",
+        "7b",
+        "东",
+        "7t",
+        "东",
+        "2w",
+        "6b",
+        "2w",
+        "7t"
+      ],
+      "draw": "白",
+      "chain": {
+        "count": 0,
+        "piao": 0
+      },
+      "base": 1
+    },
+    "source": "固定种子2026090709"
+  }
+]

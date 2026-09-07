@@ -87,7 +87,9 @@ def test_round_data_carries_document_aligned_pointers():
     assert data["event_pointers"][0] == "/blocks/2/events/0"
     assert data["event_pointers"][-1] == "/blocks/3/events/2"
     assert data["coverage"] == "full_history"
-    assert data["winner_seat"] == 1
+    # 只有出牌与超时事件，顶层汇总不能代替缺失的单局结束事实。
+    assert data["winner_seat"] is None
+    assert not data["result_confirmed"]
 
 
 def test_single_round_document_pointers_unchanged():

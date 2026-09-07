@@ -74,7 +74,7 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 
 # 本地规则语义版本（非官方字段）；进入官方会话的审计 manifest 与启动核对
 # 清单，用于区分「平台指南版本」与「本地规则引擎语义版本」。
-DEFAULT_RULESET_VERSION = "hangma-mvp-v3-action-chain"
+DEFAULT_RULESET_VERSION = "hangma-mvp-v4-youcai-baotou"
 
 # 策略名 → 工厂；只有存在两个真实实现时才保留接缝（根 AGENTS.md 第 5 节）。
 # claim_if_legal 仅用于官方测试房验收（配置项选择），默认策略不变。

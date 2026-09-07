@@ -91,10 +91,7 @@ async def test_retained_draw_is_not_redelivered_after_snapshot_absorbs_it(transp
         (0, snapshot(100)),
         (100, {"events": [event(101, "tile_drawn", seat=MY_SEAT, tile="7w")]}),
         (101, snapshot(102, turn=0)),
-        (101, {"pending": True}),  # 有界补领未能提供历史，窗口测试保留显式缺口
-        (101, {"pending": True}),  # 空闲机会按欠账旧游标补领一次
         (102, snapshot(103, turn=MY_SEAT, drawn="8w")),
-        (102, {"pending": True}),
     ])
     session = make_game_session(transport=transport, clock=clock)
     try:
@@ -113,7 +110,6 @@ async def test_same_seat_same_tile_new_river_clears_previous_pass(transport, clo
     queue = script(transport, [
         (0, snapshot(100, phase="response_chi", river=("6t",), discard="6t", responders=(1, 2, 3))),
         (100, snapshot(110, phase="response_peng", river=("6t", "6t"), discard="6t", responders=(1, 2, 3))),
-        (100, {"pending": True}),
     ])
     session = make_game_session(transport=transport, clock=clock)
     try:
@@ -133,7 +129,6 @@ async def test_new_structured_discard_clears_previous_pass(transport, clock):
     queue = script(transport, [
         (0, snapshot(100, phase="response_chi", river=("6t",), discard={"seq":100,"seat":0,"tile":"6t"}, responders=(1, 2, 3))),
         (100, snapshot(110, phase="response_peng", river=("6t", "7t"), discard={"seq":109,"seat":0,"tile":"7t"}, responders=(1, 2, 3))),
-        (100, {"pending": True}),
     ])
     session = make_game_session(transport=transport, clock=clock)
     try:
@@ -190,7 +185,6 @@ async def test_second_unknown_event_still_requires_authoritative_recovery(transp
         (0, snapshot(100)),
         (100, {"events": [event(101, "future_critical")]}),
         (0, snapshot(101)),
-        (100, {"pending": True}),  # 已吸收未知事件仍缺原文；有界补领未取得
         (101, {"events": [event(102, "future_critical")]}),
         (0, snapshot(102, turn=MY_SEAT, drawn="8w")),
     ])

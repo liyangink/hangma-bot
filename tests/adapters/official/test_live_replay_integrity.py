@@ -34,26 +34,28 @@ def read_round(doc, round_no=1):
     return round_data(parse_room_document(doc), round_no, file_sha256="ab"*32, json_pointer="#")
 
 
-def test_actual_download_wrong_first_summary_is_rejected_without_repairing_source():
+def test_actual_download_summary_difference_is_reported_without_repairing_source():
     doc = document()
-    # 原下载 rounds[0] 实际属于第 7 单局，却被标 round_no=1。
+    # 原下载 rounds[0] 与事件块第 1 单局不同，保留两处来源。
     doc["rounds"][0] = {"dealer": 0, "is_draw": 0, "multiplier": 2, "round_no": 1,
                         "scores": [-2, -2, 20, -16], "winner": 2}
     before = deepcopy(doc)
-    with pytest.raises(ValueError, match="official_result_conflict:round_no=1:winner"):
-        read_round(doc)
+    row = read_round(doc)
+    assert row["result_consistency"]["checks"]["winner"] == "conflict"
+    assert row["winner_seat"] == 0 and row["result_source"] == "round_ended"
     assert doc == before
 
 
-def test_actual_download_wrong_second_summary_is_rejected():
+def test_actual_download_second_hand_uses_its_own_ending():
     doc = document()
     doc["blocks"][0].update(round_no=2, seq_start=719, seq_end=719)
     doc["blocks"][0]["events"] = [{"seq":719,"type":"round_ended","seat":-1,"tile":"",
                                    "data":{"draw":True,"scores":[0,0,0,0]},"ts":1788694735}]
     doc["rounds"] = [{"dealer":2,"is_draw":0,"multiplier":4,"round_no":2,
                       "scores":[-32,-32,96,-32],"winner":2}]
-    with pytest.raises(ValueError, match="official_result_conflict:round_no=2:dealer"):
-        read_round(doc, 2)
+    row = read_round(doc, 2)
+    assert row["result_consistency"]["checks"]["dealer"] == "conflict"
+    assert row["is_draw"] and row["winner_seat"] is None
 
 
 @pytest.mark.parametrize("field,value,error", [
@@ -64,8 +66,10 @@ def test_actual_download_wrong_second_summary_is_rejected():
 def test_each_provided_summary_fact_is_checked(field, value, error):
     doc = document()
     doc["rounds"][0][field] = value
-    with pytest.raises(ValueError, match="official_result_conflict:round_no=1:"+error):
-        read_round(doc)
+    row = read_round(doc)
+    assert row["result_consistency"]["status"] == "conflict"
+    assert row["result_consistency"]["checks"][error] == "conflict"
+    assert row["winner_seat"] == 0
 
 
 def test_consistent_summary_exposes_all_checked_fields():
@@ -74,7 +78,9 @@ def test_consistent_summary_exposes_all_checked_fields():
         "status": "passed", "checks": {"dealer":"passed", "winner":"passed", "is_draw":"passed", "scores":"passed", "fan":"passed"},
     }
     assert result["winner_seat"] == 0
-    assert result["scores_after"] == [48, -16, -16, -16]
+    # 本片段只有单次结算，没有累计分锚点；摘要相符不等于知道局末累计分。
+    assert result["scores_after"] is None
+    assert "cumulative_score_context" in result["missing_fields"]
 
 
 @pytest.mark.parametrize("field,check", [("winner","winner"),("is_draw","is_draw"),("scores","scores"),("multiplier","fan"),("dealer","dealer")])
@@ -109,8 +115,9 @@ def test_missing_terminal_field_does_not_count_as_a_passed_comparison():
 def test_duplicate_round_summary_cannot_silently_select_first():
     doc = document()
     doc["rounds"].append(deepcopy(doc["rounds"][0]))
-    with pytest.raises(ValueError, match="duplicate_summary"):
-        read_round(doc)
+    row = read_round(doc)
+    assert row["result_consistency"]["checks"]["duplicate_summary"] == "conflict"
+    assert row["winner_seat"] == 0
 
 
 def test_block_dealers_must_agree_within_same_round():
@@ -149,13 +156,13 @@ def test_conflicting_duplicate_terminal_cannot_hide_behind_first_copy():
         read_round(doc)
 
 
-def test_explicit_fan_alias_is_checked_and_disagreement_with_multiplier_rejected():
+def test_explicit_fan_alias_disagreement_is_reported():
     doc = document()
     doc["rounds"][0]["fan"] = 2
     assert read_round(doc)["result_consistency"]["checks"]["fan"] == "passed"
     doc["rounds"][0]["fan"] = 4
-    with pytest.raises(ValueError, match="summary.multiplier_fan"):
-        read_round(doc)
+    row = read_round(doc)
+    assert row["result_consistency"]["checks"]["summary.multiplier_fan"] == "conflict"
 
 
 @pytest.mark.parametrize("field,value", [("winner",4),("dealer",-1),("multiplier",True)])

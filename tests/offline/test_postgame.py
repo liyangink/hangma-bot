@@ -89,16 +89,74 @@ def test_repeat_postgame_creates_new_job_and_preserves_old_archive(tmp_path):
     assert archive.read_bytes() == before
 
 
-def test_summary_conflict_stays_diagnostic_and_not_a_teacher_label(tmp_path):
+def test_summary_difference_stays_diagnostic_and_source_is_unchanged(tmp_path):
     source = official_at(tmp_path)
     data = json.loads(source.read_text())
-    data["rounds"][0]["winner"] = 99
+    data["rounds"][0]["winner"] = 0
     source.write_text(json.dumps(data))
     report = diagnose_official(source, tmp_path / "diagnosis", ruleset_version="test",
         rule_config={"base_score": 1, "you_cai_bi_kao": False})
     assert report["origin_conflicts"]
+    assert report["teacher_label_candidates"] == 0  # 此流局没有牌墙，规则核对仍为not_checked。
+    assert json.loads(source.read_text())["rounds"][0]["winner"] == 0
+
+
+def test_diagnosis_preserves_nonzero_cumulative_score_context(tmp_path):
+    source = official_at(tmp_path)
+    data = json.loads(source.read_text())
+    for block in data["blocks"]:
+        for event in block["events"]:
+            if event["type"] == "game_ended":
+                event["data"]["final_scores"] = [100, 200, 300, 400]
+    source.write_text(json.dumps(data))
+    report = diagnose_official(source, tmp_path / "diagnosis", ruleset_version="test")
+    row = json.loads((tmp_path / "diagnosis/hands.jsonl").read_text())
+    assert row["scores_before"] == row["scores_after"] == [100, 200, 300, 400]
+    assert row["score_delta"] == [0, 0, 0, 0]
+    assert report["final_scores_match"] is True
+    assert report["summed_scores"] == [0, 0, 0, 0]  # 累加的是变化，不能当作累计积分。
+
+
+def test_diagnosis_does_not_invent_totals_without_final_anchor(tmp_path):
+    source = official_at(tmp_path)
+    data = json.loads(source.read_text())
+    for block in data["blocks"]:
+        block["events"] = [event for event in block["events"] if event["type"] != "game_ended"]
+        block["seq_end"] = max(event["seq"] for event in block["events"])
+    source.write_text(json.dumps(data))
+    report = diagnose_official(source, tmp_path / "diagnosis", ruleset_version="test")
+    row = json.loads((tmp_path / "diagnosis/hands.jsonl").read_text())
+    assert row["scores_before"] is row["scores_after"] is row["score_delta"] is None
+    assert report["final_scores_match"] is None
     assert report["teacher_label_candidates"] == 0
-    assert json.loads(source.read_text())["rounds"][0]["winner"] == 99
+
+
+def test_diagnosis_uses_events_when_top_summary_is_absent(tmp_path):
+    source = official_at(tmp_path)
+    data = json.loads(source.read_text())
+    data.pop("rounds")
+    source.write_text(json.dumps(data))
+    report = diagnose_official(source, tmp_path / "diagnosis", ruleset_version="test")
+    row = json.loads((tmp_path / "diagnosis/hands.jsonl").read_text())
+    assert row["is_draw"] is True
+    assert row["result_source"] == "round_ended"
+    assert len(report["rounds"]) == 1
+    assert not report["origin_conflicts"]
+
+
+def test_summary_difference_does_not_reject_verified_event_label(tmp_path):
+    source = tmp_path / "events.json"
+    data = json.loads(FIXTURE.with_name("t_714a42392cba_b0.json").read_text())
+    data["rounds"][0]["winner"] = (data["rounds"][0]["winner"] + 1) % 4
+    source.write_text(json.dumps(data))
+    report = diagnose_official(source, tmp_path / "diagnosis", ruleset_version="test",
+        rule_config={"base_score": 1, "you_cai_bi_kao": False})
+    row = json.loads((tmp_path / "diagnosis/hands.jsonl").read_text())
+    assert report["origin_conflicts"]
+    assert report["statuses"] == {"passed": 1}
+    assert report["teacher_label_candidates"] == 1
+    assert row["winner_seat"] != data["rounds"][0]["winner"]
+    assert row["result_source"] == "round_ended"
 
 
 def test_history_deduplicates_bytes_and_keeps_all_provenance_and_real_config(tmp_path):

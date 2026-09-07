@@ -303,11 +303,12 @@ async def test_dirty_run_reports_all_findings(tmp_path, capsys):
 
     submissions = report["submissions"]
     assert submissions["outcome_histogram"] == {
-        "accepted": 3,
+        "accepted": 2,
         "ambiguous": 1,
         "not_sent": 1,
         "rejected_retryable": 1,
     }
+    assert submissions["outcome_record_histogram"]["accepted"] == 3
     assert submissions["rejected_total"] == 1
     assert submissions["ambiguous"] == 1
     assert submissions["not_sent"] == 1
@@ -316,7 +317,10 @@ async def test_dirty_run_reports_all_findings(tmp_path, capsys):
     assert submissions["latency_ms"]["p50"] == 300
     assert submissions["latency_ms"]["p95"] == 500
     assert submissions["latency_ms"]["p99"] == 500
-    assert report["coverage"]["rule_degradations"] == 1
+    # 旧日志只有计划文案，没有当时规则输入：保留旧口径，不能追认规则降级。
+    assert report["coverage"]["rule_degradations"] == 0
+    assert report["coverage"]["rule_analysis"]["missing_input_decisions"] == 1
+    assert report["coverage"]["plan_diagnostics"]["legacy_degraded_reason_records"] == 1
 
     assert validator_main([str(run_dir)]) == 1
     parsed = json.loads(capsys.readouterr().out)

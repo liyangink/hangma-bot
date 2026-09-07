@@ -10,14 +10,23 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
 
 from hangma_bot.kernel.actions import Tile
-from hangma_bot.kernel.observation import PublicEvent
-from hangma_bot.hangma.interface import Settlement
+from hangma_bot.kernel.config import RuleConfig
+from hangma_bot.kernel.observation import (
+    PlayerObservation,
+    PublicEvent,
+    PublicMeld,
+    RulePublicState,
+)
+from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.hangma.interface import Settlement, WinDescription
 from hangma_bot.hangma.internal_types import WinSplit
+from hangma_bot.hangma.observation_rules import enrich_observation
 from hangma_bot.hangma.settlement import (
     FanResult,
     compute_fan,
@@ -345,6 +354,87 @@ class TestInferPiaoCount:
 
     def test_empty_history(self):
         assert infer_piao_count((), 2, 3) is None
+
+
+def _observation_after_claim_and_gang(claim: str) -> PlayerObservation:
+    """构造飘→他家摸打→本人吃/碰→暗杠→补牌后的完整可见历史。
+
+    v18 动作链语义：吃碰保持计数，因此当前 count=2 包含一次飘和一次杠。
+    当前暗牌为 123456 万＋白，摸东成爆头；两个副露均为自然牌。
+    """
+    claim_codes = ("3t", "4t", "5t") if claim == "chi" else ("5t",) * 3
+    claimed_tile = Tile(claim_codes[0])
+    claim_tiles = tuple(Tile(code) for code in claim_codes)
+    gang_tiles = (Tile("9b"),) * 4
+    history = (
+        PublicEvent(1, "tile_discarded", 0, (Tile("白"),)),
+        PublicEvent(2, "tile_drawn", 1),
+        PublicEvent(3, "tile_discarded", 1, (Tile("1w"),)),
+        PublicEvent(4, "tile_drawn", 2),
+        PublicEvent(5, "tile_discarded", 2, (Tile("2w"),)),
+        PublicEvent(6, "tile_drawn", 3),
+        PublicEvent(7, "tile_discarded", 3, (claimed_tile,)),
+        PublicEvent(8, claim, 0, claim_tiles),
+        PublicEvent(9, "gang", 0, gang_tiles),
+        PublicEvent(10, "tile_drawn", 0, (Tile("东"),), gang_replenish=True),
+    )
+    return PlayerObservation(
+        game_id="piao-claim-gang", seat=0, round_no=1, snapshot_seq=10,
+        phase="draw", dealer_seat=0, turn_seat=0, responding_seats=(),
+        my_hand=tuple(Tile(code) for code in ("1w", "2w", "3w", "4w", "5w", "6w", "白")),
+        drawn_tile=Tile("东"),
+        discards=((Tile("白"),), (Tile("1w"),), (Tile("2w"),), ()),
+        melds=((
+            PublicMeld(kind=claim, tiles=claim_tiles, seat=0, from_seat=3),
+            PublicMeld(kind="gang", tiles=gang_tiles, seat=0, from_seat=None),
+        ), (), (), ()),
+        hand_counts=(8, 13, 13, 13), last_discard=None, remaining_tile_count=60,
+        scores=(0, 0, 0, 0), rule_state=RulePublicState(Tile("白"), True, 2, False),
+        public_history=history, consumed_seq=10, chain_piao=None,
+    )
+
+
+@pytest.mark.parametrize("claim", ["chi", "peng"])
+def test_enrichment_recovers_piao_across_chain_preserving_claim(claim):
+    observation = _observation_after_claim_and_gang(claim)
+    enriched = enrich_observation(observation)
+    assert enriched.chain_piao == 1
+    assert enriched.gang_draw is True
+    assert enriched.rule_state == observation.rule_state
+    assert observation.chain_piao is None  # 不修改传入的玩家观察。
+
+
+@pytest.mark.parametrize("claim", ["chi", "peng"])
+def test_public_score_keeps_piao_across_chain_preserving_claim(claim):
+    rules = HangmaRules(RuleConfig(
+        ruleset_version="v18-piao-claim-regression", you_cai_bi_kao=True, base_score=1,
+    ))
+    result = rules.score(WinDescription(_observation_after_claim_and_gang(claim), 0))
+    assert result.fan == 8
+    assert result.details == ("平胡", "杠飘链×2", "爆头")
+    assert result.score_delta == (192, -64, -64, -64)  # 固定按座位 0—3。
+
+
+@pytest.mark.parametrize("barrier", ["seq_gap", "discard", "unknown", "unknown_timeout"])
+def test_claim_chain_reconstruction_still_stops_at_missing_or_breaking_evidence(barrier):
+    observation = _observation_after_claim_and_gang("chi")
+    history = observation.public_history
+    if barrier == "seq_gap":
+        history = history[:7] + history[8:]
+    else:
+        blocking_event = {
+            "discard": PublicEvent(8, "tile_discarded", 0, (Tile("5w"),)),
+            "unknown": PublicEvent(8, "new_critical_event", 0),
+            "unknown_timeout": PublicEvent(8, "timeout", 0),
+        }[barrier]
+        history = history[:7] + (blocking_event,) + history[8:]
+    observation = replace(observation, public_history=history)
+    assert enrich_observation(observation).chain_piao is None
+    rules = HangmaRules(RuleConfig(
+        ruleset_version="v18-piao-claim-regression", you_cai_bi_kao=True, base_score=1,
+    ))
+    with pytest.raises(ValueError, match="链内飘次数未知"):
+        rules.score(WinDescription(observation, 0))
 
 
 class TestSettleWin:

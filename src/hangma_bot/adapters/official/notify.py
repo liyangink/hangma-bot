@@ -406,6 +406,7 @@ class SSENotifyClient:
         *,
         budget: Optional[StreamBudget] = None,
         on_frame: Optional[NotifyFrameHandler] = None,
+        audit_emit=None,  # 非阻塞审计函数，连接及取消与普通 HTTP 使用相同 request_id 口径
         on_event: Optional[NotifyEventObserver] = None,
         config: Optional[NotifyStreamConfig] = None,
         monotonic_clock: Callable[[], float] = time.monotonic,
@@ -418,6 +419,7 @@ class SSENotifyClient:
         # 每 Token 一个预算、各场共享；缺省各自建独立预算（独立使用场景）
         self._budget = budget if budget is not None else StreamBudget()
         self._on_frame = on_frame
+        self._audit_emit = audit_emit if audit_emit is not None else lambda *args: None
         self._on_event = on_event
         self._config = config if config is not None else NotifyStreamConfig()
         self._clock = monotonic_clock
@@ -642,7 +644,8 @@ class SSENotifyClient:
             )
 
         try:
-            async with self._transport.open_sse_stream(self._path) as lines:
+            from .request_audit import audited_sse_stream
+            async with audited_sse_stream(self._transport, self._audit_emit, self._clock, self._path) as lines:
                 async for line in lines:
                     if self._cancel_requested:
                         raise _CloseRequested(_stats())

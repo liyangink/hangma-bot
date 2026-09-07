@@ -50,6 +50,7 @@ from hangma_bot.application.contracts import (
 )
 from hangma_bot.kernel.config import TournamentConfig
 
+from .request_audit import audited_request
 from . import projector
 from .dto import (
     KNOWN_GUIDE_VERSION,
@@ -200,9 +201,9 @@ class OfficialAutoMatchSession:
         if match_max_attempts < 1 or match_busy_wait_cap_sec < 0:
             raise ValueError("匹配重试参数不合法")
         self._transport = OfficialTransport(token, transport_config)
-        # v18 官方上限16/s；M=4 实测边界429，生产以14/s、单请求突发保留余量。
+        # 匹配/赛事控制独立调度；场次按真实config.M各自分配静态额度与并发槽。
         self._scheduler = scheduler if scheduler is not None else RequestScheduler(
-            clock=monotonic_clock, rate_per_second=14.0, burst=1.0)
+            clock=monotonic_clock, rate_per_second=14.0, burst=1.0, max_concurrent=2)
         self._monotonic = monotonic_clock
         self._wall_ms = wall_clock_unix_ms
         self._audit = audit
@@ -252,35 +253,6 @@ class OfficialAutoMatchSession:
         except Exception:  # noqa: BLE001 - 审计失败绝不阻塞初始化/终态路径
             self.audit_dropped_events += 1
 
-    def _emit_raw_match(self, http_status: Optional[int], raw_text: Optional[str], attempt: int) -> None:
-        """记录 POST /api/match 完整响应原文（source=match_response，v1）。
-
-        与场次动作 POST 同口径：每次实际发出的 match 请求都留原文（含 409/
-        404/429 拒绝体与成功体）；结果不确定（超时/断连）时 http_status 与
-        raw 为空串表示"原文不存在"。原文在传输层已完成 Token 替换，记录层
-        另有第二层脱敏。
-
-        builder/注册属审计线交付（parallel-v1 §3.3），本线不写第二套 raw
-        代码：注册未合入时弹性跳过发射（导入放在调用点，避免模块级依赖把
-        会话拖入不可用状态；handoff free-match.md §5.6 标注该依赖）。
-        """
-
-        try:
-            from hangma_bot.adapters.recording import build_match_response_payload
-        except ImportError:
-            return
-        try:
-            payload = build_match_response_payload(
-                endpoint="POST /api/match",
-                http_status=http_status,
-                raw=raw_text or "",
-                attempt=attempt,
-            )
-        except Exception:  # noqa: BLE001 - raw 构造失败只丢原文，不进协议路径
-            self.audit_dropped_events += 1
-            return
-        self._emit_audit(AuditKind.RAW_PROTOCOL_STATE, payload)
-
     def _emit_auto_lifecycle(self, event: str, **fields: Any) -> None:
         """发射 area=auto_match 生命周期事件（词表见 handoff free-match.md）。"""
 
@@ -315,7 +287,7 @@ class OfficialAutoMatchSession:
             try:
                 lease = await self._scheduler.acquire(priority, request_kind=RequestKind.OTHER)
                 try:
-                    result = await self._transport.request(
+                    result = await audited_request(self._transport, self._emit_audit, self._monotonic,
                         method, path, json_body=json_body, with_auth=with_auth
                     )
                 finally:
@@ -546,7 +518,7 @@ class OfficialAutoMatchSession:
         session = OfficialGameSession(
             game_id=game_id,
             transport=self._transport,
-            scheduler=self._scheduler,
+            scheduler=self._scheduler.for_game(game_id, max_games=reg.config.max_games),
             timing=reg.config.timing,
             monotonic_clock=self._monotonic,
             wall_clock_unix_ms=self._wall_ms,
@@ -577,7 +549,7 @@ class OfficialAutoMatchSession:
           POST 本地拦截为 CAPACITY_LIMIT，不消费每分钟配额；
         - MATCH_BUSY / 瞬态 NO_ROOM_AVAILABLE / 429 有界等待后重试同一次
           匹配，请求间隔至少覆盖 10 次/分配额（滑动窗口 + 余量），遵守
-          Retry-After（调度器全局冷却）；
+          Retry-After（匹配控制通道冷却）；
         - MATCH_LIMIT_REACHED 停止新增入席（CAPACITY_LIMIT），不帮用户退出
           其他赛事；
         - POST 结果不确定（超时/断连/5xx）不盲目重发：核验身份后按
@@ -615,14 +587,14 @@ class OfficialAutoMatchSession:
             try:
                 lease = await self._scheduler.acquire(Priority.RECOVERY, request_kind=RequestKind.OTHER)
                 try:
-                    result = await self._transport.request(
-                        "POST", "/api/match", json_body=body or None
+                    result = await audited_request(self._transport, self._emit_audit, self._monotonic,
+                        "POST", "/api/match", json_body=body or None,
+                        raw_source="match_response", raw_fields={"attempt": attempts}
                     )
                 finally:
                     lease.release()
             except RateLimitedError as exc:
                 self._scheduler.note_rate_limited(exc.retry_after_seconds, request_kind=RequestKind.OTHER)
-                self._emit_raw_match(exc.http_status, getattr(exc, "raw_text", None), attempts)
                 self._emit_auto_recovery(
                     reason="match_rate_limited_retry",
                     official_code="RATE_LIMITED",
@@ -631,7 +603,6 @@ class OfficialAutoMatchSession:
                     room_id="",
                 )
             except ConflictError as exc:
-                self._emit_raw_match(exc.http_status, getattr(exc, "raw_text", None), attempts)
                 code = _match_error_code(exc)
                 if code == "MATCH_LIMIT_REACHED":
                     return self._terminal(
@@ -655,7 +626,6 @@ class OfficialAutoMatchSession:
                         ),
                     )
             except NotFoundError as exc:
-                self._emit_raw_match(exc.http_status, getattr(exc, "raw_text", None), attempts)
                 # 声明下限已在本地拦截；到达这里的 404 NO_ROOM_AVAILABLE 是
                 # 建房后入席失败的瞬态兜底（官方 message 附原因），有界重试。
                 code = _match_error_code(exc)
@@ -675,7 +645,6 @@ class OfficialAutoMatchSession:
                         ),
                     )
             except ForbiddenError as exc:
-                self._emit_raw_match(exc.http_status, getattr(exc, "raw_text", None), attempts)
                 return self._terminal(
                     ParticipantTerminalReason.TARGET_MISMATCH,
                     "match 403：code={} detail={}".format(
@@ -683,7 +652,6 @@ class OfficialAutoMatchSession:
                     ),
                 )
             except BadRequestError as exc:
-                self._emit_raw_match(exc.http_status, getattr(exc, "raw_text", None), attempts)
                 code = _match_error_code(exc)
                 if code == "TOKEN_NOT_SCOPED":
                     return self._terminal(
@@ -697,10 +665,8 @@ class OfficialAutoMatchSession:
                     ),
                 )
             except AuthError as exc:
-                self._emit_raw_match(exc.http_status, getattr(exc, "raw_text", None), attempts)
                 return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "match 401")
             except (UncertainTransportError, RecoverableServerError) as exc:
-                self._emit_raw_match(exc.http_status, getattr(exc, "raw_text", None), attempts)
                 # 结果不确定（超时/断连/明确 5xx）不得盲目重发：等待期幂等
                 # 不代表运行期也可重发。核验身份归属后按证据不足停止。
                 evidence = await self._verify_uncertain_match()
@@ -713,18 +679,12 @@ class OfficialAutoMatchSession:
                     ),
                 )
             except (OfficialError, DtoError, ValueError) as exc:
-                self._emit_raw_match(
-                    getattr(exc, "http_status", None),
-                    getattr(exc, "raw_text", None),
-                    attempts,
-                )
                 return self._terminal(
                     ParticipantTerminalReason.FATAL_PROTOCOL_ERROR,
                     "match: " + sanitize(str(exc))[:200],
                 )
             else:
                 # 2xx：解析最小事实（room_id 必填），其余未知字段忽略。
-                self._emit_raw_match(200, result.text, attempts)
                 try:
                     parsed = self._parse_match_response(result.text)
                 except (DtoError, ValueError) as exc:
@@ -746,7 +706,7 @@ class OfficialAutoMatchSession:
                     "match 重试耗尽：attempts={} 上限={}；保留恢复信息，"
                     "请以已知 room_id 显式恢复".format(attempts, self._match_max_attempts),
                 )
-            # 有界等待后重试同一次匹配（Retry-After 已计入调度器全局冷却）。
+            # 有界等待后重试同一次匹配（Retry-After 已计入匹配控制通道冷却）。
             bounded = min(max(self._match_min_interval, wait_seconds or 0.0), self._match_wait_cap)
             if bounded > 0:
                 await self._retry_sleep(bounded)

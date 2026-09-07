@@ -174,7 +174,7 @@ async def test_official_replay_response_chi_window(transport: FakeTransport, clo
             return 200, json.dumps(_events(_event(186, "pass", 1), _event(187, "tile_drawn", 2, "9t")))
         if seq == 186 and not long_poll:
             history186_polls["n"] += 1
-            assert history186_polls["n"] == 1
+            assert history186_polls["n"] == 0
             # 补回此前因非空他家私牌异常而未入历史的公开摸牌事件。
             return 200, json.dumps(_events(_event(187, "tile_drawn", 2)))
         if seq == 187:
@@ -216,7 +216,7 @@ async def test_official_replay_response_chi_window(transport: FakeTransport, clo
     # peng 窗口在 seq=184 快照（我方仍在响应座位）时没有被重复交付
     assert posts == []
     calls = [(c.params or {}).get("seq") for c in transport.calls]
-    assert 184 in calls
+    assert 184 not in calls  # 临近边界直接查快照，不再先占一次会被取消的增量额度。
     assert calls.count(0) == 4
 
     outcome = await asyncio.wait_for(session.submit(_attempt(chi_key)), timeout=2)
@@ -231,7 +231,7 @@ async def test_official_replay_response_chi_window(transport: FakeTransport, clo
     assert isinstance(item3, GameFailed)
     assert item3.recoverable is True
     assert item3.reason == "get_exhausted"
-    assert history186_polls["n"] == 1
+    assert history186_polls["n"] == 0
 
     # 全程无触发序号退化提示：纯牌码窗口的触发序号全部由跨重建记忆命中
     notes = [

@@ -423,3 +423,21 @@ async def test_raw_payloads_are_covered_by_secret_scan(tmp_path):
         handle.write(json.dumps(leaked, ensure_ascii=False) + "\n")
     report = validate_run(tmp_path / "runs" / "run-secret")
     assert report["secret_scan_clean"] is False
+
+
+async def test_request_id_detects_dropped_body_even_when_success_counters_look_contiguous(tmp_path):
+    sink = JsonlAuditSink(tmp_path, 'http-missing')
+    for request_id in ('kept', 'cancelled-missing'):
+        for phase in ('started', 'finished'):
+            sink.emit(make_record(AuditKind.HTTP_REQUEST, {
+                'request_id': request_id, 'phase': phase, 'endpoint': 'GET /api/me',
+                'outcome': 'cancelled' if request_id == 'cancelled-missing' else 'response',
+            }))
+    sink.emit(make_record(AuditKind.RAW_PROTOCOL_STATE, {
+        'payload_schema_version': 1, 'source': 'http_response', 'request_id': 'kept',
+        'endpoint': 'GET /api/me', 'http_status': 200, 'raw': '{}',
+    }))
+    await sink.aclose(timeout_seconds=2)
+    report = validate_run(tmp_path / 'runs' / 'http-missing')
+    issues = [f for f in report['findings'] if f['code'] == 'http_request_incomplete']
+    assert len(issues) == 1 and 'cancelled-missing' in issues[0]['detail']

@@ -18,7 +18,9 @@
 - 密文扫描：复用写入侧同一组形态判定，要求认证原文扫描结果为 0；
 - 覆盖率与统计：各类计数、规则降级、显式拒绝（409 族）、模糊提交、
   未发送/超时，以及"最早 intent → 最晚 outcome"的尝试级 P50/P95/P99 时延；
-  提交结果词表经 :func:`canonical_outcome` 归并规范值与封闭类名两种生产形态。
+  提交结果词表经 :func:`canonical_outcome` 归并规范值与封闭类名两种生产形态，
+  同次尝试只计一次；原始条数另列，互相矛盾的结果报 violation，不任选一层。
+  规则降级只统计决策输入中的规则事实，计划中的兼容提示和缺输入旧日志另列。
 - 原始协议事件（RAW_PROTOCOL_STATE，2026-09-04 审计增强）：按
   source/endpoint/http_status 覆盖统计与原文字节数；运行级 summary.json
   声明 raw_retention 模式后启用严格完整性检查——做过状态请求的场必须有
@@ -57,6 +59,7 @@ from hangma_bot.adapters.recording.redact import (
     ENDPOINT_KEY,
     REDACTED,
     is_sensitive_key,
+    redact_value,
     unredacted_secret_matches,
     unredacted_secret_matches_weak,
 )
@@ -103,6 +106,59 @@ class _Parsed:
     context: dict[str, Any]
     payload: dict[str, Any]
     wall_time_unix_ms: int
+
+
+_DECISION_FIELDS = ("run_id", "tournament_id", "participant_id", "game_id", "decision_id")
+_DecisionKey = tuple[str, str, str, str, str]
+_AttemptKey = tuple[str, str, str, str, str, int]
+
+
+def _decision_key(record: _Parsed) -> _DecisionKey | None:
+    """以稳定场次作用域定位决策；适配器允许缺阶段标识，不用它拆开双层记录。"""
+
+    decision_id = record.context.get("decision_id")
+    if not isinstance(decision_id, str) or not decision_id:
+        return None
+    game_id = record.context.get("game_id")
+    return (
+        record.context["run_id"], record.context["tournament_id"],
+        record.context["participant_id"],
+        game_id if isinstance(game_id, str) else "", decision_id,
+    )
+
+
+def _key_context(key: _DecisionKey | _AttemptKey) -> dict[str, Any]:
+    fields = (*_DECISION_FIELDS, "attempt_no") if len(key) == 6 else _DECISION_FIELDS
+    return dict(zip(fields, key))
+
+
+def _outcome_values(record: _Parsed) -> set[str]:
+    """两种生产字段均参加规范化；同一条记录内部矛盾也不能被字段优先级隐藏。"""
+
+    values = {
+        canonical_outcome(value)
+        for field in ("outcome", "outcome_type")
+        if isinstance(value := record.payload.get(field), str)
+    }
+    return values or {"missing_outcome"}
+
+
+def _outcome_conflicting_fields(entries: list[_Parsed]) -> dict[str, list[str]]:
+    """只比较结果的共同事实，允许可选字段缺省和历史序号的整数/字符串两种编码。"""
+
+    values = set().union(*(_outcome_values(entry) for entry in entries))
+    conflicts = {"outcome": sorted(values)} if len(values) > 1 else {}
+    for field in (
+        "official_code", "reason", "rejected_action_key", "authoritative_seq",
+        "latest_authoritative_seq", "latest_local_seq",
+    ):
+        observed = {
+            str(value) for entry in entries
+            if (value := entry.payload.get(field)) is not None
+        }
+        if len(observed) > 1:
+            conflicts[field] = sorted(observed)
+    return conflicts
 
 
 def _iter_audit_files(run_dir: Path) -> tuple[list[Path], list[Path], list[Path]]:
@@ -405,12 +461,12 @@ class _RunScanner:
 
     # ---- 关联检查 ------------------------------------------------------
 
-    def _pair_key(self, record: _Parsed, kind_name: str) -> tuple[str, str, int] | None:
-        """提取 (participant, decision_id, attempt_no) 关联键；缺失返回 None。"""
+    def _pair_key(self, record: _Parsed, kind_name: str) -> _AttemptKey | None:
+        """提取运行/赛事/身份/场次/决策/尝试键；无法关联仍保留原始统计并报错。"""
 
-        decision_id = record.context.get("decision_id")
+        decision = _decision_key(record)
         attempt_no = record.context.get("attempt_no")
-        if not isinstance(decision_id, str) or not decision_id:
+        if decision is None:
             self.findings.append(_Finding(
                 "violation",
                 f"uncorrelatable_{kind_name}",
@@ -426,51 +482,38 @@ class _RunScanner:
                 (record.location,),
             ))
             return None
-        return (record.context["participant_id"], decision_id, attempt_no)
+        return (*decision, attempt_no)
 
     def check_submissions(self) -> dict[str, Any]:
-        """intent/outcome 配对、重复键与孤立记录检查；返回提交统计。"""
+        """按实际动作尝试归并结果；原始条数、缺失和冲突独立表达，不改变线上行为。"""
 
-        intents: dict[tuple[str, str, int], list[_Parsed]] = {}
-        outcomes: dict[tuple[str, str, int], list[_Parsed]] = {}
+        intents: dict[_AttemptKey, list[_Parsed]] = {}
+        outcomes: dict[_AttemptKey, list[_Parsed]] = {}
         histogram: Counter[str] = Counter()
         official_codes: Counter[str] = Counter()
-        not_sent = 0
+        record_histogram: Counter[str] = Counter()
+        record_official_codes: Counter[str] = Counter()
+        intent_records = outcome_records = 0
+        conflicts: list[dict[str, Any]] = []
         not_sent_timeouts = 0
         latencies: list[int] = []
 
         for record in self.records:
             if record.kind == AuditKind.SUBMISSION_INTENT.value:
+                intent_records += 1
                 key = self._pair_key(record, "intent")
                 if key is not None:
                     intents.setdefault(key, []).append(record)
             elif record.kind == AuditKind.SUBMISSION_OUTCOME.value:
+                outcome_records += 1
+                values = _outcome_values(record)
+                record_histogram[next(iter(values)) if len(values) == 1 else "conflicting_outcome"] += 1
+                official = record.payload.get("official_code")
+                if isinstance(official, str):
+                    record_official_codes[official] += 1
                 key = self._pair_key(record, "outcome")
                 if key is not None:
                     outcomes.setdefault(key, []).append(record)
-                    # 应用层写 "outcome"，官方适配器写 "outcome_type"；
-                    # 两者都归并到规范词表，未知值原样计数不拒绝。
-                    raw_outcome = record.payload.get("outcome")
-                    if raw_outcome is None:
-                        raw_outcome = record.payload.get("outcome_type")
-                    canonical = (
-                        canonical_outcome(raw_outcome)
-                        if isinstance(raw_outcome, str)
-                        else "missing_outcome"
-                    )
-                    histogram[canonical] += 1
-                    official = record.payload.get("official_code")
-                    if isinstance(official, str):
-                        official_codes[official] += 1
-                    if canonical == "not_sent":
-                        not_sent += 1
-                        reason = str(record.payload.get("reason", ""))
-                        lowered = reason.lower()
-                        # 真实生产方的未发送原因形如 deadline_passed /
-                        # deadline_passed_after_schedule；在稳定原因词表
-                        # 登记前，以 deadline/timeout 形态识别动作超时。
-                        if "timeout" in lowered or "deadline" in lowered:
-                            not_sent_timeouts += 1
 
         for key, entries in intents.items():
             if len(entries) >= 3:
@@ -507,6 +550,37 @@ class _RunScanner:
                     latencies.append(latency)
 
         for key, entries in outcomes.items():
+            conflicting_fields = _outcome_conflicting_fields(entries)
+            if conflicting_fields:
+                histogram["conflicting_outcome"] += 1
+                conflicts.append(redact_value({
+                    "context": _key_context(key), "fields": conflicting_fields,
+                    "records": [{
+                        "location": {"file": entry.location.file, "line_no": entry.location.line_no},
+                        "outcomes": sorted(_outcome_values(entry)),
+                        "official_code": entry.payload.get("official_code"),
+                        "audit_producer": entry.payload.get("audit_producer"),
+                    } for entry in entries],
+                }))
+                self.findings.append(_Finding(
+                    "violation", "submission_outcome_conflict",
+                    f"同次动作尝试的提交结果矛盾，不能判定成功/拒绝等结果：{_key_context(key)}；矛盾字段={sorted(conflicting_fields)}",
+                    tuple(entry.location for entry in entries),
+                ))
+            else:
+                canonical = next(iter(_outcome_values(entries[0])))
+                histogram[canonical] += 1
+                # 缺省 official_code 不是矛盾；有明确值时同次尝试只计一次。
+                official_codes.update({
+                    value for entry in entries
+                    if isinstance(value := entry.payload.get("official_code"), str)
+                })
+                if canonical == "not_sent" and any(
+                    "timeout" in reason or "deadline" in reason
+                    for entry in entries
+                    for reason in [str(entry.payload.get("reason", "")).lower()]
+                ):
+                    not_sent_timeouts += 1
             if len(entries) >= 3:
                 # 双层各记一次属常态；三条及以上同层重复才识别为异常。
                 self.findings.append(_Finding(
@@ -525,18 +599,28 @@ class _RunScanner:
 
         latencies.sort()
         return {
-            "intents": sum(len(v) for v in intents.values()),
-            "distinct_attempts": len(intents),
-            "outcomes": sum(len(v) for v in outcomes.values()),
+            "counting_basis": "attempt-v2",
+            "intents": intent_records,
+            "outcomes": outcome_records,
+            "distinct_attempts": len(intents.keys() | outcomes.keys()),
+            "attempts_with_intent": len(intents),
+            "attempts_with_outcome": len(outcomes),
+            "paired_attempts": len(intents.keys() & outcomes.keys()),
+            "uncorrelatable_intent_records": intent_records - sum(map(len, intents.values())),
+            "uncorrelatable_outcome_records": outcome_records - sum(map(len, outcomes.values())),
             "outcome_histogram": dict(sorted(histogram.items())),
+            "outcome_record_histogram": dict(sorted(record_histogram.items())),
             "official_code_histogram": dict(sorted(official_codes.items())),
+            "official_code_record_histogram": dict(sorted(record_official_codes.items())),
+            "conflicting_attempts": len(conflicts),
+            "conflicts": conflicts,
             "rejected_total": (
                 histogram["rejected_retryable"]
                 + histogram["rejected_closed"]
                 + histogram["rejected_no_refresh"]
             ),
             "ambiguous": histogram["ambiguous"],
-            "not_sent": not_sent,
+            "not_sent": histogram["not_sent"],
             "not_sent_timeouts": not_sent_timeouts,
             "latency_ms": {
                 "attempts": len(latencies),
@@ -544,6 +628,138 @@ class _RunScanner:
                 "p95": _percentile(latencies, 95),
                 "p99": _percentile(latencies, 99),
                 "max": latencies[-1] if latencies else None,
+            },
+        }
+
+    def check_rule_coverage(self) -> dict[str, Any]:
+        """按决策统计输入规则的完整性；缺输入的旧日志和策略计划提示独立列出。
+
+        一个决策可能重规划多次：任一明确 degraded 输入即计一次规则降级；
+        没有降级证据、但存在缺失/无效规则输入时计未知，不推断为完整。
+        issues 仅提供规则问题的证据，不从计划文案反推规则失败。
+        """
+
+        inputs: dict[_DecisionKey, list[_Parsed]] = {}
+        plans: dict[_DecisionKey, list[_Parsed]] = {}
+        input_records = plan_reason_records = uncorrelatable_inputs = 0
+        for record in self.records:
+            if record.kind not in (AuditKind.DECISION_INPUT.value, AuditKind.DECISION_PLANNED.value):
+                continue
+            key = _decision_key(record)
+            if record.kind == AuditKind.DECISION_INPUT.value:
+                input_records += 1
+                if key is None:
+                    uncorrelatable_inputs += 1
+                else:
+                    inputs.setdefault(key, []).append(record)
+            else:
+                reasons = record.payload.get("degraded_reasons")
+                if isinstance(reasons, list) and reasons:
+                    plan_reason_records += 1
+                if key is not None:
+                    plans.setdefault(key, []).append(record)
+
+        complete = degraded = unknown = missing = invalid = 0
+        compatibility_hints = other_hints = hint_decisions = legacy_hint_decisions = 0
+        issue_areas: Counter[str] = Counter()
+        legacy_completeness: Counter[str] = Counter()
+        degradation_examples: list[dict[str, Any]] = []
+        unknown_examples: list[dict[str, Any]] = []
+        for key in sorted(inputs.keys() | plans.keys()):
+            entries = inputs.get(key, [])
+            statuses: set[str] = set()
+            issues: set[tuple[str, str]] = set()
+            invalid_input = False
+            for entry in entries:
+                request = entry.payload.get("request")
+                rules = request.get("rules") if isinstance(request, dict) else None
+                status = rules.get("completeness") if isinstance(rules, dict) else None
+                raw_issues = rules.get("issues") if isinstance(rules, dict) else None
+                if status in ("complete", "degraded"):
+                    statuses.add(status)
+                else:
+                    invalid_input = True
+                if not isinstance(raw_issues, list):
+                    invalid_input = True
+                    continue
+                for issue in raw_issues:
+                    if not isinstance(issue, dict) or not all(
+                        isinstance(issue.get(field), str) for field in ("area", "reason")
+                    ):
+                        invalid_input = True
+                    else:
+                        issues.add((issue["area"], issue["reason"]))
+                if status == "complete" and raw_issues:
+                    # 现行规则输出约束为 issues 非空必定 degraded；矛盾证据
+                    # 只标未知，不把“完整”文案或问题列表任一方当作正确答案。
+                    invalid_input = True
+            issue_areas.update({area for area, _ in issues})
+            if not entries:
+                missing += 1
+            if invalid_input:
+                invalid += 1
+            if "degraded" in statuses:
+                degraded += 1
+                if len(degradation_examples) < 20:
+                    degradation_examples.append(redact_value({
+                        "context": _key_context(key),
+                        "issues": [{"area": area, "reason": reason} for area, reason in sorted(issues)],
+                        "locations": [{"file": entry.location.file, "line_no": entry.location.line_no} for entry in entries],
+                    }))
+            elif not entries or invalid_input:
+                unknown += 1
+                if len(unknown_examples) < 20:
+                    unknown_examples.append({
+                        "context": _key_context(key),
+                        "reason": "missing_decision_input" if not entries else "invalid_rule_input",
+                    })
+            else:
+                complete += 1
+
+            plan_entries = plans.get(key, [])
+            reasons = {
+                reason for entry in plan_entries
+                if isinstance(entry.payload.get("degraded_reasons"), list)
+                for reason in entry.payload["degraded_reasons"] if isinstance(reason, str)
+            }
+            if reasons:
+                hint_decisions += 1
+                legacy_hint_decisions += int(not entries)
+                # 此标记来自现有兼容视图的公开审计文案；其他自由文本只能
+                # 称计划提示，不能无依据断言是策略失败或规则降级。
+                compatibility_hints += int(any("legacy-pass-neutral" in reason for reason in reasons))
+                other_hints += int(any("legacy-pass-neutral" not in reason for reason in reasons))
+            if not entries:
+                legacy_completeness.update({
+                    str(entry.payload.get("rule_completeness", "unknown"))
+                    for entry in plan_entries
+                })
+
+        return {
+            "decisions_planned": len(plans),
+            "rule_degradations": degraded,
+            "rule_degradation_decisions": [example["context"]["decision_id"] for example in degradation_examples],
+            "rule_analysis": {
+                "basis": "decision_input.request.rules",
+                "input_records": input_records,
+                "input_decisions": len(inputs),
+                "uncorrelatable_input_records": uncorrelatable_inputs,
+                "complete_decisions": complete,
+                "degraded_decisions": degraded,
+                "unknown_decisions": unknown,
+                "missing_input_decisions": missing,
+                "invalid_input_decisions": invalid,
+                "issue_area_histogram": dict(sorted(issue_areas.items())),
+                "degradation_examples": degradation_examples,
+                "unknown_examples": unknown_examples,
+            },
+            "plan_diagnostics": {
+                "legacy_degraded_reason_records": plan_reason_records,
+                "hint_decisions": hint_decisions,
+                "compatibility_hint_decisions": compatibility_hints,
+                "other_hint_decisions": other_hints,
+                "legacy_hint_decisions": legacy_hint_decisions,
+                "legacy_rule_completeness_histogram": dict(sorted(legacy_completeness.items())),
             },
         }
 
@@ -556,10 +772,7 @@ class _RunScanner:
         finished_participants: dict[str, list[_Parsed]] = {}
         games: set[tuple[str, str]] = set()
         participants: set[str] = set()
-        planned_decisions: set[tuple[str, str]] = set()
         windows: set[tuple[str, str, int, int]] = set()
-        degraded_count = 0
-        degraded_decisions: list[str] = []
 
         for record in self.records:
             pid = record.context["participant_id"]
@@ -580,15 +793,6 @@ class _RunScanner:
                     finished_games.setdefault((pid, game_id), []).append(record)
             elif record.kind == AuditKind.PARTICIPANT_FINISHED.value:
                 finished_participants.setdefault(pid, []).append(record)
-            elif record.kind == AuditKind.DECISION_PLANNED.value:
-                decision_id = record.context.get("decision_id")
-                if isinstance(decision_id, str) and decision_id:
-                    planned_decisions.add((pid, decision_id))
-                reasons = record.payload.get("degraded_reasons")
-                if isinstance(reasons, list) and reasons:
-                    degraded_count += 1
-                    if len(degraded_decisions) < 20:
-                        degraded_decisions.append(decision_id)
             elif record.kind == AuditKind.AUTHORITATIVE_STATE.value:
                 round_no = record.context.get("round_no")
                 trigger_seq = record.context.get("trigger_seq")
@@ -682,10 +886,8 @@ class _RunScanner:
             "final_scores_by_game": final_scores_by_game,
             "participants_total": len(participants),
             "participants_finished": len(finished_participants),
-            "decisions_planned": len(planned_decisions),
             "windows_observed": len(windows),
-            "rule_degradations": degraded_count,
-            "rule_degradation_decisions": degraded_decisions,
+            **self.check_rule_coverage(),
             "manifest_present": self.manifest_present,
             "summary_files": self.summary_files,
         }
@@ -729,6 +931,39 @@ class _RunScanner:
             for key in ("window", "last_discard_projection_note", "trigger_seq_projection_note")
         )
 
+    def check_http_requests(self) -> None:
+        """按真实 request_id 核对开始、终结和正文；取消不能再作为漏记例外。
+
+        旧运行没有 HTTP_REQUEST 时沿用原覆盖检查，不伪称旧日志覆盖所有调用。
+        元数据独立于低优先级正文；压测丢原文仍能指出具体请求。
+        """
+        lifecycle = {}
+        raw = {}
+        for record in self.records:
+            if record.kind not in (AuditKind.HTTP_REQUEST.value, AuditKind.RAW_PROTOCOL_STATE.value):
+                continue
+            payload = record.payload
+            timing = payload.get("request_timing") or {}
+            request_id = payload.get("request_id") or timing.get("request_id")
+            if not isinstance(request_id, str) or not request_id:
+                continue
+            if record.kind == AuditKind.HTTP_REQUEST.value:
+                lifecycle.setdefault(request_id, []).append(record)
+            else:
+                raw.setdefault(request_id, []).append(record)
+        for request_id in sorted(set(lifecycle) | set(raw)):
+            records = lifecycle.get(request_id, [])
+            starts = sum(r.payload.get("phase") == "started" for r in records)
+            ends = sum(r.payload.get("phase") == "finished" for r in records)
+            bodies = len(raw.get(request_id, []))
+            if (starts, ends, bodies) != (1, 1, 1):
+                self.findings.append(_Finding(
+                    "violation", "http_request_incomplete",
+                    f"request_id={request_id}: started={starts}, finished={ends}, raw={bodies}"
+                    + self._raw_dropped_suffix(),
+                    tuple(r.location for r in records + raw.get(request_id, [])),
+                ))
+
     def check_raw_events(self) -> dict[str, Any]:
         """原始协议事件（RAW_PROTOCOL_STATE）的覆盖统计与完整性检查。
 
@@ -746,12 +981,13 @@ class _RunScanner:
           （缺中间值 = 该次响应原文丢失）都按 violation 上报；
         - ``raw_action_missing``：每个实际发出的动作 POST（adapter 层
           SUBMISSION_OUTCOME 且 outcome_type != SubmitNotSent）必须有对应
-          action_submit_response 原文；在途取消（submit_cancelled_in_flight）
-          没有响应可录，按例外排除。
+          action_submit_response 原文；旧运行在途取消按历史例外排除；新运行必须另通过request_id完整性对账，
+          取消也应有raw为空的原始记录。
 
         旧目录没有 raw_retention 声明时上述检查全部跳过，结论与升级前一致。
         """
 
+        self.check_http_requests()
         by_source: Counter[str] = Counter()
         by_endpoint: Counter[str] = Counter()
         by_http_status: Counter[str] = Counter()

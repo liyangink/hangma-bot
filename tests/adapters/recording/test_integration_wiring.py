@@ -448,9 +448,10 @@ async def test_wired_run_passes_end_to_end(tmp_path):
 
     submissions = report["submissions"]
     assert submissions["distinct_attempts"] == 2
-    # 两种 outcome 形态（类名 + 规范值）归并进同一词表桶。
-    assert submissions["outcome_histogram"] == {"accepted": 2, "rejected_retryable": 2}
-    assert submissions["rejected_total"] == 2
+    # 两种 outcome 形态归并为一次动作尝试；原始记录条数独立保留。
+    assert submissions["outcome_histogram"] == {"accepted": 1, "rejected_retryable": 1}
+    assert submissions["outcome_record_histogram"] == {"accepted": 2, "rejected_retryable": 2}
+    assert submissions["rejected_total"] == 1
     assert submissions["latency_ms"]["attempts"] == 2
     assert submissions["latency_ms"]["p50"] == 102
     assert submissions["latency_ms"]["p95"] == 301
@@ -460,7 +461,11 @@ async def test_wired_run_passes_end_to_end(tmp_path):
     assert coverage["games_finished"] == 1
     assert coverage["participants_finished"] == 1
     assert coverage["decisions_planned"] == 2
-    assert coverage["rule_degradations"] == 1
+    assert coverage["rule_degradations"] == 0
+    assert coverage["rule_analysis"]["missing_input_decisions"] == 2
+    assert coverage["plan_diagnostics"]["legacy_rule_completeness_histogram"] == {
+        "complete": 1, "degraded": 1,
+    }
     assert coverage["manifest_present"] is True
 
     # 双层记录（应用层 + 官方适配器各一次）是正常形态：不得报告为重复，

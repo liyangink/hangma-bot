@@ -1,0 +1,3847 @@
+{
+  "schema_version": 1,
+  "guide_version": 20,
+  "captured_date": "2026-09-07",
+  "room_id": "t_b684d5c3eea4",
+  "description": "10次明杠成功前后实际HTTP响应；无认证，保留原始字段，JSON格式化但不改载荷。",
+  "cases": [
+    {
+      "id": "t_b684d5c3eea4_r1_b1_t0-s2-seq232",
+      "game_id": "t_b684d5c3eea4_r1_b1_t0",
+      "round_no": 1,
+      "expected_seq": 232,
+      "before_requests": [
+        {
+          "params": {
+            "seq": 0
+          },
+          "response": {
+            "seq": 229,
+            "gap": false,
+            "snapshot": {
+              "game_id": "t_b684d5c3eea4_r1_b1_t0",
+              "phase": "draw",
+              "round_no": 1,
+              "dealer": 0,
+              "turn": 3,
+              "waited_seat": 3,
+              "wall_remaining": 50,
+              "discards": [
+                [
+                  "东",
+                  "9w",
+                  "5b",
+                  "7t",
+                  "9t",
+                  "2t",
+                  "东",
+                  "3t",
+                  "7t"
+                ],
+                [
+                  "东",
+                  "发",
+                  "1w",
+                  "5b",
+                  "5w",
+                  "1b",
+                  "2w",
+                  "2t",
+                  "4t",
+                  "4w",
+                  "8w"
+                ],
+                [
+                  "东",
+                  "3t",
+                  "4b",
+                  "9t",
+                  "1b",
+                  "9w",
+                  "8t",
+                  "2b",
+                  "8w",
+                  "5t",
+                  "8t",
+                  "8b"
+                ],
+                [
+                  "4b",
+                  "1w",
+                  "6w",
+                  "3b",
+                  "5b",
+                  "5w",
+                  "4t",
+                  "8w",
+                  "6t"
+                ]
+              ],
+              "melds": [
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "3b",
+                      "5b",
+                      "4b"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "4b",
+                      "6b",
+                      "5b"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "1t",
+                      "3t",
+                      "2t"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "2b",
+                      "2b",
+                      "2b"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "5t",
+                      "5t",
+                      "5t"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "6t",
+                      "6t",
+                      "6t"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "7t",
+                      "9t",
+                      "8t"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "6w",
+                      "7w",
+                      "8w"
+                    ]
+                  }
+                ]
+              ],
+              "hand_counts": [
+                10,
+                1,
+                10,
+                8
+              ],
+              "my_hand": [
+                "南",
+                "9b",
+                "1w",
+                "2w",
+                "9b",
+                "南",
+                "3w",
+                "8b",
+                "南",
+                "7b"
+              ],
+              "seat": 2,
+              "last_discard": "8b",
+              "drawn_tile": "",
+              "god": {
+                "baotou": false,
+                "chain_count": 0,
+                "catch_play": false
+              },
+              "scores": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "events": null,
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788769831355,
+          "source_line": 181
+        },
+        {
+          "params": {
+            "seq": 229
+          },
+          "response": {
+            "seq": 230,
+            "gap": false,
+            "events": [
+              {
+                "seq": 230,
+                "type": "tile_discarded",
+                "seat": 3,
+                "tile": "南",
+                "data": {
+                  "catch_play": false
+                },
+                "ts": 1788769831
+              }
+            ],
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788769831850,
+          "source_line": 182
+        }
+      ],
+      "accepted_action": {
+        "kind": "gang",
+        "gang_kind": "exposed",
+        "tile": "南",
+        "schema_version": 1
+      },
+      "action_response": {
+        "response": {
+          "ok": true
+        },
+        "source_line": 183,
+        "wall_time_unix_ms": 1788769831874,
+        "decision_id": "dec-8cc92609649c426d8cf05c0866e8a8f7"
+      },
+      "after_request": {
+        "params": {
+          "seq": 0
+        },
+        "response": {
+          "seq": 232,
+          "gap": false,
+          "snapshot": {
+            "game_id": "t_b684d5c3eea4_r1_b1_t0",
+            "phase": "draw",
+            "round_no": 1,
+            "dealer": 0,
+            "turn": 2,
+            "waited_seat": 2,
+            "wall_remaining": 49,
+            "discards": [
+              [
+                "东",
+                "9w",
+                "5b",
+                "7t",
+                "9t",
+                "2t",
+                "东",
+                "3t",
+                "7t"
+              ],
+              [
+                "东",
+                "发",
+                "1w",
+                "5b",
+                "5w",
+                "1b",
+                "2w",
+                "2t",
+                "4t",
+                "4w",
+                "8w"
+              ],
+              [
+                "东",
+                "3t",
+                "4b",
+                "9t",
+                "1b",
+                "9w",
+                "8t",
+                "2b",
+                "8w",
+                "5t",
+                "8t",
+                "8b"
+              ],
+              [
+                "4b",
+                "1w",
+                "6w",
+                "3b",
+                "5b",
+                "5w",
+                "4t",
+                "8w",
+                "6t",
+                "南"
+              ]
+            ],
+            "melds": [
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "3b",
+                    "5b",
+                    "4b"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "4b",
+                    "6b",
+                    "5b"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "1t",
+                    "3t",
+                    "2t"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "2b",
+                    "2b",
+                    "2b"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "5t",
+                    "5t",
+                    "5t"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "6t",
+                    "6t",
+                    "6t"
+                  ]
+                },
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "南",
+                    "南",
+                    "南",
+                    "南"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "7t",
+                    "9t",
+                    "8t"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "6w",
+                    "7w",
+                    "8w"
+                  ]
+                }
+              ]
+            ],
+            "hand_counts": [
+              10,
+              1,
+              8,
+              7
+            ],
+            "my_hand": [
+              "9b",
+              "1w",
+              "2w",
+              "9b",
+              "3w",
+              "8b",
+              "7b",
+              "2w"
+            ],
+            "seat": 2,
+            "last_discard": "南",
+            "drawn_tile": "2w",
+            "god": {
+              "baotou": false,
+              "chain_count": 1,
+              "catch_play": false
+            },
+            "scores": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "events": null,
+          "pending": false,
+          "finished": false
+        },
+        "wall_time_unix_ms": 1788769832401,
+        "source_line": 184
+      },
+      "source_file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/audit/slot-baihu/runs/run-ac279bb84a614739b59c8094ee349471/participants/u_12cbfb19aa14/raw/t_b684d5c3eea4_r1_b1_t0.jsonl",
+      "source_sha256": "d57986661f173a6b3ad052e8359eb5ce3bb9824cad0444cf2f08bb561280ed5b"
+    },
+    {
+      "id": "t_b684d5c3eea4_r1_b3_t0-s3-seq664",
+      "game_id": "t_b684d5c3eea4_r1_b3_t0",
+      "round_no": 3,
+      "expected_seq": 664,
+      "before_requests": [
+        {
+          "params": {
+            "seq": 0
+          },
+          "response": {
+            "seq": 661,
+            "gap": false,
+            "snapshot": {
+              "game_id": "t_b684d5c3eea4_r1_b3_t0",
+              "phase": "draw",
+              "round_no": 3,
+              "dealer": 2,
+              "turn": 0,
+              "waited_seat": 0,
+              "wall_remaining": 48,
+              "discards": [
+                [
+                  "南",
+                  "南",
+                  "9b",
+                  "东",
+                  "8w",
+                  "西",
+                  "3w",
+                  "6b",
+                  "4b"
+                ],
+                [
+                  "南",
+                  "东",
+                  "5b",
+                  "2t",
+                  "1w",
+                  "2w",
+                  "2w",
+                  "1w",
+                  "5t",
+                  "4b"
+                ],
+                [
+                  "南",
+                  "发",
+                  "9w",
+                  "西",
+                  "7b",
+                  "6w",
+                  "东",
+                  "中",
+                  "西",
+                  "8b",
+                  "7b",
+                  "6b"
+                ],
+                [
+                  "发",
+                  "1w",
+                  "9w",
+                  "中",
+                  "5w",
+                  "8w",
+                  "1b",
+                  "7b",
+                  "7b",
+                  "6t",
+                  "1t",
+                  "9b"
+                ]
+              ],
+              "melds": [
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "1t",
+                      "1t",
+                      "1t"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "6w",
+                      "7w",
+                      "8w"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "1b",
+                      "1b",
+                      "1b"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "8b",
+                      "8b",
+                      "8b"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "3b",
+                      "5b",
+                      "4b"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "2t",
+                      "2t",
+                      "2t"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "5w",
+                      "5w",
+                      "5w"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "6b",
+                      "6b",
+                      "6b"
+                    ]
+                  }
+                ]
+              ],
+              "hand_counts": [
+                11,
+                1,
+                7,
+                10
+              ],
+              "my_hand": [
+                "4t",
+                "4b",
+                "白",
+                "3t",
+                "4t",
+                "3b",
+                "8t",
+                "4t",
+                "2b",
+                "9t"
+              ],
+              "seat": 3,
+              "last_discard": "9b",
+              "drawn_tile": "",
+              "god": {
+                "baotou": false,
+                "chain_count": 0,
+                "catch_play": false
+              },
+              "scores": [
+                -18,
+                4,
+                18,
+                -4
+              ]
+            },
+            "events": null,
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770001953,
+          "source_line": 512
+        },
+        {
+          "params": {
+            "seq": 661
+          },
+          "response": {
+            "seq": 662,
+            "gap": false,
+            "events": [
+              {
+                "seq": 662,
+                "type": "tile_discarded",
+                "seat": 0,
+                "tile": "4t",
+                "data": {
+                  "catch_play": false
+                },
+                "ts": 1788770002
+              }
+            ],
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770002493,
+          "source_line": 513
+        }
+      ],
+      "accepted_action": {
+        "kind": "gang",
+        "gang_kind": "exposed",
+        "tile": "4t",
+        "schema_version": 1
+      },
+      "action_response": {
+        "response": {
+          "ok": true
+        },
+        "source_line": 514,
+        "wall_time_unix_ms": 1788770002515,
+        "decision_id": "dec-41bda89b75af425b91aa794bf9f8ef70"
+      },
+      "after_request": {
+        "params": {
+          "seq": 0
+        },
+        "response": {
+          "seq": 664,
+          "gap": false,
+          "snapshot": {
+            "game_id": "t_b684d5c3eea4_r1_b3_t0",
+            "phase": "draw",
+            "round_no": 3,
+            "dealer": 2,
+            "turn": 3,
+            "waited_seat": 3,
+            "wall_remaining": 47,
+            "discards": [
+              [
+                "南",
+                "南",
+                "9b",
+                "东",
+                "8w",
+                "西",
+                "3w",
+                "6b",
+                "4b",
+                "4t"
+              ],
+              [
+                "南",
+                "东",
+                "5b",
+                "2t",
+                "1w",
+                "2w",
+                "2w",
+                "1w",
+                "5t",
+                "4b"
+              ],
+              [
+                "南",
+                "发",
+                "9w",
+                "西",
+                "7b",
+                "6w",
+                "东",
+                "中",
+                "西",
+                "8b",
+                "7b",
+                "6b"
+              ],
+              [
+                "发",
+                "1w",
+                "9w",
+                "中",
+                "5w",
+                "8w",
+                "1b",
+                "7b",
+                "7b",
+                "6t",
+                "1t",
+                "9b"
+              ]
+            ],
+            "melds": [
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "1t",
+                    "1t",
+                    "1t"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "6w",
+                    "7w",
+                    "8w"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "1b",
+                    "1b",
+                    "1b"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "8b",
+                    "8b",
+                    "8b"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "3b",
+                    "5b",
+                    "4b"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "2t",
+                    "2t",
+                    "2t"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "5w",
+                    "5w",
+                    "5w"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "6b",
+                    "6b",
+                    "6b"
+                  ]
+                },
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "4t",
+                    "4t",
+                    "4t",
+                    "4t"
+                  ]
+                }
+              ]
+            ],
+            "hand_counts": [
+              10,
+              1,
+              7,
+              8
+            ],
+            "my_hand": [
+              "4b",
+              "白",
+              "3t",
+              "3b",
+              "8t",
+              "2b",
+              "9t",
+              "1w"
+            ],
+            "seat": 3,
+            "last_discard": "4t",
+            "drawn_tile": "1w",
+            "god": {
+              "baotou": false,
+              "chain_count": 1,
+              "catch_play": false
+            },
+            "scores": [
+              -18,
+              4,
+              18,
+              -4
+            ]
+          },
+          "events": null,
+          "pending": false,
+          "finished": false
+        },
+        "wall_time_unix_ms": 1788770003057,
+        "source_line": 515
+      },
+      "source_file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/audit/slot-baihu/runs/run-ac279bb84a614739b59c8094ee349471/participants/u_12cbfb19aa14/raw/t_b684d5c3eea4_r1_b3_t0.jsonl",
+      "source_sha256": "84890d3c76e0f7f6cf20903679930776920260d42dfb20f5778b3e0554bc4cc9"
+    },
+    {
+      "id": "t_b684d5c3eea4_r1_b3_t0-s0-seq707",
+      "game_id": "t_b684d5c3eea4_r1_b3_t0",
+      "round_no": 3,
+      "expected_seq": 707,
+      "before_requests": [
+        {
+          "params": {
+            "seq": 0
+          },
+          "response": {
+            "seq": 704,
+            "gap": false,
+            "snapshot": {
+              "game_id": "t_b684d5c3eea4_r1_b3_t0",
+              "phase": "draw",
+              "round_no": 3,
+              "dealer": 2,
+              "turn": 2,
+              "waited_seat": 2,
+              "wall_remaining": 42,
+              "discards": [
+                [
+                  "南",
+                  "南",
+                  "9b",
+                  "东",
+                  "8w",
+                  "西",
+                  "3w",
+                  "6b",
+                  "4b",
+                  "4t",
+                  "中",
+                  "2b"
+                ],
+                [
+                  "南",
+                  "东",
+                  "5b",
+                  "2t",
+                  "1w",
+                  "2w",
+                  "2w",
+                  "1w",
+                  "5t",
+                  "4b",
+                  "2b",
+                  "7t"
+                ],
+                [
+                  "南",
+                  "发",
+                  "9w",
+                  "西",
+                  "7b",
+                  "6w",
+                  "东",
+                  "中",
+                  "西",
+                  "8b",
+                  "7b",
+                  "6b",
+                  "2w"
+                ],
+                [
+                  "发",
+                  "1w",
+                  "9w",
+                  "中",
+                  "5w",
+                  "8w",
+                  "1b",
+                  "7b",
+                  "7b",
+                  "6t",
+                  "1t",
+                  "9b",
+                  "1w",
+                  "2b"
+                ]
+              ],
+              "melds": [
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "1t",
+                      "1t",
+                      "1t"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "6w",
+                      "7w",
+                      "8w"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "1b",
+                      "1b",
+                      "1b"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "8b",
+                      "8b",
+                      "8b"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "3b",
+                      "5b",
+                      "4b"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "2t",
+                      "2t",
+                      "2t"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "5w",
+                      "5w",
+                      "5w"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "1b",
+                      "3b",
+                      "2b"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "5t",
+                      "6t",
+                      "7t"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "6b",
+                      "6b",
+                      "6b"
+                    ]
+                  },
+                  {
+                    "kind": "gang_ming",
+                    "tiles": [
+                      "4t",
+                      "4t",
+                      "4t",
+                      "4t"
+                    ]
+                  }
+                ]
+              ],
+              "hand_counts": [
+                10,
+                1,
+                2,
+                7
+              ],
+              "my_hand": [
+                "3t",
+                "8w",
+                "4w",
+                "4w",
+                "6w",
+                "4w",
+                "白",
+                "7w",
+                "3t",
+                "8w"
+              ],
+              "seat": 0,
+              "last_discard": "7t",
+              "drawn_tile": "",
+              "god": {
+                "baotou": false,
+                "chain_count": 0,
+                "catch_play": false
+              },
+              "scores": [
+                -18,
+                4,
+                18,
+                -4
+              ]
+            },
+            "events": null,
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770018583,
+          "source_line": 535
+        },
+        {
+          "params": {
+            "seq": 704
+          },
+          "response": {
+            "seq": 705,
+            "gap": false,
+            "events": [
+              {
+                "seq": 705,
+                "type": "tile_discarded",
+                "seat": 2,
+                "tile": "4w",
+                "data": {
+                  "catch_play": false
+                },
+                "ts": 1788770018
+              }
+            ],
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770019084,
+          "source_line": 536
+        }
+      ],
+      "accepted_action": {
+        "kind": "gang",
+        "gang_kind": "exposed",
+        "tile": "4w",
+        "schema_version": 1
+      },
+      "action_response": {
+        "response": {
+          "ok": true
+        },
+        "source_line": 537,
+        "wall_time_unix_ms": 1788770019112,
+        "decision_id": "dec-32719db26f554dee8345e943680a4018"
+      },
+      "after_request": {
+        "params": {
+          "seq": 0
+        },
+        "response": {
+          "seq": 707,
+          "gap": false,
+          "snapshot": {
+            "game_id": "t_b684d5c3eea4_r1_b3_t0",
+            "phase": "draw",
+            "round_no": 3,
+            "dealer": 2,
+            "turn": 0,
+            "waited_seat": 0,
+            "wall_remaining": 41,
+            "discards": [
+              [
+                "南",
+                "南",
+                "9b",
+                "东",
+                "8w",
+                "西",
+                "3w",
+                "6b",
+                "4b",
+                "4t",
+                "中",
+                "2b"
+              ],
+              [
+                "南",
+                "东",
+                "5b",
+                "2t",
+                "1w",
+                "2w",
+                "2w",
+                "1w",
+                "5t",
+                "4b",
+                "2b",
+                "7t"
+              ],
+              [
+                "南",
+                "发",
+                "9w",
+                "西",
+                "7b",
+                "6w",
+                "东",
+                "中",
+                "西",
+                "8b",
+                "7b",
+                "6b",
+                "2w",
+                "4w"
+              ],
+              [
+                "发",
+                "1w",
+                "9w",
+                "中",
+                "5w",
+                "8w",
+                "1b",
+                "7b",
+                "7b",
+                "6t",
+                "1t",
+                "9b",
+                "1w",
+                "2b"
+              ]
+            ],
+            "melds": [
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "1t",
+                    "1t",
+                    "1t"
+                  ]
+                },
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "4w",
+                    "4w",
+                    "4w",
+                    "4w"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "6w",
+                    "7w",
+                    "8w"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "1b",
+                    "1b",
+                    "1b"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "8b",
+                    "8b",
+                    "8b"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "3b",
+                    "5b",
+                    "4b"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "2t",
+                    "2t",
+                    "2t"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "5w",
+                    "5w",
+                    "5w"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "1b",
+                    "3b",
+                    "2b"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "5t",
+                    "6t",
+                    "7t"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "6b",
+                    "6b",
+                    "6b"
+                  ]
+                },
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "4t",
+                    "4t",
+                    "4t",
+                    "4t"
+                  ]
+                }
+              ]
+            ],
+            "hand_counts": [
+              8,
+              1,
+              1,
+              7
+            ],
+            "my_hand": [
+              "3t",
+              "8w",
+              "6w",
+              "白",
+              "7w",
+              "3t",
+              "8w",
+              "7t"
+            ],
+            "seat": 0,
+            "last_discard": "4w",
+            "drawn_tile": "7t",
+            "god": {
+              "baotou": false,
+              "chain_count": 1,
+              "catch_play": false
+            },
+            "scores": [
+              -18,
+              4,
+              18,
+              -4
+            ]
+          },
+          "events": null,
+          "pending": false,
+          "finished": false
+        },
+        "wall_time_unix_ms": 1788770019633,
+        "source_line": 538
+      },
+      "source_file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/audit/slot-qinglong/runs/run-3d3d6e61c2964d96a3e141d45ce79464/participants/u_d4af7cc46e1d/raw/t_b684d5c3eea4_r1_b3_t0.jsonl",
+      "source_sha256": "f7c0aaf31c8ec9645ea6808f4bdc390b295d1b54b8d2b06f6ac60db51ebe5ac3"
+    },
+    {
+      "id": "t_b684d5c3eea4_r1_b3_t0-s0-seq1591",
+      "game_id": "t_b684d5c3eea4_r1_b3_t0",
+      "round_no": 6,
+      "expected_seq": 1591,
+      "before_requests": [
+        {
+          "params": {
+            "seq": 0
+          },
+          "response": {
+            "seq": 1588,
+            "gap": false,
+            "snapshot": {
+              "game_id": "t_b684d5c3eea4_r1_b3_t0",
+              "phase": "draw",
+              "round_no": 6,
+              "dealer": 3,
+              "turn": 1,
+              "waited_seat": 1,
+              "wall_remaining": 44,
+              "discards": [
+                [
+                  "1b",
+                  "1b",
+                  "1t",
+                  "4w",
+                  "7t",
+                  "8t",
+                  "9b",
+                  "发",
+                  "1w",
+                  "9w",
+                  "2t"
+                ],
+                [
+                  "1b",
+                  "中",
+                  "北",
+                  "4w",
+                  "2w",
+                  "2w",
+                  "4b",
+                  "南",
+                  "8t",
+                  "1w"
+                ],
+                [
+                  "9b",
+                  "中",
+                  "北",
+                  "中",
+                  "8t",
+                  "2w",
+                  "西",
+                  "发",
+                  "9w"
+                ],
+                [
+                  "发",
+                  "8w",
+                  "3w",
+                  "1w",
+                  "2t",
+                  "2t",
+                  "西",
+                  "4b",
+                  "6b",
+                  "4t",
+                  "9w"
+                ]
+              ],
+              "melds": [
+                [],
+                [
+                  {
+                    "kind": "gang_ming",
+                    "tiles": [
+                      "1t",
+                      "1t",
+                      "1t",
+                      "1t"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "3b",
+                      "5b",
+                      "4b"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "南",
+                      "南",
+                      "南"
+                    ]
+                  }
+                ]
+              ],
+              "hand_counts": [
+                13,
+                11,
+                10,
+                10
+              ],
+              "my_hand": [
+                "6w",
+                "8w",
+                "白",
+                "8b",
+                "6t",
+                "6b",
+                "6t",
+                "6w",
+                "6t",
+                "5b",
+                "5b",
+                "8w",
+                "8w"
+              ],
+              "seat": 0,
+              "last_discard": "2t",
+              "drawn_tile": "",
+              "god": {
+                "baotou": false,
+                "chain_count": 0,
+                "catch_play": false
+              },
+              "scores": [
+                -24,
+                -2,
+                6,
+                20
+              ]
+            },
+            "events": null,
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770363460,
+          "source_line": 1208
+        },
+        {
+          "params": {
+            "seq": 1588
+          },
+          "response": {
+            "seq": 1589,
+            "gap": false,
+            "events": [
+              {
+                "seq": 1589,
+                "type": "tile_discarded",
+                "seat": 1,
+                "tile": "6t",
+                "data": {
+                  "catch_play": false
+                },
+                "ts": 1788770363
+              }
+            ],
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770363964,
+          "source_line": 1209
+        }
+      ],
+      "accepted_action": {
+        "kind": "gang",
+        "gang_kind": "exposed",
+        "tile": "6t",
+        "schema_version": 1
+      },
+      "action_response": {
+        "response": {
+          "ok": true
+        },
+        "source_line": 1210,
+        "wall_time_unix_ms": 1788770364008,
+        "decision_id": "dec-d0a4f4a43764482380f504c1dcce6602"
+      },
+      "after_request": {
+        "params": {
+          "seq": 0
+        },
+        "response": {
+          "seq": 1591,
+          "gap": false,
+          "snapshot": {
+            "game_id": "t_b684d5c3eea4_r1_b3_t0",
+            "phase": "draw",
+            "round_no": 6,
+            "dealer": 3,
+            "turn": 0,
+            "waited_seat": 0,
+            "wall_remaining": 43,
+            "discards": [
+              [
+                "1b",
+                "1b",
+                "1t",
+                "4w",
+                "7t",
+                "8t",
+                "9b",
+                "发",
+                "1w",
+                "9w",
+                "2t"
+              ],
+              [
+                "1b",
+                "中",
+                "北",
+                "4w",
+                "2w",
+                "2w",
+                "4b",
+                "南",
+                "8t",
+                "1w",
+                "6t"
+              ],
+              [
+                "9b",
+                "中",
+                "北",
+                "中",
+                "8t",
+                "2w",
+                "西",
+                "发",
+                "9w"
+              ],
+              [
+                "发",
+                "8w",
+                "3w",
+                "1w",
+                "2t",
+                "2t",
+                "西",
+                "4b",
+                "6b",
+                "4t",
+                "9w"
+              ]
+            ],
+            "melds": [
+              [
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "6t",
+                    "6t",
+                    "6t",
+                    "6t"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "1t",
+                    "1t",
+                    "1t",
+                    "1t"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "3b",
+                    "5b",
+                    "4b"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "南",
+                    "南",
+                    "南"
+                  ]
+                }
+              ]
+            ],
+            "hand_counts": [
+              11,
+              10,
+              10,
+              10
+            ],
+            "my_hand": [
+              "6w",
+              "8w",
+              "白",
+              "8b",
+              "6b",
+              "6w",
+              "5b",
+              "5b",
+              "8w",
+              "8w",
+              "8b"
+            ],
+            "seat": 0,
+            "last_discard": "6t",
+            "drawn_tile": "8b",
+            "god": {
+              "baotou": false,
+              "chain_count": 1,
+              "catch_play": false
+            },
+            "scores": [
+              -24,
+              -2,
+              6,
+              20
+            ]
+          },
+          "events": null,
+          "pending": false,
+          "finished": false
+        },
+        "wall_time_unix_ms": 1788770364513,
+        "source_line": 1211
+      },
+      "source_file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/audit/slot-qinglong/runs/run-3d3d6e61c2964d96a3e141d45ce79464/participants/u_d4af7cc46e1d/raw/t_b684d5c3eea4_r1_b3_t0.jsonl",
+      "source_sha256": "f7c0aaf31c8ec9645ea6808f4bdc390b295d1b54b8d2b06f6ac60db51ebe5ac3"
+    },
+    {
+      "id": "t_b684d5c3eea4_r1_b0_t0-s3-seq504",
+      "game_id": "t_b684d5c3eea4_r1_b0_t0",
+      "round_no": 2,
+      "expected_seq": 504,
+      "before_requests": [
+        {
+          "params": {
+            "seq": 0
+          },
+          "response": {
+            "seq": 501,
+            "gap": false,
+            "snapshot": {
+              "game_id": "t_b684d5c3eea4_r1_b0_t0",
+              "phase": "draw",
+              "round_no": 2,
+              "dealer": 2,
+              "turn": 2,
+              "waited_seat": 2,
+              "wall_remaining": 43,
+              "discards": [
+                [
+                  "1t",
+                  "中",
+                  "2w",
+                  "东",
+                  "6b",
+                  "8w",
+                  "3w",
+                  "6w",
+                  "3t",
+                  "1b",
+                  "8w"
+                ],
+                [
+                  "中",
+                  "南",
+                  "4w",
+                  "2w",
+                  "西",
+                  "1t",
+                  "2b",
+                  "3w",
+                  "发",
+                  "4t",
+                  "6b"
+                ],
+                [
+                  "3t",
+                  "中",
+                  "北",
+                  "东",
+                  "西",
+                  "南",
+                  "4w",
+                  "6w",
+                  "1w",
+                  "9b",
+                  "3w"
+                ],
+                [
+                  "1b",
+                  "北",
+                  "发",
+                  "1t",
+                  "2w",
+                  "4w",
+                  "3t",
+                  "3b",
+                  "6w",
+                  "9b"
+                ]
+              ],
+              "melds": [
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "1w",
+                      "1w",
+                      "1w"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "gang_an",
+                    "tiles": [
+                      "8t",
+                      "8t",
+                      "8t",
+                      "8t"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "7w",
+                      "9w",
+                      "8w"
+                    ]
+                  }
+                ],
+                [],
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "西",
+                      "西",
+                      "西"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "7w",
+                      "8w",
+                      "6w"
+                    ]
+                  }
+                ]
+              ],
+              "hand_counts": [
+                10,
+                7,
+                14,
+                7
+              ],
+              "my_hand": [
+                "7b",
+                "5t",
+                "9t",
+                "9t",
+                "9t",
+                "5t",
+                "5b"
+              ],
+              "seat": 3,
+              "last_discard": "6b",
+              "drawn_tile": "",
+              "god": {
+                "baotou": false,
+                "chain_count": 0,
+                "catch_play": false
+              },
+              "scores": [
+                -32,
+                -4,
+                40,
+                -4
+              ]
+            },
+            "events": null,
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788769936333,
+          "source_line": 377
+        },
+        {
+          "params": {
+            "seq": 501
+          },
+          "response": {
+            "seq": 502,
+            "gap": false,
+            "events": [
+              {
+                "seq": 502,
+                "type": "tile_discarded",
+                "seat": 2,
+                "tile": "9t",
+                "data": {
+                  "catch_play": false
+                },
+                "ts": 1788769936
+              }
+            ],
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788769936836,
+          "source_line": 378
+        }
+      ],
+      "accepted_action": {
+        "kind": "gang",
+        "gang_kind": "exposed",
+        "tile": "9t",
+        "schema_version": 1
+      },
+      "action_response": {
+        "response": {
+          "ok": true
+        },
+        "source_line": 379,
+        "wall_time_unix_ms": 1788769936852,
+        "decision_id": "dec-4c072cfdffd747609c7891a2b0281512"
+      },
+      "after_request": {
+        "params": {
+          "seq": 0
+        },
+        "response": {
+          "seq": 504,
+          "gap": false,
+          "snapshot": {
+            "game_id": "t_b684d5c3eea4_r1_b0_t0",
+            "phase": "draw",
+            "round_no": 2,
+            "dealer": 2,
+            "turn": 3,
+            "waited_seat": 3,
+            "wall_remaining": 42,
+            "discards": [
+              [
+                "1t",
+                "中",
+                "2w",
+                "东",
+                "6b",
+                "8w",
+                "3w",
+                "6w",
+                "3t",
+                "1b",
+                "8w"
+              ],
+              [
+                "中",
+                "南",
+                "4w",
+                "2w",
+                "西",
+                "1t",
+                "2b",
+                "3w",
+                "发",
+                "4t",
+                "6b"
+              ],
+              [
+                "3t",
+                "中",
+                "北",
+                "东",
+                "西",
+                "南",
+                "4w",
+                "6w",
+                "1w",
+                "9b",
+                "3w",
+                "9t"
+              ],
+              [
+                "1b",
+                "北",
+                "发",
+                "1t",
+                "2w",
+                "4w",
+                "3t",
+                "3b",
+                "6w",
+                "9b"
+              ]
+            ],
+            "melds": [
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "1w",
+                    "1w",
+                    "1w"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "gang_an",
+                  "tiles": [
+                    "8t",
+                    "8t",
+                    "8t",
+                    "8t"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "7w",
+                    "9w",
+                    "8w"
+                  ]
+                }
+              ],
+              [],
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "西",
+                    "西",
+                    "西"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "7w",
+                    "8w",
+                    "6w"
+                  ]
+                },
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "9t",
+                    "9t",
+                    "9t",
+                    "9t"
+                  ]
+                }
+              ]
+            ],
+            "hand_counts": [
+              10,
+              7,
+              13,
+              5
+            ],
+            "my_hand": [
+              "7b",
+              "5t",
+              "5t",
+              "5b",
+              "白"
+            ],
+            "seat": 3,
+            "last_discard": "9t",
+            "drawn_tile": "白",
+            "god": {
+              "baotou": false,
+              "chain_count": 1,
+              "catch_play": false
+            },
+            "scores": [
+              -32,
+              -4,
+              40,
+              -4
+            ]
+          },
+          "events": null,
+          "pending": false,
+          "finished": false
+        },
+        "wall_time_unix_ms": 1788769937389,
+        "source_line": 380
+      },
+      "source_file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/audit/slot-xuanwu/runs/run-8c6ff1ea88f34b869cc75b62a498abb7/participants/u_04ebaf816a5a/raw/t_b684d5c3eea4_r1_b0_t0.jsonl",
+      "source_sha256": "3d58c3c54723c6b6a8e68e793627af1e88d23099bbd603d6de7e81ca6b55c48c"
+    },
+    {
+      "id": "t_b684d5c3eea4_r1_b2_t0-s2-seq1387",
+      "game_id": "t_b684d5c3eea4_r1_b2_t0",
+      "round_no": 5,
+      "expected_seq": 1387,
+      "before_requests": [
+        {
+          "params": {
+            "seq": 0
+          },
+          "response": {
+            "seq": 1384,
+            "gap": false,
+            "snapshot": {
+              "game_id": "t_b684d5c3eea4_r1_b2_t0",
+              "phase": "draw",
+              "round_no": 5,
+              "dealer": 1,
+              "turn": 1,
+              "waited_seat": 1,
+              "wall_remaining": 32,
+              "discards": [
+                [
+                  "北",
+                  "南",
+                  "发",
+                  "西",
+                  "南",
+                  "2b",
+                  "2w",
+                  "6w",
+                  "2t",
+                  "1t",
+                  "东",
+                  "3t",
+                  "发",
+                  "6t",
+                  "4b"
+                ],
+                [
+                  "1w",
+                  "北",
+                  "4b",
+                  "4t",
+                  "9w",
+                  "中",
+                  "1t",
+                  "东",
+                  "北",
+                  "3w",
+                  "7w",
+                  "7b",
+                  "4w",
+                  "8w",
+                  "8t",
+                  "1w"
+                ],
+                [
+                  "东",
+                  "5b",
+                  "1b",
+                  "2t",
+                  "中",
+                  "9w",
+                  "2w",
+                  "6b",
+                  "6t",
+                  "4w",
+                  "8t",
+                  "9b",
+                  "1b",
+                  "5t",
+                  "2w"
+                ],
+                [
+                  "1t",
+                  "9w",
+                  "北",
+                  "1w",
+                  "西",
+                  "南",
+                  "6t",
+                  "7b",
+                  "4w",
+                  "6w",
+                  "中",
+                  "2t",
+                  "8w",
+                  "5t",
+                  "9b"
+                ]
+              ],
+              "melds": [
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "5w",
+                      "6w",
+                      "4w"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "7w",
+                      "8w",
+                      "6w"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "发",
+                      "发",
+                      "发"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "4w",
+                      "5w",
+                      "6w"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "9b",
+                      "9b",
+                      "9b"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "2b",
+                      "3b",
+                      "4b"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "4t",
+                      "4t",
+                      "4t"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "6w",
+                      "8w",
+                      "7w"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "3w",
+                      "3w",
+                      "3w"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "6t",
+                      "7t",
+                      "5t"
+                    ]
+                  }
+                ]
+              ],
+              "hand_counts": [
+                7,
+                5,
+                4,
+                7
+              ],
+              "my_hand": [
+                "9t",
+                "9t",
+                "9t",
+                "5w"
+              ],
+              "seat": 2,
+              "last_discard": "4b",
+              "drawn_tile": "",
+              "god": {
+                "baotou": false,
+                "chain_count": 0,
+                "catch_play": false
+              },
+              "scores": [
+                -28,
+                48,
+                -14,
+                -6
+              ]
+            },
+            "events": null,
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770283722,
+          "source_line": 1062
+        },
+        {
+          "params": {
+            "seq": 1384
+          },
+          "response": {
+            "seq": 1385,
+            "gap": false,
+            "events": [
+              {
+                "seq": 1385,
+                "type": "tile_discarded",
+                "seat": 1,
+                "tile": "9t",
+                "data": {
+                  "catch_play": false
+                },
+                "ts": 1788770283
+              }
+            ],
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770284241,
+          "source_line": 1063
+        }
+      ],
+      "accepted_action": {
+        "kind": "gang",
+        "gang_kind": "exposed",
+        "tile": "9t",
+        "schema_version": 1
+      },
+      "action_response": {
+        "response": {
+          "ok": true
+        },
+        "source_line": 1064,
+        "wall_time_unix_ms": 1788770284254,
+        "decision_id": "dec-1b14e5ccef004d9e8aa8cdec194c2ddb"
+      },
+      "after_request": {
+        "params": {
+          "seq": 0
+        },
+        "response": {
+          "seq": 1387,
+          "gap": false,
+          "snapshot": {
+            "game_id": "t_b684d5c3eea4_r1_b2_t0",
+            "phase": "draw",
+            "round_no": 5,
+            "dealer": 1,
+            "turn": 2,
+            "waited_seat": 2,
+            "wall_remaining": 31,
+            "discards": [
+              [
+                "北",
+                "南",
+                "发",
+                "西",
+                "南",
+                "2b",
+                "2w",
+                "6w",
+                "2t",
+                "1t",
+                "东",
+                "3t",
+                "发",
+                "6t",
+                "4b"
+              ],
+              [
+                "1w",
+                "北",
+                "4b",
+                "4t",
+                "9w",
+                "中",
+                "1t",
+                "东",
+                "北",
+                "3w",
+                "7w",
+                "7b",
+                "4w",
+                "8w",
+                "8t",
+                "1w",
+                "9t"
+              ],
+              [
+                "东",
+                "5b",
+                "1b",
+                "2t",
+                "中",
+                "9w",
+                "2w",
+                "6b",
+                "6t",
+                "4w",
+                "8t",
+                "9b",
+                "1b",
+                "5t",
+                "2w"
+              ],
+              [
+                "1t",
+                "9w",
+                "北",
+                "1w",
+                "西",
+                "南",
+                "6t",
+                "7b",
+                "4w",
+                "6w",
+                "中",
+                "2t",
+                "8w",
+                "5t",
+                "9b"
+              ]
+            ],
+            "melds": [
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "5w",
+                    "6w",
+                    "4w"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "7w",
+                    "8w",
+                    "6w"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "发",
+                    "发",
+                    "发"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "4w",
+                    "5w",
+                    "6w"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "9b",
+                    "9b",
+                    "9b"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "2b",
+                    "3b",
+                    "4b"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "4t",
+                    "4t",
+                    "4t"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "6w",
+                    "8w",
+                    "7w"
+                  ]
+                },
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "9t",
+                    "9t",
+                    "9t",
+                    "9t"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "3w",
+                    "3w",
+                    "3w"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "6t",
+                    "7t",
+                    "5t"
+                  ]
+                }
+              ]
+            ],
+            "hand_counts": [
+              7,
+              4,
+              2,
+              7
+            ],
+            "my_hand": [
+              "5w",
+              "中"
+            ],
+            "seat": 2,
+            "last_discard": "9t",
+            "drawn_tile": "中",
+            "god": {
+              "baotou": false,
+              "chain_count": 1,
+              "catch_play": false
+            },
+            "scores": [
+              -28,
+              48,
+              -14,
+              -6
+            ]
+          },
+          "events": null,
+          "pending": false,
+          "finished": false
+        },
+        "wall_time_unix_ms": 1788770284789,
+        "source_line": 1065
+      },
+      "source_file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/audit/slot-xuanwu/runs/run-8c6ff1ea88f34b869cc75b62a498abb7/participants/u_04ebaf816a5a/raw/t_b684d5c3eea4_r1_b2_t0.jsonl",
+      "source_sha256": "faadfd6c305bf7efd7bbb805aaa00cf9f755777bb831249abafaf0534c33ca42"
+    },
+    {
+      "id": "t_b684d5c3eea4_r1_b3_t0-s1-seq1407",
+      "game_id": "t_b684d5c3eea4_r1_b3_t0",
+      "round_no": 6,
+      "expected_seq": 1407,
+      "before_requests": [
+        {
+          "params": {
+            "seq": 0
+          },
+          "response": {
+            "seq": 1404,
+            "gap": false,
+            "snapshot": {
+              "game_id": "t_b684d5c3eea4_r1_b3_t0",
+              "phase": "draw",
+              "round_no": 6,
+              "dealer": 3,
+              "turn": 0,
+              "waited_seat": 0,
+              "wall_remaining": 74,
+              "discards": [
+                [
+                  "1b",
+                  "1b"
+                ],
+                [
+                  "1b",
+                  "中"
+                ],
+                [
+                  "9b",
+                  "中"
+                ],
+                [
+                  "发",
+                  "8w",
+                  "3w"
+                ]
+              ],
+              "melds": [
+                [],
+                [],
+                [],
+                []
+              ],
+              "hand_counts": [
+                14,
+                13,
+                13,
+                13
+              ],
+              "my_hand": [
+                "4w",
+                "4b",
+                "3t",
+                "1t",
+                "5t",
+                "7w",
+                "3t",
+                "2w",
+                "7w",
+                "1t",
+                "1t",
+                "6b",
+                "2w"
+              ],
+              "seat": 1,
+              "last_discard": "3w",
+              "drawn_tile": "",
+              "god": {
+                "baotou": false,
+                "chain_count": 0,
+                "catch_play": false
+              },
+              "scores": [
+                -24,
+                -2,
+                6,
+                20
+              ]
+            },
+            "events": null,
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770292579,
+          "source_line": 1063
+        },
+        {
+          "params": {
+            "seq": 1404
+          },
+          "response": {
+            "seq": 1405,
+            "gap": false,
+            "events": [
+              {
+                "seq": 1405,
+                "type": "tile_discarded",
+                "seat": 0,
+                "tile": "1t",
+                "data": {
+                  "catch_play": false
+                },
+                "ts": 1788770292
+              }
+            ],
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770293081,
+          "source_line": 1064
+        }
+      ],
+      "accepted_action": {
+        "kind": "gang",
+        "gang_kind": "exposed",
+        "tile": "1t",
+        "schema_version": 1
+      },
+      "action_response": {
+        "response": {
+          "ok": true
+        },
+        "source_line": 1065,
+        "wall_time_unix_ms": 1788770293126,
+        "decision_id": "dec-91c5bd889426464393168623ab86d9c4"
+      },
+      "after_request": {
+        "params": {
+          "seq": 0
+        },
+        "response": {
+          "seq": 1407,
+          "gap": false,
+          "snapshot": {
+            "game_id": "t_b684d5c3eea4_r1_b3_t0",
+            "phase": "draw",
+            "round_no": 6,
+            "dealer": 3,
+            "turn": 1,
+            "waited_seat": 1,
+            "wall_remaining": 73,
+            "discards": [
+              [
+                "1b",
+                "1b",
+                "1t"
+              ],
+              [
+                "1b",
+                "中"
+              ],
+              [
+                "9b",
+                "中"
+              ],
+              [
+                "发",
+                "8w",
+                "3w"
+              ]
+            ],
+            "melds": [
+              [],
+              [
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "1t",
+                    "1t",
+                    "1t",
+                    "1t"
+                  ]
+                }
+              ],
+              [],
+              []
+            ],
+            "hand_counts": [
+              13,
+              11,
+              13,
+              13
+            ],
+            "my_hand": [
+              "4w",
+              "4b",
+              "3t",
+              "5t",
+              "7w",
+              "3t",
+              "2w",
+              "7w",
+              "6b",
+              "2w",
+              "北"
+            ],
+            "seat": 1,
+            "last_discard": "1t",
+            "drawn_tile": "北",
+            "god": {
+              "baotou": false,
+              "chain_count": 1,
+              "catch_play": false
+            },
+            "scores": [
+              -24,
+              -2,
+              6,
+              20
+            ]
+          },
+          "events": null,
+          "pending": false,
+          "finished": false
+        },
+        "wall_time_unix_ms": 1788770293639,
+        "source_line": 1066
+      },
+      "source_file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/audit/slot-xuanwu/runs/run-8c6ff1ea88f34b869cc75b62a498abb7/participants/u_04ebaf816a5a/raw/t_b684d5c3eea4_r1_b3_t0.jsonl",
+      "source_sha256": "2d73ce2319a610347869f287ea76a9a2f5f0b908bbda3c76da46eebb3c5d2c17"
+    },
+    {
+      "id": "t_b684d5c3eea4_r1_b1_t0-s0-seq309",
+      "game_id": "t_b684d5c3eea4_r1_b1_t0",
+      "round_no": 1,
+      "expected_seq": 309,
+      "before_requests": [
+        {
+          "params": {
+            "seq": 0
+          },
+          "response": {
+            "seq": 306,
+            "gap": false,
+            "snapshot": {
+              "game_id": "t_b684d5c3eea4_r1_b1_t0",
+              "phase": "draw",
+              "round_no": 1,
+              "dealer": 0,
+              "turn": 2,
+              "waited_seat": 2,
+              "wall_remaining": 36,
+              "discards": [
+                [
+                  "东",
+                  "9w",
+                  "5b",
+                  "7t",
+                  "9t",
+                  "2t",
+                  "东",
+                  "3t",
+                  "7t",
+                  "9t",
+                  "5w",
+                  "7w"
+                ],
+                [
+                  "东",
+                  "发",
+                  "1w",
+                  "5b",
+                  "5w",
+                  "1b",
+                  "2w",
+                  "2t",
+                  "4t",
+                  "4w",
+                  "8w",
+                  "2t",
+                  "7w",
+                  "1t"
+                ],
+                [
+                  "东",
+                  "3t",
+                  "4b",
+                  "9t",
+                  "1b",
+                  "9w",
+                  "8t",
+                  "2b",
+                  "8w",
+                  "5t",
+                  "8t",
+                  "8b",
+                  "2w",
+                  "1w",
+                  "北"
+                ],
+                [
+                  "4b",
+                  "1w",
+                  "6w",
+                  "3b",
+                  "5b",
+                  "5w",
+                  "4t",
+                  "8w",
+                  "6t",
+                  "南",
+                  "4t",
+                  "8w",
+                  "发"
+                ]
+              ],
+              "melds": [
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "3b",
+                      "5b",
+                      "4b"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "4b",
+                      "6b",
+                      "5b"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "1t",
+                      "3t",
+                      "2t"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "2b",
+                      "2b",
+                      "2b"
+                    ]
+                  },
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "5t",
+                      "5t",
+                      "5t"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "gang_bu",
+                    "tiles": [
+                      "6t",
+                      "6t",
+                      "6t",
+                      "6t"
+                    ]
+                  },
+                  {
+                    "kind": "gang_ming",
+                    "tiles": [
+                      "南",
+                      "南",
+                      "南",
+                      "南"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "7t",
+                      "9t",
+                      "8t"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "6w",
+                      "7w",
+                      "8w"
+                    ]
+                  }
+                ]
+              ],
+              "hand_counts": [
+                10,
+                1,
+                8,
+                7
+              ],
+              "my_hand": [
+                "中",
+                "1t",
+                "中",
+                "3w",
+                "7b",
+                "中",
+                "2t",
+                "3t",
+                "北",
+                "6b"
+              ],
+              "seat": 0,
+              "last_discard": "1t",
+              "drawn_tile": "",
+              "god": {
+                "baotou": false,
+                "chain_count": 0,
+                "catch_play": false
+              },
+              "scores": [
+                0,
+                0,
+                0,
+                0
+              ]
+            },
+            "events": null,
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788769860686,
+          "source_line": 230
+        },
+        {
+          "params": {
+            "seq": 306
+          },
+          "response": {
+            "seq": 307,
+            "gap": false,
+            "events": [
+              {
+                "seq": 307,
+                "type": "tile_discarded",
+                "seat": 2,
+                "tile": "中",
+                "data": {
+                  "catch_play": false
+                },
+                "ts": 1788769860
+              }
+            ],
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788769861184,
+          "source_line": 231
+        }
+      ],
+      "accepted_action": {
+        "kind": "gang",
+        "gang_kind": "exposed",
+        "tile": "中",
+        "schema_version": 1
+      },
+      "action_response": {
+        "response": {
+          "ok": true
+        },
+        "source_line": 232,
+        "wall_time_unix_ms": 1788769861214,
+        "decision_id": "dec-945b075f6f314132a8abdbddeb6065df"
+      },
+      "after_request": {
+        "params": {
+          "seq": 0
+        },
+        "response": {
+          "seq": 309,
+          "gap": false,
+          "snapshot": {
+            "game_id": "t_b684d5c3eea4_r1_b1_t0",
+            "phase": "draw",
+            "round_no": 1,
+            "dealer": 0,
+            "turn": 0,
+            "waited_seat": 0,
+            "wall_remaining": 35,
+            "discards": [
+              [
+                "东",
+                "9w",
+                "5b",
+                "7t",
+                "9t",
+                "2t",
+                "东",
+                "3t",
+                "7t",
+                "9t",
+                "5w",
+                "7w"
+              ],
+              [
+                "东",
+                "发",
+                "1w",
+                "5b",
+                "5w",
+                "1b",
+                "2w",
+                "2t",
+                "4t",
+                "4w",
+                "8w",
+                "2t",
+                "7w",
+                "1t"
+              ],
+              [
+                "东",
+                "3t",
+                "4b",
+                "9t",
+                "1b",
+                "9w",
+                "8t",
+                "2b",
+                "8w",
+                "5t",
+                "8t",
+                "8b",
+                "2w",
+                "1w",
+                "北",
+                "中"
+              ],
+              [
+                "4b",
+                "1w",
+                "6w",
+                "3b",
+                "5b",
+                "5w",
+                "4t",
+                "8w",
+                "6t",
+                "南",
+                "4t",
+                "8w",
+                "发"
+              ]
+            ],
+            "melds": [
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "3b",
+                    "5b",
+                    "4b"
+                  ]
+                },
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "中",
+                    "中",
+                    "中",
+                    "中"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "4b",
+                    "6b",
+                    "5b"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "1t",
+                    "3t",
+                    "2t"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "2b",
+                    "2b",
+                    "2b"
+                  ]
+                },
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "5t",
+                    "5t",
+                    "5t"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "gang_bu",
+                  "tiles": [
+                    "6t",
+                    "6t",
+                    "6t",
+                    "6t"
+                  ]
+                },
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "南",
+                    "南",
+                    "南",
+                    "南"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "7t",
+                    "9t",
+                    "8t"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "6w",
+                    "7w",
+                    "8w"
+                  ]
+                }
+              ]
+            ],
+            "hand_counts": [
+              8,
+              1,
+              7,
+              7
+            ],
+            "my_hand": [
+              "1t",
+              "3w",
+              "7b",
+              "2t",
+              "3t",
+              "北",
+              "6b",
+              "6b"
+            ],
+            "seat": 0,
+            "last_discard": "中",
+            "drawn_tile": "6b",
+            "god": {
+              "baotou": false,
+              "chain_count": 1,
+              "catch_play": false
+            },
+            "scores": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "events": null,
+          "pending": false,
+          "finished": false
+        },
+        "wall_time_unix_ms": 1788769861735,
+        "source_line": 233
+      },
+      "source_file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/audit/slot-zhuque/runs/run-5fe8e89bb44848659a3292611ae9b886/participants/u_42ba63d1ad30/raw/t_b684d5c3eea4_r1_b1_t0.jsonl",
+      "source_sha256": "04004ebda7fb0a82b47cff658809cdb82da56cb73211aa7623176266721aed6d"
+    },
+    {
+      "id": "t_b684d5c3eea4_r1_b2_t0-s1-seq474",
+      "game_id": "t_b684d5c3eea4_r1_b2_t0",
+      "round_no": 2,
+      "expected_seq": 474,
+      "before_requests": [
+        {
+          "params": {
+            "seq": 0
+          },
+          "response": {
+            "seq": 471,
+            "gap": false,
+            "snapshot": {
+              "game_id": "t_b684d5c3eea4_r1_b2_t0",
+              "phase": "draw",
+              "round_no": 2,
+              "dealer": 1,
+              "turn": 2,
+              "waited_seat": 2,
+              "wall_remaining": 50,
+              "discards": [
+                [
+                  "北",
+                  "1w",
+                  "8w",
+                  "7b",
+                  "2b",
+                  "3t",
+                  "8b",
+                  "2t",
+                  "中"
+                ],
+                [
+                  "9b",
+                  "6b",
+                  "9b",
+                  "发",
+                  "东",
+                  "东",
+                  "7b",
+                  "2b",
+                  "4w",
+                  "南"
+                ],
+                [
+                  "东",
+                  "9b",
+                  "北",
+                  "8w",
+                  "6b",
+                  "1t",
+                  "2t",
+                  "9b",
+                  "2t"
+                ],
+                [
+                  "6w",
+                  "北",
+                  "发",
+                  "1w",
+                  "3w",
+                  "4b",
+                  "2t",
+                  "1w"
+                ]
+              ],
+              "melds": [
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "1t",
+                      "1t",
+                      "1t"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "3t",
+                      "4t",
+                      "2t"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "peng",
+                    "tiles": [
+                      "南",
+                      "南",
+                      "南"
+                    ]
+                  }
+                ],
+                []
+              ],
+              "hand_counts": [
+                10,
+                10,
+                11,
+                13
+              ],
+              "my_hand": [
+                "2w",
+                "7t",
+                "2w",
+                "3b",
+                "6t",
+                "9t",
+                "5t",
+                "9t",
+                "2w",
+                "3b"
+              ],
+              "seat": 1,
+              "last_discard": "南",
+              "drawn_tile": "",
+              "god": {
+                "baotou": false,
+                "chain_count": 0,
+                "catch_play": false
+              },
+              "scores": [
+                -16,
+                20,
+                -2,
+                -2
+              ]
+            },
+            "events": null,
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788769925524,
+          "source_line": 363
+        },
+        {
+          "params": {
+            "seq": 471
+          },
+          "response": {
+            "seq": 472,
+            "gap": false,
+            "events": [
+              {
+                "seq": 472,
+                "type": "tile_discarded",
+                "seat": 2,
+                "tile": "2w",
+                "data": {
+                  "catch_play": false
+                },
+                "ts": 1788769925
+              }
+            ],
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788769926016,
+          "source_line": 364
+        }
+      ],
+      "accepted_action": {
+        "kind": "gang",
+        "gang_kind": "exposed",
+        "tile": "2w",
+        "schema_version": 1
+      },
+      "action_response": {
+        "response": {
+          "ok": true
+        },
+        "source_line": 365,
+        "wall_time_unix_ms": 1788769926027,
+        "decision_id": "dec-3b9886604ffd4a65b9bed3ea0f1da55e"
+      },
+      "after_request": {
+        "params": {
+          "seq": 0
+        },
+        "response": {
+          "seq": 474,
+          "gap": false,
+          "snapshot": {
+            "game_id": "t_b684d5c3eea4_r1_b2_t0",
+            "phase": "draw",
+            "round_no": 2,
+            "dealer": 1,
+            "turn": 1,
+            "waited_seat": 1,
+            "wall_remaining": 49,
+            "discards": [
+              [
+                "北",
+                "1w",
+                "8w",
+                "7b",
+                "2b",
+                "3t",
+                "8b",
+                "2t",
+                "中"
+              ],
+              [
+                "9b",
+                "6b",
+                "9b",
+                "发",
+                "东",
+                "东",
+                "7b",
+                "2b",
+                "4w",
+                "南"
+              ],
+              [
+                "东",
+                "9b",
+                "北",
+                "8w",
+                "6b",
+                "1t",
+                "2t",
+                "9b",
+                "2t",
+                "2w"
+              ],
+              [
+                "6w",
+                "北",
+                "发",
+                "1w",
+                "3w",
+                "4b",
+                "2t",
+                "1w"
+              ]
+            ],
+            "melds": [
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "1t",
+                    "1t",
+                    "1t"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "3t",
+                    "4t",
+                    "2t"
+                  ]
+                },
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "2w",
+                    "2w",
+                    "2w",
+                    "2w"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "peng",
+                  "tiles": [
+                    "南",
+                    "南",
+                    "南"
+                  ]
+                }
+              ],
+              []
+            ],
+            "hand_counts": [
+              10,
+              8,
+              10,
+              13
+            ],
+            "my_hand": [
+              "7t",
+              "3b",
+              "6t",
+              "9t",
+              "5t",
+              "9t",
+              "3b",
+              "2b"
+            ],
+            "seat": 1,
+            "last_discard": "2w",
+            "drawn_tile": "2b",
+            "god": {
+              "baotou": false,
+              "chain_count": 1,
+              "catch_play": false
+            },
+            "scores": [
+              -16,
+              20,
+              -2,
+              -2
+            ]
+          },
+          "events": null,
+          "pending": false,
+          "finished": false
+        },
+        "wall_time_unix_ms": 1788769926571,
+        "source_line": 366
+      },
+      "source_file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/audit/slot-zhuque/runs/run-5fe8e89bb44848659a3292611ae9b886/participants/u_42ba63d1ad30/raw/t_b684d5c3eea4_r1_b2_t0.jsonl",
+      "source_sha256": "8fe9a0110bf10aa549cc418409bdb0e8f81702c5448db731028f525b3acf7614"
+    },
+    {
+      "id": "t_b684d5c3eea4_r1_b1_t0-s0-seq1490",
+      "game_id": "t_b684d5c3eea4_r1_b1_t0",
+      "round_no": 5,
+      "expected_seq": 1490,
+      "before_requests": [
+        {
+          "params": {
+            "seq": 0
+          },
+          "response": {
+            "seq": 1487,
+            "gap": false,
+            "snapshot": {
+              "game_id": "t_b684d5c3eea4_r1_b1_t0",
+              "phase": "draw",
+              "round_no": 5,
+              "dealer": 3,
+              "turn": 1,
+              "waited_seat": 1,
+              "wall_remaining": 54,
+              "discards": [
+                [
+                  "9t",
+                  "2t",
+                  "1w",
+                  "4b",
+                  "3w",
+                  "5t",
+                  "西",
+                  "9b"
+                ],
+                [
+                  "3t",
+                  "中",
+                  "西",
+                  "6w",
+                  "6t",
+                  "5t",
+                  "1b"
+                ],
+                [
+                  "9t",
+                  "北",
+                  "北",
+                  "西",
+                  "西",
+                  "南",
+                  "1b"
+                ],
+                [
+                  "东",
+                  "北",
+                  "7t",
+                  "1b",
+                  "6w",
+                  "2b",
+                  "4b",
+                  "东"
+                ]
+              ],
+              "melds": [
+                [
+                  {
+                    "kind": "gang_an",
+                    "tiles": [
+                      "1t",
+                      "1t",
+                      "1t",
+                      "1t"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "7t",
+                      "8t",
+                      "9t"
+                    ]
+                  },
+                  {
+                    "kind": "chi",
+                    "tiles": [
+                      "5b",
+                      "6b",
+                      "4b"
+                    ]
+                  }
+                ],
+                [],
+                []
+              ],
+              "hand_counts": [
+                10,
+                8,
+                13,
+                13
+              ],
+              "my_hand": [
+                "6b",
+                "发",
+                "发",
+                "5w",
+                "白",
+                "7b",
+                "5w",
+                "7b",
+                "5w",
+                "5b"
+              ],
+              "seat": 0,
+              "last_discard": "9b",
+              "drawn_tile": "",
+              "god": {
+                "baotou": false,
+                "chain_count": 0,
+                "catch_play": false
+              },
+              "scores": [
+                56,
+                -26,
+                -26,
+                -4
+              ]
+            },
+            "events": null,
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770322822,
+          "source_line": 1125
+        },
+        {
+          "params": {
+            "seq": 1487
+          },
+          "response": {
+            "seq": 1488,
+            "gap": false,
+            "events": [
+              {
+                "seq": 1488,
+                "type": "tile_discarded",
+                "seat": 1,
+                "tile": "5w",
+                "data": {
+                  "catch_play": false
+                },
+                "ts": 1788770323
+              }
+            ],
+            "pending": false,
+            "finished": false
+          },
+          "wall_time_unix_ms": 1788770323317,
+          "source_line": 1126
+        }
+      ],
+      "accepted_action": {
+        "kind": "gang",
+        "gang_kind": "exposed",
+        "tile": "5w",
+        "schema_version": 1
+      },
+      "action_response": {
+        "response": {
+          "ok": true
+        },
+        "source_line": 1127,
+        "wall_time_unix_ms": 1788770323343,
+        "decision_id": "dec-260eab8db93f4eca9dc920b79089f515"
+      },
+      "after_request": {
+        "params": {
+          "seq": 0
+        },
+        "response": {
+          "seq": 1490,
+          "gap": false,
+          "snapshot": {
+            "game_id": "t_b684d5c3eea4_r1_b1_t0",
+            "phase": "draw",
+            "round_no": 5,
+            "dealer": 3,
+            "turn": 0,
+            "waited_seat": 0,
+            "wall_remaining": 53,
+            "discards": [
+              [
+                "9t",
+                "2t",
+                "1w",
+                "4b",
+                "3w",
+                "5t",
+                "西",
+                "9b"
+              ],
+              [
+                "3t",
+                "中",
+                "西",
+                "6w",
+                "6t",
+                "5t",
+                "1b",
+                "5w"
+              ],
+              [
+                "9t",
+                "北",
+                "北",
+                "西",
+                "西",
+                "南",
+                "1b"
+              ],
+              [
+                "东",
+                "北",
+                "7t",
+                "1b",
+                "6w",
+                "2b",
+                "4b",
+                "东"
+              ]
+            ],
+            "melds": [
+              [
+                {
+                  "kind": "gang_an",
+                  "tiles": [
+                    "1t",
+                    "1t",
+                    "1t",
+                    "1t"
+                  ]
+                },
+                {
+                  "kind": "gang_ming",
+                  "tiles": [
+                    "5w",
+                    "5w",
+                    "5w",
+                    "5w"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "7t",
+                    "8t",
+                    "9t"
+                  ]
+                },
+                {
+                  "kind": "chi",
+                  "tiles": [
+                    "5b",
+                    "6b",
+                    "4b"
+                  ]
+                }
+              ],
+              [],
+              []
+            ],
+            "hand_counts": [
+              8,
+              7,
+              13,
+              13
+            ],
+            "my_hand": [
+              "6b",
+              "发",
+              "发",
+              "白",
+              "7b",
+              "7b",
+              "5b",
+              "8t"
+            ],
+            "seat": 0,
+            "last_discard": "5w",
+            "drawn_tile": "8t",
+            "god": {
+              "baotou": false,
+              "chain_count": 1,
+              "catch_play": false
+            },
+            "scores": [
+              56,
+              -26,
+              -26,
+              -4
+            ]
+          },
+          "events": null,
+          "pending": false,
+          "finished": false
+        },
+        "wall_time_unix_ms": 1788770324059,
+        "source_line": 1128
+      },
+      "source_file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/audit/slot-zhuque/runs/run-5fe8e89bb44848659a3292611ae9b886/participants/u_42ba63d1ad30/raw/t_b684d5c3eea4_r1_b1_t0.jsonl",
+      "source_sha256": "04004ebda7fb0a82b47cff658809cdb82da56cb73211aa7623176266721aed6d"
+    }
+  ]
+}

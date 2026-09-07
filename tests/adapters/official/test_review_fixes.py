@@ -320,12 +320,12 @@ async def test_lifecycle_audit_only_on_change(clock):
     assert (
         len([r for r in audit.records if r.kind is AuditKind.LIFECYCLE_CHANGED]) == 1
     )
-    assert len(audit.records) == 2
+    assert len([r for r in audit.records if r.kind not in (AuditKind.HTTP_REQUEST, AuditKind.RAW_PROTOCOL_STATE)]) == 2
     snapshot = await asyncio.wait_for(session.next_update(), timeout=5)
     assert not isinstance(snapshot, ParticipantTerminal)
     lifecycle = [r for r in audit.records if r.kind is AuditKind.LIFECYCLE_CHANGED]
     assert len(lifecycle) == 2  # 两轮无变化零发射 + 变化采纳一条
-    assert len(audit.records) == 3  # 指南审计不随轮询重复
+    assert len([r for r in audit.records if r.kind not in (AuditKind.HTTP_REQUEST, AuditKind.RAW_PROTOCOL_STATE)]) == 3  # 指南审计不随轮询重复
 
 
 async def test_next_update_survives_transient_exhaustion(clock):

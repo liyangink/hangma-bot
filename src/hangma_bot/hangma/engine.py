@@ -17,6 +17,7 @@ import 期损坏时，`analyze` 降级为 RuleIssue（其余候选与紧急路�
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Optional, Tuple
 
 from hangma_bot.kernel.actions import Action, Tile, action_key
@@ -253,10 +254,10 @@ class HangmaRules:
         candidates: Tuple[RuleCandidate, ...],
         issues: list,
     ) -> Tuple[RuleCandidate, ...]:
-        """有财必拷响：手留财神且非爆头/杠上摸牌时排除胡候选（§7）。
+        """按赛事开关要求有财必须爆头；杠补只影响计番，不豁免资格。
 
-        保守方向：宁漏胡不 409；判定委托 special_rules，被排除时记录
-        RuleIssue 而非静默丢弃。
+        正常规则排除的原因进入剩余候选证据；只有分解失败才记降级。
+        依据 RULES_EVIDENCE §7 的用户确认与两次官方拒胡反例。
         """
 
         if not self.config.you_cai_bi_kao:
@@ -288,24 +289,23 @@ class HangmaRules:
             issues.append(
                 RuleIssue(
                     _AREA_YOUCAI,
-                    "有财必拷响：手留财神 {0} 张但无法确认爆头/杠开，保守排除胡候选（§7）".format(
+                    "有财必拷响：手留财神 {0} 张但无法完成资格核验，保守排除胡候选（§7）".format(
                         whites_held
                     ),
                 )
             )
             return tuple(c for c in candidates if c.action_key != "hu")
-        if observation.gang_draw is None and not observation.rule_state.baotou:
-            issues.append(RuleIssue("observation.gang_draw", "当前摸牌来源未知，无法确认有财必拷响的杠补牌豁免"))
         block = special_rules.you_cai_bi_kao_block(
-            True,
+            self.config.you_cai_bi_kao,
             split,
             observation.rule_state.baotou,
-            observation.gang_draw is True,
         )
         if block is None:
             return candidates
-        issues.append(RuleIssue(_AREA_YOUCAI, block))
-        return tuple(c for c in candidates if c.action_key != "hu")
+        return tuple(
+            replace(c, evidence=c.evidence + (block,))
+            for c in candidates if c.action_key != "hu"
+        )
 
     def _attach_facts(
         self,

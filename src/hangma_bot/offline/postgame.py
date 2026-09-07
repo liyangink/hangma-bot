@@ -64,7 +64,8 @@ def diagnose_official(path: Path, out: Path, *, ruleset_version: str, rule_confi
     """官方终局事件独立派生诊断行，复用唯一规则；未知配置时不猜计番条件。
 
     输出 hands.jsonl 为赛后全信息，只能作诊断/教师候选，不能作为学生观察。
-    顶层摘要冲突和缺墙项不会因派生检查成功而变成正式导入成功。
+    单局结果与累计积分直接复用正式解析器；摘要差异单独展示，不覆盖事件。
+    缺墙、缺配置或缺累计积分仍不能变成可用教师候选。
     """
     document = json.loads(path.read_bytes())
     digest = sha256_file(path)
@@ -78,45 +79,47 @@ def diagnose_official(path: Path, out: Path, *, ruleset_version: str, rule_confi
         if type(config.get("base_score")) is not int or config["base_score"] <= 0 or not isinstance(config.get("you_cai_bi_kao"), bool):
             raise ValueError("规则配置需要正整数 base_score 和布尔 you_cai_bi_kao")
         config = {"ruleset_version": ruleset_version, "base_score": config["base_score"], "you_cai_bi_kao": config["you_cai_bi_kao"]}
-    results, refs, conflicts = {}, {}, []
-    for b, block in enumerate(document["blocks"]):
-        for e, event in enumerate(block["events"]):
-            if event["type"] != "round_ended":
-                continue
-            number, data = block["round_no"], event["data"]
-            result = {"round_no": number, "dealer": block["dealer"], "winner": event["seat"],
-                "is_draw": int(data["draw"]), "multiplier": data.get("fan", 0), "scores": data["scores"]}
-            if number in results and results[number] != result:
-                raise ValueError("同一单局的终局事件存在冲突，拒绝选择其一")
-            results[number] = result
-            refs[number] = {"file": "events.json", "sha256": digest, "json_pointer": f"/blocks/{b}/events/{e}", "seq": event["seq"]}
-    top = {r["round_no"]: r for r in document["rounds"]}
-    for number in sorted(set(top) | set(results)):
-        if top.get(number) != results.get(number):
-            conflicts.append({"round_no": number, "reason": "top_level_result_conflict_or_missing"})
-    parsed = parse_room_document(dict(document, rounds=[results[n] for n in sorted(results)]))
-    before, rows, checks = [0, 0, 0, 0], [], []
+    parsed = parse_room_document(document)
+    rows, checks, conflicts, comparisons = [], [], [], []
     rules = HangmaRules(RuleConfig(**config)) if config else None
-    for number, result in sorted(results.items()):
+    for number in sorted({block.round_no for block in parsed.blocks}):
         row = round_data(parsed, number, file_sha256=digest, json_pointer="")
-        after = [before[i] + result["scores"][i] for i in range(4)]
+        terminal = [(event, pointer) for event, pointer in zip(row["events"], row["event_pointers"])
+                    if event["type"] == "round_ended"]
+        ref = ({"file": "events.json", "sha256": digest, "json_pointer": terminal[0][1],
+                "seq": terminal[0][0]["seq"]} if terminal else None)
+        comparison = {"round_no": number, **row["result_consistency"]}
+        comparisons.append(comparison)
+        if comparison["status"] == "conflict":
+            conflicts.append({"round_no": number, "reason": "summary_comparison_difference",
+                              "checks": comparison["checks"]})
         row.update(replay_schema_version=1, hand_id=f"diagnostic:{digest}:{number}", game_key={"game_id": document["game_id"]},
-            rule_config=config, scores_before=before[:], scores_after=after, score_delta=result["scores"], result_source=refs[number],
-            derivation="blocks.round_ended", information_scope="postgame_full_information")
+            rule_config=config, result_source_ref=ref,
+            derivation="blocks.round_ended" if terminal else "blocks", information_scope="postgame_full_information")
         check = check_hand(row, rules) if rules else {"status": "not_checked", "issues": [{"code": "missing_rule_config"}]}
-        row["teacher_label_candidate"] = check["status"] == "passed" and not conflicts
+        row["teacher_label_candidate"] = (check["status"] == "passed" and row["result_confirmed"]
+            and row["coverage"] == "full_history" and row["scores_before"] is not None and row["scores_after"] is not None)
         row["student_observation"] = False
         rows.append(row)
-        checks.append({"round_no": number, "source": refs[number], **check})
-        before = after
-    final = [e["data"]["final_scores"] for b in document["blocks"] for e in b["events"] if e["type"] == "game_ended"]
-    if final and before != final[-1]:
+        checks.append({"round_no": number, "source": ref, **check})
+    finals = {e["seq"]: e["data"]["final_scores"] for row in rows for e in row["events"] if e["type"] == "game_ended"}
+    final = next(iter(finals.values())) if len(finals) == 1 else None
+    # summed_scores 保留旧报告键，但仅表示已观察单局的变化之和，不能冒充累计积分。
+    known = bool(rows) and all(row["score_delta"] is not None for row in rows)
+    summed = [sum(row["score_delta"][seat] for row in rows) for seat in range(4)] if known else None
+    start = rows[0]["scores_before"] if rows else None
+    final_match = None
+    if known and final is not None:
+        final_match = ([start[seat] + summed[seat] for seat in range(4)] == final
+                       and all(left["scores_after"] == right["scores_before"] for left, right in zip(rows, rows[1:])))
+    if final_match is False:
         for row in rows:
             row["teacher_label_candidate"] = False
     report = {"source_sha256": digest, "game_id": document["game_id"], "ruleset_version": ruleset_version, "rule_config": config,
-        "origin_conflicts": conflicts, "rounds": checks, "statuses": dict(Counter(c["status"] for c in checks)),
+        "origin_conflicts": conflicts, "summary_comparisons": comparisons,
+        "rounds": checks, "statuses": dict(Counter(c["status"] for c in checks)),
         "teacher_label_candidates": sum(r["teacher_label_candidate"] for r in rows),
-        "final_scores_match": before == final[-1] if final else None, "summed_scores": before,
+        "final_scores_match": final_match, "summed_scores": summed, "observed_start_scores": start, "final_scores": final,
         "limitations": ["赛后全知数据不可作为学生观察", "诊断派生不覆盖官方原文或正式导入", "候选标签仍需任务级筛选，不自动进入训练"]}
     out.mkdir(parents=True, exist_ok=False)
     shutil.copy2(path, out / "events.json")

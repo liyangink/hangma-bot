@@ -12,11 +12,11 @@ from dataclasses import dataclass, field, replace
 from enum import Enum
 from typing import Optional, Tuple
 
-from hangma_bot.kernel.actions import Tile, WindowKey, WindowPhase
+from hangma_bot.kernel.actions import Action, Tile, WindowKey, WindowPhase
 from hangma_bot.kernel.config import TimingConfig
 from hangma_bot.kernel.observation import PlayerObservation, PublicDiscard, PublicEvent
 from hangma_bot.hangma.observation_rules import (
-    enrich_observation, recompute_draw_rule_state, compare_observation_transition,
+    enrich_observation, reconcile_observation, recompute_draw_rule_state, compare_observation_transition,
 )
 
 from . import projector
@@ -79,6 +79,10 @@ class ProtocolSyncState:
         self._trigger_is_estimated = False
         self.finished = False
         self._observation_cache = None  # 延迟构造的权威观察缓存
+        # 只保留本场最近观察及一个已明确接受的动作前态；规则模块核对新
+        # 快照后才能衔接派生事实，不把HTTP成功当作已收到官方动作事件。
+        self._fact_observation: Optional[PlayerObservation] = None
+        self._confirmed_action: Optional[Tuple[PlayerObservation, Action]] = None
         # 跨重建存活的触发弃牌记忆 (round_no, seq, 牌码, 座位)。
         # 应用全量快照不清空它（仅局号变化时重置）：全量重建会清空事件
         # 历史，而测试房响应阶段 last_discard 是纯牌码字符串（无 seq），
@@ -105,7 +109,7 @@ class ProtocolSyncState:
         new_round = previous is None or previous.round_no != snapshot.round_no
         if previous is not None and snapshot.seq < self.last_seq:
             raise DtoError("snapshot.seq 早于已消费水位")
-        # 全量报文可同时带事件，也可能已串行补领。先校验整批，再仅补历史。
+        # 全量报文可同时带事件。先校验整批，再仅补历史。
         # 快照前事件绝不能再推进手牌/牌河；快照水位不代表事件已经接收。
         incoming = {}
         for event in events:
@@ -142,7 +146,7 @@ class ProtocolSyncState:
         retained = {} if new_round else {event.seq: event for event in self.history}
         for seq, public in incoming.items():
             if seq in retained and retained[seq] != public:
-                raise DtoError("补领事件与已接收历史冲突")
+                raise DtoError("快照附带事件与已接收历史冲突")
         old_trigger = self._response_trigger
         self.last_transition_checks = ()
         if not new_round:
@@ -156,6 +160,8 @@ class ProtocolSyncState:
             self._observation_issues.update(check for check in self.last_transition_checks if check.startswith("god_mismatch:"))
         if new_round:
             self.history = [incoming[seq] for seq in sorted(incoming)]
+            self._fact_observation = None
+            self._confirmed_action = None
             self._observation_issues.clear()
             # 无弃牌/副露、无链且处于发牌或庄家初始摸牌，才可证明单局起点。
             self.history_complete = (
@@ -443,6 +449,67 @@ class ProtocolSyncState:
         self._observation_issues.add("unknown_event:" + event_type)
         self._observation_cache = None
 
+    def incremental_response_observation(self) -> Optional[PlayerObservation]:
+        """连续普通他家摸/弃/过事件可直接投影碰窗口，无需再 GET 快照。
+
+        只处理明确 catch_play=false 且本人暗牌/god 未变化的后缀；
+        吃碰杠、本人动作、抓打圈、缺少标记或超时阶段变化仍交权威快照。
+        snapshot_seq 保持真实快照水位，consumed_seq 记录已消费的增量水位。
+        """
+        snapshot = self.snapshot
+        if snapshot is None or self.finished or snapshot.god_catch_play or snapshot.drawn_tile:
+            return None
+        suffix = tuple(e for e in self.history if e.seq > snapshot.seq)
+        if not suffix or suffix[-1].seq != self.last_seq:
+            return None
+        base = projector.observation(snapshot, tuple(self.history), self.game_id)
+        rows = [list(row) for row in base.discards]
+        counts = list(base.hand_counts)
+        remaining = base.remaining_tile_count
+        last_discard = None
+        # 不能把旧快照水位与跨缺口事件拼成当前响应状态。
+        for expected, event in enumerate(suffix, snapshot.seq + 1):
+            if event.seq != expected:
+                return None
+            if event.kind == "pass":
+                continue
+            if event.seat is None or event.seat == snapshot.seat:
+                return None
+            if event.kind == "tile_drawn" and not event.tiles:
+                counts[event.seat] += 1
+                remaining = None if remaining is None else remaining - 1
+                last_discard = None
+            elif event.kind == "tile_discarded" and len(event.tiles) == 1 and event.catch_play is False:
+                rows[event.seat].append(event.tiles[0])
+                counts[event.seat] -= 1
+                last_discard = PublicDiscard(event.seat, event.tiles[0], event.seq)
+            else:
+                return None
+        if last_discard is None or min(counts) < 0 or (remaining is not None and remaining < 0):
+            return None
+        return enrich_observation(replace(
+            base, phase="response_peng", turn_seat=last_discard.seat,
+            responding_seats=tuple(seat for seat in range(4) if seat != last_discard.seat),
+            drawn_tile=None, last_discard=last_discard, discards=tuple(tuple(row) for row in rows),
+            hand_counts=tuple(counts), remaining_tile_count=remaining, consumed_seq=self.last_seq,
+            history_complete=self.history_complete,
+            observation_issues=tuple(sorted(self._observation_issues - {"history_gap_snapshot"})),
+        ))
+
+    def incremental_response_window(self):
+        """普通弃牌的响应身份直接取原事件序号；阶段截止由会话计时处理。"""
+        observation = self.incremental_response_observation()
+        if observation is None:
+            return None
+        discard = observation.last_discard
+        return projector.DetectedWindow(
+            window_key=WindowKey(self.game_id, observation.round_no, discard.seq,
+                                 WindowPhase.RESPONSE_PENG, observation.seat),
+            timeout_seconds=self.timing.peng_timeout_sec,
+            trigger_projection_note=None,
+            trigger_discard=(discard.seq, discard.tile.code, discard.seat),
+        )
+
     def events_need_authoritative_refresh(self, events) -> bool:
         """只在当前实现不能完整推进必要事实时查询快照。
 
@@ -452,6 +519,10 @@ class ProtocolSyncState:
         丢失牌面或陈旧 god 为代价。
         """
 
+        projected = self.incremental_response_observation()
+        if projected is not None:
+            self._observation_cache = projected
+            return False
         my_seat = self.snapshot.seat if self.snapshot is not None else None
         for event in events:
             if event.type == "tile_drawn" and event.seat != my_seat and event.tiles:
@@ -482,6 +553,19 @@ class ProtocolSyncState:
         """本人对当前响应周期已表态（POST pass 被官方接受后由会话层调用）。"""
 
         self._self_responded = True
+
+    def note_accepted_action(self, action: Action, before: PlayerObservation) -> None:
+        """登记官方已明确成功的本人动作；调用方不得用于拒绝或结果不确定。
+
+        保留提交前的不可变观察供新快照核对。此处不推进牌面、不修改
+        官方god，也不提前更新链次数；作用域仅限持有本状态机的场次。
+        """
+        if before.game_id != self.game_id:
+            raise ValueError("成功动作前态必须属于当前场次")
+        self._confirmed_action = (before, action)
+        # 同场GET和POST可并发：新快照可能先于成功回执到达并已缓存。
+        # 新确认必须使同水位观察也重新核对，不等下一次HTTP或改写已投递值。
+        self._observation_cache = None
 
     @property
     def response_suppressed_for_self(self) -> bool:
@@ -611,6 +695,9 @@ class ProtocolSyncState:
         incremental = self.incremental_draw_window()
         if incremental is not None:
             return incremental
+        response = self.incremental_response_window()
+        if response is not None:
+            return response
         if self._masked_draws_since_snapshot():
             # 他家开始摸牌已证明旧响应结束；不能继续使用快照里的我方响应资格。
             return None
@@ -666,7 +753,7 @@ class ProtocolSyncState:
         return (public.seq, public.tiles[0].code, public.seat)
 
     def current_observation(self) -> Optional[PlayerObservation]:
-        """同一水位唯一观察；快照和增量窗口共用该入口，不存在第二份陈旧观察。"""
+        """当前事实的统一观察入口；快照、增量及新成功确认均使缓存失效。"""
 
         if self.snapshot is None:
             return None
@@ -674,7 +761,22 @@ class ProtocolSyncState:
             if self.incremental_draw_window() is not None:
                 self._observation_cache = self.incremental_draw_observation()
             else:
-                self._observation_cache = enrich_observation(self._snapshot_observation())
+                self._observation_cache = (self.incremental_response_observation()
+                                           or enrich_observation(self._snapshot_observation()))
+        observation = self._observation_cache
+        if observation is not self._fact_observation:
+            if self._confirmed_action is not None:
+                before, action = self._confirmed_action
+                observation = reconcile_observation(before, observation, confirmed_action=action)
+                # 增量可先推进水位但仍待权威快照确认；只能在新快照吸收
+                # 该动作后消费一次确认，避免用陈旧牌面提前丢掉核对依据。
+                if (observation.round_no != before.round_no or
+                        observation.snapshot_seq > (before.consumed_seq if before.consumed_seq is not None else before.snapshot_seq)):
+                    self._confirmed_action = None
+            elif self._fact_observation is not None:
+                observation = reconcile_observation(self._fact_observation, observation)
+            self._observation_cache = observation
+            self._fact_observation = observation
         return self._observation_cache
 
     def _snapshot_observation(self) -> Optional[PlayerObservation]:
@@ -693,7 +795,7 @@ class ProtocolSyncState:
                            remaining_tile_count=(None if base.remaining_tile_count is None
                                                  else base.remaining_tile_count - len(masked)))
         return replace(base, consumed_seq=self.last_seq, history_complete=self.history_complete,
-                       observation_issues=tuple(sorted(self._observation_issues)))
+                       observation_issues=tuple(sorted(self._observation_issues - {"history_gap_snapshot"})))
 
     def _masked_draws_since_snapshot(self):
         """只推进快照之后的他家公开摸牌数量，绝不需要或推测其牌值。"""

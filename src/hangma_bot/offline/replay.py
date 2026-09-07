@@ -663,6 +663,8 @@ def build_hand_rows_and_index(
                     "is_draw": data["is_draw"],
                     "attempt_status": "unknown",
                     "result_confirmed": data["result_confirmed"],
+                    "result_source": data["result_source"],
+                    "result_consistency": data["result_consistency"],
                     "missing_fields": list(data["missing_fields"]),
                     "source_refs": [ref],
                 },

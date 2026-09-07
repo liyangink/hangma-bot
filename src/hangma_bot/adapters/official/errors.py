@@ -81,6 +81,7 @@ class OfficialError(Exception):
         raw_text: Optional[str] = None,
     ) -> None:
         self.http_status = http_status
+        self.response_headers: dict[str, str] = {}  # 由传输层仅填脱敏诊断白名单
         # 未知 code 值不并入 detail：全大写凭证等任意文本即使脱敏后
         # 也无审计价值，直接丢弃（安全优先于信息保留）
         self.official_code = sanitize_official_code(official_code)
@@ -158,4 +159,3 @@ class DtoError(ValueError):
     def __init__(self, message: str, *, recoverable: bool = True) -> None:
         self.recoverable = recoverable
         super().__init__(message)
-

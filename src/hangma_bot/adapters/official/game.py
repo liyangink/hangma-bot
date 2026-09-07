@@ -60,6 +60,7 @@ from hangma_bot.kernel.config import TimingConfig
 from hangma_bot.kernel.observation import PlayerObservation
 from hangma_bot.kernel.serialization import observation_to_json, public_event_to_json
 
+from .request_audit import audited_request
 from . import projector
 from .action_gate import ActionGate
 from .dto import StateResponse, parse_state_response
@@ -109,7 +110,7 @@ _SSE_IDLE_POLL_SEC = 5.0
 
 
 class OfficialGameSession:
-    """一个 game_id 的会话；共享所在 Token 的传输与调度器，独享同步状态与动作门。"""
+    """一个 game_id 的会话；共享所在Token的传输，独享调度、同步状态与动作门。"""
 
     def __init__(
         self,
@@ -141,6 +142,9 @@ class OfficialGameSession:
         self._retry_sleep = retry_sleep if retry_sleep is not None else asyncio.sleep
         self._sync = ProtocolSyncState(game_id, timing)
         self._state_request_no = 0  # /state 请求单调计数（原始事件对账键，跨会话重启归零安全）
+        self._last_state_started_at = None  # 最近响应对应的请求开始时刻，单调秒
+        self._watermark_known_since = None  # 已消费水位形成时间的保守下界，单调秒
+        self._event_time_floors = {}  # 后续新事件不可能早于已证明水位的形成时间
         self._gate = ActionGate()
         self._delivered_windows = set()
         self._window_expiries = {}  # 每 WindowKey 首次单调截止，只允许收紧；单位秒
@@ -149,10 +153,7 @@ class OfficialGameSession:
         self._closed = False
         self._close_reason = ""
         self._active_tasks = set()
-        self._history_retries = {}  # (单局, 缺口起点) -> (尝试次数, 下次单调时钟秒, 原因)
-        self._history_idle_windows = set()  # 明确本地等待的碰窗口，不等同官方已接受
         self._sealed_history_rounds = set()
-        self._pending_history_events = []  # 补领超出快照基线的事件；先串行消费再交付窗口
         self._poll_active = False  # next_item 单消费者守卫
         # SSE 帧驱动（可选能力，2026-09-05 接入）：帧到达 → 唤醒短拉增量；
         # 流终局/异常 → 永久降级回长轮询（sse_degraded 审计）。任务登记进
@@ -269,14 +270,8 @@ class OfficialGameSession:
                 return delivered
             try:
                 self._ensure_sse_task()
-                deferred = None if self._pending_history_events else await self._try_recover_history()
                 boundary_timeout = self._phase_boundary_timeout()
-                if self._pending_history_events:
-                    response = StateResponse(kind="events", events=tuple(self._pending_history_events))
-                    self._pending_history_events.clear()
-                elif deferred is not None:
-                    response = deferred
-                elif self._sse_enabled and self._sse_healthy:
+                if self._sse_enabled and self._sse_healthy:
                     # SSE 帧驱动（开关开启且流健康）：帧到短拉增量；
                     # 静默/边界/降级路径见 _sse_or_boundary_wait
                     response = await self._sse_or_boundary_wait(boundary_timeout)
@@ -287,6 +282,8 @@ class OfficialGameSession:
             except _PollFailure as failure:
                 return failure.item
             if response.kind == "pending":
+                if not response.gap and self._sync.has_snapshot:
+                    self._watermark_known_since = self._last_state_started_at
                 if response.gap:
                     # pending 响应携带 gap=true：权威序号已断链，必须重建
                     # 而不是继续用旧 seq 长轮询（wv9 阻断项）
@@ -300,7 +297,7 @@ class OfficialGameSession:
                     if rebuild_streak > 2:
                         return GameFailed(self.game_id, True, "rebuild_loop")
                     try:
-                        snapshot_response = await self._get_state(long_poll=False, force_full=True, recover_history=False)
+                        snapshot_response = await self._get_state(long_poll=False, force_full=True)
                     except _PollFailure as failure:
                         return failure.item
                     if snapshot_response.kind not in ("snapshot", "finished"):
@@ -380,7 +377,7 @@ class OfficialGameSession:
                     if reason.startswith("unknown_event:")
                 ]
                 try:
-                    snapshot_response = await self._get_state(long_poll=False, force_full=True, recover_history=False)
+                    snapshot_response = await self._get_state(long_poll=False, force_full=True)
                 except _PollFailure as failure:
                     return failure.item
                 if snapshot_response.kind not in ("snapshot", "finished"):
@@ -402,6 +399,10 @@ class OfficialGameSession:
                 continue
             rebuild_streak = 0
             boundary_stalls = 0
+            if self._watermark_known_since is not None:
+                for event in response.events:
+                    self._event_time_floors.setdefault(event.seq, self._watermark_known_since)
+            self._watermark_known_since = self._last_state_started_at
             if self._sync.events_need_authoritative_refresh(response.events):
                 self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
                     "snapshot_refresh_reason": "events_require_snapshot",
@@ -444,6 +445,8 @@ class OfficialGameSession:
             self._transport,
             budget=self._sse_budget,
             on_frame=self._on_sse_frame,
+            audit_emit=self._emit_audit,
+            monotonic_clock=self._monotonic,
         )
         self._sse_task = asyncio.ensure_future(self._sse_run(client))
         self._active_tasks.add(self._sse_task)
@@ -544,6 +547,10 @@ class OfficialGameSession:
         snapshot = self._sync.snapshot
         if snapshot is None or self._sync.finished:
             return None
+        incremental = self._sync.incremental_response_window()
+        if incremental is not None:
+            expiry = self._window_timing(incremental)["expires_at_monotonic"]
+            return max(expiry - self._monotonic(), 0.0) + _BOUNDARY_MARGIN_SEC
         if snapshot.phase in ("response_peng", "response_chi"):
             # F4（2026-09-05）：优先官方绝对截止 window_deadline_ms（实测
             # 4264/4264 响应快照携带）——绝对值天然不被 pass 推进后的刷新
@@ -588,9 +595,14 @@ class OfficialGameSession:
             expiry = self._monotonic() + detected.timeout_seconds
             estimated = True
             event = next((e for e in reversed(self._sync.history) if e.seq == key.trigger_seq), None)
+            floor = self._event_time_floors.get(key.trigger_seq)
             if event is not None and event.occurred_at_unix_sec is not None:
-                expiry = min(expiry, self._monotonic() + event.occurred_at_unix_sec
-                             + detected.timeout_seconds - self._wall_ms() / 1000.0)
+                from_event = self._monotonic() + event.occurred_at_unix_sec - self._wall_ms() / 1000.0
+                floor = from_event if floor is None else max(floor, from_event)
+            if floor is not None:
+                # ts 只有整秒。上一次水位的查询开始时间也是事件时间的下界，
+                # 可避免把整秒截断当成精确时间而损失几乎整个吃碰窗口。
+                expiry = min(expiry, floor + detected.timeout_seconds)
         previous = self._window_expiries.get(key)
         if previous is not None:
             expiry = min(expiry, previous[0])
@@ -608,6 +620,11 @@ class OfficialGameSession:
           aclose 可以取消它们，不留下悬挂的长轮询或定时器。
         """
 
+        if timeout_seconds < 2 * self._scheduler.state_interval_sec:
+            # 下一次增量许可与随后边界快照可能占用相邻额度；剩余时间不足时
+            # 只在已知边界查一次，避免先发一个注定要取消的长轮询再把吃窗卡住。
+            await self._boundary_timer(timeout_seconds)
+            return await self._get_state(long_poll=False, force_full=True, priority=Priority.POLL)
         poll_task = asyncio.ensure_future(self._get_state(long_poll=True))
         timer_task = asyncio.ensure_future(self._boundary_timer(timeout_seconds))
         for task in (poll_task, timer_task):
@@ -699,11 +716,11 @@ class OfficialGameSession:
                         tail = tuple(e for e in response.events if (floor is None or e.seq > floor) and e.seq <= end)
                 closing_payload = self._history_closure_payload("round_changed", extra_events=tail)
             self._sync.apply_full_snapshot(snapshot, finished=finished, events=response.events)
+            self._watermark_known_since = self._last_state_started_at
+            if previous is None or previous.round_no != snapshot.round_no:
+                self._event_time_floors.clear()
             if closing_payload is not None:
                 self._commit_history_closure(closing_payload)
-            if previous is not None and previous.round_no != snapshot.round_no:
-                self._history_retries.clear()
-                self._history_idle_windows.clear()
             if not finished:
                 self._snapshot_expiry()
                 self._sync.current_observation()  # 预热缓存（已验证必成功）
@@ -743,8 +760,6 @@ class OfficialGameSession:
         （409 刷新发现的迁移窗口）。
         """
 
-        if self._pending_history_events:
-            return None  # 已知更晚事件必须先消费，不能在旧快照上决策
         detected = self._sync.current_window()
         if detected is None:
             return None
@@ -953,8 +968,6 @@ class OfficialGameSession:
             "missing_ranges": missing,
             "public_history": [public_event_to_json(history[seq]) for seq in sorted(history)],
             "observation": encoded,
-            "recovery_attempts": [{"from_seq": key[1], "attempts": value[0], "reason": value[2]}
-                                  for key, value in self._history_retries.items() if key[0] == snapshot.round_no],
         }
 
     def _commit_history_closure(self, payload) -> None:
@@ -969,166 +982,20 @@ class OfficialGameSession:
         """高优先级封存本手已知事实与缺口；不为终局伪造一个策略动作窗口。"""
         self._commit_history_closure(self._history_closure_payload(reason))
 
-    async def _try_recover_history(self) -> Optional[StateResponse]:
-        """主循环空闲机会有界补旧历史；每次最多一个请求，未来权威结果交回正常同步。
-
-        未提交/409待重试/模糊动作优先。总预算100ms且保留已知截止350ms；
-        失败按单调时间退避，最多三次，不能通过快照或pending假装销账。
-        """
-        snapshot = self._sync.snapshot
-        if snapshot is None or self._sync.finished or self._gate.in_flight or self._gate.blocked_window is not None:
-            return None
-        window = self._sync.current_window()
-        if window is not None and not (self._gate.is_finalized(window.window_key)
-                                      or window.window_key in self._history_idle_windows):
-            return None
-        now = self._monotonic()
-        limit = now + 0.1
-        if window is not None:
-            cached = self._window_expiries.get(window.window_key)
-            if cached is not None:
-                limit = min(limit, cached[0] - 0.35)
-        if snapshot.window_deadline_ms is not None:
-            remaining = (snapshot.window_deadline_ms - self._wall_ms()) / 1000.0
-            limit = min(limit, now + remaining - 0.35)
-        if limit <= now:
-            return None
-        for start, end in self._sync.history_missing_ranges():
-            key = (snapshot.round_no, start)
-            count, retry_at, _ = self._history_retries.get(key, (0, 0.0, "unattempted"))
-            if start <= 1 or self._sync.last_seq - (start - 1) > 256:
-                reason = "zero_cursor_not_history" if start <= 1 else "outside_event_cache"
-                self._history_retries[key] = (count, retry_at, reason)
-                continue
-            if count >= 3 or now < retry_at:
-                continue
-            self._history_retries[key] = (count + 1, now + 0.25 * 2 ** count, "attempted")
-            try:
-                response = await self._request_state(
-                    long_poll=False, seq_override=start - 1, deadline_monotonic=limit,
-                    priority=Priority.POLL, one_shot=True)
-            except _PollFailure as failure:
-                if not failure.item.recoverable:
-                    raise
-                reason = failure.item.reason
-                attempts = count + int(failure.request_sent)
-                self._history_retries[key] = (attempts, now + 0.25 * 2 ** count, reason)
-                self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
-                    "history_recovery": "unavailable", "from_seq": start, "through_seq": end,
-                    "attempt": attempts, "request_sent": failure.request_sent, "reason": reason,
-                }, round_no=snapshot.round_no)
-                return None
-            if response.snapshot is not None:
-                # 同点或更新快照仍是权威牌面；它自身并不能偿还缺失原事件。
-                self._history_retries[key] = (3, now, "snapshot_only")
-                self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
-                    "history_recovery": "snapshot_only", "from_seq": start, "through_seq": end,
-                }, round_no=snapshot.round_no)
-                if response.snapshot.seq < self._sync.last_seq:
-                    return None
-                return response
-            if response.gap:
-                self._history_retries[key] = (3, now, "gap")
-                return response  # 走正常权威恢复，不能用补领前牌面继续决策
-            if response.kind != "events" or not response.events:
-                return None
-            historical = tuple(e for e in response.events if e.seq <= snapshot.seq)
-            future = tuple(e for e in response.events if e.seq > snapshot.seq)
-            try:
-                self._sync.merge_history(historical, round_no=snapshot.round_no)
-            except (DtoError, ValueError) as exc:
-                self._history_retries[key] = (3, now, "invalid_history")
-                self._emit_audit(AuditKind.PROTOCOL_RECOVERED, {
-                    "trigger": "history_merge", "reason": str(exc)[:120],
-                }, round_no=snapshot.round_no)
-                return StateResponse(kind="events", gap=True)
-            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
-                "history_recovery": "received", "from_seq": start, "through_seq": end,
-                "received_seqs": [e.seq for e in historical],
-                "missing_ranges": [list(pair) for pair in self._sync.history_missing_ranges()],
-            }, round_no=snapshot.round_no)
-            if future:
-                return StateResponse(kind="events", events=future, finished=response.finished)
-            return None
-        return None
-
     async def _get_state(
         self, *, long_poll: bool, force_full: bool = False,
         deadline_monotonic: Optional[float] = None,
         priority: Optional[Priority] = None,
-        recover_history: bool = True,
     ) -> StateResponse:
-        """快照与事件进度分开处理；同单局快照超前时最多补领一次（含终态）。
+        """一次状态查询：完整快照立即成为新基线，不回退游标串行补史。
 
-        补领总预算最多 100ms，且保留当前窗口至少 350ms，不延长官方截止。
-        seq=0/跨单局/超出缓存范围不可保证补回；保留原快照并明确缺史。
-        晚于快照的已收到事件暂存后优先消费，禁止拿已知陈旧牌面决策。
+        seq=0 返回当前快照；其水位以内的效果已经包含在牌面中。
+        后续按已消费水位 N 请求 N 之后的事件。原事件是否齐全独立审计，
+        不用可选历史请求挤占当前窗口和单场频率额度。
         """
-        response = await self._request_state(
+        return await self._request_state(
             long_poll=long_poll, force_full=force_full,
             deadline_monotonic=deadline_monotonic, priority=priority)
-        snapshot = response.snapshot
-        previous = self._sync.snapshot
-        cursor = self._sync.last_seq
-        if (not recover_history or response.gap
-                or snapshot is None or previous is None or snapshot.round_no != previous.round_no
-                or cursor == 0 or snapshot.seq <= cursor or snapshot.seq - cursor > 256):
-            return response
-        supplied = {e.seq for e in response.events if cursor < e.seq <= snapshot.seq}
-        if len(supplied) == snapshot.seq - cursor:
-            return response
-        limit = self._monotonic() + 0.1
-        if deadline_monotonic is not None:
-            limit = min(limit, deadline_monotonic - 0.35)
-        if (not response.finished and snapshot.phase == previous.phase and snapshot.discards == previous.discards
-                and snapshot.last_discard == previous.last_discard):
-            current = self._sync.current_window()
-            cached = self._window_expiries.get(current.window_key) if current is not None else None
-            if cached is not None:
-                limit = min(limit, cached[0] - 0.35)
-        if not response.finished and snapshot.window_deadline_ms is not None:
-            limit = min(limit, self._monotonic() + (snapshot.window_deadline_ms - self._wall_ms()) / 1000.0 - 0.35)
-        if limit <= self._monotonic():
-            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {"history_backfill": "budget_unavailable", "event_cursor": cursor, "snapshot_seq": snapshot.seq})
-            return response
-        try:
-            recovered = await self._request_state(
-                long_poll=False, seq_override=cursor, deadline_monotonic=limit,
-                priority=Priority.POLL, one_shot=True)
-        except _PollFailure as failure:
-            if not failure.item.recoverable:
-                raise  # 鉴权或协议永久错误不能被可选补领吞掉
-            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {"history_backfill": "unavailable", "reason": failure.item.reason, "event_cursor": cursor, "snapshot_seq": snapshot.seq})
-            return response
-        if response.finished:
-            # 终态已确认：此次请求只补尾事件，不重新打开动作窗口或无限追赶。
-            tail = tuple(e for e in recovered.events if e.seq <= snapshot.seq) if not recovered.gap else ()
-            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
-                "history_backfill": "terminal_received" if tail else "terminal_unavailable",
-                "event_cursor": cursor, "snapshot_seq": snapshot.seq,
-                "received_seqs": [e.seq for e in tail],
-            })
-            return replace(response, events=response.events + tail)
-        if recovered.snapshot is not None:
-            # 官方只能返回快照时，不循环追赶；采用更新的权威响应并保留可归属的旧事件。
-            if recovered.snapshot.seq < snapshot.seq:
-                return response
-            if recovered.snapshot.round_no == snapshot.round_no:
-                recovered = replace(recovered, events=response.events + recovered.events)
-            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {"history_backfill": "snapshot_only", "event_cursor": cursor, "snapshot_seq": recovered.snapshot.seq})
-            return recovered
-        if recovered.gap:
-            # 补领本身发现断链是新的权威失步信号，不能退回更早快照继续行动。
-            # 走正常恢复通道并保留原截止；这不是可选历史补领的重试。
-            return await self._request_state(
-                long_poll=False, force_full=True,
-                deadline_monotonic=deadline_monotonic, priority=Priority.RECOVERY)
-        if recovered.kind != "events":
-            return response
-        before = tuple(e for e in recovered.events if e.seq <= snapshot.seq)
-        self._pending_history_events.extend(e for e in recovered.events if e.seq > snapshot.seq)
-        self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {"history_backfill": "received", "event_cursor": cursor, "snapshot_seq": snapshot.seq, "received_seqs": [e.seq for e in before]})
-        return replace(response, events=response.events + before)
 
     async def _request_state(
         self,
@@ -1137,8 +1004,6 @@ class OfficialGameSession:
         force_full: bool = False,
         deadline_monotonic: Optional[float] = None,
         priority: Optional[Priority] = None,
-        seq_override: Optional[int] = None,
-        one_shot: bool = False,
     ) -> StateResponse:
         """带预算内有界重试的 state 请求；失败升级为 _PollFailure。
 
@@ -1150,7 +1015,7 @@ class OfficialGameSession:
         计划性恢复类请求可显式走普通优先级（POLL），不占紧急恢复通道。
         """
 
-        seq = seq_override if seq_override is not None else (0 if force_full else self._sync.last_seq)
+        seq = 0 if force_full else self._sync.last_seq
         chosen_priority = priority if priority is not None else (
             Priority.RECOVERY if force_full else Priority.POLL
         )
@@ -1181,10 +1046,11 @@ class OfficialGameSession:
                 read_timeout = remaining
             try:
                 request_timing["transport_started_at_monotonic"] = self._monotonic()
-                result = await self._transport.request(
+                self._last_state_started_at = request_timing["transport_started_at_monotonic"]
+                result = await audited_request(self._transport, self._emit_audit, self._monotonic,
                     "GET",
                     "/api/games/{}/state".format(self.game_id),
-                    params={"seq": seq},
+                    params={"seq": seq}, timing=request_timing, raw_source=None,
                     long_poll=long_poll,
                     request_budget_sec=read_timeout,
                 )
@@ -1198,6 +1064,9 @@ class OfficialGameSession:
                     raise
                 self._emit_raw_state(result, seq, parsed, request_timing=request_timing)
                 return parsed
+            except asyncio.CancelledError:
+                self._emit_raw_state_error(UncertainTransportError("cancelled"), seq, request_timing=request_timing)
+                raise
             except RateLimitedError as exc:
                 retry_after = exc.retry_after_seconds
                 request_timing["retry_after_seconds"] = (retry_after if retry_after is not None
@@ -1233,8 +1102,6 @@ class OfficialGameSession:
             except DtoError as exc:
                 if not exc.recoverable:
                     raise _PollFailure(GameFailed(self.game_id, False, "fatal_protocol:" + str(exc)[:120])) from None
-                if one_shot:
-                    raise _PollFailure(GameFailed(self.game_id, True, "history_dto_invalid")) from None
                 if seq != 0 and not degraded_to_full:
                     # 增量负载损坏：降级为 seq=0 权威重建（只降一次）
                     degraded_to_full = True
@@ -1244,7 +1111,7 @@ class OfficialGameSession:
                     raise _PollFailure(GameFailed(self.game_id, True, "dto_invalid")) from None
             finally:
                 lease.release()  # 幂等：deadline 分支已手动释放时为 no-op
-            if one_shot or attempts > self._max_retries:
+            if attempts > self._max_retries:
                 raise _PollFailure(GameFailed(self.game_id, True, "get_exhausted")) from None
             await self._retry_sleep(self._backoff_base * (2 ** (attempts - 1)))
 
@@ -1273,8 +1140,6 @@ class OfficialGameSession:
         return outcome
 
     async def _submit_locked(self, attempt: ActionAttempt) -> SubmitOutcome:
-        if self._pending_history_events:
-            return self._finish_submit(attempt, SubmitNotSent("newer_events_pending"))
         detected = self._sync.current_window()
         observation = self._sync.current_observation()
         if detected is None or observation is None or detected.window_key != attempt.window_key:
@@ -1299,7 +1164,6 @@ class OfficialGameSession:
         # 碰阶段的过只表示本阶段无动作；不提前向官方声明整个响应周期放弃。
         # 等官方真实吃阶段再提交，避免依赖“peng pass 后还能 chi”的未确认语义。
         if isinstance(attempt.action, Pass) and attempt.window_key.phase is WindowPhase.RESPONSE_PENG:
-            self._history_idle_windows.add(attempt.window_key)
             return self._finish_submit(attempt, SubmitNotSent("pass_deferred_until_chi"))
         self._emit_audit(
             AuditKind.SUBMISSION_INTENT,
@@ -1323,7 +1187,7 @@ class OfficialGameSession:
                 Priority.ACTION, deadline_monotonic=attempt.latest_send_at_monotonic, request_kind=RequestKind.OTHER
             )
         except DeadlineExceeded:
-            # 全局冷却/槽竞争未在预算内让出许可：POST 从未发出，
+            # 本场冷却/槽竞争未在预算内让出许可：POST 从未发出，
             # 按未发送处理，保证 GameTask 不在冷却上阻塞到预算外
             return self._finish_submit(attempt, SubmitNotSent("deadline_passed_in_schedule"))
         request_timing["granted_at_monotonic"] = self._monotonic()
@@ -1333,10 +1197,10 @@ class OfficialGameSession:
                 return self._finish_submit(attempt, SubmitNotSent("deadline_passed_after_schedule"))
             try:
                 request_timing["transport_started_at_monotonic"] = self._monotonic()
-                result = await self._transport.request(
+                result = await audited_request(self._transport, self._emit_audit, self._monotonic,
                     "POST",
                     "/api/games/{}/action".format(self.game_id),
-                    json_body=body,
+                    json_body=body, timing=request_timing, raw_source=None,
                 )
             except ConflictError as exc:
                 # 409 已确认动作未执行：先释放动作槽再刷新，避免在持有
@@ -1406,6 +1270,7 @@ class OfficialGameSession:
             except asyncio.CancelledError:
                 # POST 可能已发出且结果未知：按模糊语义封锁同窗，杜绝非幂等双发；
                 # 取消本身继续向外传播（不吞调用方的取消请求）
+                self._emit_raw_action(None, "", attempt, request_timing=request_timing)
                 self._gate.block(attempt.window_key)
                 self._emit_audit(
                     AuditKind.SUBMISSION_OUTCOME,
@@ -1424,6 +1289,7 @@ class OfficialGameSession:
                 raise
             self._emit_raw_action(result.status, result.text, attempt, request_timing=request_timing)
             self._gate.mark_accepted(attempt.window_key)
+            self._sync.note_accepted_action(attempt.action, observation)
             if attempt.action_key == "pass":
                 # 本人 pass 被官方接受：本响应周期对我关闭（pass 覆盖
                 # peng+chi 两窗——2026-09-05 取证），登记以抑制后续投递（F2）
@@ -1511,14 +1377,6 @@ class OfficialGameSession:
                 rejected_action_key=attempt.action_key,
                 latest_local_seq=self._sync.last_seq,
                 reason="conflict_refresh_invalid_snapshot",
-            )
-        if self._pending_history_events:
-            self._gate.mark_closed(attempt.window_key)
-            return SubmitRejectedNoRefresh(
-                official_code=error.official_code or "INVALID_ACTION",
-                rejected_action_key=attempt.action_key,
-                latest_local_seq=self._sync.last_seq,
-                reason="newer_events_pending",
             )
         self._emit_audit(
             AuditKind.PROTOCOL_RECOVERED,
@@ -1612,7 +1470,7 @@ class _PollFailure(Exception):
 
     def __init__(self, item: GameFailed, *, request_sent: bool = True) -> None:
         self.item = item
-        self.request_sent = request_sent  # False：尚未调用传输层，不消耗补领网络尝试次数
+        self.request_sent = request_sent  # False：尚未调用传输层，区分排队超时与已发请求失败
         super().__init__(item.reason)
 
 

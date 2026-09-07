@@ -14,7 +14,9 @@ from __future__ import annotations
 import asyncio
 import math
 from contextlib import asynccontextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from email.utils import parsedate_to_datetime
+from datetime import datetime, timezone
 from typing import (
     Any,
     AsyncContextManager,
@@ -58,16 +60,29 @@ class TransportConfig:
     sse_read_timeout_sec: float = 75.0
     write_timeout_sec: float = 5.0
     pool_timeout_sec: float = 5.0
-    max_connections: int = 40  # 覆盖 1 赛事 + M 场并发（上限 16 场 × 轮询 + 动作）
-    max_keepalive_connections: int = 24
+    max_connections: int = 64  # 覆盖16场×2请求槽+16个SSE+独立赛事查询，避免连接池成为共享瓶颈
+    max_keepalive_connections: int = 48
 
 
 @dataclass(frozen=True)
 class TransportResult:
-    """单次成功响应；只保留状态码与文本，不含响应头（防凭证泄漏）。"""
+    """单次成功响应；响应头仅保留诊断白名单，不含 Cookie 或认证字段。"""
 
     status: int
     text: str
+    response_headers: Mapping[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class SSELineStream:
+    """通知流的状态码与脱敏响应头；正文通过异步迭代逐行消费。"""
+    lines: AsyncIterator[str]
+    status: int
+    response_headers: Mapping[str, str]
+    text: str = ""  # 流正文按 sse_frame 存证，不能在内存累积整个连接。
+
+    def __aiter__(self):
+        return self.lines
 
 
 class OfficialTransport:
@@ -176,12 +191,28 @@ class OfficialTransport:
         if self._token:
             text = text.replace(self._token, "***")
         if 200 <= status < 300:
-            return TransportResult(status=status, text=text)
+            return TransportResult(status=status, text=text, response_headers=self._safe_headers(response.headers))
         self._classify_error(status, response.headers, text)
         # 防御不可达：_classify_error 对全部非 2xx 状态必抛
         raise AssertionError("unreachable: 非 2xx 未被分类")
 
-    def _classify_error(
+    def _safe_headers(self, headers) -> dict[str, str]:
+        """保留限流与时钟诊断依据；即使服务器回显 Token 也不向外泄漏。"""
+        allowed = ("date", "retry-after", "content-type", "x-request-id", "request-id",
+                   "ratelimit-limit", "ratelimit-remaining", "ratelimit-reset",
+                   "x-ratelimit-limit", "x-ratelimit-remaining", "x-ratelimit-reset")
+        return {key: sanitize(value.replace(self._token, "***") if self._token else value)
+                for key in allowed if (value := headers.get(key)) is not None}
+
+    def _classify_error(self, status, headers, text) -> None:
+        """所有 HTTP 错误也保留同一份白名单响应头。"""
+        try:
+            self._raise_http_error(status, headers, text)
+        except OfficialError as exc:
+            exc.response_headers = self._safe_headers(headers)
+            raise
+
+    def _raise_http_error(
         self,
         status: int,
         headers: "httpx.Headers",
@@ -221,6 +252,14 @@ class OfficialTransport:
                     parsed = float(header_value)
                 except ValueError:
                     parsed = None
+                    # HTTP-date 形式优先以同响应 Date 计算，避免本机墙钟偏差。
+                    try:
+                        retry_time = parsedate_to_datetime(header_value)
+                        response_time = (parsedate_to_datetime(headers["date"]) if headers.get("date")
+                                         else datetime.now(timezone.utc))
+                        parsed = max(0.0, (retry_time - response_time).total_seconds())
+                    except (TypeError, ValueError, OverflowError):
+                        pass
                 if parsed is not None and math.isfinite(parsed) and parsed >= 0:
                     retry_after = parsed
             raise RateLimitedError(status, code, detail, retry_after, raw_text=text)
@@ -290,7 +329,7 @@ class OfficialTransport:
             # 防御不可达：_classify_error 对全部非 2xx 状态必抛
             raise AssertionError("unreachable: 非 2xx 未被分类")
         try:
-            yield response.aiter_lines()
+            yield SSELineStream(response.aiter_lines(), response.status_code, self._safe_headers(response.headers))
         except asyncio.TimeoutError:
             raise UncertainTransportError("timeout:request_budget") from None
         except httpx.TimeoutException as exc:
@@ -304,4 +343,3 @@ class OfficialTransport:
         """释放当前 Token 的连接池；关闭后实例不可复用。"""
 
         await self._client.aclose()
-

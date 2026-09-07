@@ -45,6 +45,8 @@ RAW_EVENT_SOURCES = frozenset(
         RAW_SOURCE_ACTION_RESPONSE,
         RAW_SOURCE_SSE_FRAME,
         RAW_SOURCE_MATCH_RESPONSE,
+        "http_response",  # 赛事发现、报名、到位等其他 HTTP 响应
+        "notify_response",  # SSE 连接开始至关闭；流正文按 sse_frame 保留
     }
 )
 

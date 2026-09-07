@@ -176,38 +176,81 @@ class TestStaticBaotou:
 
 
 class TestYouCaiBiKao:
-    """有财必拷响：手留财神时须爆头/杠开才能胡（§7，含保守假设）。"""
+    """赛局开关开启时有财必须爆头，任何成牌分支或杠补均不豁免。"""
 
     def test_switch_off_never_blocks(self):
         win = _split(whites=1)
-        assert you_cai_bi_kao_block(False, win, False, False) is None
+        assert you_cai_bi_kao_block(False, win, False) is None
 
     def test_no_wealth_in_hand_never_blocks(self):
         win = _split(whites=0)
-        assert you_cai_bi_kao_block(True, win, False, False) is None
+        assert you_cai_bi_kao_block(True, win, False) is None
 
     def test_plain_hu_with_wealth_blocked(self):
         win = _split("平胡", whites=1)
-        assert you_cai_bi_kao_block(True, win, False, False) is not None
+        assert you_cai_bi_kao_block(True, win, False) is not None
 
     def test_baotou_releases_block(self):
         win = _split("平胡", whites=1)
-        assert you_cai_bi_kao_block(True, win, True, False) is None
+        assert you_cai_bi_kao_block(True, win, True) is None
 
-    def test_gang_draw_releases_block(self):
+    def test_non_baotou_rejection_does_not_require_draw_source(self):
+        # 2026-09-07 测试房两例：杠补成牌但 baotou=false，官方均拒绝胡。
         win = _split("平胡", whites=1)
-        assert you_cai_bi_kao_block(True, win, False, True) is None
+        assert you_cai_bi_kao_block(True, win, False) is not None
 
-    def test_chiitoi_conservatively_blocked(self):
-        # 【假设】七对分支是否豁免未确认——保守同样要求爆头/杠开。
+    def test_chiitoi_without_baotou_is_blocked(self):
         win = _split("七对", whites=2)
-        reason = you_cai_bi_kao_block(True, win, False, False)
+        reason = you_cai_bi_kao_block(True, win, False)
         assert reason is not None and "七对" in reason
+
+    @pytest.mark.parametrize("branch,luxury", [("平胡", 0), ("七对", 0), ("七对", 1)])
+    def test_four_whites_cannot_bypass_rule_with_stale_baotou(self, branch, luxury):
+        # 官方 four-white-kept / chiitoi-held4：四白成牌可计番，但不算爆头。
+        win = _split(branch, whites=4, tenpai=True, luxury=luxury)
+        assert you_cai_bi_kao_block(True, win, True) is not None
 
     def test_blocked_reason_mentions_rule_name(self):
         win = _split("平胡", whites=3)
-        reason = you_cai_bi_kao_block(True, win, False, False)
+        reason = you_cai_bi_kao_block(True, win, False)
         assert reason is not None and "有财必拷响" in reason and "3" in reason
+
+    @pytest.mark.parametrize(
+        "branch,luxury",
+        [("平胡", 0), ("七对", 0), ("七对", 1), ("七对", 2), ("七对", 3)],
+    )
+    @pytest.mark.parametrize(
+        "enabled,whites,baotou,blocked",
+        [
+            (False, 0, False, False),
+            (False, 1, False, False),
+            (False, 1, True, False),
+            (False, 2, False, False),
+            (False, 2, True, False),
+            (False, 3, False, False),
+            (False, 3, True, False),
+            (False, 4, False, False),
+            (True, 0, False, False),
+            (True, 1, False, True),
+            (True, 1, True, False),
+            (True, 2, False, True),
+            (True, 2, True, False),
+            (True, 3, False, True),
+            (True, 3, True, False),
+            (True, 4, False, True),
+        ],
+    )
+    def test_rule_config_and_wealth_matrix(
+        self, branch, luxury, enabled, whites, baotou, blocked
+    ):
+        """房规独立于番型；番数较高不能替代爆头资格。
+
+        这里只输入各分支的规则元数据，不声明矩阵的每种组数与白板数
+        组合都可在同一手物理牌中实现；实际牌形由官方金例测试覆盖。
+        """
+        win = _split(branch, whites=whites, luxury=luxury)
+        reason = you_cai_bi_kao_block(enabled, win, baotou)
+        assert (reason is not None) is blocked
 
 
 class TestIsGangDraw:
@@ -254,9 +297,9 @@ class TestIsGangDraw:
         assert is_gang_draw(history, 2) is False
 
     def test_seq_gap_between_gang_and_draw_is_false(self):
-        """评审 d4-4f5bf9 回归：seq 缺口（历史不完整）不得误授杠开豁免。
+        """评审 d4-4f5bf9 回归：seq 缺口（历史不完整）不得误认杠补来源。
 
-        杠开豁免会绕过有财必拷响门禁，缺口历史必须保守判 False。
+        历史审计缺少杠与摸牌相邻的证据时，不能猜测其关系。
         """
 
         gap = (
@@ -283,7 +326,7 @@ class TestPurity:
         win = _split(whites=1, tenpai=True)
         for _ in range(3):
             assert static_baotou(win) is True
-            assert you_cai_bi_kao_block(True, win, False, False) is not None
+            assert you_cai_bi_kao_block(True, win, False) is not None
         history = (_event(1, "gang", 0, ("9b",)), _event(2, "tile_drawn", 0))
         for _ in range(3):
             assert is_gang_draw(history, 0) is True

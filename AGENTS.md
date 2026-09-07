@@ -76,7 +76,7 @@ class DecisionRequest:
 
 第一阶段只创建 `kernel`、`hangma`、`policy`、`application`、`adapters/official` 和 `adapters/recording`。`simulation`、`competition`、`learning` 和 `offline` 是后续目标模块，未进入相应阶段前不得为它们预建空接缝或通用基础设施。
 
-第一阶段冻结四个外部接口：`TournamentSessionPort`、`GameSessionPort`、`BotPolicy` 和 `AuditSink`。`HangmaRules` 保持唯一具体深模块；`OfficialTransport`、每 Token 请求调度器、限速器、状态同步和 `ActionGate` 均为官方适配器内部实现。
+第一阶段冻结四个外部接口：`TournamentSessionPort`、`GameSessionPort`、`BotPolicy` 和 `AuditSink`。`HangmaRules` 保持唯一具体深模块；`OfficialTransport`、每Token控制调度与每场调度/限速器、状态同步和 `ActionGate` 均为官方适配器内部实现。
 
 只有存在至少两个真实实现时才增加接缝，例如官方场次与牌谱回放共同实现 `GameSessionPort`。测试通过模块公开接口验证行为，不依赖内部私有状态。
 

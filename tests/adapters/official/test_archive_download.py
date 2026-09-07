@@ -24,6 +24,10 @@ def test_download_is_byte_exact_and_paced_without_auth(tmp_path):
     assert (folder / "events.json").read_bytes() == raw
     assert result["guide_version"] == 18
     assert len(seen) == 4 and all(delay >= .2 for delay in sleeps)
+    records = [json.loads(line) for line in (folder / "http-requests.jsonl").read_text().splitlines()]
+    assert len(records) == 8
+    assert len({record["request_id"] for record in records}) == 4
+    assert all(record["http_status"] == 200 for record in records if record["phase"] == "finished")
 
 
 def test_download_failure_keeps_evidence_but_has_no_events(tmp_path):
@@ -34,6 +38,7 @@ def test_download_failure_keeps_evidence_but_has_no_events(tmp_path):
             collect_test_room(client, "t_room", 0, tmp_path, sleep=lambda _: None)
     assert not list(tmp_path.glob("official/*/events.json"))
     assert list(tmp_path.glob("official/*/download-error.json"))
+    assert list(tmp_path.glob("official/*/events.json.http-error"))
 
 
 def test_credentials_in_url_are_rejected():

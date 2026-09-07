@@ -5,11 +5,12 @@
 事实；本模块只补充未提供的链内飘次数、当前摸牌来源，未知保留为空。
 """
 
+from collections import Counter
 from dataclasses import replace
 from typing import Optional
 
-from hangma_bot.kernel.actions import Tile
-from hangma_bot.kernel.observation import PlayerObservation, PublicEvent, RulePublicState
+from hangma_bot.kernel.actions import Action, Chi, Discard, Gang, GangKind, Pass, Peng, Tile
+from hangma_bot.kernel.observation import PlayerObservation, PublicEvent, PublicMeld, RulePublicState
 
 from .settlement import infer_piao_count
 from .special_rules import is_passive_observation_event
@@ -71,6 +72,217 @@ def enrich_observation(observation: PlayerObservation) -> PlayerObservation:
     if gang_draw is None:
         gang_draw = infer_gang_draw(observation)
     return replace(observation, chain_piao=piao, gang_draw=gang_draw)
+
+
+def reconcile_observation(
+    before: PlayerObservation,
+    after: PlayerObservation,
+    *,
+    confirmed_action: Optional[Action] = None,
+) -> PlayerObservation:
+    """核对前态与新快照后补足链事实；不改写官方 god、事件或历史完整性。
+
+    confirmed_action 只能是本场本人已获官方明确成功响应的动作，不能传入
+    仅已发送、拒绝或结果不确定的动作。动作必须与新快照的本人牌河、副露、
+    暗牌差量和官方链计数同时一致；水位以 consumed_seq 为准，不以旧快照
+    基线判断。依据 v20/2026-09-07 的成功明杠后 events=null 实测，以及
+    progression 共用的飘/杠生命周期，杠保持飘次数而普通弃牌重置链。
+
+    没有动作确认时，只在本人牌河、副露、链计数不变且暗牌未发生无法解释
+    的变化时保留已知飘数。杠补来源另须证明还是同一次摸牌，不能只因牌值
+    相同就沿用。任一证据不足保留未知；after 已知字段优先，冲突时不混填。
+    本函数纯计算，无网络、时钟或副作用；不补造缺失事件。
+    """
+    after = enrich_observation(after)
+    if (before.game_id, before.seat, before.round_no, before.dealer_seat) != (
+        after.game_id, after.seat, after.round_no, after.dealer_seat
+    ):
+        return after
+    if (before.consumed_seq is None or after.consumed_seq is None
+            or after.consumed_seq < before.consumed_seq):
+        return after
+    before = enrich_observation(before)
+    if confirmed_action is None or isinstance(confirmed_action, Pass):
+        facts = _unchanged_chain_facts(before, after)
+    else:
+        # 核对失败不能退回“没有确认动作”的沿用路径；确认本身不是执行结果
+        # 与任意新快照均一致的证明，尤其不能让旧杠补污染下一次摸牌。
+        if after.consumed_seq <= before.consumed_seq:
+            return after
+        facts = _confirmed_action_facts(before, after, confirmed_action)
+    if facts is None:
+        return after
+    piao, gang_draw = facts
+    if ((after.chain_piao is not None and piao is not None and after.chain_piao != piao)
+            or (after.gang_draw is not None and gang_draw is not None and after.gang_draw != gang_draw)):
+        return after
+    return replace(
+        after,
+        chain_piao=after.chain_piao if after.chain_piao is not None else piao,
+        gang_draw=after.gang_draw if after.gang_draw is not None else gang_draw,
+    )
+
+
+def _concealed_tiles(observation: PlayerObservation) -> Optional[tuple[Tile, ...]]:
+    """返回当前暗牌全集；兼容官方含摸牌与模拟单列摸牌，残缺牌数不参与证明。"""
+    hand = tuple(observation.my_hand)
+    waiting_count = 13 - 3 * len(observation.melds[observation.seat])
+    own_draw = observation.phase == "draw" and observation.turn_seat == observation.seat
+    if not own_draw:
+        return hand if observation.drawn_tile is None and len(hand) == waiting_count else None
+    if observation.drawn_tile is not None:
+        if len(hand) == waiting_count:
+            return hand + (observation.drawn_tile,)
+        if len(hand) == waiting_count + 1 and observation.drawn_tile in hand:
+            return hand
+        return None
+    # 吃碰后的出牌窗口没有摸牌，但本人已有待弃的一张；待摸暂态仍为听牌数。
+    return hand if len(hand) in (waiting_count, waiting_count + 1) else None
+
+
+def _without_tiles(hand: tuple[Tile, ...], removed: tuple[Tile, ...]) -> Optional[Counter]:
+    counts = Counter(hand)
+    counts.subtract(removed)
+    return +counts if all(count >= 0 for count in counts.values()) else None
+
+
+def _unchanged_chain_facts(
+    before: PlayerObservation, after: PlayerObservation,
+) -> Optional[tuple[Optional[int], Optional[bool]]]:
+    seat = before.seat
+    if (before.rule_state.chain_count != after.rule_state.chain_count
+            or before.discards[seat] != after.discards[seat]
+            or before.melds[seat] != after.melds[seat]):
+        return None
+    old_hand, new_hand = _concealed_tiles(before), _concealed_tiles(after)
+    if old_hand is None or new_hand is None:
+        return None
+    same_hand = Counter(old_hand) == Counter(new_hand)
+    if (before.consumed_seq == after.consumed_seq
+            and (not same_hand or before.drawn_tile != after.drawn_tile
+                 or before.discards != after.discards or before.melds != after.melds
+                 or (before.remaining_tile_count is not None and after.remaining_tile_count is not None
+                     and before.remaining_tile_count != after.remaining_tile_count))):
+        return None
+    new_draw = (before.drawn_tile is None and after.drawn_tile is not None
+                and after.phase == "draw" and after.turn_seat == seat
+                and Counter(new_hand) == Counter(old_hand + (after.drawn_tile,)))
+    if not same_hand and not new_draw:
+        return None
+    gang_draw = None
+    # 同水位必须同牌面；水位前进时还要全桌公开牌面、牌墙余量不变，
+    # 否则即便刚摸牌码与暗牌集合碰巧相同，也无法证明不是后续一次摸牌。
+    same_public_draw = (before.phase == after.phase == "draw"
+                        and before.turn_seat == after.turn_seat == seat
+                        and before.drawn_tile is not None
+                        and before.drawn_tile == after.drawn_tile and same_hand
+                        and before.discards == after.discards and before.melds == after.melds
+                        and (before.consumed_seq == after.consumed_seq
+                             or (before.remaining_tile_count is not None
+                                 and before.remaining_tile_count == after.remaining_tile_count)))
+    if same_public_draw:
+        gang_draw = before.gang_draw
+    return before.chain_piao, gang_draw
+
+
+def _meld_matches(
+    meld: PublicMeld, seat: int, kinds: tuple[str, ...],
+    tiles: tuple[Tile, ...], from_seat: Optional[int],
+) -> bool:
+    # v20 快照有 gang_ming 等种类且可省略来源；成功动作前 last_discard
+    # 提供明杠/吃碰来源。字段明确存在时必须一致，不能忽略实际矛盾。
+    return (meld.seat == seat and meld.kind in kinds and Counter(meld.tiles) == Counter(tiles)
+            and (meld.from_seat is None or meld.from_seat == from_seat))
+
+
+def _claimed_discard(before: PlayerObservation, tiles: tuple[Tile, ...]) -> Optional[int]:
+    discard = before.last_discard
+    if (discard is None or discard.seat == before.seat or discard.tile not in tiles
+            or before.seat not in before.responding_seats
+            or before.consumed_seq is None or discard.seq > before.consumed_seq):
+        return None
+    return discard.seat
+
+
+def _confirmed_action_facts(
+    before: PlayerObservation, after: PlayerObservation, action: Action,
+) -> Optional[tuple[Optional[int], Optional[bool]]]:
+    from .progression import chain_after_discard, chain_after_gang
+
+    seat = before.seat
+    old_hand, new_hand = _concealed_tiles(before), _concealed_tiles(after)
+    if old_hand is None or new_hand is None:
+        return None
+    old_melds, new_melds = before.melds[seat], after.melds[seat]
+    count, piao = before.rule_state.chain_count, before.chain_piao
+    if isinstance(action, Discard):
+        if (before.phase != "draw" or before.turn_seat != seat
+                or after.drawn_tile is not None or old_melds != new_melds
+                or after.discards[seat] != before.discards[seat] + (action.tile,)
+                or _without_tiles(old_hand, (action.tile,)) != Counter(new_hand)):
+            return None
+        expected_count, known_piao = chain_after_discard(count, piao or 0, before.rule_state.baotou, action.tile)
+        if expected_count != after.rule_state.chain_count:
+            return None
+        # 旧飘数未知时，普通弃牌仍可确认清零；飘白则不能用占位零生成精确数。
+        return (known_piao if piao is not None or expected_count == 0 else None), False
+    if before.discards[seat] != after.discards[seat]:
+        return None
+    if isinstance(action, Gang):
+        if (after.phase != "draw" or after.turn_seat != seat or after.drawn_tile is None
+                or after.consumed_seq - before.consumed_seq < 2):
+            return None
+        expected_count, _ = chain_after_gang(count, piao or 0)
+        if expected_count != after.rule_state.chain_count:
+            return None
+        if (before.remaining_tile_count is not None and after.remaining_tile_count is not None
+                and after.remaining_tile_count != before.remaining_tile_count - 1):
+            return None
+        from_seat = None
+        if action.kind is GangKind.EXPOSED:
+            from_seat = _claimed_discard(before, (action.tile,))
+            if before.phase != "response_peng" or from_seat is None:
+                return None
+            removed, kinds = 3, ("gang", "gang_ming")
+        else:
+            if before.phase != "draw" or before.turn_seat != seat:
+                return None
+            removed = 4 if action.kind is GangKind.CONCEALED else 1
+            kinds = ("gang", "gang_an") if action.kind is GangKind.CONCEALED else ("gang", "gang_bu")
+        if action.kind is GangKind.ADDED:
+            indexes = [i for i, meld in enumerate(old_melds)
+                       if meld.seat == seat and meld.kind == "peng" and meld.tiles == (action.tile,) * 3]
+            if len(indexes) != 1 or len(new_melds) != len(old_melds):
+                return None
+            index = indexes[0]
+            from_seat = old_melds[index].from_seat
+            if (new_melds[:index] + new_melds[index + 1:] != old_melds[:index] + old_melds[index + 1:]
+                    or not _meld_matches(new_melds[index], seat, kinds, (action.tile,) * 4, from_seat)):
+                return None
+        elif (len(new_melds) != len(old_melds) + 1 or new_melds[:-1] != old_melds
+              or not _meld_matches(new_melds[-1], seat, kinds, (action.tile,) * 4, from_seat)):
+            return None
+        expected_hand = _without_tiles(old_hand, (action.tile,) * removed)
+        if expected_hand is None:
+            return None
+        expected_hand.update((after.drawn_tile,))
+        return (piao, True) if expected_hand == Counter(new_hand) else None
+    if isinstance(action, (Chi, Peng)):
+        claimed = action.tiles if isinstance(action, Chi) else (action.tile,) * 3
+        source = _claimed_discard(before, claimed)
+        if (source is None or before.phase != ("response_chi" if isinstance(action, Chi) else "response_peng")
+                or after.phase != "draw" or after.turn_seat != seat or after.drawn_tile is not None
+                or after.rule_state.chain_count != count
+                or len(new_melds) != len(old_melds) + 1 or new_melds[:-1] != old_melds):
+            return None
+        kind = "chi" if isinstance(action, Chi) else "peng"
+        if not _meld_matches(new_melds[-1], seat, (kind,), claimed, source):
+            return None
+        taken = list(claimed)
+        taken.remove(before.last_discard.tile)
+        # 吃碰不增加链次数，也没有补摸牌；精确暗牌差量排除随后的弃牌。
+        return (piao, False) if _without_tiles(old_hand, tuple(taken)) == Counter(new_hand) else None
+    return None
 
 
 def recompute_draw_rule_state(

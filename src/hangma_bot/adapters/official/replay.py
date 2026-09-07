@@ -2,8 +2,8 @@
 
 依据：指南 v14 §2.5（2026-09-05 抓取）——GET
 /api/test-rooms/{id}/games/{batch}/events 返回完整赛后数据：blocks
-（按块保存的完整事件流，含四家开局手牌 start_hands）、rounds（每局
-结果、胡家/流局、局末积分）。本模块只做解析与结构转换：不猜牌墙、
+（按块保存的完整事件流，含四家开局手牌 start_hands）、rounds（结果
+摘要，需与事件核对；原始scores不能直接作为累计积分）。本模块只做解析与结构转换：不猜牌墙、
 不重算规则；统一牌谱的组装（身份、来源引用、缺失评级）由
 offline/replay.py 完成。
 
@@ -196,9 +196,9 @@ def parse_room_document(document: object) -> OfficialRoomDocument:
     if not isinstance(blocks_raw, list) or not blocks_raw:
         raise ValueError("blocks 必须是非空数组")
     blocks = tuple(_parse_block(item) for item in blocks_raw)
-    rounds_raw = data.get("rounds")
-    if not isinstance(rounds_raw, list) or not rounds_raw:
-        raise ValueError("rounds 必须是非空数组")
+    rounds_raw = data.get("rounds", [])
+    if not isinstance(rounds_raw, list):
+        raise ValueError("rounds 必须是数组")
     rounds = tuple(_parse_round_result(item) for item in rounds_raw)
     return OfficialRoomDocument(
         room_id=room_id,
@@ -264,11 +264,20 @@ def merge_round_events(doc: OfficialRoomDocument, round_no: int) -> dict[str, An
             if isinstance(seq, bool) or not isinstance(seq, int):
                 issues.append("事件缺少整数 seq: {!r}".format(event))
                 continue
+            if not block.seq_start <= seq <= block.seq_end:
+                issues.append("事件 seq={} 超出声明块范围".format(seq))
             if seq in events:
                 issues.append("重复事件 seq={}，保留首条".format(seq))
                 continue
             events[seq] = event
             pointers[seq] = "/blocks/{}/events/{}".format(doc_index, event_index)
+    first = blocks[0]
+    start_hands = first.start_hands
+    complete_deal = (start_hands is not None and sorted(map(len, start_hands)) == [13, 13, 13, 14]
+                     and all(tile is not None for row in start_hands for tile in row))
+    previous_end = any(block.round_no == round_no - 1 and
+                       any(e.get("type") == "round_ended" and e.get("seq") == first.seq_start - 1
+                           for e in block.events) for block in doc.blocks)
     return {
         "round_no": round_no,
         "events": [events[seq] for seq in sorted(events)],
@@ -277,6 +286,7 @@ def merge_round_events(doc: OfficialRoomDocument, round_no: int) -> dict[str, An
         "block_count": len(blocks),
         "truncated_any": truncated_any,
         "issues": issues,
+        "history_origin_known": first.seq_start == 1 or (complete_deal and previous_end),
     }
 
 
@@ -297,7 +307,8 @@ def coverage_grade(merge: Mapping[str, Any]) -> str:
     seqs = [event["seq"] for event in events if isinstance(event.get("seq"), int)]
     if not seqs or seqs != list(range(seqs[0], seqs[-1] + 1)):
         return "observed"
-    if seqs[0] != 1:
+    # 官方 seq 跨单局累加。已证明的本手起点无需重新从 1 编号。
+    if seqs[0] != 1 and not merge.get("history_origin_known"):
         return "observed"
     return "full_history"
 
@@ -306,6 +317,7 @@ def _result_consistency(
     result: OfficialRoundResult,
     blocks: list[OfficialBlock],
     events: list[Mapping[str, Any]],
+    *, summary_diagnostic: bool = False,
 ) -> dict[str, Any]:
     """核对同单局结果摘要与事件事实；冲突拒绝，缺证据标记未检查。
 
@@ -323,7 +335,10 @@ def _result_consistency(
         if not known:
             checks[field] = "not_checked"
         elif left != right:
-            conflict(field)
+            if summary_diagnostic:
+                checks[field] = "conflict"
+            else:
+                conflict(field)
         else:
             checks[field] = "passed"
 
@@ -373,7 +388,10 @@ def _result_consistency(
             known=result.is_draw is not None and event_draw is not None)
     if result.is_draw is not None and summary_winner_known:
         if result.is_draw != (result.winner_seat is None):
-            conflict("summary.winner_draw")
+            if summary_diagnostic:
+                checks["summary.winner_draw"] = "conflict"
+            else:
+                conflict("summary.winner_draw")
     if event_draw is not None and winner_raw is not None:
         if event_draw != (event_winner is None):
             conflict("round_ended.winner_draw")
@@ -396,13 +414,79 @@ def _result_consistency(
             if value < 0:
                 raise ValueError(label + " 不能为负数")
     if multiplier is not None and summary_fan is not None and multiplier != summary_fan:
-        conflict("summary.multiplier_fan")
+        if summary_diagnostic:
+            checks["summary.multiplier_fan"] = "conflict"
+        else:
+            conflict("summary.multiplier_fan")
     expected_fan = multiplier if multiplier is not None else summary_fan
     compare("fan", expected_fan, event_fan, known=expected_fan is not None and event_fan is not None)
     return {
-        "status": "passed" if all(value == "passed" for value in checks.values()) else "not_checked",
+        "status": ("conflict" if "conflict" in checks.values() else
+                   "passed" if all(value == "passed" for value in checks.values()) else "not_checked"),
         "checks": checks,
     }
+
+
+def _score_context(
+    doc: OfficialRoomDocument, events: list[Mapping[str, Any]],
+) -> tuple[list[int] | None, list[int] | None, list[int] | None]:
+    """用场次终态及连续尾事件还原单局前后累计积分，不假定起始分为0。
+
+    2026-09-07指南v18实测：round_ended.data.scores为单次变化，实时
+    snapshot.scores与game_ended.final_scores为累计值。必须有终态锚点且
+    本单局结束至场终的事件连续，才能反向扣除后续变化；否则返回三个None。
+    顶层rounds.scores保留原义，不直接写入统一牌谱的scores_after。
+    """
+    unknown = (None, None, None)
+    current = [event for event in events if event.get("type") == "round_ended"]
+    if len(current) != 1:
+        return unknown
+    start = current[0]["seq"]
+    by_seq = {}
+    for block in doc.blocks:
+        for event in block.events:
+            seq = _require_int(event.get("seq"), "event.seq")
+            if seq < start:
+                continue
+            if seq in by_seq and by_seq[seq] != event:
+                raise ValueError("official_result_conflict:conflicting_score_context_event")
+            by_seq[seq] = event
+    finals = [event for event in by_seq.values() if event.get("type") == "game_ended"]
+    if len(finals) != 1:
+        return unknown
+    end = finals[0]["seq"]
+    if end < start or any(block.truncated and block.seq_end >= start and block.seq_start <= end
+                          for block in doc.blocks):
+        return unknown
+    suffix = sorted(seq for seq in by_seq if start <= seq <= end)
+    if len(suffix) != end - start + 1:
+        return unknown  # 缺口中可能有未收到的积分变化，不凭现存结算条目猜累计值。
+
+    def vector(event, field):
+        if event.get("data") is None:
+            return None
+        data = _require_mapping(event["data"], "结算事件data")
+        raw = data.get(field)
+        if raw is None:
+            return None
+        if not isinstance(raw, (list, tuple)) or len(raw) != 4:
+            raise ValueError(field + " 必须是座位0—3的四元数组")
+        return [_require_int(value, field + " 元素") for value in raw]
+
+    after = vector(finals[0], "final_scores")
+    delta = vector(current[0], "scores")
+    if after is None or delta is None:
+        return unknown
+    for seq in suffix:
+        event = by_seq[seq]
+        if seq == start or event.get("type") != "round_ended":
+            continue
+        later_delta = vector(event, "scores")
+        if later_delta is None:
+            return unknown
+        after = [value - change for value, change in zip(after, later_delta)]
+    before = [value - change for value, change in zip(after, delta)]
+    return before, after, delta
 
 
 def round_data(
@@ -417,24 +501,38 @@ def round_data(
     返回结构对应统一牌谱 §5.2 的 initial/events/scores/winner 部分；
     hand_id、split_group_id、game_key 与 source_refs 由 offline/replay.py
     按身份契约补齐。真实样本没有未来牌墙与额外牌身份：wall/drawn 全空。
-    结果摘要与同单局终局事件冲突时抛 ValueError；缺少核对字段仍可读，
-    result_consistency 与 missing_fields 明确 not_checked，不改写官方原值。
+    单局胡家/流局/积分变化取 round_ended，累计积分由场终锚点反推。
+    顶层摘要差异以 result_consistency 标记；原事件自身冲突仍抛 ValueError。
+    缺少结算事件不从摘要猜单局结果；原报文保留，不改写官方原值。
     """
 
     merge = merge_round_events(doc, round_no)
     results = [item for item in doc.rounds if item.round_no == round_no]
-    if not results:
-        raise ValueError("round_no={} 没有结果条目".format(round_no))
-    if len(results) != 1:
-        raise ValueError("official_result_conflict:round_no={}:duplicate_summary".format(round_no))
-    result = results[0]
     # 起点块按最小 seq_start 选取：官方下载可能块乱序，按文档序取首块
     # 会拿错起点（审查收尾 F3）。
     round_blocks = [block for block in doc.blocks if block.round_no == round_no]
     first_block = min(round_blocks, key=lambda block: block.seq_start) if round_blocks else None
     if first_block is None:
         raise ValueError("round_no={} 没有事件块".format(round_no))
-    consistency = _result_consistency(result, round_blocks, merge["events"])
+    # 单局事实由该事件块中的结算事件决定。顶层 rounds 是独立摘要，
+    # 编号/条目/积分含义不可靠时只记录差异，不能覆盖胡家或丢掉完整单局。
+    terminal = [event for event in merge["events"] if event.get("type") == "round_ended"]
+    if len(terminal) > 1:
+        raise ValueError("official_result_conflict:multiple_round_ended")
+    event = terminal[0] if terminal else {}
+    event_data = _require_mapping(event.get("data") or {}, "round_ended.data")
+    result = _parse_round_result({
+        "round_no": round_no, "dealer": first_block.dealer,
+        "winner": event.get("seat"), "is_draw": event_data.get("draw"),
+        "scores": event_data.get("scores"), "fan": event_data.get("fan"),
+    })
+    # 同一原事件的矛盾副本、多个终局、块庄家冲突仍是错误，不被诊断模式放行。
+    _result_consistency(result, round_blocks, merge["events"])
+    summary = results[0] if len(results) == 1 else OfficialRoundResult(round_no, None, None, None, None, {})
+    consistency = _result_consistency(summary, round_blocks, merge["events"], summary_diagnostic=True)
+    if len(results) > 1:
+        consistency["status"] = "conflict"
+        consistency["checks"]["duplicate_summary"] = "conflict"
     dealer = first_block.dealer
     if dealer is None and result.dealer is not None:
         dealer = result.dealer
@@ -472,6 +570,9 @@ def round_data(
         missing.append("wall")
         missing.append("draw_identity")
     missing = sorted(set(missing))
+    scores_before, scores_after, score_delta = _score_context(doc, merge["events"])
+    if scores_after is None:
+        missing.append("cumulative_score_context")
     return {
         "round_no": round_no,
         "initial": {
@@ -490,13 +591,15 @@ def round_data(
         },
         "events": list(merge["events"]),
         "event_pointers": list(merge["event_pointers"]),
-        "scores_before": None,
-        "scores_after": None if result.scores is None else list(result.scores),
-        "score_delta": None,
+        "scores_before": scores_before,
+        "scores_after": scores_after,
+        "score_delta": score_delta,
         "winner_seat": result.winner_seat,
         "is_draw": result.is_draw,
         "coverage": coverage_grade(merge),
-        "result_confirmed": doc.status == "finished",  # 官方已结束，不等同各结果字段均已核对
+        "result_confirmed": (doc.status == "finished" and bool(terminal)
+                             and result.is_draw is not None and event.get("seat") is not None),
+        "result_source": "round_ended" if terminal else "unknown",
         "result_consistency": consistency,  # 字段缺失为 not_checked，不能当 passed
         "block_count": merge["block_count"],
         "seq_ranges": merge["seq_ranges"],

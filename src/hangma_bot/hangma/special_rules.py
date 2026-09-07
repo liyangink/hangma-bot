@@ -7,7 +7,8 @@
 第二套分解；动作候选的生成见 action_families。
 
 规则依据与证据级别：`RULES_EVIDENCE.md` §1/§5/§6/§7/§8
-（官方指南 v9，2026-09-03 抓取；金例夹具 tests/fixtures/official/v9）。
+（官方指南 v9，2026-09-03 抓取；金例夹具 tests/fixtures/official/v9）；
+有财必拷响另按 2026-09-07 用户确认及测试房拒胡事实修正规则解释。
 """
 
 from __future__ import annotations
@@ -150,47 +151,49 @@ def static_baotou(win: WinSplit) -> bool:
 
 
 def you_cai_bi_kao_block(
-    you_cai_bi_kao: bool, win: WinSplit, baotou: bool, gang_draw: bool
+    you_cai_bi_kao: bool, win: WinSplit, baotou: bool
 ) -> Optional[str]:
-    """有财必拷响（YouCaiBiKao）胡牌限制；None 表示允许胡，否则返回原因。
+    """成牌后叠加赛局的有财必拷响限制；None 表示本条不拦截。
 
-    【官方语义】指南 1.6：手上有财神时不允许平胡，必须爆头/杠开才能胡；
-    fan-calc 工具不强制该规则（youcai-plain-hu-shape 金例 hu=true），
-    合法性由本地按 `RuleConfig.you_cai_bi_kao` 判定。
+    【用户确认，2026-09-07】开关开启且手留财神时必须爆头，普通杠开
+    不豁免；七对和豪华七对同样适用。测试房两次有财、非爆头的杠补
+    成牌被官方拒绝，与此口径一致。fan-calc 只判成牌、爆头与番数，
+    因此其 hu=true 必须再叠加实际 `RuleConfig.you_cai_bi_kao`。
 
-    【假设】§7："平胡"按分支理解——开关开启 ∧ 手留白板 ≥ 1 时，
-    胡候选仅当（爆头判定为真 ∨ 杠上摸牌）。七对分支是否豁免未确认，
-    保守起见同样要求爆头/杠开（宁漏胡不 409）。被排除时调用方应记录
-    RuleIssue，而非静默丢弃。
+    胡牌时手留四白不算爆头（官方 four-white-kept / chiitoi-held4
+    金例）；即使上游遗留 baotou=True，也不能据此绕过赛局限制。
+    开关关闭或手中无财神时，此规则不限制已由调用方确认的成牌。
 
     参数：
       baotou：运行时传平台权威 `rule_state.baotou`，对拍可传
         `static_baotou(win)`；
-      gang_draw：是否杠上摸牌（本人杠后紧跟本人摸牌），见
-        `is_gang_draw`。
+      you_cai_bi_kao：当前赛局配置，不得因历史房间开启而写死为 True。
+
+    本函数不重做通用成牌判断，也不计算番数；无副作用。
+    被排除时调用方保留可审计原因。
     """
 
     if not you_cai_bi_kao or win.whites_held == 0:
         return None
-    if baotou or gang_draw:
+    if baotou and win.whites_held != 4:
         return None
     return (
-        "有财必拷响：手留财神 {0} 张且分支 {1}，须爆头或杠上摸牌方可胡"
-        "（七对分支按保守假设同样受限）".format(win.whites_held, win.branch)
+        "有财必拷响：手留财神 {0} 张且分支 {1}，必须爆头才能胡；"
+        "杠补不豁免，手留四白不算爆头".format(win.whites_held, win.branch)
     )
 
 
 def is_gang_draw(public_history: Tuple[PublicEvent, ...], seat: int) -> bool:
-    """按公共历史推断当前手牌是否为杠后补牌（杠上摸牌）。
+    """按公共历史推断最近一次本人摸牌是否为杠后补牌，供历史审计使用。
 
     【假设】§7：杠上摸牌由公共历史最近事件推断——本人 `gang` 事件
     紧跟（seq 相邻，即 previous.seq == draw.seq - 1）本人 `tile_drawn`
     事件。取本人最近一次摸牌事件判定：若其紧前事件不是本人的杠、或
     序号存在缺口（中间丢失事件），则视为普通摸牌。未知事件夹在中间
-    或序号不连续时一律判 False（保守；杠开豁免宁严勿宽，配合
-    YouCaiBiKao 的宁漏胡不 409 方向）。
+    或序号不连续时一律判 False（仅表示无法从历史确认杠补来源）。
 
-    该推断只用于合法性豁免与审计；不影响番数（链计数以平台为准）。
+    该结果不是胡牌资格豁免，也不代表当前窗口仍是摸牌窗口；运行时
+    当前摸牌来源优先使用官方事件事实，番数使用平台链计数。
     """
 
     last_draw_index = -1

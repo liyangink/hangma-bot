@@ -239,7 +239,7 @@ async def test_v10_boundary_no_progress_backoff_bounded(transport, clock, audit)
         seq = (params or {}).get("seq")
         if seq == 101 and not long_poll and stage["n"] == 8:
             history_polls["n"] += 1
-            assert history_polls["n"] == 1
+            assert history_polls["n"] == 0
             return _json({"pending": True})  # 水位200后补领102..200，旧事件暂未可得
         stage["n"] += 1
         if stage["n"] == 1:
@@ -272,7 +272,7 @@ async def test_v10_boundary_no_progress_backoff_bounded(transport, clock, audit)
     assert _recovered_gap_count(audit) == 7  # 6 次无进度 + 1 次前进，总量有界
 
 
-    assert history_polls["n"] == 1
+    assert history_polls["n"] == 0
 
 async def test_post_keeps_cursor_at_last_consumed_seq(transport, clock):
     """动作 POST 完成后游标语义：不重置为 0，动作效果由后续增量事件送达。"""
@@ -685,7 +685,7 @@ async def test_pending_gap_progress_restores_incremental(transport, clock):
         seq = (params or {}).get("seq")
         if seq == 101 and not long_poll and stage["n"] == 5:
             history_polls["n"] += 1
-            assert history_polls["n"] == 1
+            assert history_polls["n"] == 0
             return _json({"pending": True})  # 第一次水位前进后补领；普通poll仍需继续
         stage["n"] += 1
         if stage["n"] == 1:
@@ -713,6 +713,6 @@ async def test_pending_gap_progress_restores_incremental(transport, clock):
     assert isinstance(item, ObservedActionWindow)
     assert item.window_key.round_no == 2
     assert item.window_key.trigger_seq == 301  # 第二轮进展后恢复增量直达
-    assert get_calls == [0, 101, 0, 101, 0, 101, 200, 0, 200, 0, 300]
-    assert history_polls["n"] == 1
+    assert get_calls == [0, 101, 0, 101, 0, 200, 0, 200, 0, 300]
+    assert history_polls["n"] == 0
 

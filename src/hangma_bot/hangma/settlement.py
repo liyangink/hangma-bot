@@ -46,7 +46,9 @@ def infer_piao_count(
 ) -> Optional[int]:
     """用权威链次数约束连续历史后缀，精确求链内飘次数；缺证据返回 None。
 
-    官方指南 v15（2026-09-05）§1.3：飘/杠各累计一次，普通弃牌断链。
+    官方指南 v18（2026-09-06）§1.3：飘/杠各累计一次，普通弃牌断链。
+    按 RULES_EVIDENCE.md 的 v18 生命周期修订，吃碰保持已有链，不增加
+    次数；反查必须跨过它们，不能把合法吃碰误当断链或历史缺失。
     从当前已消费水位反向找最近 chain_count 次本人白弃/杠；官方非零链
     计数约束其中白弃属于飘。收齐前遇断点不能借旧链补数。
     """
@@ -72,8 +74,6 @@ def infer_piao_count(
                 return None
             found += 1
             piao += 1
-        elif event.kind in ("chi", "peng"):
-            return None
         if found == chain_count:
             return piao
     return None

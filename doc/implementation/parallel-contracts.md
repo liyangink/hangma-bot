@@ -134,7 +134,7 @@ def hand_id(source_namespace: str, tournament_id: str,
 
 派生 manifest 的固定字段为 `manifest_schema_version=1, contract_id, replay_schema_version, dataset_id, created_at_unix_ms, source_namespace, producer_commit, dirty, inputs, rules_hash, guide_version, guide_captured_at, config, missing_fields`；评估产物把 replay_schema_version 换成 evaluation_schema_version。inputs 每项 `{path,sha256}` 的 path 为相对输入包根路径，多个包另记录 bundle_id；其他版本统一放 versions。guide_version 是官方指南整数，guide_captured_at 是来源采集日期 YYYY-MM-DD；created_at_unix_ms 是生成节点墙上时钟 Unix 毫秒。未知指南/配置/代码 hash 可空并说明，不能满足相关实验门禁。dataset_id 是创建时的 UUID；封存后不可变，重生成用新 ID。source_namespace/config 等在一个数据集中存在多值时，该汇总字段为 null，并以每行及 inputs 事实为准，不能任取第一份配置。
 
-rules_hash 为规则源文件清单的稳定哈希：src/hangma_bot/hangma 下全部 `.py` 文件按仓库相对 POSIX 路径排序，将 `[path,文件字节SHA-256]` 数组按 §4.1 编码再哈希；规则配置另存，不混入源文件 hash。跨机器复制不受 mtime 影响。训练时更细的特征/动作/网络版本在相应模块实际开发时加入 versions，不提前发明格式。
+rules_hash 为规则源文件清单的稳定哈希：src/hangma_bot/hangma 下全部 `.py`、`.c`、`.h` 文件按仓库相对 POSIX 路径排序，将 `[path,文件字节SHA-256]` 数组按 §4.1 编码再哈希；规则配置另存，不混入源文件 hash。跨机器复制不受 mtime 影响。2026-09-07 因正式加入 C 分组数学扩展而扩充源文件范围；未含 C/头文件的历史包仍按原字节清单解释，历史指纹不重写。实际实现与二进制摘要记录在已有 `versions.hand_math`，包括 `implementation`、`semantics_version`、可空 `native_sha256` 和 `fallback_reason`；启动审计 `RUN_MANIFEST` 的 `hand_math` 使用相同结构。Python 退路的二进制摘要为空，导入不可用或制品读取失败如实记录。不能仅凭相同源哈希忽略实际制品及运行配置差异。训练时更细的特征/动作/网络版本在相应模块实际开发时加入 versions，不提前发明格式。
 
 ## 5. 统一牌谱文件 v1
 
@@ -169,9 +169,16 @@ rules_hash 为规则源文件清单的稳定哈希：src/hangma_bot/hangma 下�
 | `rule_config` / `rules_hash` / `guide_version` | 复用 RuleConfig 编码语义；无法取得时可空，规则校验与完整世界导入不能通过 |
 | `initial` | 初始事实对象，定义见下文；不完整时部分字段可空 |
 | `events` | 全部按来源序号有序的事件对象；`seq,type,seat,tile,data,ts` 保留官方字段语义及未知字段，另加 source_refs；不把 PublicEvent 当完整牌谱载体 |
-| `scores_before/scores_after/score_delta` | 各为座位 0—3 的整数向量或 null；score_delta 只有两端已知才计算 |
+| `scores_before/scores_after/score_delta` | 各为座位 0—3 的整数向量或 null；前两项为单局前后累计积分，score_delta只有两端已知才计算。不得把单次结算变化直接写入scores_after |
+| `result_source/result_consistency` | 可选诊断字段：单局事实来自round_ended或unknown；顶层摘要对照为passed/not_checked/conflict，不覆盖单局事实。事件自身冲突仍拒绝 |
 | `winner_seat` / `is_draw` | 0—3 或 null / bool或null；官方 -1 规范为无获胜者，并保留原响应 |
 | `attempt_status/result_confirmed/missing_fields/source_refs` | 与 index 状态及证据一致；结果未知或作废仍归档 |
+
+2026-09-07单局结果修正：按blocks中的round_no及其round_ended导入所有单局，顶层rounds缺条或编号不同不再丢掉完整单局；结算事件缺失时不从摘要猜胡家。跨单局seq继续累加，起手与上一单局终局可证明新单局历史起点，无需seq从1重置。
+
+赛后诊断入口`diagnose_official`复用同一解析结果，不重新生成顶层摘要或从零起分。诊断行的`result_source`仍为上述字符串，原文位置另存`result_source_ref`；`origin_conflicts`兼容保留为摘要比较差异列表，并不等于事件错误。报告`summed_scores`表示已观察单局变化之和，`observed_start_scores`表示首个已观察单局前累计积分，`final_scores`表示场终累计积分，均按座位0—3。`final_scores_match`只检查这些已导出字段是否衔接，无锚点或不完整时为null，不冒充独立外部证据；独立积分复核使用原始state快照。教师候选要求规则核对通过、单局结果确认、历史完整和累计积分已知，不因独立摘要差异否决已验证事件。
+
+2026-09-07积分语义修正：官方单局`round_ended.data.scores`为本次变化，`game_ended.data.final_scores`为整场累计积分。导入器只有在本单局结束至场终的事件连续且变化值齐全时，才以明确终态反向扣除后续变化，填写前后累计积分；缺锚点或缺事件时保留null，不假定起始分为0。依据与影响核查见[积分审计](../../review/official-deep-diagnosis-2026-09-07/score-source-audit.json)。
 
 `initial` 的冻结字段：
 

@@ -23,7 +23,7 @@
 | `BotPolicy` | `application` | 加权启发式、紧急保底 | 两种真实策略必须可替换和故障降级 |
 | `AuditSink` | `application` 与适配器 | JSONL、测试内存记录器 | 磁盘副作用不能进入动作闭环 |
 
-`HangmaRules` 是唯一规则深模块，当前不定义可替换协议。传输、每 Token 调度器、限速器、状态投影、动作门均为官方适配器内部实现。第一阶段不设置模拟、模型、事件总线、数据库或工作流端口。
+`HangmaRules` 是唯一规则深模块，当前不定义可替换协议。传输、每Token控制调度与每场调度器、限速器、状态投影、动作门均为官方适配器内部实现。第一阶段不设置模拟、模型、事件总线、数据库或工作流端口。
 
 ## 2. 运行数据流
 
@@ -122,7 +122,7 @@ V0 与依赖 V0 的 `claim_if_legal` 在线上组合根和已有离线入口通�
 
 2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；手留四白排除，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。
 
-内部请求调度的 `RequestKind.STATE` 与 `OTHER` 独立于优先级：只有 STATE 扣每用户滚动 16 次/秒，全部请求共享并发槽并服从原始截止时间；2026-09-07修订：state 429仅冷却STATE，其他来源429保守全局冷却。生产STATE平滑限制为14次/秒、burst=1，官方16次/秒为上限。恢复、补史、长轮询一律属于 STATE；动作、赛事和匹配属于 OTHER，匹配另受其专属 10 次/分钟限制。变更不新增外部端口或后台任务。行为回归见 `test_action_chain_lifecycle.py`、`test_official_action_chain_trace.py`、`test_replay_check_lifecycle.py` 和 `test_scheduler_rate_alignment.py`。
+2026-09-07 生产配置按场隔离：每个 game_id 独立持有请求队列、频率额度、并发计数和429冷却，赛事查询另用独立调度。每场最多2个在途HTTP，其中state最多1个；动作POST另由ActionGate保证串行。M≤7时每场state为2/s、burst=1；M=8—16时为1/s，以静态分配满足指南v18每用户16/s上限，不靠场间共享队列争抢额度。重新打开同一game_id沿用原额度，不重置冷却。仅连接池按Token共享，默认64连接、48保活连接，覆盖16场请求、SSE与赛事查询。state 429只冷却本场state；其他端点429只冷却所属场或赛事控制通道。 `RequestKind.STATE`包括正常轮询和恢复；OTHER不扣state额度，匹配另受10次/分钟限制。四个外部端口不变。
 
 安全不变量是“同一场任意时刻最多一个在途动作 POST”，不是“整个窗口永远只允许尝试一次”。
 
@@ -162,7 +162,7 @@ ActionAttempt
 
 `stage_attempt_id` 是应用层在每次阶段实际运行尝试开始时生成的审计标识，不是官方字段。`stage_crashed` 后的新运行必须获得新标识，旧标识下的成绩默认作废。
 
-一个端口实例对应一个 Token。其所有场次共享同一个传输、连接池和限速器；不同 Token 完全隔离。`open_game()` 按 `active_games` 动态调用，`active_games=[]` 不是终态。所有等待方法和 `aclose()` 必须支持异步取消。
+资源作用域沿用上述GameSession约束：赛事控制和各场独立调度，同Token仅共享连接池。 `open_game()`按active_games动态打开，同场复用，active_games为空不等于终态。
 
 ## 7. 审计协议
 
@@ -198,6 +198,7 @@ runs/{run_id}/
 
 | AuditKind | 记录层 | 关联键必填 | payload 要点 |
 | --- | --- | --- | --- |
+| `HTTP_REQUEST` | 官方适配器 | run_id；已知participant/game；payload.request_id | phase=started/finished、endpoint、params/body、request_timing、状态/失败/取消；与原始响应一一对应 |
 | `RUN_MANIFEST` | 应用层（runtime） | run_id | `run_id`、`mode`、`expected_tournament_id`、`known_guide_version`、（正常路径）`guide_version`/`guide_updated_at`/`participant_id`/`ruleset_version`/`max_games`/`rounds_per_game`/`timing{peng,chi,discard_timeout_sec}`；早退路径带 `early_exit=true` |
 | `LIFECYCLE_CHANGED` | 应用层（supervisor） | run_id | `event` ∈ {`status_changed`(from/to), `registered`(status/official_code), `ready`(status/stage_no/stage_observed_revision/official_code), `stage_attempt_started`(stage_attempt_id/stage_no/stage_observed_revision), `stage_attempt_voided`(…作废标记)} |
 | `AUTHORITATIVE_STATE` | 应用层（supervisor 赛事快照）+ 适配器（指南版本、场次窗口投递）双层 | run_id | 应用层：`status`/`stage_no`/`stage_observed_revision`/`stage_role`/`stage_total`/`stage_crashed`/`qualified`/`qualify_role`/`active_games`/`my_games`/`observed_at_unix_ms`；适配器赛事层：`guide_version`/`guide_updated_at`/`guide_changes[]`/`checked_at`(initialize/stage_boundary)；适配器场次层：`seq`/`phase`/`turn`/`window{game_id,round_no,trigger_seq,phase,seat}` |
@@ -210,7 +211,9 @@ runs/{run_id}/
 
 `RAW_PROTOCOL_STATE` 为唯一低优先级种类（可计数丢弃），不进入本表——其规范权威信息必须以 `AUTHORITATIVE_STATE` 高优先级另存。双层终局分数一致性检查由 recording 汇总/验证器负责（应用层 `GAME_FINISHED` 与适配器快照终局对照）。
 
-**原始事件全量保留（2026-09-05 集成，E1/E2/E3 接线）**：adapter 层全部 `/state` 响应（含全量快照原文、坏报文）与动作提交响应（含 409/429 拒绝体，经 `errors.raw_text` 携带已脱敏原文；POST 结果不确定时省略 `http_status`、`raw` 为空串表示"原文不存在"）以 `source ∈ {state_response, action_submit_response}` 落 `RAW_PROTOCOL_STATE`，路由到独立 `participants/{pid}/raw/{game}.jsonl`（可选 gzip 分段，只分段不抽样）。`sse_frame` 为 SSE 接入预留词表（未接线不产生记录不算缺失）。验证器新增对账检查：`raw_state_gap`（request_no 连续性）、`raw_state_stream_empty`、`raw_action_missing`（每个实际发出的 POST 必须有响应原文记录；`SubmitNotSent` 与取消例外）。**决策观察快照**（同日）：`DECISION_PLANNED` 增加可选 `observation_snapshot`（`my_hand` 保留官方原始顺序、`drawn_tile` 单列、`phase`/`responding`/目标弃牌 seat+tile+seq、规则状态、本人副露与候选完整列表）——只含 `PlayerObservation` 口径可见信息。所有新增字段可选，旧 run 目录以 `retention_mode=legacy` 向后兼容。
+2026-09-07验证报告口径修订：`submissions.counting_basis=attempt-v2`。`outcome_histogram`及拒绝、模糊结果统计按`run_id/tournament_id/participant_id/game_id/decision_id/attempt_no`归并；原始条数保留为`intents/outcomes`及`outcome_record_histogram`。适配器缺省的`stage_attempt_id`不能拆开同次尝试，真实阶段混用仍另报违规。双层结果矛盾单列`conflicting_attempts`，不择一算成功。`coverage.rule_degradations`按决策输入`request.rules.completeness`计数，缺输入或无效输入标未知，计划自由文本只作为提示另列。外部`AuditSink`及原始信封不变，旧报告无需原地改写；完整字段见[记录模块](./modules/recording.md#2026-09-07-汇总口径修正)。
+
+所有生产HTTP调用均记录HTTP_REQUEST开始/终结元数据，以request_id关联原始响应；成功、拒绝、超时、取消、赛事发现/报名/到位、自动匹配和SSE连接均覆盖。短元数据走高优先级，正文仍走RAW_PROTOCOL_STATE。state/action原来源兼容保留，新增http_response及notify_response；取消无响应时raw为空并记录outcome=cancelled。仅保存Date、Retry-After、Content-Type和请求/限流诊断白名单头，Token及Authorization不落盘。验证器逐请求核对开始、终结和正文，即使旧成功计数连续也能查出取消漏记或正文丢失。赛后公共下载另写http-requests.jsonl并保留非200正文为*.http-error。 旧运行缺少HTTP_REQUEST时只执行原覆盖检查，不追认旧日志覆盖所有API。
 
 验证器裁定补充（2026-09-04 集成阶段登记）：
 
@@ -296,6 +299,8 @@ kernel JSON 编码保留 schema_version=1 的可选字段增补；新编码完�
 
 应用层先取得紧急动作，再用同一 `PlayerObservation` 调用规则分析并组装 `DecisionRequest`。规则纯函数 `enrich_observation` 补充有依据的链内飘数和摸牌来源；适配器在投递前调用，使策略也获得同样事实。`HangmaRules.score()` 对非零链但无法确认飘数的输入抛 `ValueError`，含义是无法精确核验，不能把猜测分数当作结果。规则分析的完整性与历史完整性分别表达，不相互替代。
 
+2026-09-07完赛修订：适配器在同一观察入口调用纯函数 `reconcile_observation(before, after, confirmed_action=...)`，将明确成功的本人动作与新快照核对后补足上述可空事实。规则模块验证场次、座位、单局、水位和本人牌面/链变化；适配器只管理确认的寿命。拒绝或模糊结果不能传入 `confirmed_action`。没有成功确认时，只允许按未改变的本人链状态保留已知事实；本次杠补来源还须证明仍为同次摸牌。官方 `rule_state`、事件、水位及 `history_complete` 均不改写，四个外部端口与数据字段不变。依据v20及2026-09-07实际响应，详见[规则回归来源](../../tests/fixtures/official/v20/README.md)。
+
 `BudgetPolicy.build(received_at_monotonic, timeout_seconds, expires_at_monotonic=None)` 在配置时长和实际剩余时间中取更短值分配三段预算；过期预算为零。`tighten` 将 409 新边界与原预算逐项取最小值。刷新即使更晚也不能延长；提交出口还检查会话已知截止。官方 Unix 截止转换后的单调值按同一窗口缓存且只收紧，时间准确性仍受主机与服务端时钟偏差约束。
 
 离线观察核对使用 `compare_observations(actual, reference, boundary_verified=True)`，调用方须先凭独立取证确认边界；同 seq/phase 不是充分依据。结果含 `status/state_status/history_status`、字段路径差异和未检查项，分别使用 `passed/failed/not_checked`。未知字段或缺史不能因两边都为空而通过。本工具不进入线上路径，不使用隐藏牌重写策略输入。
@@ -314,23 +319,27 @@ kernel JSON 编码保留 schema_version=1 的可选字段增补；新编码完�
 | `result_scores` | `round_ended.data.scores`；座位 0、1、2、3 顺序的本单局积分变化 |
 | `final_scores` | `game_ended.data.final_scores`；同座位顺序的场次最终积分 |
 
+赛后统一单局行的`scores_before/scores_after`均为累计积分，不能将`result_scores`直接写入`scores_after`。2026-09-07修正了该映射：以明确的场次最终积分和连续尾事件还原各单局前后累计积分；无法确认时为null。字段形态不变，见[统一牌谱契约](parallel-contracts.md#52-单局行)及[原文积分审计](../../review/official-deep-diagnosis-2026-09-07/score-source-audit.json)。
+
 这些字段经 DTO、事件投影、`PlayerObservation.public_history` 和审计 JSON 编解码传递。schema_version 仍为 1，旧记录缺字段解码为 `None`。不透传任意 `data`，不扩大隐藏牌权限。他家无牌值 `tile_drawn` 是合法可见事件，必须保留；收到他家私有牌值须隔离并标记异常。
 
-`consumed_seq` 表示已被事件或权威快照吸收的状态水位，**不证明每条原始事件均已保存**；证明历史连续性须同时检查 `history_complete`。同单局快照超前时，适配器先尝试从旧水位串行补领一次：最多 100 毫秒，已知窗口至少保留 350 毫秒，序号跨度不超过 256。不新增异步同步任务。无预算、缓存缺口、跨单局或补领失败时使用权威快照并明确缺史。快照前事件仅补历史，不重复推进牌河或手牌；已收到的快照后事件先消费，禁止提交已知陈旧窗口。快照与事件可在同一个响应内出现，包括终局响应。
+完整快照直接建立当前状态基线，下一次增量查询使用该快照水位N，接收N之后的事件；seq=0返回水位1的快照同样有效。已收到的原事件仍保留且不重复应用到牌河或手牌。线上移除100ms串行补领与三次延后补史，不回退游标追逐已被快照覆盖的原事件；历史缺口单独进入history_complete和单局封存，不再仅因history_gap_snapshot将当前规则分析整体降级。新收到的增量有gap、序号缺口、冲突重复或未知关键事件时仍必须用seq=0恢复；409仍按原始截止刷新。
+
+普通他家摸牌、明确catch_play=false的弃牌及pass，在连续后缀且本人手牌/god未变化时直接投影碰窗口；抓打标记不明、本人改牌、副露、超时和跨单局等不可完整推导的情况继续查询权威快照。peng→chi无事件切换仍按边界查快照；若剩余时间不足以安排增量和边界两次额度，则只在边界查一次，避免先发注定取消的长轮询。增量截止使用事件整秒时间与上次已知水位查询开始时刻提供的保守下界，并保持同窗截止只收紧。
 
 碰阶段选择 `Pass` 返回 `SubmitNotSent("pass_deferred_until_chi")`，不发送 POST，不标记本人已表态。应用层结束本次计划，等待权威状态提供真实吃窗口；吃窗口独立建立预算。该做法避免显式碰阶段 pass 提前关闭后续吃资格，是否能在官方超时后完整获得吃机会仍需下一批实测。409 刷新若同时获得更晚事件，则返回 `SubmitRejectedNoRefresh`，原因 `newer_events_pending`；先同步后重新取得窗口，不在旧快照上重试。
 
-赛后牌谱的结果摘要须与对应 `round_ended` 核对；冲突拒绝转换并报告 `official_result_conflict`，不足以核验的字段列为 `not_checked`，不得静默替换官方原文或拿错配单局结果评估规则。
+赛后单局结果取对应事件块的 `round_ended`；顶层 `rounds` 作为独立摘要保存，差异只报告诊断，不按数组位置将其绑定单局或阻止导入。单局终结事件自身矛盾时仍拒绝转换并报告 `official_result_conflict`，不足以核验的字段列为 `not_checked`，不得静默替换官方原文。
 
-补领若返回新的 `gap=true`，必须按原截止进入正常权威恢复；不得用补领前快照继续行动。跨单局附带事件只按可证明的终局边界归属，无法归属时标记 `new_round_event_scope_unknown` 并保留原始审计。
+新增量返回gap=true必须进入正常权威恢复；跨单局附带事件只按可证明的终局边界归属，不明归属保留原始审计。
 
 ## 延后补史与单局收尾契约（2026-09-06）
 
-修复后的四个外部端口不变。`consumed_seq` 继续表示事件或快照已经吸收的牌面水位；它不再决定旧历史是否还要补领。官方适配器内部按当前单局维护 `history_floor_seq`（排除式事件下界）、`history_origin_known`（是否能证明单局起点）和缺失序号闭区间。前缀未知与可计算缺口分别保存；区间为空不能把未知起点变成完整。
+四个外部端口不变。consumed_seq表示已经吸收的状态水位；历史另有history_floor_seq、history_origin_known与缺失闭区间。未知前缀不能伪造为已知区间，缺史不阻挡完整快照的当前动作。
 
-原动作路径的一次 100ms 补领保留。该次失败或预算不足后，原始事件缺口不会被快照水位抹掉：后续 `next_item()` 在当前动作已接受、明确关闭或碰阶段本地等待时，最多增加一次旧游标 GET；未提交动作、409可重试或结果模糊状态优先。总请求预算含排队和网络，仍不超过100ms并为已知窗口保留350ms。每个缺口最多三次延后尝试，以本机单调时钟进行0.25/0.5/1秒退避；退避期间继续正常state流程，不新增后台同步任务。
+2026-09-07取消此历史方案：原动作路径和后续next_item均不再追加旧游标GET。单局切换和结束仍独立封存已知历史、未知前缀、缺失区间及终局事件是否实际收到；不为补历史再发请求，也不伪造终局事件或重新打开已结束场次。赛后完整下载是独立证据，不回写当时策略观察。
 
-仅收到真实事件才能消除对应缺口。同点快照、pending或失败都不能销账；seq=0无法表达历史查询、落后超过已知256缓存范围、接口只返回快照等情况保留原因并停止对应追赶。新快照或快照后的事件先进入正常权威同步再决策。补回旧事件不重复推进牌面，不回滚当前水位；冲突、未知关键事件或私有他家摸牌使本批补史原子拒绝并触发恢复。已建立窗口使用的估算触发身份保持稳定，真实弃牌序号保存在历史；迟到的本人pass只影响它确实所属的当前弃牌周期。
+仅实际收到的事件能补齐原事件证据；附带历史整批校验并保留，不重放牌面。未知关键事件、冲突重复或私有他家摸牌仍按既有协议恢复约束处理。
 
 单局切换成功、场次结束和会话关闭会经现有高优先级 `AUTHORITATIVE_STATE` 保存一次 `history_closure`，无需另建策略窗口。记录包含：`round_no`、`state_seq`（末次牌面吸收水位）、`snapshot_seq`、`history_through_seq`（已归属本手的历史检查上界，可晚于末次牌面）、`snapshot_phase`、座位0—3的`scores`、起点元信息、缺口闭区间、`public_history`、重试原因及可空`observation`。官方终态无法构造合法玩家观察时，`observation=null`，不伪造行动座位；历史和公开结算仍单独保存。未知前缀或未确认终局不能因封存自动变成完整。新快照校验失败不封存旧手；跨手混包尾事件仅在能证明归属时并入旧手封存。
 
@@ -343,7 +352,7 @@ kernel JSON 编码保留 schema_version=1 的可选字段增补；新编码完�
 
 ## M=4 调度与审计兼容增补（2026-09-07）
 
-四个外部端口与PlayerObservation字段不变。内部补史失败携带是否进入传输层的事实：尚未发送不消耗三次网络尝试，仍按原主循环退避，不能挤占未完成动作。仅同单局无gap、有效非零旧游标及缓存跨度内的终态快照允许一次100毫秒尾事件补领；原终态保持权威，只添加实际尾事件。
+所有生产HTTP调用均记录HTTP_REQUEST开始/终结元数据，以request_id关联原始响应；成功、拒绝、超时、取消、赛事发现/报名/到位、自动匹配和SSE连接均覆盖。短元数据走高优先级，正文仍走RAW_PROTOCOL_STATE。state/action原来源兼容保留，新增http_response及notify_response；取消无响应时raw为空并记录outcome=cancelled。仅保存Date、Retry-After、Content-Type和请求/限流诊断白名单头，Token及Authorization不落盘。验证器逐请求核对开始、终结和正文，即使旧成功计数连续也能查出取消漏记或正文丢失。赛后公共下载另写http-requests.jsonl并保留非200正文为*.http-error。
 
 `RAW_PROTOCOL_STATE` payload可选增加 `request_timing`，旧日志没有此字段时表示未记录，不是耗时为零：
 
@@ -355,4 +364,10 @@ kernel JSON 编码保留 schema_version=1 的可选字段增补；新编码完�
 | completed_at_monotonic | 本进程单调时钟秒，处理成功响应或异常并写审计时；失败不保证有响应体 |
 | retry_after_seconds | 仅state 429记录的有效有限非负秒数；缺失或无效为null，不保存完整响应头 |
 
-这些时间点只能在同进程内相减；不得跨Token进程直接相减。排队未获许可的补史仍通过AUTHORITATIVE_STATE记录 `history_recovery=unavailable, request_sent=false`，不能产生虚假的HTTP响应。原有raw报文、身份关联字段及版本保持不变。
+这些时间点只能在同进程内相减，不得跨Token进程相减；传输开始不等于服务器收包。未获许可不产生HTTP_REQUEST开始记录，提交路径仍以SubmitNotSent记录调度超时。
+
+## 2026-09-07 规则资格与计分边界澄清
+
+公共类型与签名不变。`HangmaRules.analyze/validate` 根据实例绑定的 `RuleConfig.you_cai_bi_kao` 判断提交资格：开关开启且手留白板时必须爆头，杠补不可豁免。确定规则过滤不是计算失败，原因写入保留候选的 `evidence`，不产生降级 `RuleIssue`；缺事实或异常继续降级。
+
+`score(WinDescription)` 仍接收已确认胡牌事实，仅计算倍率和座位0—3积分，不借赛事资格过滤将成牌变成流局。计番、静态爆头对拍和行动资格分别验证；线上 `rule_state.baotou` 是权威持续状态，不能无条件换成静态重算值。手留四白在资格和计分中均排除爆头。

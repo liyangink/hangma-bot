@@ -231,9 +231,11 @@ class TestSubmit:
         # 原始事件全量保留接线（E1/E3）后：state 响应原文先于权威状态审计、
         # POST 响应原文在 intent 与 outcome 之间——两者都是 RAW_PROTOCOL_STATE
         assert kinds == [
+            AuditKind.HTTP_REQUEST, AuditKind.HTTP_REQUEST,
             AuditKind.RAW_PROTOCOL_STATE,       # E1：开桌 /state 响应原文
             AuditKind.AUTHORITATIVE_STATE,
             AuditKind.SUBMISSION_INTENT,
+            AuditKind.HTTP_REQUEST, AuditKind.HTTP_REQUEST,
             AuditKind.RAW_PROTOCOL_STATE,       # E3：动作 POST 响应原文
             AuditKind.SUBMISSION_OUTCOME,
         ]

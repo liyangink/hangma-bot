@@ -100,13 +100,14 @@ def test_observation_issues_reach_rule_analysis():
     assert any(issue.area == "observation" for issue in result.issues)
 
 
-def test_explicit_gang_draw_restores_youcai_hu_and_unknown_is_degraded():
+@pytest.mark.parametrize('gang_draw', [True, False, None])
+def test_gang_draw_does_not_exempt_youcai_or_degrade(gang_draw):
     hand = tuple(Tile(x) for x in ("1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w", "1b", "1b", "东", "白"))
-    obs = observation(my_hand=hand, gang_draw=True)
-    assert "hu" in {c.action_key for c in rules().analyze(obs).legal_candidates}
-    result = rules().analyze(replace(obs, gang_draw=None))
+    obs = observation(my_hand=hand, gang_draw=gang_draw)
+    result = rules().analyze(obs)
     assert "hu" not in {c.action_key for c in result.legal_candidates}
-    assert any(issue.area == "observation.gang_draw" for issue in result.issues)
+    assert result.completeness is RuleCompleteness.COMPLETE
+    assert result.issues == ()
 
 
 def test_compare_detects_chain_reset_and_preserves_official_observation():
