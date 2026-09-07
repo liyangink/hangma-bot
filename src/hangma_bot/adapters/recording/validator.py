@@ -770,6 +770,10 @@ class _RunScanner:
         attempt_tournaments: dict[tuple[str, str], set[str]] = {}
         finished_games: dict[tuple[str, str], list[_Parsed]] = {}
         finished_participants: dict[str, list[_Parsed]] = {}
+        opened_games: dict[tuple[str, str], _Parsed] = {}
+        closed_games: dict[tuple[str, str], _Parsed] = {}
+        failed_games: dict[tuple[str, str], str] = {}
+        voided_attempts: set[tuple[str, str]] = set()
         games: set[tuple[str, str]] = set()
         participants: set[str] = set()
         windows: set[tuple[str, str, int, int]] = set()
@@ -778,6 +782,21 @@ class _RunScanner:
             pid = record.context["participant_id"]
             participants.add(pid)
             game_id = record.context.get("game_id")
+            if record.kind == AuditKind.LIFECYCLE_CHANGED.value:
+                event = record.payload.get("event")
+                if event == "stage_attempt_voided":
+                    attempt = record.payload.get("stage_attempt_id")
+                    if isinstance(attempt, str):
+                        voided_attempts.add((pid, attempt))
+                if isinstance(game_id, str) and game_id:
+                    if event == "game_opened":
+                        opened_games[(pid, game_id)] = record
+                    elif event == "game_closed":
+                        closed_games[(pid, game_id)] = record
+                    elif event == "game_ended" and record.payload.get("status") in (
+                        "abandoned", "unrecoverable_failure",
+                    ):
+                        failed_games[(pid, game_id)] = record.payload["status"]
             if isinstance(game_id, str) and game_id:
                 games.add((pid, game_id))
                 stage_attempt = record.context.get("stage_attempt_id")
@@ -880,10 +899,57 @@ class _RunScanner:
                 (),
             ))
 
+        # 收尾完整性按“已开场 → 权威成绩或明确退出原因”核验。
+        # 旧日志也会暴露真实缺失，不用新版代码把未收到的终局补成零分。
+        missing_finals: list[str] = []
+        pending_games: list[str] = []
+        explained_exits: dict[str, str] = {}
+        for (pid, game_id), opened in sorted(opened_games.items()):
+            key = f"{pid}/{game_id}"
+            if key in final_scores_by_game:
+                continue
+            closed = closed_games.get((pid, game_id))
+            attempt = opened.context.get("stage_attempt_id")
+            if (isinstance(attempt, str) and (pid, attempt) in voided_attempts) or (
+                closed is not None and closed.payload.get("reason") == "stage_crashed"
+            ):
+                explained_exits[key] = "stage_crashed"
+                continue
+            # 明确超时/读取失败不能因随后进程退出而被包装成完整审计。
+            missing_explicit = closed is not None and closed.payload.get("terminal_status") == "missing"
+            participant_ends = finished_participants.get(pid, [])
+            end_reason = participant_ends[-1].payload.get("reason") if participant_ends else None
+            explained = failed_games.get((pid, game_id))
+            if not missing_explicit and explained is not None:
+                explained_exits[key] = explained
+                continue
+            if not missing_explicit and end_reason in (
+                "cancelled", "tournament_closed", "tournament_void", "authentication_failed",
+                "incompatible_guide", "target_mismatch", "fatal_protocol_error",
+            ):
+                explained_exits[key] = end_reason
+                continue
+            if closed is not None or participant_ends:
+                missing_finals.append(key)
+                self.findings.append(_Finding(
+                    "violation", "missing_game_final_scores",
+                    f"已打开场次 {key} 已退场或身份已结束，但没有可核验的最终积分",
+                    (opened.location,) + ((closed.location,) if closed is not None else ()),
+                ))
+            else:
+                pending_games.append(key)
+
         return {
             "games_total": len(games),
             "games_finished": len(finished_games),
             "final_scores_by_game": final_scores_by_game,
+            "terminal_coverage": {
+                "games_opened": len(opened_games),
+                "missing_final_scores": missing_finals,
+                "explained_exits": explained_exits,
+                "pending_games": pending_games,
+                "all_opened_games_have_scores": not (missing_finals or explained_exits or pending_games),
+            },
             "participants_total": len(participants),
             "participants_finished": len(finished_participants),
             "windows_observed": len(windows),

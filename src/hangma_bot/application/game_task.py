@@ -70,8 +70,12 @@ class GameTask:
         self._item_backoff = item_backoff
         self._sleep = sleep
 
-    async def run(self) -> GameTaskResult:
-        """消费权威条目直到终局、分类故障或被取消；永不向监督层抛异常。"""
+    async def run(self, *, read_only: bool = False) -> GameTaskResult:
+        """消费权威条目；收尾模式只同步终局，不分析窗口、不调用策略或提交。
+
+        read_only 只能在原动作消费者取消并完成回收后启动。总体收尾截止
+        由监督器管理；此处沿用每场有限退避处理短暂读取故障。
+        """
 
         audit = self._services.audit
         while True:
@@ -112,10 +116,21 @@ class GameTask:
                 await self._sleep(delay)
                 continue
 
+            if read_only and isinstance(item, GameFailed) and item.recoverable:
+                # 退场后的短暂 GET 故障不能触发重新参赛；在原收尾预算内重读。
+                delay = self._item_backoff.next_delay_or_none()
+                if delay is not None:
+                    await self._sleep(delay)
+                    continue
             # 成功取得权威条目即重置退避预算。
             self._item_backoff.reset()
 
             if isinstance(item, ObservedActionWindow):
+                if read_only:
+                    # 两个端点到达次序不同，退场后仍可能读到旧动作窗口。
+                    # 让出事件循环，使截止/取消在连续缓存条目下也能生效。
+                    await asyncio.sleep(0)
+                    continue
                 try:
                     window_result = await run_action_window(
                         session=self._session,
@@ -174,7 +189,9 @@ class GameTask:
                         "area": "game_session",
                         "reason": safe_reason,
                         "recoverable": item.recoverable,
-                        "outcome": "rediscover" if item.recoverable else "abandon",
+                        "outcome": "close_without_result" if read_only else (
+                            "rediscover" if item.recoverable else "abandon"
+                        ),
                     },
                     game_id=item.game_id,
                     stage_attempt_id=self._stage_attempt_provider(),

@@ -88,6 +88,7 @@ class SupervisionPolicy:
     game_reopen_factor: float = 2.0
     game_reopen_max_delay_seconds: float = 8.0
     game_reopen_max_attempts: int = 5
+    game_finalization_timeout_seconds: float = 5.0  # 停止动作起的只读收尾上限，单调时钟秒；各场并行且不续期
     audit_flush_seconds: float = 5.0
 
     def _backoff(self, base: float, factor: float, cap: float, attempts: int) -> BoundedBackoff:
@@ -118,6 +119,11 @@ class _GameSlot:
     game_id: str
     session: GameSessionPort
     task: "asyncio.Task[GameTaskResult]"
+    worker: GameTask
+    stage_attempt_id: Optional[str]
+    finalization_deadline: Optional[float] = None  # 单调时钟秒；空表示无需额外读取
+    finalization_task: Optional["asyncio.Task[GameTaskResult]"] = None
+    finalization_abort_reason: Optional[str] = None
 
 
 def _snapshot_payload(snapshot: TournamentSnapshot) -> dict:
@@ -196,7 +202,7 @@ class TournamentSupervisor:
         # 正在关闭中的场次（已 pop、aclose 未完成）：对账必须跳过同 ID，
         # 否则旧会话还在关闭途中就会被按新会话重开（真实适配器会拿到
         # 缓存的旧实例），形成同 ID 双会话重叠。
-        self._closing_games: set[str] = set()
+        self._closing_games: dict[str, _GameSlot] = {}
         self._cleanup_tasks: set["asyncio.Task[None]"] = set()
         self._update_task: Optional["asyncio.Task[object]"] = None
         self._delayed_wake: Optional["asyncio.Task[None]"] = None
@@ -744,6 +750,8 @@ class TournamentSupervisor:
         """stage_crashed：作废当前尝试并关闭其全部场次任务。"""
 
         if self._stage_attempt_id is not None:
+            self._abort_finalizations("stage_crashed", stage_attempt_id=self._stage_attempt_id)
+        if self._stage_attempt_id is not None:
             self._audit.emit(
                 AuditKind.LIFECYCLE_CHANGED,
                 {
@@ -798,8 +806,8 @@ class TournamentSupervisor:
         desired = self._desired_games(snapshot)
         for game_id in list(self._games):
             if game_id not in desired:
-                # 场次从权威列表消失：取消长轮询并回收会话。
-                self._schedule_close(game_id, "removed_from_active_games")
+                # active_games 只决定是否继续行动，不证明终局响应已被消费。
+                self._schedule_close(game_id, "removed_from_active_games", collect_terminal=True)
         # 权威列表移除后，退出登记与重开预算同步出清；同一 game_id 再次出现按全新场次对待。
         for game_id in list(self._retired_games):
             if game_id not in desired:
@@ -831,24 +839,31 @@ class TournamentSupervisor:
 
     def _open_game(self, game_id: str) -> None:
         session = self._session.open_game(game_id)
+        stage_attempt_id = self._stage_attempt_id
+        worker = GameTask(
+            game_id=game_id,
+            session=session,
+            services=self._services,
+            competition_provider=lambda: self._competition,
+            # 旧场收尾可能跨越阶段切换，保留开场时的尝试身份。
+            stage_attempt_provider=lambda: stage_attempt_id,
+            item_backoff=self._supervision.new_game_item_backoff(),
+            sleep=self._sleep,
+        )
         task = asyncio.create_task(
-            GameTask(
-                game_id=game_id,
-                session=session,
-                services=self._services,
-                competition_provider=lambda: self._competition,
-                stage_attempt_provider=lambda: self._stage_attempt_id,
-                item_backoff=self._supervision.new_game_item_backoff(),
-                sleep=self._sleep,
-            ).run(),
+            worker.run(),
             name="game-{}".format(game_id),
         )
-        self._games[game_id] = _GameSlot(game_id=game_id, session=session, task=task)
+        self._games[game_id] = _GameSlot(
+            game_id=game_id, session=session, task=task, worker=worker,
+            stage_attempt_id=stage_attempt_id,
+        )
         task.add_done_callback(lambda _task, _gid=game_id: self._wake.set())
         self._audit.emit(
             AuditKind.LIFECYCLE_CHANGED,
             {"event": "game_opened", "game_id": game_id},
             game_id=game_id,
+            stage_attempt_id=stage_attempt_id,
         )
 
     def _handle_open_failure(self, game_id: str, exc: Exception) -> None:
@@ -897,13 +912,17 @@ class TournamentSupervisor:
             self._reopen_budgets[game_id] = budget
         return budget
 
-    def _schedule_close(self, game_id: str, reason: str) -> None:
-        """同步登记关闭并交给后台任务等待取消与 aclose 完成。"""
+    def _schedule_close(self, game_id: str, reason: str, *, collect_terminal: bool = False) -> None:
+        """先停止动作；普通退场并行收集迟到终局，最后才关闭会话。"""
 
         slot = self._games.pop(game_id, None)
         if slot is None:
             return
-        self._closing_games.add(game_id)
+        self._closing_games[game_id] = slot
+        if collect_terminal:
+            slot.finalization_deadline = (
+                self._services.clock.now() + self._supervision.game_finalization_timeout_seconds
+            )
         reopen_task = self._reopen_tasks.pop(game_id, None)
         if reopen_task is not None and not reopen_task.done():
             reopen_task.cancel()
@@ -914,18 +933,80 @@ class TournamentSupervisor:
         cleanup = asyncio.ensure_future(self._close_quietly(slot, reason))
         self._cleanup_tasks.add(cleanup)
         cleanup.add_done_callback(self._cleanup_tasks.discard)
+
+    def _abort_finalizations(self, reason: str, *, stage_attempt_id: Optional[str] = None) -> None:
+        """作废或身份永久错误不再读取旧场；也终止已移出活跃列表的收尾。"""
+
+        for slot in self._closing_games.values():
+            if stage_attempt_id is not None and slot.stage_attempt_id != stage_attempt_id:
+                continue
+            slot.finalization_abort_reason = reason
+            if slot.finalization_task is not None and not slot.finalization_task.done():
+                slot.finalization_task.cancel()
+
+    async def _collect_terminal(self, slot: _GameSlot) -> tuple[str, str]:
+        """在同一场次端口串行读到终局或原截止；不重新开场、不重放 POST。"""
+
+        assert slot.finalization_deadline is not None
+        remaining = max(0.0, slot.finalization_deadline - self._services.clock.now())
+        if remaining <= 0:
+            return "missing", "finalization_timeout"
         self._audit.emit(
             AuditKind.LIFECYCLE_CHANGED,
-            {"event": "game_closed", "game_id": game_id, "reason": reason},
-            game_id=game_id,
+            {"event": "game_finalization_started", "game_id": slot.game_id,
+             "timeout_seconds": remaining},
+            game_id=slot.game_id, stage_attempt_id=slot.stage_attempt_id,
         )
+        reader = slot.finalization_task = asyncio.create_task(
+            slot.worker.run(read_only=True), name="game-finalize-{}".format(slot.game_id),
+        )
+        timer = asyncio.ensure_future(self._sleep(remaining))
+        try:
+            done, _ = await asyncio.wait({reader, timer}, return_when=asyncio.FIRST_COMPLETED)
+            if slot.finalization_abort_reason is not None:
+                return "skipped", slot.finalization_abort_reason
+            # 同一调度周期已拿到权威结果时优先保留，不误报超时。
+            if reader in done and not reader.cancelled():
+                result = reader.result()
+                if result.status is GameTaskStatus.FINISHED:
+                    return "finished", "authoritative_terminal"
+                return "missing", result.detail or result.status.value
+            return "missing", "finalization_timeout"
+        finally:
+            for pending in (reader, timer):
+                if not pending.done():
+                    pending.cancel()
+            await asyncio.gather(reader, timer, return_exceptions=True)
+            slot.finalization_task = None
 
     async def _close_quietly(self, slot: _GameSlot, reason: str) -> None:
+        terminal_status, terminal_detail = "skipped", reason
         try:
+            result = None
             try:
-                await slot.task
-            except (asyncio.CancelledError, Exception):  # noqa: BLE001 - 回收路径不放大异常
+                result = await slot.task
+            except asyncio.CancelledError:
+                # 原动作任务的正常取消可继续只读收尾；收尾自身被强制取消则穿透。
+                if asyncio.current_task().cancelling():
+                    raise
+            except Exception:  # noqa: BLE001 - 回收路径不放大异常
                 pass
+            if result is not None and result.status is GameTaskStatus.FINISHED:
+                terminal_status, terminal_detail = "finished", "authoritative_terminal"
+            elif slot.finalization_abort_reason is not None:
+                terminal_detail = slot.finalization_abort_reason
+            elif result is not None and result.status in (
+                GameTaskStatus.FATAL, GameTaskStatus.UNRECOVERABLE_FAILURE,
+            ):
+                terminal_detail = result.detail or result.status.value
+            elif slot.finalization_deadline is not None:
+                terminal_status, terminal_detail = await self._collect_terminal(slot)
+        except asyncio.CancelledError:
+            terminal_status, terminal_detail = "missing", "finalization_cancelled"
+            raise
+        except Exception as exc:  # noqa: BLE001 - 收尾失败不能影响其他场次
+            terminal_status, terminal_detail = "missing", audit_error_text(exc)
+        finally:
             try:
                 await slot.session.aclose(reason)
             except Exception as exc:  # noqa: BLE001 - 关闭失败只记录不传播
@@ -937,10 +1018,16 @@ class TournamentSupervisor:
                         "game_id": slot.game_id,
                     },
                     game_id=slot.game_id,
+                    stage_attempt_id=slot.stage_attempt_id,
                 )
-        finally:
+            self._audit.emit(
+                AuditKind.LIFECYCLE_CHANGED,
+                {"event": "game_closed", "game_id": slot.game_id, "reason": reason,
+                 "terminal_status": terminal_status, "terminal_detail": terminal_detail},
+                game_id=slot.game_id, stage_attempt_id=slot.stage_attempt_id,
+            )
             # 关闭真正完成后才允许同 ID 重开；唤醒对账重新评估。
-            self._closing_games.discard(slot.game_id)
+            self._closing_games.pop(slot.game_id, None)
             self._wake.set()
 
     def _reap_game_tasks(self) -> None:
@@ -959,7 +1046,7 @@ class TournamentSupervisor:
                     detail="任务异常退出: {}".format(audit_error_text(exc)),
                 )
             cleanup = asyncio.ensure_future(self._close_quietly(slot, "task_ended"))
-            self._closing_games.add(game_id)
+            self._closing_games[game_id] = slot
             self._cleanup_tasks.add(cleanup)
             cleanup.add_done_callback(self._cleanup_tasks.discard)
 
@@ -1095,11 +1182,17 @@ class TournamentSupervisor:
     # ---- 关闭 -----------------------------------------------------------
 
     async def _shutdown(self) -> None:
-        """取消全部任务并回收会话；任何一步失败都不改变终态。"""
+        """停止所有动作并并行完成有界收尾，再允许身份关闭共享传输。"""
 
         # 关闭门先行：此后 done 回调与启动器都不得复活任何后台命令，
         # 否则取消在途 ready 时回调会立刻重建 worker 并泄漏到关闭之外。
         self._shutting_down = True
+        collect_terminal = self._terminal is None or self._terminal.reason in (
+            ParticipantTerminalReason.TOURNAMENT_FINISHED,
+            ParticipantTerminalReason.ELIMINATED,
+        )
+        if not collect_terminal:
+            self._abort_finalizations(self._terminal.reason.value)
         side_tasks: list["asyncio.Task[object]"] = []
         for attr in ("_ready_task", "_register_task"):
             task = getattr(self, attr)
@@ -1120,10 +1213,9 @@ class TournamentSupervisor:
         if self._update_task is not None:
             self._update_task.cancel()
         slots = list(self._games.values())
-        self._games.clear()
         for slot in slots:
-            slot.task.cancel()
-        pending: list["asyncio.Task[object]"] = [slot.task for slot in slots]
+            self._schedule_close(slot.game_id, "supervisor_shutdown", collect_terminal=collect_terminal)
+        pending: list["asyncio.Task[object]"] = []
         if self._update_task is not None:
             pending.append(self._update_task)
         if self._delayed_wake is not None:
@@ -1133,9 +1225,6 @@ class TournamentSupervisor:
         pending.extend(self._reopen_tasks.values())
         if pending:
             await asyncio.gather(*pending, return_exceptions=True)
-        for slot in slots:
-            await self._close_quietly(slot, "supervisor_shutdown")
         if self._cleanup_tasks:
             await asyncio.gather(*list(self._cleanup_tasks), return_exceptions=True)
         self._cleanup_tasks.clear()
-

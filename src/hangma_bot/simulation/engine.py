@@ -256,7 +256,9 @@ class SimulationEngine:
             fan = None
             details = ()
             hands13 = world.round_initial_hands
-            initial_hands = _initial_hands_14(world.round_initial_hands, world.round_dealer_drawn)
+            initial_hands = _initial_hands_14(
+                world.round_initial_hands, world.round_dealer_drawn, world.dealer_seat
+            )
             drawn_tile = world.round_dealer_drawn
             wall = world.round_start_wall
             wall_back = world.round_start_wall_back
@@ -477,7 +479,9 @@ class SimulationEngine:
             state.scores[i] + result.score_delta[i] for i in range(SEAT_COUNT)
         )
         round_ended = _round_ended_event(seq, result)
-        initial_hands = _initial_hands_14(world.round_initial_hands, world.round_dealer_drawn)
+        initial_hands = _initial_hands_14(
+            world.round_initial_hands, world.round_dealer_drawn, world.dealer_seat
+        )
         record = RoundRecord(
             round_no=world.round_no,
             dealer_seat=world.dealer_seat,
@@ -684,10 +688,14 @@ def _apply_wall_counts(state, drawable: int):
     return replace(state, wall_drawable=drawable, wall_total=drawable + RESERVE_TILES)
 
 
-def _initial_hands_14(hands13, dealer_drawn: Tile):
-    """4×13 起手 + 庄家直抽 → 14/13/13/13（直抽置尾，契约 initial.hands 口径）。"""
+def _initial_hands_14(hands13, dealer_drawn: Tile, dealer_seat: int):
+    """按座位 0—3 保存起手，实际庄家直抽置尾，其余仍为 13 张。
+
+    换庄后庄家不一定是座位 0；此处须与导入时按实际庄家移除直抽牌对应，
+    否则导出会错配起手，甚至在庄家恰有同码牌时静默损坏世界起点。
+    """
     return tuple(
-        hand + (dealer_drawn,) if index == 0 else hand
+        hand + (dealer_drawn,) if index == dealer_seat else hand
         for index, hand in enumerate(hands13)
     )
 

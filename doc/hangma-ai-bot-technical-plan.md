@@ -100,7 +100,7 @@ LLM 的定位是离线研发教练：协助编码、生成测试、分析牌谱�
 | P0 | 每 Token 请求调度与应用截止时间调度重叠 | 官方适配器唯一拥有每 Token 连接池、限速器和请求调度；应用层只拥有决策预算和任务监督 |
 | P0 | 测试房间四 Token 和审计路径没有形成可验收方案 | 第一阶段使用四个隔离进程；审计路径加入 `participant_id` 并提供完整性验证器 |
 | P1 | `heuristic/prediction/tournament/decision` 都暴露给启动入口 | 收口到一个深的 `policy` 模块，内部继续独立实现和测试 |
-| P1 | `TournamentUtility` 混合官方规则和未来预测，且写死固定四阶段 | 拆为数据化阶段格式、确定性赛事目标、剩余局估计和海选晋级线估计 |
+| P1 | `TournamentUtility` 混合官方规则和未来预测，且写死固定四阶段 | 拆为版本化阶段格式与确定性目标；海选首版使用晋级压力，固定四人阶段预测后续验证 |
 | P1 | 评测只覆盖 Predictor | 正式评测完整 Policy、动态赛事流程和官方时间/恢复壳 |
 
 ### 3.2 设计原则
@@ -365,46 +365,36 @@ class BeliefSampler(Protocol):
 
 参考：[Information Set Monte Carlo Tree Search](https://eprints.whiterose.ac.uk/id/eprint/75048/1/CowlingPowleyWhitehouse2012.pdf)。
 
-### 6.3 `competition`：阶段规则与晋级概率（P0/P1）
+### 6.3 `competition`：阶段目标与海选晋级压力（P1）
 
-该后续模块不再写死“第一轮/第二轮/第三轮”。它消费官方适配器提供的已观察赛事事实，再由本地版本化流程规则派生 `CompetitionFormat`。第一阶段只保留轻量 `CompetitionContext` 给启发式使用，不创建独立 `competition` 包。
+2026-09-07 首版设计修订（提案未实现）：采用晋级压力（`QualificationPressure`，根据缺口和剩余机会生成的追分强度）与目标胡牌分值（`TargetWinScore`，希望一次胡牌取得的我方净增积分）驱动启发式。首版交付能改变动作的候选策略，不训练海选概率模型；桌赛重采样与后缀迁移退出实施主线。[完整方案](./implementation/qualifier-utility-v1.md)规定接口、数据、验收和证据边界，架构同步更新。
 
-#### `CompetitionFormat`
+第一阶段只保留轻量 CompetitionContext 的基线仍成立；进入本次后续阶段时再创建具体 competition 实现，不预建通用预测接口。该模块只消费结构化赛事事实和可能积分结果，不读取 HTTP、文件、手牌或完整世界。
 
-表达由“当前已观察事实 + 已审查官方流程版本”得到的本地派生格式：
+#### 阶段格式与确定性目标
 
-```text
-stage_no / stage_role / stage_total
-target_size             # 海选取前 16、8 或 4
-group_advance           # 中间轮当前为组内前 2
-ranking_keys            # 晋级轮为 total_score → place_points → god_count；决赛只有 total_score
-score_resets            # 当前官方规则为每阶段独立计分
-overtime_until_unique   # 决赛同分时为真
-```
+晋级名额、三键顺序、阶段清零由已观察阶段事实与已审查官方流程派生，记录版本与依据，不解析自由文本。海选按实际到位与阶段计划取前 16/8/4，不能固定名额或把并发 M 当成完整剩余赛程。`games_played` 包含轮空的特殊计数，进度应独立核对。
 
-`stage.no/role/total`、权威 `rank` 等是 API 直接观察字段；`target_size/group_advance/ranking_keys/score_resets/overtime_until_unique` 不是 v8 响应的同名字段，而是根据 2026-09-03 官方流程形成的版本化本地规则。阶段结构可能降档，因此派生时必须结合当前 `stage.total`，不能按创建人数写死。`description` 是可变自由文本，只做留档，不能由策略临时解析来生成规则。
+赛事目标仍是海选直接晋级、16 强/8 强组内前 2、决赛最终名次；“最大化晋级概率”表达决策目的，不表示模块必须输出一个经过训练的概率。终态目标可按官方规则确定计算。三键不得相加，当前权威 rank 优先；假定结果必须同时更新受影响身份的成绩及未记账名次分。
 
-#### `CompetitionObjective`
+#### 首版压力与结果判断
 
-纯函数，按阶段格式计算：
+具体实现包含两项行为：
 
-```text
-海选：最大化 P(最终全场排名 ≤ G)，G ∈ {16, 8, 4}
-16 强 / 8 强：最大化 P(当前组内排名 ≤ 2)
-决赛：先最大化官方最终名次效用；总得分同分状态还要考虑后续加赛
-```
+1. 根据榜单、本人身份、可靠剩余机会与事实质量生成目标意图（`QualificationIntent`，参考分值、压力档位或硬排名条件及其证据）。参考追分采用缺口/剩余机会的节奏尺度和有界参数，不声称已预测最终晋级线。
+2. 对规则提供的四家结算判断目标达成。最后机会需要记账对齐、座位身份、相关结果封闭和并列依据；条件不足返回未定，不用桌分重复加榜单。
 
-晋级轮比较三键而不是相加：候选结果必须先更新总得分分布，再结合名次分和白板数的当前权威账本估计最终排序。平台返回的 `rank` 优先于客户端自行复算，尤其 `god_count` 无法从实时事件完整还原。
+`hangma` 提供立即结算和成胡路线（`WinRoute`，未来条件成立时可得到什么结果及相应牌效），不读取赛事目标；`policy` 调用 competition，在基础启发式上加有界路线调整，足够分后不继续奖励多余番数。普通追分保留 Hu 优先；只有确定的最后机会、小胡不达标且存在合法达标路线见证时，新候选策略才允许例外。未知、超时或失败回到冻结基线。
 
-#### `StageContinuationEstimator`
+`application/adapters` 补可选赛事事实和全榜记录；`offline` 补可更新人工情景，复用 simulation 公开接口做完整桌赛配对比较，再通过测试房间与自由赛检验运行与对手变化。完整官方海选样本是有限外部证据，不是首版训练或开发前提；真实硬目标能否启用仍取决于平台事实可见性。
 
-输入当前四家三键账本、剩余官方场次/单局数、座位与庄家安排，输出阶段结束时的组内联合排序分布。首版使用规则化 Monte Carlo，并在这一层估计未来名次分和白板数；只有同分边界实验表明有稳定收益时才扩展局部候选结果模型。数据足够后再训练小型 MLP；只有证明历史轨迹本身提供额外信息时才考虑 GRU。
+实施前约束补充：第一层先固定目标/压力，用薄 offline 驱动、simulation、hangma、policy 验证战术取舍；第二层才接人工榜单到 competition 的闭环，真实运行适配最后做。冻结最小路线/意图契约后可以独立开发，现有基础权重迭代无需等待。当前桌内名次风格只是默认 +4/+2 的弃牌加分；新策略目标调整生效时通过不可变参数副本关闭旧风格，避免重复计权，增强关闭或无依据时返回完整原基线计划。独立工作区、版本组合及兼容门禁见[实施约束](./implementation/qualifier-utility-v1.md#81-最小评测先分两层不等待线上赛事适配)。
 
-#### `QualificationCutoffEstimator`
+#### 后续固定四人阶段与概率研究
 
-原 `GlobalCutoffEstimator` 泛化为海选专用截线估计器：根据实时全场榜单、当阶段进度和历史模拟，估计第 `G` 名最终三键截线分布，其中 `G∈{16,8,4}`。榜单过旧、字段缺失或进度含义不明时，必须降级为保守的期望总得分目标，不能使用伪精确晋级概率。
+16 强以后可研究当前四家三键、剩余场次/单局与庄闲条件到阶段最终排序的分布；不得把单个桌赛排名直接当作多场累计的阶段排名。先验证规则化方法与经验数据的适用性，确有必要再训练模型，不属于本版依赖。海选截线预测器暂缓，不因完整赛事样本稀少而将不具代表性的自由赛频率包装成正式分布。
 
-本模块与 Suphx 的 global reward prediction、run-time policy adaptation，以及 Mortal 的 GRP 思路一致：单局战术预测与整轮排名价值分离。[Suphx](https://arxiv.org/abs/2003.13590)、[Mortal model](https://github.com/Equim-chan/Mortal/blob/main/mortal/model.py)。
+[Suphx](https://arxiv.org/html/2003.13590v2) 为跨单局最终目标提供研究背景，但不验证本项目的压力公式或参数。首版可靠性来自同源规则、明确的信息权限、成组边界测试、独立配对效果和时限门禁，详见[算法依据](./implementation/qualifier-utility-v1.md#10-算法依据与证据边界)。
 
 ### 6.4 `learning`：训练/推理共享实现（P2）
 
@@ -490,12 +480,15 @@ class BotPolicy(Protocol):
 ```text
 WeightedHeuristicPolicy  # P0，完全不依赖模型
 SafeFallbackPolicy       # P0，只保留规则紧急候选
+TargetAwareHeuristicPolicy # P1 提案，海选压力 + 规则路线事实 + 冻结基础启发式
 HybridPolicy      # P2，启发式 + CandidateOutcomeModel + competition
 ```
 
 第一阶段由应用层先调用 `HangmaRules` 生成 `RuleAnalysis`，再把它放入 `DecisionRequest`；策略只排序规则候选，不能自行声明合法动作。`DecisionPlan` 返回完整有序候选、评分分解、规则/策略降级原因和计划版本。明确 409 后应用层使用同一 `decision_id`、原始预算和已拒绝动作重新调用策略。
 
-后续 `HybridPolicy` 内部才增加：
+本次拟议的 TargetAwareHeuristicPolicy 保留 choose 接口，消费扩展后的赛事事实和规则路线，输出带可选赛事诊断的计划，不以候选结果模型为前提。原基线保持冻结，跨模块载荷扩展及最后机会弃胡例外按[首版方案](./implementation/qualifier-utility-v1.md)单独验证。
+
+后续依赖模型的 `HybridPolicy` 内部增加：
 
 ```text
 RuleAnalysis          # 应用层已经生成的合法候选和确定性分析
@@ -751,7 +744,7 @@ random_seed             # 复现本次采样和模拟的随机种子
 1. `CandidateOutcomeModel`：候选动作到本局四家联合结果；
 2. `StageContinuationModel`：当前积分和剩余局数到最终桌内排名联合分布。
 
-海选第 `G` 名截线优先使用实时榜单和规则化估计，其中 `G∈{16,8,4}`；数据足够后再训练 `QualificationCutoffEstimator`。训练特征必须包含阶段格式版本和当前三键账本，不能把三键先相加成一个“综合分”。
+海选首版使用实时榜单、可靠进度和有界追分参数，不训练 `QualificationCutoffEstimator`；本节模型均不属于该首版依赖。未来重启截线研究需独立证明数据适用性。任何后续阶段模型仍须包含阶段格式和三键账本，不能将三键相加成“综合分”。
 
 训练一旦不能在单张常规 GPU 上数小时级迭代，应缩小模型和数据，不扩大基础设施。
 
@@ -1130,3 +1123,9 @@ Hatch 在安装期构建可选 CPython 扩展，wheel 标明平台和 Python 二
 安装期优先选择仓库中与当前平台、Python、系统下限和数学源码摘要匹配的 C 制品，并核对二进制摘要；标准包只携带所选库，可编辑安装复制到源码包。当前提供 macOS 11+、arm64、CPython 3.11 的制品，同类 Mac 可以免编译安装。没有匹配制品时，默认沿用源码构建及同语义 Python 退路；HANGMA_NATIVE=prebuilt 可要求严格免编译。规则导入和动作窗口不读取制品清单，公共规则与策略接口不变。
 
 制品范围、安装命令和维护责任见[预编译制品说明](../prebuilt/hangma/README.md)。新进程通过共用规则入口生效，已运行进程需重启；保留历史规则结果的决策评估不重新计算。
+
+## 终局收集实施补充（2026-09-07）
+
+场次移出 active_games 不等于最终成绩已被我方读取。应用层先停止动作消费者，再复用原 GameSessionPort 只读收集 GameFinished，默认截止为停止动作时的单调时钟加5秒。不同场次并行收尾，不阻塞仍在进行的场次，也不因赛事 finished 延长旧截止；拿到成绩或预算耗尽后关闭场次，全部收尾后才释放共享传输并冲刷审计。
+
+普通退场、赛事 finished、淘汰及进程取消均可收集迟到终局；阶段作废仅取消对应尝试的收尾，鉴权/永久错误及 closed/void 不发新增旧场请求。在途 POST 取消仍按模糊结果记录，收尾期间只允许读取，不重放动作。验证器按已开场次核对最终成绩或明确退出原因，收尾超时/读取失败仍判审计不完整。架构与字段口径同步见[架构](./architecture.md#终局收集与优雅停止2026-09-07)和[接口契约](./implementation/interface-contracts.md#终局收集与关闭契约2026-09-07)。

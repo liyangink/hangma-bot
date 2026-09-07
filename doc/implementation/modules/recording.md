@@ -79,3 +79,7 @@ adapters/recording/
 | `plan_diagnostics.legacy_hint_decisions` / `legacy_rule_completeness_histogram` | 缺规则输入时仍有提示的决策数 / 旧计划中明确声明的 `rule_completeness` 值；直方图按决策与值去重，多版本值不同会进入多个桶，缺字段记 `unknown` |
 
 `degraded_reasons` 是混合文案字段，其他提示不必然证明策略失败，不能再把它当成规则降级或凭文案追认旧运行。旧日志的完整性判定维持原门控；这里只诚实披露未知覆盖，不因历史没有增强输入而新增违规。
+
+## 终局覆盖核验（2026-09-07）
+
+以 game_opened 为已参加场次集合，核对有效 GAME_FINISHED 最终成绩，或明确的作废/取消/失败退出原因。普通退场及完赛缺成绩、显式收尾超时/读取失败均报告 missing_game_final_scores，使 audit_complete=false。coverage.terminal_coverage 将真实缺失、可解释退出和仍在等待的场次分开列出；结构完整或已解释退出都不能代替最终成绩覆盖。

@@ -1968,6 +1968,7 @@ async def test_stale_reopen_cancel_cannot_pop_new_generation():
     """被撤销的旧重开协程不得误删新一代映射：新延迟在途时不重复开场。"""
 
     import asyncio
+    from hangma_bot.application.tournament_supervisor import SupervisionPolicy
 
     gates = []
 
@@ -1997,7 +1998,11 @@ async def test_stale_reopen_cancel_cannot_pop_new_generation():
         ],
         game_factory=lambda gid: queue[gid].pop(0),
     )
-    runtime, sink, *_ = build_runtime(session=session, sleep=gated_sleep)
+    runtime, sink, *_ = build_runtime(
+        session=session, sleep=gated_sleep,
+        # 本例的门专门冻结重开退避；终局等待由独立的收尾时序测试覆盖。
+        supervision=SupervisionPolicy(game_finalization_timeout_seconds=0),
+    )
     run_task = asyncio.create_task(runtime.run())
 
     from fakes import wait_for_condition
@@ -2214,4 +2219,3 @@ async def test_cancel_during_policy_choose_no_local_wait():
         if task is not current and task not in baseline and not task.done()
     }
     assert not leftover, "残留任务: {}".format(leftover)
-
