@@ -12,6 +12,22 @@ python3 -m venv .venv
 .venv/bin/python -m pytest -q
 ```
 
+安装时会尝试编译规则模块的 C 分组扩展，运行时直接加载，不在动作窗口
+编译。macOS 需要 Xcode Command Line Tools，Linux 需要 GCC/Clang 和
+对应 Python 开发头文件；没有可用编译器时使用同语义的 Python 分组实现。
+部署若要求必须有 C 加速，使用 `HANGMA_NATIVE=required .venv/bin/python -m pip install -e '.[dev]'`；
+`HANGMA_NATIVE=off` 可构建纯 Python 包。修改 C 源码后须重新执行安装。
+
+同架构机器可以复用兼容的 wheel 或扩展，但操作系统、Python 二进制接口
+（Application Binary Interface，ABI，决定扩展能否被当前解释器加载）和系统库也须匹配。
+源码脚本优先使用当前 checkout，迁移源码运行目录时按上述可编辑安装步骤构建，
+不要只安装 wheel 却运行另一份尚未构建的 checkout。启动审计的 `hand_math`
+记录实际实现、数学语义版本和原生文件 SHA-256；迁移后可先本机检查：
+
+```bash
+.venv/bin/python -c 'from hangma_bot.simulation.artifacts import hand_math_runtime_metadata; print(hand_math_runtime_metadata())'
+```
+
 首次使用先复制 [测试房间配置](configs/test-room.example.json) 到私有运行配置，填写房间 ID、四个 Token 文件路径，并为每次测试设置独立的 `audit_root`。完整步骤见 [运行、观测、赛后分析与迁移指引](doc/operations.md)。
 
 ```bash

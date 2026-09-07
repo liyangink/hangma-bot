@@ -210,6 +210,9 @@ def _manifest_versions(
         "clock_mode": experiment.clock_mode,
         "scoring_policies": scoring_entries,
     }
+    # 单独记录实际原生制品；规则源哈希不受 Python/C 装配选择影响。
+    from hangma_bot.simulation.artifacts import hand_math_runtime_metadata
+    versions["hand_math"] = hand_math_runtime_metadata()
     if isinstance(experiment, DecisionExperiment):
         versions["decision_mode"] = experiment.decision_mode
         if experiment.rules_config is not None:

@@ -1,37 +1,26 @@
-"""杭麻手牌数学：胡牌判定、向听数、有效牌、任意听与确定性分解。
+"""杭麻手牌数学：胡牌判定、向听、有效牌、任意听与确定性分解。
 
-本文件属于「手牌数学」子模块，是通用牌型分解的唯一实现：action_families /
-special_rules / settlement 复用本文件产出的 HandSummary / WinSplit，
-不得另建第二套分解。全部函数为纯函数：只依赖 kernel 值对象与
-internal_types 内部契约，不访问网络、文件、时钟、随机源或应用状态。
+标准型由同语义的 Python/C 分组动态规划计算：万、筒、条、字牌分别
+求局部面子／将／财神成本，再合成整手结果。缺位逐一枚举财神和
+自然虚牌，完整维护每种自然牌的四张上限；不能贪心提前耗尽财神。
+七对和确定性证据仍在本模块产生，动作族和结算继续复用这些结果。
 
-核心算法（前任原型验证过的骨架）：把暗牌转成 34 维计数向量后，
-白板（财神）单独抽出作为可任意垫牌的资源；标准型按
-「枚举将 → 取最低非空位 i → 刻子 / 顺子窗口 s∈{i-2,i-1,i} / 纯白刻 / 舍牌」
-递归分解。白可垫顺子任意位置（含起始位，如 白+8w+9w=789w）、
-可垫刻子、可作将眼；白白可自将对、白白白可自刻；4 白在手可胡。
+need 表示最少额外自然进张数，标准型 shanten = need - 1；当前财神
+补位成本为零，未来白板进张另由有效牌枚举处理。多余暗牌视为可弃。
+原生库由安装期构建，导入时选择可用实现；不可用时使用修正后的
+Python 分组算法。运行中不编译、不访问网络、文件或系统时钟。
 
-向听口径：need = 凑成完整牌型还差的张数（白垫计 0、虚牌计 1），
-未胡 shanten = need - 1（0=听牌），已胡 shanten = -1；该恒等式对
-13/14 张暗牌与任意副露折算统一成立（多余暗牌视为可弃）。
-虚牌施加每种 4 张上限（手牌原计数 + 该种虚牌 ≤ 4），杜绝
-"第 5 张东"式不可能进张把向听算低（评审回归例 123w456w789w+东×4）。
-
-缓存：_need_std 使用有界 lru_cache——单 Token 长驻进程跑整赛事时，
-无界缓存的实测增长约 1300 条/手（GB 级风险）；有界化后偶发冷算
-（毫秒级）不影响动作窗口预算。
-
-规则依据与证据级别：RULES_EVIDENCE.md §1/§2/§5
-（官方指南 v9，2026-09-03 抓取；金例夹具 tests/fixtures/official/v9）。
+规则依据：RULES_EVIDENCE.md；官方 v9 起的手牌金例与后续规则回归。
+2026-09-07 数学修复和独立目标校验见 grouped-dp-integration 验收记录。
 """
 
 from __future__ import annotations
 
-from functools import lru_cache
 from typing import Optional, Tuple
 
 from hangma_bot.kernel.actions import Tile
 
+from ._standard import backend_info as math_backend_info, need as _need_std
 from .internal_types import (
     TILE_ORDER,
     WEALTH_CODE,
@@ -42,8 +31,6 @@ from .internal_types import (
     counts_from_tiles,
 )
 
-_INF = 99  # 哨兵上界：单手牌型 need 不可能超过 8
-
 _BRANCH_PLAIN = "平胡"
 _BRANCH_CHIITOI = "七对"
 _WHITE_CODE = WEALTH_CODE
@@ -53,239 +40,6 @@ def _dec(counts: Tuple[int, ...], index: int, n: int) -> Tuple[int, ...]:
     """返回 counts[index] 减少 n 后的新元组（计数向量的不可变更新）。"""
 
     return counts[:index] + (counts[index] - n,) + counts[index + 1 :]
-
-
-def _phantom_budget(counts: Tuple[int, ...]) -> Tuple[Tuple[int, int], ...]:
-    """紧凑虚牌配额：只编码手牌原计数 ≥3 的种类（配额 4-计数 ≤ 1）。
-
-    虚牌（假想进张）不能突破每种 4 张的物理上限。原计数 ≤2 的种类
-    不进键：其同种虚牌用量在最小分解中不可能触顶（同种"虚对+虚刻"
-    的 5 张组合恒被等价或更廉价的异种/自然/纯白方案取代，最小值不
-    变），因此省略它们不损失精确性，却让键跨手牌稳定——评审
-    d8-f4dadf：全维 33 元组键使跨手牌缓存全失效，长驻进程每手冷算
-    p50≈100ms；紧凑键恢复毫秒级。
-    """
-
-    return tuple((i, 4 - c) for i, c in enumerate(counts) if c >= 3)
-
-
-_BUDGET_FREE = 4  # 未编码种类的等效配额（恒不构成约束）
-
-
-def _budget_left(budget: Tuple[Tuple[int, int], ...], index: int) -> int:
-    """查询某牌种的剩余虚牌配额；未编码种类视为不受限。"""
-
-    for i, value in budget:
-        if i == index:
-            return value
-    return _BUDGET_FREE
-
-
-def _budget_dec(
-    budget: Tuple[Tuple[int, int], ...], index: int, n: int
-) -> Tuple[Tuple[int, int], ...]:
-    """扣减某牌种配额并保持元组紧凑（归零剔除；未编码种类不变）。"""
-
-    entries = []
-    for i, value in budget:
-        if i == index:
-            value -= n
-            if value > 0:
-                entries.append((i, value))
-        else:
-            entries.append((i, value))
-    return tuple(entries)
-
-
-@lru_cache(maxsize=65536)
-def _need_std(
-    counts: Tuple[int, ...],
-    whites: int,
-    sets_left: int,
-    pair_needed: bool,
-    budget: Tuple[Tuple[int, int], ...],
-) -> int:
-    """标准型最小成胡差距：还需多少张牌（白垫计 0、虚牌计 1）。
-
-    缓存上界：lru_cache(maxsize=65536)——纯函数淘汰不损正确性；无界
-    缓存实测 500 个随机手牌累积 65 万条目（评审 d4-4f5bf9），长驻单
-    Token 进程有内存风险；上界后单局命中率不受影响。
-
-    分解枚举（正确性关键，与向听恒等式 shanten=need-1 配合）：
-    - 状态 (counts, whites, sets_left, pair_needed, budget)；counts 为
-      33 维自然牌计数（白板抽出），whites 为白板池，budget 为紧凑
-      编码的剩余虚牌配额（仅原计数 ≥3 的种类，见 _phantom_budget）；
-    - 基态：面子与将都齐 → 0（剩余自然牌视为弃牌，不影响 need）；
-    - 自然牌耗尽：剩余槽位（3/组面子 + 2/将）全部由白或虚牌填充
-      （虚牌按"全新种类"计——手牌至多占 13 种，34 种牌下恒可分配
-      满足 4 张上限），need = max(0, 槽位 - whites)；
-    - 取最低非空位 i，枚举含 i 的块：将（自然对 / 自然+白 / 白白 /
-      带虚牌变体）、刻子（自然优先、白垫补足）、顺子窗口 s∈{i-2,i-1,i}
-      （空位白垫或虚牌——白可垫起始位是官方语义，最易错点）、
-      纯白刻（白白白自刻），以及舍弃当前牌后选择其余子集。
-      消耗虚牌的分支必须校验并扣减 budget；仅在达到槽位缺口下界、
-      或分支已付进张成本无法改善 best 时剪枝。
-    """
-
-    # 面子与将已齐：多余实牌可舍，不再占用目标槽位。
-    if sets_left <= 0 and not pair_needed:
-        return 0
-    index = -1
-    for i in range(33):
-        if counts[i]:
-            index = i
-            break
-    if index == -1:
-        return max(0, 3 * sets_left + 2 * int(pair_needed) - whites)
-
-    # 每张实牌或白板至多填一个槽位；不足部分必需进张。这是可证明的
-    # 下界，仅找到达到下界的分解时才允许提前返回，不能按牌种跳过舍牌。
-    lower_bound = max(0, 3 * sets_left + 2 * int(pair_needed) - sum(counts) - whites)
-    best = _INF
-
-    if pair_needed:
-        held = counts[index]
-        # 将眼枚举：自然对 / 自然+白 / 白白，以及带虚牌的降级变体。
-        if held >= 2:
-            best = min(
-                best,
-                _need_std(
-                    _dec(counts, index, 2), whites, sets_left, False, budget
-                ),
-            )
-        if best == lower_bound:
-            return best
-        if held >= 1 and whites >= 1:
-            best = min(
-                best,
-                _need_std(
-                    _dec(counts, index, 1), whites - 1, sets_left, False, budget
-                ),
-            )
-        if best == lower_bound:
-            return best
-        if best > 1 and held >= 1 and _budget_left(budget, index) >= 1:
-            # 虚牌配对消耗该种 1 张配额（手牌原计数 + 1 虚牌 ≤ 4）。
-            best = min(
-                best,
-                1 + _need_std(
-                    _dec(counts, index, 1),
-                    whites,
-                    sets_left,
-                    False,
-                    _budget_dec(budget, index, 1),
-                ),
-            )
-        if best == lower_bound:
-            return best
-        if whites >= 2:
-            best = min(
-                best, _need_std(counts, whites - 2, sets_left, False, budget)
-            )
-        if best == lower_bound:
-            return best
-        if best > 1 and whites >= 1:
-            best = min(
-                best, 1 + _need_std(counts, whites - 1, sets_left, False, budget)
-            )
-        if best == lower_bound:
-            return best
-        # 纯虚牌将按"全新种类"计，不占现有种类配额。
-        if best > 2:
-            best = min(best, 2 + _need_std(counts, whites, sets_left, False, budget))
-    if best == lower_bound:
-        return best
-    if sets_left <= 0:
-        # 面子已齐：仍可跳过当前牌，在后方寻找更好的将眼。
-        return min(best, _need_std(
-            _dec(counts, index, 1), whites, sets_left, pair_needed, budget
-        ))
-    # 刻子：自然张优先（自然牌永不吃亏），缺口由白垫 / 虚牌补。
-    natural = min(counts[index], 3)
-    pad_white = min(3 - natural, whites)
-    phantom = 3 - natural - pad_white
-    if phantom < best and (phantom == 0 or _budget_left(budget, index) >= phantom):
-        triplet_budget = (
-            budget if phantom == 0 else _budget_dec(budget, index, phantom)
-        )
-        best = min(
-            best,
-            phantom
-            + _need_std(
-                _dec(counts, index, natural),
-                whites - pad_white,
-                sets_left - 1,
-                pair_needed,
-                triplet_budget,
-            ),
-        )
-    if best == lower_bound:
-        return best
-    # 纯白刻：白白白可自刻（不消耗自然牌，面子数减一保证递归前进）。
-    white_trip = min(3, whites)
-    if 3 - white_trip < best:
-        best = min(
-            best,
-            (3 - white_trip)
-            + _need_std(
-                counts, whites - white_trip, sets_left - 1, pair_needed, budget
-            ),
-        )
-    if best == lower_bound:
-        return best
-    # 顺子窗口：s∈{i-2,i-1,i} 且同花色 1-9 内；空位白垫——含起始位垫白
-    # （纯 8w9w + 白 = 789w 合法，官方指南 1.2 爆头反例锚点）。
-    if index < 27:
-        suit_start = (index // 9) * 9
-        for start in range(max(index - 2, suit_start), min(index, suit_start + 6) + 1):
-            remaining = list(counts)
-            missing = 0
-            for pos in (start, start + 1, start + 2):
-                if remaining[pos]:
-                    remaining[pos] -= 1
-                else:
-                    missing += 1
-            fill_white = min(missing, whites)
-            phantoms_needed = missing - fill_white
-            # 白优先垫无配额位；虚牌位需该种配额 ≥1（确定性按窗口序）。
-            # 未编码种类的扣减为空操作（_budget_dec），其配额恒不约束。
-            whites_avail = fill_white
-            phantom_slots: list = []
-            feasible = True
-            for pos in (start, start + 1, start + 2):
-                if counts[pos]:
-                    continue
-                if _budget_left(budget, pos) == 0:
-                    if whites_avail > 0:
-                        whites_avail -= 1
-                    else:
-                        feasible = False
-                        break
-                else:
-                    phantom_slots.append(pos)
-            if phantoms_needed < best and feasible and len(phantom_slots) >= phantoms_needed:
-                run_budget = budget
-                for pos in phantom_slots[:phantoms_needed]:
-                    run_budget = _budget_dec(run_budget, pos, 1)
-                best = min(
-                    best,
-                    phantoms_needed
-                    + _need_std(
-                        tuple(remaining),
-                        whites - fill_white,
-                        sets_left - 1,
-                        pair_needed,
-                        run_budget,
-                    ),
-                )
-                if best == lower_bound:
-                    return best
-    # 当前牌可能阻碍更好的组合，必须允许舍弃。放在完整块枚举之后，
-    # 让已经达到下界的分解先返回；不再使用“有虚牌额度即可强制入组”的
-    # 错误假设（真实摸白拆南对子反例，2026-09-07）。
-    return min(best, _need_std(
-        _dec(counts, index, 1), whites, sets_left, pair_needed, budget
-    ))
 
 
 def _chiitoi_pairs(counts: Tuple[int, ...], whites: int) -> int:
@@ -312,7 +66,7 @@ def _is_win_counts(counts34: Counts34, meld_set_count: int) -> bool:
 
     counts, whites = _split_counts(counts34)
     if (
-        _need_std(counts, whites, 4 - meld_set_count, True, _phantom_budget(counts))
+        _need_std(counts, whites, 4 - meld_set_count, True)
         == 0
     ):
         return True
@@ -345,7 +99,7 @@ def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSumma
     顺序（TILE_ORDER）去重；手留白板 < 4 时白板恒有效（百搭严格
       不劣于任何有效牌），已持 4 张时第 5 张物理不可得、不列入；
     evidence 为人可读的确定性证据元组（审计用）。向听的虚牌受每种
-    4 张上限约束（见 _phantom_budget），有效牌不含不可能摸到的第 5
+    4 张上限约束（分组内持续扣减配额），有效牌不含不可能摸到的第 5
     张同种牌。
     """
 
@@ -353,9 +107,8 @@ def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSumma
     counts34 = counts_from_tiles(hand_tiles)
     counts, whites = _split_counts(counts34)
     sets_needed = 4 - meld_set_count
-    budget = _phantom_budget(counts)
 
-    standard_shanten = _need_std(counts, whites, sets_needed, True, budget) - 1
+    standard_shanten = _need_std(counts, whites, sets_needed, True) - 1
     if meld_set_count == 0:
         chiitoi_shanten = 6 - _chiitoi_pairs(counts, whites)
     else:
@@ -379,7 +132,7 @@ def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSumma
             drawn[index] += 1
             d_counts, d_whites = _split_counts(tuple(drawn))
             after = _need_std(
-                d_counts, d_whites, sets_needed, True, _phantom_budget(d_counts)
+                d_counts, d_whites, sets_needed, True
             ) - 1
             if meld_set_count == 0:
                 after = min(after, 6 - _chiitoi_pairs(d_counts, d_whites))
@@ -421,7 +174,7 @@ def _split_std_evidence(
 ) -> Optional[Tuple[str, ...]]:
     """标准型胡牌分解的确定性证据（首个找到的分解，枚举顺序固定）。
 
-    与 _need_std 同一分支骨架，但返回块描述而非代价；未胡返回 None。
+    只对缺牌数为零的手牌生成完整块证据，不枚举未来虚牌；未成牌返回 None。
     """
 
     if sets_left == 0 and not pair_needed:
@@ -568,7 +321,7 @@ def win_split(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> Optional[Win
             )
 
     if (
-        _need_std(counts, whites, 4 - meld_set_count, True, _phantom_budget(counts))
+        _need_std(counts, whites, 4 - meld_set_count, True)
         == 0
     ):
         blocks = _split_std_evidence(counts, whites, 4 - meld_set_count, True)

@@ -68,7 +68,7 @@ from hangma_bot.application.audit_codec import (
     decision_request_from_json,
 )
 from hangma_bot.simulation import MatchSpec, SimulationChoice, SimulationEngine
-from hangma_bot.simulation.artifacts import compute_rules_hash
+from hangma_bot.simulation.artifacts import compute_rules_hash, hand_math_runtime_metadata
 
 DEFAULT_STRATEGY = "weighted_heuristic"
 
@@ -549,6 +549,7 @@ def build_runtime(
         "policy_version": config.strategy,
         "policy_weights": _effective_weights_snapshot(policy),
         "ruleset_version": DEFAULT_RULESET_VERSION,
+        "hand_math": hand_math_runtime_metadata(),
         "official_sync_mode": "state",
         "sse_requested": config.sse_enabled,
         "sse_effective": False,
@@ -698,6 +699,7 @@ def build_auto_match_runtime(
         "policy_version": config.strategy,
         "policy_weights": _effective_weights_snapshot(policy),
         "ruleset_version": DEFAULT_RULESET_VERSION,
+        "hand_math": hand_math_runtime_metadata(),
         "official_sync_mode": "state",
         "sse_requested": config.sse_enabled,
         "sse_effective": False,
