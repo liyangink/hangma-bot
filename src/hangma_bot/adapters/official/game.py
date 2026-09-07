@@ -30,6 +30,7 @@
 from __future__ import annotations
 
 import asyncio
+import math
 import uuid
 from dataclasses import replace
 from typing import Any, Callable, Mapping, Optional, Tuple
@@ -819,9 +820,10 @@ class OfficialGameSession:
         )
         return final
 
-    def _emit_raw_state(self, result, seq_requested: int, parsed: Optional[StateResponse]) -> None:
+    def _emit_raw_state(self, result, seq_requested: int, parsed: Optional[StateResponse], *, request_timing=None) -> None:
         """E1：/state 响应原文全量落审计；解析失败时 parsed=None 只记原文。
 
+        request_timing 的时间点为本进程单调时钟秒；传输开始不等于服务器收包。
         raw 是未经解析的官方原文（传输层已做 Token 精确替换，记录层入队
         前还有第二层脱敏）；坏报文照样落盘供赛后诊断。非阻塞：RAW 类走
         低优先级队列，绝不影响动作窗口。
@@ -830,19 +832,20 @@ class OfficialGameSession:
         snapshot = parsed.snapshot if parsed is not None else None
         self._emit_audit(
             AuditKind.RAW_PROTOCOL_STATE,
-            build_state_response_payload(
+            {**build_state_response_payload(
                 endpoint="GET /api/games/{}/state".format(self.game_id),
                 http_status=result.status,
                 seq_requested=seq_requested,
                 seq_observed=snapshot.seq if snapshot is not None else None,
                 request_no=self._state_request_no,
                 raw=result.text,
-            ),
+            ), "request_timing": {**(request_timing or {}),
+                "completed_at_monotonic": self._monotonic()}},
             trigger_seq=snapshot.seq if snapshot is not None else None,
             round_no=snapshot.round_no if snapshot is not None else None,
         )
 
-    def _emit_raw_state_error(self, exc: OfficialError, seq_requested: int) -> None:
+    def _emit_raw_state_error(self, exc: OfficialError, seq_requested: int, *, request_timing=None) -> None:
         """F-05：非 2xx / 响应未到达的 /state 失败也发射原始事件。
 
         429/401/403/404/5xx 等失败响应体（传输层已完成 Token 精确替换的
@@ -854,14 +857,15 @@ class OfficialGameSession:
 
         self._emit_audit(
             AuditKind.RAW_PROTOCOL_STATE,
-            build_state_response_payload(
+            {**build_state_response_payload(
                 endpoint="GET /api/games/{}/state".format(self.game_id),
                 http_status=exc.http_status,
                 seq_requested=seq_requested,
                 seq_observed=None,
                 request_no=self._state_request_no,
                 raw=exc.raw_text or "",
-            ),
+            ), "request_timing": {**(request_timing or {}),
+                "completed_at_monotonic": self._monotonic()}},
         )
 
     def _emit_raw_action(
@@ -869,6 +873,7 @@ class OfficialGameSession:
         http_status: Optional[int],
         raw_text: Optional[str],
         attempt: ActionAttempt,
+        *, request_timing=None,
     ) -> None:
         """E3：动作提交响应原文落审计；409/429 拒绝体完整保留。
 
@@ -879,13 +884,14 @@ class OfficialGameSession:
 
         self._emit_audit(
             AuditKind.RAW_PROTOCOL_STATE,
-            build_action_response_payload(
+            {**build_action_response_payload(
                 endpoint="POST /api/games/{}/action".format(self.game_id),
                 http_status=http_status,
                 decision_id=attempt.decision_id,
                 attempt_no=attempt.attempt_no,
                 raw=raw_text or "",
-            ),
+            ), "request_timing": {**(request_timing or {}),
+                "completed_at_monotonic": self._monotonic()}},
             decision_id=attempt.decision_id,
             attempt_no=attempt.attempt_no,
             trigger_seq=attempt.window_key.trigger_seq,
@@ -1005,10 +1011,11 @@ class OfficialGameSession:
                 if not failure.item.recoverable:
                     raise
                 reason = failure.item.reason
-                self._history_retries[key] = (count + 1, now + 0.25 * 2 ** count, reason)
+                attempts = count + int(failure.request_sent)
+                self._history_retries[key] = (attempts, now + 0.25 * 2 ** count, reason)
                 self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
                     "history_recovery": "unavailable", "from_seq": start, "through_seq": end,
-                    "attempt": count + 1, "reason": reason,
+                    "attempt": attempts, "request_sent": failure.request_sent, "reason": reason,
                 }, round_no=snapshot.round_no)
                 return None
             if response.snapshot is not None:
@@ -1051,7 +1058,7 @@ class OfficialGameSession:
         priority: Optional[Priority] = None,
         recover_history: bool = True,
     ) -> StateResponse:
-        """快照与事件进度分开处理；同单局快照超前时最多补领一次。
+        """快照与事件进度分开处理；同单局快照超前时最多补领一次（含终态）。
 
         补领总预算最多 100ms，且保留当前窗口至少 350ms，不延长官方截止。
         seq=0/跨单局/超出缓存范围不可保证补回；保留原快照并明确缺史。
@@ -1063,7 +1070,7 @@ class OfficialGameSession:
         snapshot = response.snapshot
         previous = self._sync.snapshot
         cursor = self._sync.last_seq
-        if (not recover_history or response.gap or response.finished
+        if (not recover_history or response.gap
                 or snapshot is None or previous is None or snapshot.round_no != previous.round_no
                 or cursor == 0 or snapshot.seq <= cursor or snapshot.seq - cursor > 256):
             return response
@@ -1073,13 +1080,13 @@ class OfficialGameSession:
         limit = self._monotonic() + 0.1
         if deadline_monotonic is not None:
             limit = min(limit, deadline_monotonic - 0.35)
-        if (snapshot.phase == previous.phase and snapshot.discards == previous.discards
+        if (not response.finished and snapshot.phase == previous.phase and snapshot.discards == previous.discards
                 and snapshot.last_discard == previous.last_discard):
             current = self._sync.current_window()
             cached = self._window_expiries.get(current.window_key) if current is not None else None
             if cached is not None:
                 limit = min(limit, cached[0] - 0.35)
-        if snapshot.window_deadline_ms is not None:
+        if not response.finished and snapshot.window_deadline_ms is not None:
             limit = min(limit, self._monotonic() + (snapshot.window_deadline_ms - self._wall_ms()) / 1000.0 - 0.35)
         if limit <= self._monotonic():
             self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {"history_backfill": "budget_unavailable", "event_cursor": cursor, "snapshot_seq": snapshot.seq})
@@ -1093,6 +1100,15 @@ class OfficialGameSession:
                 raise  # 鉴权或协议永久错误不能被可选补领吞掉
             self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {"history_backfill": "unavailable", "reason": failure.item.reason, "event_cursor": cursor, "snapshot_seq": snapshot.seq})
             return response
+        if response.finished:
+            # 终态已确认：此次请求只补尾事件，不重新打开动作窗口或无限追赶。
+            tail = tuple(e for e in recovered.events if e.seq <= snapshot.seq) if not recovered.gap else ()
+            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                "history_backfill": "terminal_received" if tail else "terminal_unavailable",
+                "event_cursor": cursor, "snapshot_seq": snapshot.seq,
+                "received_seqs": [e.seq for e in tail],
+            })
+            return replace(response, events=response.events + tail)
         if recovered.snapshot is not None:
             # 官方只能返回快照时，不循环追赶；采用更新的权威响应并保留可归属的旧事件。
             if recovered.snapshot.seq < snapshot.seq:
@@ -1142,8 +1158,9 @@ class OfficialGameSession:
         degraded_to_full = False
         while True:
             attempts += 1
+            request_timing = {"queued_at_monotonic": self._monotonic()}
             if deadline_monotonic is not None and self._monotonic() >= deadline_monotonic:
-                raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline")) from None
+                raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline"), request_sent=False) from None
             try:
                 lease = await self._scheduler.acquire(
                     chosen_priority, deadline_monotonic=deadline_monotonic, request_kind=RequestKind.STATE
@@ -1151,7 +1168,8 @@ class OfficialGameSession:
             except DeadlineExceeded:
                 # 冷却/槽竞争在预算内未让出许可：按预算耗尽上交，
                 # 409 路径由调用方保守映射 SubmitRejectedNoRefresh
-                raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline")) from None
+                raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline"), request_sent=False) from None
+            request_timing["granted_at_monotonic"] = self._monotonic()
             # acquire 等待（429 冷却/槽竞争）会消耗预算：拿到 lease 后必须
             # 复查截止并按最新剩余设置读取超时——不得用过期的估算值发请求
             read_timeout: Optional[float] = None
@@ -1159,9 +1177,10 @@ class OfficialGameSession:
                 remaining = deadline_monotonic - self._monotonic()
                 if remaining <= 0:
                     lease.release()
-                    raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline")) from None
+                    raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline"), request_sent=False) from None
                 read_timeout = remaining
             try:
+                request_timing["transport_started_at_monotonic"] = self._monotonic()
                 result = await self._transport.request(
                     "GET",
                     "/api/games/{}/state".format(self.game_id),
@@ -1175,36 +1194,39 @@ class OfficialGameSession:
                 except DtoError:
                     # 坏报文也必须留原文（E1）：seq_observed 未知记 None，
                     # 异常沿原分支继续处理（可恢复降级/重试/终态判定不变）
-                    self._emit_raw_state(result, seq, None)
+                    self._emit_raw_state(result, seq, None, request_timing=request_timing)
                     raise
-                self._emit_raw_state(result, seq, parsed)
+                self._emit_raw_state(result, seq, parsed, request_timing=request_timing)
                 return parsed
             except RateLimitedError as exc:
+                retry_after = exc.retry_after_seconds
+                request_timing["retry_after_seconds"] = (retry_after if retry_after is not None
+                    and math.isfinite(retry_after) and retry_after >= 0 else None)
                 # F-05：非 2xx 响应原文（限速拒绝体等诊断证据）也落审计，
                 # request_no 不递增（只随成功计数，连续性检查不受影响）
-                self._emit_raw_state_error(exc, seq)
-                self._scheduler.note_rate_limited(exc.retry_after_seconds)
+                self._emit_raw_state_error(exc, seq, request_timing=request_timing)
+                self._scheduler.note_rate_limited(exc.retry_after_seconds, request_kind=RequestKind.STATE)
             except (UncertainTransportError, RecoverableServerError) as exc:
                 # 超时/断连无响应体：raw="" + http_status=None 记录"原文不存在"
-                self._emit_raw_state_error(exc, seq)
+                self._emit_raw_state_error(exc, seq, request_timing=request_timing)
             except AuthError as exc:
-                self._emit_raw_state_error(exc, seq)
+                self._emit_raw_state_error(exc, seq, request_timing=request_timing)
                 raise _PollFailure(GameFailed(self.game_id, False, "authentication_failed")) from None
             except ForbiddenError as exc:
-                self._emit_raw_state_error(exc, seq)
+                self._emit_raw_state_error(exc, seq, request_timing=request_timing)
                 raise _PollFailure(GameFailed(self.game_id, False, "forbidden")) from None
             except NotFoundError as exc:
-                self._emit_raw_state_error(exc, seq)
+                self._emit_raw_state_error(exc, seq, request_timing=request_timing)
                 raise _PollFailure(GameFailed(self.game_id, True, "game_not_found")) from None
             except BadRequestError as exc:
-                self._emit_raw_state_error(exc, seq)
+                self._emit_raw_state_error(exc, seq, request_timing=request_timing)
                 raise _PollFailure(GameFailed(self.game_id, False, "bad_request")) from None
             except ConflictError as exc:
                 # state GET 不在官方 409 语义内；按不可恢复协议错误终止本场
-                self._emit_raw_state_error(exc, seq)
+                self._emit_raw_state_error(exc, seq, request_timing=request_timing)
                 raise _PollFailure(GameFailed(self.game_id, False, "state_conflict")) from None
             except OfficialError as exc:
-                self._emit_raw_state_error(exc, seq)
+                self._emit_raw_state_error(exc, seq, request_timing=request_timing)
                 raise _PollFailure(
                     GameFailed(self.game_id, False, "protocol_error_" + str(exc.http_status))
                 ) from None
@@ -1295,6 +1317,7 @@ class OfficialGameSession:
             trigger_seq=attempt.window_key.trigger_seq,
             round_no=attempt.window_key.round_no,
         )
+        request_timing = {"queued_at_monotonic": self._monotonic()}
         try:
             lease = await self._scheduler.acquire(
                 Priority.ACTION, deadline_monotonic=attempt.latest_send_at_monotonic, request_kind=RequestKind.OTHER
@@ -1303,11 +1326,13 @@ class OfficialGameSession:
             # 全局冷却/槽竞争未在预算内让出许可：POST 从未发出，
             # 按未发送处理，保证 GameTask 不在冷却上阻塞到预算外
             return self._finish_submit(attempt, SubmitNotSent("deadline_passed_in_schedule"))
+        request_timing["granted_at_monotonic"] = self._monotonic()
         try:
             if self._monotonic() >= attempt.latest_send_at_monotonic:
                 # 调度等待可能耗时；越过截止时间一律不再发出 POST
                 return self._finish_submit(attempt, SubmitNotSent("deadline_passed_after_schedule"))
             try:
+                request_timing["transport_started_at_monotonic"] = self._monotonic()
                 result = await self._transport.request(
                     "POST",
                     "/api/games/{}/action".format(self.game_id),
@@ -1317,22 +1342,22 @@ class OfficialGameSession:
                 # 409 已确认动作未执行：先释放动作槽再刷新，避免在持有
                 # ACTION lease 时嵌套等待 RECOVERY 槽造成调度自锁；
                 # 拒绝体原文在释放动作槽前落审计（E3）
-                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt, request_timing=request_timing)
                 lease.release()
                 outcome = await self._handle_conflict(attempt, exc)
                 return self._finish_submit(attempt, outcome)
             except AuthError as exc:
-                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt, request_timing=request_timing)
                 return self._finish_submit(
                     attempt,
                     SubmitFatal(exc.official_code, "authentication_failed"),
                 )
             except ForbiddenError as exc:
-                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt, request_timing=request_timing)
                 return self._finish_submit(attempt, SubmitFatal(exc.official_code, "forbidden"))
             except RateLimitedError as exc:
-                self._scheduler.note_rate_limited(exc.retry_after_seconds)
-                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
+                self._scheduler.note_rate_limited(exc.retry_after_seconds, request_kind=RequestKind.OTHER)
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt, request_timing=request_timing)
                 # 429：POST 已发出且官方明确未执行，但限速响应不含权威刷新。
                 # 按契约类型 SubmitRejectedNoRefresh 终结原窗口（不追加提交），
                 # 审计按实际发送计数（2026-09-04 集成阶段裁定，接口协议 §5）。
@@ -1349,20 +1374,20 @@ class OfficialGameSession:
             except UncertainTransportError as exc:
                 # 响应从未到达：http_status=None + raw="" 记录"原文不存在"，
                 # 对账不悬空（E3；验证器按 SubmitAmbiguous 语义要求该键存在）
-                self._emit_raw_action(None, "", attempt)
+                self._emit_raw_action(None, "", attempt, request_timing=request_timing)
                 return self._finish_submit(attempt, self._block_ambiguous(attempt, exc.detail))
             except RecoverableServerError as exc:
-                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt, request_timing=request_timing)
                 return self._finish_submit(attempt, self._block_ambiguous(attempt, "server_error_" + str(exc.http_status)))
             except BadRequestError as exc:
                 # 400（如 TOKEN_NOT_SCOPED）：请求/作用域配置错误，重试无意义
-                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt, request_timing=request_timing)
                 return self._finish_submit(attempt, SubmitFatal(exc.official_code, "bad_request"))
             except NotFoundError as exc:
                 # 404：官方明确未执行动作且窗口必然失效；身份未坏，
                 # 后续 next_item 的可恢复 game_not_found 会触发重新发现。
                 # 门同步终结：窗口关闭后同窗不再接受任何提交
-                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt, request_timing=request_timing)
                 self._gate.mark_closed(attempt.window_key)
                 return self._finish_submit(
                     attempt,
@@ -1373,7 +1398,7 @@ class OfficialGameSession:
                 )
             except OfficialError as exc:
                 # 未分类官方状态：保守终止当前身份的提交通道，不误当网络故障重试
-                self._emit_raw_action(exc.http_status, exc.raw_text, attempt)
+                self._emit_raw_action(exc.http_status, exc.raw_text, attempt, request_timing=request_timing)
                 return self._finish_submit(
                     attempt,
                     SubmitFatal(exc.official_code, "protocol_error_" + str(exc.http_status)),
@@ -1397,7 +1422,7 @@ class OfficialGameSession:
                     round_no=attempt.window_key.round_no,
                 )
                 raise
-            self._emit_raw_action(result.status, result.text, attempt)
+            self._emit_raw_action(result.status, result.text, attempt, request_timing=request_timing)
             self._gate.mark_accepted(attempt.window_key)
             if attempt.action_key == "pass":
                 # 本人 pass 被官方接受：本响应周期对我关闭（pass 覆盖
@@ -1585,8 +1610,9 @@ class OfficialGameSession:
 class _PollFailure(Exception):
     """轮询循环内部的分类故障包装；携带 GameItem 直接上交应用层。"""
 
-    def __init__(self, item: GameFailed) -> None:
+    def __init__(self, item: GameFailed, *, request_sent: bool = True) -> None:
         self.item = item
+        self.request_sent = request_sent  # False：尚未调用传输层，不消耗补领网络尝试次数
         super().__init__(item.reason)
 
 

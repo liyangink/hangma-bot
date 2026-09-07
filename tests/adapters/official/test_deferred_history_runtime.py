@@ -10,7 +10,7 @@ import json
 
 import pytest
 
-from _official_testkit import FakeClock, FakeTransport, load_fixture, make_game_session
+from _official_testkit import instant_sleep, FakeClock, FakeTransport, load_fixture, make_game_session
 from hangma_bot.adapters.official.errors import UncertainTransportError
 from hangma_bot.adapters.official.scheduler import Priority, RequestScheduler
 from hangma_bot.application.contracts import ActionAttempt, ObservedActionWindow, SubmitAccepted
@@ -344,3 +344,37 @@ async def test_unsubmitted_or_ambiguous_window_never_runs_deferred_history(mode)
                 active.cancel()
                 await asyncio.gather(active, return_exceptions=True)
         await session.aclose("test_done")
+
+
+async def test_unsent_history_requests_do_not_exhaust_three_network_attempts():
+    """M=4 队列竞争：三次未获许可之后，恢复额度仍必须能够补回旧事件。"""
+    clock, transport = FakeClock(), BudgetTransport()
+    initial, current, latest = _snapshots(clock)
+    current['snapshot']['window_deadline_ms'] = clock.wall_ms() + 20000
+    latest['snapshot']['window_deadline_ms'] = clock.wall_ms() + 20000
+    latest['events'] = copy.deepcopy(NEW_EVENTS)
+    class NoJitter:
+        def uniform(self, lower, upper): return 0.0
+    scheduler = RequestScheduler(clock=clock.monotonic, sleep=instant_sleep(clock), jitter_rng=NoJitter())
+    def pending_with_cooldown(again):
+        def reply():
+            clock.advance(.3)
+            if again: scheduler.note_rate_limited(.2)
+            return {'pending': True}
+        return reply
+    pending = _script(transport, _prefix(initial, current) + [
+        ('GET', 122, True, pending_with_cooldown(True)),
+        ('GET', 122, True, pending_with_cooldown(True)),
+        ('GET', 122, True, pending_with_cooldown(False)),
+        ('GET', 120, False, {'events': copy.deepcopy(OLD_EVENTS)}),
+        ('GET', 122, True, latest),
+    ])
+    session = make_game_session(transport=transport, clock=clock, scheduler=scheduler)
+    try:
+        await _first_window_and_accept(session, transport, clock)
+        scheduler.note_rate_limited(.2)
+        window = await asyncio.wait_for(session.next_item(), 1)
+        _assert_latest_without_replaying_history(window, latest)
+        assert not pending
+    finally:
+        await session.aclose('test_done')

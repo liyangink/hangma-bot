@@ -57,3 +57,35 @@ async def test_invalid_new_hand_snapshot_does_not_seal_current_hand(transport,cl
     assert isinstance(await session.next_item(),GameFailed)
     assert not [r for r in audit.records if r.payload.get('history_closure')]
     await session.aclose('test')
+
+
+async def test_finished_snapshot_without_tail_gets_one_bounded_history_request(transport, clock):
+    """终态快照只给积分时，还应有界领取实际尾事件，不能立即封存缺史。"""
+    audit = FakeAuditSink()
+    final = snapshot(102, phase='finished')
+    final['finished'] = True
+    script(transport, [
+        (0, snapshot(100, turn=2, drawn='7w')),
+        (100, final),
+        (100, {'events': [event(101, 'round_ended', data={'draw': True, 'scores': [0,0,0,0]}),
+                          event(102, 'game_ended', seat=-1, data={'final_scores': [0,0,0,0]})]}),
+    ])
+    session = make_game_session(transport=transport, clock=clock, audit=audit)
+    await session.next_item()
+    assert isinstance(await session.next_item(), GameFinished)
+    seal = next(r.payload for r in audit.records if r.payload.get('history_closure') == 'game_finished')
+    assert [e['seq'] for e in seal['public_history']] == [101, 102]
+    assert 'round_ended_not_observed' not in seal['closure_issues']
+    await session.aclose('test')
+
+
+async def test_terminal_backfill_never_reopens_a_confirmed_finished_game(transport, clock):
+    """补历史不能把已确认终态替换成另一张活动快照。"""
+    audit = FakeAuditSink()
+    final = snapshot(102, phase='finished'); final['finished'] = True
+    script(transport, [(0, snapshot(100, turn=2, drawn='7w')), (100, final),
+                       (100, snapshot(104, turn=2, drawn='8w'))])
+    session = make_game_session(transport=transport, clock=clock, audit=audit)
+    await session.next_item()
+    assert isinstance(await session.next_item(), GameFinished)
+    await session.aclose('test')

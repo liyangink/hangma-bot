@@ -103,7 +103,7 @@ async def test_finished_without_terminal_events_keeps_both_tail_reasons(transpor
     first['snapshot']['melds'] = [[], [], [], []]
     final = snapshot(102, phase='finished')
     final['finished'] = True
-    script(transport, [(0, first), (100, final)])
+    script(transport, [(0, first), (100, final), (100, final)])
     session = make_game_session(transport=transport, clock=clock, audit=audit)
     try:
         assert (await session.next_item()).observation.history_complete

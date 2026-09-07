@@ -32,6 +32,13 @@ artifacts/
 
 ## 2. 启动测试房间与赛事
 
+启用系统代理的机器，应在启动赛事的同一终端为官方内网设置代理例外。2026-09-07 实测：免认证采集客户端直连成功，但参赛客户端默认继承 macOS 系统代理，可能在 `guide/version` 连接超时，尚未报名即退出。以下只设置子进程环境，不修改系统代理；换平台主机时同步修改地址。测试房、单身份赛事与自由赛均适用。
+
+```bash
+export NO_PROXY="${NO_PROXY:+$NO_PROXY,}10.240.169.190"
+export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
+```
+
 先按 [README](../README.md) 安装依赖。复制 `configs/test-room.example.json` 到 `.private/test-room.json`，修改 `expected_tournament_id`、`audit_root`，把四个真实 Token 各保存为一个单行文件。四个文件名与配置中的 `token_file` 一致。也可使用 `token_env`；同一身份的 `token/token_env/token_file` 只能选一个。
 
 房间的 `M`（每个身份最多同时处理的场次数）、`Rounds`（每场单局数）、`BaseScore` 和 `YouCaiBiKao` 由平台配置决定。启动文件不能修改服务器规则。复制 `configs/rule-config.example.json` 到 `.private/rule-config.json`，按实际房间填写 `base_score` 与 `you_cai_bi_kao`，供赛后核验。
@@ -116,6 +123,8 @@ artifacts/
 `catalog` 更新 `artifacts/catalog.json`，列出规范会话与旧目录会话的最新报告、内容摘要和数据量；后续重新分析后可再次执行。历史集合与单独会话可能包含同一场次，不能直接相加当成训练样本量。
 
 换机器须分别迁移代码、`artifacts/` 和 `.private/`。只 `git clone` 无法得到被忽略的原始审计和封存包；也不要仅复制派生数据集而丢掉原始证据。推荐复制整个会话目录，保持内部相对路径，旧运行数据位于 `artifacts/legacy/runs/`。旧报告需要兼容链接时，在仓库根确认没有实际 `runs` 目录后执行 `ln -s artifacts/legacy/runs runs`。
+
+已明确选择入库的测试证据放在 `datasets/official-test-room/<room_id>/`，可随Git迁移；例如 [M=4测试房制品](../datasets/official-test-room/t_64201ecc3ab3/README.md)同时包含官方牌谱、原始审计封存包和派生分析包。按目录内README核验与恢复，不需要重复复制它们对应的整个本机会话。凭证仍须单独迁移。
 
 只转移某次证据包时，把 `.tar.gz` 和同名 `.sha256` 一起复制，再核验解包到不存在的新目录：
 

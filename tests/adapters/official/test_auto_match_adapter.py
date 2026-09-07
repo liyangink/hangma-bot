@@ -922,6 +922,7 @@ async def test_open_game_session_gap_rebuild_and_finished(transport, clock, audi
         (200, json.dumps(load_fixture("state_response_gap.json"))),
         (200, json.dumps(load_fixture("state_response_snapshot_draw.json"))),
         (200, json.dumps(load_fixture("state_response_finished.json"))),
+        (200, json.dumps(load_fixture("state_response_finished.json"))),  # 有界收尾补领仍只能获得快照
     ]
 
     def game_handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):

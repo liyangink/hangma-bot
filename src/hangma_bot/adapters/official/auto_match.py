@@ -200,7 +200,9 @@ class OfficialAutoMatchSession:
         if match_max_attempts < 1 or match_busy_wait_cap_sec < 0:
             raise ValueError("匹配重试参数不合法")
         self._transport = OfficialTransport(token, transport_config)
-        self._scheduler = scheduler if scheduler is not None else RequestScheduler(clock=monotonic_clock)
+        # v18 官方上限16/s；M=4 实测边界429，生产以14/s、单请求突发保留余量。
+        self._scheduler = scheduler if scheduler is not None else RequestScheduler(
+            clock=monotonic_clock, rate_per_second=14.0, burst=1.0)
         self._monotonic = monotonic_clock
         self._wall_ms = wall_clock_unix_ms
         self._audit = audit
@@ -320,7 +322,7 @@ class OfficialAutoMatchSession:
                     lease.release()
                 return json.loads(result.text)
             except RateLimitedError as exc:
-                self._scheduler.note_rate_limited(exc.retry_after_seconds)
+                self._scheduler.note_rate_limited(exc.retry_after_seconds, request_kind=RequestKind.OTHER)
                 last_exc = exc
             except (UncertainTransportError, RecoverableServerError) as exc:
                 last_exc = exc
@@ -619,7 +621,7 @@ class OfficialAutoMatchSession:
                 finally:
                     lease.release()
             except RateLimitedError as exc:
-                self._scheduler.note_rate_limited(exc.retry_after_seconds)
+                self._scheduler.note_rate_limited(exc.retry_after_seconds, request_kind=RequestKind.OTHER)
                 self._emit_raw_match(exc.http_status, getattr(exc, "raw_text", None), attempts)
                 self._emit_auto_recovery(
                     reason="match_rate_limited_retry",

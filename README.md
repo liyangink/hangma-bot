@@ -18,6 +18,8 @@ python3 -m venv .venv
 mkdir -p .private
 cp configs/test-room.example.json .private/test-room.json
 # 编辑配置并准备四个 Token 文件后，完成一个批次就退出：
+export NO_PROXY="${NO_PROXY:+$NO_PROXY,}10.240.169.190"
+export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 .venv/bin/python scripts/run_test_room.py --config .private/test-room.json --once
 
 # 另一个终端只读四身份审计，不向平台发请求：
@@ -30,6 +32,8 @@ cp configs/test-room.example.json .private/test-room.json
 ```
 
 `rule-config.json` 按本次房间真实配置填写，模板见 [规则配置](configs/rule-config.example.json)。不提供时会保留“规则配置未知”，不会默认开启有财必烤响。`--once` 是完成一个测试房间批次；每场单局数由服务器的 `Rounds` 决定。
+
+上面的 `NO_PROXY` 只让当前终端启动的进程直连赛事内网，避免系统代理阻断连接；更换平台地址时同步修改该主机。测试房、单身份赛事和自由赛启动均需留意此项，赛前免认证下载成功不能替代运行客户端的连接检查。
 
 新制品统一放在 `artifacts/`；赛后入口输出 `report.json`、原始证据包、统一数据集和独立诊断。命令成功表示生成制品成功，是否完整、是否适合训练须看报告。`artifacts/` 不随 Git 提交，迁移机器时须另外复制。
 

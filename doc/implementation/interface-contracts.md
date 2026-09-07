@@ -122,7 +122,7 @@ V0 与依赖 V0 的 `claim_if_legal` 在线上组合根和已有离线入口通�
 
 2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；手留四白排除，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。
 
-内部请求调度的 `RequestKind.STATE` 与 `OTHER` 独立于优先级：只有 STATE 扣每用户滚动 16 次/秒，全部请求仍共享并发槽、冷却和原始截止时间。恢复、补史、长轮询一律属于 STATE；动作、赛事和匹配属于 OTHER，匹配另受其专属 10 次/分钟限制。变更不新增外部端口或后台任务。行为回归见 `test_action_chain_lifecycle.py`、`test_official_action_chain_trace.py`、`test_replay_check_lifecycle.py` 和 `test_scheduler_rate_alignment.py`。
+内部请求调度的 `RequestKind.STATE` 与 `OTHER` 独立于优先级：只有 STATE 扣每用户滚动 16 次/秒，全部请求共享并发槽并服从原始截止时间；2026-09-07修订：state 429仅冷却STATE，其他来源429保守全局冷却。生产STATE平滑限制为14次/秒、burst=1，官方16次/秒为上限。恢复、补史、长轮询一律属于 STATE；动作、赛事和匹配属于 OTHER，匹配另受其专属 10 次/分钟限制。变更不新增外部端口或后台任务。行为回归见 `test_action_chain_lifecycle.py`、`test_official_action_chain_trace.py`、`test_replay_check_lifecycle.py` 和 `test_scheduler_rate_alignment.py`。
 
 安全不变量是“同一场任意时刻最多一个在途动作 POST”，不是“整个窗口永远只允许尝试一次”。
 
@@ -340,3 +340,19 @@ kernel JSON 编码保留 schema_version=1 的可选字段增补；新编码完�
 ### 单局封存完整性补充（2026-09-06）
 
 `history_closure.closure_issues` 记录附带旧尾中的未知事件、关键字段缺失、违规他家摸牌，以及未收到 `round_ended` / 场次终态未收到 `game_ended` 的原因。封存 `history_complete=true` 除要求起点、序号及原有观察完整外，还要求这些原因为空。`missing_ranges` 仅覆盖已知 `history_through_seq`，缺少更晚的尾事件不能只靠此区间表判断；不从积分或新快照捏造终局事件。该检查只影响赛后封存，不重新推进牌面、创建动作窗口或改变策略输入。
+
+## M=4 调度与审计兼容增补（2026-09-07）
+
+四个外部端口与PlayerObservation字段不变。内部补史失败携带是否进入传输层的事实：尚未发送不消耗三次网络尝试，仍按原主循环退避，不能挤占未完成动作。仅同单局无gap、有效非零旧游标及缓存跨度内的终态快照允许一次100毫秒尾事件补领；原终态保持权威，只添加实际尾事件。
+
+`RAW_PROTOCOL_STATE` payload可选增加 `request_timing`，旧日志没有此字段时表示未记录，不是耗时为零：
+
+| 字段 | 语义 |
+| --- | --- |
+| queued_at_monotonic | 本进程单调时钟秒，开始申请调度许可 |
+| granted_at_monotonic | 本进程单调时钟秒，已经获得许可 |
+| transport_started_at_monotonic | 本进程单调时钟秒，调用传输层之前；包含后续连接池等待，不能当作服务端收包时间 |
+| completed_at_monotonic | 本进程单调时钟秒，处理成功响应或异常并写审计时；失败不保证有响应体 |
+| retry_after_seconds | 仅state 429记录的有效有限非负秒数；缺失或无效为null，不保存完整响应头 |
+
+这些时间点只能在同进程内相减；不得跨Token进程直接相减。排队未获许可的补史仍通过AUTHORITATIVE_STATE记录 `history_recovery=unavailable, request_sent=false`，不能产生虚假的HTTP响应。原有raw报文、身份关联字段及版本保持不变。

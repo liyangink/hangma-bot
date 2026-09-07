@@ -7,7 +7,7 @@
 挂起轮询最多 32 个；SSE 不占 state 频率额度，未声明 state 长轮询免计次。
 工程实现采用滚动窗口，避免令牌桶突发和回填叠出同秒 31 次请求。令牌桶仅
 保留用于可选的小 burst 平滑，不能突破滚动上限。动作与赛事查询不占 state
-额度；全部请求仍共享并发槽及 429 冷却。match 的 10/分钟另由匹配会话管理。
+额度；全部请求共享并发槽；state 429 只冷却 state，其他来源429保守全局冷却。match 的 10/分钟另由匹配会话管理。
 
 实现说明：单线程 asyncio 事件循环内运行，无锁；在资源可用的等待者中按
 优先级授予，动作可越过被 state 额度阻塞的请求。clock 与 sleep 可注入。
@@ -115,6 +115,7 @@ class RequestScheduler:
         self._seq = 0
         self._active = 0
         self._cooldown_until: Optional[float] = None
+        self._state_cooldown_until: Optional[float] = None
 
     @property
     def active_count(self) -> int:
@@ -124,12 +125,11 @@ class RequestScheduler:
 
     @property
     def cooldown_remaining(self) -> float:
-        """429 全局冷却剩余秒数；未冷却时为 0。"""
+        """所有冷却中的最长剩余秒数（诊断用）；不代表所有端点都受阻。"""
 
         now = self._clock()
-        if self._cooldown_until is None or now >= self._cooldown_until:
-            return 0.0
-        return self._cooldown_until - now
+        return max(0.0, (self._cooldown_until or now) - now,
+                   (self._state_cooldown_until or now) - now)
 
     def _refill(self) -> None:
         now = self._clock()
@@ -153,7 +153,8 @@ class RequestScheduler:
             if now < self._cooldown_until:
                 return False
             self._cooldown_until = None  # 冷却结束
-        state_ready = self._state_quota_delay() <= 0
+        state_ready = self._state_quota_delay() <= 0 and (
+            self._state_cooldown_until is None or now >= self._state_cooldown_until)
         eligible = (w for w in self._waiters if w.active and
                     (w.request_kind is RequestKind.OTHER or state_ready))
         if min(eligible, default=None) is not waiter:
@@ -221,16 +222,20 @@ class RequestScheduler:
         if self._cooldown_until is not None and now < self._cooldown_until:
             return self._cooldown_until - now
         if waiter.request_kind is RequestKind.STATE:
-            quota_delay = self._state_quota_delay()
+            quota_delay = max(self._state_quota_delay(),
+                              (self._state_cooldown_until or now) - now)
             if quota_delay > 0:
-                return quota_delay
+                return max(quota_delay, 1e-6)  # 避免浮点舍入导致假时钟/高频循环不前进
         return self._poll_interval
 
     def _release_slot(self) -> None:
         self._active = max(0, self._active - 1)
 
-    def note_rate_limited(self, retry_after_seconds: Optional[float]) -> None:
-        """收到官方 429 后进入全局冷却；带抖动避免同批请求同步重试。
+    def note_rate_limited(self, retry_after_seconds: Optional[float], *,
+                          request_kind: RequestKind = RequestKind.OTHER) -> None:
+        """按端点作用域冷却；state 专属429不阻塞独立的动作额度。
+
+        未知或其他端点的429保守全局冷却；state调用方必须显式传 STATE。
 
         多个在途请求先后收到 429 时取更长的冷却终点：后到的短
         Retry-After 不得缩短先前服务端明确要求的更长等待。
@@ -248,5 +253,7 @@ class RequestScheduler:
         base = max(retry_after_seconds, self._state_quota_delay())
         jitter = self._rng.uniform(0.0, 0.25)
         candidate = self._clock() + base + jitter
-        if self._cooldown_until is None or candidate > self._cooldown_until:
-            self._cooldown_until = candidate
+        if request_kind is RequestKind.STATE:
+            self._state_cooldown_until = max(self._state_cooldown_until or candidate, candidate)
+        else:
+            self._cooldown_until = max(self._cooldown_until or candidate, candidate)
