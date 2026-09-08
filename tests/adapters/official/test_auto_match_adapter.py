@@ -56,6 +56,18 @@ from _official_testkit import (  # noqa: F401
 GUIDE_V15 = {"version": 15, "updated_at": "2026-09-05", "changes": []}
 
 
+async def test_v24_scoped_review_does_not_open_global_auto_match(transport, clock):
+    """全局令牌的新入口变化尚未在此候选适配，不能继承父类 scoped 例外。"""
+    from pathlib import Path
+    document = json.loads((Path(__file__).parents[3] / "doc/references/official-guide-version-v24.json").read_text())
+    transport.handler = lambda **kw: (200, json.dumps(document))
+    session = make_auto_session(clock=clock, transport=transport)
+    outcome = await session.initialize(_target())
+    assert isinstance(outcome, ParticipantTerminal)
+    assert outcome.reason is ParticipantTerminalReason.INCOMPATIBLE_GUIDE
+    assert all(call.path != "/api/match" for call in transport.calls)
+
+
 def _guide_doc() -> Dict[str, Any]:
     return dict(GUIDE_V15)
 

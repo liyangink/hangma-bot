@@ -110,12 +110,18 @@ class ParsedGuideVersion:
 
     version: int
     updated_at: str
-    has_unknown_breaking_change: bool  # 存在 version>KNOWN 且 type=breaking 的变更
+    has_unknown_breaking_change: bool  # 存在尚未由全局基线或当前入口审查的 breaking 变更
     changes: Tuple[Mapping[str, Any], ...]  # 原样保留，供审计与回放解释行为差异
 
 
-def parse_guide_version(doc: Any) -> ParsedGuideVersion:
-    """解析指南版本；未知 breaking 判定依据官方建议的启动策略（API 文档 §3.1）。"""
+def parse_guide_version(
+    doc: Any, *, reviewed_breaking_versions: frozenset[int] = frozenset(),
+) -> ParsedGuideVersion:
+    """解析版本；调用方可指定仅适用于其入口的已审查 breaking 版本。
+
+    缺省仍使用全局基线；不改写官方 changes，也不放行畸形版本条目。
+    例如 v24 对 scoped 参赛令牌不变，但全局令牌入口另有门禁变化。
+    """
 
     body = _require_mapping(doc, "guide/version")
     version = _require_int(body.get("version"), "guide.version")
@@ -134,7 +140,8 @@ def parse_guide_version(doc: Any) -> ParsedGuideVersion:
             # 质量问题放行未审查变更
             not isinstance(item.get("version"), int)
             or isinstance(item.get("version"), bool)
-            or item["version"] > KNOWN_GUIDE_VERSION
+            or (item["version"] > KNOWN_GUIDE_VERSION
+                and item["version"] not in reviewed_breaking_versions)
         )
         for item in changes
     )
@@ -655,4 +662,3 @@ def extract_error_code(status: int, text: str) -> Optional[str]:
         if isinstance(value, str) and value:
             return value
     return None
-

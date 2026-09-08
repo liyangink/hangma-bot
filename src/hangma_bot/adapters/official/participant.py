@@ -201,7 +201,9 @@ class OfficialTournamentSession:
                 priority=Priority.BACKGROUND,
                 with_auth=False,
             )
-            guide_parsed = parse_guide_version(guide_raw)
+            # v24（2026-09-08）明确 scoped 参赛令牌不变。本会话随后强制
+            # 核对 scoped 归属；全局令牌在初始化时拒绝，不进入报名/动作。
+            guide_parsed = parse_guide_version(guide_raw, reviewed_breaking_versions=frozenset({24}))
         except AuthError:
             return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "guide/version 401")
         except (OfficialError, DtoError, ValueError) as exc:
@@ -292,7 +294,8 @@ class OfficialTournamentSession:
                     }
                     for change in guide_parsed.changes
                 ],
-                "checked_at": "initialize",
+                    "checked_at": "initialize",
+                    "reviewed_breaking_versions": [24],
             },
         )
         return SessionBootstrap(
@@ -331,14 +334,17 @@ class OfficialTournamentSession:
                 priority=Priority.BACKGROUND,
                 with_auth=False,
             )
-            guide_parsed = parse_guide_version(guide_raw)
+            # 自动匹配会话复用此边界检查，其全局令牌不能继承 scoped 例外。
+            reviewed = frozenset({24}) if self._registration and self._registration.scoped else frozenset()
+            guide_parsed = parse_guide_version(guide_raw, reviewed_breaking_versions=reviewed)
         except AuthError:
             return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "guide/version 401")
         except (OfficialError, DtoError, ValueError) as exc:
             return self._terminal(ParticipantTerminalReason.FATAL_PROTOCOL_ERROR, "guide/version: " + str(exc)[:120])
         self._emit_audit(
             AuditKind.AUTHORITATIVE_STATE,
-            {"guide_version": guide_parsed.version, "guide_updated_at": guide_parsed.updated_at, "checked_at": "stage_boundary"},
+            {"guide_version": guide_parsed.version, "guide_updated_at": guide_parsed.updated_at,
+             "checked_at": "stage_boundary", "reviewed_breaking_versions": sorted(reviewed)},
         )
         if guide_parsed.version > KNOWN_GUIDE_VERSION and guide_parsed.has_unknown_breaking_change:
             return self._terminal(
