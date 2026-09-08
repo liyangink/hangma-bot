@@ -135,6 +135,7 @@ class HuUpgradePolicy:
         self._risk_version = risk_version
         self._safety_margin = safety_margin
         self._upgrade_weight = upgrade_weight
+        self._baseline_name = "一次摸牌"
         self._baseline = OneDrawValuePolicy(weights, monotonic)
 
     async def _check_deadline(self, budget: DecisionBudget) -> None:
@@ -150,7 +151,7 @@ class HuUpgradePolicy:
             return await self._enhance(request, budget, baseline)
         except Exception as exc:
             return replace(baseline, degraded_reasons=baseline.degraded_reasons + (
-                "等胡升级失败，沿用完整一次摸牌计划：{0}：{1}".format(type(exc).__name__, str(exc)[:240]),
+                "等胡升级失败，沿用完整{0}计划：{1}：{2}".format(self._baseline_name, type(exc).__name__, str(exc)[:240]),
             ))
 
     async def _enhance(self, request: DecisionRequest, budget: DecisionBudget, baseline: DecisionPlan) -> DecisionPlan:

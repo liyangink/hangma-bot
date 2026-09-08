@@ -24,8 +24,11 @@ def test_frozen_parameters_match_the_recorded_independent_calibration():
     assert all(item["samples"] >= 100 and item["roots"] >= 50 for item in table["diagnostics"] if item["enabled"])
 
 
-def test_cli_records_risk_inputs_and_disabled_upgrade_matches_previous_candidate(tmp_path):
+@pytest.mark.parametrize("policy_name,base_name", [("hu_upgrade_v1", "one_draw_value_v1"), ("v2_hu_upgrade_v1", "weighted_heuristic_v2")])
+def test_cli_records_risk_inputs_and_disabled_upgrade_matches_previous_candidate(tmp_path, policy_name, base_name):
     config = json.loads(CONFIG.read_text())
+    config["baseline_policy"] = {"policy_id": base_name, "name": base_name, "weights": {}}
+    config["challenger_policy"].update(policy_id=policy_name, name=policy_name)
     config["seeds"] = config["seeds"][:1]
     config["seat_permutations"] = [[0, 1, 2, 3]]
     config["tournament_config"]["rounds_per_game"] = 1
@@ -43,14 +46,17 @@ def test_cli_records_risk_inputs_and_disabled_upgrade_matches_previous_candidate
     assert actual["risk_version"] == RISK_VERSION
     assert actual["risk_cells"] == [asdict(cell) for cell in RISK_CELLS]
     assert actual["safety_margin"] == SAFETY_MARGIN
+    assert actual["base_policy"] == base_name
     hands = [json.loads(line) for line in (out / "hands.jsonl").read_text().splitlines()]
     assert len(hands) == 2
     assert hands[0]["score_delta"] == hands[1]["score_delta"]
 
 
 @pytest.mark.parametrize("change", ["youcai", "base", "ruleset", "opponents", "limits"])
-def test_matches_rejects_unvalidated_risk_table_scope(change):
+@pytest.mark.parametrize("policy_name", ["hu_upgrade_v1", "v2_hu_upgrade_v1"])
+def test_matches_rejects_unvalidated_risk_table_scope(change, policy_name):
     experiment = load_experiment(CONFIG)
+    experiment = replace(experiment, challenger=replace(experiment.challenger, name=policy_name))
     validate_upgrade_scope(experiment)
     if change in ("youcai", "base", "ruleset"):
         updates = {"youcai": {"you_cai_bi_kao": True}, "base": {"base_score": 2}, "ruleset": {"ruleset_version": "unknown"}}[change]

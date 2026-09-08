@@ -63,6 +63,7 @@ from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1  # noqa: E4
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2  # noqa: E402
 from hangma_bot.policy.value_one_draw import OneDrawValuePolicy  # noqa: E402
 from hangma_bot.policy.hu_upgrade import HuUpgradePolicy  # noqa: E402
+from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy  # noqa: E402
 from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN  # noqa: E402
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy  # noqa: E402
 from hangma_bot.policy.weights import HeuristicWeights  # noqa: E402
@@ -104,10 +105,11 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         )
         policy.policy_id = declaration.policy_id
         return policy
-    if declaration.name == "hu_upgrade_v1":
+    if declaration.name in ("hu_upgrade_v1", "v2_hu_upgrade_v1"):
         config = dict(declaration.weights)
         upgrade_weight = config.pop("upgrade_weight", 1)
-        policy = HuUpgradePolicy(
+        policy_type = V2HuUpgradePolicy if declaration.name == "v2_hu_upgrade_v1" else HuUpgradePolicy
+        policy = policy_type(
             weights=HeuristicWeightsV1(**config), monotonic=monotonic,
             risk_cells=RISK_CELLS, risk_version=RISK_VERSION,
             safety_margin=SAFETY_MARGIN, upgrade_weight=upgrade_weight,
@@ -116,7 +118,7 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         return policy
     raise ValueError(
         "未知策略名 {0!r}；本脚本只装配 weighted_heuristic / safe_fallback / "
-        "weighted_heuristic_v1 / weighted_heuristic_v2 / one_draw_value_v1 / hu_upgrade_v1".format(declaration.name)
+        "weighted_heuristic_v1 / weighted_heuristic_v2 / one_draw_value_v1 / hu_upgrade_v1 / v2_hu_upgrade_v1".format(declaration.name)
     )
 
 
@@ -210,6 +212,7 @@ def _effective_weights_snapshot(policy: Any) -> Optional[dict]:
             upgrade_weight=policy._upgrade_weight, risk_version=policy._risk_version,
             safety_margin=policy._safety_margin,
             risk_cells=[dict(vars(cell)) for cell in policy._risk_cells],
+            base_policy="weighted_heuristic_v2" if isinstance(policy, V2HuUpgradePolicy) else "one_draw_value_v1",
         )
     return snapshot
 
@@ -410,7 +413,7 @@ def validate_upgrade_scope(experiment: MatchExperiment) -> None:
     """离线等胡风险表只在已校准的规则与模拟对手池中启用。"""
 
     declarations = (experiment.baseline, experiment.challenger) + experiment.opponents
-    if not any(declaration.name == "hu_upgrade_v1" for declaration in declarations):
+    if not any(declaration.name in ("hu_upgrade_v1", "v2_hu_upgrade_v1") for declaration in declarations):
         return
     config = experiment.tournament_config.rules
     if (config.you_cai_bi_kao or config.base_score != 1 or
