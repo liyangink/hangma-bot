@@ -73,5 +73,5 @@ def test_four_white_seven_pairs_keep_summary_and_split_consistent() -> None:
     assert split.luxury_pairs == 1
     assert split.whites_held == 4
     assert sum(label.startswith("对:") for label in split.evidence) == 7
-    # 摸第四白前，五个自然对加三白可接任意牌；四白的爆头排除由规则层处理。
+    # 摸第四白前，五个自然对加三白可接任意牌；v23 四白同样可以爆头。
     assert any_tile_win(hand[:-1], 0)

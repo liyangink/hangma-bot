@@ -5,6 +5,8 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import pytest
 
 from hangma_bot.kernel.actions import (
@@ -18,6 +20,7 @@ from hangma_bot.kernel.actions import (
     Tile,
 )
 from hangma_bot.kernel.observation import PublicEvent
+from hangma_bot.hangma.hand_analysis import any_tile_win, win_split
 from hangma_bot.hangma.internal_types import WinSplit
 from hangma_bot.hangma.special_rules import (
     catch_play_restriction,
@@ -159,14 +162,50 @@ class TestPiaoAndChain:
 
 
 class TestStaticBaotou:
-    """静态爆头 = 任意听 ∧ 手留白板数 ≠ 4（§5）。"""
+    """静态爆头按摸牌前任意听判定，包括四白（官方 v23，2026-09-08）。"""
 
     def test_tenpai_with_three_whites_is_baotou(self):
         assert static_baotou(_split(whites=3, tenpai=True)) is True
 
-    def test_four_whites_held_never_baotou(self):
-        # 正好 4 张手留白板不视为爆头（金例 four-white-kept / chiitoi-held4）。
-        assert static_baotou(_split(whites=4, tenpai=True)) is False
+    def test_four_whites_any_tile_tenpai_is_baotou(self):
+        assert static_baotou(_split(whites=4, tenpai=True)) is True
+
+    @pytest.mark.parametrize(
+        "hand,draw,baotou",
+        [
+            (
+                ("1w", "2w", "3w", "4w", "5w", "6w", "7b", "8b", "9b", "白", "白", "白", "白"),
+                "东",
+                True,
+            ),
+            (
+                ("1w", "1w", "3w", "3w", "5b", "5b", "7b", "7b", "2t", "白", "白", "白", "白"),
+                "3t",
+                True,
+            ),
+            (
+                ("东", "东", "东", "东", "8w", "8w", "5b", "3t", "4t", "5t", "白", "白", "白"),
+                "白",
+                False,
+            ),
+        ],
+        ids=("plain-four-white-baotou", "seven-pairs-four-white-baotou", "four-white-without-baotou"),
+    )
+    @pytest.mark.parametrize("enabled", [False, True])
+    def test_v23_four_white_hands_and_room_gate(self, hand, draw, baotou, enabled):
+        """真实手牌走数学、静态爆头与房规门槛；四白本身不保证爆头。
+
+        输入与 baotou 期望取自 2026-09-08 v23 fan-calc 对拍；接口不含
+        YouCaiBiKao，房规开关在得到官方牌型事实后独立叠加。
+        """
+        waiting_hand = tuple(Tile(code) for code in hand)
+        win = win_split(waiting_hand + (Tile(draw),), 0)
+        assert win is not None and win.whites_held == 4
+        win = replace(win, any_tile_tenpai=any_tile_win(waiting_hand, 0))
+        actual_baotou = static_baotou(win)
+        assert actual_baotou is baotou
+        reason = you_cai_bi_kao_block(enabled, win, actual_baotou)
+        assert (reason is not None) is (enabled and not baotou)
 
     def test_not_tenpai_is_not_baotou(self):
         assert static_baotou(_split(whites=0, tenpai=False)) is False
@@ -205,10 +244,10 @@ class TestYouCaiBiKao:
         assert reason is not None and "七对" in reason
 
     @pytest.mark.parametrize("branch,luxury", [("平胡", 0), ("七对", 0), ("七对", 1)])
-    def test_four_whites_cannot_bypass_rule_with_stale_baotou(self, branch, luxury):
-        # 官方 four-white-kept / chiitoi-held4：四白成牌可计番，但不算爆头。
+    def test_four_whites_with_authoritative_baotou_are_allowed(self, branch, luxury):
+        # 上游已经确认爆头时，不得因手留四白再次否定这项权威事实。
         win = _split(branch, whites=4, tenpai=True, luxury=luxury)
-        assert you_cai_bi_kao_block(True, win, True) is not None
+        assert you_cai_bi_kao_block(True, win, True) is None
 
     def test_blocked_reason_mentions_rule_name(self):
         win = _split("平胡", whites=3)
@@ -230,6 +269,7 @@ class TestYouCaiBiKao:
             (False, 3, False, False),
             (False, 3, True, False),
             (False, 4, False, False),
+            (False, 4, True, False),
             (True, 0, False, False),
             (True, 1, False, True),
             (True, 1, True, False),
@@ -238,6 +278,7 @@ class TestYouCaiBiKao:
             (True, 3, False, True),
             (True, 3, True, False),
             (True, 4, False, True),
+            (True, 4, True, False),
         ],
     )
     def test_rule_config_and_wealth_matrix(

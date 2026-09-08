@@ -1,4 +1,4 @@
-"""官方指南 v18 §1.2/1.3 的定向动作转移回归（2026-09-06）。
+"""官方指南 v18 生命周期及 v23 四白修订的定向动作转移回归。
 
 通过公开 resolve/attach_draw 检查听牌态和动作链；不读取线上资料，不依赖
 随机实战触发。规则来源：review/official-adapter/guide-v18-20260906/guide.json。
@@ -62,14 +62,14 @@ def test_normal_discard_breaks_chain_independently_of_remaining_baotou(discard, 
     assert state.seats[0].baotou is expected_baotou
 
 
-def test_non_baotou_white_discard_can_enter_baotou_but_is_not_piao():
-    """手留四白不爆头；弃白后进入任意听不能倒算本次弃白为飘。"""
+def test_fourth_white_keeps_baotou_and_discard_counts_as_piao():
+    """v23：摸前任意听，进第四白仍爆头；弃白按动作前爆头计飘。"""
     state = _state("1w 2w 3w 4w 5w 6w 东 东 东 北 白 白 白", count=2, piao=0)
     state = _next_own_draw(state, "白")
-    assert state.seats[0].baotou is False
+    assert state.seats[0].baotou is True
     state = resolve(state, ((0, Discard(Tile("白"))),)).state
     assert state.seats[0].baotou is True
-    assert (state.seats[0].chain_count, state.seats[0].chain_piao) == (0, 0)
+    assert (state.seats[0].chain_count, state.seats[0].chain_piao) == (3, 1)
 
 
 @pytest.mark.parametrize("claim", ["chi", "peng", "ming"])
@@ -133,11 +133,11 @@ def test_replacement_draw_preserves_prior_baotou_when_static_shape_changes():
     assert ordinary.seats[0].baotou is False
 
 
-def test_four_held_whites_override_inherited_baotou_on_replacement_draw():
+def test_four_held_whites_keep_baotou_on_replacement_draw():
     meld = MeldRecord("gang", "an", _tiles("1w 1w 1w 1w"), None)
     state = _state("2w 3w 4w 东 东 东 北 白 白 白", baotou=True, count=1, melds=(meld,))
     state = _next_own_draw(state, "白", replacement=True)
-    assert state.seats[0].baotou is False
+    assert state.seats[0].baotou is True
 
 
 def test_piao_gang_piao_chain_break_and_restart():
@@ -149,7 +149,7 @@ def test_piao_gang_piao_chain_break_and_restart():
     state = _next_own_draw(state, "3w")
     state = resolve(state, ((0, Gang(Tile("3w"), GangKind.CONCEALED)),)).state
     state = attach_draw(state, Tile("白")).state
-    assert state.seats[0].baotou is True  # 手留3白+已飘1白=4，不适用手留4白排除。
+    assert state.seats[0].baotou is True  # 爆头与手留3白+已飘1白的四白加番可叠加。
     assert (state.seats[0].chain_count, state.seats[0].chain_piao) == (2, 1)
     state = resolve(state, ((0, Discard(Tile("白"))),)).state
     assert (state.seats[0].chain_count, state.seats[0].chain_piao) == (3, 2)

@@ -115,7 +115,8 @@ def test_recompute_baotou():
     specific = tuple(Tile(c) for c in ["1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "东", "东", "东", "白", "北"])
     assert recompute_baotou(any_tile, 0, 2) is True
     assert recompute_baotou(specific, 0, 2) is False
-    assert recompute_baotou(any_tile, 0, 4) is False  # 正好 4 白不视为爆头
+    four_white = tuple(Tile(c) for c in "1w 2w 3w 4w 5w 6w 7b 8b 9b 白 白 白 白".split())
+    assert recompute_baotou(four_white, 0, 4) is True  # v23：四白也按任意听判定。
 
 
 def test_wealth_discard_skips_windows_and_circle_flag():

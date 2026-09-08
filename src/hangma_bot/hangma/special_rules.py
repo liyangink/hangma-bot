@@ -9,6 +9,8 @@
 规则依据与证据级别：`RULES_EVIDENCE.md` §1/§5/§6/§7/§8
 （官方指南 v9，2026-09-03 抓取；金例夹具 tests/fixtures/official/v9）；
 有财必拷响另按 2026-09-07 用户确认及测试房拒胡事实修正规则解释。
+四白爆头按官方指南 v23 §1.2 与 2026-09-08 fan-calc 实测修正；
+旧版四白例外不再覆盖已经成立的爆头。
 """
 
 from __future__ import annotations
@@ -132,9 +134,10 @@ def chain_breaks_on_discard(tile: Tile, baotou: bool) -> bool:
 def static_baotou(win: WinSplit) -> bool:
     """爆头静态判定（金例对拍与审计口径）。
 
-    【官方】§5：爆头 ⟺ 摸牌前 13 张暗牌 + 任意一张牌都胡
-    （`WinSplit.any_tile_tenpai`，由 hand_analysis 按指南 1.2 判定）
-    ∧ 胡牌时手留白板数 ≠ 4（正好 4 张白板不视为爆头）。
+    【官方 v23，2026-09-08 对拍】爆头 ⟺ 摸牌前暗牌 + 任意一张
+    物理可得的牌都胡（`WinSplit.any_tile_tenpai`，由 hand_analysis
+    按指南 1.2 判定）。手留四白同样按任意听判断，四白本身不保证爆头；
+    指南旧计番表仍有“四白除外”字样，以 v23 fan-calc 实测为准。
 
     运行时结算优先使用 `observation.rule_state.baotou` 平台权威
     状态；本函数仅用于金例对拍、审计复核与 YouCaiBiKao 推断。
@@ -147,7 +150,7 @@ def static_baotou(win: WinSplit) -> bool:
     漏记爆头 ×2，错误方向安全但不可 silently 当作已判定）。
     """
 
-    return win.any_tile_tenpai and win.whites_held != 4
+    return win.any_tile_tenpai
 
 
 def you_cai_bi_kao_block(
@@ -160,8 +163,8 @@ def you_cai_bi_kao_block(
     成牌被官方拒绝，与此口径一致。fan-calc 只判成牌、爆头与番数，
     因此其 hu=true 必须再叠加实际 `RuleConfig.you_cai_bi_kao`。
 
-    胡牌时手留四白不算爆头（官方 four-white-kept / chiitoi-held4
-    金例）；即使上游遗留 baotou=True，也不能据此绕过赛局限制。
+    【官方 v23，2026-09-08 对拍】手留四白也可以爆头；本函数消费
+    已确认的爆头事实，不因白板数量重新否定。四白非爆头仍受开关限制。
     开关关闭或手中无财神时，此规则不限制已由调用方确认的成牌。
 
     参数：
@@ -175,11 +178,11 @@ def you_cai_bi_kao_block(
 
     if not you_cai_bi_kao or win.whites_held == 0:
         return None
-    if baotou and win.whites_held != 4:
+    if baotou:
         return None
     return (
         "有财必拷响：手留财神 {0} 张且分支 {1}，必须爆头才能胡；"
-        "杠补不豁免，手留四白不算爆头".format(win.whites_held, win.branch)
+        "杠补不豁免".format(win.whites_held, win.branch)
     )
 
 

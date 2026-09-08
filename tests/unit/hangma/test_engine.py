@@ -2,8 +2,8 @@
 
 文件归属：规则主 Agent（见模块 AGENTS.md 分工表）。测试只通过
 `HangmaRules` 公开接口与 `emergency` 模块验证行为，不触碰私有状态。
-金例夹具：tests/fixtures/official/v9/fan-calc/*.jsonl（官方 fan-calc 实测，
-指南 v9，2026-09-03 抓取；来源与口径见 fixtures README）。
+金例输入沿用 v9；期望取相同请求的 v23 官方响应（2026-09-08）。
+历史响应原样保留，来源与口径见 fixtures/official/v23/fan-calc/README.md。
 """
 
 from __future__ import annotations
@@ -111,6 +111,7 @@ def _golden_rows():
 
     import json
     from pathlib import Path
+    from .official_fan_tools import current_response
 
     root = (
         Path(__file__).resolve().parents[2]
@@ -127,16 +128,19 @@ def _golden_rows():
                 if not line:
                     continue
                 row = json.loads(line)
+                if row.get("http_status") == 400:
+                    continue  # 非法输入由官方矩阵的拒绝回归覆盖。
                 request = row.get("request") or {
                     "hand": row["hand"],
                     "draw": row["draw"],
                     "chain": row.get("chain", {"count": 0, "piao": 0}),
+                    "base": row.get("base", 1),
                 }
                 rows.append(
                     {
                         "tag": row["tag"],
                         "request": request,
-                        "response": row.get("response") or row.get("resp"),
+                        "response": current_response(request),
                     }
                 )
     return rows

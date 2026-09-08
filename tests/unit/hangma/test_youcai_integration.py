@@ -68,12 +68,12 @@ def test_known_rule_exclusion_is_complete_not_analysis_failure(gang):
 
 
 @pytest.mark.parametrize('enabled', [False, True])
-def test_four_white_cannot_use_stale_baotou_to_bypass_public_gate(enabled):
-    """合成矛盾输入：资格与结算均落实官方四白排除，避免陈旧状态误放行。"""
+def test_four_white_baotou_passes_public_gate_under_both_configs(enabled):
+    """v23 官方任意听四白牌例：成立的爆头在两种配置下均可胡。"""
     obs=make_observation(['1w','2w','3w','4w','5w','6w','7b','8b','9b']+['白']*4,
-                         '东',baotou=True,chain=1,gang=True)
+                         '东',baotou=True)
     rules=HangmaRules(RuleConfig('four-white-gate',1,enabled))
-    assert rules.validate(obs,Hu()).legal is (not enabled)
+    assert rules.validate(obs,Hu()).legal
     assert rules.analyze(obs).completeness is RuleCompleteness.COMPLETE
 
 

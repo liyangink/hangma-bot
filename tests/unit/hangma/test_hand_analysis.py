@@ -1,8 +1,8 @@
 """hand_analysis 单元测试：金例重放 + 正反例 + 性质。
 
-金例夹具：tests/fixtures/official/v9/fan-calc/cases*.jsonl
-（61 例 hu=true + 37 例 hu=false + 1 例 400 输入校验；含 59 例随机偏置
-对拍 cases-random-crossval.jsonl，2026-09-03 官方 fan-calc 实测 0 差异）。
+历史输入：tests/fixtures/official/v9/fan-calc/cases*.jsonl
+（含 59 例随机偏置对拍 cases-random-crossval.jsonl）。期望值按完整请求
+匹配 2026-09-08 抓取的官方 v23 fan-calc 响应，原 v9 响应保留不改。
 """
 
 import json
@@ -19,6 +19,8 @@ from hangma_bot.hangma.hand_analysis import (
 )
 from hangma_bot.hangma.internal_types import TILE_ORDER
 from hangma_bot.kernel.actions import Tile
+
+from .official_fan_tools import current_response
 
 FIXTURE_DIR = (
     Path(__file__).resolve().parents[2] / "fixtures" / "official" / "v9" / "fan-calc"
@@ -43,8 +45,12 @@ def _load_cases():
             obj = json.loads(line)
             if "http_status" in obj:
                 continue  # 400 输入校验例：白板总数超 4，不进入牌型对拍
-            request = obj.get("request", obj)
-            response = obj.get("response") or obj["resp"]
+            request = obj.get("request") or {
+                "hand": obj["hand"], "draw": obj["draw"],
+                "chain": obj.get("chain", {"count": 0, "piao": 0}),
+                "base": obj.get("base", 1),
+            }
+            response = current_response(request)
             cases.append(
                 pytest.param(
                     tuple(Tile(code) for code in request["hand"] + [request["draw"]]),
@@ -69,7 +75,7 @@ def tiles(*codes):
 
 @pytest.mark.parametrize("hand14,response", GOLDEN_CASES)
 def test_golden_win_split_matches_hu(hand14, response):
-    """38 例 hu=true 全部非 None；唯一 hu=false 例必须 None。"""
+    """历史输入的成胡结果与当前官方 v23 响应一致。"""
 
     split = win_split(hand14, 0)
     assert (split is not None) == response["hu"]
@@ -94,11 +100,10 @@ def test_golden_branch_and_luxury_match_detail(hand14, response):
 
 @pytest.mark.parametrize("hand14,response", GOLDEN_CASES)
 def test_golden_baotou_equivalence(hand14, response):
-    """爆头 ⟺ any_tile_win(摸前 13 张) ∧ (hand+draw).count(白) != 4。"""
+    """v23 静态爆头按摸前任意听判断，手留四白同样适用。"""
 
     hand13 = hand14[:-1]
-    whites14 = sum(1 for tile in hand14 if tile.code == "白")
-    predicted = any_tile_win(hand13, 0) and whites14 != 4
+    predicted = any_tile_win(hand13, 0)
     assert predicted == response["baotou"]
 
 
@@ -142,6 +147,62 @@ def test_chiitoi_win_with_white_substitution():
     hand = tiles("1w", "1w", "2w", "2w", "3w", "3w", "4w", "4w", "5w", "5w", "6w", "6w", "白", "白")
     split = win_split(hand, 0)
     assert split is not None and split.branch == "七对" and split.luxury_pairs == 0
+
+
+@pytest.mark.parametrize(
+    "natural_codes,expected_luxury",
+    [
+        pytest.param(
+            ("1w", "1w", "3w", "3w", "5b", "5b", "2t", "3t", "4t", "5t"),
+            0,
+            id="four-whites-fill-four-singles",
+        ),
+        pytest.param(
+            ("1w", "1w", "3w", "3w", "5b", "5b", "7b", "7b", "2t", "3t"),
+            0,
+            id="v23-four-whites-fill-two-singles",
+        ),
+        pytest.param(
+            ("1w", "1w", "3w", "3w", "5b", "5b", "7b", "7b", "2t", "2t"),
+            1,
+            id="four-whites-and-five-natural-pairs",
+        ),
+        pytest.param(
+            ("东", "东", "东", "东", "8w", "8w", "5b", "3t", "4t", "5t"),
+            1,
+            id="v23-natural-quad-and-four-white-filled-pairs",
+        ),
+        pytest.param(
+            ("东", "东", "东", "东", "8w", "8w", "5b", "5b", "3t", "3t"),
+            2,
+            id="natural-quad-and-unused-white-quad",
+        ),
+        pytest.param(
+            ("东", "东", "东", "东", "8w", "8w", "8w", "8w", "3t", "4t"),
+            2,
+            id="two-natural-quads-and-white-filled-pairs",
+        ),
+        pytest.param(
+            ("东", "东", "东", "东", "8w", "8w", "8w", "8w", "3t", "3t"),
+            3,
+            id="two-natural-quads-and-unused-white-quad",
+        ),
+    ],
+)
+def test_four_white_chiitoi_luxury_respects_pairing_role(natural_codes, expected_luxury):
+    """v23（2026-09-08 抓取）：补落单的白板不重复计豪华，自然四张保留。
+
+    两个 v23 命名牌例来自 rule-version-differences.json 的官方实测；
+    其余正反例覆盖同版指南 §1.3 的全自然对与豪华叠加条件。
+    """
+
+    hand = tiles(*natural_codes, "白", "白", "白", "白")
+    split = win_split(hand, 0)
+
+    assert split is not None
+    assert split.branch == "七对"
+    assert split.luxury_pairs == expected_luxury
+    assert split.whites_held == 4
 
 
 def test_meld_set_count_reduces_required_sets():

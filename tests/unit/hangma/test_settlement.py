@@ -1,8 +1,9 @@
-"""settlement 单元测试：番数公式、明细命名、四家结算与 61 例官方金例重放。
+"""settlement 单元测试：番数公式、明细命名、四家结算与官方金例重放。
 
-金例来源：tests/fixtures/official/v9/fan-calc/*.jsonl（官方 fan-calc 实测，
-指南 v9，2026-09-03 抓取；离线只读，不联网）。重放口径：分支与豪华组数
-取自官方期望 detail[0]，手留白板数由手牌机械计数，链参数取自请求——
+输入沿用 tests/fixtures/official/v9/fan-calc/*.jsonl 的 61 例成胡金例，
+期望来自同请求的 v23 官方响应（2026-09-08 重新抓取）；旧原始响应
+保持不变。离线只读，不联网。重放口径：分支与豪华组数取自当前官方
+期望 detail[0]，手留白板数由手牌机械计数，链参数取自请求——
 因此本测试只验证番数公式/命名/结算层，不复制通用牌型分解（hand_analysis
 的职责）。分解层金例由规则主 Agent 的集成对拍覆盖。
 """
@@ -24,6 +25,7 @@ from hangma_bot.kernel.observation import (
     RulePublicState,
 )
 from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.hangma.hand_analysis import any_tile_win, win_split
 from hangma_bot.hangma.interface import Settlement, WinDescription
 from hangma_bot.hangma.internal_types import WinSplit
 from hangma_bot.hangma.observation_rules import enrich_observation
@@ -34,6 +36,9 @@ from hangma_bot.hangma.settlement import (
     settle_scores,
     settle_win,
 )
+from hangma_bot.hangma.special_rules import static_baotou
+
+from .official_fan_tools import current_response
 
 _FAN_CALC_DIR = (
     Path(__file__).resolve().parents[2] / "fixtures" / "official" / "v9" / "fan-calc"
@@ -48,7 +53,7 @@ _GOLDEN_FILES = (
 
 
 def _iter_golden_records():
-    """逐行读取三份金例；统一为 (tag, request, response) 三元组。"""
+    """读取历史输入并匹配 v23 响应；统一为 (tag, request, response)。"""
 
     for name in _GOLDEN_FILES:
         for line in (_FAN_CALC_DIR / name).read_text(encoding="utf-8").splitlines():
@@ -60,7 +65,7 @@ def _iter_golden_records():
                 # 400 输入校验反例无常规响应体，单独覆盖。
                 continue
             if "request" in record:
-                request, response = record["request"], record["response"]
+                request = record["request"]
             else:
                 request = {
                     "hand": record["hand"],
@@ -68,8 +73,7 @@ def _iter_golden_records():
                     "chain": record.get("chain", {"count": 0, "piao": 0}),
                     "base": record.get("base", 1),
                 }
-                response = record["resp"]
-            yield record.get("tag", name), request, response
+            yield record.get("tag", name), request, current_response(request)
 
 
 def _golden_params():
@@ -105,7 +109,7 @@ _GOLDEN_PARAMS = _golden_params()
 
 @pytest.mark.parametrize("tag,req,response", _GOLDEN_PARAMS, ids=[p[0] for p in _GOLDEN_PARAMS])
 def test_golden_fan_details_and_scores(tag, req, response):
-    """官方金例重放：总番、明细命名与庄/闲两种结算场景逐字一致。"""
+    """当前官方金例重放：总番、明细命名与庄/闲两种结算场景逐字一致。"""
 
     chain = req.get("chain") or {"count": 0, "piao": 0}
     base = req.get("base", 1)
@@ -223,17 +227,42 @@ class TestComputeFanValidation:
             compute_fan(win, -1, 0, False)
 
 
-class TestBaotouGuard:
-    """爆头守卫：手留白板数 = 4 时平台爆头标志被压平（§5）。"""
+class TestBaotouBonus:
+    """有效爆头与四白分别加番（官方 v23 fan-calc，2026-09-08）。"""
 
-    def test_four_whites_held_suppresses_baotou(self):
+    def test_four_whites_held_keeps_authoritative_baotou(self):
+        # 运行时爆头来自权威状态，不得受静态分解的占位 False 或四白覆盖。
         win = WinSplit("平胡", 0, 4, False, ())
         result = compute_fan(win, 0, 0, True)
-        assert "爆头" not in result.details
+        assert result.details == ("平胡", "4个白板", "爆头")
+        assert result.fan == 4
+
+    def test_four_whites_do_not_imply_baotou(self):
+        win = WinSplit("平胡", 0, 4, False, ())
+        result = compute_fan(win, 0, 0, False)
+        assert result.details == ("平胡", "4个白板")
         assert result.fan == 2  # 仅 4个白板 ×2
 
+    @pytest.mark.parametrize(
+        "winner,expected_delta",
+        [(0, (96, -32, -32, -32)), (1, (-32, 40, -4, -4))],
+    )
+    def test_v23_four_white_baotou_hand_scores(self, winner, expected_delta):
+        """官方真实手牌贯穿数学、爆头及结算，分数向量按座位 0—3。"""
+        waiting_hand = tuple(Tile(code) for code in (
+            "1w", "2w", "3w", "4w", "5w", "6w", "7b", "8b", "9b",
+            "白", "白", "白", "白",
+        ))
+        win = win_split(waiting_hand + (Tile("东"),), 0)
+        assert win is not None
+        win = replace(win, any_tile_tenpai=any_tile_win(waiting_hand, 0))
+        result = settle_win(win, 0, 0, static_baotou(win), 1, winner, 0)
+        assert result.fan == 4
+        assert result.details == ("平胡", "4个白板", "爆头")
+        assert result.score_delta == expected_delta
+
     def test_three_held_one_piao_keeps_baotou(self):
-        # 手留 3 + 飘出 1 = 4 白板，但爆头只看手留数（金例 three-white-kept-one-piao）。
+        # 手留 3 + 飘出 1 仍计四白，并与财飘、有效爆头分别叠加。
         win = WinSplit("平胡", 0, 3, True, ())
         result = compute_fan(win, 1, 1, True)
         assert list(result.details) == ["平胡", "财飘", "4个白板", "爆头"]

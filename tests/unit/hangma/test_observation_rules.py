@@ -75,10 +75,10 @@ def test_explicit_facts_survive_incomplete_history():
     assert (result.chain_piao, result.gang_draw) == (1, True)
 
 
-def test_fourth_white_clears_baotou():
+def test_fourth_white_keeps_baotou_when_pre_draw_hand_is_any_tile_tenpai():
     hand = tuple(Tile(x) for x in ("1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w", "东", "白", "白", "白"))
     obs = observation(my_hand=hand, drawn_tile=None, rule_state=RulePublicState(Tile("白"), True, 0, False))
-    assert recompute_draw_rule_state(obs, Tile("白")).baotou is False
+    assert recompute_draw_rule_state(obs, Tile("白")).baotou is True
     assert recompute_draw_rule_state(obs, Tile("东")).baotou is True
     with pytest.raises(ValueError, match="摸牌前"):
         recompute_draw_rule_state(replace(obs, my_hand=hand + (Tile("白"),)), Tile("东"))
@@ -137,15 +137,15 @@ def test_compare_white_piao_increments_only_when_before_baotou():
     assert any(x.startswith("god_mismatch:chain_count:") for x in compare_observation_transition(normal_white, events, after))
 
 
-def test_compare_fourth_white_detects_stale_baotou():
+def test_compare_fourth_white_accepts_baotou_and_detects_incorrect_clear():
     from hangma_bot.hangma.observation_rules import compare_observation_transition
     hand = tuple(Tile(x) for x in ("1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w", "东", "白", "白", "白"))
     before = observation(my_hand=hand, drawn_tile=None, rule_state=RulePublicState(Tile("白"), True, 0, False))
     after = replace(before, consumed_seq=11, my_hand=hand + (Tile("白"),), drawn_tile=Tile("白"))
     result = compare_observation_transition(before, (event(11, "tile_drawn", tile="白"),), after)
-    assert any(x.startswith("god_mismatch:baotou:") for x in result)
-    correct = replace(after, rule_state=replace(after.rule_state, baotou=False))
-    assert not any(x.startswith("god_mismatch:") for x in compare_observation_transition(before, (event(11, "tile_drawn", tile="白"),), correct))
+    assert not any(x.startswith("god_mismatch:") for x in result)
+    incorrect = replace(after, rule_state=replace(after.rule_state, baotou=False))
+    assert any(x.startswith("god_mismatch:baotou:") for x in compare_observation_transition(before, (event(11, "tile_drawn", tile="白"),), incorrect))
 
 
 def test_compare_gang_draw_checks_chain_and_unknown_coverage_is_skipped():

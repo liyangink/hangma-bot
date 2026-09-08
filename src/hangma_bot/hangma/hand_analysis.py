@@ -276,8 +276,9 @@ def win_split(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> Optional[Win
 
     分支选择：七对与平胡同时成立时取七对（分支因子 2×2^N 恒 ≥ 平胡 1，
     与官方 fan-calc 明细一致，金例 held3-no-white-pair 等核对）。
-    豪华组数（仅七对）：四张同牌按两对计 1 组；4 张真白板也算 1 组
-    （金例 chiitoi-held4）；平胡分支恒 0。
+    豪华组数（仅七对）：四张自然同牌按两对计 1 组；4 张真白板仅在
+    其余牌全为自然对、未用于补落单时计 1 组（官方 v23 §1.3，
+    2026-09-08 抓取及 fan-calc 对拍）；平胡分支恒 0。
 
     any_tile_tenpai 说明：本函数收到的 hand_tiles 是暗牌全集（14 张口径），
     "摸牌前 13 张 + 任意一张都胡"无法在此口径下判定，故恒填 False 占位；
@@ -291,15 +292,16 @@ def win_split(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> Optional[Win
 
     if meld_set_count == 0:
         if _chiitoi_pairs(counts, whites) == 7:
+            singles = [i for i, value in enumerate(counts) if value % 2 == 1]
+            # v23：补落单的白板已参与其他对子，不能再把四真白重复计豪华。
             luxury = sum(1 for value in counts if value == 4) + (
-                1 if whites == 4 else 0
+                1 if whites == 4 and not singles else 0
             )
             pair_labels: list = []
             for i, value in enumerate(counts):
                 # 每两张自然牌一对；四张同牌即两对（其中一对计入豪华）。
                 for _ in range(value // 2):
                     pair_labels.append(_block_label("对", (TILE_ORDER[i],) * 2))
-            singles = [i for i, value in enumerate(counts) if value % 2 == 1]
             white_left = whites
             for i in singles:
                 if white_left:
@@ -339,8 +341,8 @@ def win_split(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> Optional[Win
 def any_tile_win(hand_tiles_13: Tuple[Tile, ...], meld_set_count: int) -> bool:
     """任意听判定：摸牌前 13 张暗牌 + 34 种任意一张牌都胡（爆头核心）。
 
-    【官方】指南 1.2 / RULES_EVIDENCE §5：爆头 ⟺ 本判定 ∧ 胡牌时手留
-    白板数 ≠ 4（"≠4"由调用方叠加，见 special_rules.static_baotou）。
+    【官方】v23 指南 1.2 / RULES_EVIDENCE §5（2026-09-08 核验）：
+    静态爆头按本判定，四白同样适用；已有爆头的连续动作状态由调用方处理。
     判定只看摸前 13 张（白作摸牌不影响）；白作百搭参与，可垫顺子任意
     位置（含起始位）、作将、白白自对、白白白自刻。副露折算：需
     (4-副露数) 组面子 + 将。内部复用记忆化的成胡判定（34 次判定毫秒级）。

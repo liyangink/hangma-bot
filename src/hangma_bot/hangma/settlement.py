@@ -12,6 +12,7 @@
 
 规则依据与证据级别：`RULES_EVIDENCE.md` §3/§4/§8（官方指南 v9，
 2026-09-03 抓取；61 例成胡金例 + 反例与 400 校验全部复核）。
+四白与爆头叠加按官方指南 v23 §1.2 与 2026-09-08 fan-calc 实测修正。
 """
 
 from __future__ import annotations
@@ -132,10 +133,8 @@ def compute_fan(
       baotou：爆头标志。运行时传平台权威 `rule_state.baotou`，
         对拍/审计可传 `special_rules.static_baotou(win)`（注意先覆盖
         win_split 的 any_tile_tenpai=False 占位，警示见该函数）；
-        本函数内部
-        再施加「手留白板数 ≠ 4」守卫（§5：正好 4 张手留白板不视为
-        爆头；手留 3 + 飘出 1 的组合仍可爆头，见金例
-        three-white-kept-one-piao）。
+        本函数消费已确认的爆头事实。官方 v23 §1.2 与 2026-09-08
+        fan-calc 实测允许四白与爆头分别 ×2，不再按四白数量清除爆头。
 
     校验失败抛 ValueError（含官方 400 同口径的白板总数校验）；
     未胡牌不进入本路径，由调用方以流局（番 0）处理。
@@ -170,15 +169,14 @@ def compute_fan(
     if four_white:
         details.append(_WHITE_TOTAL_DETAIL)
 
-    effective_baotou = baotou and win.whites_held != 4
-    if effective_baotou:
+    if baotou:
         details.append(_BAOTOU_DETAIL)
 
     fan = branch_factor
     fan <<= chain_count
     if four_white:
         fan <<= 1
-    if effective_baotou:
+    if baotou:
         fan <<= 1
     return FanResult(fan=fan, details=tuple(details))
 

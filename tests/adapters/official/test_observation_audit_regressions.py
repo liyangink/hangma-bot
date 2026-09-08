@@ -104,7 +104,7 @@ async def test_snapshot_refresh_preserves_gang_draw_and_room_hu_restriction(enab
 
 @pytest.mark.asyncio
 async def test_incremental_draw_updates_baotou_for_fourth_white():
-    """摸到第四张白板，爆头应按官方四白排除规则变成 false。"""
+    """v23：摸前任意听，增量摸第四白仍须保留爆头。"""
     pre = load_fixture("state_response_snapshot_draw.json")
     pre["seq"] = 100
     pre["snapshot"].update(turn=1, drawn_tile=None, responding_seats=[],
@@ -119,7 +119,7 @@ async def test_incremental_draw_updates_baotou_for_fourth_white():
         await session.next_item()
         window = await asyncio.wait_for(session.next_item(), 1)
         assert isinstance(window, ObservedActionWindow)
-        assert window.observation.rule_state.baotou is False
+        assert window.observation.rule_state.baotou is True
     finally:
         await session.aclose("audit_done")
 

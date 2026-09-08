@@ -9,7 +9,8 @@
 v15/2026-09-05 快照（doc/references/official-guide-v15.txt），夹具为
 v14/2026-09-05。逐项证据与“未确认即 blocked”口径见各函数 docstring 与
 doc/implementation/handoffs/simulation.md 支持矩阵。
-爆头生命周期另按 RULES_EVIDENCE.md 的 v18/2026-09-06 修订实现。
+爆头生命周期按 RULES_EVIDENCE.md 的 v18 修订实现；四白例外按
+v23/2026-09-08 官方计算器结果移除，保留既有连续动作继承语义。
 
 设计（engine 与 progression 的分工）：
 
@@ -208,13 +209,11 @@ def recompute_baotou(
 ) -> bool:
     """计算静态爆头条件；持续状态须经 baotou_after_draw 或弃牌边界更新。
 
-    【官方】指南 1.2 / RULES_EVIDENCE §5：爆头 ⟺ 摸牌前 13 张暗牌 + 任意一张
-    牌都胡（hand_analysis.any_tile_win，含副露折算）∧ 胡牌时手留白板 ≠ 4。
-    whites_after_draw 为摸牌后暗牌全集（含刚摸牌）中的白板数。
+    【官方 v23，2026-09-08 对拍】指南 1.2 / RULES_EVIDENCE §5：摸前暗牌
+    接任意物理可得牌均成胡（hand_analysis.any_tile_win，含副露折算）即爆头。
+    whites_after_draw 为摸后暗牌白板数，保留调用兼容；四白不再排除爆头。
     """
-    if not hand_analysis.any_tile_win(pre_draw_hand, meld_count):
-        return False
-    return whites_after_draw != 4
+    return hand_analysis.any_tile_win(pre_draw_hand, meld_count)
 
 
 def baotou_after_draw(
@@ -223,14 +222,13 @@ def baotou_after_draw(
 ) -> bool:
     """普通摸牌计算听牌条件，杠补继承连续动作状态并允许形成新爆头。
 
-    指南v18 §1.2/1.3：手留四白排除爆头；飘杠连续、普通弃牌断链。
+    指南v23 §1.2及计算器实测：四白同样按任意听判断，不清除已成立的爆头。
+    飘杠连续、普通弃牌断链，沿用v18生命周期。
     连续动作继承按本项目确认口径，不把吃碰后的暂态暗牌当作退出依据。
     replacement未知且会改变结果时拒绝猜测，交官方适配器恢复快照。
     """
     whites = sum(is_wealth(tile) for tile in pre_draw_hand) + is_wealth(drawn)
     static = recompute_baotou(pre_draw_hand, meld_count, whites)
-    if whites == 4:
-        return False
     if replacement is None and previous and not static:
         raise ValueError("摸牌来源未知，无法确定爆头是否继承；须恢复权威快照")
     return static or (bool(replacement) and previous)
