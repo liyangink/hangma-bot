@@ -433,3 +433,11 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 离线清单增加该候选的生效风险表、版本和安全余量；这属于既有策略版本元数据，未增加线上接口。当前校准适用范围及同名 CLI 门禁见[实现方案](hu-upgrade-v1.md)。真实默认 V2、冻结 V0/V1 和第一版一次摸牌候选均不变。
 
 `v2_hu_upgrade_v1` 使用同一个增强契约，完整底座为 V2；关闭开关及失败回退必须与 V2 的完整计划一致。离线生效元数据额外注明 `base_policy`，防止两个底座共用风险表时混淆策略身份。规则和审计载荷不新增字段；公开行为与命令端到端测试覆盖旧底座和 V2 底座。
+
+### 测试房装配的受控扩展
+
+`ParticipantRuntime(..., value_limits: ValueAnalysisLimits | None = None)` 和内部 `RuntimeServices.value_limits` 增加可选工作量；旧调用方默认不附加分值，`AutoMatchRuntime` 保持旧行为。四个外部端口、`DecisionRequest` 和 `BotPolicy.choose` 不改变。该参数只能影响规则分析范围，不产生新动作权限或新截止时间；过增强截止后的首次分析和 409 刷新使用普通规则路径。
+
+`RUN_MANIFEST` 增加实际 `base_score`、`you_cai_bi_kao` 及 `value_analysis_limits`（未开启为 null；开启记录 `max_expansions/max_routes_per_candidate`）。候选的既有 `policy_weights` 包含 `base_policy/upgrade_weight/risk_version/safety_margin/risk_cells`。`DECISION_INPUT` 继续使用原可选 `value_facts` 编解码，未知、缺失或降级不能当作完整证明。配置解析、公开生产组装、十场并发与磁盘审计、旧 V2 路径及截止/失败/409 测试覆盖全部新增调用链。
+
+仅显式测试房候选开启，并按平台初始化 `RuleConfig` 核对校准范围；不支持的模式在本地配置解析时报错，不支持的实际规则在报名/到位之前终止。抓打圈模拟差异尚未修复，当前候选只用于诊断测试房，不能据原模拟风险表发布。见[运行核验与已知限制](../../review/v2-hu-upgrade-runtime-2026-09-08/README.md)。

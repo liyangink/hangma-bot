@@ -58,10 +58,14 @@ from hangma_bot.application.ids import IdGenerator, PrefixedUuidIds
 from hangma_bot.application.participant_runtime import ParticipantRuntime
 from hangma_bot.application.tournament_supervisor import SupervisionPolicy
 from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.hangma.interface import ValueAnalysisLimits
+from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.policy.interface import BotPolicy
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2
+from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy
+from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
@@ -82,6 +86,9 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "weighted_heuristic": lambda: LegacyWeightedHeuristicPolicy(),
     "weighted_heuristic_v1": lambda: ReliableHeuristicPolicyV1(),
     "weighted_heuristic_v2": lambda: ComparableHeuristicPolicyV2(),
+    "v2_hu_upgrade_v1": lambda: V2HuUpgradePolicy(
+        risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+    ),
     "safe_fallback": lambda: SafeFallbackPolicy(),
     "claim_if_legal": lambda: LegacyClaimIfLegalPolicy(),
 }
@@ -201,6 +208,8 @@ class RuntimeConfig:
             raise ValueError(
                 "未知策略名 {0!r}；可用：{1}".format(self.strategy, ", ".join(sorted(_STRATEGY_FACTORIES)))
             )
+        if self.strategy == "v2_hu_upgrade_v1" and self.mode is not RuntimeMode.TEST_ROOM:
+            raise ValueError("v2_hu_upgrade_v1 当前仅允许 mode=test_room，尚未通过真实赛事发布门禁")
         if not isinstance(self.insecure_hosts, frozenset):
             raise ValueError("insecure_hosts 必须是 frozenset，得到 {0!r}".format(self.insecure_hosts))
         if self.slot is not None:
@@ -485,6 +494,22 @@ class AssembledRuntime:
         return getter() if callable(getter) else None
 
 
+def _test_room_upgrade_rules(config: RuleConfig) -> HangmaRules:
+    """按平台实际配置核对校准范围；不匹配时在报名/到位之前终止候选身份。
+
+    这是实验适用范围，绝不是把 YouCaiBiKao 固定成规则；其他策略仍按
+    官方返回的开关运行。风险表来自 BaseScore=1、关闭必拷的 v5 模拟。
+    """
+
+    if (config.base_score != 1 or config.you_cai_bi_kao or
+            config.ruleset_version != DEFAULT_RULESET_VERSION):
+        raise ValueError(
+            "v2_hu_upgrade_v1 测试范围要求 BaseScore=1、YouCaiBiKao=false、"
+            "ruleset_version=" + DEFAULT_RULESET_VERSION
+        )
+    return HangmaRules(config)
+
+
 def build_runtime(
     config: RuntimeConfig,
     *,
@@ -563,7 +588,8 @@ def build_runtime(
             expected_tournament_id=config.expected_tournament_id,
             known_guide_version=config.known_guide_version,
         ),
-        rules_factory=HangmaRules,
+        rules_factory=(_test_room_upgrade_rules if config.strategy == "v2_hu_upgrade_v1" else HangmaRules),
+        value_limits=(ValueAnalysisLimits() if config.strategy == "v2_hu_upgrade_v1" else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=BudgetPolicy(),
@@ -793,11 +819,18 @@ def _effective_weights_snapshot(policy: object) -> Optional[Mapping[str, object]
     if weights is None:
         return None
     cls = type(weights)
-    return {
+    snapshot = {
         name: getattr(weights, name)
         for name, value in vars(cls).items()
         if not name.startswith("_") and not callable(value)
     }
+    if isinstance(policy, V2HuUpgradePolicy):
+        snapshot.update(
+            base_policy="weighted_heuristic_v2", upgrade_weight=policy._upgrade_weight,
+            risk_version=policy._risk_version, safety_margin=policy._safety_margin,
+            risk_cells=[dict(vars(cell)) for cell in policy._risk_cells],
+        )
+    return snapshot
 
 
 def build_decision_codec() -> Mapping[str, Callable]:

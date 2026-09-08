@@ -35,6 +35,22 @@ SECRET_C = "room-secret-token-C-0123456789abcdef"
 SECRET_D = "room-secret-token-D-0123456789abcdef"
 
 
+def test_upgrade_room_example_selects_one_candidate_and_three_v2_with_isolated_audit():
+    """模板经过真实父/子配置解析；候选选择不串到其余身份或默认预设。"""
+    path = SCRIPTS_DIR.parent / "configs/test-room-v2-hu-upgrade.example.json"
+    names = ("HM_ROOM_QINGLONG", "HM_ROOM_BAIHU", "HM_ROOM_ZHUQUE", "HM_ROOM_XUANWU")
+    secrets = (SECRET_A, SECRET_B, SECRET_C, SECRET_D)
+    config = room.load_room_config(path, environ=dict(zip(names, secrets)))
+    children = [room.child_config_mapping(config, identity) for identity in config.identities]
+    assert [c["strategy"] for c in children] == ["v2_hu_upgrade_v1"] + ["weighted_heuristic_v2"] * 3
+    assert len({c["audit_root"] for c in children}) == 4
+    assert config.max_completed_batches == 1
+    for child, secret in zip(children, secrets):
+        parsed = participant.runtime_config_from_mapping(child, environ={room.TOKEN_ENV_VAR: secret})
+        assert parsed.strategy == child["strategy"]
+        assert all(value not in json.dumps(child) for value in secrets)
+
+
 def _participant_config(tmp_path: Path, **overrides) -> dict:
     data = {
         "mode": "test_room",

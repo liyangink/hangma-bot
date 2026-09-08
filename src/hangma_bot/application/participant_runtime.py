@@ -35,6 +35,7 @@ from hangma_bot.application.tournament_supervisor import (
     TournamentSupervisor,
 )
 from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.policy.interface import BotPolicy
 
 DEFAULT_SLEEP = asyncio.sleep
@@ -100,6 +101,7 @@ class ParticipantRuntime:
         sleep=DEFAULT_SLEEP,
         source_namespace: Optional[str] = None,
         manifest_extra: Optional[Mapping[str, object]] = None,
+        value_limits: Optional[ValueAnalysisLimits] = None,
     ) -> None:
         self._session = session
         self._policy = policy
@@ -121,6 +123,10 @@ class ParticipantRuntime:
         # 策略版本等初始化期事实，缺省可空。
         self._source_namespace = source_namespace
         self._manifest_extra = manifest_extra
+        # 组合根按候选策略显式启用，普通参赛身份不承担这部分规则工作量。
+        if value_limits is not None and not isinstance(value_limits, ValueAnalysisLimits):
+            raise TypeError("value_limits 必须是 ValueAnalysisLimits 或 None")
+        self._value_limits = value_limits
 
     @property
     def run_id(self) -> Optional[str]:
@@ -269,6 +275,14 @@ class ParticipantRuntime:
                     "guide_updated_at": bootstrap.guide.updated_at,
                     "participant_id": bootstrap.participant_id,
                     "ruleset_version": bootstrap.config.rules.ruleset_version,
+                    "base_score": bootstrap.config.rules.base_score,
+                    "you_cai_bi_kao": bootstrap.config.rules.you_cai_bi_kao,
+                    "value_analysis_limits": (
+                        None if self._value_limits is None else {
+                            "max_expansions": self._value_limits.max_expansions,
+                            "max_routes_per_candidate": self._value_limits.max_routes_per_candidate,
+                        }
+                    ),
                     "max_games": bootstrap.config.max_games,
                     "rounds_per_game": bootstrap.config.rounds_per_game,
                     "timing": {
@@ -287,6 +301,7 @@ class ParticipantRuntime:
                 ids=self._ids,
                 budget_policy=self._budget_policy,
                 abandoned_tasks=self._abandoned_policy_tasks,
+                value_limits=self._value_limits,
             )
             supervisor = TournamentSupervisor(
                 bootstrap=bootstrap,
@@ -413,4 +428,3 @@ class ParticipantRuntime:
             await self._session.aclose()
         except Exception:  # noqa: BLE001 - 关闭失败不影响终态返回
             pass
-

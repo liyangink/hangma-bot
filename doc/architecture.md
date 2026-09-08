@@ -486,3 +486,11 @@ flowchart LR
 ### V2 底座的独立验证
 
 `v2_hu_upgrade_v1` 复用同一有界增强器与冻结风险表，把本实例的完整底座选择为 V2。普通非等胡决策及关闭模式精确返回 V2，原 `one_draw_value_v1` 和 `hu_upgrade_v1` 实例行为保留。离线清单显式记录 `base_policy`，增强失败的审计原因对应实际底座；其他依赖、规则与公开载荷不变。独立新种子方案见 [V2 等胡候选](implementation/v2-hu-upgrade-v1.md)。
+
+### V2 等胡测试房接入
+
+`bootstrap` 仅在 `mode=test_room` 显式选择 `v2_hu_upgrade_v1` 时装配冻结候选与 `ValueAnalysisLimits(2048, 128)`。`ParticipantRuntime` 将可选工作量传入内部 `RuntimeServices`；决策循环先固定原预算、取得独立紧急动作，再调用唯一规则模块。增强截止已过则不附加分值，409 刷新也不续期。旧策略和 `AutoMatchRuntime` 保持原路径，四个外部端口及 `BotPolicy.choose` 契约不变。
+
+组合根按初始化返回的实际 `RuleConfig` 检查 BaseScore=1、`YouCaiBiKao=false` 及当前 v5 规则版本；候选身份在不匹配时于报名/到位之前终止，不改变官方配置。运行清单记录实际开关、分值工作量和冻结风险参数；决定输入沿用既有可选分值 codec。首轮一候选、三 V2，四进程各管十场、每场八单局；具体入口与门禁见[运行核验](../review/v2-hu-upgrade-runtime-2026-09-08/README.md)。
+
+同日新增抓打圈核验已在候选源码复现模拟权限差异，原风险表和配对结果只能代表旧模拟语义。当前测试房用途是协议、动作权限和预算诊断；修正权限并重新校准及独立评估后才能审核发布。这一限制同步记录在[主技术方案](hangma-ai-bot-technical-plan.md#v2-等胡测试房接入)。
