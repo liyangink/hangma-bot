@@ -61,6 +61,7 @@ from hangma_bot.offline.evaluation_results import (  # noqa: E402
 from hangma_bot.offline.evaluation_statistics import summarize_results  # noqa: E402
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1  # noqa: E402
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2  # noqa: E402
+from hangma_bot.policy.value_one_draw import OneDrawValuePolicy  # noqa: E402
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy  # noqa: E402
 from hangma_bot.policy.weights import HeuristicWeights  # noqa: E402
 from hangma_bot.policy.weights_v1 import HeuristicWeightsV1  # noqa: E402
@@ -92,9 +93,18 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         policy = policy_type(weights=weights, monotonic=monotonic)
         policy.policy_id = declaration.policy_id
         return policy
+    if declaration.name == "one_draw_value_v1":
+        # 仅离线候选，尚未进入正式运行预设。显式声明启用值和冻结基线权重。
+        config = dict(declaration.weights)
+        value_weight = config.pop("value_weight", 1)
+        policy = OneDrawValuePolicy(
+            weights=HeuristicWeightsV1(**config), monotonic=monotonic, value_weight=value_weight,
+        )
+        policy.policy_id = declaration.policy_id
+        return policy
     raise ValueError(
         "未知策略名 {0!r}；本脚本只装配 weighted_heuristic / safe_fallback / "
-        "weighted_heuristic_v1 / weighted_heuristic_v2".format(declaration.name)
+        "weighted_heuristic_v1 / weighted_heuristic_v2 / one_draw_value_v1".format(declaration.name)
     )
 
 
@@ -176,11 +186,14 @@ def _effective_weights_snapshot(policy: Any) -> Optional[dict]:
     if weights is None:
         return None
     cls = type(weights)
-    return {
+    snapshot = {
         name: getattr(weights, name)
         for name, value in vars(cls).items()
         if not name.startswith("_") and not callable(value)
     }
+    if isinstance(policy, OneDrawValuePolicy):
+        snapshot["value_weight"] = policy._value_weight
+    return snapshot
 
 
 def _manifest_versions(
@@ -231,6 +244,10 @@ def _manifest_versions(
         versions["n_resamples"] = experiment.n_resamples
         versions["resample_seed"] = experiment.resample_seed
         versions["simulation_version"] = experiment.simulation_version
+        versions["value_limits"] = None if experiment.value_limits is None else {
+            "max_expansions": experiment.value_limits.max_expansions,
+            "max_routes_per_candidate": experiment.value_limits.max_routes_per_candidate,
+        }
     return versions
 
 
@@ -400,6 +417,7 @@ def cmd_matches(args: argparse.Namespace) -> int:
             policies_by_id[declaration.policy_id] = build_policy(declaration, now_monotonic)
 
     rules = HangmaRules(experiment.tournament_config.rules)
+    completed_hands = []
     outcome = asyncio.run(
         run_match_experiment(
             experiment,
@@ -412,10 +430,22 @@ def cmd_matches(args: argparse.Namespace) -> int:
             now_monotonic=now_monotonic,
             wall_clock=wall_clock,
             budget_policy=BudgetPolicy(),
+            on_hand_completed=(None if experiment.value_limits is None else
+                               lambda match_id, hand: completed_hands.append({
+                                   "match_id": match_id, "round_no": hand.round_no,
+                                   "winner_seat": hand.winner_seat, "fan": hand.fan,
+                                   "score_delta": list(hand.score_delta),
+                               })),
         )
     )
     out_dir.mkdir(parents=True, exist_ok=True)
     write_results_jsonl(out_dir / "results.jsonl", list(outcome.results))
+    if experiment.value_limits is not None:
+        import json
+
+        (out_dir / "hands.jsonl").write_text(
+            "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in completed_hands), encoding="utf-8",
+        )
     report = summarize_results(
         outcome.results,
         baseline_policy_id=experiment.baseline.policy_id,

@@ -405,3 +405,21 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 修正统一落在 `hangma` 的手牌分解、爆头状态推进、配置资格与结算中。`YouCaiBiKao` 仍按实际赛事绑定；有财无爆头仍受开关限制，有效四白爆头可通过。线上权威 `god.baotou` 保持原值，来源未知且会影响继承时仍恢复快照。外部接口、观察编码、策略配置与标准型 `c_grouped` 数学语义不变；本地规则语义版本和源码摘要区分新产物，模拟产物的规则依据版本同步记录为 v23、采集日期 2026-09-08；这不改变官方适配器对未知 API 破坏性变更的审查门槛。新进程加载修复，既有进程内代码不会自动替换，历史审计和官方结算不重写。
 
 [修复与验证记录](../../review/four-white-rule-fix-2026-09-08/README.md)分别记录静态官方对拍、合成状态转移和运行回归，合成链参数不等于真实可达动作轨迹。
+
+## 可选一次摸牌分值契约（2026-09-08，已实现）
+
+本增量仅实现有限条件路线，不冻结海选目标、全榜进度或多步搜索提案。`PlayerObservation`、`DecisionRequest`、`DecisionBudget`、`BotPolicy.choose`、`DecisionPlan` 与 `MatchResult` 签名保持原有行为；V0/V1/V2 牌效和评分不变。
+
+| 接口/类型 | 新增受控内容 |
+| --- | --- |
+| `HangmaRules.analyze(observation, *, value_limits=None)` | `None` 不作分值分析；`ValueAnalysisLimits` 限制全请求展开节点和每候选路线组数 |
+| `RuleCandidate.value_facts` | 可选 `CandidateValueFacts`，含 `immediate_settlement/routes/coverage/issues`；条件数据绑定当前请求与动作 |
+| `ValueRoute` | `conditional_settlement/shanten/useful_tiles/followup_discard/conditions/support`；首版只支持向听 0 的一次摸牌条件见证 |
+| `ValueConditions` | `draw_kind/pre_draw_hand/meld_count/chain_count/chain_piao/baotou`，描述未来成胡条件，不是已确认观察 |
+| `ValueCoverage` | complete/partial/unavailable；仅相对一次未来摸牌的范围，非完整必须给原因；空集不能解释为整单局无胡牌可能 |
+| `MatchExperiment`、`MatchDriverConfig` | 可选 `value_limits`，清单和结果版本记录生效开关/限额 |
+| `drive_match`、`run_match_experiment` | 可选 `on_hand_completed`，消费公开已完成导出；回调值为 `HandCompletion(round_no,winner_seat,fan,score_delta)`，后者额外携带所属 match_id |
+
+单候选分值故障只改变其 `value_facts`，不能丢失合法/紧急动作或改写原规则完整度。旧 JSON 没有新字段按 None 读取，默认关闭时也不写该键；新字段双向往返保存全部条件。不同后续弃牌是互斥选择，不能把路线未见张数相加；四家条件净变分按座位 0—3。
+
+原始预算在规则分析之前固定，耗时包含紧急准备、规则与策略。超过保底截止但尚能发送时使用已准备的紧急动作；超过最晚发送时间不向模拟器提交，按运行失败报告。逻辑时钟实验不能证明真实 1/3 秒窗口达标。实现与字段详细解释见[一次摸牌候选](one-draw-value-v1.md)。

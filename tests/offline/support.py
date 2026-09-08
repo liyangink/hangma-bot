@@ -475,6 +475,10 @@ class FakeRules:
     def analyze(self, observation: PlayerObservation) -> RuleAnalysis:
         return self.analysis
 
+    def emergency_action(self, observation: PlayerObservation) -> Optional[RuleCandidate]:
+        """编排器在复杂分析前调用的公开紧急路径。"""
+        return self.analysis.emergency_candidate
+
 
 def draw_frame(
     revision: int,

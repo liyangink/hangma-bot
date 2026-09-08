@@ -454,3 +454,23 @@ Hatch 在安装期构建可选 CPython 扩展，wheel 标明平台和 Python 二
 修正统一落在 `hangma` 的手牌分解、爆头状态推进、配置资格与结算中。`YouCaiBiKao` 仍按实际赛事绑定；有财无爆头仍受开关限制，有效四白爆头可通过。线上权威 `god.baotou` 保持原值，来源未知且会影响继承时仍恢复快照。外部接口、观察编码、策略配置与标准型 `c_grouped` 数学语义不变；本地规则语义版本和源码摘要区分新产物，模拟产物的规则依据版本同步记录为 v23、采集日期 2026-09-08；这不改变官方适配器对未知 API 破坏性变更的审查门槛。新进程加载修复，既有进程内代码不会自动替换，历史审计和官方结算不重写。
 
 [修复与验证记录](../review/four-white-rule-fix-2026-09-08/README.md)分别记录静态官方对拍、合成状态转移和运行回归，合成链参数不等于真实可达动作轨迹。
+
+## 一次摸牌分值离线候选（2026-09-08）
+
+已增加默认关闭的 `HangmaRules.analyze(value_limits=...)` 和 `RuleCandidate.value_facts`。`hangma` 独占条件路线与结算，`policy.OneDrawValuePolicy` 仅消费事实，对 V2 普通等待的同向听候选排序；立即胡优先、杠位置及线上默认装配保持既有行为。观察与策略接口不变，没有新增 `competition` 或模型依赖。
+
+箭头表示离线运行时的数据提供方向；赛后完整结果只能进入评估产物。
+
+```mermaid
+flowchart LR
+    subgraph EVAL["场景｜离线完整桌赛"]
+        SIM["simulation 公开观察"] --> DRIVER["offline 固定原始预算"]
+        DRIVER --> RULE["hangma 合法候选与有限条件路线"]
+        RULE --> POLICY["one_draw_value_v1 完整有序计划"]
+        POLICY --> DRIVER
+        DRIVER --> SIM
+        SIM --> RESULT["已完成单局导出与桌赛评估"]
+    end
+```
+
+审计 codec 保留原观察下的动作、条件、积分和覆盖状态；旧记录缺字段仍为未知。离线计时纳入规则分析，超过最晚发送时间即运行失败，不能迟交紧急动作再宣称按时完成。工作量、范围、字段与开发门禁见[一次摸牌分值候选](implementation/one-draw-value-v1.md)；没有切换真实比赛策略。

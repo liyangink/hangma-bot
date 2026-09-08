@@ -1,0 +1,635 @@
+{
+  "case_id": "D",
+  "source_line_sha256": "f342f49b11bb1a1cbae4887bc234ff455e2b967a82a6fcebdc36b0b054494b58",
+  "request_event": {
+    "schema_version": 1,
+    "kind": "decision_input",
+    "context": {
+      "run_id": "run-4ce68fa04eb344ae85750f43aa47c579",
+      "tournament_id": "a_2a2325f65163",
+      "participant_id": "u_13495c3d79c8",
+      "stage_attempt_id": null,
+      "game_id": "a_2a2325f65163_r1_b1_t0",
+      "round_no": 2,
+      "trigger_seq": 363,
+      "decision_id": "dec-87f22129d43e4f1794789c048bb58dc9",
+      "attempt_no": null
+    },
+    "wall_time_unix_ms": 1788797438073,
+    "monotonic_ns": 1379491436046750,
+    "payload": {
+      "plan_revision": 1,
+      "budget_origin_monotonic": 1379491.434316083,
+      "rule_elapsed_ms": 1.353,
+      "request": {
+        "codec_version": 1,
+        "decision_id": "dec-87f22129d43e4f1794789c048bb58dc9",
+        "trigger_seq": 363,
+        "window_key": {
+          "schema_version": 1,
+          "game_id": "a_2a2325f65163_r1_b1_t0",
+          "round_no": 2,
+          "trigger_seq": 363,
+          "phase": "response_peng",
+          "seat": 1
+        },
+        "observation": {
+          "schema_version": 1,
+          "game_id": "a_2a2325f65163_r1_b1_t0",
+          "seat": 1,
+          "round_no": 2,
+          "snapshot_seq": 363,
+          "consumed_seq": 363,
+          "history_complete": false,
+          "chain_piao": 0,
+          "gang_draw": false,
+          "observation_issues": [],
+          "phase": "response_peng",
+          "dealer_seat": 1,
+          "turn_seat": 2,
+          "responding_seats": [
+            3,
+            0,
+            1
+          ],
+          "my_hand": [
+            "西",
+            "5b",
+            "发",
+            "7b",
+            "发",
+            "5b",
+            "3t",
+            "7b",
+            "6b",
+            "6b",
+            "白",
+            "西",
+            "5t"
+          ],
+          "drawn_tile": null,
+          "discards": [
+            [
+              "南",
+              "3w",
+              "西",
+              "1b"
+            ],
+            [
+              "2w",
+              "3b",
+              "东",
+              "9w",
+              "2t"
+            ],
+            [
+              "2b",
+              "南",
+              "北",
+              "发"
+            ],
+            [
+              "1b",
+              "1t",
+              "2t",
+              "1w"
+            ]
+          ],
+          "melds": [
+            [],
+            [],
+            [],
+            [
+              {
+                "seat": 3,
+                "kind": "peng",
+                "tiles": [
+                  "3b",
+                  "3b",
+                  "3b"
+                ],
+                "from_seat": null
+              }
+            ]
+          ],
+          "hand_counts": [
+            13,
+            13,
+            13,
+            10
+          ],
+          "last_discard": {
+            "seat": 2,
+            "tile": "发",
+            "seq": 363
+          },
+          "remaining_tile_count": 68,
+          "scores": [
+            -8,
+            10,
+            -1,
+            -1
+          ],
+          "rule_state": {
+            "wealth_god": "白",
+            "baotou": false,
+            "chain_count": 0,
+            "catch_play": false
+          },
+          "public_history": [
+            {
+              "seq": 287,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "南"
+              ],
+              "occurred_at_unix_sec": 1788797401,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 288,
+              "kind": "timeout",
+              "seat": 0,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788797401,
+              "detail_kind": "discard",
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 294,
+              "kind": "tile_discarded",
+              "seat": 1,
+              "tiles": [
+                "3b"
+              ],
+              "occurred_at_unix_sec": 1788797403,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 295,
+              "kind": "peng",
+              "seat": 3,
+              "tiles": [
+                "3b"
+              ],
+              "occurred_at_unix_sec": 1788797403,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 296,
+              "kind": "tile_discarded",
+              "seat": 3,
+              "tiles": [
+                "1t"
+              ],
+              "occurred_at_unix_sec": 1788797403,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 297,
+              "kind": "pass",
+              "seat": 0,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788797403,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 302,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "3w"
+              ],
+              "occurred_at_unix_sec": 1788797408,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 303,
+              "kind": "timeout",
+              "seat": 0,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788797408,
+              "detail_kind": "discard",
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 309,
+              "kind": "tile_discarded",
+              "seat": 1,
+              "tiles": [
+                "东"
+              ],
+              "occurred_at_unix_sec": 1788797410,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 327,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "西"
+              ],
+              "occurred_at_unix_sec": 1788797418,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 333,
+              "kind": "tile_discarded",
+              "seat": 1,
+              "tiles": [
+                "9w"
+              ],
+              "occurred_at_unix_sec": 1788797421,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 334,
+              "kind": "pass",
+              "seat": 2,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788797422,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 339,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "北"
+              ],
+              "occurred_at_unix_sec": 1788797425,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 340,
+              "kind": "pass",
+              "seat": 0,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788797425,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 351,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "1b"
+              ],
+              "occurred_at_unix_sec": 1788797432,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 357,
+              "kind": "tile_discarded",
+              "seat": 1,
+              "tiles": [
+                "2t"
+              ],
+              "occurred_at_unix_sec": 1788797435,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 358,
+              "kind": "pass",
+              "seat": 0,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788797435,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 359,
+              "kind": "pass",
+              "seat": 2,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788797435,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            }
+          ]
+        },
+        "competition": {
+          "schema_version": 1,
+          "tournament_id": "a_2a2325f65163",
+          "stage_no": null,
+          "stage_role": null,
+          "stage_total": null,
+          "participant_rank": 1,
+          "ranking": [
+            {
+              "participant_id": "u_13495c3d79c8",
+              "total_score": 73,
+              "place_points": 0,
+              "god_count": 0,
+              "games_played": 10,
+              "rank": 1
+            },
+            {
+              "participant_id": "u_fcbd1c02a686",
+              "total_score": 19,
+              "place_points": 0,
+              "god_count": 0,
+              "games_played": 10,
+              "rank": 2
+            },
+            {
+              "participant_id": "u_537a805305ef",
+              "total_score": -46,
+              "place_points": 0,
+              "god_count": 0,
+              "games_played": 10,
+              "rank": 3
+            },
+            {
+              "participant_id": "u_8027a5433ce7",
+              "total_score": -46,
+              "place_points": 0,
+              "god_count": 0,
+              "games_played": 10,
+              "rank": 4
+            }
+          ],
+          "observed_at_unix_ms": 1788797437322
+        },
+        "rules": {
+          "codec_version": 1,
+          "legal_candidates": [
+            {
+              "codec_version": 1,
+              "action_key": "peng:发",
+              "action": {
+                "kind": "peng",
+                "tile": "发",
+                "schema_version": 1
+              },
+              "evidence": [
+                "碰:暗牌持有 发 ×2（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6t",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "7t",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "西",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 3
+                  }
+                ],
+                "best_followup_discard": "3t",
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "pass",
+              "action": {
+                "kind": "pass",
+                "schema_version": 1
+              },
+              "evidence": [
+                "过:响应窗口放弃当前响应机会（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "西",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "发",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 3
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            }
+          ],
+          "emergency_candidate": {
+            "codec_version": 1,
+            "action_key": "pass",
+            "action": {
+              "kind": "pass",
+              "schema_version": 1
+            },
+            "evidence": [
+              "emergency:response-pass"
+            ],
+            "facts": null
+          },
+          "completeness": "complete",
+          "ruleset_version": "hangma-mvp-v4-youcai-baotou",
+          "issues": []
+        },
+        "rejected_attempts": []
+      },
+      "budget": {
+        "codec_version": 1,
+        "enhancement_deadline_monotonic": 1379491.534648687,
+        "fallback_deadline_monotonic": 1379491.5747817284,
+        "latest_send_at_monotonic": 1379491.6048815097
+      },
+      "window_deadline": {
+        "expires_at_monotonic": 1379491.634981291,
+        "deadline_is_estimated": false
+      },
+      "window": {
+        "game_id": "a_2a2325f65163_r1_b1_t0",
+        "round_no": 2,
+        "trigger_seq": 363,
+        "phase": "response_peng",
+        "seat": 1
+      },
+      "capture_profile": "audit-plus-v1",
+      "audit_producer": "application"
+    }
+  }
+}

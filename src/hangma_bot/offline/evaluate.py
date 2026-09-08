@@ -38,6 +38,7 @@ from hangma_bot.kernel.actions import Action, WindowKey, action_key
 from hangma_bot.kernel.config import RuleConfig, TournamentConfig
 from hangma_bot.kernel.observation import CompetitionContext
 from hangma_bot.kernel.serialization import window_key_to_json
+from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.policy.interface import (
     BotPolicy,
     DecisionBudget,
@@ -84,6 +85,17 @@ def _require_non_negative_int(value: object, field_name: str) -> int:
     if isinstance(value, bool) or not isinstance(value, int) or value < 0:
         raise ValueError("{0} 必须是非负整数，得到 {1!r}".format(field_name, value))
     return value
+
+
+def _value_limits_from_mapping(value: object) -> Optional[ValueAnalysisLimits]:
+    """读取显式实验开关；旧配置缺失保留关闭，错误配置不静默使用默认值。"""
+    if value is None:
+        return None
+    if not isinstance(value, Mapping):
+        raise ValueError("value_limits 必须是对象或 null")
+    if set(value) - {"max_expansions", "max_routes_per_candidate"}:
+        raise ValueError("value_limits 含未知工作量选项")
+    return ValueAnalysisLimits(**value)
 
 
 # ---------------------------------------------------------------------------
@@ -197,6 +209,7 @@ class MatchExperiment:
     simulation_version: Optional[str] = None  # 模拟线版本；进 versions
     input_sha256: Optional[str] = None
     source_namespace: Optional[str] = None
+    value_limits: Optional[ValueAnalysisLimits] = None  # 显式开启有限一次摸牌分析，旧实验不承担成本
 
     def __post_init__(self) -> None:
         if self.kind != "matches":
@@ -216,6 +229,8 @@ class MatchExperiment:
             raise ValueError("initial_scores 必须是长度为 4 的逻辑座位向量")
         if self.baseline.policy_id == self.challenger.policy_id:
             raise ValueError("baseline 与 challenger 的 policy_id 必须不同")
+        if self.value_limits is not None and not isinstance(self.value_limits, ValueAnalysisLimits):
+            raise ValueError("value_limits 必须是 ValueAnalysisLimits 或 None")
 
 
 def load_experiment(path: Path) -> Union[DecisionExperiment, MatchExperiment]:
@@ -304,6 +319,7 @@ def load_experiment(path: Path) -> Union[DecisionExperiment, MatchExperiment]:
             simulation_version=data.get("simulation_version"),
             input_sha256=data.get("input_sha256"),
             source_namespace=data.get("source_namespace"),
+            value_limits=_value_limits_from_mapping(data.get("value_limits")),
         )
     raise ValueError("kind 必须是 decisions 或 matches，得到 {0!r}".format(kind))
 
@@ -936,12 +952,25 @@ class MatchDriverConfig:
     step_limit: int  # 步数上限；到顶是 error，不是 complete/合成流局
     budget_policy: BudgetPolicy  # deadline.py 公开预算比例
     competition_tournament_id: str  # 可见事实：模拟实验标识，不伪造海选晋级线
+    value_limits: Optional[ValueAnalysisLimits] = None  # 固定工作量；首版只包含一次摸牌，无多步搜索
 
     def __post_init__(self) -> None:
         if self.clock_mode not in CLOCK_MODES:
             raise ValueError("clock_mode 必须是 {0} 之一".format(CLOCK_MODES))
         if self.step_limit <= 0:
             raise ValueError("step_limit 必须是正整数")
+        if self.value_limits is not None and not isinstance(self.value_limits, ValueAnalysisLimits):
+            raise ValueError("value_limits 必须是 ValueAnalysisLimits 或 None")
+
+
+@dataclass(frozen=True)
+class HandCompletion:
+    """赛后公开导出的单局结果，不得回流为策略本次决策输入。"""
+
+    round_no: int  # 桌赛内一基单局号
+    winner_seat: Optional[int]  # 胡牌座位 0—3；流局为 None
+    fan: int  # 实际最终番数；流局为 0
+    score_delta: Tuple[int, int, int, int]  # 本单局净变分，座位顺序 0—3
 
 
 @dataclass(frozen=True)
@@ -1052,6 +1081,7 @@ async def drive_match(
     config: MatchDriverConfig,
     now_monotonic: Callable[[], float],
     wall_clock: Optional[Callable[[], float]],
+    on_hand_completed: Optional[Callable[[HandCompletion], None]] = None,
 ) -> MatchRunOutcome:
     """完整桌赛驱动循环（simulation-v1 公开方法的唯一调用方）。
 
@@ -1070,9 +1100,20 @@ async def drive_match(
     decisions: List[MatchDecisionRecord] = []
     world = engine.start(spec)
     steps = 0
+    reported_hands = 0
     while steps < config.step_limit:
         steps += 1
         frame = engine.frame(world)
+        if on_hand_completed is not None:
+            # 只用模拟器公开导出；即使 advance 自动开启下一单局，也逐一报告
+            # 已结束的单局。默认关闭时不导出完整世界牌谱。
+            for round_no in range(reported_hands + 1, frame.completed_hands + 1):
+                hand = engine.export_hand(world, round_no=round_no)
+                on_hand_completed(HandCompletion(
+                    round_no=round_no, winner_seat=hand["winner_seat"],
+                    fan=hand["fan"], score_delta=tuple(hand["score_delta"]),
+                ))
+            reported_hands = frame.completed_hands
         if frame.blocked_reason is not None:
             return MatchRunOutcome(
                 status="blocked",
@@ -1152,7 +1193,7 @@ async def drive_match(
                     completed_hands=frame.completed_hands,
                     final_scores=None,
                     blocked_reason=None,
-                    error_reason="窗口无可用动作（策略与紧急候选都不可得），不静默换成 Pass",
+                    error_reason="窗口无可用动作（策略/紧急路径不可用或已过发送截止），不静默换成 Pass",
                     steps=steps,
                     decisions=tuple(decisions),
                     runtime_counts=RuntimeCounts(
@@ -1230,13 +1271,18 @@ async def _resolve_window(
     now_monotonic: Callable[[], float],
     wall_clock: Optional[Callable[[], float]],
 ) -> Tuple[MatchDecisionRecord, Any, bool]:
-    """解析一个模拟窗口：规则分析 → 预算 → 策略 → 复核 → SimulationChoice。"""
+    """在同一原始预算内准备紧急动作、规则分析、策略及复核。"""
     observation = decision.observation
     window_key: WindowKey = decision.window_key
     seat = window_key.seat
     if not 0 <= seat < 4:
         raise ValueError("窗口座位越界: {0!r}".format(seat))
-    analysis = rules.analyze(observation)
+    started = None if wall_clock is None else wall_clock()
+    budget = config.budget_policy.build(now_monotonic(), decision.timeout_seconds)
+    # 复杂分析前已经拥有独立紧急动作，不把规则开销排除在预算和耗时外。
+    prepared_emergency = rules.emergency_action(observation)
+    analysis = (rules.analyze(observation) if config.value_limits is None else
+                rules.analyze(observation, value_limits=config.value_limits))
 
     competition = CompetitionContext(
         tournament_id=config.competition_tournament_id,
@@ -1247,7 +1293,6 @@ async def _resolve_window(
         ranking=(),
         observed_at_unix_ms=0,
     )
-    budget = config.budget_policy.build(now_monotonic(), decision.timeout_seconds)
     # 决策标识含座位成分：同帧多窗口（如三家碰响应）必须 decision_id 唯一，
     # 关联链路（AGENTS.md §8）不得共享同一标识。
     decision_id = "{0}:{1}:{2}:{3}:{4}:seat{5}".format(
@@ -1269,7 +1314,6 @@ async def _resolve_window(
     )
 
     policy = policies_by_seat[seat]
-    started = None if wall_clock is None else wall_clock()
     plan: Optional[DecisionPlan] = None
     fallback_reason: Optional[str] = None
     policy_error: Optional[str] = None
@@ -1287,7 +1331,7 @@ async def _resolve_window(
         elapsed_ms = (wall_clock() - started) * 1000.0
 
     legal_keys = frozenset(candidate.action_key for candidate in analysis.legal_candidates)
-    emergency = analysis.emergency_candidate
+    emergency = analysis.emergency_candidate or prepared_emergency
 
     chosen = None if plan is None or not plan.candidates else plan.candidates[0]
     is_emergency = False
@@ -1342,6 +1386,18 @@ async def _resolve_window(
         legal = True
         is_emergency = True
         fallback_reason = fallback_reason or "illegal_choice"
+
+    if now_monotonic() > budget.latest_send_at_monotonic:
+        # 对齐线上提交门禁：合法紧急动作也不能在最晚发送时间之后补交。
+        # 逻辑实验的固定时钟不计物理延迟；real 模式必须将超期作为运行失败。
+        record = MatchDecisionRecord(
+            decision_id=decision_id, seat=seat, policy_id=_policy_id_from_policy(policy),
+            window_key=window_key_to_json(window_key), action_key=None, legal=None,
+            is_emergency=False, fallback_reason="timeout", plan_revision=plan_revision,
+            degraded_reasons=degraded + ("已过原始最晚发送时间，未向模拟器提交动作",),
+            elapsed_ms=elapsed_ms,
+        )
+        return record, None, False
 
     record = MatchDecisionRecord(
         decision_id=decision_id,
@@ -1453,6 +1509,7 @@ async def run_match_experiment(
     wall_clock: Optional[Callable[[], float]],
     budget_policy: BudgetPolicy,
     source_kind: str = "simulation",
+    on_hand_completed: Optional[Callable[[str, HandCompletion], None]] = None,
 ) -> MatchExperimentOutcome:
     """按声明执行完整同牌山复式实验：seed × 换座 × 稳定/候选。
 
@@ -1525,6 +1582,7 @@ async def run_match_experiment(
                     step_limit=experiment.step_limit,
                     budget_policy=budget_policy,
                     competition_tournament_id=seed_spec.scenario_id,
+                    value_limits=experiment.value_limits,
                 )
                 try:
                     outcome = await drive_match(
@@ -1536,6 +1594,8 @@ async def run_match_experiment(
                         config=driver_config,
                         now_monotonic=now_monotonic,
                         wall_clock=wall_clock,
+                        on_hand_completed=(None if on_hand_completed is None else
+                                           lambda hand, key=match_id: on_hand_completed(key, hand)),
                     )
                 except Exception as error:
                     excluded.append(
@@ -1556,6 +1616,10 @@ async def run_match_experiment(
                             ),
                             ("policy_ids", sorted(logical_ids)),
                             ("simulation_version", experiment.simulation_version),
+                            ("value_limits", None if experiment.value_limits is None else {
+                                "max_expansions": experiment.value_limits.max_expansions,
+                                "max_routes_per_candidate": experiment.value_limits.max_routes_per_candidate,
+                            }),
                             ("driver", "offline.evaluate drive_match (evaluation-v1)"),
                         ],
                         key=lambda item: item[0],

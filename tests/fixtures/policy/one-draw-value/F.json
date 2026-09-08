@@ -1,0 +1,2403 @@
+{
+  "case_id": "F",
+  "source_line_sha256": "d4d23a94f5ec9380343dcc852e5a51476ec9baeb5bf2e4b93007de8b65b94293",
+  "request_event": {
+    "schema_version": 1,
+    "kind": "decision_input",
+    "context": {
+      "run_id": "run-41c0bba1fce24a89a1134a8c86195812",
+      "tournament_id": "a_efdcec8879f3",
+      "participant_id": "u_13495c3d79c8",
+      "stage_attempt_id": null,
+      "game_id": "a_efdcec8879f3_r1_b6_t0",
+      "round_no": 8,
+      "trigger_seq": 1460,
+      "decision_id": "dec-8b2f75ed0a944218b458ed22b17b1c2e",
+      "attempt_no": null
+    },
+    "wall_time_unix_ms": 1788822404170,
+    "monotonic_ns": 1404457614409166,
+    "payload": {
+      "plan_revision": 1,
+      "budget_origin_monotonic": 1404457.612303541,
+      "rule_elapsed_ms": 1.769,
+      "request": {
+        "codec_version": 1,
+        "decision_id": "dec-8b2f75ed0a944218b458ed22b17b1c2e",
+        "trigger_seq": 1460,
+        "window_key": {
+          "schema_version": 1,
+          "game_id": "a_efdcec8879f3_r1_b6_t0",
+          "round_no": 8,
+          "trigger_seq": 1460,
+          "phase": "draw",
+          "seat": 0
+        },
+        "observation": {
+          "schema_version": 1,
+          "game_id": "a_efdcec8879f3_r1_b6_t0",
+          "seat": 0,
+          "round_no": 8,
+          "snapshot_seq": 1460,
+          "consumed_seq": 1460,
+          "history_complete": false,
+          "chain_piao": 0,
+          "gang_draw": null,
+          "observation_issues": [],
+          "phase": "draw",
+          "dealer_seat": 3,
+          "turn_seat": 0,
+          "responding_seats": [],
+          "my_hand": [
+            "3t",
+            "白",
+            "6w",
+            "6w",
+            "4t",
+            "7t",
+            "6t",
+            "6w",
+            "5t",
+            "8t",
+            "白"
+          ],
+          "drawn_tile": "白",
+          "discards": [
+            [
+              "1b",
+              "西",
+              "2w",
+              "北",
+              "8w",
+              "7b",
+              "9b",
+              "3b",
+              "1t"
+            ],
+            [
+              "4w",
+              "发",
+              "北",
+              "8b",
+              "9t",
+              "6b",
+              "5b",
+              "4b",
+              "1b"
+            ],
+            [
+              "2w",
+              "西",
+              "7b",
+              "8b",
+              "2t",
+              "9t",
+              "3w",
+              "3b",
+              "南"
+            ],
+            [
+              "9t",
+              "东",
+              "西",
+              "北",
+              "发",
+              "1w",
+              "7t",
+              "中",
+              "南",
+              "7b"
+            ]
+          ],
+          "melds": [
+            [
+              {
+                "seat": 0,
+                "kind": "peng",
+                "tiles": [
+                  "4b",
+                  "4b",
+                  "4b"
+                ],
+                "from_seat": null
+              }
+            ],
+            [
+              {
+                "seat": 1,
+                "kind": "chi",
+                "tiles": [
+                  "2t",
+                  "3t",
+                  "1t"
+                ],
+                "from_seat": null
+              }
+            ],
+            [
+              {
+                "seat": 2,
+                "kind": "peng",
+                "tiles": [
+                  "东",
+                  "东",
+                  "东"
+                ],
+                "from_seat": null
+              },
+              {
+                "seat": 2,
+                "kind": "peng",
+                "tiles": [
+                  "6b",
+                  "6b",
+                  "6b"
+                ],
+                "from_seat": null
+              }
+            ],
+            []
+          ],
+          "hand_counts": [
+            11,
+            10,
+            7,
+            13
+          ],
+          "last_discard": null,
+          "remaining_tile_count": 50,
+          "scores": [
+            -67,
+            -56,
+            104,
+            19
+          ],
+          "rule_state": {
+            "wealth_god": "白",
+            "baotou": true,
+            "chain_count": 0,
+            "catch_play": false
+          },
+          "public_history": [
+            {
+              "seq": 1258,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "1b"
+              ],
+              "occurred_at_unix_sec": 1788822302,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1259,
+              "kind": "pass",
+              "seat": 2,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822302,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1260,
+              "kind": "pass",
+              "seat": 1,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822302,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1261,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822303,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1270,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "2w"
+              ],
+              "occurred_at_unix_sec": 1788822308,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1276,
+              "kind": "tile_discarded",
+              "seat": 3,
+              "tiles": [
+                "东"
+              ],
+              "occurred_at_unix_sec": 1788822312,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1278,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "西"
+              ],
+              "occurred_at_unix_sec": 1788822314,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1290,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "西"
+              ],
+              "occurred_at_unix_sec": 1788822319,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1291,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822319,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1292,
+              "kind": "pass",
+              "seat": 2,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822319,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1302,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "7b"
+              ],
+              "occurred_at_unix_sec": 1788822325,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1308,
+              "kind": "tile_discarded",
+              "seat": 3,
+              "tiles": [
+                "北"
+              ],
+              "occurred_at_unix_sec": 1788822328,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1314,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "2w"
+              ],
+              "occurred_at_unix_sec": 1788822331,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1315,
+              "kind": "pass",
+              "seat": 1,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822331,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1326,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "8b"
+              ],
+              "occurred_at_unix_sec": 1788822337,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1332,
+              "kind": "tile_discarded",
+              "seat": 3,
+              "tiles": [
+                "发"
+              ],
+              "occurred_at_unix_sec": 1788822341,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1338,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "北"
+              ],
+              "occurred_at_unix_sec": 1788822344,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1339,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822344,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1340,
+              "kind": "pass",
+              "seat": 1,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822344,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1341,
+              "kind": "pass",
+              "seat": 2,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822345,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1350,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "2t"
+              ],
+              "occurred_at_unix_sec": 1788822351,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1356,
+              "kind": "tile_discarded",
+              "seat": 3,
+              "tiles": [
+                "1w"
+              ],
+              "occurred_at_unix_sec": 1788822355,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1362,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "8w"
+              ],
+              "occurred_at_unix_sec": 1788822358,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1363,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822358,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1364,
+              "kind": "pass",
+              "seat": 2,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822359,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1374,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "9t"
+              ],
+              "occurred_at_unix_sec": 1788822363,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1386,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "7b"
+              ],
+              "occurred_at_unix_sec": 1788822368,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1387,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822368,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1388,
+              "kind": "pass",
+              "seat": 2,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822368,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1389,
+              "kind": "pass",
+              "seat": 1,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822369,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1394,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "3w"
+              ],
+              "occurred_at_unix_sec": 1788822372,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1395,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822373,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1400,
+              "kind": "tile_discarded",
+              "seat": 3,
+              "tiles": [
+                "中"
+              ],
+              "occurred_at_unix_sec": 1788822375,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1406,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "9b"
+              ],
+              "occurred_at_unix_sec": 1788822378,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1407,
+              "kind": "pass",
+              "seat": 1,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822379,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1408,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822379,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1418,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "3b"
+              ],
+              "occurred_at_unix_sec": 1788822383,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1419,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822383,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1420,
+              "kind": "pass",
+              "seat": 1,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822384,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1430,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "3b"
+              ],
+              "occurred_at_unix_sec": 1788822388,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1431,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822388,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1432,
+              "kind": "pass",
+              "seat": 2,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822388,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1438,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "1t"
+              ],
+              "occurred_at_unix_sec": 1788822392,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1439,
+              "kind": "pass",
+              "seat": 2,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822392,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1440,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822393,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1443,
+              "kind": "tile_discarded",
+              "seat": 1,
+              "tiles": [
+                "1b"
+              ],
+              "occurred_at_unix_sec": 1788822394,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1444,
+              "kind": "pass",
+              "seat": 3,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788822395,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1449,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "南"
+              ],
+              "occurred_at_unix_sec": 1788822398,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 1455,
+              "kind": "tile_discarded",
+              "seat": 3,
+              "tiles": [
+                "7b"
+              ],
+              "occurred_at_unix_sec": 1788822402,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            }
+          ]
+        },
+        "competition": {
+          "schema_version": 1,
+          "tournament_id": "a_efdcec8879f3",
+          "stage_no": null,
+          "stage_role": null,
+          "stage_total": null,
+          "participant_rank": 2,
+          "ranking": [
+            {
+              "participant_id": "u_4a5acf30c1bb",
+              "total_score": 62,
+              "place_points": 3,
+              "god_count": 5,
+              "games_played": 66,
+              "rank": 1
+            },
+            {
+              "participant_id": "u_13495c3d79c8",
+              "total_score": 39,
+              "place_points": -3,
+              "god_count": 4,
+              "games_played": 66,
+              "rank": 2
+            },
+            {
+              "participant_id": "u_79eb99f9f6a3",
+              "total_score": -3,
+              "place_points": -1,
+              "god_count": 5,
+              "games_played": 66,
+              "rank": 3
+            },
+            {
+              "participant_id": "u_29275ab032b3",
+              "total_score": -98,
+              "place_points": 1,
+              "god_count": 3,
+              "games_played": 66,
+              "rank": 4
+            }
+          ],
+          "observed_at_unix_ms": 1788822403347
+        },
+        "rules": {
+          "codec_version": 1,
+          "legal_candidates": [
+            {
+              "codec_version": 1,
+              "action_key": "discard:6w",
+              "action": {
+                "kind": "discard",
+                "tile": "6w",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "1w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "2w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "6w",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "7w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "1b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "8b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "9b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "1t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "7t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "8t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9t",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "东",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "南",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "西",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "北",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "发",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 2
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:3t",
+              "action": {
+                "kind": "discard",
+                "tile": "3t",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "1w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "2w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "6w",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "7w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "1b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "8b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "9b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "1t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "7t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "8t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9t",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "东",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "南",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "西",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "北",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "发",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 2
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:4t",
+              "action": {
+                "kind": "discard",
+                "tile": "4t",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "1w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "2w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "6w",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "7w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "1b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "8b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "9b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "1t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "7t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "8t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9t",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "东",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "南",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "西",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "北",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "发",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 2
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:5t",
+              "action": {
+                "kind": "discard",
+                "tile": "5t",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "1w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "2w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "6w",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "7w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "1b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "8b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "9b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "1t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "7t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "8t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9t",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "东",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "南",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "西",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "北",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "发",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 2
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:6t",
+              "action": {
+                "kind": "discard",
+                "tile": "6t",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "1w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "2w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "6w",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "7w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "1b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "8b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "9b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "1t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "7t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "8t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9t",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "东",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "南",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "西",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "北",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "发",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 2
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:7t",
+              "action": {
+                "kind": "discard",
+                "tile": "7t",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "1w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "2w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "6w",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "7w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "1b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "8b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "9b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "1t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "7t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "8t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9t",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "东",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "南",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "西",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "北",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "发",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 2
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:8t",
+              "action": {
+                "kind": "discard",
+                "tile": "8t",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "1w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "2w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "6w",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "7w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "1b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "8b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "9b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "1t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "7t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "8t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9t",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "东",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "南",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "西",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "北",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "发",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 2
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:白",
+              "action": {
+                "kind": "discard",
+                "tile": "白",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）",
+                "出牌:财神可主动打出（§1）；是否构成飘由 special_rules 按爆头状态判定（§8）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "1w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "2w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "6w",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "7w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "1b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "8b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "9b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "1t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "2t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "7t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "8t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9t",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "东",
+                    "remaining_estimate": 0
+                  },
+                  {
+                    "code": "南",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "西",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "北",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "发",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 2
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "hu",
+              "action": {
+                "kind": "hu",
+                "schema_version": 1
+              },
+              "evidence": [
+                "胡:自摸胡成胡，判定来自手牌数学 is_win（§2/§6；只能自摸、无点炮）",
+                "标准型向听 -1",
+                "七对向听 N/A(有副露)",
+                "最优向听 -1(已胡)",
+                "手留白板 2 张"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "win",
+                "shanten_after": -1,
+                "useful_tiles": [],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            }
+          ],
+          "emergency_candidate": {
+            "codec_version": 1,
+            "action_key": "discard:白",
+            "action": {
+              "kind": "discard",
+              "tile": "白",
+              "schema_version": 1
+            },
+            "evidence": [
+              "emergency:rightmost-discard"
+            ],
+            "facts": null
+          },
+          "completeness": "complete",
+          "ruleset_version": "hangma-mvp-v4-youcai-baotou",
+          "issues": []
+        },
+        "rejected_attempts": []
+      },
+      "budget": {
+        "codec_version": 1,
+        "enhancement_deadline_monotonic": 1404459.112154708,
+        "fallback_deadline_monotonic": 1404459.7120951747,
+        "latest_send_at_monotonic": 1404460.162050525
+      },
+      "window_deadline": {
+        "expires_at_monotonic": 1404460.612005875,
+        "deadline_is_estimated": true
+      },
+      "window": {
+        "game_id": "a_efdcec8879f3_r1_b6_t0",
+        "round_no": 8,
+        "trigger_seq": 1460,
+        "phase": "draw",
+        "seat": 0
+      },
+      "capture_profile": "audit-plus-v1",
+      "audit_producer": "application"
+    }
+  }
+}
