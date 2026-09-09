@@ -142,6 +142,9 @@ def _waiting_facts(
     return CandidateFacts(
         fact_kind=CandidateFactKind.HAND_PROGRESS,
         shanten_after=summary.shanten,
+        # 与综合向听共享同一等待手牌；只暴露已有数学结果，不另选七对弃牌。
+        standard_shanten_after=summary.standard_shanten,
+        seven_pairs_shanten_after=summary.chiitoi_shanten,
         useful_tiles=useful,
         best_followup_discard=followup,
         replacement_draw_unknown=replacement_unknown,

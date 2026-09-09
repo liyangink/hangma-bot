@@ -80,8 +80,16 @@ class CandidateFacts:
     replacement_draw_unknown: bool = False  # 杠后补牌未知时为 True
     completeness: RuleCompleteness = RuleCompleteness.COMPLETE
     note: Optional[str] = None  # 降级原因或证据说明；可审计、人可读
+    standard_shanten_after: Optional[int] = None  # 同一动作后等待手牌的普通型向听；未分析为空
+    seven_pairs_shanten_after: Optional[int] = None  # 同一等待手牌的七对向听；有副露或未分析为空
 
     def __post_init__(self) -> None:
+        for name in ("standard_shanten_after", "seven_pairs_shanten_after"):
+            value = getattr(self, name)
+            if value is not None and (type(value) is not int or value < -1):
+                raise ValueError("CandidateFacts." + name + " 必须是至少 -1 的整数或空")
+            if value is not None and self.fact_kind is not CandidateFactKind.HAND_PROGRESS:
+                raise ValueError("分牌型向听只属于 HAND_PROGRESS 等待事实")
         _require_tuple = isinstance(self.useful_tiles, tuple)
         if not _require_tuple:
             raise ValueError("CandidateFacts.useful_tiles 必须是 tuple")

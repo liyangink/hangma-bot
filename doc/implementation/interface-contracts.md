@@ -2,6 +2,8 @@
 
 2026-09-09 当前增补：指南 v27；v26 的公开圈主通过可选 `RulePublicState.catch_play_owner_seat` 接入，保持快照水位、旧 JSON 缺字段兼容和同一规则源。已替代下文历史 v8 跳窗兼容及旧 v24 限定审查，详见文末“官方圈主事实与v26响应修订”。新增字段不代表推进赛事目标或模型接口冻结。
 
+大牌路线实验兼容增补：`CandidateFacts` 尾部增加 `standard_shanten_after: Optional[int] = None` 和 `seven_pairs_shanten_after: Optional[int] = None`。只允许 `HAND_PROGRESS` 携带至少 -1 的整数，来自同一动作后等待手牌的已有数学结果：吃碰采用既有 `best_followup_discard`，杠采用补牌前手牌。七对有副露时为空；缺旧字段、未分析或失败也为空，不以零替代。紧急候选不产生这些事实。`shanten_after`、合法动作与默认策略不变；不是对多个后续弃牌各取最小值。审计 codec v1 仅在非空时写新键，旧 JSON 缺键还原为 None，完整请求往返覆盖。独立早期候选只消费这些事实，范围与发布门槛见[计划](big-hand-policy-plan.md)。
+
 2026-09-07 制品工具兼容性增补：线上冻结接口和原始审计 schema 不变。`offline.postgame.finalize_session` 消费关闭的 run 与官方原文，输出不可覆盖的独立分析 job；`offline.observation_audit.audit_observations` 仅做赛后复核，不改变玩家观察。统一牌谱既有 `rule_config`、`guide_version`、`guide_captured_at` 字段保留 source 中真实元数据；旧配置缺少本地规则版本时，正式行的 `rule_config` 保持为空，局部配置仍留在 source 中。分析实现单独记录在包内 `references/analysis-provenance.json`，不替换历史线上版本。诊断单局明确 `student_observation=false`。CLI 成功只表示制品生成成功，完整性、历史覆盖和规则检查分别表达，详见 [操作指引](../operations.md)。
 
 > 状态：接口基线 v1.1（2026-09-04 集成阶段契约收口）；实行受控变更  

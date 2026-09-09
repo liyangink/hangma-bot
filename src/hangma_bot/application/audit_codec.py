@@ -156,7 +156,7 @@ def _enum_value(value: object, allowed: Sequence[str], type_name: str, key: str)
 
 def candidate_facts_to_json(facts: CandidateFacts) -> dict[str, object]:
     """把候选牌效事实转为 JSON；缺失数值字段原样保留 None/空，不伪造。"""
-    return {
+    payload = {
         "codec_version": DECISION_CODEC_VERSION,
         "fact_kind": facts.fact_kind.value,
         "shanten_after": facts.shanten_after,
@@ -169,6 +169,12 @@ def candidate_facts_to_json(facts: CandidateFacts) -> dict[str, object]:
         "completeness": facts.completeness.value,
         "note": facts.note,
     }
+    # 可选扩展只在已分析时写入；旧审计缺字段仍表示未知，不补零或重算。
+    for name in ("standard_shanten_after", "seven_pairs_shanten_after"):
+        value = getattr(facts, name)
+        if value is not None:
+            payload[name] = value
+    return payload
 
 
 def candidate_facts_from_json(payload: object) -> CandidateFacts:
@@ -219,6 +225,12 @@ def candidate_facts_from_json(payload: object) -> CandidateFacts:
             )
         ),
         note=_as_optional_str(_get(data, "note", type_name), type_name, "note"),
+        standard_shanten_after=_as_optional_int(
+            data.get("standard_shanten_after"), type_name, "standard_shanten_after"
+        ),
+        seven_pairs_shanten_after=_as_optional_int(
+            data.get("seven_pairs_shanten_after"), type_name, "seven_pairs_shanten_after"
+        ),
     )
 
 
