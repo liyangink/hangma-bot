@@ -101,6 +101,8 @@ def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSumma
     evidence 为人可读的确定性证据元组（审计用）。向听的虚牌受每种
     4 张上限约束（分组内持续扣减配额），有效牌不含不可能摸到的第 5
     张同种牌。
+    两组分牌型有效牌复用同一次进张枚举，分别对比各自当前向听；已胡
+    不再枚举，返回 None；七对有副露时也为 None，已枚举空集合为 ()。
     """
 
     _validate_melds(meld_set_count)
@@ -121,8 +123,12 @@ def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSumma
     is_win = shanten == -1
 
     useful_tiles: Tuple[UsefulTile, ...] = ()
+    standard_useful_tiles: Optional[Tuple[UsefulTile, ...]] = None
+    seven_pairs_useful_tiles: Optional[Tuple[UsefulTile, ...]] = None
     if not is_win:
         entries: list = []
+        standard_entries: list = []
+        seven_pairs_entries: list = []
         for index in range(34):
             if counts34[index] >= 4:
                 # 全 4 张同种牌在手 → 第 5 张不可能摸到，不是有效牌
@@ -131,11 +137,21 @@ def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSumma
             drawn = list(counts34)
             drawn[index] += 1
             d_counts, d_whites = _split_counts(tuple(drawn))
-            after = _need_std(
+            after_standard = _need_std(
                 d_counts, d_whites, sets_needed, True
             ) - 1
+            after = after_standard
+            if after_standard < standard_shanten:
+                standard_entries.append(
+                    UsefulTile(code=TILE_ORDER[index], shanten_after=after_standard)
+                )
             if meld_set_count == 0:
-                after = min(after, 6 - _chiitoi_pairs(d_counts, d_whites))
+                after_seven_pairs = 6 - _chiitoi_pairs(d_counts, d_whites)
+                after = min(after, after_seven_pairs)
+                if after_seven_pairs < chiitoi_shanten:
+                    seven_pairs_entries.append(
+                        UsefulTile(code=TILE_ORDER[index], shanten_after=after_seven_pairs)
+                    )
             if after < shanten:
                 entries.append(UsefulTile(code=TILE_ORDER[index], shanten_after=after))
         if whites < 4 and not any(entry.code == _WHITE_CODE for entry in entries):
@@ -143,6 +159,10 @@ def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSumma
             # 已持 4 张白板时第 5 张物理不可得，不补入（评审 d8-f4dadf）。
             entries.append(UsefulTile(code=_WHITE_CODE, shanten_after=shanten - 1))
         useful_tiles = tuple(entries)
+        # 分牌型只保存实际计算出的严格推进；不复制上面的综合白板保险。
+        standard_useful_tiles = tuple(standard_entries)
+        if meld_set_count == 0:
+            seven_pairs_useful_tiles = tuple(seven_pairs_entries)
 
     evidence_parts = ["标准型向听 {0}".format(standard_shanten)]
     evidence_parts.append(
@@ -160,6 +180,8 @@ def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSumma
         useful_tiles=useful_tiles,
         whites_held=whites,
         evidence=tuple(evidence_parts),
+        standard_useful_tiles=standard_useful_tiles,
+        seven_pairs_useful_tiles=seven_pairs_useful_tiles,
     )
 
 

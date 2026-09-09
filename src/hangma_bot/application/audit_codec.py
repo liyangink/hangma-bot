@@ -174,7 +174,33 @@ def candidate_facts_to_json(facts: CandidateFacts) -> dict[str, object]:
         value = getattr(facts, name)
         if value is not None:
             payload[name] = value
+    for name in ("standard_useful_tiles", "seven_pairs_useful_tiles"):
+        value = getattr(facts, name)
+        if value is not None:
+            payload[name] = [
+                {"code": item.code, "remaining_estimate": item.remaining_estimate}
+                for item in value
+            ]
+    if facts.pattern_progress_note is not None:
+        payload["pattern_progress_note"] = facts.pattern_progress_note
     return payload
+
+
+def _optional_pattern_tiles_from_json(value: object, key: str) -> Tuple[UsefulTileFact, ...] | None:
+    """区分未分析与已知空集合；每张牌复用生产事实类型的校验。"""
+    if value is None:
+        return None
+    type_name = "candidate_facts"
+    result = []
+    for item in _as_list(value, type_name, key):
+        entry = _require_mapping(item, type_name + "." + key + " 元素")
+        result.append(UsefulTileFact(
+            code=_as_str(_get(entry, "code", type_name), type_name, "code"),
+            remaining_estimate=_as_int(
+                _get(entry, "remaining_estimate", type_name), type_name, "remaining_estimate"
+            ),
+        ))
+    return tuple(result)
 
 
 def candidate_facts_from_json(payload: object) -> CandidateFacts:
@@ -230,6 +256,15 @@ def candidate_facts_from_json(payload: object) -> CandidateFacts:
         ),
         seven_pairs_shanten_after=_as_optional_int(
             data.get("seven_pairs_shanten_after"), type_name, "seven_pairs_shanten_after"
+        ),
+        standard_useful_tiles=_optional_pattern_tiles_from_json(
+            data.get("standard_useful_tiles"), "standard_useful_tiles"
+        ),
+        seven_pairs_useful_tiles=_optional_pattern_tiles_from_json(
+            data.get("seven_pairs_useful_tiles"), "seven_pairs_useful_tiles"
+        ),
+        pattern_progress_note=_as_optional_str(
+            data.get("pattern_progress_note"), type_name, "pattern_progress_note"
         ),
     )
 

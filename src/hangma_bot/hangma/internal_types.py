@@ -95,6 +95,8 @@ class HandSummary:
     useful_tiles: Tuple[UsefulTile, ...]  # 按规范顺序去重；含白板（万能恒有效）
     whites_held: int  # 被分析暗牌中的白板张数（0-4）
     evidence: Tuple[str, ...]  # 确定性分解证据（审计用，人可读）
+    standard_useful_tiles: Optional[Tuple[UsefulTile, ...]] = None  # 普通型独立推进牌；未枚举为空，已枚举空集合为 ()
+    seven_pairs_useful_tiles: Optional[Tuple[UsefulTile, ...]] = None  # 七对独立推进牌；有副露或未枚举为空
 
 
 @dataclass(frozen=True)

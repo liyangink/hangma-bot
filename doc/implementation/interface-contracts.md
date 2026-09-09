@@ -99,6 +99,8 @@ flowchart LR
 
 ### 4.1 候选牌效事实（2026-09-04 集成阶段契约收口）
 
+2026-09-09 兼容增补：分牌型距离之后进一步增加 `standard_useful_tiles`、`seven_pairs_useful_tiles` 两个可空有效牌元组及 `pattern_progress_note`。它们来自同一等待状态的已有进张循环；新增集合的局部计数未知不降低原事实完整性。None、空集合、公开耗尽0张、副露不适用与旧审计兼容的精确语义见[分牌型推进契约](pattern-progress-v2.md)。
+
 向听与有效牌数学只允许存在于 `hangma`；`policy` 只消费规则生产的事实并加权，不得重新推演手牌合法性、向听或有效牌。为此 `RuleCandidate` 增加可空字段 `facts: Optional[CandidateFacts]`，随候选一起传递、与 `action_key` 一一对应：
 
 - `fact_kind`：`HAND_PROGRESS`（动作后等待状态已估计）/ `WIN`（动作后即成牌，`shanten_after=-1`）/ `NOT_APPLICABLE`（该动作无动作后等待语义）/ `ANALYSIS_FAILED`（分析异常，数值字段不可信且全部为空）；
