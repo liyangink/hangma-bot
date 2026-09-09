@@ -535,3 +535,7 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 ## 2026-09-09 期限映射运行事实（无外部端口变更）
 
 四个冻结端口、`ActionAttempt` 和 `ObservedActionWindow` 字段不变。适配器内部的期限映射区间只用于收紧交付/提交期限及安排阶段查询；策略不读取用户额度或时钟样本。运行清单新增 `deadline_clock_version=snapshot-interval-v1`，权威状态审计可带 `deadline_clock`（版本、样本数、是否可用、区间宽度秒、冲突重置次数）。`deadline_is_estimated=false`仅说明官方提供期限，不能理解为零时钟误差。赛后规则诊断沿用来源的 `guide_version`，不把历史未知版本补成当前版本。
+
+### v10 候选校准适用范围（2026-09-09）
+
+可选分值契约与四个端口均不新增字段。`RISK_RULESET_VERSION` 将风险表绑定到 `hangma-mvp-v10-public-counts`；离线入口与测试房入口均核对它，旧 v5 配置不能套用本批参数。新的 `risk_version=hu-upgrade-risk-v2-v10` 沿用既有清单字段，来源为独立512桌赛、729次等待分支；生存下界为0.83/0.92、无条件支付上界0.10，分组与完整适用范围见[风险表](../../review/v2-hu-upgrade-v10-2026-09-09/risk-table.json)。规则事实对无关未知牌码保持可用，对实际成胡进张缺证据明确不可用，不能填零。新校准仍仅描述 V2 模拟对手池，不自动通过真实赛事发布门禁。

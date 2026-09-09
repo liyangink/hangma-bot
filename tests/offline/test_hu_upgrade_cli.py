@@ -9,16 +9,17 @@ import sys
 import pytest
 
 from hangma_bot.offline.evaluate import load_experiment
-from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN
+from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN, RISK_RULESET_VERSION
 from scripts.evaluate import validate_upgrade_scope
 
 ROOT = Path(__file__).resolve().parents[2]
-CONFIG = ROOT / "review/hu-upgrade-2026-09-08/experiments/development.json"
+CONFIG = ROOT / "review/v2-hu-upgrade-v10-2026-09-09/experiments/development.json"
 
 
 def test_frozen_parameters_match_the_recorded_independent_calibration():
-    table = json.loads((ROOT / "review/hu-upgrade-2026-09-08/risk-table.json").read_text())
+    table = json.loads((ROOT / "review/v2-hu-upgrade-v10-2026-09-09/risk-table.json").read_text())
     assert RISK_VERSION == table["version"]
+    assert RISK_RULESET_VERSION == table["scope"]["ruleset_version"]
     assert [asdict(cell) for cell in RISK_CELLS] == table["cells"]
     assert SAFETY_MARGIN == table["fit_spec"]["safety_margin"]
     assert all(item["samples"] >= 100 and item["roots"] >= 50 for item in table["diagnostics"] if item["enabled"])
@@ -52,14 +53,15 @@ def test_cli_records_risk_inputs_and_disabled_upgrade_matches_previous_candidate
     assert hands[0]["score_delta"] == hands[1]["score_delta"]
 
 
-@pytest.mark.parametrize("change", ["youcai", "base", "ruleset", "opponents", "limits"])
+@pytest.mark.parametrize("change", ["youcai", "base", "ruleset", "old_ruleset", "opponents", "limits"])
 @pytest.mark.parametrize("policy_name", ["hu_upgrade_v1", "v2_hu_upgrade_v1"])
 def test_matches_rejects_unvalidated_risk_table_scope(change, policy_name):
     experiment = load_experiment(CONFIG)
     experiment = replace(experiment, challenger=replace(experiment.challenger, name=policy_name))
     validate_upgrade_scope(experiment)
-    if change in ("youcai", "base", "ruleset"):
-        updates = {"youcai": {"you_cai_bi_kao": True}, "base": {"base_score": 2}, "ruleset": {"ruleset_version": "unknown"}}[change]
+    if change in ("youcai", "base", "ruleset", "old_ruleset"):
+        updates = {"youcai": {"you_cai_bi_kao": True}, "base": {"base_score": 2}, "ruleset": {"ruleset_version": "unknown"},
+                   "old_ruleset": {"ruleset_version": "hangma-mvp-v5-four-white"}}[change]
         experiment = replace(experiment, tournament_config=replace(experiment.tournament_config,
                              rules=replace(experiment.tournament_config.rules, **updates)))
     elif change == "opponents":

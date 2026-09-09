@@ -509,7 +509,7 @@ def _test_room_upgrade_rules(config: RuleConfig) -> HangmaRules:
     """按平台实际配置核对校准范围；不匹配时在报名/到位之前终止候选身份。
 
     这是实验适用范围，绝不是把 YouCaiBiKao 固定成规则；其他策略仍按
-    官方返回的开关运行。风险表来自 BaseScore=1、关闭必拷的 v5 模拟。
+    官方返回的开关运行。风险表来自 BaseScore=1、关闭必拷的 v10 独立模拟校准。
     """
 
     if (config.base_score != 1 or config.you_cai_bi_kao or

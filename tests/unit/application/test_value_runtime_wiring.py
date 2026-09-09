@@ -23,7 +23,7 @@ from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.kernel.config import RuleConfig, TimingConfig, TournamentConfig
 
 
-RULE_CONFIG = RuleConfig("hangma-mvp-v5-four-white", 1, False)
+RULE_CONFIG = RuleConfig("hangma-mvp-v10-public-counts", 1, False)
 LIMITS = ValueAnalysisLimits()
 
 
@@ -92,7 +92,7 @@ async def test_production_assembly_runs_ten_games_and_records_effective_value_co
     assert has_values == [strategy == "v2_hu_upgrade_v1"] * 10
     if strategy == "v2_hu_upgrade_v1":
         assert manifest["value_analysis_limits"] == {"max_expansions": 2048, "max_routes_per_candidate": 128}
-        assert manifest["policy_weights"]["risk_version"] == "hu-upgrade-risk-v1"
+        assert manifest["policy_weights"]["risk_version"] == "hu-upgrade-risk-v2-v10"
         assert manifest["policy_weights"]["base_policy"] == "weighted_heuristic_v2"
         assert len(manifest["policy_weights"]["risk_cells"]) == 2
     else:
@@ -102,6 +102,7 @@ async def test_production_assembly_runs_ten_games_and_records_effective_value_co
 
 @pytest.mark.parametrize("rules", [replace(RULE_CONFIG, you_cai_bi_kao=True),
                                   replace(RULE_CONFIG, base_score=2),
+                                  replace(RULE_CONFIG, ruleset_version="hangma-mvp-v5-four-white"),
                                   replace(RULE_CONFIG, ruleset_version="unknown-version")])
 async def test_candidate_rejects_actual_uncalibrated_rules_before_register_ready_or_open(tmp_path, rules):
     session = FakeTournamentSession(bootstrap=bootstrap(make_snapshot(TournamentStatus.REGISTERING), rules))
