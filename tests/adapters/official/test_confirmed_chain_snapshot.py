@@ -10,7 +10,7 @@ from hangma_bot.adapters.official.errors import ConflictError, UncertainTranspor
 from hangma_bot.adapters.official.scheduler import RequestScheduler
 from hangma_bot.application.contracts import ActionAttempt, ObservedActionWindow, SubmitAccepted, SubmitAmbiguous
 from hangma_bot.hangma.engine import HangmaRules
-from hangma_bot.hangma.interface import RuleCompleteness
+from hangma_bot.hangma.interface import CandidateFactKind, RuleCompleteness
 from hangma_bot.kernel.actions import action_key
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.serialization import action_from_json
@@ -18,6 +18,19 @@ from hangma_bot.kernel.serialization import action_from_json
 from _official_testkit import TIMING, make_audit_context
 
 CASES = json.loads((Path(__file__).parents[2] / 'fixtures/official/v20/snapshot-chain.json').read_text())['cases']
+
+# 这些真实轨迹从明杠前中途接入，只保留本次触发弃牌，缺少更早的吃牌事件。
+# seq232/309 的座0吃345饼，上家牌河三种都有；seq707 的座2吃567条，
+# 上家牌河同时有5条、7条。成功明杠能证明链事实，不能证明这些旧副露的供牌。
+EXPECTED_UNKNOWN_FACT_CANDIDATES = {
+    't_b684d5c3eea4_r1_b1_t0-s2-seq232': ('5b', {'discard:8b'}),
+    't_b684d5c3eea4_r1_b3_t0-s0-seq707': (
+        '5t', {'discard:6w', 'discard:7w', 'discard:8w', 'discard:3t', 'discard:白'},
+    ),
+    't_b684d5c3eea4_r1_b1_t0-s0-seq309': (
+        '5b', {'discard:3w', 'discard:6b', 'discard:1t', 'discard:2t', 'discard:3t', 'discard:北'},
+    ),
+}
 
 
 @pytest.mark.parametrize('case', CASES, ids=lambda c: c['id'])
@@ -82,7 +95,26 @@ async def test_real_confirmed_gang_then_snapshot_keeps_precise_facts(case, submi
             assert after.observation.gang_draw is True
             for enabled in (False, True):
                 analysis = HangmaRules(RuleConfig('snapshot-chain-regression', 1, enabled)).analyze(after.observation)
-                assert analysis.completeness is RuleCompleteness.COMPLETE
+                unknown_code, expected_failed = EXPECTED_UNKNOWN_FACT_CANDIDATES.get(case['id'], (None, set()))
+                failed_facts = {
+                    candidate.action_key: candidate.facts for candidate in analysis.legal_candidates
+                    if candidate.facts is not None
+                    and candidate.facts.fact_kind is CandidateFactKind.ANALYSIS_FAILED
+                }
+                assert set(failed_facts) == expected_failed
+                if expected_failed:
+                    assert analysis.completeness is RuleCompleteness.DEGRADED
+                    assert analysis.issues
+                    assert all(issue.area == 'candidate_facts' for issue in analysis.issues)
+                    for facts in failed_facts.values():
+                        assert facts.shanten_after is None
+                        assert not facts.useful_tiles
+                        assert facts.best_followup_discard is None
+                        assert facts.completeness is RuleCompleteness.DEGRADED
+                        assert facts.note and ('公开牌 ' + unknown_code) in facts.note
+                else:
+                    assert analysis.completeness is RuleCompleteness.COMPLETE
+                    assert not analysis.issues
                 assert analysis.emergency_candidate is not None
                 # 10例中只有玄武seq504静态成胡：有财非爆头，按房规开关
                 # 判断资格；其余9例未成牌。补足链事实不能放宽开启时的资格。

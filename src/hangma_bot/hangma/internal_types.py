@@ -132,7 +132,7 @@ class WindowContext:
     my_chi_count: int  # 本人已有吃副露数（吃上限 2 次）
     my_peng_codes: Tuple[str, ...]  # 本人已碰牌值（补杠判定；不含杠化副露）
     last_discard: Optional[PublicDiscard]  # 触发响应窗口的最近公开弃牌
-    catch_play: bool  # 本人是否处于抓打圈
+    catch_play: bool  # 本座是否受抓打约束：活跃圈的非圈主或归属未知，不是原始全局标记
     remaining_tile_count: Optional[int]  # 官方牌墙剩余；未知为 None（最后 20 张内禁杠）
 
     def full_hand(self) -> Tuple[Tile, ...]:

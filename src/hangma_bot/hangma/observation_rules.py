@@ -317,11 +317,12 @@ def compare_observation_transition(
     序号，且两份观察属于同座位同单局。只检查可确定的链次数、摸牌爆头
     和摸牌事件明确声明的补牌来源；只有他家事件时本人链次数保持不变。
     不推进完整牌桌。返回 god_mismatch:<字段>:原因 或 not_checked:<字段>:原因；
-    空缺的字段表示已检查且一致。抓打圈作用范围仍待官方验证，始终明确跳过。
+    空缺的字段表示已检查且一致。此入口只检查本人动作链，抓打圈当前权限
+    由 catch_play.analyze_catch_play 单独解析，不在这里重复推进。
     """
     from .progression import baotou_after_draw, chain_after_discard, chain_after_gang, recompute_baotou
 
-    skipped_catch = "not_checked:catch_play:官方四座位作用范围尚未核实"
+    skipped_catch = "not_checked:catch_play:抓打圈由独立归属解析消费权威标记"
     def skip(reason: str) -> tuple[str, ...]:
         return ("not_checked:chain_count:" + reason, "not_checked:baotou:" + reason, skipped_catch)
 

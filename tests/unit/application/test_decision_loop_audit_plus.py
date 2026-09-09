@@ -107,8 +107,10 @@ async def test_decision_kinds_emitted_in_order_with_profile():
     assert request["codec_version"] == 1
     assert request["observation"]["my_hand"] == ["1w", "2w", "3w"]
     assert payload["budget"]["codec_version"] == 1
-    # 窗口接收时刻 100.0 + 3s * 0.85（默认 BudgetPolicy）。
-    assert payload["budget"]["latest_send_at_monotonic"] == pytest.approx(102.55)
+    # 先从3秒窗口扣固定100毫秒网络预算，不按剩余时间百分比缩小。
+    assert payload["budget"]["latest_send_at_monotonic"] == pytest.approx(102.9)
+    assert payload["budget_policy"]["post_reserve_seconds"] == .1
+    assert payload["budget_policy"]["version"] == "fixed-post-reserve-v1"
 
     validations = _records_of(sink, "candidate_validated")
     assert len(validations) == 1
@@ -243,8 +245,8 @@ async def test_sync_audit_crossing_deadline_sends_zero_posts():
     ended = _records_of(sink, "decision_ended")
     assert ended[0].payload["end_reason"] == "deadline"
     # 原预算不变：策略拿到的预算与窗口接收时刻一致。
-    assert policy.budgets[0].latest_send_at_monotonic == pytest.approx(102.55)
-    assert policy.budgets[0].enhancement_deadline_monotonic == pytest.approx(101.5)
+    assert policy.budgets[0].latest_send_at_monotonic == pytest.approx(102.9)
+    assert policy.budgets[0].enhancement_deadline_monotonic == pytest.approx(101.45)
 
 
 async def test_codec_failure_never_blocks_fallback_submission(monkeypatch):

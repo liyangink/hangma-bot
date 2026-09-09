@@ -61,6 +61,7 @@ from hangma_bot.offline.evaluation_results import (  # noqa: E402
 from hangma_bot.offline.evaluation_statistics import summarize_results  # noqa: E402
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1  # noqa: E402
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2  # noqa: E402
+from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy  # noqa: E402
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy  # noqa: E402
 from hangma_bot.policy.weights import HeuristicWeights  # noqa: E402
 from hangma_bot.policy.weights_v1 import HeuristicWeightsV1  # noqa: E402
@@ -85,16 +86,18 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         policy = SafeFallbackPolicy()
         policy.policy_id = declaration.policy_id
         return policy
-    if declaration.name in ("weighted_heuristic_v1", "weighted_heuristic_v2"):
+    if declaration.name in ("weighted_heuristic_v1", "weighted_heuristic_v2", "weighted_heuristic_v2_white_guard"):
         # 与 V0 使用同一实验时钟；逻辑预算不能与主机单调时钟比较。
         weights = HeuristicWeightsV1(**dict(declaration.weights))
         policy_type = ReliableHeuristicPolicyV1 if declaration.name == "weighted_heuristic_v1" else ComparableHeuristicPolicyV2
         policy = policy_type(weights=weights, monotonic=monotonic)
+        if declaration.name == "weighted_heuristic_v2_white_guard":
+            policy = WhiteDiscardGuardPolicy(policy)
         policy.policy_id = declaration.policy_id
         return policy
     raise ValueError(
         "未知策略名 {0!r}；本脚本只装配 weighted_heuristic / safe_fallback / "
-        "weighted_heuristic_v1 / weighted_heuristic_v2".format(declaration.name)
+        "weighted_heuristic_v1 / weighted_heuristic_v2 / weighted_heuristic_v2_white_guard".format(declaration.name)
     )
 
 
@@ -172,6 +175,8 @@ def _effective_weights_snapshot(policy: Any) -> Optional[dict]:
     声明权重为空时实际生效的是类默认权重，manifest 必须记录生效值
     才能事后复现（E3 诊断教训 2026-09-06）。
     """
+    if isinstance(policy, WhiteDiscardGuardPolicy):
+        return _effective_weights_snapshot(policy.base_policy)
     weights = getattr(policy, "_weights", None)
     if weights is None:
         return None

@@ -37,6 +37,7 @@ from hangma_bot.application.contracts import (
     SubmitRejectedClosed,
     SubmitRejectedNoRefresh,
     SubmitRejectedRetryable,
+    SubmissionCancelledBeforeSend,
     AuditKind,
 )
 from hangma_bot.application.deadline import BudgetPolicy, RuntimeClock
@@ -488,6 +489,12 @@ async def run_action_window(
                     "rule_elapsed_ms": round(rule_elapsed_ms, 3),
                     "request": decision_request_to_json(request),
                     "budget": decision_budget_to_json(budget),
+                    "budget_policy": {
+                        "version": "fixed-post-reserve-v1",
+                        "post_reserve_seconds": services.budget_policy.post_reserve_seconds,
+                        "enhancement_fraction": services.budget_policy.enhancement_fraction,
+                        "fallback_fraction": services.budget_policy.fallback_fraction,
+                    },
                     "window_deadline": {
                         "expires_at_monotonic": current.expires_at_monotonic,
                         "deadline_is_estimated": current.deadline_is_estimated,
@@ -700,15 +707,16 @@ async def run_action_window(
                     return _finish("not_sent", "deadline")
                 try:
                     outcome: SubmitOutcome = await session.submit(attempt)
-                except asyncio.CancelledError:
-                    # 运行关闭必须穿透，绝不重发；但在途 POST 结果未知，
-                    # 尽力补一条合成 outcome，避免审计链上 intent 无配对。
+                except asyncio.CancelledError as exc:
+                    # 运行关闭必须穿透，绝不重发；适配器明确保证未发送的
+                    # 等待取消不应误记在途不确定，其余取消仍保守按未知处理。
+                    before_send = isinstance(exc, SubmissionCancelledBeforeSend)
                     try:
                         audit.emit(
                             AuditKind.SUBMISSION_OUTCOME,
                             {
-                                "outcome": "SubmitAmbiguous",
-                                "reason": "cancelled_in_flight",
+                                "outcome": "SubmitNotSent" if before_send else "SubmitAmbiguous",
+                                "reason": "cancelled_before_send" if before_send else "cancelled_in_flight",
                                 "window": _window_payload(window.window_key),
                                 "capture_profile": CAPTURE_PROFILE_AUDIT_PLUS_V1,
                                 "audit_producer": AUDIT_PRODUCER_APPLICATION,

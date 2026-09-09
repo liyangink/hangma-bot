@@ -11,6 +11,8 @@ v14/2026-09-05。逐项证据与“未确认即 blocked”口径见各函数 doc
 doc/implementation/handoffs/simulation.md 支持矩阵。
 爆头生命周期按 RULES_EVIDENCE.md 的 v18 修订实现；四白例外按
 v23/2026-09-08 官方计算器结果移除，保留既有连续动作继承语义。
+抓打圈窗口按 v26 修复（v27 全文 §1.1/§2.4，2026-09-09 核验）：
+圈主可碰/明杠，仅为弃牌者下家时可吃；不再沿用 v24 跳过全部响应的缺陷。
 
 设计（engine 与 progression 的分工）：
 
@@ -65,7 +67,7 @@ class SeatProgression:
     melds: Tuple[MeldRecord, ...]
     discards: Tuple[Tile, ...]
     drawn: Optional[Tile]
-    catch_play: bool  # 该座位抓打圈旗标（打出财神后、下次弃牌前为 True）
+    catch_play: bool  # 当前唯一圈主标记；他家弃白撤销，本人弃非白结束该圈
     chain_count: int  # 动作链次数（飘/杠各计 1，断链清零）
     chain_piao: int  # 链内飘出白板数（结算精确口径）
     baotou: bool  # 该座位持续爆头状态；吃碰杠继承，弃牌更新听牌态
@@ -492,6 +494,7 @@ def _resolve_draw(state: ProgressionState, choices: Tuple[Tuple[int, Action], ..
 
     if isinstance(action, Discard):
         new_hand, new_drawn = _remove_from_hand(s, action.tile)
+        wealth_discard = is_wealth(action.tile)
         # 本次是否飘取动作前爆头；弃后可新入爆头，但不能反向把本次打白算飘。
         chain_count, chain_piao = chain_after_discard(
             s.chain_count, s.chain_piao, s.baotou, action.tile,
@@ -501,20 +504,28 @@ def _resolve_draw(state: ProgressionState, choices: Tuple[Tuple[int, Action], ..
             hand=new_hand,
             drawn=new_drawn,
             discards=s.discards + (action.tile,),
-            catch_play=is_wealth(action.tile),
+            catch_play=wealth_discard,
             baotou=recompute_baotou(new_hand, len(s.melds), sum(is_wealth(t) for t in new_hand)),
             chain_count=chain_count,
             chain_piao=chain_piao,
         )
         state = _replace_seat(state, seat, new_seat)
+        if wealth_discard:
+            # 2026-09-08 官方换圈轨迹：包括被迫摸切白在内，每次弃白均换主。
+            # 仅撤销旧圈主标记，不改变他家的爆头或飘杠链。
+            state = replace(state, seats=tuple(
+                replace(other, catch_play=False)
+                if index != seat and other.catch_play else other
+                for index, other in enumerate(state.seats)
+            ))
         seq = state.seq + 1
+        circle_active = any(other.catch_play for other in state.seats)
         events = (_ev(
             seq, EVENT_KIND_DISCARDED, seat, action.tile,
-            (("catch_play", is_wealth(action.tile)),),
+            (("catch_play", circle_active),),
         ),)
-        if is_wealth(action.tile):
-            # 财神弃牌本身不开响应窗口（财神不可被吃碰明杠，官方 v15 1.1；
-            # v14 夹具 4/4 例：弃白后下一事件直接是下家摸牌）。
+        if wealth_discard:
+            # 白板本身不能被吃碰杠；此次弃白已原子换主/续圈，直接下家摸牌。
             return Transition(events, replace(
                 state,
                 seq=seq,
@@ -528,14 +539,15 @@ def _resolve_draw(state: ProgressionState, choices: Tuple[Tuple[int, Action], ..
                     seq=seq + 1, emit_event=True, consumes_wall=True,
                 ),
             ))
-        # 普通弃牌恒开碰窗口（含抓打圈内——圈内响应由合法性复核拦下，
-        # 与夹具实测一致：圈内普通弃牌后仍出现 pass/timeout 响应事件）。
+        # v26：圈内普通弃牌只给最新圈主碰/明杠响应权，窗口仍固定走满。
+        # 圈主本次非白已关圈，此时与普通状态一样恢复三家响应。
+        responders = tuple(index for index, other in enumerate(state.seats) if other.catch_play)
         return Transition(events, replace(
             state,
             seq=seq,
             window=_WINDOW_RESPONSE_PENG,
             turn_seat=seat,
-            responding=_other_three(seat),
+            responding=responders if circle_active else _other_three(seat),
             trigger_seq=seq,
             last_discard=PublicDiscard(seat=seat, tile=action.tile, seq=seq),
         ))
@@ -603,11 +615,11 @@ def _resolve_gang(
 def _resolve_peng_window(
     state: ProgressionState, choices: Tuple[Tuple[int, Action], ...]
 ) -> Transition:
-    """碰（含明杠）窗口：三家同期响应，收集全部选择后统一裁决。
+    """碰（含明杠）窗口：普通三家、抓打圈仅圈主，收集窗口成员后裁决。
 
     两家及以上同时碰/明杠 → blocked（无官方优先级依据）。一家的碰/明杠
-    生效，其余座位过；全部过则吃窗口对下家开放。pass 事件按固定座位序
-    发出（选择数组顺序不影响结果）。
+    生效，其余座位过；全部过后，只有下家不受抓打限制时才开吃窗口。
+    pass 事件按固定座位序发出（选择数组顺序不影响结果）。
     """
     discarder = state.turn_seat
     if discarder is None or state.last_discard is None:
@@ -631,12 +643,28 @@ def _resolve_peng_window(
         events.append(_ev(seq, EVENT_KIND_PASS, responder))
 
     if not claims:
-        # 全部过：吃窗口对弃牌者下家开放（官方 v15：碰窗口先于吃窗口）。
+        next_seat = (discarder + 1) % SEAT_COUNT
+        if any(other.catch_play for other in state.seats) and not state.seats[next_seat].catch_play:
+            # v26：圈主不是下家时没有合法吃响应方，继续正常顺序摸牌。
+            return Transition(tuple(events), replace(
+                state,
+                seq=seq,
+                window=_WINDOW_PENDING_DRAW,
+                turn_seat=None,
+                responding=(),
+                trigger_seq=seq,
+                last_discard=None,
+                pending_draw=DrawRequest(
+                    seat=next_seat, replacement=False,
+                    seq=seq + 1, emit_event=True, consumes_wall=True,
+                ),
+            ))
+        # 普通状态或下家恰为圈主：碰窗口全过后，吃仅对下家开放。
         return Transition(tuple(events), replace(
             state,
             seq=seq,
             window=_WINDOW_RESPONSE_CHI,
-            responding=((discarder + 1) % SEAT_COUNT,),
+            responding=(next_seat,),
         ))
 
     seat, action = claims[0]
@@ -647,6 +675,8 @@ def _resolve_peng_window(
         events.append(_ev(seq, EVENT_KIND_PENG, seat, tile))
         new_hand, _ = _remove_n_from_hand(s, tile, 2)
         meld = MeldRecord(kind="peng", gang_kind=None, tiles=(tile,) * 3, from_seat=discarder)
+        # v26：碰本身保留爆头与飘杠链；随后打白续飘、打非白断链关圈。
+        # 不能在尚待弃牌的暂态暗牌上重算爆头，或在碰时先清空旧链。
         new_seat = replace(
             s, hand=new_hand, drawn=None, melds=s.melds + (meld,)
         )
@@ -736,6 +766,7 @@ def _resolve_chi_window(
                     )
                 )
         meld = MeldRecord(kind="chi", gang_kind=None, tiles=action.tiles, from_seat=discarder)
+        # 与碰一致：吃不独立增加或清空链，续飘/断链由下一次弃牌统一处理。
         new_seat = replace(
             s, hand=tuple(hand), drawn=None, melds=s.melds + (meld,)
         )

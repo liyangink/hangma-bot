@@ -1,0 +1,16 @@
+{
+  "mode": "test_room",
+  "base_url": "https://platform.invalid",
+  "expected_tournament_id": "REPLACE_WITH_DEDICATED_TEST_ROOM_ID",
+  "known_guide_version": 23,
+  "audit_root": "./artifacts/sessions/catch-play-probe/audit",
+  "strategy": "catch_play_probe",
+  "max_completed_batches": 1,
+  "identities": [
+    {"slot": "A", "token_env": "HM_PROBE_A"},
+    {"slot": "B", "token_env": "HM_PROBE_B"},
+    {"slot": "C", "token_env": "HM_PROBE_C"},
+    {"slot": "D", "token_env": "HM_PROBE_D"}
+  ],
+  "restart": {"max_restarts": 0}
+}

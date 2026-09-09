@@ -4,7 +4,7 @@
 
 本模块实现 `TournamentSessionPort` 与 `GameSessionPort`，隐藏官方 HTTP、DTO、长轮询、序号恢复和非幂等动作状态。先阅读根规范、官方 API v8 记录、接口协议和 `doc/implementation/modules/official-adapter.md`。
 
-- 每Token共享一个OfficialTransport及连接池；赛事控制与每场各自拥有调度、并发、频率和429冷却。每场最多2个在途HTTP且state最多1个；静态分配state速率以满足每用户总上限，不能以共享队列让其他场抢占预算。
+- 每Token共享一个OfficialTransport及连接池；同一user_id的所有场次共享state滚动发送账与state 429冷却，不再静态分配每场速率。每场保留独立HTTP槽（最多2个在途且state最多1个）、动作门和OTHER端点冷却；赛事控制通道的槽与OTHER冷却独立。不同用户的额度和冷却隔离。
 - 四个测试 Token 之间不得共享认证头、限速状态、动作门或审计身份。
 - 适配器只输出 `ObservedActionWindow`，只接收 `ActionAttempt`；禁止导入 `DecisionRequest`、`DecisionPlan` 或启发式评分类型。
 - `StageIdentity.observed_revision` 只用于防止陈旧 `ready` 调用；应用层审计使用的 `stage_attempt_id` 不由适配器生成。
@@ -20,13 +20,26 @@
 - 409 先确认官方已拒绝，再全量刷新：同一 `WindowKey` 仍需行动才返回 `SubmitRejectedRetryable`；窗口关闭则返回 `SubmitRejectedClosed`。
 - POST 超时、断连或无法确定是否执行的响应返回 `SubmitAmbiguous`。相同 `WindowKey` 不得再次变为可提交状态，直到权威事件证明窗口已经迁移。
 - POST 发出前检查 `latest_send_at_monotonic`；超过即返回 `SubmitNotSent`。
+- state查询的最迟发起时刻与响应完成预算分开；已知窗口按最迟安全发起时刻排序，未知事件发现按场公平。有未来边界时只登记可取消的保护提示，到 `not_before_monotonic` 后才发送；提示不是第二个GET。
+- 生产state先取得预占，真正进入传输前用 `mark_sent()` 记录本机单调发送时刻。未发取消退预占，已发后成功、失败、超时或取消均不退次数。
+- 生产新建用户账时，首个state至少跨过一秒计数窗口；控制请求和POST无需等待。同进程重开场次不得清账或重复启动等待。
+- peng→chi边界到点时取消并等待旧挂起GET回收，再领取本场state槽；同时完成时先消费已返回权威结果。过期旧窗口目的写审计并撤销，只保留必要的现状或下阶段同步，不积压历史请求。
 - 认证、授权或不可恢复协议错误返回 `ParticipantTerminal`/`SubmitFatal`，不得伪装成可重试网络故障。
 
 ## 验收标准
 
 - 官方 v8 保存响应 fixture 全部解析；允许兼容新增字段但拒绝未知破坏性指南版本。
-- 同Token的M场之间及四Token之间均有额度、冷却、并发隔离测试。
+- 同用户M场覆盖共享滚动16/s、共享state冷却、明确截止排序、未知发现公平及未来边界保护；各场HTTP槽和OTHER冷却、四个不同用户的额度与冷却保持隔离。
 - 覆盖 `seq` 重复/缺口、`gap=true`、兼容未知事件、关键未知事件、409、429、401、超时和断连。
 - 任意时刻每场最多一个在途 POST；模糊结果后同窗零次追加提交。
 - `aclose()` 能取消最长 30 秒长轮询且不误关同 Token 的其他场次。
 - 状态投影测试证明官方 DTO 不泄漏他家手牌或未来信息。
+- 最新已审查指南为 v27（2026-09-09 抓取）：v24/v25 的 breaking 按调用路径及完整条目摘要放行，未知或被改写条目仍拦截。解析 `god.god_discarder_seat` 并投影可空圈主事实，保留快照水位；旧报文缺失可兼容，有字段但畸形不能静默当缺失。规则解释统一交给 `hangma.catch_play`。
+
+## 2026-09-08 调度修订边界
+
+依据本日抓取的官方指南v25，每用户state上限为16/s；滚动实际发送账是本地保守实现，不能声称复刻未公开的服务器计次算法。四个外部端口和 `ActionAttempt` 字段不变，预算仍由应用层提供，策略不读取限频状态。2026-09-09普通弃牌缓发已默认接线：滚动state用量达到10次，正常摸牌增量有本机水位下界且余量足够时，补到保守起点后1秒。快照恢复、重试、白板和本人特殊动作链跳过。等待不占HTTP槽/查询额度；醒后复核窗口，并保留收紧的原始最迟发送时刻。等待取消用SubmissionCancelledBeforeSend穿透应用层并记未发送，不得记在途模糊结果。SSE保持关闭。方案与验收边界见[算法草案](../../../../review/adapter-rate-identity-2026-09-08/algorithm-design.md)及[实施验证](../../../../review/adapter-rate-identity-2026-09-08/implementation-validation.md)。
+
+2026-09-09发送边界补充：生产`mark_sent(at)`由HTTP审计入口以同一次单调采样同步调用。state记录保留1.05秒，额外50ms为到达波动余量；官方上限仍是16/s，此余量不宣称覆盖网络长尾。详见[诊断](../../../../review/clock-rate-diagnosis-2026-09-09/README.md)。
+
+2026-09-09期限映射：同用户共享 `snapshot-interval-v1`，由通过投影验证的当前phase、官方期限和对应GET单调起止时间约束；提交用早界、边界等待用晚界，不增加查询。样本不足/过期/冲突必须降级并留审计，不把区间估计视为精确同步或任意网络长尾保证。

@@ -25,6 +25,7 @@ KNOWN_OFFICIAL_CODES = frozenset({
     "TOKEN_NOT_SCOPED",
     "UNAUTHORIZED",
     "FORBIDDEN",
+    "PORTAL_BINDING_REQUIRED",  # v24：匿名全局令牌不能新报名或新匹配，永久条件
     "GAME_NOT_FINISHED",
     "TOURNAMENT_NOT_FOUND",
     "GAME_NOT_FOUND",
@@ -100,7 +101,7 @@ class AuthError(OfficialError):
 
 
 class ForbiddenError(OfficialError):
-    """403：无访问权（作用域不符或 game_id 不属于本身份）。"""
+    """403：无访问权（含门户绑定门禁、作用域不符或场次不属于本身份）。"""
 
 
 class NotFoundError(OfficialError):

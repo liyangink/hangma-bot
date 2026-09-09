@@ -71,6 +71,11 @@ def diagnose_official(path: Path, out: Path, *, ruleset_version: str, rule_confi
     digest = sha256_file(path)
     source_path = path.parent / "source.json"
     source = json.loads(source_path.read_text()) if source_path.exists() else {}
+    # 指南版本决定是否允许旧平台抓打圈跳窗；不能把已标版本的牌谱
+    # 丢成未知版本而放宽规则，也不能用当前指南给历史原文补标。
+    guide_version = source.get("guide_version")
+    if guide_version is not None and (type(guide_version) is not int or guide_version <= 0):
+        raise ValueError("来源 guide_version 必须为正整数或 null")
     recorded_config = source.get("rule_config")
     if recorded_config and rule_config and any(recorded_config.get(k) != rule_config.get(k) for k in ("base_score", "you_cai_bi_kao")):
         raise ValueError("显式规则配置与原始来源配置冲突")
@@ -94,7 +99,7 @@ def diagnose_official(path: Path, out: Path, *, ruleset_version: str, rule_confi
             conflicts.append({"round_no": number, "reason": "summary_comparison_difference",
                               "checks": comparison["checks"]})
         row.update(replay_schema_version=1, hand_id=f"diagnostic:{digest}:{number}", game_key={"game_id": document["game_id"]},
-            rule_config=config, result_source_ref=ref,
+            rule_config=config, guide_version=guide_version, result_source_ref=ref,
             derivation="blocks.round_ended" if terminal else "blocks", information_scope="postgame_full_information")
         check = check_hand(row, rules) if rules else {"status": "not_checked", "issues": [{"code": "missing_rule_config"}]}
         row["teacher_label_candidate"] = (check["status"] == "passed" and row["result_confirmed"]
@@ -115,7 +120,7 @@ def diagnose_official(path: Path, out: Path, *, ruleset_version: str, rule_confi
     if final_match is False:
         for row in rows:
             row["teacher_label_candidate"] = False
-    report = {"source_sha256": digest, "game_id": document["game_id"], "ruleset_version": ruleset_version, "rule_config": config,
+    report = {"source_sha256": digest, "game_id": document["game_id"], "ruleset_version": ruleset_version, "rule_config": config, "guide_version": guide_version,
         "origin_conflicts": conflicts, "summary_comparisons": comparisons,
         "rounds": checks, "statuses": dict(Counter(c["status"] for c in checks)),
         "teacher_label_candidates": sum(r["teacher_label_candidate"] for r in rows),

@@ -123,7 +123,8 @@ class RulePublicState:
     wealth_god: Tile  # 财神牌；当前规则下为“白”，仍以字段传递避免硬编码
     baotou: bool  # 本人是否处于爆头状态
     chain_count: int  # 本人飘/杠动作链次数；断链后清零，非负
-    catch_play: bool  # 本人是否处于抓打圈
+    catch_play: bool  # 官方抓打圈活跃标记；不能直接等同本人必须摸切，权限需结合可证明的圈主
+    catch_play_owner_seat: Optional[int] = None  # v26公开圈主0—3，以snapshot_seq为锚点；旧报文未提供或无圈时为空
 
     def __post_init__(self) -> None:
         _validate_tile(self.wealth_god, "RulePublicState.wealth_god")
@@ -132,6 +133,8 @@ class RulePublicState:
         if not isinstance(self.catch_play, bool):
             raise ValueError("RulePublicState.catch_play 必须是布尔值")
         _require_non_negative_int(self.chain_count, "RulePublicState.chain_count")
+        if self.catch_play_owner_seat is not None:
+            _validate_seat(self.catch_play_owner_seat, "RulePublicState.catch_play_owner_seat")
 
 
 @dataclass(frozen=True)

@@ -1,8 +1,8 @@
 # 杭州麻将对战平台 API 与时间模型
 
 > 官方来源：`https://10.240.169.190:18080/portal/#guide-api`
-> 抓取时间：2026-09-03（v8 基线）；2026-09-05 二次同步至 v15（v12–v15 变更见 [v15 指南版本快照](./references/official-guide-version-v15.json)，指南正文见 [v15 指南全文](./references/official-guide-v15-content.txt)，`/portal/api/guide` 原始响应见 [v15 指南原始响应](./references/official-guide-v15.txt)）
-> 官方指南版本：v15，`updated_at=2026-09-05`
+> 最新同步：2026-09-09；官方指南 **v27**，`updated_at=2026-09-08`。原始资料：[版本响应](./references/official-guide-version-v27.json)、[指南全文](./references/official-guide-v27-content.txt)、[指南响应封套](./references/official-guide-v27.txt)。v8、v15 等历史快照保留。
+> 本轮变更：v25 服务端限制最多两摊吃；v26 修复抓打圈圈主响应并公开圈主座位；v27 为门户榜单修订。实现与证据边界见[本轮对齐记录](../review/catch-owner-v26-2026-09-09/README.md)。
 > 版本接口：`GET /portal/api/guide/version`；全文接口：`GET /portal/api/guide`（v14 起免认证）
 > 注意：文件名为兼容既有链接暂保留 `v2`。平台仍在迭代，本文不代替运行时版本自检。
 > 相关说明：[官方赛事流程](./official-tournament-flow-2026-09-03.md)、[架构与运行流程](./architecture.md)、[统一术语表](../UBIQUITOUS_LANGUAGE.md)
@@ -198,7 +198,8 @@ v2 起快照**不再返回 `allowed_actions`**。客户端必须自己判定动�
 | `hand_counts` | 他家剩余手牌张数 |
 | `god.baotou` | 本人是否处于爆头状态 |
 | `god.chain_count` | 本人飘/杠动作链次数；断链后清零 |
-| `god.catch_play` | 是否处于抓打圈 |
+| `god.catch_play` | 全局是否存在抓打圈，不等于本人受限 |
+| `god.god_discarder_seat` | v26 新增，当前圈主座位 0–3；无圈为 -1。仅最新弃白者豁免；旧报文缺字段时按已证明的连续公开事实恢复，不能默认自己豁免 |
 
 已观察到的事件通用结构：
 
@@ -274,7 +275,7 @@ v2 动作判定下限：
 - `phase=draw && turn=seat`：可以考虑出牌、自摸胡、杠。
 - `phase=response_peng && seat∈responding_seats`：可以考虑碰、明杠、`pass`。
 - `phase=response_chi && seat∈responding_seats`：可以考虑吃、`pass`。
-- `god.catch_play=true`：出牌只能打 `drawn_tile`；其他玩家不能吃、碰、明杠，仅允许暗杠和自摸胡。
+- `god.catch_play=true` 且 `god.god_discarder_seat!=seat`：本人出牌只能打 `drawn_tile`，不能吃、碰、明杠或补杠，仍可暗杠和自摸胡；圈主不受这项限制。吃碰仍须有当前 `phase/responding_seats` 授权，不能凭圈主身份伪造窗口（v26）。
 - 最终合法性仍需本地完整杭麻规则引擎判定，不能只依赖上述阶段判断。
 
 牌码：
@@ -357,9 +358,9 @@ v2 动作判定下限：
 
 启动策略：
 
-1. 代码内声明 `KNOWN_GUIDE_VERSION=15`（当前已审查基线，见 `adapters/official/dto.py`），并保存已审查的 breaking 变更集合；不能只比较一个数字后继续运行。
+1. 代码内声明 `KNOWN_GUIDE_VERSION=27`，但 v15 之后的 breaking 仍按完整条目指纹逐项审查。v25 的两摊吃限制已实现；v24 仅在已审查的赛事令牌与自动匹配路径放行，后者将 `PORTAL_BINDING_REQUIRED` 明确报为身份不匹配。启动及阶段边界都检查未知条目，同版本改写／新增和未来未知 breaking 仍拒绝，不能只比较顶层数字。
 2. Bot 启动、报名/ready 之前调用一次版本接口。
-3. 若服务器版本更高且存在 `type=breaking && version>KNOWN`，禁止进入新赛事并报警。
+3. 只要出现未审查的 breaking 条目，就禁止进入新赛事并报警，包括同一版本中被新增或改写的条目。
 4. 已开始的赛事不要每个动作重复检查版本；在阶段边界重新检查一次，并记录启动与阶段开始时版本，确保阶段尝试可追溯。
 5. 保存完整变更响应，便于回放时解释行为差异。
 
@@ -512,11 +513,12 @@ response_chi，持续 ChiTimeoutSec，固定走满
 
 财神可主动打出。打出财神所触发的抓打圈中：
 
-- 其他玩家不能吃、碰、明杠。
-- 仍可暗杠和自摸胡。
-- 出牌只能打刚摸到的 `drawn_tile`。
+- 最新弃白者为圈主，可手切、吃、碰、明杠、补杠；吃仅限上家，仍最多两摊。
+- 其余玩家只能摸切，不能吃、碰、明杠、补杠；仍可暗杠和自摸胡。
+- 白板本身不能被吃、碰、杠。任何人再弃白（包括被迫摸切白）都原子接管圈；原圈主随即失去豁免。
+- 圈主吃碰保留当前链；满足既有财飘条件时再打白续飘。圈主打非白结束圈并断链；他人打非白、摸牌或杠补不提前结束圈。
 
-因此 `god.catch_play` 是动作判定中的硬约束，优先级高于 LLM 策略。
+以上为 v27 全文 §1、§2.1 的 v26 修订。v24 曾出现圈主也不开窗的平台行为，已由官方修复；旧轨迹只说明历史版本。圈主权限与当前动作窗口须同时成立，`god.catch_play` 不能单独决定本人限制。
 
 ### 5.5 长轮询与并发
 

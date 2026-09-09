@@ -19,24 +19,12 @@
   special_rules/engine 在候选产出后过滤，本模块不判断。
 - 飘/杠链与结算语义见 special_rules / settlement；向听排序属 policy。
 
-输入契约假设（catch_play 旗标归一化，【假设】需测试房间验证，§6）：
-本模块假定 `WindowContext.catch_play` 在任一抓打圈活跃期间对本座位
-为 True（engine/适配层负责归一化）。两处消费点与失配后果：
-
-- 摸牌窗口（catch_play=True）：仅打刚摸牌、仅暗杠与自摸胡——该语义
-  对"旗标只标打出财神者"的口径同样成立，无失配风险；
-- 响应窗口（catch_play=True）：吃/碰/明杠候选被静默屏蔽（规则性
-  关闭，不记 Issue），仅剩过。若官方旗标仅对打出财神者置位，本分支
-  实际不可达（打出财神者不会成为响应者），屏蔽只是安全网；圈内
-  他家弃牌的吃/碰漏拦风险由"平台不为被禁动作开放响应窗口
-  （me ∈ responding_seats 即平台合法性信号）"兜底。
-
-验证协议（测试房间）：任一玩家打出白后记录——(a) 其余三家
-god.catch_play 是否置位；(b) 圈内他家弃牌时 response_peng/response_chi
-窗口是否对第三家开放；(c) 旗标何时清零（打出刚摸牌后?）。若 (a) 为
-仅本人置位且 (b) 为窗口仍开放，须在适配层把"圈内"状态显式归一化进
-catch_play（可由公共历史最近一圈内弃白推导），否则圈内他家吃/碰
-候选可能漏拦（409 风险方向）。
+输入契约（2026-09-08 圈主修订）：`WindowContext.catch_play` 是本座是否
+受限，由 engine 调用唯一圈主解析产生；不是官方 god.catch_play 全局值。
+非圈主和归属未知者仅摸切、暗杠、自摸胡。已证明圈主不受摸切限制，
+响应动作仍须实际 phase、responding_seats、触发弃牌与手牌条件齐全。
+v26已明确圈主可吃碰明杠补杠（2026-09-09抓取v27全文）；不再附加待确认
+降级标记，仍不得把本地候选等同官方已开放的响应成员。
 
 全部函数为纯函数：不访问网络、文件、时钟或随机源；最差手牌（17 张）
 下每族都是 O(34) 计数遍历，毫秒级完成，满足 1 秒动作窗口预算。
@@ -172,7 +160,7 @@ def _wall_allows_gang(context: WindowContext) -> Tuple[bool, Tuple[RuleIssue, ..
 def discard_candidates(context: WindowContext) -> FamilyOutcome:
     """出牌族：本人摸牌窗口的全部合法弃牌候选（§6）。
 
-    【官方】§6：抓打圈内本人出牌只能打刚摸到的牌（刚摸牌缺失时无法
+    【官方】§6：抓打圈内受限座位只能打刚摸到的牌（刚摸牌缺失时无法
     确定唯一合法牌，保守降级并交由紧急路径兜底）；其余情况任意暗牌
     均可打——含刚摸牌与财神（财神可主动打出，§1；是否构成飘由
     special_rules 按爆头状态判定，§8）。候选按 TILE_ORDER 升序、
@@ -228,7 +216,7 @@ def chi_candidates(context: WindowContext) -> FamilyOutcome:
     if not _responding(context, _RESPONSE_CHI):
         return _EMPTY
     if context.catch_play:
-        # 抓打圈：圈内不能吃/碰/明杠（§6）——规则性关闭而非降级。
+        # 本座为非圈主或归属未知时禁吃碰明杠；已知圈主不走本分支。
         return _EMPTY
     last = context.last_discard
     if last is None:

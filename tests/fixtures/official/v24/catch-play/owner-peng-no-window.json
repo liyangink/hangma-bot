@@ -1,0 +1,436 @@
+{
+  "meaning": "官方原始响应与事件摘录；牌形诊断不是官方允许碰牌的裁定，座位0—3，ts为Unix秒",
+  "cases": [
+    {
+      "provenance": {
+        "guide_version": 24,
+        "captured_at": "2026-09-08T09:42:09.586108+00:00",
+        "source_endpoint": "/api/test-rooms/t_fee4ab73c089/games/1/events",
+        "official_events_sha256": "461b001501c2918bec60bcf051fa281d0a486300faa1ec4571866403a09c2150",
+        "raw_get_file": "artifacts/sessions/catch-play-probe-20260908-fee4ab73c089/audit/slot-qinglong/runs/run-26be348ae68b4ad5b8298b23c8a77436/participants/u_4d5bd8fa93b4/raw/t_fee4ab73c089_r1_b1_t0.jsonl",
+        "raw_get_line": 1209,
+        "raw_get_sha256": "a7fb81020f8f0effb23d2fc7a9e6e009a6dece64c52289a2e1292aaf59339707"
+      },
+      "game_id": "t_fee4ab73c089_r1_b1_t0",
+      "round_no": 6,
+      "owner_seat": 1,
+      "circle_started_seq": 1496,
+      "discard_seq": 1500,
+      "verified_shape": [
+        "peng:1t"
+      ],
+      "original_snapshot_response": {
+        "seq": 1501,
+        "gap": false,
+        "snapshot": {
+          "game_id": "t_fee4ab73c089_r1_b1_t0",
+          "phase": "draw",
+          "round_no": 6,
+          "dealer": 3,
+          "turn": 0,
+          "waited_seat": 0,
+          "wall_remaining": 58,
+          "discards": [
+            [
+              "中",
+              "2t",
+              "6b",
+              "1t",
+              "1b",
+              "8t"
+            ],
+            [
+              "3b",
+              "白",
+              "1b",
+              "7t",
+              "中",
+              "白"
+            ],
+            [
+              "1b",
+              "5w",
+              "白",
+              "发",
+              "2t",
+              "9b"
+            ],
+            [
+              "白",
+              "9b",
+              "7b",
+              "8t",
+              "5w",
+              "6t",
+              "1t"
+            ]
+          ],
+          "melds": [
+            [],
+            [],
+            [],
+            []
+          ],
+          "hand_counts": [
+            14,
+            13,
+            13,
+            13
+          ],
+          "my_hand": [
+            "2b",
+            "南",
+            "北",
+            "5b",
+            "9t",
+            "6w",
+            "1w",
+            "5b",
+            "3w",
+            "1w",
+            "1t",
+            "1t",
+            "3t"
+          ],
+          "seat": 1,
+          "last_discard": "1t",
+          "drawn_tile": "",
+          "god": {
+            "baotou": false,
+            "chain_count": 0,
+            "catch_play": true
+          },
+          "scores": [
+            -7,
+            0,
+            0,
+            7
+          ]
+        },
+        "events": null,
+        "pending": false,
+        "finished": false
+      },
+      "official_event_excerpt": [
+        {
+          "seq": 1496,
+          "type": "tile_discarded",
+          "seat": 1,
+          "tile": "白",
+          "data": {
+            "catch_play": true
+          },
+          "ts": 1788860105
+        },
+        {
+          "seq": 1497,
+          "type": "tile_drawn",
+          "seat": 2,
+          "tile": "9b",
+          "data": null,
+          "ts": 1788860105
+        },
+        {
+          "seq": 1498,
+          "type": "tile_discarded",
+          "seat": 2,
+          "tile": "9b",
+          "data": {
+            "catch_play": true
+          },
+          "ts": 1788860106
+        },
+        {
+          "seq": 1499,
+          "type": "tile_drawn",
+          "seat": 3,
+          "tile": "1t",
+          "data": null,
+          "ts": 1788860106
+        },
+        {
+          "seq": 1500,
+          "type": "tile_discarded",
+          "seat": 3,
+          "tile": "1t",
+          "data": {
+            "catch_play": true
+          },
+          "ts": 1788860107
+        },
+        {
+          "seq": 1501,
+          "type": "tile_drawn",
+          "seat": 0,
+          "tile": "发",
+          "data": null,
+          "ts": 1788860107
+        }
+      ]
+    },
+    {
+      "provenance": {
+        "guide_version": 24,
+        "captured_at": "2026-09-08T09:42:08.393636+00:00",
+        "source_endpoint": "/api/test-rooms/t_fee4ab73c089/games/0/events",
+        "official_events_sha256": "5c7c88a8f78b53dd71184cb0d285dadce1ecabc81ba9fd2a64aea592ec4cbc9d",
+        "raw_get_file": "artifacts/sessions/catch-play-probe-20260908-fee4ab73c089/audit/slot-xuanwu/runs/run-9c21b96b6b0c48149e5c17408b3880bf/participants/u_2e7f4203abf0/raw/t_fee4ab73c089_r1_b0_t0.jsonl",
+        "raw_get_line": 788,
+        "raw_get_sha256": "940b50304320f0320055e913f5ee8f56b492865d13a943c663dc41527e59f860"
+      },
+      "game_id": "t_fee4ab73c089_r1_b0_t0",
+      "round_no": 4,
+      "owner_seat": 2,
+      "circle_started_seq": 981,
+      "discard_seq": 985,
+      "verified_shape": [
+        "peng:1w"
+      ],
+      "original_snapshot_response": {
+        "seq": 986,
+        "gap": false,
+        "snapshot": {
+          "game_id": "t_fee4ab73c089_r1_b0_t0",
+          "phase": "draw",
+          "round_no": 4,
+          "dealer": 2,
+          "turn": 1,
+          "waited_seat": 1,
+          "wall_remaining": 49,
+          "discards": [
+            [
+              "东",
+              "9b",
+              "中",
+              "5t",
+              "西",
+              "1t",
+              "3b",
+              "发",
+              "4w",
+              "8w",
+              "1w"
+            ],
+            [
+              "白",
+              "7t",
+              "2t",
+              "6t",
+              "9b",
+              "4t",
+              "2w",
+              "6w",
+              "7w",
+              "3b"
+            ],
+            [
+              "北",
+              "白",
+              "2t",
+              "5t",
+              "1b",
+              "2b",
+              "2b",
+              "9t",
+              "3t",
+              "6w",
+              "4t",
+              "白"
+            ],
+            [
+              "2b",
+              "白",
+              "6t",
+              "4b",
+              "1t",
+              "中",
+              "4w",
+              "西",
+              "7w",
+              "6w",
+              "7t"
+            ]
+          ],
+          "melds": [
+            [
+              {
+                "kind": "chi",
+                "tiles": [
+                  "4t",
+                  "5t",
+                  "6t"
+                ]
+              },
+              {
+                "kind": "chi",
+                "tiles": [
+                  "6w",
+                  "8w",
+                  "7w"
+                ]
+              }
+            ],
+            [
+              {
+                "kind": "peng",
+                "tiles": [
+                  "东",
+                  "东",
+                  "东"
+                ]
+              },
+              {
+                "kind": "peng",
+                "tiles": [
+                  "西",
+                  "西",
+                  "西"
+                ]
+              },
+              {
+                "kind": "peng",
+                "tiles": [
+                  "3t",
+                  "3t",
+                  "3t"
+                ]
+              },
+              {
+                "kind": "chi",
+                "tiles": [
+                  "2w",
+                  "3w",
+                  "4w"
+                ]
+              }
+            ],
+            [
+              {
+                "kind": "chi",
+                "tiles": [
+                  "7b",
+                  "8b",
+                  "9b"
+                ]
+              },
+              {
+                "kind": "peng",
+                "tiles": [
+                  "3b",
+                  "3b",
+                  "3b"
+                ]
+              }
+            ],
+            [
+              {
+                "kind": "peng",
+                "tiles": [
+                  "北",
+                  "北",
+                  "北"
+                ]
+              },
+              {
+                "kind": "chi",
+                "tiles": [
+                  "5w",
+                  "7w",
+                  "6w"
+                ]
+              }
+            ]
+          ],
+          "hand_counts": [
+            7,
+            2,
+            7,
+            7
+          ],
+          "my_hand": [
+            "9w",
+            "5b",
+            "5w",
+            "1w",
+            "7b",
+            "5w",
+            "1w"
+          ],
+          "seat": 2,
+          "last_discard": "1w",
+          "drawn_tile": "",
+          "god": {
+            "baotou": false,
+            "chain_count": 0,
+            "catch_play": true
+          },
+          "scores": [
+            -9,
+            2,
+            9,
+            -2
+          ]
+        },
+        "events": null,
+        "pending": false,
+        "finished": false
+      },
+      "official_event_excerpt": [
+        {
+          "seq": 981,
+          "type": "tile_discarded",
+          "seat": 2,
+          "tile": "白",
+          "data": {
+            "catch_play": true
+          },
+          "ts": 1788859906
+        },
+        {
+          "seq": 982,
+          "type": "tile_drawn",
+          "seat": 3,
+          "tile": "7t",
+          "data": null,
+          "ts": 1788859906
+        },
+        {
+          "seq": 983,
+          "type": "tile_discarded",
+          "seat": 3,
+          "tile": "7t",
+          "data": {
+            "catch_play": true
+          },
+          "ts": 1788859907
+        },
+        {
+          "seq": 984,
+          "type": "tile_drawn",
+          "seat": 0,
+          "tile": "1w",
+          "data": null,
+          "ts": 1788859907
+        },
+        {
+          "seq": 985,
+          "type": "tile_discarded",
+          "seat": 0,
+          "tile": "1w",
+          "data": {
+            "catch_play": true
+          },
+          "ts": 1788859908
+        },
+        {
+          "seq": 986,
+          "type": "tile_drawn",
+          "seat": 1,
+          "tile": "8t",
+          "data": null,
+          "ts": 1788859908
+        }
+      ]
+    }
+  ]
+}

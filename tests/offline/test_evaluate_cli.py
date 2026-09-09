@@ -387,7 +387,7 @@ def test_build_policy_weighted_heuristic_and_unknown_name():
         module.build_policy(PolicyDeclaration("x", "mystery"), time.monotonic)
 
 
-@pytest.mark.parametrize('name', ['weighted_heuristic', 'weighted_heuristic_v1', 'weighted_heuristic_v2'])
+@pytest.mark.parametrize('name', ['weighted_heuristic', 'weighted_heuristic_v1', 'weighted_heuristic_v2', 'weighted_heuristic_v2_white_guard'])
 def test_policy_factory_uses_experiment_clock_and_declared_weights(name):
     """真实 CLI 工厂必须把同一实验时钟及权重送入策略，不能退化为保底实验。"""
     import asyncio
@@ -405,9 +405,10 @@ def test_policy_factory_uses_experiment_clock_and_declared_weights(name):
     candidate = next(c for c in plan.candidates if c.action_key == 'discard:3b')
     shanten = next(c.facts.shanten_after for c in request.rules.legal_candidates if c.action_key == 'discard:3b')
     assert next(p.value for p in candidate.score_parts if p.name == '第三层-向听数') == -50.0*shanten
+    assert module._effective_weights_snapshot(policy)['shanten_step'] == 50.0
 
 
-@pytest.mark.parametrize('name', ['weighted_heuristic_v1', 'weighted_heuristic_v2'])
+@pytest.mark.parametrize('name', ['weighted_heuristic_v1', 'weighted_heuristic_v2', 'weighted_heuristic_v2_white_guard'])
 def test_v1_factory_rejects_unrecognized_weights_instead_of_ignoring(name):
     module = load_script_module()
     with pytest.raises(TypeError):

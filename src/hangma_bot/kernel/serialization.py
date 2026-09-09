@@ -343,12 +343,15 @@ def _public_discard_from_json(payload: object) -> PublicDiscard:
 
 def _rule_state_to_json(state: RulePublicState) -> Dict[str, JSONValue]:
     """本人可见规则状态（官方 `god`）的嵌套负载。"""
-    return {
+    payload = {
         "wealth_god": state.wealth_god.code,
         "baotou": state.baotou,
         "chain_count": state.chain_count,
         "catch_play": state.catch_play,
     }
+    if state.catch_play_owner_seat is not None:
+        payload["catch_play_owner_seat"] = state.catch_play_owner_seat
+    return payload
 
 
 def _rule_state_from_json(payload: object) -> RulePublicState:
@@ -359,6 +362,8 @@ def _rule_state_from_json(payload: object) -> RulePublicState:
         baotou=_as_bool(_get(data, "baotou", type_name), type_name, "baotou"),
         chain_count=_as_int(_get(data, "chain_count", type_name), type_name, "chain_count"),
         catch_play=_as_bool(_get(data, "catch_play", type_name), type_name, "catch_play"),
+        catch_play_owner_seat=(None if data.get("catch_play_owner_seat") is None else
+                              _as_int(data["catch_play_owner_seat"], type_name, "catch_play_owner_seat")),
     )
 
 

@@ -227,7 +227,7 @@ def test_added_gang_after_peng():
 
 
 def test_wealth_discard_skips_response_windows():
-    """弃白本身不开响应窗口（v14 夹具 4/4）；圈内普通弃牌仍开窗口但响应被拦。"""
+    """v26：白板不可响应；随后非白仅给圈主开窗，即使其他家也有对子。"""
     rules = make_rules()
     wall = ["2b", "3b", "4b", "5b", "6b"] + _reserve()
     row = build_full_world_row(
@@ -235,7 +235,7 @@ def test_wealth_discard_skips_response_windows():
         hands13=[
             ["白"] + _JUNK[:12],
             _JUNK[:],
-            _JUNK[1:] + ["5b"],
+            ["2b", "2b"] + _JUNK[2:],
             _JUNK[2:] + ["6t", "7t"],
         ],
         dealer_drawn="白",
@@ -253,33 +253,21 @@ def test_wealth_discard_skips_response_windows():
     frame = engine.frame(world)
     assert frame.decisions[0].window_key.phase.value == "draw"
     assert frame.decisions[0].window_key.seat == 1
-    # 座位 1 普通弃牌 → 碰窗口照常开启（圈内响应由合法性复核拦截）。
+    # 座位 1 摸切 2b；座位 2 虽有对子，响应成员仍只有圈主 0。
     world = _drive_frames(engine, world, chooser, 1)
     frame = engine.frame(world)
+    assert len(frame.decisions) == 1
     assert frame.decisions[0].window_key.phase.value == "response_peng"
-    assert len(frame.decisions) == 3
-    # 圈内响应者（含圈主座位 0）只有过：把座位 2 换成持 1b 对子，碰候选仍被拦。
-    seats = list(world.progression.seats)
-    seats[2] = type(seats[2])(
-        hand=(Tile("1b"), Tile("1b")) + seats[2].hand[2:],
-        melds=seats[2].melds, discards=seats[2].discards, drawn=seats[2].drawn,
-        catch_play=seats[2].catch_play, chain_count=seats[2].chain_count,
-        chain_piao=seats[2].chain_piao, baotou=seats[2].baotou,
-    )
-    from dataclasses import replace as _replace
-
-    modified = _replace(world, progression=_replace(world.progression, seats=tuple(seats)))
-    frame = engine.frame(modified)
-    for decision in frame.decisions:
-        analysis = rules.analyze(decision.observation)
-        assert not any(
-            c.action_key.startswith(("peng", "chi", "gang")) for c in analysis.legal_candidates
-        ), "圈内响应者不得产生碰吃杠候选（seat {0}）".format(decision.window_key.seat)
-        assert any(c.action_key == "pass" for c in analysis.legal_candidates)
+    assert frame.decisions[0].window_key.seat == 0
+    assert frame.decisions[0].observation.rule_state.catch_play is True
+    world = _drive_frames(engine, world, chooser, 1)
+    frame = engine.frame(world)
+    assert frame.decisions[0].window_key.phase.value == "draw"
+    assert frame.decisions[0].window_key.seat == 2
 
 
-def test_catch_play_owner_must_discard_drawn():
-    """圈主抓打圈出牌仅刚摸牌；打出其他暗牌被拒绝；弃牌后圈结束。"""
+def test_catch_play_owner_can_hand_discard_and_end_circle():
+    """全局抓打标记仍为真时，已证明圈主可手切；弃非白后该圈结束。"""
     rules = make_rules()
     wall = ["2b", "3b", "4b", "5b", "6b"] + _reserve()
     row = build_full_world_row(
@@ -297,9 +285,8 @@ def test_catch_play_owner_must_discard_drawn():
     rules, engine, world = _engine(row, rules)
     chooser = QueuedChooser(rules)
     chooser.enqueue("draw", 0, Discard(Tile("白")))
-    # 帧序：圈主弃白（无窗口）→ 1 摸打 → 碰+吃窗口 → 2 摸打 → 窗口 → 3 摸打
-    # → 窗口 → 圈主再摸牌（第 11 帧边界）。
-    world = _drive_frames(engine, world, chooser, 10)
+    # v26：圈内三个碰窗口，以及上家弃牌后的吃窗口，圈主均过牌后再摸。
+    world = _drive_frames(engine, world, chooser, 8)
     frame = engine.frame(world)
     assert frame.decisions[0].window_key.seat == 0
     assert frame.decisions[0].window_key.phase.value == "draw"
@@ -309,18 +296,14 @@ def test_catch_play_owner_must_discard_drawn():
     discard_keys = [
         c.action_key for c in analysis.legal_candidates if c.action_key.startswith("discard")
     ]
-    assert discard_keys == ["discard:{0}".format(obs.drawn_tile.code)]
-    with pytest.raises(ValueError):
-        engine.advance(
-            world,
-            frame.revision,
-            (SimulationChoice(frame.decisions[0].window_key, Discard(Tile("1b"))),),
-        )
+    assert "discard:1b" in discard_keys
+    assert "discard:{0}".format(obs.drawn_tile.code) in discard_keys
+    assert obs.drawn_tile != Tile("1b")
     world = engine.advance(
         world, frame.revision,
-        (SimulationChoice(frame.decisions[0].window_key, Discard(obs.drawn_tile)),),
+        (SimulationChoice(frame.decisions[0].window_key, Discard(Tile("1b"))),),
     )
-    assert world.progression.seats[0].catch_play is False
+    assert all(not d.observation.rule_state.catch_play for d in engine.frame(world).decisions)
 
 
 def test_gang_wall_boundary():

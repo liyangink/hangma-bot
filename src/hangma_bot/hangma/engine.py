@@ -25,6 +25,7 @@ from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.observation import PlayerObservation
 
 from . import action_families, settlement, special_rules
+from .catch_play import analyze_catch_play
 from .emergency import emergency_action
 from .observation_rules import enrich_observation
 from .interface import (
@@ -36,7 +37,7 @@ from .interface import (
     Settlement,
     WinDescription,
 )
-from .internal_types import TILE_INDEX, WEALTH_CODE, Counts34, WindowContext
+from .internal_types import WEALTH_CODE, WindowContext
 
 # 稳定 RuleIssue.area：与子模块命名（action_families.<族> / hand_analysis / candidate_facts）对齐。
 _AREA_CONTEXT = "engine.context"
@@ -68,6 +69,9 @@ class HangmaRules:
             RuleIssue("observation", message) for message in observation.observation_issues
         ]
         observation = enrich_observation(observation)
+        circle = analyze_catch_play(observation)
+        if circle.issue is not None:
+            issues.append(RuleIssue("catch_play.owner", circle.issue))
         if observation.rule_state.chain_count > 0 and observation.chain_piao is None:
             issues.append(RuleIssue("observation.chain_piao", "当前链历史不足，链内飘次数未知，结算不可核验"))
 
@@ -105,6 +109,13 @@ class HangmaRules:
             candidates = self._attach_facts(observation, context, candidates, issues)
 
         candidates = _ensure_emergency_membership(candidates, emergency)
+        if circle.active and circle.owner_seat is not None:
+            evidence = "抓打圈:圈主={0},开圈seq={1},本人受限={2},依据={3}".format(
+                circle.owner_seat, circle.started_seq, circle.restricts(observation.seat), circle.source,
+            )
+            candidates = tuple(replace(candidate, evidence=candidate.evidence + (evidence,)) for candidate in candidates)
+            if emergency is not None:
+                emergency = next(candidate for candidate in candidates if candidate.action_key == emergency.action_key)
 
         completeness = (
             RuleCompleteness.DEGRADED if issues else RuleCompleteness.COMPLETE
@@ -146,7 +157,7 @@ class HangmaRules:
         )
 
     def emergency_action(self, observation: PlayerObservation) -> Optional[RuleCandidate]:
-        """以独立最小路径返回过、抓打牌或最右弃牌；不可调用复杂搜索。"""
+        """以独立最小路径返回过、受限摸切或优先非财弃牌；不调用牌型搜索。"""
 
         return emergency_action(observation)
 
@@ -373,26 +384,16 @@ def _build_context(observation: PlayerObservation) -> WindowContext:
         my_chi_count=chi_count,
         my_peng_codes=peng_codes,
         last_discard=observation.last_discard,
-        catch_play=observation.rule_state.catch_play,
+        catch_play=analyze_catch_play(observation).restricts(seat),
         remaining_tile_count=observation.remaining_tile_count,
     )
 
 
-def _public_counts(observation: PlayerObservation) -> Counts34:
-    """四家牌河与副露的 34 维可见牌计数（牌效事实的剩余张数口径）。
+def _public_counts(observation: PlayerObservation) -> Tuple[Optional[int], ...]:
+    """仅在候选事实隔离区计算公开牌重叠；未知计数不影响动作合法性。"""
+    from .public_tile_counts import count_public_tiles
 
-    只统计公开可见的牌：本人视角合法；不含他家手牌与牌墙。
-    """
-
-    counts = [0] * 34
-    for river in observation.discards:
-        for tile in river:
-            counts[TILE_INDEX[tile.code]] += 1
-    for seat_melds in observation.melds:
-        for meld in seat_melds:
-            for tile in meld.tiles:
-                counts[TILE_INDEX[tile.code]] += 1
-    return tuple(counts)
+    return count_public_tiles(observation)
 
 
 def _is_own_draw(context: WindowContext) -> bool:

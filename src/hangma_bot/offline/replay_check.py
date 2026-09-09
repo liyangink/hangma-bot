@@ -18,8 +18,8 @@ failed；每个 issue 带 seq（无事件时 null）、code、detail、source_re
   tile_discarded 成对不重复推进；pass/timeout(response) 按窗口归属推进；
   未知事件类型无法核对 → not_checked。
 
-官方依据：指南 v15/2026-09-05 快照；真实夹具为 v14/2026-09-05
-（tests/fixtures/hangma/archived-rooms）。
+官方依据：历史 v14/v15 夹具保留；v26 圈主响应按 2026-09-09 抓取的
+v27 指南对齐。旧/未标版本牌谱允许已观察到的圈内直接摸牌时序，并标记兼容。
 """
 
 from __future__ import annotations
@@ -131,6 +131,8 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
         return _result(hand_id, "not_checked", 0, issues + [
             _issue(None, "not_checked.events_missing", "缺少事件数组"),
         ])
+    guide_version = hand.get("guide_version")
+    owner_windows = isinstance(guide_version, int) and not isinstance(guide_version, bool) and guide_version >= 26
     # 规则配置一致性：缺失为 not_checked，不一致为 failed。
     rule_config = hand.get("rule_config")
     if isinstance(rule_config, Mapping):
@@ -253,6 +255,14 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
         if kind == "timeout" and data.get("kind") == "response":
             kind = "pass"  # 响应超时=自动过（指南 2.1 超时兜底口径）
         if kind == "tile_drawn":
+            if (not owner_windows and isinstance(window, tuple)
+                    and window[0] in ("peng_window", "chi_window")
+                    and any(s.catch_play for s in seats) and seat_no == (window[1] + 1) % 4):
+                # v24 实测圈内直接摸牌。只兼容旧/未知版本已发生的轨迹，不能
+                # 据此让 v26 新牌谱跳过响应，也不改写保存的版本或事件。
+                window, last_discard = ("draw", seat_no), None
+                issues.append(_issue(seq, "info.legacy_catch_play_window",
+                    "旧/未标版本牌谱圈内直接摸牌，按历史平台时序核对"))
             if not (isinstance(window, tuple) and window[0] == "draw" and window[1] == seat_no):
                 issues.append(_issue(seq, "conflict.event_out_of_turn",
                     "tile_drawn 出现在非该座位摸牌阶段（当前窗口 {0!r}）".format(window)))
@@ -293,6 +303,12 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
                 issues.append(_issue(seq, "conflict.event_out_of_turn",
                     "tile_discarded 出现在非该座位出牌阶段（当前窗口 {0!r}）".format(window)))
                 break
+            if any(s.catch_play for s in seats) and not _validate_via_analyze(
+                rules, issues, seats, seat_no, "draw", (), None, history,
+                wall_known, wall_drawable, consumed, hand_id, dealer, round_no, game_id,
+                seq, _key_of("discard", tile),
+            ):
+                break
             combined = list(seats[seat_no].hand)
             if seats[seat_no].drawn is not None:
                 combined.append(seats[seat_no].drawn)
@@ -304,6 +320,10 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
             seats[seat_no].drawn = None
             seats[seat_no].discards.append(tile)
             seats[seat_no].catch_play = tile == _WEALTH
+            if tile == _WEALTH:
+                for other_seat, other in enumerate(seats):
+                    if other_seat != seat_no:
+                        other.catch_play = False
             chain_count, chain_piao = chain_after_discard(
                 seats[seat_no].chain_count, seats[seat_no].chain_piao,
                 seats[seat_no].baotou, Tile(tile),
@@ -319,11 +339,14 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
                 # 弃白本身不开响应窗口（v14 夹具 4/4：下一事件直接是下家摸牌）。
                 window = ("draw", (seat_no + 1) % 4)
             else:
-                # 普通弃牌恒开碰窗口（含抓打圈内：圈内响应被合法性复核拦截）。
-                window = ("peng_window", seat_no, tile, seq, {(seat_no + 1) % 4, (seat_no + 2) % 4, (seat_no + 3) % 4})
+                owners = {index for index, other in enumerate(seats) if other.catch_play}
+                responders = owners if owner_windows and owners else {index for index in range(4) if index != seat_no}
+                window = ("peng_window", seat_no, tile, seq, responders)
                 last_discard = (seat_no, tile, seq)
         elif kind == "pass":
-            ok, window, last_discard = _apply_pass(issues, window, last_discard, seat_no, seq)
+            owner = next((index for index, other in enumerate(seats) if other.catch_play), None)
+            ok, window, last_discard = _apply_pass(
+                issues, window, last_discard, seat_no, seq, owner if owner_windows else None)
             if not ok:
                 break
             history.append(dict(event))
@@ -380,7 +403,7 @@ def _status_from_issues(issues: List[dict]) -> str:
     return "passed"
 
 
-def _apply_pass(issues, window, last_discard, seat_no, seq):
+def _apply_pass(issues, window, last_discard, seat_no, seq, owner_seat=None):
     """pass/timeout(response) 推进；返回 (ok, window, last_discard)。"""
     if not isinstance(window, tuple) or window[0] not in ("peng_window", "chi_window"):
         issues.append(_issue(seq, "conflict.event_out_of_turn",
@@ -398,6 +421,8 @@ def _apply_pass(issues, window, last_discard, seat_no, seq):
     if kind == "peng_window":
         # 碰窗口全过 → 吃窗口对下家开放（官方 v15：碰窗口先于吃窗口）。
         next_seat = (discarder + 1) % 4
+        if owner_seat is not None and owner_seat != next_seat:
+            return True, ("draw", next_seat), None
         return True, ("chi_window", discarder, tile, seq0, {next_seat}), last_discard
     if responders:
         return True, ("chi_window", discarder, tile, seq0, responders), last_discard
@@ -621,11 +646,8 @@ def _shadow_observation(
     remaining = None
     if wall_known:
         remaining = (wall_drawable - consumed) + _RESERVE_TILES
-    # 抓打圈 catch_play 按窗口阶段投影（与 simulation.projection 同口径）：
-    # 圈主本人摸牌窗口 true；圈内响应窗口的响应者 true；其余 false。
+    # god 是公开全局圈标记；本人是否受限由同一 hangma 规则结合圈主决定。
     circle_active = any(s.catch_play for s in seats)
-    in_response = phase in ("response_peng", "response_chi") and seat_no in responding
-    catch_play = seat.catch_play or (circle_active and in_response)
     public_history = []
     for event in history:
         event_seat = event.get("seat")
@@ -671,7 +693,9 @@ def _shadow_observation(
             wealth_god=Tile(_WEALTH),
             baotou=seat.baotou,
             chain_count=seat.chain_count,
-            catch_play=catch_play,
+            catch_play=circle_active,
+            catch_play_owner_seat=(next((index for index, other in enumerate(seats) if other.catch_play), None)
+                                   if continuous else None),
         ),
         public_history=tuple(public_history),
         consumed_seq=seq_of_last(history),

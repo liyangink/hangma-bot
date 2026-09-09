@@ -298,6 +298,8 @@ def observation(snapshot: ParsedSnapshot, history: Tuple[PublicEvent, ...], game
             baotou=snapshot.god_baotou,
             chain_count=snapshot.god_chain_count,
             catch_play=snapshot.god_catch_play,
+            catch_play_owner_seat=(snapshot.god_discarder_seat
+                if snapshot.god_catch_play and snapshot.god_discarder_seat in (0, 1, 2, 3) else None),
         ),
         public_history=history,
     )
@@ -491,6 +493,8 @@ def action_request_body(
     杠不发送类型字段：官方 body 基本结构仅 action+tile（API 文档 §2.4），
     杠种类由服务端按阶段判定——这是待官方样本确认的假设。
     pass 携带空 tile，与官方 demo 一致。
+    catch_play 参数是规则源根据圈主身份得到的本座摸切限制，
+    不能直接传官方 god.catch_play 全局标记；圈主可手切。
     """
 
     if isinstance(action, Discard):
@@ -503,7 +507,7 @@ def action_request_body(
         # 不会拒绝打刚摸的牌
         available = set(hand) | ({drawn_tile} if drawn_tile is not None else set())
         if catch_play:
-            # 抓打圈硬约束：只能打刚摸到的牌（API 文档 §5.4）。
+            # 已由规则源确认本座受摸切限制；圈主不进入此分支。
             # drawn_tile 缺失属协议畸形态：客户端不猜测（demo 回退打第一张
             # 与 kernel 最右口径矛盾）——fail-closed 拒绝构造，由服务端
             # 超时自动打"最右一张"兜底（API 文档 §5.2），行为与官方一致
@@ -545,4 +549,3 @@ def action_request_body(
             return None  # 官方 draw 窗没有 pass 动作（API 文档 §2.4 动作判定下限）
         return {"action": "pass", "tile": ""}
     return None
-

@@ -400,7 +400,7 @@ if __name__ == "__main__":
     pytest.main([__file__])
 
 
-@pytest.mark.parametrize('candidate', ['weighted_heuristic_v1', 'weighted_heuristic_v2'])
+@pytest.mark.parametrize('candidate', ['weighted_heuristic_v1', 'weighted_heuristic_v2', 'weighted_heuristic_v2_white_guard', 'catch_play_probe'])
 def test_room_can_mix_v1_with_default_v0(tmp_path, candidate):
     """身份覆盖透传 V1，其余身份继续继承 V0；Token 和审计目录保持隔离。"""
     data = _room_config()

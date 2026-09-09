@@ -1,4 +1,4 @@
-"""每场的并发、state频率和退避独立；赛事查询不占场次额度。"""
+"""同用户共享state额度和冷却；每场连接槽、非state冷却及控制面隔离。"""
 import asyncio
 import json
 
@@ -35,7 +35,7 @@ async def test_control_concurrency_does_not_block_open_game(monkeypatch):
         await session.aclose()
 
 
-async def test_one_game_rate_limit_does_not_cool_other_game():
+async def test_user_state_rate_limit_cools_other_games_state_queries():
     clock, transport = FakeClock(), FakeTransport()
     owner = RequestScheduler(clock=clock.monotonic, sleep=instant_sleep(clock))
     times = []
@@ -53,7 +53,8 @@ async def test_one_game_rate_limit_does_not_cool_other_game():
     try:
         await slow.next_item()
         assert isinstance(await fast.next_item(), ObservedActionWindow)
-        assert times[1] == times[0]
+        assert times[1] >= times[0] + 5
+        assert times[1] <= times[0] + 5.25
     finally:
         await slow.aclose("test")
         await fast.aclose("test")
@@ -76,15 +77,15 @@ async def test_state_slot_reserves_concurrency_for_action_and_other_game():
 async def test_reopening_same_game_does_not_reset_rate_allowance():
     clock = FakeClock()
     owner = RequestScheduler(clock=clock.monotonic, sleep=instant_sleep(clock))
-    for _ in range(2):
+    for _ in range(17):
         channel = owner.for_game("same-game", max_games=4)
         lease = await channel.acquire(Priority.POLL)
         lease.release()
-    assert clock.monotonic() == pytest.approx(1000.5)
+    assert clock.monotonic() == pytest.approx(1001.0)
 
 
 @pytest.mark.parametrize('max_games', [1, 4, 7, 8, 10, 16])
-async def test_static_per_game_rates_bound_token_total_without_shared_queue(max_games):
+async def test_shared_state_rates_bound_user_total_without_static_game_caps(max_games):
     clock = FakeClock(start=0)
     owner = RequestScheduler(clock=clock.monotonic, sleep=instant_sleep(clock))
     starts = []
@@ -97,4 +98,5 @@ async def test_static_per_game_rates_bound_token_total_without_shared_queue(max_
     for game, start in starts:
         in_window = [(g, at) for g, at in starts if start - 1e-8 <= at < start + 1 - 1e-8]
         assert len(in_window) <= 16
-        assert sum(g == game for g, _ in in_window) <= 2
+    if max_games == 1:
+        assert starts[-1][1] == starts[0][1] == 0  # 单场可借全部余量，无2/s硬上限。

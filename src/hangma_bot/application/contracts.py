@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from asyncio import CancelledError
 from dataclasses import dataclass
 from enum import Enum
 from math import isfinite
@@ -10,6 +11,11 @@ from typing import Mapping, Optional, Protocol, Tuple, Union
 from hangma_bot.kernel.actions import Action, WindowKey, action_key as canonical_action_key
 from hangma_bot.kernel.config import TournamentConfig
 from hangma_bot.kernel.observation import CompetitionContext, PlayerObservation
+
+
+# 动作POST固定网络预算，单位秒，已包含工程波动余量；不是时钟偏差校正。
+# 应用最迟发送、适配器出口及已知窗口查询倒推共用，不能对同一截止重复扣除。
+DEFAULT_POST_NETWORK_RESERVE_SEC = 0.10
 
 
 class RuntimeMode(str, Enum):
@@ -396,6 +402,14 @@ class AuditSummary:
 SUBMISSION_CANCELLED_IN_FLIGHT = "submit_cancelled_in_flight"
 
 
+class SubmissionCancelledBeforeSend(CancelledError):
+    """提交在进入HTTP传输前取消，保证本次未发POST；仍须向外传播取消。
+
+    仅供能证明未发送的会话实现使用。普通CancelledError仍按结果不确定
+    处理；此异常不授权应用层重试，也不改变原窗口预算。
+    """
+
+
 class GameSessionPort(Protocol):
     """一个 ``game_id`` 的权威窗口、同步恢复与串行动作提交接缝。"""
 
@@ -409,7 +423,11 @@ class GameSessionPort(Protocol):
         ...
 
     async def submit(self, attempt: ActionAttempt) -> SubmitOutcome:
-        """最多保持一个在途 POST；结果类型决定是否允许重新规划。"""
+        """最多保持一个在途POST；结果类型决定是否允许重新规划。
+
+        取消必须传播；能证明尚未进入传输时抛SubmissionCancelledBeforeSend，
+        否则普通CancelledError表示发送结果不确定。两者均不允许自动重试。
+        """
 
         ...
 

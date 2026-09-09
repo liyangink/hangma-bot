@@ -22,6 +22,9 @@
 - 保留原 `weighted_heuristic.py`、`evaluation.py`、`weights.py` 和默认策略名；冻结指纹见 `doc/implementation/baselines/heuristic-v0.json`，固定历史输入见 `tests/fixtures/policy/`。
 - V1 使用 `heuristic_v1.py`、`evaluation_v1.py`、`weights_v1.py` 独立实现，配置名 `weighted_heuristic_v1`，开发验收后同样冻结。规则已提供响应 Pass 等待事实；V0/claim_if_legal 装配使用 `legacy_pass.py` 的显式旧视图，保留原始请求及异常事实。继续施工先读 `doc/implementation/policy-iteration-plan.md` 与接口协议 §4.3。
 - V2 配置名 `weighted_heuristic_v2`，复用 V1 的非 Pass 评分与权重，仅增加可比过牌等待分项。缺基线时按接口协议 §4.4 执行合法胡、未拒过牌、其余候选的顺序。变更 V2 不修改冻结 V0/V1；完整桌赛评估通过前保持默认 V0。
+- 可选 `weighted_heuristic_v2_white_guard` 以输入副本保护普通弃白，保留原 V2 评分。`baotou=True`、强制白及无可用非白退路不得硬禁白；共享紧急路径优先非财神。兼容旧白板紧急候选、审计与版本边界见接口协议 §4.5。
+- `catch_play_probe` 是用户要求的测试房定向策略：在 V2 已有计划中优先合法弃白（可高于胡）、响应吃碰与明杠，不套普通弃白保护。只允许 `test_room`，保留紧急候选、拒绝过滤和原预算；实验数据不作为启发式强度样本，见接口协议 §4.7。
+- 官方 v26 已确认圈主吃碰明杠及补杠，2026-09-09 接线通过同一 `RuleAnalysis` 生效，不在策略重复判圈主。规则修复不修改冻结评分；普通听牌分值、吃碰后无立即胡的续飘及杠补机会成本按[策略复核](../../../review/catch-owner-v26-2026-09-09/strategy-review.md)分阶段验证，不用单个条件番数案例推导弃胡或必吃碰。
 
 ## 验收标准
 
