@@ -34,6 +34,8 @@ GCC/Clang 和对应 Python 开发头文件；默认允许同语义的 Python 退
 
 首次使用先复制 [测试房间配置](configs/test-room.example.json) 到私有运行配置，填写房间 ID、四个 Token 文件路径，并为每次测试设置独立的 `audit_root`。完整步骤见 [运行、观测、赛后分析与迁移指引](doc/operations.md)。
 
+策略选用见[可用策略枚举与默认值](doc/implementation/strategy-catalog.md)。常用模板显式选择 `weighted_heuristic_v2`；配置省略 `strategy` 时仍回退到旧版 `weighted_heuristic`，建议显式填写。实验候选的可用分支、模式限制及相对V2的改动也集中记录在该表。
+
 ```bash
 mkdir -p .private
 cp configs/test-room.example.json .private/test-room.json
@@ -78,6 +80,7 @@ export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 
 ## 文档
 
+- [可用策略枚举、默认值与取用示例](./doc/implementation/strategy-catalog.md)
 - [技术方案与一个月实施计划](./doc/hangma-ai-bot-technical-plan.md)
 - [架构图、运行流程与场景边界](./doc/architecture.md)
 - [第一阶段实施导航与 Agent 分工](./doc/implementation/README.md)
