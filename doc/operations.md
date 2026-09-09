@@ -25,11 +25,13 @@ artifacts/
   legacy/runs/                    # 迁入的旧目录，保留原组织方式
   probes/                         # 额外协议取证
   exports/                        # 人工阅读的派生视图
-  auto-match-watchdog/            # 自由赛盯盘运行态：账本、会话进程日志、巡检文件锁（运维数据非审计取证；日志与锁可清理，账本保留）
 .private/                         # 本机运行配置与凭证，单独迁移
+runs/                             # 运行态（进程 stdout 日志、盯盘账本、文件锁）：不入库、可随时清理，不承载审计数据
 ```
 
-`run_id` 内部布局继续遵守 [审计契约](implementation/interface-contracts.md)。旧 `runs/` 根已于 2026-09-08 废弃并删除：原始运行一律经各入口配置的 `audit_root` 直接写入所属会话目录，不再有独立的 `runs` 落点（自由赛盯盘的运行态见上方 `auto-match-watchdog/`）。已有 `game-records/` 和 `datasets/` 是入库的历史资料，保留原件，新下载不再写入那里。归并的官方原文以 SHA-256（文件内容摘要，用于核对字节与去重）命名，同一原文的多处来源保存在 `source.json`。
+分工约定（2026-09-09）：`artifacts/` 只保存审计取证与赛后制品；仅为定位、追踪或维持运行服务的运行态数据统一放 gitignored 的 `runs/`（如自由赛盯盘的 `runs/auto-match-watchdog/`）。旧 `runs/` 根下的历史审计已于 2026-09-08 全部迁入会话目录，此后 `runs/` 不再作为任何审计落点。
+
+`run_id` 内部布局继续遵守 [审计契约](implementation/interface-contracts.md)；原始运行一律经各入口配置的 `audit_root` 直接写入所属会话目录。已有 `game-records/` 和 `datasets/` 是入库的历史资料，保留原件，新下载不再写入那里。归并的官方原文以 SHA-256（文件内容摘要，用于核对字节与去重）命名，同一原文的多处来源保存在 `source.json`。
 
 ## 2. 启动测试房间与赛事
 
