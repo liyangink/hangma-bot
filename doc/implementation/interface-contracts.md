@@ -499,3 +499,15 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 ## 2026-09-09 期限映射运行事实（无外部端口变更）
 
 四个冻结端口、`ActionAttempt` 和 `ObservedActionWindow` 字段不变。适配器内部的期限映射区间只用于收紧交付/提交期限及安排阶段查询；策略不读取用户额度或时钟样本。运行清单新增 `deadline_clock_version=snapshot-interval-v1`，权威状态审计可带 `deadline_clock`（版本、样本数、是否可用、区间宽度秒、冲突重置次数）。`deadline_is_estimated=false`仅说明官方提供期限，不能理解为零时钟误差。赛后规则诊断沿用来源的 `guide_version`，不把历史未知版本补成当前版本。
+
+## 2026-09-09 已实现的可选分值与自由赛等胡契约
+
+本次只落实显式等胡实验所需字段，不扩大策略信息权限。此前提案的一次摸牌部分已实现，其他目标/榜单接口仍保留原提案状态。
+
+- `RuleCandidate.value_facts` 默认None，包含当前结算、条件路线、完整性及原因；条件保存摸前本人暗牌、面子数、摸牌来源、链与爆头。互斥弃牌不能合计，四家分差按座位0—3排列。
+- `HangmaRules.analyze(observation, *, value_limits=None)` 接受固定展开/分组限额，不访问时钟；失败仅降级可选事实，合法候选及独立紧急动作保留。
+- `audit_codec`可选读写分值，旧记录缺字段仍还原为None，不补算。`BotPolicy.choose`、`DecisionRequest`、`DecisionPlan`及四个外部端口不变。
+- `ParticipantRuntime`/`RuntimeServices`增加可选 `value_limits`。`AutoMatchRuntime`另接受可选 `value_rules_scope: RuleConfig`，真实配置不匹配时传None并审计，不在应用层实现牌型或风险算法。
+- 决策循环先取得紧急动作，只在原增强截止前请求分值；409恢复不重置预算，超过提交截止不发送。自由赛manifest记录实际规则、有效分值限额及禁用原因，配置的策略名不表示每次增强都生效。
+
+字段语义、构造校验、两个入口差异及契约测试见[受控接入说明](v2-hu-upgrade-experimental.md)。
