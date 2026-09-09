@@ -165,31 +165,6 @@ def main():
                   % (short(gid), st["round_no"] if st["round_no"] is not None else "?",
                      ("%d" % mine) if mine is not None else "?", fmt_vec(snap)))
 
-    # 我方视角排名：每场名次 + 名次分布 + 总分（不需要对手身份）
-    rank_count = {1: 0, 2: 0, 3: 0, 4: 0}
-    rank_marks = []
-    snap_total = 0
-    for gid in sorted(games):
-        st = games[gid]
-        seat = st["seat"]
-        vec = st["final_scores"] if st["finished"] else st["snapshot"]
-        if seat is None or not isinstance(vec, list) or seat >= len(vec) or not isinstance(vec[seat], (int, float)):
-            continue
-        mine = vec[seat]
-        rank = 1 + sum(1 for x in vec if isinstance(x, (int, float)) and x > mine)
-        if rank in rank_count:
-            rank_count[rank] += 1
-        rank_marks.append("%s名(%+d%s)" % ("第" + "一二三四"[rank - 1] if rank <= 4 else "?", mine,
-                                         "✓" if st["finished"] else "~"))
-        if not st["finished"]:
-            snap_total += mine
-    print("-- 我方当前房排名 --")
-    print("  总分：已完赛 %+d（作数） ｜ 含进行中快照 %+d（不作数）" % (subtotal, subtotal + snap_total))
-    print("  每场名次（✓终局 ~快照）：%s" % "  ".join(rank_marks))
-    print("  名次分布：第1×%d ｜ 第2×%d ｜ 第3×%d ｜ 第4×%d"
-          % (rank_count[1], rank_count[2], rank_count[3], rank_count[4]))
-    print("  （对手每场换座且身份对我方不可见，四人总榜名次无法精确计算；结算以账本/牌谱为准）")
-
     if ledger:
         print("账本历史累计：%+d（%d 房已结算） ｜ 含本房已完赛：%+d"
               % (ledger.get("cumulative_total", 0), len(ledger.get("rooms", [])),
