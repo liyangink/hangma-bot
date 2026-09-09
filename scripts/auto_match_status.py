@@ -152,6 +152,7 @@ def main():
             print("  %s  我方 %+s  四座 %s" % (short(gid), ("%d" % mine) if mine is not None else "?", fmt_vec(fs)))
         print("  本房已完赛小计：%+d" % subtotal)
 
+    snap_sum = 0
     if running:
         print("-- 进行中（场内快照，不作数） --")
         for gid in sorted(games):
@@ -161,9 +162,15 @@ def main():
             seat = st["seat"]
             snap = st["snapshot"] or []
             mine = snap[seat] if seat is not None and seat < len(snap) else None
+            if isinstance(mine, (int, float)):
+                snap_sum += mine
             print("  %s  第 %s/8 局  当前 %+s  快照 %s"
                   % (short(gid), st["round_no"] if st["round_no"] is not None else "?",
                      ("%d" % mine) if mine is not None else "?", fmt_vec(snap)))
+        print("  本房进行中快照累计：%+d（不作数）" % snap_sum)
+    if finished or running:
+        print("本房当前合计：%+d（其中作数 %+d，快照不作数 %+d）"
+              % (subtotal + snap_sum, subtotal, snap_sum))
 
     if ledger:
         print("账本历史累计：%+d（%d 房已结算） ｜ 含本房已完赛：%+d"
