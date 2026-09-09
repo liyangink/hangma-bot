@@ -64,6 +64,7 @@ from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2  # noqa: 
 from hangma_bot.policy.value_one_draw import OneDrawValuePolicy  # noqa: E402
 from hangma_bot.policy.hu_upgrade import HuUpgradePolicy  # noqa: E402
 from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy  # noqa: E402
+from hangma_bot.policy.v2_claim_piao import V2ClaimPiaoPolicy  # noqa: E402
 from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN, RISK_RULESET_VERSION  # noqa: E402
 from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy  # noqa: E402
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy  # noqa: E402
@@ -108,6 +109,13 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         )
         policy.policy_id = declaration.policy_id
         return policy
+    if declaration.name == "v2_claim_piao_v1":
+        config = dict(declaration.weights)
+        continuation_weight = config.pop("continuation_weight", 1)
+        policy = V2ClaimPiaoPolicy(weights=HeuristicWeightsV1(**config), monotonic=monotonic,
+                                  continuation_weight=continuation_weight)
+        policy.policy_id = declaration.policy_id
+        return policy
     if declaration.name in ("hu_upgrade_v1", "v2_hu_upgrade_v1"):
         config = dict(declaration.weights)
         upgrade_weight = config.pop("upgrade_weight", 1)
@@ -121,7 +129,7 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         return policy
     raise ValueError(
         "未知策略名 {0!r}；本脚本只装配 weighted_heuristic / safe_fallback / "
-        "weighted_heuristic_v1 / weighted_heuristic_v2 / weighted_heuristic_v2_white_guard / one_draw_value_v1 / hu_upgrade_v1 / v2_hu_upgrade_v1".format(declaration.name)
+        "weighted_heuristic_v1 / weighted_heuristic_v2 / weighted_heuristic_v2_white_guard / one_draw_value_v1 / hu_upgrade_v1 / v2_hu_upgrade_v1 / v2_claim_piao_v1".format(declaration.name)
     )
 
 
@@ -212,6 +220,9 @@ def _effective_weights_snapshot(policy: Any) -> Optional[dict]:
     }
     if isinstance(policy, OneDrawValuePolicy):
         snapshot["value_weight"] = policy._value_weight
+    if isinstance(policy, V2ClaimPiaoPolicy):
+        snapshot.update(continuation_weight=policy._continuation_weight,
+                        base_policy="weighted_heuristic_v2", continuation_scope="post-claim-complete-baotou-v1")
     if isinstance(policy, HuUpgradePolicy):
         snapshot.update(
             upgrade_weight=policy._upgrade_weight, risk_version=policy._risk_version,
