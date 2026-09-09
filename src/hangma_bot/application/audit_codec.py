@@ -32,11 +32,16 @@ from typing import List, Mapping, Sequence, Tuple
 from hangma_bot.hangma.interface import (
     CandidateFactKind,
     CandidateFacts,
+    CandidateValueFacts,
     RuleAnalysis,
     RuleCandidate,
     RuleCompleteness,
     RuleIssue,
+    Settlement,
     UsefulTileFact,
+    ValueConditions,
+    ValueCoverage,
+    ValueRoute,
 )
 from hangma_bot.kernel.serialization import (
     action_from_json,
@@ -222,15 +227,107 @@ def candidate_facts_from_json(payload: object) -> CandidateFacts:
 # ---------------------------------------------------------------------------
 
 
+def _settlement_to_json(value: Settlement) -> dict:
+    return {"fan": value.fan, "score_delta": list(value.score_delta), "details": list(value.details)}
+
+
+def _settlement_from_json(payload: object) -> Settlement:
+    name = "conditional_settlement"
+    data = _require_mapping(payload, name)
+    scores = tuple(_as_int(item, name, "score_delta") for item in _as_list(_get(data, "score_delta", name), name, "score_delta"))
+    fan = _as_int(_get(data, "fan", name), name, "fan")
+    if len(scores) != 4 or sum(scores) != 0 or fan <= 0:
+        raise ValueError("成胡结算必须为正番，四座位分数守恒")
+    return Settlement(
+        score_delta=scores, fan=fan,
+        details=tuple(_as_str(item, name, "details") for item in _as_list(_get(data, "details", name), name, "details")),
+    )
+
+
+def candidate_value_facts_to_json(facts: CandidateValueFacts) -> dict:
+    """保存有限分值事实与未来条件，不能合并不同后续弃牌的有效牌张数。"""
+    return {
+        "codec_version": DECISION_CODEC_VERSION,
+        "immediate_settlement": None if facts.immediate_settlement is None else _settlement_to_json(facts.immediate_settlement),
+        "coverage": facts.coverage.value,
+        "issues": [{"area": issue.area, "reason": issue.reason} for issue in facts.issues],
+        "routes": [{
+            "conditional_settlement": _settlement_to_json(route.conditional_settlement),
+            "shanten": route.shanten,
+            "useful_tiles": [{"code": tile.code, "remaining_estimate": tile.remaining_estimate} for tile in route.useful_tiles],
+            "followup_discard": route.followup_discard,
+            "conditions": {
+                "draw_kind": route.conditions.draw_kind,
+                "pre_draw_hand": list(route.conditions.pre_draw_hand),
+                "meld_count": route.conditions.meld_count,
+                "chain_count": route.conditions.chain_count,
+                "chain_piao": route.conditions.chain_piao,
+                "baotou": route.conditions.baotou,
+            },
+            "support": route.support,
+        } for route in facts.routes],
+    }
+
+
+def candidate_value_facts_from_json(payload: object) -> CandidateValueFacts:
+    """逐字段还原可选条件结算；未保存的增强由上层还原为 None，不补算。"""
+    name = "candidate_value_facts"
+    data = _require_mapping(payload, name)
+    _check_codec_version(data, name)
+    routes = []
+    for item in _as_list(_get(data, "routes", name), name, "routes"):
+        row = _require_mapping(item, name + ".routes")
+        conditions = _require_mapping(_get(row, "conditions", name), name + ".conditions")
+        useful = []
+        for tile_raw in _as_list(_get(row, "useful_tiles", name), name, "useful_tiles"):
+            tile = _require_mapping(tile_raw, name + ".useful_tiles")
+            useful.append(UsefulTileFact(
+                code=_as_str(_get(tile, "code", name), name, "code"),
+                remaining_estimate=_as_int(_get(tile, "remaining_estimate", name), name, "remaining_estimate"),
+            ))
+        routes.append(ValueRoute(
+            conditional_settlement=_settlement_from_json(_get(row, "conditional_settlement", name)),
+            shanten=_as_int(_get(row, "shanten", name), name, "shanten"),
+            useful_tiles=tuple(useful),
+            followup_discard=_as_optional_str(_get(row, "followup_discard", name), name, "followup_discard"),
+            support=_as_str(_get(row, "support", name), name, "support"),
+            conditions=ValueConditions(
+                draw_kind=_as_str(_get(conditions, "draw_kind", name), name, "draw_kind"),
+                pre_draw_hand=tuple(_as_str(code, name, "pre_draw_hand") for code in _as_list(_get(conditions, "pre_draw_hand", name), name, "pre_draw_hand")),
+                meld_count=_as_int(_get(conditions, "meld_count", name), name, "meld_count"),
+                chain_count=_as_int(_get(conditions, "chain_count", name), name, "chain_count"),
+                chain_piao=_as_int(_get(conditions, "chain_piao", name), name, "chain_piao"),
+                baotou=_as_bool(_get(conditions, "baotou", name), name, "baotou"),
+            ),
+        ))
+    issues = []
+    for item in _as_list(_get(data, "issues", name), name, "issues"):
+        row = _require_mapping(item, name + ".issues")
+        issues.append(RuleIssue(
+            area=_as_str(_get(row, "area", name), name, "area"),
+            reason=_as_str(_get(row, "reason", name), name, "reason"),
+        ))
+    immediate = _get(data, "immediate_settlement", name)
+    return CandidateValueFacts(
+        immediate_settlement=None if immediate is None else _settlement_from_json(immediate),
+        routes=tuple(routes),
+        coverage=ValueCoverage(_as_str(_get(data, "coverage", name), name, "coverage")),
+        issues=tuple(issues),
+    )
+
+
 def rule_candidate_to_json(candidate: RuleCandidate) -> dict[str, object]:
     """把规则候选转为 JSON；动作复用 kernel 稳定序列化，facts 完整保留。"""
-    return {
+    result = {
         "codec_version": DECISION_CODEC_VERSION,
         "action_key": candidate.action_key,
         "action": action_to_json(candidate.action),
         "evidence": list(candidate.evidence),
         "facts": None if candidate.facts is None else candidate_facts_to_json(candidate.facts),
     }
+    if candidate.value_facts is not None:
+        result["value_facts"] = candidate_value_facts_to_json(candidate.value_facts)
+    return result
 
 
 def rule_candidate_from_json(payload: object) -> RuleCandidate:
@@ -247,6 +344,7 @@ def rule_candidate_from_json(payload: object) -> RuleCandidate:
             for item in _as_list(_get(data, "evidence", type_name), type_name, "evidence")
         ),
         facts=None if facts_raw is None else candidate_facts_from_json(facts_raw),
+        value_facts=None if data.get("value_facts") is None else candidate_value_facts_from_json(data["value_facts"]),
     )
 
 

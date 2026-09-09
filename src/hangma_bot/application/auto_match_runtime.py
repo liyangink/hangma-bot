@@ -56,6 +56,8 @@ from hangma_bot.application.game_task import GameTask, GameTaskStatus
 from hangma_bot.application.ids import IdGenerator, PrefixedUuidIds
 from hangma_bot.application.tournament_supervisor import SupervisionPolicy
 from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.hangma.interface import ValueAnalysisLimits
+from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.policy.interface import BotPolicy
 
 DEFAULT_SLEEP: Callable[[float], Awaitable[None]] = asyncio.sleep
@@ -144,7 +146,14 @@ class AutoMatchRuntime:
         supervision: Optional[SupervisionPolicy] = None,
         sleep: Callable[[float], Awaitable[None]] = DEFAULT_SLEEP,
         manifest_extra: Optional[Mapping[str, object]] = None,
+        value_limits: Optional[ValueAnalysisLimits] = None,
+        value_rules_scope: Optional[RuleConfig] = None,
     ) -> None:
+        """可选分值只在声明的实际规则范围内启用；匹配后不适用时继续保底运行。
+
+        value_limits 是每次规则分析的固定工作量，不是时长；None 保持原路径。
+        value_rules_scope 由组合根提供校准范围，不修改平台返回的真实规则。
+        """
         if target.mode is not RuntimeMode.AUTO_MATCH:
             raise ValueError("AutoMatchRuntime 只服务 RuntimeMode.AUTO_MATCH")
         self._session = session
@@ -160,6 +169,14 @@ class AutoMatchRuntime:
         self._sleep = sleep
         # audit-plus-v1 版本事实注入（git/策略版本与生效权重）；缺省 null。
         self._manifest_extra = manifest_extra
+        if value_limits is not None and not isinstance(value_limits, ValueAnalysisLimits):
+            raise TypeError("value_limits 必须是 ValueAnalysisLimits 或 None")
+        if value_rules_scope is not None and not isinstance(value_rules_scope, RuleConfig):
+            raise TypeError("value_rules_scope 必须是 RuleConfig 或 None")
+        if value_rules_scope is not None and value_limits is None:
+            raise ValueError("value_rules_scope 需要同时声明 value_limits")
+        self._value_limits = value_limits
+        self._value_rules_scope = value_rules_scope
         self._run_id: Optional[str] = None
         self._audit_trail: Optional[AuditTrail] = None
         self._last_audit_summary: Optional[AuditSummary] = None
@@ -286,6 +303,11 @@ class AutoMatchRuntime:
                 clock=self._clock,
             )
             self._audit_trail = trail
+            # 自由房 initialize 已经可能完成入席，不适用校准不能直接退出。
+            # 不产生分值事实时，等胡候选保持完整 V2；实际规则仍原样执行。
+            scope_matches = (self._value_rules_scope is None or
+                             bootstrap.config.rules == self._value_rules_scope)
+            value_limits = self._value_limits if scope_matches else None
             trail.emit(
                 AuditKind.RUN_MANIFEST,
                 {
@@ -301,6 +323,16 @@ class AutoMatchRuntime:
                     "participant_id": bootstrap.participant_id,
                     "room_id": bootstrap.tournament_id,
                     "ruleset_version": bootstrap.config.rules.ruleset_version,
+                    "base_score": bootstrap.config.rules.base_score,
+                    "you_cai_bi_kao": bootstrap.config.rules.you_cai_bi_kao,
+                    "value_analysis_limits": (None if value_limits is None else {
+                        "max_expansions": value_limits.max_expansions,
+                        "max_routes_per_candidate": value_limits.max_routes_per_candidate,
+                    }),
+                    "value_analysis_disabled_reason": (
+                        "uncalibrated_rule_config" if not scope_matches else
+                        "not_requested" if value_limits is None else None
+                    ),
                     "max_games": bootstrap.config.max_games,
                     "rounds_per_game": bootstrap.config.rounds_per_game,
                     "timing": {
@@ -319,6 +351,7 @@ class AutoMatchRuntime:
                 ids=self._ids,
                 budget_policy=self._budget_policy,
                 abandoned_tasks=self._abandoned_policy_tasks,
+                value_limits=value_limits,
             )
             terminal = await self._run_room(bootstrap, services)
             trail.emit(

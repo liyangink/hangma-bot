@@ -1,0 +1,290 @@
+{
+  "case_id": "G",
+  "source_line_sha256": "8721ef4d8072139b09a3c8b87f1c56c329ef369bcf4921db90870b57ad13b584",
+  "request_event": {
+    "schema_version": 1,
+    "kind": "decision_input",
+    "context": {
+      "run_id": "run-64d1e14bae8d42689bc9b594835a9358",
+      "tournament_id": "a_f5885115dbf0",
+      "participant_id": "u_13495c3d79c8",
+      "stage_attempt_id": null,
+      "game_id": "a_f5885115dbf0_r1_b9_t0",
+      "round_no": 2,
+      "trigger_seq": 177,
+      "decision_id": "dec-4908d899f73d46ac8d11b11cad3d21c9",
+      "attempt_no": null
+    },
+    "wall_time_unix_ms": 1788820844417,
+    "monotonic_ns": 1402897894922416,
+    "payload": {
+      "plan_revision": 1,
+      "budget_origin_monotonic": 1402897.892431083,
+      "rule_elapsed_ms": 2.107,
+      "request": {
+        "codec_version": 1,
+        "decision_id": "dec-4908d899f73d46ac8d11b11cad3d21c9",
+        "trigger_seq": 177,
+        "window_key": {
+          "schema_version": 1,
+          "game_id": "a_f5885115dbf0_r1_b9_t0",
+          "round_no": 2,
+          "trigger_seq": 177,
+          "phase": "response_peng",
+          "seat": 1
+        },
+        "observation": {
+          "schema_version": 1,
+          "game_id": "a_f5885115dbf0_r1_b9_t0",
+          "seat": 1,
+          "round_no": 2,
+          "snapshot_seq": 177,
+          "consumed_seq": 177,
+          "history_complete": false,
+          "chain_piao": 0,
+          "gang_draw": false,
+          "observation_issues": [],
+          "phase": "response_peng",
+          "dealer_seat": 0,
+          "turn_seat": 0,
+          "responding_seats": [
+            1,
+            2,
+            3
+          ],
+          "my_hand": [
+            "9t",
+            "9w",
+            "5b",
+            "南",
+            "白",
+            "8t",
+            "南",
+            "9t",
+            "9b",
+            "白",
+            "9w",
+            "9b",
+            "9t"
+          ],
+          "drawn_tile": null,
+          "discards": [
+            [
+              "南"
+            ],
+            [],
+            [],
+            []
+          ],
+          "melds": [
+            [],
+            [],
+            [],
+            []
+          ],
+          "hand_counts": [
+            13,
+            13,
+            13,
+            13
+          ],
+          "last_discard": {
+            "seat": 0,
+            "tile": "南",
+            "seq": 177
+          },
+          "remaining_tile_count": 83,
+          "scores": [
+            24,
+            -8,
+            -8,
+            -8
+          ],
+          "rule_state": {
+            "wealth_god": "白",
+            "baotou": false,
+            "chain_count": 0,
+            "catch_play": false
+          },
+          "public_history": []
+        },
+        "competition": {
+          "schema_version": 1,
+          "tournament_id": "a_f5885115dbf0",
+          "stage_no": null,
+          "stage_role": null,
+          "stage_total": null,
+          "participant_rank": 3,
+          "ranking": [
+            {
+              "participant_id": "u_8fd2a40380f0",
+              "total_score": 10,
+              "place_points": 0,
+              "god_count": 0,
+              "games_played": 5,
+              "rank": 1
+            },
+            {
+              "participant_id": "u_79eb99f9f6a3",
+              "total_score": 6,
+              "place_points": 0,
+              "god_count": 0,
+              "games_played": 5,
+              "rank": 2
+            },
+            {
+              "participant_id": "u_13495c3d79c8",
+              "total_score": 3,
+              "place_points": 0,
+              "god_count": 0,
+              "games_played": 5,
+              "rank": 3
+            },
+            {
+              "participant_id": "u_29275ab032b3",
+              "total_score": -19,
+              "place_points": 0,
+              "god_count": 0,
+              "games_played": 5,
+              "rank": 4
+            }
+          ],
+          "observed_at_unix_ms": 1788820844353
+        },
+        "rules": {
+          "codec_version": 1,
+          "legal_candidates": [
+            {
+              "codec_version": 1,
+              "action_key": "peng:南",
+              "action": {
+                "kind": "peng",
+                "tile": "南",
+                "schema_version": 1
+              },
+              "evidence": [
+                "碰:暗牌持有 南 ×2（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "9w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "9b",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 2
+                  }
+                ],
+                "best_followup_discard": "8t",
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "pass",
+              "action": {
+                "kind": "pass",
+                "schema_version": 1
+              },
+              "evidence": [
+                "过:响应窗口放弃当前响应机会（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "8t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "9t",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 2
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            }
+          ],
+          "emergency_candidate": {
+            "codec_version": 1,
+            "action_key": "pass",
+            "action": {
+              "kind": "pass",
+              "schema_version": 1
+            },
+            "evidence": [
+              "emergency:response-pass"
+            ],
+            "facts": null
+          },
+          "completeness": "complete",
+          "ruleset_version": "hangma-mvp-v4-youcai-baotou",
+          "issues": []
+        },
+        "rejected_attempts": []
+      },
+      "budget": {
+        "codec_version": 1,
+        "enhancement_deadline_monotonic": 1402898.272771833,
+        "fallback_deadline_monotonic": 1402898.4249081328,
+        "latest_send_at_monotonic": 1402898.5390103578
+      },
+      "window_deadline": {
+        "expires_at_monotonic": 1402898.6531125829,
+        "deadline_is_estimated": false
+      },
+      "window": {
+        "game_id": "a_f5885115dbf0_r1_b9_t0",
+        "round_no": 2,
+        "trigger_seq": 177,
+        "phase": "response_peng",
+        "seat": 1
+      },
+      "capture_profile": "audit-plus-v1",
+      "audit_producer": "application"
+    }
+  }
+}

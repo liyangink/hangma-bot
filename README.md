@@ -91,3 +91,7 @@ export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 - [官方赛事流程与多阶段晋级规则（2026-09-03）](./doc/official-tournament-flow-2026-09-03.md)
 - [官方平台 API（已同步 v15）与时间模型](./doc/official-platform-api-v2.md)
 - [仓库统一开发与文档规范](./AGENTS.md)
+
+## 实验策略选用
+
+主线现有策略与默认值见[枚举目录](doc/implementation/strategy-catalog.md)。`v2_hu_upgrade_v1` 可显式用于自由赛/测试房实验，尚未替换稳定V2；实际规则不适用时自由赛完整退回V2并记录原因。

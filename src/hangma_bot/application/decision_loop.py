@@ -48,6 +48,7 @@ from hangma_bot.hangma.interface import (
     RuleCandidate,
     RuleCompleteness,
     RuleIssue,
+    ValueAnalysisLimits,
 )
 from hangma_bot.kernel.actions import WindowKey, action_key
 from hangma_bot.kernel.observation import CompetitionContext, PlayerObservation
@@ -75,6 +76,8 @@ class RuntimeServices:
     budget_policy: BudgetPolicy
     # 硬截止放弃的策略任务注册表：动作路径不等待，运行关闭时限期回收。
     abandoned_tasks: set = field(default_factory=set)
+    # 可选分值分析工作量；None 保持普通规则路径，不能延长原始动作预算。
+    value_limits: ValueAnalysisLimits | None = None
 
 
 @dataclass(frozen=True)
@@ -185,11 +188,13 @@ def _safe_analyze(
     rules: HangmaRules,
     observation: PlayerObservation,
     notes: list[str],
+    value_limits: ValueAnalysisLimits | None = None,
 ) -> RuleAnalysis:
     """规则分析异常降级为空候选 + DEGRADED，不吞噬窗口。"""
 
     try:
-        analysis = rules.analyze(observation)
+        analysis = (rules.analyze(observation) if value_limits is None else
+                    rules.analyze(observation, value_limits=value_limits))
     except Exception as exc:  # noqa: BLE001 - 单分支异常不得丢失紧急动作
         notes.append("analyze 异常: {}".format(audit_error_text(exc)))
         return RuleAnalysis(
@@ -467,7 +472,10 @@ async def run_action_window(
             plan_revision += 1
             rules_started_at = clock.now()
             emergency = _safe_emergency(services.rules, current.observation, loop_notes)
-            analysis = _safe_analyze(services.rules, current.observation, loop_notes)
+            # 紧急动作准备后才启用增强；迟到窗口及 409 刷新不重新获得预算。
+            value_limits = (services.value_limits
+                            if clock.now() < budget.enhancement_deadline_monotonic else None)
+            analysis = _safe_analyze(services.rules, current.observation, loop_notes, value_limits)
             analysis = _merge_emergency_into_analysis(analysis, emergency)
             rule_elapsed_ms = (clock.now() - rules_started_at) * 1000.0
             request = DecisionRequest(

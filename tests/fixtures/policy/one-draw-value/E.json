@@ -1,0 +1,957 @@
+{
+  "case_id": "E",
+  "source_line_sha256": "623a9cf1b142778b8fbd4f4c09428fe32a72a6584725ab465dbc4ea16fc33180",
+  "request_event": {
+    "schema_version": 1,
+    "kind": "decision_input",
+    "context": {
+      "run_id": "run-d2f5bf03543f45af99a4106914cd0783",
+      "tournament_id": "a_9321db900414",
+      "participant_id": "u_13495c3d79c8",
+      "stage_attempt_id": null,
+      "game_id": "a_9321db900414_r1_b9_t0",
+      "round_no": 1,
+      "trigger_seq": 119,
+      "decision_id": "dec-6d33e3beb5f544d1b2e8285539e5447b",
+      "attempt_no": null
+    },
+    "wall_time_unix_ms": 1788818617163,
+    "monotonic_ns": 1400670672923166,
+    "payload": {
+      "plan_revision": 1,
+      "budget_origin_monotonic": 1400670.669432916,
+      "rule_elapsed_ms": 3.055,
+      "request": {
+        "codec_version": 1,
+        "decision_id": "dec-6d33e3beb5f544d1b2e8285539e5447b",
+        "trigger_seq": 119,
+        "window_key": {
+          "schema_version": 1,
+          "game_id": "a_9321db900414_r1_b9_t0",
+          "round_no": 1,
+          "trigger_seq": 119,
+          "phase": "draw",
+          "seat": 0
+        },
+        "observation": {
+          "schema_version": 1,
+          "game_id": "a_9321db900414_r1_b9_t0",
+          "seat": 0,
+          "round_no": 1,
+          "snapshot_seq": 119,
+          "consumed_seq": 119,
+          "history_complete": false,
+          "chain_piao": 0,
+          "gang_draw": null,
+          "observation_issues": [],
+          "phase": "draw",
+          "dealer_seat": 0,
+          "turn_seat": 0,
+          "responding_seats": [],
+          "my_hand": [
+            "5b",
+            "东",
+            "东",
+            "东",
+            "中",
+            "白",
+            "8w",
+            "5t",
+            "白",
+            "8w",
+            "东",
+            "3t",
+            "白",
+            "4t"
+          ],
+          "drawn_tile": "4t",
+          "discards": [
+            [
+              "2b",
+              "6w",
+              "南",
+              "2t",
+              "2t"
+            ],
+            [
+              "南",
+              "发",
+              "3w",
+              "6w",
+              "5w"
+            ],
+            [
+              "6w",
+              "2b",
+              "3b",
+              "9b",
+              "3b"
+            ],
+            [
+              "1b",
+              "4b",
+              "4b",
+              "7b",
+              "5t"
+            ]
+          ],
+          "melds": [
+            [],
+            [
+              {
+                "seat": 1,
+                "kind": "chi",
+                "tiles": [
+                  "3b",
+                  "4b",
+                  "2b"
+                ],
+                "from_seat": null
+              }
+            ],
+            [],
+            []
+          ],
+          "hand_counts": [
+            14,
+            10,
+            13,
+            13
+          ],
+          "last_discard": null,
+          "remaining_tile_count": 64,
+          "scores": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rule_state": {
+            "wealth_god": "白",
+            "baotou": false,
+            "chain_count": 0,
+            "catch_play": false
+          },
+          "public_history": [
+            {
+              "seq": 6,
+              "kind": "tile_discarded",
+              "seat": 1,
+              "tiles": [
+                "南"
+              ],
+              "occurred_at_unix_sec": 1788818565,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 18,
+              "kind": "tile_discarded",
+              "seat": 3,
+              "tiles": [
+                "1b"
+              ],
+              "occurred_at_unix_sec": 1788818570,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 24,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "6w"
+              ],
+              "occurred_at_unix_sec": 1788818572,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 36,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "2b"
+              ],
+              "occurred_at_unix_sec": 1788818578,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 42,
+              "kind": "tile_discarded",
+              "seat": 3,
+              "tiles": [
+                "4b"
+              ],
+              "occurred_at_unix_sec": 1788818581,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 43,
+              "kind": "pass",
+              "seat": 2,
+              "tiles": [],
+              "occurred_at_unix_sec": 1788818581,
+              "detail_kind": null,
+              "catch_play": null,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 48,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "南"
+              ],
+              "occurred_at_unix_sec": 1788818583,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 60,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "3b"
+              ],
+              "occurred_at_unix_sec": 1788818588,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 72,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "2t"
+              ],
+              "occurred_at_unix_sec": 1788818593,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 78,
+              "kind": "tile_discarded",
+              "seat": 1,
+              "tiles": [
+                "6w"
+              ],
+              "occurred_at_unix_sec": 1788818597,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 84,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "9b"
+              ],
+              "occurred_at_unix_sec": 1788818600,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 96,
+              "kind": "tile_discarded",
+              "seat": 0,
+              "tiles": [
+                "2t"
+              ],
+              "occurred_at_unix_sec": 1788818605,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 102,
+              "kind": "tile_discarded",
+              "seat": 1,
+              "tiles": [
+                "5w"
+              ],
+              "occurred_at_unix_sec": 1788818609,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 108,
+              "kind": "tile_discarded",
+              "seat": 2,
+              "tiles": [
+                "3b"
+              ],
+              "occurred_at_unix_sec": 1788818611,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            },
+            {
+              "seq": 114,
+              "kind": "tile_discarded",
+              "seat": 3,
+              "tiles": [
+                "5t"
+              ],
+              "occurred_at_unix_sec": 1788818614,
+              "detail_kind": null,
+              "catch_play": false,
+              "gang_replenish": null,
+              "response_window": null,
+              "result_draw": null,
+              "result_fan": null,
+              "result_details": null,
+              "result_scores": null,
+              "final_scores": null
+            }
+          ]
+        },
+        "competition": {
+          "schema_version": 1,
+          "tournament_id": "a_9321db900414",
+          "stage_no": null,
+          "stage_role": null,
+          "stage_total": null,
+          "participant_rank": null,
+          "ranking": [],
+          "observed_at_unix_ms": 1788818616216
+        },
+        "rules": {
+          "codec_version": 1,
+          "legal_candidates": [
+            {
+              "codec_version": 1,
+              "action_key": "discard:8w",
+              "action": {
+                "kind": "discard",
+                "tile": "8w",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 1,
+                "useful_tiles": [
+                  {
+                    "code": "6w",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "7w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "9w",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 1
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:5b",
+              "action": {
+                "kind": "discard",
+                "tile": "5b",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 1
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:3t",
+              "action": {
+                "kind": "discard",
+                "tile": "3t",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 1
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:4t",
+              "action": {
+                "kind": "discard",
+                "tile": "4t",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 1
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:5t",
+              "action": {
+                "kind": "discard",
+                "tile": "5t",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 1
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:东",
+              "action": {
+                "kind": "discard",
+                "tile": "东",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 1
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:中",
+              "action": {
+                "kind": "discard",
+                "tile": "中",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 1
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "discard:白",
+              "action": {
+                "kind": "discard",
+                "tile": "白",
+                "schema_version": 1
+              },
+              "evidence": [
+                "出牌:摸牌窗口本人回合，暗牌均可打（§6）",
+                "出牌:财神可主动打出（§1）；是否构成飘由 special_rules 按爆头状态判定（§8）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 1,
+                "useful_tiles": [
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "3t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "4t",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "5t",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 1
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": false,
+                "completeness": "complete",
+                "note": null
+              }
+            },
+            {
+              "codec_version": 1,
+              "action_key": "gang:concealed:东",
+              "action": {
+                "kind": "gang",
+                "gang_kind": "concealed",
+                "tile": "东",
+                "schema_version": 1
+              },
+              "evidence": [
+                "杠:暗杠自然四张 东（§6；白不参与任何杠，§1）"
+              ],
+              "facts": {
+                "codec_version": 1,
+                "fact_kind": "hand_progress",
+                "shanten_after": 0,
+                "useful_tiles": [
+                  {
+                    "code": "8w",
+                    "remaining_estimate": 2
+                  },
+                  {
+                    "code": "3b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "4b",
+                    "remaining_estimate": 1
+                  },
+                  {
+                    "code": "5b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "6b",
+                    "remaining_estimate": 4
+                  },
+                  {
+                    "code": "7b",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "中",
+                    "remaining_estimate": 3
+                  },
+                  {
+                    "code": "白",
+                    "remaining_estimate": 1
+                  }
+                ],
+                "best_followup_discard": null,
+                "replacement_draw_unknown": true,
+                "completeness": "complete",
+                "note": "杠上补牌未知：向听与有效牌按补牌前余牌口径"
+              }
+            }
+          ],
+          "emergency_candidate": {
+            "codec_version": 1,
+            "action_key": "discard:4t",
+            "action": {
+              "kind": "discard",
+              "tile": "4t",
+              "schema_version": 1
+            },
+            "evidence": [
+              "emergency:rightmost-discard"
+            ],
+            "facts": null
+          },
+          "completeness": "complete",
+          "ruleset_version": "hangma-mvp-v4-youcai-baotou",
+          "issues": []
+        },
+        "rejected_attempts": []
+      },
+      "budget": {
+        "codec_version": 1,
+        "enhancement_deadline_monotonic": 1400672.169176458,
+        "fallback_deadline_monotonic": 1400672.769073875,
+        "latest_send_at_monotonic": 1400673.2189969374
+      },
+      "window_deadline": {
+        "expires_at_monotonic": 1400673.66892,
+        "deadline_is_estimated": true
+      },
+      "window": {
+        "game_id": "a_9321db900414_r1_b9_t0",
+        "round_no": 1,
+        "trigger_seq": 119,
+        "phase": "draw",
+        "seat": 0
+      },
+      "capture_profile": "audit-plus-v1",
+      "audit_producer": "application"
+    }
+  }
+}

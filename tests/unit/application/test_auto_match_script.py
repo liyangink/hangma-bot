@@ -61,14 +61,16 @@ def _write_config(tmp_path: Path, doc: Dict) -> Path:
     return path
 
 
-def test_load_config_auto_match_minimal(tmp_path) -> None:
+@pytest.mark.parametrize("strategy", ["weighted_heuristic", "v2_hu_upgrade_v1"])
+def test_load_config_auto_match_minimal(tmp_path, strategy) -> None:
     """auto_match 配置解析：空目标（null=尚未发现）、声明上限与源命名空间。"""
 
-    path = _write_config(tmp_path, _base_config())
+    path = _write_config(tmp_path, _base_config(strategy=strategy))
     config, settings = run_auto_match.load_config(
         path, environ={"HM_AUTO_MATCH_TOKEN": "tok-minimal"}
     )
     assert config.mode.value == "auto_match"
+    assert config.strategy == strategy
     assert config.expected_tournament_id == ""  # 空目标：match 发现
     assert config.token_kind.value == "official"
     assert settings.source_namespace == "hangma-official"

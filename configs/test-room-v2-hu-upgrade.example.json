@@ -1,0 +1,17 @@
+{
+  "mode": "test_room",
+  "base_url": "https://10.240.169.190:18080",
+  "expected_tournament_id": "t_REPLACE_ME",
+  "known_guide_version": 27,
+  "audit_root": "artifacts/sessions/v2-hu-upgrade-test/audit",
+  "strategy": "weighted_heuristic_v2",
+  "insecure_hosts": ["10.240.169.190"],
+  "sse_enabled": false,
+  "max_completed_batches": 1,
+  "identities": [
+    {"slot": "A", "token_env": "HM_ROOM_QINGLONG", "strategy": "v2_hu_upgrade_v1"},
+    {"slot": "B", "token_env": "HM_ROOM_BAIHU"},
+    {"slot": "C", "token_env": "HM_ROOM_ZHUQUE"},
+    {"slot": "D", "token_env": "HM_ROOM_XUANWU"}
+  ]
+}

@@ -30,11 +30,14 @@ from .emergency import emergency_action
 from .observation_rules import enrich_observation
 from .interface import (
     ActionValidation,
+    CandidateValueFacts,
     RuleAnalysis,
     RuleCandidate,
     RuleCompleteness,
     RuleIssue,
     Settlement,
+    ValueAnalysisLimits,
+    ValueCoverage,
     WinDescription,
 )
 from .internal_types import WEALTH_CODE, WindowContext
@@ -62,8 +65,17 @@ class HangmaRules:
     # analyze：一个动作窗口的完整规则分析
     # ------------------------------------------------------------------
 
-    def analyze(self, observation: PlayerObservation) -> RuleAnalysis:
-        """先构造紧急动作，再隔离分析各动作族；不访问网络或时钟。"""
+    def analyze(
+        self, observation: PlayerObservation, *, value_limits: Optional[ValueAnalysisLimits] = None,
+    ) -> RuleAnalysis:
+        """先构造紧急动作，再隔离分析各动作族；不访问网络或时钟。
+
+        value_limits 默认关闭；显式启用后补充一次未来摸牌的条件结算。
+        增强失败只标记 value_facts，不改变已生成的合法候选和基础牌效。
+        """
+
+        if value_limits is not None and not isinstance(value_limits, ValueAnalysisLimits):
+            raise ValueError("value_limits 必须是 ValueAnalysisLimits 或 None")
 
         issues: list = [
             RuleIssue("observation", message) for message in observation.observation_issues
@@ -107,6 +119,8 @@ class HangmaRules:
                 candidates = ()
             candidates = self._filter_youcai(observation, context, candidates, issues)
             candidates = self._attach_facts(observation, context, candidates, issues)
+            if value_limits is not None:
+                candidates = self._attach_value_facts(observation, context, candidates, value_limits)
 
         candidates = _ensure_emergency_membership(candidates, emergency)
         if circle.active and circle.owner_seat is not None:
@@ -352,6 +366,25 @@ class HangmaRules:
             return candidates
         issues.extend(fact_issues)
         return attached
+
+    def _attach_value_facts(
+        self, observation: PlayerObservation, context: WindowContext,
+        candidates: Tuple[RuleCandidate, ...], limits: ValueAnalysisLimits,
+    ) -> Tuple[RuleCandidate, ...]:
+        """有限分值分析独立故障边界；异常不使合法动作族退化或丢失紧急动作。"""
+        try:
+            from .value_analysis import attach_value_facts
+
+            return attach_value_facts(
+                observation, context, _public_counts(observation),
+                len(observation.melds[observation.seat]), self.config, candidates, limits,
+            )
+        except Exception as exc:
+            failed = CandidateValueFacts(
+                coverage=ValueCoverage.UNAVAILABLE,
+                issues=(RuleIssue("value_analysis", "分值分析异常: {0}: {1}".format(type(exc).__name__, exc)),),
+            )
+            return tuple(replace(candidate, value_facts=failed) for candidate in candidates)
 
 
 # ---------------------------------------------------------------------------
