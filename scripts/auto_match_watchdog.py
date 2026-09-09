@@ -233,10 +233,19 @@ def restart():
 
 
 def maybe_restart():
-    """按需续开：环境变量 WATCHDOG_NO_RESTART=1 时收工不续开（用户指示收工时使用）。"""
+    """按需续开：账本 stopped 或环境变量 WATCHDOG_NO_RESTART=1 时收工不续开。
+
+    注意：stopped 只拦截"续开"，不拦截"结算"——已打完的房间仍会正常入账。
+    """
     if os.environ.get("WATCHDOG_NO_RESTART") == "1":
         print("WATCHDOG_NO_RESTART=1：按指示本房结算后不再续开，托管收工")
         return None
+    try:
+        if json.load(open(LEDGER, encoding="utf-8")).get("stopped"):
+            print("账本 stopped=true：本房结算后收工，不续开。恢复：改回 false 或删账本。")
+            return None
+    except (OSError, json.JSONDecodeError):
+        pass
     return restart()
 
 
@@ -261,13 +270,13 @@ def run_cycle():
         progress_line()
         return 0
 
-    if ledger.get("stopped"):
-        print("已止损收工，不再续开。累计 %d。恢复：将账本 stopped 改回 false 或删账本。"
-              % ledger["cumulative_total"])
-        return 0
-
     log = latest_session_log()
     if not log:
+        # 已收工且无会话记录：只报状态，不引导开房
+        if ledger.get("stopped"):
+            print("已收工（账本 stopped），累计 %d。恢复：改回 false 或删账本。"
+                  % ledger["cumulative_total"])
+            return 0
         # 无任何会话记录：引导启动第一房（expected_tournament_id 非 null 时拒绝）
         cfg = json.load(open(RUNTIME_CONFIG, encoding="utf-8"))
         if cfg.get("expected_tournament_id") is not None:
