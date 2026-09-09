@@ -8,10 +8,11 @@ from __future__ import annotations
 
 import time
 from dataclasses import dataclass, field
-from math import isfinite
+from math import isfinite, ulp
 from typing import Optional, Protocol
 
 from hangma_bot.policy.interface import DecisionBudget
+from hangma_bot.application.contracts import DEFAULT_POST_NETWORK_RESERVE_SEC
 
 
 class RuntimeClock(Protocol):
@@ -83,21 +84,24 @@ class ManualClock:
 
 @dataclass(frozen=True)
 class BudgetPolicy:
-    """把官方窗口时长切分为三段预算的比例策略。
+    """先扣固定动作网络余量，再分配计算与保底期限。
 
     三段语义见接口协议第 3 节：增强计算最早停止，保底选择次之，
-    最晚发送必须早于官方窗口结束，为 POST 在途留出余量。
+    比例仅分配可计算时间，网络余量不随窗口剩余时间缩小。
+    这里接受适配器的单调截止，不负责校正两端墙钟。
     """
 
     enhancement_fraction: float = 0.5
     fallback_fraction: float = 0.7
-    latest_send_fraction: float = 0.85
+    post_reserve_seconds: float = DEFAULT_POST_NETWORK_RESERVE_SEC
 
     def __post_init__(self) -> None:
         if not (0.0 < self.enhancement_fraction <= self.fallback_fraction):
             raise ValueError("预算比例必须满足 0 < 增强 <= 保底")
-        if not (self.fallback_fraction <= self.latest_send_fraction < 1.0):
-            raise ValueError("预算比例必须满足 保底 <= 最晚发送 < 1，为在途 POST 留余量")
+        if not self.fallback_fraction < 1.0:
+            raise ValueError("保底比例必须小于1，为提交前复核留出计算时间")
+        if not isfinite(self.post_reserve_seconds) or self.post_reserve_seconds <= 0:
+            raise ValueError("动作网络余量必须为有限正秒数")
 
     def build(
         self,
@@ -108,7 +112,7 @@ class BudgetPolicy:
         """按收到窗口时的剩余时间分配预算；未知官方截止才使用配置时长。
 
         输入均为本机单调时钟秒或持续秒数，不能传 Unix 时间。已过期窗口
-        返回零可用预算，不能通过收到旧状态重新获得一个完整动作窗口。
+        或不足固定网络余量时返回零预算，不能为旧状态缩短网络余量。
         """
 
         if not isfinite(received_at_monotonic) or not isfinite(timeout_seconds) or timeout_seconds <= 0:
@@ -118,6 +122,11 @@ class BudgetPolicy:
             if not isfinite(expires_at_monotonic):
                 raise ValueError("预算截止必须是有限单调时钟秒数")
             span = max(0.0, min(span, expires_at_monotonic - received_at_monotonic))
+        span = max(0.0, span - self.post_reserve_seconds)
+        # 绝对单调秒相减可能把“恰好只剩网络预算”变成一个浮点尾数。
+        # 只容忍该时基的两倍表示精度，不把纳秒级舍入误差当成可发预算。
+        if span <= 2 * max(ulp(received_at_monotonic), ulp(received_at_monotonic + span)):
+            span = 0.0
 
         return DecisionBudget(
             enhancement_deadline_monotonic=received_at_monotonic
@@ -125,7 +134,7 @@ class BudgetPolicy:
             fallback_deadline_monotonic=received_at_monotonic
             + span * self.fallback_fraction,
             latest_send_at_monotonic=received_at_monotonic
-            + span * self.latest_send_fraction,
+            + span,
         )
 
     def tighten(

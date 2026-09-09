@@ -143,7 +143,7 @@ def _require_positive_int(value: object, field_name: str) -> int:
 def _require_strategy(value: object) -> str:
     """校验启动器可装配的固定策略名；配置错误在启动子进程前报告。"""
 
-    choices = ("weighted_heuristic", "weighted_heuristic_v1", "weighted_heuristic_v2", "v2_hu_upgrade_v1", "safe_fallback", "claim_if_legal")
+    choices = ("weighted_heuristic", "weighted_heuristic_v1", "weighted_heuristic_v2", "weighted_heuristic_v2_white_guard", "v2_hu_upgrade_v1", "safe_fallback", "claim_if_legal", "catch_play_probe")
     if not isinstance(value, str) or value not in choices:
         raise ValueError("未知策略名；可用：" + " / ".join(choices))
     return value

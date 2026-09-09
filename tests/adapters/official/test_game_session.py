@@ -211,6 +211,56 @@ class TestNextItem:
 
 
 class TestSubmit:
+    @pytest.mark.parametrize("relay,gap,accepted", [(False, False, True), (True, False, False), (False, True, False)])
+    async def test_catch_owner_hand_discard_uses_current_circle_at_protocol_exit(
+        self, transport, clock, relay, gap, accepted,
+    ):
+        """协议出口允许可证明圈主手切；接力换主或缺史后仍拦截旧手牌。
+
+        这是受控报文的提交路径回归，Fake 接受响应不作为官方规则证据。
+        """
+        doc = load_fixture("state_response_snapshot_draw.json")
+        doc["seq"] = 8
+        doc["snapshot"]["dealer"] = 2
+        doc["snapshot"]["last_discard"]["seq"] = 7
+        doc["snapshot"]["god"]["catch_play"] = True
+        doc["snapshot"]["discards"] = [["1t"], ["9t"], ["白"], ["白" if relay else "东"]]
+        sequence = [
+            (94, "tile_discarded", 2, "白"),
+            (95, "tile_drawn", 3, None),
+            (96, "tile_discarded", 3, "白" if relay else "东"),
+            (97, "tile_drawn", 0, None),
+            (98, "tile_discarded", 0, "1t"),
+            (99, "tile_drawn", 1, None),
+            (100, "tile_discarded", 1, "9t"),
+            (101, "tile_drawn", 2, "5w"),
+        ]
+        doc["events"] = [
+            {"seq": seq - 93, "type": kind, "seat": seat, "tile": tile,
+             "data": {"catch_play": True} if kind == "tile_discarded" else {}}
+            for seq, kind, seat, tile in sequence if not (gap and seq == 97)
+        ]
+        transport.handler = _state_handler([_json(doc)])
+        session = make_game_session(transport=transport, clock=clock)
+        window = await asyncio.wait_for(session.next_item(), timeout=2)
+        assert isinstance(window, ObservedActionWindow)
+        if accepted:
+            from hangma_bot.hangma.catch_play import analyze_catch_play
+            assert analyze_catch_play(window.observation).owner_seat == 2, (
+                analyze_catch_play(window.observation), window.observation.public_history,
+            )
+        transport.handler = lambda **kw: (200, "{}")
+
+        outcome = await session.submit(_attempt(window.window_key, Discard(Tile("1w")), "discard:1w"))
+
+        if accepted:
+            assert isinstance(outcome, SubmitAccepted)
+            posts = [call for call in transport.calls if call.method == "POST"]
+            assert len(posts) == 1 and posts[0].json_body == {"action": "discard", "tile": "1w"}
+        else:
+            assert isinstance(outcome, SubmitNotSent)
+            assert not [call for call in transport.calls if call.method == "POST"]
+
     def _open_window(self, transport, clock, fixture: str = "state_response_snapshot_draw.json", audit=None):
         transport.handler = _state_handler([_json(load_fixture(fixture))])
         session = make_game_session(transport=transport, clock=clock, audit=audit)
@@ -234,6 +284,7 @@ class TestSubmit:
             AuditKind.HTTP_REQUEST, AuditKind.HTTP_REQUEST,
             AuditKind.RAW_PROTOCOL_STATE,       # E1：开桌 /state 响应原文
             AuditKind.AUTHORITATIVE_STATE,
+            AuditKind.AUTHORITATIVE_STATE,     # 普通弃牌快照恢复：记录跳过缓发
             AuditKind.SUBMISSION_INTENT,
             AuditKind.HTTP_REQUEST, AuditKind.HTTP_REQUEST,
             AuditKind.RAW_PROTOCOL_STATE,       # E3：动作 POST 响应原文

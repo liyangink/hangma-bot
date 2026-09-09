@@ -9,6 +9,7 @@ kernel-mvp-review 终裁（第 3 轮）确认：`action_key` 对未知类型抛
 import asyncio
 import time
 import unittest
+from dataclasses import replace
 
 from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.hangma.interface import RuleCandidate
@@ -112,6 +113,71 @@ class UnknownActionIsolationContracts(unittest.TestCase):
         # 坏候选被隔离；计划仍可产生（允许空候选计划，但不允许异常泄漏）。
         keys = [candidate.action_key for candidate in plan.candidates]
         self.assertNotIn("unknown:object", keys)
+
+
+class SubmitCancellationContracts(unittest.IsolatedAsyncioTestCase):
+    """取消仍穿透决策循环，只有明确的未发送证明能改变结果分类。"""
+
+    async def test_cancelled_before_send_and_unknown_send_have_distinct_audits(self):
+        from hangma_bot.application.audit import AuditTrail
+        from hangma_bot.application.contracts import (
+            AuditKind, AuditReceipt, ObservedActionWindow, SubmissionCancelledBeforeSend,
+        )
+        from hangma_bot.application.deadline import BudgetPolicy, ManualClock
+        from hangma_bot.application.decision_loop import RuntimeServices, run_action_window
+        from hangma_bot.application.ids import PrefixedUuidIds
+        from hangma_bot.kernel.actions import WindowKey, WindowPhase
+        from hangma_bot.kernel.observation import CompetitionContext
+        from hangma_bot.policy.weighted_heuristic import WeightedHeuristicPolicy
+
+        class Sink:
+            def __init__(self):
+                self.records = []
+
+            def emit(self, record):
+                self.records.append(record)
+                return AuditReceipt(True, False)
+
+        for before_send in (True, False):
+            with self.subTest(before_send=before_send):
+                entered = asyncio.Event()
+                attempts = []
+
+                class Session:
+                    async def submit(self, attempt):
+                        attempts.append(attempt)
+                        entered.set()
+                        try:
+                            await asyncio.Future()
+                        except asyncio.CancelledError:
+                            if before_send:
+                                raise SubmissionCancelledBeforeSend() from None
+                            raise
+
+                clock, sink = ManualClock(), Sink()
+                observation = replace(_observation(), phase="response_chi", turn_seat=3,
+                                      responding_seats=(0,))
+                key = WindowKey("g-contract", 1, 1, WindowPhase.RESPONSE_CHI, 0)
+                window = ObservedActionWindow(observation, key, 1, clock.now(), 1.0, clock.now() + 1)
+                audit = AuditTrail(sink, run_id="r", tournament_id="t", participant_id="p", clock=clock)
+                services = RuntimeServices(HangmaRules(_rule_config()), WeightedHeuristicPolicy(),
+                                           audit, clock, PrefixedUuidIds(), BudgetPolicy())
+                competition = CompetitionContext("t", None, None, None, None, (), 0)
+                task = asyncio.create_task(run_action_window(session=Session(), window=window,
+                    services=services, competition=competition, stage_attempt_id="s"))
+                try:
+                    await asyncio.wait_for(entered.wait(), timeout=1)
+                    task.cancel()
+                    with self.assertRaises(asyncio.CancelledError):
+                        await task
+                    outcomes = [r.payload for r in sink.records if r.kind is AuditKind.SUBMISSION_OUTCOME]
+                    self.assertEqual(len(attempts), 1)
+                    self.assertEqual(len(outcomes), 1)
+                    self.assertEqual(outcomes[0]["outcome"], "SubmitNotSent" if before_send else "SubmitAmbiguous")
+                    self.assertEqual(outcomes[0]["reason"], "cancelled_before_send" if before_send else "cancelled_in_flight")
+                finally:
+                    task.cancel()
+                    await asyncio.gather(task, return_exceptions=True)
 
 
 if __name__ == "__main__":

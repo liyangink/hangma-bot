@@ -17,10 +17,10 @@ from pathlib import Path
 
 from hangma_bot.kernel.identity import identity_digest
 
-GUIDE_VERSION = 23
-"""当前模拟规则的官方依据版本；v23 四白修订，不等同适配器已审查 API 版本。"""
+GUIDE_VERSION = 27
+"""2026-09-09抓取v27：继承四白修正，v26圈主响应取代v24旧平台兼容。"""
 
-GUIDE_CAPTURED_AT = "2026-09-08"
+GUIDE_CAPTURED_AT = "2026-09-09"
 """指南来源采集日期（YYYY-MM-DD）；见官方 v23/fan-calc/guide.json 夹具。"""
 
 

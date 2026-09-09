@@ -14,7 +14,7 @@ from hangma_bot.application.contracts import AuditKind
 
 @contextmanager
 def request_trace(emit, clock, method, path, *, timing=None, params=None, json_body=None,
-                  raw_source=None, raw_fields=None):
+                  raw_source=None, raw_fields=None, on_start=None, wall_clock=None):
     """围绕实际传输调用存证；调用方填 result，失败和取消自动保留分类。
 
 timing 的值使用本进程单调时钟秒；queued_at 是调度排队起点，
@@ -24,6 +24,13 @@ emit 必须遵循审计非阻塞、失败不抛的契约。
 """
     timing = timing if timing is not None else {}
     timing.update(request_id=uuid.uuid4().hex, transport_started_at_monotonic=clock())
+    if on_start is not None:
+        # 同一次单调采样用于发送账与审计，避免预占后提前开始释放计时。
+        # 这是本机调用边界，不声称是socket写出或服务端收到的时间。
+        on_start(timing["transport_started_at_monotonic"])
+    if wall_clock is not None:
+        timing["started_wall_unix_ms"] = wall_clock()
+        timing["started_clock_sample_end_monotonic"] = clock()
     trace = {"result": None}
     common = {"request_id": timing["request_id"], "endpoint": method + " " + path,
               "method": method, "params": dict(params or {}), "body": dict(json_body or {})}
@@ -48,6 +55,10 @@ emit 必须遵循审计非阻塞、失败不抛的契约。
     finally:
         timing.update(completed_at_monotonic=clock(), response_headers=headers,
                       outcome=outcome, error_type=error)
+        if wall_clock is not None:
+            # 单调采样区间包住Unix毫秒读数，避免用稍后的审计入队墙钟冒充收包时间。
+            timing["completed_wall_unix_ms"] = wall_clock()
+            timing["completed_clock_sample_end_monotonic"] = clock()
         emit(AuditKind.HTTP_REQUEST, {**common, "phase": "finished", "outcome": outcome,
              "http_status": status, "error_type": error, "request_timing": dict(timing)})
         if raw_source is not None:
@@ -57,11 +68,12 @@ emit 必须遵循审计非阻塞、失败不抛的契约。
 
 
 async def audited_request(transport, emit, clock, method, path, *, timing=None,
-                          raw_source="http_response", raw_fields=None, **kwargs):
+                          raw_source="http_response", raw_fields=None, on_start=None, wall_clock=None, **kwargs):
     """单次传输原样返回/抛出；全部出口有 request_id、耗时与脱敏原文。"""
     with request_trace(emit, clock, method, path, timing=timing,
                        params=kwargs.get("params"), json_body=kwargs.get("json_body"),
-                       raw_source=raw_source, raw_fields=raw_fields) as trace:
+                       raw_source=raw_source, raw_fields=raw_fields, on_start=on_start,
+                       wall_clock=wall_clock) as trace:
         result = await transport.request(method, path, **kwargs)
         trace["result"] = result
         return result

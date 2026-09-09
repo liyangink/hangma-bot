@@ -21,6 +21,7 @@ from fakes import (
 from hangma_bot.application.contracts import (
     AuditKind, GameFailed, GameFinished, ParticipantTerminal, ParticipantTerminalReason,
     TournamentStatus,
+    SubmissionCancelledBeforeSend,
 )
 from hangma_bot.application.deadline import ManualClock
 
@@ -290,7 +291,8 @@ async def test_finalization_retries_only_recoverable_read_failures(recoverable):
 
 
 @pytest.mark.asyncio
-async def test_external_cancel_seals_inflight_post_and_collects_terminal():
+@pytest.mark.parametrize("before_send", [False, True])
+async def test_external_cancel_classifies_post_and_collects_terminal(before_send):
     class InflightGame(QueuedGameSession):
         def __init__(self):
             super().__init__()
@@ -304,6 +306,8 @@ async def test_external_cancel_seals_inflight_post_and_collects_terminal():
                 await asyncio.Future()
             except asyncio.CancelledError:
                 self.submit_cancelled.set()
+                if before_send:
+                    raise SubmissionCancelledBeforeSend() from None
                 raise
 
     clock = ManualClock()
@@ -325,7 +329,9 @@ async def test_external_cancel_seals_inflight_post_and_collects_terminal():
             await task
         assert len(game.submitted) == 1
         outcomes = [r for r in sink.records if r.kind is AuditKind.SUBMISSION_OUTCOME]
-        assert len(outcomes) == 1 and outcomes[0].payload["outcome"] == "SubmitAmbiguous"
+        assert len(outcomes) == 1
+        assert outcomes[0].payload["outcome"] == ("SubmitNotSent" if before_send else "SubmitAmbiguous")
+        assert outcomes[0].payload["reason"] == ("cancelled_before_send" if before_send else "cancelled_in_flight")
         kinds = [r.kind for r in sink.records]
         assert kinds.index(AuditKind.GAME_FINISHED) < kinds.index(AuditKind.PARTICIPANT_FINISHED)
         assert game.closed and session.closed and sleep.pending == []

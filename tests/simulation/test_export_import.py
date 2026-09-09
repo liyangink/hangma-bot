@@ -147,8 +147,8 @@ def test_export_includes_manifest_fields():
     row = engine.export_hand(world, 1)
     assert row["replay_schema_version"] == 1
     assert row["rules_hash"] == "rules-hash-abc"
-    assert row["guide_version"] == 23
-    assert row["guide_captured_at"] == "2026-09-08"
+    assert row["guide_version"] == 27
+    assert row["guide_captured_at"] == "2026-09-09"
     assert row["rule_config"] == {
         "ruleset_version": "test",
         "base_score": 1,

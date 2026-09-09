@@ -43,6 +43,7 @@ from .interface import (
     ValueRoute,
 )
 from .internal_types import Counts34, TILE_INDEX, TILE_ORDER, WindowContext, counts_from_tiles
+from .public_tile_counts import PublicCounts34
 
 
 class _LimitReached(Exception):
@@ -165,8 +166,8 @@ def _bases(
     if isinstance(action, (Chi, Peng)):
         basis = _claim_basis(action, context, meld_count)
         codes = tuple(tile.code for tile in basis.hand_after)
-        # 吃碰合法候选已排除抓打圈；吃碰后直接是本人弃牌窗口，其间
-        # 没有他家插入打白的动作步骤。每个暗牌都可弃，无需另造过滤。
+        # v26 圈主有真实窗口即可吃碰；动作后直接是本人弃牌窗口，
+        # 其间没有他家插入打白换主。本人仍是圈主，每个暗牌均可弃。
         # 吃碰保持原爆头与链；随后每个合法弃牌分别走同源弃牌边界。
         for code in sorted(set(codes), key=TILE_INDEX.get):
             count, piao = _discard_chain(observation, code)
@@ -215,7 +216,7 @@ def _known_not_ready(candidate: RuleCandidate) -> bool:
 
 def _analyze_basis(
     basis: _ConditionalBasis, observation: PlayerObservation,
-    public_counts: Counts34, config: RuleConfig, budget: _ExpansionBudget,
+    public_counts: PublicCounts34, config: RuleConfig, budget: _ExpansionBudget,
     groups: _RouteGroups,
 ) -> None:
     counts = _validate_basis(basis)
@@ -244,16 +245,24 @@ def _analyze_basis(
     missing_own_piao = max(0, (observation.chain_piao or 0) - own_visible_whites)
     for code in TILE_ORDER:
         budget.consume()
-        unseen = _remaining(code, counts, public_counts, basis.waiting.newly_hidden)
-        if code == "白":
-            unseen -= missing_own_piao
-        if unseen <= 0:
+        # 未知公开重叠只影响需要该进张的路线，不能让无关牌种使整候选失效。
+        # 已知耗尽仍先跳过，避免增加正常完整观察的成胡检查工作量。
+        unseen = None
+        if public_counts[TILE_INDEX[code]] is not None:
+            unseen = _remaining(code, counts, public_counts, basis.waiting.newly_hidden)
+            if code == "白":
+                unseen -= missing_own_piao
+            if unseen <= 0:
+                continue
+        elif counts[TILE_INDEX[code]] >= 4:
             continue
         split = hand_analysis.win_split(hand + (Tile(code),), basis.waiting.melds)
         if split is None or special_rules.you_cai_bi_kao_block(
             config.you_cai_bi_kao, split, baotou
         ):
             continue
+        if unseen is None:
+            raise _Unavailable("成胡进张 {0} 的牌河/副露重叠缺少供牌证据，剩余张数未知".format(code))
         result = settlement.settle_win(
             split, basis.chain_count, basis.chain_piao, baotou,
             config.base_score, observation.seat, observation.dealer_seat,
@@ -262,7 +271,7 @@ def _analyze_basis(
 
 
 def _for_candidate(
-    observation: PlayerObservation, context: WindowContext, public_counts: Counts34,
+    observation: PlayerObservation, context: WindowContext, public_counts: PublicCounts34,
     meld_count: int, config: RuleConfig, candidate: RuleCandidate,
     limits: ValueAnalysisLimits, budget: _ExpansionBudget,
 ) -> CandidateValueFacts:
@@ -318,7 +327,7 @@ def _for_candidate(
 
 
 def attach_value_facts(
-    observation: PlayerObservation, context: WindowContext, public_counts: Counts34,
+    observation: PlayerObservation, context: WindowContext, public_counts: PublicCounts34,
     meld_count: int, config: RuleConfig, candidates: Tuple[RuleCandidate, ...],
     limits: ValueAnalysisLimits,
 ) -> Tuple[RuleCandidate, ...]:

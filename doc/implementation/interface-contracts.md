@@ -1,5 +1,7 @@
 # 第一阶段接口协议
 
+2026-09-09 当前增补：指南 v27；v26 的公开圈主通过可选 `RulePublicState.catch_play_owner_seat` 接入，保持快照水位、旧 JSON 缺字段兼容和同一规则源。已替代下文历史 v8 跳窗兼容及旧 v24 限定审查，详见文末“官方圈主事实与v26响应修订”。新增字段不代表推进赛事目标或模型接口冻结。
+
 2026-09-07 制品工具兼容性增补：线上冻结接口和原始审计 schema 不变。`offline.postgame.finalize_session` 消费关闭的 run 与官方原文，输出不可覆盖的独立分析 job；`offline.observation_audit.audit_observations` 仅做赛后复核，不改变玩家观察。统一牌谱既有 `rule_config`、`guide_version`、`guide_captured_at` 字段保留 source 中真实元数据；旧配置缺少本地规则版本时，正式行的 `rule_config` 保持为空，局部配置仍留在 source 中。分析实现单独记录在包内 `references/analysis-provenance.json`，不替换历史线上版本。诊断单局明确 `student_observation=false`。CLI 成功只表示制品生成成功，完整性、历史覆盖和规则检查分别表达，详见 [操作指引](../operations.md)。
 
 > 状态：接口基线 v1.1（2026-09-04 集成阶段契约收口）；实行受控变更  
@@ -13,6 +15,8 @@
 > 代码定义：`src/hangma_bot/**/interface.py` 与 `application/contracts.py`
 
 ## 1. 设计决策
+
+2026-09-08 v24 测试房抓打开窗收口：外部接口与 codec 不变。模拟规则推进在弃牌完成后抓打标记仍为 true 时直接进入下一摸牌，圈主非白关圈后恢复响应；本地语义 `hangma-mvp-v8-catch-windows`、模拟证据指南版本 24。线上始终以实际 `phase/responding_seats` 为前提，圈主有牌形不等于有响应窗口。普通圈官方反例、财飘组合未覆盖和运行源码冻结范围见[实测报告](../../review/piao-window-alignment-2026-09-08/live-t_fee4ab73c089.md)。同次适配器仅定向豁免已审查的 v24 scoped 条目，通用 API 审查版本仍为 15。
 
 2026-09-07 海选接口需求修订（提案，未冻结）：[目标分值策略方案 §4—5](./qualifier-utility-v1.md#4-模块结构与依赖需求)拟保留 `BotPolicy.choose(DecisionRequest, DecisionBudget)`，扩展现有载荷：`CompetitionContext` 的可选赛事事实包、`RuleCandidate` 的立即结算与有界路线事实、`RuleAnalysis` 的可选结算尺度，以及 `DecisionPlan` 的可选赛事诊断。事实包不含晋级概率，规则模块不读取赛事榜单；具体 `competition` 由策略调用，不预建通用预测接口。另补全榜/进度审计和离线可更新情景输入，`MatchResult` 仍表示桌赛结果。落码时同步本文件、codec、契约测试及全部调用方；本提案不表示现有冻结契约已修改，也不切换默认策略。
 
@@ -61,6 +65,12 @@ flowchart LR
 
 409 刷新仍复用原预算，不能因为拿到新快照获得新的完整 1 秒或 3 秒。
 
+2026-09-09固定网络预算修订：`application.contracts.DEFAULT_POST_NETWORK_RESERVE_SEC=0.10` 为应用预算和官方出口共享的默认网络余量（秒），依据v27测试房实际HTTP往返分布及动作机会筛查确定，非官方保证。先从有效窗口截止扣100毫秒，再把可计算时间按50%/70%分配给增强和保底；网络余量不再按剩余时间百分比缩小。余量不足时三期限置为接收时刻，规则、策略、保底均不能强发。`BudgetPolicy.post_reserve_seconds` 替代原 `latest_send_fraction`；四个端口、`DecisionBudget`与`ActionAttempt`字段不变。
+
+官方出口取 `min(调用方最迟发送, 会话截止-100毫秒)`，不从已经扣过网络的调用方截止重复扣除。已知吃窗查询为完成后留50毫秒本地处理和100毫秒POST预算，GET自身仍留100毫秒。普通弃牌主动缓发保留更严格的300毫秒及唤醒保护。两端钟差仍由适配器截止映射负责，本轮没有用网络余量冒充时钟校正。细节、取舍和测试见[固定网络预算](../../review/fixed-network-budget-2026-09-09/README.md)。
+
+新增审计元数据不改变原编码版本：`RUN_MANIFEST` 的 `budget_policy_version=fixed-post-reserve-v1`、`post_network_reserve_sec` 标注实际运行参数；`DECISION_INPUT.budget_policy` 保存 `version/post_reserve_seconds/enhancement_fraction/fallback_fraction`。持续时间单位为秒，比例只分配计算区间；旧日志缺这些字段时按原预算时间点解释，不重新套用当前默认值。
+
 ## 4. 规则和策略协议
 
 应用层先调用 `HangmaRules.emergency_action()`，再调用 `analyze()`。规则实现可以在内部更高效地共享结果，但必须保证复杂动作族异常时紧急路径仍可用。
@@ -98,6 +108,8 @@ flowchart LR
 
 `facts=None` 表示未生产牌效事实——紧急路径按设计不运行复杂分析，或实现尚未覆盖该动作族；消费方必须按未知处理，不得据此推断数值。规则模块保留保守假设与 `DEGRADED` 语义（见 `hangma/RULES_EVIDENCE.md`）。
 
+2026-09-09，`hangma-mvp-v10-public-counts` 修正公开牌计数：官方牌河保留被吃碰明杠的弃牌，因此牌河与副露必须按同一张物理牌去重。碰扣一次供牌重叠；吃用连续公开事件或上家完整牌河中的唯一交集确证；四张已公开即没有未见牌，补杠不重复扣供牌。缺少确证且存在多种重叠时，仅在规则模块内部使用可空计数；消费未知牌种的候选返回已有 `ANALYSIS_FAILED`，数值为空并附 `RuleIssue`，不得返回截断有效牌表或把未知当0。其他候选、合法 Hu 与独立紧急路径保留。`CandidateFacts/UsefulTileFact` 的公开类型与 JSON 形状未改变，历史标签仍按原规则版本保存；新分析须重算，不能混用。见[定向回归](../../tests/unit/hangma/test_public_tile_counts.py)及[修复记录](../../review/public-tile-counts-2026-09-09/README.md)。
+
 ### 4.2 V1 策略排序语义（2026-09-05）
 
 新增可选策略 `weighted_heuristic_v1`，旧名 `weighted_heuristic` 与其评分/权重源码保留为 V0，默认不切换。V1 按“规则候选中的合法 Hu、可信事实候选、未知事实候选”分层；可信层按总分降序、同分按 action_key。未知层按 action_key；全部候选未知时优先尚可用的规则紧急候选。整体 RuleAnalysis 降级不抹去其他完整事实，杠的补牌未知标记也不等同事实分析失败。
@@ -122,11 +134,51 @@ V0 与依赖 V0 的 `claim_if_legal` 在线上组合根和已有离线入口通�
 
 实现不增加协议字段、编码或结果类型；审计保持 `rank` 执行顺序，原始请求与实际评分理由同时保留。旧视图兼容说明记录在计划中，不代表动作失败。覆盖见 `tests/unit/policy/test_heuristic_v2.py`、正式工厂与启动器测试。
 
+### 4.5 普通弃白保护与独立保底（2026-09-08）
+
+这是本地选牌偏好，不是新增官方禁牌规则；`RuleAnalysis.legal_candidates`、`validate()`、`DecisionRequest` 和所有序列化字段保持原契约。新配置名 `weighted_heuristic_v2_white_guard` 由组合根装配 `WhiteDiscardGuardPolicy(ComparableHeuristicPolicyV2())`，后续策略可复用该包装器。
+
+- 本人出牌、观察 `baotou=False`，且合法集内存在动作键一致、未拒绝的非财神弃牌时，包装器仅在输入副本中过滤财神弃牌。`Hu`、吃碰杠和其余事实不改写；原始请求保留作审计与应用复核依据。
+- `baotou=True` 时不阻断弃白，不在策略层重算飘或声称飘值得做。没有未拒绝非财神弃牌时仍保留白板，覆盖强制摸切白和候选耗尽退路。预算、明确拒绝和取消语义不变。
+- 当前共享紧急路径在普通窗口从右优先非财神，强制抓打仍打刚摸牌；不调用主分析或手牌搜索。全为财神或只有摸牌时仍提供弃牌。单列摸牌与已含摸牌的有效手牌形态采用等价口径。
+- 旧请求若仍带合法未拒绝的白板紧急候选，正常委托计划完成后将它放在末位并标明兼容原因，不能先于非白候选；空计划和异常仍由应用原降级路径处理。计划保留连续 `rank`，不按总分重新排序。
+
+共享保底改变使用本地版本 `hangma-mvp-v6-white-guard` 记录，并继承 v5 四白语义；官方指南版本没有因本次修改而改变。旧策略评分源码未改，但重算规则的保底行为已改变，历史复现应使用原提交或已记录请求。固定规则重算与原请求比较不得混为策略收益。检查见 `tests/contracts/test_white_discard_guard.py`、策略单测及组合根/启动器/离线装配测试。
+
+### 4.6 抓打圈归属与接力（2026-09-08）
+
+本地语义 `hangma-mvp-v7-catch-owner` 继承 v6 保财保护。官方 `god.catch_play` 原值继续保存在 `RulePublicState.catch_play`；`hangma.catch_play.analyze_catch_play()` 统一产生当前有效圈、圈主座位、最新开圈事件序号与证据来源。四个外部接口及观察编码不扩展。`WindowContext.catch_play` 仅表示本座是否受限，不再复制全局标记。
+
+| 权威事件／状态 | 当前圈的转移 |
+| --- | --- |
+| 任意人弃白，含被迫摸切白、未构成财飘的弃白 | 以该座为当前圈主，以本事件 seq 为新起点；同座续白也更新起点 |
+| 非当前圈主弃非白 | 保持当前圈；原圈主在换主后也属于其他家 |
+| 当前圈主弃非白 | 该弃牌后结束；不在其摸牌时提前结束 |
+| 普通摸牌、暗杠、杠补牌 | 不换主、不关圈；不以固定摸牌次数或墙上时间计寿命 |
+| 圈主吃碰 | 动作本身不换主；是否获得窗口仍需官方对拍，后续弃牌按上两条处理 |
+| 单局终态／新单局发牌 | 不沿用本单局的有效圈权限；原终态 god 值保留作审计 |
+
+圈状态只使用已确认事件或可证明的当前快照，不因拟选动作、请求发出或网络结果不确定提前改变。财飘计番仍按本人弃牌前爆头和动作链独立计算；圈主接力不转移、清空或合并他人的飘杠链。
+
+圈主证明先检查最新弃白至已消费水位的连续可见事件后缀。缺史时，只有当前快照水位等于已消费水位、四家已见弃牌分别兼容当前牌河顺序、每座全部白板弃牌数与历史事件逐张相等、最新弃白者牌河仍以白结尾且无后续关圈矛盾，才允许恢复。白板不能被吃碰，故该对账可排除漏记的新圈；重复／冲突／未来序号及跨单局、未知关键事件不能参与。该证明依赖适配器已有的“历史只属于当前单局”输入契约，不能把不同单局的牌河与事件混用。恢复不把 `history_complete=False` 改为 True。否则保持圈主未知并标记降级，不能猜当前行动者为圈主。
+
+主规则、独立紧急路径和官方提交出口共享这一判定。已证明圈主可手切；非圈主或归属未知时保留摸切约束。圈主吃碰只在已有 `response_peng/response_chi` 且本人属于响应成员、牌形满足时生成，使用 `catch_play.owner_response` 明示仍待官方执行核验；测试须同时记录平台开窗与提交裁决。模拟暂保留已有响应时序，该时序属于待对拍假设，不能作为官方允许圈主吃碰的证据或已验证的策略收益依据。
+
+模拟弃白原子替换唯一当前圈主，弃牌事件记录全局后态；四家投影相同全局标记。他家摸牌保留无牌值事件以维护序号连续，不能泄露牌墙或他家暗牌。证据分级、12 次异座接力与 4 次同座续白见 [交付记录](../../review/piao-window-alignment-2026-09-08/circle-ownership.md)。
+
+### 4.7 抓打圈测试房探针（2026-09-08）
+
+用户授权通过主动弃白提高规则覆盖，新增可选 `catch_play_probe`。组合根注入原 V2，包装器只重排已经生成的计划：本人出牌窗口优先合法弃白（含起手白板且可高于胡）；实际响应成员窗口优先吃、碰、明杠，其余保持 V2 原排名。它不包装普通弃白保护，不新建候选、不取消其他家的摸切限制，也不读取他家手牌。明确拒绝过滤、异常、取消和预算沿用底层与应用层。
+
+运行配置强制 `mode=test_room`，正式赛事、测试赛事及自由赛均拒绝该策略名。允许四身份共同采用或按身份单独覆盖；默认策略名、V0/V1/V2 评分与本地规则版本保持。审计以 `catch-play-probe-v1` 标注定向重排，保留 V2 分数和有效权重；`rank` 才是执行顺序，这批记录属于规则诊断，不能并入策略强度评估或常规训练标签。
+
+四身份配置模板与有界执行计划见 [测试方案](../../review/piao-window-alignment-2026-09-08/probe-plan.md)。现有决策、提交和原始报文记录足够核验，不扩展外部接口或审计编码。汇总按窗口与动作尝试去重，分开记录开窗、合法候选、提交接受／拒绝；没有捕获窗口不能直接写成规则禁止。
+
 ## 5. 动作提交协议
 
 2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；四白例外已在 v23 修订中取消，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。
 
-2026-09-07 生产配置按场隔离：每个 game_id 独立持有请求队列、频率额度、并发计数和429冷却，赛事查询另用独立调度。每场最多2个在途HTTP，其中state最多1个；动作POST另由ActionGate保证串行。M≤7时每场state为2/s、burst=1；M=8—16时为1/s，以静态分配满足指南v18每用户16/s上限，不靠场间共享队列争抢额度。重新打开同一game_id沿用原额度，不重置冷却。仅连接池按Token共享，默认64连接、48保活连接，覆盖16场请求、SSE与赛事查询。state 429只冷却本场state；其他端点429只冷却所属场或赛事控制通道。 `RequestKind.STATE`包括正常轮询和恢复；OTHER不扣state额度，匹配另受10次/分钟限制。四个外部端口不变。
+2026-09-08 用户共享state调度：同一user_id的所有game_id共用滚动一秒最多16次的实际发送账及state 429冷却，撤销每场2/s或1/s静态份额。每场仍最多2个在途HTTP，其中state最多1个，动作POST另由ActionGate保证串行；各场和赛事控制通道的HTTP槽、OTHER冷却独立。state最早在新建用户账一秒后发起，以跨过旧进程计数窗口；控制请求与POST不等。重新打开场次不重置用户账或重启等待。连接池按Token共享，默认64连接、48保活连接；不同用户的账本和冷却隔离。依据为2026-09-08抓取的指南v25，服务器内部计次算法仍未公开。`RequestKind.STATE`包括正常轮询和恢复；OTHER不扣state额度，匹配另受10次/分钟限制。四个外部端口不变。
 
 安全不变量是“同一场任意时刻最多一个在途动作 POST”，不是“整个窗口永远只允许尝试一次”。
 
@@ -166,7 +218,7 @@ ActionAttempt
 
 `stage_attempt_id` 是应用层在每次阶段实际运行尝试开始时生成的审计标识，不是官方字段。`stage_crashed` 后的新运行必须获得新标识，旧标识下的成绩默认作废。
 
-资源作用域沿用上述GameSession约束：赛事控制和各场独立调度，同Token仅共享连接池。 `open_game()`按active_games动态打开，同场复用，active_games为空不等于终态。
+资源作用域沿用上述GameSession约束：同用户各场共享state发送账与state冷却，赛事控制和各场独立持有HTTP槽及OTHER冷却；连接池按Token共享。`open_game()`按active_games动态打开，同场复用，active_games为空不等于终态。
 
 ## 7. 审计协议
 
@@ -305,7 +357,7 @@ kernel JSON 编码保留 schema_version=1 的可选字段增补；新编码完�
 
 2026-09-07完赛修订：适配器在同一观察入口调用纯函数 `reconcile_observation(before, after, confirmed_action=...)`，将明确成功的本人动作与新快照核对后补足上述可空事实。规则模块验证场次、座位、单局、水位和本人牌面/链变化；适配器只管理确认的寿命。拒绝或模糊结果不能传入 `confirmed_action`。没有成功确认时，只允许按未改变的本人链状态保留已知事实；本次杠补来源还须证明仍为同次摸牌。官方 `rule_state`、事件、水位及 `history_complete` 均不改写，四个外部端口与数据字段不变。依据v20及2026-09-07实际响应，详见[规则回归来源](../../tests/fixtures/official/v20/README.md)。
 
-`BudgetPolicy.build(received_at_monotonic, timeout_seconds, expires_at_monotonic=None)` 在配置时长和实际剩余时间中取更短值分配三段预算；过期预算为零。`tighten` 将 409 新边界与原预算逐项取最小值。刷新即使更晚也不能延长；提交出口还检查会话已知截止。官方 Unix 截止转换后的单调值按同一窗口缓存且只收紧，时间准确性仍受主机与服务端时钟偏差约束。
+`BudgetPolicy.build(received_at_monotonic, timeout_seconds, expires_at_monotonic=None)` 在配置时长和实际剩余时间中取更短值，扣固定100毫秒网络余量后分配计算区间；过期或不足网络余量时预算为零（详见§3）。`tighten` 将409新边界与原预算逐项取最小值，同截止不重复扣费、更晚截止不延期；提交出口再用会话截止减固定网络余量约束过宽调用方。官方Unix截止转换后的单调值按同一窗口缓存且只收紧，时间准确性仍受主机与服务端时钟偏差约束。
 
 离线观察核对使用 `compare_observations(actual, reference, boundary_verified=True)`，调用方须先凭独立取证确认边界；同 seq/phase 不是充分依据。结果含 `status/state_status/history_status`、字段路径差异和未检查项，分别使用 `passed/failed/not_checked`。未知字段或缺史不能因两边都为空而通过。本工具不进入线上路径，不使用隐藏牌重写策略输入。
 
@@ -441,3 +493,45 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 `RUN_MANIFEST` 增加实际 `base_score`、`you_cai_bi_kao` 及 `value_analysis_limits`（未开启为 null；开启记录 `max_expansions/max_routes_per_candidate`）。候选的既有 `policy_weights` 包含 `base_policy/upgrade_weight/risk_version/safety_margin/risk_cells`。`DECISION_INPUT` 继续使用原可选 `value_facts` 编解码，未知、缺失或降级不能当作完整证明。配置解析、公开生产组装、十场并发与磁盘审计、旧 V2 路径及截止/失败/409 测试覆盖全部新增调用链。
 
 仅显式测试房候选开启，并按平台初始化 `RuleConfig` 核对校准范围；不支持的模式在本地配置解析时报错，不支持的实际规则在报名/到位之前终止。抓打圈模拟差异尚未修复，当前候选只用于诊断测试房，不能据原模拟风险表发布。见[运行核验与已知限制](../../review/v2-hu-upgrade-runtime-2026-09-08/README.md)。
+
+## 用户共享查询与原始截止契约（2026-09-08）
+
+**四个外部端口、`ObservedActionWindow` 和 `ActionAttempt` 字段不变。**共享账本、排队目的及未来边界提示均属于官方适配器内部；应用层继续提供原始动作预算，策略不读取频率额度。有明确窗口的查询按最迟安全发起时刻排序，未知现状及新事件发现按场公平处理，不再以恢复类型固定压过其他已知窗口。
+
+| 适配器内部约束 | 时间、取消与副作用语义 |
+| --- | --- |
+| `RequestScheduler.acquire.deadline_monotonic` | 本机单调时钟秒，表示最迟发起查询的时刻，到点不再授予；为 `None` 时没有已知发起期限。它不是HTTP响应完成期限。 |
+| `not_before_monotonic` | 本机单调时钟秒，表示最早允许发起；为 `None` 时可立即参与排序，不因存在空闲额度提前查询未来阶段。 |
+| `protect_state_query` | 以单调时钟秒登记 `ready_at_monotonic` 与 `latest_start_at_monotonic`，返回可取消的本场提示。后续 `acquire(..., reservation=提示)` 消费该需求，提示本身不发GET、不构成第二份实际计次。 |
+| `reserve_only=True` | 先预占额度与本场HTTP槽，防止多个协程同时领取最后名额；尚未进入传输时取消可通过 `release()` 退预占。 |
+| `mark_sent()` / `release()` | 前者在真正进入传输前以当前单调时刻记录发送；后者幂等释放HTTP槽，已经发送的成功、失败、超时与取消均不退次数。 |
+
+状态GET的响应完成预算由会话独立计算，409恢复仍不得超过 `ActionAttempt.latest_send_at_monotonic`，不得把临近的查询发起截止错误转换为极短读取超时。等待和恢复都不能使同一窗口重新获得完整时长；POST始终通过现有动作门及最迟发送检查。
+
+同场保持一个有效待查询目的和最多一个在途state。peng→chi边界到点时取消并等待旧长轮询回收，再取得本场state槽；同时完成的权威结果先消费。旧窗口目的过期时撤销并写审计，只保留必要的当前状态或下阶段确认；不伪造原事件、不回退水位，也不把已发GET从账上扣除。自己弃牌回显按水位正常消费，不创造本人的吃碰窗口。
+
+2026-09-09已接入普通弃牌缓发（`DiscardPacing`，在查询繁忙时利用我方宽裕弃牌时间短暂等待）。默认对正常摸牌增量生效：同用户滚动state用量达到10次，且本机保守起点后1秒尚未到达、原预算仍有余量时，补足剩余时间；策略计算时间已经计入。快照恢复、重试、白板及特殊动作链跳过。等待不占HTTP槽或state额度，醒后复核窗口和收紧的发送截止。时间依据来自前次已确认状态的查询发起时刻，不要求快照有毫秒截止，也不依赖服务端钟差。SSE继续关闭。实现、取消契约及32个新模型场景见[缓发验证](../../review/adapter-rate-identity-2026-09-08/discard-pacing-2026-09-09/README.md)；本地结果不等于实网收益。
+
+
+## 提交前取消的受控扩展（2026-09-09）
+
+**取消仍向外传播；明确尚未发送时必须诚实记录为未发送。**四个外部端口的方法和字段不变，新增取消子类型 `SubmissionCancelledBeforeSend(asyncio.CancelledError)`：会话只能在能证明本次尚未进入HTTP传输时抛出。应用层捕获后写 `SubmitNotSent / cancelled_before_send`，再传播取消，不能自动重试。普通 `CancelledError` 继续按 `SubmitAmbiguous / cancelled_in_flight` 处理。
+
+本次调用方为普通弃牌缓发等待；它发生在HTTP槽申请与POST intent之前。场次关闭取消等待后返回 `SubmitNotSent(session_closed)`。外部任务取消则抛上述子类型。实际POST已经进入传输时仍沿用原模糊提交封锁和审计常量。契约回归见[异常契约](../../tests/contracts/test_exception_contracts.py)，运行取消与终局收尾见[应用回归](../../tests/unit/application/test_graceful_finalization.py)。本次不把缓发状态暴露给策略，也不改变官方动作JSON。
+
+
+## 官方圈主事实与v26响应修订（2026-09-09）
+
+**官方v26已修复圈主响应，最新抓取指南为v27；恢复快照可以直接识别圈主。**受控增加 `RulePublicState.catch_play_owner_seat: Optional[int] = None`，仅保存玩家依法可见的圈主座位0—3，不携带任何暗牌；官方 `god.god_discarder_seat=-1`（无圈）或旧报文缺字段映射为空。该事实以 `snapshot_seq` 为锚点，后续圈主变化由规则模块核验连续公开后缀；缺口不能继续使用旧圈主权限。
+
+同样，快照的 `catch_play=false` 只证明快照水位时无圈；`consumed_seq` 更晚时须推进后缀中的新弃白与关圈。后缀缺口或冲突不能继续断言无圈，而是限制权限并标记归属未知；连续新弃白可以重新建立归属。回归见[圈主契约](../../tests/contracts/test_catch_owner_v26.py)。
+
+规则模块优先消费官方圈主字段；旧牌谱无字段时仍保留连续弃白后缀及快照白板对账。官方适配器负责解析/投影，模拟器投影当前唯一圈主，kernel序列化增加可选键且继续读取旧记录。离线牌谱核验从公开弃牌投影全局圈与唯一圈主，仅在连续历史能证明时填入身份；按牌谱源指南版本区分 v26 响应人数与旧平台直接摸牌兼容，不重写原始事件。四个外部端口、动作结构和策略choose接口不变；此次字段是已有公开状态的兼容扩展，kernel JSON版本保持1。
+
+圈内非白弃牌只向当前圈主开放响应，吃仍须来自上家且本人已有吃摊少于2组。其他家弃白立即换主；白板本身不允许吃碰杠。圈主吃碰明杠/补杠及任意出牌不受圈限制；非圈主只摸切、暗杠与自摸胡。圈主弃非白结束当前圈；弃白重开。弃白是否计飘仍须满足原爆头条件，不把普通弃白自动当作财飘。依据[官方v27全文](../references/official-guide-v27-content.txt)与[变更日志](../references/official-guide-version-v27.json)，采集日期2026-09-09。
+
+2026-09-09内部HTTP时序审计增加`started_wall_unix_ms`、`completed_wall_unix_ms`（本机Unix毫秒，非服务端时间）及`started_clock_sample_end_monotonic`、`completed_clock_sample_end_monotonic`（单调秒，分别与原开始/完成时刻包住墙钟采样）。仅state/action当前提供，旧记录及其他端点允许缺失。发送账与HTTP开始审计共用一次单调采样；运行清单增加`state_scheduler_version`与`state_arrival_guard_sec`（秒）。四个外部端口及动作预算类型不变。
+
+## 2026-09-09 期限映射运行事实（无外部端口变更）
+
+四个冻结端口、`ActionAttempt` 和 `ObservedActionWindow` 字段不变。适配器内部的期限映射区间只用于收紧交付/提交期限及安排阶段查询；策略不读取用户额度或时钟样本。运行清单新增 `deadline_clock_version=snapshot-interval-v1`，权威状态审计可带 `deadline_clock`（版本、样本数、是否可用、区间宽度秒、冲突重置次数）。`deadline_is_estimated=false`仅说明官方提供期限，不能理解为零时钟误差。赛后规则诊断沿用来源的 `guide_version`，不把历史未知版本补成当前版本。

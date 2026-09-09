@@ -42,7 +42,6 @@ from hangma_bot.kernel.config import TournamentConfig
 from .request_audit import audited_request
 from . import projector
 from .dto import (
-    KNOWN_GUIDE_VERSION,
     parse_guide_version,
     parse_me,
     parse_rules_config,
@@ -63,7 +62,7 @@ from .errors import (
 )
 from .game import OfficialGameSession
 from .notify import StreamBudget
-from .scheduler import Priority, RequestKind, RequestScheduler
+from .scheduler import DEFAULT_STATE_ARRIVAL_GUARD_SEC, Priority, RequestKind, RequestScheduler
 from .transport import OfficialTransport, TransportConfig
 
 
@@ -100,9 +99,12 @@ class OfficialTournamentSession:
         sse_budget: Optional[StreamBudget] = None,  # 每 Token 共享 SSE 预算
     ) -> None:
         self._transport = OfficialTransport(token, transport_config)
-        # 赛事控制独立调度；open_game 按实际 M 静态分配每场额度和并发槽。
+        # 控制面独享连接槽，各场共享用户16/s状态账；新账先跨过旧进程
+        # 可能留下的一秒计数窗口。初始化控制请求与动作POST无需等待。
         self._scheduler = scheduler if scheduler is not None else RequestScheduler(
-            clock=monotonic_clock, rate_per_second=14.0, burst=1.0, max_concurrent=2)
+            clock=monotonic_clock, sleep=retry_sleep if retry_sleep is not None else asyncio.sleep,
+            max_concurrent=2, state_startup_delay_sec=1.0,
+            state_arrival_guard_sec=DEFAULT_STATE_ARRIVAL_GUARD_SEC)
         self._monotonic = monotonic_clock
         self._wall_ms = wall_clock_unix_ms
         self._audit = audit
@@ -201,14 +203,12 @@ class OfficialTournamentSession:
                 priority=Priority.BACKGROUND,
                 with_auth=False,
             )
-            # v24（2026-09-08）明确 scoped 参赛令牌不变。本会话随后强制
-            # 核对 scoped 归属；全局令牌在初始化时拒绝，不进入报名/动作。
-            guide_parsed = parse_guide_version(guide_raw, reviewed_breaking_versions=frozenset({24}))
+            guide_parsed = parse_guide_version(guide_raw, scoped_tournament=True)
         except AuthError:
             return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "guide/version 401")
         except (OfficialError, DtoError, ValueError) as exc:
             return self._terminal(ParticipantTerminalReason.FATAL_PROTOCOL_ERROR, "guide/version: " + str(exc)[:120])
-        if guide_parsed.version > KNOWN_GUIDE_VERSION and guide_parsed.has_unknown_breaking_change:
+        if guide_parsed.has_unknown_breaking_change:
             return self._terminal(
                 ParticipantTerminalReason.INCOMPATIBLE_GUIDE,
                 "指南 v{} 存在未审查 breaking 变更".format(guide_parsed.version),
@@ -294,8 +294,7 @@ class OfficialTournamentSession:
                     }
                     for change in guide_parsed.changes
                 ],
-                    "checked_at": "initialize",
-                    "reviewed_breaking_versions": [24],
+                "checked_at": "initialize",
             },
         )
         return SessionBootstrap(
@@ -334,19 +333,16 @@ class OfficialTournamentSession:
                 priority=Priority.BACKGROUND,
                 with_auth=False,
             )
-            # 自动匹配会话复用此边界检查，其全局令牌不能继承 scoped 例外。
-            reviewed = frozenset({24}) if self._registration and self._registration.scoped else frozenset()
-            guide_parsed = parse_guide_version(guide_raw, reviewed_breaking_versions=reviewed)
+            guide_parsed = parse_guide_version(guide_raw, scoped_tournament=True)
         except AuthError:
             return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "guide/version 401")
         except (OfficialError, DtoError, ValueError) as exc:
             return self._terminal(ParticipantTerminalReason.FATAL_PROTOCOL_ERROR, "guide/version: " + str(exc)[:120])
         self._emit_audit(
             AuditKind.AUTHORITATIVE_STATE,
-            {"guide_version": guide_parsed.version, "guide_updated_at": guide_parsed.updated_at,
-             "checked_at": "stage_boundary", "reviewed_breaking_versions": sorted(reviewed)},
+            {"guide_version": guide_parsed.version, "guide_updated_at": guide_parsed.updated_at, "checked_at": "stage_boundary"},
         )
-        if guide_parsed.version > KNOWN_GUIDE_VERSION and guide_parsed.has_unknown_breaking_change:
+        if guide_parsed.has_unknown_breaking_change:
             return self._terminal(
                 ParticipantTerminalReason.INCOMPATIBLE_GUIDE,
                 "阶段边界发现指南 v{} 存在未审查 breaking 变更".format(guide_parsed.version),
@@ -466,6 +462,7 @@ class OfficialTournamentSession:
             timing=reg.config.timing,
             monotonic_clock=self._monotonic,
             wall_clock_unix_ms=self._wall_ms,
+            retry_sleep=self._retry_sleep,
             audit=self._audit,
             audit_context=self._audit_context,
             sse_enabled=self._sse_enabled,

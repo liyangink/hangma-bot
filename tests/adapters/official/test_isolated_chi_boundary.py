@@ -1,4 +1,4 @@
-"""生产分场调度回归：另一场429不能使本场错过1秒吃窗口。"""
+"""共享状态额度的边界回归：无冷却时保吃窗，用户429时不补发旧窗请求。"""
 import asyncio
 import json
 
@@ -21,7 +21,7 @@ class NoJitter:
 
 @pytest.mark.parametrize("max_games", [4, 10, 16])
 @pytest.mark.parametrize("other_game_rate_limited", [False, True])
-async def test_chi_window_is_observed_after_deferred_peng_pass(other_game_rate_limited, max_games):
+async def test_chi_boundary_respects_shared_user_cooldown_and_discards_expired_purpose(other_game_rate_limited, max_games):
     clock, transport, audit = VirtualClock(), FakeTransport(), FakeAuditSink()
     scheduler = RequestScheduler(clock=clock.monotonic, sleep=clock.sleep,
                                  rate_per_second=14, burst=1, jitter_rng=NoJitter())
@@ -74,9 +74,18 @@ async def test_chi_window_is_observed_after_deferred_peng_pass(other_game_rate_l
         if other_game_rate_limited:
             peer_task = asyncio.create_task(start_peer_at_boundary())
         second = await clock.run(active.next_item())
-        assert second.window_key.phase is WindowPhase.RESPONSE_CHI, (
+        expected = WindowPhase.DRAW if other_game_rate_limited else WindowPhase.RESPONSE_CHI
+        assert second.window_key.phase is expected, (
             f"M={max_games}; 其他场429={other_game_rate_limited}; 下次可见阶段={second.window_key.phase}; "
             f"单调时间={clock.monotonic():.3f}s，chi在2.000s结束")
+        if other_game_rate_limited:
+            # 429明确是用户state总额度；不能继续让本场越过冷却发废请求。
+            # 原吃窗目的被取消并审计，随后直接取得当前出牌窗口。
+            cancelled = [r.payload for r in audit.records
+                         if r.payload.get("state_query_cancel_reason") == "expired_window_purpose"]
+            assert len(cancelled) == 1
+            assert cancelled[0]["replacement_purpose"] == "current_state_sync"
+            assert clock.monotonic() >= 2.02
     finally:
         if peer_task:
             peer_task.cancel()

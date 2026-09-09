@@ -4,7 +4,7 @@
 向听与有效牌数学只允许存在于 hangma。本模块是候选事实的唯一生产点——
 按动作族的机械语义把候选映射为「动作后暗牌状态」，调用 hand_analysis
 得到向听与有效牌，再用「本人视角」的公开信息把有效牌折算成剩余张数估计
-（4 张物理上限 - 本人手牌 - 四家牌河与副露 - 动作新公开的牌），组装成
+（4 张物理上限 - 本人手牌 - 去重的公开牌 - 动作新公开的牌），组装成
 不可变 CandidateFacts 挂到 RuleCandidate.facts。
 
 关键不变量（与受控契约一致）：
@@ -41,6 +41,7 @@ from .interface import (
     UsefulTileFact,
 )
 from .internal_types import TILE_INDEX, Counts34, WindowContext, counts_from_tiles
+from .public_tile_counts import PublicCounts34
 
 _AREA = "candidate_facts"
 """稳定 RuleIssue.area；engine 聚合时据此区分事实生产降级。"""
@@ -80,17 +81,19 @@ def _remove_codes(codes: Tuple[str, ...], removal: Dict[str, int]) -> Tuple[str,
 def _remaining(
     code: str,
     hand_after_counts: Counts34,
-    public_counts: Counts34,
+    public_counts: PublicCounts34,
     newly_hidden: Dict[str, int],
 ) -> int:
     """从本人视角估计某牌种在牌墙/他家手牌中的剩余张数（0-4）。
 
-    口径：4 张物理上限 - 动作后本人手牌 - 四家牌河与副露（公开可见）
+    口径：4 张物理上限 - 动作后本人手牌 - 去重的牌河与副露（公开可见）
     - 本动作新公开的牌（弃牌进入本人牌河、吃碰杠进入本人副露）。
     不含对他家手牌的推测，未来牌墙不可见（契约 §4.1）。
     """
 
     index = TILE_INDEX[code]
+    if public_counts[index] is None:
+        raise FactsAnalysisError("公开牌 {0} 的牌河/副露重叠缺少供牌证据，剩余张数未知".format(code))
     return max(
         0,
         4 - hand_after_counts[index] - public_counts[index] - newly_hidden.get(code, 0),
@@ -100,7 +103,7 @@ def _remaining(
 def _useful_facts(
     summary,
     hand_after: Tuple[Tile, ...],
-    public_counts: Counts34,
+    public_counts: PublicCounts34,
     newly_hidden: Dict[str, int],
 ) -> Tuple[UsefulTileFact, ...]:
     """把 hand_analysis 的有效牌按公开信息折算成剩余张数估计。"""
@@ -122,7 +125,7 @@ def _useful_facts(
 def _waiting_facts(
     hand_after: Tuple[Tile, ...],
     melds: int,
-    public_counts: Counts34,
+    public_counts: PublicCounts34,
     newly_hidden: Dict[str, int],
     followup: Optional[str],
     replacement_unknown: bool,
@@ -191,7 +194,7 @@ def _claim_basis(action, context: WindowContext, meld_blocks: int) -> _WaitingBa
 
 
 def _best_followup(
-    basis: _WaitingBasis, public_counts: Counts34, action_key: str
+    basis: _WaitingBasis, public_counts: PublicCounts34, action_key: str
 ) -> Tuple[CandidateFacts, str]:
     """枚举全部合法后续弃牌，选最佳等待状态并组装事实。
 
@@ -266,7 +269,7 @@ def _gang_basis(action: Gang, context: WindowContext, meld_blocks: int) -> _Wait
 def _facts_for_candidate(
     candidate: RuleCandidate,
     context: WindowContext,
-    public_counts: Counts34,
+    public_counts: PublicCounts34,
     meld_blocks: int,
 ) -> CandidateFacts:
     """单个候选的事实；无法可靠分析时抛 FactsAnalysisError。"""
@@ -330,14 +333,14 @@ def _facts_for_candidate(
 
 def attach_facts(
     context: WindowContext,
-    public_counts: Counts34,
+    public_counts: PublicCounts34,
     meld_blocks: int,
     candidates: Tuple[RuleCandidate, ...],
 ) -> Tuple[Tuple[RuleCandidate, ...], Tuple[RuleIssue, ...]]:
     """给全部候选附加事实；单候选失败收敛为 ANALYSIS_FAILED + RuleIssue。
 
-    public_counts 是四家牌河与副露的 34 维可见牌计数（engine 从
-    PlayerObservation 提取）；meld_blocks 是本人已副露面子数（吃/碰/杠
+    public_counts 是四家牌河与副露去重后的 34 维可见牌计数；None表示
+    某牌种重叠缺证据，消费时逐候选降级。meld_blocks 是本人已副露面子数（吃/碰/杠
     各计 1，补杠不增加）。返回的新候选保持输入顺序与动作键不变。
     """
 

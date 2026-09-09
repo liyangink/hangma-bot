@@ -133,13 +133,16 @@ class QueuedChooser:
 
 
 def total_tiles(world: WorldState) -> int:
-    """当前局牌张守恒计数：暗牌（含摸牌）+ 副露 + 牌河 + 剩余牌墙 = 136。"""
+    """物理牌张守恒；官方牌河保留被鸣牌历史，须扣除与副露重叠的一张。"""
     state = world.progression
     count = 0
     for seat in state.seats:
         count += len(seat.hand) + (1 if seat.drawn is not None else 0)
         for meld in seat.melds:
             count += len(meld.tiles)
+            if meld.from_seat is not None:
+                # 吃/碰/明杠及由碰转补杠仅扣原供牌一次；暗杠没有供牌者。
+                count -= 1
         count += len(seat.discards)
     # 剩余墙 = 可摸区（back - front）+ 保留区 20：杠上补牌只收缩 wall_back，
     # 不能用 len(wall) - wall_front（会把已补走的牌仍计入墙内，高估 1）。

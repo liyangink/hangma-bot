@@ -1,0 +1,17 @@
+{
+  "mode": "test_room",
+  "base_url": "https://platform.invalid",
+  "expected_tournament_id": "REPLACE_WITH_TEST_ROOM_ID",
+  "known_guide_version": 27,
+  "audit_root": "./artifacts/sessions/rules-rate-smoke-room/audit",
+  "strategy": "weighted_heuristic_v2",
+  "sse_enabled": false,
+  "max_completed_batches": 1,
+  "identities": [
+    {"slot": "A", "token_env": "HM_RULES_RATE_TOKEN_A"},
+    {"slot": "B", "token_env": "HM_RULES_RATE_TOKEN_B"},
+    {"slot": "C", "token_env": "HM_RULES_RATE_TOKEN_C"},
+    {"slot": "D", "token_env": "HM_RULES_RATE_TOKEN_D", "strategy": "catch_play_probe"}
+  ],
+  "restart": {"max_restarts": 0}
+}

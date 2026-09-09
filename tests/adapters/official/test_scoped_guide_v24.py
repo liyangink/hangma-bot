@@ -22,7 +22,7 @@ def guide():
 def test_scoped_review_does_not_change_raw_guide_or_global_default():
     original = guide()
     assert parse_guide_version(original).has_unknown_breaking_change
-    parsed = parse_guide_version(original, reviewed_breaking_versions=frozenset({24}))
+    parsed = parse_guide_version(original, scoped_tournament=True)
     assert parsed.version == 24 and not parsed.has_unknown_breaking_change
     assert list(parsed.changes) == original["changes"]
 
@@ -32,7 +32,7 @@ def test_reviewed_v24_does_not_mask_future_or_malformed_breaking(unreviewed):
     original = guide()
     original["version"] = 25
     original["changes"].append({"version":unreviewed, "type":"breaking", "summary":"未审查"})
-    assert parse_guide_version(original, reviewed_breaking_versions=frozenset({24})).has_unknown_breaking_change
+    assert parse_guide_version(original, scoped_tournament=True).has_unknown_breaking_change
 
 
 @pytest.mark.parametrize("future_breaking", [False, True])

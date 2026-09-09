@@ -15,6 +15,8 @@ from .safe_fallback import SafeFallbackPolicy
 from .weighted_heuristic import WeightedHeuristicPolicy
 from .heuristic_v1 import ReliableHeuristicPolicyV1
 from .heuristic_v2 import ComparableHeuristicPolicyV2
+from .white_discard_guard import WhiteDiscardGuardPolicy
+from .catch_play_probe import CatchPlayProbePolicy
 from .weights_v1 import HeuristicWeightsV1, DEFAULT_WEIGHTS_V1
 from .weights import DEFAULT_WEIGHTS, HeuristicWeights
 
@@ -34,6 +36,8 @@ __all__ = [
     "WeightedHeuristicPolicy",
     "ReliableHeuristicPolicyV1",
     "ComparableHeuristicPolicyV2",
+    "WhiteDiscardGuardPolicy",
+    "CatchPlayProbePolicy",
     "HeuristicWeightsV1",
     "DEFAULT_WEIGHTS_V1",
     "ClaimIfLegalPolicy",

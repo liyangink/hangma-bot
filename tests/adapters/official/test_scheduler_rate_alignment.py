@@ -124,20 +124,22 @@ async def test_valid_retry_after_zero_is_preserved_when_local_state_quota_is_fre
 
 
 async def test_retry_after_never_precedes_local_state_window_or_shortens_existing_cooldown():
+    from hangma_bot.adapters.official.scheduler import RequestKind
+
     clock = FakeClock(start=0.0)
     scheduler = RequestScheduler(clock=clock.monotonic, sleep=instant_sleep(clock), jitter_rng=NoJitter())
     for _ in range(16):
         (await scheduler.acquire(Priority.POLL)).release()
     clock.advance(.25)
-    scheduler.note_rate_limited(.1)
+    scheduler.note_rate_limited(.1, request_kind=RequestKind.STATE)
     assert scheduler.cooldown_remaining == .75
-    scheduler.note_rate_limited(3.0)
+    scheduler.note_rate_limited(3.0, request_kind=RequestKind.STATE)
     clock.advance(.1)
-    scheduler.note_rate_limited(.1)
+    scheduler.note_rate_limited(.1, request_kind=RequestKind.STATE)
     assert scheduler.cooldown_remaining == pytest.approx(2.9)
 
 
-async def test_action_deadline_still_applies_during_shared_429_cooldown():
+async def test_action_deadline_still_applies_during_local_other_429_cooldown():
     from hangma_bot.adapters.official.scheduler import DeadlineExceeded, RequestKind
 
     clock = FakeClock(start=0.0)

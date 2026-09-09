@@ -9,6 +9,11 @@ __pycache__/
 *.so
 *.pyd
 *.dylib
+# 类型与覆盖率工具缓存
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 # 经过清单与源码摘要校验的共享制品允许入库；开发目录产物仍忽略。
 !prebuilt/hangma/**/*.so
 dist/
@@ -17,6 +22,17 @@ build/
 runs/
 /runs
 *.local.json
+# 官方下载中断/失败残留（archive_download 先写 .partial 再原子改名；正常均在被忽略的 runs/ 与 artifacts/ 内，此处兜底防止误提交）
+*.partial
+*.http-error
+# 本地代理技能工作区（watchdog 等管线脚本如需团队共享，应提升到 scripts/ 正式入库，而不是提交本目录）
+.agents/
+# review/ 入库卫生：源码快照与再打包归档不再新增入库（历史已入库文件不受影响；大体积证据走 datasets/ 精选提升）
+review/**/*.tar.gz
+# 评审过程本地锁文件
+review/**/*.lock
+# 清理冷却区：待观察期的原始数据暂存（处理完成并验证备份后再移入；冷却期满整目录删除，不入库）
+.backup/
 .team-work/
 # 审计封存包与本地派生数据集（大文件；runs/ 不入库，故本地派生无法由仓库重建）
 bundles/

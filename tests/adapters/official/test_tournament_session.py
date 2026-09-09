@@ -21,6 +21,7 @@ from hangma_bot.application.contracts import (
 from _official_testkit import load_fixture, make_tournament_session
 
 REFERENCE_GUIDE_V8 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v8.json"
+REFERENCE_GUIDE_V24 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v24.json"
 
 TARGET = RuntimeTarget(
     mode=RuntimeMode.TEST_ROOM,
@@ -33,12 +34,12 @@ def _guide_doc() -> dict:
     return json.loads(REFERENCE_GUIDE_V8.read_text(encoding="utf-8"))
 
 
-def _initialize_handler(transport, *, me_doc=None, detail_name="tournament_detail.json") -> None:
+def _initialize_handler(transport, *, me_doc=None, detail_name="tournament_detail.json", guide_doc=None) -> None:
     me = me_doc or load_fixture("me.json")
 
     def handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):
         if path == "/portal/api/guide/version":
-            return 200, json.dumps(_guide_doc())
+            return 200, json.dumps(guide_doc if guide_doc is not None else _guide_doc())
         if path == "/api/me":
             return 200, json.dumps(me)
         if path == "/api/tournaments/me/rules":
@@ -51,6 +52,26 @@ def _initialize_handler(transport, *, me_doc=None, detail_name="tournament_detai
 
 
 class TestInitialize:
+    async def test_v24_scoped_discovery_success(self, transport, clock) -> None:
+        doc = json.loads(REFERENCE_GUIDE_V24.read_text(encoding="utf-8"))
+        _initialize_handler(transport, guide_doc=doc)
+        session = make_tournament_session(clock=clock, transport=transport)
+        outcome = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert not isinstance(outcome, ParticipantTerminal)
+        assert outcome.tournament_id == TARGET.expected_tournament_id
+        assert outcome.guide.version == 24
+
+    async def test_v24_does_not_allow_global_token_in_scoped_session(self, transport, clock) -> None:
+        doc = json.loads(REFERENCE_GUIDE_V24.read_text(encoding="utf-8"))
+        me = load_fixture("me.json")
+        me["tournament_id"] = ""
+        _initialize_handler(transport, guide_doc=doc, me_doc=me)
+        session = make_tournament_session(clock=clock, transport=transport)
+        outcome = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert isinstance(outcome, ParticipantTerminal)
+        assert outcome.reason is ParticipantTerminalReason.TARGET_MISMATCH
+        assert all(call.method == "GET" for call in transport.calls)
+
     async def test_discovery_success(self, transport, clock) -> None:
         _initialize_handler(transport)
         session = make_tournament_session(clock=clock, transport=transport)
@@ -97,6 +118,37 @@ class TestInitialize:
 
 
 class TestRegisterAndReady:
+    @pytest.mark.parametrize("unknown_change", [False, True])
+    async def test_v24_boundary_checks_reviewed_content(self, transport, clock, unknown_change) -> None:
+        _initialize_handler(transport)
+        session = make_tournament_session(clock=clock, transport=transport)
+        boot = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert not isinstance(boot, ParticipantTerminal)
+        guide = json.loads(REFERENCE_GUIDE_V24.read_text(encoding="utf-8"))
+        if unknown_change:
+            guide["changes"][0]["detail"] += "\n未审查的阶段规则"
+        _initialize_handler(transport, detail_name="tournament_stage_open.json", guide_doc=guide)
+        update = await asyncio.wait_for(session.next_update(), timeout=2)
+        assert not isinstance(update, ParticipantTerminal)
+        assert update.stage != boot.initial_snapshot.stage
+
+        def boundary_handler(*, method, path, **kw):
+            if path == "/portal/api/guide/version":
+                return 200, json.dumps(guide)
+            assert method == "POST" and path == "/api/tournaments/me/ready"
+            return 200, "{}"
+
+        transport.handler = boundary_handler
+        transport.calls.clear()
+        result = await asyncio.wait_for(session.ready(update.stage), timeout=2)
+        if unknown_change:
+            assert isinstance(result, ParticipantTerminal)
+            assert result.reason is ParticipantTerminalReason.INCOMPATIBLE_GUIDE
+            assert all(call.method == "GET" for call in transport.calls)
+        else:
+            assert result.status is OperationStatus.ACCEPTED
+            assert any(call.method == "POST" for call in transport.calls)
+
     async def _initialized(self, transport, clock):
         _initialize_handler(transport)
         session = make_tournament_session(clock=clock, transport=transport)

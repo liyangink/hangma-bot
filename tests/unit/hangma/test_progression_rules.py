@@ -130,33 +130,26 @@ def test_wealth_discard_skips_windows_and_circle_flag():
     assert t2.state.window == "pending_draw"  # 弃白无响应窗口，直接下家摸牌
     assert t2.state.seats[0].catch_play is True
     assert dict(t2.events[0].data)["catch_play"] is True
-    # 圈内普通弃牌仍开碰窗口（响应合法性由 analyze 按圈拦截）。
-    t3 = attach_draw(t2.state, Tile("1w"))
-    t4 = resolve(t3.state, ((1, Discard(Tile("1b"))),))
-    assert t4.state.window == "response_peng"
-    assert t4.state.responding == (2, 3, 0)
-    assert t4.state.seats[0].catch_play is True  # 圈主旗标仍在
-    t5 = resolve(t4.state, ((2, Pass()), (3, Pass()), (0, Pass())))
-    assert t5.state.window == "response_chi"
-    t6 = resolve(t5.state, ((2, Pass()),))
-    assert t6.state.window == "pending_draw"
-    assert t6.state.pending_draw.seat == 2
-    # 圈内：座位 2/3 依次摸打（普通弃牌仍开窗口），圈主再摸牌。圈主弃牌后旗标清除。
-    t7 = attach_draw(t6.state, Tile("4w"))
-    t8 = resolve(t7.state, ((2, Discard(Tile("1b"))),))
-    assert t8.state.window == "response_peng"
-    t9 = resolve(t8.state, ((3, Pass()), (0, Pass()), (1, Pass())))
-    t10 = resolve(t9.state, ((3, Pass()),))
-    t11 = attach_draw(t10.state, Tile("5w"))
-    t12 = resolve(t11.state, ((3, Discard(Tile("1b"))),))
-    t13 = resolve(t12.state, ((0, Pass()), (1, Pass()), (2, Pass())))
-    t14 = resolve(t13.state, ((0, Pass()),))
-    t15 = attach_draw(t14.state, Tile("6w"))
-    assert t15.state.window == "draw"
-    assert t15.state.turn_seat == 0
-    assert t15.state.seats[0].catch_play is True
-    t16 = resolve(t15.state, ((0, Discard(Tile("6w"))),))
-    assert t16.state.seats[0].catch_play is False
+    # v26：三家依次摸切；每次只给圈主碰窗，供牌者为上家时才有吃窗。
+    state = t2.state
+    for seat, code in ((1, "1w"), (2, "4w"), (3, "5w")):
+        drawn = attach_draw(state, Tile(code))
+        discarded = resolve(drawn.state, ((seat, Discard(Tile(code))),))
+        assert discarded.state.window == "response_peng"
+        assert discarded.state.responding == (0,)
+        assert discarded.state.seats[0].catch_play is True
+        passed = resolve(discarded.state, ((0, Pass()),))
+        if seat == 3:
+            assert passed.state.window == "response_chi" and passed.state.responding == (0,)
+            passed = resolve(passed.state, ((0, Pass()),))
+        assert passed.state.window == "pending_draw"
+        assert passed.state.pending_draw.seat == (seat + 1) % 4
+        state = passed.state
+    owner_draw = attach_draw(state, Tile("6w"))
+    assert owner_draw.state.turn_seat == 0 and owner_draw.state.seats[0].catch_play
+    closed = resolve(owner_draw.state, ((0, Discard(Tile("6w"))),))
+    assert closed.state.seats[0].catch_play is False
+    assert closed.state.responding == (1, 2, 3)
 
 
 def test_win_settlement_exact_chain():

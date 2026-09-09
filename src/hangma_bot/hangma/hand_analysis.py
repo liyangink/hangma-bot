@@ -293,6 +293,7 @@ def win_split(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> Optional[Win
     if meld_set_count == 0:
         if _chiitoi_pairs(counts, whites) == 7:
             singles = [i for i, value in enumerate(counts) if value % 2 == 1]
+            # 豪华只数自然四张：三张同牌加白可补成两个对子，不能算豪华。
             # v23：补落单的白板已参与其他对子，不能再把四真白重复计豪华。
             luxury = sum(1 for value in counts if value == 4) + (
                 1 if whites == 4 and not singles else 0

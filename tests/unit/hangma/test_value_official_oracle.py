@@ -174,6 +174,14 @@ def test_visible_tile_conservation_followup_legality_and_chain_conditions(name, 
     visible = Counter(full)
     visible.update(t.code for river in obs.discards for t in river)
     visible.update(t.code for seat in obs.melds for m in seat for t in m.tiles)
+    # 原始 A：座位2吃123条，上家牌河交集仅1条；F：座位1吃123条，
+    # 上家也仅1条；三个碰分别由牌河中的4饼、东、6饼供牌。官方保留
+    # 被鸣牌的牌河记录，每个实例仅扣一次重叠，不改动冻结的原观察。
+    overlaps = {"A": ("1t",), "F": ("1t", "4b", "东", "6b")}.get(name, ())
+    for code in overlaps:
+        assert any(t.code == code for river in obs.discards for t in river)
+        assert any(t.code == code for seat in obs.melds for m in seat for t in m.tiles)
+        visible[code] -= 1
     for candidate in analyzed(name, enabled).legal_candidates:
         facts = candidate.value_facts
         assert facts.coverage is ValueCoverage.COMPLETE, (name, candidate.action_key, facts.issues)

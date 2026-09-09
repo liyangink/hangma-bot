@@ -76,7 +76,7 @@ async def test_official_100ms_remaining_bounds_all_decision_deadlines(transport,
         assert window.timeout_seconds == 1.0
         assert window.expires_at_monotonic == pytest.approx(clock.monotonic() + 0.1)
         result = budget(window)
-        assert result.latest_send_at_monotonic - clock.monotonic() == pytest.approx(0.085)
+        assert result.latest_send_at_monotonic == clock.monotonic()
         assert result.enhancement_deadline_monotonic <= result.fallback_deadline_monotonic <= result.latest_send_at_monotonic < window.expires_at_monotonic
         assert not queue
     finally:

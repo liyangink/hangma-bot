@@ -1,5 +1,7 @@
 # 官方赛事流程与多阶段晋级规则
 
+> 最新版本核对：2026-09-09 同步[指南 v27](./references/official-guide-version-v27.json)，页面更新 2026-09-08。v25 两摊吃与 v26 圈主响应属于牌局规则，不改变本页的海选、入围赛和决赛结构；v27 门户榜单修订不能解释为更换晋级规则。下列 v8/v15 日期保留为原始流程采集记录，当前接入兼容范围见[API 记录](./official-platform-api-v2.md)。
+
 > 官方来源：`https://10.240.169.190:18080/portal/#flow-stage`  
 > 抓取时间：2026-09-03（v8 基线）；2026-09-05 二次同步至指南 v15（v13 分桌在线过滤见 §6.6；v15 自动匹配默认房配置上调见 §6.7）  
 > 同步检查：`GET /portal/api/guide/version` 返回 `version=15`、`updated_at=2026-09-05`；多阶段协议本身由 v7 于 2026-09-02 引入，v8 另新增赛程 `description` 字段。完整响应见[官方 v15 指南版本快照](./references/official-guide-version-v15.json)，指南正文见[官方 v15 指南全文](./references/official-guide-v15-content.txt)，当前示例见[官方 v7 多阶段最小 Bot](./references/official_minimal_bot_v7.py)。  

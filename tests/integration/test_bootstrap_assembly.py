@@ -132,6 +132,16 @@ class TestConfigValidation:
 
 
 class TestAssembly:
+    def test_probe_strategy_is_explicitly_assembled_without_white_guard(self, tmp_path):
+        from hangma_bot.policy import CatchPlayProbePolicy, ComparableHeuristicPolicyV2
+
+        config = runtime_config_from_mapping(_valid(
+            audit_root=str(tmp_path), strategy="catch_play_probe",
+        ))
+        assembled = build_runtime(config, session_factory=lambda: _StubSession())
+        assert isinstance(assembled.policy, CatchPlayProbePolicy)
+        assert isinstance(assembled.policy.base_policy, ComparableHeuristicPolicyV2)
+
     def test_build_runtime_object_graph(self, tmp_path):
         config = runtime_config_from_mapping(_valid(audit_root=str(tmp_path)))
         assembled = build_runtime(
@@ -394,3 +404,19 @@ def test_v2_can_be_selected_without_changing_default(tmp_path):
     )),session_factory=lambda:_StubSession())
     assert isinstance(runtime.policy,ComparableHeuristicPolicyV2)
     assert runtime_config_from_mapping(_valid()).strategy=='weighted_heuristic'
+
+
+def test_white_guard_is_explicitly_assembled_with_v2_weights(tmp_path):
+    """新候选在统一组合根接线，记录底层实际权重，旧 V2 仍可单独选择。"""
+    from hangma_bot.bootstrap import DEFAULT_RULESET_VERSION, _effective_weights_snapshot
+    from hangma_bot.policy import ComparableHeuristicPolicyV2, WhiteDiscardGuardPolicy
+
+    runtime = build_runtime(runtime_config_from_mapping(_valid(
+        audit_root=str(tmp_path / "guard"), strategy="weighted_heuristic_v2_white_guard",
+    )), session_factory=lambda: _StubSession())
+
+    assert isinstance(runtime.policy, WhiteDiscardGuardPolicy)
+    assert isinstance(runtime.policy.base_policy, ComparableHeuristicPolicyV2)
+    assert _effective_weights_snapshot(runtime.policy) == _effective_weights_snapshot(ComparableHeuristicPolicyV2())
+    assert DEFAULT_RULESET_VERSION == "hangma-mvp-v10-public-counts"
+    assert runtime_config_from_mapping(_valid()).strategy == "weighted_heuristic"

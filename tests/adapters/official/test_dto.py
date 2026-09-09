@@ -23,6 +23,35 @@ REFERENCE_GUIDE_V8 = Path(__file__).parents[3] / "doc" / "references" / "officia
 REFERENCE_GUIDE_V11 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v11.json"
 REFERENCE_GUIDE_V14 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v14.json"
 REFERENCE_GUIDE_V15 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v15.json"
+REFERENCE_GUIDE_V24 = Path(__file__).parents[3] / "doc" / "references" / "official-guide-version-v24.json"
+
+
+def test_v24_review_is_limited_to_scoped_tournament_tokens() -> None:
+    """2026-09-08 官方原文豁免 scoped 路径，全局令牌入口仍需独立审查。"""
+
+    doc = json.loads(REFERENCE_GUIDE_V24.read_text(encoding="utf-8"))
+    assert parse_guide_version(doc).has_unknown_breaking_change is True
+    parsed = parse_guide_version(doc, scoped_tournament=True)
+    assert parsed.version == 24
+    assert parsed.has_unknown_breaking_change is False
+    assert parsed.changes == tuple(doc["changes"])
+
+
+@pytest.mark.parametrize("change", [
+    {"version": 24, "type": "breaking", "summary": "同版本新增破坏性语义"},
+    {"version": 25, "type": "breaking", "summary": "未来版本"},
+    {"version": "24", "type": "breaking", "summary": "畸形版本"},
+])
+def test_scoped_review_does_not_hide_other_breaking_changes(change) -> None:
+    doc = json.loads(REFERENCE_GUIDE_V24.read_text(encoding="utf-8"))
+    doc["changes"].append(change)
+    assert parse_guide_version(doc, scoped_tournament=True).has_unknown_breaking_change is True
+
+
+def test_scoped_review_rejects_rewritten_v24_entry() -> None:
+    doc = json.loads(REFERENCE_GUIDE_V24.read_text(encoding="utf-8"))
+    doc["changes"][0]["detail"] += "\n新增未知限制"
+    assert parse_guide_version(doc, scoped_tournament=True).has_unknown_breaking_change is True
 
 
 def test_reference_guide_v8_snapshot_parses() -> None:
@@ -67,7 +96,8 @@ def test_reference_guide_v15_snapshot_parses() -> None:
 
     doc = json.loads(REFERENCE_GUIDE_V15.read_text(encoding="utf-8"))
     parsed = parse_guide_version(doc)
-    assert parsed.version == KNOWN_GUIDE_VERSION == 15
+    assert parsed.version == 15
+    assert KNOWN_GUIDE_VERSION >= parsed.version  # 历史快照仍兼容，当前版本独立推进。
     assert parsed.updated_at
     assert parsed.has_unknown_breaking_change is False
     assert len(parsed.changes) >= 38  # v1—v15 全量变更（含回溯扩充的自动匹配条目）

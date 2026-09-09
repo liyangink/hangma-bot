@@ -16,14 +16,14 @@ from hangma_bot.application.deadline import BudgetPolicy
 from hangma_bot.application.audit_codec import decision_request_from_json
 
 
-def test_official_100ms_does_not_become_configuration_timeout():
+def test_official_100ms_cannot_shrink_fixed_network_reserve():
     budget = BudgetPolicy().build(100.0, 3.0, 100.1)
-    assert budget.enhancement_deadline_monotonic == pytest.approx(100.05)
-    assert budget.latest_send_at_monotonic == pytest.approx(100.085)
+    assert budget.enhancement_deadline_monotonic == 100.0
+    assert budget.latest_send_at_monotonic == 100.0
 
 
 def test_missing_deadline_estimates_but_expired_deadline_has_no_budget():
-    assert BudgetPolicy().build(100.0, 3.0).latest_send_at_monotonic == pytest.approx(102.55)
+    assert BudgetPolicy().build(100.0, 3.0).latest_send_at_monotonic == pytest.approx(102.9)
     assert BudgetPolicy().build(100.0, 3.0, 99.9).latest_send_at_monotonic == 100.0
 
 
@@ -56,8 +56,9 @@ async def _run(window, *, submit_handler=None, rules=None, clock=None, policy=No
 
 
 @pytest.mark.asyncio
-async def test_expired_window_never_reaches_policy_or_submit():
-    window = replace(make_window(make_observation()), expires_at_monotonic=99.9, deadline_is_estimated=False)
+@pytest.mark.parametrize("expiry", [99.9, 100.05, 100.1])
+async def test_expired_or_network_only_window_never_reaches_policy_or_submit(expiry):
+    window = replace(make_window(make_observation()), expires_at_monotonic=expiry, deadline_is_estimated=False)
     game, _, policy, rules = await _run(window)
     assert not game.submitted
     assert not policy.calls
@@ -66,7 +67,7 @@ async def test_expired_window_never_reaches_policy_or_submit():
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("new_expiry,expected_latest,expected_attempts", [
-    (100.2, 100.185, 2), (110.0, 100.85, 2), (100.05, 100.1, 1),
+    (100.3, 100.2, 2), (110.0, 100.9, 2), (100.2, 100.1, 1), (100.05, 100.1, 1),
 ])
 async def test_409_refresh_only_tightens_original_budget(new_expiry, expected_latest, expected_attempts):
     clock = ManualClock()
@@ -114,7 +115,7 @@ async def test_rules_policy_and_audit_receive_complete_same_observation():
         chain_piao=None, gang_draw=True, observation_issues=("history_gap",),
     )
     rules = RecordingRules()
-    window = replace(make_window(observation), expires_at_monotonic=100.1, deadline_is_estimated=False)
+    window = replace(make_window(observation), expires_at_monotonic=100.3, deadline_is_estimated=False)
     game, sink, policy, _ = await _run(window, rules=rules)
     assert game.submitted
     assert policy.calls[0].observation is observation
@@ -122,4 +123,31 @@ async def test_rules_policy_and_audit_receive_complete_same_observation():
     record = next(item for item in sink.records if item.kind.value == "decision_input")
     decoded = decision_request_from_json(record.payload["request"])
     assert decoded.observation == observation
-    assert record.payload["window_deadline"] == {"expires_at_monotonic": 100.1, "deadline_is_estimated": False}
+    assert record.payload["window_deadline"] == {"expires_at_monotonic": 100.3, "deadline_is_estimated": False}
+
+
+@pytest.mark.parametrize("remaining", [.15, .25, 1.0, 3.0])
+def test_network_reserve_is_fixed_for_short_and_long_windows(remaining):
+    budget = BudgetPolicy().build(100.0, 3.0, 100.0 + remaining)
+    assert budget.latest_send_at_monotonic == pytest.approx(100.0 + remaining - .1)
+    assert 100.0 < budget.enhancement_deadline_monotonic < budget.fallback_deadline_monotonic < budget.latest_send_at_monotonic
+
+
+def test_repeated_same_deadline_refresh_does_not_charge_network_again():
+    policy = BudgetPolicy()
+    budget = policy.build(100.0, 1.0, 101.0)
+    for received in (100.1, 100.2, 100.3):
+        budget = policy.tighten(budget, received, 1.0, 101.0)
+        assert budget.latest_send_at_monotonic == pytest.approx(100.9)
+
+
+@pytest.mark.parametrize('received', [0.0, 100.1, 1_516_670.1, 1_000_000_000.1])
+def test_exact_network_only_boundary_is_not_reopened_by_float_rounding(received):
+    budget = BudgetPolicy().build(received, 1, received + .1)
+    assert budget.latest_send_at_monotonic == received
+
+
+@pytest.mark.parametrize("reserve", [0, -.1, float('inf'), float('nan')])
+def test_invalid_fixed_reserve_rejected(reserve):
+    with pytest.raises(ValueError):
+        BudgetPolicy(post_reserve_seconds=reserve)

@@ -243,3 +243,25 @@ def test_per_source_metadata_survives_formal_conversion(tmp_path):
     assert hand["rule_config"]["you_cai_bi_kao"] is False
     provenance = json.loads((job / report["bundle"] / "references/analysis-provenance.json").read_text())
     assert provenance["rules_hash"] and provenance["source_hashes"]["offline/postgame.py"]
+
+
+@pytest.mark.parametrize('version', [24, 27, None])
+def test_diagnosis_preserves_source_guide_version_without_relabeling_history(tmp_path, version):
+    source = official_at(tmp_path)
+    (source.parent / 'source.json').write_text(json.dumps({'guide_version': version}))
+    before = source.read_bytes()
+    report = diagnose_official(source, tmp_path / 'diagnosis', ruleset_version='test',
+        rule_config={'base_score': 1, 'you_cai_bi_kao': False})
+    row = json.loads((tmp_path / 'diagnosis/hands.jsonl').read_text())
+    assert row['guide_version'] == version
+    assert report['guide_version'] == version
+    assert source.read_bytes() == before
+
+
+@pytest.mark.parametrize('version', [True, '27', 0, -1])
+def test_diagnosis_rejects_malformed_guide_instead_of_legacy_downgrade(tmp_path, version):
+    source = official_at(tmp_path)
+    (source.parent / 'source.json').write_text(json.dumps({'guide_version': version}))
+    with pytest.raises(ValueError, match='guide_version'):
+        diagnose_official(source, tmp_path / 'diagnosis', ruleset_version='test')
+    assert not (tmp_path / 'diagnosis').exists()

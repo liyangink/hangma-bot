@@ -1,8 +1,9 @@
-"""官方 JSON 报文解析（协议基线 v8 快照 + 指南 v9–v15 已审查变更）。
+"""官方 JSON 报文解析（v8 历史快照，当前已审查指南 v27）。
 
 解析原则（依据 doc/official-platform-api-v2.md，指南 v8 快照，抓取 2026-09-03；
 v9–v11 变更依据 doc/references/official-guide-version-v11.json，2026-09-04 抓取；
-v12–v15 变更依据 doc/references/official-guide-version-v15.json，2026-09-05 抓取）：
+v12–v15 变更依据 doc/references/official-guide-version-v15.json，2026-09-05 抓取；
+最新变更依据 doc/references/official-guide-version-v27.json，2026-09-09 抓取）：
 
 - 已确认必需字段缺失时抛 DtoError（默认可用 seq=0 快照重建修复）；
 - 未知新增字段一律忽略并保留（v8 的 Description 属于此类兼容新增）；
@@ -13,13 +14,16 @@ v12–v15 变更依据 doc/references/official-guide-version-v15.json，2026-09-
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
+import json
 from typing import Any, Mapping, Optional, Sequence, Tuple, Union
 
 from hangma_bot.kernel.actions import CANONICAL_TILE_CODES
 
 from .errors import DtoError
 
-KNOWN_GUIDE_VERSION = 15  # 已审查指南版本；更高版本需检查未知 breaking 变更。
+KNOWN_GUIDE_VERSION = 27  # 当前已审查指南；v16之后仍逐条验摘要，不能仅按顶层版本放行。
+_LEGACY_GUIDE_BASELINE = 15  # 原已接受基线，之后的breaking需按调用路径和完整条目审查。
 # v9—v11：非破坏性 changed 条目，已逐条审查并同步实现（v9 测试房间数据 API
 # 限速粒度、v10 跨局 gap=true 全量快照、v11 state 轮询 16/s 每用户聚合）。
 # v12（added）：GET /api/games/{id}/notify SSE 通知流，可选能力——当前实现继续
@@ -46,6 +50,14 @@ KNOWN_GUIDE_VERSION = 15  # 已审查指南版本；更高版本需检查未知 
 # 正式锦标赛/测试房间路径不受影响；16 场记账仅自动房入席时占用 cfg.M=10 格，
 # 与既有正式赛 M 上限互不叠加（同桶 16 上限仍由服务端统一校验）。
 # 依据：doc/references/official-guide-version-v15.json（2026-09-05 抓取）。
+
+# v24（2026-09-09 补充审查）：scoped 令牌不受匿名入口限制；自动匹配入口
+# 不做匿名注册，显式处理未绑定门户身份时的 PORTAL_BINDING_REQUIRED。
+# 两种已审查调用路径按条目完整内容匹配；无调用上下文的解析仍不豁免。
+_SCOPED_V24_BREAKING_SHA256 = "a07463ab753085c0198156065ad3ca2baeb2fa1fe53f59b6d0d5da338f773171"
+# v25吃最多2摊：hangma已从本人chi副露数限制；v26恢复圈主响应及公开身份，
+# v27仅门户排行榜变更。原文快照：official-guide-version-v27.json，2026-09-09。
+_V25_CHI_LIMIT_SHA256 = "cb5be8f872ea83d02c88fe7fa79e45bb10314c057a0110011c16f9df968b8026"
 
 
 def _require_mapping(doc: Any, what: str) -> Mapping[str, Any]:
@@ -110,17 +122,17 @@ class ParsedGuideVersion:
 
     version: int
     updated_at: str
-    has_unknown_breaking_change: bool  # 存在尚未由全局基线或当前入口审查的 breaking 变更
+    has_unknown_breaking_change: bool  # 存在超出当前调用路径已审查范围的 breaking 变更
     changes: Tuple[Mapping[str, Any], ...]  # 原样保留，供审计与回放解释行为差异
 
 
-def parse_guide_version(
-    doc: Any, *, reviewed_breaking_versions: frozenset[int] = frozenset(),
-) -> ParsedGuideVersion:
-    """解析版本；调用方可指定仅适用于其入口的已审查 breaking 版本。
+def parse_guide_version(doc: Any, *, scoped_tournament: bool = False,
+                        auto_match: bool = False) -> ParsedGuideVersion:
+    """解析指南版本并标记未知破坏性变更，无副作用。
 
-    缺省仍使用全局基线；不改写官方 changes，也不放行畸形版本条目。
-    例如 v24 对 scoped 参赛令牌不变，但全局令牌入口另有门禁变化。
+    scoped_tournament只供核验报名令牌绑定的赛事会话使用；auto_match只供
+    已处理门户绑定403且不调用匿名注册的自动匹配入口使用。v24按这两条
+    已审查路径放行，v25按本地吃摊限制放行；同版本回溯新增/改写仍未知。
     """
 
     body = _require_mapping(doc, "guide/version")
@@ -140,8 +152,15 @@ def parse_guide_version(
             # 质量问题放行未审查变更
             not isinstance(item.get("version"), int)
             or isinstance(item.get("version"), bool)
-            or (item["version"] > KNOWN_GUIDE_VERSION
-                and item["version"] not in reviewed_breaking_versions)
+            or item["version"] > _LEGACY_GUIDE_BASELINE
+        )
+        and not (
+            hashlib.sha256(
+                json.dumps(item, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+            ).hexdigest() in (
+                (_V25_CHI_LIMIT_SHA256, _SCOPED_V24_BREAKING_SHA256)
+                if scoped_tournament or auto_match else (_V25_CHI_LIMIT_SHA256,)
+            )
         )
         for item in changes
     )
@@ -358,6 +377,7 @@ class ParsedSnapshot:
     # 官方响应窗绝对截止（墙上时钟毫秒；2026-09-05 实测在场，响应阶段快照
     # 4264/4264 携带）。缺省 None：draw/deal 等无窗阶段或官方未提供时。
     window_deadline_ms: Optional[int] = None
+    god_discarder_seat: Optional[int] = None  # v26公开豁免方0—3，-1为无圈；旧响应未给字段时为空
 
 
 def _seat_vector(value: Any, what: str, *, length: int = 4) -> Tuple[int, ...]:
@@ -418,6 +438,12 @@ def parse_snapshot(doc: Any, top_level_seq: Optional[int] = None) -> ParsedSnaps
     god_baotou = _require_bool(god_raw.get("baotou"), "god.baotou")
     god_chain_count = _require_int(god_raw.get("chain_count"), "god.chain_count")
     god_catch_play = _require_bool(god_raw.get("catch_play"), "god.catch_play")
+    god_discarder_seat = None
+    if "god_discarder_seat" in god_raw:
+        god_discarder_seat = _require_seat(
+            god_raw["god_discarder_seat"], "god.god_discarder_seat", allow_negative=True)
+        if god_catch_play and god_discarder_seat == -1 and phase not in ("settled", "finished"):
+            raise DtoError("god.catch_play=true 与 god_discarder_seat=-1 冲突")
     if god_chain_count < 0:
         raise DtoError("god.chain_count 不能为负数")
     responding_raw = body.get("responding_seats") or []
@@ -491,6 +517,7 @@ def parse_snapshot(doc: Any, top_level_seq: Optional[int] = None) -> ParsedSnaps
         god_baotou=god_baotou,
         god_chain_count=god_chain_count,
         god_catch_play=god_catch_play,
+        god_discarder_seat=god_discarder_seat,
         window_deadline_ms=(
             body.get("window_deadline_ms")
             if isinstance(body.get("window_deadline_ms"), int)

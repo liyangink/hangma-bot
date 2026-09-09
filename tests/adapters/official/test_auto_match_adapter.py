@@ -56,10 +56,11 @@ from _official_testkit import (  # noqa: F401
 GUIDE_V15 = {"version": 15, "updated_at": "2026-09-05", "changes": []}
 
 
-async def test_v24_scoped_review_does_not_open_global_auto_match(transport, clock):
-    """全局令牌的新入口变化尚未在此候选适配，不能继承父类 scoped 例外。"""
+async def test_rewritten_v24_does_not_open_global_auto_match(transport, clock):
+    """已审查 v24 可进入匹配；同版本改写条目仍必须在匹配前终止。"""
     from pathlib import Path
     document = json.loads((Path(__file__).parents[3] / "doc/references/official-guide-version-v24.json").read_text())
+    next(item for item in document["changes"] if item["version"] == 24)["detail"] += "\n新增未审查限制"
     transport.handler = lambda **kw: (200, json.dumps(document))
     session = make_auto_session(clock=clock, transport=transport)
     outcome = await session.initialize(_target())

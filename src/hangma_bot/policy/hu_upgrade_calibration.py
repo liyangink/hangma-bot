@@ -8,6 +8,7 @@
 
 from .hu_upgrade import UpgradeRiskCell
 
+RISK_RULESET_VERSION = "hangma-mvp-v5-four-white"
 RISK_VERSION = "hu-upgrade-risk-v1"
 RISK_CELLS = (
     UpgradeRiskCell(wall_band=1, threat=False, survival_floor=0.82, loss_ceiling=0.10),

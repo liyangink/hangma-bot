@@ -83,13 +83,14 @@ def catch_play_restriction(
 
     【官方】指南 1.1 与 API §5.4：打出财神触发的抓打圈中——
     - 其余玩家不能吃、碰、明杠（仅暗杠与自摸胡）；
-    - 本人出牌只能打刚摸到的牌 `drawn_tile`；
-    - 本人仍可暗杠和自摸胡。
+    - 受限座位出牌只能打刚摸到的牌 `drawn_tile`；
+    - 受限座位仍可暗杠和自摸胡；当前圈主不直接套用这些限制。
 
     边界约定：补杠（ADDED）不是暗杠，按「仅暗杠」原文一并禁止；
     `drawn_tile` 缺失时对 `Discard` 保守拒绝（无法核对=不能出），
     宁可少一个候选也不提交非法动作。抓打圈优先级高于任何策略偏好，
-    由调用方用 `observation.rule_state.catch_play` 决定是否调用本函数。
+    调用方须先经 catch_play.analyze_catch_play 结合圈主判定本座是否受限，
+    不能直接用 observation.rule_state.catch_play 全局标记调用本函数。
     """
 
     if isinstance(action, Discard):

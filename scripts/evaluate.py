@@ -64,7 +64,8 @@ from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2  # noqa: 
 from hangma_bot.policy.value_one_draw import OneDrawValuePolicy  # noqa: E402
 from hangma_bot.policy.hu_upgrade import HuUpgradePolicy  # noqa: E402
 from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy  # noqa: E402
-from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN  # noqa: E402
+from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN, RISK_RULESET_VERSION  # noqa: E402
+from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy  # noqa: E402
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy  # noqa: E402
 from hangma_bot.policy.weights import HeuristicWeights  # noqa: E402
 from hangma_bot.policy.weights_v1 import HeuristicWeightsV1  # noqa: E402
@@ -89,11 +90,13 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         policy = SafeFallbackPolicy()
         policy.policy_id = declaration.policy_id
         return policy
-    if declaration.name in ("weighted_heuristic_v1", "weighted_heuristic_v2"):
+    if declaration.name in ("weighted_heuristic_v1", "weighted_heuristic_v2", "weighted_heuristic_v2_white_guard"):
         # 与 V0 使用同一实验时钟；逻辑预算不能与主机单调时钟比较。
         weights = HeuristicWeightsV1(**dict(declaration.weights))
         policy_type = ReliableHeuristicPolicyV1 if declaration.name == "weighted_heuristic_v1" else ComparableHeuristicPolicyV2
         policy = policy_type(weights=weights, monotonic=monotonic)
+        if declaration.name == "weighted_heuristic_v2_white_guard":
+            policy = WhiteDiscardGuardPolicy(policy)
         policy.policy_id = declaration.policy_id
         return policy
     if declaration.name == "one_draw_value_v1":
@@ -118,7 +121,7 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         return policy
     raise ValueError(
         "未知策略名 {0!r}；本脚本只装配 weighted_heuristic / safe_fallback / "
-        "weighted_heuristic_v1 / weighted_heuristic_v2 / one_draw_value_v1 / hu_upgrade_v1 / v2_hu_upgrade_v1".format(declaration.name)
+        "weighted_heuristic_v1 / weighted_heuristic_v2 / weighted_heuristic_v2_white_guard / one_draw_value_v1 / hu_upgrade_v1 / v2_hu_upgrade_v1".format(declaration.name)
     )
 
 
@@ -196,6 +199,8 @@ def _effective_weights_snapshot(policy: Any) -> Optional[dict]:
     声明权重为空时实际生效的是类默认权重，manifest 必须记录生效值
     才能事后复现（E3 诊断教训 2026-09-06）。
     """
+    if isinstance(policy, WhiteDiscardGuardPolicy):
+        return _effective_weights_snapshot(policy.base_policy)
     weights = getattr(policy, "_weights", None)
     if weights is None:
         return None
@@ -417,9 +422,9 @@ def validate_upgrade_scope(experiment: MatchExperiment) -> None:
         return
     config = experiment.tournament_config.rules
     if (config.you_cai_bi_kao or config.base_score != 1 or
-            config.ruleset_version != "hangma-mvp-v5-four-white" or
+            config.ruleset_version != RISK_RULESET_VERSION or
             any(declaration.name != "weighted_heuristic_v2" or declaration.weights for declaration in experiment.opponents)):
-        raise ValueError("hu_upgrade_v1 风险表仅校准 Base=1、YouCaiBiKao=false、v5 四白规则和默认 V2 对手池")
+        raise ValueError("hu_upgrade_v1 风险表仅校准 Base=1、YouCaiBiKao=false、" + RISK_RULESET_VERSION + " 和默认 V2 对手池")
     if experiment.value_limits is None:
         raise ValueError("hu_upgrade_v1 需要显式 value_limits 提供条件结算")
 

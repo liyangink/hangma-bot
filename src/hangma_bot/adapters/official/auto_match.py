@@ -53,7 +53,6 @@ from hangma_bot.kernel.config import TournamentConfig
 from .request_audit import audited_request
 from . import projector
 from .dto import (
-    KNOWN_GUIDE_VERSION,
     parse_guide_version,
     parse_me,
     parse_rules_config,
@@ -74,7 +73,7 @@ from .errors import (
 )
 from .game import OfficialGameSession
 from .notify import StreamBudget
-from .scheduler import Priority, RequestKind, RequestScheduler
+from .scheduler import DEFAULT_STATE_ARRIVAL_GUARD_SEC, Priority, RequestKind, RequestScheduler
 from .transport import OfficialTransport, TransportConfig
 
 # 服务端 v15 自动房默认配置（API 文档 §2.6，抓取 2026-09-05）：显式声明上限
@@ -201,9 +200,12 @@ class OfficialAutoMatchSession:
         if match_max_attempts < 1 or match_busy_wait_cap_sec < 0:
             raise ValueError("匹配重试参数不合法")
         self._transport = OfficialTransport(token, transport_config)
-        # 匹配/赛事控制独立调度；场次按真实config.M各自分配静态额度与并发槽。
+        # 匹配/赛事控制独享连接槽，各场共享用户16/s状态账；新账先跨过
+        # 旧进程可能留下的一秒计数窗口，不按config.M静态平分查询次数。
         self._scheduler = scheduler if scheduler is not None else RequestScheduler(
-            clock=monotonic_clock, rate_per_second=14.0, burst=1.0, max_concurrent=2)
+            clock=monotonic_clock, sleep=retry_sleep if retry_sleep is not None else asyncio.sleep,
+            max_concurrent=2, state_startup_delay_sec=1.0,
+            state_arrival_guard_sec=DEFAULT_STATE_ARRIVAL_GUARD_SEC)
         self._monotonic = monotonic_clock
         self._wall_ms = wall_clock_unix_ms
         self._audit = audit
@@ -329,14 +331,14 @@ class OfficialAutoMatchSession:
             guide_raw = await self._request_with_retry(
                 "GET", "/portal/api/guide/version", priority=Priority.BACKGROUND, with_auth=False
             )
-            guide_parsed = parse_guide_version(guide_raw)
+            guide_parsed = parse_guide_version(guide_raw, auto_match=True)
         except AuthError:
             return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "guide/version 401")
         except (OfficialError, DtoError, ValueError) as exc:
             return self._terminal(
                 ParticipantTerminalReason.FATAL_PROTOCOL_ERROR, "guide/version: " + str(exc)[:120]
             )
-        if guide_parsed.version > KNOWN_GUIDE_VERSION and guide_parsed.has_unknown_breaking_change:
+        if guide_parsed.has_unknown_breaking_change:
             return self._terminal(
                 ParticipantTerminalReason.INCOMPATIBLE_GUIDE,
                 "指南 v{} 存在未审查 breaking 变更".format(guide_parsed.version),
@@ -522,6 +524,7 @@ class OfficialAutoMatchSession:
             timing=reg.config.timing,
             monotonic_clock=self._monotonic,
             wall_clock_unix_ms=self._wall_ms,
+            retry_sleep=self._retry_sleep,
             audit=self._audit,
             audit_context=self._audit_context,
             sse_enabled=self._sse_enabled,
@@ -645,6 +648,14 @@ class OfficialAutoMatchSession:
                         ),
                     )
             except ForbiddenError as exc:
+                if exc.official_code == "PORTAL_BINDING_REQUIRED":
+                    # v24：/api/me 不暴露门户绑定状态，以入口的权威拒绝为准。
+                    # 这是身份条件，等待和重试都无法恢复；在途房间恢复不走 match。
+                    return self._terminal(
+                        ParticipantTerminalReason.TARGET_MISMATCH,
+                        "match 403 PORTAL_BINDING_REQUIRED：当前全局 Token 未绑定门户身份；"
+                        "请通过门户「我的 AI 身份」取得绑定的全局 Token。此条件不会重试。",
+                    )
                 return self._terminal(
                     ParticipantTerminalReason.TARGET_MISMATCH,
                     "match 403：code={} detail={}".format(

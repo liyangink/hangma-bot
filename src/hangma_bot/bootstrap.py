@@ -43,6 +43,8 @@ from hangma_bot.adapters.official import (
     OfficialTournamentSession,
     TransportConfig,
 )
+from hangma_bot.adapters.official.scheduler import DEFAULT_STATE_ARRIVAL_GUARD_SEC
+from hangma_bot.adapters.official.deadline_clock import DEADLINE_CLOCK_VERSION
 from hangma_bot.adapters.recording import JsonlAuditSink
 from hangma_bot.application.auto_match_runtime import AutoMatchRuntime, AutoMatchSettings
 from hangma_bot.application.contracts import (
@@ -65,7 +67,10 @@ from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2
 from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy
-from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN
+from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN, RISK_RULESET_VERSION
+
+from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy
+from hangma_bot.policy.catch_play_probe import CatchPlayProbePolicy
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
@@ -78,7 +83,7 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 
 # 本地规则语义版本（非官方字段）；进入官方会话的审计 manifest 与启动核对
 # 清单，用于区分「平台指南版本」与「本地规则引擎语义版本」。
-DEFAULT_RULESET_VERSION = "hangma-mvp-v5-four-white"
+DEFAULT_RULESET_VERSION = "hangma-mvp-v10-public-counts"
 
 # 策略名 → 工厂；只有存在两个真实实现时才保留接缝（根 AGENTS.md 第 5 节）。
 # claim_if_legal 仅用于官方测试房验收（配置项选择），默认策略不变。
@@ -89,8 +94,11 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "v2_hu_upgrade_v1": lambda: V2HuUpgradePolicy(
         risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
     ),
+
+    "weighted_heuristic_v2_white_guard": lambda: WhiteDiscardGuardPolicy(ComparableHeuristicPolicyV2()),
     "safe_fallback": lambda: SafeFallbackPolicy(),
     "claim_if_legal": lambda: LegacyClaimIfLegalPolicy(),
+    "catch_play_probe": lambda: CatchPlayProbePolicy(ComparableHeuristicPolicyV2()),
 }
 
 
@@ -210,6 +218,9 @@ class RuntimeConfig:
             )
         if self.strategy == "v2_hu_upgrade_v1" and self.mode is not RuntimeMode.TEST_ROOM:
             raise ValueError("v2_hu_upgrade_v1 当前仅允许 mode=test_room，尚未通过真实赛事发布门禁")
+
+        if self.strategy == "catch_play_probe" and self.mode is not RuntimeMode.TEST_ROOM:
+            raise ValueError("catch_play_probe 仅允许 mode=test_room；它主动弃白用于规则验证")
         if not isinstance(self.insecure_hosts, frozenset):
             raise ValueError("insecure_hosts 必须是 frozenset，得到 {0!r}".format(self.insecure_hosts))
         if self.slot is not None:
@@ -502,10 +513,10 @@ def _test_room_upgrade_rules(config: RuleConfig) -> HangmaRules:
     """
 
     if (config.base_score != 1 or config.you_cai_bi_kao or
-            config.ruleset_version != DEFAULT_RULESET_VERSION):
+            config.ruleset_version != RISK_RULESET_VERSION):
         raise ValueError(
             "v2_hu_upgrade_v1 测试范围要求 BaseScore=1、YouCaiBiKao=false、"
-            "ruleset_version=" + DEFAULT_RULESET_VERSION
+            "ruleset_version=" + RISK_RULESET_VERSION
         )
     return HangmaRules(config)
 
@@ -568,6 +579,7 @@ def build_runtime(
     # audit-plus-v1 版本事实（契约 §4.2）：代码提交/脏状态、策略版本与
     # 生效权重、本地规则语义版本；缺省取不到为 null，不冒充已提交代码。
     git_commit, git_dirty = _git_state()
+    budget_policy = BudgetPolicy()
     manifest_extra: Mapping[str, object] = {
         "git_commit": git_commit,
         "git_dirty": git_dirty,
@@ -578,6 +590,11 @@ def build_runtime(
         "official_sync_mode": "state",
         "sse_requested": config.sse_enabled,
         "sse_effective": False,
+        "budget_policy_version": "fixed-post-reserve-v1",
+        "post_network_reserve_sec": budget_policy.post_reserve_seconds,
+        "state_arrival_guard_sec": DEFAULT_STATE_ARRIVAL_GUARD_SEC,
+        "state_scheduler_version": "send-boundary-guard-v1",
+        "deadline_clock_version": DEADLINE_CLOCK_VERSION,
     }
     runtime = ParticipantRuntime(
         session=session,
@@ -592,7 +609,7 @@ def build_runtime(
         value_limits=(ValueAnalysisLimits() if config.strategy == "v2_hu_upgrade_v1" else None),
         clock=clock,
         ids=fixed_ids,
-        budget_policy=BudgetPolicy(),
+        budget_policy=budget_policy,
         supervision=SupervisionPolicy(),
         source_namespace=config.source_namespace,
         manifest_extra=manifest_extra,
@@ -719,6 +736,7 @@ def build_auto_match_runtime(
 
     # 与 build_runtime 同一口径的版本事实注入（audit-plus-v1 RUN_MANIFEST）。
     git_commit, git_dirty = _git_state()
+    budget_policy = BudgetPolicy()
     manifest_extra: Mapping[str, object] = {
         "git_commit": git_commit,
         "git_dirty": git_dirty,
@@ -729,6 +747,11 @@ def build_auto_match_runtime(
         "official_sync_mode": "state",
         "sse_requested": config.sse_enabled,
         "sse_effective": False,
+        "budget_policy_version": "fixed-post-reserve-v1",
+        "post_network_reserve_sec": budget_policy.post_reserve_seconds,
+        "state_arrival_guard_sec": DEFAULT_STATE_ARRIVAL_GUARD_SEC,
+        "state_scheduler_version": "send-boundary-guard-v1",
+        "deadline_clock_version": DEADLINE_CLOCK_VERSION,
     }
     runtime = AutoMatchRuntime(
         session=session,
@@ -743,7 +766,7 @@ def build_auto_match_runtime(
         rules_factory=HangmaRules,
         clock=clock,
         ids=fixed_ids,
-        budget_policy=BudgetPolicy(),
+        budget_policy=budget_policy,
         supervision=SupervisionPolicy(),
         manifest_extra=manifest_extra,
     )
@@ -815,6 +838,8 @@ def _effective_weights_snapshot(policy: object) -> Optional[Mapping[str, object]
     类默认权重，不落盘会破坏事后复现（E3 诊断教训 2026-09-06）。
     """
 
+    if isinstance(policy, (WhiteDiscardGuardPolicy, CatchPlayProbePolicy)):
+        return _effective_weights_snapshot(policy.base_policy)
     weights = getattr(policy, "_weights", None)
     if weights is None:
         return None

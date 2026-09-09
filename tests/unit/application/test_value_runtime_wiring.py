@@ -158,7 +158,7 @@ async def test_value_analysis_is_after_emergency_and_inside_original_budget():
     result, game, sink, policy = await run_window(clock, rules)
     assert result.outcome_kind == "accepted" and len(game.submitted) == 1
     assert rules.events == ["emergency", LIMITS]
-    assert policy.budgets[0].latest_send_at_monotonic == pytest.approx(100.85)
+    assert policy.budgets[0].latest_send_at_monotonic == pytest.approx(100.90)
     entry = next(r.payload for r in sink.records if r.kind.value == "decision_input")
     assert entry["rule_elapsed_ms"] == pytest.approx(200)
 
