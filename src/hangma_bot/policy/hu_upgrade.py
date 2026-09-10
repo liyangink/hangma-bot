@@ -98,6 +98,34 @@ def risk_cell_loss(cell: UpgradeRiskCell, gain: float) -> float:
     return cell.loss_absolute if cell.loss_absolute is not None else cell.loss_ceiling * gain
 
 
+def upgrade_reason(prefix: str, version: str, cell: UpgradeRiskCell, gain: float,
+                   value: float, safety_margin: float,
+                   value_phrase: str = "下一摸价值") -> str:
+    """等胡理由文案的**唯一**来源，供基类与各档位子类共用。
+
+    必须由这里统一格式化：子类若各自拼串，很容易出现"决策用绝对支付、文案仍写倍数口径"
+    的漂移——审计时人会按文案复算，得到与代码不同的分值，等于记录失真（曾真实发生）。
+    value_phrase 只描述各档位的价值口径（Tier-A 取普通型最低净分、Tier-B 取期望增益），
+    定价与保守分值的算法一律由本函数负责。
+    """
+
+    loss = risk_cell_loss(cell, gain)
+    loss_text = ("绝对支付 {0:g} 分".format(loss) if cell.loss_absolute is not None
+                 else "无条件支付上侧估计 {0:.4f}×当前胡分".format(cell.loss_ceiling))
+    return (
+        prefix +
+        "立即胡 {gain:g}，" + value_phrase + " {value:.4f}；"
+        "校准表 {version} 分组 {band}/{threat}/庄={dealer}：生存下侧估计 {survival:.4f}，"
+        "{loss_text}，保守分值 {conservative:g} > 门槛 {threshold:g}；"
+        "只估计下一摸，不是整单局保证"
+    ).format(gain=gain, value=value, version=version, band=cell.wall_band,
+             threat=int(cell.threat),
+             dealer=int(cell.dealer) if cell.dealer is not None else "-",
+             survival=cell.survival_floor, loss_text=loss_text,
+             conservative=cell.survival_floor * value - loss,
+             threshold=gain * (1 + safety_margin))
+
+
 def _next_baotou_floor(candidate: RuleCandidate, seat: int) -> Optional[float]:
     """读取完整普通摸牌爆头证明，并取所有互斥进张中最低的本人净分。
 
@@ -183,21 +211,8 @@ class HuUpgradePolicy:
     def _explain(self, cell: UpgradeRiskCell, gain: float, value: float) -> str:
         """等胡理由文案；子类按各自的价值口径覆盖。"""
 
-        loss = risk_cell_loss(cell, gain)
-        # v2 表用“倍数口径”，v3 表用绝对支付；文案必须如实区分，否则审计会读错定价。
-        loss_text = ("绝对支付 {0:g} 分".format(loss) if cell.loss_absolute is not None
-                     else "无条件支付上侧估计 {0:.4f}×当前胡分".format(cell.loss_ceiling))
-        return (
-            "有界等胡：立即胡 {gain:g}，下一次普通摸牌的最低净分 {value:g}；"
-            "校准表 {version} 分组 {band}/{threat}/庄={dealer}：生存下侧估计 {survival:.4f}，"
-            "{loss_text}，保守分值 {conservative:g} > 门槛 {threshold:g}；"
-            "只估计下一摸，不是整单局保证"
-        ).format(gain=gain, value=value, version=self._risk_version, band=cell.wall_band,
-                 threat=int(cell.threat),
-                 dealer=int(cell.dealer) if cell.dealer is not None else "-",
-                 survival=cell.survival_floor, loss_text=loss_text,
-                 conservative=cell.survival_floor * value - loss,
-                 threshold=gain * (1 + self._safety_margin))
+        return upgrade_reason("有界等胡：", self._risk_version, cell, gain, value,
+                              self._safety_margin, "下一次普通摸牌的最低净分")
 
     async def choose(self, request: DecisionRequest, budget: DecisionBudget) -> DecisionPlan:
         """增强缺失/失败保留完整基线；取消向上传播；所有候选仍由规则提供。"""

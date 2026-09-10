@@ -18,7 +18,7 @@ from typing import Optional
 from hangma_bot.hangma.interface import RuleCandidate, ValueCoverage
 from hangma_bot.kernel.observation import PlayerObservation
 
-from .hu_upgrade import UpgradeRiskCell
+from .hu_upgrade import UpgradeRiskCell, upgrade_reason
 from .v2_hu_upgrade import V2HuUpgradePolicy
 
 
@@ -64,13 +64,9 @@ class HuUpgradeTierBPolicy(V2HuUpgradePolicy):
         return mass / wall
 
     def _explain(self, cell: UpgradeRiskCell, gain: float, value: float) -> str:
-        return (
-            "有界等胡（概率档）：立即胡 {gain:g}，下一摸期望增益 {value:.4f}"
-            "（Σ未见×条件净分 / 剩余牌数，未命中按零增益）；"
-            "校准表 {version} 分组 {band}/{threat}：生存下侧估计 {survival:.4f}，"
-            "无条件支付上侧估计 {loss:.4f}×当前胡分，保守分值 {conservative:g} > 门槛 {threshold:g}；"
-            "只估计下一摸，不是整单局保证"
-        ).format(gain=gain, value=value, version=self._risk_version, band=cell.wall_band,
-                 threat=int(cell.threat), survival=cell.survival_floor, loss=cell.loss_ceiling,
-                 conservative=cell.survival_floor * value - cell.loss_ceiling * gain,
-                 threshold=gain * (1 + self._safety_margin))
+        """概率档文案。必须复用基类的共享格式化器：本方法此前自行拼串，导致决策已用
+        绝对支付而文案仍按倍数口径算分，审计复算会得到与代码不同的数值。"""
+
+        return upgrade_reason(
+            "有界等胡（概率档）：", self._risk_version, cell, gain, value,
+            self._safety_margin, "下一摸期望增益（Σ未见×条件净分 / 剩余牌数，未命中按零增益）")

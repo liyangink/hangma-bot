@@ -97,6 +97,26 @@ def test_v3_table_prices_dealer_higher_and_relaxes_band_two():
     assert all(cell.loss_absolute is not None for cell in RISK_CELLS_V3)
 
 
+def test_reason_text_reports_the_same_pricing_as_the_decision():
+    """审计文案必须与决策用同一套定价。
+
+    回归：Tier-B 曾自行拼串，决策已改用绝对支付、文案却仍写"0.1000×当前胡分"，
+    并按倍数口径算出保守分值——审计者按文案复算会得到与代码不同的数字。
+    现在两类档位共用 upgrade_reason，文案必须出现"绝对支付"且不得再出现倍数口径。
+    """
+
+    request = historical("A")
+    cells = (UpgradeRiskCell(1, False, 1.0, 0.10, dealer=True, loss_absolute=7.5),
+             UpgradeRiskCell(2, False, 1.0, 0.10, dealer=True, loss_absolute=7.5))
+    plan = plan_of(V2HuUpgradePolicy(monotonic=lambda: 0, risk_cells=cells,
+                                     risk_version="audit-test"), request)
+    reason = plan.candidates[0].reasons[-1]
+    assert plan.candidates[0].action_key == "discard:5b"
+    assert "绝对支付 7.5 分" in reason, reason
+    assert "×当前胡分" not in reason, reason
+    assert "分组 1/0/庄=1" in reason or "分组 2/0/庄=1" in reason, reason
+
+
 def test_dealer_window_needs_a_dealer_cell_and_uses_the_absolute_loss():
     """端到端：夹具 A 是庄位窗口。
 
