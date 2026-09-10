@@ -103,11 +103,12 @@ def test_chain_transitions():
 
 
 def test_next_dealer_rotation():
-    # v15：流局连庄；庄家胡连庄（直上三连庄语义）；闲家胡换庄。
+    # v15 明文确认流局连庄；官方牌谱金例另外确认闲家胡后由赢家坐庄。
     assert next_dealer(0, None, True) == 0
     assert next_dealer(2, 2, False) == 2
-    assert next_dealer(2, 0, False) == 3
-    assert next_dealer(3, 1, False) == 0
+    assert next_dealer(2, 0, False) == 0
+    assert next_dealer(3, 1, False) == 1
+    assert next_dealer(1, None, False) == 1  # 赢家未知时沿用既有保守行为。
 
 
 def test_recompute_baotou():

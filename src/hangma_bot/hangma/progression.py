@@ -237,16 +237,19 @@ def baotou_after_draw(
 
 
 def next_dealer(dealer_seat: int, winner_seat: Optional[int], is_draw: bool) -> int:
-    """单局结束后的庄家轮转。
+    """单局结束后由赢家坐庄；流局或赢家未知时保留庄家。
 
-    【官方】指南 1.1（v15/2026-09-05 快照）：“连庄：直上三连庄——首局即按
-    ×8 计（不从平庄 ×2、二连庄 ×4 递增）；流局庄家连庄。”据此：流局连庄
-    （明文）、庄家胡牌连庄（“连庄”语义本身）、闲家胡牌换庄（连庄的反面）。
-    庄家倍率恒 ×8 已在 settlement.settle_scores 实现，此处只管座位轮转。
+    【官方文档】指南 v15 §1.1（2026-09-05 快照）只明文规定流局连庄。
+    【当前观察】2026-09-08、2026-09-10 原始官方牌谱确认赢家坐庄；
+    tests/fixtures/hangma/dealer-rotation-gold.json 固化 168 次转移，
+    包含反驳旧“闲家胡则庄家下家坐庄”假设的实例。全样本统计见 RULES_EVIDENCE.md。
+
+    当前调用方是模拟器的跨单局推进；线上庄家来自官方权威快照。
+    本函数无副作用，只返回座位号（0—3）；庄家倍率仍由结算模块处理。
     """
-    if is_draw or winner_seat is None or winner_seat == dealer_seat:
+    if is_draw or winner_seat is None:
         return dealer_seat
-    return (dealer_seat + 1) % SEAT_COUNT
+    return winner_seat
 
 
 # ---------------------------------------------------------------------------
