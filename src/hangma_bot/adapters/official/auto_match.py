@@ -656,6 +656,17 @@ class OfficialAutoMatchSession:
                         "match 403 PORTAL_BINDING_REQUIRED：当前全局 Token 未绑定门户身份；"
                         "请通过门户「我的 AI 身份」取得绑定的全局 Token。此条件不会重试。",
                     )
+                if exc.official_code == "FEATURE_DISABLED":
+                    # v29：管理面「设置」可全服关闭自由匹配。关闭后新匹配一律
+                    # 403 FEATURE_DISABLED——**永久条件**，等待与重试都不会恢复，
+                    # 且不是身份/房态问题。必须与 PORTAL_BINDING_REQUIRED 区分，
+                    # 否则会把"平台已关功能"误报成"令牌没绑定门户"。
+                    # 在途照常：已在房中的用户重调仍 200 返回原房。
+                    return self._terminal(
+                        ParticipantTerminalReason.MATCHING_UNAVAILABLE,
+                        "match 403 FEATURE_DISABLED：平台已关闭自由匹配（管理面开关）；"
+                        "这是永久条件，不重试。已在房中的对局不受影响。",
+                    )
                 return self._terminal(
                     ParticipantTerminalReason.TARGET_MISMATCH,
                     "match 403：code={} detail={}".format(

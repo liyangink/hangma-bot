@@ -1,8 +1,8 @@
 # 杭州麻将对战平台 API 与时间模型
 
 > 官方来源：`https://10.240.169.190:18080/portal/#guide-api`
-> 最新同步：2026-09-09；官方指南 **v27**，`updated_at=2026-09-08`。原始资料：[版本响应](./references/official-guide-version-v27.json)、[指南全文](./references/official-guide-v27-content.txt)、[指南响应封套](./references/official-guide-v27.txt)。v8、v15 等历史快照保留。
-> 本轮变更：v25 服务端限制最多两摊吃；v26 修复抓打圈圈主响应并公开圈主座位；v27 为门户榜单修订。实现与证据边界见[本轮对齐记录](../review/catch-owner-v26-2026-09-09/README.md)。
+> 最新同步：2026-09-10；官方指南 **v30**，`updated_at=2026-09-10`。原始资料：[版本响应](./references/official-guide-version-v30.json)（v27 快照见 [official-guide-version-v27.json](./references/official-guide-version-v27.json)）、[指南全文](./references/official-guide-v27-content.txt)、[指南响应封套](./references/official-guide-v27.txt)。v8、v15 等历史快照保留。
+> 本轮变更：v25 服务端限制最多两摊吃；v26 修复抓打圈圈主响应并公开圈主座位；v27 为门户榜单修订；v28 胡大牌榜排序链去掉「该牌型全史次数」键（纯门户）；**v29（breaking）新增全服功能开关**——管理面可关闭自由匹配与自建测试房，关闭后 `POST /api/match` 新匹配、建测试房、已完结 test 房「重开下一轮」（ready）一律 **403 `FEATURE_DISABLED`**（永久条件；ready 路径此前是 409 房态类）；v30 他人 `name` 全面收口为 AI 昵称、空则空串（消费方按空串回退 `user_id`），本人 `/portal/api/me` 与 `/admin/*` 语义不变。规则/圈主证据边界见[本轮对齐记录](../review/catch-owner-v26-2026-09-09/README.md)。
 > 版本接口：`GET /portal/api/guide/version`；全文接口：`GET /portal/api/guide`（v14 起免认证）
 > 注意：文件名为兼容既有链接暂保留 `v2`。平台仍在迭代，本文不代替运行时版本自检。
 > 相关说明：[官方赛事流程](./official-tournament-flow-2026-09-03.md)、[架构与运行流程](./architecture.md)、[统一术语表](../UBIQUITOUS_LANGUAGE.md)
@@ -358,7 +358,7 @@ v2 动作判定下限：
 
 启动策略：
 
-1. 代码内声明 `KNOWN_GUIDE_VERSION=27`，但 v15 之后的 breaking 仍按完整条目指纹逐项审查。v25 的两摊吃限制已实现；v24 仅在已审查的赛事令牌与自动匹配路径放行，后者将 `PORTAL_BINDING_REQUIRED` 明确报为身份不匹配。启动及阶段边界都检查未知条目，同版本改写／新增和未来未知 breaking 仍拒绝，不能只比较顶层数字。
+1. 代码内声明 `KNOWN_GUIDE_VERSION=30`，但 v15 之后的 breaking 仍按完整条目指纹逐项审查。v25 的两摊吃限制已实现；v24 仅在已审查的赛事令牌与自动匹配路径放行，后者将 `PORTAL_BINDING_REQUIRED` 明确报为身份不匹配；v29 的全服功能开关同样按指纹放行，`auto_match` 与 `ready` 各自把 `FEATURE_DISABLED` 报为"平台已关闭该功能"的永久终态（该码必须在 `KNOWN_OFFICIAL_CODES` 白名单内，否则会被脱敏成 None 而使分支失效）。启动及阶段边界都检查未知条目，同版本改写／新增和未来未知 breaking 仍拒绝，不能只比较顶层数字。
 2. Bot 启动、报名/ready 之前调用一次版本接口。
 3. 只要出现未审查的 breaking 条目，就禁止进入新赛事并报警，包括同一版本中被新增或改写的条目。
 4. 已开始的赛事不要每个动作重复检查版本；在阶段边界重新检查一次，并记录启动与阶段开始时版本，确保阶段尝试可追溯。

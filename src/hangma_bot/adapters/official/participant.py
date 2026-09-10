@@ -372,6 +372,22 @@ class OfficialTournamentSession:
             return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "ready 401")
         except ConflictError as exc:
             return ReadyResult(status=OperationStatus.REJECTED, official_code=exc.official_code)
+        except ForbiddenError as exc:
+            if exc.official_code == "FEATURE_DISABLED":
+                # v29：管理面可全服关闭自建测试房；关闭后已完结测试房的「重开下一轮」
+                # （四个令牌各 ready 一次）返回 403 FEATURE_DISABLED——注意该路径此前
+                # 返回 409（房态类），现在是 403（**永久条件**）。重试不会恢复。
+                return self._terminal(
+                    ParticipantTerminalReason.MATCHING_UNAVAILABLE,
+                    "ready 403 FEATURE_DISABLED：平台已关闭自建测试房（管理面开关）；"
+                    "这是永久条件，不重试。",
+                )
+            return self._terminal(
+                ParticipantTerminalReason.TARGET_MISMATCH,
+                "ready 403：code={} detail={}".format(
+                    exc.official_code or "?", str(exc)[:200]
+                ),
+            )
         except (OfficialError, DtoError, ValueError) as exc:
             return self._terminal(ParticipantTerminalReason.FATAL_PROTOCOL_ERROR, "ready: " + str(exc)[:120])
 

@@ -41,6 +41,13 @@ KNOWN_OFFICIAL_CODES = frozenset({
     "NO_ROOM_AVAILABLE",  # 声明低于服务默认=永久；建房后入席失败=瞬态
     "AUTO_MATCH_ONLY",  # 对自动房玩家 API 直连 register/ready
     "MATCH_BUSY",  # 自动匹配忙（只挡建房，不挡入席）
+    # ---- v29（2026-09-09，2026-09-10 审查）----
+    # 管理面「设置」的全服功能开关：关闭自由匹配或自建测试房后，
+    # POST /api/match 新匹配、建测试房、已完结 test 房「重开下一轮」（ready）
+    # 一律 403 FEATURE_DISABLED——**永久条件**，不要重试。
+    # 注意：放行本码是必需的——白名单外的码会被 sanitize_official_code 置为 None，
+    # 使 auto_match / participant 里针对它的分支永远不命中（曾因此漏检）。
+    "FEATURE_DISABLED",
 })
 
 _MAX_DETAIL_LENGTH = 300

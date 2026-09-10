@@ -22,7 +22,7 @@ from hangma_bot.kernel.actions import CANONICAL_TILE_CODES
 
 from .errors import DtoError
 
-KNOWN_GUIDE_VERSION = 27  # 当前已审查指南；v16之后仍逐条验摘要，不能仅按顶层版本放行。
+KNOWN_GUIDE_VERSION = 30  # 当前已审查指南；v16之后仍逐条验摘要，不能仅按顶层版本放行。
 _LEGACY_GUIDE_BASELINE = 15  # 原已接受基线，之后的breaking需按调用路径和完整条目审查。
 # v9—v11：非破坏性 changed 条目，已逐条审查并同步实现（v9 测试房间数据 API
 # 限速粒度、v10 跨局 gap=true 全量快照、v11 state 轮询 16/s 每用户聚合）。
@@ -58,6 +58,21 @@ _SCOPED_V24_BREAKING_SHA256 = "a07463ab753085c0198156065ad3ca2baeb2fa1fe53f59b6d
 # v25吃最多2摊：hangma已从本人chi副露数限制；v26恢复圈主响应及公开身份，
 # v27仅门户排行榜变更。原文快照：official-guide-version-v27.json，2026-09-09。
 _V25_CHI_LIMIT_SHA256 = "cb5be8f872ea83d02c88fe7fa79e45bb10314c057a0110011c16f9df968b8026"
+# v28（changed，已审查，2026-09-10 复审）：胡大牌榜排序链去掉第 3 键「该牌型全史次数」，
+#   同番同分改为只按胡手时刻排名。纯门户展示，不进入任何决策输入，零协议影响。
+# v29（breaking，已审查，2026-09-10 复审）：新增全服功能开关，管理页可关闭自由匹配与
+#   自建测试房；关闭后 POST /api/match 新匹配、建测试房、test 房「重开下一轮」一律
+#   403 FEATURE_DISABLED（**永久条件，不要重试**；该路径此前返回 409 房态类错误）。
+#   在途照常：已在房中的用户重调 /api/match 仍 200 返回原房，进行中的对局与房间打完；
+#   已有房间的列表/详情/关闭/删除/重发令牌不受影响。本 bot 的 match 入口已按
+#   auto_match.FEATURE_DISABLED 分支给出明确终态诊断，不会把它误报成门户绑定问题。
+#   依据：doc/references/official-guide-version-v30.json（2026-09-10 抓取）。
+# v30（changed，已审查，2026-09-10 复审）：他人 name 全面收口——仅管理面建的正式锦标赛
+#   仍下发 users.name；测试房/自由房/排行榜一律只出 AI 昵称，昵称为空返回**空串**
+#   （消费方按空串回退 user_id），「昵称为空即真名」的回退全部取消；本人 /portal/api/me
+#   顶层 name 与 /admin/* 语义不变。本 bot 与离线分析全部按 user_id 作稳定身份，
+#   name 只用于展示与本地路径命名，零协议影响。
+_V29_FEATURE_DISABLED_SHA256 = "b7da31d4c244cbb33fa4cd15781d478220eeab3ad7e1a4c1535f5f9be0cda0d3"
 
 
 def _require_mapping(doc: Any, what: str) -> Mapping[str, Any]:
@@ -132,7 +147,9 @@ def parse_guide_version(doc: Any, *, scoped_tournament: bool = False,
 
     scoped_tournament只供核验报名令牌绑定的赛事会话使用；auto_match只供
     已处理门户绑定403且不调用匿名注册的自动匹配入口使用。v24按这两条
-    已审查路径放行，v25按本地吃摊限制放行；同版本回溯新增/改写仍未知。
+    已审查路径放行，v25按本地吃摊限制放行，v29按全服功能开关放行
+    （关闭自由匹配/测试房时返回永久 403 FEATURE_DISABLED，不重试）；
+    同版本回溯新增/改写仍未知。
     """
 
     body = _require_mapping(doc, "guide/version")
@@ -158,8 +175,9 @@ def parse_guide_version(doc: Any, *, scoped_tournament: bool = False,
             hashlib.sha256(
                 json.dumps(item, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
             ).hexdigest() in (
-                (_V25_CHI_LIMIT_SHA256, _SCOPED_V24_BREAKING_SHA256)
-                if scoped_tournament or auto_match else (_V25_CHI_LIMIT_SHA256,)
+                (_V25_CHI_LIMIT_SHA256, _SCOPED_V24_BREAKING_SHA256, _V29_FEATURE_DISABLED_SHA256)
+                if scoped_tournament or auto_match
+                else (_V25_CHI_LIMIT_SHA256, _V29_FEATURE_DISABLED_SHA256)
             )
         )
         for item in changes
