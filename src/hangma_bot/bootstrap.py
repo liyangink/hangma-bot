@@ -115,6 +115,12 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "v2_hu_upgrade_risk_v3": lambda: V2HuUpgradePolicy(
         risk_cells=RISK_CELLS_V3, risk_version=RISK_VERSION_V3, safety_margin=SAFETY_MARGIN_V3,
     ),
+    # 提案指定的消融组合：B（表 v3）与 A（概率档等胡）同批。B 单独对 Tier-A 是空操作
+    # （Tier-A 的 floor 是"已证明翻倍"的最小值，阈值永远松弛），但对 Tier-B 的期望增益
+    # 口径才是紧的——因此这一臂是 B 真正该被检验的地方。
+    "v2_hu_upgrade_tierb_v3": lambda: HuUpgradeTierBPolicy(
+        risk_cells=RISK_CELLS_V3, risk_version=RISK_VERSION_V3, safety_margin=SAFETY_MARGIN_V3,
+    ),
     "v2_balanced_shadow_v1": lambda: V2BalancedShadowPolicy(
         baseline=V2HuUpgradePolicy(
             risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
