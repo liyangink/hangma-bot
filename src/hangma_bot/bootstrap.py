@@ -68,7 +68,7 @@ from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2
 from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy
 from hangma_bot.policy.hu_upgrade_tierb import HuUpgradeTierBPolicy
-from hangma_bot.policy.v2_hu_upgrade_dealer import V2HuUpgradeDealerPolicy
+from hangma_bot.policy.v2_hu_upgrade_dealer import DEALER_WEIGHTS_V2, V2HuUpgradeDealerPolicy
 from hangma_bot.policy.v2_value_upgrade import V2ValueUpgradePolicy
 from hangma_bot.policy.balanced_shadow import V2BalancedShadowPolicy
 from hangma_bot.policy.hu_upgrade_calibration import (
@@ -106,6 +106,11 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     ),
     "v2_hu_upgrade_dealer_v1": lambda: V2HuUpgradeDealerPolicy(
         risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+    ),
+    # 庄位权重 v2：在 v1 的速度偏置外，按支付结构不对称加上"宽听保庄"与"庄位防守加倍"。
+    "v2_hu_upgrade_dealer_v2": lambda: V2HuUpgradeDealerPolicy(
+        risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+        dealer_weights=DEALER_WEIGHTS_V2,
     ),
     "v2_value_upgrade_v1": lambda: V2ValueUpgradePolicy(
         risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
@@ -248,7 +253,7 @@ class RuntimeConfig:
             raise ValueError(
                 "未知策略名 {0!r}；可用：{1}".format(self.strategy, ", ".join(sorted(_STRATEGY_FACTORIES)))
             )
-        if self.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_value_upgrade_v1", "v2_balanced_shadow_v1") and self.mode not in (RuntimeMode.TEST_ROOM, RuntimeMode.AUTO_MATCH):
+        if self.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_hu_upgrade_dealer_v2", "v2_hu_upgrade_risk_v3", "v2_hu_upgrade_tierb_v3", "v2_value_upgrade_v1", "v2_balanced_shadow_v1") and self.mode not in (RuntimeMode.TEST_ROOM, RuntimeMode.AUTO_MATCH):
             raise ValueError("V2 实验策略当前仅允许 mode=test_room/auto_match，尚未通过正式赛事发布门禁")
 
         if self.strategy == "catch_play_probe" and self.mode is not RuntimeMode.TEST_ROOM:
@@ -637,8 +642,8 @@ def build_runtime(
             expected_tournament_id=config.expected_tournament_id,
             known_guide_version=config.known_guide_version,
         ),
-        rules_factory=(_test_room_upgrade_rules if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_value_upgrade_v1", "v2_balanced_shadow_v1") else HangmaRules),
-        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_value_upgrade_v1", "v2_balanced_shadow_v1") else None),
+        rules_factory=(_test_room_upgrade_rules if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_hu_upgrade_dealer_v2", "v2_hu_upgrade_risk_v3", "v2_hu_upgrade_tierb_v3", "v2_value_upgrade_v1", "v2_balanced_shadow_v1") else HangmaRules),
+        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_hu_upgrade_dealer_v2", "v2_hu_upgrade_risk_v3", "v2_hu_upgrade_tierb_v3", "v2_value_upgrade_v1", "v2_balanced_shadow_v1") else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,
@@ -796,9 +801,9 @@ def build_auto_match_runtime(
         ),
         settings=settings,
         rules_factory=HangmaRules,
-        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_value_upgrade_v1", "v2_balanced_shadow_v1") else None),
+        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_hu_upgrade_dealer_v2", "v2_hu_upgrade_risk_v3", "v2_hu_upgrade_tierb_v3", "v2_value_upgrade_v1", "v2_balanced_shadow_v1") else None),
         value_rules_scope=(RuleConfig(RISK_RULESET_VERSION, 1, False)
-                           if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_value_upgrade_v1", "v2_balanced_shadow_v1") else None),
+                           if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_hu_upgrade_dealer_v2", "v2_hu_upgrade_risk_v3", "v2_hu_upgrade_tierb_v3", "v2_value_upgrade_v1", "v2_balanced_shadow_v1") else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,

@@ -27,6 +27,20 @@ from .weights_v1 import DEFAULT_WEIGHTS_V1, HeuristicWeightsV1
 DEALER_WEIGHTS_V1 = replace(DEFAULT_WEIGHTS_V1, claim_risk_peng=0.0, claim_risk_chi=0.0,
                             shanten_step=115.0)
 
+# 庄位权重 v2：在 v1 的速度偏置之外，按**支付结构不对称**补两个方向。
+#
+# 指南 §1.4：庄家胡 每番 +24；庄家输给闲家 每番 -8；闲家胡 每番 +10；闲家输给另一闲家
+# 每番 -1。因此相对闲位，庄位"赢更值钱（2.4 倍）"且"输更贵（8 倍）"：
+#
+# - `effective_tile` 1.0 -> 2.0（G-3 宽听先赢保庄）：听牌口越宽越先赢，而庄位赢下来还保庄；
+# - `feed_risk` 6.0 -> 9.0 与 `safe_tile_bonus` 3.0 -> 4.5（G-2 庄位喂牌加倍）：弃牌被鸣后
+#   对手胡牌的代价在庄位是闲位的 8 倍，固定防守常数在庄位被系统性低估。
+#
+# 与 G-4（收紧等胡门槛）区分：那条已被实测证明在 Tier-A 上惰性（阈值恒松弛），
+# 而这里的三个权重都作用在**每个弃牌窗口**，不受"可证明性"门槛影响。
+DEALER_WEIGHTS_V2 = replace(DEALER_WEIGHTS_V1, effective_tile=2.0, feed_risk=9.0,
+                            safe_tile_bonus=4.5)
+
 
 class V2HuUpgradeDealerPolicy(V2HuUpgradePolicy):
     """本人坐庄时用节奏偏置底座，其余座位与 Tier-A 逐字一致。"""
