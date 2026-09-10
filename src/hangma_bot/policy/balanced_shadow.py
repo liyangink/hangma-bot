@@ -20,19 +20,24 @@ from .v2_hu_upgrade import V2HuUpgradePolicy
 
 
 def _route_signature(candidate) -> Optional[Tuple[int, int, int]]:
-    """读取普通/七对双路线的公开事实；未知、胜负和杠补事实均跳过。"""
+    """读取普通/七对双路线的公开事实；未知、胜负和杠补事实均跳过。
+
+    必须用纯普通型向听 standard_shanten_after，不能用综合向听 shanten_after：
+    后者是两条路线的最小值，当七对路线更近时会把签名写成同距离，恰好抹掉
+    本影子层要测量的那一类候选。缺纯普通型向听的旧记录不出签名，不按综合值反推。
+    """
 
     facts = candidate.facts
     if facts is None or facts.fact_kind is not CandidateFactKind.HAND_PROGRESS:
         return None
     if facts.completeness is not RuleCompleteness.COMPLETE:
         return None
-    if facts.shanten_after is None or facts.seven_pairs_shanten_after is None:
+    if facts.standard_shanten_after is None or facts.seven_pairs_shanten_after is None:
         return None
     if facts.replacement_draw_unknown:
         return None
     outs = sum(tile.remaining_estimate for tile in facts.useful_tiles)
-    return facts.shanten_after, facts.seven_pairs_shanten_after, outs
+    return facts.standard_shanten_after, facts.seven_pairs_shanten_after, outs
 
 
 def _pareto(candidates: Iterable[object]) -> Tuple[object, ...]:

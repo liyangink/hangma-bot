@@ -7,7 +7,7 @@ from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.hangma.interface import CandidateFactKind, RuleCompleteness, UsefulTileFact
 from hangma_bot.hangma.interface import CandidateFacts, RuleAnalysis, RuleCandidate
 from hangma_bot.kernel.actions import Discard, WindowKey
-from hangma_bot.policy.balanced_shadow import V2BalancedShadowPolicy, _pareto
+from hangma_bot.policy.balanced_shadow import V2BalancedShadowPolicy, _pareto, _route_signature
 from hangma_bot.policy.interface import DecisionPlan, RankedCandidate
 from .support import make_budget, make_observation, make_request, make_rules
 
@@ -17,7 +17,8 @@ def test_pareto_keeps_distinct_speed_and_seven_pair_routes():
         facts = SimpleNamespace(
             fact_kind=CandidateFactKind.HAND_PROGRESS,
             completeness=RuleCompleteness.COMPLETE,
-            shanten_after=standard,
+            shanten_after=min(standard, pairs),
+            standard_shanten_after=standard,
             seven_pairs_shanten_after=pairs,
             replacement_draw_unknown=False,
             useful_tiles=tuple(UsefulTileFact(code=code, remaining_estimate=4) for code in ("1w", "2w", "3w", "4w")[:outs]),
@@ -26,6 +27,13 @@ def test_pareto_keeps_distinct_speed_and_seven_pair_routes():
 
     frontier = _pareto((candidate("a", 1, 3, 4), candidate("b", 2, 1, 3), candidate("c", 2, 2, 1)))
     assert {candidate.action_key for candidate in frontier} == {"a", "b"}
+
+    # 七对更近必须能被签名表达：综合向听是最小值，会把该情形写成同距离。
+    nearer = candidate("d", 3, 0, 2)
+    standard, pairs, _ = _route_signature(nearer)
+    assert (standard, pairs) == (3, 0), "七对更近（0 < 3）必须出现在签名里"
+    assert standard != nearer.facts.shanten_after, "签名不得使用综合向听，否则该情形会伪装成同距离"
+    assert nearer in _pareto((nearer, candidate("e", 4, 2, 2)))
 
 
 def test_shadow_preserves_baseline_action_without_complete_facts():
