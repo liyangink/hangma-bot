@@ -71,7 +71,10 @@ from hangma_bot.policy.hu_upgrade_tierb import HuUpgradeTierBPolicy
 from hangma_bot.policy.v2_hu_upgrade_dealer import V2HuUpgradeDealerPolicy
 from hangma_bot.policy.v2_value_upgrade import V2ValueUpgradePolicy
 from hangma_bot.policy.balanced_shadow import V2BalancedShadowPolicy
-from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN, RISK_RULESET_VERSION
+from hangma_bot.policy.hu_upgrade_calibration import (
+    RISK_CELLS, RISK_CELLS_V3, RISK_RULESET_VERSION, RISK_VERSION, RISK_VERSION_V3,
+    SAFETY_MARGIN, SAFETY_MARGIN_V3,
+)
 
 from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy
 from hangma_bot.policy.catch_play_probe import CatchPlayProbePolicy
@@ -106,6 +109,11 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     ),
     "v2_value_upgrade_v1": lambda: V2ValueUpgradePolicy(
         risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+    ),
+    # 方向 B：风险表 v3（庄闲分离 + 实测绝对支付）。行为差异只在等胡窗口的定价，
+    # 不影响动作合法性；实测值来自真实平台两池 27,824 个样本。
+    "v2_hu_upgrade_risk_v3": lambda: V2HuUpgradePolicy(
+        risk_cells=RISK_CELLS_V3, risk_version=RISK_VERSION_V3, safety_margin=SAFETY_MARGIN_V3,
     ),
     "v2_balanced_shadow_v1": lambda: V2BalancedShadowPolicy(
         baseline=V2HuUpgradePolicy(
