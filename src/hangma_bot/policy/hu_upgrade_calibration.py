@@ -35,6 +35,15 @@ SAFETY_MARGIN = 0.10
 #    （两带实测上侧的保守取值）。
 #
 # 不含 band 0（墙余 24–39）：实测生存率 67% 贴近 p>0.6 红线，明确"研究过并拒绝"。
+#
+# 【实测结论 2026-09-11】该表相对 v2 表**不改变任何决策**：差分 0 / 10,769 窗口
+# （measure_policy_differential.py，32 根、前缀 gate）。把 loss_absolute 归零（比 v2
+# 更宽松）后差异**仍然为 0**，因此不是数值标定问题，而是**风险参数根本不是瓶颈**：
+# 上游 _next_draw_value（默认 _next_baotou_floor）先要求"能证明弃牌后任意下一摸必翻倍"，
+# 不满足就直接 continue，风险表只在这之后的比较式里起作用。
+# 这与 optimization-proposals.md §0-2 的判断一致（"单纯调表解放不了那 89% 的窗口"）。
+# 保留 dealer 维与 loss_absolute 机制（类型安全、v2 表逐字兼容、有回归用例），供未来
+# 若解锁可证明性后再定价；但**不要**再把该表当作独立候选上线。
 RISK_VERSION_V3 = "hu-upgrade-risk-v3-dealer-v10"
 RISK_CELLS_V3 = (
     UpgradeRiskCell(wall_band=1, threat=False, dealer=False, survival_floor=0.83,
