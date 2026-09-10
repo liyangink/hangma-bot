@@ -103,11 +103,14 @@ def test_chain_transitions():
 
 
 def test_next_dealer_rotation():
-    # v15：流局连庄；庄家胡连庄（直上三连庄语义）；闲家胡换庄。
-    assert next_dealer(0, None, True) == 0
-    assert next_dealer(2, 2, False) == 2
-    assert next_dealer(2, 0, False) == 3
-    assert next_dealer(3, 1, False) == 0
+    # 平台实测规则（原始官方牌谱两夜 1,088/1,088 非流局转移）：**赢家坐庄**，流局保留。
+    # 指南 1.1 只明文规定“流局庄家连庄”，未规定闲家胡牌之后谁坐庄。
+    # 历史实现曾写成“闲家胡牌则下家坐庄”，只命中平台 24.6% 的转移，已于 2026-09-11 修正。
+    assert next_dealer(0, None, True) == 0    # 流局：庄家保留
+    assert next_dealer(2, 2, False) == 2      # 庄家自摸：连庄
+    assert next_dealer(2, 0, False) == 0      # 闲家 0 胡：0 坐庄（不是下家 3）
+    assert next_dealer(3, 1, False) == 1      # 闲家 1 胡：1 坐庄（不是下家 0）
+    assert next_dealer(1, None, False) == 1   # 赢家未知（异常输入）：保守保留
 
 
 def test_recompute_baotou():
