@@ -88,8 +88,9 @@ class V2BalancedShadowPolicy:
         signatures = ";".join(
             f"{candidate.action_key}:{_route_signature(candidate)}" for candidate in frontier[:8]
         )
+        truncated = "（已截断至 8，前沿共 {0} 个）".format(len(frontier)) if len(frontier) > 8 else ""
         note = (
-            f"影子路线[{self.VERSION}]：Pareto候选 {len(frontier)} 个；不改当前顺序；"
+            f"影子路线[{self.VERSION}]：Pareto候选 {len(frontier)} 个{truncated}；不改当前顺序；"
             f"动作键={keys}；路线签名={signatures}"
         )
         ranked = list(plan.candidates)
