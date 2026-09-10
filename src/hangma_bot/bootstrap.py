@@ -67,6 +67,7 @@ from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2
 from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy
+from hangma_bot.policy.hu_upgrade_tierb import HuUpgradeTierBPolicy
 from hangma_bot.policy.balanced_shadow import V2BalancedShadowPolicy
 from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN, RISK_RULESET_VERSION
 
@@ -93,6 +94,9 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "weighted_heuristic_v1": lambda: ReliableHeuristicPolicyV1(),
     "weighted_heuristic_v2": lambda: ComparableHeuristicPolicyV2(),
     "v2_hu_upgrade_v1": lambda: V2HuUpgradePolicy(
+        risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+    ),
+    "v2_hu_upgrade_tierb_v1": lambda: HuUpgradeTierBPolicy(
         risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
     ),
     "v2_balanced_shadow_v1": lambda: V2BalancedShadowPolicy(
@@ -222,7 +226,7 @@ class RuntimeConfig:
             raise ValueError(
                 "未知策略名 {0!r}；可用：{1}".format(self.strategy, ", ".join(sorted(_STRATEGY_FACTORIES)))
             )
-        if self.strategy in ("v2_hu_upgrade_v1", "v2_balanced_shadow_v1") and self.mode not in (RuntimeMode.TEST_ROOM, RuntimeMode.AUTO_MATCH):
+        if self.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_balanced_shadow_v1") and self.mode not in (RuntimeMode.TEST_ROOM, RuntimeMode.AUTO_MATCH):
             raise ValueError("V2 实验策略当前仅允许 mode=test_room/auto_match，尚未通过正式赛事发布门禁")
 
         if self.strategy == "catch_play_probe" and self.mode is not RuntimeMode.TEST_ROOM:
@@ -611,8 +615,8 @@ def build_runtime(
             expected_tournament_id=config.expected_tournament_id,
             known_guide_version=config.known_guide_version,
         ),
-        rules_factory=(_test_room_upgrade_rules if config.strategy in ("v2_hu_upgrade_v1", "v2_balanced_shadow_v1") else HangmaRules),
-        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_balanced_shadow_v1") else None),
+        rules_factory=(_test_room_upgrade_rules if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_balanced_shadow_v1") else HangmaRules),
+        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_balanced_shadow_v1") else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,
@@ -770,9 +774,9 @@ def build_auto_match_runtime(
         ),
         settings=settings,
         rules_factory=HangmaRules,
-        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_balanced_shadow_v1") else None),
+        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_balanced_shadow_v1") else None),
         value_rules_scope=(RuleConfig(RISK_RULESET_VERSION, 1, False)
-                           if config.strategy in ("v2_hu_upgrade_v1", "v2_balanced_shadow_v1") else None),
+                           if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_balanced_shadow_v1") else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,

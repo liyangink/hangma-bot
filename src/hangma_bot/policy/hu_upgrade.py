@@ -143,6 +143,29 @@ class HuUpgradePolicy:
         if self._monotonic() > budget.enhancement_deadline_monotonic:
             raise PolicyTimeoutError("等胡升级超过增强截止时间")
 
+    def _next_draw_value(self, candidate: RuleCandidate, obs: PlayerObservation,
+                         gain: float) -> Optional[float]:
+        """下一摸的成功价值估计；默认取"任意普通摸均爆头"的净分下界（Tier-A）。
+
+        子类可覆盖为概率档口径（Tier-B：按未见张数加权的期望增益）。返回 None 表示
+        本候选没有可用的价值证据，调用方保持原计划。
+        """
+
+        return _next_baotou_floor(candidate, obs.seat)
+
+    def _explain(self, cell: UpgradeRiskCell, gain: float, value: float) -> str:
+        """等胡理由文案；子类按各自的价值口径覆盖。"""
+
+        return (
+            "有界等胡：立即胡 {gain:g}，下一次普通摸牌的最低净分 {value:g}；"
+            "校准表 {version} 分组 {band}/{threat}：生存下侧估计 {survival:.4f}，"
+            "无条件支付上侧估计 {loss:.4f}×当前胡分，保守分值 {conservative:g} > 门槛 {threshold:g}；"
+            "只估计下一摸，不是整单局保证"
+        ).format(gain=gain, value=value, version=self._risk_version, band=cell.wall_band,
+                 threat=int(cell.threat), survival=cell.survival_floor, loss=cell.loss_ceiling,
+                 conservative=cell.survival_floor * value - cell.loss_ceiling * gain,
+                 threshold=gain * (1 + self._safety_margin))
+
     async def choose(self, request: DecisionRequest, budget: DecisionBudget) -> DecisionPlan:
         """增强缺失/失败保留完整基线；取消向上传播；所有候选仍由规则提供。"""
 
@@ -199,7 +222,7 @@ class HuUpgradePolicy:
                 candidate = available.get(item.action_key)
                 if candidate is None or not isinstance(item.action, Discard):
                     continue
-                floor = _next_baotou_floor(candidate, obs.seat)
+                floor = self._next_draw_value(candidate, obs, gain)
                 if floor is None or floor <= gain:
                     continue
                 conservative = cell.survival_floor * floor - cell.loss_ceiling * gain
@@ -211,14 +234,7 @@ class HuUpgradePolicy:
                     ScorePart("等胡升级-成功分值估计", cell.survival_floor * floor),
                     ScorePart("等胡升级-失败支付估计", -cell.loss_ceiling * gain),
                 )
-                explanation = (
-                    "有界等胡：立即胡 {gain:g}，下一次普通摸牌的最低净分 {floor:g}；"
-                    "校准表 {version} 分组 {band}/{threat}：生存下侧估计 {survival:.4f}，"
-                    "无条件支付上侧估计 {loss:.4f}×当前胡分，保守分值 {value:g} > 门槛 {threshold:g}；"
-                    "只估计下一摸，不是整单局保证"
-                ).format(gain=gain, floor=floor, version=self._risk_version, band=cell.wall_band,
-                         threat=int(cell.threat), survival=cell.survival_floor, loss=cell.loss_ceiling,
-                         value=conservative, threshold=gain * (1 + self._safety_margin))
+                explanation = self._explain(cell, gain, floor)
         if selected is None:
             return baseline
         result = [selected] + [item for item in baseline.candidates if item.action_key != selected.action_key]
