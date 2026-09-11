@@ -43,8 +43,7 @@ RUNTIME_CONFIG = os.path.join(ROOT, "configs", "auto-match.local.json")
 LEDGER = os.path.join(STATE, "auto-match-watchdog-state.json")
 ME = "u_13495c3d79c8"
 PGREP = "run_auto_match.py --config"
-STOP_STREAK = 3          # 连续 3 房小计负分 → 止损
-STOP_FLOOR = -1500       # 累计 < -1500 → 止损
+STOP_FLOOR = -1500       # 累计 < -1500 → 止损（2026-09-10 用户确认：取消连败限制，只看累计分）
 HARD_ERRORS = {"authentication_failed", "incompatible_guide", "capacity_limit",
                "fatal_protocol_error"}
 
@@ -143,13 +142,19 @@ def download(room_id, session_dir):
     return None
 
 
-def official_table(dest):
-    """官方牌谱 → {gid: (seat, 逐局求和终局分)}。"""
+def official_table(dest, room_id=None):
+    """官方牌谱 → {gid: (seat, 逐局求和终局分)}；room_id 给定时只统计该房。
+
+    本战役所有会话共用同一 audit_root，官方下载也累积在同一 official/，
+    不按房过滤会把历史房的场次重复计入本房结算（2026-09-09 实测踩坑）。
+    """
     table = {}
     if not dest:
         return table
     for f in glob.glob(os.path.join(dest, "official", "dl-*", "events.json")):
         d = json.load(open(f, encoding="utf-8"))
+        if room_id and d.get("room_id") != room_id:
+            continue
         seat = next((i for i, s in enumerate(d.get("seats", []))
                      if s.get("user_id") == ME), None)
         total = (sum(r["scores"][seat] for r in d["rounds"])
@@ -163,7 +168,7 @@ def settle(audit_dir, room_id):
     # audit_dir 形如 <session>/audit/runs/run-<id>；会话目录承接官方下载与赛后分析。
     session_dir = os.path.dirname(os.path.dirname(os.path.dirname(audit_dir)))
     dest = download(room_id, session_dir)
-    table = official_table(dest)
+    table = official_table(dest, room_id)
     finals = audit_finals(audit_dir)
     games, subtotal = [], 0
     for gid in sorted(table or finals):
@@ -341,14 +346,13 @@ def run_cycle():
         "games": games,
     })
 
-    if ledger["current_lose_streak"] >= STOP_STREAK or ledger["cumulative_total"] < STOP_FLOOR:
+    if ledger["cumulative_total"] < STOP_FLOOR:
         ledger["stopped"] = True
         save_ledger(ledger)
-        why = "连败 3 房" if ledger["current_lose_streak"] >= STOP_STREAK else "累计破 -1500"
         print("第 %d 房 %s 结算：%d（%d胜%d负%d平），累计 %d。"
               % (len(ledger["rooms"]), room_id, subtotal, wins, losses, draws,
                  ledger["cumulative_total"]))
-        print("=== 止损触发（%s），托管收工。恢复：账本 stopped 改 false 或删账本。===" % why)
+        print("=== 止损触发（累计破 %d），托管收工。恢复：账本 stopped 改 false 或删账本。===" % STOP_FLOOR)
         return 0
     save_ledger(ledger)
     print("第 %d 房 %s 结算：%d（%d胜%d负%d平），累计 %d，连败 %d 房"
