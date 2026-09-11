@@ -67,7 +67,14 @@ from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2
 from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy
-from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN, RISK_RULESET_VERSION
+from hangma_bot.policy.hu_upgrade_tierb import HuUpgradeTierBPolicy
+from hangma_bot.policy.v2_hu_upgrade_dealer import DEALER_WEIGHTS_V2, V2HuUpgradeDealerPolicy
+from hangma_bot.policy.v2_value_upgrade import V2ValueUpgradePolicy
+from hangma_bot.policy.balanced_shadow import V2BalancedShadowPolicy
+from hangma_bot.policy.hu_upgrade_calibration import (
+    RISK_CELLS, RISK_CELLS_V3, RISK_RULESET_VERSION, RISK_VERSION, RISK_VERSION_V3,
+    SAFETY_MARGIN, SAFETY_MARGIN_V3,
+)
 
 from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy
 from hangma_bot.policy.catch_play_probe import CatchPlayProbePolicy
@@ -93,6 +100,43 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "weighted_heuristic_v2": lambda: ComparableHeuristicPolicyV2(),
     "v2_hu_upgrade_v1": lambda: V2HuUpgradePolicy(
         risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+    ),
+    "v2_hu_upgrade_tierb_v1": lambda: HuUpgradeTierBPolicy(
+        risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+    ),
+    "v2_hu_upgrade_dealer_v1": lambda: V2HuUpgradeDealerPolicy(
+        risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+    ),
+    # 庄位权重 v2：在 v1 的速度偏置外，按支付结构不对称加上"宽听保庄"与"庄位防守加倍"。
+    "v2_hu_upgrade_dealer_v2": lambda: V2HuUpgradeDealerPolicy(
+        risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+        dealer_weights=DEALER_WEIGHTS_V2,
+    ),
+    "v2_value_upgrade_v1": lambda: V2ValueUpgradePolicy(
+        risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+    ),
+    # 方向 B：风险表 v3（庄闲分离 + 实测绝对支付）。行为差异只在等胡窗口的定价，
+    # 不影响动作合法性；实测值来自真实平台两池 27,824 个样本。
+    "v2_hu_upgrade_risk_v3": lambda: V2HuUpgradePolicy(
+        risk_cells=RISK_CELLS_V3, risk_version=RISK_VERSION_V3, safety_margin=SAFETY_MARGIN_V3,
+    ),
+    # 提案指定的消融组合：B（表 v3）与 A（概率档等胡）同批。B 单独对 Tier-A 是空操作
+    # （Tier-A 的 floor 是"已证明翻倍"的最小值，阈值永远松弛），但对 Tier-B 的期望增益
+    # 口径才是紧的——因此这一臂是 B 真正该被检验的地方。
+    "v2_hu_upgrade_tierb_v3": lambda: HuUpgradeTierBPolicy(
+        risk_cells=RISK_CELLS_V3, risk_version=RISK_VERSION_V3, safety_margin=SAFETY_MARGIN_V3,
+    ),
+    "v2_balanced_shadow_v1": lambda: V2BalancedShadowPolicy(
+        baseline=V2HuUpgradePolicy(
+            risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+        ),
+    ),
+
+    # 2x2 析因格"等胡 x 护白"：WhiteDiscardGuardPolicy 只过滤本人出牌、
+    # baotou=False 且存在未拒绝合法非白弃牌时的财神弃牌；决策接缝与评分输入不变。
+    "v2_hu_upgrade_white_guard_v1": lambda: WhiteDiscardGuardPolicy(
+        V2HuUpgradePolicy(risk_cells=RISK_CELLS, risk_version=RISK_VERSION,
+                          safety_margin=SAFETY_MARGIN),
     ),
 
     "weighted_heuristic_v2_white_guard": lambda: WhiteDiscardGuardPolicy(ComparableHeuristicPolicyV2()),
@@ -216,8 +260,8 @@ class RuntimeConfig:
             raise ValueError(
                 "未知策略名 {0!r}；可用：{1}".format(self.strategy, ", ".join(sorted(_STRATEGY_FACTORIES)))
             )
-        if self.strategy == "v2_hu_upgrade_v1" and self.mode not in (RuntimeMode.TEST_ROOM, RuntimeMode.AUTO_MATCH):
-            raise ValueError("v2_hu_upgrade_v1 当前仅允许 mode=test_room/auto_match 实验，尚未通过正式赛事发布门禁")
+        if self.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_hu_upgrade_dealer_v2", "v2_hu_upgrade_risk_v3", "v2_hu_upgrade_tierb_v3", "v2_value_upgrade_v1", "v2_balanced_shadow_v1", "v2_hu_upgrade_white_guard_v1") and self.mode not in (RuntimeMode.TEST_ROOM, RuntimeMode.AUTO_MATCH):
+            raise ValueError("V2 实验策略当前仅允许 mode=test_room/auto_match，尚未通过正式赛事发布门禁")
 
         if self.strategy == "catch_play_probe" and self.mode is not RuntimeMode.TEST_ROOM:
             raise ValueError("catch_play_probe 仅允许 mode=test_room；它主动弃白用于规则验证")
@@ -515,7 +559,7 @@ def _test_room_upgrade_rules(config: RuleConfig) -> HangmaRules:
     if (config.base_score != 1 or config.you_cai_bi_kao or
             config.ruleset_version != RISK_RULESET_VERSION):
         raise ValueError(
-            "v2_hu_upgrade_v1 测试范围要求 BaseScore=1、YouCaiBiKao=false、"
+            "V2 实验策略测试范围要求 BaseScore=1、YouCaiBiKao=false、"
             "ruleset_version=" + RISK_RULESET_VERSION
         )
     return HangmaRules(config)
@@ -605,8 +649,8 @@ def build_runtime(
             expected_tournament_id=config.expected_tournament_id,
             known_guide_version=config.known_guide_version,
         ),
-        rules_factory=(_test_room_upgrade_rules if config.strategy == "v2_hu_upgrade_v1" else HangmaRules),
-        value_limits=(ValueAnalysisLimits() if config.strategy == "v2_hu_upgrade_v1" else None),
+        rules_factory=(_test_room_upgrade_rules if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_hu_upgrade_dealer_v2", "v2_hu_upgrade_risk_v3", "v2_hu_upgrade_tierb_v3", "v2_value_upgrade_v1", "v2_balanced_shadow_v1", "v2_hu_upgrade_white_guard_v1") else HangmaRules),
+        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_hu_upgrade_dealer_v2", "v2_hu_upgrade_risk_v3", "v2_hu_upgrade_tierb_v3", "v2_value_upgrade_v1", "v2_balanced_shadow_v1", "v2_hu_upgrade_white_guard_v1") else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,
@@ -764,9 +808,9 @@ def build_auto_match_runtime(
         ),
         settings=settings,
         rules_factory=HangmaRules,
-        value_limits=(ValueAnalysisLimits() if config.strategy == "v2_hu_upgrade_v1" else None),
+        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_hu_upgrade_dealer_v2", "v2_hu_upgrade_risk_v3", "v2_hu_upgrade_tierb_v3", "v2_value_upgrade_v1", "v2_balanced_shadow_v1", "v2_hu_upgrade_white_guard_v1") else None),
         value_rules_scope=(RuleConfig(RISK_RULESET_VERSION, 1, False)
-                           if config.strategy == "v2_hu_upgrade_v1" else None),
+                           if config.strategy in ("v2_hu_upgrade_v1", "v2_hu_upgrade_tierb_v1", "v2_hu_upgrade_dealer_v1", "v2_hu_upgrade_dealer_v2", "v2_hu_upgrade_risk_v3", "v2_hu_upgrade_tierb_v3", "v2_value_upgrade_v1", "v2_balanced_shadow_v1", "v2_hu_upgrade_white_guard_v1") else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,

@@ -139,9 +139,30 @@ def _waiting_facts(
 
     summary = hand_analysis.analyse_hand(hand_after, melds)
     useful = _useful_facts(summary, hand_after, public_counts, newly_hidden)
+    # 新牌型集合可能包含旧综合有效牌之外的牌种。其公开计数缺证据时
+    # 只丢弃该集合，不能连带让已完整的旧牌效事实降级。
+    pattern_notes = []
+    counts = counts_from_tiles(hand_after)
+    def pattern_entries(entries, label):
+        if entries is None:
+            return None
+        try:
+            return tuple(UsefulTileFact(entry.code, _remaining(entry.code, counts, public_counts, newly_hidden))
+                         for entry in entries)
+        except Exception as exc:
+            pattern_notes.append(label + "推进牌计数未知：" + type(exc).__name__ + ": " + str(exc))
+            return None
+    standard = pattern_entries(summary.standard_useful_tiles, "普通型")
+    seven = pattern_entries(summary.seven_pairs_useful_tiles, "七对")
     return CandidateFacts(
         fact_kind=CandidateFactKind.HAND_PROGRESS,
         shanten_after=summary.shanten,
+        # 与综合向听共享同一等待手牌；只暴露已有数学结果，不另选七对弃牌。
+        standard_shanten_after=summary.standard_shanten,
+        seven_pairs_shanten_after=summary.chiitoi_shanten,
+        standard_useful_tiles=standard,
+        seven_pairs_useful_tiles=seven,
+        pattern_progress_note="；".join(pattern_notes) if pattern_notes else None,
         useful_tiles=useful,
         best_followup_discard=followup,
         replacement_draw_unknown=replacement_unknown,

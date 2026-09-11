@@ -38,15 +38,29 @@ class UpgradeRiskCell:
     threat: bool
     survival_floor: float
     loss_ceiling: float
+    # 方向 B（风险表 v3）：以下两个字段为可选扩展，缺省时行为与 v2 表完全一致。
+    # dealer：None = 庄闲通用；True/False 只匹配对应庄闲态。真实支付结构不对称
+    #   （庄家胡 +24 番、庄家输给闲家 -8 番；闲家胡 +10 番、输给另一闲家 -1 番），
+    #   而旧表把两种状态混在一起定价，对庄位大番场景失真 3 倍以上。
+    # loss_absolute：绝对支付（分），设置时**替代** loss_ceiling × 立即胡净分。
+    #   旧口径 0.10×胡分对庄位 ×2+ 场景系统性低估，改用两池实测的上侧值。
+    dealer: Optional[bool] = None
+    loss_absolute: Optional[float] = None
 
     def __post_init__(self) -> None:
         if type(self.wall_band) is not int or self.wall_band not in (0, 1, 2):
             raise ValueError("wall_band 必须是 0、1 或 2")
         if type(self.threat) is not bool:
             raise ValueError("threat 必须是布尔值")
+        if self.dealer is not None and type(self.dealer) is not bool:
+            raise ValueError("dealer 必须是布尔值或 None")
         for name, value in (("survival_floor", self.survival_floor), ("loss_ceiling", self.loss_ceiling)):
             if type(value) not in (int, float) or not math.isfinite(value) or value < 0:
                 raise ValueError(name + " 必须是非负有限数")
+        if self.loss_absolute is not None:
+            if (type(self.loss_absolute) not in (int, float)
+                    or not math.isfinite(self.loss_absolute) or self.loss_absolute < 0):
+                raise ValueError("loss_absolute 必须是非负有限数或 None")
         if self.survival_floor > 1:
             raise ValueError("survival_floor 不能超过 1")
 
@@ -69,6 +83,47 @@ def upgrade_risk_key(observation: PlayerObservation) -> Optional[Tuple[int, bool
         for seat in opponents
     )
     return band, threat
+
+
+def risk_cell_matches(cell: UpgradeRiskCell, band: int, threat: bool, is_dealer: bool) -> bool:
+    """风险分组匹配；dealer 为 None 表示庄闲通用（v2 表行为完全不变）。"""
+
+    return (cell.wall_band == band and cell.threat == threat
+            and (cell.dealer is None or cell.dealer == is_dealer))
+
+
+def risk_cell_loss(cell: UpgradeRiskCell, gain: float) -> float:
+    """等待失败的支付估计：优先用绝对字段（方向 B），否则回退 v2 的倍数口径。"""
+
+    return cell.loss_absolute if cell.loss_absolute is not None else cell.loss_ceiling * gain
+
+
+def upgrade_reason(prefix: str, version: str, cell: UpgradeRiskCell, gain: float,
+                   value: float, safety_margin: float,
+                   value_phrase: str = "下一摸价值") -> str:
+    """等胡理由文案的**唯一**来源，供基类与各档位子类共用。
+
+    必须由这里统一格式化：子类若各自拼串，很容易出现"决策用绝对支付、文案仍写倍数口径"
+    的漂移——审计时人会按文案复算，得到与代码不同的分值，等于记录失真（曾真实发生）。
+    value_phrase 只描述各档位的价值口径（Tier-A 取普通型最低净分、Tier-B 取期望增益），
+    定价与保守分值的算法一律由本函数负责。
+    """
+
+    loss = risk_cell_loss(cell, gain)
+    loss_text = ("绝对支付 {0:g} 分".format(loss) if cell.loss_absolute is not None
+                 else "无条件支付上侧估计 {0:.4f}×当前胡分".format(cell.loss_ceiling))
+    return (
+        prefix +
+        "立即胡 {gain:g}，" + value_phrase + " {value:.4f}；"
+        "校准表 {version} 分组 {band}/{threat}/庄={dealer}：生存下侧估计 {survival:.4f}，"
+        "{loss_text}，保守分值 {conservative:g} > 门槛 {threshold:g}；"
+        "只估计下一摸，不是整单局保证"
+    ).format(gain=gain, value=value, version=version, band=cell.wall_band,
+             threat=int(cell.threat),
+             dealer=int(cell.dealer) if cell.dealer is not None else "-",
+             survival=cell.survival_floor, loss_text=loss_text,
+             conservative=cell.survival_floor * value - loss,
+             threshold=gain * (1 + safety_margin))
 
 
 def _next_baotou_floor(candidate: RuleCandidate, seat: int) -> Optional[float]:
@@ -125,8 +180,8 @@ class HuUpgradePolicy:
             raise ValueError("safety_margin 必须是非负有限数")
         if not isinstance(risk_cells, tuple) or any(not isinstance(cell, UpgradeRiskCell) for cell in risk_cells):
             raise ValueError("risk_cells 必须是 UpgradeRiskCell 元组")
-        if len({(cell.wall_band, cell.threat) for cell in risk_cells}) != len(risk_cells):
-            raise ValueError("risk_cells 不能包含重复分组")
+        if len({(cell.wall_band, cell.threat, cell.dealer) for cell in risk_cells}) != len(risk_cells):
+            raise ValueError("risk_cells 不能包含重复分组（wall_band/threat/dealer 三元）")
         if not isinstance(risk_version, str) or not risk_version:
             raise ValueError("risk_version 必须是非空字符串")
         self._weights = weights
@@ -142,6 +197,22 @@ class HuUpgradePolicy:
         await asyncio.sleep(0)
         if self._monotonic() > budget.enhancement_deadline_monotonic:
             raise PolicyTimeoutError("等胡升级超过增强截止时间")
+
+    def _next_draw_value(self, candidate: RuleCandidate, obs: PlayerObservation,
+                         gain: float) -> Optional[float]:
+        """下一摸的成功价值估计；默认取"任意普通摸均爆头"的净分下界（Tier-A）。
+
+        子类可覆盖为概率档口径（Tier-B：按未见张数加权的期望增益）。返回 None 表示
+        本候选没有可用的价值证据，调用方保持原计划。
+        """
+
+        return _next_baotou_floor(candidate, obs.seat)
+
+    def _explain(self, cell: UpgradeRiskCell, gain: float, value: float) -> str:
+        """等胡理由文案；子类按各自的价值口径覆盖。"""
+
+        return upgrade_reason("有界等胡：", self._risk_version, cell, gain, value,
+                              self._safety_margin, "下一次普通摸牌的最低净分")
 
     async def choose(self, request: DecisionRequest, budget: DecisionBudget) -> DecisionPlan:
         """增强缺失/失败保留完整基线；取消向上传播；所有候选仍由规则提供。"""
@@ -183,7 +254,10 @@ class HuUpgradePolicy:
             if obs.phase != "draw" or obs.drawn_tile is None:
                 return baseline
             key = upgrade_risk_key(obs)
-            cell = next((cell for cell in self._risk_cells if (cell.wall_band, cell.threat) == key), None)
+            is_dealer = obs.dealer_seat == obs.seat
+            cell = next((cell for cell in self._risk_cells
+                         if key is not None and risk_cell_matches(cell, key[0], key[1], is_dealer)),
+                        None)
             hu = available.get(baseline.candidates[0].action_key)
             if cell is None or hu is None or hu.value_facts is None:
                 return baseline
@@ -199,26 +273,19 @@ class HuUpgradePolicy:
                 candidate = available.get(item.action_key)
                 if candidate is None or not isinstance(item.action, Discard):
                     continue
-                floor = _next_baotou_floor(candidate, obs.seat)
+                floor = self._next_draw_value(candidate, obs, gain)
                 if floor is None or floor <= gain:
                     continue
-                conservative = cell.survival_floor * floor - cell.loss_ceiling * gain
+                conservative = cell.survival_floor * floor - risk_cell_loss(cell, gain)
                 if conservative > gain * (1 + self._safety_margin):
                     offers.append((conservative, floor, item))
             if offers:
                 conservative, floor, selected = min(offers, key=lambda offer: (-offer[0], -offer[1], offer[2].action_key))
                 parts = (
                     ScorePart("等胡升级-成功分值估计", cell.survival_floor * floor),
-                    ScorePart("等胡升级-失败支付估计", -cell.loss_ceiling * gain),
+                    ScorePart("等胡升级-失败支付估计", -risk_cell_loss(cell, gain)),
                 )
-                explanation = (
-                    "有界等胡：立即胡 {gain:g}，下一次普通摸牌的最低净分 {floor:g}；"
-                    "校准表 {version} 分组 {band}/{threat}：生存下侧估计 {survival:.4f}，"
-                    "无条件支付上侧估计 {loss:.4f}×当前胡分，保守分值 {value:g} > 门槛 {threshold:g}；"
-                    "只估计下一摸，不是整单局保证"
-                ).format(gain=gain, floor=floor, version=self._risk_version, band=cell.wall_band,
-                         threat=int(cell.threat), survival=cell.survival_floor, loss=cell.loss_ceiling,
-                         value=conservative, threshold=gain * (1 + self._safety_margin))
+                explanation = self._explain(cell, gain, floor)
         if selected is None:
             return baseline
         result = [selected] + [item for item in baseline.candidates if item.action_key != selected.action_key]

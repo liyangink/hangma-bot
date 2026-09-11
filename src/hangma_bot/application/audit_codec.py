@@ -156,7 +156,7 @@ def _enum_value(value: object, allowed: Sequence[str], type_name: str, key: str)
 
 def candidate_facts_to_json(facts: CandidateFacts) -> dict[str, object]:
     """把候选牌效事实转为 JSON；缺失数值字段原样保留 None/空，不伪造。"""
-    return {
+    payload = {
         "codec_version": DECISION_CODEC_VERSION,
         "fact_kind": facts.fact_kind.value,
         "shanten_after": facts.shanten_after,
@@ -169,6 +169,38 @@ def candidate_facts_to_json(facts: CandidateFacts) -> dict[str, object]:
         "completeness": facts.completeness.value,
         "note": facts.note,
     }
+    # 可选扩展只在已分析时写入；旧审计缺字段仍表示未知，不补零或重算。
+    for name in ("standard_shanten_after", "seven_pairs_shanten_after"):
+        value = getattr(facts, name)
+        if value is not None:
+            payload[name] = value
+    for name in ("standard_useful_tiles", "seven_pairs_useful_tiles"):
+        value = getattr(facts, name)
+        if value is not None:
+            payload[name] = [
+                {"code": item.code, "remaining_estimate": item.remaining_estimate}
+                for item in value
+            ]
+    if facts.pattern_progress_note is not None:
+        payload["pattern_progress_note"] = facts.pattern_progress_note
+    return payload
+
+
+def _optional_pattern_tiles_from_json(value: object, key: str) -> Tuple[UsefulTileFact, ...] | None:
+    """区分未分析与已知空集合；每张牌复用生产事实类型的校验。"""
+    if value is None:
+        return None
+    type_name = "candidate_facts"
+    result = []
+    for item in _as_list(value, type_name, key):
+        entry = _require_mapping(item, type_name + "." + key + " 元素")
+        result.append(UsefulTileFact(
+            code=_as_str(_get(entry, "code", type_name), type_name, "code"),
+            remaining_estimate=_as_int(
+                _get(entry, "remaining_estimate", type_name), type_name, "remaining_estimate"
+            ),
+        ))
+    return tuple(result)
 
 
 def candidate_facts_from_json(payload: object) -> CandidateFacts:
@@ -219,6 +251,21 @@ def candidate_facts_from_json(payload: object) -> CandidateFacts:
             )
         ),
         note=_as_optional_str(_get(data, "note", type_name), type_name, "note"),
+        standard_shanten_after=_as_optional_int(
+            data.get("standard_shanten_after"), type_name, "standard_shanten_after"
+        ),
+        seven_pairs_shanten_after=_as_optional_int(
+            data.get("seven_pairs_shanten_after"), type_name, "seven_pairs_shanten_after"
+        ),
+        standard_useful_tiles=_optional_pattern_tiles_from_json(
+            data.get("standard_useful_tiles"), "standard_useful_tiles"
+        ),
+        seven_pairs_useful_tiles=_optional_pattern_tiles_from_json(
+            data.get("seven_pairs_useful_tiles"), "seven_pairs_useful_tiles"
+        ),
+        pattern_progress_note=_as_optional_str(
+            data.get("pattern_progress_note"), type_name, "pattern_progress_note"
+        ),
     )
 
 
