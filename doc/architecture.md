@@ -493,3 +493,11 @@ Hatch 在安装期构建可选 CPython 扩展，wheel 标明平台和 Python 二
 显式选择 `v2_hu_upgrade_v1` 时，组合根向自由赛/测试房运行时提供一次摸牌分值预算；规则模块生产条件结算，策略只消费事实，应用层继续负责原始截止、保底与提交。新增可选分值编码进入审计，四个外部端口、HTTP和调度边界不变。
 
 自由赛取得实际规则后核对 `value_rules_scope`，匹配才将 `value_limits` 传入决策循环；不匹配传None，完整沿用V2并完成已入席房间。测试房继续严格校验范围。默认不启用分值，主线不含两摸线上搜索。新增类型及运行参数见[接入说明](implementation/v2-hu-upgrade-experimental.md)，与[主技术方案](hangma-ai-bot-technical-plan.md)同步。
+
+## 2026-09-11 模型与赛事目标最小接入（已实现）
+
+当前新增 `learning.outcome_model`、`competition.outcome_utility` 和 `policy.outcome_policy`，具体范围与调用图见 [outcome-v1](./implementation/model-competition-contract-v1.md)。这是进入模型阶段的实际最小实现，优先于前文第一阶段“尚不创建学习/赛事模块”的历史状态；尚未交付网络训练、自动晋级目标或阶段续局模型。
+
+`learning` 接收可见观察与合法候选，产生带版本的条件均值或联合积分分布；`competition` 纯计算给定单局目标下的效用；`policy` 汇总两者，输出原 `DecisionPlan` 及可选 `outcome_trace`。稳定结果值对象与纯 codec 在 `kernel`，模型制品及基线由 `bootstrap.build_outcome_policy` 显式注入。训练任务归 `offline`，不会从线上调用。
+
+现有默认策略不接入新能力。两个运行入口复用生产计划 codec；字段缺失兼容旧记录。应用保底、原窗口预算和动作提交门保持原责任。自动赛事事实和公共驱动的后续增量仍按真实生产者收口，不由共享类型推测生成。

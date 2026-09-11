@@ -515,3 +515,11 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 - 决策循环先取得紧急动作，只在原增强截止前请求分值；409恢复不重置预算，超过提交截止不发送。自由赛manifest记录实际规则、有效分值限额及禁用原因，配置的策略名不表示每次增强都生效。
 
 字段语义、构造校验、两个入口差异及契约测试见[受控接入说明](v2-hu-upgrade-experimental.md)。
+
+## 2026-09-11 模型与赛事目标契约 outcome-v1（已实现）
+
+两线以 [model-competition-contract-v1.md](./model-competition-contract-v1.md) 为本批冻结依据。已交付 `OutcomeQuery`、异步结果生产函数、均值/联合分布、完整版本条件、单局结果目标、经验表生产器和 `OutcomePolicy` 消费；不是只写类型目录。
+
+`BotPolicy.choose`、`DecisionRequest`、规则接口与模拟器公开接口不变；`DecisionPlan.outcome_trace` 新增为可选字段，旧策略保持 None，旧 JSON 不输出该键，旧记录读取为 None。结果载荷单独使用 `schema_version=1`，生产 `DECISION_CODEC_VERSION` 不变。字段、错误、预算、工作量上限和全部调用方以契约文档及 `tests/contracts/test_outcome_integration.py` 为准。
+
+自动晋级压力、真实剩余机会、参考积分尺度和离线驱动增量仍需后续受控提交。本批单局门槛目标不能被解释为已确认赛事最后机会；新模型和新目标实现分别验收后仍须验证固定组合的完整桌赛/赛事效果。

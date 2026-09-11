@@ -26,6 +26,7 @@
 from __future__ import annotations
 
 import math
+from hangma_bot.kernel.outcome_codec import outcome_trace_from_json, outcome_trace_to_json
 from collections.abc import Mapping as MappingABC
 from typing import List, Mapping, Sequence, Tuple
 
@@ -623,7 +624,7 @@ def _ranked_candidate_from_json(payload: object) -> RankedCandidate:
 
 def decision_plan_to_json(plan: DecisionPlan) -> dict[str, object]:
     """保存完整候选顺序、策略评分分项和原因；评分不是桌内积分。"""
-    return {
+    result = {
         "codec_version": DECISION_CODEC_VERSION,
         "decision_id": plan.decision_id,
         "window_key": window_key_to_json(plan.window_key),
@@ -632,6 +633,10 @@ def decision_plan_to_json(plan: DecisionPlan) -> dict[str, object]:
         "candidates": [_ranked_candidate_to_json(item) for item in plan.candidates],
         "degraded_reasons": list(plan.degraded_reasons),
     }
+    # 不给原计划强加空键，保持已有审计线格式逐字节兼容。
+    if plan.outcome_trace is not None:
+        result["outcome_trace"] = outcome_trace_to_json(plan.outcome_trace)
+    return result
 
 
 def decision_plan_from_json(payload: object) -> DecisionPlan:
@@ -658,6 +663,7 @@ def decision_plan_from_json(payload: object) -> DecisionPlan:
                 _get(data, "degraded_reasons", type_name), type_name, "degraded_reasons"
             )
         ),
+        outcome_trace=(None if data.get("outcome_trace") is None else outcome_trace_from_json(data["outcome_trace"])),
     )
 
 

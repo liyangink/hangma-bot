@@ -32,10 +32,11 @@ Token 与模式核对（scripts 验收）：``token_kind`` 与 ``mode`` 必须�
 from __future__ import annotations
 
 import os
+import time
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Callable, FrozenSet, Mapping, Optional
+from typing import TYPE_CHECKING, Callable, FrozenSet, Mapping, Optional
 from urllib.parse import urlsplit
 
 from hangma_bot.adapters.official import (
@@ -62,7 +63,7 @@ from hangma_bot.application.tournament_supervisor import SupervisionPolicy
 from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.kernel.config import RuleConfig
-from hangma_bot.policy.interface import BotPolicy
+from hangma_bot.policy.interface import BotPolicy, DecisionRequest
 from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2
@@ -82,11 +83,39 @@ from hangma_bot.application.audit_codec import (
 from hangma_bot.simulation import MatchSpec, SimulationChoice, SimulationEngine
 from hangma_bot.simulation.artifacts import compute_rules_hash, hand_math_runtime_metadata
 
+if TYPE_CHECKING:
+    from hangma_bot.kernel.outcomes import HandOutcomeObjective, OutcomeModelVersion
+    from hangma_bot.learning.outcome_model import OutcomePredictor
+    from hangma_bot.policy.outcome_policy import OutcomePolicy
+
 DEFAULT_STRATEGY = "weighted_heuristic"
 
 # 本地规则语义版本（非官方字段）；进入官方会话的审计 manifest 与启动核对
 # 清单，用于区分「平台指南版本」与「本地规则引擎语义版本」。
 DEFAULT_RULESET_VERSION = "hangma-mvp-v10-public-counts"
+
+
+def build_outcome_policy(
+    *, baseline: BotPolicy, predictor: OutcomePredictor | None,
+    expected_version: OutcomeModelVersion,
+    rule_config: RuleConfig, rules_source_hash: str,
+    objective: Callable[[DecisionRequest], HandOutcomeObjective],
+    monotonic: Callable[[], float] = time.monotonic,
+) -> OutcomePolicy:
+    """显式组装离线/候选结果策略，不增加线上默认枚举或自动加载制品。
+
+    baseline 是完整可靠基线；predictor 是 OutcomeQuery 到 OutcomeBatch 的
+    异步函数或 None；objective 从 DecisionRequest 的可见事实生成单局目标。
+    expected_version 固定本批模型适用条件；rule_config/rules_source_hash 必须
+    来自实际运行规则，不能复制模型声明。monotonic 返回单调时钟秒。
+    后续模型装载在组合根完成，policy 不访问模型文件。
+    """
+    from hangma_bot.policy.outcome_policy import OutcomePolicy
+    from hangma_bot.kernel.outcome_codec import rules_context_key
+
+    return OutcomePolicy(baseline=baseline, fallback=SafeFallbackPolicy(), predictor=predictor,
+                         expected_version=expected_version, objective=objective, monotonic=monotonic,
+                         runtime_rules_hash=rules_context_key(rule_config, rules_source_hash))
 
 # 策略名 → 工厂；只有存在两个真实实现时才保留接缝（根 AGENTS.md 第 5 节）。
 # claim_if_legal 仅用于官方测试房验收（配置项选择），默认策略不变。

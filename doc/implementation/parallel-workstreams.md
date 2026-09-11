@@ -94,3 +94,9 @@
 **自由赛 Agent：** 从相同契约提交建立独立分支，按 free-match-start.md 接入全局 Token `/api/match`，默认只完成一个自动房。实现专用生命周期，复用已有 GameTask/GameSession/SSE/ActionGate，禁止调用 auto 房 register/ready，区分声明上限与平台配置，处理 10 次/分钟、容量、结果不确定入席和关闭前结果留存。先交受控 mode/initialize 语义差异给主审；不改审计/规则/策略协议。提交 handoffs/free-match.md 和实际验收证据，未知下载能力保持未知。
 
 主审继续按 policy-iteration-plan.md 做分析与候选实现，模块交付后组织评估和集成，不把尚未验证的策略设为稳定默认值。
+
+## 2026-09-11 模型与赛事两线的共同起点
+
+共享接入现已有实际实现和契约测试，入口为 [outcome-v1](./model-competition-contract-v1.md)。模型线独立开发 `learning` 编码/网络/制品与 `offline` 标签/训练；赛事线独立开发 `competition` 排名事实/目标与人工情景评估。两线复用 `OutcomeQuery`、结果类型和单局目标，经 `bootstrap.build_outcome_policy` 接入同一 `choose`。
+
+公共类型、codec、策略共享入口、组合根与公共评测驱动由集成人维护。各线基于包含本说明的共同提交创建独立工作区；共享契约通过不等于模型或赛事目标已具备完整生产能力，具体剩余工作见 [启动计划](./model-competition-kickoff-2026-09-11.md)。

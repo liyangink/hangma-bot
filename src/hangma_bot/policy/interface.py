@@ -8,6 +8,7 @@ from typing import Protocol, Tuple
 from hangma_bot.hangma.interface import RuleAnalysis
 from hangma_bot.kernel.actions import Action, WindowKey
 from hangma_bot.kernel.observation import CompetitionContext, PlayerObservation
+from hangma_bot.kernel.outcomes import OutcomeDecisionTrace
 
 
 @dataclass(frozen=True)
@@ -81,6 +82,7 @@ class DecisionPlan:
     revision: int
     candidates: Tuple[RankedCandidate, ...]
     degraded_reasons: Tuple[str, ...]
+    outcome_trace: OutcomeDecisionTrace | None = None  # 可选结果/目标审计；旧策略及旧记录为空
 
 
 class BotPolicy(Protocol):

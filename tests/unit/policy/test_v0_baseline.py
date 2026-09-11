@@ -48,7 +48,10 @@ def rows():
 def test_frozen_v0_plan_is_unchanged(row):
     request = recorded_request(row)
     plan = run_choose(WeightedHeuristicPolicy(monotonic=lambda:0),request,make_budget())
-    assert json.loads(json.dumps(asdict(plan),ensure_ascii=False,allow_nan=False)) == row['expected_plan']
+    encoded = json.loads(json.dumps(asdict(plan),ensure_ascii=False,allow_nan=False))
+    # 共享计划新增可选审计，V0 必须不使用；原动作、分项与排序仍逐项冻结。
+    assert encoded.pop('outcome_trace') is None
+    assert encoded == row['expected_plan']
 
 
 @pytest.mark.parametrize('row',[r for r in rows() if r['complete_facts']],ids=lambda r:r['name'])
