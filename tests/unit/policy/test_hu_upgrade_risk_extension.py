@@ -1,10 +1,11 @@
-"""方向 B 风险表 v3：庄闲分离 + 绝对支付。
+"""等胡风险 cell 的保留扩展点：庄闲维、绝对支付、审计文案一致性。
 
-守三条不变量：
-1. dealer 为 None 的旧表行为**逐字不变**（v2 表兼容，既有配置不受影响）；
+方向 B（风险表 v3）被证明为**结构性空操作**（差分 0/10,769）后，其表本身已随实验臂
+一起移出可用策略清单；这里只保留被证明有用的那部分机制并继续守住不变量：
+
+1. dealer 为 None 时行为**逐字不变**（v2 表兼容，既有配置不受影响）；
 2. dealer 维**真正生效**：庄位窗口只匹配 dealer=True 的 cell，闲位反之，无匹配则不升级；
-3. 绝对支付字段替代倍数口径，且庄位支付高于闲位（支付结构不对称：庄胡 +24 番、
-   庄输给闲 -8 番；闲胡 +10 番、输给另一闲 -1 番）。
+3. 绝对支付字段替代倍数口径；审计文案必须与决策用**同一套**定价。
 """
 
 import asyncio
@@ -19,7 +20,6 @@ from hangma_bot.hangma import HangmaRules
 from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.policy.hu_upgrade import UpgradeRiskCell, risk_cell_loss, risk_cell_matches
-from hangma_bot.policy.hu_upgrade_calibration import RISK_CELLS_V3, RISK_VERSION_V3
 from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy
 
 from .support import make_budget
@@ -80,21 +80,6 @@ def test_invalid_extension_fields_rejected():
         UpgradeRiskCell(1, False, 0.83, 0.10, loss_absolute=-1.0)
     with pytest.raises(ValueError):
         UpgradeRiskCell(1, False, 0.83, 0.10, loss_absolute=float("nan"))
-
-
-def test_v3_table_prices_dealer_higher_and_relaxes_band_two():
-    """v3 表：庄位支付高于闲位；band 2 生存下侧按实测从 0.92 提到 0.95。"""
-
-    assert RISK_VERSION_V3.startswith("hu-upgrade-risk-v3")
-    for band in (1, 2):
-        cells = {cell.dealer: cell for cell in RISK_CELLS_V3 if cell.wall_band == band}
-        assert set(cells) == {True, False}, band
-        assert cells[True].loss_absolute > cells[False].loss_absolute, band
-    band1 = next(c for c in RISK_CELLS_V3 if c.wall_band == 1 and c.dealer is False)
-    band2 = next(c for c in RISK_CELLS_V3 if c.wall_band == 2 and c.dealer is False)
-    assert band1.survival_floor == pytest.approx(0.83)
-    assert band2.survival_floor == pytest.approx(0.95)
-    assert all(cell.loss_absolute is not None for cell in RISK_CELLS_V3)
 
 
 def test_reason_text_reports_the_same_pricing_as_the_decision():

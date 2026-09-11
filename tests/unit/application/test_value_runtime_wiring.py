@@ -121,9 +121,30 @@ async def test_candidate_rejects_actual_uncalibrated_rules_before_register_ready
 
 @pytest.mark.parametrize("mode,token_kind", [("official_tournament", "official"),
                                           ("test_tournament", "test")])
-def test_candidate_cannot_accidentally_enter_unapproved_competition_modes(tmp_path, mode, token_kind):
-    with pytest.raises(ValueError, match="仅允许 mode=test_room/auto_match"):
-        runtime_config(tmp_path, mode=mode, token_kind=token_kind)
+def test_candidate_may_enter_competition_modes_after_release_review(tmp_path, mode, token_kind):
+    """Tier-A 于 2026-09-11 由人工决定解除模式限制，见 doc/implementation/strategy-catalog.md。
+
+    门禁依据是本地五项判据全部通过：完整桌赛净分正、按根聚类 95% 区间下界为正
+    （+4.586 [2.784, 6.388]，256 根）、精确二项符号检验显著（56/6，p<1e-4）、
+    第一名比例不退化、时限与降级计数全 0。
+
+    【发布前未完成项】官方测试赛事门禁尚未跑过（本地门禁不能替代它，见根 AGENTS.md §7）；
+    真实房 2 对 2 配对 A/B 功效不足（−9.30 [−27.65, +9.05]），强对手池重跑
+    +1.945 [−0.445, +4.219] 不显著。⇒ 对外部对手的预期收益按 +2/场 量级估计，
+    不要按对照读数 +4.586 外推。本用例只固化"可选性已被人工批准"这一事实，
+    不代表已通过发布门禁。
+    """
+    config = runtime_config(tmp_path, mode=mode, token_kind=token_kind)
+    assert config.strategy == "v2_hu_upgrade_v1"
+
+
+@pytest.mark.parametrize("mode,token_kind", [("official_tournament", "official"),
+                                          ("test_tournament", "test")])
+def test_shadow_layer_cannot_enter_competition_modes(tmp_path, mode, token_kind):
+    """影子层只追加路线审计理由、不改变动作顺序，必须挡在正式赛事之外。"""
+    with pytest.raises(ValueError, match="不得用于正式赛事"):
+        runtime_config(tmp_path, mode=mode, token_kind=token_kind,
+                       strategy="v2_balanced_shadow_v1")
 
 
 @pytest.mark.parametrize("rules", [replace(RULE_CONFIG, you_cai_bi_kao=True),
