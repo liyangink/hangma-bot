@@ -245,6 +245,32 @@ def test_composition_root_accepts_registered_model_strategies(tmp_path):
         config("sequence_model_unknown_v1")
 
 
+def test_tournament_entry_config_accepts_model_strategies(tmp_path):
+    """赛事入口的运行配置必须能选到三个候选。
+
+    ``run_participant.py``、``run_test_room.py``、``run_auto_match.py`` 都经
+    ``runtime_config_from_mapping`` 解析配置，因此这里走同一条路径验证；
+    未知字段与未知策略名仍须被拒绝。
+    """
+
+    from hangma_bot.bootstrap import runtime_config_from_mapping
+
+    base = dict(mode="test_room", base_url="http://127.0.0.1:1", expected_tournament_id="t1",
+                known_guide_version=1, token="redacted", token_kind="test", audit_root=str(tmp_path))
+    for name in ("sequence_model_2048_projected_v1", "sequence_model_4096_direct_v1",
+                 "sequence_model_4096_projected_v1"):
+        config = runtime_config_from_mapping(dict(base, strategy=name))
+        assert config.strategy == name
+        assert config.sequence_model_dir is None
+    config = runtime_config_from_mapping(
+        dict(base, strategy="sequence_model_4096_projected_v1", sequence_model_dir=str(tmp_path)))
+    assert config.sequence_model_dir == tmp_path
+    with pytest.raises(ValueError):
+        runtime_config_from_mapping(dict(base, strategy="sequence_model_unknown_v1"))
+    with pytest.raises(ValueError):
+        runtime_config_from_mapping(dict(base, strategy="weighted_heuristic", unknown_field=1))
+
+
 def test_unexpected_member_is_rejected(tmp_path):
     """部署包出现未声明成员必须拒绝，防止夹带训练数据或完整世界。"""
 

@@ -378,6 +378,14 @@ class RuntimeConfig:
         )
 
 
+def _optional_path(value: object, field_name: str) -> Optional[Path]:
+    """把可空配置项转成 Path；None/缺省保持 None，其他类型明确拒绝。"""
+
+    if value is None:
+        return None
+    return Path(_require_non_empty_str(value, field_name))
+
+
 _CONFIG_FIELDS = frozenset({
     "mode",
     "base_url",
@@ -394,6 +402,7 @@ _CONFIG_FIELDS = frozenset({
     "audit_raw_gzip",
     "audit_raw_rotate_bytes",
     "source_namespace",
+    "sequence_model_dir",
 })
 
 
@@ -489,6 +498,8 @@ def runtime_config_from_mapping(
         source_namespace=_require_non_empty_str(
             data.get("source_namespace", "hangma-official"), "source_namespace"
         ),
+        # 仅模型类策略使用；缺省 None 表示取仓库内预置部署包目录。
+        sequence_model_dir=_optional_path(data.get("sequence_model_dir"), "sequence_model_dir"),
     )
 
 
