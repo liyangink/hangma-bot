@@ -169,7 +169,7 @@ class PlayerObservation:
     rule_state: RulePublicState
     public_history: Tuple[PublicEvent, ...]
     consumed_seq: Optional[int] = None  # 已消费的官方事件水位；snapshot_seq 仍为快照基线，旧记录为空
-    history_complete: bool = False  # 当前单局可见事件是否从已知起点完整保存；重连缺史时为 False
+    history_complete: bool = False  # 本地事件记录覆盖（兼容旧字段名），非官方状态完整性；正常快照可为False，不作为模型准入条件
     chain_piao: Optional[int] = None  # 当前本人动作链内的飘白次数；依据不足时为空，不等于零
     gang_draw: Optional[bool] = None  # 当前本人摸牌是否为杠补牌；缺少可靠来源时为空
     observation_issues: Tuple[str, ...] = ()  # 观察核对/缺失原因，不含私密协议原文

@@ -242,7 +242,6 @@ class ProtocolSyncState:
             covered = {seq for seq in incoming if self.last_seq < seq <= snapshot.seq}
             if len(covered) != snapshot.seq - self.last_seq:
                 self.history_complete = False
-                self._observation_issues.add("history_gap_snapshot")
 
         if scope_unknown:
             self.history_complete = False
@@ -331,17 +330,11 @@ class ProtocolSyncState:
         return tuple(ranges)
 
     def _refresh_history_completeness(self) -> None:
-        """只有真实补齐且起点可证明时恢复完整性，其他降级原因不可洗掉。"""
-        missing = self.history_missing_ranges()
-        other_issues = self._observation_issues - {"history_gap_snapshot"}
-        if missing:
-            self._observation_issues.add("history_gap_snapshot")
-            self.history_complete = False
-        elif self.history_origin_known and not other_issues:
-            self._observation_issues.discard("history_gap_snapshot")
-            self.history_complete = True
-        else:
-            self.history_complete = False
+        """记录原事件覆盖情况；快照未附带过去事件是正常形态，不登记观察异常。"""
+        self.history_complete = (
+            self.history_origin_known and not self.history_missing_ranges()
+            and not self._observation_issues
+        )
 
     def merge_history(self, events: Tuple[ParsedEvent, ...], *, round_no: int) -> None:
         """补入调用方已证明属于当前手、且不晚于快照的事件；不重放牌面。
@@ -545,7 +538,7 @@ class ProtocolSyncState:
             drawn_tile=None, last_discard=last_discard, discards=tuple(tuple(row) for row in rows),
             hand_counts=tuple(counts), remaining_tile_count=remaining, consumed_seq=self.last_seq,
             history_complete=self.history_complete,
-            observation_issues=tuple(sorted(self._observation_issues - {"history_gap_snapshot"})),
+            observation_issues=tuple(sorted(self._observation_issues)),
         ))
 
     def incremental_response_window(self):
@@ -847,7 +840,7 @@ class ProtocolSyncState:
                            remaining_tile_count=(None if base.remaining_tile_count is None
                                                  else base.remaining_tile_count - len(masked)))
         return replace(base, consumed_seq=self.last_seq, history_complete=self.history_complete,
-                       observation_issues=tuple(sorted(self._observation_issues - {"history_gap_snapshot"})))
+                       observation_issues=tuple(sorted(self._observation_issues)))
 
     def _masked_draws_since_snapshot(self):
         """只推进快照之后的他家公开摸牌数量，绝不需要或推测其牌值。"""

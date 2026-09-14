@@ -136,6 +136,11 @@ def compare_observations(
         if any(seq > observation.consumed_seq for seq in seqs):
             history_differences.append(ObservationDifference("public_history." + source + ".watermark", seqs, observation.consumed_seq))
     for seq, expected in right_events.items():
+        if seq not in left_events and not actual.history_complete and seq <= actual.snapshot_seq:
+            # 官方快照前的原事件可以没有归档；这是记录覆盖范围，不是状态错误。
+            # 已收到却被本地丢掉的事件，须由 raw→归档核验另行证明。
+            history_unchecked.append("public_history[seq={}]:not_archived_before_snapshot".format(seq))
+            continue
         history_differences.extend(_differences("public_history[seq={}]".format(seq), left_events.get(seq), expected))
     # 参考可能仅保留部分历史；本地多保存的公开事件不因此算错。
     if reference.history_complete:

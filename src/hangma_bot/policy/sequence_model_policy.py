@@ -15,7 +15,9 @@ import torch
 from hangma_bot.hangma.interface import RuleCompleteness
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.outcome_codec import observation_key
-from hangma_bot.learning.sequence_encoding import SequenceInput, encode_sequence_input
+from hangma_bot.learning.sequence_encoding import (
+    SEQUENCE_INPUT_CONTRACT_VERSION, SequenceInput, encode_sequence_input,
+)
 from hangma_bot.learning.sequence_model_artifact import SequenceModelArtifact
 from hangma_bot.learning.sequence_policy import SequenceActorCritic, batch_sequence_inputs
 from .interface import BotPolicy, DecisionBudget, DecisionPlan, DecisionRequest, ScorePart
@@ -86,9 +88,9 @@ class SequenceModelPolicy:
                 or request.rules.ruleset_version != self._rules.ruleset_version
                 or asdict(self._rules) != self._artifact.rule_config):
             return fail("model_or_rules_unavailable")
-        # 重连缺史或存在观察问题时公开历史不完整，编码器会拒绝；提前降级以便审计。
-        if not request.observation.history_complete or request.observation.observation_issues:
-            return fail("incomplete_history")
+        # 权威快照及后续连续增量是正常输入；本地原事件归档覆盖不是准入条件。
+        if request.observation.observation_issues:
+            return fail("observation_issues")
         if set(legal) != {c.action_key for c in plan.candidates}:
             return fail("baseline_coverage")
         candidates = tuple(item for item in request.rules.legal_candidates
@@ -106,7 +108,8 @@ class SequenceModelPolicy:
             enhanced = replace(plan, candidates=tuple(
                 replace(c, rank=index + 1, total_score=logits[c.action_key],
                         score_parts=(ScorePart("sequence_model_logit", logits[c.action_key]),),
-                        reasons=("全候选独立策略网络，偏好不是积分", "model_id=" + self.model_id))
+                        reasons=("全候选独立策略网络，偏好不是积分", "model_id=" + self.model_id,
+                                 "input_contract: " + SEQUENCE_INPUT_CONTRACT_VERSION))
                 for index, c in enumerate(ranked)))
             return enhanced if remaining() > 0 else fail("budget_exhausted")
         except TimeoutError:

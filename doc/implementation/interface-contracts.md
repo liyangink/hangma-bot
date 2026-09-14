@@ -354,7 +354,7 @@ runs/{run_id}/
 | --- | --- | --- |
 | `PublicEvent.detail_kind` | 官方公开 `gang/timeout` 的 `data.kind`；未提供为空 | 旧事件默认空；吃组合完整保存在 `tiles`，不与顶层单牌重复拼接 |
 | `PlayerObservation.consumed_seq` | 本场已处理事件水位，非负整数；`snapshot_seq` 仍是快照基线 | 旧记录为空，不能默认断言与快照后事件对齐 |
-| `PlayerObservation.history_complete` | 当前单局依法可见历史是否有完整起点且无缺口 | 默认 False；快照恢复不会凭空补齐历史 |
+| `PlayerObservation.history_complete` | 本地事件记录是否从单局起点完整保存，兼容旧字段名 | 默认 False；仅描述记录覆盖，不是官方状态完整性或模型准入条件；正常快照可以没有此前原事件 |
 | `PlayerObservation.chain_piao` | 本人当前动作链内飘白次数；非负且不超过 `rule_state.chain_count` | 默认空；不能把普通弃白/旧链弃白计入 |
 | `PlayerObservation.gang_draw` | 当前本人摸牌是否为杠后补牌 | 默认空；证据不足不能伪装普通摸牌 |
 | `PlayerObservation.observation_issues` | 可见观察缺失、协议异常或 god 核对差异的稳定原因元组 | 默认空；不保存隐藏牌和原始协议字典 |
@@ -544,3 +544,17 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 `recover_snapshot_history(events, after_seq, round_no)` 要求序号从请求游标之后连续，允许完全一致的重复；先核对已消费事件冲突，再整批验证并合入同单局、快照水位以内的历史。已消费的快照后增量只核对，不再触发刷新或事件时钟；真正的新事件仍由原增量同步校验和推进。未知旧事件、冲突重复、私有他家摸牌或跨单局矛盾拒绝合入并触发一次权威重建；不修改已交付窗口的身份，不重复应用牌面。新单局重置历史查询范围，已结束场次不为补史重新打开。
 
 原始响应在筛除旧事件前完整审计。查询时序可带 `history_after_seq` 和 `state_consumed_seq`，都是官方序号；`AUTHORITATIVE_STATE.history_recovery` 为 `merged/unavailable/rejected`，分别记录补领范围、剩余缺口或放弃范围。时间仍复用原请求单调时钟；不更改动作截止、429冷却、每场state槽和POST串行纪律。回归见[正式会话及实测样本测试](../../tests/adapters/official/test_history_cursor_recovery.py)、[取消测试](../../tests/adapters/official/test_deferred_history_runtime.py)。
+
+## 官方快照输入与序列模型准入（2026-09-14）
+
+官方指南v34（2026-09-14抓取）§2.1是状态正确性的依据：权威快照加其后连续增量组成当前玩家状态。首次接入、跨单局和正常恢复得到的快照可以不含此前原事件；该输入不能被本地“全单局事件收齐”条件拒绝。
+
+`history_complete`保留旧字段名及JSON兼容，只记录本地事件覆盖。它不参与模型准入、当前窗口标签或协议异常判定；适配器不再登记`history_gap_snapshot`观察异常。归档范围仍可独立统计，原事件及该标志均不伪造。
+
+序列模型输入准入版本为`official-snapshot-events-v1`，随每个模型候选的`reasons`记录。编码接受快照前已收事件片段；全部记录须严格递增且不超出已消费水位，快照后的增量须从`S+1`连续覆盖至当前水位。观察矛盾、真实未恢复的增量断序、容量/候选/模型错误仍按原保底路径处理；前者使用`sequence_model:observation_issues`，不再混称`incomplete_history`。
+
+共享334维观察摘要、14维事件行、184维候选、特征数值和网络定义不变；`history_complete`对应数值仍如实保留，不写成true来迁就权重。三个部署包原字节保持，准入版本与模型身份分别审计。关键窗口标签仅依赖当前可见事实，不要求旧事件归档。
+
+离线观察核对将未归档的快照前事件列为记录未核对，不判协议失败；共同已收事件内容冲突、声称归档完整却缺记录及快照后缺少增量仍能检出。已经收到却未归档的情况由原始响应到封存的`received_missing`核验负责。
+
+四个外部端口、当前状态水位、窗口键、动作原始截止和共享限频不变。回归见[真实跨单局模型契约](../../tests/contracts/test_snapshot_sequence_model.py)、[输入边界测试](../../tests/unit/learning/test_snapshot_sequence_encoding.py)和[修复验证](../../review/model-fallback-2026-09-14/README.md)。

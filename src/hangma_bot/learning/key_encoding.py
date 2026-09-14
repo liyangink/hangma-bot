@@ -42,7 +42,7 @@ def key_window_tags(observation: PlayerObservation, analysis: RuleAnalysis) -> t
     tenpai_candidate 指存在规则零向听候选，不冒称本次才进入听牌。
     成对/第四张是当前摸牌后的机械计数，不保证该进张值得保留或杠。
     """
-    if (analysis.completeness != RuleCompleteness.COMPLETE or not observation.history_complete
+    if (analysis.completeness != RuleCompleteness.COMPLETE
             or observation.observation_issues or not 2 <= len(analysis.legal_candidates) <= 128):
         return ()
     counts = visible_hand_counts(observation)

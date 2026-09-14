@@ -11,6 +11,7 @@ from .key_encoding import KEY_ACTION_VERSION, _encode_key_candidate_with_counts
 
 SEQUENCE_FEATURE_VERSION = 'visible-key-public-sequence-v1'
 SEQUENCE_ACTION_VERSION = KEY_ACTION_VERSION
+SEQUENCE_INPUT_CONTRACT_VERSION = 'official-snapshot-events-v1'
 HISTORY_EVENT_DIM = 14
 MAX_CANDIDATES = 128
 
@@ -20,7 +21,7 @@ class SequenceInput:
     """一次动作窗口的纯值输入；座位均已旋转为本人、下家、对家、上家。"""
 
     context: tuple[float, ...]  # 334 维既有可见摘要，含当前摸牌身份。
-    history: tuple[tuple[float, ...], ...]  # 按时间升序的公开事件，每行 14 维；无填充。
+    history: tuple[tuple[float, ...], ...]  # 实际已收可见事件，按序排列，每行14维；快照前可不连续，无填充。
     candidates: tuple[tuple[float, ...], ...]  # K×184，全部提供的合法候选，不按教师筛选。
     action_keys: tuple[str, ...]  # 与候选一一对应的规范排序键，仅用于绑定输出，不输入网络。
 
@@ -28,15 +29,33 @@ class SequenceInput:
 def encode_sequence_input(
     observation: PlayerObservation, candidates: tuple[RuleCandidate, ...],
 ) -> SequenceInput:
-    """编码完整可见历史和全动作候选；无副作用，异常时调用方须回退。
+    """编码权威当前牌面、已收可见事件和全动作候选；无副作用。
 
     复用 visible-flat-v1 的 14 维事件行及 key 编码的 334/184 维。
     事件中的牌码、枚举仍是既有数值编码，不宣称是新类别嵌入。
-    历史缺失、有观察问题、超容量、空候选或重复键均抛 ValueError。
+    官方v34 §2.1以快照及后续连续增量为准；快照以前未归档的事件正常
+    保留为记录覆盖信息，不是输入异常。快照之后断序、非法事件顺序、
+    有观察问题、超容量、空候选或重复键抛 ValueError。
+    特征数值与维度不变，输入准入版本单独记录，兼容原部署权重。
     这里不判定动作合法性；输入候选必须由唯一 hangma 规则模块产生。
     """
-    if not observation.history_complete or observation.observation_issues:
-        raise ValueError('独立策略需要无问题的完整可见历史')
+    if observation.observation_issues:
+        raise ValueError('独立策略观察存在未解决的问题')
+    consumed = observation.consumed_seq
+    if consumed is None:
+        consumed = observation.snapshot_seq  # 旧观察只声明了快照基线。
+    previous = None
+    next_incremental = observation.snapshot_seq + 1
+    for event in observation.public_history:
+        if event.seq > consumed or (previous is not None and event.seq <= previous):
+            raise ValueError('可见事件顺序或已消费水位矛盾')
+        if event.seq > observation.snapshot_seq:
+            if event.seq != next_incremental:
+                raise ValueError('快照之后的增量尚未连续同步')
+            next_incremental += 1
+        previous = event.seq
+    if next_incremental != consumed + 1:
+        raise ValueError('快照之后的增量尚未连续同步')
     if not 1 <= len(candidates) <= MAX_CANDIDATES:
         raise ValueError('候选数量为空或超过编码容量')
     ordered = tuple(sorted(candidates, key=lambda candidate: candidate.action_key))
