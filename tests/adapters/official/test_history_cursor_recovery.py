@@ -153,3 +153,26 @@ def test_cross_round_recovery_requires_new_snapshot_and_resets_cursor_scope():
     state.recover_snapshot_history(events(event(105, "pass"), event(106, "pass")),
                                    after_seq=104, round_no=2)
     assert state.current_observation().history_complete
+
+
+def test_v34_live_snapshot_does_not_consume_server_event_history():
+    from pathlib import Path
+    from hangma_bot.adapters.official.dto import parse_state_response
+    from hangma_bot.adapters.official.sync_state import ProtocolSyncState
+    from _official_testkit import TIMING
+    path = Path(__file__).resolve().parents[2] / "fixtures/official/v34/history-cursor-recovery.json"
+    raw = json.loads(path.read_text())
+    before, refreshed, recovered = raw["captures"]
+    state = ProtocolSyncState(raw["game_id"], TIMING)
+    state.apply_full_snapshot(parse_state_response(before["body"]).snapshot)
+    state.apply_full_snapshot(parse_state_response(refreshed["body"]).snapshot)
+    assert refreshed["requested_seq"] == 0 and not refreshed["body"].get("events")
+    assert state.last_seq == 376 and state.history_query_seq() == recovered["requested_seq"] == 372
+    board = state.current_observation()
+    parsed = parse_state_response(recovered["body"])
+    assert not state.recover_snapshot_history(parsed.events, after_seq=372, round_no=board.round_no)
+    after = state.current_observation()
+    assert [e.seq for e in after.public_history] == [373, 374, 375, 376]
+    assert after.my_hand == board.my_hand and after.discards == board.discards
+    assert after.melds == board.melds and after.hand_counts == board.hand_counts
+    assert state.last_seq == state.history_query_seq() == 376
