@@ -252,8 +252,8 @@ async def test_v10_boundary_no_progress_backoff_bounded(transport, clock, audit)
             assert seq == 101
             return _json(progress)  # 新局首事件已发生：快照水位前进，退避立即清零
         if stage["n"] == 9:
-            assert seq == 200
-            return _json(_events(_event(201, "tile_drawn", MY_SEAT, "8w")))
+            assert seq == 101  # 正常查询顺带补齐快照跨过的区间
+            return _json(_events(*[_event(n, "pass", 1) for n in range(102, 201)], _event(201, "tile_drawn", MY_SEAT, "8w")))
         raise AssertionError("unexpected stage={}".format(stage["n"]))
 
     transport.handler = handler
@@ -395,7 +395,8 @@ async def test_own_discard_refreshes_hand_before_next_incremental_draw(transport
             assert seq == 0  # 本人弃牌 → 刷新
             return _json(refreshed)
         if stage["n"] == 4:
-            return _json(_events(_event(104, "tile_drawn", MY_SEAT, "7w")))
+            assert seq == 102
+            return _json(_events(_event(103, "pass", 1), _event(104, "tile_drawn", MY_SEAT, "7w")))
         raise AssertionError("unexpected stage={}".format(stage["n"]))
 
     transport.handler = handler
@@ -702,8 +703,8 @@ async def test_pending_gap_progress_restores_incremental(transport, clock):
         if stage["n"] == 9:
             return _json(water_300)  # 第二轮进展：水位 300（streak 再次清零）
         if stage["n"] == 10:
-            assert seq == 300
-            return _json(_events(_event(301, "tile_drawn", MY_SEAT, "8w")))
+            assert seq == 200
+            return _json(_events(*[_event(n, "pass", 1) for n in range(201, 301)], _event(301, "tile_drawn", MY_SEAT, "8w")))
         raise AssertionError("unexpected stage={}".format(stage["n"]))
 
     transport.handler = handler
@@ -713,6 +714,6 @@ async def test_pending_gap_progress_restores_incremental(transport, clock):
     assert isinstance(item, ObservedActionWindow)
     assert item.window_key.round_no == 2
     assert item.window_key.trigger_seq == 301  # 第二轮进展后恢复增量直达
-    assert get_calls == [0, 101, 0, 101, 0, 200, 0, 200, 0, 300]
+    assert get_calls == [0, 101, 0, 101, 0, 101, 0, 200, 0, 200]
     assert history_polls["n"] == 0
 

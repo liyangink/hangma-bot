@@ -6,11 +6,11 @@ from test_sync_repair_regressions import make_game_session, script, snapshot, ev
 
 
 @pytest.mark.parametrize('initial_seq,next_seq', [(0, 1), (100, 105)])
-async def test_snapshot_watermark_becomes_next_incremental_cursor(transport, clock, initial_seq, next_seq):
+async def test_snapshot_is_delivered_before_next_regular_history_poll(transport, clock, initial_seq, next_seq):
     queue = script(transport, [
         (0, snapshot(initial_seq, turn=2, drawn='7w')),
         (initial_seq, snapshot(next_seq, turn=2, drawn='8w')),
-        (next_seq, snapshot(next_seq + 1, turn=2, drawn='9w')),
+        (max(1, initial_seq), snapshot(next_seq + 1, turn=2, drawn='9w')),
     ])
     session = make_game_session(transport=transport, clock=clock)
     try:

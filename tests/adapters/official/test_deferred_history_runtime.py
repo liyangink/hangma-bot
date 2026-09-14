@@ -1,4 +1,4 @@
-"""快照基线的后续轮询：使用新游标、保留缺史事实并正确取消。
+"""快照基线的后续轮询：正常轮询补史、保留缺史事实并正确取消。
 
 均为独立协议脚本，不将其当成官方规则样本；单调时钟通过 FakeClock 控制。
 """
@@ -71,7 +71,7 @@ def _script(transport, entries):
         wanted_method, wanted_seq, wanted_long, response = pending.pop(0)
         assert (method, (params or {}).get("seq"), long_poll) == (
             wanted_method, wanted_seq, wanted_long
-        ), "后续轮询必须使用已采纳的快照水位"
+        ), "快照先交付，后续正常轮询才用缺史游标"
         if isinstance(response, Exception):
             raise response
         if callable(response):
@@ -93,13 +93,13 @@ def _attempt(window, clock):
     )
 
 
-async def test_accepted_action_is_followed_by_current_cursor_not_deferred_history():
+async def test_accepted_action_precedes_regular_history_recovery():
     clock, transport = FakeClock(), BudgetTransport()
     initial, current, latest = _snapshots(clock)
     latest["events"] = copy.deepcopy(NEW_EVENTS)
     pending = _script(transport, [
         ("GET", 0, True, initial), ("GET", 120, True, current),
-        ("POST", None, False, {"ok": True}), ("GET", 122, True, latest),
+        ("POST", None, False, {"ok": True}), ("GET", 120, True, latest),
     ])
     session = make_game_session(transport=transport, clock=clock)
     try:
@@ -115,7 +115,7 @@ async def test_accepted_action_is_followed_by_current_cursor_not_deferred_histor
         await session.aclose("test")
 
 
-async def test_poll_cancellation_after_snapshot_releases_own_slots_without_old_cursor_query():
+async def test_regular_history_poll_cancellation_releases_own_slots():
     clock, transport = FakeClock(), BudgetTransport()
     initial, current, _ = _snapshots(clock)
     entered, exited = asyncio.Event(), asyncio.Event()
@@ -127,7 +127,7 @@ async def test_poll_cancellation_after_snapshot_releases_own_slots_without_old_c
             exited.set()
     pending = _script(transport, [
         ("GET", 0, True, initial), ("GET", 120, True, current),
-        ("POST", None, False, {}), ("GET", 122, True, held),
+        ("POST", None, False, {}), ("GET", 120, True, held),
     ])
     owner = RequestScheduler(clock=clock.monotonic, sleep=instant_sleep(clock), poll_interval=0)
     scheduler = owner.for_game("one", max_games=4)

@@ -67,10 +67,10 @@ async def test_snapshot_ahead_preserves_received_history_and_advances_cursor(tra
 
 
 
-async def test_next_incremental_after_snapshot_uses_snapshot_cursor(transport, clock):
+async def test_next_regular_poll_recovers_old_events_and_delivers_new_draw(transport, clock):
     queue = script(transport, [(0, snapshot(100)),
         (100, snapshot(102, phase='response_peng', river=('6t',), discard='6t', responders=(1,2,3))),
-        (102, {'events': [event(103, 'tile_drawn', seat=2, tile='7w')]})])
+        (100, {'events': [event(101, 'tile_discarded', tile='6t'), event(102, 'pass', seat=1), event(103, 'tile_drawn', seat=2, tile='7w')]})])
     session = make_game_session(transport=transport, clock=clock)
     try:
         first = await session.next_item()
@@ -78,7 +78,7 @@ async def test_next_incremental_after_snapshot_uses_snapshot_cursor(transport, c
         window = await session.next_item()
         assert window.window_key.phase is WindowPhase.DRAW
         assert window.window_key.trigger_seq == 103
-        assert [e.seq for e in window.observation.public_history] == [103]
+        assert [e.seq for e in window.observation.public_history] == [101, 102, 103]
         assert not queue
     finally:
         await session.aclose('test')
@@ -167,7 +167,7 @@ def test_new_hand_snapshot_does_not_inherit_previous_hand_ending():
 async def test_incremental_gap_after_snapshot_still_requires_recovery(transport, clock):
     queue = script(transport, [(0, snapshot(100)),
         (100, snapshot(102, phase='response_peng', river=('6t',), discard='6t', responders=(1,2,3))),
-        (102, {'pending': True, 'gap': True}),
+        (100, {'pending': True, 'gap': True}),
         (0, snapshot(103, phase='response_chi', river=('6t',), discard='6t', responders=(2,)))])
     session = make_game_session(transport=transport, clock=clock)
     try:

@@ -91,7 +91,7 @@ async def test_retained_draw_is_not_redelivered_after_snapshot_absorbs_it(transp
         (0, snapshot(100)),
         (100, {"events": [event(101, "tile_drawn", seat=MY_SEAT, tile="7w")]}),
         (101, snapshot(102, turn=0)),
-        (102, snapshot(103, turn=MY_SEAT, drawn="8w")),
+        (101, snapshot(103, turn=MY_SEAT, drawn="8w")),
     ])
     session = make_game_session(transport=transport, clock=clock)
     try:
@@ -185,7 +185,7 @@ async def test_second_unknown_event_still_requires_authoritative_recovery(transp
         (0, snapshot(100)),
         (100, {"events": [event(101, "future_critical")]}),
         (0, snapshot(101)),
-        (101, {"events": [event(102, "future_critical")]}),
+        (100, {"events": [event(101, "future_critical"), event(102, "future_critical")]}),
         (0, snapshot(102, turn=MY_SEAT, drawn="8w")),
     ])
     session = make_game_session(transport=transport, clock=clock)
