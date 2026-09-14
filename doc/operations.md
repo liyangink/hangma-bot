@@ -60,6 +60,35 @@ export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 
 正式赛事需将配置改为实际赛事 ID、`mode: official_tournament`、`token_kind: official`，并提供正式 Token。自由赛使用 `configs/auto-match.example.json` 和 `run_auto_match.py --config .private/auto-match.json`，一个全局 Token 同时只运行一个实例；默认一次自动房会话结束即退出。具体参数见 [自由赛指引](implementation/free-match-start.md)。示例使用当前代码基线 v18 和 `sse_enabled: false`；遇到指南变化先同步、审查兼容性，不能只把版本号改大。
 
+### 2.1 持续多策略对比战役（测试房 watchdog）
+
+`scripts/test_room_campaign_watchdog.py` 把「开房 → 按整轮续打 → 下载牌谱 → 赛后封存 → 提升到数据池 → 增量落库」串成一条可反复调用的命令，用于在同一张桌上长期对比多条策略。四条臂坐在同一场、同一单局里，官方每个场次重新随机换座，因此每个单局天然是一组配对观测。
+
+```bash
+# 1) 建房（M=10、Rounds=16、空闲 30 分钟自动关闭），落盘令牌、战役记录与策略归因
+.venv/bin/python scripts/test_room_campaign_watchdog.py open \
+  --campaign runs/testroom-campaign-20260914 --m 10 --rounds 16 --target-rounds 8
+
+# 2) 开打之前先离线装配四条臂（模型装载、规则适用范围）；失败就不要进房
+.venv/bin/python scripts/test_room_campaign_watchdog.py preflight \
+  --campaign runs/testroom-campaign-20260914
+
+# 3) 打一个整轮并做完赛后处理；一轮跑完即退出
+.venv/bin/python scripts/test_room_campaign_watchdog.py round \
+  --campaign runs/testroom-campaign-20260914
+
+# 4) 只读进度与库内累计
+.venv/bin/python scripts/test_room_campaign_watchdog.py status --campaign runs/testroom-campaign-20260914
+```
+
+**为什么一轮跑完必须立刻下载**：`GET /api/test-rooms/{id}/games/{batch}/events` 只返回**最新一轮**的批次数据（指南 v1 测试房数据 API）。开打下一轮之后，上一轮的官方牌谱就再也取不到了——逐轮下载是硬约束，不是优化。
+
+**整轮唤醒而不是长驻**：脚本内没有任何睡眠轮询。把 `round` 当后台任务挂起，任务结束时再挂下一个 `round`，这就是本战役的节奏。房间空闲 `timeout_min` 分钟会自动 `close`，续打要在分析之前先发起。
+
+**路径与归因**：战役运行态在 `runs/<campaign>/`（gitignored：战役记录、令牌、逐轮摘要、身份进程日志）；逐轮审计会话是 `artifacts/sessions/<campaign>-rN/`；对比数据池是 `datasets/derived/<pool>/{hands,manifests,validations,official}`，这是入库主源。`open` 会把四个令牌的 `user_id` 写进 `datamart/strategy-map.json` 的 `identities`，**座位级策略归因靠它**；四个槽位的策略在整个战役里固定不轮换——官方每场重新随机换座，座位偏差在 M 场内已被随机化。
+
+`round` 退出码 1 表示本轮有步骤失败（摘要仍写出 `runs/<campaign>/summary-rN.json`），不等于没拿到数据。逐轮结果的阅读入口是 `datamart/compare_arms.py`（见 [评估库说明](../datamart/README.md)）。
+
 ## 3. 持续观测与定位
 
 常规观测只读本机审计，支持单身份和四身份、普通 JSONL 和压缩分段，不增加平台请求。
