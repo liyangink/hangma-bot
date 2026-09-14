@@ -431,3 +431,64 @@ def test_room_rejects_bad_identity_strategy_before_launch(tmp_path,strategy):
     data['identities'][0]['strategy'] = strategy
     with pytest.raises(ValueError,match='策略'):
         room.load_room_config(_write_config(tmp_path,data),environ={'HM_ROOM_A':SECRET_A,'HM_ROOM_B':SECRET_B})
+
+
+def _available_strategies() -> tuple:
+    """组合根声明的全部可配置策略名；启动器白名单的唯一真源。"""
+    from hangma_bot.bootstrap import AVAILABLE_STRATEGIES
+    return AVAILABLE_STRATEGIES
+
+
+@pytest.mark.parametrize('strategy', _available_strategies())
+def test_room_launcher_accepts_every_available_strategy(tmp_path, strategy):
+    """启动器白名单必须覆盖组合根的全部可用策略。
+
+    2026-09-14 序列策略网络候选接入后，本启动器仍保留一份手写策略名副本，
+    于是出现「组合根已支持、启动器报未知策略名并在起子进程前拒绝」的静默
+    脱节。此用例把两份清单不脱节固化成契约：组合根新增策略时自动覆盖。
+    """
+    data = _room_config(strategy=strategy)
+    cfg = room.load_room_config(
+        _write_config(tmp_path, data), environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B}
+    )
+    assert cfg.strategy == strategy
+    children = [room.child_config_mapping(cfg, identity) for identity in cfg.identities]
+    assert all(child['strategy'] == strategy for child in children)
+    for child in children:
+        # 派生配置必须同时通过组合根公开校验，证明两份清单真正一致。
+        assert participant.runtime_config_from_mapping(
+            child, environ={room.TOKEN_ENV_VAR: SECRET_A}
+        ).strategy == strategy
+
+
+def test_room_passes_sequence_model_dir_to_every_child(tmp_path):
+    """模型类策略的部署包根目录必须透传到每个身份子进程。
+
+    组合根用 sequence_model_dir 定位权重；不透传时子进程会静默回退到仓库内
+    预置目录——测试房读不到外部部署包却不报错，属于难以察觉的实验偏差。
+    """
+    model_dir = str(tmp_path / "models")
+    data = _room_config(strategy='sequence_model_4096_projected_v1', sequence_model_dir=model_dir)
+    cfg = room.load_room_config(
+        _write_config(tmp_path, data), environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B}
+    )
+    assert cfg.sequence_model_dir == model_dir
+    children = [room.child_config_mapping(cfg, identity) for identity in cfg.identities]
+    assert all(child['sequence_model_dir'] == model_dir for child in children)
+    for child in children:
+        assert participant.runtime_config_from_mapping(
+            child, environ={room.TOKEN_ENV_VAR: SECRET_A}
+        ).sequence_model_dir == Path(model_dir)
+
+
+def test_room_omits_sequence_model_dir_when_unset(tmp_path):
+    """未配置时不写派生字段，保持「缺省取仓库内预置目录」的原语义。"""
+    data = _room_config()
+    cfg = room.load_room_config(
+        _write_config(tmp_path, data), environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B}
+    )
+    assert cfg.sequence_model_dir is None
+    assert all(
+        'sequence_model_dir' not in room.child_config_mapping(cfg, identity)
+        for identity in cfg.identities
+    )
