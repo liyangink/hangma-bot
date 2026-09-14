@@ -156,6 +156,7 @@ class OfficialGameSession:
         self._last_state_started_at = None  # 最近响应对应的请求开始时刻，单调秒
         self._last_clock_response = None  # 已收到但尚待投影验证的响应与单调起止时刻
         self._watermark_known_since = None  # 已消费水位形成时间的保守下界，单调秒
+        self._last_state_history_only = False  # 只补旧历史的响应不能提供新的动作时间下界
         self._event_time_floors = {}  # 后续新事件不可能早于已证明水位的形成时间
         self._gate = ActionGate()
         self._delivered_windows = set()
@@ -294,7 +295,7 @@ class OfficialGameSession:
             except _PollFailure as failure:
                 return failure.item
             if response.kind == "pending":
-                if not response.gap and self._sync.has_snapshot:
+                if not response.gap and self._sync.has_snapshot and not self._last_state_history_only:
                     self._watermark_known_since = self._last_state_started_at
                 if response.gap:
                     # pending 响应携带 gap=true：权威序号已断链，必须重建
@@ -414,7 +415,8 @@ class OfficialGameSession:
             if self._watermark_known_since is not None:
                 for event in response.events:
                     self._event_time_floors.setdefault(event.seq, self._watermark_known_since)
-            self._watermark_known_since = self._last_state_started_at
+            if not self._last_state_history_only:
+                self._watermark_known_since = self._last_state_started_at
             if self._sync.events_need_authoritative_refresh(response.events):
                 self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
                     "snapshot_refresh_reason": "events_require_snapshot",
@@ -1232,6 +1234,10 @@ class OfficialGameSession:
                             "abandoned_through_seq": through, "response_kind": parsed.kind,
                             "gap": parsed.gap,
                         }, trigger_seq=state_seq, round_no=round_no)
+                # 旧事件或补史pending不能证明当前水位形成于本次请求时刻。
+                # 保留原时间下界，避免给随后发现的新动作延长估算预算。
+                self._last_state_history_only = (
+                    recovering_history and parsed.kind in ("pending", "events") and not parsed.events)
                 self._last_clock_response = (parsed, request_timing["transport_started_at_monotonic"],
                                              request_timing["completed_at_monotonic"])
                 return parsed

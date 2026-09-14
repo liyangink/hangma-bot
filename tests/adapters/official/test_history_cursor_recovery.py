@@ -176,3 +176,30 @@ def test_v34_live_snapshot_does_not_consume_server_event_history():
     assert after.my_hand == board.my_hand and after.discards == board.discards
     assert after.melds == board.melds and after.hand_counts == board.hand_counts
     assert state.last_seq == state.history_query_seq() == 376
+
+
+@pytest.mark.parametrize("late_reply", [{"events": [event(101, "pass", seat=1)]}, {"pending": True}])
+async def test_old_history_response_does_not_move_new_event_time_floor(transport, clock, late_reply):
+    from test_sync_repair_regressions import script
+    started = clock.monotonic()
+    queue = [(0, snapshot(100)), (100, snapshot(103, turn=2, drawn="7w")),
+             (100, late_reply)]
+    if late_reply.get("events"):
+        queue.append((101, {"events": [event(102, "pass", seat=1), event(103, "pass", seat=3)]}))
+    queue.append((103, {"events": [event(104, "tile_drawn", seat=2, tile="8w")]}))
+    script(transport, queue)
+    handler = transport.handler
+    def delayed(**kwargs):
+        # 补史开始时已晚于快照；响应时刻不能被当作新事件的发生下界。
+        response = handler(**kwargs)
+        clock.advance(0.2)
+        return response
+    transport.handler = delayed
+    session = make_game_session(transport=transport, clock=clock)
+    try:
+        await session.next_item()
+        window = await session.next_item()
+        assert window.window_key.trigger_seq == 104
+        assert window.expires_at_monotonic == pytest.approx(started + 0.2 + 3.0)
+    finally:
+        await session.aclose("test_done")
