@@ -365,6 +365,7 @@ class ParsedEvent:
     result_details: Optional[Tuple[str, ...]] = None  # 已公开的终局计番明细，顺序不变
     result_scores: Optional[Tuple[int, int, int, int]] = None  # 终局积分增量，座位 0—3
     final_scores: Optional[Tuple[int, int, int, int]] = None  # 终场公开积分，座位 0—3；不从赛后隐藏数据填入
+    claimed_tile: Optional[str] = None  # chi 顶层 tile 明确公开的被吃牌；缺失/空值不按组合位置推测
 
 
 @dataclass(frozen=True)
@@ -684,6 +685,7 @@ def _parse_event(item: Any) -> ParsedEvent:
         tiles=tiles,
         occurred_at_unix_sec=valid_ts,
         detail_kind=detail_kind,
+        claimed_tile=single_tiles[0] if event_type == "chi" and single_tiles else None,
         **facts,
     )
 

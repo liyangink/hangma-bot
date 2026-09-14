@@ -351,8 +351,10 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
                 break
             history.append(dict(event))
         elif kind in ("peng", "chi", "gang"):
+            # chi 的缺失/空字段可兼容；保留非字符串原值供下游报冲突，避免 False 被当缺失。
+            meld_tile = event.get("tile") if kind == "chi" else tile
             ok, window, last_discard, seats = _apply_meld(
-                rules, issues, seats, window, last_discard, kind, seat_no, tile, data, seq,
+                rules, issues, seats, window, last_discard, kind, seat_no, meld_tile, data, seq,
                 history, wall_known, wall_drawable, consumed, hand_id, dealer, round_no, game_id,
             )
             if not ok:
@@ -469,6 +471,10 @@ def _apply_meld(
                 "chi 出现在非吃窗口（当前 {0!r}）".format(window)))
             return False, window, last_discard, seats
         discarder, discard_tile = window[1], window[2]
+        if tile is not None and tile != "" and tile != discard_tile:
+            issues.append(_issue(seq, "conflict.meld_tile_mismatch",
+                "chi 顶层供牌 {0!r} 与触发弃牌 {1} 不一致".format(tile, discard_tile)))
+            return False, window, last_discard, seats
         tiles_raw = data.get("tiles") if isinstance(data, Mapping) else None
         if not isinstance(tiles_raw, list) or len(tiles_raw) != 3:
             issues.append(_issue(seq, "conflict.meld_shape", "chi 事件缺少三张 tiles"))
@@ -670,6 +676,8 @@ def _shadow_observation(
             # 完整牌谱可能含在线他家摸牌未公开的 data，不能投影给该座位。
             gang_replenish=(data.get("gang_replenish") if not masked_draw and isinstance(data.get("gang_replenish"), bool) else None),
             response_window=data.get("window"),
+            # chi 顶层 tile 是当时已公开的供牌；缺失时不从影子手牌回填。
+            claimed_tile=Tile(tile_value) if event.get("type") == "chi" and tile_value else None,
         ))
     continuous = all(right.seq == left.seq + 1 for left, right in zip(public_history, public_history[1:]))
     return enrich_observation(PlayerObservation(

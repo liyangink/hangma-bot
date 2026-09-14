@@ -183,6 +183,7 @@ def public_event(event: ParsedEvent) -> PublicEvent:
         result_details=event.result_details,
         result_scores=event.result_scores,
         final_scores=event.final_scores,
+        claimed_tile=Tile(event.claimed_tile) if event.claimed_tile is not None else None,
     )
 
 

@@ -52,6 +52,7 @@ def public_history_for(events: Tuple[object, ...], seat: int) -> Tuple[PublicEve
                    else (event.tile,) if event.tile is not None and not hidden_draw else ()),
             detail_kind=data.get("kind"),
             catch_play=data.get("catch_play") if kind == "tile_discarded" else None,
+            claimed_tile=event.tile if kind == "chi" else None,
         ))
     return tuple(out)
 

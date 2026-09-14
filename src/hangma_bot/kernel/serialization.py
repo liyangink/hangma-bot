@@ -295,6 +295,7 @@ def _event_to_json(event: PublicEvent) -> Dict[str, JSONValue]:
         "result_details": None if event.result_details is None else list(event.result_details),
         "result_scores": None if event.result_scores is None else list(event.result_scores),
         "final_scores": None if event.final_scores is None else list(event.final_scores),
+        "claimed_tile": None if event.claimed_tile is None else event.claimed_tile.code,
     }
 
 
@@ -323,6 +324,7 @@ def _event_from_json(payload: object) -> PublicEvent:
         result_details=None if data.get("result_details") is None else tuple(_as_str(x, type_name, "result_details") for x in _as_list(data["result_details"], type_name, "result_details")),
         result_scores=None if data.get("result_scores") is None else tuple(_as_int(x, type_name, "result_scores") for x in _as_list(data["result_scores"], type_name, "result_scores")),
         final_scores=None if data.get("final_scores") is None else tuple(_as_int(x, type_name, "final_scores") for x in _as_list(data["final_scores"], type_name, "final_scores")),
+        claimed_tile=_decode_optional_tile(data.get("claimed_tile"), type_name, "claimed_tile"),
     )
 
 

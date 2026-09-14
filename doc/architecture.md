@@ -1,5 +1,7 @@
 # 杭麻 AI Bot 架构与运行流程
 
+2026-09-14 吃供牌修复：官方 `chi.tile` 经解析与投影进入 `PublicEvent.claimed_tile`，随玩家观察、单局封存及审计编解码保存；模拟和离线转换使用同一可选字段。唯一规则模块优先读取该明确供牌，缺字段仍按连续历史或唯一牌河交集判断。局部缺史不再丢掉已收到吃事件中的证据；未知或冲突仍保守降级。字段不含暗牌，不增加网络请求或新模块；同步基线、动作预算和学习特征布局保持原契约。详见[接口增补](implementation/interface-contracts.md)和[契约回归](../tests/contracts/test_chi_claimed_tile.py)。
+
 分牌型事实进一步包含各自有效牌集合，经原 `CandidateFacts` 和审计通路交付；新增集合缺证据只做局部降级，禁止影响稳定V2的综合事实。计算仍在同一规则循环内，详见[分牌型推进契约](implementation/pattern-progress-v2.md)。
 
 2026-09-09 大牌路线实验：`hangma → CandidateFacts → policy` 的现有通路增加同一等待手牌的普通型、七对分牌型向听，审计编解码同步保存，旧记录缺字段仍为未知。没有新增牌型算法或跨层依赖。独立候选仅在正式赛 `YouCaiBiKao=false` 下研究早期路线取舍，默认策略不变；见[目标与阶段计划](implementation/big-hand-policy-plan.md)。

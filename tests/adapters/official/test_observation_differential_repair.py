@@ -131,7 +131,8 @@ async def test_event_details_survive_full_refresh_and_faults_are_located(kind, t
         assert isinstance(window, ObservedActionWindow)
         # gang 事件规范 tiles 保存顶层单牌；四张牌副露由快照提供。
         event_tiles = tuple(Tile(code) for code in tiles) if kind == "chi" else (Tile("9t"),)
-        history = (PublicEvent(101, kind, 1, event_tiles, detail_kind=detail),
+        history = (PublicEvent(101, kind, 1, event_tiles, detail_kind=detail,
+                               claimed_tile=Tile("9t") if kind == "chi" else None),
                    PublicEvent(102, "tile_discarded", 1, (Tile("9t"),)),
                    PublicEvent(103, "tile_drawn", 2, (Tile("中"),)))
         meld = PublicMeld(1, kind, tuple(Tile(code) for code in tiles), 0 if kind == "chi" else None)
