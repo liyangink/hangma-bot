@@ -147,6 +147,62 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "catch_play_probe": lambda: CatchPlayProbePolicy(ComparableHeuristicPolicyV2()),
 }
 
+# 序列策略网络候选：策略名 → 部署包子目录名。基线固定为完整 V2（与训练时的
+# "完整 V2" 对手同源），因此这些候选与 V2 的差别只来自网络排序本身。
+# 【发布前须知】三个候选都尚未证明优于或不劣于 V2：正式开发比较的八项同时区间
+# 全部跨零（混合池点估计 +1.28 ～ +2.86 分/桌）。它们用于真实环境实测取数，
+# 不是已验证的强度提升；默认策略仍是 DEFAULT_STRATEGY，必须显式配置才会启用。
+_SEQUENCE_MODEL_STRATEGIES: Mapping[str, str] = {
+    "sequence_model_2048_projected_v1": "2048-projected",
+    "sequence_model_4096_direct_v1": "4096-direct",
+    "sequence_model_4096_projected_v1": "4096-projected",
+}
+
+# 默认部署包根目录；可用 RuntimeConfig.sequence_model_dir 覆盖。相对路径按
+# 仓库根解析，模型权重随仓库分发，不从训练工作区读取。
+SEQUENCE_MODEL_DIRNAME = "prebuilt/sequence-policy-models"
+
+# 需要启用条件分值规则增强的策略。序列网络输入含 13 维条件分值，训练时按
+# ValueAnalysisLimits() 生成；关闭增强会让这些维度退化为零，构成训练/服务偏移，
+# 因此这些策略必须与实际运行规则同一口径，并在校准范围外直接拒绝启动。
+_VALUE_ANALYSIS_STRATEGIES = (
+    "v2_hu_upgrade_v1", "v2_balanced_shadow_v1",
+) + tuple(_SEQUENCE_MODEL_STRATEGIES)
+
+
+def _sequence_model_policy(config, monotonic: Callable[[], float] = time.monotonic) -> BotPolicy:
+    """装载一个序列策略网络候选；装载失败即启动失败，不静默降级成另一个策略。
+
+    先建立完整 V2 基线与紧急保底，再注入网络。制品声明的规则配置必须与
+    实际运行配置逐项相等，否则装载期就拒绝——这比运行期回退更早暴露错配。
+    """
+    from dataclasses import asdict
+
+    from hangma_bot.learning.sequence_model_artifact import load_sequence_model
+    from hangma_bot.policy.sequence_model_policy import SequenceModelPolicy
+
+    root = config.sequence_model_dir
+    if root is None:
+        root = _REPO_ROOT / SEQUENCE_MODEL_DIRNAME
+    directory = Path(root) / _SEQUENCE_MODEL_STRATEGIES[config.strategy]
+    network, artifact = load_sequence_model(directory)
+    runtime_rules = RuleConfig(DEFAULT_RULESET_VERSION, 1, False)
+    if asdict(runtime_rules) != artifact.rule_config:
+        raise ValueError("序列策略制品声明的规则配置与本机运行规则不一致")
+    baseline = V2HuUpgradePolicy(
+        risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+    )
+    return SequenceModelPolicy(baseline=baseline, fallback=SafeFallbackPolicy(), network=network,
+                               artifact=artifact, runtime_rules=runtime_rules, monotonic=monotonic)
+
+
+def _build_policy(config, monotonic: Callable[[], float] = time.monotonic) -> BotPolicy:
+    """按运行配置构造策略；模型类候选走显式装载，其余走原工厂表。"""
+
+    if config.strategy in _SEQUENCE_MODEL_STRATEGIES:
+        return _sequence_model_policy(config, monotonic)
+    return _STRATEGY_FACTORIES[config.strategy]()
+
 
 class TokenKind(str, Enum):
     """Token 用途类别；与 RuntimeMode 交叉核对，防止测试/正式身份混接。"""
@@ -206,7 +262,9 @@ class RuntimeConfig:
     - ``token``：敏感凭证；只进入官方传输的认证头；
     - ``token_kind``：Token 用途类别（test/official）；
     - ``audit_root``：审计根目录（其下生成 runs/{run_id}/...）；
-    - ``strategy``：策略名，取值见 ``_STRATEGY_FACTORIES``；
+    - ``strategy``：策略名，取值见 ``_STRATEGY_FACTORIES`` 与
+      ``_SEQUENCE_MODEL_STRATEGIES``（后者需要仓库内或显式指定的模型部署包）；
+    - ``sequence_model_dir``：序列策略网络部署包根目录；仅模型类策略使用，
     - ``insecure_hosts``：允许关闭 TLS 校验的官方内网主机白名单（默认空）；
     - ``slot``：可选身份槽位标签（测试房间 A—D），只用于日志定位；
     - ``audit_raw_gzip``：原始事件（RAW_PROTOCOL_STATE）gzip 分段落盘开关
@@ -227,6 +285,9 @@ class RuntimeConfig:
     slot: Optional[str] = None
     audit_raw_gzip: bool = False
     audit_raw_rotate_bytes: int = 32 * 1024 * 1024
+    # 序列策略网络部署包根目录；仅 ``strategy`` 取 ``_SEQUENCE_MODEL_STRATEGIES``
+    # 的键时使用。None 表示取仓库内 ``prebuilt/sequence-policy-models``。
+    sequence_model_dir: Optional[Path] = None
     # SSE 帧驱动开关（2026-09-05 接入，默认关）：开启后各场次在长轮询之外
     # 兼容旧配置；生产组合根固定使用 state，实际生效值写入运行清单。
     sse_enabled: bool = False
@@ -258,9 +319,12 @@ class RuntimeConfig:
         if not isinstance(self.audit_root, Path):
             raise ValueError("audit_root 必须是 Path，得到 {0!r}".format(self.audit_root))
         _require_non_empty_str(self.strategy, "RuntimeConfig.strategy")
-        if self.strategy not in _STRATEGY_FACTORIES:
+        if self.strategy not in _STRATEGY_FACTORIES and self.strategy not in _SEQUENCE_MODEL_STRATEGIES:
             raise ValueError(
-                "未知策略名 {0!r}；可用：{1}".format(self.strategy, ", ".join(sorted(_STRATEGY_FACTORIES)))
+                "未知策略名 {0!r}；可用：{1}".format(
+                    self.strategy,
+                    ", ".join(sorted(set(_STRATEGY_FACTORIES) | set(_SEQUENCE_MODEL_STRATEGIES))),
+                )
             )
         # 2026-09-11 接线变更：v2_hu_upgrade_v1（Tier-A）**解除模式限制**，
         # 现在四种模式（test_room / test_tournament / official_tournament / auto_match）
@@ -290,6 +354,8 @@ class RuntimeConfig:
         if not isinstance(self.audit_raw_gzip, bool):
             raise ValueError("audit_raw_gzip 必须是布尔，得到 {0!r}".format(self.audit_raw_gzip))
         _require_positive_int(self.audit_raw_rotate_bytes, "RuntimeConfig.audit_raw_rotate_bytes")
+        if self.sequence_model_dir is not None and not isinstance(self.sequence_model_dir, Path):
+            raise ValueError("RuntimeConfig.sequence_model_dir 必须是 Path 或 None")
 
     def __repr__(self) -> str:
         """掩码 Token 的结构化描述；可用于日志，不泄漏凭证。"""
@@ -633,7 +699,7 @@ def build_runtime(
     if policy_factory is not None:
         policy = policy_factory()
     else:
-        policy = _STRATEGY_FACTORIES[config.strategy]()
+        policy = _build_policy(config)
 
     # audit-plus-v1 版本事实（契约 §4.2）：代码提交/脏状态、策略版本与
     # 生效权重、本地规则语义版本；缺省取不到为 null，不冒充已提交代码。
@@ -664,8 +730,8 @@ def build_runtime(
             expected_tournament_id=config.expected_tournament_id,
             known_guide_version=config.known_guide_version,
         ),
-        rules_factory=(_test_room_upgrade_rules if config.strategy in ("v2_hu_upgrade_v1", "v2_balanced_shadow_v1") else HangmaRules),
-        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_balanced_shadow_v1") else None),
+        rules_factory=(_test_room_upgrade_rules if config.strategy in _VALUE_ANALYSIS_STRATEGIES else HangmaRules),
+        value_limits=(ValueAnalysisLimits() if config.strategy in _VALUE_ANALYSIS_STRATEGIES else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,
@@ -791,7 +857,7 @@ def build_auto_match_runtime(
     if policy_factory is not None:
         policy = policy_factory()
     else:
-        policy = _STRATEGY_FACTORIES[config.strategy]()
+        policy = _build_policy(config)
 
     # 与 build_runtime 同一口径的版本事实注入（audit-plus-v1 RUN_MANIFEST）。
     git_commit, git_dirty = _git_state()
@@ -823,9 +889,9 @@ def build_auto_match_runtime(
         ),
         settings=settings,
         rules_factory=HangmaRules,
-        value_limits=(ValueAnalysisLimits() if config.strategy in ("v2_hu_upgrade_v1", "v2_balanced_shadow_v1") else None),
+        value_limits=(ValueAnalysisLimits() if config.strategy in _VALUE_ANALYSIS_STRATEGIES else None),
         value_rules_scope=(RuleConfig(RISK_RULESET_VERSION, 1, False)
-                           if config.strategy in ("v2_hu_upgrade_v1", "v2_balanced_shadow_v1") else None),
+                           if config.strategy in _VALUE_ANALYSIS_STRATEGIES else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,

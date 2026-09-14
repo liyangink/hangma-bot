@@ -1,0 +1,207 @@
+{
+ "action_version": "candidate-visible-relations-conditional-value-v2",
+ "candidate": "4096-direct",
+ "checkpoint_sha256": "d1b128fba9ea72e5fc49ee00d6c200a55a63e7a03b3e92fc726a6cf6254cfc99",
+ "direction": "direct",
+ "evidence": {
+  "deployment_note": "未证明优于或不劣于 V2：正式开发比较的同时区间全部跨零。本包用于真实环境实测取数，不是已验证的强度提升。",
+  "development_comparisons": {
+   "direct-minus-V2": {
+    "mixed": {
+     "net": {
+      "ci95": [
+       -0.528369140625,
+       5.8779296875
+      ],
+      "mean": 2.6279296875,
+      "primary_family_ci95": [
+       -1.7744476318359375,
+       7.315447998046871
+      ],
+      "roots": 256
+     },
+     "sole_first": {
+      "ci95": [
+       -0.025390625,
+       0.046875
+      ],
+      "mean": 0.0107421875,
+      "primary_family_ci95": [
+       -0.0390625,
+       0.0634765625
+      ],
+      "roots": 256
+     }
+    },
+    "rich": {
+     "net": {
+      "ci95": [
+       -0.5430419921874999,
+       5.4063476562499915
+      ],
+      "mean": 2.345703125,
+      "primary_family_ci95": [
+       -1.6992279052734376,
+       6.861373901367177
+      ],
+      "roots": 256
+     },
+     "sole_first": {
+      "ci95": [
+       -0.01953125,
+       0.0419921875
+      ],
+      "mean": 0.0107421875,
+      "primary_family_ci95": [
+       -0.03125,
+       0.0556640625
+      ],
+      "roots": 256
+     }
+    }
+   },
+   "projected-minus-V2": {
+    "mixed": {
+     "net": {
+      "ci95": [
+       -0.4472900390625,
+       6.303759765624996
+      ],
+      "mean": 2.859375,
+      "primary_family_ci95": [
+       -1.7363494873046874,
+       7.607437133789059
+      ],
+      "roots": 256
+     },
+     "sole_first": {
+      "ci95": [
+       -0.0234375,
+       0.05078125
+      ],
+      "mean": 0.013671875,
+      "primary_family_ci95": [
+       -0.0361328125,
+       0.0673828125
+      ],
+      "roots": 256
+     }
+    },
+    "rich": {
+     "net": {
+      "ci95": [
+       -0.5703125,
+       5.489282226562498
+      ],
+      "mean": 2.3671875,
+      "primary_family_ci95": [
+       -1.7773712158203125,
+       6.7744354248046825
+      ],
+      "roots": 256
+     },
+     "sole_first": {
+      "ci95": [
+       -0.013671875,
+       0.0478515625
+      ],
+      "mean": 0.0166015625,
+      "primary_family_ci95": [
+       -0.025390625,
+       0.060546875
+      ],
+      "roots": 256
+     }
+    }
+   },
+   "projected-minus-direct": {
+    "mixed": {
+     "net": {
+      "ci95": [
+       -1.01953125,
+       1.7744140625
+      ],
+      "mean": 0.2314453125,
+      "primary_family_ci95": [
+       -1.4199249267578125,
+       2.4873229980468707
+      ],
+      "roots": 256
+     },
+     "sole_first": {
+      "ci95": [
+       -0.0078125,
+       0.013671875
+      ],
+      "mean": 0.0029296875,
+      "primary_family_ci95": [
+       -0.01171875,
+       0.01953125
+      ],
+      "roots": 256
+     }
+    },
+    "rich": {
+     "net": {
+      "ci95": [
+       -1.279296875,
+       1.4062744140624979
+      ],
+      "mean": 0.021484375,
+      "primary_family_ci95": [
+       -1.759765625,
+       2.0283264160156236
+      ],
+      "roots": 256
+     },
+     "sole_first": {
+      "ci95": [
+       -0.006860351562499978,
+       0.01953125
+      ],
+      "mean": 0.005859375,
+      "primary_family_ci95": [
+       -0.01171875,
+       0.0244140625
+      ],
+      "roots": 256
+     }
+    }
+   }
+  },
+  "development_roots": null,
+  "development_tables": 5376,
+  "network_config": {
+   "feedforward": 256,
+   "heads": 4,
+   "layers": 2,
+   "width": 64
+  },
+  "parent_identity": {
+   "checkpoint_sha256": "3df4124a16c10679c396abb42a93ebba1fd9563788c9769612c2dff94481aae9",
+   "choices_collected": 200259,
+   "parameter_id": "7526b2697c48f2abfa90902815526732f71c4dd4d549585cd5fc31fed7f15041",
+   "training_manifest_sha256": "9771d353bb76a52f5f7c988b92122ca427e23c3c943a5e1b1c8fa82a38872adb",
+   "training_report_sha256": "9500cb77020aec50c24798aeafddb4f05c6d439914f05e4c1e862667917cce1b",
+   "updates": 6890
+  },
+  "report_id": "071854e49f990f71a8fda186fcf29cf4ca9b84db97e7fca9bf3720fe876dff92",
+  "student_binding_id": "4067d053d10969ea354fa974fb3dd00a750685bed7f3e19e6be568cbe327e010",
+  "training_plan_id": "357b6e97b81f359150a085a61e4448a0b7223bb2a3d466e0c3d81d13fac9b596",
+  "training_source_hash": "e052f4406f3950a457dbfeed43d44901d5be103158288e056e2410097ced614c"
+ },
+ "feature_version": "visible-key-public-sequence-v1",
+ "network_version": "visible-sequence-actor-critic-v1",
+ "parameter_id": "bdc508a94eea56d82e42e0a7c0911b1e8c03614539e411172e4a21a6fb0f1b6b",
+ "release_gate": false,
+ "rule_config": {
+  "base_score": 1,
+  "ruleset_version": "hangma-mvp-v10-public-counts",
+  "you_cai_bi_kao": false
+ },
+ "schema": "sequence-policy-deployment-v1",
+ "steps": 6144,
+ "training_method_id": "59a0c3168e49243b21e0127a322abeb9df107f9247f58c21e6d7feee95a451ab",
+ "training_roots": 4096,
+ "training_rules_hash": "295744c71fa907afd735bb70ceb53cb5aa870447737432f9bc48927610f3ceba"
+}
