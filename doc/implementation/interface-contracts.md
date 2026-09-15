@@ -236,6 +236,36 @@ V0/V1/V2 评分函数不读新字段（有逐字节回归 `tests/unit/policy/tes
 V0/V1 评分源码的**行为**不变；线上不含任何 LLM 调用。相关测试见 `tests/unit/policy/test_heuristic_adapter.py`、
 `tests/unit/policy/test_value_path_families.py` 与 `review/llm-guided-heuristic-route-2026-09-15/tools/test_sitin_gates.py`。
 
+### 4.9 坐隐研究工具的产物 schema 与实验清单身份字段（2026-09-15）
+
+**范围与边界（先读这一句）**：本节的 schema 全部属于**离线研究工具**（`review/llm-guided-heuristic-route-2026-09-15/`），
+不进入线上动作闭环，不改变四个外部端口、动作窗口、网络请求与默认策略。登记它们的理由是根 `AGENTS.md` §8：
+产物一旦被当作证据使用，其字段语义就必须有受控出处，而不是只写在某个工具文件的 docstring 里。
+
+| schema | 生产者 | 用途 | 关键字段 |
+| --- | --- | --- | --- |
+| `sitin-gates/1` | `tools/sitin_gates.py` | 三道门禁的准入记录 | `bound_identity`（模块 + 有效参数 + 源码指纹）、`evidence_kind`（`admission`\|`trigger`）、`corpus`（含 **`sha256` 内容哈希**与 `constructed_trigger_set`）、`gate_level_admitted` 与 `admitted` **两个分开的布尔值** |
+| `sitin-scheduler/2` | `tools/sitin_scheduler.py` | 预算台账与顺序淘汰报告 | `table_budget`/`spent_tables`、`rounds`、`root_sets`（`(轮次, 根组集合身份)` 判重）、`rerun` |
+| `sitin-run-state/1` | `tools/sitin_scheduler.py` | 分级执行的持久化状态 | `levels[].spec/root_keys/root_specs/root_set_id/candidates/results/done/survivors`、`cursor_level`、`stop_reason` |
+| `sitin-candidate-manifest/1` | `tools/sitin_scheduler.py` | 每个候选每级的产物身份 | `bound_identity`、`adjustment_identity`、`adjustment_spec`、`effective_adjustment_params`、`effective_base_weights`、`source_sha256`、`gate_binding`、`cell_dir` |
+| `sitin-round-failure/1` | `tools/sitin_scheduler.py` | 一轮评估未产出可用结果时的失败证据 | `reason`、`returncode`、`timeout_sec`、`stdout_tail`/`stderr_tail` |
+
+**三条跨 schema 的语义约定**（这三条是复核 S7-2 / R7-1 / R7-2 的直接产物，改动它们属受控变更）：
+
+1. **身份**：候选身份 = 模块名 + 拆分后的有效参数（`adj.` 前缀）+ **源码指纹**；参数或源码一改，原准入记录与台账条目自动失效。
+   **身份里不含语料**，因此语料必须**单独**核验：准入记录写 `corpus.sha256`，调度器的 `--admission-corpus` 为**必填**，逐字节比对；
+   旧格式记录（无 `corpus.sha256`）一律拒绝。
+2. **不可排序**：运行失败、零有效根组、样本不足分别是**不可排序状态**，不得补零参与排序（`rankable=false` + `rankable_reason`）；
+   只有 `admissible`（无 FAIL 且无 INSUFFICIENT）的记录可以放开执行，构造触发集的记录**永不**产生准入资格。
+3. **可终止**：离线执行任意候选代码必须有墙钟上限与**进程组**终止（SIGTERM → 宽限 → SIGKILL）；
+   失败落 `sitin-round-failure/1` 并记为不可排序，其余候选照常推进。
+
+**`scripts/evaluate.py` 实验清单的身份字段（同批收口）**：`versions.scoring_policies` 的每条记录，除既有的
+`effective_weights` 外新增 `effective_adjustment_params`、`candidate_identity`、`candidate_spec` 与 `candidate_source`（路径 + sha256）；
+`versions` 另增 `scoring_source`（评分源码 → sha256）与 `worktree`（`commit`/`dirty`/`dirty_paths`/`code_snapshot`）。
+**`producer_commit + dirty=true` 只说得出“与父提交不一样”，说不出差在哪里**，因此未提交代码时另把实际装载的评分源码写入产物目录 `code_snapshot/`。
+权重快照的解包改为按 `base_policy` **约定**递归（上限 8 层），新增装饰器不必再改该函数——初版只认 `WhiteDiscardGuardPolicy`，
+候选适配器解不出来，产物里写成 `effective_weights=null`，而 **null 与“该策略确实没有权重”长得一样**。
 ## 5. 动作提交协议
 
 2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；四白例外已在 v23 修订中取消，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。

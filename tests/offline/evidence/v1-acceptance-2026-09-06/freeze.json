@@ -1,7 +1,7 @@
 {
   "base_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
   "source_sha256": {
-    "scripts/evaluate.py": "187da35974148c34a32542d5bb27296310fddba9edb6c71ad5297dd76f2a44df",
+    "scripts/evaluate.py": "55c1a969144aaad0280a213c13db2f16db5437a0adcc60cfbec37455647c9b83",
     "src/hangma_bot/__init__.py": "825b34bad229681f1b84f4c4437bf77825abea1a25a15420b77eba7f5d8bc32f",
     "src/hangma_bot/adapters/__init__.py": "144047c2864316c251c4111567c7259b67e96afa207355c85786de66996f3319",
     "src/hangma_bot/adapters/official/__init__.py": "26b542cc794f40b4f3fdeb2af5be8782556f3f850209f479531898ddfd689709",
@@ -103,6 +103,23 @@
         "change": "同一文件的**文档字符串更正**（不改任何可执行逻辑）：把初版写的「Phi 漏掉直接乘 2 的幂的状态量 ⇒ potential-based 充分条件失效」更正为「那只说明该项未被塑形，不是不合规」；并补定理链接与隐藏信息限定。",
         "reason": "该断言由独立复核（Standards 轴）撞出并经复算确认：Ng 1999 定理 1 只要求 F 是**某一个**状态函数的差，不要求该函数涵盖全部价值量。初版把推导写成了既定规则。",
         "scope": "仅文档字符串措辞；字段列表与填充逻辑不变，V1 评分行为仍逐字节不变。"
+      }
+    },
+    {
+      "date": "2026-09-15",
+      "files": [
+        "scripts/evaluate.py"
+      ],
+      "change": "实验清单（manifest）的身份字段：评分者的 effective_weights 解包改为按 base_policy 约定递归；每条评分者新增 effective_adjustment_params / candidate_identity / candidate_spec / candidate_source；versions 新增 scoring_source（评分源码 -> sha256）与 worktree（commit/dirty/dirty_paths/code_snapshot），未提交代码时另把实际装载的评分源码写入产物目录 code_snapshot/。",
+      "reason": "REVIEW-7 S7-2 的剩余半：初版 _effective_weights_snapshot 只解包 WhiteDiscardGuardPolicy，候选适配器（HeuristicAdjustmentPolicy）解不出来，实测产物里 effective_weights=null，而 null 与“该策略确实没有权重”在产物里长得一样；producer_commit + dirty=true 也说不出差在哪里。",
+      "behavior_neutral_evidence": [
+        "解包对既有可达策略逐字节同结果：WhiteDiscardGuardPolicy 仍剥到 V2；无 _weights 的策略仍返回 None。",
+        "新增字段只写入 manifest 的 versions 段；匹配实验的模拟结果与统计口径未变。",
+        "tests/offline/test_evaluate_cli.py 全绿；旧产物读取路径未改（versions 为自由映射，未知键不参与解析）。"
+      ],
+      "scope": "只扩展产物身份字段与权重解包；不改评分行为、不改结果契约、不改四个外部端口。",
+      "supersedes": {
+        "scripts/evaluate.py": "187da35974148c34a32542d5bb27296310fddba9edb6c71ad5297dd76f2a44df"
       }
     }
   ],
