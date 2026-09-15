@@ -26,6 +26,7 @@ from typing import Callable, Mapping, Optional, Tuple
 from ..heuristic_adapter import HeuristicAdjustment, HeuristicAdjustmentPolicy
 from ..weights_v1 import DEFAULT_WEIGHTS_V1, HeuristicWeightsV1
 from . import (
+    chain_path_value,
     meld_opportunity_cost,
     meld_waiting_conditional,
     seven_pairs_path_value,
@@ -38,6 +39,7 @@ CandidateFactory = Callable[[Mapping[str, float], str], HeuristicAdjustment]
 
 #: 静态注册表：名称 -> 候选工厂。**新增候选只改这里一行**。
 CANDIDATE_FACTORIES: Mapping[str, CandidateFactory] = {
+    "chain_path_value": chain_path_value.build_adjustment_from_params,
     "meld_opportunity_cost": meld_opportunity_cost.build_adjustment_from_params,
     "meld_waiting_conditional": meld_waiting_conditional.build_adjustment_from_params,
     "seven_pairs_path_value": seven_pairs_path_value.build_adjustment_from_params,
@@ -45,6 +47,7 @@ CANDIDATE_FACTORIES: Mapping[str, CandidateFactory] = {
 
 #: 名称 -> 模块对象；供**装载方**计算源码指纹（仍是静态字面量，不是自动发现）。
 _MODULES = {
+    "chain_path_value": chain_path_value,
     "meld_opportunity_cost": meld_opportunity_cost,
     "meld_waiting_conditional": meld_waiting_conditional,
     "seven_pairs_path_value": seven_pairs_path_value,

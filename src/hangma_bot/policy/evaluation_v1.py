@@ -2,6 +2,31 @@
 
 从冻结的 evaluation.py 复制；不得反向让 V0 导入本文件。
 只消费规则事实，不重新计算向听、有效牌或动作合法性。
+
+修订说明（2026-09-15，S1c 事实接线，最小改动）
+------------------------------------------------
+本文件在 tests/offline/evidence/v1-acceptance-2026-09-06/freeze.json 的冻结清单内。
+本次只做一件事：为 EvaluationContext 追加四个**带默认值**的规则状态字段
+（chain_count / baotou / wealth_count / chain_piao），并在 build_context 中填充。
+chain_piao 是官方「手留白 + 链内飘出 ≤ 4」口径（guide 第 106 行）里除手留白外的另一半，
+缺它就无法判定「四白 ×2」这条倍率；它与 chain_count 同属观察层已有事实。
+
+为什么必须加（官方规则依据）：总番 = 1 × 分支因子 × 2^动作链次数 ×（4 白板 ×2）×（爆头 ×2）
+（doc/references/official-guide-v34-content.txt 第 29 行）。链与爆头都直接乘 2 的幂，
+属于决定同一局面真实价值的状态量。若候选把加分写成“同一状态势之差”，而势的输入漏掉
+这两个量，同一个势值就会对应真实价值相差数倍的状态，势不再是状态势，
+potential-based 塑形（Ng/Harada/Russell 1999 Thm 1）的充分条件失效。
+这是**安全性前提**，不是表示力偏好。
+
+为什么是行为中性的（三条等价证据，2026-09-15 实测）：
+1. 三个字段都有默认值；本文件内 EvaluationContext 的构造点只有 build_context 一处；
+2. 全仓 grep：EvaluationContext 的 __eq__ / __hash__ 使用点为 0；
+3. V0/V1/V2 的评分函数不读这三个字段，故评分分项、排序与计划不变。
+   改动前的对照运行中，全仓测试只有冻结哈希断言一条失败。
+   唯一可见差异是 repr（审计文本），不属于行为。
+
+代价与边界：冻结清单中本文件的 sha256 随之更新，修订原因记录在同一 freeze.json；
+**不**新建并行的上下文类型，也不为历史版本做兼容设计（用户已裁定：补充说明即可）。
 """
 
 from __future__ import annotations
@@ -43,6 +68,12 @@ class EvaluationContext:
     dealer_meld_codes: Tuple[str, ...]  # 庄家副露全部牌码
     table_rank: int  # 桌内名次，1 为领先；同分时并列名次按严格大于计数
     catch_play: bool  # 是否处于抓打圈
+    # 以下三项为 2026-09-15 追加的规则状态；带默认值以保证旧构造点行为不变。
+    # 三者都是"直接乘 2 的幂"的状态量，是 potential-based 塑形的前提（见模块 docstring）。
+    chain_count: int = 0  # 本人飘/杠动作链次数（官方 god.chain_count）；断链清零，非负，每步总番 ×2
+    baotou: bool = False  # 本人是否爆头（官方 god.baotou）；总番 ×2，且是"飘"的前置条件
+    wealth_count: int = 0  # 动作前本人手留财神张数；四白还须叠加链内飘出张数，不得只用本字段
+    chain_piao: Optional[int] = None  # 当前链内飘出白板数（官方 chain.piao）；依据不足时为空，**不等于零**
 
 
 @dataclass(frozen=True)
@@ -84,9 +115,14 @@ def build_context(observation: PlayerObservation) -> EvaluationContext:
         for tile in river
     )
 
+    wealth_code = observation.rule_state.wealth_god.code
+    # 手留财神张数按 combined_codes 机械计数，与 _wealth_after 同口径。
+    # 吃/碰/杠组合按规则不含财神（白不可被吃碰杠），故这里只数手牌。
+    wealth_count = sum(1 for code in combined if code == wealth_code)
+
     return EvaluationContext(
         combined_codes=tuple(combined),
-        wealth_code=observation.rule_state.wealth_god.code,
+        wealth_code=wealth_code,
         safe_codes=safe_codes,
         my_seat=my_seat,
         next_seat=next_seat,
@@ -95,6 +131,11 @@ def build_context(observation: PlayerObservation) -> EvaluationContext:
         dealer_meld_codes=meld_codes_by_seat[observation.dealer_seat],
         table_rank=table_rank,
         catch_play=observation.rule_state.catch_play,
+        chain_count=observation.rule_state.chain_count,
+        baotou=observation.rule_state.baotou,
+        wealth_count=wealth_count,
+        # 官方 chain.piao 的依据不足时为空，原样透传（空与 0 必须区分）。
+        chain_piao=observation.chain_piao,
     )
 
 

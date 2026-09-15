@@ -104,6 +104,11 @@ class HeuristicAdjustment:
         self._fingerprint = source_fingerprint_value
         self._params_json = params_json
         self.clamped_count = 0
+        # 产生过非零 delta 的次数。这是**诊断计数器**，与 clamped_count 同性质：
+        # 不参与评分、不改变计划，只让门禁能区分两种截然不同的零改选——
+        # 「语料里根本没有触发面」与「触发到了却一次都没改选（等于基线）」。
+        # 少了它，G-2 只能一律报"等价基线"，而前者其实是证据不足。
+        self.fired_count = 0
 
     @property
     def spec(self) -> AdjustmentSpec:
@@ -147,6 +152,7 @@ class HeuristicAdjustment:
             raise ValueError("候选 delta 非有限，交由应用层紧急保底")
         if raw == 0.0:
             return item
+        self.fired_count += 1
         clamped = raw
         notes: Tuple[str, ...] = ()
         if abs(raw) > self._spec.bound:

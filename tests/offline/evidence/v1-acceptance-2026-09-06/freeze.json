@@ -65,7 +65,7 @@
     "src/hangma_bot/policy/claim_if_legal.py": "acd4c887d59cd5f84e9ea2a6ab6c698278110623af0e2bb26a2f1b992d6a8f43",
     "src/hangma_bot/policy/errors.py": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9",
     "src/hangma_bot/policy/evaluation.py": "92f68d0f0eb384cff1444bdc84937fb93d90f398c9ac7b803e00f23d800d86e1",
-    "src/hangma_bot/policy/evaluation_v1.py": "f63cf9195fee2a1ecc0166c32f110c2c83c29a87aee19d9056b2ffee537f6be0",
+    "src/hangma_bot/policy/evaluation_v1.py": "163987219a051c227a17970df6207365d4ee1e8375d251df274b9dec1af82baa",
     "src/hangma_bot/policy/heuristic_v1.py": "fb924e32375a033f84f6566160e761102308e3b145c7a5caa885db6f99affd4c",
     "src/hangma_bot/policy/interface.py": "d2cbf90fea78c6472b3653b0a60d0d29246f1d687529ce054e6e03213a3627da",
     "src/hangma_bot/policy/safe_fallback.py": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281",
@@ -81,6 +81,25 @@
     "src/hangma_bot/simulation/shuffle.py": "aef5087ea4dca5d834267b90ed1925e0d638cfc10918ea6bb0e83d46e95b172f",
     "src/hangma_bot/simulation/state.py": "7b760825e545da2ccebc7d5849da86183c76194bc6623c4b9670df52fee16737"
   },
+  "source_revision_notes": [
+    {
+      "date": "2026-09-15",
+      "files": [
+        "src/hangma_bot/policy/evaluation_v1.py"
+      ],
+      "change": "EvaluationContext 追加四个带默认值的规则状态字段（chain_count / baotou / wealth_count / chain_piao），并在 build_context 中填充。",
+      "reason": "官方总番公式含 2^动作链次数 与（爆头 x2）两项（doc/references/official-guide-v34-content.txt 第 29 行），四白项依赖「手留白 + 链内飘出 == 4」（同文第 53 / 106 行）。三者都是直接乘 2 的幂的状态量，是 potential-based 塑形（Ng/Harada/Russell 1999 Thm 1）中状态势必须包含的输入；缺失会使势不再是状态势，充分条件失效。",
+      "behavior_neutral_evidence": [
+        "四个字段都有默认值；本文件内 EvaluationContext 的构造点只有 build_context 一处。",
+        "全仓检索：EvaluationContext 的 __eq__ / __hash__ 使用点为 0。",
+        "V0/V1/V2 的评分函数不读这四个字段；tests/unit/policy/test_evaluation_context_rule_state.py 用中性化上下文断言 V1 与 V2 的评分结果逐字节不变。"
+      ],
+      "field_notes": {
+        "chain_piao": "官方 chain.piao；依据不足时为空，**空不等于零**，原样透传。"
+      },
+      "scope": "只增加评分上下文的可读字段；不改变 V1 评分行为，不新建并行上下文类型。用户裁定：补充说明即可，不为历史版本做兼容设计。"
+    }
+  ],
   "experiment_sha256": "b2241fe5831795b39522507543785aa832966c116c8de9924f78b6f8ba821d75",
   "purpose": "V1 开发验收；不作正式发布或不劣证明；逻辑时钟不验证真实截止时间。",
   "stop_rule": "固定 32 个根组；故障先诊断，不按积分提前择优停止或挑种子。",
