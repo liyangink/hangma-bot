@@ -339,3 +339,117 @@ def test_action_kind_matches_product_convention():
     assert action_kind("peng:1w") == "peng"
     assert action_kind("discard:白") == "discard"
     assert action_kind(None) == ""
+
+# --- 2.5 合法动作与保底不变量 + 故障注入 ------------------------------------
+
+def _adjustment_with(delta, *, bound=300.0, scope=("chi", "peng")):
+    spec = AdjustmentSpec(name="故障注入项", version="fault-v1", thought="故障注入",
+                          trigger="总是触发", scope=scope, bound=bound)
+    return HeuristicAdjustment(spec, delta, source_fingerprint_value="deadbeef")
+
+
+def test_candidate_exception_propagates_so_the_app_can_fall_back():
+    """候选异常**不得被适配器吞掉**：应用层必须能看到它并改用紧急保底。
+
+    适配器只做"追加分项"，不接管错误处理——吞掉异常会让线上处于
+    "计划看起来正常但其实没算完"的危险状态。
+    """
+
+    def boom(candidate, ctx, candidates):
+        raise RuntimeError("注入的候选故障")
+
+    request = _response_request(
+        [_cand(Peng(Tile("1w")), _facts()), _cand(Pass(), _facts())])
+    with pytest.raises(RuntimeError):
+        asyncio.run(_policy(_adjustment_with(boom)).choose(request, make_budget()))
+
+
+def test_candidate_returning_non_numeric_is_rejected():
+    request = _response_request(
+        [_cand(Peng(Tile("1w")), _facts()), _cand(Pass(), _facts())])
+    with pytest.raises(TypeError):
+        asyncio.run(_policy(_adjustment_with(lambda c, x, y: "很便宜")).choose(
+            request, make_budget()))
+
+
+@pytest.mark.parametrize("value", [float("nan"), float("inf"), float("-inf")])
+def test_candidate_returning_non_finite_is_rejected(value):
+    """非有限值必须立刻失败，交由应用层保底——不能带着 NaN 去排序。"""
+
+    request = _response_request(
+        [_cand(Peng(Tile("1w")), _facts()), _cand(Pass(), _facts())])
+    with pytest.raises(ValueError):
+        asyncio.run(_policy(_adjustment_with(lambda c, x, y: value)).choose(
+            request, make_budget()))
+
+
+def test_degraded_rules_still_produce_a_plan():
+    """规则降级时候选仍须产出保守计划，并把降级原因写进审计。"""
+
+    from hangma_bot.hangma.interface import RuleIssue
+
+    rules = make_rules(
+        [_cand(Peng(Tile("1w")), _facts()), _cand(Pass(), _facts())],
+        completeness=RuleCompleteness.DEGRADED,
+        issues=(RuleIssue(area="hu", reason="注入的规则分支失败"),))
+    request = make_request(make_observation(), rules)
+    plan = asyncio.run(_policy(_m4(beta=20.0)).choose(request, make_budget()))
+    assert plan.candidates, "降级也必须给出计划"
+    assert any("DEGRADED" in r for r in plan.degraded_reasons)
+    assert any("规则降级" in r for r in plan.degraded_reasons)
+
+
+def test_empty_candidates_produce_an_audited_empty_plan():
+    request = make_request(make_observation(), make_rules([]))
+    plan = asyncio.run(_policy(_m4(beta=20.0)).choose(request, make_budget()))
+    assert plan.candidates == ()
+    assert any("计划为空" in r for r in plan.degraded_reasons)
+
+
+def test_unknown_facts_put_the_emergency_candidate_first():
+    """事实全未知、且**没有过牌候选**时，紧急候选必须排在最前（保底不变量）。
+
+    注意分支优先级：只要存在过牌候选且缺可比等待基线，V2 的既有规则是
+    "合法胡优先，其次使用未拒绝的过牌退路"——此时过牌**故意**排在紧急候选之前。
+    因此要触发"全部未知 ⇒ 紧急优先"分支，候选里必须没有 Pass。
+    """
+
+    emergency = _cand(Discard(Tile("9w")))
+    request = _response_request(
+        [_cand(Peng(Tile("1w"))), emergency], emergency=emergency)
+    plan = asyncio.run(_policy(_m4(beta=20.0)).choose(request, make_budget()))
+    assert plan.candidates[0].action_key == "discard:9w"
+    assert plan.candidates[0].is_emergency
+    assert any("全部候选事实未知" in r for r in plan.degraded_reasons)
+
+
+def test_factless_pass_retreat_outranks_the_emergency_candidate():
+    """反向记录 V2 的既有语义：缺等待基线时过牌退路优先于紧急候选。
+
+    这是**既有行为**，适配器不得改变它；把它写成测试是为了防止将来
+    有人"顺手"调换这两个分支的优先级。
+    """
+
+    emergency = _cand(Discard(Tile("9w")))
+    request = _response_request(
+        [_cand(Peng(Tile("1w"))), emergency, _cand(Pass())], emergency=emergency)
+    plan = asyncio.run(_policy(_m4(beta=20.0)).choose(request, make_budget()))
+    assert plan.candidates[0].action_key == "pass"
+    assert any("缺可比等待基线" in r for r in plan.degraded_reasons)
+
+
+def test_disabled_candidate_is_identical_even_under_fault_injection():
+    """关闭候选时，即使候选本身会抛异常也**不得**被调用（构造保证）。"""
+
+    called = {"n": 0}
+
+    def counting_boom(candidate, ctx, candidates):
+        called["n"] += 1
+        raise RuntimeError("不应被调用")
+
+    request = _response_request(
+        [_cand(Peng(Tile("1w")), _facts()), _cand(Pass(), _facts())])
+    plan = asyncio.run(_policy(_adjustment_with(counting_boom), enabled=False).choose(
+        request, make_budget()))
+    assert called["n"] == 0
+    assert plan.candidates
