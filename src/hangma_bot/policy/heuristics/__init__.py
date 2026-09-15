@@ -25,7 +25,11 @@ from typing import Callable, Mapping, Optional, Tuple
 
 from ..heuristic_adapter import HeuristicAdjustment, HeuristicAdjustmentPolicy
 from ..weights_v1 import DEFAULT_WEIGHTS_V1, HeuristicWeightsV1
-from . import meld_opportunity_cost, meld_waiting_conditional
+from . import (
+    meld_opportunity_cost,
+    meld_waiting_conditional,
+    seven_pairs_path_value,
+)
 
 # 候选参数的声明前缀。**改这个前缀属接口变更**，需同步实验配置与文档。
 ADJUSTMENT_PARAM_PREFIX = "adj."
@@ -36,12 +40,14 @@ CandidateFactory = Callable[[Mapping[str, float], str], HeuristicAdjustment]
 CANDIDATE_FACTORIES: Mapping[str, CandidateFactory] = {
     "meld_opportunity_cost": meld_opportunity_cost.build_adjustment_from_params,
     "meld_waiting_conditional": meld_waiting_conditional.build_adjustment_from_params,
+    "seven_pairs_path_value": seven_pairs_path_value.build_adjustment_from_params,
 }
 
 #: 名称 -> 模块对象；供**装载方**计算源码指纹（仍是静态字面量，不是自动发现）。
 _MODULES = {
     "meld_opportunity_cost": meld_opportunity_cost,
     "meld_waiting_conditional": meld_waiting_conditional,
+    "seven_pairs_path_value": seven_pairs_path_value,
 }
 
 
