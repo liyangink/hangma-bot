@@ -30,6 +30,7 @@ from . import (
     four_component_path_value,
     meld_opportunity_cost,
     meld_waiting_conditional,
+    multiplier_path_potential,
     seven_pairs_path_value,
 )
 
@@ -44,6 +45,7 @@ CANDIDATE_FACTORIES: Mapping[str, CandidateFactory] = {
     "four_component_path_value": four_component_path_value.build_adjustment_from_params,
     "meld_opportunity_cost": meld_opportunity_cost.build_adjustment_from_params,
     "meld_waiting_conditional": meld_waiting_conditional.build_adjustment_from_params,
+    "multiplier_path_potential": multiplier_path_potential.build_adjustment_from_params,
     "seven_pairs_path_value": seven_pairs_path_value.build_adjustment_from_params,
 }
 
@@ -53,6 +55,7 @@ _MODULES = {
     "four_component_path_value": four_component_path_value,
     "meld_opportunity_cost": meld_opportunity_cost,
     "meld_waiting_conditional": meld_waiting_conditional,
+    "multiplier_path_potential": multiplier_path_potential,
     "seven_pairs_path_value": seven_pairs_path_value,
 }
 
