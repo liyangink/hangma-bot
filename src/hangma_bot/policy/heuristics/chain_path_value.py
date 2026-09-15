@@ -20,8 +20,9 @@ M4（`meld_opportunity_cost`）把吃碰建模成**纯机会成本**：把"过�
 
 ## 为什么它是**安全**的（potential-based）
 
-Ng/Harada/Russell 1999 要求塑形写成 `F(s,a,s') = γΦ(s') − Φ(s)`，γ=1 时退化为
-`Φ(s') − Φ(s)`。本实例取
+Ng, Harada & Russell 1999（"Policy invariance under reward transformations", ICML，
+定理 1，https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-ICML99.pdf ）
+要求塑形写成 `F(s,a,s') = γΦ(s') − Φ(s)`，γ=1 时退化为 `Φ(s') − Φ(s)`。本实例取
 
     Φ(s) = scale · chain_count(s)                     # 状态势，只依赖状态
     term(a) = Φ(s') − Φ(s) = scale · (链次数增量)
@@ -32,6 +33,15 @@ Ng/Harada/Russell 1999 要求塑形写成 `F(s,a,s') = γΦ(s') − Φ(s)`，γ=
 
 **由此得到的自动性质**（都有测试）：沿任意闭环求和为 0（Ng §3 环判据）；
 吃/碰/过三项恒为 0，只有链真的动了才给分。
+
+**Φ 的覆盖范围（必须写明，否则会被读成"已完整建模"）**：本 Φ 只含 `chain_count`，
+**不含** `baotou`（×2）与 `chain_piao`（四白 ×2）。按定理的正确读法，这只说明
+**那两个乘子没有被本候选塑形**——不是缺陷，也不是"充分条件失效"
+（定理只要求 F 是某个状态函数的差，不要求该函数涵盖全部价值量）。
+
+**限定**：定理原始设定假设状态对决策者可见；本项目是隐藏信息局，
+把它降到"信息状态"上是【推导·未一手核实】，可用的替代框架是信念 MDP。
+见 refs/REF-DECOMP-game-abstraction.md §3.5/§6。
 
 ## 单位与自由参数（必须显式声明，方案 §16.3 G-BS-3）
 
@@ -113,8 +123,15 @@ class ChainPathParams:
             raise ValueError("ChainPathParams.bound 必须为正")
 
     def to_json(self) -> str:
-        return "scale={0},step_log2={1},bound={2}".format(
-            self.scale, self.step_log2, self.bound)
+        """稳定序列化；**进候选身份**，使产物可复现到具体参数。
+
+        `scope` 必须一起序列化：它是作用面，改了 scope 就是换了候选。
+        初版漏了它（`meld_opportunity_cost` 有），于是改 scope 不改身份 ——
+        而身份是"跑的就是过门禁的那份配置"的立身之本（R7-1）。2026-09-15 独立复核撞出。
+        """
+
+        return "scale={0},step_log2={1},bound={2},scope={3}".format(
+            self.scale, self.step_log2, self.bound, "+".join(self.scope))
 
 
 def chain_count_after(ctx: EvaluationContext, action: Action) -> int:

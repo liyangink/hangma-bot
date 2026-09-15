@@ -65,7 +65,7 @@
     "src/hangma_bot/policy/claim_if_legal.py": "acd4c887d59cd5f84e9ea2a6ab6c698278110623af0e2bb26a2f1b992d6a8f43",
     "src/hangma_bot/policy/errors.py": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9",
     "src/hangma_bot/policy/evaluation.py": "92f68d0f0eb384cff1444bdc84937fb93d90f398c9ac7b803e00f23d800d86e1",
-    "src/hangma_bot/policy/evaluation_v1.py": "163987219a051c227a17970df6207365d4ee1e8375d251df274b9dec1af82baa",
+    "src/hangma_bot/policy/evaluation_v1.py": "ff620155626ab91a4d6e70fe81b8bfc259c75b6ef684e9306a2892560f05ae8d",
     "src/hangma_bot/policy/heuristic_v1.py": "fb924e32375a033f84f6566160e761102308e3b145c7a5caa885db6f99affd4c",
     "src/hangma_bot/policy/interface.py": "d2cbf90fea78c6472b3653b0a60d0d29246f1d687529ce054e6e03213a3627da",
     "src/hangma_bot/policy/safe_fallback.py": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281",
@@ -97,7 +97,13 @@
       "field_notes": {
         "chain_piao": "官方 chain.piao；依据不足时为空，**空不等于零**，原样透传。"
       },
-      "scope": "只增加评分上下文的可读字段；不改变 V1 评分行为，不新建并行上下文类型。用户裁定：补充说明即可，不为历史版本做兼容设计。"
+      "scope": "只增加评分上下文的可读字段；不改变 V1 评分行为，不新建并行上下文类型。用户裁定：补充说明即可，不为历史版本做兼容设计。",
+      "revision_2": {
+        "date": "2026-09-15",
+        "change": "同一文件的**文档字符串更正**（不改任何可执行逻辑）：把初版写的「Phi 漏掉直接乘 2 的幂的状态量 ⇒ potential-based 充分条件失效」更正为「那只说明该项未被塑形，不是不合规」；并补定理链接与隐藏信息限定。",
+        "reason": "该断言由独立复核（Standards 轴）撞出并经复算确认：Ng 1999 定理 1 只要求 F 是**某一个**状态函数的差，不要求该函数涵盖全部价值量。初版把推导写成了既定规则。",
+        "scope": "仅文档字符串措辞；字段列表与填充逻辑不变，V1 评分行为仍逐字节不变。"
+      }
     }
   ],
   "experiment_sha256": "b2241fe5831795b39522507543785aa832966c116c8de9924f78b6f8ba821d75",
