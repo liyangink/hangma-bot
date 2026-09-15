@@ -213,9 +213,17 @@ V0 与依赖 V0 的 `claim_if_legal` 在线上组合根和已有离线入口通�
 全部来自观察层已有事实，**纯接入、无新增规则计算**。
 
 理由是可表达性：官方总番 = `1 × 分支因子 × 2^动作链次数 ×（4 白板 ×2）×（爆头 ×2）`
-（官方指南 v34 第 29 行），链与爆头都直接乘 2 的幂；候选要写出涉及它们的**状态势之差**，就必须先能读到它们。
-**注意**：这不等于"势函数必须涵盖全部价值量"——potential-based 塑形只要求加分能写成某个状态函数之差，
-漏掉某项只意味着**该项未被塑形**，不构成不合规（详见 `evaluation_v1.py` 模块 docstring 的更正说明）。
+（**官方指南 v34，2026-09-14 抓取**，原文快照见
+[doc/references/official-guide-v34-content.txt](../references/official-guide-v34-content.txt) 第 29 行），
+链与爆头都直接乘 2 的幂；候选要写出涉及它们的**状态势之差**，就必须先能读到它们。
+
+**注意（本条的强度边界，引用时必须一起带）**：这不等于「势函数必须涵盖全部价值量」。
+potential-based 塑形（[Ng, Harada & Russell 1999, ICML](https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-ICML99.pdf) 定理 1）
+只要求加分能写成**某一个**状态函数之差；漏掉某项只意味着**该项未被塑形**，不构成不合规。
+**【推导·未一手核实】**：该定理的原始设定假设状态对决策者可见，本项目是隐藏信息局，
+把它降到「信息状态」上用**没有一手来源**，属推导；可用的替代框架是信念 MDP。
+逐字核对见 [refs/REF-DECOMP-game-abstraction.md](../../review/llm-guided-heuristic-route-2026-09-15/refs/REF-DECOMP-game-abstraction.md) §3.5/§6，
+本条的更正说明见 `src/hangma_bot/policy/evaluation_v1.py` 模块 docstring。
 
 **冻结契约的处置**：该文件在 `tests/offline/evidence/v1-acceptance-2026-09-06/freeze.json` 的冻结清单内。
 本次按用户裁定做**最小改动 + 补充说明**：只加带默认值字段、更新该文件 sha256，
