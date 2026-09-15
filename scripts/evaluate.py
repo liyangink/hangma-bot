@@ -59,6 +59,7 @@ from hangma_bot.offline.evaluation_results import (  # noqa: E402
     write_results_jsonl,
 )
 from hangma_bot.offline.evaluation_statistics import summarize_results  # noqa: E402
+from hangma_bot.policy import heuristics  # noqa: E402
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1  # noqa: E402
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2  # noqa: E402
 from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy  # noqa: E402
@@ -73,6 +74,41 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 # ---------------------------------------------------------------------------
 # 显式装配（组合根钩子缺失时的最小回退；不建注册表）
 # ---------------------------------------------------------------------------
+
+
+def _candidate_source_fingerprint(name: str) -> str:
+    """候选模块源码的 sha256 前 16 位。
+
+    **在这里算而不是在 policy 包内**：policy 模块禁止任何文件副作用
+    （`tests/unit/policy/test_policy_timeout_and_purity.py` 静态扫描
+    `Path(` / `open(` / `read_text`）。指纹是**装载期的溯源信息**，
+    装载方持有 IO 权限；契约测试比对声明与实际源码，防止漂移。
+    """
+
+    module = heuristics.candidate_module(name)
+    # 复用本文件既有的 _sha256_of（它在函数内 import hashlib，是本文件的既有约定）。
+    return _sha256_of(Path(module.__file__))[:16]
+
+
+def _build_registered_candidate(
+    declaration: PolicyDeclaration, monotonic: Callable[[], float]
+) -> Optional[Any]:
+    """尝试把声明装配成**已注册的候选启发式**；未注册返回 None。
+
+    候选注册表在 `hangma_bot.policy.heuristics` 内（静态字面量，非插件系统）。
+    这里只做一次委托，新增候选不需要修改本文件。
+    """
+
+    if not heuristics.is_candidate(declaration.name):
+        return None
+    candidate = heuristics.build_candidate(
+        declaration.name,
+        weights=dict(declaration.weights),
+        monotonic=monotonic,
+        source_fingerprint_value=_candidate_source_fingerprint(declaration.name),
+    )
+    candidate.policy_id = declaration.policy_id  # 诊断标识，不进评分
+    return candidate
 
 
 def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float]) -> Any:
@@ -95,9 +131,18 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
             policy = WhiteDiscardGuardPolicy(policy)
         policy.policy_id = declaration.policy_id
         return policy
+    # 候选启发式接缝（README §17 2.2）：注册表在 policy 包内，**新增候选不必再改本文件**。
+    # 这是打通接缝的**唯一一次**生产改动；之后加候选只改 policy/heuristics/__init__.py 一行。
+    # 候选模块是 hangma_bot 包成员，因此这里的 import 不破坏模块边界
+    # （这正是候选放在 review/ 下做不到的一点）。
+    policy = _build_registered_candidate(declaration, monotonic)
+    if policy is not None:
+        return policy
     raise ValueError(
         "未知策略名 {0!r}；本脚本只装配 weighted_heuristic / safe_fallback / "
-        "weighted_heuristic_v1 / weighted_heuristic_v2 / weighted_heuristic_v2_white_guard".format(declaration.name)
+        "weighted_heuristic_v1 / weighted_heuristic_v2 / weighted_heuristic_v2_white_guard，"
+        "以及 policy.heuristics 已注册的候选：{1}".format(
+            declaration.name, ", ".join(heuristics.candidate_names()))
     )
 
 

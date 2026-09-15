@@ -6,7 +6,11 @@
 
 import math
 from dataclasses import replace
-from typing import Awaitable, Callable, Tuple
+from typing import TYPE_CHECKING, Awaitable, Callable, Tuple
+
+if TYPE_CHECKING:
+    # 只用于类型标注：heuristic_adapter 反向依赖 heuristic_v2，运行期 import 会成环。
+    from .heuristic_adapter import HeuristicAdjustment
 
 from hangma_bot.hangma.interface import CandidateFactKind, RuleCandidate, RuleCompleteness
 from hangma_bot.kernel.actions import Pass
@@ -36,11 +40,17 @@ async def score_candidates(
     ctx: EvaluationContext,
     weights: HeuristicWeightsV1,
     check_deadline: Callable[[], Awaitable[None]],
+    adjustments: Tuple["HeuristicAdjustment", ...] = (),
 ) -> Tuple[ScoredCandidate, ...]:
     """只替换过牌的中性分项；其他候选保留 V1 分数和可信层级。
 
     输入都是规则合法候选。异常及非有限结果向上传播，交给应用已有保底。
     返回值不含模拟完整信息；缺过牌基线时由 V2 入口调整响应退路次序。
+
+    `adjustments` 是**接缝**（README §17 2.2）：候选启发式在这里追加有界分项，
+    不复制本函数的任何逻辑。**默认空元组时本函数行为逐字节不变**——
+    因此"关闭候选即等价基线"是构造保证的，不依赖测试碰运气。
+    每个候选的每个调整前都检查一次截止时间，保证 G-1 的时间上界可测。
     """
     original = await score_v1_candidates(candidates, ctx, weights, check_deadline)
     result = []
@@ -69,4 +79,13 @@ async def score_candidates(
                               shanten=facts.shanten_after, reasons=reasons + (
             f"V2 过牌等待：当前向听 {facts.shanten_after}，有效牌剩余估计 {remaining} 张；与吃碰使用同一牌效基准",
         )))
+    if adjustments:
+        # 接缝：候选只在既有评分之上追加有界分项；本函数不为其做任何排序或合法性判断。
+        adjusted_result = []
+        for item in result:
+            for adjustment in adjustments:
+                await check_deadline()
+                item = adjustment.apply(item, ctx, candidates)
+            adjusted_result.append(item)
+        result = adjusted_result
     return tuple(result)

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import time
-from typing import Callable, List, Optional, Set, Tuple
+from typing import TYPE_CHECKING, Callable, List, Optional, Set, Tuple
 
 from hangma_bot.hangma.interface import RuleCandidate, RuleCompleteness
 from hangma_bot.kernel.actions import Hu, Pass, action_key
@@ -24,6 +24,10 @@ from .interface import (
 )
 from .weights_v1 import DEFAULT_WEIGHTS_V1, HeuristicWeightsV1
 
+if TYPE_CHECKING:
+    # 只用于类型标注：heuristic_adapter 反向依赖本模块，运行期 import 会成环。
+    from .heuristic_adapter import HeuristicAdjustment
+
 
 class ComparableHeuristicPolicyV2:
     """候选 V2：先合法胡，再按可比等待牌效排序；缺基线则以合法过牌退路。
@@ -36,13 +40,20 @@ class ComparableHeuristicPolicyV2:
         self,
         weights: HeuristicWeightsV1 = DEFAULT_WEIGHTS_V1,
         monotonic: Callable[[], float] = time.monotonic,
+        adjustments: Tuple["HeuristicAdjustment", ...] = (),
     ) -> None:
-        """绑定不可变权重与单调时钟；时钟仅用于截止时间判断，不影响评分。"""
+        """绑定不可变权重与单调时钟；时钟仅用于截止时间判断，不影响评分。
+
+        `adjustments` 是候选启发式接缝（README §17 2.2）。适配器只在这里挂分项，
+        过滤/层级/排序/保底/截止时间仍全部走本类原逻辑。**默认空元组时行为逐字节不变**，
+        因此"关闭候选即等价基线"是构造保证的。
+        """
 
         if not isinstance(weights, HeuristicWeightsV1):
             raise TypeError("V2 复用冻结的 HeuristicWeightsV1 配置")
         self._weights = weights
         self._monotonic = monotonic
+        self._adjustments = tuple(adjustments)
 
     async def _check_deadline(self, budget: DecisionBudget) -> None:
         """先让出事件循环再检查截止时间。
@@ -119,6 +130,7 @@ class ComparableHeuristicPolicyV2:
                 context,
                 self._weights,
                 lambda: self._check_deadline(budget),
+                self._adjustments,
             )
             # 只在过滤后的合法未拒过牌存在且缺基线时退路优先；合法胡永远在前。
             pass_candidates = [c for c in intake if isinstance(c.action, Pass)]
