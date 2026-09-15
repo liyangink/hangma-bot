@@ -15,12 +15,31 @@ Ng/Harada/Russell 1999 要求塑形写成 `F(s,a,s') = γΦ(s') − Φ(s)`，γ=
 `Φ(s') − Φ(s)`。本实例取
 
 ```text
-Φ(s) = −(path_log2 + closer_bonus·1[七对是更近路径]) × 1[七对路径在 s 存活]
+Φ(s) = +(path_log2 + closer_bonus·1[七对是更近路径]) × 1[七对路径在 s 存活]
 term(action) = Φ(s') − Φ(s)
 ```
 
 - `Φ(s)` 里的 `1[七对路径在 s 存活]` 由 **s 本身**决定，与"这是吃还是碰"**无关**；
 - 因此 `term` 是**同一个状态势的差**，而不是"给吃加 −X、给碰加 −Y"这类**动作标签加分**。
+
+**REVIEW-8 R8-2 的两处更正（都在本节）**：
+
+1. **符号写反了**。初版把 `Φ` 写成**负**的（`Φ = −(...)·1[存活]`），
+   而实现里"打掉路径"给的是**负**的 `term`；按 `term = Φ(s') − Φ(s)`，
+   负 Φ 会让打掉路径得到**正**分——与实现的扣分方向相反。
+   正确的写法是**正的 Φ**：路径在 ⇒ Φ 为正；路径被打掉 ⇒ `Φ(s') = 0 < Φ(s)` ⇒ `term < 0`。
+   实现的方向本来就是对的，**错的是公式**。
+2. **活路径内的变化被吞掉了**。初版在"前后都存活"时直接返回 0，
+   于是"七对本来更近 → 变得不再更近"这种同一条路径内的价值变化**没有计入**，
+   环判据也随之不成立（`F(A,B) + F(B,C) ≠ F(A,C)`）。
+   现在按 `Φ(s') − Φ(s)` 逐项算**完整差值**。
+
+## 一处明确的不适用（不猜）
+
+`delta` 需要"动作前状态"作参考。窗口里用**过牌候选**代表它（过牌=手牌不变，
+于是它的 `*_shanten_after` 就是当前状态的向听）。**没有过牌候选时无参考可依**
+（例如纯弃牌窗口：每个候选都会改变手牌），此时返回 0——**不加不减，不猜**。
+这一条是**覆盖面的边界**，不是"候选无效"；它同时说明本项在弃牌窗口上不生效。
 
 **与 M4（鸣牌机会成本）的关键区别**：M4 把"过牌那边的等待牌效"`−f(s)` 只加给吃碰候选，
 同一状态内不同动作被加了不同的数 ⇒ **它的 argmax 可以改变**，按 Ng 的必要性，
@@ -112,22 +131,40 @@ def _seven_pairs_state(candidate: RuleCandidate):
     return (seven is not None, seven, standard)
 
 
+def potential(state: Tuple[bool, Optional[int], Optional[int]],
+              params: SevenPairsPathParams) -> float:
+    """`Φ(s)`：七对路径**存活时的 log2 价值**；路径已关闭时为 0。
+
+    `Φ` 是**正**的：路径活着 ⇒ 有这份价值；路径被打掉 ⇒ 价值归零 ⇒ `Φ(s') − Φ(s) < 0`。
+    初版把 `Φ` 写成负号，与实现的扣分方向相反（REVIEW-8 R8-2）。见模块 docstring。
+    """
+
+    live, seven, standard = state
+    if not live:
+        return 0.0
+    closer = (seven is not None and standard is not None and seven < standard)
+    return params.path_log2 + (params.closer_bonus if closer else 0.0)
+
+
 def path_term(action_candidate: RuleCandidate, before_candidate: RuleCandidate,
               params: SevenPairsPathParams) -> float:
-    """`Φ(s') − Φ(s)`：动作把一条存活的七对路径打掉时，扣它的 log2 价值。"""
+    """`Φ(s') − Φ(s)`：**完整**的状态势之差。
+
+    三种情形都在这里算，不再提前返回：
+      - 存活 → 关闭：扣掉整条路径的 log2 价值（`−(path_log2 + closer_bonus)`）；
+      - 存活 → 存活：按"七对是否仍是更近路径"记 `±closer_bonus`
+        （初版在这里恒返回 0，把同一条路径内的价值变化整个吞掉了）；
+      - 关闭 → 任何：`Φ(s') − 0`（关闭态 Φ 为 0）。
+
+    已胡牌（`WIN`）或事实不可用时返回 0：**不加不减，不猜**。
+    """
 
     before = _seven_pairs_state(before_candidate)
     after = _seven_pairs_state(action_candidate)
     if before is None or after is None:
         return 0.0                       # 事实不可用：不加不减，不猜
-    live_before, seven_before, standard_before = before
-    live_after = after[0]
-    if not live_before or live_after:
-        return 0.0                       # 本来就没路径，或路径没被打掉
-    closer = (seven_before is not None and standard_before is not None
-              and seven_before < standard_before)
-    value = params.path_log2 + (params.closer_bonus if closer else 0.0)
-    return round(-min(value, params.bound), 6)
+    value = potential(after, params) - potential(before, params)
+    return round(max(-params.bound, min(params.bound, value)), 6)
 
 
 def build_adjustment(
@@ -152,9 +189,14 @@ def build_adjustment(
         version=SEVEN_PAIRS_PATH_VERSION,
         thought=(
             "按官方番型路径而非动作类别打分：七对禁止任何副露，因此一次吃碰会永久关闭"
-            "一条 ×2 起（豪华最高 ×16）的路径。本项在动作打掉该路径时扣它的 log2 价值，"
-            "并按'七对是否本来更近'加权。写成状态势之差，故不改变最优策略。"),
-        trigger="窗口内存在过牌候选；该候选的七对路径存活；被评候选会把该路径打掉",
+            "一条 ×2 起（豪华最高 ×16）的路径。本项取状态势 Φ(s)=路径存活时的 log2 价值"
+            "（含'七对是否更近'的加分），按 Φ(s')−Φ(s) 计分：打掉路径扣分，"
+            "路径内的更近/更远变化按 ±closer_bonus 计入。写成同一个状态势之差，"
+            "故不改变最优策略。"),
+        trigger=(
+            "窗口内存在过牌候选（作为'动作前状态'的参考，过牌=手牌不变）；"
+            "该参考的七对路径存活；被评候选会把该路径打掉，或改变'七对是否更近'；"
+            "**纯弃牌窗口无过牌候选时不适用**，不加不减"),
         scope=params.scope,
         bound=params.bound,
     )
@@ -188,4 +230,5 @@ __all__ = [
     "build_adjustment",
     "build_adjustment_from_params",
     "path_term",
+    "potential",
 ]

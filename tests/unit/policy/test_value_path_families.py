@@ -226,3 +226,95 @@ def test_seven_pairs_term_does_not_guess_without_facts() -> None:
     after = _cand(Peng(Tile("1w")), None)
     assert pairs.path_term(after, before, pairs.SevenPairsPathParams()) == 0.0
     assert pairs.path_term(before, before, pairs.SevenPairsPathParams()) == 0.0
+
+
+# --- REVIEW-8 R8-2：七对势差合同的三类回归 -------------------------------
+
+def _pairs_term(before_facts, after_facts) -> float:
+    return pairs.path_term(_cand(Pass(), after_facts), _cand(Pass(), before_facts),
+                           pairs.SevenPairsPathParams())
+
+
+def test_seven_pairs_term_is_additive_over_a_three_state_chain() -> None:
+    """★ R8-2：**可加性**。初版在"前后都存活"时恒返回 0，于是
+    `F(A,B) + F(B,C) ≠ F(A,C)`——那不是同一个状态势的差。
+
+    A：七对 1 / 普通 2（七对更近）⇒ Φ = 1 + 1 = 2
+    B：七对 2 / 普通 1（不再更近）  ⇒ Φ = 1
+    C：路径关闭                     ⇒ Φ = 0
+    """
+
+    a = _progress_facts(seven=1, standard=2)
+    b = _progress_facts(seven=2, standard=1)
+    c = _progress_facts(seven=None, standard=1)
+    f_ab, f_bc, f_ac = _pairs_term(a, b), _pairs_term(b, c), _pairs_term(a, c)
+    assert f_ab == pytest.approx(-1.0)          # 只丢"更近"的加分
+    assert f_bc == pytest.approx(-1.0)          # 打掉路径：丢 path_log2
+    assert f_ac == pytest.approx(-2.0)
+    assert f_ab + f_bc == pytest.approx(f_ac, abs=1e-9)
+
+
+def test_seven_pairs_cycle_criterion_sums_to_zero() -> None:
+    """★ R8-2：**环判据**（Ng §3）。沿 A→B→C→A 走一圈，势差之和必须为 0。"""
+
+    a = _progress_facts(seven=1, standard=2)
+    b = _progress_facts(seven=2, standard=1)
+    c = _progress_facts(seven=None, standard=1)
+    loop = (_pairs_term(a, b) + _pairs_term(b, c) + _pairs_term(c, a))
+    assert loop == pytest.approx(0.0, abs=1e-9)
+
+
+def test_seven_pairs_term_matches_the_declared_potential() -> None:
+    """★ R8-2：term 必须等于 `Φ(s') − Φ(s)`，且 Φ **为正**。
+
+    初版把 Φ 写成 `−(...)·1[存活]`，而实现给的是负 term——公式与方向相反。
+    这里直接按 `potential()` 复算，使"声明的 Φ"与"实现的 term"不能再各说各话。
+    """
+
+    params = pairs.SevenPairsPathParams()
+    states = {
+        "closer-alive": (True, 1, 2),
+        "alive": (True, 3, 3),
+        "closed": (False, None, 1),
+    }
+    assert pairs.potential(states["closer-alive"], params) == pytest.approx(2.0)
+    assert pairs.potential(states["alive"], params) == pytest.approx(1.0)
+    assert pairs.potential(states["closed"], params) == pytest.approx(0.0)
+    facts = {key: _progress_facts(seven=value[1], standard=value[2])
+             for key, value in states.items()}
+    facts["closed"] = _progress_facts(seven=None, standard=1)
+    for before_key, before_facts in facts.items():
+        for after_key, after_facts in facts.items():
+            expected = (pairs.potential(states[after_key], params)
+                        - pairs.potential(states[before_key], params))
+            assert _pairs_term(before_facts, after_facts) == pytest.approx(
+                expected, abs=1e-6), (before_key, after_key)
+
+
+def test_seven_pairs_does_not_apply_in_a_pure_discard_window() -> None:
+    """**明确的不适用**：没有过牌候选就没有"动作前状态"的参考 ⇒ 不加不减。
+
+    纯弃牌窗口里每个候选都会改变手牌，拿不到 `s` 的向听事实；此时返回 0
+    （**不猜**）。这是覆盖面的边界，不是"候选无效"——它同时说明本项在
+    弃牌窗口上不生效，需由触发集或别的族覆盖。
+    """
+
+    params = pairs.SevenPairsPathParams()
+    adjustment = pairs.build_adjustment(params)
+    discard = _cand(Discard(Tile("1w")), _progress_facts(seven=3, standard=3))
+    ctx = build_context(make_observation())
+    scored = _scored(discard)
+    assert adjustment.apply(scored, ctx, (discard,)) is scored   # 原样返回：没有分项被追加
+    # 有参考（过牌）时同一个动作会得到非零项
+    reference = _cand(Pass(), _progress_facts(seven=1, standard=2))
+    assert pairs.path_term(discard, reference, params) == pytest.approx(-1.0)
+
+
+def _scored(candidate: RuleCandidate):
+    """最小可用的评分候选；只用于观察适配器是否追加了分项。"""
+
+    from hangma_bot.policy.evaluation_v1 import ScoredCandidate
+
+    return ScoredCandidate(priority=1, candidate=candidate,
+                           action_key=candidate.action_key, parts=(), reasons=(),
+                           total=0.0, shanten=None, is_safe_discard=False)

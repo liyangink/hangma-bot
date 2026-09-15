@@ -59,6 +59,11 @@ from hangma_bot.offline.evaluation_results import (  # noqa: E402
     write_results_jsonl,
 )
 from hangma_bot.offline.evaluation_statistics import summarize_results  # noqa: E402
+from hangma_bot.offline.scoring_sources import (  # noqa: E402
+    candidate_identity_digest,
+    scoring_source_snapshot,
+    write_code_snapshot,
+)
 from hangma_bot.policy import heuristics  # noqa: E402
 from hangma_bot.policy.heuristic_adapter import HeuristicAdjustmentPolicy  # noqa: E402
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1  # noqa: E402
@@ -78,17 +83,20 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _candidate_source_fingerprint(name: str) -> str:
-    """候选模块源码的 sha256 前 16 位。
+    """候选**执行依赖闭包**的 sha256 前 16 位（不是入口文件的指纹）。
 
     **在这里算而不是在 policy 包内**：policy 模块禁止任何文件副作用
     （`tests/unit/policy/test_policy_timeout_and_purity.py` 静态扫描
     `Path(` / `open(` / `read_text`）。指纹是**装载期的溯源信息**，
     装载方持有 IO 权限；契约测试比对声明与实际源码，防止漂移。
+
+    **REVIEW-8 S8-1**：初版只对入口文件取哈希。候选之间会互相 import
+    （`meld_waiting_conditional` 用 `meld_opportunity_cost.natural_draw_value`），
+    只改被依赖的文件时身份不变，于是"在某份代码上过了门禁"可以被另一份代码沿用。
+    现在与门禁侧 `candidate_identity` 共用同一个闭包摘要，两侧必然一致。
     """
 
-    module = heuristics.candidate_module(name)
-    # 复用本文件既有的 _sha256_of（它在函数内 import hashlib，是本文件的既有约定）。
-    return _sha256_of(Path(module.__file__))[:16]
+    return candidate_identity_digest(name)
 
 
 def _build_registered_candidate(
@@ -218,20 +226,6 @@ def _git_state() -> Tuple[Optional[str], Optional[bool]]:
 #: 装饰器链最大解包层数；防止自引用把快照函数变成死循环。
 _MAX_POLICY_UNWRAP = 8
 
-#: 影响评分行为的策略源码（相对仓库根）——**指纹清单**。
-#: 为什么需要它：`producer_commit + dirty=true` 只说明"与父提交不一样"，
-#: 说不出**哪里不一样**，事后无法判断某个产物由哪份代码产生（REVIEW-7 S7-2）。
-#: 清单是**固定元组**而不是目录扫描：它是本脚本对"哪些文件决定评分"的显式声明，
-#: 新增评分模块必须显式登记（漏登记时指纹缺项，而不是静默变成"整仓一致"）。
-_SCORING_SOURCE_FILES: Tuple[str, ...] = (
-    "src/hangma_bot/policy/evaluation_v1.py",
-    "src/hangma_bot/policy/heuristic_v1.py",
-    "src/hangma_bot/policy/heuristic_v2.py",
-    "src/hangma_bot/policy/weights_v1.py",
-    "src/hangma_bot/policy/heuristic_adapter.py",
-    "src/hangma_bot/policy/white_discard_guard.py",
-)
-
 #: 脏工作区里最多记录多少条变更路径；超出只截断**列表**，不截断该布尔标志。
 _DIRTY_PATHS_MAX = 200
 
@@ -296,21 +290,18 @@ def _candidate_module_path(name: str) -> str:
 
 
 def _scoring_source_snapshot(candidate_names: Tuple[str, ...]) -> dict:
-    """本次比较依赖的评分源码 → 字节指纹（含**用到的候选模块**）。
+    """本次比较依赖的评分源码 → 字节指纹（**import 依赖闭包**，不是固定清单）。
 
     这是 `dirty=true` 之外的**可验证指纹**：拿到产物的人可按"路径 → sha256"
     逐份复核当时实际装载的源码，即使那些源码从未提交。
+
+    **REVIEW-8 S8-1**：初版是一份**硬编码文件清单**，它漏了正在使用的
+    `evaluation_v2.py`，也不覆盖候选之间的相互 import。现在与门禁身份
+    共用 `offline/scoring_sources.py` 的闭包实现——一处定义，三处引用
+    （准入身份、实验清单、源码归档），不会再出现"清单各写一遍、各自漏项"。
     """
 
-    paths = list(_SCORING_SOURCE_FILES)
-    for name in sorted(set(candidate_names)):
-        paths.append(_candidate_module_path(name))
-    snapshot = {}
-    for relative_path in paths:
-        digest = _source_digest(relative_path)
-        if digest is not None:
-            snapshot[relative_path] = digest
-    return snapshot
+    return scoring_source_snapshot(tuple(candidate_names))
 
 
 def _worktree_snapshot() -> dict:
@@ -354,20 +345,10 @@ def _write_code_snapshot(out_dir: Path, scoring_source: Mapping) -> Optional[str
 
     REVIEW-7 S7-2 的处置是"保存实际代码快照**或**可验证指纹"；这里两件都做，
     因为用途不同：指纹用于**核对**，快照用于**在没有该提交的环境里重建**。
-    代价有界——清单是固定元组加本次用到的候选模块（个位数文件），不是整仓快照。
+    代价有界——清单是**依赖闭包**（十几到几十个小文件），不是整仓快照。
     """
 
-    if not scoring_source:
-        return None
-    target = out_dir / "code_snapshot"
-    for relative_path in sorted(scoring_source):
-        source = _REPO_ROOT / relative_path
-        if not source.is_file():
-            continue
-        destination = target / relative_path
-        destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_bytes(source.read_bytes())
-    return target.name
+    return write_code_snapshot(out_dir, scoring_source)
 
 
 def _candidate_names_in(declarations) -> Tuple[str, ...]:
@@ -404,6 +385,9 @@ def _policy_artifact_fields(declaration: PolicyDeclaration, policy: Any) -> dict
         "scope": list(spec.scope),
         "bound": spec.bound,
     }
+    # 依赖闭包摘要：与门禁 `bound_identity` 里的 src 段**同一个值**，
+    # 两处产物因此可以互核（REVIEW-8 S8-1）。
+    fields["dependency_digest"] = candidate_identity_digest(declaration.name)
     fields["candidate_source"] = dict(
         _source_digest(relative_path) or {}, path=relative_path)
     return fields
@@ -452,6 +436,9 @@ def _manifest_versions(
         )
         entry["candidate_source"] = (
             fields.get("candidate_source") if fields is not None else None
+        )
+        entry["dependency_digest"] = (
+            fields.get("dependency_digest") if fields is not None else None
         )
     versions = {
         "experiment_kind": experiment.kind,

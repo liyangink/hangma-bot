@@ -247,21 +247,36 @@ V0/V1 评分源码的**行为**不变；线上不含任何 LLM 调用。相关�
 | `sitin-gates/1` | `tools/sitin_gates.py` | 三道门禁的准入记录 | `bound_identity`（模块 + 有效参数 + 源码指纹）、`evidence_kind`（`admission`\|`trigger`）、`corpus`（含 **`sha256` 内容哈希**与 `constructed_trigger_set`）、`gate_level_admitted` 与 `admitted` **两个分开的布尔值** |
 | `sitin-scheduler/2` | `tools/sitin_scheduler.py` | 预算台账与顺序淘汰报告 | `table_budget`/`spent_tables`、`rounds`、`root_sets`（`(轮次, 根组集合身份)` 判重）、`rerun` |
 | `sitin-run-state/1` | `tools/sitin_scheduler.py` | 分级执行的持久化状态 | `levels[].spec/root_keys/root_specs/root_set_id/candidates/results/done/survivors`、`cursor_level`、`stop_reason` |
-| `sitin-candidate-manifest/1` | `tools/sitin_scheduler.py` | 每个候选每级的产物身份 | `bound_identity`、`adjustment_identity`、`adjustment_spec`、`effective_adjustment_params`、`effective_base_weights`、`source_sha256`、`gate_binding`、`cell_dir` |
-| `sitin-round-failure/1` | `tools/sitin_scheduler.py` | 一轮评估未产出可用结果时的失败证据 | `reason`、`returncode`、`timeout_sec`、`stdout_tail`/`stderr_tail` |
+| `sitin-candidate-manifest/1` | `tools/sitin_scheduler.py` | 每个候选每级的产物身份 | `bound_identity`、`adjustment_identity`、`adjustment_spec`、`effective_adjustment_params`、`effective_base_weights`、`source_sha256`、`gate_binding`、`root_set_id`（**按 seed**，与台账同口径）、`cell_dir` |
+| `sitin-round-failure/1` | `tools/sitin_scheduler.py` | 一轮评估未产出可用结果时的失败证据 | `reason`、`returncode`、`timeout_sec`、`stdout_tail`/`stderr_tail`、`supervision`（受监管执行的结局）、`problems`（计划核验发现的问题） |
 
-**三条跨 schema 的语义约定**（这三条是复核 S7-2 / R7-1 / R7-2 的直接产物，改动它们属受控变更）：
+**五条跨 schema 的语义约定**（来自复核 S7-2 / R7-1 / R7-2 与 REVIEW-8 S8-1·S8-2·R8-1·R8-3·R8-4，改动它们属受控变更）：
 
-1. **身份**：候选身份 = 模块名 + 拆分后的有效参数（`adj.` 前缀）+ **源码指纹**；参数或源码一改，原准入记录与台账条目自动失效。
-   **身份里不含语料**，因此语料必须**单独**核验：准入记录写 `corpus.sha256`，调度器的 `--admission-corpus` 为**必填**，逐字节比对；
-   旧格式记录（无 `corpus.sha256`）一律拒绝。
+1. **身份 = 模块名 + 有效参数 + 执行依赖闭包摘要**。指纹取自**静态 import 图**的一级方传递闭包
+   （`hangma_bot/offline/scoring_sources.py`），不是入口文件——候选之间会互相 import
+   （`meld_waiting_conditional` 用 `meld_opportunity_cost.natural_draw_value`），
+   只改被依赖文件、入口不变时必须让身份失效。该摘要**一处定义、四处引用**：
+   准入身份（门禁 `bound_identity`）、调度身份、实验清单的 `scoring_source`、未提交时的 `code_snapshot/`。
+   **身份里不含语料**，因此语料必须**单独**核验：准入记录写 `corpus.sha256`，调度器的
+   `--admission-corpus` 为**必填**，逐字节比对；旧格式记录（无 `corpus.sha256`）一律拒绝。
 2. **不可排序**：运行失败、零有效根组、样本不足分别是**不可排序状态**，不得补零参与排序（`rankable=false` + `rankable_reason`）；
    只有 `admissible`（无 FAIL 且无 INSUFFICIENT）的记录可以放开执行，构造触发集的记录**永不**产生准入资格。
-3. **可终止**：离线执行任意候选代码必须有墙钟上限与**进程组**终止（SIGTERM → 宽限 → SIGKILL）；
-   失败落 `sitin-round-failure/1` 并记为不可排序，其余候选照常推进。
+   **候选执行异常不是"排除"**：解码失败 / 规则事实不可用 / 策略执行失败分开计数，
+   执行失败优先于一切样本量判断，判 FAIL 并记录窗口与异常文本。
+3. **可终止**：离线执行任意候选代码必须有墙钟上限与**进程组**终止，且**门禁与桌赛共用同一个受监管入口**
+   （`tools/sitin_process.py`）：立刻记录组身份、到期对**整组**两段式终止
+   （SIGTERM → 宽限 → **无条件 SIGKILL**，不以组长已退出作为全组结束的依据）、
+   读者线程有界收输出。失败落 `sitin-round-failure/1`（含 `supervision`）并记为不可排序，其余候选照常推进。
+4. **计划核验**：一轮桌赛的结果必须对照计划核验——行数 = 根 × 换座 × **双臂**、逐行 `complete`、
+   每个（根, 换座）恰好"基线一臂 + 候选一臂"。不符即本轮**不可排序**，不得让"恰好在某些输入上
+   成功的那些行"单独参与排名。**与候选无关的环境排除须预先登记**，不得靠删异常行了事。
+5. **恢复对账**：恢复前必须核对**完整任务身份**——逐候选重算身份、重核**当前**准入，
+   且第一级的持久化候选集合必须等于本次命令行的候选集合。不一致**拒绝恢复**
+   （不静默执行另一份配置），而不是只验证命令行后再换回旧状态。
 
 **`scripts/evaluate.py` 实验清单的身份字段（同批收口）**：`versions.scoring_policies` 的每条记录，除既有的
-`effective_weights` 外新增 `effective_adjustment_params`、`candidate_identity`、`candidate_spec` 与 `candidate_source`（路径 + sha256）；
+`effective_weights` 外新增 `effective_adjustment_params`、`candidate_identity`、`candidate_spec`、
+`dependency_digest`（**与门禁 `bound_identity` 的 src 段同值**）与 `candidate_source`（路径 + sha256）；
 `versions` 另增 `scoring_source`（评分源码 → sha256）与 `worktree`（`commit`/`dirty`/`dirty_paths`/`code_snapshot`）。
 **`producer_commit + dirty=true` 只说得出“与父提交不一样”，说不出差在哪里**，因此未提交代码时另把实际装载的评分源码写入产物目录 `code_snapshot/`。
 权重快照的解包改为按 `base_policy` **约定**递归（上限 8 层），新增装饰器不必再改该函数——初版只认 `WhiteDiscardGuardPolicy`，
