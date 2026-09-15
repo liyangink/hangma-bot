@@ -1,5 +1,7 @@
 # 杭麻 AI Bot 架构与运行流程
 
+2026-09-15 候选装载接缝与评分上下文规则状态：`policy/heuristics/` 下的候选经**静态字面量注册表**装载（无自动扫描、不是插件系统、不是给 LLM 的自动上线通道），适配器在 V2 评分之后追加有界分项且不复制决策管线；`EvaluationContext` 追加 `chain_count`/`baotou`/`wealth_count`/`chain_piao` 四个**带默认值**字段（纯接入、无新增规则计算）。候选身份 = 模块 + 有效参数 + 源码指纹，实验产物另落 `sitin-candidate-manifest/1`。四个外部端口与默认策略名不变，V0/V1 评分行为不变，线上不含 LLM 调用；详见[接口增补](implementation/interface-contracts.md#48-候选装载接缝与评分上下文规则状态2026-09-15)。
+
 2026-09-14 吃供牌修复：官方 `chi.tile` 经解析与投影进入 `PublicEvent.claimed_tile`，随玩家观察、单局封存及审计编解码保存；模拟和离线转换使用同一可选字段。唯一规则模块优先读取该明确供牌，缺字段仍按连续历史或唯一牌河交集判断。局部缺史不再丢掉已收到吃事件中的证据；未知或冲突仍保守降级。字段不含暗牌，不增加网络请求或新模块；同步基线、动作预算和学习特征布局保持原契约。详见[接口增补](implementation/interface-contracts.md)和[契约回归](../tests/contracts/test_chi_claimed_tile.py)。
 
 分牌型事实进一步包含各自有效牌集合，经原 `CandidateFacts` 和审计通路交付；新增集合缺证据只做局部降级，禁止影响稳定V2的综合事实。计算仍在同一规则循环内，详见[分牌型推进契约](implementation/pattern-progress-v2.md)。

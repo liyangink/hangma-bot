@@ -184,6 +184,50 @@ V0 与依赖 V0 的 `claim_if_legal` 在线上组合根和已有离线入口通�
 
 四身份配置模板与有界执行计划见 [测试方案](../../review/piao-window-alignment-2026-09-08/probe-plan.md)。现有决策、提交和原始报文记录足够核验，不扩展外部接口或审计编码。汇总按窗口与动作尝试去重，分开记录开窗、合法候选、提交接受／拒绝；没有捕获窗口不能直接写成规则禁止。
 
+### 4.8 候选装载接缝与评分上下文规则状态（2026-09-15）
+
+**背景**：`policy` 需要一个"离线生成的启发式候选可插拔、但绝不给线上自动上线通道"的接缝，
+并需要让候选读到决定番数乘子的规则状态。两者都改变了策略内部与评估侧的接口形状，按根 `AGENTS.md` §8 在此登记。
+
+**候选装载接缝**：候选是 `policy/heuristics/` 下的**独立模块**，经 `policy/heuristics/__init__.py` 的
+**静态字面量注册表**（`CANDIDATE_FACTORIES` / `_MODULES`）装载——无自动扫描、无 `entry_points`、无动态导入、无网络。
+它**不是插件系统，也不是给 LLM 的自动上线通道**：新增候选 = 新增一个模块 + 注册表一行 + 过契约测试 + 过三道门禁 + 人工审核。
+适配器 `policy/heuristic_adapter.py` 在 `evaluation_v2.score_candidates` **之后**追加一个有界分项，
+**不复制** V2 的过滤、可信层级、排序、紧急保底与截止时间检查（复制决策管线曾导致"把官方已拒绝的动作重新提交"）。
+`adjustments=()` 时行为**逐字节等于基线**，是构造保证而非测试碰运气。
+
+**参数命名**：候选参数复用 `PolicyDeclaration.weights`，但必须带前缀 `adj.`（例如 `{"adj.beta": 20.0, "shanten_step": 100.0}`）；
+带前缀的键归候选、去掉前缀后传入，其余键仍是基础评分权重。**改这个前缀属接口变更。**
+
+**身份与审计**：候选身份 = 模块名 + **拆分后的有效参数** + **源码指纹**，三者共同构成 `bound_identity`；
+参数或源码一改，原门禁通过记录与预算台账条目自动失效。源码指纹**不在 `policy` 包内计算**
+（该包禁止文件 IO，有静态扫描测试），由持有 IO 权限的装载方计算并传入。
+实验产物同时记录完整候选身份、有效调整参数、有效基础权重与源码 sha256（`sitin-candidate-manifest/1`）。
+
+**故障传播**：候选返回非数值 / 非有限值 / 越界时，适配器抛错或钳制并写审计说明，**不静默**；
+异常与非有限结果向上传播，由应用层既有紧急保底接管。候选不得声明动作合法性、不得重排、不得读时间/随机/文件、不得做搜索。
+
+**评分上下文规则状态**：`policy/evaluation_v1.py` 的 `EvaluationContext` 追加四个**带默认值**字段——
+`chain_count`（官方 `god.chain_count`，本人动作链次数）、`baotou`（官方 `god.baotou`）、
+`wealth_count`（动作前手留财神张数）、`chain_piao`（官方 `chain.piao`，**依据不足时为空，空不等于零**）。
+全部来自观察层已有事实，**纯接入、无新增规则计算**。
+
+理由是可表达性：官方总番 = `1 × 分支因子 × 2^动作链次数 ×（4 白板 ×2）×（爆头 ×2）`
+（官方指南 v34 第 29 行），链与爆头都直接乘 2 的幂；候选要写出涉及它们的**状态势之差**，就必须先能读到它们。
+**注意**：这不等于"势函数必须涵盖全部价值量"——potential-based 塑形只要求加分能写成某个状态函数之差，
+漏掉某项只意味着**该项未被塑形**，不构成不合规（详见 `evaluation_v1.py` 模块 docstring 的更正说明）。
+
+**冻结契约的处置**：该文件在 `tests/offline/evidence/v1-acceptance-2026-09-06/freeze.json` 的冻结清单内。
+本次按用户裁定做**最小改动 + 补充说明**：只加带默认值字段、更新该文件 sha256，
+并在同一 freeze.json 写入 `source_revision_notes`（改了什么、为什么、行为中性证据）；
+**不**新建并行上下文类型，**不**为历史版本做兼容设计。行为中性有三条可复跑证据：
+字段都有默认值且构造点只有 `build_context` 一处；全仓 `__eq__`/`__hash__` 使用点为 0；
+V0/V1/V2 评分函数不读新字段（有逐字节回归 `tests/unit/policy/test_evaluation_context_rule_state.py`）。
+
+**不变的部分**：四个外部端口（`TournamentSessionPort`、`GameSessionPort`、`BotPolicy`、`AuditSink`）与默认策略名不变；
+V0/V1 评分源码的**行为**不变；线上不含任何 LLM 调用。相关测试见 `tests/unit/policy/test_heuristic_adapter.py`、
+`tests/unit/policy/test_value_path_families.py` 与 `review/llm-guided-heuristic-route-2026-09-15/tools/test_sitin_gates.py`。
+
 ## 5. 动作提交协议
 
 2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；四白例外已在 v23 修订中取消，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。
