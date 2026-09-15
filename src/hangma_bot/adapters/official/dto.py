@@ -22,7 +22,7 @@ from hangma_bot.kernel.actions import CANONICAL_TILE_CODES
 
 from .errors import DtoError
 
-KNOWN_GUIDE_VERSION = 30  # 当前已审查指南；v16之后仍逐条验摘要，不能仅按顶层版本放行。
+KNOWN_GUIDE_VERSION = 34  # 当前已审查指南；v16之后仍逐条验摘要，不能仅按顶层版本放行。
 _LEGACY_GUIDE_BASELINE = 15  # 原已接受基线，之后的breaking需按调用路径和完整条目审查。
 # v9—v11：非破坏性 changed 条目，已逐条审查并同步实现（v9 测试房间数据 API
 # 限速粒度、v10 跨局 gap=true 全量快照、v11 state 轮询 16/s 每用户聚合）。
@@ -72,6 +72,42 @@ _V25_CHI_LIMIT_SHA256 = "cb5be8f872ea83d02c88fe7fa79e45bb10314c057a0110011c16f9d
 #   （消费方按空串回退 user_id），「昵称为空即真名」的回退全部取消；本人 /portal/api/me
 #   顶层 name 与 /admin/* 语义不变。本 bot 与离线分析全部按 user_id 作稳定身份，
 #   name 只用于展示与本地路径命名，零协议影响。
+# v31（changed，已审查，2026-09-15 同步，2026-09-11 生效）：局间固定停 5 秒再发下一局。
+#   字段集/错误码/超时/轮数一律未动，只改「结算 → 发牌」的时序。停顿时长服务端写死
+#   不可配置，正式赛/测试房/自由房一律 5 秒。窗口内任意 seq（含 seq=0）取到的都是
+#   phase="settled"、round_no 仍是**刚结束那一局**、waited_seat=-1、手牌与牌河为上一局终态。
+#   跨局轮询承诺（v10）仍成立，只是唤醒时点从「立即」变为「最多 5 秒后」，远小于 30 秒长轮询。
+#   本 bot 的单局迁移判定以 snapshot.round_no 变化为准（game.py 的 previous.round_no !=
+#   snapshot.round_no 分支），不靠 phase 也不靠「一次 seq=0 必得新局」，因此顿挫期内的
+#   settled 快照只会归并事件、不会误判成新局，零协议影响。**运行面唯一变化**：每局多 5 秒
+#   固定停顿，完整桌赛墙钟增加约 5×Rounds 秒，仅影响阶段时长估算，不影响任何提交时限预算。
+# v32（changed，已审查，2026-09-15 同步，2026-09-12 生效）：杠爆（爆头×杠开=×4）判定时刻修正。
+#   此前爆头标记只在「发牌后」「出牌后」刷新，摸牌后直接杠（暗杠/补杠）这条路径读到的是
+#   上一次出牌时的陈旧值，应为杠爆的局被静默判成普通杠开（fan 2 而非 4），该局 scores 随之
+#   变化（例：庄家自摸赔付 16 → 32）。修正后在杠动作时按杠后手牌重算。
+#   本 bot **不自行构造结算**：fan/detail/scores 一律以服务端为准，拿到的是修正后的正确值；
+#   本地模拟器/回放引擎的爆头重算发生在杠后补牌落地（progression.attach_draw →
+#   baotou_after_draw，按杠后暗牌 recompute_baotou），与修正口径同向，既有用例
+#   tests/unit/hangma/test_action_chain_lifecycle.py::test_concealed_gang_can_form_new_baotou_before_replacement_draw
+#   已固化；明杠路径按官方说明行为零变化。存量落库数据不回溯，修复前错判局保持原值。
+# v33（changed，已审查，2026-09-15 同步，2026-09-13 生效）：杠后补牌停出决策窗口。
+#   杠（暗杠/补杠/明杠）补到能胡的牌不再与结算同一步自动完成，改为与普通摸牌同构：
+#   快照停在 phase="draw"、turn=waited_seat=杠者、drawn_tile=补牌，客户端可 hu / 续杠 /
+#   弃胡打财神续飘；不提交则超时自动胡兜底（默认 3 秒），番数与分数逐值不变。
+#   本 bot 的推进在杠动作后一律进入 pending_draw 再落地补牌（progression._resolve_gang →
+#   attach_draw → WindowPhase.DRAW），从不假设「补牌即结算」，且主动判胡并提交 hu，
+#   因此属官方说明的「零改动」类；既有用例
+#   tests/unit/hangma/test_hu_gate_and_double_count.py::test_gang_replacement_draw_allows_hu
+#   已固化补牌窗口必须放行自摸胡。**历史牌谱注意**：v33 之前的存量局存在
+#   tile_drawn{gang_replenish:true} 与 round_ended 同秒、中间无决策的形态，离线重放/候选
+#   重建必须容忍该无决策收束，不能按新口径要求补一次决策。
+# v34（added，已审查，2026-09-15 同步，2026-09-14 生效）：门户今日榜新增 last「垫底」行。
+#   纯 Portal 面加法：GET /portal/api/leaderboard 响应多一个 last 键，对象恒为
+#   {rooms, firsts, score, is_me} 或 null；**仅 period=today 且上榜人数 > 32 时非 null**，
+#   其余一律 null（人数 ≤32 时返回 null 是刻意的匿名判据，不是数据缺失）。不下发 rank/
+#   user_id/name，top/me/prev/period/from/as_of 六键逐字节不变。玩家 API 十个端点一字未动，
+#   决策输入零影响；consume 该门户端点的离线脚本需按可空处理 last。
+# 依据：doc/references/official-guide-version-v34.json（2026-09-15 抓取）。
 _V29_FEATURE_DISABLED_SHA256 = "b7da31d4c244cbb33fa4cd15781d478220eeab3ad7e1a4c1535f5f9be0cda0d3"
 
 

@@ -34,7 +34,7 @@
 - 任意时刻每场最多一个在途 POST；模糊结果后同窗零次追加提交。
 - `aclose()` 能取消最长 30 秒长轮询且不误关同 Token 的其他场次。
 - 状态投影测试证明官方 DTO 不泄漏他家手牌或未来信息。
-- 最新已审查指南为 v30（2026-09-10 抓取）：v24/v25/v29 的 breaking 按调用路径及完整条目摘要放行，未知或被改写条目仍拦截。v29 是全服功能开关：关闭自由匹配或自建测试房后，`POST /api/match` 新匹配与已完结 test 房「重开下一轮」（ready）返回**永久** 403 `FEATURE_DISABLED`（ready 路径此前是 409 房态类）。该错误码必须同时登记在 `errors.KNOWN_OFFICIAL_CODES` 白名单，否则会被 `sanitize_official_code` 置为 `None`，使针对它的分支**静默失效**。v30 把他人 `name` 收口为 AI 昵称、空则空串，本模块按 `user_id` 作稳定身份，零协议影响。解析 `god.god_discarder_seat` 并投影可空圈主事实，保留快照水位；旧报文缺失可兼容，有字段但畸形不能静默当缺失。规则解释统一交给 `hangma.catch_play`。
+- 最新已审查指南为 **v34**（2026-09-15 抓取，服务端 `updated_at=2026-09-14`）：v24/v25/v29 的 breaking 按调用路径及完整条目摘要放行，未知或被改写条目仍拦截。**v31—v34 共 4 条、0 条 breaking，但 v32/v33 属规则口径与决策窗口变更，已逐条评审并登记在 `dto.py`**：v31 局间固定停 5 秒，窗口内 `phase="settled"`、`round_no` 仍是刚结束那一局，单局迁移必须以 `round_no` 变化为准、不得依赖「一次 `seq=0` 必得新局」，完整桌赛墙钟约增加 `5 × Rounds` 秒；v32 杠爆判定改在杠动作时重算，不自行构造结算者零改动，本地引擎的爆头重算落在杠后补牌落地，已由 `test_action_chain_lifecycle` 固化；v33 杠后补牌停出决策窗口，与普通摸牌同构，主动判胡提交 `hu` 者零改动，但历史牌谱存在「补牌即可胡却无决策直接收束」的形态，离线重放必须容忍；v34 门户今日榜 `last` 垫底行，纯加法，仅 `period=today` 且上榜 >32 时非 null。v29 是全服功能开关：关闭自由匹配或自建测试房后，`POST /api/match` 新匹配与已完结 test 房「重开下一轮」（ready）返回**永久** 403 `FEATURE_DISABLED`（ready 路径此前是 409 房态类）。该错误码必须同时登记在 `errors.KNOWN_OFFICIAL_CODES` 白名单，否则会被 `sanitize_official_code` 置为 `None`，使针对它的分支**静默失效**。v30 把他人 `name` 收口为 AI 昵称、空则空串，本模块按 `user_id` 作稳定身份，零协议影响。解析 `god.god_discarder_seat` 并投影可空圈主事实，保留快照水位；旧报文缺失可兼容，有字段但畸形不能静默当缺失。规则解释统一交给 `hangma.catch_play`。
 
 ## 2026-09-08 调度修订边界
 
