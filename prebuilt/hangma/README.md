@@ -24,10 +24,14 @@
 ```sh
 python3.11 -m venv .venv
 HANGMA_NATIVE=prebuilt .venv/bin/python -m pip install -e '.[dev]'
-.venv/bin/python -c 'from hangma_bot.simulation.artifacts import hand_math_runtime_metadata; print(hand_math_runtime_metadata())'
+python scripts/check_native_backend.py
 ```
 
 检查输出的 implementation 为 c_grouped。测试房、自由赛、正式赛、模拟与规则重算评估都复用此规则模块；保留历史规则结果的决策评估不重新计算。已经运行的进程需要重启。
+
+**安装后必须跑一次 `scripts/check_native_backend.py`（换机器、改建 venv、以及开跑长篇离线评估之前同样要跑）**。它把"本机存在完全匹配的预编译件、却在跑纯 Python 回退"判为失败并给出修复命令；"本机确实没有匹配制品"则只提示原因、不算问题。判据与安装期**共用同一份**匹配模块（`selection.py`），不会各判一套。
+
+**为什么要有这道检查**：原生构建钩子在 `auto` 模式下不匹配或未执行时**只警告、不报错**，回落是静默的。2026-09-16 实测到一次真实漏装：venv 比本目录的 C 内核早两天建立、之后从未重装，环境长期跑纯 Python，每桌 CPU 9.01 秒 vs 启用内核 1.84 秒（**4.9 倍**）。该差异只在跑几千桌时才显形，日常看不出，**项目的历史吞吐常数因此被误判作废**（其实它描述的是带内核的环境）。
 
 默认 auto 与 required 先尝试预编译库；required 要求最终获得原生扩展。prebuilt 明确禁止源码编译，不兼容就报错。off 使用 Python。指定 CC/CFLAGS/LDFLAGS 等编译配置时，auto/required 进入源码构建，以尊重显式配置；prebuilt 始终只复用。
 

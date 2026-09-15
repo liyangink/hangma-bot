@@ -6,11 +6,8 @@ off 用于纯 Python 安装及退路验收。所有检查只发生在安装期�
 """
 from __future__ import annotations
 
-import hashlib
-import json
 import os
 from pathlib import Path
-import platform
 import shlex
 import shutil
 import subprocess
@@ -21,59 +18,20 @@ import tempfile
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 
 
-def select_prebuilt(root: Path) -> tuple[Path, str] | None:
-    """按运行平台、解释器、系统下限及源码/制品摘要选择已入库扩展。
+# 预编译制品的匹配逻辑**只有一处定义**（prebuilt/hangma/selection.py）：构建钩子与
+# scripts/check_native_backend.py 共用同一份，避免"检查"与"安装"两套判据漂移。
+# 此处按路径加载，不为本模块再引入安装期包依赖。
+def _load_prebuilt_selection():
+    import importlib.util
 
-    当前只提供 macOS arm64 CPython 制品；不匹配、损坏或清单异常均
-    返回 None，安装调用方决定编译或报错。不访问网络、不加载二进制。
-    """
-    if sys.platform != "darwin" or sys.implementation.name != "cpython":
-        return None
-    if sysconfig.get_config_var("Py_DEBUG") or sysconfig.get_config_var("Py_GIL_DISABLED"):
-        return None
-    directory = root / "prebuilt/hangma"
-    try:
-        manifest = json.loads((directory / "manifest.json").read_text())
-        if manifest["schema_version"] != 1:
-            return None
-        host_macos = tuple(int(value) for value in platform.mac_ver()[0].split(".")[:2])
-        for item in manifest["artifacts"]:
-            if (item["platform"] != sys.platform
-                or item["architecture"] != platform.machine()
-                or item["python_implementation"] != sys.implementation.name
-                or item["python_version"] != list(sys.version_info[:2])
-                or item["soabi"] != sysconfig.get_config_var("SOABI")
-                or item["extension_suffix"] != sysconfig.get_config_var("EXT_SUFFIX")):
-                continue
-            minimum = tuple(item["minimum_macos"])
-            if (len(minimum) != 2 or any(type(n) is not int for n in minimum)
-                or minimum[0] < 11 or minimum[1] != 0 or len(host_macos) != 2
-                or host_macos < minimum):
-                continue
-            artifact = (directory / item["path"]).resolve()
-            if not artifact.is_relative_to(directory.resolve()):
-                continue
-            if artifact.name != "_grouped_native" + item["extension_suffix"]:
-                continue
-            if hashlib.sha256(artifact.read_bytes()).hexdigest() != item["binary_sha256"]:
-                continue
-            sources = item["sources"]
-            required_sources = {"src/hangma_bot/hangma/_grouped_native.c",
-                "src/hangma_bot/hangma/_standard_python.py"}
-            if not required_sources.issubset(sources):
-                continue
-            for name, expected in sources.items():
-                source = (root / name).resolve()
-                if (not source.is_relative_to(root.resolve())
-                    or hashlib.sha256(source.read_bytes()).hexdigest() != expected):
-                    break
-            else:
-                python_tag = "cp" + "".join(map(str, sys.version_info[:2]))
-                tag = f"{python_tag}-{python_tag}-macosx_{minimum[0]}_0_{item['architecture']}"
-                return artifact, tag
-    except (OSError, ValueError, KeyError, TypeError, AttributeError):
-        return None
-    return None
+    path = Path(__file__).resolve().parent / "prebuilt" / "hangma" / "selection.py"
+    spec = importlib.util.spec_from_file_location("hangma_prebuilt_selection", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+select_prebuilt = _load_prebuilt_selection().select_prebuilt
 
 
 def publish_extension(source: Path, destination: Path) -> None:
