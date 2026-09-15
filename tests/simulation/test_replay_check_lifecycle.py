@@ -4,7 +4,7 @@ import pytest
 
 from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.kernel.actions import Tile
-from hangma_bot.offline.replay_check import check_hand
+from hangma_bot.offline.replay_check import check_hand, derived_wall_drawable
 
 from ._helpers import make_rules
 
@@ -82,6 +82,38 @@ def test_chi_gang_replacement_keeps_baotou_and_replays_exact_settlement(marker):
     assert final.rule_state.chain_count == 1
     assert final.chain_piao == 0
     assert final.gang_draw is True
+
+
+def test_derived_wall_drawable_matches_standard_deal_and_guards_reserve():
+    """缺墙推导公式；136 张整副、53 张标准发牌与 20 张保留区口径。"""
+
+    assert derived_wall_drawable(53) == 63     # 标准发牌：136 − 53 − 20
+    assert derived_wall_drawable(0) == 116     # 未发牌时整副扣保留区
+    assert derived_wall_drawable(115) == 1
+    assert derived_wall_drawable(116) is None  # 恰好只剩保留区，可摸区为零
+    assert derived_wall_drawable(120) is None  # 发牌数超过整副，拒绝推导
+    assert derived_wall_drawable(400) is None
+
+
+def test_wall_less_row_derives_wall_only_for_observation_projection():
+    """归档缺 wall 时反推牌墙供观察投影，恢复被保守剔除的杠候选。
+
+    官方赛后文档不含 wall，推导前 remaining_tile_count 恒为 None，规则侧按
+    「未知即保守」剔除全部杠候选（action_families._wall_allows_gang 同时守卫
+    暗杠/补杠与明杠两条路径），使离线重放丢失线上真实存在的杠候选。
+    本用例钉住两件事：投影确有牌墙，且缺墙的校验口径不变。
+    """
+
+    rules = _ObservedRules()
+    outcome = check_hand(_chi_gang_win_row(None), rules)
+    # 推导只补观察投影：缺墙仍报 not_checked，不冒充完整世界。
+    assert outcome["status"] == "not_checked"
+    assert {issue["code"] for issue in outcome["issues"]} == {"not_checked.gang_wall_boundary"}
+    assert rules.observations, "check_hand 必须把观察交给公开规则接口"
+    for observation in rules.observations:
+        assert observation.remaining_tile_count is not None
+        # 四家起手 14+13+13+13 = 53 ⇒ 可摸区 63 ⇒ 余量落在 (20, 83] 内。
+        assert 20 < observation.remaining_tile_count <= 83
 
 
 def test_check_hand_preserves_seat_zero_and_masks_other_draw_without_dropping_event():

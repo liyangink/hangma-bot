@@ -46,8 +46,29 @@ from hangma_bot.kernel.observation import (
 
 _WEALTH = "白"
 _RESERVE_TILES = 20
+_DECK_TILES = len(CANONICAL_TILE_ORDER) * 4
+"""整副牌张数（34 种牌码各 4 张 = 136）。与 simulation.shuffle 的全牌池同源。"""
 
 _CONFLICT_PREFIX = "conflict."
+
+
+def derived_wall_drawable(dealt_tiles: int) -> Optional[int]:
+    """归档缺牌墙时反推「可摸区」张数；不可反推时返回 None。
+
+    官方赛后文档不含 wall 字段，而牌墙张数是同一副牌的物理事实：整副
+    _DECK_TILES 张减去实际发牌张数即为剩余牌墙，其中末 _RESERVE_TILES 张
+    为保留区不摸，故可摸区 = 整副 − 已发 − 保留区。发牌张数由单局行四家
+    起手（庄家含直抽第 14 张）求和得到，不依赖任何猜测。
+
+    本函数**只用于离线重放构造观察**，使 remaining_tile_count 不至于恒为
+    None 而让规则侧保守剔除全部杠候选；它不改变 check_hand 的 wall_known
+    校验口径，缺墙的 full_history 仍不冒充完整世界。
+    """
+
+    remaining_wall = _DECK_TILES - dealt_tiles
+    if remaining_wall <= _RESERVE_TILES:
+        return None
+    return remaining_wall - _RESERVE_TILES
 
 
 class _Seat:
@@ -198,7 +219,18 @@ def check_hand(hand: Mapping[str, object], rules: HangmaRules) -> dict[str, obje
         )
     wall_raw = initial.get("wall")
     wall_known = isinstance(wall_raw, list) and wall_raw
-    wall_drawable = len(wall_raw) - _RESERVE_TILES if wall_known else None
+    if wall_known:
+        wall_drawable = len(wall_raw) - _RESERVE_TILES
+    else:
+        # 归档缺牌墙（官方赛后文档不含 wall 字段）时反推可摸区，专供观察投影：
+        # 否则 remaining_tile_count 恒为 None，规则侧按「未知即保守」剔除全部杠
+        # 候选（action_families._wall_allows_gang 同时守卫暗杠/补杠与明杠两条
+        # 路径），使离线重放丢失线上真实存在的杠候选。
+        #
+        # **只补观察投影，不改变校验口径**：wall_known 仍为 False，因此
+        # _validate_via_analyze 与流局「可摸区是否摸完」核对照旧跳过，缺墙的
+        # full_history 仍不冒充完整世界。
+        wall_drawable = derived_wall_drawable(sum(len(row) for row in hands_raw))
     consumed = 0
     scores_before = hand.get("scores_before")
     scores_after = hand.get("scores_after")
@@ -650,7 +682,8 @@ def _shadow_observation(
     if last_discard is not None and phase in ("response_peng", "response_chi"):
         last = PublicDiscard(seat=last_discard[0], tile=Tile(last_discard[1]), seq=last_discard[2])
     remaining = None
-    if wall_known:
+    if wall_drawable is not None:
+        # wall_known 为假时 wall_drawable 是缺墙反推值，见 check_hand 的推导注释。
         remaining = (wall_drawable - consumed) + _RESERVE_TILES
     # god 是公开全局圈标记；本人是否受限由同一 hangma 规则结合圈主决定。
     circle_active = any(s.catch_play for s in seats)
