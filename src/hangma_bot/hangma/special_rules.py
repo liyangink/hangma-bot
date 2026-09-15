@@ -132,6 +132,30 @@ def chain_breaks_on_discard(tile: Tile, baotou: bool) -> bool:
     return not is_piao_discard(tile, baotou)
 
 
+def four_white_indicator(whites_held: Optional[int],
+                         chain_piao: Optional[int]) -> Optional[bool]:
+    """官方「4 个白板」指示：**手留白 + 链内飘出恰好等于 4**。
+
+    【官方】指南 v34 §1.3（2026-09-14 抓取）：「胡牌时手牌留存 + 链内飘出的白板 = 4
+    （**正好 4 张**；普通打出的、杠出的不算）」→ ×2。
+
+    **这是等值条件，不是单调量**：留 2 张不算、留 4 张算、留 3 张 + 链内飘 1 张也算。
+    把它写成"白板越多越好"是错的（README §14.1 M-2 的反例同源）。
+
+    任一输入未知时返回 None——**空与 0 必须区分，未知不填 False**；
+    数值越界只可能是上游装配错误，立即失败而不是静默夹取。
+    """
+
+    if whites_held is None or chain_piao is None:
+        return None
+    for name, value in (("whites_held", whites_held), ("chain_piao", chain_piao)):
+        if type(value) is not int or not 0 <= value <= 4:
+            raise ValueError(
+                "four_white_indicator.{0} 必须是 0-4 的整数，得到 {1!r}".format(
+                    name, value))
+    return whites_held + chain_piao == 4
+
+
 def static_baotou(win: WinSplit) -> bool:
     """爆头静态判定（金例对拍与审计口径）。
 

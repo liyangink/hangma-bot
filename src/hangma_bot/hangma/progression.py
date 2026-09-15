@@ -236,6 +236,115 @@ def baotou_after_draw(
     return static or (bool(replacement) and previous)
 
 
+# ---------------------------------------------------------------------------
+# 确定性动作后的**分量状态**（第三阶段 3.0 的规则增量）
+#
+# **为什么放在这里**：`hangma` 是唯一规则来源。完整价值族候选要按
+# `Φ(s') − Φ(s)` 计分，四个分量（分支 / 链 / 四白 / 爆头）都需要**动作后**的值；
+# 候选不得自己重写规则，只能调用本模块的转移函数——与 `chain_path_value`
+# 调用 `chain_after_discard` 是同一条纪律（单一规则来源，policy 不复制规则）。
+#
+# 三个事实栏位（[PLAN-REVISION §1.3]）：**动作前 / 已知动作后 / 待随机事件后**。
+# 本节只回答中间那一栏。随机事件后的值由 `baotou_after_draw` 回答；
+# **未知的未来摸牌、未知杠补与未来成胡不得写成确定后态**（返回 None）。
+# ---------------------------------------------------------------------------
+
+
+def _drop_one(concealed: Tuple[Tile, ...], tile: Tile) -> Optional[Tuple[Tile, ...]]:
+    """从暗牌里去掉**首个同码实例**；没有该牌时返回 None（不猜）。"""
+
+    held = list(concealed)
+    for index, item in enumerate(held):
+        if item.code == tile.code:
+            del held[index]
+            return tuple(held)
+    return None
+
+
+def chain_after_action(chain_count: int, chain_piao: Optional[int], baotou: bool,
+                       action: Action) -> Tuple[int, Optional[int]]:
+    """任意本人动作后的 `(链次数, 链内飘出数)`。
+
+    弃牌 → `chain_after_discard`；杠（任意种类）→ `chain_after_gang`；
+    吃/碰/过**不改链**（官方明文允许"圈内吃碰后再打财神 = 财飘链 +1"，
+    因此吃碰是否是链投资属**状态**问题，不能按动作类别加减分）。
+
+    `chain_piao` 未知时**原样保留未知**：断链结局是不确定的例外——规则把两项
+    归零，与原先是否已知无关，所以那一种结局可以给出确定的 0。
+    胡是终局，返回动作前的链（实际番值由结算给出）。
+    """
+
+    if isinstance(action, Discard):
+        count, _ = chain_after_discard(chain_count, chain_piao or 0, baotou, action.tile)
+        if count == 0:
+            return 0, 0                       # 断链：两项归零，与原先是否已知无关
+        return count, (None if chain_piao is None else chain_piao + 1)
+    if isinstance(action, Gang):
+        return chain_after_gang(chain_count, chain_piao or 0)[0], chain_piao
+    return chain_count, chain_piao
+
+
+def wealth_after_action(concealed_wealth: int, action: Action) -> int:
+    """动作后本人**手留**财神张数（机械计数，不涉及向听/有效牌推演）。
+
+    规则依据【官方】指南 §1.1：财神（白板）**不能被吃、碰、杠、胡**，可主动打出。
+    因此只有「打出财神」的弃牌会减少手留张数；吃/碰/杠/过/胡都不改变。
+
+    **四白还须叠加链内飘出张数**，不得只用本函数——
+    见 `special_rules.four_white_indicator`。
+    """
+
+    if type(concealed_wealth) is not int or concealed_wealth < 0:
+        raise ValueError(
+            "concealed_wealth 必须是非负整数，得到 {0!r}".format(concealed_wealth))
+    if isinstance(action, Discard) and is_wealth(action.tile):
+        return concealed_wealth - 1
+    return concealed_wealth
+
+
+def baotou_after_discard(concealed_after_discard: Tuple[Tile, ...],
+                         meld_count: int) -> bool:
+    """弃牌后的爆头：用**弃后暗牌**重新判定（可能进入、保持或退出）。
+
+    【官方】指南 §1.2 的任意听定义 + RULES_EVIDENCE §158—168 的生命周期表：
+    "其他弃牌 → 弃后暗牌重新判定"；"旧爆头状态打白 → 先记本次飘，
+    再用弃后暗牌更新爆头"（两条都是**更新**，与本次是否构成飘无关）。
+    """
+
+    return recompute_baotou(
+        concealed_after_discard, meld_count,
+        sum(is_wealth(tile) for tile in concealed_after_discard))
+
+
+def baotou_after_action(previous_baotou: bool, action: Action,
+                        concealed: Tuple[Tile, ...],
+                        meld_count: int) -> Optional[bool]:
+    """**确定性动作后**的爆头状态（rule_transition）。
+
+    证据级别必须与实现一起引用（根 AGENTS.md §3）：
+
+    - 【官方】弃牌：用弃后暗牌重新判定（指南 §1.2 的任意听定义）；
+    - 【官方】摸牌：`baotou_after_draw`（摸前暗牌判定；杠补继承或新进入）；
+    - 【实现 + 用户确认】吃/碰/杠：**继承**动作前状态。官方指南**未逐事件写出
+      赋值公式**，依据是 RULES_EVIDENCE §158—168 的生命周期表与官方本人快照
+      seq2267—2270（吃→暗杠→补牌保持爆头、随后普通弃牌退出）；
+      不要把该轨迹扩大为"所有动作的官方对拍覆盖"。
+
+    `concealed` 是当前窗口本人**暗牌（含刚摸的牌，与观察同序）**。
+    终局（胡）返回 None——实际番值由结算给出，此处不做代理。
+    弃的牌不在暗牌中返回 None：**不猜**（那是装配错误，不是规则分支）。
+    """
+
+    if isinstance(action, Discard):
+        after = _drop_one(concealed, action.tile)
+        if after is None:
+            return None
+        return baotou_after_discard(after, meld_count)
+    if isinstance(action, (Chi, Peng, Gang, Pass)):
+        return bool(previous_baotou)
+    return None
+
+
 def next_dealer(dealer_seat: int, winner_seat: Optional[int], is_draw: bool) -> int:
     """单局结束后由赢家坐庄；流局或赢家未知时保留庄家。
 
@@ -388,13 +497,12 @@ def _remove_from_hand(
     combined = list(s.hand)
     if s.drawn is not None:
         combined.append(s.drawn)
-    for index, held in enumerate(combined):
-        if held.code == tile.code:
-            del combined[index]
-            return (tuple(combined), None)
-    raise ValueError(
-        "弃牌 {0} 不在该座位暗牌中（合法性验证与推进状态不一致）".format(tile.code)
-    )
+    after = _drop_one(tuple(combined), tile)
+    if after is None:
+        raise ValueError(
+            "弃牌 {0} 不在该座位暗牌中（合法性验证与推进状态不一致）".format(tile.code)
+        )
+    return (after, None)
 
 
 def _remove_n_from_hand(
@@ -508,7 +616,7 @@ def _resolve_draw(state: ProgressionState, choices: Tuple[Tuple[int, Action], ..
             drawn=new_drawn,
             discards=s.discards + (action.tile,),
             catch_play=wealth_discard,
-            baotou=recompute_baotou(new_hand, len(s.melds), sum(is_wealth(t) for t in new_hand)),
+            baotou=baotou_after_discard(new_hand, len(s.melds)),
             chain_count=chain_count,
             chain_piao=chain_piao,
         )

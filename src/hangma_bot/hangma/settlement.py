@@ -25,7 +25,7 @@ from hangma_bot.kernel.observation import PublicEvent, ScoreVector
 
 from .interface import Settlement
 from .internal_types import WinSplit, is_wealth
-from .special_rules import is_passive_observation_event
+from .special_rules import four_white_indicator, is_passive_observation_event
 
 _BRANCH_PLAIN = "平胡"
 _BRANCH_CHIITOI = "七对"
@@ -165,7 +165,8 @@ def compute_fan(
     if chain_count > 0:
         details.append(_chain_detail(chain_count, piao))
 
-    four_white = win.whites_held + piao == 4
+    # 单一规则来源：等值条件「手留白 + 链内飘出 == 4」由 special_rules 判定。
+    four_white = four_white_indicator(win.whites_held, piao) is True
     if four_white:
         details.append(_WHITE_TOTAL_DETAIL)
 
