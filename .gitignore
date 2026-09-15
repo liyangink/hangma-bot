@@ -44,5 +44,8 @@ exports/
 # 统一本机制品与凭证；迁移须另外复制 artifacts，不能只 git clone。
 artifacts/
 .private/
+# 项目内 DSH 无头通道的 harness home（profile + 会话记录）；含运行痕迹，不入库。
+# 生成端 headless 通道用法见 review/llm-guided-heuristic-route-2026-09-15/evidence/3.1-generation/。
+.dsh-headless/
 # 注：可共享的牌谱/训练制品提交到 datasets/（2026-09-06 起：自由赛完整牌谱）。
 # 大样本封存仍建议走审计线 bundle + exports 流程（大文件不进 Git 的一般原则）。
