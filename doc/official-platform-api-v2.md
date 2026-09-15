@@ -761,4 +761,14 @@ v19新增门户胡大牌榜，v20把门户两榜top行数从20增至32；它们�
 
 **验证**：480 个单局行 / 87,377 个决策窗口上，杠窗口不一致由 **77 处降为 0**（明杠 37、暗杠 16、补杠 24，三类全清）；同批次另有 56 处 `pass` 不一致在修复前后**数量完全相同**，与本次改动无关，属另一独立现象（待查）。回归用例 `tests/simulation/test_replay_check_lifecycle.py` 的两个新用例已固化，去掉修复即失败。
 
-**仍未对拍**：推导公式尚未与官方 `wall_remaining` 直接对拍（现有抓包只含零星终局快照，`review/official-adapter/*` 每个文件仅 4 条且无 seq 流）。旁证是 `simulation/shuffle.py` 的 136/83/63/20 口径与该字段取值范围一致（实录 `wall_remaining=47` 远大于归档中任何一局的摸牌数），但严格对拍仍建议另抓一段带 seq 的 `/state` 快照流。
+**已与官方 `wall_remaining` 逐窗对拍通过（2026-09-15，无需新开测试房）**：真值取自本机已有的官方测试房实测抓包
+`artifacts/sessions/test-room-20260907-b684d5c3eea4/**/raw/t_b684d5c3eea4_r1_b*_t0.jsonl`（`raw_protocol_state` 记录的 `/state` 原始响应，快照内含 `seq/round_no/wall_remaining`），
+共 4 局 × 8 单局、30,096 条唯一快照。
+
+| 对拍对象 | 比较数 | 完全一致 | 不一致 |
+| --- | ---: | ---: | ---: |
+| 推导公式 `136 − 已发牌 − 已摸牌`（含开局 `wall_remaining=83`、`hand_counts=[14,13,13,13]`） | 30,096 | **30,096（100%）** | 0 |
+| 线上代码路径 `derived_wall_drawable` + `check_hand` 的 `consumed`（截获 `_shadow_observation` 的投影结果） | 118 | **118（100%）** | 0 |
+
+对拍要点：单局事件在归档里被切成多段 block（同一 `round_no` 可有多个 seq 区间），必须按 `round_no` 合并全部段后再累计摸牌数，否则会漏算而出现假不一致；
+`start_hands` 只在首段出现，缺墙推导的「已发牌」张数须取该段（标准发牌 53 张）。
