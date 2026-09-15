@@ -78,7 +78,7 @@ def _request(*, ruleset: str = RULESET,
         my_hand=tuple(Tile(code) for code in
                       ("1b", "2b", "3b", "4b", "5b", "6b", "7b", "8b", "9b", "1t", "2t", "3t", "4t")),
         drawn_tile=Tile("5t"),
-        # 线上完整窗口的公开历史从已知起点保存；重连缺史时编码器会拒绝，见降级测试。
+        # 基准样例从起点保存事件；正常快照输入另有不保存原始前缀的用例。
         history_complete=True,
     )
     analysis = support.rules_from_engine(observation)
@@ -190,16 +190,42 @@ def test_single_candidate_window_does_not_run_network():
     assert network.calls == 0
 
 
-def test_incomplete_history_restores_baseline():
-    """重连缺史时公开历史不完整：不得用该模型决策，原因单独可审计。"""
+def test_authoritative_snapshot_without_event_prefix_runs_model():
+    """官方快照是正常输入；未归档此前事件不能阻止模型排序。"""
 
     network = _CountingNetwork()
     policy = _policy(network)
     request = _request()
     request = replace(request, observation=replace(request.observation, history_complete=False))
     plan = _choose(policy, request)
-    assert plan.degraded_reasons[-1] == "sequence_model:incomplete_history"
+    assert plan.degraded_reasons == ()
+    assert network.calls == 1
+    assert all(c.score_parts[0].name == "sequence_model_logit" for c in plan.candidates)
+    assert request.observation.history_complete is False
+
+
+def test_inconsistent_observation_still_restores_baseline():
+    """明确观察矛盾仍阻止模型使用，不能当作普通快照恢复放行。"""
+    network = _CountingNetwork()
+    request = _request()
+    request = replace(request, observation=replace(
+        request.observation, observation_issues=("god_mismatch:chain_count",),
+    ))
+    plan = _choose(_policy(network), request)
+    assert plan.degraded_reasons[-1] == "sequence_model:observation_issues"
     assert network.calls == 0
+
+
+def test_model_input_contract_survives_audit_redaction():
+    """准入版本必须在实际两层脱敏后仍可用于定位运行行为。"""
+    from hangma_bot.application.audit import audit_text
+    from hangma_bot.adapters.recording.redact import redact_json_line, redact_value
+    from hangma_bot.learning.sequence_encoding import SEQUENCE_INPUT_CONTRACT_VERSION
+
+    plan = _choose(_policy(_CountingNetwork()), _request())
+    reasons = [audit_text(reason) for reason in plan.candidates[0].reasons]
+    recorded = json.loads(redact_json_line(json.dumps(redact_value(reasons))))
+    assert "input_contract: " + SEQUENCE_INPUT_CONTRACT_VERSION in recorded
 
 
 def test_model_failure_falls_back_with_structured_reason():

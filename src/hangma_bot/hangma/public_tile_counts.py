@@ -2,7 +2,8 @@
 
 官方 v18 连续快照与 v20 明杠快照均保留被鸣牌的牌河记录，同一张牌也在
 副露中出现。碰只重叠一张，补杠不再次领取弃牌；四张杠牌已全部公开。
-吃的供牌由连续弃牌→吃或上家完整牌河中的唯一可能牌证明；有多种可能时不猜。
+吃的供牌优先采用官方吃事件明确的领取牌；旧事件才用连续弃牌→吃或上家
+完整牌河中的唯一可能牌证明。证据冲突或有多种可能时不猜。
 """
 
 from collections import Counter, defaultdict
@@ -46,7 +47,16 @@ def _chi_claims(observation: PlayerObservation):
             pending = (event.seat, event.tiles[0].code) if event.seat is not None and len(event.tiles) == 1 else None
         elif event.kind == "chi":
             shape = tuple(sorted(tile.code for tile in event.tiles))
-            if (pending is not None and event.seat is not None and len(shape) == 3
+            if event.claimed_tile is not None and event.seat is not None and len(shape) == 3:
+                # v18 保存事件已明确给出 chi.tile；它证明这次吃领取的牌，
+                # 不要求未收到的前置弃牌事件，也不能复用为另一次同形吃。
+                proof = ((event.seat - 1) % 4, event.claimed_tile.code)
+                if pending is not None and pending != proof:
+                    # 连续弃牌与明确领取牌冲突时，不挑选有利的一份历史；
+                    # 与同序号冲突一致，仅允许当前快照的唯一交集另行确证。
+                    return {}
+                claims[(event.seat, shape)].append(proof)
+            elif (pending is not None and event.seat is not None and len(shape) == 3
                     and pending[0] == (event.seat - 1) % 4 and pending[1] in shape):
                 claims[(event.seat, shape)].append(pending)
             pending = None

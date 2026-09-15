@@ -74,6 +74,7 @@ class ProtocolSyncState:
         # 排除式下界：本手需核对的已知历史范围为 (floor, snapshot.seq]。
         # 中途首次接入取当前水位作锚点，但 origin_known=False 保留未知前缀。
         self.history_floor_seq: Optional[int] = None
+        self._history_query_floor = 0  # 补领已放弃的排除式水位；不代表原事件已收到
         self._observation_issues = set()
         self.last_transition_checks = ()  # 本次快照与可推导前态的核对结果，供审计
         self._trigger_is_estimated = False
@@ -101,6 +102,56 @@ class ProtocolSyncState:
     @property
     def has_snapshot(self) -> bool:
         return self.snapshot is not None
+
+    def history_query_seq(self) -> int:
+        """下一次普通查询顺带补当前单局缺史；当前状态水位 last_seq 不回退。
+
+        seq=0 只能取快照，不能领取 seq1；未知前缀不猜起点。落后快照超过
+        官方256条保留范围的缺口不反复追逐，缺口账本仍如实保留。
+        """
+        if self.snapshot is None or self.finished:
+            return self.last_seq
+        for start, end in self.history_missing_ranges():
+            cursor = max(start - 1, self._history_query_floor, 1)
+            if cursor < end and self.last_seq - cursor <= 256:
+                return cursor
+        return self.last_seq
+
+    def abandon_history_query(self, through_seq: int) -> None:
+        """服务端未能补领时跳过该覆盖范围；不清缺口、不谎报历史完整。"""
+        self._history_query_floor = max(self._history_query_floor, through_seq)
+
+    def recover_snapshot_history(
+        self, events: Tuple[ParsedEvent, ...], *, after_seq: int, round_no: int,
+    ) -> Tuple[ParsedEvent, ...]:
+        """验证旧游标批次并只补快照已吸收的部分，返回其后的正常增量。
+
+        不重放手牌/牌河，不重建已交付窗口身份。断链、未知旧事件、冲突、
+        越界或私有牌由 DtoError 交会话恢复；跨单局需权威快照证明归属。
+        """
+        if self.snapshot is None or self.snapshot.round_no != round_no:
+            raise DtoError("补史请求与当前单局不一致")
+        if not 0 < after_seq < self.last_seq:
+            raise DtoError("补史游标必须早于已消费状态水位")
+        expected = after_seq
+        unique = {}
+        retained = {event.seq: event for event in self.history}
+        for event in sorted(events, key=lambda item: item.seq):
+            if event.seq in unique:
+                if unique[event.seq] != event:
+                    raise DtoError("补史响应存在冲突重复")
+                continue
+            if event.seq != expected + 1:
+                raise DtoError("补史响应存在序号缺口")
+            if event.seq in retained and retained[event.seq] != projector.public_event(event):
+                raise DtoError("补史响应与已消费事件冲突")
+            unique[event.seq] = event
+            expected = event.seq
+        old = tuple(event for event in unique.values() if event.seq <= self.snapshot.seq)
+        self.merge_history(old, round_no=round_no)
+        # 已消费的快照后增量也可能随旧游标再次返回，只核对，不让它们再次
+        # 触发刷新、动作时钟或窗口交付。真正的新事件仍交 apply_events 校验。
+        return tuple(event for event in unique.values() if event.seq > self.last_seq)
 
     def apply_full_snapshot(self, snapshot: ParsedSnapshot, *, finished: bool = False, events=()) -> None:
         """快照替换桌面，保留同单局已接收历史；缺失历史不能由快照补造。"""
@@ -159,6 +210,7 @@ class ProtocolSyncState:
                 before, tuple(e for e in self.history if e.seq > previous.seq), after)
             self._observation_issues.update(check for check in self.last_transition_checks if check.startswith("god_mismatch:"))
         if new_round:
+            self._history_query_floor = 0
             self.history = [incoming[seq] for seq in sorted(incoming)]
             self._fact_observation = None
             self._confirmed_action = None
@@ -190,7 +242,6 @@ class ProtocolSyncState:
             covered = {seq for seq in incoming if self.last_seq < seq <= snapshot.seq}
             if len(covered) != snapshot.seq - self.last_seq:
                 self.history_complete = False
-                self._observation_issues.add("history_gap_snapshot")
 
         if scope_unknown:
             self.history_complete = False
@@ -279,17 +330,11 @@ class ProtocolSyncState:
         return tuple(ranges)
 
     def _refresh_history_completeness(self) -> None:
-        """只有真实补齐且起点可证明时恢复完整性，其他降级原因不可洗掉。"""
-        missing = self.history_missing_ranges()
-        other_issues = self._observation_issues - {"history_gap_snapshot"}
-        if missing:
-            self._observation_issues.add("history_gap_snapshot")
-            self.history_complete = False
-        elif self.history_origin_known and not other_issues:
-            self._observation_issues.discard("history_gap_snapshot")
-            self.history_complete = True
-        else:
-            self.history_complete = False
+        """记录原事件覆盖情况；快照未附带过去事件是正常形态，不登记观察异常。"""
+        self.history_complete = (
+            self.history_origin_known and not self.history_missing_ranges()
+            and not self._observation_issues
+        )
 
     def merge_history(self, events: Tuple[ParsedEvent, ...], *, round_no: int) -> None:
         """补入调用方已证明属于当前手、且不晚于快照的事件；不重放牌面。
@@ -493,7 +538,7 @@ class ProtocolSyncState:
             drawn_tile=None, last_discard=last_discard, discards=tuple(tuple(row) for row in rows),
             hand_counts=tuple(counts), remaining_tile_count=remaining, consumed_seq=self.last_seq,
             history_complete=self.history_complete,
-            observation_issues=tuple(sorted(self._observation_issues - {"history_gap_snapshot"})),
+            observation_issues=tuple(sorted(self._observation_issues)),
         ))
 
     def incremental_response_window(self):
@@ -795,7 +840,7 @@ class ProtocolSyncState:
                            remaining_tile_count=(None if base.remaining_tile_count is None
                                                  else base.remaining_tile_count - len(masked)))
         return replace(base, consumed_seq=self.last_seq, history_complete=self.history_complete,
-                       observation_issues=tuple(sorted(self._observation_issues - {"history_gap_snapshot"})))
+                       observation_issues=tuple(sorted(self._observation_issues)))
 
     def _masked_draws_since_snapshot(self):
         """只推进快照之后的他家公开摸牌数量，绝不需要或推测其牌值。"""

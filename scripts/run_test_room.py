@@ -90,6 +90,9 @@ def _ensure_import_path() -> None:
 _ensure_import_path()
 
 from hangma_bot.application.deadline import BoundedBackoff  # noqa: E402  编排级有界退避
+# 策略名的唯一来源；本启动器只做白名单展示，不自行维护副本（否则组合根
+# 新增策略后本文件会静默拒绝，2026-09-14 序列模型接入即发生过一次）。
+from hangma_bot.bootstrap import AVAILABLE_STRATEGIES  # noqa: E402
 
 TOKEN_ENV_VAR = "HM_IDENTITY_TOKEN"
 RESULT_PREFIX = "RESULT "
@@ -118,6 +121,7 @@ _ROOM_FIELDS = frozenset({
     "identities",
     "restart",
     "sse_enabled",
+    "sequence_model_dir",
 })
 _RESTART_FIELDS = frozenset({
     "max_restarts",
@@ -143,9 +147,8 @@ def _require_positive_int(value: object, field_name: str) -> int:
 def _require_strategy(value: object) -> str:
     """校验启动器可装配的固定策略名；配置错误在启动子进程前报告。"""
 
-    choices = ("weighted_heuristic", "weighted_heuristic_v1", "weighted_heuristic_v2", "weighted_heuristic_v2_white_guard", "v2_hu_upgrade_v1", "safe_fallback", "claim_if_legal", "catch_play_probe")
-    if not isinstance(value, str) or value not in choices:
-        raise ValueError("未知策略名；可用：" + " / ".join(choices))
+    if not isinstance(value, str) or value not in AVAILABLE_STRATEGIES:
+        raise ValueError("未知策略名；可用：" + " / ".join(AVAILABLE_STRATEGIES))
     return value
 
 
@@ -209,6 +212,9 @@ class RoomConfig:
     restart: RoomRestart
     sse_enabled: bool = False  # SSE 帧驱动开关（透传给每身份子进程）
     max_completed_batches: Optional[int] = None  # 每身份完成批次数上限；None 沿用持续续赛
+    # 序列策略网络部署包根目录；仅当某个身份/房间策略取 sequence_model_* 时生效。
+    # None 表示由子进程回退到仓库内 prebuilt/sequence-policy-models。
+    sequence_model_dir: Optional[str] = None
 
 
 @dataclass
@@ -355,6 +361,8 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         sse_enabled=sse_value,
         max_completed_batches=(_require_positive_int(data["max_completed_batches"], "max_completed_batches")
                                if data.get("max_completed_batches") is not None else None),
+        sequence_model_dir=(_require_non_empty_str(data["sequence_model_dir"], "sequence_model_dir")
+                            if data.get("sequence_model_dir") is not None else None),
     )
 
 
@@ -374,6 +382,8 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
     }
     if room.insecure_hosts:
         config["insecure_hosts"] = sorted(room.insecure_hosts)
+    if room.sequence_model_dir is not None:
+        config["sequence_model_dir"] = room.sequence_model_dir
     return config
 
 

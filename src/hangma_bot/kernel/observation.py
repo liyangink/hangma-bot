@@ -66,6 +66,7 @@ class PublicEvent:
     result_details: Optional[Tuple[str, ...]] = None  # 已公开的终局计番明细，顺序不变
     result_scores: Optional[Tuple[int, int, int, int]] = None  # 终局积分增量，座位 0—3
     final_scores: Optional[Tuple[int, int, int, int]] = None  # 终场公开积分，座位 0—3；不从赛后隐藏数据填入
+    claimed_tile: Optional[Tile] = None  # 该次吃明确领取的上家弃牌（官方 chi.tile）；旧事件未提供时为空
 
     def __post_init__(self) -> None:
         _require_non_negative_int(self.seq, "PublicEvent.seq")
@@ -95,6 +96,10 @@ class PublicEvent:
         _require_tuple(self.tiles, "PublicEvent.tiles")
         for tile in self.tiles:
             _validate_tile(tile, "PublicEvent.tiles")
+        if self.claimed_tile is not None:
+            _validate_tile(self.claimed_tile, "PublicEvent.claimed_tile")
+            if self.kind != "chi" or self.seat is None or self.claimed_tile not in self.tiles:
+                raise ValueError("PublicEvent.claimed_tile 仅用于有座位的吃事件且必须属于 tiles")
         if self.occurred_at_unix_sec is not None and (
             isinstance(self.occurred_at_unix_sec, bool)
             or not isinstance(self.occurred_at_unix_sec, int)
@@ -164,7 +169,7 @@ class PlayerObservation:
     rule_state: RulePublicState
     public_history: Tuple[PublicEvent, ...]
     consumed_seq: Optional[int] = None  # 已消费的官方事件水位；snapshot_seq 仍为快照基线，旧记录为空
-    history_complete: bool = False  # 当前单局可见事件是否从已知起点完整保存；重连缺史时为 False
+    history_complete: bool = False  # 本地事件记录覆盖（兼容旧字段名），非官方状态完整性；正常快照可为False，不作为模型准入条件
     chain_piao: Optional[int] = None  # 当前本人动作链内的飘白次数；依据不足时为空，不等于零
     gang_draw: Optional[bool] = None  # 当前本人摸牌是否为杠补牌；缺少可靠来源时为空
     observation_issues: Tuple[str, ...] = ()  # 观察核对/缺失原因，不含私密协议原文

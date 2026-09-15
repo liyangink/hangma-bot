@@ -156,6 +156,7 @@ class OfficialGameSession:
         self._last_state_started_at = None  # 最近响应对应的请求开始时刻，单调秒
         self._last_clock_response = None  # 已收到但尚待投影验证的响应与单调起止时刻
         self._watermark_known_since = None  # 已消费水位形成时间的保守下界，单调秒
+        self._last_state_history_only = False  # 只补旧历史的响应不能提供新的动作时间下界
         self._event_time_floors = {}  # 后续新事件不可能早于已证明水位的形成时间
         self._gate = ActionGate()
         self._delivered_windows = set()
@@ -294,7 +295,7 @@ class OfficialGameSession:
             except _PollFailure as failure:
                 return failure.item
             if response.kind == "pending":
-                if not response.gap and self._sync.has_snapshot:
+                if not response.gap and self._sync.has_snapshot and not self._last_state_history_only:
                     self._watermark_known_since = self._last_state_started_at
                 if response.gap:
                     # pending 响应携带 gap=true：权威序号已断链，必须重建
@@ -414,7 +415,8 @@ class OfficialGameSession:
             if self._watermark_known_since is not None:
                 for event in response.events:
                     self._event_time_floors.setdefault(event.seq, self._watermark_known_since)
-            self._watermark_known_since = self._last_state_started_at
+            if not self._last_state_history_only:
+                self._watermark_known_since = self._last_state_started_at
             if self._sync.events_need_authoritative_refresh(response.events):
                 self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
                     "snapshot_refresh_reason": "events_require_snapshot",
@@ -1061,11 +1063,11 @@ class OfficialGameSession:
         obsolete_window_end: Optional[float] = None,
         query_purpose: str = "state_sync",
     ) -> StateResponse:
-        """一次状态查询：完整快照立即成为新基线，不回退游标串行补史。
+        """一次状态查询：快照立即成为基线，普通查询顺带领取已知历史缺口。
 
         seq=0 返回当前快照；其水位以内的效果已经包含在牌面中。
-        后续按已消费水位 N 请求 N 之后的事件。原事件是否齐全独立审计，
-        不用可选历史请求挤占当前窗口和用户共享频率额度。
+        当前活窗先交付，不串行追加补史。后续普通查询可使用历史游标，
+        返回的旧事件只合并历史，新事件继续按已消费水位推进。
         """
         # 完成预算与发起截止分离。409由调用方提供原动作预算，不能在过期后
         # 自动跨窗重试；普通阶段刷新可以丢弃旧目的后同步现状。
@@ -1184,8 +1186,14 @@ class OfficialGameSession:
             try:
                 if latest_start_monotonic is not None and self._monotonic() >= latest_start_monotonic:
                     raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline"), request_sent=False)
-                # 游标在发送时取最新已消费值，不能在等待额度前冻结旧水位。
-                seq = 0 if force_full or degraded_to_full else self._sync.last_seq
+                # 发送时同时读取当前状态与历史进度；强制恢复仍必须 seq=0。
+                state_seq = self._sync.last_seq
+                round_no = self._sync.snapshot.round_no if self._sync.snapshot is not None else None
+                seq = 0 if force_full or degraded_to_full else self._sync.history_query_seq()
+                recovering_history = 0 < seq < state_seq
+                if recovering_history:
+                    request_timing["history_after_seq"] = seq
+                    request_timing["state_consumed_seq"] = state_seq
                 def state_started(at):
                     lease.mark_sent(at)
                     self._last_state_started_at = at
@@ -1206,6 +1214,30 @@ class OfficialGameSession:
                     self._emit_raw_state(result, seq, None, request_timing=request_timing)
                     raise
                 self._emit_raw_state(result, seq, parsed, request_timing=request_timing)
+                if recovering_history:
+                    if parsed.kind == "events" and not parsed.gap and parsed.events:
+                        newer = self._sync.recover_snapshot_history(
+                            parsed.events, after_seq=seq, round_no=round_no)
+                        self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                            "history_recovery": "merged", "requested_seq": seq,
+                            "state_consumed_seq": state_seq,
+                            "recovered_through_seq": min(state_seq, max(e.seq for e in parsed.events)),
+                            "remaining_ranges": [list(r) for r in self._sync.history_missing_ranges()],
+                        }, trigger_seq=state_seq, round_no=round_no)
+                        # 原文已完整审计。旧 chi/gang 不再触发牌面刷新或重复窗口。
+                        parsed = replace(parsed, events=newer)
+                    else:
+                        through = max(state_seq, parsed.snapshot.seq if parsed.snapshot is not None else state_seq)
+                        self._sync.abandon_history_query(through)
+                        self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                            "history_recovery": "unavailable", "requested_seq": seq,
+                            "abandoned_through_seq": through, "response_kind": parsed.kind,
+                            "gap": parsed.gap,
+                        }, trigger_seq=state_seq, round_no=round_no)
+                # 旧事件或补史pending不能证明当前水位形成于本次请求时刻。
+                # 保留原时间下界，避免给随后发现的新动作延长估算预算。
+                self._last_state_history_only = (
+                    recovering_history and parsed.kind in ("pending", "events") and not parsed.events)
                 self._last_clock_response = (parsed, request_timing["transport_started_at_monotonic"],
                                              request_timing["completed_at_monotonic"])
                 return parsed
@@ -1245,6 +1277,13 @@ class OfficialGameSession:
                     GameFailed(self.game_id, False, "protocol_error_" + str(exc.http_status))
                 ) from None
             except DtoError as exc:
+                if recovering_history:
+                    self._sync.abandon_history_query(state_seq)
+                    self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                        "history_recovery": "rejected", "requested_seq": seq,
+                        "abandoned_through_seq": state_seq,
+                        "reason": "invalid_event_batch",
+                    }, trigger_seq=state_seq, round_no=round_no)
                 if not exc.recoverable:
                     raise _PollFailure(GameFailed(self.game_id, False, "fatal_protocol:" + str(exc)[:120])) from None
                 if seq != 0 and not degraded_to_full:

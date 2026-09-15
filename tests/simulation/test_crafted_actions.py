@@ -124,6 +124,11 @@ def test_chi_flow_window_order():
     assert state.seats[1].melds[0].kind == "chi"
     chi_event = next(e for e in world.events if e.kind == "chi")
     assert dict(chi_event.data)["tiles"] == ("4w", "5w", "6w")
+    public_chi = next(
+        event for event in engine.frame(world).decisions[0].observation.public_history
+        if event.kind == "chi"
+    )
+    assert public_chi.claimed_tile == Tile("5w")
     kinds = [e.kind for e in world.events]
     assert kinds.count("pass") == 3  # 碰窗口三家过；吃窗口直接吃
     assert "peng" not in kinds

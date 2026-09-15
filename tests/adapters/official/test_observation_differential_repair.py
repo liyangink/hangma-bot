@@ -131,7 +131,8 @@ async def test_event_details_survive_full_refresh_and_faults_are_located(kind, t
         assert isinstance(window, ObservedActionWindow)
         # gang 事件规范 tiles 保存顶层单牌；四张牌副露由快照提供。
         event_tiles = tuple(Tile(code) for code in tiles) if kind == "chi" else (Tile("9t"),)
-        history = (PublicEvent(101, kind, 1, event_tiles, detail_kind=detail),
+        history = (PublicEvent(101, kind, 1, event_tiles, detail_kind=detail,
+                               claimed_tile=Tile("9t") if kind == "chi" else None),
                    PublicEvent(102, "tile_discarded", 1, (Tile("9t"),)),
                    PublicEvent(103, "tile_drawn", 2, (Tile("中"),)))
         meld = PublicMeld(1, kind, tuple(Tile(code) for code in tiles), 0 if kind == "chi" else None)
@@ -140,7 +141,13 @@ async def test_event_details_survive_full_refresh_and_faults_are_located(kind, t
         report = compare_observations(window.observation, expected, boundary_verified=True)
         assert not report.differences, report
         missing = replace(window.observation, public_history=window.observation.public_history[1:])
-        assert compare_observations(missing, expected, boundary_verified=True).history_status == "failed"
+        # 仅比较观察无法证明快照前那条事件曾被收到；记录覆盖不足不算协议失败。
+        omitted = compare_observations(missing, expected, boundary_verified=True)
+        assert omitted.history_status == "not_checked"
+        assert not omitted.differences
+        # 若声称归档完整却少了一条，则仍能检出；原始响应归档另有received_missing核验。
+        claimed_complete = replace(missing, history_complete=True)
+        assert compare_observations(claimed_complete, expected, boundary_verified=True).history_status == "failed"
         broken = replace(history[0], tiles=(Tile("9t"),)) if kind == "chi" else replace(history[0], detail_kind=None)
         corrupted = replace(window.observation, public_history=(broken,) + history[1:])
         detected = compare_observations(corrupted, expected, boundary_verified=True)

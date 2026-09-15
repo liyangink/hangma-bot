@@ -158,6 +158,11 @@ _SEQUENCE_MODEL_STRATEGIES: Mapping[str, str] = {
     "sequence_model_4096_projected_v1": "4096-projected",
 }
 
+# 全部可配置策略名的唯一来源。启动脚本（run_test_room.py 等）与 RuntimeConfig
+# 校验都必须引用本常量，不得各自维护副本——否则会出现"组合根已支持、启动器
+# 白名单却拒绝"的静默漂移（2026-09-14 序列模型接入即发生过一次）。
+AVAILABLE_STRATEGIES: tuple[str, ...] = tuple(_STRATEGY_FACTORIES) + tuple(_SEQUENCE_MODEL_STRATEGIES)
+
 # 默认部署包根目录；可用 RuntimeConfig.sequence_model_dir 覆盖。相对路径按
 # 仓库根解析，模型权重随仓库分发，不从训练工作区读取。
 SEQUENCE_MODEL_DIRNAME = "prebuilt/sequence-policy-models"
@@ -319,11 +324,10 @@ class RuntimeConfig:
         if not isinstance(self.audit_root, Path):
             raise ValueError("audit_root 必须是 Path，得到 {0!r}".format(self.audit_root))
         _require_non_empty_str(self.strategy, "RuntimeConfig.strategy")
-        if self.strategy not in _STRATEGY_FACTORIES and self.strategy not in _SEQUENCE_MODEL_STRATEGIES:
+        if self.strategy not in AVAILABLE_STRATEGIES:
             raise ValueError(
                 "未知策略名 {0!r}；可用：{1}".format(
-                    self.strategy,
-                    ", ".join(sorted(set(_STRATEGY_FACTORIES) | set(_SEQUENCE_MODEL_STRATEGIES))),
+                    self.strategy, " / ".join(sorted(AVAILABLE_STRATEGIES))
                 )
             )
         # 2026-09-11 接线变更：v2_hu_upgrade_v1（Tier-A）**解除模式限制**，

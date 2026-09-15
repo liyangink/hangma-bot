@@ -3,6 +3,7 @@
 import pytest
 
 from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.kernel.actions import Tile
 from hangma_bot.offline.replay_check import check_hand
 
 from ._helpers import make_rules
@@ -93,6 +94,36 @@ def test_check_hand_preserves_seat_zero_and_masks_other_draw_without_dropping_ev
     assert all(event.tiles == () for event in other_draws)
     assert final.consumed_seq == final.public_history[-1].seq
     assert final.public_history[-1].gang_replenish is True
+
+
+@pytest.mark.parametrize("tile_fields,expected", [
+    ({"tile": "2w"}, Tile("2w")), ({}, None), ({"tile": None}, None), ({"tile": ""}, None),
+])
+def test_check_hand_preserves_only_explicit_chi_supply(tile_fields, expected):
+    """历史核对只透传当时公开供牌；缺字段时不从组合或影子暗牌回填。"""
+    row = _chi_gang_win_row(True)
+    source_chi = next(event for event in row["events"] if event["type"] == "chi")
+    source_chi.pop("tile")
+    source_chi.update(tile_fields)
+    rules = _ObservedRules()
+    check_hand(row, rules)
+    final = rules.observations[-1]
+    public_chi = next(event for event in final.public_history if event.kind == "chi")
+    assert public_chi.claimed_tile == expected
+    assert public_chi.tiles == (Tile("2w"), Tile("3w"), Tile("4w"))
+    assert all(event.claimed_tile is None for event in final.public_history if event.kind != "chi")
+
+
+@pytest.mark.parametrize("claimed_tile", ["3w", "9t", "10t", 9, False, ["2w"]])
+def test_check_hand_reports_conflicting_chi_supply_without_raising(claimed_tile):
+    """坏供牌必须在影子状态推进前返回冲突，不能留到 PublicEvent 构造时抛错。"""
+    row = _chi_gang_win_row(True)
+    source_chi = next(event for event in row["events"] if event["type"] == "chi")
+    source_chi["tile"] = claimed_tile
+    outcome = check_hand(row, _ObservedRules())
+    assert outcome["status"] == "failed"
+    assert any(issue["code"] == "conflict.meld_tile_mismatch" and issue["seq"] == source_chi["seq"]
+               for issue in outcome["issues"])
 
 
 def test_discard_updates_baotou_before_next_claim_without_waiting_for_own_draw():
