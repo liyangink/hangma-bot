@@ -60,6 +60,7 @@ from hangma_bot.offline.evaluation_results import (  # noqa: E402
 )
 from hangma_bot.offline.evaluation_statistics import summarize_results  # noqa: E402
 from hangma_bot.policy import heuristics  # noqa: E402
+from hangma_bot.policy.heuristic_adapter import HeuristicAdjustmentPolicy  # noqa: E402
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1  # noqa: E402
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2  # noqa: E402
 from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy  # noqa: E402
@@ -214,15 +215,57 @@ def _git_state() -> Tuple[Optional[str], Optional[bool]]:
     return (commit or None), dirty
 
 
+#: 装饰器链最大解包层数；防止自引用把快照函数变成死循环。
+_MAX_POLICY_UNWRAP = 8
+
+#: 影响评分行为的策略源码（相对仓库根）——**指纹清单**。
+#: 为什么需要它：`producer_commit + dirty=true` 只说明"与父提交不一样"，
+#: 说不出**哪里不一样**，事后无法判断某个产物由哪份代码产生（REVIEW-7 S7-2）。
+#: 清单是**固定元组**而不是目录扫描：它是本脚本对"哪些文件决定评分"的显式声明，
+#: 新增评分模块必须显式登记（漏登记时指纹缺项，而不是静默变成"整仓一致"）。
+_SCORING_SOURCE_FILES: Tuple[str, ...] = (
+    "src/hangma_bot/policy/evaluation_v1.py",
+    "src/hangma_bot/policy/heuristic_v1.py",
+    "src/hangma_bot/policy/heuristic_v2.py",
+    "src/hangma_bot/policy/weights_v1.py",
+    "src/hangma_bot/policy/heuristic_adapter.py",
+    "src/hangma_bot/policy/white_discard_guard.py",
+)
+
+#: 脏工作区里最多记录多少条变更路径；超出只截断**列表**，不截断该布尔标志。
+_DIRTY_PATHS_MAX = 200
+
+
+def _unwrap_scoring_policy(policy: Any) -> Any:
+    """剥掉只做重排/追加分项的装饰器，取到**持权重的内核**。
+
+    为什么必须解包：V2 之后新增了两层装饰器（白板保护、候选适配器）。
+    初版只认 `WhiteDiscardGuardPolicy`，于是候选适配器解不出来，
+    manifest 写成 `effective_weights=null`；而 **null 与"该策略确实没有权重"
+    在产物里长得一样**，事后无法区分（REVIEW-7 S7-2 实测）。
+
+    用 `base_policy` **约定**而不是 isinstance 白名单：新增装饰器不必再改本函数。
+    仓库内实现该约定的装饰器都把 `base_policy` 指向被包装策略
+    （`white_discard_guard.py` / `catch_play_probe.py` / `heuristic_adapter.py`）。
+    """
+
+    current = policy
+    for _ in range(_MAX_POLICY_UNWRAP):
+        inner = getattr(current, "base_policy", None)
+        if inner is None or inner is current:
+            break
+        current = inner
+    return current
+
+
 def _effective_weights_snapshot(policy: Any) -> Optional[dict]:
     """策略生效权重快照（类声明字段的当前值）；无权重参数的策略返回 None。
 
     声明权重为空时实际生效的是类默认权重，manifest 必须记录生效值
     才能事后复现（E3 诊断教训 2026-09-06）。
     """
-    if isinstance(policy, WhiteDiscardGuardPolicy):
-        return _effective_weights_snapshot(policy.base_policy)
-    weights = getattr(policy, "_weights", None)
+
+    weights = getattr(_unwrap_scoring_policy(policy), "_weights", None)
     if weights is None:
         return None
     cls = type(weights)
@@ -233,33 +276,191 @@ def _effective_weights_snapshot(policy: Any) -> Optional[dict]:
     }
 
 
+def _source_digest(relative_path: str) -> Optional[dict]:
+    """一份源码文件的字节指纹；文件不存在时返回 None（**不冒充已记录**）。"""
+
+    import hashlib
+
+    path = _REPO_ROOT / relative_path
+    if not path.is_file():
+        return None
+    data = path.read_bytes()
+    return {"sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)}
+
+
+def _candidate_module_path(name: str) -> str:
+    """已注册候选模块相对仓库根的路径；未注册由注册表抛错（不静默回退）。"""
+
+    module = heuristics.candidate_module(name)
+    return str(Path(module.__file__).resolve().relative_to(_REPO_ROOT))
+
+
+def _scoring_source_snapshot(candidate_names: Tuple[str, ...]) -> dict:
+    """本次比较依赖的评分源码 → 字节指纹（含**用到的候选模块**）。
+
+    这是 `dirty=true` 之外的**可验证指纹**：拿到产物的人可按"路径 → sha256"
+    逐份复核当时实际装载的源码，即使那些源码从未提交。
+    """
+
+    paths = list(_SCORING_SOURCE_FILES)
+    for name in sorted(set(candidate_names)):
+        paths.append(_candidate_module_path(name))
+    snapshot = {}
+    for relative_path in paths:
+        digest = _source_digest(relative_path)
+        if digest is not None:
+            snapshot[relative_path] = digest
+    return snapshot
+
+
+def _worktree_snapshot() -> dict:
+    """工作区身份：提交号、是否脏、**脏在哪些路径**（REVIEW-7 S7-2）。
+
+    与 `scoring_source` 的分工：这里回答"仓库整体是否与父提交一致"，
+    `scoring_source` 回答"评分源码的字节是什么"。两者都落盘，
+    既不依赖 `dirty=true` 这个布尔值，也不依赖父提交。
+    """
+
+    commit, dirty = _git_state()
+    paths: list = []
+    truncated = False
+    try:
+        status = subprocess.run(
+            ["git", "-C", str(_REPO_ROOT), "status", "--porcelain"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        ).stdout
+        for line in status.splitlines():
+            if line.strip():
+                # porcelain 前两列是状态码，其后是路径。
+                paths.append(line[3:].strip() if len(line) > 3 else line.strip())
+    except (OSError, subprocess.SubprocessError):
+        paths = []
+        truncated = True
+    if len(paths) > _DIRTY_PATHS_MAX:
+        paths = paths[:_DIRTY_PATHS_MAX]
+        truncated = True
+    return {
+        "commit": commit,
+        "dirty": dirty,
+        "dirty_paths": paths,
+        "dirty_paths_truncated": truncated,
+    }
+
+
+def _write_code_snapshot(out_dir: Path, scoring_source: Mapping) -> Optional[str]:
+    """把本次实际装载的评分源码落到产物目录，返回快照子目录名。
+
+    REVIEW-7 S7-2 的处置是"保存实际代码快照**或**可验证指纹"；这里两件都做，
+    因为用途不同：指纹用于**核对**，快照用于**在没有该提交的环境里重建**。
+    代价有界——清单是固定元组加本次用到的候选模块（个位数文件），不是整仓快照。
+    """
+
+    if not scoring_source:
+        return None
+    target = out_dir / "code_snapshot"
+    for relative_path in sorted(scoring_source):
+        source = _REPO_ROOT / relative_path
+        if not source.is_file():
+            continue
+        destination = target / relative_path
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(source.read_bytes())
+    return target.name
+
+
+def _candidate_names_in(declarations) -> Tuple[str, ...]:
+    """声明序列里**已注册候选**的名字；其余策略名不进评分源码指纹清单。"""
+
+    return tuple(item.name for item in declarations if heuristics.is_candidate(item.name))
+
+
+def _policy_artifact_fields(declaration: PolicyDeclaration, policy: Any) -> dict:
+    """manifest 里每个评分者一条的**候选身份字段**（REVIEW-7 S7-2）。
+
+    初版只写 `effective_weights`，且候选适配器解包不出来 ⇒ 候选那条是 null。
+    现在写四样：生效基础权重、生效调整参数、候选身份串、候选源码指纹。
+    四者缺一，产物就回答不了"跑的是哪一份候选代码 + 哪一组参数"。
+    """
+
+    params, _base = heuristics.split_declaration_params(dict(declaration.weights))
+    fields = {
+        "effective_weights": _effective_weights_snapshot(policy),
+        "effective_adjustment_params": params or None,
+        "candidate_identity": None,
+        "candidate_spec": None,
+        "candidate_source": None,
+    }
+    if not isinstance(policy, HeuristicAdjustmentPolicy):
+        return fields
+    spec = policy.adjustment.spec
+    relative_path = _candidate_module_path(declaration.name)
+    fields["candidate_identity"] = policy.identity()
+    fields["candidate_spec"] = {
+        "name": spec.name,
+        "version": spec.version,
+        "trigger": spec.trigger,
+        "scope": list(spec.scope),
+        "bound": spec.bound,
+    }
+    fields["candidate_source"] = dict(
+        _source_digest(relative_path) or {}, path=relative_path)
+    return fields
+
+
 def _manifest_versions(
     *,
     experiment: Any,
     baseline: PolicyDeclaration,
     challenger: PolicyDeclaration,
     opponents: Tuple[PolicyDeclaration, ...] = (),
-    effective_weights_by_id: Optional[Mapping] = None,
+    policy_artifacts_by_id: Optional[Mapping] = None,
+    scoring_source: Optional[Mapping] = None,
+    worktree: Optional[Mapping] = None,
 ) -> list:
+    """manifest 的 versions 段。
+
+    `policy_artifacts_by_id` 取代初版的 `effective_weights_by_id`：每条评分者
+    除生效权重外还要写候选身份、生效调整参数与候选源码指纹（REVIEW-7 S7-2）。
+    `policy_id` 不在映射里时该条写 null——**与"算不出权重"用同一个可读形态**，
+    并同时把缺项写进 `missing_fields`（由调用方核对）。
+    """
+
     scoring_entries = {
         "baseline": baseline.to_json(),
         "challenger": challenger.to_json(),
         "opponent_pool": [item.to_json() for item in opponents],
     }
+    artifacts = policy_artifacts_by_id or {}
     for entry in (
         [scoring_entries["baseline"], scoring_entries["challenger"]]
         + scoring_entries["opponent_pool"]
     ):
+        fields = artifacts.get(entry["policy_id"])
         entry["effective_weights"] = (
-            effective_weights_by_id.get(entry["policy_id"])
-            if effective_weights_by_id is not None
-            else None
+            fields.get("effective_weights") if fields is not None else None
+        )
+        entry["effective_adjustment_params"] = (
+            fields.get("effective_adjustment_params") if fields is not None else None
+        )
+        entry["candidate_identity"] = (
+            fields.get("candidate_identity") if fields is not None else None
+        )
+        entry["candidate_spec"] = (
+            fields.get("candidate_spec") if fields is not None else None
+        )
+        entry["candidate_source"] = (
+            fields.get("candidate_source") if fields is not None else None
         )
     versions = {
         "experiment_kind": experiment.kind,
         "clock_mode": experiment.clock_mode,
         "scoring_policies": scoring_entries,
     }
+    # 评分源码指纹与工作区身份（REVIEW-7 S7-2）：只写 dirty=true 说明不了差在哪。
+    versions["scoring_source"] = dict(scoring_source or {})
+    versions["worktree"] = dict(worktree or {})
     # 单独记录实际原生制品；规则源哈希不受 Python/C 装配选择影响。
     from hangma_bot.simulation.artifacts import hand_math_runtime_metadata
     versions["hand_math"] = hand_math_runtime_metadata()
@@ -388,6 +589,10 @@ def cmd_decisions(args: argparse.Namespace) -> int:
     report = build_decision_report(outcome, experiment)
     write_report_files(out_dir, report)
     decisions_input = dataset / "decisions.jsonl"
+    declarations = (experiment.baseline, experiment.challenger)
+    scoring_source = _scoring_source_snapshot(_candidate_names_in(declarations))
+    worktree = _worktree_snapshot()
+    worktree["code_snapshot"] = _write_code_snapshot(out_dir, scoring_source)
     manifest = _build_manifest(
         experiment=experiment,
         inputs=(
@@ -400,10 +605,14 @@ def cmd_decisions(args: argparse.Namespace) -> int:
             experiment=experiment,
             baseline=experiment.baseline,
             challenger=experiment.challenger,
-            effective_weights_by_id={
-                experiment.baseline.policy_id: _effective_weights_snapshot(baseline_policy),
-                experiment.challenger.policy_id: _effective_weights_snapshot(challenger_policy),
+            policy_artifacts_by_id={
+                experiment.baseline.policy_id: _policy_artifact_fields(
+                    experiment.baseline, baseline_policy),
+                experiment.challenger.policy_id: _policy_artifact_fields(
+                    experiment.challenger, challenger_policy),
             },
+            scoring_source=scoring_source,
+            worktree=worktree,
         ),
     )
     write_manifest(out_dir / "manifest.json", manifest)
@@ -480,6 +689,12 @@ def cmd_matches(args: argparse.Namespace) -> int:
             {"heading": "运行排除明细", "paragraphs": list(outcome.excluded)}
         )
     write_report_files(out_dir, report)
+    declarations = (
+        (experiment.baseline, experiment.challenger) + experiment.opponents
+    )
+    scoring_source = _scoring_source_snapshot(_candidate_names_in(declarations))
+    worktree = _worktree_snapshot()
+    worktree["code_snapshot"] = _write_code_snapshot(out_dir, scoring_source)
     manifest = _build_manifest(
         experiment=experiment,
         inputs=(),
@@ -488,10 +703,14 @@ def cmd_matches(args: argparse.Namespace) -> int:
             baseline=experiment.baseline,
             challenger=experiment.challenger,
             opponents=experiment.opponents,
-            effective_weights_by_id={
-                policy_id: _effective_weights_snapshot(policy)
-                for policy_id, policy in policies_by_id.items()
+            policy_artifacts_by_id={
+                declaration.policy_id: _policy_artifact_fields(
+                    declaration, policies_by_id[declaration.policy_id])
+                for declaration in declarations
+                if declaration.policy_id in policies_by_id
             },
+            scoring_source=scoring_source,
+            worktree=worktree,
         ),
     )
     write_manifest(out_dir / "manifest.json", manifest)
