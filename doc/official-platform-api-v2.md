@@ -1,8 +1,8 @@
 # 杭州麻将对战平台 API 与时间模型
 
 > 官方来源：`https://10.240.169.190:18080/portal/#guide-api`
-> 最新同步：2026-09-10；官方指南 **v30**，`updated_at=2026-09-10`。原始资料：[版本响应](./references/official-guide-version-v30.json)（v27 快照见 [official-guide-version-v27.json](./references/official-guide-version-v27.json)）、[指南全文](./references/official-guide-v27-content.txt)、[指南响应封套](./references/official-guide-v27.txt)。v8、v15 等历史快照保留。
-> 本轮变更：v25 服务端限制最多两摊吃；v26 修复抓打圈圈主响应并公开圈主座位；v27 为门户榜单修订；v28 胡大牌榜排序链去掉「该牌型全史次数」键（纯门户）；**v29（breaking）新增全服功能开关**——管理面可关闭自由匹配与自建测试房，关闭后 `POST /api/match` 新匹配、建测试房、已完结 test 房「重开下一轮」（ready）一律 **403 `FEATURE_DISABLED`**（永久条件；ready 路径此前是 409 房态类）；v30 他人 `name` 全面收口为 AI 昵称、空则空串（消费方按空串回退 `user_id`），本人 `/portal/api/me` 与 `/admin/*` 语义不变。规则/圈主证据边界见[本轮对齐记录](../review/catch-owner-v26-2026-09-09/README.md)。
+> 最新同步：2026-09-15；官方指南 **v34**，`updated_at=2026-09-14`。原始资料：[版本响应](./references/official-guide-version-v34.json)、[指南全文](./references/official-guide-v34-content.txt)、[指南响应封套](./references/official-guide-v34.txt)；v30/v27/v15/v14 等历史快照保留（内容快照仅 v14/v15/v27/v34 有全文，其余轮次只有版本响应）。
+> 本轮变更（v31—v34，**0 条 breaking**）：v31 局间固定停 5 秒再发下一局，窗口内 `phase="settled"`、`round_no` 仍是刚结束那一局；v32 杠爆判定时刻修正，摸牌后杠（暗杠/补杠）的爆头改在杠动作时重算，此前被静默判成普通杠开（fan 2 而非 4）；v33 杠后补牌停出决策窗口，补到能胡不再与结算同步自动完成，改为与普通摸牌同构并保留超时自动胡兜底；v34 门户今日榜新增 `last` 垫底行（纯加法，仅 `period=today` 且上榜人数 > 32 时非 null）。**v32/v33 虽非 breaking，但属规则口径与决策窗口变更，一律逐条审查**：证据与本仓对应实现见 §9.4 与 `dto.py` 的 `KNOWN_GUIDE_VERSION` 记录。此前各轮（v24—v30）的 breaking 按完整条目指纹放行，见下 §3.1。
 > 版本接口：`GET /portal/api/guide/version`；全文接口：`GET /portal/api/guide`（v14 起免认证）
 > 注意：文件名为兼容既有链接暂保留 `v2`。平台仍在迭代，本文不代替运行时版本自检。
 > 相关说明：[官方赛事流程](./official-tournament-flow-2026-09-03.md)、[架构与运行流程](./architecture.md)、[统一术语表](../UBIQUITOUS_LANGUAGE.md)
@@ -358,7 +358,7 @@ v2 动作判定下限：
 
 启动策略：
 
-1. 代码内声明 `KNOWN_GUIDE_VERSION=30`，但 v15 之后的 breaking 仍按完整条目指纹逐项审查。v25 的两摊吃限制已实现；v24 仅在已审查的赛事令牌与自动匹配路径放行，后者将 `PORTAL_BINDING_REQUIRED` 明确报为身份不匹配；v29 的全服功能开关同样按指纹放行，`auto_match` 与 `ready` 各自把 `FEATURE_DISABLED` 报为"平台已关闭该功能"的永久终态（该码必须在 `KNOWN_OFFICIAL_CODES` 白名单内，否则会被脱敏成 None 而使分支失效）。启动及阶段边界都检查未知条目，同版本改写／新增和未来未知 breaking 仍拒绝，不能只比较顶层数字。
+1. 代码内声明 `KNOWN_GUIDE_VERSION=34`，但 v15 之后的 breaking 仍按完整条目指纹逐项审查（v31—v34 无 breaking，已逐条评审并登记在 `dto.py`）。v25 的两摊吃限制已实现；v24 仅在已审查的赛事令牌与自动匹配路径放行，后者将 `PORTAL_BINDING_REQUIRED` 明确报为身份不匹配；v29 的全服功能开关同样按指纹放行，`auto_match` 与 `ready` 各自把 `FEATURE_DISABLED` 报为"平台已关闭该功能"的永久终态（该码必须在 `KNOWN_OFFICIAL_CODES` 白名单内，否则会被脱敏成 None 而使分支失效）。启动及阶段边界都检查未知条目，同版本改写／新增和未来未知 breaking 仍拒绝，不能只比较顶层数字。
 2. Bot 启动、报名/ready 之前调用一次版本接口。
 3. 只要出现未审查的 breaking 条目，就禁止进入新赛事并报警，包括同一版本中被新增或改写的条目。
 4. 已开始的赛事不要每个动作重复检查版本；在阶段边界重新检查一次，并记录启动与阶段开始时版本，确保阶段尝试可追溯。
@@ -704,3 +704,61 @@ v2 Demo 没有多阶段主循环，**不能作为当前参赛入口**。v7 Demo 
 v19新增门户胡大牌榜，v20把门户两榜top行数从20增至32；它们不改变玩家状态查询和动作接口。全文差异、原始响应和兼容性回归见[本批版本证据](../review/official-live-b684-2026-09-07/README.md#配置和版本)。本地冻结运行源码不因纯加键修改规则；本批32个真实`round_ended`的新增字段均与对应块一致。
 
 当前观察：该房顶层`rounds`仍缺b1第1单局、b3第7单局两条流局记录，延后重读结果相同；已有30条摘要与事件一致。完整事件中32个单局均在，本地按事件导入32个单局，15049个实时快照的累计积分与逐单局积分变化及场终积分全部对齐。原始复查见[本批验收报告](../review/official-live-b684-2026-09-07/README.md#单局顶层摘要和累计积分)，不据此猜测服务端原因。
+
+## 2026-09-15 同步 v31—v34（0 条 breaking）
+
+2026-09-15 用 `scripts/sync_official_guide.py` 重新抓取，服务端指南由本地已审查基线 **v30** 推进到 **v34**（`updated_at=2026-09-14`），共 4 条新条目、**0 条 breaking**。原始资料见 [official-guide-version-v34.json](./references/official-guide-version-v34.json)、[official-guide-v34-content.txt](./references/official-guide-v34-content.txt)。本节按「官方已确认 / 当前观察 / 工程判断」分级，并要求任何一条非 breaking 条目也不能只按顶层版本号放行。
+
+### 9.4.1 v31（changed，2026-09-11 生效）：局间固定停 5 秒
+
+**官方已确认**：每局结算后固定停 5 秒再发下一局，时长服务端写死不可配置，正式锦标赛、测试房、自由匹配房一律 5 秒。这 5 秒内用任意 seq（含 `seq=0`）取到的快照都是 `phase="settled"`、`round_no` 仍是**刚结束那一局**、`waited_seat=-1`、手牌与牌河为上一局终态。字段集、错误码、三个超时和轮数一律未动。
+
+**与既有承诺的关系**：v10 的跨局轮询承诺仍成立——用上一局末的 seq 轮询仍会收到新局全量快照（`gap:true`），只是唤醒时点由「立即」变为「最多 5 秒后」；5 秒远小于 30 秒长轮询上限，超时预算无需调整。
+
+**当前观察（本仓影响）**：单局迁移判定以 `snapshot.round_no` 变化为准（`adapters/official/game.py` 的 `previous.round_no != snapshot.round_no` 分支），不依赖 `phase`，也不依赖「一次 `seq=0` 必然拿到新局」，因此顿挫期内的 `settled` 快照只会被归并事件、不会误判成新局。`sync_state.apply_full_snapshot` 用 `new_round` 与 `terminal` 分别处理轮次切换与终局边界，语义与新时序一致。**零协议影响**。
+
+**工程判断**：运行面唯一变化是每局多 5 秒固定停顿，完整桌赛墙钟约增加 `5 × Rounds` 秒。这只影响阶段时长估算与盯盘节奏，不影响任何提交时限预算。
+
+### 9.4.2 v32（changed，2026-09-12 生效）：杠爆判定时刻修正
+
+**官方已确认**：爆头在服务端是派生缓存标记，此前只在「发牌后」与「出牌后」刷新。**摸牌后直接杠**（暗杠/补杠）这条路径把牌移入副露、手牌正好回到 13 张等效听牌态，但没有人重算该标记，结算读到的是上一次出牌时的陈旧值：应为**杠爆（×4）**的局被静默判成**普通杠开（×2）**，该局 `fan` 与 `scores` 随之改变（例：庄家自摸时庄家赔付由 16 变 32）。修正后改在杠动作时重算。明杠路径同步统一，但官方说明其行为**零变化**（`[t×3]+A ⇄ A + 1 组副露` 数学恒等）。存量落库数据不回溯，修复前的错判局保持原值。
+
+**当前观察（本仓影响）**：本 bot **不自行构造结算**，`fan/detail/scores` 一律以服务端为准，拿到的是修正后的正确值；自研结算校验的路径只用于离线对拍。本地引擎的爆头重算发生在杠后补牌落地（`hangma/progression.py` 的 `_resolve_gang → attach_draw → baotou_after_draw`，按杠后暗牌 `recompute_baotou`），与修正口径同向，既有用例 `tests/unit/hangma/test_action_chain_lifecycle.py::test_concealed_gang_can_form_new_baotou_before_replacement_draw` 已固化该语义。
+
+**待确认假设**：`baotou_after_draw` 采用「`static or (replacement and previous)`」的连续动作继承口径（本仓 2026-09-08 经用户确认）。服务端修正后是否对该继承分支同判，尚未用官方金例对拍；建议在有「杠前已爆头、杠后静态形状改变」的真实局时补一条对拍用例。
+
+### 9.4.3 v33（changed，2026-09-13 生效）：杠后补牌停出决策窗口
+
+**官方已确认**：杠（暗杠/补杠/明杠）补到能胡的牌不再与结算在同一步自动完成——此前 `tile_drawn{gang_replenish:true}` 与 `round_ended` 同秒发生，玩家既无法续杠也无法弃胡打财神续飘。修正后与普通摸牌**完全同构**：快照停在 `phase="draw"`、`turn=waited_seat=杠者`、`drawn_tile=补牌`，客户端可提交 `hu`、续杠、或弃胡打财神续飘；不提交则走同一条超时兜底（默认 3 秒）**自动胡**，番数与分数逐值不变。官方明确：主动判胡并提交 `hu` 的 bot **零改动**；依赖服务端代胡的 bot 仍会自动胡，只是晚一个 `DiscardTimeout`。
+
+**当前观察（本仓影响）**：本 bot 的推进在杠动作后一律进入 `pending_draw` 再落地补牌（`progression._resolve_gang` → `attach_draw` → `WindowPhase.DRAW`），从不假设「补牌即结算」，并主动判胡提交 `hu`，属官方说明的零改动类。既有用例 `tests/unit/hangma/test_hu_gate_and_double_count.py::test_gang_replacement_draw_allows_hu` 已固化「补牌窗口必须放行自摸胡」。
+
+**当前观察（历史牌谱注意）**：v33 之前的存量局存在「补牌即可胡却无决策、直接 `round_ended`」的形态。离线重放与候选重建必须容忍这种**无决策收束**，不能按新口径要求中间补一次决策；官方亦声明历史局重放结果逐字段不变。
+
+### 9.4.4 v34（added，2026-09-14 生效）：门户今日榜 `last` 垫底行
+
+**官方已确认**：纯 Portal 面加法。`GET /portal/api/leaderboard` 响应新增 `last` 键，对象恒为 `{rooms, firsts, score, is_me}` 或 JSON `null`；**仅 `period=today` 且该窗口上榜人数 > 32 时非 null**，`period=all|week` 恒 null，今日榜人数 ≤32 时也恒 null。不下发 `rank`/`user_id`/`name`；`top/me/prev/period/from/as_of` 六个既有键逐字节不变。人数 ≤32 时整行不下发是**刻意的匿名判据**，不是数据缺失或故障。
+
+**当前观察（本仓影响）**：玩家 API 的十个端点一字未动，决策输入零影响。消费该门户端点的离线脚本（`scripts/fetch_leaderboard.py`、`scripts/tag_opponents.py`）按可空处理新键即可，不做强校验。
+
+### 9.4.5 与「杠候选缺失」的关系（澄清，2026-09-15 复现）
+
+**与本次 v31—v34 无关**：v32 官方明确明杠路径行为零变化，v33 只改判定时机、不改候选合法性。
+
+**当前观察（复现）**：取 `datasets/derived/auto-match-rooms-20260908` 前 3 场（24 个单局行）重放，得到 **4,201 个决策窗口、5 处不一致，全部是 `gang:exposed:*`**，与温故 A0 记录一致。这 5 处的共同特征是：`observation.remaining_tile_count` 为 `None`、`catch_play=False`（排除抓打圈限制）、暗牌持有被弃牌 3 张，而候选集只剩 `peng:X` 与 `pass`。全部 4,201 个窗口的 `remaining_tile_count` 均为 `None`。
+
+**当前观察（根因）**：`hangma/action_families.py::_wall_allows_gang` 在牌墙剩余未知时按「宁漏候选不 409」直接返回 False。该门禁被**两条路径共用**——摸牌窗口的暗杠/补杠（同文件 342 行）与碰窗口的明杠（366 行），因此**三种杠全部**会被剔除。官方赛后文档不含牌墙，重建的 `remaining_tile_count` 恒为 `None`，杠候选便系统性缺失。
+
+**范围修正**：A0 记录的「不一致全部是明杠」是 3 场冒烟样本的**抽样假象**。全量 910 场共 **1,250 次杠事件**（明杠 606、补杠 406、暗杠 238），即受影响的窗口是全部三类杠，而非只有明杠。
+
+**不是平台侧变更**：线上路径由 `projector.py` 从官方快照的 `wall_remaining` 取得余量，门禁正常放行，线上不受影响；缺口只在离线重建口径。
+
+**已修复（2026-09-15）**：补信息的落点是离线重建层 `offline/replay_check.py`，**不是规则模块**（规则模块对未知输入保守是正确的；放宽它会让线上在末 10 墩提交必被 409 的杠）。
+
+改法：新增公开函数 `derived_wall_drawable(dealt_tiles)`，按同一副牌的物理事实反推可摸区——整副 136 张减去单局行四家起手实际发牌张数（庄家含直抽第 14 张，标准发牌 53 张）再减保留区 20 张。`check_hand` 在归档缺 `wall` 时用它填 `wall_drawable`，`_shadow_observation` 据此投影 `remaining_tile_count`。
+
+**边界（重要）**：`wall_known` 仍为 False，因此 `_validate_via_analyze` 与流局「可摸区是否摸完」核对照旧跳过——推导**只补观察投影，不冒充完整世界**，也不新增任何校验主张；缺墙单局仍报 `not_checked.gang_wall_boundary`。
+
+**验证**：480 个单局行 / 87,377 个决策窗口上，杠窗口不一致由 **77 处降为 0**（明杠 37、暗杠 16、补杠 24，三类全清）；同批次另有 56 处 `pass` 不一致在修复前后**数量完全相同**，与本次改动无关，属另一独立现象（待查）。回归用例 `tests/simulation/test_replay_check_lifecycle.py` 的两个新用例已固化，去掉修复即失败。
+
+**仍未对拍**：推导公式尚未与官方 `wall_remaining` 直接对拍（现有抓包只含零星终局快照，`review/official-adapter/*` 每个文件仅 4 条且无 seq 流）。旁证是 `simulation/shuffle.py` 的 136/83/63/20 口径与该字段取值范围一致（实录 `wall_remaining=47` 远大于归档中任何一局的摸牌数），但严格对拍仍建议另抓一段带 seq 的 `/state` 快照流。
