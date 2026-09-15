@@ -217,13 +217,9 @@ V0 与依赖 V0 的 `claim_if_legal` 在线上组合根和已有离线入口通�
 [doc/references/official-guide-v34-content.txt](../references/official-guide-v34-content.txt) 第 29 行），
 链与爆头都直接乘 2 的幂；候选要写出涉及它们的**状态势之差**，就必须先能读到它们。
 
-**注意（本条的强度边界，引用时必须一起带）**：这不等于「势函数必须涵盖全部价值量」。
-potential-based 塑形（[Ng, Harada & Russell 1999, ICML](https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-ICML99.pdf) 定理 1）
-只要求加分能写成**某一个**状态函数之差；漏掉某项只意味着**该项未被塑形**，不构成不合规。
-**【推导·未一手核实】**：该定理的原始设定假设状态对决策者可见，本项目是隐藏信息局，
-把它降到「信息状态」上用**没有一手来源**，属推导；可用的替代框架是信念 MDP。
-逐字核对见 [refs/REF-DECOMP-game-abstraction.md](../../review/llm-guided-heuristic-route-2026-09-15/refs/REF-DECOMP-game-abstraction.md) §3.5/§6，
-本条的更正说明见 `src/hangma_bot/policy/evaluation_v1.py` 模块 docstring。
+**注意（理论边界，第三阶段规划复核更正）**：字段接线只扩展可表达的规则事实，不产生最优策略保证。[Ng、Harada、Russell 1999](https://ai.stanford.edu/~ang/papers/shaping-icml99.pdf) 讨论累计奖励变换；当前适配器直接改变单步启发式评分，没有求解变换后的累计回报，不能直接套用策略不变结论。势函数也不必包含全部价值量；漏掉某项表示未建模该项，不能据此判断定理条件失效。
+
+本项目把势差用作候选声明的结构约定，明确适用域、门控、未知事实与终止例外；验收仍含效果和运行证据。第三阶段动作前后事实、阶段编排的增量尚属规划，须在实际实现时同步受控契约及调用方，见 [修订规划 §1—§3](../../review/llm-guided-heuristic-route-2026-09-15/PLAN-REVISION-2026-09-15.md)。
 
 **冻结契约的处置**：该文件在 `tests/offline/evidence/v1-acceptance-2026-09-06/freeze.json` 的冻结清单内。
 本次按用户裁定做**最小改动 + 补充说明**：只加带默认值字段、更新该文件 sha256，
