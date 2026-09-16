@@ -69,6 +69,12 @@ def draw_event(seq: int, seat: int, code: str) -> PublicEvent:
     return PublicEvent(seq=seq, kind="tile_drawn", seat=seat, tiles=(Tile(code),))
 
 
+def timeout_event(seq: int, seat: int, detail_kind: Optional[str]) -> PublicEvent:
+    """一条官方 timeout 事件；``detail_kind=response`` 是纯表态，其余/缺省不能排除自动出牌。"""
+
+    return PublicEvent(seq=seq, kind="timeout", seat=seat, tiles=(), detail_kind=detail_kind)
+
+
 def meld(seat: int, kind: str, codes: Sequence[str]) -> PublicMeld:
     """一副公开副露（座位置于对象内，与官方投影一致）。"""
 
