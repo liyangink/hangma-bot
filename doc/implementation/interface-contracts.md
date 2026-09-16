@@ -651,3 +651,73 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 离线观察核对将未归档的快照前事件列为记录未核对，不判协议失败；共同已收事件内容冲突、声称归档完整却缺记录及快照后缺少增量仍能检出。已经收到却未归档的情况由原始响应到封存的`received_missing`核验负责。
 
 四个外部端口、当前状态水位、窗口键、动作原始截止和共享限频不变。回归见[真实跨单局模型契约](../../tests/contracts/test_snapshot_sequence_model.py)、[输入边界测试](../../tests/unit/learning/test_snapshot_sequence_encoding.py)和[修复验证](../../review/model-fallback-2026-09-14/README.md)。
+
+## 记录层链内飘出归因与门控字段接线（2026-09-16，坐隐 3.6d）
+
+**背景（记录缺口的事实，可复跑）**：官方 `god` 只给 `baotou` / `chain_count` / `catch_play` /
+`discarder_seat`，**不提供 `chain.piao`**（链内飘出白板数）；它只能由本人动作史推导。
+`datasets/derived/auto-match-2026-09-06/decisions.jsonl` 的 3343 行 `public_history` 全为空、
+observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一 `chain_count=1` 的窗口
+判 `DEGRADED` 并排除——链类场景在真实语料上**一个可用窗口都没有**（§F.3 D2）。
+2026-09-10 语料（3201 行）里还有 1 行是 `chain_count=1` 记 0、而规则单一来源重推为 `None`
+（消费水位 1316、历史只到 1314）：记录里出现了**不可归因的值**。
+
+**变更 1：审计记录（`DECISION_INPUT` payload）新增可归因推导**
+`adapters/recording/chain_piao.py` 在**落盘前**用规则单一来源重推链内飘出，并写两处：
+
+- `payload.request.observation.chain_piao` 归一到**可归因**推导值；不可归因写 `null`（未知 ≠ 零）；
+- `payload.chain_piao_attribution`（schema `chain-piao-attribution-v1`，与 observation **同级**）：
+  `status`（`attributed`/`unknown`/`error`/`not_applicable`）、`piao`、`chain_count`、`rungs` 与
+  `rung_basis`、`witness_seqs`（归因命中的本人链动作官方事件序号）、`own_river_whites`、`whites_held`、
+  `live_value`（归一化**前**的原值，可追溯）、`changed`、`invariants`（含依据）、`reason`、`units`。
+
+推导档位（每档都有规则依据，多档同时成立必须一致，冲突记 unknown）：
+① `chain_count == 0` ⇒ 0；② 本人牌河白板数 == 0 ⇒ 0（飘 = 爆头态打出白板，白板不可被吃碰杠、
+弃出后必留本人牌河）；③ 手留白板 4 张 ⇒ 0（白板共 4 张）；④ 杠上补牌且链长 1 ⇒ 0
+（`chain_after_gang` + `gang_replenish`）；⑤ 连续历史后缀定位到每个 +1（`settlement.infer_piao_count`
+给值，本地只做见证定位，两者等价性由测试钉死）。不变量：`piao ≤ chain_count`、
+`piao ≤ 本人牌河白板数`、`手留白 + piao ≤ 4`、`每个 +1 可归因`。
+
+**边界（必须与结论一起引用）**：该补全**只在记录器写入 `DECISION_INPUT` 时运行**，
+在应用层完成决策之后；**不参与**决策、重试、退出或晋级判定，不读时钟/文件/网络。
+补全失败原样落盘并记 `status=error`——**审计不因补全失败丢记录**。
+记录里的 `chain_piao` 是**本地派生字段**（平台从不提供该字段），把归一化前的 live 值保留在
+`live_value` 使记录仍可完整追溯；平台 `god` 字段、规则候选与计划均**不改动**。
+单位：`chain_count` 单位「次」，`piao` / `own_river_whites` / `whites_held` 单位「张」，
+本块不产生番值、倍率或积分。未变化的 payload 字段、路径与 `AuditKind` 词表见 §7。
+
+**变更 2：评分上下文追加三个门控字段**
+`policy/evaluation_v1.py` 的 `EvaluationContext` 追加**带默认值**的
+`you_cai_bi_kao`（本场规则开关「有财必拷响」；`None` = 未知，**不等于 False**）、
+`remaining_tile_count`（牌墙剩余张数，张）、`catch_play_owner_seat`（抓打圈圈主座位 0—3）。
+`build_context` 新增**仅关键字**参数 `you_cai_bi_kao`（默认 `None`），后两项直接取自
+`PlayerObservation` 的可见事实。为什么必须接（3.0 场景类账 §6.1）：`gate.you_cai_bi_kao` /
+`gate.wall_end_gang_ban` / `gate.catch_play_owner` 是"别的分量是否可达"的前置条件，
+此前在评分上下文里根本读不到，逐类覆盖恒报 `unknown`。**它们不是价值分量，不配权重、不进分项。**
+
+**证据边界（含 2026-09-16 实测缺口）**：`you_cai_bi_kao` 是规则配置，`PlayerObservation` 与
+`DecisionRequest` 都不携带 `RuleConfig`，因此本文件把它做成**显式可注入参数**、缺省未知**不猜**；
+线上路径不传即为未知。**实测三字段的记录在场情况**（105 份 derived 语料 / 359,262 行，0 桌）：
+
+| 字段 | 记录路径 | 在场 |
+| --- | --- | --- |
+| `remaining_tile_count` | `request.observation.remaining_tile_count` | 359,262 / 359,262（非空） |
+| `catch_play_owner_seat` | `request.observation.rule_state.catch_play_owner_seat` | 592 行（有圈主时；`catch_play=true` 另 228 行为归属未知的缺键形态） |
+| `you_cai_bi_kao` | **运行级** `runs/{run_id}/manifest.json` → `payload.you_cai_bi_kao` | 决策行 0；运行清单 98/100 在场（值全 `False`，无真实 `true` 样本） |
+
+因此：**derived 语料上该开关只能按 `run_id` 连接运行清单**（读取入口
+`adapters/recording/run_facts.py`，缺失一律 `None`，不得用默认 `False` 顶替）；
+让每条决策记录直接携带它需要改 `DecisionRequest`/`audit_codec` 或 `offline/replay.py`，**不在本次改动内**。
+门控类 `gate.you_cai_bi_kao` 在未连接的窗口上必须保持 `unknown`。
+
+**行为与冻结契约**：四个外部端口、默认策略名、V0/V1/V2 评分分项、排序与计划**全部不变**
+（`tests/unit/policy` 534 项通过，含逐字节行为中性回归）。该文件在 V1 冻结清单内，
+按 2026-09-15 同款处置：只加带默认值字段 + 更新 `freeze.json` 的 sha256 与
+`source_revision_notes`（该文件不在本包可写范围，**由 Lead 落盘**；落盘前
+`tests/contracts/test_heuristic_sources_frozen.py` 预期为红）。
+
+**相关测试与证据**：`tests/unit/adapters/recording/test_chain_piao.py`（24 项：五级档位、
+档位冲突、不可归因记 unknown、与规则函数等价性、落盘只改两处、记录器接线）；
+`tests/adapters`（948 项通过，记录器不因补全失败丢记录）；语料前后对比见
+[evidence/3.6d-corpus](../../review/llm-guided-heuristic-route-2026-09-15/evidence/3.6d-corpus/README.md)。
+

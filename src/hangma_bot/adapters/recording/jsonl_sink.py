@@ -42,6 +42,7 @@ from collections import Counter, deque
 from pathlib import Path
 from typing import IO, Callable, NamedTuple
 
+from hangma_bot.adapters.recording.chain_piao import normalize_decision_input_payload
 from hangma_bot.adapters.recording.raw_events import is_new_shape_raw_payload
 from hangma_bot.adapters.recording.redact import redact_json_line, redact_value
 from hangma_bot.adapters.recording.schema import (
@@ -206,6 +207,14 @@ class JsonlAuditSink:
         errors = validate_payload(kind, record.payload)
         if errors:
             raise ValueError("payload 校验失败: " + "; ".join(errors))
+        # 3.6d 记录补全：决策输入落盘前把「链内飘出白板数」归一到**可归因**推导值
+        # （官方 god 不提供 chain.piao，只能由本人动作史推导；不可归因记 unknown）。
+        # 只改这一种记录的落盘内容，不影响任何决策输入本身；补全失败原样落盘。
+        payload = (
+            normalize_decision_input_payload(record.payload)
+            if kind is AuditKind.DECISION_INPUT
+            else record.payload
+        )
 
         participant_id = record.context.participant_id
         path = relative_path_for(kind, participant_id, record.context.game_id)
@@ -216,7 +225,7 @@ class JsonlAuditSink:
             "context": dataclasses.asdict(record.context),
             "wall_time_unix_ms": record.wall_time_unix_ms,
             "monotonic_ns": record.monotonic_ns,
-            "payload": redact_value(dict(record.payload)),
+            "payload": redact_value(dict(payload)),
         }
         line = redact_json_line(json.dumps(envelope, ensure_ascii=False, allow_nan=False))
         pending = _PendingRecord(

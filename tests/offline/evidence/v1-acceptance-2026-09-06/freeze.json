@@ -19,7 +19,7 @@
     "src/hangma_bot/adapters/official/transport.py": "2658eca9b0cf8fd99fb878b24d86e331dd7b391eae8451fd2cf8e902d0039a9a",
     "src/hangma_bot/adapters/recording/__init__.py": "b88785ffd47c975965c0fae2aac307f27681ebb5c5fc3030b2b760ea2ef675fe",
     "src/hangma_bot/adapters/recording/bundle.py": "d67b969652858ad44a0f7aee3721b509787994bcc2dfc3f9cb72ca7ed82ffab1",
-    "src/hangma_bot/adapters/recording/jsonl_sink.py": "73b23f5dd56a54be5b9d2cbc869a39c8592eb3de793f97775993f259ae915806",
+    "src/hangma_bot/adapters/recording/jsonl_sink.py": "898e9615ca2bde629ae38661d8c573148425606e322fd05b46757f727dac45c4",
     "src/hangma_bot/adapters/recording/raw_events.py": "43a97d26b92d26c23b50776a41dba1ef0a9236750e92783bd7d75608c7cd97f3",
     "src/hangma_bot/adapters/recording/reader.py": "8af325ad67c9df49aac8611e7c92c2081bc00e2cf1c09d8f54c8f2fe78bb91c2",
     "src/hangma_bot/adapters/recording/redact.py": "f50e8165c5c8acee39affeaa921515f7fbfa3a0a29309b9a1fd03385ee408d69",
@@ -65,7 +65,7 @@
     "src/hangma_bot/policy/claim_if_legal.py": "acd4c887d59cd5f84e9ea2a6ab6c698278110623af0e2bb26a2f1b992d6a8f43",
     "src/hangma_bot/policy/errors.py": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9",
     "src/hangma_bot/policy/evaluation.py": "92f68d0f0eb384cff1444bdc84937fb93d90f398c9ac7b803e00f23d800d86e1",
-    "src/hangma_bot/policy/evaluation_v1.py": "ff620155626ab91a4d6e70fe81b8bfc259c75b6ef684e9306a2892560f05ae8d",
+    "src/hangma_bot/policy/evaluation_v1.py": "b3198fcfc030a235873f67051bdf859f04a97b3290c4bd6783e870b7d7330fe0",
     "src/hangma_bot/policy/heuristic_v1.py": "fb924e32375a033f84f6566160e761102308e3b145c7a5caa885db6f99affd4c",
     "src/hangma_bot/policy/interface.py": "d2cbf90fea78c6472b3653b0a60d0d29246f1d687529ce054e6e03213a3627da",
     "src/hangma_bot/policy/safe_fallback.py": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281",
@@ -138,6 +138,26 @@
       "supersedes": {
         "scripts/evaluate.py": "55c1a969144aaad0280a213c13db2f16db5437a0adcc60cfbec37455647c9b83"
       }
+    },
+    {
+      "date": "2026-09-16",
+      "files": [
+        "src/hangma_bot/policy/evaluation_v1.py",
+        "src/hangma_bot/adapters/recording/jsonl_sink.py"
+      ],
+      "change": "evaluation_v1.py：EvaluationContext 追加三个带默认值的可达性门控字段（you_cai_bi_kao / remaining_tile_count / catch_play_owner_seat），build_context 新增仅关键字参数 you_cai_bi_kao（缺省 None = 未知，不猜成 False），后两项从观察填充。jsonl_sink.py：决策记录落盘前追加链内飘出（chain_piao）的规则推导归因块与不变量校验。",
+      "reason": "坐隐 3.6d 的记录与接线缺口。① 3.0 场景类账 §6.1 的三个门控类在评分上下文里读不到，逐类覆盖恒报 unknown；它们不是价值分量、不配权重，只决定别的分量是否可达。② 官方 god 状态只给 baotou / chain_count / catch_play / discarder_seat，不提供链内飘出，缺该字段时链状态窗口在准入侧一律 DEGRADED（README 附录 F.3 的 D2）。",
+      "behavior_neutral_evidence": [
+        "三个字段都有默认值；EvaluationContext 的构造点仍只有 build_context 一处。",
+        "V0/V1/V2 评分函数不读这三个字段：tests/unit/policy 与 tests/contracts 实跑通过（唯一红是本条要更新的冻结哈希）。",
+        "tests/unit/policy/test_evaluation_context_rule_state.py 用中性化上下文断言 V1/V2 评分逐字节不变；记录层不变量失败 0，推导值与 live 值同时已知时不一致 0（359,236 行互证）。"
+      ],
+      "known_followups": [
+        "you_cai_bi_kao 是官方运行级常量，只落在运行级清单（runs/{run_id}/manifest.json，读取入口 src/hangma_bot/adapters/recording/run_facts.py）；决策记录不携带它 ⇒ derived 语料上该字段恒为未知，gate.you_cai_bi_kao 在这些窗口不可判定（不得用默认 false 顶替）。",
+        "让每条决策的评分上下文直接带该开关需改 DecisionRequest / audit_codec，未在本轮范围内。"
+      ],
+      "identity_impact": "evaluation_v1.py 在候选执行依赖闭包内 ⇒ 已落盘门禁记录与 I1 提示词夹具按设计失效（身份漂移 6/6、提示词 sha 由 ea716dcf 变 bdeb1976），旧记录保留为历史不删除，刷新由后续「记录与夹具刷新」包统一执行。",
+      "scope": "只扩展评分上下文可读事实与记录层归因；不改 V1/V2 评分行为、不改线上策略与配置、不新建并行上下文类型。"
     }
   ],
   "experiment_sha256": "b2241fe5831795b39522507543785aa832966c116c8de9924f78b6f8ba821d75",

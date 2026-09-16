@@ -40,6 +40,23 @@ readings/NgHaradaRussell-ICML99.pdf ）只要求加分能写成 F(s,a,s') = γΦ
 
 代价与边界：冻结清单中本文件的 sha256 随之更新，修订原因记录在同一 freeze.json；
 **不**新建并行的上下文类型，也不为历史版本做兼容设计（用户已裁定：补充说明即可）。
+
+**修订 3（2026-09-16，坐隐 3.6d 记录与接线缺口，最小改动）**：追加三个**带默认值**的
+**可达性门控事实**字段（`you_cai_bi_kao` / `remaining_tile_count` / `catch_play_owner_seat`），
+并在 `build_context` 中从观察填充后两项。为什么必须接（3.0 场景类账 §6.1）：这三个类
+（`gate.you_cai_bi_kao` / `gate.wall_end_gang_ban` / `gate.catch_play_owner`）是
+**"别的分量是否可达"的前置条件**；3.0 交付时它们在评分上下文里**根本读不到**，于是恒报
+`unknown`——逐类覆盖无法把它们判成"已接线"。它们不是价值分量，只决定别的分量在哪些位点上
+成立，因此**不得给它配权重**（3.0 权重纪律）。
+
+证据边界（必须与上面一起引用）：`remaining_tile_count` 与 `catch_play_owner_seat` 直接来自
+`PlayerObservation` 的可见事实；`you_cai_bi_kao` 是**规则配置**项，`PlayerObservation` 里
+没有它，`DecisionRequest` 目前也不携带 `RuleConfig`。因此本文件只把它做成**显式可注入的
+可选参数**（默认 `None` = 未知），**不猜**：线上路径不传时为未知，离线评估器按面板规则
+配置注入（如 3.0 工具的 `PANEL_YOU_CAI_BI_KAO`）。让线上请求携带该开关需要改
+`DecisionRequest` 契约（kernel/application 范围），不在本次改动内。三个字段都**不改变**
+任何评分分项、排序与计划：V0/V1/V2 的评分函数不读它们，`EvaluationContext` 的构造点
+仍只有 `build_context` 一处。
 """
 
 from __future__ import annotations
@@ -87,6 +104,11 @@ class EvaluationContext:
     baotou: bool = False  # 本人是否爆头（官方 god.baotou）；总番 ×2，且是"飘"的前置条件
     wealth_count: int = 0  # 动作前本人手留财神张数；四白还须叠加链内飘出张数，不得只用本字段
     chain_piao: Optional[int] = None  # 当前链内飘出白板数（官方 chain.piao）；依据不足时为空，**不等于零**
+    # 以下三项为 2026-09-16 追加的**可达性门控事实**（3.6d 接线，见模块 docstring 修订 3）。
+    # 它们不是价值分量，只决定别的分量是否可达，因此没有权重、也不进任何分项。
+    you_cai_bi_kao: Optional[bool] = None  # 本场规则开关「有财必拷响」；None = 未知（调用方未注入），**不等于 False**
+    remaining_tile_count: Optional[int] = None  # 牌墙剩余张数（张，来自观察）；None = 未知；末局禁杠边界由规则层判定
+    catch_play_owner_seat: Optional[int] = None  # 当前抓打圈圈主座位（0—3，来自规则公开状态）；None = 无圈主或未知
 
 
 @dataclass(frozen=True)
@@ -103,8 +125,15 @@ class ScoredCandidate:
     is_safe_discard: bool  # 是否为熟张弃牌，供名次风格层加成
 
 
-def build_context(observation: PlayerObservation) -> EvaluationContext:
-    """从玩家观察构建评分上下文；不做任何合法性判断。"""
+def build_context(
+    observation: PlayerObservation, *, you_cai_bi_kao: Optional[bool] = None
+) -> EvaluationContext:
+    """从玩家观察构建评分上下文；不做任何合法性判断。
+
+    `you_cai_bi_kao` 是**规则配置**项（观察里没有它），只能由知情调用方注入；
+    缺省 `None` 表示未知——不得当成 `False`（未知 ≠ 关）。离线评估器按面板规则
+    配置传入，线上路径不传即为未知，行为与接线前一致（模块 docstring 修订 3）。
+    """
 
     combined: List[str] = _hand_codes_without_double_count(observation)
 
@@ -149,6 +178,10 @@ def build_context(observation: PlayerObservation) -> EvaluationContext:
         wealth_count=wealth_count,
         # 官方 chain.piao 的依据不足时为空，原样透传（空与 0 必须区分）。
         chain_piao=observation.chain_piao,
+        # 可达性门控事实：直接透传观察事实；you_cai_bi_kao 只能由调用方注入（见函数 docstring）。
+        you_cai_bi_kao=you_cai_bi_kao,
+        remaining_tile_count=observation.remaining_tile_count,
+        catch_play_owner_seat=observation.rule_state.catch_play_owner_seat,
     )
 
 
