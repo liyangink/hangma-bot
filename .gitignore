@@ -48,4 +48,8 @@ artifacts/
 # 生成端 headless 通道用法见 review/llm-guided-heuristic-route-2026-09-15/evidence/3.1-generation/。
 .dsh-headless/
 # 注：可共享的牌谱/训练制品提交到 datasets/（2026-09-06 起：自由赛完整牌谱）。
+# 坐隐面板窗口级缓存：派生大产物（各约 12–13 MB，可由 repro.sh 重建，实测全量重建约 17.2 分钟），
+# 按 Lead 裁定不入库；指纹、口径与复跑入口随证据入库。
+review/llm-guided-heuristic-route-2026-09-15/evidence/3.6b-panel-triage/panel-cache/
+review/llm-guided-heuristic-route-2026-09-15/evidence/3.6b-panel-triage/panel-cache-youcai-true/
 # 大样本封存仍建议走审计线 bundle + exports 流程（大文件不进 Git 的一般原则）。
