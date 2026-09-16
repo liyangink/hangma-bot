@@ -1,5 +1,7 @@
 # 第一阶段接口协议
 
+> **2026-09-16 待实施合同**：坐隐新 `action_value_v1` 的边界登记见文末“坐隐完整动作评分与研究合同 v4”。现有 delta 和旧准入 schema 原义保持；本次登记不表示代码/codec 已升级。
+
 2026-09-09 当前增补：指南 v27；v26 的公开圈主通过可选 `RulePublicState.catch_play_owner_seat` 接入，保持快照水位、旧 JSON 缺字段兼容和同一规则源。已替代下文历史 v8 跳窗兼容及旧 v24 限定审查，详见文末“官方圈主事实与v26响应修订”。新增字段不代表推进赛事目标或模型接口冻结。
 
 大牌路线实验兼容增补：`CandidateFacts` 尾部增加 `standard_shanten_after: Optional[int] = None` 和 `seven_pairs_shanten_after: Optional[int] = None`。只允许 `HAND_PROGRESS` 携带至少 -1 的整数，来自同一动作后等待手牌的已有数学结果：吃碰采用既有 `best_followup_discard`，杠采用补牌前手牌。七对有副露时为空；缺旧字段、未分析或失败也为空，不以零替代。紧急候选不产生这些事实。`shanten_after`、合法动作与默认策略不变；不是对多个后续弃牌各取最小值。审计 codec v1 仅在非空时写新键，旧 JSON 缺键还原为 None，完整请求往返覆盖。独立早期候选只消费这些事实，范围与发布门槛见[计划](big-hand-policy-plan.md)。
@@ -726,3 +728,23 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 第⑤档（逐事件见证）与 `settlement.infer_piao_count` 逐行同宽——非被动 `timeout`（自动动作，含缺
 `detail_kind`）一律不跨过；**本座**存在未知牌自动动作时第④⑥档让位为未知（返工 blocker-1）。
 
+
+## 坐隐完整动作评分与研究合同 v4（2026-09-16，待实施）
+
+**新框架是独立策略接缝，不扩展旧 delta 的含义。** 规范细则与验收以[实施合同 §4—14](../../review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)为准；本节登记跨模块变更责任，当前生产签名和产物版本不因文档自动改变。
+
+| 接缝 | 拟实施合同 | 生产者/消费者及兼容责任 |
+| --- | --- | --- |
+| 线上策略 | `BotPolicy.choose(DecisionRequest, DecisionBudget)` 不变；内部唯一 `score_actions(ScoringView) -> ScoreBatch`，一次给全部合法动作完整评分 | policy 内部；新策略不调用 V2 底分，不以增加 delta.bound 取得新语义 |
+| 规则事实 | 保留动作后合法弃牌分支、分牌型进展、路线证据/截断、确定条件结算 | hangma/interface、规则实现、application 构建/修复请求、offline 驱动与审计 codec 同步；旧最佳牌效字段保留 |
+| 信息权限 | ScoringView 为玩家观察/有效赛事上下文白名单投影；去掉研究种子/标签/结果与运行身份 | 投影不读 WorldState；规则配置、Rounds 等缺现有载荷的已知事实由组合根/驱动显式注入，不从历史猜补 |
+| 输出 | SCORED 必须每动作一项有限评分；ABSTAIN 或非法返回使整批降级；trace 有界，非线性分项不强求求和 | 固定骨架排序/去重/拒绝过滤/紧急动作保留；记录器落盘，policy 无 IO |
+| 分值分析接线 | 同一 AnalysisProfile 显式传入生产与普通/阶段模拟的规则 analyze | drive_match 与所有调用方补配置；未开启增强不得伪装有路线事实 |
+| 条件续打 | 通过公开 start/frame/advance 合法前缀重建到不透明世界；共享完整桌赛驱动循环 | simulation 继续独占 WorldState；offline 持有阶段已完成结果、当前桌累计与剩余赛程 |
+| 阶段目标 | 新 group-only 入口、group_advance_v1、未知排名上下界 | 四人档位默认决赛不能冒用；旧 stage_advance_score 保持旧代理含义 |
+| 候选身份 | 新 action_value_v1 种类绑定源码/参数/骨架/特征/工具/执行器/依赖闭包 | scoring_sources、装载、门禁、普通/阶段槽、缓存、恢复一致；旧 manifest 不直接放行 |
+| 研究资格 | sitin-action-value-admission/1 区分执行安全、覆盖、研究范围与发布资格 | 旧 admitted 与 trigger/research 记录不重解释；自然均分显著为正不再是新阶段入口的前置 |
+| 审计 | DecisionPlan/codec 增加可选版本化完整评分 trace 与事实身份 | 缺旧字段仍可解码；不覆盖旧原始观察；候选哈希由有 IO 权限的装配方生成 |
+| 时限 | 受限且有工作量计数的候选执行器；规则/特征/评分/计划整链计时 | asyncio timeout 不负责抢占同步无限计算；保留原网络余量与同窗不延长契约 |
+
+实现上述变更时必须同批更新本协议的具体类型定义、全部调用方、旧记录往返与契约测试；当前不预建空端口，不改变 HTTP 协议或默认上线策略。

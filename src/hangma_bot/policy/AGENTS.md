@@ -1,5 +1,7 @@
 # `policy` 模块实施规范
 
+> **坐隐 v4 范围说明（2026-09-16，待实施）**：新 `action_value_v1` 采用[完整评分合同](../../../review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)，V1/V2 的胡优先层和旧 delta 约束只约束这些旧实现。新入口显式比较所有合法动作，不能据此改写规则合法性、紧急路径或冻结旧策略；生成代码只进入受限评分接缝，不生成完整 choose/提交/评估器。
+
 ## 目标与边界
 
 本模块只对规则引擎已经确认的候选排序，是线上唯一决策接缝。先阅读根规范、接口协议和 `doc/implementation/modules/policy.md`。

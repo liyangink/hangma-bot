@@ -1,5 +1,7 @@
 # `policy` 实施说明
 
+> **2026-09-16 新接缝规划（待实施）**：新增 `action_value_v1` 独立完整动作评分，按[框架 v4](../../../review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)施工。下文“唯一装载路径”仅指旧 delta 候选；新策略仍只实现同一个 BotPolicy.choose，对合法动作完整评分，显式允许比较合法胡与继续，遵守原保底/截止/审计。公共输入、codec、注册表与新门禁同批升级，不修改冻结 V0/V1/V2。
+
 ## 交付结果
 
 实现确定性的 `WeightedHeuristicPolicy` 与只保留紧急动作的 `SafeFallbackPolicy`。输出完整 `DecisionPlan`，不执行提交。
