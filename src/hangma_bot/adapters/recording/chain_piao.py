@@ -36,6 +36,7 @@ from typing import Dict, List, Mapping, Optional, Tuple
 
 from hangma_bot.hangma.internal_types import is_wealth
 from hangma_bot.hangma.settlement import infer_piao_count
+from hangma_bot.hangma.special_rules import is_passive_observation_event
 from hangma_bot.kernel.observation import PlayerObservation
 from hangma_bot.kernel.serialization import observation_from_json
 
@@ -109,7 +110,11 @@ def derive_chain_piao(observation: PlayerObservation) -> ChainPiaoDerivation:
     chain_count = observation.rule_state.chain_count
     river_whites = _own_river_whites(observation)
     whites_held = _whites_held(observation)
-    history_piao, history_seqs, history_reason = _history_witness(observation)
+    history_piao, history_seqs, history_reason = history_witness(observation)
+    # 本座「未知牌的自动动作」：官方把自动动作记为 timeout（data.kind != response），自动弃牌
+    # **不落成 tile_discarded 事件** ⇒ 可见事实里少了一次本座动作，平台链计数可能尚未反映它。
+    # 只抑制**依赖链构成**的档位（④⑥），不影响牌面单调事实（②③）。
+    own_unknown_action = has_own_unknown_action(observation)
     if own_melds_contain_white(observation):
         return _verdict(None, chain_count, (), (), river_whites, whites_held,
                         reason="本人副露含白板，与「白板不可被吃碰杠」矛盾，本记录不作归因")
@@ -126,10 +131,11 @@ def derive_chain_piao(observation: PlayerObservation) -> ChainPiaoDerivation:
     if whites_held == 4:
         # 档位③：白板共 4 张，手留 4 张 ⇒ 链内飘出必为 0。
         candidates.append((RUNG_HELD_FOUR, 0))
-    if chain_count == 1 and observation.gang_draw is True:
+    if chain_count == 1 and observation.gang_draw is True and not own_unknown_action:
         # 档位④：这次摸牌是杠上补牌且链长 1 ⇒ 该链动作就是这次杠 ⇒ 飘 0。
+        # 本座存在未知牌自动动作时不用（平台链计数可能尚未吸收那一步）。
         candidates.append((RUNG_GANG_DRAW_SINGLE, 0))
-    if chain_count > 0 and own_melds_prove_no_gang(observation):
+    if chain_count > 0 and own_melds_prove_no_gang(observation) and not own_unknown_action:
         # 档位⑥：本局公开副露里没有杠组（且种类全在已知白名单内）⇒ 链动作不可能是杠
         # ⇒ 链次数即飘数。与档位⑤（逐事件见证）互为交叉核对：两者同时成立必须一致。
         candidates.append((RUNG_NO_GANG_MELD, chain_count))
@@ -156,6 +162,23 @@ def derive_chain_piao(observation: PlayerObservation) -> ChainPiaoDerivation:
     seqs = history_seqs if witnessed else ()
     return _verdict(piao, chain_count, rungs, seqs, river_whites, whites_held,
                     witnessed=witnessed, rule_accounted=rule_accounted)
+
+
+def has_own_unknown_action(observation: PlayerObservation) -> bool:
+    """可见历史里是否有**本座**「未知牌的自动动作」（非被动 timeout）。
+
+    官方把自动动作记为 ``timeout``：``data.kind=response`` 是响应超时（纯表态、无副作用），
+    其余取值或缺 kind 一律**不能排除自动出牌**（与 ``special_rules.is_passive_observation_event` 同口径）。
+    自动弃牌不会作为 ``tile_discarded`` 事件出现，因此本座牌面与链构成里可能少了一步；
+    依赖链构成的档位（④⑥）遇到它必须让位给 unknown。
+    """
+
+    for event in observation.public_history:
+        if event.seat != observation.seat or event.kind != "timeout":
+            continue
+        if not is_passive_observation_event(event):
+            return True
+    return False
 
 
 def own_melds_contain_gang(observation: PlayerObservation) -> bool:
@@ -362,10 +385,13 @@ def _whites_held(observation: PlayerObservation) -> int:
     return sum(1 for code in _concealed_codes(observation) if code == "白")
 
 
-def _history_witness(
+def history_witness(
     observation: PlayerObservation,
 ) -> Tuple[Optional[int], Tuple[int, ...], Optional[str]]:
     """在连续历史后缀里定位链动作见证；口径与 ``settlement.infer_piao_count`` 相同。
+
+    公开为**等价性对拍入口**（audit/test 用）：``rule_value_for_cross_check`` 与
+    本函数的返回值必须在**每一行记录**上一致（同为 None 或同值）。
 
     为什么另写一遍：规则函数只返回值，不返回"哪几个事件贡献了 +1"，而归因要求每个
     +1 都能指到具体事件序号。两处口径由等价性测试钉死（同输入必须同结果：规则函数
@@ -389,6 +415,10 @@ def _history_witness(
         expected -= 1
         if event.kind not in harmless:
             return None, (), "历史出现未知事件类型 {0}，无法定位链动作".format(event.kind)
+        # **必须与 ``settlement.infer_piao_count` 同宽**：非被动 timeout（自动动作，含缺 kind）
+        # 不得当作纯表态跨过。判定与座位无关，且先于座位过滤——与规则函数逐行一致。
+        if event.kind == "timeout" and not is_passive_observation_event(event):
+            return None, (), "历史含非被动 timeout（无法排除自动动作），无法定位链动作"
         if event.seat != observation.seat:
             continue
         if event.kind == "gang":

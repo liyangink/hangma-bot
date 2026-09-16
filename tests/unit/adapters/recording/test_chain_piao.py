@@ -29,6 +29,7 @@ from hangma_bot.adapters.recording.chain_piao import (
     RUNG_PUBLIC_HISTORY,
     RUNG_RIVER_NO_WHITE,
     derive_chain_piao,
+    has_own_unknown_action,
     normalize_decision_input_payload,
     own_melds_contain_gang,
     own_melds_contain_white,
@@ -48,6 +49,7 @@ from .support import (
     make_observation,
     meld,
     observation_with_river,
+    timeout_event,
 )
 
 
@@ -247,10 +249,25 @@ def test_own_meld_with_white_is_refused() -> None:
          (_gang(0, "2w"),), 1),
         ((discard_event(1, 0, "3w"),), 1, 1, (_peng(0, "3w"),), None),  # 链已断，历史走不通
         ((gang_event(1, 0, "2w"),), 1, 2, (_gang(0, "2w"),), None),     # 历史不足以覆盖 2 次链动作
+        # timeout 的三态（返工 blocker-1：判定必须与 is_passive_observation_event 同宽）：
+        #   detail_kind 缺省 / "discard" = 无法排除自动出牌 ⇒ 规则函数返回 None，第⑤档也不得命中；
+        #   detail_kind="response" = 纯表态 ⇒ 两侧都必须跨过它继续反查。
+        ((discard_event(1, 0, WEALTH_CODE), timeout_event(2, 0, None)), 2, 1, (),
+         None),
+        ((discard_event(1, 0, WEALTH_CODE), timeout_event(2, 0, "discard")), 2, 1, (),
+         None),
+        ((discard_event(1, 0, WEALTH_CODE), timeout_event(2, 1, None)), 2, 1, (),
+         None),
+        ((discard_event(1, 0, WEALTH_CODE), timeout_event(2, 0, "response"),
+          gang_event(3, 0, "2w")), 3, 2, (_gang(0, "2w"),), 1),
     ],
 )
 def test_history_rung_matches_rule_source(events, consumed, chain_count, melds, expected) -> None:
-    """第⑤档（逐事件见证）与 ``infer_piao_count`` 同口径：值必须相等，None 必须同为 None。"""
+    """第⑤档（逐事件见证）与 ``infer_piao_count`` 同口径：值必须相等，None 必须同为 None。
+
+    ``expected is None` 时断言的是**第⑤档不命中**（``witnessed=False`、档位不在集合里），
+    而不是"整条推导必须未知"——其他档位（牌面单调事实）可以独立成立，那是另一条证据链。
+    """
 
     observation = observation_with_river(
         0, [WEALTH_CODE], rule_state=_rule_state(chain_count),
@@ -258,10 +275,65 @@ def test_history_rung_matches_rule_source(events, consumed, chain_count, melds, 
         melds=_melds(0, *melds),
     )
     assert rule_value_for_cross_check(observation) == expected
+    derivation = derive_chain_piao(observation)
     if expected is not None:
-        derivation = derive_chain_piao(observation)
         assert derivation.piao == expected
         assert derivation.attributed is True
+    else:
+        assert RUNG_PUBLIC_HISTORY not in derivation.rungs
+        assert derivation.witnessed is False
+
+
+def test_own_auto_action_suppresses_chain_composition_rungs() -> None:
+    """评审判给的最小复现：本座非被动 timeout ⇒ 不得由链构成档位给出 piao=1。
+
+    世界：无杠组副露、chain_count=1、牌河恰 1 张白、历史=[本座白弃牌, 本座非被动 timeout]。
+    第⑤档按规则函数口径返回 None；第⑥档（无杠 ⇒ 链动作全是飘）与第④档因本座存在
+    **未知牌的自动动作**（自动弃牌不落 tile_discarded 事件）而让位 ⇒ 整条推导 unknown。
+    """
+
+    assert has_own_unknown_action is not None  # 导入自检：函数在公开面上
+    observation = observation_with_river(
+        0, [WEALTH_CODE], rule_state=_rule_state(1), consumed_seq=2,
+        public_history=history(discard_event(1, 0, WEALTH_CODE), timeout_event(2, 0, None)),
+        melds=_melds(0, _peng(0, "3w")),
+    )
+    assert rule_value_for_cross_check(observation) is None
+    derivation = derive_chain_piao(observation)
+    assert derivation.piao is None
+    assert derivation.attributed is False
+    assert RUNG_NO_GANG_MELD not in derivation.rungs
+    assert RUNG_PUBLIC_HISTORY not in derivation.rungs
+    assert derivation.reason
+
+
+def test_own_auto_action_does_not_suppress_board_facts() -> None:
+    """牌面单调事实不受本座自动动作影响：牌河无白 ⇒ 飘必为 0（第二条独立证据链）。"""
+
+    observation = observation_with_river(
+        0, ["3w"], rule_state=_rule_state(1), consumed_seq=2,
+        public_history=history(discard_event(1, 0, "3w"), timeout_event(2, 0, None)),
+        melds=_melds(0, _peng(0, "3w")),
+    )
+    derivation = derive_chain_piao(observation)
+    assert derivation.piao == 0
+    assert derivation.rungs == (RUNG_RIVER_NO_WHITE,)
+
+
+def test_other_seat_timeout_keeps_the_no_gang_rung() -> None:
+    """**他家**非被动 timeout 与本座链无关 ⇒ 第⑥档仍成立（真实基线里 4 行非零归因属此形态）。"""
+
+    observation = observation_with_river(
+        0, [WEALTH_CODE], rule_state=_rule_state(1), consumed_seq=2,
+        public_history=history(discard_event(1, 0, WEALTH_CODE), timeout_event(2, 1, None)),
+        melds=_melds(0, _peng(0, "3w")),
+    )
+    assert rule_value_for_cross_check(observation) is None
+    derivation = derive_chain_piao(observation)
+    assert derivation.piao == 1
+    assert derivation.rungs == (RUNG_NO_GANG_MELD,)
+    assert derivation.rule_accounted is True
+    assert derivation.witnessed is False
 
 
 def test_rule_source_none_never_becomes_history_attribution() -> None:

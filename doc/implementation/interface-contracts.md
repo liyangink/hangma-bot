@@ -713,11 +713,16 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 **行为与冻结契约**：四个外部端口、默认策略名、V0/V1/V2 评分分项、排序与计划**全部不变**
 （`tests/unit/policy` 534 项通过，含逐字节行为中性回归）。该文件在 V1 冻结清单内，
 按 2026-09-15 同款处置：只加带默认值字段 + 更新 `freeze.json` 的 sha256 与
-`source_revision_notes`（该文件不在本包可写范围，**由 Lead 落盘**；落盘前
-`tests/contracts/test_heuristic_sources_frozen.py` 预期为红）。
+`source_revision_notes`（该文件不在本包可写范围，**由 Lead 落盘**：现 sha256 已对齐
+`b3198fcfc030a235873f67051bdf859f04a97b3290c4bd6783e870b7d7330fe0`，
+`tests/contracts/test_heuristic_sources_frozen.py` **8 passed**）。
 
-**相关测试与证据**：`tests/unit/adapters/recording/test_chain_piao.py`（24 项：五级档位、
-档位冲突、不可归因记 unknown、与规则函数等价性、落盘只改两处、记录器接线）；
-`tests/adapters`（948 项通过，记录器不因补全失败丢记录）；语料前后对比见
-[evidence/3.6d-corpus](../../review/llm-guided-heuristic-route-2026-09-15/evidence/3.6d-corpus/README.md)。
+**相关测试与证据**：`tests/unit/adapters/recording/test_chain_piao.py`（**28 项**：**六级档位**、
+档位冲突、不可归因记 unknown、与规则函数等价性（含 timeout 三态）、落盘只改两处、记录器接线、
+未知副露种类 fail-closed）与 `tests/unit/adapters/recording/test_run_facts.py`（6 项）；
+`tests/adapters`（**924 passed / 1 skipped**，记录器不因补全失败丢记录）；
+语料前后对比见 [evidence/3.6d-corpus](../../review/llm-guided-heuristic-route-2026-09-15/evidence/3.6d-corpus/README.md)。
+**第⑥档 `own_melds_without_gang` 是 canonical 面板上唯一产生非零归因的档位**（非零 20 行全部来自它）；
+第⑤档（逐事件见证）与 `settlement.infer_piao_count` 逐行同宽——非被动 `timeout`（自动动作，含缺
+`detail_kind`）一律不跨过；**本座**存在未知牌自动动作时第④⑥档让位为未知（返工 blocker-1）。
 
