@@ -45,6 +45,8 @@ VALUE_ANALYSIS_SEMANTICS_VERSION = "hangma-value-analysis/1"
 
 # —— P11（M1 闭环）：赛事基准的掩码词表（冻结；变更即候选身份变化）——
 #: freshness_masks 的**位置序**：下标 0/1 分别对应 stage_scores / table_scores。
+#: 第三概念 current_stage_scores 不单列掩码位：它的可用性与 stage_scores 同掩码
+#: （masks[0] == stage_account:complete 才非空），见 _current_stage_scores。
 COMPETITION_MASK_BASES: Tuple[str, ...] = ("stage_scores", "table_scores")
 #: stage_scores 的可用状态（freshness_masks[0] 取值，闭集）。
 STAGE_ACCOUNT_COMPLETE = "stage_account:complete"      # 桌内座位序账完整可用
@@ -172,30 +174,67 @@ def _stage_account_vector(
     return tuple(int(entry.total_score) for entry in ranking), STAGE_ACCOUNT_COMPLETE
 
 
+def _current_stage_scores(
+    stage_scores: Optional[Tuple[int, int, int, int]],
+    stage_mask: str,
+    table_scores: Tuple[int, ...],
+) -> Optional[Tuple[int, int, int, int]]:
+    """三概念之三：当前阶段合计 = 已完成账 + 当前桌账（逐座位相加）。
+
+    - **为什么可以相加**：两项同座位序（物理座位 0—3）、同单位（积分点）、
+      **互不重叠**——`stage_scores` 只含本阶段**已完成各桌赛**的积分和，
+      `table_scores` 只含**本桌进行中**积分。相加是重建完整当前阶段分数，
+      不是重复累计，因此是阶段门线的唯一正确基准。
+    - **唯一禁止的重复累计**：`table_scores` 与同一份
+      `visible_state.table_scores` 相加（同一事实的两个基准名，相加即翻倍）；
+      该禁令在 `CompetitionView.__post_init__` 由一致性检查兜底。
+    - **未知 ≠ 零**：`stage_scores` 缺账（absent/unmappable）时它同时为 None，
+      不得用 `table_scores` 顶替当阶段账，也不得补零。
+    """
+    if stage_mask != STAGE_ACCOUNT_COMPLETE or stage_scores is None:
+        return None
+    return tuple(
+        int(completed) + int(live)
+        for completed, live in zip(stage_scores, table_scores)
+    )
+
+
 def _competition_view(
     context: CompetitionContext, seat: int, table_scores: Tuple[int, ...]
 ) -> CompetitionView:
-    """从 CompetitionContext + 本桌观察座位投影可见赛事上下文（P11/M1 闭环）。
+    """从 CompetitionContext + 本桌观察座位投影可见赛事上下文（P11/M1 + R8 E3）。
 
-    两个基准分别命名、各自可空，不得混算或互相顶替（接口协议「基准唯一」）：
+    三份账分别命名、各自可空（机器合同 scoring_view.competition_bases）：
 
-    - `stage_scores`：本阶段**已完成桌**的座位序阶段账（单位：积分点；
-      顺序：物理座位 0—3），经 `_stage_account_vector` 投影；无账/不可映射
-      时为 None（未知，不是全 0）。
-    - `table_scores`：本桌**进行中**积分，直接来自本窗口 `PlayerObservation
-      .scores`（座位 0—3；与候选可见的 `visible_state.table_scores` 是同一
-      事实的两个基准名）；本桌积分对本人恒可见，故恒投影、不报未知，也不
-      与阶段账相加（合同「基准唯一」：一次计算只选一个基准）。
+    - `stage_scores`（**已完成账**）：本阶段**已完成桌**的座位序阶段账
+      （单位：积分点；顺序：物理座位 0—3），经 `_stage_account_vector` 投影；
+      无账/不可映射时为 None（未知，不是全 0）。
+    - `table_scores`（**当前桌账**）：本桌**进行中**积分，直接来自本窗口
+      `PlayerObservation.scores`（座位 0—3；与候选可见的
+      `visible_state.table_scores` 是同一事实的两个基准名）；本桌积分对本人
+      恒可见，故恒投影、不报未知。
+    - `current_stage_scores`（**当前阶段合计**）：前两账逐座位相加，见
+      `_current_stage_scores`；相加合法（同座位序、同单位、互不重叠），
+      被禁止的只有「同一份本桌积分按两个基准名相加」。
     - `freshness_masks`：固定两元组，位置序 `COMPETITION_MASK_BASES`
       （下标 0 = stage_scores、1 = table_scores），取值来自闭集
       `COMPETITION_MASK_VALUES`；基准不可用时掩码说明原因，掩码本身仍然
-      给出（缺账的原因是可核事实，不是未知）。
+      给出（缺账的原因是可核事实，不是未知）。`current_stage_scores` 的
+      可用性与 `stage_scores` 同掩码（masks[0] == complete 才非空），
+      故不单列第三个掩码位。
+    - **未投影的可见事实**（合同 `residual_gaps` 显式登记）：剩余赛程
+      （`CompetitionContext.stage_no`/`stage_total`）不进候选视图——把剩余
+      桌数从 0 改为 6，候选视图逐字不变；不得默认它已可见。
     """
     stage_scores, stage_mask = _stage_account_vector(context, seat)
+    live_scores = tuple(int(score) for score in table_scores)
     return CompetitionView(
         stage_scores=stage_scores,
-        table_scores=tuple(int(score) for score in table_scores),
+        table_scores=live_scores,
         freshness_masks=(stage_mask, TABLE_ACCOUNT_LIVE),
+        current_stage_scores=_current_stage_scores(
+            stage_scores, stage_mask, live_scores
+        ),
     )
 
 

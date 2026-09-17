@@ -704,3 +704,361 @@ class TestUnknownAccountIsNotZero:
         print("[P11-E] 第 1 桌已知零账：stage_scores={0} 掩码={1}".format(
             view.competition.stage_scores, view.competition.freshness_masks))
 
+# ---------------------------------------------------------------------------
+# E3 · M1（复审 §5，R8 包 E3）：已完成账 + 当前桌账 = 当前阶段合计
+#
+# 缺陷（R7 冻结版）：投影给出 stage_scores（本阶段已完成桌）与 table_scores（本桌进行中），
+# 作者条款却要求「一次门线只选一个基准」并禁止相加 —— 两者同座位序、同单位、
+# **互不重叠**（一个只含已完成桌、一个只含本桌进行中），禁止相加等于禁止重建
+# 完整当前阶段分数，遵守它就会算错当前阶段位置。
+#
+# 零合金例（复审 §5 M1 原文；向量顺序物理座位 0—3，焦点座位 2）：
+#   已完成账   [60, 40, -20, -80] → 焦点到当前第二名分数线距离 −60（严格第 3 名，OUT）
+#   当前桌账   [-100, 0, 100, 0]  → +100（本桌第一，但这不是阶段门线）
+#   当前阶段合计 [-40, 40, 80, -80] → **+40**（严格第 1 名，IN）
+# 只看旧阶段账会把当前领先者当落后者；只看桌内积分也不是阶段门线。
+# 唯一禁止的重复累计：table_scores 与同一份 visible_state.table_scores 相加
+# （同一事实的两个基准名）。
+#
+# 路径：公开入口 build_scoring_view(request).candidate_view()（真实 DecisionRequest，
+# 阶段账由 offline StageSituationProjection 真实投影，不是替身）。
+# ---------------------------------------------------------------------------
+
+E3_SEAT = 2                                    # 焦点物理座位（复审金例口径）
+E3_ADVANCE = 2                                 # 晋级区大小（目标合同 objective.advance_count）
+E3_COMPLETED = (60, 40, -20, -80)              # 已完成账（座位 0—3）
+E3_PLACES = (1, 3, -3, -1)                     # 已完成账名次分（次级键；名次单调）
+E3_TABLE = (-100, 0, 100, 0)                   # 当前桌进行中（同座位序）
+E3_COMPOSITE = (-40, 40, 80, -80)              # 当前阶段合计（逐座位相加）
+
+
+def _e3_observation(*, seat=E3_SEAT, table_scores=E3_TABLE):
+    """第 2 桌真实观察：阶段账与桌内账各自独立注入（座位与桌内账可换）。"""
+    tiles = tuple(Tile(code) for code in P11_HAND.split())
+    return PlayerObservation(
+        game_id="e3-stage-composition", seat=seat, round_no=5, snapshot_seq=64,
+        phase="draw", dealer_seat=0, turn_seat=seat, responding_seats=(),
+        my_hand=tiles, drawn_tile=Tile(P11_DRAW),
+        discards=((), (), (), ()), melds=((), (), (), ()),
+        hand_counts=tuple(14 if index == seat else 13 for index in range(4)),
+        last_discard=None, remaining_tile_count=52, scores=tuple(table_scores),
+        rule_state=RulePublicState(Tile("白"), False, 0, False), public_history=(),
+    )
+
+
+def _e3_request(*, seat=E3_SEAT, completed=E3_COMPLETED, places=E3_PLACES,
+                table_scores=E3_TABLE, stage_table_no=2, tables_in_stage=2):
+    """同一观察 + 指定阶段账/当前桌账 → DecisionRequest（阶段账由真实投影器生成）。"""
+    observation = _e3_observation(seat=seat, table_scores=table_scores)
+    situation = StageSituationProjection(
+        stage_table_no=stage_table_no, tables_in_stage=tables_in_stage,
+        stage_role="qualify", tables_completed=1, rounds_per_game=8,
+        stage_scores_by_seat=tuple(completed),
+        place_points_by_seat=tuple(places),
+        participant_ids_by_seat=P11_IDENTITIES,
+    )
+    request = _request_for(observation, ValueAnalysisLimits())
+    return replace(
+        request, competition=situation.competition_context(P11_TOURNAMENT, seat)
+    )
+
+
+def _e3_inside_gap(scores, seat=E3_SEAT, advance=E3_ADVANCE):
+    """手算阶段门线势差：inside_line = 升序下标 (4−advance) 的分数（= 第 advance 名）。"""
+    ordered = sorted(scores)
+    return scores[seat] - ordered[4 - advance]
+
+
+def _e3_candidate_competition(request):
+    """候选实际可见的赛事上下文（公开入口 build_scoring_view → candidate_view）。"""
+    return build_scoring_view(request).candidate_view()["competition"]
+
+
+#: E3/M1 的受限候选（真实执行器装载）：只读**当前阶段合计**（current_stage_scores）
+#: 算阶段门线势差，再按「阶段内领先 → 牌效档 / 阶段内落后 → 追分档」切档。
+#: 与 P11 的候选（只读 stage_scores）构成同窗口对照：同一份观察、同一批规则候选，
+#: 只有基准不同——用来证明作者实际看到并使用的计算路径确实变了。
+#: 基准不可用（None / 长度错）时显式 ABSTAIN，不靠缺键静默回退到某个默认档。
+E3_BASIS_CANDIDATE_SOURCE = '''"""e3_stage_composition_probe：按可见的当前阶段合计切档。"""
+
+SHANTEN_WEIGHT = 3.0
+SUPPORT_WEIGHT = 0.5
+ADVANCE_INDEX = 2
+UNKNOWN_ANCHOR_STEP = 1.0
+
+
+def number(value):
+    if value is None:
+        return None
+    if value is True or value is False:
+        return None
+    return value
+
+
+def tile_width(tiles):
+    if tiles is None:
+        return None
+    total = 0.0
+    for tile in tiles:
+        remaining = number(tile.get("remaining_estimate"))
+        if remaining is None:
+            return None
+        total = total + remaining
+    return total
+
+
+def action_facts(action):
+    shanten = number(action.get("shanten_after"))
+    if shanten is None:
+        return None
+    support = tile_width(action.get("useful_tiles"))
+    if support is None:
+        support = 0.0
+    return (shanten, support)
+
+
+def stage_pressure(view):
+    competition = view.get("competition")
+    if competition is None:
+        return (None, "no_competition_view")
+    scores = competition.get("current_stage_scores")
+    if scores is None:
+        return (None, "current_stage_scores_unknown")
+    if len(scores) != 4:
+        return (None, "current_stage_scores_bad_length")
+    seat = view["visible_state"]["seat"]
+    ordered = sorted(scores)
+    inside_line = ordered[ADVANCE_INDEX]
+    if scores[seat] >= inside_line:
+        return (False, "current_stage_scores")
+    return (True, "current_stage_scores")
+
+
+def score_actions(view):
+    push, basis = stage_pressure(view)
+    if push is None:
+        return {"status": "ABSTAIN", "reason": "阶段合计不可用：" + basis}
+    entries = []
+    for action in view["actions"]:
+        facts = action_facts(action)
+        if facts is None:
+            continue
+        shanten = facts[0]
+        support = facts[1]
+        if push:
+            score = support
+        else:
+            score = 0.0 - SHANTEN_WEIGHT * shanten + SUPPORT_WEIGHT * support
+        entries.append({
+            "action_key": action["action_key"],
+            "score": score,
+            "trace": {"basis": "e3_stage_composition",
+                      "mode": "push" if push else "safe",
+                      "stage_basis": basis, "shanten": shanten, "width": support},
+        })
+    anchor = None
+    for entry in entries:
+        if anchor is None or entry["score"] < anchor:
+            anchor = entry["score"]
+    if anchor is None:
+        return {"status": "ABSTAIN", "reason": "无可用动作事实"}
+    anchor = anchor - UNKNOWN_ANCHOR_STEP
+    for action in view["actions"]:
+        key = action["action_key"]
+        known = False
+        for entry in entries:
+            if entry["action_key"] == key:
+                known = True
+        if known:
+            continue
+        entries.append({
+            "action_key": key, "score": anchor,
+            "trace": {"basis": "unknown_field_basis", "field": "shanten_after",
+                      "stage_basis": basis},
+        })
+    return {"status": "SCORED", "entries": entries, "reason": None}
+'''
+
+class TestStageCompositionIntoView:
+    """E3/M1：候选可见视图必须携带「当前阶段合计」，且只加一次本桌账。"""
+
+    def test_candidate_view_carries_composed_current_stage_scores(self):
+        request = _e3_request()
+        view = build_scoring_view(request)
+        competition = view.competition
+        assert competition.stage_scores == E3_COMPLETED
+        assert competition.table_scores == E3_TABLE
+        assert competition.current_stage_scores == E3_COMPOSITE
+        assert competition.freshness_masks == (
+            "stage_account:complete", "table_account:live")
+
+        mapped = _e3_candidate_competition(request)
+        assert mapped["stage_scores"] == E3_COMPLETED
+        assert mapped["table_scores"] == E3_TABLE
+        assert mapped["current_stage_scores"] == E3_COMPOSITE
+        # 三概念的定义式（逐座位）：合计 = 已完成账 + 当前桌账。
+        for index in range(4):
+            assert (mapped["current_stage_scores"][index]
+                    == mapped["stage_scores"][index] + mapped["table_scores"][index])
+        print("[E3-A] 已完成账={0} 当前桌账={1} 当前阶段合计={2} 掩码={3}".format(
+            mapped["stage_scores"], mapped["table_scores"],
+            mapped["current_stage_scores"], mapped["freshness_masks"]))
+
+    def test_zero_sum_golden_example_rebuilds_the_stage_position(self):
+        """复审零合金例：−60（只看已完成账）/ +100（只看桌内）/ **+40**（合计）。"""
+        mapped = _e3_candidate_competition(_e3_request())
+        completed = mapped["stage_scores"]
+        table = mapped["table_scores"]
+        composite = mapped["current_stage_scores"]
+        assert composite == tuple(a + b for a, b in zip(completed, table))             == E3_COMPOSITE
+        assert _e3_inside_gap(completed) == -60.0
+        assert _e3_inside_gap(table) == 100.0
+        assert _e3_inside_gap(composite) == 40.0
+
+        # 名次结论（advance_count=2）：只看已完成账，焦点严格第 3（OUT）；
+        # 用合计，焦点严格第 1（IN，Φ_in ≥ 0）。这就是「把当前领先者当落后者」。
+        assert completed[E3_SEAT] < sorted(completed)[4 - E3_ADVANCE]   # -20 < 40
+        assert composite[E3_SEAT] >= sorted(composite)[4 - E3_ADVANCE]  # 80 ≥ 40
+        assert _e3_inside_gap(composite) >= 0.0 > _e3_inside_gap(completed)
+        print("[E3-B] 门线势差：已完成账={0} 当前桌账={1} 合计={2}（焦点座位 {3}）".format(
+            _e3_inside_gap(completed), _e3_inside_gap(table),
+            _e3_inside_gap(composite), E3_SEAT))
+
+    def test_only_forbidden_accumulation_is_table_scores_double_count(self):
+        """唯一禁止的重复累计：table_scores 与同一份 visible_state.table_scores 相加。"""
+        view = build_scoring_view(_e3_request())
+        mapped = view.candidate_view()
+        competition = mapped["competition"]
+        # 同一事实的两个基准名：候选可见桌内积分与 competition.table_scores 逐位相同。
+        assert competition["table_scores"] == E3_TABLE
+        assert mapped["visible_state"]["table_scores"] == E3_TABLE
+        double_counted = tuple(
+            competition["stage_scores"][index] + 2 * competition["table_scores"][index]
+            for index in range(4)
+        )
+        assert competition["current_stage_scores"] == E3_COMPOSITE
+        assert competition["current_stage_scores"] != double_counted
+        assert double_counted[E3_SEAT] == 180  # 手算：−20 + 2×100 ≠ 80
+        print("[E3-C] 正确合成={0} 重复累计（被禁止）={1}".format(
+            competition["current_stage_scores"], double_counted))
+
+    def test_machine_level_rejects_inconsistent_composition(self):
+        """一致性是机器不变量：给出与两账不符的合计必须构造期失败。"""
+        from hangma_bot.policy.action_value import CompetitionView
+
+        with pytest.raises(ValueError, match="current_stage_scores"):
+            CompetitionView(stage_scores=E3_COMPLETED, table_scores=E3_TABLE,
+                            current_stage_scores=(0, 0, 0, 0))
+        # 正例对照：一致即通过（判别力证明上面的用例不是恒真）。
+        consistent = CompetitionView(stage_scores=E3_COMPLETED, table_scores=E3_TABLE,
+                                     current_stage_scores=E3_COMPOSITE)
+        assert consistent.current_stage_scores == E3_COMPOSITE
+
+    def test_restricted_candidate_sees_the_composed_basis_end_to_end(self):
+        """作者实际路径：受限候选（真执行器）读 current_stage_scores 后决策翻转。
+
+        - 修复后的候选（读 `current_stage_scores`）：焦点在**阶段内领先** → safe 档
+          → 牌效最优弃牌；
+        - 旧口径候选（只读 `stage_scores`，即 P11 的候选源码）：把当前领先者当落后者
+          → push 档 → 追分弃牌。
+
+        两条路径都走**真实受限执行**（静态子集检查 + 插桩计量 + 真实规则候选 +
+        真实 ActionValuePolicy 装配）；`current_stage_scores` 缺失或为 None 时修复后的
+        候选显式 ABSTAIN（不是靠缺键回退到某个默认档），因此该用例在修复前会红。
+        """
+
+        request = _e3_request()
+        fixed = run_choose(
+            ActionValuePolicy(ActionValueScorer(
+                "e3_stage_composition_probe", E3_BASIS_CANDIDATE_SOURCE)),
+            request, make_budget())
+        legacy = run_choose(_p11_policy(), request, make_budget())
+        fixed_top = fixed.candidates[0]
+        legacy_top = legacy.candidates[0]
+        assert fixed_top.score_trace["detail"]["stage_basis"] == "current_stage_scores"
+        assert legacy_top.score_trace["detail"]["stage_basis"] == "stage_scores"
+        assert legacy_top.score_trace["detail"]["mode"] == "push"
+        assert fixed_top.score_trace["detail"]["mode"] == "safe"
+        assert fixed_top.action_key != legacy_top.action_key
+        # 交叉核验（用同一视图的真实事实，不写死动作键）：两个胜者在对方档位上
+        # 都严格更差 —— 翻转来自真实权衡，不是同分决胜或噪声。
+        facts = _p11_discard_facts(build_scoring_view(request))
+        efficiency = lambda key: -3.0 * facts[key][0] + 0.5 * facts[key][1]
+        width = lambda key: facts[key][1]
+        assert efficiency(legacy_top.action_key) < efficiency(fixed_top.action_key)
+        assert width(fixed_top.action_key) < width(legacy_top.action_key)
+        print("[E3-F] 旧口径 stage_scores → {0}（{1}）；合计口径 "
+              "current_stage_scores → {2}（{3}）".format(
+                  legacy_top.action_key, legacy_top.score_trace["detail"]["mode"],
+                  fixed_top.action_key, fixed_top.score_trace["detail"]["mode"]))
+
+
+class TestStageCompositionUnknownAndScheduleGap:
+    """E3/M1：缺账 ⇒ 合计未知（不是 0、不等于桌内账）；剩余赛程登记为剩余缺口。"""
+
+    def test_absent_stage_account_makes_composition_unknown_not_zero(self):
+        from hangma_bot.kernel.observation import CompetitionContext
+
+        empty = CompetitionContext(
+            tournament_id=P11_TOURNAMENT, stage_no=None, stage_role=None,
+            stage_total=None, participant_rank=None, ranking=(),
+            observed_at_unix_ms=0,
+        )
+        request = replace(
+            _request_for(_e3_observation(), ValueAnalysisLimits()), competition=empty)
+        view = build_scoring_view(request)
+        assert view.competition.stage_scores is None
+        # 未知 ≠ 0，也不得退回本桌账冒充阶段账。
+        assert view.competition.current_stage_scores is None
+        mapped = view.candidate_view()["competition"]
+        assert mapped["current_stage_scores"] is None
+        assert mapped["table_scores"] == E3_TABLE   # 本桌账仍可见，但不是阶段账
+        assert mapped["freshness_masks"][0] == "stage_account:absent"
+        print("[E3-D] 无阶段账：stage_scores={0} current_stage_scores={1} 掩码={2}".format(
+            mapped["stage_scores"], mapped["current_stage_scores"],
+            mapped["freshness_masks"]))
+
+    def test_known_zero_completed_account_composes_to_the_table_account(self):
+        """「已知的零」是已知事实：第 1 桌（无已完成桌）合计就等于本桌进行中积分。"""
+        mapped = _e3_candidate_competition(
+            _e3_request(completed=(0, 0, 0, 0), places=(0, 0, 0, 0)))
+        assert mapped["stage_scores"] == (0, 0, 0, 0)
+        assert mapped["freshness_masks"][0] == "stage_account:complete"
+        assert mapped["current_stage_scores"] == E3_TABLE
+
+    def test_remaining_schedule_is_invisible_and_registered_as_a_gap(self):
+        """剩余赛程未投影（0→6 逐字不变）⇒ 必须在合同里登记为剩余缺口。"""
+        import json
+        from pathlib import Path
+
+        near = build_scoring_view(
+            _e3_request(stage_table_no=2, tables_in_stage=2)).candidate_view()
+        far = build_scoring_view(
+            _e3_request(stage_table_no=2, tables_in_stage=8)).candidate_view()
+        remaining_near, remaining_far = 2 - 2, 8 - 2      # 0 桌 vs 6 桌
+        assert (remaining_near, remaining_far) == (0, 6)
+        # 整份候选可见映射逐字不变：赛程信息没有投影进任何字段。
+        assert (json.dumps(near, sort_keys=True, ensure_ascii=False)
+                == json.dumps(far, sort_keys=True, ensure_ascii=False))
+        assert near["competition"] == far["competition"]
+        # 候选可见的赛事上下文里没有任何赛程字段（只有三份账 + 掩码）。
+        assert set(near["competition"]) == {
+            "stage_scores", "table_scores", "current_stage_scores",
+            "freshness_masks"}, sorted(near["competition"])
+        dumped = json.dumps(near, ensure_ascii=False)
+        for absent in ("tables_remaining", "stage_total", "table_no", "剩余"):
+            assert absent not in dumped, absent
+
+        contract = json.loads((
+            Path(__file__).resolve().parents[3]
+            / "review/llm-guided-heuristic-route-2026-09-15"
+              "/contracts/action-value-v1.json"
+        ).read_text(encoding="utf-8"))
+        gaps = contract["scoring_view"]["competition_bases"]["residual_gaps"]
+        assert gaps, "剩余赛程必须显式登记为剩余缺口，不得默认已可见"
+        gap = [item for item in gaps if "剩余" in item][0]
+        for token in ("stage_no", "stage_total", "单位", "不得当 0", "剩余桌数"):
+            assert token in gap, token
+        print("[E3-E] 剩余赛程 0/6 → 候选视图逐字不变；合同登记缺口：{0}".format(
+            gap[:60]))
+

@@ -1445,4 +1445,8 @@ class TestR1S4ContentBoundIdentity:
         # /3：R6/S1 方法别名、比较与成员查询、递归结构遍历纳入计费，
         #     新增嵌套深度/结构单元上限，格式宽度与精度改为分配前校验，
         #     集合迭代确定化——计费语义再变，旧 candidate_id 与准入失效。
-        assert EXECUTOR_VERSION == "action-value-executor/3"
+        # /4：R8/N1—N3 原生哈希前置守卫（字典/集合字面量与推导式、set/
+        #     frozenset/dict 构造、.add、深键查询）、序列起始值求和拒绝、
+        #     字面量与推导式改确定元素流、链式比较临时名隔离——计费与语义
+        #     第三次变更，旧 candidate_id 与准入记录再次失效。
+        assert EXECUTOR_VERSION == "action-value-executor/4"

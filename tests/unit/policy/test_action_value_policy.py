@@ -695,6 +695,21 @@ _SCORING_VIEW_STRUCTURE_BY_VERSION = {
         # 位置序 [stage_scores, table_scores] 的闭集词表（与代码常量同源）。
         "mask_values": COMPETITION_MASK_VALUES,
     },
+    "sitin-scoring-view/3": {
+        "fields": (
+            "actions", "analysis_profile", "competition",
+            "reference_features", "visible_state",
+        ),
+        # /3（R8 E3/M1）：新增第三概念 current_stage_scores（已完成账 + 当前桌账 =
+        # 当前阶段合计）与 residual_gaps（剩余赛程未投影的显式登记）。
+        "competition_bases_keys": (
+            "admission_conditions", "current_stage_scores", "freshness_masks",
+            "identity_mapping", "residual_gaps", "residual_risk", "seat_order",
+            "stage_scores", "staleness", "table_scores", "units",
+            "unknown_is_not_zero",
+        ),
+        "mask_values": COMPETITION_MASK_VALUES,
+    },
 }
 
 
@@ -721,10 +736,11 @@ def _scoring_view_structure(scoring_view: dict) -> dict:
 class TestScoringViewVersionGuard:
     """P11b：版本升位与防静默漂移守卫。"""
 
-    def test_schema_version_is_two_and_matches_code_constant(self):
+    def test_schema_version_matches_code_constant_and_is_registered(self):
         contract = _contract_scoring_view()
         assert contract["schema_version"] == SCORING_VIEW_SCHEMA_VERSION
-        assert SCORING_VIEW_SCHEMA_VERSION == "sitin-scoring-view/2"
+        # /3（R8 E3/M1）：第三概念 current_stage_scores + residual_gaps 登记。
+        assert SCORING_VIEW_SCHEMA_VERSION == "sitin-scoring-view/3"
         assert SCORING_VIEW_SCHEMA_VERSION in _SCORING_VIEW_STRUCTURE_BY_VERSION
 
     def test_contract_structure_matches_declared_version(self):
@@ -743,20 +759,25 @@ class TestScoringViewVersionGuard:
         )
 
     def test_guard_rejects_extended_competition_without_version_bump(self):
-        """自证守卫有效：把 /2 的结构面贴到 /1 版本号上必须被判为漂移。"""
-        drifted = dict(_contract_scoring_view())
-        drifted["schema_version"] = "sitin-scoring-view/1"
-        assert _scoring_view_structure(drifted) != (
-            _SCORING_VIEW_STRUCTURE_BY_VERSION["sitin-scoring-view/1"]
-        )
+        """自证守卫有效：把新结构面贴到旧版本号上必须被判为漂移。
 
-    def test_runtime_rejects_previous_version(self):
-        """运行时同样拒绝旧版本：/1 视图不得通过完整性验证。"""
-        with pytest.raises(ValueError, match="schema_version"):
-            ScoringView(
-                schema_version="sitin-scoring-view/1",
-                visible_state=build_sample_view().visible_state,
-                actions=build_sample_view().actions,
-                analysis_profile=build_sample_view().analysis_profile,
-            )
+        两段边界都验：/2 结构面贴 /1（P11b 边界）与 /3 结构面贴 /2（R8 E3 边界）。
+        """
+        for historical in ("sitin-scoring-view/1", "sitin-scoring-view/2"):
+            drifted = dict(_contract_scoring_view())
+            drifted["schema_version"] = historical
+            assert _scoring_view_structure(drifted) != (
+                _SCORING_VIEW_STRUCTURE_BY_VERSION[historical]
+            ), historical
+
+    def test_runtime_rejects_previous_versions(self):
+        """运行时拒绝全部历史版本：/1 与 /2 视图都不得通过完整性验证。"""
+        for historical in ("sitin-scoring-view/1", "sitin-scoring-view/2"):
+            with pytest.raises(ValueError, match="schema_version"):
+                ScoringView(
+                    schema_version=historical,
+                    visible_state=build_sample_view().visible_state,
+                    actions=build_sample_view().actions,
+                    analysis_profile=build_sample_view().analysis_profile,
+                )
 

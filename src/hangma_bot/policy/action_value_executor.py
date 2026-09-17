@@ -32,6 +32,22 @@
      检查后分配。
    - **集合迭代确定化**：受限集合与冻结集合固定按插入顺序迭代，集合运算
      结果按左→右顺序重建，跨 PYTHONHASHSEED 的计费与结果一致。
+3c. 哈希边界与插桩语义补齐（2026-09-17 R8/N1—N3 第三次收紧）：
+   - **原生哈希前置守卫**：字典/集合字面量与推导式、set()/frozenset()/
+     dict() 构造、.add（含绑定方法别名与经函数间接调用）与 table[深键]
+     查询，一律在进入 CPython 的 C 层哈希**之前**做有界结构检查并计费。
+     修复前 `x = (x, x)` 嵌套 16 次的元组作 {x: 1} 的键可正常返回且只计
+     36，原生哈希完全在保护之外。
+   - **字典/集合字面量先求值成元素流再构造**：字面量与集合推导式不再先建
+     原生容器（其迭代顺序与哈希种子有关），改由受限容器按源序插入——
+     跨 PYTHONHASHSEED 结果逐字节一致。
+   - **sum 只保留数值用途**：`sum(rows, ())` 这类序列起始值做 len(rows)
+     次拷贝、最终规模不受单集合上限约束（复审反例 64×128 → 8192 项仅计
+     138），在拷贝前直接拒绝；`sum(rows)` 与数值起始值仍允许。
+   - **链式比较临时名与候选名隔离**：`a < b < c` 的插桩 lambda 参数改为
+     `_avc{i}/_avt{i}`。修复前用 `x0/t0` 作参数名，会捕获候选自身的同名
+     局部变量（`x0 = 100; 0 < 1 < x0` 原生 True、受限执行器得 False）。
+
 4. WorkloadExceeded 继承 BaseException：受限子集内没有任何可写的 except
    处理器能捕获它（bare except / except BaseException / 任意异常类型名
    均被静态拒绝），保证候选不能捕获工作量耗尽异常继续执行。
@@ -90,7 +106,11 @@ _SCALAR_COST_TYPES = frozenset({int, float, bool, type(None)})
 # 遍历纳入计费，新增嵌套深度与结构规模上限，格式宽度/精度改为分配前
 # 校验，集合迭代确定化——计费与语义再次变更，版本 /2 → /3；旧候选
 # 在旧计费下的准入结论不再有效（必须按新版本重算身份与准入）。
-EXECUTOR_VERSION = "action-value-executor/3"
+# 2026-09-17 R8(N1—N3)：原生哈希前置守卫（字典/集合字面量、推导式、
+# set/frozenset/dict 构造、.add 与深键查询）、序列起始值求和拒绝、
+# 字面量与推导式改为确定元素流构造、链式比较临时名隔离——计费与语义
+# 第三次变更，版本 /3 → /4；旧 candidate_id 与旧准入记录随之失效。
+EXECUTOR_VERSION = "action-value-executor/4"
 
 # —— 白名单（权威：合同 whitelist；合同测试逐条对账）——
 
@@ -620,8 +640,11 @@ _AV_METHOD = "_av_method"
 _AV_FVALUE = "_av_fvalue"
 _AV_SUB = "_av_sub"
 _AV_WRAP_LIST = "_av_wrap_list"
-_AV_WRAP_SET = "_av_wrap_set"
 _AV_WRAP_DICT = "_av_wrap_dict"
+#: R8/N1—N3：字面量/推导式的确定化构造与键守卫（原生哈希之前）。
+_AV_SET_LIT = "_av_set_lit"
+_AV_DICT_LIT = "_av_dict_lit"
+_AV_KEY = "_av_key"
 
 _INSTRUMENT_NAMES = frozenset(
     {
@@ -634,8 +657,10 @@ _INSTRUMENT_NAMES = frozenset(
         _AV_FVALUE,
         _AV_SUB,
         _AV_WRAP_LIST,
-        _AV_WRAP_SET,
         _AV_WRAP_DICT,
+        _AV_SET_LIT,
+        _AV_DICT_LIT,
+        _AV_KEY,
     }
 )
 
@@ -705,6 +730,11 @@ class _Instrumentor(ast.NodeTransformer):
         16 层重复嵌套元组（65,536 个叶）只计 35。链式比较 a < b < c 改写为
         嵌套 lambda：每个操作数只求值一次，且保持 Python 的短路语义（右侧
         操作数在前一次比较为假时不被求值）。
+
+        R8/N2：lambda 参数名必须是候选**写不出来**的名字（静态检查拒绝一切
+        下划线开头标识符），否则会捕获候选自身的同名局部变量：修复前用
+        `x0/t0`，候选写 `x0 = 100; 0 < 1 < x0` 时第二个比较读到 lambda
+        参数 x0(=0)，原生 True 变成受限执行器的 False。
         """
         self.generic_visit(node)
         return self._chain_compare(node.left, list(node.ops), list(node.comparators), 0)
@@ -719,8 +749,9 @@ class _Instrumentor(ast.NodeTransformer):
         op_name = _CMP_NAMES[type(ops[index])]
         if index == len(ops) - 1:
             return self._wrap(_AV_CMP, left, ast.Constant(op_name), comparators[index])
-        slot = "x{0}".format(index)
-        holder = "t{0}".format(index)
+        # R8/N2：临时名与候选可声明名隔离（下划线开头对候选是保留前缀）。
+        slot = "_avc{0}".format(index)
+        holder = "_avt{0}".format(index)
         rest = self._chain_compare(
             ast.Name(id=holder, ctx=ast.Load()), ops, comparators, index + 1
         )
@@ -817,13 +848,27 @@ class _Instrumentor(ast.NodeTransformer):
         return self._wrap(_AV_WRAP_LIST, node)
 
     def visit_SetComp(self, node: ast.SetComp) -> ast.AST:
+        """R8/N3：集合推导式不再先建原生 set（迭代顺序随哈希种子变化）。
+
+        `{e for g}` 改写为 `_av_set_lit([e for g])`：先按源序求值成受限
+        列表，再由受限集合按插入顺序去重。元素求值次数、求值顺序与原生
+        集合推导式一致（每个元素恰好求值一次）。
+        """
         self.generic_visit(node)
         node.elt = self._wrap(_AV_PASS, node.elt)
-        return self._wrap(_AV_WRAP_SET, node)
+        listcomp = ast.copy_location(
+            ast.ListComp(elt=node.elt, generators=node.generators), node
+        )
+        return self._wrap(_AV_SET_LIT, listcomp)
 
     def visit_DictComp(self, node: ast.DictComp) -> ast.AST:
+        """R8/N1：字典推导式在 C 层逐项哈希键——键必须先守卫并计费。
+
+        字典本身保持插入序（Python 语义），因此只需在键进入原生哈希之前
+        做有界结构检查：深键（如 16 层嵌套元组）改为提前 WorkloadExceeded。
+        """
         self.generic_visit(node)
-        node.key = self._wrap(_AV_PASS, node.key)
+        node.key = self._wrap(_AV_KEY, self._wrap(_AV_PASS, node.key))
         node.value = self._wrap(_AV_PASS, node.value)
         return self._wrap(_AV_WRAP_DICT, node)
 
@@ -832,17 +877,100 @@ class _Instrumentor(ast.NodeTransformer):
         return self._wrap(_AV_WRAP_LIST, node)
 
     def visit_Set(self, node: ast.Set) -> ast.AST:
+        """R8/N1+N3：集合字面量先求值成元组，再由受限集合按源序构造。
+
+        修复前先建**原生 set**：元素在 C 层被哈希（深键可绕过计费），且
+        迭代顺序随进程哈希种子变化。改写后元素求值顺序不变（左→右，
+        每个表达式恰好求值一次），构造与计费都发生在守卫之内。
+        """
         self.generic_visit(node)
-        return self._wrap(_AV_WRAP_SET, node)
+        elements = ast.Tuple(elts=list(node.elts), ctx=ast.Load())
+        return self._wrap(_AV_SET_LIT, elements)
 
     def visit_Dict(self, node: ast.Dict) -> ast.AST:
+        """R8/N1+N3：字典字面量先求值成 (键, 值) 对，再逐键守卫后插入。
+
+        键/值的求值顺序与原生字面量一致（键先于值、逐对左→右）；任何键在
+        进入原生哈希之前都会被结构检查（超深/超宽即拒绝）并按结构计费。
+        """
         self.generic_visit(node)
-        return self._wrap(_AV_WRAP_DICT, node)
+        if any(key is None for key in node.keys):  # pragma: no cover - 静态检查已拒绝
+            _reject("字典字面量不允许 ** 解包")
+        pairs = [
+            ast.Tuple(elts=[key, value], ctx=ast.Load())
+            for key, value in zip(node.keys, node.values)
+        ]
+        return self._wrap(_AV_DICT_LIT, ast.Tuple(elts=pairs, ctx=ast.Load()))
 
 
 # ---------------------------------------------------------------------------
 # 运行时计费与受限容器
 # ---------------------------------------------------------------------------
+
+
+def structure_cost(value: Any, what: str) -> int:
+    """结构代价（R6/S1）：标量 0、长字符串按段、容器 1 + 子项代价。
+
+    字符串按 64 字符一段计费：CPython 的字符串比较是 memcmp 级、哈希在
+    对象内缓存，短键（动作键、字段名、类型名）增量为 0；只有长字符串
+    （最长 65536）才按段计入，避免“一次比较搬 64 KB”却不计费。
+
+    比较/成员查询/格式化/排序，以及 R8/N1 新增的**原生哈希**（字典键、
+    集合元素、下标查询）都会递归遍历数据，而 CPython 的比较、repr 与哈希
+    在 C 层执行、不受候选语句计费约束。本函数在**真正遍历数据之前**用
+    显式栈做有界测量：
+
+    - 容器深度超过 MAX_DATA_DEPTH 即拒绝——(a, a) 重复嵌套会形成深度 d、
+      叶数 2^d 的结构，指数比较不再可能跑满时间或 C 栈；
+    - 单元数超过 MAX_DATA_CELLS 即拒绝——宽而共享的结构同样有界。
+
+    返回值用于计费；标量返回 0，因此普通标量比较的量级与既有实现一致。
+    标量与短字符串走常数快路径（不建栈、不遍历），保证热路径开销可控。
+    """
+    kind = type(value)
+    if kind is str:
+        return len(value) // _STRING_COST_CHUNK
+    if kind in _SCALAR_COST_TYPES:
+        return 0
+    if not isinstance(value, (dict, tuple, list, set, frozenset)):
+        return 0  # 其它标量/可调用对象：O(1) 比较与哈希，不计费
+    total = 0
+    nodes = 0
+    stack: List[Tuple[Any, int]] = [(value, 0)]
+    while stack:
+        node, depth = stack.pop()
+        if isinstance(node, str):
+            total += len(node) // _STRING_COST_CHUNK
+        elif isinstance(node, dict):
+            nodes += 1
+            if depth + 1 > MAX_DATA_DEPTH:
+                raise WorkloadExceeded(
+                    "{0} 嵌套深度超过 {1} 层上限：拒绝递归数据遍历".format(
+                        what, MAX_DATA_DEPTH
+                    )
+                )
+            total += 1
+            for key, item in node.items():
+                stack.append((key, depth + 1))
+                stack.append((item, depth + 1))
+        elif isinstance(node, (tuple, list, set, frozenset)):
+            nodes += 1
+            if depth + 1 > MAX_DATA_DEPTH:
+                raise WorkloadExceeded(
+                    "{0} 嵌套深度超过 {1} 层上限：拒绝递归数据遍历".format(
+                        what, MAX_DATA_DEPTH
+                    )
+                )
+            total += 1
+            for item in node:
+                stack.append((item, depth + 1))
+        if total > MAX_DATA_CELLS or nodes > MAX_DATA_CELLS:
+            raise WorkloadExceeded(
+                "{0} 结构超过 {1} 单元上限：拒绝递归数据遍历".format(
+                    what, MAX_DATA_CELLS
+                )
+            )
+    return total
 
 
 class _Meter:
@@ -885,24 +1013,39 @@ class _AvList(list):
 
 
 class _AvSet(set):
-    """受限局部集合：add 做集合上限检查，迭代按插入顺序确定化。
+    """受限局部集合：add 做结构守卫与集合上限检查，迭代按插入顺序确定化。
 
     R6/S1：普通 set 的迭代顺序依赖对象 hash，字符串元素在不同
     PYTHONHASHSEED 下顺序不同（同一候选的计费与结果随之漂移）。受限集合
     因此额外记录首次插入顺序并用它迭代：结果与 hash 种子无关，且真实集合
     语义（成员判定、相等、长度）仍由基类保证。
+
+    R8/N1：原生哈希发生在 C 层，候选若用深键（如 16 层嵌套元组）触发
+    指数级哈希/比较，计费完全绕过。add() 因此在**进入原生集合之前**先做
+    有界结构检查（structure_cost：超深/超宽即 WorkloadExceeded）并按结构
+    单元计费——字面量、推导式、set()/frozenset() 构造、.add（含别名）与
+    集合运算全部经此通道。
     """
 
-    __slots__ = ("_cap", "_order")
+    __slots__ = ("_cap", "_order", "_meter")
 
-    def __init__(self, items: Any = (), cap: int = MAX_LOCAL_COLLECTION_SIZE) -> None:
+    def __init__(
+        self,
+        items: Any = (),
+        cap: int = MAX_LOCAL_COLLECTION_SIZE,
+        meter: Any = None,
+    ) -> None:
         super().__init__()
         self._cap = int(cap)
         self._order: List[Any] = []
+        self._meter = meter
         for item in items:
             self.add(item)
 
     def add(self, item: Any) -> None:
+        cost = structure_cost(item, "集合元素")  # 原生哈希前的有界结构守卫
+        if cost and self._meter is not None:
+            self._meter.charge(cost)
         if item in self:
             return
         if len(self._order) >= self._cap:
@@ -932,15 +1075,33 @@ class _AvFrozenSet(frozenset):
 
 
 class _AvDict(dict):
-    """受限局部字典：下标写入做集合上限检查（静态检查已拒绝输入侧写入）。"""
+    """受限局部字典：逐键守卫 + 集合上限检查（静态检查已拒绝输入侧写入）。
 
-    __slots__ = ("_cap",)
+    R8/N1：字典键的原生哈希同样在 C 层。候选写不出下标赋值，字典只能经
+    字面量、推导式、dict() 构造或 dict | dict 产生，这些入口都经
+    __setitem__，因此键的结构检查（超深/超宽即拒绝）与计费只需在这里做
+    一次，就覆盖了全部构造通道。
+    """
 
-    def __init__(self, items: Any = (), cap: int = MAX_LOCAL_COLLECTION_SIZE) -> None:
-        super().__init__(items)
+    __slots__ = ("_cap", "_meter")
+
+    def __init__(
+        self,
+        items: Any = (),
+        cap: int = MAX_LOCAL_COLLECTION_SIZE,
+        meter: Any = None,
+    ) -> None:
+        super().__init__()
         self._cap = cap
+        self._meter = meter
+        source = items.items() if isinstance(items, dict) else items
+        for key, value in source:
+            self[key] = value
 
     def __setitem__(self, key: Any, value: Any) -> None:
+        cost = structure_cost(key, "字典键")  # 原生哈希前的有界结构守卫
+        if cost and self._meter is not None:
+            self._meter.charge(cost)
         if key not in self and len(self) >= self._cap:
             raise WorkloadExceeded("局部集合超过 {0} 项上限".format(self._cap))
         super().__setitem__(key, value)
@@ -1140,69 +1301,6 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
     def collection_exceed() -> None:
         raise WorkloadExceeded("局部集合超过 {0} 项上限".format(cap))
 
-    def structure_cost(value: Any, what: str) -> int:
-        """结构代价（R6/S1）：标量 0、长字符串按段、容器 1 + 子项代价。
-
-        字符串按 64 字符一段计费：CPython 的字符串比较是 memcmp 级、哈希在
-        对象内缓存，短键（动作键、字段名、类型名）增量为 0；只有长字符串
-        （最长 65536）才按段计入，避免“一次比较搬 64 KB”却不计费。
-
-        比较/成员查询/格式化/排序都会递归遍历数据，而 CPython 的比较与
-        repr 在 C 层执行、不受候选语句计费约束。本函数在**真正遍历数据之前**
-        用显式栈做有界测量：
-
-        - 容器深度超过 MAX_DATA_DEPTH 即拒绝——(a, a) 重复嵌套会形成深度 d、
-          叶数 2^d 的结构，指数比较不再可能跑满时间或 C 栈；
-        - 单元数超过 MAX_DATA_CELLS 即拒绝——宽而共享的结构同样有界。
-
-        返回值用于计费；标量返回 0，因此普通标量比较的量级与既有实现一致。
-        标量与短字符串走常数快路径（不建栈、不遍历），保证热路径开销可控。
-        """
-        kind = type(value)
-        if kind is str:
-            return len(value) // _STRING_COST_CHUNK
-        if kind in _SCALAR_COST_TYPES:
-            return 0
-        if not isinstance(value, (dict, tuple, list, set, frozenset)):
-            return 0  # 其它标量/可调用对象：O(1) 比较与哈希，不计费
-        total = 0
-        nodes = 0
-        stack: List[Tuple[Any, int]] = [(value, 0)]
-        while stack:
-            node, depth = stack.pop()
-            if isinstance(node, str):
-                total += len(node) // _STRING_COST_CHUNK
-            elif isinstance(node, dict):
-                nodes += 1
-                if depth + 1 > MAX_DATA_DEPTH:
-                    raise WorkloadExceeded(
-                        "{0} 嵌套深度超过 {1} 层上限：拒绝递归数据遍历".format(
-                            what, MAX_DATA_DEPTH
-                        )
-                    )
-                total += 1
-                for key, item in node.items():
-                    stack.append((key, depth + 1))
-                    stack.append((item, depth + 1))
-            elif isinstance(node, (tuple, list, set, frozenset)):
-                nodes += 1
-                if depth + 1 > MAX_DATA_DEPTH:
-                    raise WorkloadExceeded(
-                        "{0} 嵌套深度超过 {1} 层上限：拒绝递归数据遍历".format(
-                            what, MAX_DATA_DEPTH
-                        )
-                    )
-                total += 1
-                for item in node:
-                    stack.append((item, depth + 1))
-            if total > MAX_DATA_CELLS or nodes > MAX_DATA_CELLS:
-                raise WorkloadExceeded(
-                    "{0} 结构超过 {1} 单元上限：拒绝递归数据遍历".format(
-                        what, MAX_DATA_CELLS
-                    )
-                )
-        return total
-
     def items_structure_cost(items: Any, what: str) -> int:
         """元素级结构代价：排序/极值的 C 层比较也按元素结构计费。"""
         total = 0
@@ -1272,6 +1370,19 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
 
         return key_call
 
+    def ordered_input(value: Any) -> Any:
+        """R8/N3：原生集合输入的迭代顺序确定化（受限集合已按插入序迭代）。
+
+        候选能构造的集合都已是受限集合（插入序）；这里只处理“混入的普通
+        set/frozenset”（例如视图数据或旧对象），按确定键排序后再消费，
+        保证跨 PYTHONHASHSEED 的计费与结果一致。
+        """
+        if isinstance(value, (set, frozenset)) and not isinstance(
+            value, (_AvSet, _AvFrozenSet)
+        ):
+            return _deterministic_order(value)
+        return value
+
     def bounded_items(value: Any, what: str) -> List[Any]:
         """S1 修复：消费可迭代对象的内建统一“先限长（≤cap）再按元素计费”。
 
@@ -1279,6 +1390,7 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         物化；无长度输入：逐项计费物化（受 cap 约束）。真实遍历只发生在
         本函数内，候选无法再拿到“只计 1 次调用费却遍历百万项”的通道。
         """
+        value = ordered_input(value)
         length = seq_len(value)
         if length is None:
             return materialize(value)
@@ -1366,7 +1478,7 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
             if len(result) > cap:
                 collection_exceed()
             meter.charge(max(1, len(result)))
-            return _AvSet(_deterministic_order(result), cap)
+            return _AvSet(_deterministic_order(result), cap, meter)
         return num_guard(result)
 
     def combined_set(a: Any, b: Any, op_name: str) -> Any:
@@ -1387,16 +1499,21 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         else:  # ^
             order = [item for item in _deterministic_order(a) if item not in b]
             order += [item for item in _deterministic_order(b) if item not in a]
-        return _AvSet(order, cap)
+        return _AvSet(order, cap, meter)
 
     def combined_dict(a: Any, b: Any) -> Any:
-        """dict | dict：结果仍受集合上限约束（顺序与 Python 一致，左后右）。"""
+        """dict | dict：逐键守卫重建（顺序与 Python 一致：左后右）。
+
+        R8/N1：dict(a)/update(b) 在 C 层哈希全部键，改为经 _AvDict.__setitem__
+        重建，键的结构检查与计费与字面量构造走同一通道。
+        """
         meter.charge(max(1, len(a) + len(b)))
-        merged = dict(a)
-        merged.update(b)
-        if len(merged) > cap:
-            collection_exceed()
-        return _AvDict(merged, cap)
+        merged = _AvDict(cap=cap, meter=meter)
+        for key, value in a.items():
+            merged[key] = value
+        for key, value in b.items():
+            merged[key] = value
+        return merged
 
     def av_un(op_name: str, value: Any) -> Any:
         meter.charge(1)
@@ -1462,7 +1579,13 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         return result
 
     def av_sub(value: Any, index: Any) -> Any:
-        """R6/S1：切片是批量拷贝——按结果长度计费；下标取值 O(1) 不计。"""
+        """R6/S1：切片是批量拷贝——按结果长度计费；下标取值 O(1) 不计。
+
+        R8/N1：`table[深键]` 的字典查找会在 C 层哈希并比较键，深键的
+        指数级代价必须先做有界结构检查并计费。
+        """
+        if isinstance(value, dict):
+            meter.charge(structure_cost(index, "下标键"))
         result = value[index]
         if isinstance(index, slice) and isinstance(result, (str, list, tuple)):
             meter.charge(len(result))
@@ -1503,6 +1626,11 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
             def grow(*args: Any, **kwargs: Any) -> Any:
                 if len(obj) >= cap:
                     collection_exceed()
+                if name == "add" and not isinstance(obj, _AvSet):
+                    # R8/N1：受限集合的 add 自带结构守卫与计费；普通 set
+                    # （混入对象）在这里补上，别名调用与直接调用走同一通道。
+                    for arg in args:
+                        meter.charge(structure_cost(arg, ".add 元素"))
                 return bound(*args, **kwargs)
 
             return grow
@@ -1516,6 +1644,7 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         return call
 
     def wrap_list(value: Any) -> Any:
+        value = ordered_input(value)
         length = seq_len(value)
         if length is None:
             items = materialize(value)
@@ -1527,6 +1656,12 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         return _AvList(items, cap)
 
     def wrap_set(value: Any) -> Any:
+        """集合构造（字面量 / 推导式 / set()）：按源序插入并逐元素守卫。
+
+        R8/N1+N3：元素在进入原生哈希之前做结构检查并按结构计费；原生
+        集合输入先确定化排序，避免迭代顺序随哈希种子漂移。
+        """
+        value = ordered_input(value)
         length = seq_len(value)
         if length is None:
             items = materialize(value)
@@ -1535,19 +1670,34 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
                 collection_exceed()
             items = list(value)
         meter.charge(max(1, len(items)))
-        return _AvSet(items, cap)
+        return _AvSet(items, cap, meter)
 
     def wrap_dict(value: Any) -> Any:
-        length = seq_len(value)
-        if length is None:
-            pairs = materialize(value)
-            data = dict(pairs)
-        else:
-            if length > cap:
+        """字典构造（字面量 / 推导式 / dict()）：逐键守卫（原生哈希前）。
+
+        R8/N1：修复前 dict(mapping) 先在 C 层哈希全部键，深键的指数级
+        哈希/比较完全在保护之外；现在键经 _AvDict.__setitem__ 检查与计费。
+        """
+        if isinstance(value, dict):
+            if len(value) > cap:
                 collection_exceed()
-            data = dict(value)
-        meter.charge(max(1, len(data)))
-        return _AvDict(data, cap)
+            pairs = value.items()
+        else:
+            length = seq_len(value)
+            if length is None:
+                pairs = materialize(value)
+            else:
+                if length > cap:
+                    collection_exceed()
+                pairs = value
+        result = _AvDict(pairs, cap, meter)
+        meter.charge(max(1, len(result)))
+        return result
+
+    def av_key(value: Any) -> Any:
+        """R8/N1：推导式键在进入原生哈希前的守卫与计费（标量代价为 0）。"""
+        meter.charge(structure_cost(value, "推导式键"))
+        return value
 
     # —— 白名单内建的计费包装 ——
 
@@ -1622,6 +1772,15 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         items = bounded_items(iterable, "sum()")
         # R6/S1：序列求和（sum(pairs, ())）按元素结构计费——拼接是批量拷贝。
         meter.charge(items_structure_cost(items, "sum() 元素"))
+        # R8/N1：序列起始值会做 len(rows) 次拷贝，最终规模 = len(start) +
+        # Σlen(item)，不受单集合上限约束（复审反例 [(1,)*128]*64 + () 得到
+        # 8192 项、仅计 138）。评分的求和只需要数值用途，因此**在拷贝之前**
+        # 拒绝序列起始值；数值起始值（int/float/bool）仍然允许。
+        if start and isinstance(start[0], (list, tuple, str, dict, set, frozenset)):
+            raise WorkloadExceeded(
+                "sum() 不允许序列起始值（如 sum(rows, ())）：重复拷贝的次数与"
+                "最终规模不受单集合上限约束；数值求和请用 sum(rows)"
+            )
         return num_guard(sum(items, *start))
 
     def b_sorted(iterable: Any, **kwargs: Any) -> Any:
@@ -1669,6 +1828,7 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         return _AvList(picked, cap)
 
     def b_tuple(iterable: Any = ()) -> tuple:
+        iterable = ordered_input(iterable)
         length = seq_len(iterable)
         if length is None:
             items = materialize(iterable)
@@ -1683,13 +1843,28 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         return wrap_list(iterable)
 
     def b_dict(*args: Any, **kwargs: Any) -> Any:
-        source = args[0] if args else ()
-        return wrap_dict(dict(source, **kwargs) if args else dict(**kwargs))
+        """dict(...)：与字面量/推导式同一条逐键守卫通道（R8/N1）。"""
+        pairs: List[Any] = []
+        if args:
+            source = args[0]
+            if isinstance(source, dict):
+                if len(source) > cap:
+                    collection_exceed()
+                pairs.extend(source.items())
+            else:
+                pairs.extend(bounded_items(source, "dict()"))
+        pairs.extend(kwargs.items())
+        if len(pairs) > cap:
+            collection_exceed()
+        result = _AvDict(pairs, cap, meter)
+        meter.charge(max(1, len(result)))
+        return result
 
     def b_set(iterable: Any = ()) -> Any:
         return wrap_set(iterable)
 
     def b_frozenset(iterable: Any = ()) -> frozenset:
+        iterable = ordered_input(iterable)
         length = seq_len(iterable)
         if length is None:
             items = materialize(iterable)
@@ -1698,6 +1873,9 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
                 collection_exceed()
             items = list(iterable)
         meter.charge(max(1, len(items)))
+        # R8/N1：冻结集合的构造同样在 C 层哈希元素——逐项结构守卫并计费。
+        for item in items:
+            meter.charge(structure_cost(item, "frozenset 元素"))
         # R6/S1：冻结集合也按首次出现顺序迭代（跨 hash 种子一致）。
         return _AvFrozenSet(_unique_in_order(items))
 
@@ -1711,8 +1889,10 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         _AV_FVALUE: av_fvalue,
         _AV_SUB: av_sub,
         _AV_WRAP_LIST: wrap_list,
-        _AV_WRAP_SET: wrap_set,
         _AV_WRAP_DICT: wrap_dict,
+        _AV_SET_LIT: wrap_set,
+        _AV_DICT_LIT: wrap_dict,
+        _AV_KEY: av_key,
         "len": b_len,
         "min": b_min,
         "max": b_max,
