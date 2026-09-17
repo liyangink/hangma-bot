@@ -338,6 +338,11 @@ def test_deps_digest_tracks_whitelist_and_limits() -> None:
             "max_trace_bytes": av.MAX_TRACE_BYTES,
             "max_int_magnitude": exe.MAX_INT_MAGNITUDE,
             "max_power_exponent": exe.MAX_POWER_EXPONENT,
+            # R6/S1 新增的执行器侧工作量边界（合同 JSON limits.candidate 未
+            # 逐键列出的结构上限）：字符串长度、嵌套深度、结构单元上限。
+            "max_string_chars": exe.MAX_STRING_CHARS,
+            "max_data_depth": exe.MAX_DATA_DEPTH,
+            "max_data_cells": exe.MAX_DATA_CELLS,
         },
         "view_types": exe._types_digest_material(),
     }

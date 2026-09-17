@@ -16,6 +16,22 @@
    list/dict/set，切片同受上限）；字符串长度有界；算术结果整数幅度 ≤
    2^63-1，浮点必须有限；模块级仅允许不可变常量，装载即快照、执行后
    复核，跨调用可变状态被拒绝。
+3b. 工作量边界补齐（2026-09-17 R6/S1 第二次收紧）：
+   - **方法取值也包装**：属性读取一律改写为 _av_method（绑定本身是 O(1)，
+     取值不计费；真实工作发生在调用时），绑定方法别名（count = values.count
+     之后再调用）与直接调用走同一计费通道；无白名单方法仍被静态拒绝。
+   - **比较/成员查询/递归数据遍历统一计费**：比较按操作数结构规模计费
+     （标量 0、长字符串按 64 字符一段、容器 1+子项），in 按被查序列长度加
+     元素结构计费，sorted/min/max 按元素结构与 key 结果计费，切片按结果
+     长度计费。
+   - **嵌套深度与结构规模在建栈时限制**：结构遍历发现容器深度 >
+     MAX_DATA_DEPTH 或单元数 > MAX_DATA_CELLS 即提前拒绝，指数结构
+     （(a, a) 重复嵌套）不会再让 CPython 递归比较跑满时间或 C 栈。
+   - **分配前校验输出规模**：f-string 与 % 格式化的宽度/精度先解析再拒绝
+     （动态格式规范同样按运行时取值解析），序列重复、字符串长度同样先
+     检查后分配。
+   - **集合迭代确定化**：受限集合与冻结集合固定按插入顺序迭代，集合运算
+     结果按左→右顺序重建，跨 PYTHONHASHSEED 的计费与结果一致。
 4. WorkloadExceeded 继承 BaseException：受限子集内没有任何可写的 except
    处理器能捕获它（bare except / except BaseException / 任意异常类型名
    均被静态拒绝），保证候选不能捕获工作量耗尽异常继续执行。
@@ -32,6 +48,7 @@ import hashlib
 import json
 import math
 import operator
+import re
 from dataclasses import fields as dataclass_fields
 from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Set, Tuple
 
@@ -58,13 +75,22 @@ MAX_SOURCE_BYTES = 65_536  # 候选源码字节上限
 MAX_INT_MAGNITUDE = 2**63 - 1  # 运行时整数幅度界限（拒绝大整数膨胀）
 MAX_POWER_EXPONENT = 4  # ** 仅允许 0—4 的整数常量指数
 MAX_SHIFT_BITS = 256  # 移位量上限，防止一次性构造超大整数
-MAX_STRING_CHARS = 65_536  # 单个字符串长度上限（拼接/重复/格式化后检查）
+MAX_STRING_CHARS = 65_536  # 单个字符串长度上限（拼接/重复/格式化前检查）
 UNSIZEED_INPUT_COST = 4_096  # 无长度输入的保守计费（正常路径输入均有长度）
+MAX_DATA_DEPTH = 12  # 结构嵌套深度上限（比较/成员/格式化/排序前检查）
+MAX_DATA_CELLS = 131_072  # 单次结构遍历的单元上限（叶子 + 容器节点）
+_STRING_COST_CHUNK = 64  # 长字符串按 64 字符一段进入结构代价（短键增量为 0）
+#: 结构代价为 0 的标量类型（快路径；其余非容器类型同样返回 0）。
+_SCALAR_COST_TYPES = frozenset({int, float, bool, type(None)})
 
 # 2026-09-17 R1(S1)：迭代入口全面按元素计费、range 按长度计费、模块级
 # 仅不可变常量、跨调用无状态校验——计费语义变更，版本 /1 → /2，旧
 # candidate_id 与旧准入记录随之失效（identity.recovery_policy 预期行为）。
-EXECUTOR_VERSION = "action-value-executor/2"
+# 2026-09-17 R6(S1)：方法取值/绑定方法别名、比较与成员查询、递归数据
+# 遍历纳入计费，新增嵌套深度与结构规模上限，格式宽度/精度改为分配前
+# 校验，集合迭代确定化——计费与语义再次变更，版本 /2 → /3；旧候选
+# 在旧计费下的准入结论不再有效（必须按新版本重算身份与准入）。
+EXECUTOR_VERSION = "action-value-executor/3"
 
 # —— 白名单（权威：合同 whitelist；合同测试逐条对账）——
 
@@ -127,6 +153,20 @@ _UNARY_OPS: Dict[type, str] = {
     ast.UAdd: "+",
     ast.Not: "not",
     ast.Invert: "~",
+}
+
+#: 比较运算符 → 运行时名（R6/S1：比较一律插桩为 _av_cmp）。
+_CMP_NAMES: Dict[type, str] = {
+    ast.Eq: "==",
+    ast.NotEq: "!=",
+    ast.Lt: "<",
+    ast.LtE: "<=",
+    ast.Gt: ">",
+    ast.GtE: ">=",
+    ast.Is: "is",
+    ast.IsNot: "is not",
+    ast.In: "in",
+    ast.NotIn: "not in",
 }
 
 
@@ -575,13 +615,28 @@ _AV_PASS = "_av_pass"
 _AV_BIN = "_av_bin"
 _AV_UN = "_av_un"
 _AV_ITER = "_av_iter"
-_AV_SEQ_METHOD = "_av_seq_method"
+_AV_CMP = "_av_cmp"
+_AV_METHOD = "_av_method"
+_AV_FVALUE = "_av_fvalue"
+_AV_SUB = "_av_sub"
 _AV_WRAP_LIST = "_av_wrap_list"
 _AV_WRAP_SET = "_av_wrap_set"
 _AV_WRAP_DICT = "_av_wrap_dict"
 
 _INSTRUMENT_NAMES = frozenset(
-    {_AV_PASS, _AV_BIN, _AV_UN, _AV_ITER, _AV_WRAP_LIST, _AV_WRAP_SET, _AV_WRAP_DICT}
+    {
+        _AV_PASS,
+        _AV_BIN,
+        _AV_UN,
+        _AV_ITER,
+        _AV_CMP,
+        _AV_METHOD,
+        _AV_FVALUE,
+        _AV_SUB,
+        _AV_WRAP_LIST,
+        _AV_WRAP_SET,
+        _AV_WRAP_DICT,
+    }
 )
 
 
@@ -606,20 +661,113 @@ class _Instrumentor(ast.NodeTransformer):
         )
 
     def visit_Call(self, node: ast.Call) -> ast.AST:
-        func = node.func
-        if isinstance(func, ast.Attribute) and func.attr in ("count", "index"):
-            # S1：.count/.index 在真实对象上线性遍历——改走按长度计费的方法包装。
-            self.generic_visit(node)
-            return ast.copy_location(
-                ast.Call(
-                    func=ast.Name(id=_AV_SEQ_METHOD, ctx=ast.Load()),
-                    args=[func.value, ast.Constant(func.attr), *node.args],
-                    keywords=list(node.keywords),
-                ),
-                node,
-            )
+        # R6/S1：方法取值已在 visit_Attribute 包装为计费可调用对象，调用点
+        # 只需按“调用一次”计 1；.count/.index 的线性扫描计费在被包装的
+        # 可调用对象里完成，别名与直接调用不再有区别。
         self.generic_visit(node)
         return self._wrap(_AV_PASS, node)
+
+    def visit_Attribute(self, node: ast.Attribute) -> ast.AST:
+        """R6/S1：属性（方法）取值统一包装为计费可调用对象。
+
+        修复前只包装 .count/.index 的**直接调用**形态：候选先写
+        `count = values.count` 再调用 `count(x)`，真实线性扫描发生在被绑定的
+        C 方法里，计费完全绕过。这里把所有白名单只读方法取值改写成
+        `_av_method(obj, name)`，返回的可调用对象在每次调用时按方法规范计费。
+        静态检查已保证属性名在 ALLOWED_METHODS 内，因此本改写不放宽权限。
+        """
+        self.generic_visit(node)
+        return ast.copy_location(
+            ast.Call(
+                func=ast.Name(id=_AV_METHOD, ctx=ast.Load()),
+                args=[node.value, ast.Constant(node.attr)],
+                keywords=[],
+            ),
+            node,
+        )
+
+    def visit_Subscript(self, node: ast.Subscript) -> ast.AST:
+        """R6/S1：切片是批量拷贝——按结果长度计费（下标取值 O(1)，不计）。"""
+        self.generic_visit(node)
+        return ast.copy_location(
+            ast.Call(
+                func=ast.Name(id=_AV_SUB, ctx=ast.Load()),
+                args=[node.value, node.slice],
+                keywords=[],
+            ),
+            node,
+        )
+
+    def visit_Compare(self, node: ast.Compare) -> ast.AST:
+        """R6/S1：比较运算统一计费，并按操作数结构规模计费。
+
+        修复前 ast.Compare 完全不插桩：`a == b` 的递归结构比较在 C 层执行，
+        16 层重复嵌套元组（65,536 个叶）只计 35。链式比较 a < b < c 改写为
+        嵌套 lambda：每个操作数只求值一次，且保持 Python 的短路语义（右侧
+        操作数在前一次比较为假时不被求值）。
+        """
+        self.generic_visit(node)
+        return self._chain_compare(node.left, list(node.ops), list(node.comparators), 0)
+
+    def _chain_compare(
+        self,
+        left: ast.AST,
+        ops: List[ast.cmpop],
+        comparators: List[ast.AST],
+        index: int,
+    ) -> ast.AST:
+        op_name = _CMP_NAMES[type(ops[index])]
+        if index == len(ops) - 1:
+            return self._wrap(_AV_CMP, left, ast.Constant(op_name), comparators[index])
+        slot = "x{0}".format(index)
+        holder = "t{0}".format(index)
+        rest = self._chain_compare(
+            ast.Name(id=holder, ctx=ast.Load()), ops, comparators, index + 1
+        )
+        body = ast.BoolOp(
+            op=ast.And(),
+            values=[
+                self._wrap(
+                    _AV_CMP,
+                    ast.Name(id=slot, ctx=ast.Load()),
+                    ast.Constant(op_name),
+                    ast.Name(id=holder, ctx=ast.Load()),
+                ),
+                rest,
+            ],
+        )
+        lam = ast.Lambda(
+            args=ast.arguments(
+                posonlyargs=[],
+                args=[ast.arg(arg=slot), ast.arg(arg=holder)],
+                vararg=None,
+                kwonlyargs=[],
+                kw_defaults=[],
+                kwarg=None,
+                defaults=[],
+            ),
+            body=body,
+        )
+        return ast.copy_location(
+            ast.Call(func=lam, args=[left, comparators[index]], keywords=[]), left
+        )
+
+    def visit_FormattedValue(self, node: ast.FormattedValue) -> ast.AST:
+        """R6/S1：f-string 单值格式化改走 _av_fvalue。
+
+        修复前只在整段 f-string 完成后检查长度：宽度 2×10^8 的结果已经分配
+        完毕（实测峰值 200 MB）才抛超限。改写后宽度/精度在 format() 之前校验。
+        """
+        self.generic_visit(node)
+        spec = (
+            node.format_spec if node.format_spec is not None else ast.Constant(value=None)
+        )
+        inner = self._wrap(
+            _AV_FVALUE, node.value, spec, ast.Constant(node.conversion)
+        )
+        return ast.copy_location(
+            ast.FormattedValue(value=inner, conversion=-1, format_spec=None), node
+        )
 
     def visit_BinOp(self, node: ast.BinOp) -> ast.AST:
         self.generic_visit(node)
@@ -644,6 +792,17 @@ class _Instrumentor(ast.NodeTransformer):
         return self._wrap(_AV_UN, ast.Constant(op_name), node.operand)
 
     def visit_For(self, node: ast.For) -> ast.AST:
+        self.generic_visit(node)
+        node.iter = self._wrap(_AV_ITER, node.iter)
+        return node
+
+    def visit_comprehension(self, node: ast.comprehension) -> ast.AST:
+        """R6/S1：推导式迭代同样逐项计费。
+
+        修复前只有 for 语句的迭代经 _av_iter 计费：推导式（列表/集合/字典）
+        的迭代表达式不受约束，`[x for x in rows if flag]` 这类"被过滤掉的
+        元素"完全不计费，可在循环里重复扫描有界集合而绕过计费。
+        """
         self.generic_visit(node)
         node.iter = self._wrap(_AV_ITER, node.iter)
         return node
@@ -726,18 +885,50 @@ class _AvList(list):
 
 
 class _AvSet(set):
-    """受限局部集合：add 只做集合上限检查。"""
+    """受限局部集合：add 做集合上限检查，迭代按插入顺序确定化。
 
-    __slots__ = ("_cap",)
+    R6/S1：普通 set 的迭代顺序依赖对象 hash，字符串元素在不同
+    PYTHONHASHSEED 下顺序不同（同一候选的计费与结果随之漂移）。受限集合
+    因此额外记录首次插入顺序并用它迭代：结果与 hash 种子无关，且真实集合
+    语义（成员判定、相等、长度）仍由基类保证。
+    """
+
+    __slots__ = ("_cap", "_order")
 
     def __init__(self, items: Any = (), cap: int = MAX_LOCAL_COLLECTION_SIZE) -> None:
-        super().__init__(items)
-        self._cap = cap
+        super().__init__()
+        self._cap = int(cap)
+        self._order: List[Any] = []
+        for item in items:
+            self.add(item)
 
     def add(self, item: Any) -> None:
-        if len(self) >= self._cap:
+        if item in self:
+            return
+        if len(self._order) >= self._cap:
             raise WorkloadExceeded("局部集合超过 {0} 项上限".format(self._cap))
         super().add(item)
+        self._order.append(item)
+
+    def __iter__(self) -> Any:
+        # 复制一份顺序表：候选不能在迭代中改变受限集合而影响迭代速度。
+        return iter(list(self._order))
+
+    def __len__(self) -> int:
+        return len(self._order)
+
+
+class _AvFrozenSet(frozenset):
+    """受限冻结集合：迭代顺序固定为构造时的首次出现顺序（跨 hash 种子一致）。"""
+
+    def __init__(self, items: Any = ()) -> None:
+        self._order = tuple(items)
+
+    def __iter__(self) -> Any:
+        return iter(self._order)
+
+    def __len__(self) -> int:
+        return len(self._order)
 
 
 class _AvDict(dict):
@@ -771,6 +962,161 @@ _RT_OPS: Dict[str, Callable[[Any, Any], Any]] = {
 }
 
 
+_CMP_OPS: Dict[str, Callable[[Any, Any], Any]] = {
+    "==": operator.eq,
+    "!=": operator.ne,
+    "<": operator.lt,
+    "<=": operator.le,
+    ">": operator.gt,
+    ">=": operator.ge,
+    "is": operator.is_,
+    "is not": operator.is_not,
+    "in": lambda item, container: operator.contains(container, item),
+    "not in": lambda item, container: not operator.contains(container, item),
+}
+
+#: % 格式化规范：%(key)flags width.precision length type（R6/S1 分配前校验）。
+#: 宽度/精度允许 \d+ 或 * ；* 形态无法在分配前界定长度上限，单独拒绝。
+_PERCENT_SPEC = re.compile(
+    r"%(?:\(([^)]*)\))?([-+ #0]*)(\*?\d*|\*)(?:\.(\*?\d*|\*))?[hlL]?([diouxXeEfFgGcrsa%])"
+)
+
+
+def _digits_to_int(digits: str) -> Optional[int]:
+    """把数字串转成整数；超过 12 位直接给一个超限值，避免自身大整数膨胀。"""
+    if not digits:
+        return None
+    if len(digits) > 12:
+        return MAX_STRING_CHARS + 1
+    return int(digits)
+
+
+def parse_format_spec(spec: str) -> Tuple[Optional[int], Optional[int]]:
+    """解析 format mini-language 的宽度与精度（缺失为 None）。
+
+    语法：[[fill]align][sign][z][#][0][width][grouping][.precision][type]。
+    fill 可以是任意字符（含数字），所以必须按语法逐段推进，不能用正则
+    直接取数字（否则 f-string 里 fill=0 / align=> / width=10 会被误读）。
+    """
+    index = 0
+    size = len(spec)
+    if size >= 2 and spec[1] in "<>=^":
+        index = 2
+    elif size >= 1 and spec[0] in "<>=^":
+        index = 1
+    if index < size and spec[index] in "+- ":
+        index += 1
+    for flag in ("z", "#", "0"):
+        if index < size and spec[index] == flag:
+            index += 1
+    digits = ""
+    while index < size and spec[index].isdigit() and len(digits) <= 12:
+        digits += spec[index]
+        index += 1
+    width = _digits_to_int(digits)
+    if index < size and spec[index] in ",_":
+        index += 1
+    precision = None
+    if index < size and spec[index] == ".":
+        index += 1
+        digits = ""
+        while index < size and spec[index].isdigit() and len(digits) <= 12:
+            digits += spec[index]
+            index += 1
+        precision = _digits_to_int(digits)
+    return width, precision
+
+
+def percent_format_guard(pattern: str, what: str) -> None:
+    """按 % 格式化规范在**分配前**检查宽度、精度与最小结果长度。
+
+    修复前百分号格式化先分配 100 MB 结果，再在 av_bin 事后检查长度。
+    """
+    minimum = 0
+    for match in _PERCENT_SPEC.finditer(pattern):
+        width_text = match.group(3)
+        precision_text = match.group(4)
+        conversion = match.group(5)
+        if conversion == "%":
+            minimum += 1
+            continue
+        if (width_text and "*" in width_text) or (
+            precision_text and "*" in precision_text
+        ):
+            # '%%*d' % (n, x)：宽度/精度取自实参，分配前无法界定上限。
+            raise WorkloadExceeded(
+                "{0} 使用 * 宽度/精度：无法在分配前界定长度上限，请改用固定宽度".format(what)
+            )
+        width = _digits_to_int(width_text)
+        if width is not None:
+            if width > MAX_STRING_CHARS:
+                raise WorkloadExceeded(
+                    "{0} 宽度 {1} 超过 {2} 字符上限：在分配前拒绝".format(
+                        what, width, MAX_STRING_CHARS
+                    )
+                )
+            minimum += width
+        else:
+            minimum += 1
+        precision = _digits_to_int(precision_text)
+        if precision is not None:
+            if precision > MAX_STRING_CHARS:
+                raise WorkloadExceeded(
+                    "{0} 精度 {1} 超过 {2} 字符上限：在分配前拒绝".format(
+                        what, precision, MAX_STRING_CHARS
+                    )
+                )
+            minimum += precision
+    if minimum > MAX_STRING_CHARS:
+        raise WorkloadExceeded(
+            "{0} 结果最小长度 {1} 超过 {2} 字符上限：在分配前拒绝".format(
+                what, minimum, MAX_STRING_CHARS
+            )
+        )
+
+
+def _deterministic_key(value: Any) -> Tuple[int, str]:
+    """外部普通集合元素的兜底排序键（与 hash 种子无关）。
+
+    候选只能构造受限集合（插入顺序固定），本函数只服务“非受限集合混入”的
+    防御性路径：按类型分层 + repr 排序，repr 深度受结构检查约束。
+    """
+    if isinstance(value, bool):
+        return (0, "1" if value else "0")
+    if value is None:
+        return (0, "")
+    if isinstance(value, (int, float)):
+        return (1, repr(value))
+    if isinstance(value, str):
+        return (2, value)
+    try:
+        return (3, repr(value))
+    except RecursionError:  # pragma: no cover - 结构检查已限制深度
+        return (4, type(value).__name__)
+
+
+def _deterministic_order(value: Any) -> List[Any]:
+    """集合迭代顺序：受限集合用插入顺序；其余按确定性键排序兜底。"""
+    order = getattr(value, "_order", None)
+    if order is not None:
+        return list(order)
+    try:
+        return sorted(value, key=_deterministic_key)
+    except TypeError:  # pragma: no cover - 防御性兜底
+        return list(value)
+
+
+def _unique_in_order(items: Any) -> List[Any]:
+    """按首次出现顺序去重（受限冻结集合用它固定迭代顺序）。"""
+    seen: Set[Any] = set()
+    ordered: List[Any] = []
+    for item in items:
+        if item not in seen:
+            seen.add(item)
+            ordered.append(item)
+    return ordered
+
+
 def _make_runtime(meter: _Meter) -> Dict[str, Any]:
     """构造受限运行时：插桩助手 + 白名单内建的计费包装。
 
@@ -793,6 +1139,138 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
 
     def collection_exceed() -> None:
         raise WorkloadExceeded("局部集合超过 {0} 项上限".format(cap))
+
+    def structure_cost(value: Any, what: str) -> int:
+        """结构代价（R6/S1）：标量 0、长字符串按段、容器 1 + 子项代价。
+
+        字符串按 64 字符一段计费：CPython 的字符串比较是 memcmp 级、哈希在
+        对象内缓存，短键（动作键、字段名、类型名）增量为 0；只有长字符串
+        （最长 65536）才按段计入，避免“一次比较搬 64 KB”却不计费。
+
+        比较/成员查询/格式化/排序都会递归遍历数据，而 CPython 的比较与
+        repr 在 C 层执行、不受候选语句计费约束。本函数在**真正遍历数据之前**
+        用显式栈做有界测量：
+
+        - 容器深度超过 MAX_DATA_DEPTH 即拒绝——(a, a) 重复嵌套会形成深度 d、
+          叶数 2^d 的结构，指数比较不再可能跑满时间或 C 栈；
+        - 单元数超过 MAX_DATA_CELLS 即拒绝——宽而共享的结构同样有界。
+
+        返回值用于计费；标量返回 0，因此普通标量比较的量级与既有实现一致。
+        标量与短字符串走常数快路径（不建栈、不遍历），保证热路径开销可控。
+        """
+        kind = type(value)
+        if kind is str:
+            return len(value) // _STRING_COST_CHUNK
+        if kind in _SCALAR_COST_TYPES:
+            return 0
+        if not isinstance(value, (dict, tuple, list, set, frozenset)):
+            return 0  # 其它标量/可调用对象：O(1) 比较与哈希，不计费
+        total = 0
+        nodes = 0
+        stack: List[Tuple[Any, int]] = [(value, 0)]
+        while stack:
+            node, depth = stack.pop()
+            if isinstance(node, str):
+                total += len(node) // _STRING_COST_CHUNK
+            elif isinstance(node, dict):
+                nodes += 1
+                if depth + 1 > MAX_DATA_DEPTH:
+                    raise WorkloadExceeded(
+                        "{0} 嵌套深度超过 {1} 层上限：拒绝递归数据遍历".format(
+                            what, MAX_DATA_DEPTH
+                        )
+                    )
+                total += 1
+                for key, item in node.items():
+                    stack.append((key, depth + 1))
+                    stack.append((item, depth + 1))
+            elif isinstance(node, (tuple, list, set, frozenset)):
+                nodes += 1
+                if depth + 1 > MAX_DATA_DEPTH:
+                    raise WorkloadExceeded(
+                        "{0} 嵌套深度超过 {1} 层上限：拒绝递归数据遍历".format(
+                            what, MAX_DATA_DEPTH
+                        )
+                    )
+                total += 1
+                for item in node:
+                    stack.append((item, depth + 1))
+            if total > MAX_DATA_CELLS or nodes > MAX_DATA_CELLS:
+                raise WorkloadExceeded(
+                    "{0} 结构超过 {1} 单元上限：拒绝递归数据遍历".format(
+                        what, MAX_DATA_CELLS
+                    )
+                )
+        return total
+
+    def items_structure_cost(items: Any, what: str) -> int:
+        """元素级结构代价：排序/极值的 C 层比较也按元素结构计费。"""
+        total = 0
+        for item in items:
+            total += structure_cost(item, what)
+            if total > MAX_DATA_CELLS:
+                raise WorkloadExceeded(
+                    "{0} 结构超过 {1} 单元上限：拒绝递归数据遍历".format(
+                        what, MAX_DATA_CELLS
+                    )
+                )
+        return total
+
+    def scan_cost(value: Any, what: str) -> int:
+        """线性扫描计费（in / .count / .index）：按长度 + 元素结构代价。"""
+        length = seq_len(value)
+        if length is None:
+            return UNSIZEED_INPUT_COST
+        limit = MAX_STRING_CHARS if isinstance(value, str) else cap
+        if length > limit:
+            raise WorkloadExceeded(
+                "{0} 输入长度 {1} 超过 {2} 上限".format(what, length, limit)
+            )
+        total = max(1, length)
+        if isinstance(value, str) or isinstance(value, dict):
+            # 字符串逐字符扫描、字典按哈希查找：不再展开（字典值不参与查找）。
+            return total
+        for item in value:
+            total += structure_cost(item, what)
+            if total > MAX_DATA_CELLS:
+                raise WorkloadExceeded(
+                    "{0} 结构超过 {1} 单元上限：拒绝递归数据遍历".format(
+                        what, MAX_DATA_CELLS
+                    )
+                )
+        return total
+
+    def guard_format_spec(spec: str, what: str) -> None:
+        """格式规范宽度/精度在**分配前**校验（R6/S1）。"""
+        width, precision = parse_format_spec(spec)
+        if width is not None and width > MAX_STRING_CHARS:
+            raise WorkloadExceeded(
+                "{0} 宽度 {1} 超过 {2} 字符上限：在分配前拒绝".format(
+                    what, width, MAX_STRING_CHARS
+                )
+            )
+        if precision is not None and precision > MAX_STRING_CHARS:
+            raise WorkloadExceeded(
+                "{0} 精度 {1} 超过 {2} 字符上限：在分配前拒绝".format(
+                    what, precision, MAX_STRING_CHARS
+                )
+            )
+
+    def metered_key(key: Any, what: str) -> Any:
+        """给 sorted/min/max 的 key 包装：键结果的结构代价进入计费。
+
+        key 结果的比较发生在 C 层（PyObject_RichCompare），不在 _av_cmp 的
+        计费路径上；按每个键结果的结构规模计费即把这条通道关掉。
+        """
+        if key is None or not callable(key):
+            return key
+
+        def key_call(item: Any) -> Any:
+            result = key(item)
+            meter.charge(structure_cost(result, what))
+            return result
+
+        return key_call
 
     def bounded_items(value: Any, what: str) -> List[Any]:
         """S1 修复：消费可迭代对象的内建统一“先限长（≤cap）再按元素计费”。
@@ -863,6 +1341,16 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
                 repeat_guard(a, b)
             elif isinstance(b, (list, tuple, str)) and isinstance(a, int) and not isinstance(a, bool):
                 repeat_guard(b, a)
+        if op_name == "%" and isinstance(a, str):
+            # R6/S1：宽度/精度在分配前校验（修复前先分配 100 MB 再事后检查）。
+            percent_format_guard(a, "% 格式化")
+            meter.charge(structure_cost(b, "% 格式化右操作数"))
+        if op_name in ("|", "-", "&", "^"):
+            set_result = combined_set(a, b, op_name)
+            if set_result is not None:
+                return set_result
+            if op_name == "|" and isinstance(a, dict) and isinstance(b, dict):
+                return combined_dict(a, b)
         result = _RT_OPS[op_name](a, b)
         if isinstance(result, str) and len(result) > MAX_STRING_CHARS:
             raise WorkloadExceeded("字符串超过 {0} 字符上限".format(MAX_STRING_CHARS))
@@ -872,7 +1360,43 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
             if isinstance(result, list):
                 return _AvList(result, cap)
             return result
+        if isinstance(result, (set, frozenset)):
+            # R6/S1：集合运算结果同样受集合上限约束，并按插入顺序确定化
+            # （修复前返回普通 set：长度不受限且迭代顺序随 hash 种子变化）。
+            if len(result) > cap:
+                collection_exceed()
+            meter.charge(max(1, len(result)))
+            return _AvSet(_deterministic_order(result), cap)
         return num_guard(result)
+
+    def combined_set(a: Any, b: Any, op_name: str) -> Any:
+        """集合运算的确定化重建：顺序 = 左操作数顺序 + 右操作数新增项。"""
+        if not isinstance(a, (set, frozenset)) or not isinstance(b, (set, frozenset)):
+            return None
+        meter.charge(max(1, len(a) + len(b)))
+        base = _RT_OPS[op_name](set(a), set(b))
+        if len(base) > cap:
+            collection_exceed()
+        if op_name == "|":
+            order = [item for item in _deterministic_order(a)]
+            order += [item for item in _deterministic_order(b) if item not in a]
+        elif op_name == "&":
+            order = [item for item in _deterministic_order(a) if item in b]
+        elif op_name == "-":
+            order = [item for item in _deterministic_order(a) if item not in b]
+        else:  # ^
+            order = [item for item in _deterministic_order(a) if item not in b]
+            order += [item for item in _deterministic_order(b) if item not in a]
+        return _AvSet(order, cap)
+
+    def combined_dict(a: Any, b: Any) -> Any:
+        """dict | dict：结果仍受集合上限约束（顺序与 Python 一致，左后右）。"""
+        meter.charge(max(1, len(a) + len(b)))
+        merged = dict(a)
+        merged.update(b)
+        if len(merged) > cap:
+            collection_exceed()
+        return _AvDict(merged, cap)
 
     def av_un(op_name: str, value: Any) -> Any:
         meter.charge(1)
@@ -889,19 +1413,107 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
             meter.charge(1)
             yield item
 
-    def av_seq_method(obj: Any, name: str, *args: Any, **kwargs: Any) -> Any:
-        """S1：.count/.index 按被查序列长度计费并限长（真实遍历只发生在这里）。"""
-        length = seq_len(obj)
-        limit = MAX_STRING_CHARS if isinstance(obj, str) else cap
-        if length is not None:
-            if length > limit:
-                raise WorkloadExceeded(
-                    ".{0} 输入长度 {1} 超过 {2} 上限".format(name, length, limit)
-                )
-            meter.charge(max(1, length))
+    def av_cmp(a: Any, op_name: str, b: Any) -> Any:
+        """R6/S1：比较与成员查询统一计费，并按操作数结构规模计费。
+
+        - 相等/排序比较：按两侧结构代价计费（标量 0，故标量比较量级不变）；
+        - is / is not：身份比较 O(1)，只计 1；
+        - in / not in：按被查序列长度（scan_cost）加被查元素结构计费。
+
+        结构代价由 structure_cost 做**有界**遍历并在超深/超宽时提前拒绝，
+        所以 CPython 的递归比较不会在指数结构上跑满时间或 C 栈。
+        """
+        meter.charge(1)
+        if op_name in ("is", "is not"):
+            return _CMP_OPS[op_name](a, b)
+        if op_name in ("in", "not in"):
+            meter.charge(scan_cost(b, "成员查询容器") + structure_cost(a, "成员查询元素"))
+            return _CMP_OPS[op_name](a, b)
+        cost = structure_cost(a, "比较左操作数") + structure_cost(b, "比较右操作数")
+        if cost:
+            meter.charge(cost)
+        return _CMP_OPS[op_name](a, b)
+
+    def av_fvalue(value: Any, spec: Any, conversion: int) -> str:
+        """R6/S1：f-string 单值格式化——宽度/精度在分配前校验。
+
+        修复前 f-string 在整段拼接后才检查长度：宽度 2×10^8 的结果先被分配
+        （实测峰值 200 MB）才抛超限。这里先按运行时的格式规范解析宽度与精度
+        并拒绝超限值，再做 repr/str/ascii 转换与 format()；容器值先做有界结构
+        检查，避免 repr 在指数结构上递归展开。
+        """
+        meter.charge(1)
+        meter.charge(structure_cost(value, "f-string 值"))
+        if conversion == 114:  # !r
+            value = repr(value)
+        elif conversion == 115:  # !s
+            value = str(value)
+        elif conversion == 97:  # !a
+            value = ascii(value)
+        if spec is None:
+            result = format(value, "")
         else:
-            meter.charge(1)
-        return getattr(obj, name)(*args, **kwargs)
+            if not isinstance(spec, str):
+                raise WorkloadExceeded("f-string 格式规范必须是字符串")
+            guard_format_spec(spec, "f-string 格式规范")
+            result = format(value, spec)
+        if type(result) is str and len(result) > MAX_STRING_CHARS:
+            raise WorkloadExceeded("字符串超过 {0} 字符上限".format(MAX_STRING_CHARS))
+        return result
+
+    def av_sub(value: Any, index: Any) -> Any:
+        """R6/S1：切片是批量拷贝——按结果长度计费；下标取值 O(1) 不计。"""
+        result = value[index]
+        if isinstance(index, slice) and isinstance(result, (str, list, tuple)):
+            meter.charge(len(result))
+        elif isinstance(result, (set, frozenset, dict)) and len(result) > cap:
+            collection_exceed()
+        return result
+
+    def av_method(obj: Any, name: str) -> Any:
+        """R6/S1：方法取值统一包装为计费可调用对象。
+
+        修复前只包装 .count/.index 的直接调用：`count = values.count` 之后再
+        调用就完全绕过计费（4096 项列表扫 40 趟只计 8,357）。现在取方法本身
+        计 1，返回的可调用对象在每次调用时按方法规范计费：
+
+        - .count/.index：按被查序列长度 + 参数结构计费（真实线性扫描）；
+        - .append/.add：先查集合上限再改（任何底层容器都受上限约束）；
+        - .get/.items/.keys/.values：只由调用点计 1（键的哈希成本按结构代价
+          计入 .get），因此常见只读方法调用的计费量级与修复前一致。
+
+        取值本身（绑定方法）不计费：绑定是 O(1)，真实工作发生在调用时；
+        调用点已经有 _av_pass 计 1。
+        """
+        bound = getattr(obj, name)  # 无该方法时与原生语义一致：立即 AttributeError
+
+        if name in ("count", "index"):
+
+            def scan(*args: Any, **kwargs: Any) -> Any:
+                cost = scan_cost(obj, ".{0} 输入".format(name))
+                for arg in args:
+                    cost += structure_cost(arg, ".{0} 参数".format(name))
+                meter.charge(cost)
+                return bound(*args, **kwargs)
+
+            return scan
+
+        if name in ("append", "add"):
+
+            def grow(*args: Any, **kwargs: Any) -> Any:
+                if len(obj) >= cap:
+                    collection_exceed()
+                return bound(*args, **kwargs)
+
+            return grow
+
+        def call(*args: Any, **kwargs: Any) -> Any:
+            if name == "get" and args:
+                # 键的哈希/比较成本：长键或深键按结构代价计费（短键为 0）。
+                meter.charge(structure_cost(args[0], ".get 键"))
+            return bound(*args, **kwargs)
+
+        return call
 
     def wrap_list(value: Any) -> Any:
         length = seq_len(value)
@@ -946,17 +1558,30 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
     def b_min(*args: Any, **kwargs: Any) -> Any:
         # S1：单参数形式先限长再按元素计费（min(range(N)) 不再免费遍历 N 项）；
         # 多参数形式比较参数本身，按参数个数计费。
+        # R6/S1：极值比较发生在 C 层，按元素结构与 key 结果结构计费并限深。
         if len(args) == 1:
             items = bounded_items(args[0], "min()")
+            meter.charge(items_structure_cost(items, "min() 元素"))
+            if "key" in kwargs:
+                kwargs["key"] = metered_key(kwargs["key"], "min() 键")
             return num_guard(min(items, **kwargs))
         meter.charge(max(1, len(args)))
+        meter.charge(items_structure_cost(list(args), "min() 参数"))
+        if "key" in kwargs:
+            kwargs["key"] = metered_key(kwargs["key"], "min() 键")
         return num_guard(min(*args, **kwargs))
 
     def b_max(*args: Any, **kwargs: Any) -> Any:
         if len(args) == 1:
             items = bounded_items(args[0], "max()")
+            meter.charge(items_structure_cost(items, "max() 元素"))
+            if "key" in kwargs:
+                kwargs["key"] = metered_key(kwargs["key"], "max() 键")
             return num_guard(max(items, **kwargs))
         meter.charge(max(1, len(args)))
+        meter.charge(items_structure_cost(list(args), "max() 参数"))
+        if "key" in kwargs:
+            kwargs["key"] = metered_key(kwargs["key"], "max() 键")
         return num_guard(max(*args, **kwargs))
 
     def b_abs(value: Any) -> Any:
@@ -995,10 +1620,16 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
 
     def b_sum(iterable: Any, *start: Any) -> Any:
         items = bounded_items(iterable, "sum()")
+        # R6/S1：序列求和（sum(pairs, ())）按元素结构计费——拼接是批量拷贝。
+        meter.charge(items_structure_cost(items, "sum() 元素"))
         return num_guard(sum(items, *start))
 
     def b_sorted(iterable: Any, **kwargs: Any) -> Any:
         items = bounded_items(iterable, "sorted()")
+        # R6/S1：排序比较在 C 层执行，按元素结构与 key 结果结构计费并限深。
+        meter.charge(items_structure_cost(items, "sorted() 元素"))
+        if "key" in kwargs:
+            kwargs["key"] = metered_key(kwargs["key"], "sorted() 键")
         return _AvList(sorted(items, **kwargs), cap)
 
     def b_all(iterable: Any) -> bool:
@@ -1067,14 +1698,18 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
                 collection_exceed()
             items = list(iterable)
         meter.charge(max(1, len(items)))
-        return frozenset(items)
+        # R6/S1：冻结集合也按首次出现顺序迭代（跨 hash 种子一致）。
+        return _AvFrozenSet(_unique_in_order(items))
 
     runtime: Dict[str, Any] = {
         _AV_PASS: av_pass,
         _AV_BIN: av_bin,
         _AV_UN: av_un,
         _AV_ITER: av_iter,
-        _AV_SEQ_METHOD: av_seq_method,
+        _AV_CMP: av_cmp,
+        _AV_METHOD: av_method,
+        _AV_FVALUE: av_fvalue,
+        _AV_SUB: av_sub,
         _AV_WRAP_LIST: wrap_list,
         _AV_WRAP_SET: wrap_set,
         _AV_WRAP_DICT: wrap_dict,
@@ -1253,6 +1888,9 @@ def compute_deps_digest(file_contents: Optional[Mapping[str, str]] = None) -> st
             "max_trace_bytes": MAX_TRACE_BYTES,
             "max_int_magnitude": MAX_INT_MAGNITUDE,
             "max_power_exponent": MAX_POWER_EXPONENT,
+            "max_string_chars": MAX_STRING_CHARS,
+            "max_data_depth": MAX_DATA_DEPTH,
+            "max_data_cells": MAX_DATA_CELLS,
         },
         "view_types": _types_digest_material(),
     }

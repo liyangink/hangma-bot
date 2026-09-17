@@ -1439,4 +1439,8 @@ class TestR1S4ContentBoundIdentity:
     def test_executor_version_bumped_for_billing_change(self) -> None:
         from hangma_bot.policy.action_value_executor import EXECUTOR_VERSION
 
-        assert EXECUTOR_VERSION == "action-value-executor/2"
+        # /2：R1 迭代入口与 range 按长度计费；
+        # /3：R6/S1 方法别名、比较与成员查询、递归结构遍历纳入计费，
+        #     新增嵌套深度/结构单元上限，格式宽度与精度改为分配前校验，
+        #     集合迭代确定化——计费语义再变，旧 candidate_id 与准入失效。
+        assert EXECUTOR_VERSION == "action-value-executor/3"
