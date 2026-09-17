@@ -784,4 +784,38 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 - **残留风险**：平台级 4 人榜单恰好在请求座位携带我方名次、且四条 `games_played` 一致时，与座位序账结构上不可区分。当前该通道唯一生产者是离线驱动的桌内投影；在线路径若要用该字段，须先给 `CompetitionContext` 增加显式座位序声明（kernel 契约变更）。
 - **金例与验收**：`tests/unit/policy/test_action_value_policy.py`（投影契约：座位序、不可映射形态、掩码对齐、词表对账）与 `tests/unit/policy/test_action_value_projection_facts.py`（同一第 2 桌观察下领先/落后注入改变候选选择、四换座不串位、缺账为未知、第 1 桌已知零账）；证据见 [P11 FIX-REPORT](../../review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r7-fixes/P11-scoringview-stage-account/FIX-REPORT.md)。本包不改统计、门禁、调度与作者提示词模板（后者属 P10）。
 
+### 结构工作量口径与执行器版本（2026-09-17，R9 P1/S1，对应复审 S1）
 
+**结论：受限执行器的结构遍历按「展开节点」计费与限额——容器节点与标量叶同口径各计 1 个单元，共享引用按出现次数累积。** 修复前只给容器节点与长字符串计数：`row=(1,)*1024`、`key=(row,)*256`、`lookup={key:1}` 展开 262144 个标量叶、远超 MAX_DATA_CELLS=131072，却只计 262 operations 正常返回，而 CPython 的原生元组哈希仍逐项访问这些叶。
+
+- **执行器版本**：`EXECUTOR_VERSION` 由 `action-value-executor/4` 升为 `action-value-executor/5`（R1/R6/R8 之后的第 4 次计费语义变更）。理由：语义可观察地变化（原放行输入改为拒绝）且标量叶计费改变既有候选的 operations 计数，执行器版本进入 `candidate_id` 与 `deps_digest`。连带影响：既有 candidate_id、准入记录、面板身份与旧冻结清单一律失效，旧目录不得续跑（R9 §2：新身份重开）。
+- **口径（机器合同 `limits.candidate` 逐键登记 + `limits.metering_rules` 逐条登记）**：每个被展开的节点各计 1 个单元（容器与标量叶同口径）；字符串按 64 字符一段、至少 1 段；共享引用按出现次数累积（不做 id 记忆化——原生哈希不缓存子对象哈希、比较也不去重）；嵌套深度 > MAX_DATA_DEPTH=12 或单元数 > MAX_DATA_CELLS=131072 即在**进入原生哈希/比较之前**抛 WorkloadExceeded（候选不可捕获）；顶层标量与短字符串走常数快路径，普通标量比较与短键查询的计费量级不变。
+- **位置不变量（可观察）**：字典/集合字面量与推导式、`set()/frozenset()/dict()` 构造、`.add`（含绑定方法别名）、下标与 `.get` 查询、比较/成员/格式化/排序，都在 C 层哈希或比较**之前**做有界结构检查；键含不可哈希元素时观察到的仍是结构超限（若守卫后置，观察到的会是 `TypeError: unhashable type` 通道）。
+- **金例与验收**：`tests/unit/policy/test_action_value_executor_r9_bounds.py`（21 项：宽浅共享结构在哈希前拒绝、限额外 1 个单元即拒、共享按出现次数计费、三个规模点的单元计费、既有反例保留、热路径上界）与既有 `test_action_value_executor_r8_bounds.py` / `test_action_value_executor_workload_bounds.py`（合计 155 项绿）；合同对账见 `tests/contracts/test_action_value_contract.py`。证据与旧/新数字见 [P1 EXEC FIX-REPORT](../../review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-fixes/P1-exec/FIX-REPORT.md)。本包不改 `ScoringView` 结构版本（仍 `sitin-scoring-view/3`），不改统计、门禁与调度。
+
+#### S1b 补正：视图分派、返回值与字符串产出（2026-09-17，R9 P1/S1b，独立对抗性验证收口）
+
+**结论：类型分派不再默认放行——集合式字典视图按底层键值展开，未知类型保守兜底，候选返回值（含 trace）与字符串产出都进入同一计费口径。** 独立验证者复现了第三种绕过形状：`dict_keys` / `dict_items` 不是 `dict/tuple/list/set/frozenset` 实例，白名单分派把它们判 0 单元，而 CPython 的 `dict_items` 相等比较是**集合式语义**（逐项哈希键并逐值比较）：128 键 × 每值 4096 叶的候选实测 37,541 / 100,000 operations **正常返回**、墙钟 1.672 s（超 1 秒动作窗口），同一个 dict 本体会被 131072 单元上限拒绝。
+
+- **执行器版本**：`EXECUTOR_VERSION` 由 `action-value-executor/5` 升为 `action-value-executor/6`（第 5 次计费语义变更）。连带影响同上一小节：旧 candidate_id、准入记录、面板身份与冻结清单失效，旧目录不得续跑；自然面板产物金例按既有设计**显式 skip**（executor_version 与合同 sha256 同时漂移）。
+- **视图分派**：`dict_keys/dict_items/dict_values` 分别按「键」「键+值」「值」逐项展开，计入同一 MAX_DATA_CELLS 上限（ItemsView 的每对键值展平为两个节点，故 `structure_cost(d.items()) == structure_cost(d)`）。比较、成员查询、字典键/集合元素、`sorted/min/max/sum` 元素、f-string 与 `%` 格式化、`.get` 与下标等**既有全部入口**自动继承该展开；视图本身不可哈希，超限时观察到的是结构拒绝而不是原生 `TypeError`。只读遍历 `for k, v in table.items()` 不受影响（迭代逐项计费的既有量级）。
+- **未知类型兜底（不再「未知 ⇒ 0」）**：有 `len()` 的对象（如 `range`）按 `max(1, len)` 计费且不展开；可调用对象（函数、绑定方法、白名单内建）计 1；其余未知形状按 `max_data_cells + 1` 计费——所有调用点都会把结构代价计入计数器，默认预算 100,000 下**必然整批拒绝**，同时 `structure_cost` 保持全函数（不抛异常），直接度量仍可读。
+- **候选返回值计费**：`ActionValueExecutor.score` 在骨架做任何递归校验/序列化之前，对候选**返回值**按同一套有界结构遍历逐节点计费（共享引用按出现次数展开）。trace 通道实测由「24 operations → 201,524,908 字节序列化 / 406 MB 峰值」变为提前拒绝（峰值 ≤ 数万字节）。正常批的返回值只有几十到几百个单元，量级不变。
+- **trace 合同层预判**（`action_value.py`，不改变正常评分行为）：`ActionScore` 与 `ScoreBatch` 的构造期在 `_validate_trace_value` 与 `json.dumps` **之前**用显式栈做有界遍历，给出序列化字节下界；节点数或字节下界超过 `MAX_TRACE_BYTES=32768` 立即 `ValueError`。原有的「序列化后逐字节比较」保留为最终口径，因此只提前拒绝「无论如何都会超限」的输入。
+- **字符串产出速率**：拼接、重复、f-string 与 `%` 格式化的结果按 **64 字符一段**计费（与字符串哈希/比较同口径）；短结果（< 64 字符）仍计 0，热路径量级不变。修复前 `"x"*32768 + "y"*32768` 每次拷贝 64 KiB 只计 1 个单元，15,000 轮（90,005 ops）可搬 983 MB；现在上界是 64 字节/单元（≈6 MB/预算）。
+- **金例与验收**：`tests/unit/policy/test_action_value_executor_r9b_views_trace.py`（18 项：视图三形状计费与哈希前拒绝、限额内视图比较按元素计费、`.items()` 热路径上界、未知形状按上限+1 计费与执行器通道拒绝、trace 提前拒绝与峰值上界、字符串产出速率与热路径）；独立验证者的 87 项对抗探针一条命令复算见 [P1-exec-verify](../../review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-fixes/P1-exec-verify/VERIFY-REPORT.md)（修复后 `run_all.sh` 退出码 0：0 项绕过、0 项未计费批量工作）。证据与数字见 [P1 EXEC FIX-REPORT](../../review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-fixes/P1-exec/FIX-REPORT.md) §S1b。
+
+
+
+
+
+### R9 P2/ROOT：家族根身份与真实执行种子（2026-09-17，对应复审 A1/A2/A3）
+
+**结论：家族通道的根身份统一为唯一根描述符（生成器版本 × 子场景 × 对手情景 × 实际种子 × 根索引），身份字符串与执行种子由同五个维度派生；家族首次建立按冻结核心清单逐格验收配额，且入席候选必须对全部核心根取得合格评价后，才一起提交面板版本与实际席位。** 本章范围仍限于离线研究工具（`review/llm-guided-heuristic-route-2026-09-15/`），不改变四个外部端口、动作窗口与默认策略。
+
+- **schema**：`sitin-root-identity/2`（身份字符串 `av-eval-{谓词}:{谓词}:{生成器}:{情景}:s{实际种子}:root{NNN}`）、`sitin-root-descriptor/2`（身份 + 执行种子 + 复现参数 + 派生记号）；根内容摘要升为 `sitin-av-family-root-digest/2`；家族根台账与 epoch 表升为 `sitin-av-family-roots/2`、`sitin-av-family-epochs/2`。
+- **唯一实现点**：`tools/sitin_stage.py` 的 `root_identity` / `root_seed` / `root_descriptor` / `parse_root_identity` / `legacy_prefix_root_seed`。普通条件生成（`tools/sitin_opportunities.generate_opportunity`）与指定根单根面板（`tools/sitin_search._av_conditional_root_panel`）共用它；生成快照落 `root_descriptor`，样本与补根工作项逐字沿用同一种子。
+- **权威与冲突**：根身份是权威——台账行/声明字段与身份不符即记问题并**不启用**该根（不静默覆盖）；候选身份不进共享来源根身份（候选属于评价实例 `av_instance_identity_key` 的 candidate 维，同根对不同候选共享同一根描述符、各有独立实例键）。
+- **核心矩阵与建立条件**：`AV_FAMILY_CORE_ROOTS_PER_CELL = 2`（每（子场景侧 × 对手情景）格 2 根，合计 8，对应 SEARCH-SPACE-REDESIGN §7.3）。建立顺序为：冲突声明与历史身份 → 未物化声明 → 逐格配额 → 入席候选对全部核心根的合格评价与非空席位 → 原子提交 epoch 与实际席位；缺格保持 pending，新增停因 `family_refresh_identity_conflict_old_seats_kept`。
+- **旧数据策略（显式，不含自动迁移）**：v1 根身份（`av-eval-{谓词}:{谓词}:rootNNN`，不含情景与实际种子）与旧 schema 台账/epoch 表一律**拒绝继承**；带 `seed_derivation=prefix-v1` 与记录的真实执行种子的历史行按**原生成器**式子 `derive_seed(panel_seed, "prefix", 旧身份)` 还原并逐字核对，缺真实种子或版本即停止并说明原因（不静默赋新种子）。
+- **验收与证据**：`tools/test_sitin_search_r9_root_matrix_identity.py`（16 项：对角两格/少一根/单格不合格/冲突声明不得建立、补齐后恰好建立一次且恢复不重复、8 根 H/M 各半、新种子同索引新增、同根恢复零新增、三处种子逐字一致、历史根拒绝与还原）；控制流探针 `evidence/v4-impl/r9-fixes/P2-root/probes/p2_root_probe.py` 与 6 个定向变异；报告见 [P2 ROOT FIX-REPORT](../../review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-fixes/P2-root/FIX-REPORT.md)。

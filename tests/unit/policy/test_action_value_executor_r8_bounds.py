@@ -253,7 +253,9 @@ class TestN1DeepKeyGuards:
         )
         kind, batch, counted = _run(source)
         assert kind == "returned" and batch.reason == "flat"
-        assert counted <= 8, "标量键字典计费膨胀：{0}".format(counted)
+        # R9/S1b：候选返回值本身计 5 个结构单元（dict 1 + 两对键值各 2）；
+        # 标量键字典字面量自身仍为 0 计费单元，故上界为 8 + 5。
+        assert counted <= 8 + 5, "标量键字典计费膨胀：{0}".format(counted)
 
 
 class TestN1SequenceSumBounds:

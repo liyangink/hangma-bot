@@ -254,6 +254,60 @@ class ActionView:
             )
 
 
+def _guard_trace_serialized_size(value: Any, where: str) -> int:
+    """序列化前的**有界**体积预判：返回字节下界；超过 MAX_TRACE_BYTES 即拒绝。
+
+    R9/S1b：候选返回值（trace）此前在「递归校验 → json.dumps → 比上限」之后
+    才被拒绝，两步都在候选计费之外：24 operations 的候选可让整批序列化
+    201 MB / 峰值 406 MB。本函数在**进入递归校验与序列化之前**用显式栈做
+    有界预判：
+
+    - 字符串按字符数、数值/None/bool 按 1 字节、容器按 1 字节括号计入下界；
+    - 共享引用按**出现次数**展开（json.dumps 与递归校验都按次展开，不去重）；
+    - 访问节点数超过 MAX_TRACE_BYTES 即拒绝：任何节点在 JSON 里至少占 1 字节，
+      因此节点数超过上限的 trace 必然超过字节上限（下界足以判定）；
+    - 无递归、无记忆化，工作与内存都以 MAX_TRACE_BYTES 为界（实测 ≤ 数毫秒）。
+
+    保留下游原有的精确检查（序列化后逐字节比较）作为最终口径——本函数只
+    提前拒绝「无论如何都会超限」的输入，不放过任何原本会被拒绝的形状。
+    """
+    limit = MAX_TRACE_BYTES
+    total = 0
+    nodes = 0
+    stack: List[Any] = [value]
+    while stack:
+        node = stack.pop()
+        nodes += 1
+        if nodes > limit:
+            raise ValueError(
+                "{0} 展开节点超过 {1} 上限：拒绝序列化前的大体积 trace".format(
+                    where, limit
+                )
+            )
+        if isinstance(node, str):
+            total += len(node)
+        elif node is None or isinstance(node, (bool, int, float)):
+            total += 1
+        elif isinstance(node, (list, tuple)):
+            total += 1
+            stack.extend(node)
+        elif isinstance(node, dict):
+            total += 1
+            for key, item in node.items():
+                stack.append(key)
+                stack.append(item)
+        else:
+            # 其余类型由 _validate_trace_value 报错；这里只按最小字节计入下界。
+            total += 1
+        if total > limit:
+            raise ValueError(
+                "{0} 序列化规模超过 {1} 字节上限（序列化前预判拒绝）".format(
+                    where, limit
+                )
+            )
+    return total
+
+
 def _validate_trace_value(value: Any, remaining_depth: int, where: str) -> None:
     """校验 trace 标量/容器：深度 ≤3、只含原始类型、字符串有界。"""
     if value is None or isinstance(value, bool) or isinstance(value, int):
@@ -315,6 +369,9 @@ class ActionScore:
         object.__setattr__(self, "score", score)
         if not isinstance(self.trace, dict):
             raise ValueError("ActionScore.trace 必须是 dict")
+        # R9/S1b：先做有界体积预判，再进入递归校验（单条 trace 超过整批上限
+        # 即必然超限，故用同一上限即可判定，且不会放过原本合法的 trace）。
+        _guard_trace_serialized_size(self.trace, "ActionScore.trace")
         _validate_trace_value(self.trace, MAX_TRACE_DEPTH, "ActionScore.trace")
         object.__setattr__(self, "trace", dict(self.trace))
 
@@ -365,6 +422,16 @@ class ScoreBatch:
         keys = [entry.action_key for entry in self.entries]
         if len(set(keys)) != len(keys):
             raise ValueError("SCORED 批存在重复动作键，整批失效")
+        # R9/S1b：整批序列化前的有界预判（共享 trace 按出现次数展开），
+        # 避免先把超限 trace 序列化成几十/上百 MB 再比上限。
+        _guard_trace_serialized_size(
+            [
+                {"action_key": entry.action_key, "score": entry.score,
+                 "trace": entry.trace}
+                for entry in self.entries
+            ],
+            "ScoreBatch.trace",
+        )
         trace_bytes = _serialized_trace_bytes(self.entries)
         if trace_bytes > MAX_TRACE_BYTES:
             raise ValueError(

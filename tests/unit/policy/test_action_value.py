@@ -845,8 +845,10 @@ class TestMetering:
         executor = ActionValueExecutor(source, name="meter-loop")
         executor.score(build_sample_view())
         # range：调用点 1 + 按长度计费 50（S1：range 本身按长度计费）；
-        # 迭代 50×1；加法 50×1；返回字典字面量 2。
-        assert executor.last_operation_count == 1 + 50 + 50 + 50 + 2
+        # 迭代 50×1；加法 50×1；返回字典字面量 2；
+        # R9/S1b：候选返回值本身按结构单元计费 5（dict 1 + 'status'/值 2 +
+        # 'reason'/值 2）——该通道此前免费，现与其它结构遍历同口径。
+        assert executor.last_operation_count == 1 + 50 + 50 + 50 + 2 + 5
 
     def test_sum_and_sorted_charged_by_input_length(self) -> None:
         source = (
@@ -858,8 +860,9 @@ class TestMetering:
         )
         executor = ActionValueExecutor(source, name="meter-builtin")
         executor.score(build_sample_view())
-        # 列表字面量 5；sum 调用点 1 + 长度 5；sorted 调用点 1 + 长度 5；字典 2。
-        assert executor.last_operation_count == 5 + 6 + 6 + 2
+        # 列表字面量 5；sum 调用点 1 + 长度 5；sorted 调用点 1 + 长度 5；字典 2；
+        # R9/S1b：候选返回值结构单元 5。
+        assert executor.last_operation_count == 5 + 6 + 6 + 2 + 5
 
     def test_len_charged_one_per_call(self) -> None:
         source = (
@@ -869,8 +872,8 @@ class TestMetering:
         )
         executor = ActionValueExecutor(source, name="meter-len")
         executor.score(build_sample_view())
-        # len 调用点 1 + 内建 1 + 字典 2。
-        assert executor.last_operation_count == 4
+        # len 调用点 1 + 内建 1 + 字典 2 + 返回值结构单元 5（R9/S1b）。
+        assert executor.last_operation_count == 4 + 5
 
     def test_collection_size_cap(self) -> None:
         source = (
@@ -1449,4 +1452,17 @@ class TestR1S4ContentBoundIdentity:
         #     frozenset/dict 构造、.add、深键查询）、序列起始值求和拒绝、
         #     字面量与推导式改确定元素流、链式比较临时名隔离——计费与语义
         #     第三次变更，旧 candidate_id 与准入记录再次失效。
-        assert EXECUTOR_VERSION == "action-value-executor/4"
+        # /5（R9/S1）：结构遍历改为每个展开节点（含标量叶）各计 1 个单元、
+        #     容器与标量叶同口径限额、共享引用按出现次数累积——宽而浅的共享
+        #     结构不再只算容器数（原反例 (1,)*1024 复用 256 次由放行改为哈希
+        #     前拒绝），计费与语义第四次变更，旧 candidate_id、旧准入记录与
+        #     旧面板身份随之失效。理由与连带影响见
+        #     evidence/v4-impl/r9-fixes/P1-exec/FIX-REPORT.md §版本判定。
+        # /6（R9/S1b，独立对抗性验证收口）：集合式字典视图（dict_keys/
+        #     dict_items/dict_values）纳入结构遍历、未知类型保守兜底（不再
+        #     「未知 ⇒ 0」）、候选返回值（含 trace）按结构单元计费、字符串产出
+        #     按 64 字符一段计费——第三形状反例（视图）与 trace 通道、字符串
+        #     通道同时收口，计费与语义第五次变更，旧 candidate_id、旧准入记录
+        #     与旧面板身份失效。证据见 evidence/v4-impl/r9-fixes/P1-exec/
+        #     FIX-REPORT.md 与 P1-exec-verify/VERIFY-REPORT.md。
+        assert EXECUTOR_VERSION == "action-value-executor/6"

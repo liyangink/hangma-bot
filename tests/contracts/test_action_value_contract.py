@@ -83,6 +83,33 @@ def test_candidate_limits_match_executor(contract: Mapping[str, Any]) -> None:
     # trace 上限定义在 ScoreBatch（构造期序列化测长），执行器再导出对账。
     assert limits["max_trace_bytes"] == av.MAX_TRACE_BYTES
     assert exe.MAX_TRACE_BYTES == av.MAX_TRACE_BYTES
+    # R9/S1：结构遍历上限进入合同逐键对账（此前只在执行器侧、由 deps 摘要
+    # 间接覆盖；单元口径已补齐为「容器节点 + 标量叶」同口径）。
+    assert limits["max_string_chars"] == exe.MAX_STRING_CHARS
+    assert limits["max_data_depth"] == exe.MAX_DATA_DEPTH
+    assert limits["max_data_cells"] == exe.MAX_DATA_CELLS
+
+
+#: R9/S1、R9/S1b：结构遍历计费口径必须逐条出现在合同 metering_rules 里（防合同
+#: 与实现再次分叉：结构单元口径是执行安全的可观察断言，不是实现细节）。
+METERING_RULES_EXPECTED_SUBSTRINGS = (
+    "结构遍历按展开节点计费",
+    "共享引用按出现次数累积而不去重",
+    "结构单元超过 max_data_cells 或深度超过 max_data_depth",
+    # R9/S1b：视图分派、未知类型兜底、返回值与 trace、字符串产出速率。
+    "集合式字典视图按底层键/键值对展开",
+    "分派之外的未知类型保守兜底",
+    "候选返回值与 trace 在序列化之前计费并做体积预判",
+    "字符串产出（拼接、重复、f-string 与 % 格式化结果）按 64 字符一段计费",
+)
+
+
+def test_contract_registers_structure_unit_metering(
+    contract: Mapping[str, Any]
+) -> None:
+    rules = contract["limits"]["metering_rules"]
+    for needle in METERING_RULES_EXPECTED_SUBSTRINGS:
+        assert any(needle in rule for rule in rules), needle
 
 
 def test_rule_analysis_limits_match_rules_module(contract: Mapping[str, Any]) -> None:
@@ -342,8 +369,9 @@ def test_deps_digest_tracks_whitelist_and_limits() -> None:
             "max_trace_bytes": av.MAX_TRACE_BYTES,
             "max_int_magnitude": exe.MAX_INT_MAGNITUDE,
             "max_power_exponent": exe.MAX_POWER_EXPONENT,
-            # R6/S1 新增的执行器侧工作量边界（合同 JSON limits.candidate 未
-            # 逐键列出的结构上限）：字符串长度、嵌套深度、结构单元上限。
+            # 结构上限（R6/S1 引入；R9/S1 起同时逐键登记在合同 JSON
+            # limits.candidate）：字符串长度、嵌套深度、结构单元上限。
+            # 单元口径 = 容器节点 + 标量叶同口径各计 1。
             "max_string_chars": exe.MAX_STRING_CHARS,
             "max_data_depth": exe.MAX_DATA_DEPTH,
             "max_data_cells": exe.MAX_DATA_CELLS,

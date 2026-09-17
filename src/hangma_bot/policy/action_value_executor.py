@@ -48,6 +48,34 @@
      `_avc{i}/_avt{i}`。修复前用 `x0/t0` 作参数名，会捕获候选自身的同名
      局部变量（`x0 = 100; 0 < 1 < x0` 原生 True、受限执行器得 False）。
 
+3e. 分派与返回值口径补齐（2026-09-17 R9/S1b 第五次收紧）：
+   - **集合式字典视图展开**：dict_keys/dict_items/dict_values 按底层键、或
+     键+值逐项展开，计入同一单元上限（修复前它们不是 dict/tuple/list/set/
+     frozenset 实例，白名单分派判 0 单元，原生逐项比较完全在保护之外：
+     128×4096 的 items 视图比较实测 37,541 ops / 1.672 s 正常返回）。
+   - **兜底不再默认放行**：有 len() 按 max(1,len) 计、可调用计 1、其余未知
+     类型按 MAX_DATA_CELLS+1 计费（默认预算下计费通道必然拒绝）。
+   - **候选返回值计费**：score() 在骨架做任何递归校验/序列化之前，对候选
+     返回值按同一套有界结构遍历逐节点计费（共享引用按出现次数展开）；
+     trace 通道实测由「24 ops → 201 MB 序列化 / 406 MB 峰值」变为提前拒绝。
+   - **字符串产出按 64 字符一段计费**：拼接、重复、f-string 与 % 格式化的
+     结果长度计费（短结果 < 64 字符仍为 0，热路径不变）。
+   - **ScoreBatch 合同层序列化前预判**（action_value.py）：递归校验与
+     json.dumps 之前用有界遍历给出字节下界，超 MAX_TRACE_BYTES 立即拒绝。
+
+3d. 结构单元口径补齐（2026-09-17 R9/S1 第四次收紧）：
+   - **结构遍历对每个展开的节点计费**：容器节点与标量叶同口径各计 1 个
+     单元（字符串按 64 字符一段、至少 1 段），限额同样按单元数判定。
+     修复前只给容器与长字符串计数：`row=(1,)*1024`、`key=(row,)*256`、
+     `{key: 1}` 展开 262144 个标量叶、超过 MAX_DATA_CELLS=131072，却只算
+     262 operations 正常返回，而 CPython 的元组哈希仍逐项访问这些叶。
+   - **共享引用按出现次数累积**：同一对象被引用 n 次就遍历 n 次（原生
+     哈希与比较都不去重），不做 id 记忆化。
+   - **守卫自身有界**：容器出栈时先按「每个子节点至少 1 单元」预判上限，
+     超限立即拒绝，入栈量与遍历量都不超过 MAX_DATA_CELLS。
+   - **热路径不变**：顶层标量与短字符串走常数快路径，标量比较、短键
+     哈希与字典键查询的计费量级与 /4 一致。
+
 4. WorkloadExceeded 继承 BaseException：受限子集内没有任何可写的 except
    处理器能捕获它（bare except / except BaseException / 任意异常类型名
    均被静态拒绝），保证候选不能捕获工作量耗尽异常继续执行。
@@ -65,6 +93,7 @@ import json
 import math
 import operator
 import re
+from collections.abc import ItemsView, KeysView, ValuesView
 from dataclasses import fields as dataclass_fields
 from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Set, Tuple
 
@@ -94,7 +123,7 @@ MAX_SHIFT_BITS = 256  # 移位量上限，防止一次性构造超大整数
 MAX_STRING_CHARS = 65_536  # 单个字符串长度上限（拼接/重复/格式化前检查）
 UNSIZEED_INPUT_COST = 4_096  # 无长度输入的保守计费（正常路径输入均有长度）
 MAX_DATA_DEPTH = 12  # 结构嵌套深度上限（比较/成员/格式化/排序前检查）
-MAX_DATA_CELLS = 131_072  # 单次结构遍历的单元上限（叶子 + 容器节点）
+MAX_DATA_CELLS = 131_072  # 单次结构遍历的单元上限（标量叶与容器节点同口径各计 1）
 _STRING_COST_CHUNK = 64  # 长字符串按 64 字符一段进入结构代价（短键增量为 0）
 #: 结构代价为 0 的标量类型（快路径；其余非容器类型同样返回 0）。
 _SCALAR_COST_TYPES = frozenset({int, float, bool, type(None)})
@@ -110,7 +139,20 @@ _SCALAR_COST_TYPES = frozenset({int, float, bool, type(None)})
 # set/frozenset/dict 构造、.add 与深键查询）、序列起始值求和拒绝、
 # 字面量与推导式改为确定元素流构造、链式比较临时名隔离——计费与语义
 # 第三次变更，版本 /3 → /4；旧 candidate_id 与旧准入记录随之失效。
-EXECUTOR_VERSION = "action-value-executor/4"
+# 2026-09-17 R9(S1)：结构遍历改为**每个展开节点（含标量叶）各计 1 个单元**、
+# 容器与标量叶同口径限额、共享引用按出现次数累积——宽而浅的共享结构不再
+# 只算容器数（反例 row=(1,)*1024、key=(row,)*256 由 262 operations 放行
+# 改为哈希前拒绝）；守卫自身入栈/遍历量有界。计费与语义第四次变更，
+# 版本 /4 → /5；旧 candidate_id、旧准入记录与旧面板身份随之失效。
+# 2026-09-17 R9/S1b（独立对抗性验证收口）：分派不再默认放行——
+#   dict_keys/dict_items/dict_values 视图按底层键值展开（第三形状反例：
+#   128×4096 的 items 视图比较 37,541 operations / 1.672 s 正常返回）；
+#   未知类型改保守兜底（有 len 按长度、可调用计 1、其余按上限+1 → 计费通道
+#   必然拒绝）；候选**返回值**按同一结构口径计费（trace 通道修复前 24
+#   operations 触发 201 MB 序列化）；字符串产出按 64 字符一段计费（拼接/
+#   重复/格式化，修复前 90,005 ops 可搬 983 MB）。计费与语义第五次变更，
+#   版本 /5 → /6；旧 candidate_id、旧准入记录与旧面板身份随之失效。
+EXECUTOR_VERSION = "action-value-executor/6"
 
 # —— 白名单（权威：合同 whitelist；合同测试逐条对账）——
 
@@ -908,12 +950,26 @@ class _Instrumentor(ast.NodeTransformer):
 # ---------------------------------------------------------------------------
 
 
-def structure_cost(value: Any, what: str) -> int:
-    """结构代价（R6/S1）：标量 0、长字符串按段、容器 1 + 子项代价。
+def _structure_exceeded(what: str) -> WorkloadExceeded:
+    """结构单元超限的统一拒绝信号（R9/S1）。"""
+    return WorkloadExceeded(
+        "{0} 结构超过 {1} 单元上限：拒绝递归数据遍历".format(what, MAX_DATA_CELLS)
+    )
 
-    字符串按 64 字符一段计费：CPython 的字符串比较是 memcmp 级、哈希在
-    对象内缓存，短键（动作键、字段名、类型名）增量为 0；只有长字符串
-    （最长 65536）才按段计入，避免“一次比较搬 64 KB”却不计费。
+
+def structure_cost(value: Any, what: str) -> int:
+    """结构代价（R6/S1；R9/S1 扩到标量叶）：每个展开节点各计 1 个单元。
+
+    计费口径（与复审同口径）：
+    - **每个被展开的节点各计 1 个单元**：容器节点与标量叶（int/float/bool/
+      None 及其它非容器对象）同口径；字符串按 64 字符一段、至少 1 段
+      （CPython 的字符串比较是 memcmp 级、哈希在对象内缓存，短键的额外
+      增量本就接近 0，但仍逐项访问一次）；
+    - **共享引用按出现次数累积**：同一对象被容器引用 n 次就遍历 n 次。
+      CPython 的元组哈希不缓存子对象哈希、容器比较也不去重，所以这里
+      **不做 id 记忆化**——去重会让宽而共享的结构少算真实遍历成本；
+    - 顶层标量与短字符串走常数快路径（不建栈、不遍历），普通标量比较与
+      短键哈希的计费量级与既有实现一致。
 
     比较/成员查询/格式化/排序，以及 R8/N1 新增的**原生哈希**（字典键、
     集合元素、下标查询）都会递归遍历数据，而 CPython 的比较、repr 与哈希
@@ -922,55 +978,137 @@ def structure_cost(value: Any, what: str) -> int:
 
     - 容器深度超过 MAX_DATA_DEPTH 即拒绝——(a, a) 重复嵌套会形成深度 d、
       叶数 2^d 的结构，指数比较不再可能跑满时间或 C 栈；
-    - 单元数超过 MAX_DATA_CELLS 即拒绝——宽而共享的结构同样有界。
+    - 单元数超过 MAX_DATA_CELLS 即拒绝——容器节点与标量叶同口径计入，
+      宽而浅（含共享引用）的结构同样有界；
+    - 守卫自身有界：容器出栈时先按“每个子节点至少 1 单元”预判上限，
+      超限立即拒绝，因此入栈量与遍历量都不超过 MAX_DATA_CELLS。
 
-    返回值用于计费；标量返回 0，因此普通标量比较的量级与既有实现一致。
-    标量与短字符串走常数快路径（不建栈、不遍历），保证热路径开销可控。
+    修复前（R8/N1—N3）只给容器节点与长字符串计费、标量叶出栈不计数：
+    row=(1,)*1024、key=(row,)*256、{key: 1} 的 262144 个展开叶只算 257，
+    原生元组哈希仍逐项访问这些叶。
+
+    R9/S1b：分派不再默认放行。dict_keys/dict_items/dict_values 这类集合式
+    视图按底层键/键值对展开（同一单元上限）；其余未知类型按
+    _unknown_structure_units 的保守兜底处理（有 len 按长度计、可调用计 1、
+    其余拒绝），不再有「未知 ⇒ 0」。
+    """
+    return _walk_structure(value, what, None)
+
+
+def _structure_children(node: Any) -> Optional[List[Any]]:
+    """结构节点的子节点列表；返回 None 表示该节点是 O(1) 叶子。
+
+    R9/S1b：分派不再默认放行——dict_keys/dict_items/dict_values 这类**集合式
+    字典视图**必须展开为底层键/键值对：CPython 的 dict_items 相等比较走逐项
+    查找并逐值比较（dictview_richcompare），视图本身不是 dict/tuple/list/set/
+    frozenset 实例，白名单分派会把它们当成 O(1) 标量（实测量：视图计 0 单元，
+    而原生比较每轮访问 524,288 个元素节点）。
+    """
+    if isinstance(node, dict):
+        return [child for pair in node.items() for child in pair]
+    if isinstance(node, (tuple, list, set, frozenset)):
+        return list(node)
+    if isinstance(node, ItemsView):
+        # 每项是 (键, 值) 二元组：两项都参与原生比较/序列化。
+        return [child for pair in node for child in pair]
+    if isinstance(node, KeysView):
+        return list(node)
+    if isinstance(node, ValuesView):
+        return list(node)
+    return None
+
+
+def _unknown_structure_units(node: Any) -> int:
+    """未知类型的保守单元数（R9/S1b：不再默认 0）。
+
+    兜底顺序（保守方向 = 宁可多计也不放行）：
+    1. 有 len() 的对象（range、视图类、自定义 Sized）：按 max(1, len) 计费
+       且**不展开**——元素级遍历由迭代/构造/切片等各自通道计费；
+    2. 可调用对象（函数、绑定方法、白名单内建）：身份哈希与比较 O(1)，计 1；
+    3. 其余未知类型（分派外的对象）：按 MAX_DATA_CELLS + 1 计费。这个数字
+       必然让计费通道触顶——所有调用点都会把结构代价计到计数器上（默认
+       预算 100,000 < 131,073）或按单元上限直接拒绝，因此**默认口径下等价于
+       拒绝**，同时 structure_cost 保持全函数（不抛异常），直接度量与
+       读数仍可观察。
+    """
+    if node is None or isinstance(node, (bool, int, float, complex)):
+        # 标量基类（含 int/float 的子类，如计数叶子这类外部包装）：O(1) 哈希
+        # 与比较，计 1——不展开、不按未知形状拒绝。
+        return 1
+    try:
+        length = len(node)
+    except TypeError:
+        length = None
+    if isinstance(length, int) and length >= 0:
+        return max(1, length)
+    if callable(node):
+        return 1
+    return MAX_DATA_CELLS + 1  # 未知形状：按上限+1 计费 → 计费通道必然拒绝
+
+
+def _walk_structure(
+    value: Any, what: str, sink: Optional[Callable[[int], None]]
+) -> int:
+    """同一套有界结构遍历：返回单元数；sink 逐节点计费（None = 只测量）。
+
+    口径（structure_cost 与候选返回值计费共用，避免两份实现分叉）：
+    - 每个展开节点各计 1 个单元（容器、视图、标量叶同口径；字符串按 64
+      字符一段、至少 1 段）；
+    - 共享引用按出现次数累积，不做 id 记忆化；
+    - 容器/视图出栈前先按「每个子节点至少 1 单元」预判 MAX_DATA_CELLS，
+      超限立即拒绝，因此入栈量与遍历量都有界；
+    - 未知类型走保守兜底（见 _unknown_structure_units）。
     """
     kind = type(value)
     if kind is str:
         return len(value) // _STRING_COST_CHUNK
     if kind in _SCALAR_COST_TYPES:
         return 0
-    if not isinstance(value, (dict, tuple, list, set, frozenset)):
-        return 0  # 其它标量/可调用对象：O(1) 比较与哈希，不计费
+    children = _structure_children(value)
+    if children is None:
+        return _unknown_structure_units(value)
     total = 0
-    nodes = 0
     stack: List[Tuple[Any, int]] = [(value, 0)]
     while stack:
         node, depth = stack.pop()
+        node_type = type(node)
         if isinstance(node, str):
-            total += len(node) // _STRING_COST_CHUNK
-        elif isinstance(node, dict):
-            nodes += 1
-            if depth + 1 > MAX_DATA_DEPTH:
-                raise WorkloadExceeded(
-                    "{0} 嵌套深度超过 {1} 层上限：拒绝递归数据遍历".format(
-                        what, MAX_DATA_DEPTH
+            units = max(1, len(node) // _STRING_COST_CHUNK)
+        elif node is None or isinstance(node, (bool, int, float, complex)):
+            units = 1  # 标量叶：与容器节点同口径各计 1 个单元
+        else:
+            node_children = _structure_children(node)
+            if node_children is None:
+                units = _unknown_structure_units(node)
+            else:
+                if depth + 1 > MAX_DATA_DEPTH:
+                    raise WorkloadExceeded(
+                        "{0} 嵌套深度超过 {1} 层上限：拒绝递归数据遍历".format(
+                            what, MAX_DATA_DEPTH
+                        )
                     )
-                )
-            total += 1
-            for key, item in node.items():
-                stack.append((key, depth + 1))
-                stack.append((item, depth + 1))
-        elif isinstance(node, (tuple, list, set, frozenset)):
-            nodes += 1
-            if depth + 1 > MAX_DATA_DEPTH:
-                raise WorkloadExceeded(
-                    "{0} 嵌套深度超过 {1} 层上限：拒绝递归数据遍历".format(
-                        what, MAX_DATA_DEPTH
-                    )
-                )
-            total += 1
-            for item in node:
-                stack.append((item, depth + 1))
-        if total > MAX_DATA_CELLS or nodes > MAX_DATA_CELLS:
-            raise WorkloadExceeded(
-                "{0} 结构超过 {1} 单元上限：拒绝递归数据遍历".format(
-                    what, MAX_DATA_CELLS
-                )
-            )
+                if total + 1 + len(node_children) > MAX_DATA_CELLS:
+                    raise _structure_exceeded(what)
+                units = 1
+                for child in node_children:
+                    stack.append((child, depth + 1))
+        if sink is not None:
+            sink(units)
+        total += units
+        if total > MAX_DATA_CELLS:
+            raise _structure_exceeded(what)
     return total
+
+
+def charge_structure(value: Any, meter: "_Meter", what: str) -> int:
+    """把结构单元逐节点计费到执行器计数器（R9/S1b：候选返回值通道）。
+
+    候选执行期间的一切批量工作都按结构单元计费；候选**返回后**的返回值
+    （含 trace）此前完全在计费之外：24 operations 就能让执行器序列化
+    201 MB。这里在返回骨架做任何递归校验/序列化之前按出现次数逐节点计费，
+    超出计数预算即 WorkloadExceeded（整批失效，不进入序列化）。
+    """
+    return _walk_structure(value, what, meter.charge)
 
 
 class _Meter:
@@ -1466,6 +1604,12 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         result = _RT_OPS[op_name](a, b)
         if isinstance(result, str) and len(result) > MAX_STRING_CHARS:
             raise WorkloadExceeded("字符串超过 {0} 字符上限".format(MAX_STRING_CHARS))
+        if isinstance(result, str):
+            # R9/S1b：**字符串产出**按 64 字符一段计费（与字符串哈希/比较同口径）。
+            # 修复前拼接与重复只计 1 次运算：`"x"*32768 + "y"*32768` 每次拷贝
+            # 64 KiB 却只花 1 个单元，15,000 轮（90,005 ops）能搬 983 MB；
+            # 现在的上界是 64 字节/单元（短字符串结果 < 64 字符仍为 0，热路径不变）。
+            meter.charge(len(result) // _STRING_COST_CHUNK)
         if isinstance(result, (list, tuple)):
             if len(result) > cap:
                 collection_exceed()
@@ -1576,6 +1720,10 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
             result = format(value, spec)
         if type(result) is str and len(result) > MAX_STRING_CHARS:
             raise WorkloadExceeded("字符串超过 {0} 字符上限".format(MAX_STRING_CHARS))
+        if type(result) is str:
+            # R9/S1b：格式化产出同样按 64 字符一段计费（宽度 65536 的填充
+            # 此前 2 个操作就能产出 128 KiB；短结果仍为 0，热路径不变）。
+            meter.charge(len(result) // _STRING_COST_CHUNK)
         return result
 
     def av_sub(value: Any, index: Any) -> Any:
@@ -2008,6 +2156,20 @@ class ActionValueExecutor:
                     "模块级常量 {0!r} 在执行后发生变化：跨调用状态被拒绝".format(name)
                 )
 
+    def _guarded_candidate(self, candidate_view: Mapping[str, Any]) -> Any:
+        """候选调用 + 返回值结构计费（R9/S1b：返回值不是免费通道）。
+
+        候选**执行期间**的一切批量工作早已计费；但候选**返回后**的返回值
+        （尤其 trace）此前完全在计费之外：24 operations 就能让骨架递归校验
+        并序列化 201 MB。这里在骨架做任何递归校验/序列化之前，按同一套有界
+        结构遍历逐节点计费（共享引用按出现次数展开），超出计数预算即
+        WorkloadExceeded 整批失效——正常批的返回值只有几十到几百个单元，
+        量级不变。
+        """
+        raw = self._fn(candidate_view)
+        charge_structure(raw, self._meter, "候选返回值")
+        return raw
+
     def score(self, view: ScoringView) -> ScoreBatch:
         """受限执行 score_actions 并验证完整返回；失败整批抛错，不部分补零。"""
         if not isinstance(view, ScoringView):
@@ -2016,7 +2178,7 @@ class ActionValueExecutor:
         try:
             # WorkloadExceeded 是 BaseException：骨架内的 except Exception
             # 不会吞掉它，原样上抛给调用方做整批降级。
-            return run_scoring_skeleton(view, self._fn)
+            return run_scoring_skeleton(view, self._guarded_candidate)
         finally:
             self.last_operation_count = self._meter.used
             self._verify_no_shared_mutation()
