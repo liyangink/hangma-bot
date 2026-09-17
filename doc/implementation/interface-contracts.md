@@ -1,6 +1,6 @@
 # 第一阶段接口协议
 
-> **2026-09-16 待实施合同**：坐隐新 `action_value_v1` 的边界登记见文末“坐隐完整动作评分与研究合同 v4”。现有 delta 和旧准入 schema 原义保持；本次登记不表示代码/codec 已升级。
+> **2026-09-17 已实施**：坐隐 `action_value_v1` v4 框架已按文末“坐隐完整动作评分与研究合同 v4”落地（A—E 全包，见文末实施状态段）；现有 delta 和旧准入 schema 原义保持。
 
 2026-09-09 当前增补：指南 v27；v26 的公开圈主通过可选 `RulePublicState.catch_play_owner_seat` 接入，保持快照水位、旧 JSON 缺字段兼容和同一规则源。已替代下文历史 v8 跳窗兼容及旧 v24 限定审查，详见文末“官方圈主事实与v26响应修订”。新增字段不代表推进赛事目标或模型接口冻结。
 
@@ -729,7 +729,7 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 `detail_kind`）一律不跨过；**本座**存在未知牌自动动作时第④⑥档让位为未知（返工 blocker-1）。
 
 
-## 坐隐完整动作评分与研究合同 v4（2026-09-16，待实施）
+## 坐隐完整动作评分与研究合同 v4（2026-09-16 立项，2026-09-17 实施完成）
 
 **新框架是独立策略接缝，不扩展旧 delta 的含义。** 规范细则与验收以[实施合同 §4—14](../../review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)为准；本节登记跨模块变更责任，当前生产签名和产物版本不因文档自动改变。
 
@@ -748,3 +748,5 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 | 时限 | 受限且有工作量计数的候选执行器；规则/特征/评分/计划整链计时 | asyncio timeout 不负责抢占同步无限计算；保留原网络余量与同窗不延长契约 |
 
 实现上述变更时必须同批更新本协议的具体类型定义、全部调用方、旧记录往返与契约测试；当前不预建空端口，不改变 HTTP 协议或默认上线策略。
+
+**2026-09-16 A 包合同冻结 → 2026-09-17 实施完成**：机器合同 [contracts/action-value-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json)（score_actions 接口、受限子集、限额与白名单、身份与门禁 schema）与 [contracts/group-dev-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json)（group_advance_v1 目标 + group_dev_v1 赛制，group-only 单组阶段合同）已冻结并实施：B1 进展载荷（FollowupBranchFacts/FamilyProgress）、B2 受限执行器与三种子、B3 codec 升级与 ActionValuePolicy 装配、C1 legal-prefix-v1 与中途续打、C2 根级统计与八席档案、D 生成门禁与七命令、E 最小真实闭环（I1/M1 血缘完整）全部落地。本节上表接缝行随之从拟实施转为已实施（审计 trace 与决策路径接线除外——决策记录仍按原 codec）。效果结论见 evidence/v4-impl/batch8/CLOSURE.md 四态报告：框架完成、开发候选完成、no_positive_candidate（未选出整体优胜，如实未进入确认）。
