@@ -750,3 +750,21 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 实现上述变更时必须同批更新本协议的具体类型定义、全部调用方、旧记录往返与契约测试；当前不预建空端口，不改变 HTTP 协议或默认上线策略。
 
 **2026-09-16 A 包合同冻结 → 2026-09-17 实施完成**：机器合同 [contracts/action-value-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json)（score_actions 接口、受限子集、限额与白名单、身份与门禁 schema）与 [contracts/group-dev-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json)（group_advance_v1 目标 + group_dev_v1 赛制，group-only 单组阶段合同）已冻结并实施：B1 进展载荷（FollowupBranchFacts/FamilyProgress）、B2 受限执行器与三种子、B3 codec 升级与 ActionValuePolicy 装配、C1 legal-prefix-v1 与中途续打、C2 根级统计与八席档案、D 生成门禁与七命令、E 最小真实闭环（I1/M1 血缘完整）全部落地。本节上表接缝行随之从拟实施转为已实施（审计 trace 与决策路径接线除外——决策记录仍按原 codec）。效果结论见 evidence/v4-impl/batch8/CLOSURE.md 四态报告：框架完成、开发候选完成、no_positive_candidate（未选出整体优胜，如实未进入确认）。
+
+### 门线 / 位次势差语义（2026-09-17，R7 P10，对应复审 §5 M4）
+
+**结论：「门线」只有两个名字，名字必须与升序下标一致。** R6 试跑候选把「晋级门线（第 3 名分数线）」贴到升序 `sorted(scores)[2]`（实为**第 2 名**）：对四座 `(100, 80, 20, 0)`、焦点座位 2 得到 −60，而所称「第 3 名距离」应为 0。本节固定候选面向口径；作者提示词由 [`tools/sitin_generate.py`](../../review/llm-guided-heuristic-route-2026-09-15/tools/sitin_generate.py) 的 `gate_line_semantics_block()` 渲染（同源，不手抄第二套），口径块进合同身份——改口径即改提示词哈希。
+
+| 名字 | 别名 | 公式 | 含义 |
+| --- | --- | --- | --- |
+| `inside_line` | 追第二名 | 升序下标 2 的分数（= 第 2 名分数）；`Φ_in = s[seat] − inside_line` | 与**晋级区末位**的分差；`Φ_in ≥ 0` 表示积分不低于第 2 名（并列计入） |
+| `outside_line` | 领先第三名 | 升序下标 1 的分数（= 第 3 名分数）；`Φ_out = s[seat] − outside_line` | 相对**区外头名**的领先量；`Φ_out > 0` 表示严格领先 |
+
+- **名次映射**：第 k 名分数 = 升序下标 4−k（下标 0/1/2/3 = 第 4/3/2/1 名）。晋级区大小取目标合同 [group-dev-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json) 的 `objective.advance_count`（当前为 2）。禁止把下标 2 叫「第 3 名门线」，也不得用未注明第几名的「门线」同时指代两者。
+- **基准唯一**：一次计算只用一个基准（`competition.stage_scores` / `competition.table_scores` / `visible_state.scores`），必须显式命名来源；三类不得混算或相加，一个缺失不得用另一个顶替。
+- **动作后势差只有两种模式**：`recompute`（**完整结算向量重算**：动作后四座积分全部已知，如 `immediate_settlement.score_delta` 是四座齐全的增量向量；`ΔΦ = Φ(s′) − Φ(s)`，任一座未知即未知）；`frozen_line`（**近似启发式**：只把本人增量 δ 加到本座位、门线数值固定为动作前取值，`ΔΦ = δ`，适用域仅限同一窗口内比较本座位各合法动作）。只加本人增量、固定他家门线的写法**不得**称重算，也不得据此声称门线会移动或晋级概率已计入——`recompute` 下 `ΔΦ ≠ δ`。
+- **未知与同分**：基准缺失/陈旧、长度不是 4、含 None/布尔/非有限数 → 势差为**未知**（不得当 0）；同分不改变门线数值，但改变「谁是第 k 名」，`Φ = 0` 时是否在晋级区内按**识别区间**给（`low = 严格更高者数 + 1`、`high = 严格更高者数 + 同块人数`；`high ≤ 晋级区 → IN`；`low > 晋级区 → OUT`；其余 `UNRESOLVED`），次级键（place_points/god_count）未知时保留区间。
+- **平移不变**：四座同加任意常数时两条势差不变；绝对积分水平不是门线势差。
+- **单调性适用域**：门线数值固定时 `Φ` 关于本座位积分单调不减；「向听更低更好」只对同一动作族、同一合法性集合、其余事实相同的比较成立（大牌路线可能牺牲向听换番），不得写成任何局面都成立。
+- **金例**：[`tools/test_sitin_generate_gate_line.py`](../../review/llm-guided-heuristic-route-2026-09-15/tools/test_sitin_generate_gate_line.py)（14 项，纯计算；每条期望值在测试注释里给出推导算式），覆盖领先 / 临界 / 落后 / 同分 / 四换座 / 结算后门线变动 / 平移不变性 / 未知不伪装零 / 单调性适用域；提示词里渲染的金例数字与该测试同源。本包只改口径与金例，不改统计、门禁与调度。
+
