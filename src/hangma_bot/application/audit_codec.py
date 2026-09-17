@@ -675,7 +675,7 @@ def translate_monotonic_deadlines(
 
 
 def _ranked_candidate_to_json(candidate: RankedCandidate) -> dict[str, object]:
-    return {
+    result = {
         "action_key": candidate.action_key,
         "action": action_to_json(candidate.action),
         "rank": candidate.rank,
@@ -686,6 +686,22 @@ def _ranked_candidate_to_json(candidate: RankedCandidate) -> dict[str, object]:
         "reasons": list(candidate.reasons),
         "is_emergency": candidate.is_emergency,
     }
+    # R2/S5：版本化完整评分解释只在携带时写入（有界结构化 trace 原样保留，
+    # 不再截成 reasons 摘要）；旧策略与旧记录缺键还原 None（pattern 先例）。
+    if candidate.score_trace is not None:
+        result["score_trace"] = dict(candidate.score_trace)
+    return result
+
+
+def _score_trace_from_json(value: object) -> dict | None:
+    """还原完整评分解释；缺键/显式 null 还原 None，不补算摘要。"""
+    if value is None:
+        return None
+    data = _require_mapping(value, "ranked_candidate.score_trace")
+    for key in data:
+        if not isinstance(key, str):
+            raise ValueError("ranked_candidate.score_trace 的键必须是字符串")
+    return dict(data)
 
 
 def _ranked_candidate_from_json(payload: object) -> RankedCandidate:
@@ -708,6 +724,7 @@ def _ranked_candidate_from_json(payload: object) -> RankedCandidate:
             _get(data, "total_score", type_name), type_name, "total_score"
         ),
         score_parts=tuple(score_parts),
+        score_trace=_score_trace_from_json(data.get("score_trace")),
         reasons=tuple(
             _as_str(item, type_name, "reasons")
             for item in _as_list(_get(data, "reasons", type_name), type_name, "reasons")

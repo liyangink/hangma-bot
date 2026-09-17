@@ -8,11 +8,14 @@
    只允许白名单 builtins 与只读方法（.append/.add 仅限局部构造期）。
 2. 编译产物插桩：候选 AST 重写为受限产物——每个调用点、二元/一元运算、
    推导式元素、f-string 计费；for 迭代经 _av_iter 逐项计费。
-3. 计数计费：len/min/max/abs/round/int/float/bool/range 计 1；
-   sum/sorted/all/any/map/filter/enumerate/reversed/zip 及容器构造按输入
-   长度保守计费；总操作 ≤ MAX_COUNTED_OPERATIONS；局部单集合 ≤
-   MAX_LOCAL_COLLECTION_SIZE（包装 list/dict/set）；字符串长度有界；
-   算术结果整数幅度 ≤ 2^63-1，浮点必须有限。
+3. 计数计费（2026-09-17 R1/S1 收紧）：range 按自身长度计费并禁止超大
+   构造；min/max/sum/sorted/all/any/map/filter/enumerate/reversed/zip、
+   容器构造与 .count/.index 一律“先限长（≤4096）再按元素计费”，真实
+   遍历只发生在计费包装内；len/abs/round/int/float/bool 计 1；总操作 ≤
+   MAX_COUNTED_OPERATIONS；局部单集合 ≤ MAX_LOCAL_COLLECTION_SIZE（包装
+   list/dict/set，切片同受上限）；字符串长度有界；算术结果整数幅度 ≤
+   2^63-1，浮点必须有限；模块级仅允许不可变常量，装载即快照、执行后
+   复核，跨调用可变状态被拒绝。
 4. WorkloadExceeded 继承 BaseException：受限子集内没有任何可写的 except
    处理器能捕获它（bare except / except BaseException / 任意异常类型名
    均被静态拒绝），保证候选不能捕获工作量耗尽异常继续执行。
@@ -58,7 +61,10 @@ MAX_SHIFT_BITS = 256  # 移位量上限，防止一次性构造超大整数
 MAX_STRING_CHARS = 65_536  # 单个字符串长度上限（拼接/重复/格式化后检查）
 UNSIZEED_INPUT_COST = 4_096  # 无长度输入的保守计费（正常路径输入均有长度）
 
-EXECUTOR_VERSION = "action-value-executor/1"
+# 2026-09-17 R1(S1)：迭代入口全面按元素计费、range 按长度计费、模块级
+# 仅不可变常量、跨调用无状态校验——计费语义变更，版本 /1 → /2，旧
+# candidate_id 与旧准入记录随之失效（identity.recovery_policy 预期行为）。
+EXECUTOR_VERSION = "action-value-executor/2"
 
 # —— 白名单（权威：合同 whitelist；合同测试逐条对账）——
 
@@ -140,7 +146,12 @@ def _check_constant(node: ast.Constant) -> None:
 
 
 def _check_constant_expr(node: ast.AST) -> None:
-    """模块级常量只允许常量字面量及其容器组合，防止执行期任意表达式。"""
+    """模块级只允许**不可变**常量：str/int/float/bool/None 与其 tuple 组合。
+
+    S1 修复：list/dict/set 字面量一律拒绝——它们是跨调用可变共享状态
+    （CACHE.append 会让同输入连续评分产生不同输出）。可变容器只能在
+    函数体内经受限包装构造（局部、随调用丢弃）。
+    """
     if isinstance(node, ast.Constant):
         _check_constant(node)
         return
@@ -152,18 +163,16 @@ def _check_constant_expr(node: ast.AST) -> None:
             _reject("模块级一元符号只允许作用于数值常量")
         _check_constant(node.operand)
         return
-    if isinstance(node, (ast.Tuple, ast.List, ast.Set)):
+    if isinstance(node, ast.Tuple):
         for item in node.elts:
             _check_constant_expr(item)
         return
-    if isinstance(node, ast.Dict):
-        for key in node.keys:
-            if not isinstance(key, ast.Constant):
-                _reject("模块级常量字典的键必须是常量")
-            _check_constant(key)
-            _check_constant_expr(node.values[node.keys.index(key)])
-        return
-    _reject("模块级只允许常量赋值，得到 {0}".format(type(node).__name__))
+    if isinstance(node, (ast.List, ast.Set, ast.Dict)):
+        _reject(
+            "模块级 {0} 字面量被拒绝：跨调用可变状态；可变容器请在函数内"
+            "局部构造（受限包装随调用丢弃）".format(type(node).__name__.lower())
+        )
+    _reject("模块级只允许不可变常量赋值，得到 {0}".format(type(node).__name__))
 
 
 def _is_docstring(stmt: ast.stmt) -> bool:
@@ -566,6 +575,7 @@ _AV_PASS = "_av_pass"
 _AV_BIN = "_av_bin"
 _AV_UN = "_av_un"
 _AV_ITER = "_av_iter"
+_AV_SEQ_METHOD = "_av_seq_method"
 _AV_WRAP_LIST = "_av_wrap_list"
 _AV_WRAP_SET = "_av_wrap_set"
 _AV_WRAP_DICT = "_av_wrap_dict"
@@ -596,6 +606,18 @@ class _Instrumentor(ast.NodeTransformer):
         )
 
     def visit_Call(self, node: ast.Call) -> ast.AST:
+        func = node.func
+        if isinstance(func, ast.Attribute) and func.attr in ("count", "index"):
+            # S1：.count/.index 在真实对象上线性遍历——改走按长度计费的方法包装。
+            self.generic_visit(node)
+            return ast.copy_location(
+                ast.Call(
+                    func=ast.Name(id=_AV_SEQ_METHOD, ctx=ast.Load()),
+                    args=[func.value, ast.Constant(func.attr), *node.args],
+                    keywords=list(node.keywords),
+                ),
+                node,
+            )
         self.generic_visit(node)
         return self._wrap(_AV_PASS, node)
 
@@ -682,7 +704,7 @@ class _Meter:
 
 
 class _AvList(list):
-    """受限局部列表：append 只做集合上限检查（调用点已按次计费）。"""
+    """受限局部列表：append 与切片结果都受集合上限约束（调用点已按次计费）。"""
 
     __slots__ = ("_cap",)
 
@@ -694,6 +716,13 @@ class _AvList(list):
         if len(self) >= self._cap:
             raise WorkloadExceeded("局部集合超过 {0} 项上限".format(self._cap))
         super().append(item)
+
+    def __getitem__(self, item: Any) -> Any:
+        result = super().__getitem__(item)
+        # 切片产生新列表：仍包装为受限列表，防止绕开集合上限继续增长。
+        if isinstance(result, list):
+            return _AvList(result, self._cap)
+        return result
 
 
 class _AvSet(set):
@@ -764,6 +793,23 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
 
     def collection_exceed() -> None:
         raise WorkloadExceeded("局部集合超过 {0} 项上限".format(cap))
+
+    def bounded_items(value: Any, what: str) -> List[Any]:
+        """S1 修复：消费可迭代对象的内建统一“先限长（≤cap）再按元素计费”。
+
+        有长度输入：len > cap 即拒绝（最大输入边界），否则按长度计费并
+        物化；无长度输入：逐项计费物化（受 cap 约束）。真实遍历只发生在
+        本函数内，候选无法再拿到“只计 1 次调用费却遍历百万项”的通道。
+        """
+        length = seq_len(value)
+        if length is None:
+            return materialize(value)
+        if length > cap:
+            raise WorkloadExceeded(
+                "{0} 输入长度 {1} 超过 {2} 项上限".format(what, length, cap)
+            )
+        meter.charge(max(1, length))
+        return list(value)
 
     def num_guard(value: Any) -> Any:
         if isinstance(value, bool):
@@ -843,6 +889,20 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
             meter.charge(1)
             yield item
 
+    def av_seq_method(obj: Any, name: str, *args: Any, **kwargs: Any) -> Any:
+        """S1：.count/.index 按被查序列长度计费并限长（真实遍历只发生在这里）。"""
+        length = seq_len(obj)
+        limit = MAX_STRING_CHARS if isinstance(obj, str) else cap
+        if length is not None:
+            if length > limit:
+                raise WorkloadExceeded(
+                    ".{0} 输入长度 {1} 超过 {2} 上限".format(name, length, limit)
+                )
+            meter.charge(max(1, length))
+        else:
+            meter.charge(1)
+        return getattr(obj, name)(*args, **kwargs)
+
     def wrap_list(value: Any) -> Any:
         length = seq_len(value)
         if length is None:
@@ -884,11 +944,19 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         return len(obj)
 
     def b_min(*args: Any, **kwargs: Any) -> Any:
-        meter.charge(1)
+        # S1：单参数形式先限长再按元素计费（min(range(N)) 不再免费遍历 N 项）；
+        # 多参数形式比较参数本身，按参数个数计费。
+        if len(args) == 1:
+            items = bounded_items(args[0], "min()")
+            return num_guard(min(items, **kwargs))
+        meter.charge(max(1, len(args)))
         return num_guard(min(*args, **kwargs))
 
     def b_max(*args: Any, **kwargs: Any) -> Any:
-        meter.charge(1)
+        if len(args) == 1:
+            items = bounded_items(args[0], "max()")
+            return num_guard(max(items, **kwargs))
+        meter.charge(max(1, len(args)))
         return num_guard(max(*args, **kwargs))
 
     def b_abs(value: Any) -> Any:
@@ -915,68 +983,59 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         return bool(*args, **kwargs)
 
     def b_range(*args: Any) -> range:
-        meter.charge(1)
+        # S1：range 本身按长度计费并禁止超大构造——len(range(...)) 即元素数，
+        # 构造 range(1000000) 立即计满预算并抛 WorkloadExceeded，后续任何
+        # 内建/循环都不可能再从超大 range 获得不计费遍历。
         for item in args:
             if isinstance(item, bool) or not isinstance(item, int):
                 raise WorkloadExceeded("range 参数必须是 int")
-        return range(*args)
+        result = range(*args)
+        meter.charge(max(1, len(result)))
+        return result
 
     def b_sum(iterable: Any, *start: Any) -> Any:
-        meter.charge(max(1, input_cost(iterable)))
-        return num_guard(sum(iterable, *start))
+        items = bounded_items(iterable, "sum()")
+        return num_guard(sum(items, *start))
 
     def b_sorted(iterable: Any, **kwargs: Any) -> Any:
-        meter.charge(max(1, input_cost(iterable)))
-        items = materialize(iterable) if seq_len(iterable) is None else list(iterable)
-        if len(items) > cap:
-            collection_exceed()
+        items = bounded_items(iterable, "sorted()")
         return _AvList(sorted(items, **kwargs), cap)
 
     def b_all(iterable: Any) -> bool:
-        meter.charge(max(1, input_cost(iterable)))
-        return all(iterable)
+        return all(bounded_items(iterable, "all()"))
 
     def b_any(iterable: Any) -> bool:
-        meter.charge(max(1, input_cost(iterable)))
-        return any(iterable)
+        return any(bounded_items(iterable, "any()"))
 
     def b_enumerate(iterable: Any, *start: Any) -> Any:
-        meter.charge(max(1, input_cost(iterable)))
-        return enumerate(iterable, *start)
+        # S1：物化为受限列表（不再返回惰性 enumerate），长度受限、按元素计费。
+        items = bounded_items(iterable, "enumerate()")
+        return _AvList(list(enumerate(items, *start)), cap)
 
     def b_reversed(seq: Any) -> Any:
-        meter.charge(max(1, input_cost(seq)))
-        items = materialize(seq) if seq_len(seq) is None else list(seq)
-        if len(items) > cap:
-            collection_exceed()
+        items = bounded_items(seq, "reversed()")
         return _AvList(items[::-1], cap)
 
     def b_zip(*seqs: Any) -> Any:
-        total = 0
-        for seq in seqs:
-            total += input_cost(seq)
-        meter.charge(max(1, total))
-        items = list(zip(*seqs))
+        materialized = [bounded_items(seq, "zip()") for seq in seqs]
+        items = list(zip(*materialized))
         if len(items) > cap:
             collection_exceed()
         return _AvList(items, cap)
 
     def b_map(fn: Any, *seqs: Any) -> Any:
-        total = 0
-        for seq in seqs:
-            total += input_cost(seq)
-        meter.charge(max(1, total))
-        items = list(map(fn, *seqs))
+        materialized = [bounded_items(seq, "map()") for seq in seqs]
+        items = list(map(fn, *materialized))
         if len(items) > cap:
             collection_exceed()
         return _AvList(items, cap)
 
     def b_filter(fn: Any, seq: Any) -> Any:
-        meter.charge(max(1, input_cost(seq)))
-        items = list(filter(fn, seq))
-        if len(items) > cap:
+        items = bounded_items(seq, "filter()")
+        picked = list(filter(fn, items))
+        if len(picked) > cap:
             collection_exceed()
-        return _AvList(items, cap)
+        return _AvList(picked, cap)
 
     def b_tuple(iterable: Any = ()) -> tuple:
         length = seq_len(iterable)
@@ -1015,6 +1074,7 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
         _AV_BIN: av_bin,
         _AV_UN: av_un,
         _AV_ITER: av_iter,
+        _AV_SEQ_METHOD: av_seq_method,
         _AV_WRAP_LIST: wrap_list,
         _AV_WRAP_SET: wrap_set,
         _AV_WRAP_DICT: wrap_dict,
@@ -1091,7 +1151,47 @@ class ActionValueExecutor:
         if not callable(fn):  # pragma: no cover - 静态检查已保证
             raise StaticCheckError("score_actions 未定义或不可调用")
         self._fn: Callable[[Mapping[str, Any]], Mapping[str, Any]] = fn
+        # S1：装载即核验并快照模块级绑定——只允许函数与不可变常量；
+        # score() 每次执行后逐项复核，杜绝跨调用可变共享状态。
+        self._namespace = namespace
+        self._module_snapshot = self._snapshot_module_bindings(namespace)
         self.last_operation_count: Optional[int] = None
+
+    @staticmethod
+    def _snapshot_module_bindings(
+        namespace: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """装载期快照模块级绑定；可变类型直接拒绝（静态检查的双重保险）。"""
+        snapshot: Dict[str, Any] = {}
+        for name, value in namespace.items():
+            if name == "__builtins__" or name.startswith("_av"):
+                continue
+            if callable(value):
+                snapshot[name] = ("fn", value)
+                continue
+            if value is None or isinstance(value, (str, int, float, bool, tuple, frozenset)):
+                snapshot[name] = ("const", value)
+                continue
+            raise StaticCheckError(
+                "模块级绑定 {0!r} 是可变类型 {1}：跨调用状态被拒绝".format(
+                    name, type(value).__name__
+                )
+            )
+        return snapshot
+
+    def _verify_no_shared_mutation(self) -> None:
+        """执行后复核模块命名空间无残留变更（跨调用状态检测）。"""
+        for name, (kind, original) in self._module_snapshot.items():
+            current = self._namespace.get(name, None)
+            if kind == "fn":
+                if current is not original:
+                    raise WorkloadExceeded(
+                        "模块级函数 {0!r} 被重绑定：跨调用状态被拒绝".format(name)
+                    )
+            elif current != original or type(current) is not type(original):
+                raise WorkloadExceeded(
+                    "模块级常量 {0!r} 在执行后发生变化：跨调用状态被拒绝".format(name)
+                )
 
     def score(self, view: ScoringView) -> ScoreBatch:
         """受限执行 score_actions 并验证完整返回；失败整批抛错，不部分补零。"""
@@ -1104,6 +1204,7 @@ class ActionValueExecutor:
             return run_scoring_skeleton(view, self._fn)
         finally:
             self.last_operation_count = self._meter.used
+            self._verify_no_shared_mutation()
 
 
 # ---------------------------------------------------------------------------
@@ -1129,12 +1230,17 @@ def _types_digest_material() -> Dict[str, Any]:
     return material
 
 
-def compute_deps_digest() -> str:
-    """首版第一方传递依赖摘要：白名单 + 限额 + 类型摘要的 sha256。
+def compute_deps_digest(file_contents: Optional[Mapping[str, str]] = None) -> str:
+    """第一方传递依赖摘要：结构摘要（白名单/限额/类型）+ 实际文件内容摘要。
 
-    合同 whitelist.view_api：ScoringView 只读访问器与不可变集合类型由 B2
-    冻结并进入候选身份；任何白名单/限额/类型字段变化都会改变本摘要，
-    从而使旧 candidate_id 失效（identity.recovery_policy）。
+    S4 修复：仅靠字段名/常量摘要无法覆盖“只改方法体”的实现变更。离线
+    装配层（sitin_gates）读取 FIRST_PARTY_DIGEST_MODULES 列出的实际第一方
+    文件与合同 JSON 内容，经 file_contents 注入本函数——任何实现文件的方法
+    体改动都会改变内容摘要，从而使旧 candidate_id 与旧准入记录失效
+    （identity.recovery_policy）。本模块保持无文件副作用：读文件在离线层。
+
+    传 None 时摘要仅含结构信息（纯策略层默认路径，用于进程内快速对账）；
+    真实准入/评估身份必须由离线层注入内容摘要。
     """
     material = {
         "executor_version": EXECUTOR_VERSION,
@@ -1150,8 +1256,42 @@ def compute_deps_digest() -> str:
         },
         "view_types": _types_digest_material(),
     }
+    if file_contents is not None:
+        if not isinstance(file_contents, Mapping):
+            raise ValueError("file_contents 必须是映射（模块名 → 文件文本）")
+        material["first_party_contents"] = compute_first_party_digest(file_contents)
     return hashlib.sha256(
         json.dumps(material, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ).hexdigest()
+
+
+#: 身份闭包覆盖的第一方模块（S4）：类型/投影/策略接线/种子/规则事实接口。
+#: 离线装配层按本清单读取实际文件内容；清单本身变化同样改变身份。
+FIRST_PARTY_DIGEST_MODULES: Tuple[str, ...] = (
+    "hangma_bot.policy.action_value",
+    "hangma_bot.policy.action_value_executor",
+    "hangma_bot.policy.action_value_policy",
+    "hangma_bot.policy.action_value_seeds",
+    "hangma_bot.hangma.interface",
+    "hangma_bot.hangma.candidate_facts",
+    "hangma_bot.hangma.value_analysis",
+    "hangma_bot.hangma.progression_payload",
+)
+
+
+def compute_first_party_digest(file_contents: Mapping[str, str]) -> str:
+    """对给定第一方文件内容映射计算确定的内容摘要（sha256）。
+
+    键为模块名/文件标识，值为文件全文文本；键排序后规范化序列化，任何
+    文件内容的任何改动（含仅改方法体）都会改变摘要。
+    """
+    if not isinstance(file_contents, Mapping):
+        raise ValueError("file_contents 必须是映射（模块名 → 文件文本）")
+    normalized = {str(key): str(value) for key, value in file_contents.items()}
+    return hashlib.sha256(
+        json.dumps(
+            normalized, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
     ).hexdigest()
 
 

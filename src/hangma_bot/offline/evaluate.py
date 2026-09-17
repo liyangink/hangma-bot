@@ -932,6 +932,113 @@ def _safe_mean(values: List[float]) -> Optional[float]:
 
 
 @dataclass(frozen=True)
+class StageSituationProjection:
+    """阶段处境的当时可见投影（Q8：第二桌起策略可读已知阶段事实）。
+
+    - 只承载**已完成桌赛**的公开事实（四座位累计积分/名次分、已完成桌数）
+      与本阶段形状（当前桌序/总桌数）；不包含任何进行中桌赛的未来结果、
+      未发生桌赛或他家暗牌（T09 红线）；
+    - 进入策略请求的通道是 CompetitionContext：stage_no=当前桌序（1 起）、
+      stage_total=阶段总桌数（策略可推剩余桌数 = stage_total − stage_no）、
+      ranking=四座位已完成桌账（god_count 离线不可复现，按 0 建模并在此
+      注明**不参与 U 识别区间**——U 由 sitin_stage.group_advance_utility
+      单独计算，不读本投影）；名次按已知键 (total_score, place_points) 的
+      平均名次表达（并列共享区间平均，不冒充官方名次）；
+    - participant_ids_by_seat 把座位 0—3 映射到参赛者身份（焦点/对手），
+      供面板按臂装配与阶段账累计；本类型不改 kernel 任何受控契约。
+    """
+
+    stage_table_no: int                      # 当前桌序（1 起；驱动所在的桌）
+    tables_in_stage: int                     # 阶段总桌数（group-dev-v1.tables_per_group）
+    stage_role: str = "qualify"              # 阶段角色（group-only 合同为 qualify）
+    tables_completed: int = 0                # 当前桌之前已完成的完整桌赛数
+    rounds_per_game: int = 8                 # 每桌单局数（冻结配置口径）
+    stage_scores_by_seat: Tuple[int, int, int, int] = (0, 0, 0, 0)      # 已完成桌累计积分
+    place_points_by_seat: Tuple[int, int, int, int] = (0, 0, 0, 0)      # 已完成桌名次分累计
+    participant_ids_by_seat: Tuple[str, str, str, str] = ("seat-0", "seat-1", "seat-2", "seat-3")
+
+    def __post_init__(self) -> None:
+        if self.stage_table_no < 1:
+            raise ValueError("stage_table_no 必须从 1 起（当前桌序）")
+        if self.tables_in_stage < 1:
+            raise ValueError("tables_in_stage 必须是正整数（阶段总桌数）")
+        if self.tables_completed < 0 or self.rounds_per_game < 1:
+            raise ValueError("tables_completed 必须非负且 rounds_per_game 必须为正")
+        for name in ("stage_scores_by_seat", "place_points_by_seat"):
+            value = getattr(self, name)
+            if not isinstance(value, tuple) or len(value) != 4:
+                raise ValueError("StageSituationProjection.{0} 必须是长度 4 的座位向量".format(name))
+        if not isinstance(self.participant_ids_by_seat, tuple) or len(self.participant_ids_by_seat) != 4:
+            raise ValueError("StageSituationProjection.participant_ids_by_seat 必须是长度 4 的座位向量")
+
+    def known_key_ranks(self) -> Tuple[float, float, float, float]:
+        """按已知键 (total_score, place_points) 的平均名次（座位 0—3）。
+
+        并列块共享该块名次区间的平均值；这是可见性投影，不是官方名次，
+        未知 god_count 不参与（U 的识别区间另由 sitin_stage 计算）。
+        """
+        order = sorted(range(4), key=lambda seat: (-self.stage_scores_by_seat[seat],
+                                                   -self.place_points_by_seat[seat]))
+        ranks = [0.0, 0.0, 0.0, 0.0]
+        index = 0
+        while index < len(order):
+            end = index
+            while (end + 1 < len(order)
+                   and (self.stage_scores_by_seat[order[end + 1]],
+                        self.place_points_by_seat[order[end + 1]])
+                   == (self.stage_scores_by_seat[order[index]],
+                       self.place_points_by_seat[order[index]])):
+                end += 1
+            average = (index + 1 + end + 1) / 2.0
+            for position in range(index, end + 1):
+                ranks[order[position]] = average
+            index = end + 1
+        return (ranks[0], ranks[1], ranks[2], ranks[3])
+
+    def competition_context(self, tournament_id: str, seat: int) -> CompetitionContext:
+        """构造指定座位策略请求内的可见赛事上下文（只含已完成桌公开事实）。"""
+        if not 0 <= seat < 4:
+            raise ValueError("seat 必须是 0—3")
+        from hangma_bot.kernel.observation import RankingEntry
+
+        ranks = self.known_key_ranks()
+        entries = tuple(
+            RankingEntry(
+                participant_id=self.participant_ids_by_seat[position],
+                total_score=int(self.stage_scores_by_seat[position]),
+                place_points=int(self.place_points_by_seat[position]),
+                god_count=0,  # 离线不可复现，按 0 建模；不参与 U 识别区间
+                games_played=int(self.tables_completed) * int(self.rounds_per_game),
+                rank=max(1, int(round(ranks[position]))),
+            )
+            for position in range(4)
+        )
+        return CompetitionContext(
+            tournament_id=tournament_id,
+            stage_no=self.stage_table_no,
+            stage_role=self.stage_role,
+            stage_total=self.tables_in_stage,
+            participant_rank=max(1, int(round(ranks[seat]))),
+            ranking=entries,
+            observed_at_unix_ms=0,
+        )
+
+    def to_json(self) -> dict:
+        return {
+            "stage_table_no": self.stage_table_no,
+            "tables_in_stage": self.tables_in_stage,
+            "stage_role": self.stage_role,
+            "tables_completed": self.tables_completed,
+            "tables_remaining_after_current": max(0, self.tables_in_stage - self.stage_table_no),
+            "rounds_per_game": self.rounds_per_game,
+            "stage_scores_by_seat": list(self.stage_scores_by_seat),
+            "place_points_by_seat": list(self.place_points_by_seat),
+            "participant_ids_by_seat": list(self.participant_ids_by_seat),
+            "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+        }
+
+
+@dataclass(frozen=True)
 class MatchDriverConfig:
     """桌赛驱动的确定性输入；不含策略、网络或真实时钟。"""
 
@@ -1071,6 +1178,7 @@ async def drive_match(
     now_monotonic: Callable[[], float],
     wall_clock: Optional[Callable[[], float]],
     value_limits: Optional[ValueAnalysisLimits] = None,
+    stage_situation: Optional[StageSituationProjection] = None,
 ) -> MatchRunOutcome:
     """完整桌赛驱动循环（simulation-v1 公开方法的唯一调用方）。
 
@@ -1082,6 +1190,9 @@ async def drive_match(
     - value_limits 是普通/阶段驱动共用的统一分析配置（T08/B3）：非 None 时
       每个窗口的 rules.analyze 携带同一 ValueAnalysisLimits（等值即可），
       产出 B1 分支进展与条件分值载荷；默认 None 保持旧行为零变化。
+    - stage_situation 是阶段处境的当时可见投影（Q8）：非 None 时注入每个
+      策略请求的 CompetitionContext（策略可见自己座位的已完成桌累计积分/
+      名次分与剩余桌数）；None 保持旧空上下文零变化。
     - 策略异常/超时按紧急候选保底并计数；复核非法同样转紧急候选；
       任何窗口都拿不到动作时整场以 error 结束，不合成流局。
     - advance 抛 ValueError（旧 revision/缺窗/非法动作）按 error 结束。
@@ -1098,6 +1209,7 @@ async def drive_match(
         now_monotonic=now_monotonic,
         wall_clock=wall_clock,
         value_limits=value_limits,
+        stage_situation=stage_situation,
     )
 
 
@@ -1114,6 +1226,7 @@ async def _advance_frames(
     wall_clock: Optional[Callable[[], float]],
     value_limits: Optional[ValueAnalysisLimits] = None,
     first_frame: Any = None,
+    stage_situation: Optional[StageSituationProjection] = None,
 ) -> MatchRunOutcome:
     """共享驱动循环：从给定世界推进到需要行动/终局（C1 纯重构提取）。
 
@@ -1123,6 +1236,8 @@ async def _advance_frames(
     - first_frame 允许调用方复用已取得的当前帧（resume_match 观察摘要
       核对通过后传入）；None 时循环首步自行 engine.frame(world)，
       与提取前 drive_match 的调用序列逐语句一致。
+    - stage_situation（Q8）逐窗口注入策略请求的 CompetitionContext；
+      None 保持旧空上下文（既有调用零变化）。
     - 终态判定、窗口解析、保底规则、advance 异常边界与步数上限语义
       均保持不变；match_id 即原 spec.match_id（决策标识口径不变）。
     """
@@ -1202,6 +1317,7 @@ async def _advance_frames(
                 now_monotonic=now_monotonic,
                 wall_clock=wall_clock,
                 value_limits=value_limits,
+                stage_situation=stage_situation,
             )
             decisions.append(record)
             if record.fallback_reason == "timeout":
@@ -1350,6 +1466,7 @@ async def resume_match(
     remaining_schedule: Optional[Mapping] = None,
     stage_snapshot: Optional[Mapping] = None,
     value_limits: Optional[ValueAnalysisLimits] = None,
+    stage_situation: Optional[StageSituationProjection] = None,
 ) -> MatchRunOutcome:
     """受控中途续打入口（C1）：从重建的不透明世界继续驱动到声明终点。
 
@@ -1364,6 +1481,8 @@ async def resume_match(
     - remaining_schedule 声明终点与剩余赛程（{"declared_endpoint": str, ...}），
       由调用方冻结；引擎终态（final_scores/blocked/步数上限）即本驱动的
       实际终点，声明终点供费用账与阶段编排对账。
+    - stage_situation（Q8）注入当前桌已完成阶段账的可见投影；None 保持
+      旧空上下文（既有调用零变化）。
     - 截取帧中尚未推进的响应者不沿用任何预先选好的响应：本入口按当前帧
       观察逐窗口重新请求策略（v4 §7.2 条 4/末段）。
     """
@@ -1403,6 +1522,7 @@ async def resume_match(
         wall_clock=wall_clock,
         value_limits=value_limits,
         first_frame=frame,
+        stage_situation=stage_situation,
     )
 
 
@@ -1431,6 +1551,7 @@ async def _resolve_window(
     now_monotonic: Callable[[], float],
     wall_clock: Optional[Callable[[], float]],
     value_limits: Optional[ValueAnalysisLimits] = None,
+    stage_situation: Optional[StageSituationProjection] = None,
 ) -> Tuple[MatchDecisionRecord, Any, bool]:
     """解析一个模拟窗口：规则分析 → 预算 → 策略 → 复核 → SimulationChoice。"""
     observation = decision.observation
@@ -1447,15 +1568,22 @@ async def _resolve_window(
     if wall_clock is not None and rules_started is not None:
         rules_elapsed_ms = (wall_clock() - rules_started) * 1000.0
 
-    competition = CompetitionContext(
-        tournament_id=config.competition_tournament_id,
-        stage_no=None,
-        stage_role=None,
-        stage_total=None,
-        participant_rank=None,
-        ranking=(),
-        observed_at_unix_ms=0,
-    )
+    if stage_situation is None:
+        competition = CompetitionContext(
+            tournament_id=config.competition_tournament_id,
+            stage_no=None,
+            stage_role=None,
+            stage_total=None,
+            participant_rank=None,
+            ranking=(),
+            observed_at_unix_ms=0,
+        )
+    else:
+        # Q8：策略可见自己座位所在阶段已完成桌的公开事实与阶段形状
+        # （stage_no=当前桌序、stage_total=阶段总桌数 → 剩余桌数可推）。
+        competition = stage_situation.competition_context(
+            config.competition_tournament_id, seat
+        )
     budget = config.budget_policy.build(now_monotonic(), decision.timeout_seconds)
     # 决策标识含座位成分：同帧多窗口（如三家碰响应）必须 decision_id 唯一，
     # 关联链路（AGENTS.md §8）不得共享同一标识。

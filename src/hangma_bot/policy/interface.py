@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Protocol, Tuple
+from dataclasses import dataclass, field
+from typing import Any, Mapping, Optional, Protocol, Tuple
 
 from hangma_bot.hangma.interface import RuleAnalysis
 from hangma_bot.kernel.actions import Action, WindowKey
@@ -70,6 +70,11 @@ class RankedCandidate:
     score_parts: Tuple[ScorePart, ...]
     reasons: Tuple[str, ...]
     is_emergency: bool = False
+    # R2/S5：版本化完整评分解释（有界结构化 trace 的原样保留；深度≤3、
+    # 单串≤4096、整批≤32KiB 已在评分批构造期验证，本字段不再截断）。
+    # compare=False：附加审计载荷不参与既有相等/哈希语义（B1 载荷同款
+    # 过渡约定；旧策略与旧记录缺省 None）。
+    score_trace: Optional[Mapping[str, Any]] = field(default=None, compare=False)
 
 
 @dataclass(frozen=True)

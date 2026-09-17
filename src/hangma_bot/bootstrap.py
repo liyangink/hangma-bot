@@ -146,14 +146,42 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "safe_fallback": lambda: SafeFallbackPolicy(),
     "claim_if_legal": lambda: LegacyClaimIfLegalPolicy(),
     "catch_play_probe": lambda: CatchPlayProbePolicy(ComparableHeuristicPolicyV2()),
-    # action_value_v1 候选策略（B3 全链接入）：受限执行器装载种子评分器，
-    # 完整动作排序合同见 contracts/action-value-v1.json。可选注册——不设默认、
-    # 不进 sitin_stage.PANEL_POLICY_NAMES（冻结稳定面板白名单；候选臂注入是
-    # C1 的交付），真实赛事注册仍受 §14 T20 发布门禁约束。
-    "action_value:efficiency_seed": lambda: ActionValuePolicy.from_seed("efficiency_seed"),
-    "action_value:route_value_seed": lambda: ActionValuePolicy.from_seed("route_value_seed"),
-    "action_value:hu_first_reference": lambda: ActionValuePolicy.from_seed("hu_first_reference"),
 }
+
+# 研究/离线专用注册表（2026-09-17 R1/S3 修复）：action_value:* 研究候选
+# 从通用注册表分离——不得出现在 AVAILABLE_STRATEGIES，任何真实网络入口
+# （正式赛事/测试赛事/自由赛/测试房间）的 RuntimeConfig 一律拒绝；仅离线
+# 装配（offline/evaluate 的 build_action_value_offline_policy 与坐隐工具）
+# 经 build_research_policy 取用。真实赛事只接受绑定完整身份的发布冻结包
+# （§14 T20），由发布流程另包交付，不经本注册表。
+# R2/S2：显式传入与运行时 value_limits 同口径的 ValueAnalysisLimits，
+# 使 analysis_profile 透传实际分析配置而非默认快照。
+_RESEARCH_STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
+    "action_value:efficiency_seed": lambda: ActionValuePolicy.from_seed(
+        "efficiency_seed", value_limits=ValueAnalysisLimits()),
+    "action_value:route_value_seed": lambda: ActionValuePolicy.from_seed(
+        "route_value_seed", value_limits=ValueAnalysisLimits()),
+    "action_value:hu_first_reference": lambda: ActionValuePolicy.from_seed(
+        "hu_first_reference", value_limits=ValueAnalysisLimits()),
+}
+
+#: 研究候选名清单（离线装配专用；不进入 AVAILABLE_STRATEGIES）。
+RESEARCH_STRATEGY_NAMES: tuple[str, ...] = tuple(_RESEARCH_STRATEGY_FACTORIES)
+
+
+def build_research_policy(name: str) -> BotPolicy:
+    """研究/离线装配专用入口：按种子名构建 action_value 候选策略。
+
+    本函数仅供离线评估与坐隐工具调用；真实网络运行入口
+    （RuntimeConfig→build_runtime）无法到达研究候选（S3 拒绝测试固化）。
+    """
+    if name not in _RESEARCH_STRATEGY_FACTORIES:
+        raise ValueError(
+            "未知研究策略名 {0!r}；可用：{1}".format(
+                name, " / ".join(sorted(_RESEARCH_STRATEGY_FACTORIES))
+            )
+        )
+    return _RESEARCH_STRATEGY_FACTORIES[name]()
 
 # 序列策略网络候选：策略名 → 部署包子目录名。基线固定为完整 V2（与训练时的
 # "完整 V2" 对手同源），因此这些候选与 V2 的差别只来自网络排序本身。
@@ -348,6 +376,16 @@ class RuntimeConfig:
         if not isinstance(self.audit_root, Path):
             raise ValueError("audit_root 必须是 Path，得到 {0!r}".format(self.audit_root))
         _require_non_empty_str(self.strategy, "RuntimeConfig.strategy")
+        # S3（2026-09-17 R1）：研究候选不得进入任何真实网络入口。三种网络
+        # 入口（正式赛事/测试赛事/自由赛）与测试房间共用本配置对象，统一在
+        # 此拒绝并给出明确错误；研究装配只能走离线 build_research_policy。
+        if self.strategy.startswith("action_value:"):
+            raise ValueError(
+                "研究候选 {0!r} 不得进入真实网络入口（正式赛事/测试赛事/自由赛/"
+                "测试房间）；action_value:* 仅限离线研究装配（build_research_policy），"
+                "发布必须使用绑定完整身份的冻结包并通过人工审核（T20）".format(
+                    self.strategy)
+            )
         if self.strategy not in AVAILABLE_STRATEGIES:
             raise ValueError(
                 "未知策略名 {0!r}；可用：{1}".format(

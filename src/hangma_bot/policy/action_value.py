@@ -41,6 +41,10 @@ STATUS_VALUES: Tuple[str, ...] = (STATUS_SCORED, STATUS_ABSTAIN)
 # trace 序列化字节上限（合同 limits.candidate.max_trace_bytes；执行器再导出对账）。
 MAX_TRACE_BYTES = 32768
 
+# R2/S5：RankedCandidate.score_trace 的线格式版本（完整有界结构化解释；
+# 变更解释结构时递增，审计旧记录缺键还原 None）。
+SCORE_TRACE_SCHEMA_VERSION = "sitin-action-score-trace/1"
+
 # trace 允许的最大嵌套深度（dict 嵌套层数 ≤3）。
 MAX_TRACE_DEPTH = 3
 
@@ -153,8 +157,23 @@ class ActionView:
     is_legal: bool  # 合法身份，来自 RuleAnalysis；仅作事实透传
     followup_branches: Optional[Tuple[Any, ...]] = None  # B1 FollowupBranchFacts 元组；None=未分析/不适用（B3 起透传 None，不与已知空集合混淆）
     immediate_settlement: Optional[Settlement] = None  # 立即结算；非立即结算动作为空
-    family_progress: str = "UNKNOWN"  # 本动作相对进展，取值见 PROGRESS_STATES
+    family_progress: str = "UNKNOWN"  # 本动作相对进展（全家族显著性摘要），取值见 PROGRESS_STATES
     routes: Tuple[Any, ...] = ()  # B1 ValueRoute 条件见证摘要（B3 投影）；空=无路线分析
+    # —— R2/S2：显式动作牌效事实（普通弃牌/过牌等的 CandidateFacts 直投影；
+    # 不重新实现规则数学，缺省 None/() 表示未生产或未分析，不冒充零）——
+    fact_kind: Optional[str] = None  # hand_progress/win/not_applicable/analysis_failed；None=未生产 facts
+    shanten_after: Optional[int] = None  # 动作后综合向听；WIN 为 -1；未分析 None
+    useful_tiles: Tuple[Any, ...] = ()  # 动作后等待态一步推进有效牌（UsefulTileFact 透传）
+    replacement_draw_unknown: Optional[bool] = None  # 杠上补牌未知标记（杠候选）；None=未携带
+    best_followup_discard: Optional[str] = None  # 吃/碰后的最佳后续弃牌（旧语义保留）
+    standard_shanten_after: Optional[int] = None  # 普通型向听；未分析 None
+    seven_pairs_shanten_after: Optional[int] = None  # 七对向听；未分析 None
+    standard_useful_tiles: Optional[Tuple[Any, ...]] = None  # 普通型推进牌；None=未分析，() =已知空
+    seven_pairs_useful_tiles: Optional[Tuple[Any, ...]] = None  # 七对推进牌；None=未分析，() =已知空
+    pattern_progress_note: Optional[str] = None  # 分牌型计数的局部缺证据原因
+    family_progress_entries: Tuple[Any, ...] = ()  # 完整 FamilyProgress 明细（R2/S5 前折叠为单串，现两口径并存）
+    value_coverage: Optional[str] = None  # value_facts.coverage：complete/partial/unavailable；None=未跑分值分析
+    value_issues: Tuple[Any, ...] = ()  # value_facts.issues（缺证据/截断/失败原因）
 
     def __post_init__(self) -> None:
         if not isinstance(self.action_key, str) or not self.action_key:
@@ -173,6 +192,33 @@ class ActionView:
             raise ValueError("ActionView.followup_branches 必须是 tuple 或 None")
         if not isinstance(self.routes, tuple):
             raise ValueError("ActionView.routes 必须是 tuple")
+        for name in ("useful_tiles", "family_progress_entries", "value_issues"):
+            if not isinstance(getattr(self, name), tuple):
+                raise ValueError("ActionView.{0} 必须是 tuple".format(name))
+        for name in (
+            "standard_useful_tiles", "seven_pairs_useful_tiles",
+        ):
+            value = getattr(self, name)
+            if value is not None and not isinstance(value, tuple):
+                raise ValueError("ActionView.{0} 必须是 tuple 或 None".format(name))
+        for name in (
+            "shanten_after", "standard_shanten_after", "seven_pairs_shanten_after",
+        ):
+            value = getattr(self, name)
+            if value is not None and (isinstance(value, bool) or not isinstance(value, int) or value < -1):
+                raise ValueError("ActionView.{0} 必须是至少 -1 的整数或 None".format(name))
+        if self.fact_kind is not None and self.fact_kind not in (
+            "hand_progress", "win", "not_applicable", "analysis_failed",
+        ):
+            raise ValueError("ActionView.fact_kind 必须是已知候选事实类别或 None")
+        if self.replacement_draw_unknown is not None and not isinstance(
+            self.replacement_draw_unknown, bool
+        ):
+            raise ValueError("ActionView.replacement_draw_unknown 必须是布尔或 None")
+        if self.value_coverage is not None and self.value_coverage not in (
+            "complete", "partial", "unavailable",
+        ):
+            raise ValueError("ActionView.value_coverage 必须是 complete/partial/unavailable 或 None")
         derived = kernel_action_key(self.action)
         if derived != self.action_key:
             raise ValueError(
@@ -380,7 +426,10 @@ def _route_mapping(route: Any, seat: int) -> Dict[str, Any]:
 
     只透传路线已证事实（条件结算、有效牌未见枚数、条件结构），不补未来
     摸牌值；候选不得把 useful_tiles 的未见枚数当概率（合同 §4.2 路线行）。
+    测试用 dict 路线浅拷贝直通（与 _branch_mapping 同口径）。
     """
+    if isinstance(route, dict):
+        return dict(route)
     settlement = getattr(route, "conditional_settlement", None)
     conditions = getattr(route, "conditions", None)
     useful = getattr(route, "useful_tiles", None) or ()
@@ -406,6 +455,40 @@ def _route_mapping(route: Any, seat: int) -> Dict[str, Any]:
     }
 
 
+def _useful_tiles_mapping(tiles: Any) -> Any:
+    """UsefulTileFact 元组的原始值投影；None 保持 None（未分析口径）。"""
+    if tiles is None:
+        return None
+    return tuple(
+        {"code": tile.code, "remaining_estimate": tile.remaining_estimate}
+        for tile in tiles
+    )
+
+
+def _family_entries_mapping(entries: Any) -> Tuple[Dict[str, Any], ...]:
+    """FamilyProgress 明细的原始值投影（family/progress/route_status 用 .value 字符串）。"""
+    result = []
+    for entry in entries:
+        family = getattr(entry, "family", None)
+        progress = getattr(entry, "progress", None)
+        status = getattr(entry, "route_status", None)
+        result.append({
+            "family": getattr(family, "value", family),
+            "progress": getattr(progress, "value", progress),
+            "route_status": getattr(status, "value", status),
+            "basis": getattr(entry, "basis", None),
+        })
+    return tuple(result)
+
+
+def _rule_issues_mapping(issues: Any) -> Tuple[Dict[str, Any], ...]:
+    """RuleIssue（缺证据/截断/失败原因）的原始值投影。"""
+    return tuple(
+        {"area": getattr(issue, "area", None), "reason": getattr(issue, "reason", None)}
+        for issue in issues
+    )
+
+
 def _action_mapping(view: ActionView, seat: int) -> Dict[str, Any]:
     """单个动作的受限映射：只含原始值，不携带 Action 值对象。"""
     settlement = None
@@ -424,6 +507,22 @@ def _action_mapping(view: ActionView, seat: int) -> Dict[str, Any]:
             else tuple(_branch_mapping(b) for b in view.followup_branches)
         ),
         "routes": tuple(_route_mapping(r, seat) for r in view.routes),
+        # —— R2/S2：显式动作牌效事实直投影（普通弃牌/过牌不再只剩分支口径）——
+        "fact_kind": view.fact_kind,
+        "shanten_after": view.shanten_after,
+        "useful_tiles": _useful_tiles_mapping(view.useful_tiles),
+        "replacement_draw_unknown": view.replacement_draw_unknown,
+        "best_followup_discard": view.best_followup_discard,
+        "standard_shanten_after": view.standard_shanten_after,
+        "seven_pairs_shanten_after": view.seven_pairs_shanten_after,
+        "standard_useful_tiles": _useful_tiles_mapping(view.standard_useful_tiles),
+        "seven_pairs_useful_tiles": _useful_tiles_mapping(view.seven_pairs_useful_tiles),
+        "pattern_progress_note": view.pattern_progress_note,
+        "family_progress_entries": _family_entries_mapping(
+            view.family_progress_entries
+        ),
+        "value_coverage": view.value_coverage,
+        "value_issues": _rule_issues_mapping(view.value_issues),
     }
 
 
@@ -696,6 +795,10 @@ def batch_to_ranked_candidates(
     - 新总分放单个 ScorePart，精确保持 total_score == sum(score_parts)；
       非线性机制明细留在有版本 trace，不拆成虚假可加贡献。
     - 排序按分数降序、action_key 升序稳定排列；rank 从 1 开始连续。
+    - R2/S5：完整有界结构化解释不再在适配时丢弃——entry.trace 原样挂到
+      RankedCandidate.score_trace（带 trace_schema 版本键，深度≤3、单串
+      ≤4096、整批 ≤32KiB 已在 ScoreBatch 构造期验证）；reasons 仍是有界
+      人读摘要。
     - ABSTAIN 批返回空元组：调用方沿用已备紧急计划，本函数不拼任何分数。
     """
     if not isinstance(batch, ScoreBatch):
@@ -716,6 +819,10 @@ def batch_to_ranked_candidates(
                 total_score=entry.score,
                 score_parts=(part,),
                 reasons=_trace_reasons(entry.trace),
+                score_trace={
+                    "trace_schema": SCORE_TRACE_SCHEMA_VERSION,
+                    "detail": dict(entry.trace),
+                },
             )
         )
     return tuple(candidates)

@@ -352,3 +352,69 @@ def test_executor_version_is_versioned() -> None:
         "route_value_seed"
     ).executor_version
     assert exe.EXECUTOR_VERSION.startswith("action-value-executor/")
+
+
+# ---------------------------------------------------------------------------
+# R1/S4：离线装配层（sitin_gates）身份绑定实际第一方实现与实际分析配置
+# ---------------------------------------------------------------------------
+
+_TOOLS_DIR = (
+    Path(__file__).resolve().parents[2]
+    / "review/llm-guided-heuristic-route-2026-09-15/tools"
+)
+
+
+def _load_gates():
+    import sys
+
+    if str(_TOOLS_DIR) not in sys.path:
+        sys.path.insert(0, str(_TOOLS_DIR))
+    import sitin_gates
+
+    return sitin_gates
+
+
+def test_gates_identity_binds_first_party_file_contents() -> None:
+    """仅改任一第一方文件方法体 → candidate_id 变 → 旧准入记录失效。"""
+    gates = _load_gates()
+    source = "def score_actions(view):\n    return {}\n"
+    base = gates.av_identity_binding(source)
+    assert base["deps_digest_basis"] == "first_party_file_contents(S4)"
+    assert base["deps_digest"] == exe.compute_deps_digest(gates.av_first_party_contents())
+
+    contents = dict(gates.av_first_party_contents())
+    contents["hangma_bot.policy.action_value"] += "# body-only tweak\n"
+    tweaked_id = exe.compute_candidate_identity(
+        source,
+        hashlib.sha256(CONTRACT_PATH.read_bytes()).hexdigest(),
+        gates.av_default_identity_params(),
+        exe.EXECUTOR_VERSION,
+        exe.compute_deps_digest(contents),
+    )
+    assert tweaked_id != base["candidate_id"]
+
+
+def test_gates_identity_params_bind_actual_analysis_config() -> None:
+    gates = _load_gates()
+    binding = gates.av_identity_binding("def score_actions(view):\n    return {}\n")
+    limits = binding["params"]["value_analysis_limits"]
+    assert limits == {"max_expansions": 2048, "max_routes_per_candidate": 128}
+    assert limits["max_expansions"] == ValueAnalysisLimits().max_expansions
+
+
+def test_gates_record_match_rejects_stale_identity() -> None:
+    """依赖变化（deps_digest 变）使旧准入记录拒绝续写（T07）。"""
+    gates = _load_gates()
+    source = "def score_actions(view):\n    return {}\n"
+    record = {
+        "schema": gates.AV_ADMISSION_SCHEMA,
+        "identity": gates.av_identity_binding(source),
+        "layers": {"execution_safety": {"status": "PASS"}},
+    }
+    ok, reason = gates.av_record_identity_matches(record, source)
+    assert ok, reason
+    stale = dict(record)
+    stale["identity"] = dict(record["identity"])
+    stale["identity"]["deps_digest"] = "0" * 64
+    ok2, reason2 = gates.av_record_identity_matches(stale, source)
+    assert not ok2 and "deps_digest" in reason2

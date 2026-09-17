@@ -71,7 +71,9 @@ def _conflict_view() -> ScoringView:
 
     - discard:2w：向听 1、有效牌 10 → 牌效 2.0；family_progress=SAME。
     - peng:5t：向听 3、有效牌 4 → 牌效 -7.0；但 ADVANCE +2、立即结算
-      fan 8/self_delta 32、分支条件 fan 16 → 路线分 11.0。
+      fan 8/self_delta 32、条件路线 conditional_settlement fan 16（R2/S2
+      修正：种子从真实 ValueRoute 字段读取，不再读不存在的 branch.fan）
+      → 路线分 11.0。
     - pass：无任何分支事实 → 两种子均显式未知处理垫底。
     """
     actions = (
@@ -102,7 +104,23 @@ def _conflict_view() -> ScoringView:
                     "followup_key": "peng:5t",
                     "combined_shanten": 3,
                     "support_remaining": 4,
-                    "fan": 16,
+                },
+            ),
+            routes=(
+                {
+                    "followup_discard": None,
+                    "shanten": 0,
+                    "useful_tiles": ({"code": "5t", "remaining_estimate": 2},),
+                    "conditional_settlement": {
+                        "fan": 16, "score_delta": (16, -6, -6, -4),
+                        "self_delta": 16, "details": ("conflict-route",),
+                    },
+                    "conditions": {
+                        "draw_kind": "normal", "pre_draw_hand": ("5t", "5t"),
+                        "meld_count": 0, "chain_count": 0, "chain_piao": 0,
+                        "baotou": False,
+                    },
+                    "support": "conditional_witness",
                 },
             ),
             immediate_settlement=Settlement(
@@ -311,7 +329,19 @@ class TestT05HuAndContinueCompared:
         if diff.returncode != 0:
             pytest.skip("git 不可用，跳过工作区断言")
         modified = {line.strip() for line in diff.stdout.splitlines() if line.strip()}
-        allowed = {"src/hangma_bot/policy/__init__.py"}
+        # R2 返工（S2/S5）获准修改 action_value 接缝文件族与受控接口
+        # （score_trace）；executor.py 由 R1（S1 计费修复）并行修改；
+        # AGENTS.md 是模块文档（完成度评审更新）。旧策略文件
+        # （heuristic*/safe_fallback 等）仍零改动。
+        allowed = {
+            "src/hangma_bot/policy/__init__.py",
+            "src/hangma_bot/policy/AGENTS.md",
+            "src/hangma_bot/policy/interface.py",
+            "src/hangma_bot/policy/action_value.py",
+            "src/hangma_bot/policy/action_value_executor.py",
+            "src/hangma_bot/policy/action_value_policy.py",
+            "src/hangma_bot/policy/action_value_seeds.py",
+        }
         unexpected = modified - allowed
         assert not unexpected, "旧策略文件被意外修改：{0}".format(sorted(unexpected))
         status = sp.run(
@@ -324,14 +354,9 @@ class TestT05HuAndContinueCompared:
             for line in status.stdout.splitlines()
             if line.startswith("??")
         }
-        # B3 全链接入新增装配文件 action_value_policy.py（投影器 + BotPolicy；
-        # 编解码升级后 B1 载荷参与相等性，策略层与类型文件同批交付）。
-        expected_new = {
-            "src/hangma_bot/policy/action_value.py",
-            "src/hangma_bot/policy/action_value_executor.py",
-            "src/hangma_bot/policy/action_value_seeds.py",
-            "src/hangma_bot/policy/action_value_policy.py",
-        }
+        # B3 文件已入库（tracked）；R2 返工在其上修改而非新增——
+        # 未跟踪新文件集合应为空，改动由上方 allowed 白名单约束。
+        expected_new: set[str] = set()
         assert new_files == expected_new
 
 
@@ -381,7 +406,8 @@ class TestT06BatchFailureContract:
         executor = ActionValueExecutor(source, name="dead-loop")
         with pytest.raises(WorkloadExceeded, match="计数操作超限"):
             executor.score(build_sample_view())
-        assert executor.last_operation_count == MAX_COUNTED_OPERATIONS + 1
+        # S1：range(200000) 在构造期即按长度计满 200000，循环根本未开始。
+        assert executor.last_operation_count == 200000
 
     def test_workload_exceeded_is_uncatchable_by_exception(self) -> None:
         assert not issubclass(WorkloadExceeded, Exception)
@@ -740,6 +766,21 @@ def score_actions(view):
 def score_actions(view):
     return {}
 """,
+    "module-level-list": """CACHE = []
+
+def score_actions(view):
+    return {}
+""",
+    "module-level-dict": """TABLE = {"a": 1}
+
+def score_actions(view):
+    return {}
+""",
+    "module-level-set": """SEEN = {1, 2}
+
+def score_actions(view):
+    return {}
+""",
     "module-level-non-constant": """X = [1, 2] + [3]
 
 def score_actions(view):
@@ -802,8 +843,9 @@ class TestMetering:
         )
         executor = ActionValueExecutor(source, name="meter-loop")
         executor.score(build_sample_view())
-        # range：调用点 1 + 内建 1；迭代 50×1；加法 50×1；返回字典字面量 2。
-        assert executor.last_operation_count == 2 + 50 + 50 + 2
+        # range：调用点 1 + 按长度计费 50（S1：range 本身按长度计费）；
+        # 迭代 50×1；加法 50×1；返回字典字面量 2。
+        assert executor.last_operation_count == 1 + 50 + 50 + 50 + 2
 
     def test_sum_and_sorted_charged_by_input_length(self) -> None:
         source = (
@@ -1052,3 +1094,349 @@ class TestScoringViewContract:
         )
         with pytest.raises(Exception):
             batch.status = "ABSTAIN"  # type: ignore[misc]
+
+
+# ---------------------------------------------------------------------------
+# R1（2026-09-17）：S1 计费绕过/跨调用状态、S3 赛事配置越界、S4 内容身份
+# ---------------------------------------------------------------------------
+
+
+MIN_RANGE_SOURCE = (
+    "def score_actions(view):\n"
+    "    x = min(range(1000000))\n"
+    "    return {'status': 'ABSTAIN', 'reason': 'probe'}\n"
+)
+
+
+class TestR1S1BillingBypassClosed:
+    """评审 S1 反例改造为正式回归：两个反例必须被拒绝或有界终止。"""
+
+    def test_min_over_million_range_rejected_under_tiny_budget(self) -> None:
+        executor = ActionValueExecutor(MIN_RANGE_SOURCE, max_operations=100)
+        with pytest.raises(WorkloadExceeded, match="计数操作超限"):
+            executor.score(build_sample_view())
+        # range 构造期即按长度计满——真实遍历从未发生。
+        assert executor.last_operation_count == 1_000_000
+
+    def test_max_and_sum_over_large_range_rejected(self) -> None:
+        for expr in ("max(range(500000))", "sum(range(500000))", "all(range(500000))"):
+            source = (
+                "def score_actions(view):\n"
+                "    x = {0}\n"
+                "    return {{'status': 'ABSTAIN', 'reason': 'probe'}}\n".format(expr)
+            )
+            executor = ActionValueExecutor(source, max_operations=1000)
+            with pytest.raises(WorkloadExceeded):
+                executor.score(build_sample_view())
+
+    def test_module_level_cache_list_rejected(self) -> None:
+        source = (
+            "CACHE = []\n"
+            "\n"
+            "def score_actions(view):\n"
+            "    CACHE.append(1)\n"
+            "    return {'status': 'ABSTAIN', 'reason': 'cache'}\n"
+        )
+        with pytest.raises(StaticCheckError, match="跨调用可变状态"):
+            ActionValueExecutor(source)
+
+    def test_repeat_calls_stay_stateless(self) -> None:
+        source = (
+            "LIMITS = (3, 5)\n"
+            "\n"
+            "def score_actions(view):\n"
+            "    total = 0\n"
+            "    for cap in LIMITS:\n"
+            "        total = total + cap\n"
+            "    entries = []\n"
+            "    for action in view['actions']:\n"
+            "        entries.append({'action_key': action['action_key'], 'score': total * 1.0, 'trace': {}})\n"
+            "    return {'status': 'SCORED', 'entries': entries}\n"
+        )
+        executor = ActionValueExecutor(source)
+        view = build_sample_view()
+        first = executor.score(view)
+        second = executor.score(view)
+        assert first == second
+
+    def test_module_mutation_detected_across_calls(self) -> None:
+        """防御性验证：装载后命名空间若被外部篡改，执行后复核必须拒绝。"""
+        source = (
+            "T = (1, 2)\n"
+            "\n"
+            "def score_actions(view):\n"
+            "    return {'status': 'ABSTAIN', 'reason': 'x'}\n"
+        )
+        executor = ActionValueExecutor(source)
+        executor.score(build_sample_view())
+        executor._namespace["T"] = (9, 9)  # 模拟跨调用状态注入
+        with pytest.raises(WorkloadExceeded, match="跨调用状态"):
+            executor.score(build_sample_view())
+
+    def test_count_index_billed_by_length(self) -> None:
+        source = (
+            "def score_actions(view):\n"
+            "    s = 'x' * 5000\n"
+            "    n = s.count('x')\n"
+            "    return {'status': 'ABSTAIN', 'reason': 'count'}\n"
+        )
+        executor = ActionValueExecutor(source, max_operations=100)
+        with pytest.raises(WorkloadExceeded):
+            executor.score(build_sample_view())
+
+    def test_enumerate_map_zip_inputs_bounded(self) -> None:
+        source = (
+            "def score_actions(view):\n"
+            "    pairs = list(enumerate(range(5000)))\n"
+            "    return {'status': 'ABSTAIN', 'reason': 'enumerate'}\n"
+        )
+        executor = ActionValueExecutor(source)
+        with pytest.raises(WorkloadExceeded, match="4096"):
+            executor.score(build_sample_view())
+
+    def test_min_max_multi_argument_form_still_allowed(self) -> None:
+        source = (
+            "def score_actions(view):\n"
+            "    m = min(3, 1, 2)\n"
+            "    m2 = max(1, 4, 2)\n"
+            "    return {'status': 'ABSTAIN', 'reason': 'multi'}\n"
+        )
+        executor = ActionValueExecutor(source)
+        assert executor.score(build_sample_view()).status == "ABSTAIN"
+
+    def test_slice_results_keep_collection_cap(self) -> None:
+        source = (
+            "def score_actions(view):\n"
+            "    base = list(range(10))\n"
+            "    grown = base[0:1]\n"
+            "    for i in range(4100):\n"
+            "        grown.append(i)\n"
+            "    return {'status': 'ABSTAIN', 'reason': 'slice'}\n"
+        )
+        executor = ActionValueExecutor(source)
+        with pytest.raises(WorkloadExceeded):
+            executor.score(build_sample_view())
+
+
+class TestR1S1TimingAndFallback:
+    """超量不阻塞原动作窗口；失败后紧急保底仍可用；最大输入有界完成。"""
+
+    def test_overwork_rejected_fast_and_emergency_still_available(self) -> None:
+        from time import perf_counter
+
+        from hangma_bot.hangma.engine import HangmaRules
+        from hangma_bot.kernel.config import RuleConfig
+
+        executor = ActionValueExecutor(MIN_RANGE_SOURCE)  # 默认 100k 预算
+        started = perf_counter()
+        with pytest.raises(WorkloadExceeded):
+            executor.score(build_sample_view())
+        elapsed_ms = (perf_counter() - started) * 1000.0
+        assert elapsed_ms < 2000.0, "超量拒绝必须立即完成，不得阻塞动作窗口"
+        # 原动作窗口保底：候选整批失效后紧急动作路径独立可用。
+        rules = HangmaRules(RuleConfig("v26", 1, False))
+        observation = build_sample_view().visible_state
+        assert rules.emergency_action(observation) is not None
+
+    def test_max_input_view_scores_bounded(self) -> None:
+        from time import perf_counter
+
+        from hangma_bot.kernel.actions import (
+            CANONICAL_TILE_ORDER,
+            Chi,
+            Discard,
+            Hu,
+            Pass,
+            Peng,
+            Tile,
+        )
+
+        def branches_for(prefix: str) -> tuple:
+            return tuple(
+                {
+                    "followup_key": "{0}-b{1}".format(prefix, branch),
+                    "combined_shanten": branch % 4,
+                    "support_remaining": branch % 9,
+                    "fan": branch % 33,
+                }
+                for branch in range(128)
+            )
+
+        actions = [
+            ActionView(
+                action_key="discard:{0}".format(code),
+                action=Discard(tile=Tile(code)),
+                action_type="discard",
+                is_legal=True,
+                followup_branches=branches_for(code),
+                family_progress="ADVANCE",
+            )
+            for code in CANONICAL_TILE_ORDER
+        ]
+        actions.append(
+            ActionView(action_key="hu", action=Hu(), action_type="hu", is_legal=True,
+                       followup_branches=branches_for("hu"), family_progress="CLOSE"))
+        actions.append(
+            ActionView(action_key="pass", action=Pass(), action_type="pass",
+                       is_legal=True, followup_branches=branches_for("pass"),
+                       family_progress="SAME"))
+        for code in ("1w", "3w", "5w"):
+            actions.append(
+                ActionView(
+                    action_key="peng:{0}".format(code),
+                    action=Peng(tile=Tile(code)),
+                    action_type="peng",
+                    is_legal=True,
+                    followup_branches=branches_for("peng" + code),
+                    family_progress="ADVANCE",
+                )
+            )
+        for start in ("1w", "4w", "7w"):
+            index = CANONICAL_TILE_ORDER.index(start)
+            tiles = (
+                Tile(CANONICAL_TILE_ORDER[index]),
+                Tile(CANONICAL_TILE_ORDER[index + 1]),
+                Tile(CANONICAL_TILE_ORDER[index + 2]),
+            )
+            actions.append(
+                ActionView(
+                    action_key="chi:{0}".format(",".join(t.code for t in tiles)),
+                    action=Chi(tiles=tiles),
+                    action_type="chi",
+                    is_legal=True,
+                    followup_branches=branches_for("chi" + start),
+                    family_progress="ADVANCE",
+                )
+            )
+        base = build_sample_view()
+        view = ScoringView(
+            schema_version="sitin-scoring-view/1",
+            visible_state=base.visible_state,
+            actions=tuple(sorted(actions, key=lambda item: item.action_key)),
+            analysis_profile=base.analysis_profile,
+        )
+        assert len(view.actions) >= 40
+        started = perf_counter()
+        batch = build_action_value_policy("route_value_seed").score(view)
+        elapsed_ms = (perf_counter() - started) * 1000.0
+        assert batch.status == "SCORED"
+        assert len(batch.entries) == len(view.actions)
+        assert elapsed_ms < 2000.0, "最大输入（40+ 动作 × 128 分支）必须有界快速完成"
+
+
+class TestR1S3ResearchTournamentBoundary:
+    """研究策略与真实网络入口分离：三入口 + 测试房间一律拒绝。"""
+
+    @pytest.mark.parametrize(
+        "mode_name",
+        ["OFFICIAL_TOURNAMENT", "TEST_TOURNAMENT", "AUTO_MATCH", "TEST_ROOM"],
+    )
+    def test_network_modes_reject_research_strategy(self, mode_name: str) -> None:
+        from pathlib import Path
+
+        from hangma_bot.bootstrap import RuntimeConfig, RuntimeMode, TokenKind
+
+        mode = RuntimeMode[mode_name]
+        token_kind = (
+            TokenKind.OFFICIAL
+            if mode in (RuntimeMode.OFFICIAL_TOURNAMENT, RuntimeMode.AUTO_MATCH)
+            else TokenKind.TEST
+        )
+        with pytest.raises(ValueError, match="研究候选"):
+            RuntimeConfig(
+                mode=mode,
+                base_url="https://example.invalid",
+                expected_tournament_id="x",
+                known_guide_version=29,
+                token="not-a-real-token",
+                token_kind=token_kind,
+                audit_root=Path("/tmp/never"),
+                strategy="action_value:efficiency_seed",
+            )
+
+    def test_research_names_not_in_available_strategies(self) -> None:
+        from hangma_bot.bootstrap import AVAILABLE_STRATEGIES, RESEARCH_STRATEGY_NAMES
+
+        assert not any(name.startswith("action_value:") for name in AVAILABLE_STRATEGIES)
+        assert set(RESEARCH_STRATEGY_NAMES) == {
+            "action_value:efficiency_seed",
+            "action_value:route_value_seed",
+            "action_value:hu_first_reference",
+        }
+
+    def test_stable_strategies_still_configurable(self) -> None:
+        from pathlib import Path
+
+        from hangma_bot.bootstrap import (
+            DEFAULT_STRATEGY,
+            RuntimeConfig,
+            RuntimeMode,
+            TokenKind,
+        )
+
+        config = RuntimeConfig(
+            mode=RuntimeMode.OFFICIAL_TOURNAMENT,
+            base_url="https://example.invalid",
+            expected_tournament_id="x",
+            known_guide_version=29,
+            token="not-a-real-token",
+            token_kind=TokenKind.OFFICIAL,
+            audit_root=Path("/tmp/never"),
+            strategy=DEFAULT_STRATEGY,
+        )
+        assert config.strategy == DEFAULT_STRATEGY
+
+    def test_research_entry_offline_only(self) -> None:
+        from hangma_bot.bootstrap import build_research_policy
+        from hangma_bot.policy.action_value_policy import ActionValuePolicy
+
+        for name in (
+            "action_value:efficiency_seed",
+            "action_value:route_value_seed",
+            "action_value:hu_first_reference",
+        ):
+            policy = build_research_policy(name)
+            assert isinstance(policy, ActionValuePolicy)
+        with pytest.raises(ValueError, match="未知研究策略名"):
+            build_research_policy("action_value:unknown")
+
+
+class TestR1S4ContentBoundIdentity:
+    """身份绑定实际第一方实现：只改方法体也必须改变 candidate_id。"""
+
+    def test_first_party_modules_all_importable(self) -> None:
+        import importlib
+
+        from hangma_bot.policy.action_value_executor import FIRST_PARTY_DIGEST_MODULES
+
+        assert len(FIRST_PARTY_DIGEST_MODULES) >= 5
+        for dotted in FIRST_PARTY_DIGEST_MODULES:
+            assert importlib.import_module(dotted) is not None
+
+    def test_deps_digest_binds_actual_file_contents(self) -> None:
+        import importlib.util
+        from pathlib import Path
+
+        from hangma_bot.policy.action_value_executor import (
+            compute_deps_digest,
+            compute_first_party_digest,
+        )
+
+        structural = compute_deps_digest()
+        contents = {}
+        for dotted in ("hangma_bot.policy.action_value", "hangma_bot.policy.action_value_executor"):
+            spec = importlib.util.find_spec(dotted)
+            contents[dotted] = Path(spec.origin).read_text(encoding="utf-8")
+        bound = compute_deps_digest(contents)
+        assert structural != bound
+        # 只改一个文件的一个字符（等价于只改方法体）即失效。
+        tweaked = dict(contents)
+        first_key = next(iter(tweaked))
+        tweaked[first_key] = tweaked[first_key] + "# body-only tweak\n"
+        assert compute_deps_digest(tweaked) != bound
+        assert compute_first_party_digest(tweaked) != compute_first_party_digest(contents)
+
+    def test_executor_version_bumped_for_billing_change(self) -> None:
+        from hangma_bot.policy.action_value_executor import EXECUTOR_VERSION
+
+        assert EXECUTOR_VERSION == "action-value-executor/2"

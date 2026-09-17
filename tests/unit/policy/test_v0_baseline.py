@@ -51,6 +51,9 @@ def test_frozen_v0_plan_is_unchanged(row):
     encoded = json.loads(json.dumps(asdict(plan),ensure_ascii=False,allow_nan=False))
     # 共享计划新增可选审计，V0 必须不使用；原动作、分项与排序仍逐项冻结。
     assert encoded.pop('outcome_trace') is None
+    # R2/S5：score_trace 是可选完整评分解释（action_value 专属），V0 不携带。
+    for candidate in encoded['candidates']:
+        assert candidate.pop('score_trace') is None
     assert encoded == row['expected_plan']
 
 

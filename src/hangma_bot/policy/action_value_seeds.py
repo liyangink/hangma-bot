@@ -30,7 +30,7 @@ from .action_value_executor import (
 )
 
 
-EFFICIENCY_SEED_SOURCE = '''"""efficiency_seed：牌效优先——followup 分支 combined_shanten 最小 + support_remaining 加权。"""
+EFFICIENCY_SEED_SOURCE = '''"""efficiency_seed：牌效优先——分支 combined_shanten 最小；无分支动作用动作级向听+有效牌（R2/S2）。"""
 
 SHANTEN_WEIGHT = 3.0
 SUPPORT_WEIGHT = 0.5
@@ -68,26 +68,62 @@ def best_branch(branches):
     return (best_shanten, best_support, best_key)
 
 
-def make_trace(shanten, support, key):
+def action_shanten(action):
+    value = action.get("shanten_after")
+    if value is None:
+        return None
+    if value is True or value is False:
+        return None
+    if value < -1:
+        return None
+    return value
+
+
+def support_from_tiles(tiles):
+    if tiles is None:
+        return None
+    total = 0.0
+    for tile in tiles:
+        remaining = tile.get("remaining_estimate")
+        if remaining is None or remaining is True or remaining is False:
+            return None
+        total = total + remaining
+    return total
+
+
+def action_basis(action):
+    branches = action.get("followup_branches")
+    if branches is not None and len(branches) > 0:
+        best = best_branch(branches)
+        if best is not None:
+            return (best[0], best[1], best[2], "followup_branch")
+    shanten = action_shanten(action)
+    if shanten is None:
+        return None
+    support = support_from_tiles(action.get("useful_tiles"))
+    if support is None:
+        support = 0.0
+    return (shanten, support, None, "action_facts")
+
+
+def make_trace(shanten, support, key, source):
     if key is None:
-        return {"basis": "efficiency", "combined_shanten": shanten, "support_remaining": support}
-    return {"basis": "efficiency", "combined_shanten": shanten, "support_remaining": support, "followup_key": key}
+        return {"basis": "efficiency", "fact_source": source, "combined_shanten": shanten, "support_remaining": support}
+    return {"basis": "efficiency", "fact_source": source, "combined_shanten": shanten, "support_remaining": support, "followup_key": key}
 
 
 def known_entries(actions):
     entries = []
     for action in actions:
-        branches = action.get("followup_branches")
-        if branches is None:
+        basis = action_basis(action)
+        if basis is None:
             continue
-        best = best_branch(branches)
-        if best is None:
-            continue
-        shanten = best[0]
-        support = best[1]
-        key = best[2]
+        shanten = basis[0]
+        support = basis[1]
+        key = basis[2]
+        source = basis[3]
         score = 0.0 - SHANTEN_WEIGHT * shanten + SUPPORT_WEIGHT * support
-        entries.append({"action_key": action["action_key"], "score": score, "trace": make_trace(shanten, support, key)})
+        entries.append({"action_key": action["action_key"], "score": score, "trace": make_trace(shanten, support, key, source)})
     return entries
 
 
@@ -132,12 +168,22 @@ ROUTE_VALUE_SEED_SOURCE = '''"""route_value_seed：路线价值——牌效基�
 SHANTEN_WEIGHT = 3.0
 SUPPORT_WEIGHT = 0.5
 UNKNOWN_SHANTEN_PENALTY = 4.0
-PROGRESS_BONUS = {"ADVANCE": 2.0, "SAME": 0.0, "RETREAT": -2.0, "CLOSE": -1.0, "UNKNOWN": 0.0}
 IMMEDIATE_FAN_WEIGHT = 4.0
 ROUTE_FAN_WEIGHT = 0.5
 DELTA_WEIGHT = 0.0625
 MAX_DELTA = 64
 UNKNOWN_FIELD = "combined_shanten"
+
+
+def progress_bonus(progress):
+    """进展加分查表（R1 执行器 /2 禁止模块级 dict 常量，改为纯函数）。"""
+    if progress == "ADVANCE":
+        return 2.0
+    if progress == "RETREAT":
+        return -2.0
+    if progress == "CLOSE":
+        return -1.0
+    return 0.0
 
 
 def num_or_none(branch, key):
@@ -185,13 +231,59 @@ def best_branch(branches):
     return (best_shanten, best_support, best_key)
 
 
-def route_fan_best(branches):
+def route_fan_best(routes):
+    """R2/S2 修正：条件路线番从真实 ValueRoute.conditional_settlement.fan 读取。"""
     best = 0.0
-    for branch in branches:
-        fan = num_or_none(branch, "fan")
-        if fan is not None and fan > best:
+    for route in routes:
+        settle = route.get("conditional_settlement")
+        if settle is None:
+            continue
+        fan = settle.get("fan")
+        if fan is None or fan is True or fan is False:
+            continue
+        if fan < 0:
+            continue
+        if fan > best:
             best = fan
     return best
+
+
+def action_shanten(action):
+    value = action.get("shanten_after")
+    if value is None:
+        return None
+    if value is True or value is False:
+        return None
+    if value < -1:
+        return None
+    return value
+
+
+def support_from_tiles(tiles):
+    if tiles is None:
+        return None
+    total = 0.0
+    for tile in tiles:
+        remaining = tile.get("remaining_estimate")
+        if remaining is None or remaining is True or remaining is False:
+            return None
+        total = total + remaining
+    return total
+
+
+def action_basis(action):
+    branches = action.get("followup_branches")
+    if branches is not None and len(branches) > 0:
+        best = best_branch(branches)
+        if best is not None:
+            return (best[0], best[1], best[2], "followup_branch")
+    shanten = action_shanten(action)
+    if shanten is None:
+        return None
+    support = support_from_tiles(action.get("useful_tiles"))
+    if support is None:
+        support = 0.0
+    return (shanten, support, None, "action_facts")
 
 
 def settlement_factor(action):
@@ -215,33 +307,32 @@ def score_actions(view):
     actions = view["actions"]
     entries = []
     for action in actions:
-        branches = action.get("followup_branches")
-        best = (None, 0.0, None)
-        if branches is not None:
-            best = best_branch(branches)
-        shanten = best[0]
-        support = best[1]
-        key = best[2]
-        basis = "route_value"
+        basis = action_basis(action)
+        shanten = None
+        support = 0.0
+        key = None
+        source = "unknown"
+        if basis is not None:
+            shanten = basis[0]
+            support = basis[1]
+            key = basis[2]
+            source = basis[3]
+        basis_name = "route_value"
         if shanten is None:
-            basis = "route_value_unknown_shanten"
+            basis_name = "route_value_unknown_shanten"
             base = 0.0 - SHANTEN_WEIGHT * UNKNOWN_SHANTEN_PENALTY
         else:
             base = 0.0 - SHANTEN_WEIGHT * shanten + SUPPORT_WEIGHT * support
         progress = action.get("family_progress")
         if progress is None:
             progress = "UNKNOWN"
-        bonus = PROGRESS_BONUS.get(progress)
-        if bonus is None:
-            bonus = 0.0
+        bonus = progress_bonus(progress)
         settle = settlement_factor(action)
-        route_fan = 0.0
-        if branches is not None:
-            route_fan = route_fan_best(branches)
+        route_fan = route_fan_best(action.get("routes"))
         score = base + bonus + settle[0] + fan_scale(route_fan) * ROUTE_FAN_WEIGHT
-        trace = {"basis": basis, "combined_shanten": shanten, "support_remaining": support, "progress": progress, "immediate_fan": settle[1], "route_fan": route_fan, "note": "fan 因子为 log 界缩放，非期望积分"}
+        trace = {"basis": basis_name, "fact_source": source, "combined_shanten": shanten, "support_remaining": support, "progress": progress, "immediate_fan": settle[1], "route_fan": route_fan, "note": "fan 因子为 log 界缩放，非期望积分；条件路线番取自 conditional_settlement"}
         if key is not None:
-            entry = {"action_key": action["action_key"], "score": score, "trace": {"basis": basis, "combined_shanten": shanten, "support_remaining": support, "progress": progress, "immediate_fan": settle[1], "route_fan": route_fan, "followup_key": key, "note": "fan 因子为 log 界缩放，非期望积分"}}
+            entry = {"action_key": action["action_key"], "score": score, "trace": {"basis": basis_name, "fact_source": source, "combined_shanten": shanten, "support_remaining": support, "progress": progress, "immediate_fan": settle[1], "route_fan": route_fan, "followup_key": key, "note": "fan 因子为 log 界缩放，非期望积分；条件路线番取自 conditional_settlement"}}
         else:
             entry = {"action_key": action["action_key"], "score": score, "trace": trace}
         entries.append(entry)
@@ -288,10 +379,48 @@ def best_branch(branches):
     return (best_shanten, best_support, best_key)
 
 
-def make_trace(shanten, support, key):
+def action_shanten(action):
+    value = action.get("shanten_after")
+    if value is None:
+        return None
+    if value is True or value is False:
+        return None
+    if value < -1:
+        return None
+    return value
+
+
+def support_from_tiles(tiles):
+    if tiles is None:
+        return None
+    total = 0.0
+    for tile in tiles:
+        remaining = tile.get("remaining_estimate")
+        if remaining is None or remaining is True or remaining is False:
+            return None
+        total = total + remaining
+    return total
+
+
+def action_basis(action):
+    branches = action.get("followup_branches")
+    if branches is not None and len(branches) > 0:
+        best = best_branch(branches)
+        if best is not None:
+            return (best[0], best[1], best[2], "followup_branch")
+    shanten = action_shanten(action)
+    if shanten is None:
+        return None
+    support = support_from_tiles(action.get("useful_tiles"))
+    if support is None:
+        support = 0.0
+    return (shanten, support, None, "action_facts")
+
+
+def make_trace(shanten, support, key, source):
     if key is None:
-        return {"basis": "hu_first_efficiency", "combined_shanten": shanten, "support_remaining": support}
-    return {"basis": "hu_first_efficiency", "combined_shanten": shanten, "support_remaining": support, "followup_key": key}
+        return {"basis": "hu_first_efficiency", "fact_source": source, "combined_shanten": shanten, "support_remaining": support}
+    return {"basis": "hu_first_efficiency", "fact_source": source, "combined_shanten": shanten, "support_remaining": support, "followup_key": key}
 
 
 def min_score(entries):
@@ -314,20 +443,18 @@ def score_actions(view):
             trace = {"basis": "hu_first_reference", "legal_hu": True}
             hu_entries.append({"action_key": action["action_key"], "score": HU_BONUS, "trace": trace})
             continue
-        branches = action.get("followup_branches")
-        best = None
-        if branches is not None:
-            best = best_branch(branches)
-        if best is None:
+        basis = action_basis(action)
+        if basis is None:
             key = action["action_key"]
             anchor_entry = {"action_key": key, "score": None, "trace": {"basis": "unknown_field_basis", "field": UNKNOWN_FIELD}}
             entries.append(anchor_entry)
             continue
-        shanten = best[0]
-        support = best[1]
-        branch_key = best[2]
+        shanten = basis[0]
+        support = basis[1]
+        branch_key = basis[2]
+        source = basis[3]
         score = 0.0 - SHANTEN_WEIGHT * shanten + SUPPORT_WEIGHT * support
-        entries.append({"action_key": action["action_key"], "score": score, "trace": make_trace(shanten, support, branch_key)})
+        entries.append({"action_key": action["action_key"], "score": score, "trace": make_trace(shanten, support, branch_key, source)})
     if min_score(entries) is None:
         anchor = -1.0
     else:
@@ -355,15 +482,15 @@ class SeedSpec:
 
 
 EFFICIENCY_SEED_MECHANISM: Dict[str, str] = {
-    "trigger": "动作存在带 combined_shanten 的 followup 分支时按牌效评分；任何动作缺该字段时走显式未知处理。",
-    "changed_branches": "向听更近（combined_shanten 更小）且有效牌余量（support_remaining）更大的弃牌/吃碰分支前移；无分支事实的动作（如 Pass）垫底。",
+    "trigger": "吃/碰动作按 followup 分支 combined_shanten 评分；普通弃牌等无分支动作按动作级 shanten_after+useful_tiles 评分（R2/S2 修正：不再把无分支当未知）；两者都缺时走显式未知处理。",
+    "changed_branches": "向听更近（combined_shanten/shanten_after 更小）且有效牌余量更大的弃牌/吃碰动作前移；trace 以 fact_source 区分 followup_branch 与 action_facts 事实来源。",
     "expected_direction": "分数 = -3.0×向听 + 0.5×有效牌余量；只比较相对大小，不是积分期望。",
-    "counterexample": "缺 combined_shanten 的动作不按 0 分处理：取已知动作最低分 -1 的下界锚点并在 trace 标注 unknown_field_basis，不得把未知排在已知负分之前。",
+    "counterexample": "缺任何向听事实的动作不按 0 分处理：取已知动作最低分 -1 的下界锚点并在 trace 标注 unknown_field_basis，不得把未知排在已知负分之前。",
 }
 
 ROUTE_VALUE_SEED_MECHANISM: Dict[str, str] = {
-    "trigger": "family_progress 为 ADVANCE 或存在立即结算/分支条件 fan 事实时，在牌效基础上叠加路线项。",
-    "changed_branches": "进展加分（ADVANCE +2 / RETREAT -2 / CLOSE -1）、立即结算的 log 界缩放 fan 因子（每达 2/4/8/16/32 各记 1，×4）与条件路线 fan 因子（×0.5）使吃碰杠胡相对纯牌效前移。",
+    "trigger": "family_progress 为 ADVANCE 或存在立即结算/条件路线 fan 事实时，在牌效基础上叠加路线项；牌效基线与 efficiency_seed 同源（分支优先、动作级兜底，R2/S2）。",
+    "changed_branches": "进展加分（ADVANCE +2 / RETREAT -2 / CLOSE -1）、立即结算的 log 界缩放 fan 因子（每达 2/4/8/16/32 各记 1，×4）与条件路线 fan 因子（×0.5）使吃碰杠胡相对纯牌效前移；条件路线番只从 routes[].conditional_settlement.fan 读取（真实 ValueRoute 字段，R2/S2 修正：不再读不存在的 branch.fan）。",
     "expected_direction": "分数 = 牌效 + 进展 + 有界结算因子；fan 因子是 log 界缩放的启发量，trace 明确标注非期望积分，不得自称期望积分。",
     "counterexample": "牌效更差且无进展/结算优势的路线不会超过纯牌效最优动作；缺向听事实的动作按保守常数 -12（4 向听惩罚）处理并标注 route_value_unknown_shanten。",
 }

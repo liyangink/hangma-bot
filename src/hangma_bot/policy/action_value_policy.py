@@ -98,17 +98,37 @@ def build_scoring_view(
     request: DecisionRequest,
     *,
     reference_features: Sequence[ReferenceFeature] = (),
+    value_limits: Optional[ValueAnalysisLimits] = None,
 ) -> ScoringView:
-    """从 DecisionRequest 投影只读 ScoringView（v4 §4.1 第 3 步）。
+    """从 DecisionRequest 投影只读 ScoringView（v4 §4.1 第 3 步；R2/S2 补全事实）。
 
     - actions 按 action_key 升序，集合只来自 request.rules（不重新判合法）；
-    - followup_branches/family_progress 取 B1 载荷（None 保持 None）；
-    - 立即结算取 value_facts.immediate_settlement；routes 是条件见证摘要；
+    - followup_branches/family_progress 取 B1 载荷（None 保持 None），完整
+      分家族明细经 family_progress_entries 透传（单串摘要字段并存）；
+    - 普通弃牌/过牌的显式牌效事实（fact_kind/shanten_after/useful_tiles/
+      standard/seven_pairs 向听与推进牌/杠补未知/最佳后续弃牌）直投影自
+      CandidateFacts——不重新实现规则数学，也不为普通弃牌伪造分支；
+    - 立即结算取 value_facts.immediate_settlement；routes 是条件见证摘要，
+      value_coverage/value_issues 透传覆盖状态与截断/缺证据原因；
     - visible_state 直接持有 request.observation（白名单访问器见 B2）；
-    - analysis_profile 由 ruleset_version + ValueAnalysisLimits 默认值构造；
+    - analysis_profile 由 ruleset_version + 实际 ValueAnalysisLimits 构造：
+      value_limits 由调用方传入实际分析配置；缺省时按默认上限快照并在
+      truncation_note 明示（不冒充实际配置）；
     - reference_features 默认空元组（首版无校准代理）。
     """
-    limits = ValueAnalysisLimits()
+    limits = value_limits if value_limits is not None else ValueAnalysisLimits()
+    truncation_note = (
+        "实际分析配置 ValueAnalysisLimits(max_expansions={0},"
+        " max_routes_per_candidate={1})；动作级覆盖见 value_coverage/value_issues".format(
+            limits.max_expansions, limits.max_routes_per_candidate
+        )
+        if value_limits is not None
+        else "未显式提供分析配置，按 ValueAnalysisLimits 默认上限快照"
+             "（max_expansions={0}, max_routes_per_candidate={1}）；"
+             "动作级覆盖见 value_coverage/value_issues".format(
+                 limits.max_expansions, limits.max_routes_per_candidate
+             )
+    )
     actions = []
     for candidate in sorted(
         request.rules.legal_candidates, key=lambda item: item.action_key
@@ -131,6 +151,41 @@ def build_scoring_view(
                     () if facts is None else facts.family_progress
                 ),
                 routes=() if value_facts is None else value_facts.routes,
+                fact_kind=(
+                    None if facts is None else facts.fact_kind.value
+                ),
+                shanten_after=None if facts is None else facts.shanten_after,
+                useful_tiles=() if facts is None else facts.useful_tiles,
+                replacement_draw_unknown=(
+                    None if facts is None else facts.replacement_draw_unknown
+                ),
+                best_followup_discard=(
+                    None if facts is None else facts.best_followup_discard
+                ),
+                standard_shanten_after=(
+                    None if facts is None else facts.standard_shanten_after
+                ),
+                seven_pairs_shanten_after=(
+                    None if facts is None else facts.seven_pairs_shanten_after
+                ),
+                standard_useful_tiles=(
+                    None if facts is None else facts.standard_useful_tiles
+                ),
+                seven_pairs_useful_tiles=(
+                    None if facts is None else facts.seven_pairs_useful_tiles
+                ),
+                pattern_progress_note=(
+                    None if facts is None else facts.pattern_progress_note
+                ),
+                family_progress_entries=(
+                    () if facts is None else facts.family_progress
+                ),
+                value_coverage=(
+                    None if value_facts is None else value_facts.coverage.value
+                ),
+                value_issues=(
+                    () if value_facts is None else value_facts.issues
+                ),
             )
         )
     return ScoringView(
@@ -141,7 +196,7 @@ def build_scoring_view(
             semantics_version=VALUE_ANALYSIS_SEMANTICS_VERSION,
             max_expansions=limits.max_expansions,
             max_routes_per_candidate=limits.max_routes_per_candidate,
-            truncation_note="hangma.interface.ValueAnalysisLimits 默认上限",
+            truncation_note=truncation_note,
             ruleset_version=request.rules.ruleset_version,
         ),
         competition=_competition_view(request.competition),
@@ -157,14 +212,25 @@ class ActionValuePolicy:
     已备紧急计划。policy_id 供离线驱动记录（诊断身份，不进评分）。
     """
 
-    def __init__(self, scorer: ActionValueScorer) -> None:
+    def __init__(
+        self,
+        scorer: ActionValueScorer,
+        *,
+        value_limits: Optional[ValueAnalysisLimits] = None,
+    ) -> None:
         self._scorer = scorer
+        # R2/S2：实际分析配置快照——组合根/离线驱动把与 rules.analyze 同一
+        # 口径的 ValueAnalysisLimits 传入，analysis_profile 透传实际值；
+        # 缺省 None 时投影按默认上限快照并明示（见 build_scoring_view）。
+        self._value_limits = value_limits
         self.policy_id = "{kind}:{name}".format(kind=CANDIDATE_KIND, name=scorer.name)
 
     @classmethod
-    def from_seed(cls, name: str) -> "ActionValuePolicy":
+    def from_seed(
+        cls, name: str, *, value_limits: Optional[ValueAnalysisLimits] = None
+    ) -> "ActionValuePolicy":
         """按种子名装配（静态注册表）；未知名字立即失败，不静默换策略。"""
-        return cls(build_action_value_policy(name))
+        return cls(build_action_value_policy(name), value_limits=value_limits)
 
     @property
     def scorer_name(self) -> str:
@@ -181,7 +247,7 @@ class ActionValuePolicy:
             item.action_key for item in request.rejected_attempts
         )
         try:
-            view = build_scoring_view(request)
+            view = build_scoring_view(request, value_limits=self._value_limits)
             batch = self._scorer.score(view)
             ranked = batch_to_ranked_candidates(batch, view.actions)
         except (ValueError, WorkloadExceeded) as exc:
