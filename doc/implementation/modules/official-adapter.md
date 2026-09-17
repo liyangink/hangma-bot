@@ -121,3 +121,15 @@ peng→chi无事件边界到点时，取消并等待旧长轮询回收，释放�
 ## 官方快照与事件记录覆盖（2026-09-14）
 
 正常完整快照直接建立当前状态，快照前未归档的原事件不属于观察异常。`ProtocolSyncState.history_complete`及同名观察字段只描述本地记录覆盖；不再登记`history_gap_snapshot`，也不以它决定模型是否可用。跨单局、409及真实增量缺口仍按官方协议恢复；补领保留为独立证据增强，不是恢复完成或模型调用的前置条件。见[模型快照输入契约](../interface-contracts.md#官方快照输入与序列模型准入2026-09-14)。
+
+## 赛事详情端点偶发 404 容忍（2026-09-17）
+
+**结论：详情端点 `GET /api/tournaments/{id}` 的单次 404 不再判「赛事消失」，改为有界重试后才按原永久语义终结。** 四个外部端口签名、错误分类与其他调用路径不变。
+
+【2026-09-17 真实平台证据】测试赛事 `t_65d538e905c5`（1024杭麻竞技二测，状态 `registering`，尚未开赛）在本机 2 秒轮询下，同一端点连续 48 次 200 之后**单次**返回 `404 {"code":"TOURNAMENT_GONE","message":"tournament unavailable"}`；同时刻 `/api/me` 为 200，随后同一端点又恢复 200。2026-09-17 18:39—18:45 CST 的 5 次独立运行共命中 4 次（分别在启动后 +100.1s、+8.2s、+125.2s、+38.4s），每次都是孤立单发。原实现一见 404 即返回 `ParticipantTerminal(TARGET_MISMATCH)`，而 `run_participant.py` 对 `target_mismatch` 使用退出码 10（守护器不得重启）——一次平台侧瞬时读取失败就会丢掉整场赛事。
+
+实现：`OfficialTournamentSession._tournament_detail()` 统一承载初始化与轮询两处详情读取，按 `TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE = 5` 次、每次间隔一个轮询周期重试；每次容忍写一条 `PROTOCOL_RECOVERED`（`area=tournament_detail_not_found`，含 `attempt`/`tolerance`/`official_code`）供赛后回放。连续耗尽后仍返回原 `TARGET_MISMATCH`；身份绑定与规则归属的强校验（`/api/me`、`/api/tournaments/me/rules`）不受影响。同时把 `TOURNAMENT_GONE` 登记进 `errors.KNOWN_OFFICIAL_CODES`——白名单外的码会被 `sanitize_official_code` 置为 `None`，使 404 的现场码在审计里丢失（与 2026-09-09 `FEATURE_DISABLED` 同类问题）。
+
+回归用例：`tests/adapters/official/test_tournament_session.py::TestTournamentDetailNotFoundTolerance`，覆盖三条不变量——偶发 404 后重读成功则正常完成且留审计、持续 404 仍在耗尽容忍次数后 `TARGET_MISMATCH`、轮询中的单次 404 不得终结（本类主回归）。
+
+边界：本容忍只增加**尝试次数**，不改变结论——真消失仍会在约 `5 x 轮询间隔` 秒后终结。若平台进入连续 404 窗口（连续超过 5 次），仍按永久目标错配退出，由外部有界重启守护兜底；本次赛事使用 `runs/test-tournament-20260917/supervise_participant_v2.sh`（固定 3 秒间隔、无上限重启至 UTC 截止时刻）。

@@ -28,6 +28,12 @@ KNOWN_OFFICIAL_CODES = frozenset({
     "PORTAL_BINDING_REQUIRED",  # v24：匿名全局令牌不能新报名或新匹配，永久条件
     "GAME_NOT_FINISHED",
     "TOURNAMENT_NOT_FOUND",
+    # 2026-09-17：详情端点 GET /api/tournaments/{id} 的 404 实际码（本次实测原文
+    # {"code":"TOURNAMENT_GONE","message":"tournament unavailable"}）。白名单外的码会被
+    # sanitize_official_code 置为 None，使审计失去"现场码"证据——与 FEATURE_DISABLED
+    # 同类问题，故登记。该码**既可能是真消失也可能是一次瞬时读取失败**：判定容忍
+    # 次数与语义边界见 official/participant.py 的 TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE。
+    "TOURNAMENT_GONE",
     "GAME_NOT_FOUND",
     "INVALID_ACTION",
     "INVALID_INPUT",

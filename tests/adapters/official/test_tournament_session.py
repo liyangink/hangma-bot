@@ -7,8 +7,10 @@ from pathlib import Path
 
 import pytest
 
-from hangma_bot.adapters.official.errors import AuthError, ConflictError
+from hangma_bot.adapters.official.errors import AuthError, ConflictError, NotFoundError
+from hangma_bot.adapters.official.participant import TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE
 from hangma_bot.application.contracts import (
+    AuditKind,
     OperationStatus,
     ParticipantTerminal,
     ParticipantTerminalReason,
@@ -304,3 +306,93 @@ class TestResourceSharing:
         sessions[0]._scheduler.note_rate_limited(5.0)
         assert sessions[1]._scheduler.cooldown_remaining == 0
         assert sessions[0]._scheduler.cooldown_remaining > 0
+
+
+class TestTournamentDetailNotFoundTolerance:
+    """详情端点偶发 404 的容忍语义（2026-09-17 真实平台证据）。
+
+    证据：测试赛事 t_65d538e905c5 在正常 2 秒轮询中，详情端点连续 200 之后
+    单次返回 404 TOURNAMENT_GONE，同时刻 /api/me 为 200，随后同端点又恢复
+    200（两次独立运行各命中一次）。因此单次 404 只说明该次读取失败：
+    本类固化"偶发 404 不终结、持续 404 仍终结"两条不变量。
+    """
+
+    def _flaky_detail(self, transport, *, failures: int,
+                      detail_name: str = "tournament_detail.json") -> dict:
+        """初始化链路的脚本化传输：详情端点前 failures 次返回 404，之后成功。"""
+
+        state = {"detail_calls": 0}
+
+        def handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):
+            if path == "/portal/api/guide/version":
+                return 200, json.dumps(_guide_doc())
+            if path == "/api/me":
+                return 200, json.dumps(load_fixture("me.json"))
+            if path == "/api/tournaments/me/rules":
+                return 200, json.dumps(load_fixture("rules.json"))
+            if path == "/api/tournaments/t_test_room_1":
+                state["detail_calls"] += 1
+                if state["detail_calls"] <= failures:
+                    raise NotFoundError(404, "TOURNAMENT_GONE", "tournament unavailable")
+                return 200, json.dumps(load_fixture(detail_name))
+            raise AssertionError("unexpected " + method + " " + path)
+
+        transport.handler = handler
+        return state
+
+    @staticmethod
+    def _not_found_notices(audit) -> list:
+        return [record for record in audit.records
+                if record.payload.get("area") == "tournament_detail_not_found"]
+
+    async def test_transient_detail_404_is_tolerated(self, transport, clock, audit) -> None:
+        """单次 404 后重读成功：初始化正常完成，且容忍事实进审计。"""
+
+        self._flaky_detail(transport, failures=1)
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        outcome = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert not isinstance(outcome, ParticipantTerminal)
+        assert outcome.tournament_id == TARGET.expected_tournament_id
+        notices = self._not_found_notices(audit)
+        assert len(notices) == 1
+        assert notices[0].kind is AuditKind.PROTOCOL_RECOVERED
+        assert notices[0].payload["official_code"] == "TOURNAMENT_GONE"
+        assert notices[0].payload["tolerance"] == TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE
+
+    async def test_persistent_detail_404_is_still_target_mismatch(self, transport, clock, audit) -> None:
+        """持续 404 语义不变：耗尽容忍次数后仍按永久目标错配终结。"""
+
+        state = self._flaky_detail(transport, failures=99)
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        outcome = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert isinstance(outcome, ParticipantTerminal)
+        assert outcome.reason is ParticipantTerminalReason.TARGET_MISMATCH
+        assert state["detail_calls"] == TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE
+        assert len(self._not_found_notices(audit)) == TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE
+
+    async def test_transient_detail_404_does_not_end_polling(self, transport, clock, audit) -> None:
+        """轮询中的单次 404 不得终结：重读拿到权威快照并正常返回。
+
+        这条是本类的主回归：2026-09-17 首跑正是死在这里（退出码 10）。
+        """
+
+        _initialize_handler(transport)
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        bootstrap = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert not isinstance(bootstrap, ParticipantTerminal)
+
+        state = {"detail_calls": 0}
+
+        def handler(*, path, **kw):
+            if path == "/api/me":
+                return 200, json.dumps(load_fixture("me.json"))
+            state["detail_calls"] += 1
+            if state["detail_calls"] == 1:
+                raise NotFoundError(404, "TOURNAMENT_GONE", "tournament unavailable")
+            return 200, json.dumps(load_fixture("tournament_stage_open.json"))
+
+        transport.handler = handler
+        snapshot = await asyncio.wait_for(session.next_update(), timeout=5)
+        assert not isinstance(snapshot, ParticipantTerminal)
+        assert snapshot.status is TournamentStatus.STAGE_OPEN
+        assert len(self._not_found_notices(audit)) == 1
