@@ -768,7 +768,9 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 - **单调性适用域**：门线数值固定时 `Φ` 关于本座位积分单调不减；「向听更低更好」只对同一动作族、同一合法性集合、其余事实相同的比较成立（大牌路线可能牺牲向听换番），不得写成任何局面都成立。
 - **金例**：[`tools/test_sitin_generate_gate_line.py`](../../review/llm-guided-heuristic-route-2026-09-15/tools/test_sitin_generate_gate_line.py)（14 项，纯计算；每条期望值在测试注释里给出推导算式），覆盖领先 / 临界 / 落后 / 同分 / 四换座 / 结算后门线变动 / 平移不变性 / 未知不伪装零 / 单调性适用域；提示词里渲染的金例数字与该测试同源。本包只改口径与金例，不改统计、门禁与调度。
 
-### ScoringView 赛事基准投影（2026-09-17，R7 P11，对应复审 §5 M1 的视图层缺口）
+### ScoringView 赛事基准投影（2026-09-17，R7 P11/P11b，对应复审 §5 M1 的视图层缺口）
+
+**结构版本：`sitin-scoring-view/2`（2026-09-17 P11b 升位）。** `/1` = 阶段账未进入候选视图的冻结版（`competition` 只有一句「无权获知或陈旧为空」，无 `competition_bases`）；`/2` = 本节口径。合同内容（`fields.competition` 扩写 + 新增 `competition_bases`）与版本串必须同步升级，否则属**静默漂移**——守卫见 `tests/unit/policy/test_action_value_policy.py::TestScoringViewVersionGuard`（合同结构面 = 字段名集合 + `competition_bases` 顶层键 + `freshness_masks` 词表，必须与「已声明版本」的登记指纹一致；未登记即失败）。运行期同样拒绝旧版本（`ScoringView.__post_init__` 与常量比对）。影响面：R6/batch7 期生成候选自带 `schema_version != "sitin-scoring-view/1" → ABSTAIN` 的自守卫，在新视图下会**自主弃权**——这是身份隔离的预期结果（这些候选本就不在 R7 重验收复用范围内）；作者提示词渲染的 schema 串取自合同 JSON，自动跟随。
 
 **结论：候选评分器读到的 `ScoringView.competition` 不再是恒空视图。** R6 冻结版 `_competition_view()` 直接 `return CompetitionView()`，面板侧（P2）已注入到公开策略输入 `DecisionRequest.competition` 的阶段账对**真实候选臂不可见**——门线/追分逻辑只能退回桌内积分。本节固定投影契约（实现见 [`src/hangma_bot/policy/action_value_policy.py`](../../src/hangma_bot/policy/action_value_policy.py) 的 `_stage_account_vector` / `_competition_view`，机器合同见 [action-value-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json) 的 `scoring_view.competition_bases`）。
 

@@ -54,7 +54,9 @@ def test_contract_identity_fields(contract: Mapping[str, Any]) -> None:
 
 def test_scoring_view_schema_version_matches(contract: Mapping[str, Any]) -> None:
     assert contract["scoring_view"]["schema_version"] == av.SCORING_VIEW_SCHEMA_VERSION
-    assert av.SCORING_VIEW_SCHEMA_VERSION == "sitin-scoring-view/1"
+    # /2：competition 投影（stage_scores/table_scores/freshness_masks）进入候选视图；
+    # /1 = 阶段账未进入视图的冻结版。结构面变化必须先登记再升版本（R7 P11b）。
+    assert av.SCORING_VIEW_SCHEMA_VERSION == "sitin-scoring-view/2"
 
 
 def test_route_and_progress_states_match(contract: Mapping[str, Any]) -> None:

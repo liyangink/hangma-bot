@@ -23,7 +23,11 @@ if False:  # pragma: no cover - 仅为类型检查保留；载荷运行期按 B1
 
 # —— 合同常量（scoring_view.schema_version / route_states / progress_states）——
 
-SCORING_VIEW_SCHEMA_VERSION = "sitin-scoring-view/1"
+#: 结构版本。/1 = 阶段账未进入候选视图的冻结版；/2 = 新增 competition_bases
+#: 口径（stage_scores 座位序账 / table_scores 本桌进行中 / freshness_masks 闭集），
+#: R7 P11 投影 + P11b 升位。结构面变化必须先登记再升版本（守卫见
+#: tests/unit/policy/test_action_value_policy.py::TestScoringViewVersionGuard）。
+SCORING_VIEW_SCHEMA_VERSION = "sitin-scoring-view/2"
 CANDIDATE_KIND = "action_value_v1"
 
 ROUTE_STATES: Tuple[str, ...] = (
@@ -585,7 +589,7 @@ def _observation_mapping(observation: PlayerObservation) -> Dict[str, Any]:
 
 @dataclass(frozen=True)
 class ScoringView:
-    """一个动作窗口内候选代码可见的全部只读事实（sitin-scoring-view/1）。
+    """一个动作窗口内候选代码可见的全部只读事实（sitin-scoring-view/2）。
 
     信息权限：visible_state 直接持有 PlayerObservation 引用并只提供白名单
     只读访问器（不复制可变状态，PlayerObservation 本身冻结）；不含 WorldState、
@@ -593,7 +597,7 @@ class ScoringView:
     运行关联键不入视图。受限候选经 candidate_view() 得到纯原始值映射。
     """
 
-    schema_version: str  # 固定 sitin-scoring-view/1；不兼容变更升主版本
+    schema_version: str  # 固定 sitin-scoring-view/2；结构面/语义不兼容变更升版本并登记
     visible_state: PlayerObservation  # 白名单只读观察（信息权限见各访问器）
     actions: Tuple[ActionView, ...]  # 按 action_key 严格升序的不可变动作表
     analysis_profile: AnalysisProfileView  # 语义版本与工作量上限快照

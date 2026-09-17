@@ -654,7 +654,7 @@ def build_sample_view() -> ScoringView:
         ),
     )
     return ScoringView(
-        schema_version="sitin-scoring-view/1",
+        schema_version="sitin-scoring-view/2",
         visible_state=make_sample_observation(),
         actions=actions,
         analysis_profile=AnalysisProfileView(

@@ -41,8 +41,14 @@ from hangma_bot.kernel.observation import (
     RankingEntry,
     RulePublicState,
 )
-from hangma_bot.policy.action_value import ActionScore, ScoreBatch
+from hangma_bot.policy.action_value import (
+    SCORING_VIEW_SCHEMA_VERSION,
+    ActionScore,
+    ScoreBatch,
+    ScoringView,
+)
 from hangma_bot.policy.action_value_executor import WorkloadExceeded
+from hangma_bot.policy.action_value_seeds import build_sample_view
 from hangma_bot.policy.action_value_policy import (
     COMPETITION_MASK_BASES,
     COMPETITION_MASK_VALUES,
@@ -654,3 +660,103 @@ class TestRealSeedEndToEnd:
         plan = run_choose(policy, request, make_budget())
         legal = {c.action_key for c in analysis.legal_candidates}
         assert {item.action_key for item in plan.candidates} == legal
+
+# ---------------------------------------------------------------------------
+# P11b：ScoringView 结构版本升位与「静默漂移」守卫
+#
+# 背景：P11 扩写了合同 `scoring_view.fields.competition` 并新增 `competition_bases`，
+# 但版本串仍是 /1 —— 合同内容已变而版本未变属于静默漂移，R7 重验收不允许。
+# 本组用例：（1）版本串与结构面登记一致；（2）**守卫**：结构面变化必须同时升版本，
+# 否则失败（并用一个合成漂移用例自证守卫确实会拦住）。
+# ---------------------------------------------------------------------------
+
+#: 结构版本 → 合同 `scoring_view` 的**结构面**指纹（冻结登记表）。
+#: 结构面 = 字段名集合 + `competition_bases` 顶层键 + `freshness_masks` 词表；
+#: 任何结构面变化都必须新增一条登记并同步升级 `schema_version`。
+_SCORING_VIEW_STRUCTURE_BY_VERSION = {
+    "sitin-scoring-view/1": {
+        "fields": (
+            "actions", "analysis_profile", "competition",
+            "reference_features", "visible_state",
+        ),
+        "competition_bases_keys": None,   # /1：competition 只有一句「无权/陈旧为空」
+        "mask_values": None,
+    },
+    "sitin-scoring-view/2": {
+        "fields": (
+            "actions", "analysis_profile", "competition",
+            "reference_features", "visible_state",
+        ),
+        "competition_bases_keys": (
+            "admission_conditions", "freshness_masks", "identity_mapping",
+            "residual_risk", "seat_order", "stage_scores", "staleness",
+            "table_scores", "units", "unknown_is_not_zero",
+        ),
+        # 位置序 [stage_scores, table_scores] 的闭集词表（与代码常量同源）。
+        "mask_values": COMPETITION_MASK_VALUES,
+    },
+}
+
+
+def _contract_scoring_view() -> dict:
+    path = (
+        Path(__file__).resolve().parents[3]
+        / "review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json"
+    )
+    return json.loads(path.read_text(encoding="utf-8"))["scoring_view"]
+
+
+def _scoring_view_structure(scoring_view: dict) -> dict:
+    """提取合同 `scoring_view` 的结构面（忽略纯散文措辞）。"""
+    bases = scoring_view.get("competition_bases")
+    return {
+        "fields": tuple(sorted(scoring_view["fields"])),
+        "competition_bases_keys": (None if bases is None else tuple(sorted(bases))),
+        "mask_values": (
+            None if bases is None else tuple(bases["freshness_masks"]["values"])
+        ),
+    }
+
+
+class TestScoringViewVersionGuard:
+    """P11b：版本升位与防静默漂移守卫。"""
+
+    def test_schema_version_is_two_and_matches_code_constant(self):
+        contract = _contract_scoring_view()
+        assert contract["schema_version"] == SCORING_VIEW_SCHEMA_VERSION
+        assert SCORING_VIEW_SCHEMA_VERSION == "sitin-scoring-view/2"
+        assert SCORING_VIEW_SCHEMA_VERSION in _SCORING_VIEW_STRUCTURE_BY_VERSION
+
+    def test_contract_structure_matches_declared_version(self):
+        """守卫：合同结构面必须与「已声明版本」的登记指纹逐项一致。"""
+        contract = _contract_scoring_view()
+        declared = contract["schema_version"]
+        expected = _SCORING_VIEW_STRUCTURE_BY_VERSION.get(declared)
+        assert expected is not None, (
+            "合同声明的版本 {0!r} 未登记结构面：结构面变更必须先登记并升版本".format(
+                declared)
+        )
+        assert _scoring_view_structure(contract) == expected, (
+            "合同 scoring_view 结构面与版本 {0!r} 的登记不一致——"
+            "扩写 competition 字段/新增 competition_bases 必须同时升级 schema_version".format(
+                declared)
+        )
+
+    def test_guard_rejects_extended_competition_without_version_bump(self):
+        """自证守卫有效：把 /2 的结构面贴到 /1 版本号上必须被判为漂移。"""
+        drifted = dict(_contract_scoring_view())
+        drifted["schema_version"] = "sitin-scoring-view/1"
+        assert _scoring_view_structure(drifted) != (
+            _SCORING_VIEW_STRUCTURE_BY_VERSION["sitin-scoring-view/1"]
+        )
+
+    def test_runtime_rejects_previous_version(self):
+        """运行时同样拒绝旧版本：/1 视图不得通过完整性验证。"""
+        with pytest.raises(ValueError, match="schema_version"):
+            ScoringView(
+                schema_version="sitin-scoring-view/1",
+                visible_state=build_sample_view().visible_state,
+                actions=build_sample_view().actions,
+                analysis_profile=build_sample_view().analysis_profile,
+            )
+

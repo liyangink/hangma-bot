@@ -19,6 +19,7 @@ from hangma_bot.hangma.interface import Settlement
 from hangma_bot.kernel.actions import Discard, Hu, Pass, Peng, Tile
 
 from hangma_bot.policy.action_value import (
+    SCORING_VIEW_SCHEMA_VERSION,
     ActionScore,
     ActionView,
     AnalysisProfileView,
@@ -52,7 +53,7 @@ from hangma_bot.policy.action_value_seeds import (
 def _make_view(actions: tuple, *, competition: CompetitionView | None = None) -> ScoringView:
     """按 action_key 升序构造测试视图（调用方保证升序）。"""
     return ScoringView(
-        schema_version="sitin-scoring-view/1",
+        schema_version=SCORING_VIEW_SCHEMA_VERSION,
         visible_state=build_sample_view().visible_state,
         actions=actions,
         analysis_profile=AnalysisProfileView(
@@ -1023,16 +1024,17 @@ class TestScoringViewContract:
         actions = tuple(reversed(build_sample_view().actions))
         with pytest.raises(ValueError, match="严格升序"):
             ScoringView(
-                schema_version="sitin-scoring-view/1",
+                schema_version=SCORING_VIEW_SCHEMA_VERSION,
                 visible_state=build_sample_view().visible_state,
                 actions=actions,
                 analysis_profile=build_sample_view().analysis_profile,
             )
 
     def test_wrong_schema_version_rejected(self) -> None:
+        # 旧结构版本（P11b 前的 /1）在新常量下必须被拒；反例值随版本升位而更新。
         with pytest.raises(ValueError, match="schema_version"):
             ScoringView(
-                schema_version="sitin-scoring-view/2",
+                schema_version="sitin-scoring-view/1",
                 visible_state=build_sample_view().visible_state,
                 actions=build_sample_view().actions,
                 analysis_profile=build_sample_view().analysis_profile,
@@ -1310,7 +1312,7 @@ class TestR1S1TimingAndFallback:
             )
         base = build_sample_view()
         view = ScoringView(
-            schema_version="sitin-scoring-view/1",
+            schema_version=SCORING_VIEW_SCHEMA_VERSION,
             visible_state=base.visible_state,
             actions=tuple(sorted(actions, key=lambda item: item.action_key)),
             analysis_profile=base.analysis_profile,
