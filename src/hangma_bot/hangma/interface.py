@@ -57,6 +57,100 @@ class UsefulTileFact:
             )
 
 
+class RouteStatus(str, Enum):
+    """路线证据状态；与进展五态 ProgressKind 不混（v4 §5.1）。
+
+    回答"该路线当前有什么证据"，不回答"动作使它变好还是变坏"；
+    `UNANALYZED` 不等于关闭，也不等于零机会。
+    """
+
+    WITNESSED = "witnessed"          # 已有条件见证（如 ValueRoute 一次摸牌成胡见证）
+    OPEN_UNCERTAIN = "open_uncertain"  # 合法可达但兑现未知；不得因未枚举写成零机会
+    CLOSED_PROVEN = "closed_proven"    # 已证关闭（如七对路线存在副露）
+    UNANALYZED = "unanalyzed"          # 未分析；不等于关闭或零机会
+
+
+class FamilyId(str, Enum):
+    """规则价值来源的四个专长家族（v4 §7.3 场景矩阵；进展载荷按声明序排列）。"""
+
+    BRANCH = "branch"        # 普通型/七对分支
+    CHAIN = "chain"          # 动作链（连续飘/杠）
+    FOUR_WHITE = "four_white"  # 四白等值
+    BAOTOU = "baotou"        # 爆头
+
+
+class ProgressKind(str, Enum):
+    """动作相对变化（前后对比）；缺证据/未分析时用 UNKNOWN，不得用数值冒充。"""
+
+    ADVANCE = "advance"
+    SAME = "same"
+    RETREAT = "retreat"
+    CLOSE = "close"
+    UNKNOWN = "unknown"      # 缺证据/未分析时用，不得用数值冒充
+
+
+@dataclass(frozen=True)
+class FollowupBranchFacts:
+    """吃/碰候选动作后一种合法弃牌分支的机械事实。
+
+    v4 §3.1/§4.2：新入口保留吃碰后全部已分析合法弃牌分支，不只读已选
+    最佳分支；吃碰后不同弃牌不得预合并成一个牌效最佳分支。计数未知时
+    `useful_tiles` 为空且 `support_remaining=None`（all-or-nothing 口径），
+    不得写 0 冒充已知空缺。
+    """
+
+    followup_key: str            # 分支键："<action_key>#<followup_discard>"，稳定排序用
+    followup_discard: str        # 该分支先弃的牌（规范牌值）
+    combined_shanten: Optional[int]      # 该分支等待态已知分牌型向听的最小值；两分牌型都未知为 None
+    standard_shanten_after: Optional[int]   # 同一等待手牌普通型向听；未分析 None
+    seven_pairs_shanten_after: Optional[int] # 七对向听；有副露或未分析 None
+    useful_tiles: Tuple[UsefulTileFact, ...] = ()  # 该分支等待态的一步推进有效牌
+    support_remaining: Optional[int] = None  # 一步推进有效牌的未见枚数总和（牌码去重后求和）；计数未知 None，不得写 0 冒充
+
+    def __post_init__(self) -> None:
+        if self.followup_discard not in CANONICAL_TILE_CODES:
+            raise ValueError("FollowupBranchFacts.followup_discard 必须是规范牌值")
+        if (
+            not isinstance(self.followup_key, str)
+            or not self.followup_key.endswith("#" + self.followup_discard)
+        ):
+            raise ValueError(
+                "FollowupBranchFacts.followup_key 必须形如 <action_key>#<followup_discard>"
+            )
+        for name in ("combined_shanten", "standard_shanten_after", "seven_pairs_shanten_after"):
+            value = getattr(self, name)
+            if value is not None and (type(value) is not int or value < -1):
+                raise ValueError("FollowupBranchFacts." + name + " 必须是至少 -1 的整数或空")
+        if not isinstance(self.useful_tiles, tuple) or any(
+            not isinstance(tile, UsefulTileFact) for tile in self.useful_tiles
+        ):
+            raise ValueError("FollowupBranchFacts.useful_tiles 必须是 UsefulTileFact 元组")
+        if self.support_remaining is not None and (
+            type(self.support_remaining) is not int or self.support_remaining < 0
+        ):
+            raise ValueError("FollowupBranchFacts.support_remaining 必须是非负整数或空")
+
+
+@dataclass(frozen=True)
+class FamilyProgress:
+    """一个候选动作对一个规则家族的相对进展与证据状态（v4 §7.3 谓词输入）。"""
+
+    family: FamilyId
+    progress: ProgressKind       # 动作相对变化（前后对比）
+    route_status: RouteStatus    # 证据状态
+    basis: str                   # 确定性依据一句话（引用规则数学/观察事实；不得调用任何策略）
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.family, FamilyId):
+            raise ValueError("FamilyProgress.family 必须是 FamilyId")
+        if not isinstance(self.progress, ProgressKind):
+            raise ValueError("FamilyProgress.progress 必须是 ProgressKind")
+        if not isinstance(self.route_status, RouteStatus):
+            raise ValueError("FamilyProgress.route_status 必须是 RouteStatus")
+        if not isinstance(self.basis, str) or not self.basis:
+            raise ValueError("FamilyProgress.basis 必须是非空字符串")
+
+
 @dataclass(frozen=True)
 class CandidateFacts:
     """一个候选动作的"动作后牌效事实"；由规则模块生产，策略只消费加权。
@@ -85,6 +179,11 @@ class CandidateFacts:
     standard_useful_tiles: Optional[Tuple[UsefulTileFact, ...]] = None  # 普通型推进牌及可见未见张数；未分析或计数未知为空
     seven_pairs_useful_tiles: Optional[Tuple[UsefulTileFact, ...]] = None  # 七对推进牌；未分析、不适用或计数未知为空；() 表示已知空集合
     pattern_progress_note: Optional[str] = None  # 新增分牌型计数的局部缺证据原因，不降低原综合事实完整性
+    # B3 编解码升级后载荷参与相等性（audit_codec 已携带两键，往返保持相等）；
+    # compare=False 临时兼容随编解码升级移除，旧消费者按"开关 value 分析产生
+    # 不同载荷即不同事实"的新契约比较。
+    followup_branches: Optional[Tuple[FollowupBranchFacts, ...]] = None  # 吃/碰候选：全部已分析合法弃牌分支，按 followup_discard 规范牌序；None=未分析或不适用；旧 best_followup_discard 保留原语义（=其中牌效最佳分支的弃牌）
+    family_progress: Tuple[FamilyProgress, ...] = ()  # 空元组=未分析，不冒充无进展；按 FamilyId 声明序
 
     def __post_init__(self) -> None:
         for name in ("standard_useful_tiles", "seven_pairs_useful_tiles"):
@@ -126,6 +225,33 @@ class CandidateFacts:
             and not self.note
         ):
             raise ValueError("ANALYSIS_FAILED 必须在 note 中给出失败原因")
+        if self.followup_branches is not None:
+            # 适用口径与 best_followup_discard 一致：只有吃/碰类 HAND_PROGRESS
+            # 候选携带（由生产端保证动作类别；此处校验事实形状一致性）。
+            if self.fact_kind is not CandidateFactKind.HAND_PROGRESS:
+                raise ValueError("followup_branches 只属于 HAND_PROGRESS 吃/碰候选")
+            if not isinstance(self.followup_branches, tuple) or any(
+                not isinstance(branch, FollowupBranchFacts)
+                for branch in self.followup_branches
+            ):
+                raise ValueError("CandidateFacts.followup_branches 必须是 FollowupBranchFacts 元组")
+            if self.best_followup_discard is None:
+                raise ValueError(
+                    "followup_branches 需要 best_followup_discard（吃/碰适用口径）"
+                )
+            branch_discards = tuple(
+                branch.followup_discard for branch in self.followup_branches
+            )
+            if len(set(branch_discards)) != len(branch_discards):
+                raise ValueError("followup_branches.followup_discard 不得重复")
+            if self.best_followup_discard not in branch_discards:
+                raise ValueError("best_followup_discard 必须属于 followup_branches")
+        if not isinstance(self.family_progress, tuple) or any(
+            not isinstance(entry, FamilyProgress) for entry in self.family_progress
+        ):
+            raise ValueError("CandidateFacts.family_progress 必须是 FamilyProgress 元组")
+        if len({entry.family for entry in self.family_progress}) != len(self.family_progress):
+            raise ValueError("family_progress.family 不得重复")
 
 
 @dataclass(frozen=True)

@@ -19,6 +19,22 @@ from .white_discard_guard import WhiteDiscardGuardPolicy
 from .catch_play_probe import CatchPlayProbePolicy
 from .weights_v1 import HeuristicWeightsV1, DEFAULT_WEIGHTS_V1
 from .weights import DEFAULT_WEIGHTS, HeuristicWeights
+from .action_value import (
+    ActionScore,
+    ActionView,
+    AnalysisProfileView,
+    CompetitionView,
+    ReferenceFeature,
+    ScoreBatch,
+    ScoringView,
+    batch_to_ranked_candidates,
+    run_scoring_skeleton,
+)
+from .action_value_seeds import (
+    SEED_NAMES,
+    ActionValueScorer,
+    build_action_value_policy,
+)
 
 __all__ = [
     "BotPolicy",
@@ -41,4 +57,16 @@ __all__ = [
     "HeuristicWeightsV1",
     "DEFAULT_WEIGHTS_V1",
     "ClaimIfLegalPolicy",
+    "ActionScore",
+    "ActionView",
+    "AnalysisProfileView",
+    "CompetitionView",
+    "ReferenceFeature",
+    "ScoreBatch",
+    "ScoringView",
+    "run_scoring_skeleton",
+    "batch_to_ranked_candidates",
+    "SEED_NAMES",
+    "ActionValueScorer",
+    "build_action_value_policy",
 ]

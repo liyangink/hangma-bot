@@ -8,6 +8,8 @@
 2. 完整桌赛驱动：只调用 SimulationEngine 的公开方法（start/frame/advance/
    export_hand/from_replay），按 frame 的全部窗口先准备紧急动作再请求
    策略、复核选择后一次性 advance；blocked/异常/步数上限都不是 complete。
+   驱动循环提取为 _advance_frames 共享函数（C1）；resume_match 提供受控
+   中途续打入口（重建核对观察摘要后共用同一循环，不另写推进逻辑）。
 
 依赖纪律（parallel-contracts §2/§6）：
 - 不读取 WorldState 字段；engine/spec 只做结构访问。SimulationEngine、
@@ -34,6 +36,7 @@ from typing import Any, Callable, List, Mapping, Optional, Sequence, Tuple, Unio
 
 from hangma_bot.application.deadline import BudgetPolicy
 from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.kernel.actions import Action, WindowKey, action_key
 from hangma_bot.kernel.config import RuleConfig, TournamentConfig
 from hangma_bot.kernel.observation import CompetitionContext
@@ -963,6 +966,7 @@ class MatchDecisionRecord:
     plan_revision: Optional[int]
     degraded_reasons: Tuple[str, ...]
     elapsed_ms: Optional[float]
+    rules_elapsed_ms: Optional[float] = None  # 规则分析段耗时（含投影输入）；与 elapsed_ms 同口径，仅 wall_clock 提供时有值
 
     def to_json(self) -> dict:
         return {
@@ -977,6 +981,7 @@ class MatchDecisionRecord:
             "plan_revision": self.plan_revision,
             "degraded_reasons": list(self.degraded_reasons),
             "elapsed_ms": self.elapsed_ms,
+            "rules_elapsed_ms": self.rules_elapsed_ms,
         }
 
 
@@ -1042,6 +1047,19 @@ def policy_ids_by_seat_from(
     return (by_seat[0], by_seat[1], by_seat[2], by_seat[3])
 
 
+def build_action_value_offline_policy(name: str) -> BotPolicy:
+    """离线驱动装配 action_value 策略的可选注入入口（B3）。
+
+    name 是种子名（efficiency_seed / route_value_seed / hu_first_reference）；
+    评分器经受限执行器装载（静态注册表，不动态扫描）。本工厂不改变任何
+    默认装配：调用方显式引用后才生效，且离线驱动应同时给 drive_match /
+    run_match_experiment 传同一 ValueAnalysisLimits，策略才能读到 B1 载荷。
+    """
+    from hangma_bot.policy.action_value_policy import ActionValuePolicy
+
+    return ActionValuePolicy.from_seed(name)
+
+
 async def drive_match(
     *,
     engine: Any,
@@ -1052,6 +1070,7 @@ async def drive_match(
     config: MatchDriverConfig,
     now_monotonic: Callable[[], float],
     wall_clock: Optional[Callable[[], float]],
+    value_limits: Optional[ValueAnalysisLimits] = None,
 ) -> MatchRunOutcome:
     """完整桌赛驱动循环（simulation-v1 公开方法的唯一调用方）。
 
@@ -1060,19 +1079,63 @@ async def drive_match(
     - 每帧先对每个窗口调用 rules.analyze 准备紧急动作，再构造
       DecisionRequest/DecisionBudget 请求对应座位策略；复核选择后把
       全部窗口一次性 advance。
+    - value_limits 是普通/阶段驱动共用的统一分析配置（T08/B3）：非 None 时
+      每个窗口的 rules.analyze 携带同一 ValueAnalysisLimits（等值即可），
+      产出 B1 分支进展与条件分值载荷；默认 None 保持旧行为零变化。
     - 策略异常/超时按紧急候选保底并计数；复核非法同样转紧急候选；
       任何窗口都拿不到动作时整场以 error 结束，不合成流局。
     - advance 抛 ValueError（旧 revision/缺窗/非法动作）按 error 结束。
+    """
+    world = engine.start(spec)
+    return await _advance_frames(
+        engine=engine,
+        world=world,
+        match_id=spec.match_id,
+        policies_by_seat=policies_by_seat,
+        rules=rules,
+        choice_factory=choice_factory,
+        config=config,
+        now_monotonic=now_monotonic,
+        wall_clock=wall_clock,
+        value_limits=value_limits,
+    )
+
+
+async def _advance_frames(
+    *,
+    engine: Any,
+    world: Any,
+    match_id: str,
+    policies_by_seat: Tuple[BotPolicy, BotPolicy, BotPolicy, BotPolicy],
+    rules: HangmaRules,
+    choice_factory: Callable[[WindowKey, Action], Any],
+    config: MatchDriverConfig,
+    now_monotonic: Callable[[], float],
+    wall_clock: Optional[Callable[[], float]],
+    value_limits: Optional[ValueAnalysisLimits] = None,
+    first_frame: Any = None,
+) -> MatchRunOutcome:
+    """共享驱动循环：从给定世界推进到需要行动/终局（C1 纯重构提取）。
+
+    - world 是不透明对象：本循环只经 engine.frame/engine.advance 交互，
+      不读取世界任何字段；drive_match 与 resume_match 共用本函数，
+      不存在第二套推进逻辑（v4 §7.2 C1 要求）。
+    - first_frame 允许调用方复用已取得的当前帧（resume_match 观察摘要
+      核对通过后传入）；None 时循环首步自行 engine.frame(world)，
+      与提取前 drive_match 的调用序列逐语句一致。
+    - 终态判定、窗口解析、保底规则、advance 异常边界与步数上限语义
+      均保持不变；match_id 即原 spec.match_id（决策标识口径不变）。
     """
     timeouts = 0
     illegal_choices = 0
     fallbacks = 0
     decisions: List[MatchDecisionRecord] = []
-    world = engine.start(spec)
     steps = 0
+    frame = first_frame
     while steps < config.step_limit:
         steps += 1
-        frame = engine.frame(world)
+        if frame is None:
+            frame = engine.frame(world)
         if frame.blocked_reason is not None:
             return MatchRunOutcome(
                 status="blocked",
@@ -1131,13 +1194,14 @@ async def drive_match(
         for decision in frame.decisions:
             record, choice, action_available = await _resolve_window(
                 decision=decision,
-                match_id=spec.match_id,
+                match_id=match_id,
                 policies_by_seat=policies_by_seat,
                 rules=rules,
                 choice_factory=choice_factory,
                 config=config,
                 now_monotonic=now_monotonic,
                 wall_clock=wall_clock,
+                value_limits=value_limits,
             )
             decisions.append(record)
             if record.fallback_reason == "timeout":
@@ -1167,6 +1231,7 @@ async def drive_match(
 
         try:
             world = engine.advance(world, frame.revision, tuple(choices))
+            frame = None  # 推进成功后下一循环重新取帧（first_frame 只消费一次）
         except ValueError as error:
             return MatchRunOutcome(
                 status="error",
@@ -1219,6 +1284,142 @@ async def drive_match(
     )
 
 
+def frame_observation_summary(frame: Any) -> dict:
+    """决策帧观察摘要：重建核对（legal-prefix 重建）的唯一口径（C1）。
+
+    - 只投影帧公开可见事实：窗口键定位（座位/局号/触发序/阶段/快照序）、
+      每个决策座位的手牌**摘要**（sha256，不落原始牌值）、张数、刚摸牌、
+      牌墙公开余量、四家积分与帧级 revision/completed_hands；不含牌墙
+      物理顺序、他家暗牌或未来事件（T09 隐藏信息红线）。
+    - 输出为 JSON 原生类型（list/dict/str/int/None），键序与排序固定，
+      同一帧必得同一摘要；跨进程经 JSON 往返后仍可逐键相等比较。
+    - drawn_tile 是该座位自己依法可见的刚摸牌，属于其玩家可见事实；
+      重建核对比对的是「到达同一决策边界」这一事实，不是保密信息交换。
+    """
+    entries = []
+    for decision in frame.decisions:
+        observation = decision.observation
+        window_key = decision.window_key
+        hand_codes = sorted(tile.code for tile in observation.my_hand)
+        entries.append(
+            {
+                "game_id": observation.game_id,
+                "round_no": observation.round_no,
+                "trigger_seq": window_key.trigger_seq,
+                "phase": window_key.phase.value,
+                "seat": window_key.seat,
+                "snapshot_seq": observation.snapshot_seq,
+                "hand_digest": hashlib.sha256(
+                    "|".join(hand_codes).encode("utf-8")
+                ).hexdigest(),
+                "hand_count": len(observation.my_hand),
+                "drawn_tile": (
+                    None if observation.drawn_tile is None
+                    else observation.drawn_tile.code
+                ),
+                "remaining_tile_count": observation.remaining_tile_count,
+                "scores": list(observation.scores),
+            }
+        )
+    entries.sort(
+        key=lambda item: (
+            item["seat"],
+            item["phase"],
+            item["trigger_seq"],
+            item["snapshot_seq"],
+        )
+    )
+    return {
+        "revision": frame.revision,
+        "completed_hands": frame.completed_hands,
+        "decision_count": len(entries),
+        "decisions": entries,
+    }
+
+
+async def resume_match(
+    *,
+    engine: Any,
+    world: Any,
+    policies_by_seat: Tuple[BotPolicy, BotPolicy, BotPolicy, BotPolicy],
+    rules: HangmaRules,
+    choice_factory: Callable[[WindowKey, Action], Any],
+    config: MatchDriverConfig,
+    now_monotonic: Callable[[], float],
+    wall_clock: Optional[Callable[[], float]],
+    remaining_schedule: Optional[Mapping] = None,
+    stage_snapshot: Optional[Mapping] = None,
+    value_limits: Optional[ValueAnalysisLimits] = None,
+) -> MatchRunOutcome:
+    """受控中途续打入口（C1）：从重建的不透明世界继续驱动到声明终点。
+
+    - world 由调用方从快照重建（同进程复用不透明世界对象，或经模拟器
+      公开 start/frame/advance 重放合法前缀得到）；本函数只经
+      engine.frame/engine.advance 与世界交互，禁止读写 WorldState 私有
+      字段，也不实现第二套推进逻辑——驱动循环与 drive_match 共用
+      _advance_frames。
+    - stage_snapshot 必须携带 observation_summary（frame_observation_summary
+      口径）：续打前核对当前帧观察摘要，不一致直接 ValueError（fail-closed，
+      不在此世界上继续，不静默接受错位重建）。
+    - remaining_schedule 声明终点与剩余赛程（{"declared_endpoint": str, ...}），
+      由调用方冻结；引擎终态（final_scores/blocked/步数上限）即本驱动的
+      实际终点，声明终点供费用账与阶段编排对账。
+    - 截取帧中尚未推进的响应者不沿用任何预先选好的响应：本入口按当前帧
+      观察逐窗口重新请求策略（v4 §7.2 条 4/末段）。
+    """
+    if not isinstance(stage_snapshot, Mapping) or not isinstance(
+        stage_snapshot.get("observation_summary"), Mapping
+    ):
+        raise ValueError(
+            "resume_match 必须携带 stage_snapshot.observation_summary"
+            "（frame_observation_summary 口径；重建核对 fail-closed）"
+        )
+    if remaining_schedule is not None:
+        endpoint = remaining_schedule.get("declared_endpoint")
+        if not isinstance(endpoint, str) or not endpoint:
+            raise ValueError(
+                "remaining_schedule.declared_endpoint 必须是非空字符串（声明终点）"
+            )
+    frame = engine.frame(world)
+    summary = frame_observation_summary(frame)
+    expected = dict(stage_snapshot["observation_summary"])
+    if summary != expected:
+        raise ValueError(
+            "重建核对失败：首帧观察摘要与快照不一致（fail-closed，拒绝续打）；"
+            "快照 decision_count={0}，实际 {1}".format(
+                expected.get("decision_count"), summary["decision_count"]
+            )
+        )
+    match_id = _resume_match_id(frame, stage_snapshot)
+    return await _advance_frames(
+        engine=engine,
+        world=world,
+        match_id=match_id,
+        policies_by_seat=policies_by_seat,
+        rules=rules,
+        choice_factory=choice_factory,
+        config=config,
+        now_monotonic=now_monotonic,
+        wall_clock=wall_clock,
+        value_limits=value_limits,
+        first_frame=frame,
+    )
+
+
+def _resume_match_id(frame: Any, stage_snapshot: Mapping) -> str:
+    """续打段的决策标识前缀：优先快照 match_spec.match_id，退化取窗口 game_id。"""
+    match_spec = stage_snapshot.get("match_spec")
+    if isinstance(match_spec, Mapping):
+        match_id = match_spec.get("match_id")
+        if isinstance(match_id, str) and match_id:
+            return match_id
+    if frame.decisions:
+        return str(frame.decisions[0].window_key.game_id)
+    raise ValueError(
+        "无法确定续打段决策标识：stage_snapshot.match_spec.match_id 缺失且首帧无决策窗口"
+    )
+
+
 async def _resolve_window(
     *,
     decision: Any,
@@ -1229,6 +1430,7 @@ async def _resolve_window(
     config: MatchDriverConfig,
     now_monotonic: Callable[[], float],
     wall_clock: Optional[Callable[[], float]],
+    value_limits: Optional[ValueAnalysisLimits] = None,
 ) -> Tuple[MatchDecisionRecord, Any, bool]:
     """解析一个模拟窗口：规则分析 → 预算 → 策略 → 复核 → SimulationChoice。"""
     observation = decision.observation
@@ -1236,7 +1438,14 @@ async def _resolve_window(
     seat = window_key.seat
     if not 0 <= seat < 4:
         raise ValueError("窗口座位越界: {0!r}".format(seat))
-    analysis = rules.analyze(observation)
+    rules_started = None if wall_clock is None else wall_clock()
+    if value_limits is None:
+        analysis = rules.analyze(observation)
+    else:
+        analysis = rules.analyze(observation, value_limits=value_limits)
+    rules_elapsed_ms = None
+    if wall_clock is not None and rules_started is not None:
+        rules_elapsed_ms = (wall_clock() - rules_started) * 1000.0
 
     competition = CompetitionContext(
         tournament_id=config.competition_tournament_id,
@@ -1311,6 +1520,7 @@ async def _resolve_window(
                 plan_revision=None,
                 degraded_reasons=(),
                 elapsed_ms=elapsed_ms,
+                rules_elapsed_ms=rules_elapsed_ms,
             )
             return record, None, False
         action = emergency.action
@@ -1335,6 +1545,7 @@ async def _resolve_window(
                 plan_revision=plan_revision,
                 degraded_reasons=degraded,
                 elapsed_ms=elapsed_ms,
+                rules_elapsed_ms=rules_elapsed_ms,
             )
             return record, None, False
         action = emergency.action
@@ -1355,6 +1566,7 @@ async def _resolve_window(
         plan_revision=plan_revision,
         degraded_reasons=degraded,
         elapsed_ms=elapsed_ms,
+        rules_elapsed_ms=rules_elapsed_ms,
     )
     return record, choice_factory(window_key, action), True
 
@@ -1453,6 +1665,7 @@ async def run_match_experiment(
     wall_clock: Optional[Callable[[], float]],
     budget_policy: BudgetPolicy,
     source_kind: str = "simulation",
+    value_limits: Optional[ValueAnalysisLimits] = None,
 ) -> MatchExperimentOutcome:
     """按声明执行完整同牌山复式实验：seed × 换座 × 稳定/候选。
 
@@ -1461,6 +1674,8 @@ async def run_match_experiment(
     - 每轮 run：match_id 唯一（含测试策略），pair_id 相同；scenario_id 相同；
     - 换座用 seat_permutation 把逻辑身份映射到实际座位，初始庄家与积分
       同步映射；
+    - value_limits 透传给每个 drive_match（T08 统一分析配置）；默认 None
+      保持旧行为零变化。
     - 单场异常记录后继续其余场次，不崩溃整批；blocked/error 行照常落盘
       （status 非 complete），供汇总排除计数。
     """
@@ -1536,6 +1751,7 @@ async def run_match_experiment(
                         config=driver_config,
                         now_monotonic=now_monotonic,
                         wall_clock=wall_clock,
+                        value_limits=value_limits,
                     )
                 except Exception as error:
                     excluded.append(

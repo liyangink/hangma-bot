@@ -27,6 +27,7 @@ from hangma_bot.kernel.observation import PlayerObservation
 from . import action_families, settlement, special_rules
 from .catch_play import analyze_catch_play
 from .emergency import emergency_action
+from .progression_payload import ProgressionPayloadError
 from .observation_rules import enrich_observation
 from .interface import (
     ActionValidation,
@@ -120,7 +121,9 @@ class HangmaRules:
             candidates = self._filter_youcai(observation, context, candidates, issues)
             candidates = self._attach_facts(observation, context, candidates, issues)
             if value_limits is not None:
-                candidates = self._attach_value_facts(observation, context, candidates, value_limits)
+                candidates = self._attach_value_facts(
+                    observation, context, candidates, value_limits, issues
+                )
 
         candidates = _ensure_emergency_membership(candidates, emergency)
         if circle.active and circle.owner_seat is not None:
@@ -370,8 +373,14 @@ class HangmaRules:
     def _attach_value_facts(
         self, observation: PlayerObservation, context: WindowContext,
         candidates: Tuple[RuleCandidate, ...], limits: ValueAnalysisLimits,
+        issues: list,
     ) -> Tuple[RuleCandidate, ...]:
-        """有限分值分析独立故障边界；异常不使合法动作族退化或丢失紧急动作。"""
+        """有限分值分析与进展载荷的独立故障边界；异常不使合法动作族退化或丢失紧急动作。
+
+        两条口径（模块规范）：进展载荷（facts 家族进展）失败计入 issues
+        并显式 DEGRADED；可选分值分析自身失败只收敛到各候选
+        value_facts.issues，不降低 RuleAnalysis.completeness（契约行为）。
+        """
         try:
             from .value_analysis import attach_value_facts
 
@@ -379,6 +388,18 @@ class HangmaRules:
                 observation, context, _public_counts(observation),
                 len(observation.melds[observation.seat]), self.config, candidates, limits,
             )
+        except ProgressionPayloadError as exc:
+            issues.append(
+                RuleIssue(
+                    "progression_payload",
+                    "进展载荷异常: {0}: {1}".format(type(exc).__name__, exc),
+                )
+            )
+            failed = CandidateValueFacts(
+                coverage=ValueCoverage.UNAVAILABLE,
+                issues=(RuleIssue("progression_payload", str(exc)),),
+            )
+            return tuple(replace(candidate, value_facts=failed) for candidate in candidates)
         except Exception as exc:
             failed = CandidateValueFacts(
                 coverage=ValueCoverage.UNAVAILABLE,

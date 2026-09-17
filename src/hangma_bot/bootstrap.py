@@ -75,6 +75,7 @@ from hangma_bot.policy.hu_upgrade_calibration import (
 
 from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy
 from hangma_bot.policy.catch_play_probe import CatchPlayProbePolicy
+from hangma_bot.policy.action_value_policy import ActionValuePolicy
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
@@ -145,6 +146,13 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "safe_fallback": lambda: SafeFallbackPolicy(),
     "claim_if_legal": lambda: LegacyClaimIfLegalPolicy(),
     "catch_play_probe": lambda: CatchPlayProbePolicy(ComparableHeuristicPolicyV2()),
+    # action_value_v1 候选策略（B3 全链接入）：受限执行器装载种子评分器，
+    # 完整动作排序合同见 contracts/action-value-v1.json。可选注册——不设默认、
+    # 不进 sitin_stage.PANEL_POLICY_NAMES（冻结稳定面板白名单；候选臂注入是
+    # C1 的交付），真实赛事注册仍受 §14 T20 发布门禁约束。
+    "action_value:efficiency_seed": lambda: ActionValuePolicy.from_seed("efficiency_seed"),
+    "action_value:route_value_seed": lambda: ActionValuePolicy.from_seed("route_value_seed"),
+    "action_value:hu_first_reference": lambda: ActionValuePolicy.from_seed("hu_first_reference"),
 }
 
 # 序列策略网络候选：策略名 → 部署包子目录名。基线固定为完整 V2（与训练时的
@@ -173,6 +181,22 @@ SEQUENCE_MODEL_DIRNAME = "prebuilt/sequence-policy-models"
 _VALUE_ANALYSIS_STRATEGIES = (
     "v2_hu_upgrade_v1", "v2_balanced_shadow_v1",
 ) + tuple(_SEQUENCE_MODEL_STRATEGIES)
+
+# action_value_v1 策略名（B3）：ScoringView 依赖 B1 载荷（followup_branches/
+# family_progress/value_facts.routes），必须与序列网络策略同样启用 value_limits；
+# 但不进 _VALUE_ANALYSIS_STRATEGIES（后者同时绑定测试房规则范围校验）。
+_ACTION_VALUE_STRATEGY_NAMES = (
+    "action_value:efficiency_seed",
+    "action_value:route_value_seed",
+    "action_value:hu_first_reference",
+)
+
+
+def _value_limits_for(strategy: str) -> Optional[ValueAnalysisLimits]:
+    """按策略名决定是否启用条件分值分析；默认策略保持 None（旧行为零变化）。"""
+    if strategy in _VALUE_ANALYSIS_STRATEGIES or strategy in _ACTION_VALUE_STRATEGY_NAMES:
+        return ValueAnalysisLimits()
+    return None
 
 
 def _sequence_model_policy(config, monotonic: Callable[[], float] = time.monotonic) -> BotPolicy:
@@ -746,7 +770,7 @@ def build_runtime(
             known_guide_version=config.known_guide_version,
         ),
         rules_factory=(_test_room_upgrade_rules if config.strategy in _VALUE_ANALYSIS_STRATEGIES else HangmaRules),
-        value_limits=(ValueAnalysisLimits() if config.strategy in _VALUE_ANALYSIS_STRATEGIES else None),
+        value_limits=_value_limits_for(config.strategy),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,
@@ -904,7 +928,7 @@ def build_auto_match_runtime(
         ),
         settings=settings,
         rules_factory=HangmaRules,
-        value_limits=(ValueAnalysisLimits() if config.strategy in _VALUE_ANALYSIS_STRATEGIES else None),
+        value_limits=_value_limits_for(config.strategy),
         value_rules_scope=(RuleConfig(RISK_RULESET_VERSION, 1, False)
                            if config.strategy in _VALUE_ANALYSIS_STRATEGIES else None),
         clock=clock,

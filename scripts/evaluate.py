@@ -131,6 +131,14 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
         policy = SafeFallbackPolicy()
         policy.policy_id = declaration.policy_id
         return policy
+    if declaration.name.startswith("action_value:"):
+        # B3 可选注入：action_value:<seed> 经离线驱动工厂用受限执行器装载；
+        # 不改变默认装配，cmd_matches 会为这类声明启用统一 value_limits。
+        from hangma_bot.offline.evaluate import build_action_value_offline_policy
+
+        policy = build_action_value_offline_policy(declaration.name.split(":", 1)[1])
+        policy.policy_id = declaration.policy_id
+        return policy
     if declaration.name in ("weighted_heuristic_v1", "weighted_heuristic_v2", "weighted_heuristic_v2_white_guard"):
         # 与 V0 使用同一实验时钟；逻辑预算不能与主机单调时钟比较。
         weights = HeuristicWeightsV1(**dict(declaration.weights))
@@ -150,9 +158,23 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
     raise ValueError(
         "未知策略名 {0!r}；本脚本只装配 weighted_heuristic / safe_fallback / "
         "weighted_heuristic_v1 / weighted_heuristic_v2 / weighted_heuristic_v2_white_guard，"
+        "action_value:<seed>（B3 可选注入），"
         "以及 policy.heuristics 已注册的候选：{1}".format(
             declaration.name, ", ".join(heuristics.candidate_names()))
     )
+
+
+def _value_limits_for_declarations(declarations) -> Optional[object]:
+    """声明含 action_value 策略时返回统一分析配置；默认 None（旧行为零变化）。
+
+    action_value 策略依赖 B1 载荷（followup_branches/family_progress/routes），
+    与线上组合根同口径启用 ValueAnalysisLimits；其它策略保持 None。
+    """
+    from hangma_bot.hangma.interface import ValueAnalysisLimits
+
+    if any(str(item.name).startswith("action_value:") for item in declarations):
+        return ValueAnalysisLimits()
+    return None
 
 
 def _clock_callables(clock_mode: str) -> Tuple[Callable[[], float], Optional[Callable[[], float]]]:
@@ -646,6 +668,9 @@ def cmd_matches(args: argparse.Namespace) -> int:
             policies_by_id[declaration.policy_id] = build_policy(declaration, now_monotonic)
 
     rules = HangmaRules(experiment.tournament_config.rules)
+    declarations_all = (
+        (experiment.baseline, experiment.challenger) + experiment.opponents
+    )
     outcome = asyncio.run(
         run_match_experiment(
             experiment,
@@ -658,6 +683,8 @@ def cmd_matches(args: argparse.Namespace) -> int:
             now_monotonic=now_monotonic,
             wall_clock=wall_clock,
             budget_policy=BudgetPolicy(),
+            # T08 统一分析配置：action_value 声明启用，其余默认 None（零变化）。
+            value_limits=_value_limits_for_declarations(declarations_all),
         )
     )
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -676,9 +703,7 @@ def cmd_matches(args: argparse.Namespace) -> int:
             {"heading": "运行排除明细", "paragraphs": list(outcome.excluded)}
         )
     write_report_files(out_dir, report)
-    declarations = (
-        (experiment.baseline, experiment.challenger) + experiment.opponents
-    )
+    declarations = declarations_all
     scoring_source = _scoring_source_snapshot(_candidate_names_in(declarations))
     worktree = _worktree_snapshot()
     worktree["code_snapshot"] = _write_code_snapshot(out_dir, scoring_source)

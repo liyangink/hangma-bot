@@ -117,6 +117,7 @@ def test_conditional_pass_matches_every_current_official_fan_input(row):
 
 
 def test_default_behavior_and_emergency_do_not_request_value_analysis():
+    """默认不产分值事实；编解码升级后载荷参与相等性——比较前剥离载荷字段。"""
     obs = _observation("1w 2w 3w 4w 5w 6w 7w 8w 9w 1b 2b 3b 4t", "4t")
     rules = _rules()
     baseline = rules.analyze(obs)
@@ -126,7 +127,14 @@ def test_default_behavior_and_emergency_do_not_request_value_analysis():
     assert enriched.emergency_candidate.value_facts is None
     assert enriched.completeness == baseline.completeness
     assert enriched.issues == baseline.issues
-    assert tuple(replace(candidate, value_facts=None) for candidate in enriched.legal_candidates) == baseline.legal_candidates
+
+    def _strip_value(candidate):
+        facts = candidate.facts
+        if facts is not None:
+            facts = replace(facts, followup_branches=None, family_progress=())
+        return replace(candidate, value_facts=None, facts=facts)
+
+    assert tuple(_strip_value(candidate) for candidate in enriched.legal_candidates) == baseline.legal_candidates
     assert _by_key(enriched)["hu"].value_facts.immediate_settlement == rules.score(WinDescription(obs, obs.seat))
 
 
@@ -286,7 +294,15 @@ def test_candidate_exception_does_not_change_legality_or_other_candidates():
     assert by_key["discard:6w"].value_facts.coverage is ValueCoverage.UNAVAILABLE
     assert by_key["discard:5w"].value_facts.coverage is ValueCoverage.COMPLETE
     assert by_key["discard:5w"].value_facts.routes
-    assert tuple(replace(candidate, value_facts=None) for candidate in result.legal_candidates) == baseline.legal_candidates
+
+    def _strip_value(candidate):
+        # 编解码升级后载荷参与相等性：载荷随 value 分析开启而不同，比较前剥离。
+        facts = candidate.facts
+        if facts is not None:
+            facts = replace(facts, followup_branches=None, family_progress=())
+        return replace(candidate, value_facts=None, facts=facts)
+
+    assert tuple(_strip_value(candidate) for candidate in result.legal_candidates) == baseline.legal_candidates
 
 
 @pytest.mark.parametrize("wall", [0, 19, 20])

@@ -34,6 +34,11 @@ from hangma_bot.hangma.interface import (
     CandidateFactKind,
     CandidateFacts,
     CandidateValueFacts,
+    FamilyId,
+    FamilyProgress,
+    FollowupBranchFacts,
+    ProgressKind,
+    RouteStatus,
     RuleAnalysis,
     RuleCandidate,
     RuleCompleteness,
@@ -184,6 +189,35 @@ def candidate_facts_to_json(facts: CandidateFacts) -> dict[str, object]:
             ]
     if facts.pattern_progress_note is not None:
         payload["pattern_progress_note"] = facts.pattern_progress_note
+    # B3 编解码升级（B1 分支进展载荷）：沿用 pattern_progress_v2 兼容先例——
+    # 新键仅在非默认（非 None/非空）时写入，旧 JSON 缺键还原 None/()；
+    # 字段名与 dataclass 一致（snake_case），枚举写 .value 字符串。
+    if facts.followup_branches is not None:
+        payload["followup_branches"] = [
+            {
+                "followup_key": branch.followup_key,
+                "followup_discard": branch.followup_discard,
+                "combined_shanten": branch.combined_shanten,
+                "standard_shanten_after": branch.standard_shanten_after,
+                "seven_pairs_shanten_after": branch.seven_pairs_shanten_after,
+                "useful_tiles": [
+                    {"code": item.code, "remaining_estimate": item.remaining_estimate}
+                    for item in branch.useful_tiles
+                ],
+                "support_remaining": branch.support_remaining,
+            }
+            for branch in facts.followup_branches
+        ]
+    if facts.family_progress:
+        payload["family_progress"] = [
+            {
+                "family": entry.family.value,
+                "progress": entry.progress.value,
+                "route_status": entry.route_status.value,
+                "basis": entry.basis,
+            }
+            for entry in facts.family_progress
+        ]
     return payload
 
 
@@ -200,6 +234,62 @@ def _optional_pattern_tiles_from_json(value: object, key: str) -> Tuple[UsefulTi
             remaining_estimate=_as_int(
                 _get(entry, "remaining_estimate", type_name), type_name, "remaining_estimate"
             ),
+        ))
+    return tuple(result)
+
+
+def _branch_facts_from_json(value: object) -> Tuple[FollowupBranchFacts, ...] | None:
+    """还原吃/碰分支载荷；旧 JSON 缺键时由调用方保持 None（未分析口径）。"""
+    if value is None:
+        return None
+    type_name = "candidate_facts"
+    result = []
+    for item in _as_list(value, type_name, "followup_branches"):
+        entry = _require_mapping(item, type_name + ".followup_branches 元素")
+        useful = _optional_pattern_tiles_from_json(
+            _get(entry, "useful_tiles", type_name), "useful_tiles"
+        )
+        result.append(FollowupBranchFacts(
+            followup_key=_as_str(
+                _get(entry, "followup_key", type_name), type_name, "followup_key"
+            ),
+            followup_discard=_as_str(
+                _get(entry, "followup_discard", type_name), type_name, "followup_discard"
+            ),
+            combined_shanten=_as_optional_int(
+                entry.get("combined_shanten"), type_name, "combined_shanten"
+            ),
+            standard_shanten_after=_as_optional_int(
+                entry.get("standard_shanten_after"), type_name, "standard_shanten_after"
+            ),
+            seven_pairs_shanten_after=_as_optional_int(
+                entry.get("seven_pairs_shanten_after"), type_name, "seven_pairs_shanten_after"
+            ),
+            useful_tiles=() if useful is None else useful,
+            support_remaining=_as_optional_int(
+                entry.get("support_remaining"), type_name, "support_remaining"
+            ),
+        ))
+    return tuple(result)
+
+
+def _family_progress_from_json(value: object) -> Tuple[FamilyProgress, ...] | None:
+    """还原家族进展载荷；旧 JSON 缺键时由调用方还原空元组（未分析）。"""
+    if value is None:
+        return None
+    type_name = "candidate_facts"
+    result = []
+    for item in _as_list(value, type_name, "family_progress"):
+        entry = _require_mapping(item, type_name + ".family_progress 元素")
+        result.append(FamilyProgress(
+            family=FamilyId(_as_str(_get(entry, "family", type_name), type_name, "family")),
+            progress=ProgressKind(
+                _as_str(_get(entry, "progress", type_name), type_name, "progress")
+            ),
+            route_status=RouteStatus(
+                _as_str(_get(entry, "route_status", type_name), type_name, "route_status")
+            ),
+            basis=_as_str(_get(entry, "basis", type_name), type_name, "basis"),
         ))
     return tuple(result)
 
@@ -267,6 +357,10 @@ def candidate_facts_from_json(payload: object) -> CandidateFacts:
         pattern_progress_note=_as_optional_str(
             data.get("pattern_progress_note"), type_name, "pattern_progress_note"
         ),
+        # B3 编解码升级：旧 JSON 缺键还原 None/()；语义校验（吃/碰适用口径、
+        # 家族不重复、分支键形状）交给 CandidateFacts 构造函数完成。
+        followup_branches=_branch_facts_from_json(data.get("followup_branches")),
+        family_progress=(_family_progress_from_json(data.get("family_progress")) or ()),
     )
 
 

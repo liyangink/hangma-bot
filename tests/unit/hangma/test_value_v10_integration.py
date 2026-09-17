@@ -38,7 +38,15 @@ def test_unknown_public_overlap_only_disables_routes_that_need_its_tiles():
     assert values["discard:1w"].issues[0].area == "value_analysis.missing_evidence"
     plain = rules.analyze(obs)
     enriched = rules.analyze(obs, value_limits=ValueAnalysisLimits(max_expansions=16384))
-    assert tuple(replace(c, value_facts=None) for c in enriched.legal_candidates) == plain.legal_candidates
+
+    def _strip_value(candidate):
+        # 编解码升级后载荷参与相等性：载荷随 value 分析开启而不同，比较前剥离。
+        facts = candidate.facts
+        if facts is not None:
+            facts = replace(facts, followup_branches=None, family_progress=())
+        return replace(candidate, value_facts=None, facts=facts)
+
+    assert tuple(_strip_value(c) for c in enriched.legal_candidates) == plain.legal_candidates
 
 
 @pytest.mark.parametrize("claim", ["peng", "chi"])

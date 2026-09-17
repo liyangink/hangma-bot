@@ -26,7 +26,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Dict, List, Optional, Tuple
 
 from hangma_bot.kernel.actions import Chi, Discard, Gang, GangKind, Hu, Pass, Peng, Tile
@@ -35,6 +35,7 @@ from . import hand_analysis
 from .interface import (
     CandidateFactKind,
     CandidateFacts,
+    FollowupBranchFacts,
     RuleCandidate,
     RuleCompleteness,
     RuleIssue,
@@ -214,13 +215,34 @@ def _claim_basis(action, context: WindowContext, meld_blocks: int) -> _WaitingBa
     )
 
 
-def _best_followup(
+def _branch_useful(
+    summary, hand_after: Tuple[Tile, ...], public_counts: PublicCounts34,
+    newly_hidden: Dict[str, int],
+) -> Tuple[Tuple[UsefulTileFact, ...], Optional[int]]:
+    """分支一步推进有效牌及其牌码去重计数和；计数未知返回 ((), None)。
+
+    hand_analysis 的有效牌按牌码去重，求和即去重和；任一牌种公开重叠缺
+    证据时整分支计数未知——useful_tiles 为空、support_remaining=None，
+    不得写 0 冒充（v4 §7.3 谓词的 support_remaining 口径）。
+    """
+
+    try:
+        useful = _useful_facts(summary, hand_after, public_counts, newly_hidden)
+    except FactsAnalysisError:
+        return (), None
+    return useful, sum(item.remaining_estimate for item in useful)
+
+
+def _followup_branches(
     basis: _WaitingBasis, public_counts: PublicCounts34, action_key: str
-) -> Tuple[CandidateFacts, str]:
-    """枚举全部合法后续弃牌，选最佳等待状态并组装事实。
+) -> Tuple[CandidateFacts, str, Tuple[FollowupBranchFacts, ...]]:
+    """枚举全部合法后续弃牌：逐分支记录机械事实，并选最佳等待状态。
 
     选择键 (向听, -剩余张数估计和, 规范牌序下标) 完全确定；后续弃牌进入
-    本人牌河，计入 newly_hidden。
+    本人牌河，计入 newly_hidden。计数未知的分支不参与冒充：排序权重按 -1
+    处理（同向听下排在任何已知非负计数之后），仍保留为独立分支记录；
+    仅最佳分支的事实生产维持原口径（其计数未知时整个候选照旧
+    ANALYSIS_FAILED，不降级伪造数值）。
     """
 
     distinct = sorted({tile.code for tile in basis.hand_after}, key=TILE_INDEX.get)
@@ -228,7 +250,8 @@ def _best_followup(
         raise FactsAnalysisError(
             "候选 {key} 鸣牌后手牌为空，无法估计后续弃牌".format(key=action_key)
         )
-    best: Optional[Tuple[Tuple[int, int, int], CandidateFacts, str]] = None
+    best: Optional[Tuple[Tuple[int, int, int], str]] = None
+    branches: List[FollowupBranchFacts] = []
     for code in distinct:
         after = tuple(
             Tile(c) for c in _remove_codes(
@@ -238,26 +261,39 @@ def _best_followup(
         newly_hidden = dict(basis.newly_hidden)
         newly_hidden[code] = newly_hidden.get(code, 0) + 1
         summary = hand_analysis.analyse_hand(after, basis.melds)
-        weight = sum(
-            _remaining(u.code, counts_from_tiles(after), public_counts, newly_hidden)
-            for u in summary.useful_tiles
-        )
+        useful, support = _branch_useful(summary, after, public_counts, newly_hidden)
+        weight = support if support is not None else -1
         order_key = (summary.shanten, -weight, TILE_INDEX[code])
-        facts = _waiting_facts(
-            after,
-            basis.melds,
-            public_counts,
-            newly_hidden,
-            followup=code,
-            replacement_unknown=False,
+        branches.append(
+            FollowupBranchFacts(
+                followup_key="{0}#{1}".format(action_key, code),
+                followup_discard=code,
+                combined_shanten=summary.shanten,
+                standard_shanten_after=summary.standard_shanten,
+                seven_pairs_shanten_after=summary.chiitoi_shanten,
+                useful_tiles=useful,
+                support_remaining=support,
+            )
         )
         if best is None or order_key < best[0]:
-            best = (order_key, facts, code)
+            best = (order_key, code)
     if best is None:
         raise FactsAnalysisError(
             "候选 {key} 无任何合法后续弃牌".format(key=action_key)
         )
-    return best[1], best[2]
+    facts = _waiting_facts(
+        tuple(
+            Tile(c) for c in _remove_codes(
+                tuple(t.code for t in basis.hand_after), {best[1]: 1}
+            )
+        ),
+        basis.melds,
+        public_counts,
+        dict(basis.newly_hidden, **{best[1]: basis.newly_hidden.get(best[1], 0) + 1}),
+        followup=best[1],
+        replacement_unknown=False,
+    )
+    return facts, best[1], tuple(branches)
 
 
 def _gang_basis(action: Gang, context: WindowContext, meld_blocks: int) -> _WaitingBasis:
@@ -337,8 +373,12 @@ def _facts_for_candidate(
         )
     if isinstance(action, (Peng, Chi)):
         basis = _claim_basis(action, context, meld_blocks)
-        facts, _followup = _best_followup(basis, public_counts, candidate.action_key)
-        return facts
+        facts, _followup, branches = _followup_branches(
+            basis, public_counts, candidate.action_key
+        )
+        # v4 §3.1：全部已分析合法弃牌分支随事实保留，不预合并成最佳分支；
+        # best_followup_discard 语义不变（=其中牌效最佳分支的弃牌）。
+        return replace(facts, followup_branches=branches)
     if isinstance(action, Gang):
         basis = _gang_basis(action, context, meld_blocks)
         return _waiting_facts(

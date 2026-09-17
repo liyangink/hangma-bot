@@ -19,7 +19,7 @@ from hangma_bot.kernel.actions import Chi, Discard, Gang, Hu, Pass, Peng, Tile
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.observation import PlayerObservation
 
-from . import hand_analysis, progression, settlement, special_rules
+from . import hand_analysis, progression, progression_payload, settlement, special_rules
 from .action_families import WALL_RESERVE_TILES
 from .candidate_facts import (
     FactsAnalysisError,
@@ -331,17 +331,71 @@ def attach_value_facts(
     meld_count: int, config: RuleConfig, candidates: Tuple[RuleCandidate, ...],
     limits: ValueAnalysisLimits,
 ) -> Tuple[RuleCandidate, ...]:
-    """附加有界分值事实；保持动作、动作键、证据和既有牌效事实不变。
+    """附加有界分值事实与分支进展载荷；保持动作、动作键、证据不变。
 
     输入必须是同一观察生成的候选及已归一化上下文；全请求共享固定预算。
     各候选分别隔离异常，缺失证据与截断原因保存在 value_facts.issues。
+    进展载荷（family_progress）与分值分析共享同一预算：动作前状态一次
+    手牌分析计 1 节点、每候选载荷计 1 节点，超限降级为 UNKNOWN 条目并
+    追加 progression_payload.limit RuleIssue，不截断冒充完整；载荷异常
+    向上传播，由 engine 故障边界收敛（合法候选与紧急动作保留）。
     本函数无外部副作用，故障不影响规则合法性或独立紧急动作。
     """
     budget = _ExpansionBudget(limits.max_expansions)
-    return tuple(
-        replace(candidate, value_facts=_for_candidate(
+    payload_state = None
+    payload_state_error = None
+    attached = []
+    for candidate in candidates:
+        value_facts = _for_candidate(
             observation, context, public_counts, meld_count, config,
             candidate, limits, budget,
-        ))
-        for candidate in candidates
-    )
+        )
+        # ---- 分支进展载荷（v4 §7.3）：先建一次共享的动作前状态 ----
+        # 意外异常包装为 ProgressionPayloadError：engine 对载荷失败单独记
+        # RuleIssue（DEGRADED）；可选分值分析自身的失败口径保持不变。
+        if payload_state is None and payload_state_error is None:
+            try:
+                budget.consume()
+                payload_state = progression_payload.BeforeState(
+                    observation, context, meld_count
+                )
+            except _LimitReached as exc:
+                payload_state_error = str(exc)
+            except Exception as exc:
+                raise progression_payload.ProgressionPayloadError(
+                    "动作前状态构建失败: {0}: {1}".format(type(exc).__name__, exc)
+                ) from exc
+        if payload_state is not None:
+            try:
+                budget.consume()
+            except _LimitReached as exc:
+                value_facts, facts = progression_payload.attach_unknown_payload(
+                    candidate, value_facts, str(exc)
+                )
+            else:
+                try:
+                    value_facts, facts = progression_payload.attach_payload(
+                        payload_state, candidate, value_facts
+                    )
+                except _LimitReached as exc:
+                    value_facts, facts = progression_payload.attach_unknown_payload(
+                        candidate, value_facts, str(exc)
+                    )
+                except Exception as exc:
+                    raise progression_payload.ProgressionPayloadError(
+                        "候选 {key} 进展计算失败: {t}: {m}".format(
+                            key=candidate.action_key, t=type(exc).__name__, m=exc
+                        )
+                    ) from exc
+        else:
+            value_facts, facts = progression_payload.attach_unknown_payload(
+                candidate, value_facts,
+                payload_state_error or "动作前状态未建立（预算超限）",
+            )
+        if facts is candidate.facts:
+            attached.append(replace(candidate, value_facts=value_facts))
+        else:
+            attached.append(
+                replace(candidate, value_facts=value_facts, facts=facts)
+            )
+    return tuple(attached)
