@@ -7,6 +7,9 @@ contracts/action-value-v1.json（rank/降级/不拼 V2）。choose 对外签名�
 
 from __future__ import annotations
 
+import json
+from dataclasses import replace
+from pathlib import Path
 from typing import Optional
 
 import pytest
@@ -32,13 +35,17 @@ from hangma_bot.hangma.interface import (
 from hangma_bot.kernel.actions import Discard, Hu, Pass, Tile
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.observation import (
+    CompetitionContext,
     PlayerObservation,
     PublicDiscard,
+    RankingEntry,
     RulePublicState,
 )
 from hangma_bot.policy.action_value import ActionScore, ScoreBatch
 from hangma_bot.policy.action_value_executor import WorkloadExceeded
 from hangma_bot.policy.action_value_policy import (
+    COMPETITION_MASK_BASES,
+    COMPETITION_MASK_VALUES,
     VALUE_ANALYSIS_SEMANTICS_VERSION,
     ActionValuePolicy,
     build_scoring_view,
@@ -182,10 +189,16 @@ class TestBuildScoringView:
         assert view.analysis_profile.ruleset_version == request.rules.ruleset_version
         assert view.analysis_profile.max_expansions == 2048
         assert view.analysis_profile.max_routes_per_candidate == 128
+        # P11：缺省夹具的 ranking 为空（无阶段账事实）→ 阶段基准未知；但桌内
+        # 基准是已知事实，不得报成未知（旧断言「competition 三个字段恒 None」
+        # 正是本包修复的缺陷本身，见 FIX-REPORT §1）。
         assert view.competition is not None
         assert view.competition.stage_scores is None
-        assert view.competition.table_scores is None
-        assert view.competition.freshness_masks is None
+        assert view.competition.stage_scores != (0, 0, 0, 0)
+        assert view.competition.table_scores == tuple(request.observation.scores)
+        assert view.competition.freshness_masks == (
+            "stage_account:absent", "table_account:live",
+        )
         assert view.reference_features == ()
 
     @pytest.mark.parametrize(
@@ -213,6 +226,190 @@ class TestBuildScoringView:
         ))
         view = build_scoring_view(request)
         assert view.actions[0].family_progress == expected
+
+
+# ---------------------------------------------------------------------------
+# P11：阶段账 → CompetitionView 投影契约（身份映射 / 单位 / 顺序 / 可空 / 未知≠零）
+#
+# R6 冻结版 _competition_view() 恒返回空 CompetitionView；本组用例固定投影契约：
+#   - 座位向量语义 = 物理座位 0—3（与本桌观察同序）；
+#   - 阶段账只承认「桌内座位序账」（ranking[i] = 坐在物理座位 i 的身份的
+#     已完成桌账；由 offline StageSituationProjection.competition_context 逐位
+#     构造，位置 i 与 participant_ids_by_seat[i] 一一对应）；
+#   - 我方身份的锚点是 CompetitionContext.participant_rank（我方名次，按座位
+#     发布）：ranking[我方座位].rank must == participant_rank；
+#   - 任何不满足的必要条件一律投影 None（未知），绝不补零、绝不默认无账。
+# ---------------------------------------------------------------------------
+
+
+def _entry(participant_id, *, total, places, rank, god=0, games=0):
+    """构造一条排名条目（单位：积分点 / 名次分；rank 从 1 起）。"""
+    return RankingEntry(
+        participant_id=participant_id, total_score=total, place_points=places,
+        god_count=god, games_played=games, rank=rank,
+    )
+
+
+def _context(*, ranking, participant_rank, seat_tournament="p11-t", **overrides):
+    base = dict(
+        tournament_id=seat_tournament, stage_no=2, stage_role="qualify",
+        stage_total=2, participant_rank=participant_rank, ranking=tuple(ranking),
+        observed_at_unix_ms=0,
+    )
+    base.update(overrides)
+    return CompetitionContext(**base)
+
+
+def _seat_ordered_account(*, totals=(40, 90, -20, 10), places=(1, 3, -3, -1),
+                          ids=("focal", "opp-1", "opp-2", "opp-3"), games=8,
+                          ranks=(2, 1, 4, 3), participant_rank=None):
+    """标准桌内座位序账：四条同 games_played、名次与已知键一致。
+
+    participant_rank 缺省按「请求方坐在 0 号位」（make_observation 默认座位）
+    取 0 号位条目的名次；换座位请求时由调用方按座位传入。
+    """
+    return _context(
+        ranking=tuple(
+            _entry(pid, total=total, places=place, rank=rank, games=games)
+            for pid, total, place, rank in zip(ids, totals, places, ranks)
+        ),
+        participant_rank=ranks[0] if participant_rank is None else participant_rank,
+    )
+
+
+class TestCompetitionViewProjection:
+    """投影器：CompetitionContext → CompetitionView 的座位序与可空语义。"""
+
+    def _view_for(self, context, *, observation=None):
+        observation = observation if observation is not None else make_observation()
+        request = make_request(observation, make_rules(()))
+        return build_scoring_view(replace(request, competition=context))
+
+    def test_seat_ordered_account_projects_both_bases(self):
+        view = self._view_for(_seat_ordered_account())
+        assert view.competition.stage_scores == (40, 90, -20, 10)
+        assert view.competition.table_scores == tuple(view.visible_state.scores)
+        assert view.competition.freshness_masks == (
+            "stage_account:complete", "table_account:live",
+        )
+        # 受限候选可见通道携带同一份事实（原始值）。
+        mapped = view.candidate_view()["competition"]
+        assert mapped["stage_scores"] == (40, 90, -20, 10)
+        assert mapped["table_scores"] == tuple(view.visible_state.scores)
+
+    def test_seat_vector_follows_own_seat_not_rank_order(self):
+        """座位序账不是名次序：1 号位的 90 分必须落在下标 1，哪怕它是第 1 名。"""
+        totals = (40, 90, -20, 10)
+        ranks = (2, 1, 4, 3)
+        for seat in range(4):
+            observation = make_observation(seat=seat)
+            # 我方名次按座位发布：请求座位不同，锚点名次随之不同（同一份账）。
+            view = self._view_for(
+                _seat_ordered_account(totals=totals, participant_rank=ranks[seat]),
+                observation=observation,
+            )
+            assert view.competition.stage_scores == totals
+            assert view.competition.stage_scores[seat] == totals[seat]
+
+    def test_absent_account_projects_unknown_not_zero(self):
+        empty = _context(ranking=(), participant_rank=None, stage_no=None,
+                         stage_role=None, stage_total=None)
+        view = self._view_for(empty)
+        assert view.competition.stage_scores is None
+        assert view.competition.stage_scores != (0, 0, 0, 0)
+        assert view.competition.freshness_masks == (
+            "stage_account:absent", "table_account:live",
+        )
+        # 阶段基准缺失不得用桌内基准顶替（合同 baseline-uniqueness）。
+        assert view.competition.table_scores == tuple(view.visible_state.scores)
+
+    @pytest.mark.parametrize(
+        "name,context_factory",
+        [
+            ("阶段级榜单（5 条，非本桌四座）",
+             lambda: _context(
+                 ranking=[_entry("p{0}".format(i), total=i, places=0, rank=i + 1)
+                          for i in range(5)],
+                 participant_rank=1)),
+            ("身份重复（一席一身份被破坏）",
+             lambda: _seat_ordered_account(ids=("focal", "focal", "opp-2", "opp-3"))),
+            ("我方名次与座位不一致（ranking[seat].rank != participant_rank）",
+             lambda: _context(
+                 ranking=(
+                     _entry("a", total=40, places=1, rank=2, games=8),
+                     _entry("b", total=90, places=3, rank=1, games=8),
+                     _entry("c", total=-20, places=-3, rank=4, games=8),
+                     _entry("d", total=10, places=-1, rank=3, games=8),
+                 ),
+                 participant_rank=3)),  # 我方坐在 0 号位，但 0 号位条目名次是 2
+            ("已完成局数不一致（不是同一批已完成桌）",
+             lambda: _context(
+                 ranking=(
+                     _entry("a", total=40, places=1, rank=2, games=8),
+                     _entry("b", total=90, places=3, rank=1, games=8),
+                     _entry("c", total=-20, places=-3, rank=4, games=4),
+                     _entry("d", total=10, places=-1, rank=3, games=8),
+                 ),
+                 participant_rank=2)),
+            ("名次与已知键矛盾（更低分却名次更高）",
+             lambda: _context(
+                 ranking=(
+                     _entry("a", total=40, places=1, rank=1, games=8),
+                     _entry("b", total=90, places=3, rank=4, games=8),
+                     _entry("c", total=-20, places=-3, rank=3, games=8),
+                     _entry("d", total=10, places=-1, rank=2, games=8),
+                 ),
+                 participant_rank=1)),
+            ("我方名次缺失（无法锚定身份）",
+             lambda: _context(
+                 ranking=(
+                     _entry("a", total=40, places=1, rank=2, games=8),
+                     _entry("b", total=90, places=3, rank=1, games=8),
+                     _entry("c", total=-20, places=-3, rank=4, games=8),
+                     _entry("d", total=10, places=-1, rank=3, games=8),
+                 ),
+                 participant_rank=None)),
+        ],
+    )
+    def test_unmappable_shapes_project_unknown(self, name, context_factory):
+        view = self._view_for(context_factory())
+        assert view.competition.stage_scores is None, name
+        assert view.competition.freshness_masks == (
+            "stage_account:unmappable", "table_account:live",
+        ), name
+        # 未知不得被桌内基准顶替或补零。
+        assert view.competition.table_scores == tuple(view.visible_state.scores)
+
+    def test_masks_are_positionally_aligned_with_bases(self):
+        for context in (_seat_ordered_account(),
+                        _context(ranking=(), participant_rank=None)):
+            view = self._view_for(context)
+            masks = view.competition.freshness_masks
+            assert masks is not None and len(masks) == 2
+            assert masks[0].startswith("stage_account:")
+            assert masks[1] == "table_account:live"
+            assert (view.competition.stage_scores is None) == (
+                masks[0] != "stage_account:complete")
+
+    def test_projection_is_deterministic_and_input_independent(self):
+        context = _seat_ordered_account()
+        first = self._view_for(context)
+        second = self._view_for(_seat_ordered_account())
+        assert first.competition == second.competition
+        assert context.ranking[0].total_score == 40  # 投影不改写输入
+
+    def test_stage_account_vocabulary_matches_machine_contract(self):
+        """掩码词表以代码常量为准，机器合同逐字一致（合同节 competition_bases）。"""
+        path = (
+            Path(__file__).resolve().parents[3]
+            / "review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json"
+        )
+        contract = json.loads(path.read_text(encoding="utf-8"))
+        block = contract["scoring_view"].get("competition_bases")
+        assert block is not None, "机器合同缺少 scoring_view.competition_bases 节"
+        declared = tuple(block["freshness_masks"]["values"])
+        assert declared == COMPETITION_MASK_VALUES
+        assert tuple(block["freshness_masks"]["order"]) == COMPETITION_MASK_BASES
 
 
 def _peng_observation():

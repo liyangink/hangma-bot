@@ -26,7 +26,10 @@ from hangma_bot.policy.action_value_policy import (
     ActionValuePolicy,
     build_scoring_view,
 )
-from hangma_bot.policy.action_value_seeds import build_action_value_policy
+from hangma_bot.policy.action_value_seeds import (
+    ActionValueScorer,
+    build_action_value_policy,
+)
 from .support import make_budget, make_request, run_choose
 
 RULES_CONFIG = RuleConfig("r2-projection", 1, False)
@@ -353,3 +356,351 @@ def _rules_with(candidates):
     from .support import make_rules
 
     return make_rules(candidates)
+
+# ---------------------------------------------------------------------------
+# P11/M1：阶段账投影到候选可见的 ScoringView.competition（视图层闭环）
+#
+# 缺陷（R6 冻结版）：_competition_view() 恒返回空 CompetitionView —— 面板侧
+# （P2）已按「身份→物理座位」注入已完成桌阶段账到 DecisionRequest.competition，
+# 但候选式评分器读到的 stage_scores/table_scores/freshness_masks 全是 None，
+# 门线/追分逻辑只能退回桌内积分。本组用例把 P2 的第 2 桌实验搬到视图层：
+# 同一观察下领先/落后首桌账必须产生可见差异并改变选择；四换座不串位；
+# 缺账投影为未知（不是全 0）。
+# ---------------------------------------------------------------------------
+
+from dataclasses import replace  # noqa: E402
+
+from hangma_bot.offline.evaluate import StageSituationProjection  # noqa: E402
+
+#: P11 夹具手牌：真实引擎载荷中「牌效档最优」与「追分档（有效牌宽度）最优」是
+#: 两个不同弃牌，且两档各自都是**唯一严格最优**（排除同分靠 action_key 决胜的
+#: 假翻转）。由 evidence/v4-impl/r7-fixes/P11-scoringview-stage-account/
+#: probe_pressure_fixture.py 在 3000 个随机 14 张手里按**策略实际排序规则**
+#: （分数降序、同分 action_key 升序）筛出，命中 1 例：
+#:   牌效档（领先）= discard:3t 22.50（领先第二名 1.50）
+#:   追分档（落后）= discard:3w 宽度 66.00（领先第二名 3.00）
+#:   交叉核验：3w 的牌效分 21.00 < 22.50；3t 的宽度 63.00 < 66.00
+P11_HAND = "2b 1b 3t 2w 7w 1w 8t 9w 3w 4w 7b 9b 6t"
+P11_DRAW = "5w"
+#: 焦点物理座位（第 2 桌换座后 focal 坐在 1 号位；与 P2 面板侧实测同形）。
+P11_SEAT = 1
+#: 第 2 桌桌内积分：两版注入下逐位相同，用来证明变化只来自阶段账。
+P11_TABLE_SCORES = (2, -2, 4, 0)
+P11_TOURNAMENT = "p11-stage-account"
+
+#: 阶段账（按身份累计；P2 面板侧 totals/place_totals 口径）。
+P11_IDENTITIES = ("focal", "opp-1", "opp-2", "opp-3")
+P11_ACCOUNT_SCORES = {"focal": 40, "opp-1": 90, "opp-2": -20, "opp-3": 10}
+P11_ACCOUNT_PLACES = {"focal": 1, "opp-1": 3, "opp-2": -3, "opp-3": -1}
+P11_ROTATIONS = ((0, 1, 2, 3), (1, 2, 3, 0), (2, 3, 0, 1), (3, 0, 1, 2))
+
+#: 领先版：焦点座位（1 号位）阶段积分最高；落后版：同一座位阶段积分垫底。
+#: 两版都由 P2 的 StageSituationProjection 生成（身份→物理座位同一口径）。
+P11_LEADING_BY_SEAT = (40, 90, -20, 10)
+P11_TRAILING_BY_SEAT = (90, -20, 40, 10)
+
+
+def _p11_observation(*, seat=P11_SEAT):
+    """第 2 桌真实观察：13 张手牌 + 摸牌，桌内积分非零（与阶段账互不混入）。"""
+    tiles = tuple(Tile(code) for code in P11_HAND.split())
+    return PlayerObservation(
+        game_id="p11-stage-account", seat=seat, round_no=5, snapshot_seq=64,
+        phase="draw", dealer_seat=0, turn_seat=seat, responding_seats=(),
+        my_hand=tiles, drawn_tile=Tile(P11_DRAW),
+        discards=((), (), (), ()), melds=((), (), (), ()),
+        hand_counts=tuple(14 if index == seat else 13 for index in range(4)),
+        last_discard=None, remaining_tile_count=52, scores=P11_TABLE_SCORES,
+        rule_state=RulePublicState(Tile("白"), False, 0, False), public_history=(),
+    )
+
+
+def _p11_request(*, seat=P11_SEAT, stage_scores_by_seat, stage_places_by_seat,
+                 participant_ids_by_seat=P11_IDENTITIES):
+    """同一观察 + 指定阶段账注入 → DecisionRequest（观察与桌内账逐位相同）。"""
+    observation = _p11_observation(seat=seat)
+    situation = StageSituationProjection(
+        stage_table_no=2, tables_in_stage=2, stage_role="qualify",
+        tables_completed=1, rounds_per_game=8,
+        stage_scores_by_seat=tuple(stage_scores_by_seat),
+        place_points_by_seat=tuple(stage_places_by_seat),
+        participant_ids_by_seat=tuple(participant_ids_by_seat),
+    )
+    request = _request_for(observation, ValueAnalysisLimits())
+    return replace(
+        request, competition=situation.competition_context(P11_TOURNAMENT, seat)
+    )
+
+
+#: 候选式评分器（受限子集源码，经 ActionValueExecutor 装载）：按可见阶段门线
+#: 势差切档——Φ_in = s[座位] − 升序下标 2（第 2 名分数，晋级区末位门线）；
+#: Φ_in ≥ 0 走高牌效档（向听优先），Φ_in < 0 走追分档（有效牌宽度优先）。
+#: 阶段账缺失/不可映射时**保持守成档**并把缺项写进 trace（未知不得当 0）。
+P11_PRESSURE_CANDIDATE_SOURCE = '''"""p11_stage_pressure_probe：按可见阶段门线势差在「牌效档」与「追分档」间切换。"""
+
+SHANTEN_WEIGHT = 3.0
+SUPPORT_WEIGHT = 0.5
+ADVANCE_INDEX = 2
+UNKNOWN_ANCHOR_STEP = 1.0
+
+
+def number(value):
+    if value is None:
+        return None
+    if value is True or value is False:
+        return None
+    return value
+
+
+def tile_width(tiles):
+    if tiles is None:
+        return None
+    total = 0.0
+    for tile in tiles:
+        remaining = number(tile.get("remaining_estimate"))
+        if remaining is None:
+            return None
+        total = total + remaining
+    return total
+
+
+def action_facts(action):
+    shanten = number(action.get("shanten_after"))
+    if shanten is None:
+        return None
+    support = tile_width(action.get("useful_tiles"))
+    if support is None:
+        support = 0.0
+    return (shanten, support)
+
+
+def stage_pressure(view):
+    competition = view.get("competition")
+    if competition is None:
+        return (False, "no_competition_view")
+    masks = competition.get("freshness_masks")
+    scores = competition.get("stage_scores")
+    if scores is None:
+        if masks is None:
+            return (False, "stage_account_missing")
+        return (False, masks[0])
+    if len(scores) != 4:
+        return (False, "stage_account_bad_length")
+    seat = view["visible_state"]["seat"]
+    ordered = sorted(scores)
+    inside_line = ordered[ADVANCE_INDEX]
+    return (scores[seat] < inside_line, "stage_scores")
+
+
+def score_actions(view):
+    push, basis = stage_pressure(view)
+    entries = []
+    for action in view["actions"]:
+        facts = action_facts(action)
+        if facts is None:
+            continue
+        shanten = facts[0]
+        support = facts[1]
+        if push:
+            score = support
+        else:
+            score = 0.0 - SHANTEN_WEIGHT * shanten + SUPPORT_WEIGHT * support
+        entries.append({
+            "action_key": action["action_key"],
+            "score": score,
+            "trace": {"basis": "stage_pressure", "mode": "push" if push else "safe",
+                      "stage_basis": basis, "shanten": shanten, "width": support},
+        })
+    anchor = None
+    for entry in entries:
+        if anchor is None or entry["score"] < anchor:
+            anchor = entry["score"]
+    if anchor is None:
+        for action in view["actions"]:
+            entries.append({
+                "action_key": action["action_key"], "score": 0.0,
+                "trace": {"basis": "stage_pressure", "mode": "abstain_no_facts",
+                          "stage_basis": basis},
+            })
+        return {"status": "SCORED", "entries": entries, "reason": None}
+    anchor = anchor - UNKNOWN_ANCHOR_STEP
+    for action in view["actions"]:
+        key = action["action_key"]
+        known = False
+        for entry in entries:
+            if entry["action_key"] == key:
+                known = True
+        if known:
+            continue
+        entries.append({
+            "action_key": key, "score": anchor,
+            "trace": {"basis": "unknown_field_basis", "field": "shanten_after",
+                      "stage_basis": basis},
+        })
+    return {"status": "SCORED", "entries": entries, "reason": None}
+'''
+
+
+def _p11_discard_facts(view):
+    """从候选可见映射取普通弃牌的动作级事实：(shanten_after, 有效牌宽度)。"""
+    facts = {}
+    for action in view.candidate_view()["actions"]:
+        shanten = action["shanten_after"]
+        if shanten is None or not action["action_key"].startswith("discard:"):
+            continue
+        facts[action["action_key"]] = (
+            float(shanten),
+            float(sum(tile["remaining_estimate"] for tile in action["useful_tiles"])),
+        )
+    return facts
+
+
+def _p11_policy():
+    """按名装载受限候选（与真实候选臂同一装载路径：静态检查 + 插桩计量）。"""
+    return ActionValuePolicy(ActionValueScorer("p11_stage_pressure_probe",
+                                               P11_PRESSURE_CANDIDATE_SOURCE))
+
+
+class TestStageAccountProjectionIntoView:
+    """P11 验收：阶段账进入候选可见视图并改变选择（与 P2 面板侧同口径）。"""
+
+    def _views_and_plans(self):
+        leading = _p11_request(stage_scores_by_seat=P11_LEADING_BY_SEAT,
+                               stage_places_by_seat=(1, 3, -3, -1))
+        trailing = _p11_request(stage_scores_by_seat=P11_TRAILING_BY_SEAT,
+                                stage_places_by_seat=(-3, 1, 3, -1))
+        policy = _p11_policy()
+        views = {}
+        plans = {}
+        for name, request in (("leading", leading), ("trailing", trailing)):
+            views[name] = build_scoring_view(request)
+            plans[name] = run_choose(policy, request, make_budget())
+        return leading, trailing, views, plans
+
+    def test_leading_and_trailing_injections_are_visible_in_scoring_view(self):
+        leading, trailing, views, _ = self._views_and_plans()
+        # 观察与桌内账逐位相同：两版差异只来自阶段账。
+        assert leading.observation == trailing.observation
+        assert leading.observation.scores == trailing.observation.scores == P11_TABLE_SCORES
+        assert views["leading"].competition.stage_scores == P11_LEADING_BY_SEAT
+        assert views["trailing"].competition.stage_scores == P11_TRAILING_BY_SEAT
+        assert views["leading"].competition.stage_scores !=             views["trailing"].competition.stage_scores
+        # 候选可见（受限映射）通道同样携带，且为原始值。
+        mapped = views["leading"].candidate_view()["competition"]
+        assert mapped["stage_scores"] == P11_LEADING_BY_SEAT
+        assert mapped["table_scores"] == P11_TABLE_SCORES
+        assert all(isinstance(item, str) for item in mapped["freshness_masks"])
+        print("[P11-A] 观察相同 seat={0} 桌内账={1}; 阶段账 领先={2} 落后={3}; "
+              "候选可见掩码={4}".format(
+                  views["leading"].seat_index(), P11_TABLE_SCORES,
+                  views["leading"].competition.stage_scores,
+                  views["trailing"].competition.stage_scores,
+                  mapped["freshness_masks"]))
+
+    def test_same_window_leading_vs_trailing_changes_choice(self):
+        _, _, views, plans = self._views_and_plans()
+        leading_top = plans["leading"].candidates[0]
+        trailing_top = plans["trailing"].candidates[0]
+        print("[P11-B] 领先档首选={0}（mode={1}） 落后档首选={2}（mode={3}）".format(
+            leading_top.action_key,
+            plans["leading"].candidates[0].score_trace["detail"].get("mode"),
+            trailing_top.action_key,
+            plans["trailing"].candidates[0].score_trace["detail"].get("mode")))
+        assert leading_top.action_key != trailing_top.action_key
+        assert plans["leading"].candidates[0].score_trace["detail"]["mode"] == "safe"
+        assert plans["trailing"].candidates[0].score_trace["detail"]["mode"] == "push"
+        # 同一窗口：动作集合与窗口键不变，只有阶段账不同的排序结果。
+        assert views["leading"].expected_action_keys() == views["trailing"].expected_action_keys()
+        # 交叉核验（值取自同一视图的真实载荷，不写死）：两个胜者在对方档位上
+        # 都严格更差 —— 变化来自真实权衡，不是同分决胜或噪声。
+        facts = _p11_discard_facts(views["leading"])
+        efficiency = lambda key: -3.0 * facts[key][0] + 0.5 * facts[key][1]
+        width = lambda key: facts[key][1]
+        assert efficiency(trailing_top.action_key) < efficiency(leading_top.action_key)
+        assert width(leading_top.action_key) < width(trailing_top.action_key)
+        print("[P11-B2] 交叉核验：牌效 {0}={1:.2f} vs {2}={3:.2f}；宽度 {0}={4:.2f} vs {2}={5:.2f}".format(
+            leading_top.action_key, efficiency(leading_top.action_key),
+            trailing_top.action_key, efficiency(trailing_top.action_key),
+            width(leading_top.action_key), width(trailing_top.action_key)))
+
+    def test_four_rotations_keep_identity_to_seat_mapping(self):
+        """四换座（plan.permutation 口径）：向量逐位等于面板侧账，不串位。"""
+        observed = []
+        for permutation in P11_ROTATIONS:
+            ids_by_seat = tuple(P11_IDENTITIES[index] for index in permutation)
+            scores = tuple(P11_ACCOUNT_SCORES[item] for item in ids_by_seat)
+            places = tuple(P11_ACCOUNT_PLACES[item] for item in ids_by_seat)
+            situation = StageSituationProjection(
+                stage_table_no=2, tables_in_stage=2, stage_role="qualify",
+                tables_completed=1, rounds_per_game=8,
+                stage_scores_by_seat=scores, place_points_by_seat=places,
+                participant_ids_by_seat=ids_by_seat,
+            )
+            per_seat = []
+            for seat in range(4):
+                request = _p11_request(
+                    seat=seat, stage_scores_by_seat=scores,
+                    stage_places_by_seat=places,
+                    participant_ids_by_seat=ids_by_seat,
+                )
+                view = build_scoring_view(request)
+                assert view.competition.stage_scores == situation.stage_scores_by_seat
+                assert view.competition.freshness_masks[0] == "stage_account:complete"
+                # 本座位 = 坐在该物理座位的身份的阶段账；其余座位逐位属于各自身份。
+                for position in range(4):
+                    assert (view.competition.stage_scores[position]
+                            == P11_ACCOUNT_SCORES[ids_by_seat[position]]), (
+                        permutation, seat, position)
+                per_seat.append(view.competition.stage_scores[seat])
+            observed.append((ids_by_seat, per_seat))
+        print("[P11-C] 四换座逐桌核对：")
+        for ids_by_seat, per_seat in observed:
+            print("        seats={0} 各座位本人账={1}".format(ids_by_seat, per_seat))
+        # 焦点身份在四种换座下取到的是同一份自己的账（不随换座被换成邻座）。
+        focal_accounts = {
+            ids_by_seat.index("focal"): per_seat[ids_by_seat.index("focal")]
+            for ids_by_seat, per_seat in observed
+        }
+        assert set(focal_accounts.values()) == {P11_ACCOUNT_SCORES["focal"]}
+        assert sorted(focal_accounts) == [0, 1, 2, 3]  # 四种座位都覆盖到
+
+
+class TestUnknownAccountIsNotZero:
+    """P11 验收：缺账 = 未知（None），已知空账 = 已知的零，两者必须可区分。"""
+
+    def _request_with(self, competition):
+        observation = _p11_observation()
+        return replace(_request_for(observation, ValueAnalysisLimits()),
+                       competition=competition)
+
+    def test_absent_account_projects_unknown_and_candidate_declares_gap(self):
+        from hangma_bot.kernel.observation import CompetitionContext
+
+        empty = CompetitionContext(
+            tournament_id=P11_TOURNAMENT, stage_no=None, stage_role=None,
+            stage_total=None, participant_rank=None, ranking=(),
+            observed_at_unix_ms=0,
+        )
+        request = self._request_with(empty)
+        view = build_scoring_view(request)
+        assert view.competition.stage_scores is None  # 未知，不是 (0, 0, 0, 0)
+        mapped = view.candidate_view()["competition"]
+        assert mapped["stage_scores"] is None
+        assert mapped["freshness_masks"][0].startswith("stage_account:")
+        plan = run_choose(_p11_policy(), request, make_budget())
+        assert plan.candidates
+        assert plan.candidates[0].score_trace["detail"]["stage_basis"] != "stage_scores"
+        print("[P11-D] 无阶段账：stage_scores={0} 掩码={1} 首选档={2}".format(
+            mapped["stage_scores"], mapped["freshness_masks"],
+            plan.candidates[0].score_trace["detail"]["mode"]))
+
+    def test_known_empty_account_is_known_zero_and_keeps_safe_mode(self):
+        """第 1 桌（无已完成桌）注入的是**已知的四座全 0 账**，不是未知。"""
+        request = _p11_request(stage_scores_by_seat=(0, 0, 0, 0),
+                               stage_places_by_seat=(0, 0, 0, 0))
+        view = build_scoring_view(request)
+        assert view.competition.stage_scores == (0, 0, 0, 0)
+        plan = run_choose(_p11_policy(), request, make_budget())
+        assert plan.candidates[0].score_trace["detail"]["mode"] == "safe"
+        print("[P11-E] 第 1 桌已知零账：stage_scores={0} 掩码={1}".format(
+            view.competition.stage_scores, view.competition.freshness_masks))
+

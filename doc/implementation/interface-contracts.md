@@ -768,3 +768,17 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 - **单调性适用域**：门线数值固定时 `Φ` 关于本座位积分单调不减；「向听更低更好」只对同一动作族、同一合法性集合、其余事实相同的比较成立（大牌路线可能牺牲向听换番），不得写成任何局面都成立。
 - **金例**：[`tools/test_sitin_generate_gate_line.py`](../../review/llm-guided-heuristic-route-2026-09-15/tools/test_sitin_generate_gate_line.py)（14 项，纯计算；每条期望值在测试注释里给出推导算式），覆盖领先 / 临界 / 落后 / 同分 / 四换座 / 结算后门线变动 / 平移不变性 / 未知不伪装零 / 单调性适用域；提示词里渲染的金例数字与该测试同源。本包只改口径与金例，不改统计、门禁与调度。
 
+### ScoringView 赛事基准投影（2026-09-17，R7 P11，对应复审 §5 M1 的视图层缺口）
+
+**结论：候选评分器读到的 `ScoringView.competition` 不再是恒空视图。** R6 冻结版 `_competition_view()` 直接 `return CompetitionView()`，面板侧（P2）已注入到公开策略输入 `DecisionRequest.competition` 的阶段账对**真实候选臂不可见**——门线/追分逻辑只能退回桌内积分。本节固定投影契约（实现见 [`src/hangma_bot/policy/action_value_policy.py`](../../src/hangma_bot/policy/action_value_policy.py) 的 `_stage_account_vector` / `_competition_view`，机器合同见 [action-value-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json) 的 `scoring_view.competition_bases`）。
+
+- **两个基准、各自命名**：`competition.stage_scores` = 本阶段**已完成各完整桌赛**的积分和（单位：积分点，整数、允许负分；不含当前桌进行中积分、不含名次分、不含未来桌赛结果）；`competition.table_scores` = 本桌**进行中**积分，与 `visible_state.scores`（候选可见名 `visible_state.table_scores`）是同一事实的另一个基准名。门线一节「基准唯一」不变：一次计算只选一个基准并显式命名来源。
+- **顺序语义 = 物理座位 0—3**，与本桌可见观察同序；下标 `i` 是**坐在 i 号位的身份**的账，**不是名次序**。投影只承认这一种口径（「桌内座位序账」）：`ranking[i]` 由离线驱动 `StageSituationProjection.competition_context()` 逐位置构造，位置 `i` 与 `participant_ids_by_seat[i]` 一一对应；面板侧映射由 `plan.seats()` 生成，换座后身份随座位搬移。
+- **我方身份锚点**：`DecisionRequest` 不含我方 `participant_id`（kernel 契约不改），唯一锚点是我方名次 `CompetitionContext.participant_rank`（由驱动/适配器按请求座位发布）。准入必要条件（全部满足才投影，逐条实现在代码里）：`ranking` 恰 4 条；四个 `participant_id` 互不相同；`ranking[我方座位].rank == participant_rank`；四条 `games_played` 相同；名次与已知键 `(total_score, place_points)` 降序不矛盾。
+- **可空条件与未知≠零**：`ranking` 为空 ⇒ `stage_scores = None` + `stage_account:absent`；有排名事实但不满足任一准入条件 ⇒ `stage_scores = None` + `stage_account:unmappable`。**两种情形都不得补零、不得当成「四家同分」、不得用另一基准顶替**。反之，驱动在尚无已完成桌（第 1 桌）时注入的**四座全 0 账是已知的零**，按 `stage_account:complete` 投影——「已知的零」与「无账」由掩码区分。
+- **掩码词表**（`freshness_masks`，固定两元组，位置序 `[stage_scores, table_scores]`，闭集）：`stage_account:complete` / `stage_account:absent` / `stage_account:unmappable` / `table_account:live`（后两者分别描述阶段基准缺失原因与本桌基准恒可用）。词表以代码常量为准，机器合同 `scoring_view.competition_bases.freshness_masks.values` 逐字对账（见 `tests/unit/policy/test_action_value_policy.py`）。
+- **陈旧边界**：策略不读时钟，投影不判陈旧；上游判定排名陈旧时应注入空 `ranking`/空名次（→ `absent`），不得注入陈旧数值冒充可用。
+- **残留风险**：平台级 4 人榜单恰好在请求座位携带我方名次、且四条 `games_played` 一致时，与座位序账结构上不可区分。当前该通道唯一生产者是离线驱动的桌内投影；在线路径若要用该字段，须先给 `CompetitionContext` 增加显式座位序声明（kernel 契约变更）。
+- **金例与验收**：`tests/unit/policy/test_action_value_policy.py`（投影契约：座位序、不可映射形态、掩码对齐、词表对账）与 `tests/unit/policy/test_action_value_projection_facts.py`（同一第 2 桌观察下领先/落后注入改变候选选择、四换座不串位、缺账为未知、第 1 桌已知零账）；证据见 [P11 FIX-REPORT](../../review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r7-fixes/P11-scoringview-stage-account/FIX-REPORT.md)。本包不改统计、门禁、调度与作者提示词模板（后者属 P10）。
+
+

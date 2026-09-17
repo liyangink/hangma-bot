@@ -43,6 +43,23 @@ from .interface import (
 #: 分值/进展载荷语义变更时必须升级，候选身份随之变化。
 VALUE_ANALYSIS_SEMANTICS_VERSION = "hangma-value-analysis/1"
 
+# —— P11（M1 闭环）：赛事基准的掩码词表（冻结；变更即候选身份变化）——
+#: freshness_masks 的**位置序**：下标 0/1 分别对应 stage_scores / table_scores。
+COMPETITION_MASK_BASES: Tuple[str, ...] = ("stage_scores", "table_scores")
+#: stage_scores 的可用状态（freshness_masks[0] 取值，闭集）。
+STAGE_ACCOUNT_COMPLETE = "stage_account:complete"      # 桌内座位序账完整可用
+STAGE_ACCOUNT_ABSENT = "stage_account:absent"          # 尚无阶段账事实（无帐 ≠ 零）
+STAGE_ACCOUNT_UNMAPPABLE = "stage_account:unmappable"  # 有排名事实但身份→座位不可映射
+#: table_scores 的可用状态（freshness_masks[1] 取值，闭集）。
+TABLE_ACCOUNT_LIVE = "table_account:live"              # 本桌进行中积分，恒可用
+#: 闭集词表（合同 scoring_view.competition_bases.freshness_masks.values 逐字一致）。
+COMPETITION_MASK_VALUES: Tuple[str, ...] = (
+    STAGE_ACCOUNT_COMPLETE,
+    STAGE_ACCOUNT_ABSENT,
+    STAGE_ACCOUNT_UNMAPPABLE,
+    TABLE_ACCOUNT_LIVE,
+)
+
 # family_progress 元组坍缩为单一进展的显著性序：最显著的相对变化优先。
 # 候选需要完整分家族明细时读 followup_branches/routes 事实；本字段是
 # RuleAnalysis 全部家族条目的确定性摘要，同输入同输出。
@@ -82,16 +99,104 @@ def _collapse_family_progress(entries) -> str:
     return "UNKNOWN"
 
 
-def _competition_view(context: CompetitionContext) -> CompetitionView:
-    """从 CompetitionContext 投影可见赛事上下文。
+def _stage_account_vector(
+    context: CompetitionContext, seat: int
+) -> Tuple[Optional[Tuple[int, int, int, int]], str]:
+    """把排名事实投影为**桌内座位序账**（阶段基准），不可映射即未知。
 
-    CompetitionContext 只有按参赛者身份的排名条目（RankingEntry），没有
-    按座位 0—3 的阶段/桌赛积分向量，排名到座位的映射也不可推导；首版
-    全部投影 None，候选必须显式处理空值（合同 scoring_view.competition：
-    无权获知或陈旧则为空），当前桌内积分另经 visible_state.table_scores。
+    契约（合同 scoring_view.competition_bases，P11/R7）：
+
+    - **单位与顺序**：返回四元组的元素是「坐在物理座位 0—3 的身份在本阶段
+      **已完成各完整桌赛**的积分之和」，单位与 `PlayerObservation.scores`、
+      `RankingEntry.total_score` 一致（整数积分点，允许负分）；不含当前桌
+      进行中的积分，不含名次分，不含未来桌赛结果。
+    - **身份→座位映射**：唯一承认「桌内座位序账」——`ranking[i]` 是坐在
+      物理座位 i 的参赛者的账（驱动 `offline.evaluate.StageSituationProjection
+      .competition_context()` 逐位置构造，位置 i 与 `participant_ids_by_seat[i]`
+      一一对应；面板侧由 `plan.seats()` 生成，换座后身份随座位搬移）。
+      策略没有 `participant_id`（`DecisionRequest` 不含我方身份，kernel 契约
+      不改），因此**我方身份的锚点是 `context.participant_rank`（我方名次，由
+      驱动/适配器按座位发布）**：我方座位上的条目名次必须等于我方名次。
+    - **可空条件**：`context.ranking` 为空 ⇒ 无阶段账事实（官方未提供或本
+      阶段尚无已完成桌），返回 None + `stage_account:absent`；有排名事实但
+      不满足下列任一必要条件 ⇒ 无法映射，返回 None +
+      `stage_account:unmappable`。
+    - **未知 ≠ 零**：任何缺失/不可映射一律 None，绝不补零、绝不把「无账」
+      当成「四家同分」；反过来，`StageSituationProjection` 在无已完成桌时
+      注入的**四座全 0 账**是已知的零，按 complete 投影（两者由掩码区分）。
+    - **陈旧**：策略不读时钟，本投影不判陈旧；上游若判定排名陈旧，应注入
+      空 ranking/None 名次（→ absent），不得注入陈旧数值冒充可用。
+
+    准入必要条件（全部满足才是座位序账；逐条都在代码里，不靠注释约定）：
+
+    1. 恰 4 条 —— 一桌四座；阶段级榜单（人数 ≠ 4）无法映射到本桌座位；
+    2. 四个 `participant_id` 互不相同 —— 一席一身份；
+    3. `participant_rank` 非空且 `ranking[seat].rank == participant_rank`
+       —— 我方身份必须位于我方物理座位（唯一可核验的锚点）；
+    4. 四条 `games_played` 相同 —— 四个座位覆盖同一批已完成桌；
+    5. 名次与已知键 (total_score, place_points) 不矛盾 —— 名次是该键降序的
+       单调函数（严格更大者名次不得更大）。
+
+    残留风险（如实记录，见 FIX-REPORT §2.6）：平台级 4 人榜单恰好在 `seat` 位
+    携带我方名次、且已完成局数一致时，与座位序账在结构上不可区分；此时
+    投影会把榜单名次序误当作座位序。当前该通道的唯一生产者是离线驱动的
+    桌内投影（P2 面板侧），并已由验收用例固定；若将来在线路径也要读该字段，
+    必须先给 `CompetitionContext` 增加显式的座位序声明（属 kernel 契约变更）。
     """
-    _ = context
-    return CompetitionView()
+
+    ranking = context.ranking
+    if not ranking:
+        return None, STAGE_ACCOUNT_ABSENT
+    if not 0 <= seat < 4 or len(ranking) != 4:
+        return None, STAGE_ACCOUNT_UNMAPPABLE
+    identities = {entry.participant_id for entry in ranking}
+    if len(identities) != 4:
+        return None, STAGE_ACCOUNT_UNMAPPABLE
+    if len({entry.games_played for entry in ranking}) != 1:
+        return None, STAGE_ACCOUNT_UNMAPPABLE
+    if context.participant_rank is None:
+        return None, STAGE_ACCOUNT_UNMAPPABLE
+    if ranking[seat].rank != context.participant_rank:
+        return None, STAGE_ACCOUNT_UNMAPPABLE
+    known_key = tuple(
+        (entry.total_score, entry.place_points) for entry in ranking
+    )
+    for index in range(4):
+        for other in range(4):
+            if index == other:
+                continue
+            if known_key[index] > known_key[other] and (
+                ranking[index].rank > ranking[other].rank
+            ):
+                return None, STAGE_ACCOUNT_UNMAPPABLE
+    return tuple(int(entry.total_score) for entry in ranking), STAGE_ACCOUNT_COMPLETE
+
+
+def _competition_view(
+    context: CompetitionContext, seat: int, table_scores: Tuple[int, ...]
+) -> CompetitionView:
+    """从 CompetitionContext + 本桌观察座位投影可见赛事上下文（P11/M1 闭环）。
+
+    两个基准分别命名、各自可空，不得混算或互相顶替（接口协议「基准唯一」）：
+
+    - `stage_scores`：本阶段**已完成桌**的座位序阶段账（单位：积分点；
+      顺序：物理座位 0—3），经 `_stage_account_vector` 投影；无账/不可映射
+      时为 None（未知，不是全 0）。
+    - `table_scores`：本桌**进行中**积分，直接来自本窗口 `PlayerObservation
+      .scores`（座位 0—3；与候选可见的 `visible_state.table_scores` 是同一
+      事实的两个基准名）；本桌积分对本人恒可见，故恒投影、不报未知，也不
+      与阶段账相加（合同「基准唯一」：一次计算只选一个基准）。
+    - `freshness_masks`：固定两元组，位置序 `COMPETITION_MASK_BASES`
+      （下标 0 = stage_scores、1 = table_scores），取值来自闭集
+      `COMPETITION_MASK_VALUES`；基准不可用时掩码说明原因，掩码本身仍然
+      给出（缺账的原因是可核事实，不是未知）。
+    """
+    stage_scores, stage_mask = _stage_account_vector(context, seat)
+    return CompetitionView(
+        stage_scores=stage_scores,
+        table_scores=tuple(int(score) for score in table_scores),
+        freshness_masks=(stage_mask, TABLE_ACCOUNT_LIVE),
+    )
 
 
 def build_scoring_view(
@@ -111,6 +216,9 @@ def build_scoring_view(
     - 立即结算取 value_facts.immediate_settlement；routes 是条件见证摘要，
       value_coverage/value_issues 透传覆盖状态与截断/缺证据原因；
     - visible_state 直接持有 request.observation（白名单访问器见 B2）；
+    - competition 由 `_competition_view` 投影：stage_scores = 已完成桌的座位序
+      阶段账（无账/不可映射为 None），table_scores = 本桌进行中积分，
+      freshness_masks 位置序 [stage_scores, table_scores]（P11/M1 闭环）；
     - analysis_profile 由 ruleset_version + 实际 ValueAnalysisLimits 构造：
       value_limits 由调用方传入实际分析配置；缺省时按默认上限快照并在
       truncation_note 明示（不冒充实际配置）；
@@ -199,7 +307,9 @@ def build_scoring_view(
             truncation_note=truncation_note,
             ruleset_version=request.rules.ruleset_version,
         ),
-        competition=_competition_view(request.competition),
+        competition=_competition_view(
+            request.competition, request.observation.seat, request.observation.scores
+        ),
         reference_features=tuple(reference_features),
     )
 
@@ -383,6 +493,12 @@ class ActionValuePolicy:
 
 __all__ = [
     "ActionValuePolicy",
+    "COMPETITION_MASK_BASES",
+    "COMPETITION_MASK_VALUES",
+    "STAGE_ACCOUNT_ABSENT",
+    "STAGE_ACCOUNT_COMPLETE",
+    "STAGE_ACCOUNT_UNMAPPABLE",
+    "TABLE_ACCOUNT_LIVE",
     "VALUE_ANALYSIS_SEMANTICS_VERSION",
     "build_scoring_view",
 ]
