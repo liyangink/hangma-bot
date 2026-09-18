@@ -63,3 +63,12 @@ review/llm-guided-heuristic-route-2026-09-15/evidence/3.6c-scorer/raw/*-cache.js
 # 2026-09-18：测试房按房间分目录存放的 4 份 Token 一律不入库（
 # 历史已跟踪的 token/ 文件不受影响，如需移出跟踪请另行 git rm --cached）。
 token/test_t_*/
+
+# 2026-09-18：R9 验收期间的**运行产物**（账本/面板/样本/运行根）不入库——
+# .git 已 1.0GB；这类目录可由 scripts + 冻结输入重建，且体积随运行线性增长。
+# 已跟踪的按仓库既有裁定用 git rm --cached 移出（文件保留在磁盘），报告与摘要仍入库并以路径+sha256 引用。
+review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-fixes/*/_runs/
+review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-fixes/*/e2e/run-root/
+review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-fixes/*/e2e/run-evidence/
+review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-fixes/*/probes/_run-*/
+review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-gate2/run/gate2-*/
