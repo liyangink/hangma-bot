@@ -59,3 +59,7 @@ review/llm-guided-heuristic-route-2026-09-15/evidence/3.6b-panel-triage/panel-ca
 # 坐隐 3.6c 评分缓存（可由 repro.sh / sitin_panel_cache.py 重建；92-canonical 227MB 超出 GitHub 单文件 100MB 硬限导致 push 被拒，2026-09-16 起同裁定不入库）
 review/llm-guided-heuristic-route-2026-09-15/evidence/3.6c-scorer/raw/*-cache.jsonl
 # 大样本封存仍建议走审计线 bundle + exports 流程（大文件不进 Git 的一般原则）。
+
+# 2026-09-18：测试房按房间分目录存放的 4 份 Token 一律不入库（
+# 历史已跟踪的 token/ 文件不受影响，如需移出跟踪请另行 git rm --cached）。
+token/test_t_*/
