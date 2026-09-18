@@ -71,7 +71,7 @@
     "src/hangma_bot/policy/safe_fallback.py": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281",
     "src/hangma_bot/policy/weighted_heuristic.py": "3228a68f544466d16bf5ab926fbb3a3ec7960509aed70bf56571f33d1af08bc5",
     "src/hangma_bot/policy/weights.py": "385ecefe548eea7c4490e4efa2aa54d0c7a49911a729edcd06d1a5438c804b3f",
-    "src/hangma_bot/policy/weights_v1.py": "3752a9db9603c9fc76f153a3e55da50fb4e3c50684f86e227e449723a2a6bba9",
+    "src/hangma_bot/policy/weights_v1.py": "6dc4f4bf263ce055d0c450e914b556ab5323ecf3290cf104c06d9547aeed0f77",
     "src/hangma_bot/simulation/__init__.py": "9940e70b041e4729b56d825b8f85abec12594cf25a84b8672a927ce20b29e844",
     "src/hangma_bot/simulation/artifacts.py": "b60e3f0132e071b84c829680e5cdeda721551c589272f3bc081d2496438e57d6",
     "src/hangma_bot/simulation/engine.py": "58c00e5cfdb711b025b1a0d716a3d3cd9e70fb95f2ac14f017e294e4c82135f2",
@@ -165,13 +165,14 @@
         "src/hangma_bot/policy/weights_v1.py",
         "src/hangma_bot/bootstrap.py"
       ],
-      "change": "weights_v1.py 末尾**新增**模块级常量 V2_PARAM_BATCH_WEIGHTS（= replace(DEFAULT_WEIGHTS_V1)）；bootstrap.py 新增策略枚举 v2_hu_upgrade_v2 引用该常量，并加入 _VALUE_ANALYSIS_STRATEGIES。",
+      "change": "weights_v1.py 末尾**新增**模块级常量 V2_PARAM_BATCH_WEIGHTS（= replace(DEFAULT_WEIGHTS_V1, safe_tile_bonus=0.0)）；bootstrap.py 新增策略枚举 v2_hu_upgrade_v2 引用该常量，并加入 _VALUE_ANALYSIS_STRATEGIES。",
       "reason": "2026-09-17 赛后定位的两处缺陷修复后评分读数回到准确，既有权重的最佳取值需重新标定。按用户裁定：v2_hu_upgrade_v1 保持冻结，数值调整由新枚举承载；未验证前不得替换默认构造。",
       "behavior_neutral_evidence": [
-        "DEFAULT_WEIGHTS_V1 的 12 个字段取值逐字不变；新增常量初期与它完全相等（tests/unit/policy/test_v2_param_batch.py::test_param_batch_starts_identical_to_frozen_v2）。",
+        "DEFAULT_WEIGHTS_V1 的 12 个字段取值逐字不变（新常量是它的独立副本，就地不改）。",
         "新常量只被 bootstrap.py 的 v2_hu_upgrade_v2 工厂读取；v2_hu_upgrade_v1 工厂、DEFAULT_STRATEGY、V1/V2 装配路径一行未动。",
-        "同一请求上两个枚举产出完全相同的计划（同文件 test_enum_swaps_weights_only）。",
-        "既有策略的可达行为未变：定向 143 passed（含 V1 冻结契约与新枚举三例）。"
+        "因此既有策略（含冻结的 V1 与 Tier-A v2_hu_upgrade_v1）行为完全不变；差异只在新枚举里体现，属刻意设计。",
+        "新枚举本身的安全边界由 tests/unit/policy/test_v2_param_batch.py 把关：改动字段必须与 _TUNED_FIELDS 声明一致、两组权重都要产出合法计划。",
+        "定向测试 1348 passed（含本冻结契约、policy 目录守卫与新枚举三例）。"
       ],
       "scope": "只新增一个未被任何既有策略引用的权重常量，外加一个新策略枚举；不改默认策略、不改默认权重、不改评分函数与规则层。",
       "supersedes": {
