@@ -382,6 +382,55 @@ class ProtocolSyncState:
         self._refresh_history_completeness()
         self._observation_cache = None
 
+    def _archive_late_unseen(self, late_unseen) -> None:
+        """归档「水位已越过、但本地从未保存过」的事件；不推进水位、不重放牌面。
+
+        复用 merge_history 的纪律：只在当前快照已吸收范围内、保持序号排序、
+        终局边界之后不得再有活动事件。任一条不满足时只登记观察异常并跳过该事件，
+        既不阻塞当前同步，也不把未确认收到的事件当作已确认。
+        """
+
+        if not late_unseen or self.snapshot is None:
+            return
+        merged_late = {}
+        for public in late_unseen:
+            if public.seq <= 0 or public.seq > self.snapshot.seq:
+                self._observation_issues.add("late_unseen_event_outside_snapshot")
+                continue
+            if public.kind not in KNOWN_EVENT_TYPES:
+                # 与 apply_events 的未知关键事件口径一致：未知类型一律不写入历史。
+                self._observation_issues.add("late_unseen_event_unknown_type:" + public.kind)
+                continue
+            if public.kind == "tile_drawn" and public.seat != self.snapshot.seat and public.tiles:
+                # 玩家端不应收到他家摸牌的牌值：私有牌绝不写入历史。
+                self._observation_issues.add("late_unseen_event_other_draw")
+                continue
+            if (self.history_origin_known and self.history_floor_seq is not None
+                    and public.seq <= self.history_floor_seq):
+                self._observation_issues.add("late_unseen_event_before_floor")
+                continue
+            merged_late[public.seq] = public
+        retained = {e.seq: e for e in self.history}
+        if not any(seq not in retained for seq in merged_late):
+            self._refresh_history_completeness()
+            return
+        merged = {**retained, **merged_late}
+        ordered = [merged[seq] for seq in sorted(merged)]
+        ended = False
+        game_ended = False
+        for event in ordered:
+            if game_ended or (ended and event.kind != "game_ended"):
+                # 归档会破坏终局边界：放弃归档，保留既有历史与水位。
+                self._observation_issues.add("late_unseen_event_after_round_ended")
+                self._refresh_history_completeness()
+                return
+            ended = ended or event.kind == "round_ended"
+            game_ended = event.kind == "game_ended"
+        self.history = ordered
+        self._restore_current_pass()
+        self._refresh_history_completeness()
+        self._observation_cache = None
+
     def _restore_current_pass(self) -> None:
         """由完整的当前弃牌后缀恢复本人表态，窗口身份仍使用原冻结序号。"""
         if self.snapshot is None:
@@ -404,9 +453,16 @@ class ProtocolSyncState:
         事务性：先对整批做连续性与未知事件预检，任一失败则整批拒绝
         （NEEDS_REBUILD）且不应用任何事件——避免"部分应用后重建失败"
         留下与权威状态不一致的本地游标。
+
+        **2026-09-18 幂等判据修订**：seq <= 水位不再等同于"已确认收到"。
+        水位会被 seq=0 全量快照一步推高，因此可能出现在途增量批的序号已低于水位、
+        而本地历史里**从未保存过**该序号的情况。这类事件按"未入库"处理：
+        在快照已吸收范围内且不破坏终局边界的（复用 merge_history 的纪律）归档进历史，
+        last_seq 不因此改变；只有确实保存过同一载荷的事件才算重复幂等忽略。
         """
 
         duplicates = []
+        late_unseen = []
         if gap:
             return SyncResult(SyncDecision.NEEDS_REBUILD, ("gap=true",))
         if self.snapshot is None:
@@ -426,9 +482,14 @@ class ProtocolSyncState:
             except (ValueError, DtoError) as exc:
                 return SyncResult(SyncDecision.NEEDS_REBUILD, ("projection_failed:" + str(exc)[:80],))
             if event.seq <= expected:
-                if event.seq in seen and seen[event.seq] != public:
-                    return SyncResult(SyncDecision.NEEDS_REBUILD, ("conflicting_duplicate:{}".format(event.seq),))
-                duplicates.append(event.seq)  # 重复 seq 幂等忽略
+                if event.seq in seen:
+                    if seen[event.seq] != public:
+                        return SyncResult(SyncDecision.NEEDS_REBUILD, ("conflicting_duplicate:{}".format(event.seq),))
+                    duplicates.append(event.seq)  # 已保存过同一载荷：重复 seq 幂等忽略
+                    continue
+                # 水位越过该序号但本地从未保存过它：不是重复，按未入库归档，不推进水位。
+                late_unseen.append(public)
+                seen[event.seq] = public
                 continue
             if event.seq != expected + 1:
                 return SyncResult(
@@ -457,6 +518,7 @@ class ProtocolSyncState:
             expected = event.seq
             ended = ended or event.type == "round_ended"
             game_ended = event.type == "game_ended"
+        self._archive_late_unseen(late_unseen)  # 与本次应用同一事务：预检已全通过
         for event, public in projected:  # 预检全通过后统一应用
             if public.kind == "tile_drawn" and public.seat != self.snapshot.seat and public.tiles:
                 # 玩家端不应收到他家摸牌的牌值；空牌值摸牌合法，私有牌不可送给策略。

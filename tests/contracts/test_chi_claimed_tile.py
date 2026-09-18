@@ -1,4 +1,4 @@
-"""吃供牌贯穿官方事件、玩家观察和审计；v18 原文加合成缺史边界。"""
+"""吃供牌贯穿官方事件、玩家观察和审计；v18 原文加合成缺史边界（含 2026-09-18 保守回退）。"""
 
 import json
 from dataclasses import replace
@@ -52,12 +52,15 @@ def test_explicit_chi_claim_survives_audit_and_repairs_missing_history_facts():
     assert restored.history_complete is False
 
     # 旧审计仍可读取；不能凭三张牌的排列位置补出缺失供牌。
+    # 2026-09-18 口径修订：无证据不再降级为未知，改为「不扣重叠」的保守数值
+    # （公开 9t 记 2 张、剩余少估 1 张）；合法动作、紧急候选与合法性判定都不读这份计数。
     encoded["public_history"][0].pop("claimed_tile")
     legacy = observation_from_json(encoded)
     assert legacy.public_history[0].claimed_tile is None
     degraded = rules.analyze(legacy)
     old_facts = next(c.facts for c in degraded.legal_candidates if c.action_key == "discard:白")
-    assert old_facts.fact_kind is CandidateFactKind.ANALYSIS_FAILED
+    assert old_facts.fact_kind is CandidateFactKind.HAND_PROGRESS
+    assert next(t.remaining_estimate for t in old_facts.useful_tiles if t.code == "9t") == 2
     assert {c.action_key for c in degraded.legal_candidates} == {
         c.action_key for c in analysis.legal_candidates
     }

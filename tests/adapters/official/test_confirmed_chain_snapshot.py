@@ -22,14 +22,14 @@ CASES = json.loads((Path(__file__).parents[2] / 'fixtures/official/v20/snapshot-
 # 这些真实轨迹从明杠前中途接入，只保留本次触发弃牌，缺少更早的吃牌事件。
 # seq232/309 的座0吃345饼，上家牌河三种都有；seq707 的座2吃567条，
 # 上家牌河同时有5条、7条。成功明杠能证明链事实，不能证明这些旧副露的供牌。
+#
+# 2026-09-18 口径修订：无法证明供牌时**不再**把候选标为 ANALYSIS_FAILED，
+# 改为「不扣重叠」的保守数值（公开可能多算 1、剩余少估 1）。
+# 因此这里的期望失败集为空；合法动作、立即胡与紧急候选都不读这份计数。
 EXPECTED_UNKNOWN_FACT_CANDIDATES = {
-    't_b684d5c3eea4_r1_b1_t0-s2-seq232': ('5b', {'discard:8b'}),
-    't_b684d5c3eea4_r1_b3_t0-s0-seq707': (
-        '5t', {'discard:6w', 'discard:7w', 'discard:8w', 'discard:3t', 'discard:白'},
-    ),
-    't_b684d5c3eea4_r1_b1_t0-s0-seq309': (
-        '5b', {'discard:3w', 'discard:6b', 'discard:1t', 'discard:2t', 'discard:3t', 'discard:北'},
-    ),
+    't_b684d5c3eea4_r1_b1_t0-s2-seq232': (None, set()),
+    't_b684d5c3eea4_r1_b3_t0-s0-seq707': (None, set()),
+    't_b684d5c3eea4_r1_b1_t0-s0-seq309': (None, set()),
 }
 
 

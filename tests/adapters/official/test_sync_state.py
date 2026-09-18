@@ -49,12 +49,31 @@ def test_consecutive_events_accepted() -> None:
 
 
 def test_duplicate_seq_ignored_idempotently() -> None:
+    """只有确实保存过同一载荷的事件才算重复；水位下从未入库的改为归档。"""
+
     state = ProtocolSyncState("g", TIMING)
     state.apply_full_snapshot(_snapshot())
+    # 快照把水位一步推到 101，但历史里没有 101：它不算「已确认收到的重复」。
     result = state.apply_events((_event(101), _event(102), _event(102)))
     assert result.decision is SyncDecision.ACCEPTED
-    assert result.ignored_duplicate_seqs == (101, 102)
+    assert result.ignored_duplicate_seqs == (102,)
     assert state.last_seq == 102
+    assert [e.seq for e in state.current_observation().public_history] == [101, 102]
+
+
+def test_late_unseen_event_below_watermark_is_archived_not_dropped() -> None:
+    """快照跳水位后到达的在途增量事件必须归档：不推进水位，也不当成已收到。
+
+    对应 2026-09-18 复核：`seq <= 水位` 只说明水位越过了它，不说明本地保存过它。
+    """
+
+    state = ProtocolSyncState("g", TIMING)
+    state.apply_full_snapshot(_snapshot())
+    result = state.apply_events((_event(100),))
+    assert result.decision is SyncDecision.ACCEPTED
+    assert result.ignored_duplicate_seqs == ()
+    assert state.last_seq == 101  # 归档不推进水位
+    assert [e.seq for e in state.current_observation().public_history] == [100]
 
 
 def test_seq_gap_triggers_rebuild() -> None:

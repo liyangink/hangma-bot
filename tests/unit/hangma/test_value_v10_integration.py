@@ -23,8 +23,11 @@ def _values(rules, observation):
     ).legal_candidates}
 
 
-def test_unknown_public_overlap_only_disables_routes_that_need_its_tiles():
-    """1/2万供牌不明；打4条仅听4条/白，仍能完整证明；立即胡不依赖该计数。"""
+def test_unproven_chi_supply_keeps_routes_available_with_conservative_counts():
+    """1/2万供牌不明时不再禁用路线（2026-09-18 口径修订）：给保守数值、不降级。
+
+    合法动作、立即胡与紧急候选都不读这份计数；方向落在保守侧。
+    """
     chi = PublicMeld(2, "chi", tuple(Tile(c) for c in ("1w", "2w", "3w")), 1)
     obs = make_observation(drawn_tile=Tile("4t"), melds=((), (), (chi,), ()),
                            discards=((), (Tile("1w"), Tile("2w")), (), ()))
@@ -33,9 +36,9 @@ def test_unknown_public_overlap_only_disables_routes_that_need_its_tiles():
     assert values["discard:4t"].coverage is ValueCoverage.COMPLETE
     assert {t.code for r in values["discard:4t"].routes for t in r.useful_tiles} == {"4t", "白"}
     assert values["hu"].immediate_settlement == rules.score(WinDescription(obs, 0))
-    assert values["discard:1w"].coverage is ValueCoverage.UNAVAILABLE
-    assert not values["discard:1w"].routes
-    assert values["discard:1w"].issues[0].area == "value_analysis.missing_evidence"
+    assert values["discard:1w"].coverage is ValueCoverage.COMPLETE
+    assert values["discard:1w"].routes
+    assert not values["discard:1w"].issues
     plain = rules.analyze(obs)
     enriched = rules.analyze(obs, value_limits=ValueAnalysisLimits(max_expansions=16384))
 

@@ -22,6 +22,10 @@ build/
 runs/
 /runs
 *.local.json
+# 2026-09-18：赛事当日 Token 文件不再入库（按用户要求只忽略这一类命名）。
+# 注意 .gitignore 只对**未跟踪**文件生效：`token/` 下已跟踪的历史凭证不受影响，
+# 如需移出跟踪请另行 `git rm --cached <path>`（本次未动）。
+token/*测试赛.txt
 # 官方下载中断/失败残留（archive_download 先写 .partial 再原子改名；正常均在被忽略的 runs/ 与 artifacts/ 内，此处兜底防止误提交）
 *.partial
 *.http-error

@@ -35,8 +35,10 @@ def test_new_pattern_unknown_count_does_not_poison_complete_old_facts():
     assert {t.code for t in facts.useful_tiles}=={'4t','白'}
     assert facts.standard_useful_tiles is not None
     assert facts.seven_pairs_shanten_after==6
-    assert facts.seven_pairs_useful_tiles is None
-    assert '七对推进牌计数未知' in facts.pattern_progress_note
+    # 2026-09-18 口径修订：缺供牌证据的吃副露不再把任何牌种标为未知（改为不扣重叠），
+    # 因此七对推进牌也照常给出保守数值，且不再有「计数未知」备注。
+    assert facts.seven_pairs_useful_tiles is not None
+    assert facts.pattern_progress_note is None
 
 
 def test_exhausted_pattern_tiles_are_zero_not_unknown_or_a_fifth_copy():

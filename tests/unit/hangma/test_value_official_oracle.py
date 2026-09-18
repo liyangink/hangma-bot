@@ -174,10 +174,12 @@ def test_visible_tile_conservation_followup_legality_and_chain_conditions(name, 
     visible = Counter(full)
     visible.update(t.code for river in obs.discards for t in river)
     visible.update(t.code for seat in obs.melds for m in seat for t in m.tiles)
-    # 原始 A：座位2吃123条，上家牌河交集仅1条；F：座位1吃123条，
-    # 上家也仅1条；三个碰分别由牌河中的4饼、东、6饼供牌。官方保留
-    # 被鸣牌的牌河记录，每个实例仅扣一次重叠，不改动冻结的原观察。
-    overlaps = {"A": ("1t",), "F": ("1t", "4b", "东", "6b")}.get(name, ())
+    # 2026-09-18 口径修订：这两个现场快照都来自「保留口径」（守恒等式显示 A 有 1 处、
+    # F 有 4 处重叠仍留在牌河），因此碰按守恒等式各扣一次：F 的 4b/东/6b。
+    # 吃的供牌是「三张里的一张」，缺 claimed_tile 与紧邻弃牌配对时无法判定是哪一张，
+    # 新口径**不再用「上家牌河唯一交集」猜**（该旧规则会伪造供牌），故 A 的 1 处、
+    # F 的 1 处吃重叠不再扣；方向落在保守侧（公开可能多算 1，剩余少估 1）。
+    overlaps = {"A": (), "F": ("4b", "东", "6b")}.get(name, ())
     for code in overlaps:
         assert any(t.code == code for river in obs.discards for t in river)
         assert any(t.code == code for seat in obs.melds for m in seat for t in m.tiles)

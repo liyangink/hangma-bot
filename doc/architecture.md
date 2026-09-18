@@ -18,6 +18,8 @@
 
 2026-09-09 当前修订：本地规则为 `hangma-mvp-v10-public-counts`，指南仍为 v27。`hangma.public_tile_counts` 从玩家观察的牌河、副露与公开历史去除同张重叠；供牌无法证明时，沿用逐候选 `ANALYSIS_FAILED`，不伪造剩余张数。模拟投影保留吃的完整组合和事件类别，与官方投影提供相同证据。公开接口形状及 V2 权重不变；快照中的旧“无圈”也须推进连续后缀，不能忽略之后新弃白。验证与单批测试房配置见[修复记录](../review/public-tile-counts-2026-09-09/README.md)。
 
+**2026-09-18 口径修订**：平台自 2026-09-14 前后起**不再**把被吃/碰/明杠领走的弃牌留在快照牌河中（2026-09-10 之前的快照仍保留；官方指南更新日志 v1—v34 **没有**这条记录）。因此公开计数改为「**逐副露实证 + 牌张守恒守卫**」：只有当供牌被证明仍在供牌者牌河中（官方 `chi` 的 `claimed_tile`，或「紧邻弃牌→鸣牌」的事件配对）才扣一次重叠；守恒等式 `Σ手牌+Σ牌河+Σ副露+牌墙−136` 判定为「已移除」时整批否决扣除；**无证据不再降级为未知，改为不扣重叠的保守数值**（公开可能多算 1、剩余少估 1）；只有输入自相矛盾（同码副露超物理上限、实证重叠超过河中实存张数、同一快照内证据互相矛盾）才返回 `None` 并沿用 `ANALYSIS_FAILED`。合法动作、立即胡与紧急候选都不读这份计数。证据链见 `review/test-tournament-20260917/probes/discard-river-accounting-evidence.md`；`ruleset_version` 字符串暂未变更（是否升号影响离线产物绑定，待定）。
+
 2026-09-09 v9 规则对齐：官方适配器把 v26 新增的 `god.god_discarder_seat` 转为 `RulePublicState.catch_play_owner_seat`，以 `snapshot_seq` 为事实锚点；`hangma.catch_play` 统一处理当前权限、连续后缀的换主与关圈，旧报文缺字段时保留有证据的恢复路径。规则、保底、提交复核与策略共用这一事实，模拟器通过唯一推进器给圈主开放吃碰明杠，恢复后不沿用旧圈主权限。v24 跳过整个圈内响应的兼容行为已被官方 v26 修复替代。类型编解码、消费者和测试同步见[接口增补](implementation/interface-contracts.md#官方圈主事实与v26响应修订2026-09-09)及[对齐记录](../review/catch-owner-v26-2026-09-09/README.md)。
 
 2026-09-07 制品更新：运行审计推荐定位到 `artifacts/sessions/<session>/audit/`，四身份仍各自拥有记录器。完赛后 `audit_tool.py postgame` 调用 `offline.postgame` 封存证据、转换数据集，并复用唯一规则模块核验终局及观察转移，不进入线上主循环。下载归 `adapters.official.archive_download`，公开客户端由 `bootstrap` 装配；本机归并和旧布局恢复归 `offline.artifact_store`。冻结接口不变，缺失信息不补写到历史 `PlayerObservation`。路径和完整性边界见 [操作指引](operations.md)。

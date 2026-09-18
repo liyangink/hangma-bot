@@ -32,10 +32,11 @@ def test_standard_only_unknown_count_preserves_seven_pairs_and_combined_facts():
     assert facts.completeness is RuleCompleteness.COMPLETE
     assert facts.shanten_after == facts.seven_pairs_shanten_after == 0
     assert facts.standard_shanten_after == 3
-    assert facts.standard_useful_tiles is None
+    # 2026-09-18 口径修订：缺供牌证据的吃副露不再使普通型计数未知，
+    # 改为「不扣重叠」的保守数值；七对与该副露无关，事实不变。
+    assert facts.standard_useful_tiles is not None
     assert facts.seven_pairs_useful_tiles is not None
     expected = {"南": 3, "白": 4}
     assert {tile.code: tile.remaining_estimate for tile in facts.useful_tiles} == expected
     assert {tile.code: tile.remaining_estimate for tile in facts.seven_pairs_useful_tiles} == expected
-    assert "普通型推进牌计数未知" in facts.pattern_progress_note
-    assert "七对推进牌计数未知" not in facts.pattern_progress_note
+    assert facts.pattern_progress_note is None
