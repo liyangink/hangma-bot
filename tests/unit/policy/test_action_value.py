@@ -342,6 +342,11 @@ class TestT05HuAndContinueCompared:
             "src/hangma_bot/policy/action_value_executor.py",
             "src/hangma_bot/policy/action_value_policy.py",
             "src/hangma_bot/policy/action_value_seeds.py",
+            # 2026-09-18：`weights_v1.py` 末尾新增 modul 级常量 V2_PARAM_BATCH_WEIGHTS
+            # （`v2_hu_upgrade_v2` 的载体）。纯新增、未被任何既有策略引用，
+            # DEFAULT_WEIGHTS_V1 取值逐字不变；字节冻结契约已同步更新哈希并追加
+            # behavior_neutral_evidence（tests/offline/evidence/v1-acceptance-2026-09-06/freeze.json）。
+            "src/hangma_bot/policy/weights_v1.py",
         }
         unexpected = modified - allowed
         assert not unexpected, "旧策略文件被意外修改：{0}".format(sorted(unexpected))

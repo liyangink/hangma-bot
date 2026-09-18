@@ -68,6 +68,7 @@ from hangma_bot.policy.safe_fallback import SafeFallbackPolicy
 from hangma_bot.policy.heuristic_v1 import ReliableHeuristicPolicyV1
 from hangma_bot.policy.heuristic_v2 import ComparableHeuristicPolicyV2
 from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy
+from hangma_bot.policy.weights_v1 import V2_PARAM_BATCH_WEIGHTS
 from hangma_bot.policy.balanced_shadow import V2BalancedShadowPolicy
 from hangma_bot.policy.hu_upgrade_calibration import (
     RISK_CELLS, RISK_RULESET_VERSION, RISK_VERSION, SAFETY_MARGIN,
@@ -125,6 +126,12 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "weighted_heuristic_v1": lambda: ReliableHeuristicPolicyV1(),
     "weighted_heuristic_v2": lambda: ComparableHeuristicPolicyV2(),
     "v2_hu_upgrade_v1": lambda: V2HuUpgradePolicy(
+        risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
+    ),
+    # 2026-09-18：数值调整走新枚举，`v2_hu_upgrade_v1` 保持冻结不动。
+    # 新枚举的权重由 V2_PARAM_BATCH_WEIGHTS 承载，标定按「一次一个参数、单独提交」推进。
+    "v2_hu_upgrade_v2": lambda: V2HuUpgradePolicy(
+        weights=V2_PARAM_BATCH_WEIGHTS,
         risk_cells=RISK_CELLS, risk_version=RISK_VERSION, safety_margin=SAFETY_MARGIN,
     ),
     # 已淘汰的实验臂（Tier-B 概率档 / 庄位权重 v1+v2 / 一摸价值层叠加 / 风险表 v3
@@ -207,7 +214,7 @@ SEQUENCE_MODEL_DIRNAME = "prebuilt/sequence-policy-models"
 # ValueAnalysisLimits() 生成；关闭增强会让这些维度退化为零，构成训练/服务偏移，
 # 因此这些策略必须与实际运行规则同一口径，并在校准范围外直接拒绝启动。
 _VALUE_ANALYSIS_STRATEGIES = (
-    "v2_hu_upgrade_v1", "v2_balanced_shadow_v1",
+    "v2_hu_upgrade_v1", "v2_hu_upgrade_v2", "v2_balanced_shadow_v1",
 ) + tuple(_SEQUENCE_MODEL_STRATEGIES)
 
 # action_value_v1 策略名（B3）：ScoringView 依赖 B1 载荷（followup_branches/

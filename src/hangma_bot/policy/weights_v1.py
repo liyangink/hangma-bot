@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, fields, replace
 
 
 @dataclass(frozen=True)
@@ -40,3 +40,13 @@ class HeuristicWeightsV1:
 
 
 DEFAULT_WEIGHTS_V1 = HeuristicWeightsV1()
+
+#: 2026-09-18 新参数批次（策略 `v2_hu_upgrade_v2`）的权重集。
+#:
+#: 新枚举先以**零行为变更**着陆：本常量此刻与冻结 V2 逐字相同，等价性由
+#: tests/unit/policy/test_v2_param_batch.py 断言。后续标定必须**一次只改一个参数、单独提交**，
+#: 并通过策略目录门禁后才更新本常量，不得混批。
+#: 本文件虽在 V1 字节冻结名单内，本次为**纯新增常量**（见
+#: tests/offline/evidence/v1-acceptance-2026-09-06/freeze.json 的 source_revision_notes 末条）。
+#: 候选取值与扫描协议见 review/test-tournament-20260917/policy-param-batch-spec-2026-09-18.md。
+V2_PARAM_BATCH_WEIGHTS = replace(DEFAULT_WEIGHTS_V1)

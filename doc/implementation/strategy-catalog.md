@@ -7,7 +7,8 @@
 | `weighted_heuristic` | 全部 | 冻结V0，省略配置时的默认值 |
 | `weighted_heuristic_v1` | 全部 | 冻结V1，历史对照 |
 | `weighted_heuristic_v2` | 全部 | 稳定基线；Tier-A 的对照基准 |
-| `v2_hu_upgrade_v1` | **全部（含正式赛事）** | V2有界等胡（Tier-A）。**当前验证过的最优策略**，见下方状态 |
+| `v2_hu_upgrade_v1` | **全部（含正式赛事）** | V2有界等胡（Tier-A）。**当前验证过的最优策略**，见下方状态。2026-09-18 起冻结：后续数值调整一律走 `v2_hu_upgrade_v2` |
+| `v2_hu_upgrade_v2` | 全部（与 v1 同口径） | **新参数批次载体**：与 v1 同结构，只换 `policy/weights_v1.py` 的 `V2_PARAM_BATCH_WEIGHTS`。2026-09-18 着陆时该常量与冻结 V2 逐字相同（零行为变更），数值由「一次一个参数、单独提交 + 策略目录门禁」逐步标定；候选取值与扫描协议见 `review/test-tournament-20260917/policy-param-batch-spec-2026-09-18.md` |
 | `v2_balanced_shadow_v1` | **仅 `test_room` / `auto_match`** | 多路线前沿审计层：复用 `v2_hu_upgrade_v1` 保底并追加路线理由，**不改变动作顺序**；不得用于正式赛事提交 |
 | `weighted_heuristic_v2_white_guard` | 全部 | V2普通弃财保护变体。**已证明为无行为差异**（V2 与 Tier-A 上各 256 桌，符号检验 0 正/0 负/256 平）——保留是因为有 21 处测试/脚本/对手池引用，不要当作独立候选再验 |
 | `safe_fallback` | 全部 | 规则紧急动作，保底/诊断用途 |
