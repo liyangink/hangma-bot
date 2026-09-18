@@ -126,7 +126,9 @@ async def test_calibrated_phase_refresh_uses_late_boundary_not_submit_early_boun
         chi=await asyncio.wait_for(session.next_item(),.5)
         assert chi.window_key.phase.value=='response_chi'
         assert peng.expires_at_monotonic < start+2
-        assert start+2.05 < refresh_at[0] < start+2.09
+        # 2026-09-18：边界定时器降级为看门狗——晚界 + 0.20s 容错（实测标记
+        # 到达滞后最差 +26ms），刷新时刻从"截止+0.05"后移到"截止+0.20"档
+        assert start+2.19 < refresh_at[0] < start+2.26
     finally:
         await session.aclose('test_completed')
 

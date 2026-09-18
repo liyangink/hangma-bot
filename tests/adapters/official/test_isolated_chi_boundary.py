@@ -26,10 +26,12 @@ async def test_chi_boundary_respects_shared_user_cooldown_and_discards_expired_p
     scheduler = RequestScheduler(clock=clock.monotonic, sleep=clock.sleep,
                                  rate_per_second=14, burst=1, jitter_rng=NoJitter())
     wall_start = clock.wall_ms()
-    initial = snapshot(179, turn=1, phase="response_peng", river=("4t",),
-                       discard={"seat": 1, "tile": "4t", "seq": 179}, responders=(2,))
+    # 弃 5w：本方手牌（万子全型）与上家弃牌构成吃形保守超集——
+    # 2026-09-18 起只有对我校有鸣牌兴趣的周期才挂边界看门狗
+    initial = snapshot(179, turn=1, phase="response_peng", river=("5w",),
+                       discard={"seat": 1, "tile": "5w", "seq": 179}, responders=(2,))
     initial["snapshot"]["window_deadline_ms"] = wall_start + 1000
-    initial["snapshot"]["discards"] = [[], ["4t"], [], []]
+    initial["snapshot"]["discards"] = [[], ["5w"], [], []]
     calls = 0
     async def handler(*, path, params, long_poll, **kwargs):
         nonlocal calls
@@ -43,9 +45,9 @@ async def test_chi_boundary_respects_shared_user_cooldown_and_discards_expired_p
         phase = "response_chi" if clock.monotonic() < 2 else "draw"
         seq = 182 if phase == "response_chi" else 184
         doc = snapshot(seq, turn=1 if phase == "response_chi" else 2, phase=phase,
-                       drawn="" if phase == "response_chi" else "7w", river=("4t",),
-                       discard={"seat": 1, "tile": "4t", "seq": 179}, responders=(2,))
-        doc["snapshot"]["discards"] = [[], ["4t"], [], []]
+                       drawn="" if phase == "response_chi" else "7w", river=("5w",),
+                       discard={"seat": 1, "tile": "5w", "seq": 179}, responders=(2,))
+        doc["snapshot"]["discards"] = [[], ["5w"], [], []]
         doc["snapshot"]["window_deadline_ms"] = wall_start + (2000 if phase == "response_chi" else 5000)
         doc["events"] = [event(n, "timeout", seat=seat, data={"kind":"response", "window":"peng"})
                          for n, seat in ((180, 0), (181, 2), (182, 3))]

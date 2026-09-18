@@ -73,9 +73,11 @@ def new_scheduler(clock):
 
 def response_snapshot(wall_origin_ms, *, phase="response_peng", seq=179):
     """座位1弃牌、本人座位2可响应的固定阶段，截止使用官方Unix毫秒字段。"""
-    doc = snapshot(seq, turn=1, phase=phase, river=("4t",),
-                   discard={"seat": 1, "tile": "4t", "seq": 179}, responders=(2,))
-    doc["snapshot"]["discards"] = [[], ["4t"], [], []]
+    # 弃 5w：本方手牌（万子全型）与上家弃牌构成吃形超集——2026-09-18 起
+    # 只有对我校有鸣牌兴趣的周期才挂边界看门狗
+    doc = snapshot(seq, turn=1, phase=phase, river=("5w",),
+                   discard={"seat": 1, "tile": "5w", "seq": 179}, responders=(2,))
+    doc["snapshot"]["discards"] = [[], ["5w"], [], []]
     doc["snapshot"]["window_deadline_ms"] = wall_origin_ms + (1000 if phase == "response_peng" else 2000)
     if seq > 179:
         doc["events"] = [event(number, "timeout", seat=seat,
@@ -191,7 +193,8 @@ async def test_boundary_waits_for_cancelled_poll_cleanup_before_reusing_the_stat
         assert isinstance(second, ObservedActionWindow)
         assert second.window_key.phase is WindowPhase.RESPONSE_CHI
         assert sequence == ["poll_started", "poll_cancelled", "poll_cleanup_done", "boundary_get_started"]
-        assert transport.started_at[-1] == pytest.approx(1.09)
+        # 2026-09-18：看门狗=截止晚界+0.20s 容错（旧边界刷新为 +0.05s）
+        assert transport.started_at[-1] == pytest.approx(1.24)
         assert root.state_used_count == 3, "取消已发长轮询不能退state次数"
         assert root.for_game("active", max_games=10).active_count == 0
         assert [call.params["seq"] for call in transport.calls] == [0, 179, 0]
@@ -230,7 +233,7 @@ async def test_authoritative_response_returned_during_cancel_is_consumed_without
         await defer_peng(session, first, .99)
         second = await clock.run(session.next_item())
         assert isinstance(second, ObservedActionWindow)
-        assert returned_on_cancel == [pytest.approx(1.05)]
+        assert returned_on_cancel == [pytest.approx(1.2)]  # 看门狗时刻（截止+0.20s）
         assert second.window_key.phase is WindowPhase.RESPONSE_CHI
         assert second.observation.consumed_seq == 180
         assert any(item.seq == 180 and item.kind == "timeout" for item in second.observation.public_history)
@@ -262,9 +265,9 @@ async def test_expired_queued_chi_query_is_replaced_by_one_current_state_sync(te
         assert clock.monotonic() == pytest.approx(2.2), "旧chi目的不能抢在冷却/阶段结束前发送"
         if terminal:
             return 200, json.dumps(load_fixture("state_response_finished.json"))
-        doc = snapshot(184, turn=2, drawn="7w", river=("4t",),
-                       discard={"seat": 1, "tile": "4t", "seq": 179})
-        doc["snapshot"]["discards"] = [[], ["4t"], [], []]
+        doc = snapshot(184, turn=2, drawn="7w", river=("5w",),
+                       discard={"seat": 1, "tile": "5w", "seq": 179})
+        doc["snapshot"]["discards"] = [[], ["5w"], [], []]
         doc["snapshot"]["window_deadline_ms"] = wall_origin + 5000
         return 200, json.dumps(doc)
 
@@ -292,7 +295,7 @@ async def test_expired_queued_chi_query_is_replaced_by_one_current_state_sync(te
             "trigger_seq": 179, "phase": "response_chi", "seat": 2,
         }
         assert expired[0]["window_is_expected"] is True
-        assert expired[0]["purpose_wait_sec"] == pytest.approx(.70)
+        assert expired[0]["purpose_wait_sec"] == pytest.approx(.55)  # 看门狗晚挂0.15s，等待相应更短
         assert expired[0]["replacement_purpose"] == "current_state_sync"
         assert expired[0]["latest_start_monotonic"] == pytest.approx(1.75)
         assert expired[0]["obsolete_window_end_monotonic"] == pytest.approx(2.0)

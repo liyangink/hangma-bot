@@ -71,15 +71,16 @@ def attempt(window, clock):
 async def test_refresh_preserves_history_without_duplicating_river(transport, clock):
     queue = script(transport, [
         (0, snapshot(100)),
-        (100, {"events": [event(101, "tile_discarded", tile="6t")]}),
-        (0, snapshot(101, phase="response_peng", river=("6t",), discard=(None))),
+        # 弃东：本方手牌持东×2（碰兴趣超集）——2026-09-18 起有兴趣才刷新
+        (100, {"events": [event(101, "tile_discarded", tile="东")]}),
+        (0, snapshot(101, phase="response_peng", river=("东",), discard=(None))),
         (101, {"events": [event(102, "tile_drawn", seat=MY_SEAT, tile="7w")]}),
     ])
     session = make_game_session(transport=transport, clock=clock)
     try:
         window = await session.next_item()
         assert isinstance(window, ObservedActionWindow)
-        assert tuple(t.code for t in window.observation.discards[0]) == ("6t",)
+        assert tuple(t.code for t in window.observation.discards[0]) == ("东",)
         assert [(e.seq, e.kind) for e in window.observation.public_history] == [(101, "tile_discarded"), (102, "tile_drawn")]
         assert not queue
     finally:

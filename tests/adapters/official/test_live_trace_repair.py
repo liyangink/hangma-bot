@@ -28,7 +28,8 @@ def test_public_event_retains_known_data(kind,tile,data,field,expected):
 
 
 async def test_masked_other_draw_remains_in_public_history(transport,clock):
-    script(transport,[(0,snapshot(100)),(100,{'events':[event(101,'tile_drawn'),event(102,'tile_discarded',tile='6t')]}),(0,snapshot(102,phase='response_peng',river=('6t',),discard='6t',responders=(1,2,3)))])
+    # 弃东：本方手牌持东×2（碰兴趣超集）——2026-09-18 起有兴趣才刷新
+    script(transport,[(0,snapshot(100)),(100,{'events':[event(101,'tile_drawn'),event(102,'tile_discarded',tile='东')]}),(0,snapshot(102,phase='response_peng',river=('东',),discard='东',responders=(1,2,3)))])
     session=make_game_session(transport=transport,clock=clock)
     try:
         window=await session.next_item()
@@ -53,8 +54,8 @@ async def test_peng_pass_is_deferred_and_real_chi_window_is_delivered(transport,
 
 async def test_snapshot_ahead_preserves_received_history_and_advances_cursor(transport, clock):
     queue = script(transport, [(0, snapshot(100)),
-        (100, {'events': [event(101, 'tile_discarded', tile='6t')]}),
-        (0, snapshot(103, phase='response_peng', river=('6t',), discard='6t', responders=(1,2,3)))])
+        (100, {'events': [event(101, 'tile_discarded', tile='东')]}),
+        (0, snapshot(103, phase='response_peng', river=('东',), discard='东', responders=(1,2,3)))])
     session = make_game_session(transport=transport, clock=clock)
     try:
         window = await session.next_item()

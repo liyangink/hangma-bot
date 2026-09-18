@@ -111,9 +111,18 @@ async def test_consecutive_draws_delivered_incrementally_zero_rebuilds(transport
         stage["n"] += 1
         if stage["n"] == 1:
             return _json(base)
-        # 第 2~6 次调用：连续的本人摸牌增量（游标 101→105，事件 102~106）
-        assert 101 <= seq <= 105, "轮询游标必须按已消费 seq 推进"
-        return _json(_events(_event(seq + 1, "tile_drawn", MY_SEAT, "{}w".format(seq - 98))))
+        # 第 2~6 次调用：物理自洽的"摸→(应用层行动后)弃→再摸"增量链
+        # （2026-09-18 修订：本人弃牌回显不再刷新，手牌口径=快照+摸−弃）
+        assert seq in (101, 102, 104, 106, 108), "轮询游标必须按已消费 seq 推进"
+        if seq == 101:
+            return _json(_events(_event(102, "tile_drawn", MY_SEAT, "1w")))
+        draw_no = (seq - 100) // 2  # 102→1w, 104→2w, 106→3w, 108→4w, 110→5w
+        prev_tile = "{}w".format(draw_no)
+        next_tile = "{}w".format(draw_no + 1)
+        return _json(_events(
+            _event(seq + 1, "tile_discarded", MY_SEAT, prev_tile),
+            _event(seq + 2, "tile_drawn", MY_SEAT, next_tile),
+        ))
 
     transport.handler = handler
     session = make_game_session(transport=transport, clock=clock, audit=audit)
@@ -126,12 +135,12 @@ async def test_consecutive_draws_delivered_incrementally_zero_rebuilds(transport
         assert item.window_key.seat == MY_SEAT
         drawn_triggers.append(item.window_key.trigger_seq)
         assert item.observation.drawn_tile is not None
-        # 增量送达：手牌与最后快照一致（本人改牌动作全部落在刷新触发集）
-        assert [t.code for t in item.observation.my_hand] == _HAND
+        # 增量送达：手牌=快照+本人摸牌−本人弃牌（净额为零，仍是13张暗牌）
+        assert sorted(t.code for t in item.observation.my_hand) == sorted(_HAND)
 
-    assert drawn_triggers == [102, 103, 104, 105, 106]
+    assert drawn_triggers == [102, 104, 106, 108, 110]
     get_calls = [c.params["seq"] for c in transport.calls if c.method == "GET"]
-    assert get_calls == [0, 101, 102, 103, 104, 105]  # 仅首拉 seq=0，零重建请求
+    assert get_calls == [0, 101, 102, 104, 106, 108]  # 仅首拉 seq=0，零重建请求
     assert get_calls.count(0) == 1
     assert _recovered_gap_count(audit) == 0
     assert all(r.kind is not AuditKind.PROTOCOL_RECOVERED for r in audit.records)
@@ -297,10 +306,10 @@ async def test_post_keeps_cursor_at_last_consumed_seq(transport, clock):
                 )
             )
         if stage["n"] == 3:
-            assert seq == 0  # 本人弃牌触发权威刷新（手牌/神位状态新鲜化）
-            return _json(refreshed)
-        if stage["n"] == 4:
-            assert seq == 103  # 刷新后按快照包含式水位继续增量
+            # 2026-09-18 复盘修订：本人弃牌回显不再触发 seq=0 权威刷新
+            # （手牌新鲜化由增量摸牌观察的本人弃牌扣除承担），
+            # 游标沿已消费增量水位 103 继续长轮询。
+            assert seq == 103
             return _json({"pending": True})
         await asyncio.sleep(30)  # 后续轮询挂起：测试取消
         return _json({"pending": True})
@@ -317,7 +326,7 @@ async def test_post_keeps_cursor_at_last_consumed_seq(transport, clock):
     )
     assert isinstance(outcome, SubmitAccepted)
 
-    # 消费 POST 产生的增量：本人弃牌触发刷新、按新水位继续轮询
+    # 消费 POST 产生的增量：本人弃牌回显 + 他家摸牌均走纯增量，不刷新
     task = asyncio.ensure_future(session.next_item())
     await asyncio.sleep(0.1)
     task.cancel()
@@ -325,10 +334,10 @@ async def test_post_keeps_cursor_at_last_consumed_seq(transport, clock):
         await task
 
     get_calls = [c.params["seq"] for c in transport.calls if c.method == "GET"]
-    # 首拉 seq=0 → POST 后增量轮询用 101（不回退 0）→ 本人弃牌触发刷新(0) →
-    # 按快照水位 103 继续增量（pending 后原游标重拉同样 103）
-    assert get_calls[:4] == [0, 101, 0, 103]
-    assert all(seq == 103 for seq in get_calls[4:])
+    # 首拉 seq=0 → POST 后增量轮询用 101（不回退 0）→ 本人弃牌回显/他家
+    # 摸牌不刷新，游标保持 103 继续（pending 后原游标重拉同样 103）
+    assert get_calls[:3] == [0, 101, 103]
+    assert all(seq == 103 for seq in get_calls[3:])
 
 
 async def test_submit_on_incremental_draw_window_accepted(transport, clock):
@@ -374,12 +383,15 @@ async def test_submit_on_incremental_draw_window_accepted(transport, clock):
     assert again.reason == "stale_window"
 
 
-async def test_own_discard_refreshes_hand_before_next_incremental_draw(transport, clock):
-    """本人弃牌触发权威刷新：下一次增量摸牌送达时 my_hand 与官方快照一致。"""
+async def test_own_discard_echo_keeps_cursor_and_next_draw_updates_hand(transport, clock):
+    """本人弃牌回显不再触发快照刷新（2026-09-18 复盘修订）。
+
+    下一次增量摸牌送达时 my_hand = 快照手牌 − 本人弃牌回显，新摸牌单列
+    drawn_tile；全程游标沿增量水位前进，不出现第二次 seq=0。
+    """
 
     base = _snapshot_doc(101, turn=0, my_hand=_HAND)
-    hand_after = [c for c in _HAND if c != "5w"] + ["东"]  # 本次摸东后弃5w，仍有13张暗牌
-    refreshed = _snapshot_doc(103, turn=0, my_hand=hand_after)
+    hand_after = [c for c in _HAND if c != "5w"] + ["9t"]  # 摸9t弃5w后仍13张暗牌
     stage = {"n": 0}
 
     def handler(*, method: str, path: str, params=None, json_body=None, long_poll=False):
@@ -390,13 +402,14 @@ async def test_own_discard_refreshes_hand_before_next_incremental_draw(transport
         if stage["n"] == 1:
             return _json(base)
         if stage["n"] == 2:
-            return _json(_events(_event(102, "tile_discarded", MY_SEAT, "5w")))
+            # 本人摸牌+弃牌同批到达：均不触发刷新
+            return _json(_events(
+                _event(102, "tile_drawn", MY_SEAT, "9t"),
+                _event(103, "tile_discarded", MY_SEAT, "5w"),
+            ))
         if stage["n"] == 3:
-            assert seq == 0  # 本人弃牌 → 刷新
-            return _json(refreshed)
-        if stage["n"] == 4:
-            assert seq == 102
-            return _json(_events(_event(103, "pass", 1), _event(104, "tile_drawn", MY_SEAT, "7w")))
+            assert seq == 103, "本人弃牌回显不刷新，游标沿增量水位前进"
+            return _json(_events(_event(104, "tile_drawn", MY_SEAT, "7w")))
         raise AssertionError("unexpected stage={}".format(stage["n"]))
 
     transport.handler = handler
@@ -405,8 +418,11 @@ async def test_own_discard_refreshes_hand_before_next_incremental_draw(transport
     item = await asyncio.wait_for(session.next_item(), timeout=2)
     assert isinstance(item, ObservedActionWindow)
     assert item.window_key.trigger_seq == 104
-    assert [t.code for t in item.observation.my_hand] == hand_after  # 刷新后的官方手牌
+    # 快照 + 本人摸牌(9t) − 本人弃牌(5w) = 摸牌前13张；新摸7w单列
+    assert [t.code for t in item.observation.my_hand] == hand_after
     assert item.observation.drawn_tile == Tile("7w")
+    get_calls = [c.params["seq"] for c in transport.calls if c.method == "GET"]
+    assert get_calls[:3] == [0, 101, 103]  # 无第二次 seq=0
 
 
 # ---------- sync_state 状态机单元回归 ----------
@@ -434,10 +450,54 @@ def _sync_state():
 
 
 class TestRefreshPredicate:
-    def test_discard_and_timeout_require_refresh(self):
+    def test_discard_and_timeout_refresh_only_with_claim_interest(self):
+        """2026-09-18 复盘修订：无关弃牌/标记走增量，有兴趣才刷新。
+
+        fixture 手牌为 1w-9w + 东东 + 南 + 白（摸 5w，即持 5w×2）；
+        我方座位 2，上家是座位 1。
+        """
+
         state = _sync_state()
-        assert state.events_need_authoritative_refresh((_parsed_event(102, "tile_discarded", 1, "3b"),))
-        assert state.events_need_authoritative_refresh((_parsed_event(102, "timeout", 1),))
+        # 上家弃 3b：无对子、无筒子搭子 → 与我校无关，不刷新
+        assert not state.events_need_authoritative_refresh(
+            (_parsed_event(102, "tile_discarded", 1, "3b"),)
+        )
+        # 无关弃牌已入流：同周期 timeout 标记也只推进投影
+        assert not state.events_need_authoritative_refresh(
+            (_parsed_event(103, "timeout", 1),)
+        )
+        # 持对（5w×2 含刚摸）→ 任何座位弃 5w 都可能碰 → 刷新
+        assert state.events_need_authoritative_refresh(
+            (_parsed_event(104, "tile_discarded", 0, "5w"),)
+        )
+        # 上家弃 2w：同花色距离≤2 搭子超集 → 可能吃 → 刷新
+        assert state.events_need_authoritative_refresh(
+            (_parsed_event(105, "tile_discarded", 1, "2w"),)
+        )
+        # 财神白板不能被吃/碰/杠，但弃白是抓打圈唯一激活路径 → 必须刷新
+        # （2026-09-18 开圈守卫：合法性空间变化与兴趣无关）
+        assert state.events_need_authoritative_refresh(
+            (_parsed_event(106, "tile_discarded", 1, "白"),)
+        )
+
+    def test_catch_play_discard_requires_refresh(self):
+        """携带 catch_play=true 的弃牌（圈内弃牌）无条件刷新。"""
+
+        from hangma_bot.adapters.official.dto import ParsedEvent
+
+        state = _sync_state()
+        event = ParsedEvent(
+            seq=102, type="tile_discarded", seat=1, tiles=("东",),
+            occurred_at_unix_sec=1756771200, catch_play=True,
+        )
+        assert state.events_need_authoritative_refresh((event,))
+
+    def test_timeout_in_interesting_cycle_requires_refresh(self):
+        """有兴趣周期的 timeout 标记仍刷新：我的吃窗可能在切换后开出。"""
+
+        state = _sync_state()
+        state.apply_events((_parsed_event(102, "tile_discarded", 0, "5w"),))
+        assert state.events_need_authoritative_refresh((_parsed_event(103, "timeout", 0),))
 
     def test_any_meld_requires_refresh_until_public_board_is_projected(self):
         state = _sync_state()

@@ -20,6 +20,7 @@ from hangma_bot.hangma.observation_rules import (
 )
 
 from . import projector
+from .claim_interest import WEALTH_GOD_CODE, discard_interesting
 from .dto import ParsedEvent, ParsedSnapshot, StateResponse
 from .errors import DtoError
 
@@ -617,13 +618,74 @@ class ProtocolSyncState:
             trigger_discard=(discard.seq, discard.tile.code, discard.seat),
         )
 
-    def events_need_authoritative_refresh(self, events) -> bool:
-        """只在当前实现不能完整推进必要事实时查询快照。
+    def _own_hand_superset(self) -> Optional[Tuple[str, ...]]:
+        """本人暗牌的保守超集牌码序列：快照 my_hand(+drawn) ∪ 快照后本人摸牌。
 
-        弃牌后的响应资格、所有人的副露/牌河变化、超时及单局边界仍由
-        权威快照确认。正常 pass 不刷新；本人普通摸牌仅在完整前态能
-        通过 hangma 重算规则状态时直接交付，否则恢复。减少请求不能以
-        丢失牌面或陈旧 god 为代价。
+        只增不减：本人弃牌/副露让真实暗牌变少，超集只会多判兴趣（多拉
+        一次快照，安全侧）；本人新摸牌必须并入——漏掉新牌会把可碰/可吃
+        误判为无关。快照缺失、本人摸牌身份未知（空牌值）或抓打圈激活时
+        返回 None，调用方按"有兴趣"保守处理。
+        """
+
+        snapshot = self.snapshot
+        if snapshot is None or snapshot.seat is None or snapshot.seat < 0:
+            return None
+        if snapshot.god_catch_play:
+            return None  # 抓打圈分支复杂，不做无关裁剪
+        codes = list(snapshot.my_hand)
+        if snapshot.drawn_tile:
+            codes.append(snapshot.drawn_tile)
+        for event in self.history:
+            if event.seq <= snapshot.seq:
+                continue
+            if event.kind != "tile_drawn" or event.seat != snapshot.seat:
+                continue
+            if len(event.tiles) != 1:
+                return None  # 本人摸牌身份未知：超集不完整，退回保守
+            codes.append(event.tiles[0].code)
+        return tuple(codes)
+
+    def claim_interest_for_cycle(self) -> bool:
+        """当前弃牌周期是否可能给我开碰/明杠/吃响应窗（保守超集）。
+
+        周期身份未知（无触发弃牌记忆）时返回 True：信息不足永远选
+        "拉快照"这一安全侧。供 timeout 标记事件与边界看门狗 gating 使用。
+        """
+
+        trigger = self._response_trigger
+        if trigger is None or self.snapshot is None:
+            return True
+        _round_no, _seq, tile_code, discarder_seat = trigger
+        return discard_interesting(
+            my_seat=self.snapshot.seat,
+            discarder_seat=discarder_seat,
+            tile_code=tile_code,
+            hand_codes=self._own_hand_superset(),
+        )
+
+    def events_need_authoritative_refresh(self, events) -> bool:
+        """事件流何时仍需要权威快照：推导不了、或事实可能与我校行动相关。
+
+        2026-09-18 复盘修订（review/test-tournament-20260917/REPORT.md
+        §8.2/§9.3）：全 10 场 5,343 次 peng→chi 切换 99.6% 在切换时刻携带
+        timeout/pass 标记事件，且响应窗与我校无关的比例约 94-96%（可鸣率
+        4.07%/6.04%）。据此收敛刷新触发集：
+
+        - 他家弃牌：仅当按保守手牌超集我可能碰/明杠/吃时刷新；弃财神
+          （白，抓打圈唯一激活路径）或携带 catch_play=true 的弃牌无条件
+          刷新——弃白恰是兴趣过滤判无关的场景，合法性空间变化必须权威
+          确认；非白弃牌缺省 catch_play 标记时开圈不可能发生，正常过滤；
+        - timeout 标记：仅当当前弃牌周期对我有鸣牌兴趣、或权威快照仍处于
+          抓打圈时刷新（标记事件本身足以推进投影，且我的吃窗只可能在
+          有兴趣的周期里开出）；
+        - 本人弃牌回显：不刷新（无响应资格变化；增量摸牌观察会扣除
+          本人自快照以来的弃牌，见 incremental_draw_observation）；
+        - 他家/本人副露、未知类型、跨局边界、违规他家摸牌：维持无条件
+          刷新——副露会重置牌河/副露投影基线，减少请求不得以丢失牌面
+          或陈旧 god 为代价。
+
+        正常 pass 仍不刷新；本人普通摸牌仅在完整前态能通过 hangma
+        重算规则状态时直接交付，否则恢复。
         """
 
         projected = self.incremental_response_observation()
@@ -631,6 +693,9 @@ class ProtocolSyncState:
             self._observation_cache = projected
             return False
         my_seat = self.snapshot.seat if self.snapshot is not None else None
+        if self.snapshot is not None and self.snapshot.god_catch_play:
+            return True  # 抓打圈窗口语义复杂，回到权威快照
+        hand_superset = self._own_hand_superset()
         for event in events:
             if event.type == "tile_drawn" and event.seat != my_seat and event.tiles:
                 # 违规他家摸牌可能证明此前本人的窗口已结束；不可只脱敏后继续决策。
@@ -638,7 +703,35 @@ class ProtocolSyncState:
             if event.type not in KNOWN_EVENT_TYPES:
                 # P2-N3：见 docstring——已学习未知类型的行为不可知，保守刷新。
                 return True
-            if event.type in ("tile_discarded", "timeout", "round_ended", "game_ended"):
+            if event.type == "tile_discarded":
+                if event.seat is None:
+                    return True  # 座位缺失保守刷新
+                tile_code = event.tiles[0] if event.tiles else ""
+                if event.catch_play is True or tile_code == WEALTH_GOD_CODE:
+                    # 抓打圈的激活路径是弃财神（弃白开圈）、圈内弃牌带
+                    # catch_play=true：这两类弃牌恰是鸣牌兴趣判无关的场景，
+                    # 合法性空间变化必须权威确认；圈内后续事件由下方
+                    # snapshot.god_catch_play 分支兜住。官方事件可缺省
+                    # catch_play 字段（v8/v34 fixture 均有 data:{} 形态），
+                    # 非白弃牌缺标记时开圈不可能发生，按正常过滤处理。
+                    return True
+                if event.seat == my_seat:
+                    continue  # 本人弃牌回显没有响应资格变化
+                if discard_interesting(
+                    my_seat=my_seat,
+                    discarder_seat=event.seat,
+                    tile_code=tile_code,
+                    hand_codes=hand_superset,
+                ):
+                    return True
+                continue  # 与我校无关的弃牌：由标记事件与投影推进
+            if event.type == "timeout":
+                if self.snapshot.god_catch_play:
+                    return True  # 抓打圈内阶段推进不可由投影推导，保持刷新
+                if self.claim_interest_for_cycle():
+                    return True
+                continue  # 无兴趣周期的窗口推进标记：投影即可
+            if event.type in ("round_ended", "game_ended"):
                 return True
             if event.type in ("chi", "peng", "gang"):
                 return True
@@ -723,13 +816,14 @@ class ProtocolSyncState:
     def incremental_draw_observation(self) -> Optional[PlayerObservation]:
         """本人摸牌窗口的增量观察：快照权威字段 + 增量摸牌/弃牌事实。
 
-        只允许在 incremental_draw_window 命中时使用。为什么 my_hand 可以
-        直接沿用快照：本人一切改牌动作（弃牌/副露/超时）都在
-        events_need_authoritative_refresh 的刷新触发集内，摸牌事件成为事件
-        流末条时，自最后快照以来本人未发生任何改牌动作，快照 my_hand 即
-        当前手牌；drawn_tile 仅取本人摸牌事件牌码，他家摸牌不得提供牌值。牌河按事件流追加公开弃牌，保持估算口径与真实
-        牌河一致；phase/turn/responding_seats 由摸牌语义推导（draw 阶段、
-        本人行动、无响应成员）。
+        只允许在 incremental_draw_window 命中时使用。my_hand 口径：本人
+        副露/超时仍在 events_need_authoritative_refresh 的刷新触发集内；
+        本人弃牌回显自 2026-09-18 修订后不再触发刷新，因此这里按事件流
+        扣除自快照以来的本人弃牌后再交付（见函数体内 own_discards 段），
+        摸牌事件成为事件流末条时结果即当前手牌；drawn_tile 仅取本人摸牌
+        事件牌码，他家摸牌不得提供牌值。牌河按事件流追加公开弃牌，保持
+        估算口径与真实牌河一致；phase/turn/responding_seats 由摸牌语义
+        推导（draw 阶段、本人行动、无响应成员）。
         """
 
         base = self._snapshot_observation()
@@ -744,6 +838,31 @@ class ProtocolSyncState:
         ):
             return None
         drawn = last.tiles[0]
+        # 2026-09-18 修订：本人弃牌回显不再触发快照刷新（见
+        # events_need_authoritative_refresh），快照 my_hand 与当前暗牌之间
+        # 可能隔着若干次本人摸牌/弃牌。这里按事件流做"加本人摸牌、减本人
+        # 弃牌"的净额修正，保持摸牌窗口"13−3×副露 +1 张新摸"口径；历史
+        # 中出现身份未知的本人摸牌时抛错交权威快照；扣不存在的牌码按防御
+        # 处理跳过（正常流程不可达，观察核对层会捕获不一致）。本人副露仍
+        # 会触发刷新，无需在此处理。
+        own_adds = []
+        own_removes = []
+        for event in self.history:
+            # last 即本次交付的摸牌事件，牌值由 drawn 单列，不得重复计入
+            if event.seq >= last.seq or event.seq <= self.snapshot.seq or event.seat != self.snapshot.seat:
+                continue
+            if event.kind == "tile_drawn":
+                if len(event.tiles) != 1:
+                    raise ValueError("本人历史摸牌身份未知，须恢复权威快照")
+                own_adds.append(event.tiles[0].code)
+            elif event.kind == "tile_discarded" and len(event.tiles) == 1:
+                own_removes.append(event.tiles[0].code)
+        if own_adds or own_removes:
+            hand_codes = [tile.code for tile in base.my_hand] + own_adds
+            for code in own_removes:
+                if code in hand_codes:
+                    hand_codes.remove(code)
+            base = replace(base, my_hand=tuple(Tile(code) for code in hand_codes))
         # 最新弃牌以事件流增量事实为准；无增量弃牌时退回快照投影
         fact = self._last_discarded_event()
         if fact is not None and fact[0] > self.snapshot.seq:

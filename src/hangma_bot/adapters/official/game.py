@@ -5,9 +5,11 @@
 - 客户端局面 = 全量快照 + 后续增量事件（指南 v14 §2.1）：增量事件是
   权威公开事实，事件流只含自己的摸牌。本人摸牌窗口直接由增量事件送达
   （游标纪律修复，量化与口径见 doc/implementation/notes/cursor-discipline.md），
-  不再逐批 seq=0 刷新；快照刷新只在事件流无法推导权威事实时发生：
-  弃牌/timeout（响应窗口与神位状态）、本人副露（手牌张数不进入事件流）、
-  跨局边界 v10 快照与失步重建。
+  不再逐批 seq=0 刷新；快照刷新只在事件流无法推导权威事实、或事实可能
+  与我校行动相关时发生（2026-09-18 复盘修订，review/test-tournament-
+  20260917 §8.2/§9.3）：与我校无鸣牌兴趣的他家弃牌/timeout 标记走纯增量
+  （可鸣率实测仅 4-6%），副露（重置牌河/副露投影基线）、本人副露（手牌
+  张数不进入事件流）、跨局边界 v10 快照与失步重建仍无条件刷新。
 - 重复 seq 幂等忽略；缺口、gap=true、未知关键事件用 seq=0 整体重建。
 - GET 超时/可恢复 5xx/429 在预算内有界重试；动作 POST 绝不自动重放。
 - 409 固定流程：记录明确拒绝 → seq=0 全量刷新 → 比较 WindowKey →
@@ -18,10 +20,13 @@
 - 官方可在快照响应附带 gap=true（指南 v10，跨局断链）：快照本身即
   权威全量，直接吸收并记录事实，无需额外重建。
 - 同场任意时刻最多一个在途 POST（ActionGate）。
-- 响应阶段（response_peng/response_chi）轮询时挂阶段边界定时器与长轮询
-  竞速：官方阶段切换不产生增量事件，定时器先到则主动 seq=0 刷新，捕获
-  无事件的 peng→chi 转换（集成阶段第二轮 R1）；定时器只在 response
-  阶段挂起，draw 阶段维持现状。
+- 响应阶段（response_peng/response_chi）轮询时长轮询为主、看门狗兜底
+  （2026-09-18 复盘修订）：官方在窗口走满的边界发出 timeout/pass 标记
+  事件（5,343 次切换 99.6% 携带、挂起长轮询到达滞后实测最差 +26ms），
+  边界发现由长轮询事件承担；仅对可能开我校响应窗的周期（鸣牌兴趣保守
+  超集）在"权威截止晚界+0.20s 容错"挂看门狗，标记迟到才主动 seq=0
+  捕获切换（39+11 例真沉默尾部与平台行为再变的保险）。竞速结构与槽位
+  回收复用 _long_poll_racing_boundary。
 - 响应窗口 WindowKey.trigger_seq 取触发弃牌事件序号（事件流最近一次
   tile_discarded，重建后回退结构化 last_discard 的官方 seq），同物理窗口
   身份稳定、每窗恰好交付一次（集成阶段第二轮 R2）。
@@ -94,6 +99,12 @@ from .transport import OfficialTransport
 # 无事件切换阶段，定时器按"窗口秒数 + 本余量"与长轮询竞速，保证刷新落在
 # 下一阶段已经生效之后（捕获 peng->chi 转换）而不截断原窗口。
 _BOUNDARY_MARGIN_SEC = 0.05
+
+_BOUNDARY_WATCHDOG_TOLERANCE_SEC = 0.20
+# 边界看门狗容错（2026-09-18，review/test-tournament-20260917）：全 10 场
+# 2,587 个"挂起长轮询带回边界标记事件"样本的到达滞后最差 +26ms（p99
+# −95ms，负值为本机钟滞后平台 ~200ms 所致；发射侧 4,708 标记 99.9% 不晚
+# 于截止所在秒）。0.20s ≈ 实测最差值的 8 倍余量；误触发只多一次 GET。
 
 # 查询发起和响应完成是两个截止：GET至少预留100ms，收到状态后再留
 # 50ms本地处理和共享的100ms动作网络预算，不宣称最坏耗时或服务器保证。
@@ -440,6 +451,26 @@ class OfficialGameSession:
                 if delivered is not None:
                     return delivered
                 continue
+            if any(event.type in ("tile_discarded", "timeout") for event in response.events):
+                # 2026-09-18：与我校无鸣牌兴趣的弃牌/标记事件不再触发全量
+                # 快照（review/test-tournament-20260917 §8.2/§9.3）；留审计
+                # 便于赛后按同一口径复核节省量与漏刷案例。沿用 AUTHORITATIVE_STATE
+                # 的 snapshot_refresh_reason 决策族（同 events_require_snapshot
+                # 先例）：按 kind 统计权威刷新次数的消费方必须同时过滤
+                # reason 前缀 skipped_，此约定与本条审计互为契约。标签细分：
+                # 本批弃牌全为本人回显时记 skipped_own_discard_echo（S5 口径），
+                # 其余记 skipped_no_claim_interest，复核口径不混计。
+                _discards = [e for e in response.events if e.type == "tile_discarded"]
+                _skip_reason = (
+                    "skipped_own_discard_echo"
+                    if _discards and all(e.seat == self._sync.snapshot.seat for e in _discards if e.seat is not None)
+                    else "skipped_no_claim_interest"
+                )
+                self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                    "snapshot_refresh_reason": _skip_reason,
+                    "event_types": sorted({event.type for event in response.events}),
+                    "consumed_seq": self._sync.last_seq,
+                }, trigger_seq=self._sync.last_seq)
             delivered = self._maybe_deliver_incremental_draw_window()
             if delivered is not None:
                 return delivered
@@ -545,32 +576,45 @@ class OfficialGameSession:
         return await self._get_state(long_poll=False)
 
     def _phase_boundary_timeout(self) -> Optional[float]:
-        """当前权威快照处于响应阶段时的边界定时时长；其余阶段为 None。
+        """响应阶段的边界看门狗定时时长；其余阶段与无关周期为 None。
 
-        官方响应阶段固定走满配置窗口秒数（peng/chi 各 1 秒）后才切换到
-        下一阶段，且 response_peng -> response_chi 的切换不产生任何增量
-        事件（集成阶段第二轮 R1 实测牌谱）——长轮询等不到事件，等看到
-        chi 窗口的 timeout 事件时窗口已结束。边界定时器与长轮询竞速，
-        定时先到则主动刷新权威快照，捕获无事件的阶段切换。
+        2026-09-18 复盘修订（review/test-tournament-20260917/REPORT.md
+        §8.2 与边界标记实测）：官方在窗口走满的边界时刻发出 timeout/pass
+        标记事件——全 10 场 5,343 次 peng→chi 切换 99.6% 携带标记，挂起
+        长轮询的标记到达滞后实测最差 +26ms。因此边界发现以长轮询事件为
+        主、定时器降级为看门狗：
 
-        时长取对应窗口秒数 + 约 50ms 余量：太短会刷新到旧相位（多一次
-        浪费的普通优先级请求），太长会压缩下一窗口的可用决策时间。
+        - 与我校无鸣牌兴趣的周期不设定时器（标记事件由投影消费，占
+          ~94-96% 的响应窗，不再每个边界刷一次全量）；
+        - 有兴趣的周期在"权威截止（晚界）+ _BOUNDARY_WATCHDOG_TOLERANCE_SEC"
+          看门狗到点仍未等来标记事件时，才主动 seq=0 捕获切换——覆盖
+          39+11 例真沉默尾部与未来平台行为再变的保险。
+
+        竞速结构与槽位回收复用 _long_poll_racing_boundary：正常路径长轮询
+        先返回（标记准时），看门狗被取消；仅标记迟到时看门狗取消长轮询。
         仅在 response 阶段挂起，draw 阶段维持现状。
         """
 
         snapshot = self._sync.snapshot
         if snapshot is None or self._sync.finished:
             return None
+        if not self._sync.claim_interest_for_cycle():
+            return None  # 无关周期：标记事件推进投影即可，不做边界刷新
         incremental = self._sync.incremental_response_window()
         if incremental is not None:
+            # 偏差说明：事件推导窗无官方截止，这里沿用 _window_timing 的
+            # 保守早界（提交口径）而非晚界——看门狗偏早只多一次 GET
+            # （安全侧）。有兴趣弃牌通常已先触发权威刷新进入下方快照
+            # 分支（权威晚界+容错），本分支仅在投影路径覆盖时可达。
             expiry = self._window_timing(incremental)["expires_at_monotonic"]
-            return max(expiry - self._monotonic(), 0.0) + _BOUNDARY_MARGIN_SEC
+            return max(expiry - self._monotonic(), 0.0) + _BOUNDARY_WATCHDOG_TOLERANCE_SEC
         if snapshot.phase in ("response_peng", "response_chi"):
             # F4（2026-09-05）：优先官方绝对截止 window_deadline_ms（实测
             # 4264/4264 响应快照携带）——绝对值天然不被 pass 推进后的刷新
-            # 重置（旧相对猜测式的核心缺陷）；官方未提供时退回窗口秒数+余量
+            # 重置（旧相对猜测式的核心缺陷）；看门狗取晚界（宁晚勿早，
+            # 标记事件未到才算迟到），官方未提供时退回窗口秒数+容错
             expiry, _ = self._snapshot_expiry(for_boundary=True)
-            return max(expiry - self._monotonic(), 0.0) + _BOUNDARY_MARGIN_SEC
+            return max(expiry - self._monotonic(), 0.0) + _BOUNDARY_WATCHDOG_TOLERANCE_SEC
         return None
 
     def _snapshot_expiry(self, *, for_boundary=False):
@@ -646,7 +690,10 @@ class OfficialGameSession:
         reservation, response_deadline, window_end = self._protect_next_chi_query(timeout_seconds)
         # 已临近边界时不再挂一条几乎必被取消的GET；这是查询往返余量，
         # 不是每场固定限频间隔。显式小burst的诊断仍保留其平滑限制。
-        if timeout_seconds < max(_STATE_RESPONSE_RESERVE_SEC, 2 * self._scheduler.state_interval_sec):
+        # 2026-09-18：timeout_seconds 已含看门狗容错，判定须用扣除容错后
+        # 的真实边界剩余，否则短路永假、临近边界反而先挂必被取消的轮询。
+        boundary_remaining = timeout_seconds - _BOUNDARY_WATCHDOG_TOLERANCE_SEC
+        if boundary_remaining < max(_STATE_RESPONSE_RESERVE_SEC, 2 * self._scheduler.state_interval_sec):
             try:
                 await self._boundary_timer(timeout_seconds)
                 return await self._get_state(

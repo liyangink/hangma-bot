@@ -170,7 +170,9 @@ class TestDeadlineTimerF4:
 
         deadline = clock.wall_ms() + 250
         transport.handler = _state_handler([
-            (200, json.dumps(_peng_doc(2, deadline_ms=deadline))),
+            # last_discard=2w：本方手牌持 2w×2（碰兴趣保守超集命中），
+            # 2026-09-18 起只有对我校有鸣牌兴趣的周期才挂边界看门狗
+            (200, json.dumps(_peng_doc(2, deadline_ms=deadline, last_discard="2w"))),
         ])
         session = make_game_session(transport=transport, clock=clock)
 
@@ -181,12 +183,47 @@ class TestDeadlineTimerF4:
         window = await asyncio.wait_for(session.next_item(), timeout=2)
         assert isinstance(window, ObservedActionWindow)
 
-        # 长轮询挂起、队列耗尽后由边界定时器在官方截止时刻主动刷新
+        # 长轮询挂起、队列耗尽后由边界看门狗在官方截止后主动刷新
         transport.handler = _state_handler([
-            (200, json.dumps(_peng_doc(3, deadline_ms=clock.wall_ms() + 5000))),
+            (200, json.dumps(_peng_doc(3, deadline_ms=clock.wall_ms() + 5000, last_discard="2w"))),
         ])
         # 仅验证：deadline 路径下 _phase_boundary_timeout 由官方绝对值推导
+        # （2026-09-18 看门狗语义：官方截止 250ms + 0.20s 容错 ≈ 0.45s；
+        # 旧的固定窗口秒数+0.05 猜测式在任意截止下都给 ~1.05s）
         timeout = session._phase_boundary_timeout()
-        assert timeout is not None and timeout < 1.0 + 0.05, (
-            "官方截止 5s 内的余量应远小于旧猜测式 1.05s"
+        assert timeout is not None and 0.2 < timeout < 0.5, (
+            "官方截止 250ms 应推导出 ~0.45s 的看门狗，而非旧猜测式 1.05s"
         )
+
+    async def test_no_watchdog_for_claim_uninteresting_cycle(self, transport, clock) -> None:
+        """2026-09-18：与我校无鸣牌兴趣的周期不挂边界看门狗（行为级验证）。
+
+        默认 last_discard=6b 与本方手牌（2w×2、万条型+字）无碰对、无筒子
+        搭子且弃牌者非上家可吃位——此周期标记事件由长轮询/投影消费。
+        行为断言：窗口交付后下一次轮询是纯长轮询（增量游标），全程无第二次
+        seq=0（旧实现每个响应边界都会主动刷一次全量）。
+        """
+
+        async def handler(*, method, path, params=None, json_body=None, long_poll=False):
+            if method == "POST":
+                return 200, "{}"
+            seq = (params or {}).get("seq")
+            if seq == 0:
+                return 200, json.dumps(_peng_doc(2, deadline_ms=clock.wall_ms() + 1000))
+            if long_poll:
+                await asyncio.sleep(30)  # 挂起等待标记事件：测试侧取消
+            raise AssertionError("无关周期不得出现边界 seq=0 刷新：seq={}".format(seq))
+
+        transport.handler = handler
+        session = make_game_session(transport=transport, clock=clock)
+        window = await asyncio.wait_for(session.next_item(), timeout=2)
+        assert isinstance(window, ObservedActionWindow)
+
+        task = asyncio.ensure_future(session.next_item())
+        await asyncio.sleep(0.1)
+        task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await task
+
+        gets = [(c.params or {}).get("seq") for c in transport.calls if c.method == "GET"]
+        assert gets == [0, 2], "无关周期只应有首拉(seq=0)与增量长轮询(seq=快照水位)，无边界全量"

@@ -131,9 +131,13 @@ class TestNextItem:
         base["snapshot"]["turn"] = 0  # 首快照无窗口（他人回合）
         refreshed = load_fixture("state_response_snapshot_draw.json")
         refreshed["seq"] = 103  # 权威快照必须吸收本批事件
+        # 2026-09-18：无关弃牌不再触发刷新——把事件改为对我校有兴趣的弃东
+        # （本方手牌持东×2，碰兴趣保守超集命中）
+        events_doc = load_fixture("state_response_events.json")
+        events_doc["events"][0]["tile"] = "东"
         transport.handler = _state_handler([
             _json(base),
-            _json(load_fixture("state_response_events.json")),
+            _json(events_doc),
             _json(refreshed),
         ])
         session = make_game_session(transport=transport, clock=clock)
