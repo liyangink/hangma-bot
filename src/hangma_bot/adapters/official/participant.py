@@ -66,6 +66,20 @@ from .scheduler import DEFAULT_STATE_ARRIVAL_GUARD_SEC, Priority, RequestKind, R
 from .transport import OfficialTransport, TransportConfig
 
 
+#: 赛事详情端点 GET /api/tournaments/{id} 的偶发 404 容忍次数（2026-09-17 真实平台证据）。
+#:
+#: 【证据】测试赛事 t_65d538e905c5 于 2026-09-17 18:39—18:45 CST 的正常 2 秒轮询中，
+#: 5 次独立运行共命中 4 次：同一端点连续若干次 200 后**单次**返回 404
+#: TOURNAMENT_GONE，而同时刻 /api/me 为 200，随后同一端点又恢复 200
+#: （命中点在 +100.1s、+8.2s、+125.2s、+38.4s，全部孤立单发）。
+#: 因此单次 404 只说明该次读取失败，不足以判定"赛事消失"。
+#:
+#: 【语义边界】本容忍只改变**尝试次数**，不改变结论：连续耗尽后仍按原有永久
+#: 语义终结为 TARGET_MISMATCH。身份绑定与规则归属仍由 /api/me 与
+#: /api/tournaments/me/rules 的强校验负责，不受本容忍放宽。
+TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE = 5
+
+
 @dataclass(frozen=True)
 class _Registration:
     """初始化发现结果；不含 Token 原文。"""
@@ -155,6 +169,44 @@ class OfficialTournamentSession:
         return self._audit_context()
 
     # ---------- HTTP 帮助 ----------
+
+    async def _tournament_detail(self, tournament_id: str, *, priority: Priority) -> Any:
+        """读取赛事详情；偶发 404 有界重试后才上抛，其余异常原样透传。
+
+        为什么不能一见 404 就判"赛事消失"：见模块常量
+        TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE 记录的真实平台证据——
+        同一端点前后请求均 200、中间单次 404，属平台侧瞬时读取失败。
+        每次容忍都发一条 PROTOCOL_RECOVERED 审计，让"忽略过哪些 404"
+        可回放；重试间隔用赛事轮询间隔，不额外占用请求额度。
+        """
+
+        last: Optional[NotFoundError] = None
+        for attempt in range(1, TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE + 1):
+            try:
+                return await self._request_with_retry(
+                    "GET",
+                    "/api/tournaments/{}".format(tournament_id),
+                    priority=priority,
+                )
+            except NotFoundError as exc:
+                last = exc
+                self._emit_audit(
+                    AuditKind.PROTOCOL_RECOVERED,
+                    {
+                        "area": "tournament_detail_not_found",
+                        "reason": "详情端点返回 404，按瞬时读取失败有界重试",
+                        "tournament_id": tournament_id,
+                        "attempt": attempt,
+                        "tolerance": TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE,
+                        "official_code": exc.official_code,
+                    },
+                )
+                if attempt >= TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE:
+                    break
+                await self._retry_sleep(self._poll_interval)
+        if last is None:  # 循环结构保证不可达；显式失败优于静默返回 None
+            raise RuntimeError("赛事详情读取未产生结果也未产生异常")
+        raise last
 
     async def _request_with_retry(
         self,
@@ -249,11 +301,8 @@ class OfficialTournamentSession:
                     ParticipantTerminalReason.TARGET_MISMATCH,
                     "rules 归属 {} 与目标 {} 不符".format(rules_parsed.tournament_id, tournament_id),
                 )
-            detail_raw = await self._request_with_retry(
-                "GET",
-                "/api/tournaments/{}".format(tournament_id),
-                priority=Priority.RECOVERY,
-            )
+            # 偶发 404 由 _tournament_detail 有界容忍；持续 404 仍→TARGET_MISMATCH
+            detail_raw = await self._tournament_detail(tournament_id, priority=Priority.RECOVERY)
             detail_parsed = parse_tournament_detail(detail_raw)
             # 配置构造（M/Rounds/时限约束）与初始投影都在 try 内完成：
             # 坏配置（如 M=0）必须是 ParticipantTerminal 而非裸 ValueError
@@ -405,11 +454,9 @@ class OfficialTournamentSession:
                         "Token 绑定漂移：{} → {}".format(reg.tournament_id, me.tournament_id or "(空)"),
                     )
                 detail_parsed = parse_tournament_detail(
-                    await self._request_with_retry(
-                        "GET",
-                        "/api/tournaments/{}".format(reg.tournament_id),
-                        priority=Priority.BACKGROUND,
-                    ),
+                    # 偶发 404 不是"赛事消失"（同端点前后均 200）：容忍见模块常量；
+                    # 持续 404 由下面的 except NotFoundError 按永久语义终结
+                    await self._tournament_detail(reg.tournament_id, priority=Priority.BACKGROUND)
                 )
             except AuthError:
                 return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "next_update 401")
