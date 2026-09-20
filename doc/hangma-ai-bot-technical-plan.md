@@ -1235,6 +1235,8 @@ Hatch 在安装期构建可选 CPython 扩展，wheel 标明平台和 Python 二
 
 ## 2026-09-19 监督进化与真实行为面板
 
+2026-09-20 评分审计进展：自然桌、阶段及面板已保存按实际物理座位策略归属的评分成功/失败/未知计数，并绑定摘要到完整MatchResult。操作计数超额与其他资源约束、主动弃权分列；不改变驱动fallbacks含义。完整结果读取与确认执行原型恢复时重新核验，32个真实工程桌赛通过。条件续打同口径、可放宽的研究配置与自动选留资格仍待收口，不代表已完成正式确认或发布。见[验收证据](../review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/formal-execution-audit-20260920/README.md)。
+
 2026-09-20 用户补充裁定：候选暂未满足默认计数额度，不直接否定研究价值；可在另行冻结的有界离线配置下评价效果，随后验证等价实现、编译优化或机制简化的可行性。不可部署的好机制可有限留存，供新提案重新评价。执行审计和研究配置尚待贯通准入、评测、反馈、档案及恢复，当前生产默认额度和历史结果不改写；正式确认与发布绑定最终部署产物，并满足原1秒/3秒窗口及并发门禁。与[架构](architecture.md)同步的细则见[性能研究与发布裁定](../review/llm-guided-heuristic-route-2026-09-15/R10-PERFORMANCE-RESEARCH-AND-RELEASE-2026-09-20.md)。
 
 当前按 [v4 评分搜索合同](../review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)及 [R10 执行方案](../review/llm-guided-heuristic-route-2026-09-15/R10-SUPERVISED-EVOLUTION-2026-09-19.md)推进，目标为显著优于稳定 V2 并通过赛事发布门禁。真实生成—评价—反馈—修订已完成最小试运行，尚无可发布候选，独立确认执行仍待实现。
