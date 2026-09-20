@@ -1144,8 +1144,10 @@ class _AvList(list):
 
     def __getitem__(self, item: Any) -> Any:
         result = super().__getitem__(item)
-        # 切片产生新列表：仍包装为受限列表，防止绕开集合上限继续增长。
-        if isinstance(result, list):
+        # 仅切片产生新列表。普通下标必须保留对象引用，否则嵌套累加器
+        # 的 append 会写入副本，合法候选将静默丢失计数和加权分数。
+        # 切片仍包装为受限列表，防止绕开集合上限继续增长。
+        if isinstance(item, slice) and isinstance(result, list):
             return _AvList(result, self._cap)
         return result
 
