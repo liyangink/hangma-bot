@@ -386,6 +386,11 @@ class ActionValuePolicy:
         """候选种子名；进入策略诊断身份。"""
         return self._scorer.name
 
+    @property
+    def max_operations(self) -> Optional[int]:
+        """实际评分额度供离线审计读取；非正式评分替身未声明时保持未知。"""
+        return getattr(self._scorer, "max_operations", None)
+
     async def choose(
         self,
         request: DecisionRequest,

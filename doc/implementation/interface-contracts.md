@@ -753,6 +753,24 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 
 **2026-09-16 A 包合同冻结 → 2026-09-17 实施完成**：机器合同 [contracts/action-value-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json)（score_actions 接口、受限子集、限额与白名单、身份与门禁 schema）与 [contracts/group-dev-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json)（group_advance_v1 目标 + group_dev_v1 赛制，group-only 单组阶段合同）已冻结并实施：B1 进展载荷（FollowupBranchFacts/FamilyProgress）、B2 受限执行器与三种子、B3 codec 升级与 ActionValuePolicy 装配、C1 legal-prefix-v1 与中途续打、C2 根级统计与八席档案、D 生成门禁与七命令、E 最小真实闭环（I1/M1 血缘完整）全部落地。本节上表接缝行随之从拟实施转为已实施（审计 trace 与决策路径接线除外——决策记录仍按原 codec）。效果结论见 evidence/v4-impl/batch8/CLOSURE.md 四态报告：框架完成、开发候选完成、no_positive_candidate（未选出整体优胜，如实未进入确认）。
 
+### 显式离线执行配置（2026-09-20）
+
+**研究配置只提高单次评分的操作计数上限，不修改规则、输出合同、内存边界或真实动作时限。** 默认机器合同仍为100,000；`research-200k-v1` 是单独登记的有界研究配置，不能改写历史准入结论。
+
+| 公开接缝 | 语义与调用责任 |
+| --- | --- |
+| `ActionValueScorer(name, source, *, max_operations=100000)` | `max_operations` 必须为正整数，拒绝bool/浮点强转；构造与每次评分使用同一额度。种子工厂与线上组合根保持默认 |
+| `ActionValueScorer.max_operations` | 只读实际生效的单窗口计数上限，不是毫秒或已用次数 |
+| `ActionValueScorer.last_operation_count` | 最近一次评分的实际计数，失败时含触发超额的操作；不等于整个公式执行完需要的总数 |
+| `ActionValueScorer.candidate_identity(...)` | 非默认额度进入身份参数；拒绝与实际额度不符的参数或配置声明。默认参数形状保持兼容，但实现依赖更新仍改变新运行身份 |
+| `ActionValuePolicy.max_operations` | 向离线审计只读暴露评分器实际额度；未声明额度的测试评分器返回None，不猜测默认值；`choose`签名及排序不变 |
+| `sitin_execution_profile.resolve` | 白名单配置解析，只有`default-100k-v1`和`research-200k-v1`；拒绝任意翻倍或类型冒充 |
+| 研究准入与自然评价 | 准入、监管子进程及计时显式用相同额度；自然入口要求授权声明和同源码同额度的准入记录，执行前拒绝缺失或漂移 |
+| 条件续打与独立核验 | 当前桌只记截取后窗口，剩余桌记完整窗口；按物理座位0至3绑定策略、额度和摘要。缺历史审计为未知，不能补零 |
+| 反馈与恢复 | 不同额度不得按同源码合并反馈；独立读取器核验自然换座后的实际额度。自动档案状态机仍只支持默认配置，研究配置在花费前拒绝 |
+
+本次公开属性与构造参数由策略契约测试覆盖，受监督离线入口另覆盖默认失败/研究成功、持久化及错额度拒绝。逐窗口操作数全量落盘和自动研究档案恢复不在当前实现范围。研究结果永不直接签发发布资格。
+
 ### 门线 / 位次势差语义（2026-09-17，R7 P10，对应复审 §5 M4）
 
 **结论：「门线」只有两个名字，名字必须与升序下标一致。** R6 试跑候选把「晋级门线（第 3 名分数线）」贴到升序 `sorted(scores)[2]`（实为**第 2 名**）：对四座 `(100, 80, 20, 0)`、焦点座位 2 得到 −60，而所称「第 3 名距离」应为 0。本节固定候选面向口径；作者提示词由 [`tools/sitin_generate.py`](../../review/llm-guided-heuristic-route-2026-09-15/tools/sitin_generate.py) 的 `gate_line_semantics_block()` 渲染（同源，不手抄第二套），口径块进合同身份——改口径即改提示词哈希。

@@ -24,6 +24,7 @@ from .action_value import (
 )
 from .action_value_executor import (
     EXECUTOR_VERSION,
+    MAX_COUNTED_OPERATIONS,
     ActionValueExecutor,
     compute_candidate_identity,
     compute_deps_digest,
@@ -538,10 +539,24 @@ class ActionValueScorer:
     抛给调用方整批降级。candidate_identity() 输出合同身份，供准入与评估绑定。
     """
 
-    def __init__(self, name: str, source: str) -> None:
+    def __init__(self, name: str, source: str, *, max_operations: int = MAX_COUNTED_OPERATIONS) -> None:
+        """装载指定有界额度；线上工厂保持默认，离线研究配置由调用方另行冻结。"""
+        if type(max_operations) is not int or max_operations <= 0:
+            raise ValueError("max_operations 必须为正整数，不能使用bool或截断浮点")
         self.name = name
         self.source = source
-        self._executor = ActionValueExecutor(source, name=name)
+        self._max_operations = max_operations
+        self._executor = ActionValueExecutor(source, name=name, max_operations=max_operations)
+
+    @property
+    def max_operations(self) -> int:
+        """实际生效的单窗口计数上限；不是毫秒，也不是实际用量。"""
+        return self._max_operations
+
+    @property
+    def last_operation_count(self) -> int:
+        """最近一次评分的实际计数；含触发超额的操作，不表示完整公式所需总数。"""
+        return self._executor.last_operation_count
 
     @property
     def executor_version(self) -> str:
@@ -559,10 +574,24 @@ class ActionValueScorer:
         deps_digest: Optional[str] = None,
     ) -> str:
         """按合同 identity.candidate_id_inputs 计算 candidate_id。"""
+        if params is not None and not isinstance(params, Mapping):
+            raise ValueError("params 必须是映射或空")
+        effective_params = dict(params or {})
+        declared = effective_params.get("candidate_max_operations", self.max_operations)
+        if type(declared) is not int or declared != self.max_operations:
+            raise ValueError("候选身份声明的额度与实际评分器不符")
+        if "candidate_execution_profile" in effective_params:
+            profile = effective_params["candidate_execution_profile"]
+            if (not isinstance(profile, Mapping)
+                    or type(profile.get("max_operations")) is not int
+                    or profile["max_operations"] != self.max_operations):
+                raise ValueError("候选身份的研究配置额度与实际评分器不符")
+        if self.max_operations != MAX_COUNTED_OPERATIONS:
+            effective_params["candidate_max_operations"] = self.max_operations
         return compute_candidate_identity(
             self.source,
             contract_sha256,
-            params,
+            effective_params,
             EXECUTOR_VERSION,
             deps_digest if deps_digest is not None else compute_deps_digest(),
         )

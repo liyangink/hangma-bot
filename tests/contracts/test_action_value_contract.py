@@ -23,7 +23,34 @@ from hangma_bot.policy.action_value_seeds import (
     SEED_NAMES,
     build_action_value_policy,
     build_sample_view,
+    ActionValueScorer,
 )
+
+
+def test_explicit_scorer_budget_changes_execution_and_identity():
+    """默认装配不变；显式大额度只放宽操作计数，身份不能伪报实际配置。"""
+    source = ('def score_actions(view):\n    for i in range(60000):\n        x = i\n'
+              '    return {"status": "SCORED", "entries": '
+              '[{"action_key": a["action_key"], "score": 0.0, "trace": {}} for a in view["actions"]]}\n')
+    default = ActionValueScorer("test", source)
+    research = ActionValueScorer("test", source, max_operations=200000)
+    with pytest.raises(exe.WorkloadExceeded): default.score(build_sample_view())
+    assert default.last_operation_count > default.max_operations == 100000
+    assert research.score(build_sample_view()).status == "SCORED"
+    assert 100000 < research.last_operation_count < research.max_operations == 200000
+    assert default.candidate_identity("contract", deps_digest="deps") != research.candidate_identity("contract", deps_digest="deps")
+    assert default.candidate_identity("contract", deps_digest="deps") == exe.compute_candidate_identity(
+        source, "contract", None, exe.EXECUTOR_VERSION, "deps")
+    for name in SEED_NAMES:
+        assert build_action_value_policy(name).max_operations == 100000
+    for params in ({"candidate_max_operations": 100000},
+                   {"candidate_execution_profile": {"max_operations": 100000}}):
+        with pytest.raises(ValueError): research.candidate_identity("contract", params=params)
+
+
+@pytest.mark.parametrize("limit", [True, False, 0, -1, 200000.5, "200000", None])
+def test_scorer_rejects_invalid_execution_budget(limit):
+    with pytest.raises(ValueError): ActionValueScorer("test", "", max_operations=limit)
 
 CONTRACT_PATH = (
     Path(__file__).resolve().parents[2]
