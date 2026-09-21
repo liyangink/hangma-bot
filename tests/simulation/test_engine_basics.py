@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from hangma_bot.kernel.serialization import observation_to_json
 from hangma_bot.simulation import SimulationEngine, WorldState
 
@@ -108,6 +110,45 @@ def test_round_walls_independent_of_prior_choices():
     dealer_a = next_dealer(0, world_a.round_records[0].winner_seat, world_a.round_records[0].is_draw)
     dealer_b = next_dealer(0, world_b.round_records[0].winner_seat, world_b.round_records[0].is_draw)
     assert (hands_a == hands_b) == (dealer_a == dealer_b)
+
+
+def test_future_drawable_resampling_is_deterministic_and_observation_preserving():
+    """离线未来顺序重排不改变当前观察、牌张、过去前缀或固定保留区。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    world = engine.start(make_spec(rules, rounds=1, seed=117, scenario_id="resample"))
+    before = json.dumps(
+        [observation_to_json(item.observation) for item in engine.frame(world).decisions],
+        sort_keys=True,
+        ensure_ascii=False,
+    )
+    first = engine.resample_future_drawable_wall(world, sample_key="sample-1")
+    again = engine.resample_future_drawable_wall(world, sample_key="sample-1")
+    second = engine.resample_future_drawable_wall(world, sample_key="sample-2")
+
+    assert first.wall == again.wall
+    assert first.wall != second.wall
+    assert world.wall != first.wall
+    assert world.wall[: world.wall_front] == first.wall[: first.wall_front]
+    assert world.wall[world.wall_back :] == first.wall[first.wall_back :]
+    assert sorted(tile.code for tile in world.wall) == sorted(tile.code for tile in first.wall)
+    assert first.round_start_wall == first.wall
+    assert world.round_start_wall == world.wall
+    after = json.dumps(
+        [observation_to_json(item.observation) for item in engine.frame(first).decisions],
+        sort_keys=True,
+        ensure_ascii=False,
+    )
+    assert before == after
+
+
+def test_future_drawable_resampling_rejects_empty_sample_key():
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    world = engine.start(make_spec(rules, rounds=1, seed=118))
+    with pytest.raises(ValueError, match="sample_key"):
+        engine.resample_future_drawable_wall(world, sample_key="")
 
 
 def test_conservation_during_full_match():

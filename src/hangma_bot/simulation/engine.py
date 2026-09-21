@@ -124,6 +124,34 @@ class SimulationEngine:
             blocked_reason=None,
         )
 
+    def resample_future_drawable_wall(
+        self, world: WorldState, *, sample_key: str
+    ) -> WorldState:
+        """为离线成对续打重排当前局尚未摸取的可摸区。
+
+        只允许在决策边界调用。方法保留已经发生的牌墙前缀、四家当前暗手、
+        公开事件、牌张多重集和固定保留区；同一世界与 ``sample_key`` 逐字
+        可复现。返回新 ``WorldState``，原世界不变。它只隔离未来摸牌顺序
+        方差，不是对未知他家手牌的后验采样，也不向策略暴露完整世界。
+        """
+
+        if not isinstance(world, WorldState):
+            raise ValueError("resample_future_drawable_wall 需要 WorldState")
+        if world.blocked_reason is not None or world.progression.window not in _DECISION_WINDOWS:
+            raise ValueError("未来牌墙只可在未阻塞的决策边界重排")
+        resampled = shuffle.resample_future_drawable(
+            world.wall,
+            wall_front=world.wall_front,
+            wall_back=world.wall_back,
+            scenario_id=world.scenario_id,
+            seed=world.seed,
+            round_no=world.round_no,
+            sample_key=sample_key,
+        )
+        # round_start_wall 用于最终 RoundRecord；同步尚未消费区，确保导出记录
+        # 与实际续打牌墙一致。已消费前缀及当前游标均不变。
+        return replace(world, wall=resampled, round_start_wall=resampled)
+
     def advance(
         self,
         world: WorldState,

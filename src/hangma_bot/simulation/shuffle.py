@@ -25,6 +25,9 @@ from hangma_bot.kernel.actions import CANONICAL_TILE_ORDER, Tile
 DEAL_ALGORITHM = "simulation-v1:deal-v1"
 """发牌算法版本标识，写入每个 world_payload 与产物 manifest。"""
 
+FUTURE_WALL_RESAMPLE_ALGORITHM = "simulation-v1:future-drawable-resample-v1"
+"""离线研究用未来可摸区重排版本；不会进入线上策略输入。"""
+
 RESERVE_TILES = 20
 """牌墙保留不摸的张数（最后 10 墩，官方指南 1.1 v15）。"""
 
@@ -50,6 +53,54 @@ def wall_for_round(scenario_id: str, seed: int, round_no: int) -> Tuple[Tile, ..
     pool = list(_FULL_POOL)
     rng.shuffle(pool)
     return tuple(Tile(code) for code in pool)
+
+
+def resample_future_drawable(
+    wall: Tuple[Tile, ...],
+    *,
+    wall_front: int,
+    wall_back: int,
+    scenario_id: str,
+    seed: int,
+    round_no: int,
+    sample_key: str,
+) -> Tuple[Tile, ...]:
+    """确定性重排尚未摸取的可摸区，保留已消费前缀与固定保留区。
+
+    该函数只改变 ``wall[wall_front:wall_back]`` 的物理顺序，不改变牌张
+    多重集、其他玩家暗手或末尾 20 张保留区。它估计的是“当前真实隐藏牌
+    分配给定时，未来可摸顺序的条件方差”，不是完整信息集后验抽样。
+    ``sample_key`` 必须由离线实验冻结；策略不得按结果选择它。
+    """
+
+    if (
+        isinstance(wall_front, bool)
+        or isinstance(wall_back, bool)
+        or not isinstance(wall_front, int)
+        or not isinstance(wall_back, int)
+        or not 0 <= wall_front <= wall_back <= len(wall)
+    ):
+        raise ValueError("未来牌墙重排游标非法")
+    if not isinstance(sample_key, str) or not sample_key:
+        raise ValueError("sample_key 必须是非空字符串")
+    payload = json.dumps(
+        [
+            FUTURE_WALL_RESAMPLE_ALGORITHM,
+            scenario_id,
+            seed,
+            round_no,
+            wall_front,
+            wall_back,
+            sample_key,
+        ],
+        ensure_ascii=False,
+        separators=(",", ":"),
+        allow_nan=False,
+    )
+    rng = random.Random(int.from_bytes(hashlib.sha256(payload.encode("utf-8")).digest()[:8], "big"))
+    drawable = list(wall[wall_front:wall_back])
+    rng.shuffle(drawable)
+    return tuple(wall[:wall_front]) + tuple(drawable) + tuple(wall[wall_back:])
 
 
 def deal_hands(
