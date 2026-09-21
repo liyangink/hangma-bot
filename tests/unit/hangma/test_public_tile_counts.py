@@ -14,12 +14,60 @@ from dataclasses import replace
 import pytest
 
 from hangma_bot.hangma.interface import CandidateFactKind, RuleCompleteness
+from hangma_bot.hangma.internal_types import TILE_INDEX
+from hangma_bot.hangma.public_tile_counts import count_unseen_tiles
 from hangma_bot.kernel.actions import Tile
 from hangma_bot.kernel.observation import PublicEvent, PublicMeld
 from tests.unit.hangma.test_candidate_facts import make_observation, _rules
 from tests.unit.hangma.test_official_action_chain_trace import trace
 
 from tests.simulation.test_catch_owner_v26 import _after_piao_and_claim
+
+
+def test_unseen_counts_subtract_current_draw_exactly_once_in_both_snapshot_shapes():
+    """契约形态与官方实测形态必须得到相同未知容量，不能把当前摸牌留在牌池。"""
+
+    base = make_observation(drawn_tile=Tile("1w"), hand_counts=(14, 13, 13, 13))
+    official = replace(base, my_hand=base.my_hand + (Tile("1w"),))
+
+    contract_counts = count_unseen_tiles(base)
+    official_counts = count_unseen_tiles(official)
+
+    assert contract_counts == official_counts
+    assert contract_counts[TILE_INDEX["1w"]] == 2
+
+
+def test_unseen_counts_include_public_discards_and_reject_physical_overflow():
+    visible = make_observation(
+        drawn_tile=Tile("1w"),
+        hand_counts=(14, 13, 13, 13),
+        discards=((Tile("1w"),), (), (), ()),
+    )
+    impossible = make_observation(
+        hand_codes=("1w", "1w", "1w", "1w", "2w", "3w", "4w",
+                    "5w", "6w", "7w", "8w", "9w", "1b"),
+        drawn_tile=Tile("1w"),
+        hand_counts=(14, 13, 13, 13),
+    )
+
+    assert count_unseen_tiles(visible)[TILE_INDEX["1w"]] == 1
+    assert count_unseen_tiles(impossible)[TILE_INDEX["1w"]] is None
+
+
+def test_unseen_counts_include_chain_piao_missing_from_snapshot_river():
+    observation = make_observation(
+        hand_codes=("1w", "2w", "3w", "4w", "5w", "6w", "7w",
+                    "8w", "9w", "1b", "2b", "3b", "白"),
+        chain_piao=2,
+        rule_state=replace(
+            make_observation().rule_state,
+            baotou=True,
+            chain_count=2,
+        ),
+    )
+
+    # 手牌 1 张 + 链内已飘但当前河缺失的 2 张，物理未知只剩 1 张。
+    assert count_unseen_tiles(observation)[TILE_INDEX["白"]] == 1
 
 
 @pytest.mark.parametrize("claim,code,remaining", [("peng", "东", 1), ("chi", "9t", 3)])

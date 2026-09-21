@@ -305,6 +305,17 @@ V0/V1 评分源码的**行为**不变；线上不含任何 LLM 调用。相关�
 **`producer_commit + dirty=true` 只说得出“与父提交不一样”，说不出差在哪里**，因此未提交代码时另把实际装载的评分源码写入产物目录 `code_snapshot/`。
 权重快照的解包改为按 `base_policy` **约定**递归（上限 8 层），新增装饰器不必再改该函数——初版只认 `WhiteDiscardGuardPolicy`，
 候选适配器解不出来，产物里写成 `effective_weights=null`，而 **null 与“该策略确实没有权重”长得一样**。
+
+### 4.10 R18 机会能力离线评测合同（2026-09-22）
+
+`hangma_bot.offline.opportunity_capability` 只消费正式 `DecisionRequest`、`BotPolicy.choose` 的首选动作及题目生成器事先提供的全合法动作 oracle。它不调用候选内部 scorer，不产生合法动作、胡牌、爆头、链或结算，也不改变 `BotPolicy`、`DecisionRequest`、`DecisionPlan` 和四个外部端口。
+
+题目身份至少绑定 `case_id/base_scenario_id/family/split/generator_seed/rules_hash/generator_sha256/oracle_version/request_sha256/reachability_witness_sha256`。全部合法动作须逐项提供同单位的 `value/error_bound/oracle_level/evidence`；动作缺值、策略异常、空计划或非法首选都保留为显式状态，不补零参与排序。regret 同时报点估计和由动作值误差推导的上下界；候选相对 V2 的配对增益按最坏方向组合区间。
+
+条件代理需要未知牌容量时统一调用 `hangma.public_tile_counts.count_unseen_tiles`。该函数先复用当前平台牌河/副露去重，再兼容 `my_hand` 含或不含单列摸牌的两种实测形态；当前摸牌恰好扣一次。某牌码已知张数超过四张或公开计数矛盾时返回 `None`，题目生成器必须据此退出该动作或整题 oracle，不能截断成零。
+
+同一基础状态展开的财神数、链深、horizon、座位或赛事处境共享 `base_scenario_id` 和数据分割。聚合先在基础场景内取变体均值，再对基础场景等权，逐家族输出；不得按展开题数混成总命中率。该离线向量可供 Pareto/Lexicase 保留专长，但不能代替完整桌赛非劣、独立确认、时限和官方发布门禁。机器合同见 [r18-opportunity-capability-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/r18-opportunity-capability-v1.json)。
+
 ## 5. 动作提交协议
 
 2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；四白例外已在 v23 修订中取消，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。

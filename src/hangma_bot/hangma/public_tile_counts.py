@@ -38,6 +38,9 @@ from .special_rules import is_passive_observation_event
 PublicCounts34 = Tuple[Optional[int], ...]
 """按规范34种牌排列；None表示该牌种的公开计数因输入自相矛盾而无法确定。"""
 
+UnseenCounts34 = Tuple[Optional[int], ...]
+"""按规范34种牌排列；已知张数含本人暗牌、当前摸牌与全部去重公开牌。"""
+
 _PHYSICAL_LIMIT = 4
 _TOTAL_TILES = 136
 """136 张牌的全量：四家手牌 + 四家牌河 + 全部副露 + 牌墙剩余。"""
@@ -255,4 +258,54 @@ def count_public_tiles(observation: PlayerObservation) -> PublicCounts34:
             result.append(None)
         else:
             result.append(counts[code] - overlaps[code])
+    return tuple(result)
+
+
+def count_unseen_tiles(observation: PlayerObservation) -> UnseenCounts34:
+    """计算玩家视角逐牌码未知容量；当前摸牌恰好扣除一次。
+
+    该函数供离线机会 oracle 与规则诊断共用，避免题库各自重建一套牌张
+    守恒。它兼容官方 ``my_hand`` 已含单列摸牌和契约 ``my_hand`` 不含摸牌
+    两种形态，归一化判据与规则引擎一致。公开牌先由
+    :func:`count_public_tiles` 去重；任一牌码自相矛盾或已知张数超过四张时，
+    该牌码返回 ``None``，不能截断为零冒充可计算。
+    """
+
+    concealed = list(observation.my_hand)
+    drawn = observation.drawn_tile
+    if drawn is not None:
+        expected_with_drawn = 14 - 3 * len(observation.melds[observation.seat])
+        if len(concealed) == expected_with_drawn:
+            for index in range(len(concealed) - 1, -1, -1):
+                if concealed[index].code == drawn.code:
+                    del concealed[index]
+                    break
+            else:
+                # 长度声称是官方“已含摸牌”形态，却找不到该摸牌；整个暗牌
+                # 形状不可判定，不能猜它其实是契约形态。
+                return (None,) * len(TILE_ORDER)
+        concealed.append(drawn)
+
+    hidden = Counter(tile.code for tile in concealed)
+    public = count_public_tiles(observation)
+    own_visible_whites = sum(
+        tile.code == "白" for tile in observation.discards[observation.seat]
+    )
+    missing_chain_whites = max(
+        0, (observation.chain_piao or 0) - own_visible_whites
+    )
+    result = []
+    for index, code in enumerate(TILE_ORDER):
+        public_count = public[index]
+        known = (
+            hidden[code]
+            + public_count
+            + (missing_chain_whites if code == "白" else 0)
+            if public_count is not None
+            else None
+        )
+        if known is None or known < 0 or known > _PHYSICAL_LIMIT:
+            result.append(None)
+        else:
+            result.append(_PHYSICAL_LIMIT - known)
     return tuple(result)
