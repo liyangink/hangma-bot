@@ -342,6 +342,9 @@ class TestT05HuAndContinueCompared:
             "src/hangma_bot/policy/action_value_executor.py",
             "src/hangma_bot/policy/action_value_policy.py",
             "src/hangma_bot/policy/action_value_seeds.py",
+            # 2026-09-21：R17 在冻结公开后继/叶执行合同之上新增薄策略包装器；
+            # 只重排既有合法弃牌位置，任一缺口原样回退 V2。
+            "src/hangma_bot/policy/public_successor_policy.py",
             # 2026-09-18：`weights_v1.py` 末尾新增 modul 级常量 V2_PARAM_BATCH_WEIGHTS
             # （`v2_hu_upgrade_v2` 的载体）。纯新增、未被任何既有策略引用，
             # DEFAULT_WEIGHTS_V1 取值逐字不变；字节冻结契约已同步更新哈希并追加
