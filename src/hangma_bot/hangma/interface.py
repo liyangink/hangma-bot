@@ -6,7 +6,11 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional, Tuple
 
-from hangma_bot.kernel.actions import Action, CANONICAL_TILE_CODES
+from hangma_bot.kernel.actions import (
+    Action,
+    CANONICAL_TILE_CODES,
+    CANONICAL_TILE_INDEX,
+)
 from hangma_bot.kernel.observation import PlayerObservation, ScoreVector
 
 
@@ -585,6 +589,9 @@ class PublicSuccessorRoot:
     discard_code: str
     shanten_after: Optional[int]
     coverage: PublicSuccessorCoverage
+    edge_capacity_mask: int = 0  # 低 34 位：完整正容量边集合的规则承诺
+    edge_capacity_packed: int = 0  # 每牌 3 位：对应边的 0—4 公开容量
+    edge_capacity_total: int = 0  # 全部正容量边的容量和；不是牌墙概率分母
     edges: Tuple[PublicSuccessorDrawEdge, ...] = ()
     issues: Tuple[RuleIssue, ...] = ()
 
@@ -604,6 +611,24 @@ class PublicSuccessorRoot:
             raise ValueError("完整公开后继根必须携带根向听")
         if not isinstance(self.coverage, PublicSuccessorCoverage):
             raise ValueError("PublicSuccessorRoot.coverage 类型错误")
+        if (
+            isinstance(self.edge_capacity_mask, bool)
+            or not isinstance(self.edge_capacity_mask, int)
+            or not 0 <= self.edge_capacity_mask < (1 << 34)
+        ):
+            raise ValueError("edge_capacity_mask 必须是 34 位非负整数")
+        if (
+            isinstance(self.edge_capacity_packed, bool)
+            or not isinstance(self.edge_capacity_packed, int)
+            or not 0 <= self.edge_capacity_packed < (1 << (34 * 3))
+        ):
+            raise ValueError("edge_capacity_packed 必须是 34×3 位非负整数")
+        if (
+            isinstance(self.edge_capacity_total, bool)
+            or not isinstance(self.edge_capacity_total, int)
+            or self.edge_capacity_total < 0
+        ):
+            raise ValueError("edge_capacity_total 必须是非负整数")
         if not isinstance(self.edges, tuple) or not isinstance(self.issues, tuple):
             raise ValueError("PublicSuccessorRoot.edges/issues 必须是 tuple")
         if any(not isinstance(edge, PublicSuccessorDrawEdge) for edge in self.edges):
@@ -614,6 +639,32 @@ class PublicSuccessorRoot:
             raise ValueError("不完整公开后继根必须说明原因")
         if self.coverage is PublicSuccessorCoverage.UNAVAILABLE and self.edges:
             raise ValueError("不可用公开后继根不得携带部分边")
+        if self.coverage is PublicSuccessorCoverage.COMPLETE:
+            actual_mask = 0
+            actual_total = 0
+            for edge in self.edges:
+                index = CANONICAL_TILE_INDEX[edge.draw_tile.code]
+                capacity = edge.draw_tile.remaining_estimate
+                actual_mask |= 1 << index
+                actual_total += capacity
+                if ((self.edge_capacity_packed >> (index * 3)) & 0b111) != capacity:
+                    raise ValueError("公开后继边容量与规则承诺不一致")
+            if actual_mask != self.edge_capacity_mask:
+                raise ValueError("公开后继边集合与规则承诺不一致")
+            if actual_total != self.edge_capacity_total:
+                raise ValueError("公开后继边容量和与规则承诺不一致")
+            for index in range(34):
+                capacity = (self.edge_capacity_packed >> (index * 3)) & 0b111
+                if capacity > 4:
+                    raise ValueError("公开后继边容量越过四张上限")
+                if bool(self.edge_capacity_mask & (1 << index)) != (capacity > 0):
+                    raise ValueError("公开后继边位图与打包容量不一致")
+        elif (
+            self.edge_capacity_mask
+            or self.edge_capacity_packed
+            or self.edge_capacity_total
+        ):
+            raise ValueError("不完整公开后继根不得携带完整容量承诺")
 
 
 @dataclass(frozen=True)

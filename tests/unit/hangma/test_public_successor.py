@@ -5,6 +5,9 @@ from __future__ import annotations
 import gc
 import time
 import tracemalloc
+from dataclasses import replace
+
+import pytest
 
 from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.hangma.interface import (
@@ -76,6 +79,18 @@ def test_all_34_positive_capacity_edges_include_non_useful_draws() -> None:
         "东", "南", "西", "北", "中", "发", "白",
     }
     assert any(not edge.is_currently_useful for edge in root.edges)
+    assert root.edge_capacity_mask.bit_count() == len(root.edges)
+    assert root.edge_capacity_total == sum(
+        edge.draw_tile.remaining_estimate for edge in root.edges
+    )
+
+
+def test_complete_root_rejects_deleted_positive_capacity_edge() -> None:
+    """容量承诺使策略侧能识别删边，不能把坏图当成较优搜索结果。"""
+
+    root = _rules().analyze_public_self_draw_successors(_observation()).roots[0]
+    with pytest.raises(ValueError, match="边集合与规则承诺不一致"):
+        replace(root, edges=root.edges[1:])
 
 
 def test_two_envelopes_preserve_drawn_only_and_full_discard_frontiers() -> None:

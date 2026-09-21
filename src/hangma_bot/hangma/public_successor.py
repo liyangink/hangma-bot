@@ -201,6 +201,9 @@ def _project_root(
             if capacity > 0:
                 capacities.append((draw_code, capacity))
         public_after_root = _adjust_public_counts(public_counts, basis.newly_public)
+        capacity_mask, capacity_packed, capacity_total = _pack_capacities(
+            tuple(capacities)
+        )
         useful_codes = frozenset(basis.summary.useful_codes)
         edges = []
         for draw_code, capacity in capacities:
@@ -221,6 +224,9 @@ def _project_root(
             discard_code=code,
             shanten_after=basis.summary.shanten,
             coverage=PublicSuccessorCoverage.COMPLETE,
+            edge_capacity_mask=capacity_mask,
+            edge_capacity_packed=capacity_packed,
+            edge_capacity_total=capacity_total,
             edges=tuple(edges),
         )
     except Exception as exc:
@@ -516,6 +522,22 @@ def _pack_useful(
         packed |= value << (index * 3)
         support += value
     return mask, packed, len(codes), support
+
+
+def _pack_capacities(
+    capacities: Tuple[Tuple[str, int], ...]
+) -> Tuple[int, int, int]:
+    """打包完整正容量边集合，供消费方验证边未被删除或改写。"""
+
+    mask = 0
+    packed = 0
+    total = 0
+    for code, value in capacities:
+        index = TILE_INDEX[code]
+        mask |= 1 << index
+        packed |= value << (index * 3)
+        total += value
+    return mask, packed, total
 
 
 def _adjust_public_counts(
