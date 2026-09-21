@@ -192,6 +192,19 @@ def _project_root(
     try:
         basis = _root_basis(candidate, current, meld_count, summary_cache)
         root_summary = basis.summary
+        # 官方最后 20 张为保留区且不再摸牌。当前观察的剩余牌数是摸牌
+        # 落地后的总墙余量，因此等于 20 时，本次弃牌之后牌局直接流局，
+        # 不得按公开未见张数虚构任何“下一次普通摸牌”边。
+        if (
+            current.remaining_tile_count is not None
+            and current.remaining_tile_count <= action_families.WALL_RESERVE_TILES
+        ):
+            return PublicSuccessorRoot(
+                action_key=candidate.action_key,
+                discard_code=code,
+                shanten_after=basis.summary.shanten,
+                coverage=PublicSuccessorCoverage.COMPLETE,
+            )
         hand_counts = counts_from_tiles(basis.hand)
         capacities = []
         for draw_code in TILE_ORDER:

@@ -583,7 +583,11 @@ class PublicSuccessorDrawEdge:
 
 @dataclass(frozen=True)
 class PublicSuccessorRoot:
-    """一个当前合法弃牌根的全部公开自摸后继前沿。"""
+    """一个当前合法弃牌根的全部公开自摸后继前沿。
+
+    官方保留区已经到达时，完整根以零容量和空 ``edges`` 表示弃牌后
+    不再存在普通摸牌；这仍是完整规则事实，不是缺失或截断。
+    """
 
     action_key: str
     discard_code: str

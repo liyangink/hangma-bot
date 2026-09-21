@@ -12,9 +12,10 @@
    一个上下界，而不是把杠当成必然可用。
 2. 抓打圈未来归属未知，受限／不受限两个包络继续合成上下界；候选不能
    选择较有利包络。
-3. 每根在全部正公开容量边上计算容量重数加权的上下界。该重数不是摸牌
-   概率。根之间用 (条件胡净分支撑量, 下界, 上界) 的 Pareto 层排序；
-   同层保持稳定 V2 次序，不引入未经校验的插值权重。
+3. 有未来摸牌时，每根在全部正公开容量边上计算容量重数加权的上下界。
+   该重数不是摸牌概率。最后 20 张保留区已经到达时，完整空图归约为
+   全零同层，严格保持稳定 V2 次序。根之间用 (条件胡净分支撑量, 下界,
+   上界) 的 Pareto 层排序；同层保持稳定 V2 次序，不引入未经校验的插值权重。
 
 任一事实缺失、容量承诺不一致、工作量超界或候选异常都会使整窗归约
 不可用，调用方必须精确回退稳定 V2，不能把未知根当成零分。
@@ -48,7 +49,20 @@ from .interface import DecisionRequest
 
 
 LEAF_VIEW_SCHEMA_VERSION = "r17-public-successor-leaf/1"
-MAX_LEAF_EVALUATIONS = 4096
+# 结构上限，不再用开发样本分位数充当正确性门：一个摸牌窗口至多有
+# 14 个不同弃牌根、34 种条件摸牌、2 个抓打包络；每个包络至多保留
+# 14 个弃牌前沿叶和 4 个杠叶。候选的真实计算成本另由逐叶 2,048 与
+# 整窗 500,000 计费操作上限约束。
+MAX_DISCARD_ROOTS_PER_WINDOW = 14
+MAX_DRAW_EDGES_PER_ROOT = 34
+MAX_ENVELOPES_PER_EDGE = 2
+MAX_NEXT_ACTION_LEAVES_PER_ENVELOPE = 18
+MAX_LEAF_EVALUATIONS = (
+    MAX_DISCARD_ROOTS_PER_WINDOW
+    * MAX_DRAW_EDGES_PER_ROOT
+    * MAX_ENVELOPES_PER_EDGE
+    * MAX_NEXT_ACTION_LEAVES_PER_ENVELOPE
+)
 LEAF_SCORE_MIN = -1.0
 LEAF_SCORE_MAX = 1.0
 TERMINAL_HU_SCORE = 1.0
@@ -439,8 +453,24 @@ def _reduce_root(
         if route is not None:
             hu_net_support += capacity * route[0]
             hu_capacity += capacity
-    if not edge_rows or root.edge_capacity_total <= 0:
-        raise ValueError("完整弃牌根没有正容量边")
+    if not edge_rows:
+        if (
+            root.edge_capacity_mask
+            or root.edge_capacity_packed
+            or root.edge_capacity_total
+        ):
+            raise ValueError("完整空后继根携带非零容量承诺")
+        return RootSearchScore(
+            action_key=root.action_key,
+            lower_support_score=0.0,
+            upper_support_score=0.0,
+            conditional_hu_net_support=0.0,
+            conditional_hu_capacity=0,
+            capacity_total=0,
+            leaf_evaluations=0,
+        )
+    if root.edge_capacity_total <= 0:
+        raise ValueError("完整非空弃牌根没有正容量边")
     lower_mass = math.fsum(
         capacity * lower for _, capacity, lower, _ in edge_rows
     )

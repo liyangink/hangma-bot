@@ -10,6 +10,7 @@ from hangma_bot.kernel.actions import Tile
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.observation import PlayerObservation, RulePublicState
 from hangma_bot.policy.public_successor_search import (
+    MAX_LEAF_EVALUATIONS,
     RootSearchScore,
     SearchReduction,
     order_discard_keys_by_fronts,
@@ -79,6 +80,10 @@ def _score(leaf) -> float:
     )
 
 
+def test_leaf_limit_is_derived_from_complete_rule_graph_shape() -> None:
+    assert MAX_LEAF_EVALUATIONS == 14 * 34 * 2 * 18 == 17_136
+
+
 def test_real_rule_graph_reduces_with_bounded_leaf_views() -> None:
     request, successors = _inputs()
     seen = []
@@ -100,6 +105,33 @@ def test_real_rule_graph_reduces_with_bounded_leaf_views() -> None:
     assert all(item.root.action_key.startswith("discard:") for item in seen)
     assert sum(item.leaf_evaluations for item in reduced.roots) == len(seen)
     assert all(-1.0 <= item.lower_support_score <= item.upper_support_score <= 1.0 for item in reduced.roots)
+
+
+def test_reserved_wall_has_zero_successor_scores_and_keeps_v2_order() -> None:
+    """末次摸牌后的弃牌没有未来收益；固定归约必须形成全零同层。"""
+
+    request, successors = _inputs(_observation(remaining_tile_count=20))
+    seen = []
+
+    def scorer(leaf):
+        seen.append(leaf)
+        return _score(leaf)
+
+    reduced = reduce_public_successors(request, successors, scorer)
+    assert reduced.complete, reduced.reason
+    assert seen == []
+    assert all(
+        item.dominance_vector == (0.0, 0.0, 0.0)
+        and item.capacity_total == 0
+        and item.leaf_evaluations == 0
+        for item in reduced.roots
+    )
+    baseline = tuple(
+        item.action_key
+        for item in request.rules.legal_candidates
+        if item.action_key.startswith("discard:")
+    )
+    assert order_discard_keys_by_fronts(reduced, baseline) == baseline
 
 
 def test_reordering_graph_does_not_change_root_scores() -> None:

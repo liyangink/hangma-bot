@@ -130,7 +130,9 @@ def test_future_concealed_gang_is_conditional_on_future_wall_gt_20() -> None:
         assert gang.requires_future_wall_gt20
 
 
-def test_future_gang_is_absent_when_current_wall_is_already_reserved() -> None:
+def test_no_future_draw_edge_when_only_reserved_wall_remains() -> None:
+    """官方最后 20 张保留不摸；末次摸牌后的弃牌根没有下一摸。"""
+
     rules = _rules()
     observation = _observation(
         hand_codes=(
@@ -142,9 +144,10 @@ def test_future_gang_is_absent_when_current_wall_is_already_reserved() -> None:
     )
     result = rules.analyze_public_self_draw_successors(observation)
     root = next(item for item in result.roots if item.action_key == "discard:西")
-    edge = next(item for item in root.edges if item.draw_tile.code == "1w")
-    assert not edge.restricted.gang_leaves
-    assert not edge.unrestricted.gang_leaves
+    assert root.edges == ()
+    assert root.edge_capacity_mask == 0
+    assert root.edge_capacity_packed == 0
+    assert root.edge_capacity_total == 0
 
 
 def test_future_gang_wall_boundary_21_excludes_and_22_keeps_condition() -> None:
