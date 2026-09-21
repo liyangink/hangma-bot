@@ -157,6 +157,35 @@ def _wall_allows_gang(context: WindowContext) -> Tuple[bool, Tuple[RuleIssue, ..
     return True, ()
 
 
+def discard_tile_codes(
+    context: WindowContext,
+) -> Tuple[Tuple[str, ...], Tuple[RuleIssue, ...]]:
+    """出牌族的规范合法牌码；供完整候选和批量后继共同消费。
+
+    本函数拥有抓打圈与摸牌窗口的出牌合法性，返回牌码而不分配动作、
+    证据或候选对象。调用方不得再实现一套出牌合法性。
+    """
+
+    if not _own_draw(context):
+        return (), ()
+    if context.catch_play:
+        if context.drawn_tile is None:
+            return (), (
+                RuleIssue(
+                    _area("discard"),
+                    "抓打圈但刚摸牌缺失，无法确定唯一可出的刚摸牌（§6）",
+                ),
+            )
+        return (context.drawn_tile.code,), ()
+    full_hand = context.full_hand()
+    if not full_hand:
+        return (), ()
+    counts = counts_from_tiles(full_hand)
+    return tuple(
+        TILE_ORDER[index] for index, count in enumerate(counts) if count > 0
+    ), ()
+
+
 def discard_candidates(context: WindowContext) -> FamilyOutcome:
     """出牌族：本人摸牌窗口的全部合法弃牌候选（§6）。
 
@@ -167,34 +196,16 @@ def discard_candidates(context: WindowContext) -> FamilyOutcome:
     每牌值一个，天然去重且确定。
     """
 
-    if not _own_draw(context):
-        return _EMPTY
-    if context.catch_play:
-        if context.drawn_tile is None:
-            return FamilyOutcome(
-                (),
-                (
-                    RuleIssue(
-                        _area("discard"),
-                        "抓打圈但刚摸牌缺失，无法确定唯一可出的刚摸牌（§6）",
-                    ),
-                ),
-            )
-        evidence = ("出牌:抓打圈仅可打刚摸的牌 {0}（§6）".format(context.drawn_tile.code),)
-        return FamilyOutcome(
-            (_candidate(Discard(context.drawn_tile), evidence),), ()
-        )
-    full_hand = context.full_hand()
-    if not full_hand:
-        # 观察不完整：不伪造候选；engine 对整体无候选时返回 None。
-        return _EMPTY
-    counts = counts_from_tiles(full_hand)
+    codes, issues = discard_tile_codes(context)
+    if issues or not codes:
+        return FamilyOutcome((), issues)
     candidates = []
-    for index, count in enumerate(counts):
-        if count <= 0:
-            continue
-        code = TILE_ORDER[index]
-        evidence = ["出牌:摸牌窗口本人回合，暗牌均可打（§6）"]
+    for code in codes:
+        evidence = [
+            "出牌:抓打圈仅可打刚摸的牌 {0}（§6）".format(code)
+            if context.catch_play
+            else "出牌:摸牌窗口本人回合，暗牌均可打（§6）"
+        ]
         if code == WEALTH_CODE:
             evidence.append(
                 "出牌:财神可主动打出（§1）；是否构成飘由 special_rules 按爆头状态判定（§8）"

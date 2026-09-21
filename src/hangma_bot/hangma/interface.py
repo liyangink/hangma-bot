@@ -419,3 +419,229 @@ class CandidateValueFacts:
             raise ValueError("routes 和 issues 必须是 tuple")
         if self.coverage is not ValueCoverage.COMPLETE and not self.issues:
             raise ValueError("非完整分值分析必须说明原因")
+
+
+class PublicSuccessorCoverage(str, Enum):
+    """公开自摸后继投影的完整性；未知边不得填零或静默删除。"""
+
+    COMPLETE = "complete"
+    PARTIAL = "partial"
+    UNAVAILABLE = "unavailable"
+
+
+class PublicSuccessorEnvelopeKind(str, Enum):
+    """下一次本人摸牌时的两个条件合法动作包络。"""
+
+    RESTRICTED_DRAWN_ONLY = "restricted_drawn_only"
+    UNRESTRICTED = "unrestricted"
+
+
+@dataclass(frozen=True)
+class PublicSuccessorLeaf:
+    """后继杠或弃牌叶；只携带固定 reducer 需要的规则事实。
+
+    ``useful_mask`` 的低 34 位按 ``CANONICAL_TILE_CODES`` 标记有效牌；
+    ``useful_remaining_packed`` 每牌使用 3 位保存 0—4 的公开未见张数。
+    该紧凑表示完整保留 34 维牌值身份和容量，同时避免为批量前沿的
+    每个牌值分配嵌套对象；容量不是概率。
+    杠叶的 ``requires_future_wall_gt20`` 恒真，表示只有实际未来窗口仍在
+    最后 20 张禁杠边界之外时才合法；当前分析不得把条件哨兵当未来事实。
+    """
+
+    action_key: str
+    action_type: str  # discard / gang
+    shanten_after: int
+    standard_shanten_after: int
+    seven_pairs_shanten_after: Optional[int]
+    useful_mask: int
+    useful_remaining_packed: int
+    useful_tile_count: int
+    support_remaining: int
+    replacement_draw_unknown: bool
+    requires_future_wall_gt20: bool = False
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.action_key, str) or not self.action_key:
+            raise ValueError("PublicSuccessorLeaf.action_key 必须是非空字符串")
+        if self.action_type not in ("discard", "gang"):
+            raise ValueError("PublicSuccessorLeaf.action_type 必须是 discard 或 gang")
+        for name in ("shanten_after", "standard_shanten_after"):
+            value = getattr(self, name)
+            if isinstance(value, bool) or not isinstance(value, int) or value < -1:
+                raise ValueError(name + " 必须是至少 -1 的整数")
+        if (
+            self.seven_pairs_shanten_after is not None
+            and (
+                isinstance(self.seven_pairs_shanten_after, bool)
+                or not isinstance(self.seven_pairs_shanten_after, int)
+                or self.seven_pairs_shanten_after < -1
+            )
+        ):
+            raise ValueError("seven_pairs_shanten_after 必须是至少 -1 的整数或空")
+        if (
+            isinstance(self.useful_mask, bool)
+            or not isinstance(self.useful_mask, int)
+            or not 0 <= self.useful_mask < (1 << 34)
+        ):
+            raise ValueError("PublicSuccessorLeaf.useful_mask 必须是 34 位非负整数")
+        if (
+            isinstance(self.useful_remaining_packed, bool)
+            or not isinstance(self.useful_remaining_packed, int)
+            or not 0 <= self.useful_remaining_packed < (1 << (34 * 3))
+        ):
+            raise ValueError("useful_remaining_packed 必须是 34×3 位非负整数")
+        if (
+            isinstance(self.useful_tile_count, bool)
+            or not isinstance(self.useful_tile_count, int)
+            or self.useful_tile_count != self.useful_mask.bit_count()
+        ):
+            raise ValueError("useful_tile_count 必须等于 useful_mask 的置位数")
+        if (
+            isinstance(self.support_remaining, bool)
+            or not isinstance(self.support_remaining, int)
+            or self.support_remaining < 0
+        ):
+            raise ValueError("support_remaining 必须是非负整数")
+        if not isinstance(self.replacement_draw_unknown, bool):
+            raise ValueError("replacement_draw_unknown 必须是 bool")
+        if not isinstance(self.requires_future_wall_gt20, bool):
+            raise ValueError("requires_future_wall_gt20 必须是 bool")
+        if self.action_type == "gang":
+            if not self.replacement_draw_unknown or not self.requires_future_wall_gt20:
+                raise ValueError("杠叶必须标明补牌未知且要求未来墙余量大于 20")
+        elif self.replacement_draw_unknown or self.requires_future_wall_gt20:
+            raise ValueError("弃牌叶不得携带杠补或未来墙条件")
+
+    def useful_remaining(self, tile_index: int) -> int:
+        """返回规范牌序下标对应的公开未见张数（0—4）。"""
+
+        if isinstance(tile_index, bool) or not isinstance(tile_index, int) or not 0 <= tile_index < 34:
+            raise ValueError("tile_index 必须是 0—33 的整数")
+        return (self.useful_remaining_packed >> (tile_index * 3)) & 0b111
+
+
+@dataclass(frozen=True)
+class PublicSuccessorEnvelope:
+    """一条条件摸牌边在一种抓打圈状态下的合法后继摘要。"""
+
+    kind: PublicSuccessorEnvelopeKind
+    hu_available: bool
+    legal_discard_count: int
+    gang_leaves: Tuple[PublicSuccessorLeaf, ...]
+    discard_frontier: Tuple[PublicSuccessorLeaf, ...]
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.kind, PublicSuccessorEnvelopeKind):
+            raise ValueError("PublicSuccessorEnvelope.kind 类型错误")
+        if not isinstance(self.hu_available, bool):
+            raise ValueError("PublicSuccessorEnvelope.hu_available 必须是 bool")
+        if (
+            isinstance(self.legal_discard_count, bool)
+            or not isinstance(self.legal_discard_count, int)
+            or self.legal_discard_count < 0
+        ):
+            raise ValueError("legal_discard_count 必须是非负整数")
+        for name in ("gang_leaves", "discard_frontier"):
+            value = getattr(self, name)
+            if not isinstance(value, tuple) or any(
+                not isinstance(item, PublicSuccessorLeaf) for item in value
+            ):
+                raise ValueError(name + " 必须是 PublicSuccessorLeaf 元组")
+        if any(leaf.action_type != "gang" for leaf in self.gang_leaves):
+            raise ValueError("gang_leaves 只能包含杠叶")
+        if any(leaf.action_type != "discard" for leaf in self.discard_frontier):
+            raise ValueError("discard_frontier 只能包含弃牌叶")
+        if len(self.discard_frontier) > self.legal_discard_count:
+            raise ValueError("弃牌 Pareto 前沿不能多于完整合法弃牌数")
+
+
+@dataclass(frozen=True)
+class PublicSuccessorDrawEdge:
+    """根弃牌后一个公开容量为正的条件普通摸牌边。"""
+
+    draw_tile: UsefulTileFact  # remaining_estimate 是容量，不是概率
+    is_currently_useful: bool
+    restricted: PublicSuccessorEnvelope
+    unrestricted: PublicSuccessorEnvelope
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.draw_tile, UsefulTileFact):
+            raise ValueError("PublicSuccessorDrawEdge.draw_tile 类型错误")
+        if self.draw_tile.remaining_estimate <= 0:
+            raise ValueError("公开自摸边容量必须大于 0")
+        if not isinstance(self.is_currently_useful, bool):
+            raise ValueError("is_currently_useful 必须是 bool")
+        if self.restricted.kind is not PublicSuccessorEnvelopeKind.RESTRICTED_DRAWN_ONLY:
+            raise ValueError("restricted 必须是受限摸切包络")
+        if self.unrestricted.kind is not PublicSuccessorEnvelopeKind.UNRESTRICTED:
+            raise ValueError("unrestricted 必须是不受限包络")
+
+
+@dataclass(frozen=True)
+class PublicSuccessorRoot:
+    """一个当前合法弃牌根的全部公开自摸后继前沿。"""
+
+    action_key: str
+    discard_code: str
+    shanten_after: Optional[int]
+    coverage: PublicSuccessorCoverage
+    edges: Tuple[PublicSuccessorDrawEdge, ...] = ()
+    issues: Tuple[RuleIssue, ...] = ()
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.action_key, str) or not self.action_key.startswith("discard:"):
+            raise ValueError("PublicSuccessorRoot.action_key 必须是弃牌动作键")
+        if self.discard_code not in CANONICAL_TILE_CODES:
+            raise ValueError("PublicSuccessorRoot.discard_code 必须是规范牌值")
+        if self.action_key != "discard:" + self.discard_code:
+            raise ValueError("PublicSuccessorRoot 动作键与弃牌值不一致")
+        if self.shanten_after is not None and (
+            isinstance(self.shanten_after, bool)
+            or not isinstance(self.shanten_after, int)
+        ):
+            raise ValueError("PublicSuccessorRoot.shanten_after 必须是整数或空")
+        if self.coverage is PublicSuccessorCoverage.COMPLETE and self.shanten_after is None:
+            raise ValueError("完整公开后继根必须携带根向听")
+        if not isinstance(self.coverage, PublicSuccessorCoverage):
+            raise ValueError("PublicSuccessorRoot.coverage 类型错误")
+        if not isinstance(self.edges, tuple) or not isinstance(self.issues, tuple):
+            raise ValueError("PublicSuccessorRoot.edges/issues 必须是 tuple")
+        if any(not isinstance(edge, PublicSuccessorDrawEdge) for edge in self.edges):
+            raise ValueError("PublicSuccessorRoot.edges 元素类型错误")
+        if any(not isinstance(issue, RuleIssue) for issue in self.issues):
+            raise ValueError("PublicSuccessorRoot.issues 元素类型错误")
+        if self.coverage is not PublicSuccessorCoverage.COMPLETE and not self.issues:
+            raise ValueError("不完整公开后继根必须说明原因")
+        if self.coverage is PublicSuccessorCoverage.UNAVAILABLE and self.edges:
+            raise ValueError("不可用公开后继根不得携带部分边")
+
+
+@dataclass(frozen=True)
+class PublicSuccessorAnalysis:
+    """一个动作窗口的公开自摸后继批量分析；不包含未来真实观察。"""
+
+    phase: str
+    coverage: PublicSuccessorCoverage
+    roots: Tuple[PublicSuccessorRoot, ...]
+    ruleset_version: str
+    issues: Tuple[RuleIssue, ...] = ()
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.phase, str) or not self.phase:
+            raise ValueError("PublicSuccessorAnalysis.phase 必须是非空字符串")
+        if not isinstance(self.coverage, PublicSuccessorCoverage):
+            raise ValueError("PublicSuccessorAnalysis.coverage 类型错误")
+        if not isinstance(self.roots, tuple) or any(
+            not isinstance(root, PublicSuccessorRoot) for root in self.roots
+        ):
+            raise ValueError("PublicSuccessorAnalysis.roots 类型错误")
+        if not isinstance(self.ruleset_version, str) or not self.ruleset_version:
+            raise ValueError("ruleset_version 必须是非空字符串")
+        if not isinstance(self.issues, tuple) or any(
+            not isinstance(issue, RuleIssue) for issue in self.issues
+        ):
+            raise ValueError("PublicSuccessorAnalysis.issues 类型错误")
+        if self.coverage is not PublicSuccessorCoverage.COMPLETE and not self.issues:
+            raise ValueError("不完整公开后继分析必须说明原因")
+        if self.coverage is PublicSuccessorCoverage.UNAVAILABLE and self.roots:
+            raise ValueError("不可用公开后继分析不得携带根")

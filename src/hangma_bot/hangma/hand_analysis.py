@@ -25,6 +25,7 @@ from .internal_types import (
     TILE_ORDER,
     WEALTH_CODE,
     Counts34,
+    HandProgressSummary,
     HandSummary,
     UsefulTile,
     WinSplit,
@@ -86,6 +87,119 @@ def _validate_melds(meld_set_count: int) -> None:
         )
 
 
+def _analyse_progress_math(
+    hand_tiles: Tuple[Tile, ...],
+    meld_set_count: int,
+    *,
+    collect_pattern_useful: bool,
+):
+    """共享的向听/进张核心；详细与轻量入口不得各写一套数学。"""
+
+    counts34 = counts_from_tiles(hand_tiles)
+    return _analyse_counts_progress_math(
+        counts34,
+        meld_set_count,
+        collect_pattern_useful=collect_pattern_useful,
+    )
+
+
+def _analyse_counts_progress_math(
+    counts34: Counts34,
+    meld_set_count: int,
+    *,
+    collect_pattern_useful: bool,
+):
+    """34 维计数版共享数学；供规则模块的有界批量接口复用。"""
+
+    _validate_melds(meld_set_count)
+    if len(counts34) != 34:
+        raise ValueError("counts34 必须包含 34 个规范牌值计数")
+    counts, whites = _split_counts(counts34)
+    sets_needed = 4 - meld_set_count
+
+    standard_shanten = _need_std(counts, whites, sets_needed, True) - 1
+    if meld_set_count == 0:
+        # 七对基础统计只做一次。后续逐牌进张按该牌原计数奇偶 O(1)
+        # 更新，避免在 34 次枚举中反复扫描 33 维自然牌；公式与
+        # _chiitoi_pairs 完全相同（R17 P0 六遍摘要对账验证）。
+        natural_pairs = sum(value // 2 for value in counts)
+        natural_singles = sum(value % 2 for value in counts)
+        paired_with_white = min(whites, natural_singles)
+        pair_total = (
+            natural_pairs + paired_with_white
+            + (whites - paired_with_white) // 2
+        )
+        chiitoi_shanten = 6 - min(7, pair_total)
+    else:
+        natural_pairs = 0
+        natural_singles = 0
+        chiitoi_shanten = None
+    shanten = (
+        standard_shanten
+        if chiitoi_shanten is None
+        else min(standard_shanten, chiitoi_shanten)
+    )
+    is_win = shanten == -1
+
+    entries = []
+    standard_entries = [] if collect_pattern_useful else None
+    seven_pairs_entries = [] if collect_pattern_useful else None
+    if not is_win:
+        for index in range(34):
+            if counts34[index] >= 4:
+                continue
+            drawn = list(counts34)
+            drawn[index] += 1
+            d_counts, d_whites = _split_counts(tuple(drawn))
+            after_standard = _need_std(
+                d_counts, d_whites, sets_needed, True
+            ) - 1
+            after = after_standard
+            if (
+                standard_entries is not None
+                and after_standard < standard_shanten
+            ):
+                standard_entries.append((TILE_ORDER[index], after_standard))
+            if meld_set_count == 0:
+                if index < 33:
+                    held = counts34[index]
+                    drawn_pairs = natural_pairs + (held % 2)
+                    drawn_singles = natural_singles + (
+                        1 if held % 2 == 0 else -1
+                    )
+                else:
+                    drawn_pairs = natural_pairs
+                    drawn_singles = natural_singles
+                drawn_paired_with_white = min(d_whites, drawn_singles)
+                drawn_pair_total = (
+                    drawn_pairs + drawn_paired_with_white
+                    + (d_whites - drawn_paired_with_white) // 2
+                )
+                after_seven_pairs = 6 - min(7, drawn_pair_total)
+                after = min(after, after_seven_pairs)
+                if (
+                    seven_pairs_entries is not None
+                    and after_seven_pairs < chiitoi_shanten
+                ):
+                    seven_pairs_entries.append(
+                        (TILE_ORDER[index], after_seven_pairs)
+                    )
+            if after < shanten:
+                entries.append((TILE_ORDER[index], after))
+        if whites < 4 and not any(code == _WHITE_CODE for code, _ in entries):
+            entries.append((_WHITE_CODE, shanten - 1))
+    return (
+        standard_shanten,
+        chiitoi_shanten,
+        shanten,
+        is_win,
+        whites,
+        tuple(entries),
+        None if standard_entries is None else tuple(standard_entries),
+        None if seven_pairs_entries is None else tuple(seven_pairs_entries),
+    )
+
+
 def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSummary:
     """确定性手牌分析：胡牌、向听、有效牌与白板计数。
 
@@ -105,64 +219,29 @@ def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSumma
     不再枚举，返回 None；七对有副露时也为 None，已枚举空集合为 ()。
     """
 
-    _validate_melds(meld_set_count)
-    counts34 = counts_from_tiles(hand_tiles)
-    counts, whites = _split_counts(counts34)
-    sets_needed = 4 - meld_set_count
-
-    standard_shanten = _need_std(counts, whites, sets_needed, True) - 1
-    if meld_set_count == 0:
-        chiitoi_shanten = 6 - _chiitoi_pairs(counts, whites)
-    else:
-        chiitoi_shanten = None
-    shanten = (
-        standard_shanten
-        if chiitoi_shanten is None
-        else min(standard_shanten, chiitoi_shanten)
+    (
+        standard_shanten,
+        chiitoi_shanten,
+        shanten,
+        is_win,
+        whites,
+        entries,
+        standard_entries,
+        seven_pairs_entries,
+    ) = _analyse_progress_math(
+        hand_tiles, meld_set_count, collect_pattern_useful=True
     )
-    is_win = shanten == -1
-
-    useful_tiles: Tuple[UsefulTile, ...] = ()
-    standard_useful_tiles: Optional[Tuple[UsefulTile, ...]] = None
-    seven_pairs_useful_tiles: Optional[Tuple[UsefulTile, ...]] = None
-    if not is_win:
-        entries: list = []
-        standard_entries: list = []
-        seven_pairs_entries: list = []
-        for index in range(34):
-            if counts34[index] >= 4:
-                # 全 4 张同种牌在手 → 第 5 张不可能摸到，不是有效牌
-                #（评审 d5-a0c5d8：防止"第 5 张东"式幻影进张进入策略输入）。
-                continue
-            drawn = list(counts34)
-            drawn[index] += 1
-            d_counts, d_whites = _split_counts(tuple(drawn))
-            after_standard = _need_std(
-                d_counts, d_whites, sets_needed, True
-            ) - 1
-            after = after_standard
-            if after_standard < standard_shanten:
-                standard_entries.append(
-                    UsefulTile(code=TILE_ORDER[index], shanten_after=after_standard)
-                )
-            if meld_set_count == 0:
-                after_seven_pairs = 6 - _chiitoi_pairs(d_counts, d_whites)
-                after = min(after, after_seven_pairs)
-                if after_seven_pairs < chiitoi_shanten:
-                    seven_pairs_entries.append(
-                        UsefulTile(code=TILE_ORDER[index], shanten_after=after_seven_pairs)
-                    )
-            if after < shanten:
-                entries.append(UsefulTile(code=TILE_ORDER[index], shanten_after=after))
-        if whites < 4 and not any(entry.code == _WHITE_CODE for entry in entries):
-            # 契约保险：百搭恒有效（数学上必然成立，此分支仅为防御）。
-            # 已持 4 张白板时第 5 张物理不可得，不补入（评审 d8-f4dadf）。
-            entries.append(UsefulTile(code=_WHITE_CODE, shanten_after=shanten - 1))
-        useful_tiles = tuple(entries)
-        # 分牌型只保存实际计算出的严格推进；不复制上面的综合白板保险。
-        standard_useful_tiles = tuple(standard_entries)
-        if meld_set_count == 0:
-            seven_pairs_useful_tiles = tuple(seven_pairs_entries)
+    useful_tiles = tuple(UsefulTile(code, after) for code, after in entries)
+    standard_useful_tiles = (
+        None
+        if is_win
+        else tuple(UsefulTile(code, after) for code, after in standard_entries)
+    )
+    seven_pairs_useful_tiles = (
+        None
+        if is_win or meld_set_count > 0
+        else tuple(UsefulTile(code, after) for code, after in seven_pairs_entries)
+    )
 
     evidence_parts = ["标准型向听 {0}".format(standard_shanten)]
     evidence_parts.append(
@@ -182,6 +261,68 @@ def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSumma
         evidence=tuple(evidence_parts),
         standard_useful_tiles=standard_useful_tiles,
         seven_pairs_useful_tiles=seven_pairs_useful_tiles,
+    )
+
+
+def analyse_hand_progress(
+    hand_tiles: Tuple[Tile, ...], meld_set_count: int
+) -> HandProgressSummary:
+    """返回公开后继 reducer 所需的轻量规则数学摘要。
+
+    本入口与 ``analyse_hand`` 调用同一个 ``_analyse_progress_math``；只省略
+    分牌型有效牌对象、白板计数和人读证据，不改变向听、成牌或综合有效
+    牌集合。它是 ``hangma`` 内部批量接口，不是策略侧重算入口。
+    """
+
+    (
+        standard_shanten,
+        chiitoi_shanten,
+        shanten,
+        is_win,
+        _,
+        entries,
+        _,
+        _,
+    ) = _analyse_progress_math(
+        hand_tiles, meld_set_count, collect_pattern_useful=False
+    )
+    return HandProgressSummary(
+        is_win=is_win,
+        standard_shanten=standard_shanten,
+        chiitoi_shanten=chiitoi_shanten,
+        shanten=shanten,
+        useful_codes=tuple(code for code, _ in entries),
+    )
+
+
+def analyse_counts_progress(
+    counts34: Counts34, meld_set_count: int
+) -> HandProgressSummary:
+    """按 34 维规范计数返回轻量进张摘要。
+
+    这是 ``hangma`` 内部批量入口。调用方必须从同模块规则状态构造计数；
+    数学与 ``analyse_hand``、``analyse_hand_progress`` 共用
+    ``_analyse_counts_progress_math``，不会形成第二套向听或有效牌实现。
+    """
+
+    (
+        standard_shanten,
+        chiitoi_shanten,
+        shanten,
+        is_win,
+        _,
+        entries,
+        _,
+        _,
+    ) = _analyse_counts_progress_math(
+        counts34, meld_set_count, collect_pattern_useful=False
+    )
+    return HandProgressSummary(
+        is_win=is_win,
+        standard_shanten=standard_shanten,
+        chiitoi_shanten=chiitoi_shanten,
+        shanten=shanten,
+        useful_codes=tuple(code for code, _ in entries),
     )
 
 

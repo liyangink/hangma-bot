@@ -32,6 +32,8 @@ from .observation_rules import enrich_observation
 from .interface import (
     ActionValidation,
     CandidateValueFacts,
+    PublicSuccessorAnalysis,
+    PublicSuccessorCoverage,
     RuleAnalysis,
     RuleCandidate,
     RuleCompleteness,
@@ -177,6 +179,68 @@ class HangmaRules:
         """以独立最小路径返回过、受限摸切或优先非财弃牌；不调用牌型搜索。"""
 
         return emergency_action(observation)
+
+    def analyze_public_self_draw_successors(
+        self,
+        observation: PlayerObservation,
+    ) -> PublicSuccessorAnalysis:
+        """批量分析合法弃牌根的公开自摸后继；不构造未来观察。
+
+        首版只覆盖本人摸牌出牌窗口。响应窗口返回显式
+        ``UNAVAILABLE``，策略应回退稳定 V2。合法弃牌根始终由本实例
+        针对本次 ``PlayerObservation`` 内部生成；公开契约不接收外部
+        ``RuleAnalysis``，避免同规则版本的旧窗口分析被错误复用。
+
+        返回的公开未见张数只是容量，不是概率。方法不读取时钟、GC、
+        文件、网络或 ``WorldState``；任何未来规则资格未知都写入 issues。
+        """
+
+        observation = enrich_observation(observation)
+        try:
+            context = _build_context(observation)
+            public_counts = _public_counts(observation)
+            meld_count = len(observation.melds[observation.seat])
+            discard_outcome = action_families.discard_candidates(context)
+        except Exception as exc:
+            return PublicSuccessorAnalysis(
+                phase=observation.phase,
+                coverage=PublicSuccessorCoverage.UNAVAILABLE,
+                roots=(),
+                ruleset_version=self.config.ruleset_version,
+                issues=(
+                    RuleIssue(
+                        "public_successor.context",
+                        "公开后继上下文提取异常: {0}: {1}".format(
+                            type(exc).__name__, exc
+                        ),
+                    ),
+                ),
+            )
+        if discard_outcome.issues:
+            return PublicSuccessorAnalysis(
+                phase=observation.phase,
+                coverage=PublicSuccessorCoverage.UNAVAILABLE,
+                roots=(),
+                ruleset_version=self.config.ruleset_version,
+                issues=tuple(
+                    RuleIssue(
+                        "public_successor.root",
+                        "合法弃牌根生成不完整: {0}: {1}".format(
+                            issue.area, issue.reason
+                        ),
+                    )
+                    for issue in discard_outcome.issues
+                ),
+            )
+        from .public_successor import analyze_public_self_draw_successors
+
+        return analyze_public_self_draw_successors(
+            context,
+            public_counts,
+            meld_count,
+            discard_outcome.candidates,
+            self.config,
+        )
 
     def score(self, win: WinDescription) -> Settlement:
         """按绑定规则计算四家结算；不读取运行时外部状态。

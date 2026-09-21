@@ -13,11 +13,14 @@ from pathlib import Path
 import pytest
 
 from hangma_bot.hangma.hand_analysis import (
+    _chiitoi_pairs,
+    analyse_counts_progress,
     analyse_hand,
+    analyse_hand_progress,
     any_tile_win,
     win_split,
 )
-from hangma_bot.hangma.internal_types import TILE_ORDER
+from hangma_bot.hangma.internal_types import TILE_ORDER, counts_from_tiles
 from hangma_bot.kernel.actions import Tile
 
 from .official_fan_tools import current_response
@@ -397,6 +400,71 @@ def test_analyse_hand_worst_case_latency():
         hand = tiles(*[rng.choice(pool) for _ in range(14)])
         analyse_hand(hand, 0)
     assert time.perf_counter() - start < 5.0, "20 个随机手牌总耗时超限"
+
+
+def test_incremental_chiitoi_draw_enumeration_matches_reference_scan():
+    """R17 O(1) 七对进张更新与原 33 维逐次扫描逐字段等价。"""
+
+    import random as _random
+
+    rng = _random.Random(20260921)
+    for _ in range(256):
+        counts = [0] * 34
+        for _ in range(13):
+            choices = [index for index, count in enumerate(counts) if count < 4]
+            counts[rng.choice(choices)] += 1
+        hand = tuple(
+            Tile(TILE_ORDER[index])
+            for index, count in enumerate(counts)
+            for _ in range(count)
+        )
+        summary = analyse_hand(hand, 0)
+        progress = analyse_hand_progress(hand, 0)
+        assert progress.is_win == summary.is_win
+        assert progress.standard_shanten == summary.standard_shanten
+        assert progress.chiitoi_shanten == summary.chiitoi_shanten
+        assert progress.shanten == summary.shanten
+        assert progress.useful_codes == tuple(
+            item.code for item in summary.useful_tiles
+        )
+        counts34 = counts_from_tiles(hand)
+        reference_shanten = 6 - _chiitoi_pairs(counts34[:33], counts34[33])
+        assert summary.chiitoi_shanten == reference_shanten
+
+        reference_useful = []
+        for index, held in enumerate(counts34):
+            if held >= 4:
+                continue
+            drawn = list(counts34)
+            drawn[index] += 1
+            if 6 - _chiitoi_pairs(tuple(drawn[:33]), drawn[33]) < reference_shanten:
+                reference_useful.append(TILE_ORDER[index])
+        assert tuple(item.code for item in summary.seven_pairs_useful_tiles) == tuple(
+            reference_useful
+        )
+
+
+def test_counts_progress_entry_matches_tile_progress_on_random_hands():
+    """R17 批量计数入口必须与原 Tile 入口逐字段相等。"""
+
+    import random as _random
+
+    rng = _random.Random(2026092102)
+    for meld_count in range(5):
+        concealed = 14 - 3 * meld_count
+        for _ in range(80):
+            counts = [0] * 34
+            for _ in range(concealed):
+                choices = [index for index, count in enumerate(counts) if count < 4]
+                counts[rng.choice(choices)] += 1
+            hand = tuple(
+                Tile(TILE_ORDER[index])
+                for index, count in enumerate(counts)
+                for _ in range(count)
+            )
+            assert analyse_counts_progress(tuple(counts), meld_count) == (
+                analyse_hand_progress(hand, meld_count)
+            )
 
 def test_four_whites_held_excludes_fifth_white_from_useful():
     """评审 d12-6cec77 遗留 info：4 白在手且未成胡时，useful 不含白。

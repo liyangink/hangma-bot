@@ -100,6 +100,22 @@ class HandSummary:
 
 
 @dataclass(frozen=True)
+class HandProgressSummary:
+    """公开后继批量分析使用的轻量手牌数学投影。
+
+    与 ``HandSummary`` 共用 ``hand_analysis`` 的同一核心计算，只省略
+    分牌型有效牌对象和人读证据；不得在消费模块重算向听或有效牌。
+    """
+
+    is_win: bool
+    standard_shanten: int
+    chiitoi_shanten: Optional[int]
+    shanten: int
+    useful_codes: Tuple[str, ...]
+    evidence: Tuple[str, ...] = ()  # 兼容动作族胡候选的证据拼接；轻量入口固定为空
+
+
+@dataclass(frozen=True)
 class WinSplit:
     """胡牌分解的规则元数据（结算与爆头判定输入）。
 
