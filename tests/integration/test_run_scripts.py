@@ -448,6 +448,10 @@ def test_room_launcher_accepts_every_available_strategy(tmp_path, strategy):
     脱节。此用例把两份清单不脱节固化成契约：组合根新增策略时自动覆盖。
     """
     data = _room_config(strategy=strategy)
+    if strategy == 'r18_integrated_positive_v1':
+        # R18 冻结包绑定当前已适配的官方指南 v34；通用启动器夹具仍保留
+        # 较早版本以覆盖普通策略，因此这里只提升该发布包所需的版本声明。
+        data['known_guide_version'] = 34
     cfg = room.load_room_config(
         _write_config(tmp_path, data), environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B}
     )

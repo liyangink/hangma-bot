@@ -7,6 +7,7 @@
 | `weighted_heuristic` | 全部 | 冻结V0，省略配置时的默认值 |
 | `weighted_heuristic_v1` | 全部 | 冻结V1，历史对照 |
 | `weighted_heuristic_v2` | 全部 | 稳定基线；Tier-A 的对照基准 |
+| `r18_integrated_positive_v1` | **仅 `test_room` / `test_tournament` / `auto_match`** | 2026-09-23 人工批准的累计杭麻机会能力候选；固定候选摘要、P45—P48 证据摘要与规则范围。不得进入正式赛事，不是默认策略 |
 | `v2_hu_upgrade_v1` | **全部（含正式赛事）** | V2有界等胡（Tier-A）。**当前验证过的最优策略**，见下方状态。2026-09-18 起冻结：后续数值调整一律走 `v2_hu_upgrade_v2` |
 | `v2_hu_upgrade_v2` | 全部（与 v1 同口径） | **新参数批次载体**：与 v1 同结构，只换 `policy/weights_v1.py` 的 `V2_PARAM_BATCH_WEIGHTS`。2026-09-18 着陆时该常量与冻结 V2 逐字相同（零行为变更），数值由「一次一个参数、单独提交 + 策略目录门禁」逐步标定；候选取值与扫描协议见 `review/test-tournament-20260917/policy-param-batch-spec-2026-09-18.md` |
 | `v2_balanced_shadow_v1` | **仅 `test_room` / `auto_match`** | 多路线前沿审计层：复用 `v2_hu_upgrade_v1` 保底并追加路线理由，**不改变动作顺序**；不得用于正式赛事提交 |
@@ -14,6 +15,24 @@
 | `safe_fallback` | 全部 | 规则紧急动作，保底/诊断用途 |
 | `claim_if_legal` | 解析器接受全部，用途限测试 | 主动鸣牌探针，不推荐自由赛策略比较 |
 | `catch_play_probe` | 仅测试房 | 抓打圈取证探针，可将弃白排在胡前，不用于争取积分 |
+
+## `r18_integrated_positive_v1` 测试与自由赛冻结包
+
+该枚举是候选 `r18_integrated_positive_v1` 的真实环境发布包，不是离线研究名的别名。发布包身份为
+`4c086e2e503c80bce60a721585d4c463a2bde1f3c0f75a033fae382d615681b8`，候选源码摘要为
+`0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d`。每次运行的
+`RUN_MANIFEST.policy_release` 都保存完整候选身份、允许模式、规则范围及 P45—P48 证据摘要。
+
+只允许以下环境：
+
+- `test_room`：验证四身份隔离、协议、规则、恢复和动作时限；
+- `test_tournament`：执行官方测试赛事发布门禁；
+- `auto_match`：收集自由赛完整桌和真实机会触发证据。
+
+适用规则固定为 `hangma-mvp-v10-public-counts`、底分 1、`YouCaiBiKao=false`，最低已适配官方指南为 v34。房间规则不符或配置声明的已知指南低于 v34 时在动作前
+拒绝该候选身份。`official_tournament` 继续由组合根拒绝，默认策略也不改变。离线研究名
+`action_value:r18_integrated_positive_v1` 在所有网络模式中仍被拒绝。配置样例见
+`configs/r18-integrated-positive-v1.*.example.json`。
 
 ## `v2_hu_upgrade_v1`（Tier-A）发布状态
 

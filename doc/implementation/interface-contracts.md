@@ -260,6 +260,29 @@ V0/V1/V2 评分函数不读新字段（有逐字节回归 `tests/unit/policy/tes
 V0/V1 评分源码的**行为**不变；线上不含任何 LLM 调用。相关测试见 `tests/unit/policy/test_heuristic_adapter.py`、
 `tests/unit/policy/test_value_path_families.py` 与 `review/llm-guided-heuristic-route-2026-09-15/tools/test_sitin_gates.py`。
 
+#### 4.8.1 R18 累计机会候选真实入口冻结包（2026-09-23）
+
+**结论**：人工批准只把固定候选 `r18_integrated_positive_v1` 接入测试房、测试赛事和自由赛。
+正式赛事与默认策略继续关闭，离线研究名 `action_value:r18_integrated_positive_v1` 继续被全部网络模式拒绝。
+
+组合根装配 `R18IntegratedPositiveV1ReleasePolicy` 时重新计算内嵌候选源码 SHA-256；与
+`0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d` 不同即拒绝启动。
+发布包另绑定候选 ID、默认 `ValueAnalysisLimits`、规则范围及 P45—P48 四份结果摘要，规范化包 ID 为
+`4c086e2e503c80bce60a721585d4c463a2bde1f3c0f75a033fae382d615681b8`。策略名相同而其中任一内容变化时，
+包 ID 必须变化并重新审核，不能沿用本次授权。
+
+规则适用域固定为 `hangma-mvp-v10-public-counts`、底分 1、`YouCaiBiKao=false`，最低已适配官方指南为 v34。测试房、测试赛事和
+自由赛都在官方初始化规则到达后核对；不符时在该候选动作前拒绝会话，不做未验证语义上的静默退化。
+动作入口仍是唯一 `BotPolicy.choose(DecisionRequest, DecisionBudget)`，规则事实仍只由 `hangma` 生产。
+
+`RUN_MANIFEST.policy_release` 是可空映射：普通策略为 `null`；R18 冻结包保存
+`schema/strategy/candidate_name/candidate_id/candidate_source_sha256/ruleset_version/known_guide_version_min/base_score/you_cai_bi_kao/`
+`value_analysis_limits/allowed_modes/evidence_sha256/human_approval_date/official_tournament_allowed/production_default/`
+`release_package_id`。其中不含 Token、牌局动态状态或隐藏信息。P54 以 P47 冻结的 377 个正式请求核对发布包
+与研究装配的完整 `DecisionPlan`，必须 377/377 相等且零 `action_value_failed`；结果见
+`review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/`
+`r18-p54-network-release-wiring-01-20260923/`。
+
 ### 4.9 坐隐研究工具的产物 schema 与实验清单身份字段（2026-09-15）
 
 **范围与边界（先读这一句）**：本节的 schema 全部属于**离线研究工具**（`review/llm-guided-heuristic-route-2026-09-15/`），
@@ -397,7 +420,7 @@ runs/{run_id}/
 | AuditKind | 记录层 | 关联键必填 | payload 要点 |
 | --- | --- | --- | --- |
 | `HTTP_REQUEST` | 官方适配器 | run_id；已知participant/game；payload.request_id | phase=started/finished、endpoint、params/body、request_timing、状态/失败/取消；与原始响应一一对应 |
-| `RUN_MANIFEST` | 应用层（runtime） | run_id | `run_id`、`mode`、`expected_tournament_id`、`known_guide_version`、（正常路径）`guide_version`/`guide_updated_at`/`participant_id`/`ruleset_version`/`max_games`/`rounds_per_game`/`timing{peng,chi,discard_timeout_sec}`；早退路径带 `early_exit=true` |
+| `RUN_MANIFEST` | 应用层（runtime） | run_id | `run_id`、`mode`、`expected_tournament_id`、`known_guide_version`、（正常路径）`guide_version`/`guide_updated_at`/`participant_id`/`ruleset_version`/`max_games`/`rounds_per_game`/`timing{peng,chi,discard_timeout_sec}`；`policy_release` 对普通策略为 `null`，人工批准冻结包按 §4.8.1 保存完整发布身份；早退路径带 `early_exit=true` |
 | `LIFECYCLE_CHANGED` | 应用层（supervisor） | run_id | `event` ∈ {`status_changed`(from/to), `registered`(status/official_code), `ready`(status/stage_no/stage_observed_revision/official_code), `stage_attempt_started`(stage_attempt_id/stage_no/stage_observed_revision), `stage_attempt_voided`(…作废标记)} |
 | `AUTHORITATIVE_STATE` | 应用层（supervisor 赛事快照）+ 适配器（指南版本、场次窗口投递）双层 | run_id | 应用层：`status`/`stage_no`/`stage_observed_revision`/`stage_role`/`stage_total`/`stage_crashed`/`qualified`/`qualify_role`/`active_games`/`my_games`/`observed_at_unix_ms`；适配器赛事层：`guide_version`/`guide_updated_at`/`guide_changes[]`/`checked_at`(initialize/stage_boundary)；适配器场次层：`seq`/`phase`/`turn`/`window{game_id,round_no,trigger_seq,phase,seat}` |
 | `DECISION_PLANNED` | 应用层（decision loop） | decision_id | `plan_revision`/`based_on_authoritative_seq`/`trigger_seq`/`window`/`candidates[{action_key,is_emergency}]`/`degraded_reasons[]`/`rule_completeness` |

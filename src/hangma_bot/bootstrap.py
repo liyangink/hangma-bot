@@ -82,6 +82,12 @@ from hangma_bot.policy.research_candidates import (
     R18_TWO_WEALTH_BAOTOU_V1_NAME,
     build_research_candidate_scorer,
 )
+from hangma_bot.policy.r18_integrated_positive_v1_release import (
+    R18IntegratedPositiveV1ReleasePolicy,
+    R18_INTEGRATED_POSITIVE_V1_ALLOWED_MODES,
+    R18_INTEGRATED_POSITIVE_V1_KNOWN_GUIDE_VERSION,
+    R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+)
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
@@ -158,6 +164,11 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "safe_fallback": lambda: SafeFallbackPolicy(),
     "claim_if_legal": lambda: LegacyClaimIfLegalPolicy(),
     "catch_play_probe": lambda: CatchPlayProbePolicy(ComparableHeuristicPolicyV2()),
+    # 2026-09-23 人工批准的 P49 冻结包。模式范围在 RuntimeConfig 继续封闭；
+    # 工厂只负责装配绑定源码与证据摘要的策略，不能自行扩大到正式赛事。
+    R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: (
+        lambda: R18IntegratedPositiveV1ReleasePolicy()
+    ),
 }
 
 # 研究/离线专用注册表（2026-09-17 R1/S3 修复）：action_value:* 研究候选
@@ -233,7 +244,7 @@ SEQUENCE_MODEL_DIRNAME = "prebuilt/sequence-policy-models"
 # 因此这些策略必须与实际运行规则同一口径，并在校准范围外直接拒绝启动。
 _VALUE_ANALYSIS_STRATEGIES = (
     "v2_hu_upgrade_v1", "v2_hu_upgrade_v2", "v2_balanced_shadow_v1",
-) + tuple(_SEQUENCE_MODEL_STRATEGIES)
+) + tuple(_SEQUENCE_MODEL_STRATEGIES) + (R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,)
 
 # action_value_v1 策略名（B3）：ScoringView 依赖 B1 载荷（followup_branches/
 # family_progress/value_facts.routes），必须与序列网络策略同样启用 value_limits；
@@ -437,6 +448,24 @@ class RuntimeConfig:
 
         if self.strategy == "catch_play_probe" and self.mode is not RuntimeMode.TEST_ROOM:
             raise ValueError("catch_play_probe 仅允许 mode=test_room；它主动弃白用于规则验证")
+        if (
+            self.strategy == R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY
+            and self.mode.value not in R18_INTEGRATED_POSITIVE_V1_ALLOWED_MODES
+        ):
+            raise ValueError(
+                "r18_integrated_positive_v1 只获批测试房、测试赛事和自由赛；"
+                "不得以 mode={0} 启动".format(self.mode.value)
+            )
+        if (
+            self.strategy == R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY
+            and self.known_guide_version < R18_INTEGRATED_POSITIVE_V1_KNOWN_GUIDE_VERSION
+        ):
+            raise ValueError(
+                "r18_integrated_positive_v1 基于官方指南 v{0} 冻结；"
+                "known_guide_version 不得低于 {0}".format(
+                    R18_INTEGRATED_POSITIVE_V1_KNOWN_GUIDE_VERSION
+                )
+            )
         if not isinstance(self.insecure_hosts, frozenset):
             raise ValueError("insecure_hosts 必须是 frozenset，得到 {0!r}".format(self.insecure_hosts))
         if self.slot is not None:
@@ -744,7 +773,7 @@ def _test_room_upgrade_rules(config: RuleConfig) -> HangmaRules:
     if (config.base_score != 1 or config.you_cai_bi_kao or
             config.ruleset_version != RISK_RULESET_VERSION):
         raise ValueError(
-            "V2 实验策略测试范围要求 BaseScore=1、YouCaiBiKao=false、"
+            "价值分析候选测试范围要求 BaseScore=1、YouCaiBiKao=false、"
             "ruleset_version=" + RISK_RULESET_VERSION
         )
     return HangmaRules(config)
@@ -814,6 +843,7 @@ def build_runtime(
         "git_dirty": git_dirty,
         "policy_version": config.strategy,
         "policy_weights": _effective_weights_snapshot(policy),
+        "policy_release": _policy_release_snapshot(policy),
         "ruleset_version": DEFAULT_RULESET_VERSION,
         "hand_math": hand_math_runtime_metadata(),
         "official_sync_mode": "state",
@@ -971,6 +1001,7 @@ def build_auto_match_runtime(
         "git_dirty": git_dirty,
         "policy_version": config.strategy,
         "policy_weights": _effective_weights_snapshot(policy),
+        "policy_release": _policy_release_snapshot(policy),
         "ruleset_version": DEFAULT_RULESET_VERSION,
         "hand_math": hand_math_runtime_metadata(),
         "official_sync_mode": "state",
@@ -992,7 +1023,14 @@ def build_auto_match_runtime(
             known_guide_version=config.known_guide_version,
         ),
         settings=settings,
-        rules_factory=HangmaRules,
+        # R18 发布候选只在 P45—P48 已验证的 v10/BaseScore=1/关闭必拷
+        # 范围内获批。自由赛发现房间后若规则不符，明确终止该候选会话，
+        # 不能用缺失分值事实静默退化成未经验证的另一种行为。
+        rules_factory=(
+            _test_room_upgrade_rules
+            if config.strategy == R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY
+            else HangmaRules
+        ),
         value_limits=_value_limits_for(config.strategy),
         value_rules_scope=(RuleConfig(RISK_RULESET_VERSION, 1, False)
                            if config.strategy in _VALUE_ANALYSIS_STRATEGIES else None),
@@ -1088,6 +1126,17 @@ def _effective_weights_snapshot(policy: object) -> Optional[Mapping[str, object]
             risk_cells=[dict(vars(cell)) for cell in policy._risk_cells],
         )
     return snapshot
+
+
+def _policy_release_snapshot(policy: object) -> Optional[Mapping[str, object]]:
+    """返回人工批准候选的冻结发布身份；普通策略保持 None。"""
+
+    value = getattr(policy, "release_metadata", None)
+    if value is None:
+        return None
+    if not isinstance(value, Mapping):
+        raise ValueError("策略 release_metadata 必须是映射")
+    return dict(value)
 
 
 def build_decision_codec() -> Mapping[str, Callable]:
