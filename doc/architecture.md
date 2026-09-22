@@ -413,7 +413,7 @@ flowchart LR
 
 2026-09-22 R18 P9 增加离线教师专用的公开状态一致隐藏分配。`SimulationEngine.resample_public_consistent_hidden_world` 只允许在焦点座位自己的摸牌决策窗口调用：固定焦点 `PlayerObservation`、公开历史、各区域张数和物理牌张多重集，把三家暗手与未消费牌墙（含保留区）共同重排，并在返回前逐字段核对焦点观察不变。候选与续打策略仍只经正式 `BotPolicy` 接缝读取玩家观察，不能读取 `WorldState`。该抽样未使用历史动作似然，只用于离线稳健性教师；它不是对手行为条件后验、不能进入线上动作闭环，也不能单独签发候选准入或发布资格。重排后的 `WorldState.history_consistent=false`，导出入口拒绝生成 `full_world` 牌谱，防止把当前状态稳健性样本伪装成可重放的历史事实。首个消费方及边界见 [P9 中后盘七对教师结果](../review/llm-guided-heuristic-route-2026-09-15/R18-P9-MIDGAME-HIDDEN-WORLD-TEACHER-RESULT-2026-09-22.md)。
 
-2026-09-22 R18 P10 在离线教师中给正式 `BotPolicy.choose` 接缝增加只读轨迹包装器。包装器只记录当时 `DecisionRequest` 中的公开观察、规则事实和策略返回计划，用于生成“本人先胡、他家先胡、无胡终止”及分牌型进展标签；它不改变计划、不读取 `WorldState`，也不进入生产组合根。完整世界终态的赢家、番数与支付只能在后续离线教师侧作为监督标签读取，禁止回流为候选输入。结果和字段边界见 [P10 七对多步生存轨迹结果](../review/llm-guided-heuristic-route-2026-09-15/R18-P10-MULTISTEP-SURVIVAL-TRACE-RESULT-2026-09-22.md)。
+2026-09-22 R18 P10 在离线教师中给正式 `BotPolicy.choose` 接缝增加只读轨迹包装器。包装器只记录当时 `DecisionRequest` 中的公开观察、规则事实和策略返回计划，用于生成“本人先胡、他家先胡、无胡终止”及分牌型进展标签；它不改变计划、不读取 `WorldState`，也不进入生产组合根。轨迹消费方必须用截取窗口的 `round_no` 隔离当前局，后续局只允许作执行对账，禁止混入当前机会的终止或向听标签。完整世界终态的赢家、番数与支付只能在后续离线教师侧作为监督标签读取，禁止回流为候选输入。结果和字段边界见 [P10 七对多步生存轨迹结果](../review/llm-guided-heuristic-route-2026-09-15/R18-P10-MULTISTEP-SURVIVAL-TRACE-RESULT-2026-09-22.md)。
 
 2026-09-22 R18 机会精英档案接入 `offline.opportunity_archive`。它只读取已冻结的隐藏能力聚合与完整桌安全摘要，不读取隐藏题面、不调用策略，也不进入线上依赖。每个家族分层保持独立 `conservative_gain` 和绝对 regret；缺测不补零，Pareto 不跨目标求总均分，Lexicase 让每个目标轮流成为首筛条件。候选须先有隐藏专长准入且没有完整桌实质伤害，才进入研究父代池；作者成本和自然触发数只作诊断。档案只决定离线保留与下一代父代，不签发确认或发布资格，首轮结果见 [R18 机会优先档案](../review/llm-guided-heuristic-route-2026-09-15/R18-OPPORTUNITY-ARCHIVE-01-RESULT-2026-09-22.md)。
 
