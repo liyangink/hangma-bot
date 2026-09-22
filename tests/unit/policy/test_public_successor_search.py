@@ -13,6 +13,7 @@ from hangma_bot.policy.public_successor_search import (
     MAX_LEAF_EVALUATIONS,
     RootSearchScore,
     SearchReduction,
+    order_discard_keys_by_confirmed_hu_takeover,
     order_discard_keys_by_fronts,
     reduce_public_successors,
 )
@@ -244,6 +245,10 @@ def _root(key, hu, lower, upper):
     return RootSearchScore(key, lower, upper, hu, 0, 100, 1)
 
 
+def _takeover_root(key, capacity, net, lower, upper):
+    return RootSearchScore(key, lower, upper, net, capacity, 100, 1)
+
+
 def test_pareto_fronts_use_all_dimensions_and_keep_v2_order_inside_front() -> None:
     reduction = SearchReduction(
         complete=True,
@@ -271,3 +276,62 @@ def test_incomplete_reduction_or_key_mismatch_returns_exact_v2_order() -> None:
         True, (_root("discard:1w", 0, 0, 0),), None
     )
     assert order_discard_keys_by_fronts(mismatched, baseline) == baseline
+
+
+def test_confirmed_hu_takeover_moves_only_one_frontier_challenger() -> None:
+    baseline = ("discard:1w", "discard:2w", "discard:3w", "discard:4w")
+    reduction = SearchReduction(
+        True,
+        (
+            _takeover_root("discard:1w", 2, 0.10, 0.20, 0.30),
+            _takeover_root("discard:2w", 3, 0.11, 0.20, 0.30),
+            _takeover_root("discard:3w", 4, 0.12, 0.21, 0.31),
+            _takeover_root("discard:4w", 3, 0.13, 0.22, 0.32),
+        ),
+        None,
+    )
+
+    # 3w 四维支配 2w；3w 与 4w 不可比，故按 V2 顺序选 3w。
+    assert order_discard_keys_by_confirmed_hu_takeover(reduction, baseline) == (
+        "discard:3w",
+        "discard:1w",
+        "discard:2w",
+        "discard:4w",
+    )
+
+
+def test_confirmed_hu_takeover_requires_all_four_conditions() -> None:
+    baseline = (
+        "discard:top",
+        "discard:capacity-only",
+        "discard:net-only",
+        "discard:lower-regression",
+        "discard:upper-regression",
+    )
+    reduction = SearchReduction(
+        True,
+        (
+            _takeover_root("discard:top", 2, 0.10, 0.20, 0.30),
+            _takeover_root("discard:capacity-only", 3, 0.10, 0.20, 0.30),
+            _takeover_root("discard:net-only", 2, 0.11, 0.20, 0.30),
+            _takeover_root("discard:lower-regression", 3, 0.11, 0.19, 0.31),
+            _takeover_root("discard:upper-regression", 3, 0.11, 0.21, 0.29),
+        ),
+        None,
+    )
+    assert order_discard_keys_by_confirmed_hu_takeover(reduction, baseline) == baseline
+
+
+def test_confirmed_hu_takeover_falls_back_on_incomplete_or_key_mismatch() -> None:
+    baseline = ("discard:1w", "discard:2w")
+    assert order_discard_keys_by_confirmed_hu_takeover(
+        SearchReduction(False, (), "unknown"), baseline
+    ) == baseline
+    assert order_discard_keys_by_confirmed_hu_takeover(
+        SearchReduction(
+            True,
+            (_takeover_root("discard:1w", 0, 0.0, 0.0, 0.0),),
+            None,
+        ),
+        baseline,
+    ) == baseline

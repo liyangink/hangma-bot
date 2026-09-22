@@ -92,6 +92,40 @@ def _policy(request, monkeypatch, *, now=0.0, enabled=True, provider=None):
     return policy, baseline, baseline_plan, calls
 
 
+def test_injected_orderer_controls_reorder_without_changing_default(monkeypatch) -> None:
+    request = _request()
+    original = _plan(request)
+    baseline = _Baseline(original)
+    calls = []
+
+    def orderer(reduction, baseline_keys):
+        calls.append((reduction, baseline_keys))
+        return (baseline_keys[1], baseline_keys[0], baseline_keys[2])
+
+    policy = PublicSuccessorSearchPolicy(
+        lambda observation: object(),
+        LeafProgramExecutor(SOURCE),
+        candidate_identity="injected-orderer",
+        baseline=baseline,
+        monotonic=lambda: 0.0,
+        orderer=orderer,
+    )
+    monkeypatch.setattr(
+        "hangma_bot.policy.public_successor_policy.reduce_public_successors",
+        lambda request, successors, scorer: _complete_reduction(),
+    )
+
+    result = run_choose(policy, request, make_budget())
+    assert len(calls) == 1
+    assert calls[0][1] == ("discard:1w", "discard:2w", "discard:3w")
+    assert tuple(item.action_key for item in result.candidates) == (
+        "hu",
+        "discard:2w",
+        "discard:1w",
+        "discard:3w",
+    )
+
+
 def _complete_reduction() -> SearchReduction:
     return SearchReduction(
         complete=True,

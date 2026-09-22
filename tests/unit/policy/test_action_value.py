@@ -352,6 +352,10 @@ class TestT05HuAndContinueCompared:
             # 2026-09-21：R17 在冻结公开后继/叶执行合同之上新增薄策略包装器；
             # 只重排既有合法弃牌位置，任一缺口原样回退 V2。
             "src/hangma_bot/policy/public_successor_policy.py",
+            # 2026-09-23：P60 在既有公开后继归约上新增严格胡牌机会接管排序器，
+            # 并允许受保护组合显式注入排序器；P47 与旧策略实现不变。
+            "src/hangma_bot/policy/public_successor_search.py",
+            "src/hangma_bot/policy/protected_public_successor_policy.py",
             # 2026-09-18：`weights_v1.py` 末尾新增 modul 级常量 V2_PARAM_BATCH_WEIGHTS
             # （`v2_hu_upgrade_v2` 的载体）。纯新增、未被任何既有策略引用，
             # DEFAULT_WEIGHTS_V1 取值逐字不变；字节冻结契约已同步更新哈希并追加

@@ -138,6 +138,40 @@ def test_ordinary_plan_uses_existing_r17_reduction(monkeypatch) -> None:
     assert all("候选=candidate-id" in item.reasons[-1] for item in actual.candidates)
 
 
+def test_ordinary_plan_accepts_injected_conservative_orderer(monkeypatch) -> None:
+    request = _request()
+    trace = {"trace_schema": "sitin-action-score-trace/1", "detail": {}}
+    original = _plan(request, trace=trace)
+    calls = []
+
+    def orderer(reduction, baseline_keys):
+        calls.append((reduction, baseline_keys))
+        return (baseline_keys[1], baseline_keys[0], baseline_keys[2])
+
+    policy = ProtectedPublicSuccessorSearchPolicy(
+        lambda observation: object(),
+        LeafProgramExecutor(SOURCE),
+        candidate_identity="conservative-orderer",
+        baseline=_Baseline(original),
+        protected_trace_keys=PROTECTED,
+        monotonic=lambda: 0.0,
+        orderer=orderer,
+    )
+    monkeypatch.setattr(
+        "hangma_bot.policy.protected_public_successor_policy.reduce_public_successors",
+        lambda request, successors, scorer: _reduction(),
+    )
+
+    actual = run_choose(policy, request, make_budget())
+    assert len(calls) == 1
+    assert calls[0][1] == ("discard:1w", "discard:2w", "discard:3w")
+    assert tuple(item.action_key for item in actual.candidates) == (
+        "discard:2w",
+        "discard:1w",
+        "discard:3w",
+    )
+
+
 def test_duplicate_or_empty_protection_keys_are_rejected() -> None:
     request = _request()
     plan = _plan(

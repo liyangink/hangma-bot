@@ -576,6 +576,69 @@ def order_discard_keys_by_fronts(
     return tuple(ordered)
 
 
+def _takeover_dominates(left: RootSearchScore, right: RootSearchScore) -> bool:
+    """比较两个已满足接管门的根；容量也是不可退的独立维度。"""
+
+    left_vector = (
+        left.conditional_hu_capacity,
+        left.conditional_hu_net_support,
+        left.lower_support_score,
+        left.upper_support_score,
+    )
+    right_vector = (
+        right.conditional_hu_capacity,
+        right.conditional_hu_net_support,
+        right.lower_support_score,
+        right.upper_support_score,
+    )
+    pairs = tuple(zip(left_vector, right_vector))
+    return all(a >= b for a, b in pairs) and any(a > b for a, b in pairs)
+
+
+def order_discard_keys_by_confirmed_hu_takeover(
+    reduction: SearchReduction,
+    baseline_keys: Tuple[str, ...],
+) -> Tuple[str, ...]:
+    """仅让四项胡牌机会证据同时改善的一个根接管 V2 首选。
+
+    挑战根相对当前首选必须同时满足：条件一摸胡容量严格增加、条件胡净分
+    支撑严格增加、后继下界不退、后继上界不退。多个挑战根同时满足时，
+    先排除被另一挑战根四维支配的根，再按稳定 V2 顺序选择一个。除被选根
+    移到首位外，其余弃牌的相对顺序逐字保持。
+    """
+
+    if not reduction.complete or not baseline_keys:
+        return baseline_keys
+    scores = {item.action_key: item for item in reduction.roots}
+    if len(scores) != len(reduction.roots) or set(scores) != set(baseline_keys):
+        return baseline_keys
+    baseline_top = scores[baseline_keys[0]]
+    eligible = tuple(
+        key
+        for key in baseline_keys[1:]
+        if scores[key].conditional_hu_capacity
+        > baseline_top.conditional_hu_capacity
+        and scores[key].conditional_hu_net_support
+        > baseline_top.conditional_hu_net_support
+        and scores[key].lower_support_score >= baseline_top.lower_support_score
+        and scores[key].upper_support_score >= baseline_top.upper_support_score
+    )
+    if not eligible:
+        return baseline_keys
+    frontier = tuple(
+        key
+        for key in eligible
+        if not any(
+            other != key and _takeover_dominates(scores[other], scores[key])
+            for other in eligible
+        )
+    )
+    if not frontier:
+        return baseline_keys
+    selected = frontier[0]
+    return (selected,) + tuple(key for key in baseline_keys if key != selected)
+
+
 __all__ = [
     "LEAF_VIEW_SCHEMA_VERSION",
     "MAX_LEAF_EVALUATIONS",
@@ -587,6 +650,7 @@ __all__ = [
     "SearchReduction",
     "SearchRootView",
     "SearchWindowView",
+    "order_discard_keys_by_confirmed_hu_takeover",
     "order_discard_keys_by_fronts",
     "reduce_public_successors",
 ]

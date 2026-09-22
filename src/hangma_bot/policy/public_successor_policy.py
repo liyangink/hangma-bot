@@ -11,7 +11,7 @@ from __future__ import annotations
 import asyncio
 from dataclasses import replace
 import time
-from typing import Callable, Dict, Optional
+from typing import Callable, Dict, Optional, Tuple
 
 from hangma_bot.hangma.interface import PublicSuccessorAnalysis
 from hangma_bot.kernel.actions import Discard, WindowPhase
@@ -27,12 +27,14 @@ from .interface import (
 )
 from .public_successor_leaf_executor import LeafProgramExecutor
 from .public_successor_search import (
+    SearchReduction,
     order_discard_keys_by_fronts,
     reduce_public_successors,
 )
 
 
 SuccessorProvider = Callable[[PlayerObservation], PublicSuccessorAnalysis]
+DiscardOrderer = Callable[[SearchReduction, Tuple[str, ...]], Tuple[str, ...]]
 
 
 class PublicSuccessorSearchPolicy:
@@ -47,6 +49,7 @@ class PublicSuccessorSearchPolicy:
         baseline: Optional[BotPolicy] = None,
         monotonic: Callable[[], float] = time.monotonic,
         enabled: bool = True,
+        orderer: Optional[DiscardOrderer] = None,
     ) -> None:
         if not callable(successor_provider):
             raise TypeError("successor_provider 必须可调用")
@@ -54,6 +57,8 @@ class PublicSuccessorSearchPolicy:
             raise TypeError("leaf_executor 必须是 LeafProgramExecutor")
         if not isinstance(candidate_identity, str) or not candidate_identity:
             raise ValueError("candidate_identity 必须是非空字符串")
+        if orderer is not None and not callable(orderer):
+            raise TypeError("orderer 必须可调用")
         self._provider = successor_provider
         self._executor = leaf_executor
         self._identity = candidate_identity
@@ -61,6 +66,7 @@ class PublicSuccessorSearchPolicy:
         self.max_operations = leaf_executor.max_operations_per_window
         self._monotonic = monotonic
         self._enabled = bool(enabled)
+        self._orderer = orderer
         self._baseline: BotPolicy = (
             baseline
             if baseline is not None
@@ -102,7 +108,8 @@ class PublicSuccessorSearchPolicy:
                 return baseline
             scorer = self._executor.window_scorer()
             reduction = reduce_public_successors(request, successors, scorer)
-            ordered_keys = order_discard_keys_by_fronts(reduction, baseline_keys)
+            orderer = self._orderer or order_discard_keys_by_fronts
+            ordered_keys = orderer(reduction, baseline_keys)
             if not reduction.complete or ordered_keys == baseline_keys:
                 return baseline
             if not await self._within_enhancement_budget(budget):
@@ -132,4 +139,4 @@ class PublicSuccessorSearchPolicy:
         return replace(baseline, candidates=tuple(result))
 
 
-__all__ = ["PublicSuccessorSearchPolicy", "SuccessorProvider"]
+__all__ = ["DiscardOrderer", "PublicSuccessorSearchPolicy", "SuccessorProvider"]

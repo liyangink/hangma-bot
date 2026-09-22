@@ -26,12 +26,14 @@ from .interface import (
 )
 from .public_successor_leaf_executor import LeafProgramExecutor
 from .public_successor_search import (
+    SearchReduction,
     order_discard_keys_by_fronts,
     reduce_public_successors,
 )
 
 
 SuccessorProvider = Callable[[PlayerObservation], PublicSuccessorAnalysis]
+DiscardOrderer = Callable[[SearchReduction, Tuple[str, ...]], Tuple[str, ...]]
 
 
 def protected_trace_state(
@@ -75,6 +77,7 @@ class ProtectedPublicSuccessorSearchPolicy:
         protected_trace_keys: Tuple[str, ...],
         monotonic: Callable[[], float] = time.monotonic,
         enabled: bool = True,
+        orderer: Optional[DiscardOrderer] = None,
     ) -> None:
         if not callable(successor_provider):
             raise TypeError("successor_provider 必须可调用")
@@ -82,6 +85,8 @@ class ProtectedPublicSuccessorSearchPolicy:
             raise TypeError("leaf_executor 必须是 LeafProgramExecutor")
         if not isinstance(candidate_identity, str) or not candidate_identity:
             raise ValueError("candidate_identity 必须是非空字符串")
+        if orderer is not None and not callable(orderer):
+            raise TypeError("orderer 必须可调用")
         keys = tuple(protected_trace_keys)
         if not keys or any(not isinstance(key, str) or not key for key in keys):
             raise ValueError("protected_trace_keys 必须是非空字符串元组")
@@ -94,6 +99,7 @@ class ProtectedPublicSuccessorSearchPolicy:
         self._protected_trace_keys = keys
         self._monotonic = monotonic
         self._enabled = bool(enabled)
+        self._orderer = orderer
         self.policy_id = "protected-r17:" + candidate_identity[:12]
         self.max_operations = leaf_executor.max_operations_per_window
 
@@ -137,7 +143,8 @@ class ProtectedPublicSuccessorSearchPolicy:
                 return baseline
             scorer = self._executor.window_scorer()
             reduction = reduce_public_successors(request, successors, scorer)
-            ordered_keys = order_discard_keys_by_fronts(reduction, baseline_keys)
+            orderer = self._orderer or order_discard_keys_by_fronts
+            ordered_keys = orderer(reduction, baseline_keys)
             if not reduction.complete or ordered_keys == baseline_keys:
                 return baseline
             if not await self._within_enhancement_budget(budget):
@@ -167,4 +174,8 @@ class ProtectedPublicSuccessorSearchPolicy:
         return replace(baseline, candidates=tuple(result))
 
 
-__all__ = ["ProtectedPublicSuccessorSearchPolicy", "protected_trace_state"]
+__all__ = [
+    "DiscardOrderer",
+    "ProtectedPublicSuccessorSearchPolicy",
+    "protected_trace_state",
+]
