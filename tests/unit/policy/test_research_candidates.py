@@ -14,6 +14,9 @@ from hangma_bot.policy.research_candidates import (
     R18_INTEGRATED_POSITIVE_V1_NAME,
     R18_INTEGRATED_POSITIVE_V1_SHA256,
     R18_INTEGRATED_POSITIVE_V1_SOURCE,
+    R18_INTEGRATED_POSITIVE_V2_NAME,
+    R18_INTEGRATED_POSITIVE_V2_SHA256,
+    R18_INTEGRATED_POSITIVE_V2_SOURCE,
     R18_TWO_WEALTH_BAOTOU_V1_NAME,
     R18_TWO_WEALTH_BAOTOU_V1_SHA256,
     R18_TWO_WEALTH_BAOTOU_V1_SOURCE,
@@ -29,6 +32,7 @@ def test_r18_two_wealth_source_matches_frozen_normalized_digest() -> None:
     assert RESEARCH_CANDIDATE_NAMES == (
         R18_TWO_WEALTH_BAOTOU_V1_NAME,
         R18_INTEGRATED_POSITIVE_V1_NAME,
+        R18_INTEGRATED_POSITIVE_V2_NAME,
     )
 
 
@@ -37,6 +41,13 @@ def test_r18_integrated_source_matches_frozen_digest() -> None:
     assert hashlib.sha256(
         R18_INTEGRATED_POSITIVE_V1_SOURCE.encode("utf-8")
     ).hexdigest() == R18_INTEGRATED_POSITIVE_V1_SHA256
+
+
+def test_r18_integrated_v2_source_matches_frozen_digest() -> None:
+    """第二版累计候选必须绑定 P65 冻结源码摘要。"""
+    assert hashlib.sha256(
+        R18_INTEGRATED_POSITIVE_V2_SOURCE.encode("utf-8")
+    ).hexdigest() == R18_INTEGRATED_POSITIVE_V2_SHA256
 
 
 def test_r18_two_wealth_scorer_is_bounded_and_scores_complete_sample() -> None:
@@ -70,6 +81,16 @@ def test_r18_integrated_policy_is_offline_only() -> None:
 
     assert isinstance(policy, ActionValuePolicy)
     assert policy.scorer_name == R18_INTEGRATED_POSITIVE_V1_NAME
+    assert strategy not in AVAILABLE_STRATEGIES
+
+
+def test_r18_integrated_v2_policy_is_offline_only() -> None:
+    """第二版累计父代可离线构造，但仍不得进入真实网络策略清单。"""
+    strategy = "action_value:r18_integrated_positive_v2"
+    policy = build_research_policy(strategy)
+
+    assert isinstance(policy, ActionValuePolicy)
+    assert policy.scorer_name == R18_INTEGRATED_POSITIVE_V2_NAME
     assert strategy not in AVAILABLE_STRATEGIES
 
 

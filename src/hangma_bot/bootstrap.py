@@ -81,6 +81,7 @@ from hangma_bot.policy.catch_play_probe import CatchPlayProbePolicy
 from hangma_bot.policy.action_value_policy import ActionValuePolicy
 from hangma_bot.policy.research_candidates import (
     R18_INTEGRATED_POSITIVE_V1_NAME,
+    R18_INTEGRATED_POSITIVE_V2_NAME,
     R18_TWO_WEALTH_BAOTOU_V1_NAME,
     build_research_candidate_scorer,
 )
@@ -212,6 +213,12 @@ _RESEARCH_STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     # 2,048 张新完整桌与 P37 的 512 个来源积分轨迹逐一相同。
     "action_value:r18_integrated_positive_v1": lambda: ActionValuePolicy(
         build_research_candidate_scorer(R18_INTEGRATED_POSITIVE_V1_NAME),
+        value_limits=ValueAnalysisLimits(),
+    ),
+    # R18 P69：在 P47 上增加已通过盲态因果复验与 1,024 桌独立
+    # 确认的“非财神建爆头优于立即小胡”能力。仍只限离线研究。
+    "action_value:r18_integrated_positive_v2": lambda: ActionValuePolicy(
+        build_research_candidate_scorer(R18_INTEGRATED_POSITIVE_V2_NAME),
         value_limits=ValueAnalysisLimits(),
     ),
 }
