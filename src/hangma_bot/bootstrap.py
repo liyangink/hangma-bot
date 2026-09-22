@@ -78,6 +78,7 @@ from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy
 from hangma_bot.policy.catch_play_probe import CatchPlayProbePolicy
 from hangma_bot.policy.action_value_policy import ActionValuePolicy
 from hangma_bot.policy.research_candidates import (
+    R18_INTEGRATED_POSITIVE_V1_NAME,
     R18_TWO_WEALTH_BAOTOU_V1_NAME,
     build_research_candidate_scorer,
 )
@@ -181,6 +182,12 @@ _RESEARCH_STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
         build_research_candidate_scorer(R18_TWO_WEALTH_BAOTOU_V1_NAME),
         value_limits=ValueAnalysisLimits(),
     ),
+    # R18 P46：在双财神父代上恢复已独立验证的庄家起手七对能力；
+    # 2,048 张新完整桌与 P37 的 512 个来源积分轨迹逐一相同。
+    "action_value:r18_integrated_positive_v1": lambda: ActionValuePolicy(
+        build_research_candidate_scorer(R18_INTEGRATED_POSITIVE_V1_NAME),
+        value_limits=ValueAnalysisLimits(),
+    ),
 }
 
 #: 研究候选名清单（离线装配专用；不进入 AVAILABLE_STRATEGIES）。
@@ -236,6 +243,7 @@ _ACTION_VALUE_STRATEGY_NAMES = (
     "action_value:route_value_seed",
     "action_value:hu_first_reference",
     "action_value:r18_two_wealth_baotou_v1",
+    "action_value:r18_integrated_positive_v1",
 )
 
 

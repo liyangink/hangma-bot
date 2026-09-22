@@ -344,6 +344,8 @@ class TestT05HuAndContinueCompared:
             "src/hangma_bot/policy/action_value_seeds.py",
             # 2026-09-22：R18 P37 新增冻结活动研究父代注册表；只供离线组合根。
             "src/hangma_bot/policy/research_candidates.py",
+            # 2026-09-22：R18 P46 累计正向能力父代的内容绑定源码；只供离线组合根。
+            "src/hangma_bot/policy/r18_integrated_positive_v1.py",
             # 2026-09-21：R17 在冻结公开后继/叶执行合同之上新增薄策略包装器；
             # 只重排既有合法弃牌位置，任一缺口原样回退 V2。
             "src/hangma_bot/policy/public_successor_policy.py",
@@ -1377,6 +1379,7 @@ class TestR1S3ResearchTournamentBoundary:
             "action_value:route_value_seed",
             "action_value:hu_first_reference",
             "action_value:r18_two_wealth_baotou_v1",
+            "action_value:r18_integrated_positive_v1",
         }
 
     def test_stable_strategies_still_configurable(self) -> None:
@@ -1410,6 +1413,7 @@ class TestR1S3ResearchTournamentBoundary:
             "action_value:route_value_seed",
             "action_value:hu_first_reference",
             "action_value:r18_two_wealth_baotou_v1",
+            "action_value:r18_integrated_positive_v1",
         ):
             policy = build_research_policy(name)
             assert isinstance(policy, ActionValuePolicy)
