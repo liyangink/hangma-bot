@@ -806,6 +806,12 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 
 本次公开属性与构造参数由策略契约测试覆盖，受监督离线入口另覆盖默认失败/研究成功、持久化及错额度拒绝。逐窗口操作数全量落盘和自动研究档案恢复不在当前实现范围。研究结果永不直接签发发布资格。
 
+### 冻结活动研究父代接缝（2026-09-22，R18 P37）
+
+**双财神保爆头候选只接入离线研究组合根，真实网络入口仍封闭。** `policy.research_candidates` 保存规范化源码、机制四字段和冻结 SHA-256；构建时先复核内容摘要，再交给既有 `ActionValueExecutor` 静态检查、插桩和 100,000 次单窗口工作量上限。组合根以 `action_value:r18_two_wealth_baotou_v1` 暴露给 `build_research_policy`，该名字不进入 `AVAILABLE_STRATEGIES`，`RuntimeConfig` 继续拒绝全部 `action_value:*`。
+
+候选只在精确公开谓词成立时把唯一 `discard:<wealth>` 提升到 P5 胡分数之上：P5 首选胡、手牌恰有两张财神、胡与弃财神动作各唯一、规则事实 `baotou_after is True`。任一条件缺失、为假或未知都完整保持 P5。评估源码 `b59146…` 经仅删除死赋值的规范化得到包内源码 `38cc7e…`；255 个当前评分视图的完整 `ScoreBatch` 逐项相等。隐藏机会与完整桌结果见 [P37 活动研究父代报告](../../review/llm-guided-heuristic-route-2026-09-15/R18-P37-TWO-WEALTH-ACTIVE-PARENT-RESULT-2026-09-22.md)。该接缝只解决可重复装配，不改变 T20 人工发布门、线上时限或默认策略。
+
 ### 门线 / 位次势差语义（2026-09-17，R7 P10，对应复审 §5 M4）
 
 **结论：「门线」只有两个名字，名字必须与升序下标一致。** R6 试跑候选把「晋级门线（第 3 名分数线）」贴到升序 `sorted(scores)[2]`（实为**第 2 名**）：对四座 `(100, 80, 20, 0)`、焦点座位 2 得到 −60，而所称「第 3 名距离」应为 0。本节固定候选面向口径；作者提示词由 [`tools/sitin_generate.py`](../../review/llm-guided-heuristic-route-2026-09-15/tools/sitin_generate.py) 的 `gate_line_semantics_block()` 渲染（同源，不手抄第二套），口径块进合同身份——改口径即改提示词哈希。

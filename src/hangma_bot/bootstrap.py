@@ -77,6 +77,10 @@ from hangma_bot.policy.hu_upgrade_calibration import (
 from hangma_bot.policy.white_discard_guard import WhiteDiscardGuardPolicy
 from hangma_bot.policy.catch_play_probe import CatchPlayProbePolicy
 from hangma_bot.policy.action_value_policy import ActionValuePolicy
+from hangma_bot.policy.research_candidates import (
+    R18_TWO_WEALTH_BAOTOU_V1_NAME,
+    build_research_candidate_scorer,
+)
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
@@ -170,6 +174,13 @@ _RESEARCH_STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
         "route_value_seed", value_limits=ValueAnalysisLimits()),
     "action_value:hu_first_reference": lambda: ActionValuePolicy.from_seed(
         "hu_first_reference", value_limits=ValueAnalysisLimits()),
+    # R18 P37：已过自然隐藏机会门和 1,024 桌研究安全门的活动研究父代。
+    # 仍是离线研究策略；真实网络入口继续由 RuntimeConfig 的 action_value:*
+    # 拒绝规则封闭，不能据此获得发布资格。
+    "action_value:r18_two_wealth_baotou_v1": lambda: ActionValuePolicy(
+        build_research_candidate_scorer(R18_TWO_WEALTH_BAOTOU_V1_NAME),
+        value_limits=ValueAnalysisLimits(),
+    ),
 }
 
 #: 研究候选名清单（离线装配专用；不进入 AVAILABLE_STRATEGIES）。
@@ -224,6 +235,7 @@ _ACTION_VALUE_STRATEGY_NAMES = (
     "action_value:efficiency_seed",
     "action_value:route_value_seed",
     "action_value:hu_first_reference",
+    "action_value:r18_two_wealth_baotou_v1",
 )
 
 

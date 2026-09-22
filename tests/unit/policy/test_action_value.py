@@ -342,6 +342,8 @@ class TestT05HuAndContinueCompared:
             "src/hangma_bot/policy/action_value_executor.py",
             "src/hangma_bot/policy/action_value_policy.py",
             "src/hangma_bot/policy/action_value_seeds.py",
+            # 2026-09-22：R18 P37 新增冻结活动研究父代注册表；只供离线组合根。
+            "src/hangma_bot/policy/research_candidates.py",
             # 2026-09-21：R17 在冻结公开后继/叶执行合同之上新增薄策略包装器；
             # 只重排既有合法弃牌位置，任一缺口原样回退 V2。
             "src/hangma_bot/policy/public_successor_policy.py",
@@ -363,8 +365,7 @@ class TestT05HuAndContinueCompared:
             for line in status.stdout.splitlines()
             if line.startswith("??")
         }
-        # B3 文件已入库（tracked）；R2 返工在其上修改而非新增——
-        # 未跟踪新文件集合应为空，改动由上方 allowed 白名单约束。
+        # 新模块须在执行本回归前纳入提交集合，避免未跟踪源码绕过上方白名单。
         expected_new: set[str] = set()
         assert new_files == expected_new
 
@@ -1375,6 +1376,7 @@ class TestR1S3ResearchTournamentBoundary:
             "action_value:efficiency_seed",
             "action_value:route_value_seed",
             "action_value:hu_first_reference",
+            "action_value:r18_two_wealth_baotou_v1",
         }
 
     def test_stable_strategies_still_configurable(self) -> None:
@@ -1407,6 +1409,7 @@ class TestR1S3ResearchTournamentBoundary:
             "action_value:efficiency_seed",
             "action_value:route_value_seed",
             "action_value:hu_first_reference",
+            "action_value:r18_two_wealth_baotou_v1",
         ):
             policy = build_research_policy(name)
             assert isinstance(policy, ActionValuePolicy)

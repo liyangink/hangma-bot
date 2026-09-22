@@ -423,6 +423,8 @@ flowchart LR
 
 2026-09-22 R18 将动作后爆头事实纳入 `sitin-scoring-view/4`。唯一规则源仍是 `hangma.progression.baotou_after_action`，计算结果随 `CandidateFacts.baotou_after` 进入审计编解码，再由 `policy` 原样投影为 `actions[].baotou_after`；策略层不得重建手牌或另写爆头判定。胡牌终局、未运行分值/进展分析和不能确定的规则转移均为 `None`。该变化用于降低机会专长作者的推导负担，不改变默认策略排序、线上动作接口或合法动作生成。
 
+2026-09-22 R18 P37 将首个通过隐藏机会门与 1,024 桌研究安全门的双财神保爆头候选登记为活动研究父代。规范化源码随 `policy.research_candidates` 静态打包，由唯一组合根通过 `build_research_policy("action_value:r18_two_wealth_baotou_v1")` 装配；装载仍经过源码摘要核对、受限执行器和默认 100,000 次工作量上限。它不在 `AVAILABLE_STRATEGIES`，所有真实网络模式继续拒绝 `action_value:*`，因此此次接线不改变默认线上策略或发布资格。稳定 P5 继续作为演化对照，机会题库负责专长选择，完整桌负责非劣与可靠性安全。
+
 面板重评使用完整 `ActionValuePolicy.choose` 计划，记录拒绝过滤后的首选和后续候选、紧急标记与修订号；失败降级计划留作诊断，不能被判为等行为。主搜索按授权的面板路径/摘要和监督备注冻结运行身份，内容变化拒绝恢复，不可判定在效果评价之前停止；档案仅接收可判定的新行为证据。生成输入/输出 token 预留使用同锁内单次原子落盘，避免中断留下新半笔预留。
 
 ## 10. 第一阶段目录
