@@ -38,13 +38,15 @@ def _config(tmp_path: Path, mode: str, token_kind: str):
             "known_guide_version": 34,
             "audit_root": str(tmp_path),
             "strategy": R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+            "expected_policy_release_id": R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
         }
     )
 
 
 def test_release_package_identity_and_default_are_frozen() -> None:
     policy = R18IntegratedPositiveV1ReleasePolicy(
-        rules_source_hash=R18_INTEGRATED_POSITIVE_V1_RULES_SOURCE_HASH
+        rules_source_hash=R18_INTEGRATED_POSITIVE_V1_RULES_SOURCE_HASH,
+        value_analysis_sha256=R18_INTEGRATED_POSITIVE_V1_VALUE_ANALYSIS_SHA256,
     )
     metadata = policy.release_metadata
 
@@ -65,7 +67,18 @@ def test_release_package_identity_and_default_are_frozen() -> None:
 
 def test_release_candidate_rejects_rule_source_drift() -> None:
     with pytest.raises(RuntimeError, match="完整规则源摘要漂移"):
-        R18IntegratedPositiveV1ReleasePolicy(rules_source_hash="0" * 64)
+        R18IntegratedPositiveV1ReleasePolicy(
+            rules_source_hash="0" * 64,
+            value_analysis_sha256=R18_INTEGRATED_POSITIVE_V1_VALUE_ANALYSIS_SHA256,
+        )
+
+
+def test_release_candidate_rejects_value_analysis_drift() -> None:
+    with pytest.raises(RuntimeError, match="分值分析依赖摘要漂移"):
+        R18IntegratedPositiveV1ReleasePolicy(
+            rules_source_hash=R18_INTEGRATED_POSITIVE_V1_RULES_SOURCE_HASH,
+            value_analysis_sha256="0" * 64,
+        )
 
 
 @pytest.mark.parametrize(
@@ -118,8 +131,45 @@ def test_release_candidate_rejects_stale_known_guide(tmp_path: Path) -> None:
         "known_guide_version": 33,
         "audit_root": str(tmp_path),
         "strategy": R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+        "expected_policy_release_id": R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
     }
     with pytest.raises(ValueError, match="官方指南 v34"):
+        runtime_config_from_mapping(data)
+
+
+@pytest.mark.parametrize("release_id", (None, "0" * 64))
+def test_release_candidate_rejects_missing_or_stale_package_binding(
+    tmp_path: Path, release_id: str | None
+) -> None:
+    data = {
+        "mode": "test_tournament",
+        "token_kind": "test",
+        "token": "fixture-not-a-real-token",
+        "base_url": "https://platform.invalid",
+        "expected_tournament_id": "t-r18",
+        "known_guide_version": 34,
+        "audit_root": str(tmp_path),
+        "strategy": R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+    }
+    if release_id is not None:
+        data["expected_policy_release_id"] = release_id
+    with pytest.raises(ValueError, match="发布包"):
+        runtime_config_from_mapping(data)
+
+
+def test_non_release_strategy_rejects_release_binding(tmp_path: Path) -> None:
+    data = {
+        "mode": "test_tournament",
+        "token_kind": "test",
+        "token": "fixture-not-a-real-token",
+        "base_url": "https://platform.invalid",
+        "expected_tournament_id": "t-r18",
+        "known_guide_version": 34,
+        "audit_root": str(tmp_path),
+        "strategy": "weighted_heuristic_v2",
+        "expected_policy_release_id": R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
+    }
+    with pytest.raises(ValueError, match="冻结发布策略"):
         runtime_config_from_mapping(data)
 
 

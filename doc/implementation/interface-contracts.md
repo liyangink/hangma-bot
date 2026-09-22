@@ -272,6 +272,12 @@ V0/V1 评分源码的**行为**不变；线上不含任何 LLM 调用。相关�
 `d8a6346c8303a891523952bff618989931beb62fa041a511805b807ee471a6ef`；策略名相同而其中任一内容变化时，
 包 ID 必须变化并重新审核，不能沿用本次授权。
 
+R18 的真实网络配置必须包含 `expected_policy_release_id`，值严格等于上述完整包 ID。该字段是公开制品身份，
+不是 Token。`runtime_config_from_mapping` 在建立会话前拒绝缺失或不匹配；普通策略携带该字段同样拒绝。
+测试房的房间级配置只保存一次，由 `run_test_room.py` 仅向实际使用 R18 的身份派生配置透传，四个子进程各自
+再次通过组合根校验。P59 的测试房与测试赛事专用冻结件分别绑定模板、入口脚本、组合根、当前发布包和
+P57/P58 状态证据；离线装配通过不替代真实官方测试。
+
 规则适用域固定为 `hangma-mvp-v10-public-counts`、底分 1、`YouCaiBiKao=false`，最低已适配官方指南为 v34。测试房、测试赛事和
 自由赛都在官方初始化规则到达后核对；不符时在该候选动作前拒绝会话，不做未验证语义上的静默退化。
 动作入口仍是唯一 `BotPolicy.choose(DecisionRequest, DecisionBudget)`，规则事实仍只由 `hangma` 生产。
@@ -285,6 +291,7 @@ P57 以 P47 冻结的 377 个正式请求核对发布包
 与研究装配的完整 `DecisionPlan`，必须 377/377 相等且零 `action_value_failed`；结果见
 `review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/`
 `r18-p57-network-release-rebind-01-20260923/`。P54 的旧包 ID 仅保留为修复前历史证据。
+模式专用冻结件见同目录下 `r18-p59-network-mode-freeze-01-20260923/`。
 
 ### 4.9 坐隐研究工具的产物 schema 与实验清单身份字段（2026-09-15）
 

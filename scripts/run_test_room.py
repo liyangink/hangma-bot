@@ -27,6 +27,7 @@ Token 安全：Token 只经环境变量 ``HM_IDENTITY_TOKEN`` 传给子进程，
   "known_guide_version": 18,
   "audit_root": "artifacts/sessions/test-room-example/audit",   // 每身份生成 audit_root/slot-{X}/runs/{run_id}/...
   "strategy": "weighted_heuristic",   // 可选
+  "expected_policy_release_id": "<发布策略专用完整 SHA-256>", // 普通策略省略
   "insecure_hosts": ["<官方内网主机>"], // 可选
   "identities": [                // 必须恰好四个；token 与 token_env 二选一
     {"slot": "A", "token": "...", "strategy": "weighted_heuristic_v1"},
@@ -92,7 +93,11 @@ _ensure_import_path()
 from hangma_bot.application.deadline import BoundedBackoff  # noqa: E402  编排级有界退避
 # 策略名的唯一来源；本启动器只做白名单展示，不自行维护副本（否则组合根
 # 新增策略后本文件会静默拒绝，2026-09-14 序列模型接入即发生过一次）。
-from hangma_bot.bootstrap import AVAILABLE_STRATEGIES  # noqa: E402
+from hangma_bot.bootstrap import (  # noqa: E402
+    AVAILABLE_STRATEGIES,
+    R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
+    R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+)
 
 TOKEN_ENV_VAR = "HM_IDENTITY_TOKEN"
 RESULT_PREFIX = "RESULT "
@@ -122,6 +127,7 @@ _ROOM_FIELDS = frozenset({
     "restart",
     "sse_enabled",
     "sequence_model_dir",
+    "expected_policy_release_id",
 })
 _RESTART_FIELDS = frozenset({
     "max_restarts",
@@ -215,6 +221,8 @@ class RoomConfig:
     # 序列策略网络部署包根目录；仅当某个身份/房间策略取 sequence_model_* 时生效。
     # None 表示由子进程回退到仓库内 prebuilt/sequence-policy-models。
     sequence_model_dir: Optional[str] = None
+    # 发布包摘要只透传给实际选择该发布策略的身份；不是 Token。
+    expected_policy_release_id: Optional[str] = None
 
 
 @dataclass
@@ -342,6 +350,22 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
     )
 
     strategy = _require_strategy(data.get("strategy", "weighted_heuristic"))
+    effective_strategies = [
+        identity.strategy if identity.strategy is not None else strategy
+        for identity in identities
+    ]
+    expected_release = data.get("expected_policy_release_id")
+    uses_r18_release = R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY in effective_strategies
+    if uses_r18_release:
+        if expected_release is None:
+            raise ValueError("测试房 R18 配置必须显式绑定发布包 expected_policy_release_id")
+        expected_release = _require_non_empty_str(
+            expected_release, "expected_policy_release_id"
+        )
+        if expected_release != R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID:
+            raise ValueError("测试房配置绑定的 R18 发布包摘要与当前批准包不一致")
+    elif expected_release is not None:
+        raise ValueError("expected_policy_release_id 只能与已冻结发布策略共同使用")
     hosts = data.get("insecure_hosts", [])
     if not isinstance(hosts, (list, tuple)):
         raise ValueError("insecure_hosts 必须是数组")
@@ -363,6 +387,7 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
                                if data.get("max_completed_batches") is not None else None),
         sequence_model_dir=(_require_non_empty_str(data["sequence_model_dir"], "sequence_model_dir")
                             if data.get("sequence_model_dir") is not None else None),
+        expected_policy_release_id=expected_release,
     )
 
 
@@ -380,6 +405,8 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
         "strategy": identity.strategy if identity.strategy is not None else room.strategy,
         "sse_enabled": room.sse_enabled,
     }
+    if config["strategy"] == R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY:
+        config["expected_policy_release_id"] = room.expected_policy_release_id
     if room.insecure_hosts:
         config["insecure_hosts"] = sorted(room.insecure_hosts)
     if room.sequence_model_dir is not None:

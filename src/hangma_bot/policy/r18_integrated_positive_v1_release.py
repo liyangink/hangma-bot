@@ -8,12 +8,9 @@
 from __future__ import annotations
 
 import hashlib
-import inspect
 import json
-from pathlib import Path
 from typing import Any, Mapping
 
-from hangma_bot.hangma import value_analysis
 from hangma_bot.hangma.interface import ValueAnalysisLimits
 
 from .action_value_policy import ActionValuePolicy
@@ -57,15 +54,6 @@ def _source_digest() -> str:
     ).hexdigest()
 
 
-def _value_analysis_digest() -> str:
-    """返回当前规则分值分析源码摘要；源码不可读时拒绝网络装配。"""
-
-    source_path = inspect.getsourcefile(value_analysis)
-    if source_path is None:
-        raise RuntimeError("无法定位分值分析源码；拒绝装配 R18 发布候选")
-    return hashlib.sha256(Path(source_path).read_bytes()).hexdigest()
-
-
 def _release_payload() -> dict[str, Any]:
     return {
         "schema": "r18-integrated-positive-v1-release/2",
@@ -104,10 +92,15 @@ R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID = hashlib.sha256(
 class R18IntegratedPositiveV1ReleasePolicy(ActionValuePolicy):
     """绑定 P49 人工审核结果的 R18 真实环境候选策略。"""
 
-    def __init__(self, *, rules_source_hash: str) -> None:
+    def __init__(
+        self,
+        *,
+        rules_source_hash: str,
+        value_analysis_sha256: str,
+    ) -> None:
         if _source_digest() != R18_INTEGRATED_POSITIVE_V1_SHA256:
             raise RuntimeError("R18 发布候选源码摘要漂移；拒绝装配")
-        if _value_analysis_digest() != R18_INTEGRATED_POSITIVE_V1_VALUE_ANALYSIS_SHA256:
+        if value_analysis_sha256 != R18_INTEGRATED_POSITIVE_V1_VALUE_ANALYSIS_SHA256:
             raise RuntimeError("R18 分值分析依赖摘要漂移；拒绝装配")
         if rules_source_hash != R18_INTEGRATED_POSITIVE_V1_RULES_SOURCE_HASH:
             raise RuntimeError("R18 完整规则源摘要漂移；拒绝装配")

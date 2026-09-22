@@ -18,6 +18,7 @@
   "token_kind": "official",   // test / official
   "audit_root": "./runs",      // 其下生成 runs/{run_id}/... 审计目录
   "strategy": "weighted_heuristic",  // 可选；weighted_heuristic / safe_fallback
+  "expected_policy_release_id": "<发布策略专用完整 SHA-256>", // 普通策略省略
   "insecure_hosts": ["<官方内网主机>"],  // 可选；仅白名单内网主机允许关闭 TLS 校验
   "slot": "A"                  // 可选；测试房间身份槽位标签，仅用于日志
 }

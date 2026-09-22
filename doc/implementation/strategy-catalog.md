@@ -23,6 +23,8 @@
 `0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d`。每次运行的
 `RUN_MANIFEST.policy_release` 都保存完整候选身份、允许模式、规则范围、完整规则源摘要及 P45—P48/P55 证据摘要。
 记录端对该受控子树内的严格 SHA-256 做路径限定豁免，包 ID 不再被通用长串脱敏误删。
+运行配置必须另写 `expected_policy_release_id`，值为上述完整包 ID。缺失、旧摘要或普通策略误带该字段均在
+联网前拒绝；测试房入口把同一摘要传给四个身份。这样同名策略在发布包轮换后不能沿用旧配置静默启动。
 
 只允许以下环境：
 
@@ -33,7 +35,9 @@
 适用规则固定为 `hangma-mvp-v10-public-counts`、底分 1、`YouCaiBiKao=false`，最低已适配官方指南为 v34。房间规则不符或配置声明的已知指南低于 v34 时在动作前
 拒绝该候选身份。`official_tournament` 继续由组合根拒绝，默认策略也不改变。离线研究名
 `action_value:r18_integrated_positive_v1` 在所有网络模式中仍被拒绝。配置样例见
-`configs/r18-integrated-positive-v1.*.example.json`。
+`configs/r18-integrated-positive-v1.*.example.json`。测试房与测试赛事的专用冻结包及离线装配验收见
+`review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/`
+`r18-p59-network-mode-freeze-01-20260923/`。
 
 ## `v2_hu_upgrade_v1`（Tier-A）发布状态
 

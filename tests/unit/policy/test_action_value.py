@@ -346,6 +346,9 @@ class TestT05HuAndContinueCompared:
             "src/hangma_bot/policy/research_candidates.py",
             # 2026-09-22：R18 P46 累计正向能力父代的内容绑定源码；只供离线组合根。
             "src/hangma_bot/policy/r18_integrated_positive_v1.py",
+            # 2026-09-23：R18 获批网络冻结包；文件摘要读取移到唯一组合根，
+            # 本模块只核对注入摘要并保持 policy 无磁盘副作用。
+            "src/hangma_bot/policy/r18_integrated_positive_v1_release.py",
             # 2026-09-21：R17 在冻结公开后继/叶执行合同之上新增薄策略包装器；
             # 只重排既有合法弃牌位置，任一缺口原样回退 V2。
             "src/hangma_bot/policy/public_successor_policy.py",

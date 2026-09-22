@@ -452,6 +452,9 @@ def test_room_launcher_accepts_every_available_strategy(tmp_path, strategy):
         # R18 冻结包绑定当前已适配的官方指南 v34；通用启动器夹具仍保留
         # 较早版本以覆盖普通策略，因此这里只提升该发布包所需的版本声明。
         data['known_guide_version'] = 34
+        data['expected_policy_release_id'] = (
+            room.R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID
+        )
     cfg = room.load_room_config(
         _write_config(tmp_path, data), environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B}
     )
@@ -463,6 +466,36 @@ def test_room_launcher_accepts_every_available_strategy(tmp_path, strategy):
         assert participant.runtime_config_from_mapping(
             child, environ={room.TOKEN_ENV_VAR: SECRET_A}
         ).strategy == strategy
+
+
+def test_room_r18_release_binding_is_required_and_reaches_every_child(tmp_path):
+    data = _room_config(
+        strategy='r18_integrated_positive_v1',
+        known_guide_version=34,
+        expected_policy_release_id=room.R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
+    )
+    cfg = room.load_room_config(
+        _write_config(tmp_path, data),
+        environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B},
+    )
+    children = [room.child_config_mapping(cfg, identity) for identity in cfg.identities]
+    assert all(
+        child['expected_policy_release_id']
+        == room.R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID
+        for child in children
+    )
+
+    for bad in (None, '0' * 64):
+        broken = dict(data)
+        if bad is None:
+            broken.pop('expected_policy_release_id')
+        else:
+            broken['expected_policy_release_id'] = bad
+        with pytest.raises(ValueError, match='发布包'):
+            room.load_room_config(
+                _write_config(tmp_path, broken),
+                environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B},
+            )
 
 
 def test_room_passes_sequence_model_dir_to_every_child(tmp_path):

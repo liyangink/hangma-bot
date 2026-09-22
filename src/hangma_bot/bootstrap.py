@@ -32,6 +32,7 @@ Token 与模式核对（scripts 验收）：``token_kind`` 与 ``mode`` 必须�
 from __future__ import annotations
 
 import os
+import hashlib
 import time
 from dataclasses import dataclass
 from enum import Enum
@@ -61,6 +62,7 @@ from hangma_bot.application.ids import IdGenerator, PrefixedUuidIds
 from hangma_bot.application.participant_runtime import ParticipantRuntime
 from hangma_bot.application.tournament_supervisor import SupervisionPolicy
 from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.hangma import value_analysis
 from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.policy.interface import BotPolicy, DecisionRequest
@@ -86,6 +88,7 @@ from hangma_bot.policy.r18_integrated_positive_v1_release import (
     R18IntegratedPositiveV1ReleasePolicy,
     R18_INTEGRATED_POSITIVE_V1_ALLOWED_MODES,
     R18_INTEGRATED_POSITIVE_V1_KNOWN_GUIDE_VERSION,
+    R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
     R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
 )
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
@@ -130,6 +133,15 @@ def build_outcome_policy(
                          expected_version=expected_version, objective=objective, monotonic=monotonic,
                          runtime_rules_hash=rules_context_key(rule_config, rules_source_hash))
 
+
+def _value_analysis_source_hash() -> str:
+    """在组合根读取分值分析源码摘要；策略模块保持无文件副作用。"""
+
+    source = getattr(value_analysis, "__file__", None)
+    if not source:
+        raise RuntimeError("无法定位分值分析源码；拒绝装配 R18 发布候选")
+    return hashlib.sha256(Path(source).read_bytes()).hexdigest()
+
 # 策略名 → 工厂；只有存在两个真实实现时才保留接缝（根 AGENTS.md 第 5 节）。
 # claim_if_legal 仅用于官方测试房验收（配置项选择），默认策略不变。
 _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
@@ -166,9 +178,10 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     "catch_play_probe": lambda: CatchPlayProbePolicy(ComparableHeuristicPolicyV2()),
     # 2026-09-23 人工批准的 P49 冻结包。模式范围在 RuntimeConfig 继续封闭；
     # 工厂只负责装配绑定源码与证据摘要的策略，不能自行扩大到正式赛事。
-    R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: (
+R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: (
         lambda: R18IntegratedPositiveV1ReleasePolicy(
-            rules_source_hash=compute_rules_hash(_REPO_ROOT)
+            rules_source_hash=compute_rules_hash(_REPO_ROOT),
+            value_analysis_sha256=_value_analysis_source_hash(),
         )
     ),
 }
@@ -362,6 +375,8 @@ class RuntimeConfig:
     - ``strategy``：策略名，取值见 ``_STRATEGY_FACTORIES`` 与
       ``_SEQUENCE_MODEL_STRATEGIES``（后者需要仓库内或显式指定的模型部署包）；
     - ``sequence_model_dir``：序列策略网络部署包根目录；仅模型类策略使用，
+    - ``expected_policy_release_id``：人工批准发布包的完整 SHA-256；发布策略
+      必填，包轮换后旧配置在联网前失效；普通策略必须为空；
     - ``insecure_hosts``：允许关闭 TLS 校验的官方内网主机白名单（默认空）；
     - ``slot``：可选身份槽位标签（测试房间 A—D），只用于日志定位；
     - ``audit_raw_gzip``：原始事件（RAW_PROTOCOL_STATE）gzip 分段落盘开关
@@ -392,6 +407,9 @@ class RuntimeConfig:
     # 保持相同，进入审计 RUN_MANIFEST 与统一牌谱身份；不是 Token、主机名
     # 或 Git 分支。默认 hangma-official，按部署覆盖。
     source_namespace: str = "hangma-official"
+    # 人工批准发布包的完整 SHA-256。R18 真实网络配置必须显式写入，避免
+    # 同名策略在包轮换后沿用旧配置；该值不是凭证，可写入审计与冻结材料。
+    expected_policy_release_id: Optional[str] = None
 
     def __post_init__(self) -> None:
         if not isinstance(self.mode, RuntimeMode):
@@ -468,6 +486,23 @@ class RuntimeConfig:
                     R18_INTEGRATED_POSITIVE_V1_KNOWN_GUIDE_VERSION
                 )
             )
+        if self.strategy == R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY:
+            if self.expected_policy_release_id is None:
+                raise ValueError(
+                    "r18_integrated_positive_v1 真实网络配置必须显式绑定发布包 "
+                    "expected_policy_release_id"
+                )
+            if (
+                self.expected_policy_release_id
+                != R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID
+            ):
+                raise ValueError(
+                    "r18_integrated_positive_v1 配置绑定的发布包摘要与当前批准包不一致"
+                )
+        elif self.expected_policy_release_id is not None:
+            raise ValueError(
+                "expected_policy_release_id 只能与已冻结发布策略共同使用"
+            )
         if not isinstance(self.insecure_hosts, frozenset):
             raise ValueError("insecure_hosts 必须是 frozenset，得到 {0!r}".format(self.insecure_hosts))
         if self.slot is not None:
@@ -527,6 +562,7 @@ _CONFIG_FIELDS = frozenset({
     "audit_raw_rotate_bytes",
     "source_namespace",
     "sequence_model_dir",
+    "expected_policy_release_id",
 })
 
 
@@ -624,6 +660,13 @@ def runtime_config_from_mapping(
         ),
         # 仅模型类策略使用；缺省 None 表示取仓库内预置部署包目录。
         sequence_model_dir=_optional_path(data.get("sequence_model_dir"), "sequence_model_dir"),
+        expected_policy_release_id=(
+            _require_non_empty_str(
+                data["expected_policy_release_id"], "expected_policy_release_id"
+            )
+            if data.get("expected_policy_release_id") is not None
+            else None
+        ),
     )
 
 

@@ -78,21 +78,42 @@ def room_id_of(audit_dir):
     return sorted(ids)[0] if ids else None
 
 
-def audit_finals(audit_dir):
-    """审计终局分：game_finished.final_scores，同 game_id 去重取后写。返回 {gid: [4分]}"""
-    finals = {}
+def audit_outcomes(audit_dir):
+    """审计终局与本人座位；同 game_id 的后写终局覆盖重复记录。
+
+    ``game_finished`` 只有四座分数，不带本人座位；座位从同一场的权威
+    ``authoritative_state.payload.window.seat`` 读取。这样官方下载缺一个批次
+    时，已完整落盘的审计场次仍能正确结算，不能被下载表的键集合静默丢掉。
+    """
+    outcomes = {}
     for f in glob.glob(os.path.join(audit_dir, "participants", ME, "games", "*.jsonl")):
         gid = os.path.basename(f)[:-6]
+        seat = None
+        final_scores = None
         for line in open(f, encoding="utf-8", errors="replace"):
             try:
                 rec = json.loads(line)
             except json.JSONDecodeError:
                 continue
+            if rec.get("kind") == "authoritative_state":
+                observed = ((rec.get("payload") or {}).get("window") or {}).get("seat")
+                if type(observed) is int and 0 <= observed < 4:
+                    if seat is not None and seat != observed:
+                        raise ValueError("同一场审计出现冲突座位：%s" % gid)
+                    seat = observed
             if rec.get("kind") == "game_finished":
                 fs = (rec.get("payload") or {}).get("final_scores")
-                if isinstance(fs, list):
-                    finals[gid] = fs
-    return finals
+                if isinstance(fs, list) and len(fs) == 4:
+                    final_scores = fs
+        if final_scores is not None:
+            outcomes[gid] = {"seat": seat, "final_scores": final_scores}
+    return outcomes
+
+
+def audit_finals(audit_dir):
+    """兼容进度统计：返回 ``{game_id: 四座终局分}``。"""
+
+    return {gid: row["final_scores"] for gid, row in audit_outcomes(audit_dir).items()}
 
 
 def _declared_batches():
@@ -101,15 +122,18 @@ def _declared_batches():
     return int(cfg.get("auto_match", {}).get("declared_max_games", 10))
 
 
-def _room_downloaded(session_dir, room_id):
-    """幂等判定：会话 official/ 已存在该房间任一批次的完整下载（source.json 匹配 room_id）。"""
+def _downloaded_batches(session_dir, room_id):
+    """返回该房已完整下载的批次号；坏或无批次来源不冒充完成。"""
+    batches = set()
     for src in glob.glob(os.path.join(session_dir, "official", "dl-*", "source.json")):
         try:
-            if json.load(open(src, encoding="utf-8")).get("room_id") == room_id:
-                return True
+            source = json.load(open(src, encoding="utf-8"))
+            batch = source.get("batch")
+            if source.get("room_id") == room_id and type(batch) is int and batch >= 0:
+                batches.add(batch)
         except (OSError, json.JSONDecodeError):
             continue
-    return False
+    return batches
 
 
 def download(room_id, session_dir):
@@ -119,21 +143,22 @@ def download(room_id, session_dir):
     限速与失败证据隔离统一由标准入口负责。失败 30 秒后整房重试一次。
     返回会话目录（official/dl-*/events.json 供结算核对）或 None。
     """
-    if _room_downloaded(session_dir, room_id):
-        return session_dir
     batches = _declared_batches()
+    expected = set(range(batches))
+    if expected.issubset(_downloaded_batches(session_dir, room_id)):
+        return session_dir
     for attempt in (1, 2):
-        complete = True
         for batch in range(batches):
+            if batch in _downloaded_batches(session_dir, room_id):
+                continue
             r = sh(".venv/bin/python3 scripts/audit_tool.py collect-test-room "
                    "--runtime-config %s --room %s --batch %d --out %s" % (RUNTIME_CONFIG, room_id, batch, session_dir),
                    cwd=ROOT)
             if r.returncode != 0:
                 tail = (r.stderr or r.stdout or "").strip()[-200:]
                 print("批次 %d 下载失败：%s" % (batch, tail))
-                complete = False
                 break
-        if complete or _room_downloaded(session_dir, room_id):
+        if expected.issubset(_downloaded_batches(session_dir, room_id)):
             return session_dir
         if attempt == 1:
             print("牌谱下载失败，30 秒后重试一次…")
@@ -169,19 +194,24 @@ def settle(audit_dir, room_id):
     session_dir = os.path.dirname(os.path.dirname(os.path.dirname(audit_dir)))
     dest = download(room_id, session_dir)
     table = official_table(dest, room_id)
-    finals = audit_finals(audit_dir)
+    outcomes = audit_outcomes(audit_dir)
     games, subtotal = [], 0
-    for gid in sorted(table or finals):
+    for gid in sorted(set(table) | set(outcomes)):
         seat, dl_total = table.get(gid, (None, None))
-        if gid in finals and seat is not None and seat < len(finals[gid]):
-            mine, src = finals[gid][seat], "audit"
+        outcome = outcomes.get(gid)
+        audit_seat = outcome and outcome.get("seat")
+        if seat is not None and audit_seat is not None and seat != audit_seat:
+            raise ValueError("审计与官方下载的本人座位冲突：%s" % gid)
+        effective_seat = seat if seat is not None else audit_seat
+        if outcome is not None and effective_seat is not None:
+            mine, src = outcome["final_scores"][effective_seat], "audit"
         elif dl_total is not None:
             mine, src = dl_total, "official_download补全"
         else:
             print("!! %s 审计与牌谱均无终局分，该场不计（结果缺失）" % gid)
             continue
         subtotal += mine
-        games.append({"game_id": gid, "seat": seat, "final_score": mine, "source": src})
+        games.append({"game_id": gid, "seat": effective_seat, "final_score": mine, "source": src})
     return subtotal, games, dest
 
 
@@ -202,6 +232,67 @@ def load_ledger():
 
 def save_ledger(s):
     json.dump(s, open(LEDGER, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+
+
+def reconcile_ledger(ledger):
+    """用已落盘审计补齐历史房漏场，并重算累计；不删除既有场次。
+
+    watchdog 旧版把 ``table or finals`` 当作场次集合，官方下载只要非空就会
+    吞掉审计独有的终局。这里在每次持锁巡检开头复核已经入账的房：同场
+    座位/分数冲突直接失败，只有审计给出确定座位与四座终局分时才补记。
+    """
+    repairs = []
+    for room in ledger.get("rooms", []):
+        audit_rel = room.get("audit_dir")
+        if not isinstance(audit_rel, str) or not audit_rel:
+            continue
+        audit_dir = audit_rel if os.path.isabs(audit_rel) else os.path.join(ROOT, audit_rel)
+        if not os.path.isdir(audit_dir):
+            continue
+        existing = {game.get("game_id"): game for game in room.get("games", [])}
+        added = []
+        for gid, outcome in sorted(audit_outcomes(audit_dir).items()):
+            seat = outcome.get("seat")
+            scores = outcome.get("final_scores")
+            if type(seat) is not int or not 0 <= seat < 4 or not isinstance(scores, list):
+                continue
+            score = scores[seat]
+            if gid in existing:
+                prior = existing[gid]
+                if prior.get("seat") != seat or prior.get("final_score") != score:
+                    raise ValueError("账本与审计终局冲突：%s" % gid)
+                continue
+            row = {"game_id": gid, "seat": seat, "final_score": score,
+                   "source": "audit_reconciled"}
+            room.setdefault("games", []).append(row)
+            existing[gid] = row
+            added.append(gid)
+        if added:
+            room["games"].sort(key=lambda row: row["game_id"])
+            before = room.get("room_subtotal")
+            room["room_subtotal"] = sum(game["final_score"] for game in room["games"])
+            repairs.append({"room_id": room.get("room_id"), "added_games": added,
+                            "subtotal_before": before,
+                            "subtotal_after": room["room_subtotal"]})
+    if not repairs:
+        return False
+    ledger["cumulative_total"] = sum(
+        room.get("room_subtotal", 0) for room in ledger.get("rooms", [])
+    )
+    streak = 0
+    for room in reversed(ledger.get("rooms", [])):
+        if room.get("room_subtotal", 0) < 0:
+            streak += 1
+        else:
+            break
+    ledger["current_lose_streak"] = streak
+    ledger["updated_at"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+    ledger.setdefault("reconciliations", []).append({
+        "at": ledger["updated_at"],
+        "reason": "补齐审计已有但旧版下载键集合漏掉的终局场次",
+        "repairs": repairs,
+    })
+    return True
 
 
 def progress_line():
@@ -271,6 +362,9 @@ def main():
 
 def run_cycle():
     ledger = load_ledger()
+    if reconcile_ledger(ledger):
+        save_ledger(ledger)
+        print("已按审计补齐历史漏场，累计重算为 %d" % ledger["cumulative_total"])
     if session_alive():
         progress_line()
         return 0
