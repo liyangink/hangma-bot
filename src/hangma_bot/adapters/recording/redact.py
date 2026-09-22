@@ -19,6 +19,7 @@
 from __future__ import annotations
 
 import re
+import json
 from typing import Any
 
 # 脱敏后统一写入的占位标记；本身不包含任何触发形态，可安全重复扫描。
@@ -44,6 +45,8 @@ _LONG_SECRET_RE = re.compile(r"[A-Za-z0-9._~+/=-]{40,}")
 
 # endpoint 字段的键名：raw 事件 payload 保存官方端点原样（接口协议 §7）。
 ENDPOINT_KEY = "endpoint"
+POLICY_RELEASE_KEY = "policy_release"
+_SHA256_RE = re.compile(r"[0-9a-f]{64}")
 
 # 端点豁免裸长串规则的原因：场次 URL 的路径段（如
 # /api/games/<40+ 字符 game_id>/state）会误命中 _LONG_SECRET_RE，把
@@ -73,6 +76,34 @@ def _redact_string_weak(text: str) -> str:
     return text
 
 
+def _redact_value(value: Any, path: tuple[str, ...]) -> Any:
+    """携带结构路径执行脱敏；发布包摘要只在受控清单子树内豁免。"""
+
+    if isinstance(value, dict):
+        result: dict[Any, Any] = {}
+        for key, item in value.items():
+            key_path = path + ((key,) if isinstance(key, str) else ())
+            if isinstance(key, str) and _SENSITIVE_KEY_RE.search(key):
+                result[key] = REDACTED
+            elif key == ENDPOINT_KEY and isinstance(item, str):
+                result[key] = _redact_string_weak(item)
+            elif (
+                POLICY_RELEASE_KEY in path
+                and isinstance(item, str)
+                and _SHA256_RE.fullmatch(item)
+            ):
+                # policy_release 由组合根生成；严格 SHA-256 是审计身份而非凭证。
+                result[key] = item
+            else:
+                result[key] = _redact_value(item, key_path)
+        return result
+    if isinstance(value, (list, tuple)):
+        return [_redact_value(item, path) for item in value]
+    if isinstance(value, str):
+        return _redact_string(value)
+    return value
+
+
 def redact_value(value: Any) -> Any:
     """深拷贝并脱敏任意结构；非 JSON 值原样保留，由序列化阶段统一报错。
 
@@ -80,23 +111,7 @@ def redact_value(value: Any) -> Any:
     敏感键的整棵子树被 ``REDACTED`` 替换，不做部分保留。
     """
 
-    if isinstance(value, dict):
-        result: dict[Any, Any] = {}
-        for key, item in value.items():
-            if isinstance(key, str) and _SENSITIVE_KEY_RE.search(key):
-                result[key] = REDACTED
-            elif key == ENDPOINT_KEY and isinstance(item, str):
-                # 端点保存官方端点原样：只做弱形态扫描，不应用裸长串规则
-                # （场次 URL 路径段会误命中 40+ 连续字符）。
-                result[key] = _redact_string_weak(item)
-            else:
-                result[key] = redact_value(item)
-        return result
-    if isinstance(value, (list, tuple)):
-        return [redact_value(item) for item in value]
-    if isinstance(value, str):
-        return _redact_string(value)
-    return value
+    return _redact_value(value, ())
 
 
 # 序列化行内的端点值定位：精确匹配 "endpoint": "..."（值内允许转义）。
@@ -117,6 +132,47 @@ def redact_json_line(line: str) -> str:
     避免场次 URL 被裸长串规则误杀；掩蔽内容不匹配任何凭证形态，扫描后
     精确还原（对已含 REDACTED 的行同样幂等）。
     """
+
+    try:
+        document = redact_value(json.loads(line))
+    except (json.JSONDecodeError, TypeError, ValueError):
+        document = None
+
+    if document is not None:
+        masked: list[str] = []
+
+        def _protect(value: Any, path: tuple[str, ...]) -> Any:
+            if isinstance(value, dict):
+                return {
+                    key: _protect(item, path + ((key,) if isinstance(key, str) else ()))
+                    for key, item in value.items()
+                }
+            if isinstance(value, list):
+                return [_protect(item, path) for item in value]
+            if isinstance(value, str) and (
+                (path and path[-1] == ENDPOINT_KEY)
+                or (POLICY_RELEASE_KEY in path and _SHA256_RE.fullmatch(value))
+            ):
+                marker = "[AUDIT-PROTECTED-{0}]".format(len(masked))
+                masked.append(value)
+                return marker
+            return value
+
+        def _restore(value: Any) -> Any:
+            if isinstance(value, dict):
+                return {key: _restore(item) for key, item in value.items()}
+            if isinstance(value, list):
+                return [_restore(item) for item in value]
+            if isinstance(value, str):
+                match = re.fullmatch(r"\[AUDIT-PROTECTED-(\d+)\]", value)
+                if match and int(match.group(1)) < len(masked):
+                    return masked[int(match.group(1))]
+            return value
+
+        protected = json.dumps(_protect(document, ()), ensure_ascii=False, allow_nan=False)
+        scanned = _redact_string(protected)
+        restored = _restore(json.loads(scanned))
+        return json.dumps(restored, ensure_ascii=False, allow_nan=False)
 
     masked: list[str] = []
 

@@ -167,10 +167,12 @@ def derive_chain_piao(observation: PlayerObservation) -> ChainPiaoDerivation:
 def has_own_unknown_action(observation: PlayerObservation) -> bool:
     """可见历史里是否有**本座**「未知牌的自动动作」（非被动 timeout）。
 
-    官方把自动动作记为 ``timeout``：``data.kind=response`` 是响应超时（纯表态、无副作用），
-    其余取值或缺 kind 一律**不能排除自动出牌**（与 ``special_rules.is_passive_observation_event` 同口径）。
-    自动弃牌不会作为 ``tile_discarded`` 事件出现，因此本座牌面与链构成里可能少了一步；
-    依赖链构成的档位（④⑥）遇到它必须让位给 unknown。
+    官方把窗口到期记为 ``timeout``：``data.kind`` 为 response（响应窗口固定走满，
+    纯表态）或 discard（出牌窗口到期记账；服务端代打动作以紧邻 ``tile_discarded``
+    进入公开流，见 special_rules.is_passive_observation_event 的 2026-09-23 实测
+    依据），两者均为被动观察事件；其余取值或缺 kind 一律**不能排除自动出牌**
+    （与 ``special_rules.is_passive_observation_event`` 同口径）。
+    未知类别的自动动作无法确认牌面，依赖链构成的档位（④⑥）遇到它必须让位给 unknown。
     """
 
     for event in observation.public_history:

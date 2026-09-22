@@ -251,6 +251,31 @@ def test_known_piao_prohibits_impossible_fifth_total_white_without_complete_rive
     assert all("4个白板" in route.conditional_settlement.details for route in facts.routes)
 
 
+def test_shanten_one_still_checks_white_as_an_immediate_winning_draw():
+    """四张中已耗尽自然将牌时，根向听 1 仍可能摸白立即胡。
+
+    该形状来自 P53 自然桌反例：三组顺子、四张中和一个孤张。自然第五张
+    中不可得，所以物理上限感知的根向听为 1；白板可与孤张组成将，下一摸
+    白必须产生 ValueRoute，不能被“向听大于零”快速路径漏掉。
+    """
+
+    obs = _observation(
+        "1b 8w 7w 3b 6w 中 8t 7t 中 6t 中 2b 9w",
+        "中",
+    )
+    analyzed = _rules().analyze(obs, value_limits=ValueAnalysisLimits())
+    candidate = _by_key(analyzed)["discard:6w"]
+
+    assert candidate.facts.shanten_after == 1
+    assert candidate.value_facts.coverage is ValueCoverage.COMPLETE
+    draws = _by_draw(candidate.value_facts)
+    assert set(draws) == {"白"}
+    settlement, remaining, conditions = draws["白"]
+    assert remaining == 4
+    assert settlement.score_delta[obs.seat] > 0
+    assert conditions.pre_draw_hand.count("中") == 4
+
+
 def test_work_limit_includes_any_tile_internal_expansion_and_is_explicit():
     obs = _observation("1w 1w 2w 2w 3w 3w 4b 4b 5b 5b 6t 6t 白", response="9w")
     from hangma_bot.hangma import progression

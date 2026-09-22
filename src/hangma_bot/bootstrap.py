@@ -167,7 +167,9 @@ _STRATEGY_FACTORIES: Mapping[str, Callable[[], BotPolicy]] = {
     # 2026-09-23 人工批准的 P49 冻结包。模式范围在 RuntimeConfig 继续封闭；
     # 工厂只负责装配绑定源码与证据摘要的策略，不能自行扩大到正式赛事。
     R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: (
-        lambda: R18IntegratedPositiveV1ReleasePolicy()
+        lambda: R18IntegratedPositiveV1ReleasePolicy(
+            rules_source_hash=compute_rules_hash(_REPO_ROOT)
+        )
     ),
 }
 

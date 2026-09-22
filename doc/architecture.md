@@ -1,8 +1,9 @@
 # 杭麻 AI Bot 架构与运行流程
 
 2026-09-23 R18 累计机会能力候选完成测试房、测试赛事和自由赛接线。真实入口只装配
-`r18_integrated_positive_v1` 冻结包：组合根在构造时核对候选源码摘要，将候选身份、规则范围、允许模式及
-P45—P48 证据摘要写入 `RUN_MANIFEST.policy_release`；最低已适配官方指南为 v34，房间规则必须是
+`r18_integrated_positive_v1` 冻结包：组合根在构造时核对候选源码和完整 `hangma` 规则源摘要，将候选身份、规则范围、允许模式及
+P45—P48/P55 证据摘要写入 `RUN_MANIFEST.policy_release`；记录端为该受控子树的严格 SHA-256 保留原文。
+最低已适配官方指南为 v34，房间规则必须是
 `hangma-mvp-v10-public-counts`、底分 1、`YouCaiBiKao=false`，不符即停止该候选会话。离线研究名
 `action_value:r18_integrated_positive_v1` 仍不能进入网络入口；正式赛事和默认策略继续关闭。此次接线没有
 改变规则计算、合法动作、提交或降级数据流，只把已人工批准的固定身份接到既有 `BotPolicy.choose` 接缝。

@@ -161,8 +161,9 @@ def test_compare_gang_draw_checks_chain_and_unknown_coverage_is_skipped():
         assert result and all(x.startswith("not_checked:") for x in result)
 
 
-@pytest.mark.parametrize("detail", [None, "discard", "new_kind"])
+@pytest.mark.parametrize("detail", [None, "new_kind"])
 def test_nonresponse_timeout_invalidates_inference_and_transition_check(detail):
+    """缺 detail_kind 或未来新增 kind 的 timeout 仍不能排除自动动作，保持未知。"""
     from hangma_bot.hangma.observation_rules import compare_observation_transition
     timeout = PublicEvent(13, "timeout", 0, detail_kind=detail)
     history = (event(11, "gang", tile="9b"), event(12, "tile_drawn", tile="东"), timeout)
@@ -172,6 +173,23 @@ def test_nonresponse_timeout_invalidates_inference_and_transition_check(detail):
     assert enriched.chain_piao is None
     result = compare_observation_transition(observation(), history, after)
     assert result and all(x.startswith("not_checked:") for x in result)
+
+
+def test_discard_timeout_keeps_inference_and_transition_check():
+    """timeout(kind=discard) 是打牌窗口记账，与 response 同为被动事件。
+
+    2026-09-23 实测（两房 24/24 成对）：服务端代打动作以紧邻 tile_discarded
+    进入公开流，本事件不携带独立规则信息；杠后摸牌证据与链核对不受影响。
+    """
+    from hangma_bot.hangma.observation_rules import compare_observation_transition
+    timeout = PublicEvent(13, "timeout", 0, detail_kind="discard")
+    history = (event(11, "gang", tile="9b"), event(12, "tile_drawn", tile="东"), timeout)
+    after = with_chain(1, history, consumed_seq=13)
+    enriched = enrich_observation(after)
+    assert enriched.gang_draw is True
+    assert enriched.chain_piao == 0
+    assert not any(x.startswith("not_checked:chain_count:") for x in compare_observation_transition(observation(), history, after))
+
 
 
 def test_confirmed_response_timeout_keeps_current_chain_and_draw_evidence():

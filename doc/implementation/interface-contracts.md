@@ -267,8 +267,9 @@ V0/V1 评分源码的**行为**不变；线上不含任何 LLM 调用。相关�
 
 组合根装配 `R18IntegratedPositiveV1ReleasePolicy` 时重新计算内嵌候选源码 SHA-256；与
 `0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d` 不同即拒绝启动。
-发布包另绑定候选 ID、默认 `ValueAnalysisLimits`、规则范围及 P45—P48 四份结果摘要，规范化包 ID 为
-`4c086e2e503c80bce60a721585d4c463a2bde1f3c0f75a033fae382d615681b8`。策略名相同而其中任一内容变化时，
+发布包另绑定候选 ID、默认 `ValueAnalysisLimits`、完整 `hangma` 规则源摘要及 P45—P48、P55 五份结果摘要，
+规范化包 ID 为 `0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a`。规则源摘要为
+`d8a6346c8303a891523952bff618989931beb62fa041a511805b807ee471a6ef`；策略名相同而其中任一内容变化时，
 包 ID 必须变化并重新审核，不能沿用本次授权。
 
 规则适用域固定为 `hangma-mvp-v10-public-counts`、底分 1、`YouCaiBiKao=false`，最低已适配官方指南为 v34。测试房、测试赛事和
@@ -277,11 +278,13 @@ V0/V1 评分源码的**行为**不变；线上不含任何 LLM 调用。相关�
 
 `RUN_MANIFEST.policy_release` 是可空映射：普通策略为 `null`；R18 冻结包保存
 `schema/strategy/candidate_name/candidate_id/candidate_source_sha256/ruleset_version/known_guide_version_min/base_score/you_cai_bi_kao/`
-`value_analysis_limits/allowed_modes/evidence_sha256/human_approval_date/official_tournament_allowed/production_default/`
-`release_package_id`。其中不含 Token、牌局动态状态或隐藏信息。P54 以 P47 冻结的 377 个正式请求核对发布包
+`value_analysis_sha256/rules_source_hash/value_analysis_limits/allowed_modes/evidence_sha256/human_approval_date/`
+`official_tournament_allowed/production_default/release_package_id`。其中不含 Token、牌局动态状态或隐藏信息。
+记录端只在 `policy_release` 子树保留严格 64 位小写十六进制身份摘要；敏感键仍优先整值脱敏，其他路径的同形长串仍按凭证处理。
+P57 以 P47 冻结的 377 个正式请求核对发布包
 与研究装配的完整 `DecisionPlan`，必须 377/377 相等且零 `action_value_failed`；结果见
 `review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/`
-`r18-p54-network-release-wiring-01-20260923/`。
+`r18-p57-network-release-rebind-01-20260923/`。P54 的旧包 ID 仅保留为修复前历史证据。
 
 ### 4.9 坐隐研究工具的产物 schema 与实验清单身份字段（2026-09-15）
 

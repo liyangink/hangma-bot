@@ -38,13 +38,18 @@ EVENT_KIND_GANG = "gang"
 
 
 def is_passive_observation_event(event: PublicEvent) -> bool:
-    """确认仅表态、不会代替本人出牌的事件；未知 timeout 不能视为无副作用。
+    """确认仅表态、不改变规则状态的事件；timeout 两类均为窗口生命周期记账。
 
-    官方 v15 归档的响应超时为 data.kind=response；kind=discard 是自动
-    弃牌后的通知。缺 kind 或新增 kind 尚无法排除自动动作，必须保留未知。
+    官方指南 v34（2026-09 抓取）§超时兜底：吃/碰窗口"固定走满"（防时间侧信道）；
+    出牌思考超时由服务端"自动打出最右一张牌"，代打动作本身以紧邻的
+    ``tile_discarded`` 事件进入公开流。2026-09-23 两房实测（a_55f18ee75775
+    7 例、a_e2b2d94b31c1 17 例）：timeout(kind=discard) 全部与同座位紧邻
+    ``tile_discarded`` 成对出现，含本人压线主动提交的同构场景，因此该事件
+    不携带独立规则信息，与 response 类同为被动观察事件。
+    缺 kind 或未来新增 kind 仍不能排除自动动作，必须保留未知。
     """
     return event.kind == "pass" or (
-        event.kind == "timeout" and event.detail_kind == "response"
+        event.kind == "timeout" and event.detail_kind in ("response", "discard")
     )
 
 

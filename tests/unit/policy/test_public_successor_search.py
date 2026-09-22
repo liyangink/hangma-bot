@@ -107,6 +107,46 @@ def test_real_rule_graph_reduces_with_bounded_leaf_views() -> None:
     assert all(-1.0 <= item.lower_support_score <= item.upper_support_score <= 1.0 for item in reduced.roots)
 
 
+def test_white_win_edge_matches_value_route_when_natural_fifth_tile_is_exhausted() -> None:
+    """P53 反例：根向听 1 的白板胡边必须有同容量条件分值路线。"""
+
+    observation = _observation(
+        my_hand=tuple(
+            Tile(code)
+            for code in (
+                "1b", "8w", "7w", "3b", "6w", "中", "8t",
+                "7t", "中", "6t", "中", "2b", "9w",
+            )
+        ),
+        drawn_tile=Tile("中"),
+    )
+    request, successors = _inputs(observation)
+    candidate = next(
+        item for item in request.rules.legal_candidates
+        if item.action_key == "discard:6w"
+    )
+    white_routes = [
+        tile
+        for route in candidate.value_facts.routes
+        if route.conditions.draw_kind == "normal" and route.followup_discard is None
+        for tile in route.useful_tiles
+        if tile.code == "白"
+    ]
+    root = next(item for item in successors.roots if item.action_key == "discard:6w")
+    white_edge = next(item for item in root.edges if item.draw_tile.code == "白")
+
+    assert candidate.facts.shanten_after == 1
+    assert white_routes[0].remaining_estimate == white_edge.draw_tile.remaining_estimate == 4
+    assert white_edge.restricted.hu_available
+    assert white_edge.unrestricted.hu_available
+    reduced = reduce_public_successors(request, successors, _score)
+    assert reduced.complete, reduced.reason
+    reduced_root = next(
+        item for item in reduced.roots if item.action_key == "discard:6w"
+    )
+    assert reduced_root.conditional_hu_capacity == 4
+
+
 def test_reserved_wall_has_zero_successor_scores_and_keeps_v2_order() -> None:
     """末次摸牌后的弃牌没有未来收益；固定归约必须形成全零同层。"""
 

@@ -62,3 +62,63 @@ def test_incomplete_or_conflicting_white_accounting_cannot_grant_owner_privilege
 
     assert context.active and context.owner_seat is None
     assert context.issue and all(context.restricts(seat) for seat in range(4))
+
+
+def _official_owner_observation_with_discard_timeout():
+    """复现 2026-09-23 自动房 a_e2b2d94b31c1_r1_b3_t0 的降级场景。
+
+    快照（seq=201）时圈活跃、圈主为座 2；随后座 2 弃非白关圈，紧随
+    timeout(kind=discard) 窗口记账与响应窗口走满，到当前水位本人摸牌。
+    timeout(discard) 与同座位紧邻弃牌成对（官方代打动作已在弃牌事件中），
+    不应阻断圈主推导。
+    """
+    history = (
+        PublicEvent(202, "tile_discarded", 2, (Tile("5w"),), catch_play=False),
+        PublicEvent(203, "timeout", 2, detail_kind="discard"),
+        PublicEvent(204, "timeout", 1, detail_kind="response"),
+        PublicEvent(205, "timeout", 3, detail_kind="response"),
+        PublicEvent(206, "timeout", 1, detail_kind="response"),
+        PublicEvent(207, "tile_drawn", 3),
+        PublicEvent(208, "tile_discarded", 3, (Tile("北"),), catch_play=False),
+        PublicEvent(209, "timeout", 0, detail_kind="response"),
+        PublicEvent(210, "tile_drawn", 0),
+    )
+    return make_observation(
+        snapshot_seq=201, consumed_seq=210, public_history=history,
+        rule_state=RulePublicState(Tile("白"), False, 0, True, catch_play_owner_seat=2),
+    )
+
+
+def test_discard_timeout_bookkeeping_does_not_block_owner_derivation():
+    """打牌窗口记账夹在快照与水位之间时，官方圈主路径必须完成推导。"""
+
+    context = analyze_catch_play(_official_owner_observation_with_discard_timeout())
+
+    assert context.issue is None
+    assert context.active is False and context.owner_seat is None
+    assert context.source == "official-snapshot+continuous-events"
+    assert not any(context.restricts(seat) for seat in range(4))
+
+
+def test_timeout_without_detail_kind_still_degrades_owner_derivation():
+    """缺 detail_kind 的 timeout 无法排除自动动作，保持保守未知（回归保护）。"""
+
+    observation = replace(
+        _official_owner_observation_with_discard_timeout(),
+        public_history=(
+            PublicEvent(202, "tile_discarded", 2, (Tile("5w"),), catch_play=False),
+            PublicEvent(203, "timeout", 2),
+            PublicEvent(204, "timeout", 1, detail_kind="response"),
+            PublicEvent(205, "timeout", 3, detail_kind="response"),
+            PublicEvent(206, "timeout", 1, detail_kind="response"),
+            PublicEvent(207, "tile_drawn", 3),
+            PublicEvent(208, "tile_discarded", 3, (Tile("北"),), catch_play=False),
+            PublicEvent(209, "timeout", 0, detail_kind="response"),
+            PublicEvent(210, "tile_drawn", 0),
+        ),
+    )
+
+    context = analyze_catch_play(observation)
+
+    assert context.issue is not None
+    assert context.owner_seat is None

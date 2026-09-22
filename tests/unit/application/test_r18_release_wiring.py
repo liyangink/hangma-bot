@@ -21,7 +21,9 @@ from hangma_bot.policy.r18_integrated_positive_v1_release import (
     R18_INTEGRATED_POSITIVE_V1_ALLOWED_MODES,
     R18_INTEGRATED_POSITIVE_V1_CANDIDATE_ID,
     R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
+    R18_INTEGRATED_POSITIVE_V1_RULES_SOURCE_HASH,
     R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+    R18_INTEGRATED_POSITIVE_V1_VALUE_ANALYSIS_SHA256,
 )
 
 
@@ -41,17 +43,29 @@ def _config(tmp_path: Path, mode: str, token_kind: str):
 
 
 def test_release_package_identity_and_default_are_frozen() -> None:
-    policy = R18IntegratedPositiveV1ReleasePolicy()
+    policy = R18IntegratedPositiveV1ReleasePolicy(
+        rules_source_hash=R18_INTEGRATED_POSITIVE_V1_RULES_SOURCE_HASH
+    )
     metadata = policy.release_metadata
 
     assert R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY in AVAILABLE_STRATEGIES
     assert DEFAULT_STRATEGY != R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY
     assert metadata["release_package_id"] == R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID
     assert metadata["candidate_id"] == R18_INTEGRATED_POSITIVE_V1_CANDIDATE_ID
+    assert metadata["value_analysis_sha256"] == (
+        R18_INTEGRATED_POSITIVE_V1_VALUE_ANALYSIS_SHA256
+    )
+    assert metadata["rules_source_hash"] == R18_INTEGRATED_POSITIVE_V1_RULES_SOURCE_HASH
+    assert "p55_white_value_route_repair" in metadata["evidence_sha256"]
     assert tuple(metadata["allowed_modes"]) == R18_INTEGRATED_POSITIVE_V1_ALLOWED_MODES
     assert metadata["official_tournament_allowed"] is False
     assert metadata["production_default"] is False
     assert policy.policy_id.startswith("release:r18-integrated-positive-v1:")
+
+
+def test_release_candidate_rejects_rule_source_drift() -> None:
+    with pytest.raises(RuntimeError, match="完整规则源摘要漂移"):
+        R18IntegratedPositiveV1ReleasePolicy(rules_source_hash="0" * 64)
 
 
 @pytest.mark.parametrize(

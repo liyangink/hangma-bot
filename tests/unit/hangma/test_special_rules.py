@@ -26,6 +26,7 @@ from hangma_bot.hangma.special_rules import (
     catch_play_restriction,
     chain_breaks_on_discard,
     is_gang_draw,
+    is_passive_observation_event,
     is_piao_discard,
     static_baotou,
     wealth_action_restriction,
@@ -371,3 +372,27 @@ class TestPurity:
         history = (_event(1, "gang", 0, ("9b",)), _event(2, "tile_drawn", 0))
         for _ in range(3):
             assert is_gang_draw(history, 0) is True
+
+
+class TestPassiveObservationEvents:
+    """被动观察事件白名单：timeout 两类均为窗口记账，缺 kind 仍保守未知。
+
+    官方指南 v34 §超时兜底：出牌超时服务端"自动打出最右一张牌"，代打动作
+    已由紧邻 tile_discarded 表达（2026-09-23 两房 24/24 成对实测），
+    timeout(kind=discard) 本身不携带独立规则信息。
+    """
+
+    def test_pass_and_both_timeout_kinds_are_passive(self):
+        assert is_passive_observation_event(_event(1, "pass", 1)) is True
+        assert is_passive_observation_event(
+            PublicEvent(seq=2, kind="timeout", seat=1, tiles=(), detail_kind="response")
+        ) is True
+        assert is_passive_observation_event(
+            PublicEvent(seq=3, kind="timeout", seat=1, tiles=(), detail_kind="discard")
+        ) is True
+
+    def test_timeout_without_detail_kind_stays_unknown(self):
+        assert is_passive_observation_event(_event(1, "timeout", 1)) is False
+
+    def test_unknown_kind_stays_non_passive(self):
+        assert is_passive_observation_event(_event(1, "unknown_rule_action", 1)) is False

@@ -202,7 +202,13 @@ def _validate_basis(basis: _ConditionalBasis) -> Counts34:
 
 
 def _known_not_ready(candidate: RuleCandidate) -> bool:
-    """单一等待状态可复用已完成的向听事实；吃碰仍逐一检查后续弃牌。"""
+    """证明候选至少还差两次摸牌；吃碰仍逐一检查后续弃牌。
+
+    杭麻白板是万能牌，且自然牌受四张物理上限约束。于是可能出现
+    ``shanten_after == 1``、自然第五张不可得，但下一摸白板即可补成胡的
+    状态；这类候选不能用根向听提前跳过，仍须枚举一次摸牌。只有向听
+    严格大于 1 时，单张白板也不可能一次补齐。
+    """
     facts = candidate.facts
     return (
         not isinstance(candidate.action, (Chi, Peng))
@@ -210,7 +216,7 @@ def _known_not_ready(candidate: RuleCandidate) -> bool:
         and facts.fact_kind is CandidateFactKind.HAND_PROGRESS
         and facts.completeness is RuleCompleteness.COMPLETE
         and facts.shanten_after is not None
-        and facts.shanten_after > 0
+        and facts.shanten_after > 1
     )
 
 

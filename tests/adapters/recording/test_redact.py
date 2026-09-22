@@ -147,3 +147,30 @@ class TestEndpointExemption:
 
         assert unredacted_secret_matches_weak(self.LONG_ENDPOINT) == ()
         assert len(unredacted_secret_matches_weak("token=abcdef123")) == 1
+
+
+class TestPolicyReleaseDigestExemption:
+    """发布清单保留身份摘要；相同长串在其他路径仍按凭证处理。"""
+
+    DIGEST = "a" * 64
+
+    def test_release_sha256_survives_both_redaction_layers(self):
+        payload = {
+            "policy_release": {
+                "candidate_id": self.DIGEST,
+                "evidence_sha256": {"p55": self.DIGEST},
+            },
+            "raw": self.DIGEST,
+        }
+
+        line = redact_json_line(json.dumps(redact_value(payload), ensure_ascii=False))
+        document = json.loads(line)
+
+        assert document["policy_release"]["candidate_id"] == self.DIGEST
+        assert document["policy_release"]["evidence_sha256"]["p55"] == self.DIGEST
+        assert document["raw"] == REDACTED
+
+    def test_sensitive_key_still_wins_inside_release_manifest(self):
+        payload = {"policy_release": {"access_token": self.DIGEST}}
+        document = json.loads(redact_json_line(json.dumps(payload)))
+        assert document["policy_release"]["access_token"] == REDACTED

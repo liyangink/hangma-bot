@@ -249,13 +249,14 @@ def test_own_meld_with_white_is_refused() -> None:
          (_gang(0, "2w"),), 1),
         ((discard_event(1, 0, "3w"),), 1, 1, (_peng(0, "3w"),), None),  # 链已断，历史走不通
         ((gang_event(1, 0, "2w"),), 1, 2, (_gang(0, "2w"),), None),     # 历史不足以覆盖 2 次链动作
-        # timeout 的三态（返工 blocker-1：判定必须与 is_passive_observation_event 同宽）：
-        #   detail_kind 缺省 / "discard" = 无法排除自动出牌 ⇒ 规则函数返回 None，第⑤档也不得命中；
-        #   detail_kind="response" = 纯表态 ⇒ 两侧都必须跨过它继续反查。
+        # timeout 的两态（2026-09-23 修订：判定与 is_passive_observation_event 同宽）：
+        #   detail_kind 缺省 = 无法排除自动出牌 ⇒ 规则函数返回 None，第⑤档也不得命中；
+        #   detail_kind="response" / "discard" = 窗口记账（代打动作已由紧邻 tile_discarded
+        #   表达，见 special_rules 实测依据）⇒ 两侧都必须跨过它继续反查。
         ((discard_event(1, 0, WEALTH_CODE), timeout_event(2, 0, None)), 2, 1, (),
          None),
         ((discard_event(1, 0, WEALTH_CODE), timeout_event(2, 0, "discard")), 2, 1, (),
-         None),
+         1),
         ((discard_event(1, 0, WEALTH_CODE), timeout_event(2, 1, None)), 2, 1, (),
          None),
         ((discard_event(1, 0, WEALTH_CODE), timeout_event(2, 0, "response"),
