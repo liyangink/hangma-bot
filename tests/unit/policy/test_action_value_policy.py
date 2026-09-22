@@ -710,6 +710,21 @@ _SCORING_VIEW_STRUCTURE_BY_VERSION = {
         ),
         "mask_values": COMPETITION_MASK_VALUES,
     },
+    "sitin-scoring-view/4": {
+        "fields": (
+            "actions", "analysis_profile", "competition",
+            "reference_features", "visible_state",
+        ),
+        # /4（R18）：动作表新增 hangma 同源的 baotou_after；顶层结构与
+        # competition 子结构不变，动作字段由公开接口附录逐字段守卫。
+        "competition_bases_keys": (
+            "admission_conditions", "current_stage_scores", "freshness_masks",
+            "identity_mapping", "residual_gaps", "residual_risk", "seat_order",
+            "stage_scores", "staleness", "table_scores", "units",
+            "unknown_is_not_zero",
+        ),
+        "mask_values": COMPETITION_MASK_VALUES,
+    },
 }
 
 
@@ -739,8 +754,8 @@ class TestScoringViewVersionGuard:
     def test_schema_version_matches_code_constant_and_is_registered(self):
         contract = _contract_scoring_view()
         assert contract["schema_version"] == SCORING_VIEW_SCHEMA_VERSION
-        # /3（R8 E3/M1）：第三概念 current_stage_scores + residual_gaps 登记。
-        assert SCORING_VIEW_SCHEMA_VERSION == "sitin-scoring-view/3"
+        # /4（R18）：动作后爆头事实进入候选视图。
+        assert SCORING_VIEW_SCHEMA_VERSION == "sitin-scoring-view/4"
         assert SCORING_VIEW_SCHEMA_VERSION in _SCORING_VIEW_STRUCTURE_BY_VERSION
 
     def test_contract_structure_matches_declared_version(self):
@@ -780,4 +795,3 @@ class TestScoringViewVersionGuard:
                     actions=build_sample_view().actions,
                     analysis_profile=build_sample_view().analysis_profile,
                 )
-

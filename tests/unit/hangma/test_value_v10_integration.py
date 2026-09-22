@@ -46,7 +46,10 @@ def test_unproven_chi_supply_keeps_routes_available_with_conservative_counts():
         # 编解码升级后载荷参与相等性：载荷随 value 分析开启而不同，比较前剥离。
         facts = candidate.facts
         if facts is not None:
-            facts = replace(facts, followup_branches=None, family_progress=())
+            facts = replace(
+                facts, followup_branches=None, family_progress=(),
+                baotou_after=None,
+            )
         return replace(candidate, value_facts=None, facts=facts)
 
     assert tuple(_strip_value(c) for c in enriched.legal_candidates) == plain.legal_candidates

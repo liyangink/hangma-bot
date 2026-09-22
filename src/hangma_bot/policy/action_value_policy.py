@@ -333,6 +333,9 @@ def build_scoring_view(
                 value_issues=(
                     () if value_facts is None else value_facts.issues
                 ),
+                baotou_after=(
+                    None if facts is None else facts.baotou_after
+                ),
             )
         )
     return ScoringView(

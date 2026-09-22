@@ -131,7 +131,10 @@ def test_default_behavior_and_emergency_do_not_request_value_analysis():
     def _strip_value(candidate):
         facts = candidate.facts
         if facts is not None:
-            facts = replace(facts, followup_branches=None, family_progress=())
+            facts = replace(
+                facts, followup_branches=None, family_progress=(),
+                baotou_after=None,
+            )
         return replace(candidate, value_facts=None, facts=facts)
 
     assert tuple(_strip_value(candidate) for candidate in enriched.legal_candidates) == baseline.legal_candidates
@@ -299,7 +302,10 @@ def test_candidate_exception_does_not_change_legality_or_other_candidates():
         # 编解码升级后载荷参与相等性：载荷随 value 分析开启而不同，比较前剥离。
         facts = candidate.facts
         if facts is not None:
-            facts = replace(facts, followup_branches=None, family_progress=())
+            facts = replace(
+                facts, followup_branches=None, family_progress=(),
+                baotou_after=None,
+            )
         return replace(candidate, value_facts=None, facts=facts)
 
     assert tuple(_strip_value(candidate) for candidate in result.legal_candidates) == baseline.legal_candidates

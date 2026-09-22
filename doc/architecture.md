@@ -421,6 +421,8 @@ flowchart LR
 
 2026-09-22 R18 机会精英档案接入 `offline.opportunity_archive`。它只读取已冻结的隐藏能力聚合与完整桌安全摘要，不读取隐藏题面、不调用策略，也不进入线上依赖。每个家族分层保持独立 `conservative_gain` 和绝对 regret；缺测不补零，Pareto 不跨目标求总均分，Lexicase 让每个目标轮流成为首筛条件。候选须先有隐藏专长准入且没有完整桌实质伤害，才进入研究父代池；作者成本和自然触发数只作诊断。档案只决定离线保留与下一代父代，不签发确认或发布资格，首轮结果见 [R18 机会优先档案](../review/llm-guided-heuristic-route-2026-09-15/R18-OPPORTUNITY-ARCHIVE-01-RESULT-2026-09-22.md)。
 
+2026-09-22 R18 将动作后爆头事实纳入 `sitin-scoring-view/4`。唯一规则源仍是 `hangma.progression.baotou_after_action`，计算结果随 `CandidateFacts.baotou_after` 进入审计编解码，再由 `policy` 原样投影为 `actions[].baotou_after`；策略层不得重建手牌或另写爆头判定。胡牌终局、未运行分值/进展分析和不能确定的规则转移均为 `None`。该变化用于降低机会专长作者的推导负担，不改变默认策略排序、线上动作接口或合法动作生成。
+
 面板重评使用完整 `ActionValuePolicy.choose` 计划，记录拒绝过滤后的首选和后续候选、紧急标记与修订号；失败降级计划留作诊断，不能被判为等行为。主搜索按授权的面板路径/摘要和监督备注冻结运行身份，内容变化拒绝恢复，不可判定在效果评价之前停止；档案仅接收可判定的新行为证据。生成输入/输出 token 预留使用同锁内单次原子落盘，避免中断留下新半笔预留。
 
 ## 10. 第一阶段目录

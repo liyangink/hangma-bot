@@ -115,6 +115,27 @@ def test_default_facts_do_not_write_payload_keys():
         CandidateFacts(CandidateFactKind.HAND_PROGRESS, 0, family_progress=())
     )
     assert "family_progress" not in empty_progress
+    assert "baotou_after" not in empty_progress
+
+
+@pytest.mark.parametrize("value", [False, True])
+def test_baotou_after_roundtrips_without_losing_false(value):
+    """动作后爆头是三态事实；False 不能因真假值判断而从审计记录丢失。"""
+
+    facts = CandidateFacts(
+        CandidateFactKind.HAND_PROGRESS, 0, baotou_after=value
+    )
+    payload = candidate_facts_to_json(facts)
+    assert payload["baotou_after"] is value
+    assert candidate_facts_from_json(payload) == facts
+
+
+def test_old_payload_without_baotou_after_restores_unknown():
+    payload = candidate_facts_to_json(
+        CandidateFacts(CandidateFactKind.HAND_PROGRESS, 0, baotou_after=True)
+    )
+    payload.pop("baotou_after")
+    assert candidate_facts_from_json(payload).baotou_after is None
 
 
 def test_payload_roundtrip_uses_snake_case_and_string_enums():

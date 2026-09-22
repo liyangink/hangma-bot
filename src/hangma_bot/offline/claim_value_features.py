@@ -270,6 +270,7 @@ def _candidate_facts(value: Optional[CandidateFacts]) -> dict[str, Any]:
         "seven_pairs_shanten": _optional(value.seven_pairs_shanten_after),
         "standard_useful_tiles": _useful_tiles(value.standard_useful_tiles),
         "seven_pairs_useful_tiles": _useful_tiles(value.seven_pairs_useful_tiles),
+        "baotou_after": _optional(value.baotou_after),
         "followup_branches": _optional(followups),
         "family_progress": [
             {

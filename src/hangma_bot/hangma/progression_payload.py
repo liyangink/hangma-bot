@@ -248,14 +248,11 @@ def _four_white_entry(
 
 
 def _baotou_entry(
-    state: BeforeState, action: Action, witnessed: bool
+    state: BeforeState, after: Optional[bool], witnessed: bool
 ) -> FamilyProgress:
     """baotou：权威状态与同源推导的动作后状态对比；无确定转移 UNKNOWN。"""
 
     before = state.baotou
-    after = progression.baotou_after_action(
-        before, action, state.hand, state.meld_count
-    )
     status = _status(witnessed)
     if after is None:
         return FamilyProgress(
@@ -285,23 +282,36 @@ def _baotou_entry(
     )
 
 
-def build_family_progress(
+def _build_payload(
     state: BeforeState, action: Action, facts: CandidateFacts,
     value_facts: CandidateValueFacts,
-) -> Tuple[FamilyProgress, ...]:
-    """构建一个候选的四家族进展条目（FamilyId 声明序，恰好四条）。"""
+) -> Tuple[Tuple[FamilyProgress, ...], Optional[bool]]:
+    """一次同源计算四家族进展和动作后爆头事实。"""
 
     witnesses = _witnesses(value_facts.routes)
     after_melds = _after_melds(action, state.meld_count)
     chain_after, piao_after = progression.chain_after_action(
         state.chain_count, state.chain_piao, state.baotou, action
     )
-    return (
+    baotou_after = progression.baotou_after_action(
+        state.baotou, action, state.hand, state.meld_count
+    )
+    entries = (
         _branch_entry(state, facts, after_melds, witnesses.branch),
         _chain_entry(state, chain_after, witnesses.chain),
         _four_white_entry(state, action, piao_after, witnesses.four_white),
-        _baotou_entry(state, action, witnesses.baotou),
+        _baotou_entry(state, baotou_after, witnesses.baotou),
     )
+    return entries, baotou_after
+
+
+def build_family_progress(
+    state: BeforeState, action: Action, facts: CandidateFacts,
+    value_facts: CandidateValueFacts,
+) -> Tuple[FamilyProgress, ...]:
+    """构建一个候选的四家族进展条目（FamilyId 声明序，恰好四条）。"""
+
+    return _build_payload(state, action, facts, value_facts)[0]
 
 
 def _append_issue(
@@ -325,8 +335,12 @@ def attach_payload(
     facts = candidate.facts
     if facts is None or facts.fact_kind not in _PAYLOAD_KINDS:
         return value_facts, facts
-    entries = build_family_progress(state, candidate.action, facts, value_facts)
-    return value_facts, replace(facts, family_progress=entries)
+    entries, baotou_after = _build_payload(
+        state, candidate.action, facts, value_facts
+    )
+    return value_facts, replace(
+        facts, family_progress=entries, baotou_after=baotou_after
+    )
 
 
 def attach_unknown_payload(

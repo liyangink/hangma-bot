@@ -484,6 +484,7 @@ class TestLegacyCompatibility:
             # 事实；剥离两载荷字段后仍逐位相等（旧消费者字段零变化）。
             assert replace(
                 candidate.facts, followup_branches=None, family_progress=(),
+                baotou_after=None,
             ) == baseline.facts
             assert candidate.action == baseline.action
             assert candidate.evidence == baseline.evidence

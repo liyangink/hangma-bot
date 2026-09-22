@@ -168,6 +168,8 @@ class CandidateFacts:
       ``best_followup_discard`` 即该弃牌的规范牌值；
     - 杠候选 ``replacement_draw_unknown=True``：杠上补牌未知，
       ``shanten_after`` 是补牌前余牌口径，不得假设具体未来摸牌；
+    - ``baotou_after`` 只由规则转移产生；终局、未分析或不能确定时为
+      ``None``，策略层不得从手牌重新实现爆头规则；
     - ``completeness=DEGRADED`` 时 ``note`` 必须给出降级原因或证据。
     """
 
@@ -188,6 +190,7 @@ class CandidateFacts:
     # 不同载荷即不同事实"的新契约比较。
     followup_branches: Optional[Tuple[FollowupBranchFacts, ...]] = None  # 吃/碰候选：全部已分析合法弃牌分支，按 followup_discard 规范牌序；None=未分析或不适用；旧 best_followup_discard 保留原语义（=其中牌效最佳分支的弃牌）
     family_progress: Tuple[FamilyProgress, ...] = ()  # 空元组=未分析，不冒充无进展；按 FamilyId 声明序
+    baotou_after: Optional[bool] = None  # 规则同源的动作后爆头状态；终局、未分析或转移未知为 None
 
     def __post_init__(self) -> None:
         for name in ("standard_useful_tiles", "seven_pairs_useful_tiles"):
@@ -256,6 +259,8 @@ class CandidateFacts:
             raise ValueError("CandidateFacts.family_progress 必须是 FamilyProgress 元组")
         if len({entry.family for entry in self.family_progress}) != len(self.family_progress):
             raise ValueError("family_progress.family 不得重复")
+        if self.baotou_after is not None and not isinstance(self.baotou_after, bool):
+            raise ValueError("CandidateFacts.baotou_after 必须是 bool 或 None")
 
 
 @dataclass(frozen=True)

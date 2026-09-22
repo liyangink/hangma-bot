@@ -189,6 +189,8 @@ def candidate_facts_to_json(facts: CandidateFacts) -> dict[str, object]:
             ]
     if facts.pattern_progress_note is not None:
         payload["pattern_progress_note"] = facts.pattern_progress_note
+    if facts.baotou_after is not None:
+        payload["baotou_after"] = facts.baotou_after
     # B3 编解码升级（B1 分支进展载荷）：沿用 pattern_progress_v2 兼容先例——
     # 新键仅在非默认（非 None/非空）时写入，旧 JSON 缺键还原 None/()；
     # 字段名与 dataclass 一致（snake_case），枚举写 .value 字符串。
@@ -361,6 +363,11 @@ def candidate_facts_from_json(payload: object) -> CandidateFacts:
         # 家族不重复、分支键形状）交给 CandidateFacts 构造函数完成。
         followup_branches=_branch_facts_from_json(data.get("followup_branches")),
         family_progress=(_family_progress_from_json(data.get("family_progress")) or ()),
+        baotou_after=(
+            None
+            if data.get("baotou_after") is None
+            else _as_bool(data.get("baotou_after"), type_name, "baotou_after")
+        ),
     )
 
 

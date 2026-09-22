@@ -27,9 +27,10 @@ if False:  # pragma: no cover - 仅为类型检查保留；载荷运行期按 B1
 #: 口径（stage_scores 座位序账 / table_scores 本桌进行中 / freshness_masks 闭集），
 #: R7 P11 投影 + P11b 升位；/3 = R8 E3（M1）：新增第三概念 current_stage_scores
 #: （已完成账 + 当前桌账 = 当前阶段合计，逐座位相加）与合同 residual_gaps
-#: （剩余赛程未投影的显式登记）。结构面变化必须先登记再升版本（守卫见
+#: （剩余赛程未投影的显式登记）；/4 = R18：新增规则同源动作后爆头事实。
+#: 结构面变化必须先登记再升版本（守卫见
 #: tests/unit/policy/test_action_value_policy.py::TestScoringViewVersionGuard）。
-SCORING_VIEW_SCHEMA_VERSION = "sitin-scoring-view/3"
+SCORING_VIEW_SCHEMA_VERSION = "sitin-scoring-view/4"
 CANDIDATE_KIND = "action_value_v1"
 
 ROUTE_STATES: Tuple[str, ...] = (
@@ -200,6 +201,7 @@ class ActionView:
     family_progress_entries: Tuple[Any, ...] = ()  # 完整 FamilyProgress 明细（R2/S5 前折叠为单串，现两口径并存）
     value_coverage: Optional[str] = None  # value_facts.coverage：complete/partial/unavailable；None=未跑分值分析
     value_issues: Tuple[Any, ...] = ()  # value_facts.issues（缺证据/截断/失败原因）
+    baotou_after: Optional[bool] = None  # hangma 生产的动作后爆头状态；None=终局/未知/未分析
 
     def __post_init__(self) -> None:
         if not isinstance(self.action_key, str) or not self.action_key:
@@ -227,6 +229,8 @@ class ActionView:
             value = getattr(self, name)
             if value is not None and not isinstance(value, tuple):
                 raise ValueError("ActionView.{0} 必须是 tuple 或 None".format(name))
+        if self.baotou_after is not None and not isinstance(self.baotou_after, bool):
+            raise ValueError("ActionView.baotou_after 必须是 bool 或 None")
         for name in (
             "shanten_after", "standard_shanten_after", "seven_pairs_shanten_after",
         ):
@@ -616,6 +620,7 @@ def _action_mapping(view: ActionView, seat: int) -> Dict[str, Any]:
         ),
         "value_coverage": view.value_coverage,
         "value_issues": _rule_issues_mapping(view.value_issues),
+        "baotou_after": view.baotou_after,
     }
 
 
@@ -678,7 +683,7 @@ def _observation_mapping(observation: PlayerObservation) -> Dict[str, Any]:
 
 @dataclass(frozen=True)
 class ScoringView:
-    """一个动作窗口内候选代码可见的全部只读事实（sitin-scoring-view/3）。
+    """一个动作窗口内候选代码可见的全部只读事实（sitin-scoring-view/4）。
 
     信息权限：visible_state 直接持有 PlayerObservation 引用并只提供白名单
     只读访问器（不复制可变状态，PlayerObservation 本身冻结）；不含 WorldState、
@@ -686,7 +691,7 @@ class ScoringView:
     运行关联键不入视图。受限候选经 candidate_view() 得到纯原始值映射。
     """
 
-    schema_version: str  # 固定 sitin-scoring-view/3；结构面/语义不兼容变更升版本并登记
+    schema_version: str  # 固定 sitin-scoring-view/4；结构面/语义不兼容变更升版本并登记
     visible_state: PlayerObservation  # 白名单只读观察（信息权限见各访问器）
     actions: Tuple[ActionView, ...]  # 按 action_key 严格升序的不可变动作表
     analysis_profile: AnalysisProfileView  # 语义版本与工作量上限快照
