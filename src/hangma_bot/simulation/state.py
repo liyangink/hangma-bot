@@ -67,6 +67,7 @@ class WorldState:
     round_start_wall_back: int
     events: Tuple[EventRecord, ...]  # 当前局已发生事件
     round_records: Tuple[RoundRecord, ...]  # 已完成局
+    history_consistent: bool  # 当前世界能否由局初暗牌、牌墙与事件完整重放
     blocked_reason: Optional[str]
 
     @property

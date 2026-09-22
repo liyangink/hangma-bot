@@ -411,6 +411,8 @@ flowchart LR
 
 2026-09-22 R18 机会能力评估接入 `offline.opportunity_capability`。题目生成器仍调用 `hangma` 取得全部合法动作及动作事实，评估器只把已冻结的 `DecisionRequest` 送入正式 `BotPolicy.choose`，不直调候选评分函数，也不接触 `WorldState`。每个基础场景可展开财神数、链深和 horizon 变体；统计先在 `base_scenario_id` 内聚合，再对基础场景等权，逐机会家族报告配对 regret 及误差区间。任一合法动作缺少同口径 oracle 值时整题退出能力计分。机会题库用于生成和保留专长，完整同墙换座桌赛继续负责退化安全与最终强度确认；题库不能签发线上或发布资格。受控合同和阶段计划见 [R18 机会优先演化方案](../review/llm-guided-heuristic-route-2026-09-15/R18-OPPORTUNITY-FIRST-EVOLUTION-PLAN-2026-09-22.md)。
 
+2026-09-22 R18 P9 增加离线教师专用的公开状态一致隐藏分配。`SimulationEngine.resample_public_consistent_hidden_world` 只允许在焦点座位自己的摸牌决策窗口调用：固定焦点 `PlayerObservation`、公开历史、各区域张数和物理牌张多重集，把三家暗手与未消费牌墙（含保留区）共同重排，并在返回前逐字段核对焦点观察不变。候选与续打策略仍只经正式 `BotPolicy` 接缝读取玩家观察，不能读取 `WorldState`。该抽样未使用历史动作似然，只用于离线稳健性教师；它不是对手行为条件后验、不能进入线上动作闭环，也不能单独签发候选准入或发布资格。重排后的 `WorldState.history_consistent=false`，导出入口拒绝生成 `full_world` 牌谱，防止把当前状态稳健性样本伪装成可重放的历史事实。首个消费方及边界见 [P9 中后盘七对教师结果](../review/llm-guided-heuristic-route-2026-09-15/R18-P9-MIDGAME-HIDDEN-WORLD-TEACHER-RESULT-2026-09-22.md)。
+
 2026-09-22 R18 机会精英档案接入 `offline.opportunity_archive`。它只读取已冻结的隐藏能力聚合与完整桌安全摘要，不读取隐藏题面、不调用策略，也不进入线上依赖。每个家族分层保持独立 `conservative_gain` 和绝对 regret；缺测不补零，Pareto 不跨目标求总均分，Lexicase 让每个目标轮流成为首筛条件。候选须先有隐藏专长准入且没有完整桌实质伤害，才进入研究父代池；作者成本和自然触发数只作诊断。档案只决定离线保留与下一代父代，不签发确认或发布资格，首轮结果见 [R18 机会优先档案](../review/llm-guided-heuristic-route-2026-09-15/R18-OPPORTUNITY-ARCHIVE-01-RESULT-2026-09-22.md)。
 
 面板重评使用完整 `ActionValuePolicy.choose` 计划，记录拒绝过滤后的首选和后续候选、紧急标记与修订号；失败降级计划留作诊断，不能被判为等行为。主搜索按授权的面板路径/摘要和监督备注冻结运行身份，内容变化拒绝恢复，不可判定在效果评价之前停止；档案仅接收可判定的新行为证据。生成输入/输出 token 预留使用同锁内单次原子落盘，避免中断留下新半笔预留。

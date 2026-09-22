@@ -151,6 +151,76 @@ def test_future_drawable_resampling_rejects_empty_sample_key():
         engine.resample_future_drawable_wall(world, sample_key="")
 
 
+def test_public_consistent_hidden_world_is_deterministic_and_preserves_observation():
+    """隐藏教师样本固定焦点观察、区域张数与物理牌池。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    world = engine.start(make_spec(rules, rounds=2, seed=791))
+    focal = world.progression.turn_seat
+    assert focal is not None
+    before_observation = engine.frame(world).decisions[0].observation
+    before_pool = sorted(
+        [
+            tile.code
+            for index, seat in enumerate(world.progression.seats)
+            if index != focal
+            for tile in seat.hand
+        ]
+        + [tile.code for tile in world.wall[world.wall_front:]]
+    )
+
+    first = engine.resample_public_consistent_hidden_world(
+        world, focal_seat=focal, sample_key="hidden-1"
+    )
+    again = engine.resample_public_consistent_hidden_world(
+        world, focal_seat=focal, sample_key="hidden-1"
+    )
+    second = engine.resample_public_consistent_hidden_world(
+        world, focal_seat=focal, sample_key="hidden-2"
+    )
+
+    assert first == again
+    assert first != second
+    assert world.history_consistent is True
+    assert first.history_consistent is False
+    assert engine.frame(first).decisions[0].observation == before_observation
+    assert first.progression.seats[focal] == world.progression.seats[focal]
+    assert first.wall_front == world.wall_front
+    assert first.wall_back == world.wall_back
+    assert first.wall[:first.wall_front] == world.wall[:world.wall_front]
+    after_pool = sorted(
+        [
+            tile.code
+            for index, seat in enumerate(first.progression.seats)
+            if index != focal
+            for tile in seat.hand
+        ]
+        + [tile.code for tile in first.wall[first.wall_front:]]
+    )
+    assert before_pool == after_pool
+    with pytest.raises(ValueError, match="不是历史一致世界"):
+        engine.export_hand(first, first.round_no)
+
+    terminal = drive(engine, first, simple_chooser(rules))
+    assert terminal.round_no == 2
+    assert terminal.history_consistent is False
+    with pytest.raises(ValueError, match="不是历史一致世界"):
+        engine.export_hand(terminal, terminal.round_no)
+
+
+def test_public_consistent_hidden_world_rejects_nonacting_focal_seat():
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    world = engine.start(make_spec(rules, rounds=1, seed=792))
+    focal = world.progression.turn_seat
+    assert focal is not None
+    with pytest.raises(ValueError, match="当前摸牌窗口行动座位"):
+        engine.resample_public_consistent_hidden_world(
+            world, focal_seat=(focal + 1) % 4, sample_key="hidden"
+        )
+
+
 def test_conservation_during_full_match():
     """推进全程每局牌张守恒（暗牌+副露+牌河+剩余墙=136）。"""
     rules = make_rules()

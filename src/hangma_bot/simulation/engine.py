@@ -26,6 +26,7 @@ from hangma_bot.hangma.progression import (
     deal_state,
     end_as_draw,
     next_dealer,
+    recompute_baotou,
     resolve,
 )  # noqa: E501
 from hangma_bot.kernel.actions import SEAT_COUNT, Tile, action_key
@@ -152,6 +153,105 @@ class SimulationEngine:
         # 与实际续打牌墙一致。已消费前缀及当前游标均不变。
         return replace(world, wall=resampled, round_start_wall=resampled)
 
+    def resample_public_consistent_hidden_world(
+        self,
+        world: WorldState,
+        *,
+        focal_seat: int,
+        sample_key: str,
+    ) -> WorldState:
+        """重采样焦点玩家不可见的三家暗手与未消费牌墙。
+
+        本入口只供离线教师在焦点座位自己的摸牌窗口使用。它固定焦点暗手、
+        当前摸牌、全部公开事件/牌河/副露、各家手牌张数、积分、链状态、墙
+        游标和牌张总多重集；三家暗手与尚未消费的牌墙（含保留区）共同洗牌
+        后按原张数重新分配。返回世界的焦点 ``PlayerObservation`` 必须与输入
+        逐字段相等，否则 fail-closed。
+
+        这是假设“所有满足当前公开状态的隐藏分配等权”的稳健性样本。它未按
+        历史动作策略似然加权，因此不是历史一致后验，不得用于线上决策输入，
+        也不得把样本均值表述为真实对手 belief 下的无偏期望。返回世界明确
+        标记为非历史一致，禁止导出成 ``full_world`` 牌谱。
+        """
+
+        if not isinstance(world, WorldState):
+            raise ValueError("隐藏世界重采样需要 WorldState")
+        if (
+            isinstance(focal_seat, bool)
+            or not isinstance(focal_seat, int)
+            or not 0 <= focal_seat < SEAT_COUNT
+        ):
+            raise ValueError("focal_seat 必须是 0..3 整数")
+        state = world.progression
+        if world.blocked_reason is not None or state.window != "draw":
+            raise ValueError("隐藏世界只可在未阻塞的本人摸牌决策窗口重采样")
+        if state.turn_seat != focal_seat:
+            raise ValueError("focal_seat 必须是当前摸牌窗口行动座位")
+        if any(
+            seat.drawn is not None
+            for index, seat in enumerate(state.seats)
+            if index != focal_seat
+        ):
+            raise ValueError("非焦点座位存在当前摸牌，拒绝隐藏世界重采样")
+
+        before = projection.observation(world, focal_seat)
+        unseen_wall = world.wall[world.wall_front:]
+        opponent_sizes = {
+            index: len(seat.hand)
+            for index, seat in enumerate(state.seats)
+            if index != focal_seat
+        }
+        pool = tuple(
+            tile
+            for index, seat in enumerate(state.seats)
+            if index != focal_seat
+            for tile in seat.hand
+        ) + tuple(unseen_wall)
+        sampled = shuffle.resample_public_consistent_hidden_pool(
+            pool,
+            scenario_id=world.scenario_id,
+            seed=world.seed,
+            round_no=world.round_no,
+            revision=world.revision,
+            focal_seat=focal_seat,
+            sample_key=sample_key,
+        )
+        cursor = 0
+        seats = list(state.seats)
+        for index in range(SEAT_COUNT):
+            if index == focal_seat:
+                continue
+            count = opponent_sizes[index]
+            hand = tuple(sampled[cursor:cursor + count])
+            cursor += count
+            old = seats[index]
+            seats[index] = replace(
+                old,
+                hand=hand,
+                baotou=recompute_baotou(
+                    hand,
+                    len(old.melds),
+                    sum(tile.code == "白" for tile in hand),
+                ),
+            )
+        sampled_wall_suffix = tuple(sampled[cursor:])
+        if len(sampled_wall_suffix) != len(unseen_wall):
+            raise ValueError("隐藏世界重采样内部张数不守恒")
+        wall = tuple(world.wall[:world.wall_front]) + sampled_wall_suffix
+        sampled_world = replace(
+            world,
+            progression=replace(
+                state,
+                seats=(seats[0], seats[1], seats[2], seats[3]),
+            ),
+            wall=wall,
+            round_start_wall=wall,
+            history_consistent=False,
+        )
+        if projection.observation(sampled_world, focal_seat) != before:
+            raise ValueError("隐藏世界重采样改变了焦点 PlayerObservation")
+        return sampled_world
+
     def advance(
         self,
         world: WorldState,
@@ -229,6 +329,10 @@ class SimulationEngine:
         """
         if isinstance(round_no, bool) or not isinstance(round_no, int):
             raise ValueError("round_no 必须是整数")
+        if not world.history_consistent:
+            raise ValueError(
+                "公开状态一致隐藏分配不是历史一致世界，禁止导出 full_world 牌谱"
+            )
         # from_replay 导入的单局世界 rounds_per_game=1 但 round_no 保留原局号：
         # 可导出上限取 max(rounds_per_game, world.round_no)。
         upper = max(world.rounds_per_game, world.round_no)
@@ -454,6 +558,7 @@ class SimulationEngine:
             round_start_wall_back=wall_back,
             events=(),
             round_records=(),
+            history_consistent=True,
             blocked_reason=None,
         )
 
@@ -575,6 +680,9 @@ class SimulationEngine:
             next_world,
             round_records=world.round_records + (record,),
             completed_hands=completed_hands,
+            # 任一已完成局来自当前状态隐藏重排时，整张桌赛都不能再冒充
+            # 可从局初事实完整重放；跨局继续保留 fail-closed 标记。
+            history_consistent=world.history_consistent,
         )
 
     def _world_from_payload(self, payload: Mapping, hand: Mapping) -> WorldState:
@@ -707,6 +815,7 @@ class SimulationEngine:
             round_start_wall_back=wall_back,
             events=(),
             round_records=(),
+            history_consistent=True,
             blocked_reason=None,
         )
 

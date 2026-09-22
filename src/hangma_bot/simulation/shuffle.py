@@ -28,6 +28,11 @@ DEAL_ALGORITHM = "simulation-v1:deal-v1"
 FUTURE_WALL_RESAMPLE_ALGORITHM = "simulation-v1:future-drawable-resample-v1"
 """离线研究用未来可摸区重排版本；不会进入线上策略输入。"""
 
+PUBLIC_CONSISTENT_HIDDEN_RESAMPLE_ALGORITHM = (
+    "simulation-v1:public-consistent-hidden-resample-v1"
+)
+"""离线教师用公开状态一致隐藏分配版本；不是历史后验模型。"""
+
 RESERVE_TILES = 20
 """牌墙保留不摸的张数（最后 10 墩，官方指南 1.1 v15）。"""
 
@@ -101,6 +106,61 @@ def resample_future_drawable(
     drawable = list(wall[wall_front:wall_back])
     rng.shuffle(drawable)
     return tuple(wall[:wall_front]) + tuple(drawable) + tuple(wall[wall_back:])
+
+
+def resample_public_consistent_hidden_pool(
+    pool: Tuple[Tile, ...],
+    *,
+    scenario_id: str,
+    seed: int,
+    round_no: int,
+    revision: int,
+    focal_seat: int,
+    sample_key: str,
+) -> Tuple[Tile, ...]:
+    """确定性重排焦点玩家不可见的牌张池。
+
+    输入池由 ``SimulationEngine`` 从三家当前暗手与尚未消费的完整牌墙
+    （含保留区）组装。这里先按规范牌序排序再洗牌，因此结果只取决于公开
+    状态约束的牌张多重集和冻结样本键，不取决于原真实隐藏分配的排列。
+
+    该算法只保证当前 ``PlayerObservation``、牌张守恒和各区域张数一致；
+    它没有使用历史动作似然，不能称为行为条件后验或 POMCP belief。
+    """
+
+    if not isinstance(pool, tuple) or not all(isinstance(tile, Tile) for tile in pool):
+        raise ValueError("隐藏牌池必须是 Tile 元组")
+    if isinstance(revision, bool) or not isinstance(revision, int) or revision < 0:
+        raise ValueError("revision 必须是非负整数")
+    if (
+        isinstance(focal_seat, bool)
+        or not isinstance(focal_seat, int)
+        or not 0 <= focal_seat < 4
+    ):
+        raise ValueError("focal_seat 必须是 0..3 整数")
+    if not isinstance(sample_key, str) or not sample_key:
+        raise ValueError("sample_key 必须是非空字符串")
+    payload = json.dumps(
+        [
+            PUBLIC_CONSISTENT_HIDDEN_RESAMPLE_ALGORITHM,
+            scenario_id,
+            seed,
+            round_no,
+            revision,
+            focal_seat,
+            sample_key,
+        ],
+        ensure_ascii=False,
+        separators=(",", ":"),
+        allow_nan=False,
+    )
+    order = {code: index for index, code in enumerate(CANONICAL_TILE_ORDER)}
+    hidden = sorted(pool, key=lambda tile: order[tile.code])
+    rng = random.Random(
+        int.from_bytes(hashlib.sha256(payload.encode("utf-8")).digest()[:8], "big")
+    )
+    rng.shuffle(hidden)
+    return tuple(hidden)
 
 
 def deal_hands(
