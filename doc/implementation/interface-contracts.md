@@ -293,6 +293,16 @@ P57 以 P47 冻结的 377 个正式请求核对发布包
 `r18-p57-network-release-rebind-01-20260923/`。P54 的旧包 ID 仅保留为修复前历史证据。
 模式专用冻结件见同目录下 `r18-p59-network-mode-freeze-01-20260923/`。
 
+2026-09-23 补充：用户另行批准 `r18_integrated_positive_v2` 接入 `test_room`、`test_tournament`、
+`auto_match` 和 `official_tournament`。它使用独立的 `R18IntegratedPositiveV2ReleasePolicy`，
+冻结候选源码 `a2d9b8af93beabdba75716fccae56b0668a6fd84f0bdce558d2ff3e569443618`、
+同一 v10 规则源与分值分析依赖摘要，以及 P45/P46/P55/P66B/P67/P69/P70/P71 结果摘要。
+完整包 ID 为 `e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486`；
+任何一种模式都必须用这个 ID 填写 `expected_policy_release_id`。测试房房间级配置不能混用 v1/v2 两个冻结包。
+离线名 `action_value:r18_integrated_positive_v2` 仍被全部网络入口拒绝，默认策略保持原值。
+P73 使用四份模式配置、生产解析器和组合根完成无网络装配，并将 409 个正式策略计划与离线父代逐项对账；
+真实赛事效果和运行可靠性仍以各模式实际审计为准，详见同目录 `r18-p73-v2-network-release-wiring-01-20260923/`。
+
 ### 4.9 坐隐研究工具的产物 schema 与实验清单身份字段（2026-09-15）
 
 **范围与边界（先读这一句）**：本节的 schema 全部属于**离线研究工具**（`review/llm-guided-heuristic-route-2026-09-15/`），

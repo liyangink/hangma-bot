@@ -92,6 +92,13 @@ from hangma_bot.policy.r18_integrated_positive_v1_release import (
     R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
     R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
 )
+from hangma_bot.policy.r18_integrated_positive_v2_release import (
+    R18IntegratedPositiveV2ReleasePolicy,
+    R18_INTEGRATED_POSITIVE_V2_ALLOWED_MODES,
+    R18_INTEGRATED_POSITIVE_V2_KNOWN_GUIDE_VERSION,
+    R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
+    R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
+)
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
@@ -185,6 +192,13 @@ R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: (
             value_analysis_sha256=_value_analysis_source_hash(),
         )
     ),
+    # R18 P69/P71 候选经用户批准接入四种真实环境模式；每次装配核对冻结摘要。
+    R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY: (
+        lambda: R18IntegratedPositiveV2ReleasePolicy(
+            rules_source_hash=compute_rules_hash(_REPO_ROOT),
+            value_analysis_sha256=_value_analysis_source_hash(),
+        )
+    ),
 }
 
 # 研究/离线专用注册表（2026-09-17 R1/S3 修复）：action_value:* 研究候选
@@ -266,7 +280,10 @@ SEQUENCE_MODEL_DIRNAME = "prebuilt/sequence-policy-models"
 # 因此这些策略必须与实际运行规则同一口径，并在校准范围外直接拒绝启动。
 _VALUE_ANALYSIS_STRATEGIES = (
     "v2_hu_upgrade_v1", "v2_hu_upgrade_v2", "v2_balanced_shadow_v1",
-) + tuple(_SEQUENCE_MODEL_STRATEGIES) + (R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,)
+) + tuple(_SEQUENCE_MODEL_STRATEGIES) + (
+    R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+    R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
+)
 
 # action_value_v1 策略名（B3）：ScoringView 依赖 B1 载荷（followup_branches/
 # family_progress/value_facts.routes），必须与序列网络策略同样启用 value_limits；
@@ -505,6 +522,24 @@ class RuntimeConfig:
             ):
                 raise ValueError(
                     "r18_integrated_positive_v1 配置绑定的发布包摘要与当前批准包不一致"
+                )
+        elif self.strategy == R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY:
+            if self.mode.value not in R18_INTEGRATED_POSITIVE_V2_ALLOWED_MODES:
+                raise ValueError("r18_integrated_positive_v2 未获批当前运行模式")
+            if self.known_guide_version < R18_INTEGRATED_POSITIVE_V2_KNOWN_GUIDE_VERSION:
+                raise ValueError(
+                    "r18_integrated_positive_v2 基于官方指南 v{0} 冻结".format(
+                        R18_INTEGRATED_POSITIVE_V2_KNOWN_GUIDE_VERSION
+                    )
+                )
+            if self.expected_policy_release_id is None:
+                raise ValueError(
+                    "r18_integrated_positive_v2 真实网络配置必须显式绑定发布包 "
+                    "expected_policy_release_id"
+                )
+            if self.expected_policy_release_id != R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID:
+                raise ValueError(
+                    "r18_integrated_positive_v2 配置绑定的发布包摘要与当前批准包不一致"
                 )
         elif self.expected_policy_release_id is not None:
             raise ValueError(
@@ -1075,12 +1110,15 @@ def build_auto_match_runtime(
             known_guide_version=config.known_guide_version,
         ),
         settings=settings,
-        # R18 发布候选只在 P45—P48 已验证的 v10/BaseScore=1/关闭必拷
+        # R18 发布候选只在已验证的 v10/BaseScore=1/关闭必拷
         # 范围内获批。自由赛发现房间后若规则不符，明确终止该候选会话，
         # 不能用缺失分值事实静默退化成未经验证的另一种行为。
         rules_factory=(
             _test_room_upgrade_rules
-            if config.strategy == R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY
+            if config.strategy in (
+                R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+                R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
+            )
             else HangmaRules
         ),
         value_limits=_value_limits_for(config.strategy),

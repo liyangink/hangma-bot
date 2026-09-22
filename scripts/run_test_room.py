@@ -97,6 +97,8 @@ from hangma_bot.bootstrap import (  # noqa: E402
     AVAILABLE_STRATEGIES,
     R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
     R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+    R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
+    R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
 )
 
 TOKEN_ENV_VAR = "HM_IDENTITY_TOKEN"
@@ -355,14 +357,21 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         for identity in identities
     ]
     expected_release = data.get("expected_policy_release_id")
-    uses_r18_release = R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY in effective_strategies
-    if uses_r18_release:
+    release_packages = {
+        R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
+        R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
+    }
+    selected_releases = {name for name in effective_strategies if name in release_packages}
+    if len(selected_releases) > 1:
+        raise ValueError("测试房单份配置不能混用不同 R18 冻结发布包")
+    if selected_releases:
         if expected_release is None:
             raise ValueError("测试房 R18 配置必须显式绑定发布包 expected_policy_release_id")
         expected_release = _require_non_empty_str(
             expected_release, "expected_policy_release_id"
         )
-        if expected_release != R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID:
+        selected_strategy = next(iter(selected_releases))
+        if expected_release != release_packages[selected_strategy]:
             raise ValueError("测试房配置绑定的 R18 发布包摘要与当前批准包不一致")
     elif expected_release is not None:
         raise ValueError("expected_policy_release_id 只能与已冻结发布策略共同使用")
@@ -405,7 +414,10 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
         "strategy": identity.strategy if identity.strategy is not None else room.strategy,
         "sse_enabled": room.sse_enabled,
     }
-    if config["strategy"] == R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY:
+    if config["strategy"] in (
+        R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+        R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
+    ):
         config["expected_policy_release_id"] = room.expected_policy_release_id
     if room.insecure_hosts:
         config["insecure_hosts"] = sorted(room.insecure_hosts)

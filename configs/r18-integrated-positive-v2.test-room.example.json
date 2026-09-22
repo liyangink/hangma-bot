@@ -1,0 +1,32 @@
+{
+  "mode": "test_room",
+  "base_url": "https://10.240.169.190:18080",
+  "expected_tournament_id": "t_REPLACE_ME",
+  "known_guide_version": 34,
+  "audit_root": "artifacts/sessions/r18-integrated-positive-v2-test-room/audit",
+  "strategy": "r18_integrated_positive_v2",
+  "expected_policy_release_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+  "insecure_hosts": [
+    "10.240.169.190"
+  ],
+  "sse_enabled": false,
+  "max_completed_batches": 1,
+  "identities": [
+    {
+      "slot": "qinglong",
+      "token_file": ".private/qinglong.token"
+    },
+    {
+      "slot": "baihu",
+      "token_file": ".private/baihu.token"
+    },
+    {
+      "slot": "zhuque",
+      "token_file": ".private/zhuque.token"
+    },
+    {
+      "slot": "xuanwu",
+      "token_file": ".private/xuanwu.token"
+    }
+  ]
+}

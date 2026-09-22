@@ -1,0 +1,26 @@
+{
+  "mode": "auto_match",
+  "base_url": "https://10.240.169.190:18080",
+  "expected_tournament_id": null,
+  "known_guide_version": 34,
+  "token_kind": "official",
+  "token_env": "HM_AUTO_MATCH_TOKEN",
+  "audit_root": "artifacts/sessions/r18-integrated-positive-v2-auto-match/audit",
+  "audit_raw_gzip": true,
+  "strategy": "r18_integrated_positive_v2",
+  "expected_policy_release_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+  "insecure_hosts": [
+    "10.240.169.190"
+  ],
+  "sse_enabled": false,
+  "source_namespace": "hangma-official",
+  "auto_match": {
+    "declared_max_games": 10,
+    "declared_rounds": 8,
+    "match_min_interval_sec": 6.5,
+    "match_max_attempts": 5,
+    "match_busy_wait_cap_sec": 60,
+    "drain_grace_seconds": 45,
+    "room_poll_interval_sec": 2
+  }
+}
