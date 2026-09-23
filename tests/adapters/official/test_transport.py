@@ -41,6 +41,54 @@ class TestTlsPolicy:
         transport = _transport("https://10.240.169.190:18080", {})
         assert transport.tls_verify is True
 
+    async def test_configured_internal_host_bypasses_system_proxy(self, monkeypatch) -> None:
+        """内网官方主机可直连时，不得被系统代理导向不可达节点。"""
+
+        hits = {"target": 0, "proxy": 0}
+
+        async def serve(reader, writer, *, kind: str, status: int) -> None:
+            await reader.readuntil(b"\r\n\r\n")
+            hits[kind] += 1
+            writer.write(
+                f"HTTP/1.1 {status} {'OK' if status == 200 else 'Bad Gateway'}\r\n"
+                "Content-Length: 2\r\nConnection: close\r\n\r\n{}".encode()
+            )
+            await writer.drain()
+            writer.close()
+            await writer.wait_closed()
+
+        import asyncio
+
+        target = await asyncio.start_server(
+            lambda r, w: serve(r, w, kind="target", status=200), "127.0.0.1", 0
+        )
+        proxy = await asyncio.start_server(
+            lambda r, w: serve(r, w, kind="proxy", status=502), "127.0.0.1", 0
+        )
+        target_port = target.sockets[0].getsockname()[1]
+        proxy_port = proxy.sockets[0].getsockname()[1]
+        monkeypatch.setenv("HTTP_PROXY", f"http://127.0.0.1:{proxy_port}")
+        monkeypatch.setenv("ALL_PROXY", f"http://127.0.0.1:{proxy_port}")
+        monkeypatch.setenv("NO_PROXY", "")
+        transport = _transport(f"http://127.0.0.1:{target_port}", {"127.0.0.1"})
+        try:
+            response = await transport.request("GET", "/portal/api/guide/version", with_auth=False)
+            assert response.status == 200
+            assert hits == {"target": 1, "proxy": 0}
+            public_policy = _transport(f"http://127.0.0.1:{target_port}", set())
+            try:
+                with pytest.raises(RecoverableServerError):
+                    await public_policy.request("GET", "/portal/api/guide/version", with_auth=False)
+                assert hits == {"target": 1, "proxy": 1}
+            finally:
+                await public_policy.aclose()
+        finally:
+            await transport.aclose()
+            target.close()
+            proxy.close()
+            await target.wait_closed()
+            await proxy.wait_closed()
+
 
 class TestErrorClassification:
     async def test_success_returns_result_without_headers(self) -> None:

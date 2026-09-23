@@ -98,8 +98,12 @@ class OfficialTransport:
         self._token = token
         self._config = config
         host = (urlparse(config.base_url).hostname or "").lower()
-        # 仅对白名单内的固定内网主机关闭校验；其余主机一律校验
-        self._tls_verify: bool = host not in {h.lower() for h in config.insecure_hosts}
+        # 白名单内的官方内网主机直连并关闭证书校验。macOS 系统级 HTTPS
+        # 代理可被 httpx 的 trust_env 隐式读取，即使 shell 没有 *_PROXY
+        # 变量；内网流量经过该代理会在 guide/version 的 TLS 握手超时。
+        # 其他主机继续使用原有的证书校验与环境代理行为。
+        internal_host = host in {h.lower() for h in config.insecure_hosts}
+        self._tls_verify: bool = not internal_host
         timeout = httpx.Timeout(
             connect=config.connect_timeout_sec,
             read=config.read_timeout_sec,
@@ -109,6 +113,7 @@ class OfficialTransport:
         self._client = httpx.AsyncClient(
             base_url=config.base_url,
             verify=self._tls_verify,
+            trust_env=not internal_host,
             timeout=timeout,
             limits=httpx.Limits(
                 max_connections=config.max_connections,
