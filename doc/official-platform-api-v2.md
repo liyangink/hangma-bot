@@ -85,8 +85,8 @@ Content-Type: application/json
 | `Rounds` | 每场比赛局数 |
 | `BaseScore` | 底分 |
 | `YouCaiBiKao` | 有财必拷响开关；指南原文写“必须爆头或杠开”。2026-09-07用户确认及测试房拒胡纠正本地解释：开启时手留财神必须爆头，杠补不独立豁免，见[规则证据§7](../src/hangma_bot/hangma/RULES_EVIDENCE.md#7-有财必拷响youcaibikao赛事可变参数) |
-| `PengTimeoutSec` | 碰/明杠响应窗口，默认 1 秒，固定走满 |
-| `ChiTimeoutSec` | 吃响应窗口，默认 1 秒，固定走满 |
+| `PengTimeoutSec` | 碰/明杠响应窗口，默认 1 秒；无有效鸣牌时走满，有效鸣牌提前推进的 v35 测试房观察见 §5.3 |
+| `ChiTimeoutSec` | 吃响应窗口，默认 1 秒；无有效鸣牌时走满，有效鸣牌提前推进的 v35 测试房观察见 §5.3 |
 | `DiscardTimeoutSec` | 出牌窗口，默认 3 秒 |
 | `StartAt` | 开赛时间，Unix 秒 |
 | `RegisterDeadlineAt` | 报名截止，Unix 秒；0 表示无截止 |
@@ -496,16 +496,18 @@ v8 起大厅行和门户赛事详情新增 `description`；玩家接口的 `conf
 ```text
 tile_discarded
     ↓
-response_peng，持续 PengTimeoutSec，固定走满
+response_peng，标称 PengTimeoutSec；无有效鸣牌时走满
     ├─ 有效碰/明杠：按规则进入动作后的流程
     └─ 无人执行
           ↓
-response_chi，持续 ChiTimeoutSec，固定走满
+response_chi，标称 ChiTimeoutSec；无有效鸣牌时走满
     ├─ 有效吃：吃牌玩家进入出牌流程
     └─ 无人执行：下家摸牌
 ```
 
-“固定走满”是平台防时间侧信道设计。即使玩家很早 `pass`，服务端也不会通过提前切换阶段暴露其决策。事件中的 `timeout(kind="response")` 表示“窗口走满”，不是玩家失联；不要计入模型超时率。
+**官方指南 v34 原文**把碰/吃窗口写为固定走满，以防过牌时间侧信道；早到的单个 `pass` 不能让客户端推断窗口已结束。事件中的 `timeout(kind="response")` 表示“窗口走满”，不是玩家失联；不要计入模型超时率。
+
+**当前观察（指南 v35 测试房，2026-09-23）**：有效鸣牌并不等待原窗口截止才推进。两轮测试房匹配原弃牌 `response_peng.window_deadline_ms` 后，135/135 与 155/155 个 `peng` 事件均在原截止前被客户端首次收到；其中 133/135 与 153/155 个碰后弃牌也在原截止前收到。见[早碰提前推进对账](../review/r18-four-arm-evaluation-2026-09-23/LIVE-R6-PACING-1S-AND-REQUEST-INTERVALS-2026-09-23.md#杭麻窗口与约-120-毫秒网络容错的预算解释)。这与把“固定走满”理解为“有效碰/吃也必须等待满窗”不符，平台行为细节待官方确认。工程上按较危险的当前观察处理：`window_deadline_ms` 只约束**当前**动作机会，不保证截止前不会出现有效鸣牌、下一次弃牌或新响应窗。
 
 吃/碰默认只有 1 秒，不能在窗口打开后才启动多 Agent 讨论。策略应在其他玩家行动期间预计算；窗口到达后只做合法性复核、缓存查找和串行动作尝试。通常一次成功即结束；只有官方明确拒绝且刷新确认同窗仍开放时，才按原预算换下一候选。
 
