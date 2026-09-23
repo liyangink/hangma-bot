@@ -17,25 +17,28 @@ class DiscardPacing:
     target_at_monotonic: float  # 本机单调秒；立即提交时等于本次检查时刻
     reason: str  # 审计用途：固定缓发或跳过原因，不改变策略选牌
     latest_send_at_monotonic: float | None = None  # 实际等待时收紧的发送截止；跳过时为空
+    requested_min_age_sec: float | None = None  # 首次观察动作窗起的目标年龄；跳过特殊动作时为空
 
 
 def plan_discard_pacing(*, now: float, observed_at: float,
-                        expires_lower_bound: float, latest_send: float) -> DiscardPacing:
-    """正常弃牌在本机首次见到动作窗满1秒时提交。
+                        expires_lower_bound: float, latest_send: float,
+                        minimum_age_sec: float = MIN_OBSERVED_AGE_SEC,
+                        target_reason: str = "baseline") -> DiscardPacing:
+    """正常弃牌在本机首次见到动作窗达到指定年龄时提交。
 
     ``observed_at`` 是本机单调秒，实际摸牌不晚于此刻。安全截止不足
     时立即提交。绝不延长原动作截止；
     等待不占HTTP槽或state额度。
     """
     if not all(isfinite(value) for value in (
-            now, observed_at, expires_lower_bound, latest_send)):
+            now, observed_at, expires_lower_bound, latest_send, minimum_age_sec)):
         return DiscardPacing(now, "invalid_timing")
-    if observed_at > now or expires_lower_bound <= observed_at:
+    if observed_at > now or expires_lower_bound <= observed_at or minimum_age_sec <= 0:
         return DiscardPacing(now, "invalid_timing")
     safe_latest = min(latest_send, expires_lower_bound - POST_RESERVE_SEC)
-    baseline = observed_at + MIN_OBSERVED_AGE_SEC
+    baseline = observed_at + minimum_age_sec
     if baseline + SEND_SLACK_SEC >= safe_latest:
-        return DiscardPacing(now, "insufficient_margin")
+        return DiscardPacing(now, "insufficient_margin", requested_min_age_sec=minimum_age_sec)
     if baseline <= now:
-        return DiscardPacing(now, "target_age_reached")
-    return DiscardPacing(baseline, "baseline", safe_latest)
+        return DiscardPacing(now, "target_age_reached", requested_min_age_sec=minimum_age_sec)
+    return DiscardPacing(baseline, target_reason, safe_latest, minimum_age_sec)

@@ -131,6 +131,7 @@ _ROOM_FIELDS = frozenset({
     "restart",
     "sse_enabled",
     "discard_pacing_enabled",
+    "discard_pacing_profile",
     "ordinary_long_poll_min_interval_ms",
     "sequence_model_dir",
     "expected_policy_release_id",
@@ -225,6 +226,7 @@ class RoomConfig:
     restart: RoomRestart
     sse_enabled: bool = False  # SSE 帧驱动开关（透传给每身份子进程）
     discard_pacing_enabled: bool = True  # 默认沿用弃牌提交缓发；实验房可关闭
+    discard_pacing_profile: str = "fixed_1000"  # 实验房可按滚动额度 8/16 切换 200/500ms
     ordinary_long_poll_min_interval_ms: int = 0  # 同场普通增量长轮询底档，毫秒
     max_completed_batches: Optional[int] = None  # 每身份完成批次数上限；None 沿用持续续赛
     # 序列策略网络部署包根目录；仅当某个身份/房间策略取 sequence_model_* 时生效。
@@ -398,6 +400,9 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
     discard_pacing_enabled = data.get("discard_pacing_enabled", True)
     if not isinstance(discard_pacing_enabled, bool):
         raise ValueError("discard_pacing_enabled 必须是布尔值")
+    discard_pacing_profile = data.get("discard_pacing_profile", "fixed_1000")
+    if discard_pacing_profile not in ("fixed_1000", "quota_half_200_500"):
+        raise ValueError("未知 discard_pacing_profile")
     interval = data.get("ordinary_long_poll_min_interval_ms", 0)
     if isinstance(interval, bool) or not isinstance(interval, int) or not 0 <= interval <= 1000:
         raise ValueError("ordinary_long_poll_min_interval_ms 必须是 0..1000 的整数")
@@ -412,6 +417,7 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         restart=restart,
         sse_enabled=sse_value,
         discard_pacing_enabled=discard_pacing_enabled,
+        discard_pacing_profile=discard_pacing_profile,
         ordinary_long_poll_min_interval_ms=interval,
         max_completed_batches=(_require_positive_int(data["max_completed_batches"], "max_completed_batches")
                                if data.get("max_completed_batches") is not None else None),
@@ -435,6 +441,7 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
         "strategy": identity.strategy if identity.strategy is not None else room.strategy,
         "sse_enabled": room.sse_enabled,
         "discard_pacing_enabled": room.discard_pacing_enabled,
+        "discard_pacing_profile": room.discard_pacing_profile,
         "ordinary_long_poll_min_interval_ms": room.ordinary_long_poll_min_interval_ms,
     }
     if config["strategy"] in (

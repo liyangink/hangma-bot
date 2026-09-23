@@ -106,6 +106,7 @@ class OfficialTournamentSession:
         sse_enabled: bool = False,  # SSE 帧驱动开关（透传给每场会话）
         sse_budget: Optional[StreamBudget] = None,  # 每 Token 共享 SSE 预算
         discard_pacing_enabled: bool = True,  # 测试房可关闭普通弃牌提交缓发
+        discard_pacing_profile: str = "fixed_1000",  # 测试房可选 8/16 额度切换 200/500ms
         ordinary_long_poll_min_interval_ms: int = 0,  # 同场普通增量长轮询底档，毫秒
     ) -> None:
         self._transport = OfficialTransport(token, transport_config)
@@ -128,6 +129,7 @@ class OfficialTournamentSession:
         self._sse_enabled = sse_enabled
         self._sse_budget = sse_budget
         self._discard_pacing_enabled = discard_pacing_enabled
+        self._discard_pacing_profile = discard_pacing_profile
         self._ordinary_long_poll_min_interval_ms = ordinary_long_poll_min_interval_ms
         self._retry_sleep = retry_sleep if retry_sleep is not None else asyncio.sleep
         self._registration: Optional[_Registration] = None
@@ -511,6 +513,7 @@ class OfficialTournamentSession:
             sse_enabled=self._sse_enabled,
             sse_budget=self._sse_budget,
             discard_pacing_enabled=self._discard_pacing_enabled,
+            discard_pacing_profile=self._discard_pacing_profile,
             ordinary_long_poll_min_interval_ms=self._ordinary_long_poll_min_interval_ms,
         )
         self._games[game_id] = session

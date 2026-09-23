@@ -31,7 +31,8 @@ async def finish(task):
 
 
 async def make_draw(*, snapshot_only=False, ts_offset=0, missing_ts=False,
-                    chain_count=0, enabled=True, wait=None, receive_delay=.2):
+                    chain_count=0, enabled=True, wait=None, receive_delay=.2,
+                    profile="fixed_1000"):
     """先见他家状态，再在0.2秒收到本人正常摸牌；可显式切换恢复/异常输入。"""
     clock = VirtualClock()
     audit, transport = FakeAuditSink(), FakeTransport()
@@ -71,6 +72,7 @@ async def make_draw(*, snapshot_only=False, ts_offset=0, missing_ts=False,
         audit=audit, audit_context=make_audit_context,
         retry_sleep=(lambda seconds: wait(clock, seconds)) if wait else clock.sleep,
         discard_pacing_enabled=enabled,
+        discard_pacing_profile=profile,
     )
     window = await clock.run(session.next_item())
     assert isinstance(window, ObservedActionWindow)
@@ -89,6 +91,49 @@ async def pressure(root, used):
     peer = root.for_game("peer", max_games=10)
     while root.state_used_count < used:
         (await peer.acquire(Priority.POLL)).release()
+
+
+@pytest.mark.parametrize("used,expected,age_ms,reason", [
+    (7, .4, 200, "quota_below_half_200"),
+    (8, .7, 500, "quota_half_500"),
+    (16, .7, 500, "quota_half_500"),
+])
+async def test_quota_half_profile_uses_eight_of_sixteen_state_grants(
+    used, expected, age_ms, reason,
+):
+    clock, root, scope, session, transport, audit, attempt, posts = await make_draw(
+        profile="quota_half_200_500")
+    await pressure(root, used)
+    try:
+        assert isinstance(await clock.run(session.submit(attempt)), SubmitAccepted)
+        assert posts == pytest.approx([expected])
+        scheduled = [r.payload for r in audit.records
+                     if r.payload.get("discard_pacing_status") == "scheduled"]
+        assert len(scheduled) == 1
+        assert scheduled[0]["state_used"] == used
+        assert scheduled[0]["reason"] == reason
+        assert scheduled[0]["requested_min_age_ms"] == age_ms
+        assert scheduled[0]["discard_pacing_profile"] == "quota_half_200_500"
+        assert scope.active_count == 0
+    finally:
+        await session.aclose("test")
+
+
+async def test_quota_half_profile_skips_500ms_when_deadline_margin_is_tight():
+    clock, root, scope, session, transport, audit, attempt, posts = await make_draw(
+        profile="quota_half_200_500")
+    await pressure(root, 8)
+    try:
+        outcome = await clock.run(session.submit(replace(
+            attempt, latest_send_at_monotonic=.65)))
+        assert isinstance(outcome, SubmitAccepted)
+        assert posts == pytest.approx([.2])
+        assert any(r.payload.get("discard_pacing_status") == "skipped"
+                   and r.payload.get("reason") == "insufficient_margin"
+                   and r.payload.get("requested_min_age_ms") == 500
+                   for r in audit.records)
+    finally:
+        await session.aclose("test")
 
 
 @pytest.mark.parametrize("used,expected", [(0, 1.2), (9, 1.2), (10, 1.2), (16, 1.2)])

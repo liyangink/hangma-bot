@@ -672,6 +672,8 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 
 2026-09-24 测试房配置可设 `discard_pacing_enabled=false`，并以 `ordinary_long_poll_min_interval_ms=50` 对同一场连续的普通增量长轮询加最短重挂间隔（从上一响应完成到下一 GET 发起，单调时钟毫秒）。新查询立即入队，通过调度器 `not_before_monotonic` 与排队重叠；不作用于 `seq=0`、已知期限、高优先级摸牌预警或恢复查询。默认 0 毫秒，非测试房模式禁止实验值。运行清单与请求时序审计都能对账；四个外部端口不变，见[试验记录](../../review/r18-four-arm-evaluation-2026-09-23/LIVE-R7-LONGPOLL-50MS-2026-09-24.md)。
 
+2026-09-24 后续测试房实验：`discard_pacing_profile=quota_half_200_500` 只用于正常首答弃牌。目标提交时刻为首次观察动作窗后 200 毫秒；提交决策时，同身份状态调度器近 1.05 秒实际发起账达到 8/16，则改为 500 毫秒。它不读取排队时长，也不占用状态请求额度；原动作截止余量不足时立即提交。`ordinary_long_poll_min_interval_ms=60` 只约束连续普通增量长轮询；含 `timeout/pass` 的响应和动作提交打断连续性，下一次查询不加底档。三个参数及跳过原因进入运行清单或请求/动作审计。实验档只允许测试房，四个外部端口不变；验收见[综合房计划](../../review/r18-four-arm-evaluation-2026-09-23/LIVE-R9-COMBINED-60-200-500-2026-09-24.md)。
+
 
 ## 提交前取消的受控扩展（2026-09-09）
 

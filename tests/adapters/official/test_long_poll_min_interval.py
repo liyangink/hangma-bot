@@ -13,7 +13,7 @@ from hangma_bot.adapters.official.scheduler import RequestScheduler
 from hangma_bot.application.contracts import GameFinished
 
 
-async def _run_responses(responses):
+async def _run_responses(responses, *, interval_ms=50):
     clock = VirtualClock()
     audit, transport = FakeAuditSink(), FakeTransport()
     calls = []
@@ -30,7 +30,7 @@ async def _run_responses(responses):
             "spacing", max_games=10),
         timing=TIMING, monotonic_clock=clock.monotonic, wall_clock_unix_ms=clock.wall_ms,
         audit=audit, audit_context=make_audit_context, retry_sleep=clock.sleep,
-        discard_pacing_enabled=False, ordinary_long_poll_min_interval_ms=50,
+        discard_pacing_enabled=False, ordinary_long_poll_min_interval_ms=interval_ms,
     )
     try:
         assert isinstance(await clock.run(session.next_item()), GameFinished)
@@ -58,6 +58,23 @@ async def test_consecutive_ordinary_incremental_long_polls_have_50ms_start_floor
     assert "ordinary_long_poll_not_before_monotonic" not in timings[2]
     assert timings[3]["ordinary_long_poll_min_interval_ms"] == 50
     assert timings[3]["ordinary_long_poll_not_before_monotonic"] == pytest.approx(.05)
+
+
+async def test_pass_boundary_exempts_next_poll_then_resumes_60ms_floor():
+    calls, timings = await _run_responses([
+        snapshot(101, turn=0),
+        PASS_EVENT,
+        {"seq": 103, "events": [
+            {"seq": 103, "type": "pass", "seat": 0, "data": None},
+        ], "gap": False},
+        {"pending": True},
+        {"pending": True},
+        load_fixture("state_response_finished.json"),
+    ], interval_ms=60)
+    assert [seq for seq, _ in calls] == [0, 101, 102, 103, 103, 103]
+    assert [at for _, at in calls] == pytest.approx([0, 0, 0, 0, .06, .12])
+    assert "ordinary_long_poll_not_before_monotonic" not in timings[3]
+    assert timings[4]["ordinary_long_poll_min_interval_ms"] == 60
 
 
 async def test_opponent_draw_recovery_bypasses_ordinary_floor():

@@ -207,6 +207,33 @@ class TestRunTestRoomScript:
                     environ={"HM_ROOM_A": SECRET_A, "HM_ROOM_B": SECRET_B},
                 )
 
+    def test_combined_pacing_profile_passes_to_four_children(self, tmp_path):
+        configured = _room_config(
+            discard_pacing_enabled=True,
+            discard_pacing_profile="quota_half_200_500",
+            ordinary_long_poll_min_interval_ms=60,
+        )
+        room_config = room.load_room_config(
+            _write_room_json(tmp_path, configured),
+            environ={"HM_ROOM_A": SECRET_A, "HM_ROOM_B": SECRET_B},
+        )
+        children = [room.child_config_mapping(room_config, identity)
+                    for identity in room_config.identities]
+        assert len(children) == 4
+        assert all(child["discard_pacing_profile"] == "quota_half_200_500"
+                   and child["ordinary_long_poll_min_interval_ms"] == 60
+                   for child in children)
+        runtime = participant.load_config(
+            _write_config(tmp_path, {**children[0], "token": SECRET_A, "token_env": None}),
+            environ={},
+        )
+        assert runtime.discard_pacing_profile == "quota_half_200_500"
+        with pytest.raises(ValueError, match="discard_pacing_profile"):
+            room.load_room_config(
+                _write_room_json(tmp_path, _room_config(discard_pacing_profile="unknown")),
+                environ={"HM_ROOM_A": SECRET_A, "HM_ROOM_B": SECRET_B},
+            )
+
     def test_room_rejects_invalid_finished_restart_delay(self, tmp_path):
         with pytest.raises(ValueError, match="finished_restart_delay_seconds"):
             room.load_room_config(

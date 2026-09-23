@@ -149,6 +149,7 @@ class OfficialGameSession:
         sse_enabled: bool = False,  # SSE 帧驱动开关（默认关=行为与现状一致）
         sse_budget: Optional[StreamBudget] = None,  # 每 Token 共享的 SSE 并发预算
         discard_pacing_enabled: bool = True,  # 只缓发有时间依据的普通弃牌；内部诊断可关闭
+        discard_pacing_profile: str = "fixed_1000",  # 测试房可选：额度过半时 200/500 毫秒档
         ordinary_long_poll_min_interval_ms: int = 0,  # 同场普通增量长轮询响应至下次发起的最短毫秒数
     ) -> None:
         self.game_id = game_id
@@ -164,6 +165,9 @@ class OfficialGameSession:
         self._retry_sleep = retry_sleep if retry_sleep is not None else asyncio.sleep
         self._sync = ProtocolSyncState(game_id, timing)
         self._discard_pacing_enabled = discard_pacing_enabled
+        if discard_pacing_profile not in ("fixed_1000", "quota_half_200_500"):
+            raise ValueError("未知 discard_pacing_profile")
+        self._discard_pacing_profile = discard_pacing_profile
         if isinstance(ordinary_long_poll_min_interval_ms, bool) or not isinstance(
             ordinary_long_poll_min_interval_ms, int
         ) or not 0 <= ordinary_long_poll_min_interval_ms <= 1000:
@@ -1357,7 +1361,7 @@ class OfficialGameSession:
                               "scheduler_priority": chosen_priority.name,
                               "latest_start_monotonic": latest_start_monotonic,
                               "response_deadline_monotonic": deadline_monotonic}
-            # 只整形同场连续普通增量长轮询。立即入队，让 50ms 与共享额度
+            # 只整形同场连续普通增量长轮询。立即入队，让底档与共享额度
             # 排队重叠；已知期限、摸牌预警、恢复与 seq=0 快照不附加等待。
             ordinary_long_poll = (
                 long_poll and not force_full and not degraded_to_full
@@ -1420,9 +1424,6 @@ class OfficialGameSession:
                     long_poll=long_poll,
                     request_budget_sec=read_timeout,
                 )
-                self._last_ordinary_long_poll_completed_at = (
-                    request_timing["completed_at_monotonic"] if ordinary_long_poll else None
-                )
                 self._state_request_no += 1
                 try:
                     parsed = parse_state_response(_loads(result.text))
@@ -1432,6 +1433,9 @@ class OfficialGameSession:
                     self._emit_raw_state(result, seq, None, request_timing=request_timing)
                     raise
                 self._emit_raw_state(result, seq, parsed, request_timing=request_timing)
+                boundary_marker_seen = any(
+                    event.type in ("timeout", "pass") for event in parsed.events
+                )
                 if recovering_history:
                     if parsed.kind == "events" and not parsed.gap and parsed.events:
                         newer = self._sync.recover_snapshot_history(
@@ -1452,6 +1456,14 @@ class OfficialGameSession:
                             "abandoned_through_seq": through, "response_kind": parsed.kind,
                             "gap": parsed.gap,
                         }, trigger_seq=state_seq, round_no=round_no)
+                # timeout/pass 标记后可能立即发生他家摸打；下一次增量 GET
+                # 是发现一秒鸣牌窗的唯一入口，因此不再视为连续普通重挂。
+                self._last_ordinary_long_poll_completed_at = (
+                    request_timing["completed_at_monotonic"]
+                    if ordinary_long_poll and parsed.kind in ("pending", "events")
+                    and not boundary_marker_seen
+                    else None
+                )
                 # 旧事件或补史pending不能证明当前水位形成于本次请求时刻。
                 # 保留原时间下界，避免给随后发现的新动作延长估算预算。
                 self._last_state_history_only = (
@@ -1525,6 +1537,8 @@ class OfficialGameSession:
     async def submit(self, attempt: ActionAttempt) -> SubmitOutcome:
         """串行动作提交：门控 → 截止检查 → intent 审计 → POST → 封闭结果。"""
 
+        # 动作尝试打断普通重挂连续性；不因随后看到的同场状态误加底档。
+        self._last_ordinary_long_poll_completed_at = None
         if self._closed:
             return self._finish_submit(attempt, SubmitNotSent("session_closed"))
         allowed, reason = self._gate.try_enter(attempt.window_key)
@@ -1544,7 +1558,7 @@ class OfficialGameSession:
             self._sse_event.set()
         return outcome
 
-    def _discard_pacing_plan(self, attempt, detected, observation, timing, backlog_delay_sec):
+    def _discard_pacing_plan(self, attempt, detected, observation, timing, state_used):
         """普通弃牌按首次见到动作窗缓发；重试和本人特殊动作链直接跳过。"""
         now = self._monotonic()
         if not self._discard_pacing_enabled:
@@ -1571,10 +1585,19 @@ class OfficialGameSession:
         elif timing["deadline_is_estimated"]:
             # 快照恢复后的窗口若无官方截止，无法证明还剩0.5秒安全等待。
             return DiscardPacing(now, "snapshot_estimated_deadline")
+        # state_used 是同一身份约 1 秒状态请求滚动账。实验档在 8/16
+        # 已用时将最低观察年龄从 200ms 切到 500ms；动作自身不消费该账。
+        if self._discard_pacing_profile == "quota_half_200_500":
+            minimum_age_sec = 0.5 if state_used >= 8 else 0.2
+            target_reason = "quota_half_500" if state_used >= 8 else "quota_below_half_200"
+        else:
+            minimum_age_sec = 1.0
+            target_reason = "baseline"
         return plan_discard_pacing(
             now=now, observed_at=observed_at,
             expires_lower_bound=expiry,
-            latest_send=attempt.latest_send_at_monotonic)
+            latest_send=attempt.latest_send_at_monotonic,
+            minimum_age_sec=minimum_age_sec, target_reason=target_reason)
 
     async def _wait_discard_pacing(self, attempt, plan, state_used, backlog_delay_sec):
         """等到一次性目标；关会话可取消，等待不占HTTP槽或state额度。"""
@@ -1582,6 +1605,9 @@ class OfficialGameSession:
         payload = {"discard_pacing_status": "scheduled", "reason": plan.reason,
                    "target_at_monotonic": plan.target_at_monotonic,
                    "started_at_monotonic": started, "state_used": state_used,
+                   "discard_pacing_profile": self._discard_pacing_profile,
+                   "requested_min_age_ms": (plan.requested_min_age_sec * 1000
+                                            if plan.requested_min_age_sec is not None else None),
                    "state_backlog_delay_sec": backlog_delay_sec,
                    "latest_send_at_monotonic": attempt.latest_send_at_monotonic}
         context = dict(decision_id=attempt.decision_id, attempt_no=attempt.attempt_no,
@@ -1642,7 +1668,7 @@ class OfficialGameSession:
             state_used = self._scheduler.state_used_count
             backlog_delay_sec = self._scheduler.state_backlog_delay_sec
             plan = self._discard_pacing_plan(
-                attempt, detected, observation, timing, backlog_delay_sec)
+                attempt, detected, observation, timing, state_used)
             if plan.target_at_monotonic > self._monotonic():
                 attempt = replace(attempt, latest_send_at_monotonic=plan.latest_send_at_monotonic)
                 await self._wait_discard_pacing(attempt, plan, state_used, backlog_delay_sec)
@@ -1651,6 +1677,9 @@ class OfficialGameSession:
             self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
                 "discard_pacing_status": "skipped", "reason": plan.reason,
                 "state_used": state_used,
+                "discard_pacing_profile": self._discard_pacing_profile,
+                "requested_min_age_ms": (plan.requested_min_age_sec * 1000
+                                         if plan.requested_min_age_sec is not None else None),
                 "state_backlog_delay_sec": backlog_delay_sec}, decision_id=attempt.decision_id,
                 attempt_no=attempt.attempt_no, trigger_seq=attempt.window_key.trigger_seq,
                 round_no=attempt.window_key.round_no)
