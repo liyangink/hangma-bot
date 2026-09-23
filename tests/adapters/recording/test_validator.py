@@ -129,6 +129,35 @@ async def test_clean_run_reports_complete(tmp_path, capsys):
     assert parsed["audit_complete"] is True
 
 
+async def test_policy_release_digest_is_not_misread_as_token(tmp_path):
+    """发布包身份摘要可审计，其他长串与敏感键仍须被拦截。"""
+
+    run_dir = await _build_clean_run(tmp_path)
+    manifest = run_dir / "manifest.json"
+    original = json.loads(manifest.read_text(encoding="utf-8"))
+    digest = "a" * 64
+    document = json.loads(json.dumps(original))
+    document["payload"]["policy_release"] = {
+        "candidate_id": digest,
+        "evidence_sha256": {"p55": digest},
+    }
+    manifest.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+    clean = validate_run(run_dir)
+    assert clean["audit_complete"] is True
+    assert clean["secret_scan_clean"] is True
+
+    document["payload"]["policy_release"]["access_token"] = digest
+    manifest.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+    sensitive = validate_run(run_dir)
+    assert "secret_found" in {f["code"] for f in sensitive["findings"]}
+
+    del document["payload"]["policy_release"]["access_token"]
+    document["payload"]["unrelated_long_value"] = digest
+    manifest.write_text(json.dumps(document, ensure_ascii=False), encoding="utf-8")
+    unrelated = validate_run(run_dir)
+    assert "secret_found" in {f["code"] for f in unrelated["findings"]}
+
+
 async def _build_dirty_run(base):
     """故意包含六类缺陷的运行：悬空、重复、孤立、混用、重复终局、降级。"""
 

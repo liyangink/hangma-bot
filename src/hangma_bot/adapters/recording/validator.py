@@ -57,7 +57,9 @@ from hangma_bot.adapters.recording.raw_events import (
 )
 from hangma_bot.adapters.recording.redact import (
     ENDPOINT_KEY,
+    POLICY_RELEASE_KEY,
     REDACTED,
+    _SHA256_RE,
     is_sensitive_key,
     redact_value,
     unredacted_secret_matches,
@@ -189,6 +191,8 @@ def _walk_secrets(
     location: RecordLocation,
     path: str,
     endpoint_value: bool = False,
+    policy_release_value: bool = False,
+    sensitive_value: bool = False,
 ) -> None:
     """递归扫描结构：敏感键未脱敏或字符串值残留凭证形态都算命中。
 
@@ -200,8 +204,9 @@ def _walk_secrets(
         for key, value in node.items():
             key_text = key if isinstance(key, str) else str(key)
             child_path = f"{path}.{key_text}"
+            key_sensitive = is_sensitive_key(key_text)
             if (
-                is_sensitive_key(key_text)
+                key_sensitive
                 and value != REDACTED
                 and not (isinstance(value, str) and REDACTED in value)
             ):
@@ -216,13 +221,21 @@ def _walk_secrets(
                 location,
                 child_path,
                 endpoint_value=(key_text == ENDPOINT_KEY),
+                policy_release_value=policy_release_value or key_text == POLICY_RELEASE_KEY,
+                sensitive_value=key_sensitive,
             )
     elif isinstance(node, list):
         for index, value in enumerate(node):
             _walk_secrets(
-                value, hits, location, f"{path}[{index}]", endpoint_value=endpoint_value
+                value, hits, location, f"{path}[{index}]", endpoint_value=endpoint_value,
+                policy_release_value=policy_release_value,
+                sensitive_value=sensitive_value,
             )
     elif isinstance(node, str):
+        # 写入侧仅在受控 policy_release 子树保留严格 SHA-256 身份摘要。
+        # 验证器必须使用同一例外；敏感键（如 access_token）永不豁免。
+        if policy_release_value and not sensitive_value and _SHA256_RE.fullmatch(node):
+            return
         matcher = unredacted_secret_matches_weak if endpoint_value else unredacted_secret_matches
         for match in matcher(node):
             # 只报告形态与长度，不回显原文，避免验证报告本身泄漏秘密。
