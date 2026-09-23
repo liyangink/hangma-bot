@@ -8,7 +8,6 @@ from pathlib import Path
 import pytest
 
 from hangma_bot.adapters.official.errors import AuthError, ConflictError, NotFoundError
-from hangma_bot.adapters.official.participant import TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE
 from hangma_bot.application.contracts import (
     AuditKind,
     OperationStatus,
@@ -187,6 +186,28 @@ class TestRegisterAndReady:
         assert result.status is OperationStatus.REJECTED
         assert result.official_code == "NOT_QUALIFIED"
 
+    async def test_v35_gone_retries_idempotent_register_and_ready(self, transport, clock, audit) -> None:
+        """暂时不可达不能让报名或到位静默退出；两端点均为官方幂等操作。"""
+        _initialize_handler(transport)
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        bootstrap = await session.initialize(TARGET)
+        assert not isinstance(bootstrap, ParticipantTerminal)
+        calls = {"register": 0, "ready": 0}
+
+        def handler(*, path, **kw):
+            operation = "register" if path.endswith("/register") else "ready"
+            calls[operation] += 1
+            if calls[operation] <= 2:
+                raise NotFoundError(404, "TOURNAMENT_GONE", "tournament unavailable")
+            return 200, "{}"
+
+        transport.handler = handler
+        assert (await session.register()).status is OperationStatus.ACCEPTED
+        assert (await session.ready(bootstrap.initial_snapshot.stage)).status is OperationStatus.ACCEPTED
+        assert calls == {"register": 3, "ready": 3}
+        assert sum(record.payload.get("area") == "tournament_temporarily_unavailable"
+                   for record in audit.records) == 4
+
     async def test_stale_ready_rejected_locally(self, transport, clock) -> None:
         """陈旧到位：观察修订号不匹配时本地拒绝且不发任何 HTTP 请求。"""
 
@@ -309,12 +330,12 @@ class TestResourceSharing:
 
 
 class TestTournamentDetailNotFoundTolerance:
-    """详情端点偶发 404 的容忍语义（2026-09-17 真实平台证据）。
+    """指南 v35 的两种 404：GONE 暂时不可达，NOT_FOUND 永久不存在。
 
     证据：测试赛事 t_65d538e905c5 在正常 2 秒轮询中，详情端点连续 200 之后
     单次返回 404 TOURNAMENT_GONE，同时刻 /api/me 为 200，随后同端点又恢复
     200（两次独立运行各命中一次）。因此单次 404 只说明该次读取失败：
-    本类固化"偶发 404 不终结、持续 404 仍终结"两条不变量。
+    本类固化按官方 code 判型，不把重试次数当成房间是否存在的证据。
     """
 
     def _flaky_detail(self, transport, *, failures: int,
@@ -343,7 +364,7 @@ class TestTournamentDetailNotFoundTolerance:
     @staticmethod
     def _not_found_notices(audit) -> list:
         return [record for record in audit.records
-                if record.payload.get("area") == "tournament_detail_not_found"]
+                if record.payload.get("area") == "tournament_temporarily_unavailable"]
 
     async def test_transient_detail_404_is_tolerated(self, transport, clock, audit) -> None:
         """单次 404 后重读成功：初始化正常完成，且容忍事实进审计。"""
@@ -357,18 +378,37 @@ class TestTournamentDetailNotFoundTolerance:
         assert len(notices) == 1
         assert notices[0].kind is AuditKind.PROTOCOL_RECOVERED
         assert notices[0].payload["official_code"] == "TOURNAMENT_GONE"
-        assert notices[0].payload["tolerance"] == TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE
+        assert notices[0].payload["path"] == "/api/tournaments/t_test_room_1"
 
-    async def test_persistent_detail_404_is_still_target_mismatch(self, transport, clock, audit) -> None:
-        """持续 404 语义不变：耗尽容忍次数后仍按永久目标错配终结。"""
+    async def test_gone_recovers_even_after_old_tolerance(self, transport, clock, audit) -> None:
+        """连续六次 GONE 后恢复，仍须留在原房，不得误判永久消失。"""
 
-        state = self._flaky_detail(transport, failures=99)
+        state = self._flaky_detail(transport, failures=6)
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        outcome = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert not isinstance(outcome, ParticipantTerminal)
+        assert state["detail_calls"] == 7
+        assert len(self._not_found_notices(audit)) == 6
+
+    async def test_not_found_is_permanent_without_retry(self, transport, clock, audit) -> None:
+        """明确不存在的房间不等待；只按 code 而不按 HTTP 404 判型。"""
+        _initialize_handler(transport)
+        calls = {"detail": 0}
+        prior = transport.handler
+
+        def handler(**kw):
+            if kw["path"] == "/api/tournaments/t_test_room_1":
+                calls["detail"] += 1
+                raise NotFoundError(404, "TOURNAMENT_NOT_FOUND", "not found")
+            return prior(**kw)
+
+        transport.handler = handler
         session = make_tournament_session(clock=clock, transport=transport, audit=audit)
         outcome = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
         assert isinstance(outcome, ParticipantTerminal)
         assert outcome.reason is ParticipantTerminalReason.TARGET_MISMATCH
-        assert state["detail_calls"] == TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE
-        assert len(self._not_found_notices(audit)) == TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE
+        assert calls["detail"] == 1
+        assert not self._not_found_notices(audit)
 
     async def test_transient_detail_404_does_not_end_polling(self, transport, clock, audit) -> None:
         """轮询中的单次 404 不得终结：重读拿到权威快照并正常返回。

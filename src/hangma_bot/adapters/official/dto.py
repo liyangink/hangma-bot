@@ -22,7 +22,7 @@ from hangma_bot.kernel.actions import CANONICAL_TILE_CODES
 
 from .errors import DtoError
 
-KNOWN_GUIDE_VERSION = 34  # 当前已审查指南；v16之后仍逐条验摘要，不能仅按顶层版本放行。
+KNOWN_GUIDE_VERSION = 35  # 当前已审查指南；v16之后仍逐条验摘要，不能仅按顶层版本放行。
 _LEGACY_GUIDE_BASELINE = 15  # 原已接受基线，之后的breaking需按调用路径和完整条目审查。
 # v9—v11：非破坏性 changed 条目，已逐条审查并同步实现（v9 测试房间数据 API
 # 限速粒度、v10 跨局 gap=true 全量快照、v11 state 轮询 16/s 每用户聚合）。
@@ -109,6 +109,11 @@ _V25_CHI_LIMIT_SHA256 = "cb5be8f872ea83d02c88fe7fa79e45bb10314c057a0110011c16f9d
 #   决策输入零影响；consume 该门户端点的离线脚本需按可空处理 last。
 # 依据：doc/references/official-guide-version-v34.json（2026-09-15 抓取）。
 _V29_FEATURE_DISABLED_SHA256 = "b7da31d4c244cbb33fa4cd15781d478220eeab3ad7e1a4c1535f5f9be0cda0d3"
+# v35（breaking，2026-09-23 抓取）：同一 404 的 TOURNAMENT_GONE 是房 actor
+# 暂时不可达，须退避重试；TOURNAMENT_NOT_FOUND（或缺 code）才是永久不存在。
+# 服务端 wire 未变。本 bot 在 participant._request_with_retry 按 code 区分，
+# 完整条目指纹防止同版本回溯改写。依据：official-guide-version-v35.json。
+_V35_TOURNAMENT_GONE_SHA256 = "2ef5d3830d911ed11d18a1378d90bdae96f2c3c5ffb06102e689225d0d3abcf9"
 
 
 def _require_mapping(doc: Any, what: str) -> Mapping[str, Any]:
@@ -185,7 +190,8 @@ def parse_guide_version(doc: Any, *, scoped_tournament: bool = False,
     已处理门户绑定403且不调用匿名注册的自动匹配入口使用。v24按这两条
     已审查路径放行，v25按本地吃摊限制放行，v29按全服功能开关放行
     （关闭自由匹配/测试房时返回永久 403 FEATURE_DISABLED，不重试）；
-    同版本回溯新增/改写仍未知。
+    v35 的 TOURNAMENT_GONE/TOURNAMENT_NOT_FOUND 双义已按 code 落实到
+    participant 的赛事请求重试；同版本回溯新增/改写仍未知。
     """
 
     body = _require_mapping(doc, "guide/version")
@@ -211,7 +217,8 @@ def parse_guide_version(doc: Any, *, scoped_tournament: bool = False,
             hashlib.sha256(
                 json.dumps(item, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
             ).hexdigest() in (
-                (_V25_CHI_LIMIT_SHA256, _SCOPED_V24_BREAKING_SHA256, _V29_FEATURE_DISABLED_SHA256)
+                (_V25_CHI_LIMIT_SHA256, _SCOPED_V24_BREAKING_SHA256,
+                 _V29_FEATURE_DISABLED_SHA256, _V35_TOURNAMENT_GONE_SHA256)
                 if scoped_tournament or auto_match
                 else (_V25_CHI_LIMIT_SHA256, _V29_FEATURE_DISABLED_SHA256)
             )
