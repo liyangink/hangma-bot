@@ -1542,7 +1542,7 @@ class OfficialGameSession:
             # 快照恢复后的窗口若无官方截止，无法证明还剩0.5秒安全等待。
             return DiscardPacing(now, "snapshot_estimated_deadline")
         return plan_discard_pacing(
-            now=now, observed_at=observed_at, backlog_delay_sec=backlog_delay_sec,
+            now=now, observed_at=observed_at,
             expires_lower_bound=expiry,
             latest_send=attempt.latest_send_at_monotonic)
 

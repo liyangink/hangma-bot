@@ -91,8 +91,8 @@ async def pressure(root, used):
         (await peer.acquire(Priority.POLL)).release()
 
 
-@pytest.mark.parametrize("used,expected", [(0, .7), (9, .7), (10, .7), (16, 1.2)])
-async def test_every_normal_discard_waits_half_second_and_quota_congestion_extends_to_one(used, expected):
+@pytest.mark.parametrize("used,expected", [(0, 1.2), (9, 1.2), (10, 1.2), (16, 1.2)])
+async def test_every_normal_discard_waits_one_second_independent_of_quota_congestion(used, expected):
     clock, root, scope, session, transport, audit, attempt, posts = await make_draw()
     await pressure(root, used)
     try:
@@ -130,24 +130,26 @@ async def test_ineligible_or_tight_budget_discard_submits_immediately(setup, cha
         await session.aclose("test")
 
 
-async def test_snapshot_draw_also_gets_half_second_when_deadline_allows():
+async def test_snapshot_draw_also_gets_one_second_when_deadline_allows():
     clock, root, scope, session, transport, audit, attempt, posts = await make_draw(snapshot_only=True)
     try:
         assert isinstance(await clock.run(session.submit(attempt)), SubmitAccepted)
-        assert posts == pytest.approx([.5])
+        assert posts == pytest.approx([1.0])
         assert any(r.payload.get("discard_pacing_status") == "completed"
                    for r in audit.records)
     finally:
         await session.aclose("test")
 
 
-async def test_one_second_target_falls_back_to_half_second_when_budget_is_tight():
+async def test_one_second_target_is_skipped_when_budget_is_tight():
     clock, root, scope, session, transport, audit, attempt, posts = await make_draw()
     await pressure(root, 16)
     try:
         result = await clock.run(session.submit(replace(attempt, latest_send_at_monotonic=.95)))
         assert isinstance(result, SubmitAccepted)
-        assert posts == pytest.approx([.7])
+        assert posts == pytest.approx([.2])
+        assert any(r.payload.get("discard_pacing_status") == "skipped"
+                   and r.payload.get("reason") == "insufficient_margin" for r in audit.records)
     finally:
         await session.aclose("test")
 
@@ -189,7 +191,7 @@ async def test_wait_holds_no_http_slot_and_still_serializes_own_post():
         assert isinstance(duplicate, SubmitNotSent)
         assert clock.monotonic() == pytest.approx(.2)
         assert isinstance(await clock.run(finish(task)), SubmitAccepted)
-        assert posts == pytest.approx([.7])
+        assert posts == pytest.approx([1.2])
     finally:
         await session.aclose("test")
         task.cancel()
@@ -250,8 +252,8 @@ async def test_timer_overshoot_does_not_send_after_original_deadline():
 
 
 @pytest.mark.parametrize("setup,expected", [
-    ({"missing_ts": True}, .7),
-    ({"ts_offset": 2}, .7),
+    ({"missing_ts": True}, 1.2),
+    ({"ts_offset": 2}, 1.2),
     ({"ts_offset": 2, "receive_delay": 2.3}, 2.3),
 ])
 async def test_pacing_uses_local_watermark_without_server_clock_assumptions(setup, expected):
@@ -274,7 +276,7 @@ async def test_overshoot_rechecks_tighter_local_bound_even_when_server_clock_is_
     await pressure(root, 10)
     try:
         result = await session.submit(replace(attempt, latest_send_at_monotonic=4.5))
-        assert clock.monotonic() == pytest.approx(2.8)
+        assert clock.monotonic() == pytest.approx(3.3)
         assert isinstance(result, SubmitNotSent) and result.reason == "deadline_passed"
         assert not posts
     finally:
