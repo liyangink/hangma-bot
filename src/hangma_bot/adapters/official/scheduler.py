@@ -1,8 +1,11 @@
 """用户共享的状态查询额度与场次资源隔离，均为官方适配器内部实现。
 
-官方 v25（2026-09-08 抓取）：state 每用户 16 次/秒，跨场共享；每场仍
-最多一个在途 state 和一个在途动作。已知查询按最迟发起时刻排序，未知
-事件发现按场公平；动作 POST 不消费 state 额度。所有时刻均为单调秒。
+官方指南 v34（2026-09-23 本地快照）：state 每用户 16 次/秒，跨场共享；每场仍
+最多一个在途 state 和一个在途动作。已知查询按最迟发起时刻排序；
+恢复及已确认响应周期的进度查询优先于普通轮询；无截止请求按
+可见风险与等待晋级排序，同级按入队先后。
+同一身份动作 POST 不消费 state
+额度。所有时刻均为单调秒。
 """
 from __future__ import annotations
 
@@ -17,17 +20,30 @@ from typing import Awaitable, Callable, Optional
 from .deadline_clock import DeadlineClock
 
 # 工程余量（秒），不是官方窗口长度：本机发起与服务端到达存在波动。
-# 16笔记账至少保留1.05秒，可覆盖至多50ms的到达延迟差；长尾仍靠429恢复。
+# 16笔记账至少保留1.05秒。长期均匀放行让服务器收到的短时簇更小；
+# 到达波动超出本地余量时仍由共享429冷却恢复。
 DEFAULT_STATE_ARRIVAL_GUARD_SEC = 0.05
+DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC = 1.0 / 14.5
+# 十场会话共用16/s时不能先发满16笔再出现近一秒查询盲区。
+# 生产入口最多保留四笔即刻查询，供十场同时启动及增量后的权威快照；其余按
+# 16/s 补充令牌。滚动窗口仍负责官方硬上限与到达余量。
+DEFAULT_PRODUCTION_STATE_BURST = 4.0
+# 软等待上限只改变无已知期限查询的排序，不绕过 16/1.05 硬账。
+# 从该身份实际可服务的时刻起算，避免启动或 429 冷却使低类请求
+# 一解冻就压过刚出现的一秒风险；到龄后与摸牌监听同级，先入先发。
+DEFAULT_DISCARD_WATCH_PROMOTION_SEC = 0.8
+DEFAULT_POLL_PROMOTION_SEC = 1.2
 
 
 class Priority(IntEnum):
-    """非状态端点的用途优先级；状态查询优先使用明确截止。"""
+    """请求用途优先级；明确截止后依次保已知响应、预期弃牌和普通轮询。"""
 
     ACTION = 0
     RECOVERY = 1
-    POLL = 2
-    BACKGROUND = 3
+    DRAW_WATCH = 2
+    DISCARD_WATCH = 3
+    POLL = 4
+    BACKGROUND = 5
 
 
 class RequestKind(Enum):
@@ -138,6 +154,7 @@ class RequestScheduler:
                  jitter_rng: Optional[random.Random] = None, poll_interval: float = 0.002,
                  state_startup_delay_sec: float = 0.0,
                  state_arrival_guard_sec: float = 0.0,
+                 state_min_spacing_sec: float = 0.0,
                  _root: Optional[RequestScheduler] = None) -> None:
         self._rate = float(rate_per_second)
         self._capacity = float(burst if burst is not None else rate_per_second)
@@ -149,6 +166,8 @@ class RequestScheduler:
             raise ValueError("state_startup_delay_sec 必须为有限非负秒数")
         if not math.isfinite(state_arrival_guard_sec) or state_arrival_guard_sec < 0:
             raise ValueError("state_arrival_guard_sec 必须为有限非负秒数")
+        if not math.isfinite(state_min_spacing_sec) or state_min_spacing_sec < 0:
+            raise ValueError("state_min_spacing_sec 必须为有限非负秒数")
         if max_concurrent < 1 or (max_state_concurrent is not None
                                  and not 1 <= max_state_concurrent <= max_concurrent):
             raise ValueError("并发上限必须为正数，state 上限不得超过总上限")
@@ -170,6 +189,11 @@ class RequestScheduler:
             self._state_reserved = 0
             self._tokens = self._capacity
             self._last_refill = clock()
+            self._state_min_spacing_sec = state_min_spacing_sec
+            # 首个官方计数窗口维持原四笔即刻突发与16/s补充，保证十场
+            # 同时开局的首次动作；此后才加均匀间隔，避免长期突发/空档。
+            self._state_initial_burst_remaining = self._window_capacity
+            self._next_paced_state_grant_at = self._last_refill
             # 进程重启不能恢复旧发送账。生产新建用户账时先跨过一秒，
             # 场次重开复用本账；控制查询与动作POST不受此保护等待影响。
             self._state_cooldown_until = self._last_refill + state_startup_delay_sec
@@ -203,16 +227,24 @@ class RequestScheduler:
         return self._active
 
     @property
-    def state_interval_sec(self) -> float:
-        """显式小 burst 的平滑间隔；默认共享滚动额度没有固定相邻间隔。"""
-        root = self._root
-        return 1.0 / root._rate if root._capacity < root._window_capacity else 0.0
-
-    @property
     def state_used_count(self) -> int:
-        """用户当前记账窗口内发起次数（生产含50ms释放余量），不含预占。"""
+        """用户当前记账窗口内发起次数（生产含到达余量），不含预占。"""
         self._root._refresh()
         return len(self._root._state_grants)
+
+    @property
+    def state_backlog_delay_sec(self) -> float:
+        """按当前state许可等待和已排队工作量估计新增查询的等待秒数。
+
+        只供动作缓发的0.5秒上限使用；这不是将来事件的预测或截止保证。
+        不把尚未到达ready时刻的保护提示计为实际排队请求。
+        """
+        root = self._root
+        root._refresh()
+        now = root._clock()
+        queued = sum(waiter.active and waiter.request_kind is RequestKind.STATE
+                     and waiter.ready <= now for waiter in root._waiters)
+        return min(0.5, max(root._state_quota_delay(), queued / root._rate))
 
     @property
     def cooldown_remaining(self) -> float:
@@ -262,7 +294,10 @@ class RequestScheduler:
             # 预占不会按许可时刻自然过期，必须等 mark_sent 或 release 唤醒。
             window_delay = (max(0.0, root._state_grants[0] + root._window_seconds - root._clock())
                             if root._state_grants else math.inf)
-        return max(token_delay, window_delay)
+        spacing_delay = 0.0
+        if root._state_min_spacing_sec and root._state_initial_burst_remaining <= 0:
+            spacing_delay = max(0.0, root._next_paced_state_grant_at - root._clock())
+        return max(token_delay, window_delay, spacing_delay)
 
     def _required_queries(self, selected: Optional[_Waiter] = None) -> list[tuple[float, float]]:
         """取已经知道的查询期限；不从未来世界或未知他家动作推导期限。"""
@@ -279,23 +314,59 @@ class RequestScheduler:
         return rows
 
     def _schedule_possible(self, requirements: list[tuple[float, float]], *, spend_now: bool) -> bool:
-        """在已知滚动账上演算必要查询；不保证未知突发下存在完整可行调度。"""
+        """按真实发放约束预演已知查询；未知事件及未来 429 不在预演内。"""
         now = self._clock()
-        history = deque(self._state_grants)
-        # 未发送预占的真实发送时刻未知，保守地视为在候选时刻附近才开始计时。
-        history.extend([now] * (self._state_reserved + int(spend_now)))
+        history = deque(sorted(self._state_grants))
+        # 已领取但尚未发送的许可不能按假设发送时刻自动过期；在预演期间
+        # 始终占据滚动窗口的一份容量，直到真实 mark_sent/release 唤醒。
+        reserved = self._state_reserved
+        tokens = self._tokens
+        refill_at = now
+        initial_burst = self._state_initial_burst_remaining
+        next_paced = self._next_paced_state_grant_at
+
+        def record_grant(sent_at: float) -> None:
+            nonlocal tokens, initial_burst, next_paced
+            history.append(sent_at)
+            tokens -= 1.0
+            if self._state_min_spacing_sec:
+                if initial_burst > 0:
+                    initial_burst -= 1
+                    if initial_burst == 0:
+                        next_paced = sent_at + self._state_min_spacing_sec
+                else:
+                    next_paced = max(sent_at, next_paced) + self._state_min_spacing_sec
+
+        if spend_now:
+            # 调用方仅在当前 quota/槽均可发时检查本条件。预演这次真实
+            # 许可对令牌、平滑间距与滚动账的全部影响，而不只加一条历史。
+            record_grant(now)
         at = now
         for ready, latest in sorted(requirements, key=lambda item: item[1]):
             at = max(at, ready, self._state_cooldown_until)
-            while history and at >= history[0] + self._window_seconds:
-                history.popleft()
-            if len(history) >= self._window_capacity:
-                at = max(at, history[-self._window_capacity] + self._window_seconds)
+            while True:
+                elapsed = max(0.0, at - refill_at)
+                tokens = min(self._capacity, tokens + elapsed * self._rate)
+                refill_at = at
                 while history and at >= history[0] + self._window_seconds:
                     history.popleft()
+                next_at = at
+                if tokens < 1.0:
+                    next_at = max(next_at, at + (1.0 - tokens) / self._rate)
+                if self._state_min_spacing_sec and initial_burst <= 0:
+                    next_at = max(next_at, next_paced)
+                if len(history) + reserved >= self._window_capacity:
+                    if not history:
+                        return False  # 未发送预占没有可推导的自然释放时刻。
+                    next_at = max(next_at, history[0] + self._window_seconds)
+                if next_at == at:
+                    break
+                at = next_at
+                if at >= latest:
+                    return False
             if at >= latest:
                 return False
-            history.append(at)
+            record_grant(at)
         return True
 
     def _spending_preserves_known_queries(self, waiter: _Waiter) -> bool:
@@ -303,9 +374,12 @@ class RequestScheduler:
         if not before:
             return True
         after = self._required_queries(waiter)
-        # 原已超容量时按最早期限尽力服务；不能因为无解而永久卡住全部请求。
-        return (self._schedule_possible(after, spend_now=True)
-                or not self._schedule_possible(before, spend_now=False))
+        if self._schedule_possible(after, spend_now=True):
+            return True
+        # 已知需求本来无解时，仍允许真实有截止的请求尽力争取；普通查询
+        # 不能以“无解”为由再占去它们当前仅剩的许可。
+        return (waiter.deadline is not None
+                and not self._schedule_possible(before, spend_now=False))
 
     def _resource_ready(self, waiter: _Waiter) -> bool:
         owner, now = waiter.owner, self._clock()
@@ -319,13 +393,19 @@ class RequestScheduler:
                 and now >= self._state_cooldown_until and self._state_quota_delay() <= 0
                 and self._spending_preserves_known_queries(waiter))
 
-    @staticmethod
-    def _rank(waiter: _Waiter) -> tuple:
+    def _rank(self, waiter: _Waiter) -> tuple:
         if waiter.request_kind is RequestKind.OTHER:
             return (0 if waiter.priority is Priority.ACTION else 3, int(waiter.priority), waiter.seq)
         if waiter.deadline is not None:
             return (1, waiter.deadline, waiter.owner._last_service, waiter.seq)
-        return (2, waiter.owner._last_service, waiter.seq)
+        priority = int(waiter.priority)
+        served_age = self._clock() - max(waiter.ready, self._state_cooldown_until)
+        if (waiter.priority is Priority.DISCARD_WATCH
+                and served_age >= DEFAULT_DISCARD_WATCH_PROMOTION_SEC):
+            priority = int(Priority.DRAW_WATCH)
+        elif waiter.priority is Priority.POLL and served_age >= DEFAULT_POLL_PROMOTION_SEC:
+            priority = int(Priority.DRAW_WATCH)
+        return (2, priority, waiter.seq)
 
     def _claim(self, waiter: _Waiter, reserve_only: bool) -> Optional[SchedulerLease]:
         self._refresh()
@@ -340,6 +420,15 @@ class RequestScheduler:
         if waiter.request_kind is RequestKind.STATE:
             self._state_reserved += 1
             self._tokens -= 1.0
+            if self._state_min_spacing_sec:
+                if self._state_initial_burst_remaining > 0:
+                    self._state_initial_burst_remaining -= 1
+                    if self._state_initial_burst_remaining == 0:
+                        self._next_paced_state_grant_at = self._clock() + self._state_min_spacing_sec
+                else:
+                    self._next_paced_state_grant_at = (
+                        max(self._clock(), self._next_paced_state_grant_at)
+                        + self._state_min_spacing_sec)
             owner._active_state += 1
             self._service_seq += 1
             owner._last_service = self._service_seq

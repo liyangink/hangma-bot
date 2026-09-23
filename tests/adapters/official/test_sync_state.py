@@ -48,6 +48,31 @@ def test_consecutive_events_accepted() -> None:
     assert len(state.current_observation().public_history) == 2
 
 
+def test_own_draw_and_discard_cannot_revive_old_response_snapshot() -> None:
+    """本人已摸打证明旧吃窗结束；增量末条弃牌后不得回退到旧响应快照。"""
+    from hangma_bot.adapters.official.dto import parse_snapshot
+    from hangma_bot.kernel.actions import WindowPhase
+
+    doc = load_fixture("state_response_snapshot_draw.json")
+    doc["seq"] = 100
+    body = doc["snapshot"]
+    body.update(phase="response_chi", turn=1, drawn_tile="",
+                responding_seats=[2], last_discard={"seq": 100, "seat": 1, "tile": "9t"})
+    body["discards"][1] = ["9t"]
+    state = ProtocolSyncState("g", TIMING)
+    state.apply_full_snapshot(parse_snapshot(body, 100))
+    assert state.current_window().window_key.phase is WindowPhase.RESPONSE_CHI
+
+    draw = ParsedEvent(seq=101, type="tile_drawn", seat=2, tiles=("7w",),
+                       occurred_at_unix_sec=1756771200)
+    discard = ParsedEvent(seq=102, type="tile_discarded", seat=2, tiles=("7w",),
+                          occurred_at_unix_sec=1756771201)
+    assert state.apply_events((draw,)).decision is SyncDecision.ACCEPTED
+    assert state.current_window().window_key.phase is WindowPhase.DRAW
+    assert state.apply_events((discard,)).decision is SyncDecision.ACCEPTED
+    assert state.current_window() is None
+
+
 def test_duplicate_seq_ignored_idempotently() -> None:
     """只有确实保存过同一载荷的事件才算重复；水位下从未入库的改为归档。"""
 
@@ -446,4 +471,3 @@ def test_incremental_observation_counts_unchanged_when_base_already_drawn() -> N
     # 基础快照 hand_counts[2]=14（官方含摸牌形态口径）：换牌等量，不再 +1
     assert observation.hand_counts[2] == 14
     assert observation.drawn_tile is not None and observation.drawn_tile.code == "7w"
-

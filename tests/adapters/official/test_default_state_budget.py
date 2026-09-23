@@ -6,6 +6,7 @@ initialize/open_game创建场次。连续权威快照用于制造可观察查询
 
 from __future__ import annotations
 
+import asyncio
 import json
 from collections import Counter
 
@@ -16,6 +17,7 @@ from _virtual_clock import VirtualClock
 
 from hangma_bot.adapters.official import auto_match, participant
 from hangma_bot.adapters.official.transport import TransportConfig
+from hangma_bot.adapters.official.scheduler import Priority
 from hangma_bot.application.contracts import ObservedActionWindow, RuntimeMode, RuntimeTarget, SessionBootstrap
 
 
@@ -110,7 +112,52 @@ def default_session(monkeypatch, clock, mode, *, audit=None):
 
 
 @pytest.mark.parametrize("mode", MODES, ids=lambda mode: mode.value)
-async def test_default_entry_waits_one_initial_second_then_allows_fast_same_game_queries(monkeypatch, mode):
+async def test_m10_default_scheduler_leaves_a_nearby_permit_for_first_discard_watch(monkeypatch, mode):
+    """生产四入口同刻十场请求时，预期他家弃牌的查询不应被整秒额度空档阻断。"""
+    clock = VirtualClock()
+    session, _, _ = default_session(monkeypatch, clock, mode)
+    root = session._scheduler  # 核对真实默认装配；本测试仍只经公开 acquire 发请求。
+    games = [root.for_game(str(i), max_games=10) for i in range(10)]
+
+    async def query(scope, priority):
+        async with await scope.acquire(priority):
+            return clock.monotonic()
+
+    async def settle():
+        for _ in range(300):
+            await asyncio.sleep(0)
+
+    def advance(seconds):
+        clock.advance(seconds)
+        for due, future in clock.waiting:
+            if due <= clock.monotonic() + 1e-10 and not future.done():
+                future.set_result(None)
+        clock.waiting = [(due, future) for due, future in clock.waiting if not future.done()]
+
+    ordinary = [asyncio.create_task(query(games[i % 10], Priority.POLL)) for i in range(16)]
+    watch = None
+    try:
+        await settle()
+        advance(1.0)  # 新建用户账的一秒保护到期，十场同时进入轮询。
+        await settle()
+        advance(.1)
+        await settle()
+        watch = asyncio.create_task(query(games[6], Priority.DISCARD_WATCH))
+        await settle()
+        advance(.2)
+        await settle()
+        assert watch.done(), "首次弃牌查询不应因先前十场突发而等待近一秒"
+        assert watch.result() <= 1.3
+    finally:
+        for task in ordinary + ([watch] if watch is not None else []):
+            if not task.done():
+                task.cancel()
+        await asyncio.gather(*(ordinary + ([watch] if watch is not None else [])), return_exceptions=True)
+        await session.aclose()
+
+
+@pytest.mark.parametrize("mode", MODES, ids=lambda mode: mode.value)
+async def test_default_entry_waits_one_initial_second_then_allows_bounded_fast_queries(monkeypatch, mode):
     clock = VirtualClock()
     session, target, transport = default_session(monkeypatch, clock, mode)
     try:
@@ -131,14 +178,14 @@ async def test_default_entry_waits_one_initial_second_then_allows_fast_same_game
         assert isinstance(second, ObservedActionWindow)
         assert second.window_key != first.window_key
         assert [sent[0] for sent in state_sends(transport)] == [1.0, 1.0], (
-            "M=10真实默认装配不得残留每场1/s或用户14/s、burst=1的平滑")
+            "相邻增量与快照需要两笔即刻许可，不能恢复每场固定间隔")
 
         await game.aclose("reopen_test")
         reopened = session.open_game(GAMES[0])
         assert reopened is not game
         assert isinstance(await clock.run(reopened.next_item()), ObservedActionWindow)
-        assert [sent[0] for sent in state_sends(transport)] == [1.0, 1.0, 1.0], (
-            "关闭重开单场不能重新等待一秒建账保护")
+        assert [sent[0] for sent in state_sends(transport)] == pytest.approx([1.0, 1.0, 1.0]), (
+            "关闭重开单场不能重新建账；首次增量与快照可使用有限突发余量")
     finally:
         await session.aclose()
 
@@ -154,8 +201,9 @@ async def test_default_entry_shares_sixteen_sends_and_keeps_account_when_game_re
         for index in range(16):
             observed = await clock.run(games[index % len(games)].next_item())
             assert isinstance(observed, ObservedActionWindow)
-        assert [sent[0] for sent in state_sends(transport)] == [1.0] * 16, (
-            "真正的生产默认构造应在一次建账保护后提供16份共享滚动额度")
+        assert [sent[0] for sent in state_sends(transport)] == pytest.approx(
+            [1.0] * 4 + [1.0 + (index - 3) / 16 for index in range(4, 16)]), (
+            "生产默认装配应只保留四笔即刻许可，随后按共享16/s平滑发放")
 
         await games[0].aclose("quota_reopen_test")
         reopened = session.open_game(GAMES[0])
@@ -166,10 +214,11 @@ async def test_default_entry_shares_sixteen_sends_and_keeps_account_when_game_re
         assert sends[-1][0] == pytest.approx(2.05), "重开场次不得清除用户已发记录，提前发出第17笔"
         assert sends[-1][3] == 0, "重建场次以权威快照恢复，额度账独立保留"
 
-        # 滚动账已恢复，刚重开的同场继续立即查询，不能重新施加每场间隔。
+        # 滚动账已恢复；刚重开的同场继续使用用户共享的长期平滑间隔，
+        # 不能因场次重开而重新领取一笔即刻额度。
         assert isinstance(await clock.run(reopened.next_item()), ObservedActionWindow)
         times = [sent[0] for sent in state_sends(transport)]
-        assert times[-1] == pytest.approx(2.05)
+        assert times[-1] == pytest.approx(2.05 + 1 / 14.5)
         assert all(sum(at - 1.0 < value <= at for value in times) <= 16 for at in times)
     finally:
         await session.aclose()

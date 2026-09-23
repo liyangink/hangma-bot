@@ -1,12 +1,12 @@
-"""普通弃牌的短暂缓发计算；只用本机已知时间和用户查询用量，不访问外部状态。"""
+"""普通弃牌的短暂缓发计算；只用本机观察时刻和共享查询队列，不访问外部状态。"""
 
 from dataclasses import dataclass
 from math import isfinite
 from hangma_bot.application.contracts import DEFAULT_POST_NETWORK_RESERVE_SEC
 
 
-STATE_PRESSURE_THRESHOLD = 10
-TARGET_DRAW_AGE_SEC = 1.0
+MIN_OBSERVED_AGE_SEC = 0.5
+MAX_OBSERVED_AGE_SEC = 1.0
 POST_RESERVE_SEC = DEFAULT_POST_NETWORK_RESERVE_SEC + 0.20
 SEND_SLACK_SEC = 0.10
 
@@ -20,24 +20,28 @@ class DiscardPacing:
     latest_send_at_monotonic: float | None = None  # 实际等待时收紧的发送截止；跳过时为空
 
 
-def plan_discard_pacing(*, now: float, state_used: int, start_lower_bound: float,
+def plan_discard_pacing(*, now: float, observed_at: float, backlog_delay_sec: float,
                         expires_lower_bound: float, latest_send: float) -> DiscardPacing:
-    """有压力且能完整补到保守起点后1秒才等待，否则立即走原提交路径。
+    """正常弃牌至少距本机见到动作窗0.5秒；拥堵可补至1秒。
 
-    输入时间均为本机单调秒。起点/截止来自会话已验证的摸牌增量时序，
-    可能只是保守下界，不要求毫秒精确；调用方负责排除快照恢复与特殊动作。
-    不消费查询额度，不延长应用层原始latest_send，并为唤醒和POST留余量。
+    ``observed_at`` 是本机单调秒，实际摸牌不晚于此刻。队列工作量只
+    决定额外等待，最多0.5秒；安全截止不足时先退回0.5秒，再退回立即
+    提交。绝不延长原动作截止；等待不占HTTP槽或state额度。
     """
-    if state_used < STATE_PRESSURE_THRESHOLD:
-        return DiscardPacing(now, "quota_available")
-    if not all(isfinite(value) for value in (now, start_lower_bound, expires_lower_bound, latest_send)):
+    if not all(isfinite(value) for value in (
+            now, observed_at, backlog_delay_sec, expires_lower_bound, latest_send)):
         return DiscardPacing(now, "invalid_timing")
-    if start_lower_bound > now or expires_lower_bound <= start_lower_bound:
+    if observed_at > now or backlog_delay_sec < 0 or expires_lower_bound <= observed_at:
         return DiscardPacing(now, "invalid_timing")
-    target = start_lower_bound + TARGET_DRAW_AGE_SEC
+    safe_latest = min(latest_send, expires_lower_bound - POST_RESERVE_SEC)
+    baseline = observed_at + MIN_OBSERVED_AGE_SEC
+    if baseline + SEND_SLACK_SEC >= safe_latest:
+        return DiscardPacing(now, "insufficient_margin")
+    target = observed_at + min(MAX_OBSERVED_AGE_SEC,
+                               MIN_OBSERVED_AGE_SEC + backlog_delay_sec)
+    reason = "state_backlog" if target > baseline else "baseline"
+    if target + SEND_SLACK_SEC >= safe_latest:
+        target, reason = baseline, "backlog_margin_fallback"
     if target <= now:
         return DiscardPacing(now, "target_age_reached")
-    safe_latest = min(latest_send, expires_lower_bound - POST_RESERVE_SEC)
-    if target + SEND_SLACK_SEC >= safe_latest:
-        return DiscardPacing(now, "insufficient_margin")
-    return DiscardPacing(target, "state_pressure", safe_latest)
+    return DiscardPacing(target, reason, safe_latest)

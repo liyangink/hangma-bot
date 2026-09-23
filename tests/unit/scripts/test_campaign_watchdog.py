@@ -57,6 +57,20 @@ def test_runtime_config_is_one_identity_per_slot_with_its_own_strategy(tmp_path)
     assert config["restart"]["max_restarts"] == 2
 
 
+def test_r18_runtime_config_binds_each_approved_release(tmp_path):
+    """正式测试房入口不得因战役脚本漏传发布包摘要而拒绝候选启动。"""
+    campaign = _campaign()
+    campaign["arms"]["zhuque"] = "r18_integrated_positive_v1"
+    campaign["arms"]["xuanwu"] = "r18_integrated_positive_v2"
+    config, _ = watchdog._runtime_config(tmp_path / "r18-campaign", 1, campaign)
+    identities = {item["slot"]: item for item in config["identities"]}
+    assert "expected_policy_release_id" not in identities["qinglong"]
+    assert identities["zhuque"]["expected_policy_release_id"] == watchdog._release_id_for_strategy(
+        "r18_integrated_positive_v1")
+    assert identities["xuanwu"]["expected_policy_release_id"] == watchdog._release_id_for_strategy(
+        "r18_integrated_positive_v2")
+
+
 def test_register_identities_is_idempotent_and_keeps_file_layout(tmp_path, monkeypatch):
     path = tmp_path / "strategy-map.json"
     path.write_text(json.dumps({

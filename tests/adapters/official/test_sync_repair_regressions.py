@@ -5,7 +5,9 @@ import asyncio
 import json
 
 from hangma_bot.application.contracts import ActionAttempt, ObservedActionWindow, SubmitAccepted
-from hangma_bot.kernel.actions import Pass, WindowPhase
+from hangma_bot.kernel.actions import Discard, Pass, Peng, Tile, WindowPhase, action_key
+from hangma_bot.hangma import HangmaRules
+from hangma_bot.kernel.config import RuleConfig
 
 from _official_testkit import load_fixture, TIMING, instant_sleep, make_audit_context
 from hangma_bot.adapters.official.game import OfficialGameSession
@@ -25,6 +27,7 @@ def make_game_session(*, transport, clock, audit=None):
         scheduler=RequestScheduler(clock=clock.monotonic, sleep=instant_sleep(clock), poll_interval=0),
         timing=TIMING, monotonic_clock=clock.monotonic, wall_clock_unix_ms=clock.wall_ms,
         audit=audit, audit_context=make_audit_context, retry_sleep=not_elapsed,
+        discard_pacing_enabled=False,  # 同步夹具不推进等待时钟；缓发另行覆盖
     )
 
 
@@ -84,6 +87,252 @@ async def test_refresh_preserves_history_without_duplicating_river(transport, cl
         assert [(e.seq, e.kind) for e in window.observation.public_history] == [(101, "tile_discarded"), (102, "tile_drawn")]
         assert not queue
     finally:
+        await session.aclose("test_completed")
+
+
+async def test_opponent_draw_makes_next_state_query_a_discard_watch(transport, clock, audit):
+    """他家摸牌之后的首个状态查询负责发现未知弃牌，必须区别于普通轮询。"""
+    queue = script(transport, [
+        (0, snapshot(100, turn=0)),
+        (100, {"events": [event(101, "tile_drawn", seat=0)]}),
+        (101, {"events": [event(102, "tile_discarded", seat=0, tile="东")]}),
+        (0, snapshot(102, turn=0, phase="response_peng", river=("东",),
+                     discard={"seq": 102, "seat": 0, "tile": "东"}, responders=(2,))),
+    ])
+    session = make_game_session(transport=transport, clock=clock, audit=audit)
+    try:
+        window = await session.next_item()
+        assert isinstance(window, ObservedActionWindow)
+        assert window.window_key.trigger_seq == 102
+        requests = [r.payload for r in audit.records if r.kind.value == "http_request"
+                    and r.payload.get("phase") == "started"
+                    and r.payload.get("endpoint") == "GET /api/games/g_room1_batch1/state"]
+        assert [r["request_timing"]["query_purpose"] for r in requests] == [
+            "state_sync", "discard_watch", "discard_watch", "state_sync"]
+        assert [r["request_timing"]["scheduler_priority"] for r in requests] == [
+            "POLL", "DRAW_WATCH", "DRAW_WATCH", "RECOVERY"]
+        assert not queue
+    finally:
+        await session.aclose("test_completed")
+
+
+async def test_interesting_incremental_discard_fetches_official_deadline_before_delivery(
+    transport, clock,
+):
+    """排队后整秒估算已过期，仍须先查官方截止再决定能否碰。"""
+    requested = []
+    posts = []
+
+    def handler(*, method, params=None, **kwargs):
+        if method == "POST":
+            posts.append(kwargs.get("json_body"))
+            return 200, '{"ok":true}'
+        assert method == "GET"
+        seq = params["seq"]
+        requested.append(seq)
+        if len(requested) == 1:
+            assert seq == 0
+            return 200, json.dumps(snapshot(100, turn=0))
+        if len(requested) == 2:
+            assert seq == 100
+            clock.advance(1.2)  # 他家摸牌长轮询先消耗时间，旧水位时间已陈旧。
+            return 200, json.dumps({"events": [event(101, "tile_drawn", seat=0)]})
+        if len(requested) == 3:
+            assert seq == 101
+            occurred_at = clock.wall_ms() // 1000
+            clock.advance(.9)  # 排队/传输后才发现弃牌，整数 ts 的早界已过。
+            discarded = event(102, "tile_discarded", seat=0, tile="东",
+                              data={"catch_play": False})
+            discarded["ts"] = occurred_at
+            return 200, json.dumps({"events": [discarded]})
+        assert len(requested) == 4 and seq == 0
+        response = snapshot(102, turn=0, phase="response_peng", river=("东",),
+                            discard={"seq": 102, "seat": 0, "tile": "东"}, responders=(2,))
+        response["snapshot"]["window_deadline_ms"] = clock.wall_ms() + 500
+        return 200, json.dumps(response)
+
+    transport.handler = handler
+    session = make_game_session(transport=transport, clock=clock)
+    try:
+        window = await session.next_item()
+        assert isinstance(window, ObservedActionWindow)
+        assert window.window_key.trigger_seq == 102
+        assert window.observation.snapshot_seq == 102
+        assert window.deadline_is_estimated is False
+        assert requested == [0, 100, 101, 0]
+        action = Peng(Tile("东"))
+        assert HangmaRules(RuleConfig("estimated-deadline-rescue", 1, False)).validate(
+            window.observation, action).legal
+        attempt = ActionAttempt(
+            decision_id="deadline-rescue-peng", attempt_no=1, plan_revision=1,
+            window_key=window.window_key,
+            based_on_authoritative_seq=window.observation.snapshot_seq,
+            action=action, action_key=action_key(action),
+            latest_send_at_monotonic=window.expires_at_monotonic - .1)
+        assert isinstance(await session.submit(attempt), SubmitAccepted)
+        assert len(posts) == 1
+    finally:
+        await session.aclose("test_completed")
+
+
+async def test_response_handoff_watches_next_opponent_discard_before_draw_is_seen(
+    transport, clock, audit,
+):
+    """无鸣牌兴趣的响应标记结束后，下一次查询也须及时发现对手摸打。"""
+    queue = script(transport, [
+        (0, snapshot(100, turn=0)),
+        (100, {"events": [event(101, "tile_discarded", seat=0, tile="9w")]}),
+        (101, {"events": [
+            event(102, "timeout", seat=1, data={"kind": "response", "window": "peng"}),
+            event(103, "timeout", seat=2, data={"kind": "response", "window": "peng"}),
+            event(104, "timeout", seat=3, data={"kind": "response", "window": "peng"}),
+            event(105, "pass", seat=1),
+        ]}),
+        (105, {"events": [event(106, "tile_drawn", seat=0),
+                           event(107, "tile_discarded", seat=0, tile="东")]}),
+        (0, snapshot(107, turn=0, phase="response_peng", river=("9w", "东"),
+                     discard={"seq": 107, "seat": 0, "tile": "东"}, responders=(2,))),
+    ])
+    session = make_game_session(transport=transport, clock=clock, audit=audit)
+    try:
+        window = await session.next_item()
+        assert isinstance(window, ObservedActionWindow)
+        assert window.window_key.trigger_seq == 107
+        requests = [r.payload for r in audit.records if r.kind.value == "http_request"
+                    and r.payload.get("phase") == "started"
+                    and r.payload.get("endpoint") == "GET /api/games/g_room1_batch1/state"]
+        assert [r["request_timing"]["query_purpose"] for r in requests] == [
+            "state_sync", "discard_watch", "discard_watch", "discard_watch", "state_sync"]
+        assert not queue
+    finally:
+        await session.aclose("test_completed")
+
+
+async def test_uninteresting_discard_still_watches_opponent_peng_then_new_discard(
+    transport, clock, audit,
+):
+    """我方不能鸣当前弃牌时，仍要及时观察他家碰后打出的新牌。"""
+    claimed = snapshot(103, turn=1, phase="response_peng", river=("9w",),
+                       discard={"seq": 103, "seat": 1, "tile": "东"}, responders=(2,))
+    claimed["snapshot"]["discards"][1] = ["东"]
+    queue = script(transport, [
+        (0, snapshot(100, turn=0)),
+        (100, {"events": [event(101, "tile_discarded", seat=0, tile="9w")]}),
+        (101, {"events": [event(102, "peng", seat=1, tile="9w"),
+                           event(103, "tile_discarded", seat=1, tile="东")]}),
+        (0, claimed),
+    ])
+    session = make_game_session(transport=transport, clock=clock, audit=audit)
+    try:
+        window = await session.next_item()
+        assert isinstance(window, ObservedActionWindow)
+        assert window.window_key.trigger_seq == 103
+        requests = [r.payload for r in audit.records if r.kind.value == "http_request"
+                    and r.payload.get("phase") == "started"
+                    and r.payload.get("endpoint") == "GET /api/games/g_room1_batch1/state"]
+        assert [r["request_timing"]["query_purpose"] for r in requests] == [
+            "state_sync", "discard_watch", "discard_watch", "state_sync"]
+        assert not queue
+    finally:
+        await session.aclose("test_completed")
+
+
+async def test_first_query_after_own_discard_keeps_discard_watch(transport, clock, audit):
+    """交付并提交本人弃牌后，新轮询周期首个请求仍保护他家快速鸣打。"""
+    second_get = asyncio.Event()
+    blocker = asyncio.Event()
+    gets = 0
+
+    async def handler(*, method, **kwargs):
+        nonlocal gets
+        if method == "POST":
+            return 200, '{"ok":true}'
+        gets += 1
+        if gets == 1:
+            return 200, json.dumps(snapshot(100, turn=MY_SEAT, drawn="7w"))
+        second_get.set()
+        await blocker.wait()
+        return 200, '{"pending":true}'
+
+    transport.handler = handler
+    session = make_game_session(transport=transport, clock=clock, audit=audit)
+    task = None
+    try:
+        window = await session.next_item()
+        assert isinstance(window, ObservedActionWindow)
+        action = Discard(Tile("7w"))
+        submitted = ActionAttempt(
+            decision_id="own-discard-watch", attempt_no=1, plan_revision=1,
+            window_key=window.window_key, based_on_authoritative_seq=window.authoritative_seq,
+            action=action, action_key="discard:7w",
+            latest_send_at_monotonic=clock.monotonic() + 1.0)
+        assert isinstance(await session.submit(submitted), SubmitAccepted)
+        task = asyncio.create_task(session.next_item())
+        await second_get.wait()
+        requests = [r.payload for r in audit.records if r.kind.value == "http_request"
+                    and r.payload.get("phase") == "started"
+                    and r.payload.get("endpoint") == "GET /api/games/g_room1_batch1/state"]
+        assert [r["request_timing"]["query_purpose"] for r in requests] == [
+            "state_sync", "discard_watch"]
+    finally:
+        if task is not None:
+            task.cancel()
+            await asyncio.gather(task, return_exceptions=True)
+        await session.aclose("test_completed")
+
+
+async def test_new_draw_does_not_reuse_previous_response_boundary(transport, clock, audit):
+    """旧响应快照之后已看到本人摸牌时，提交弃牌不再等待旧吃窗边界。"""
+    old = snapshot(100, turn=1, phase="response_chi", river=(),
+                   discard={"seq": 100, "seat": 1, "tile": "东"}, responders=(2,))
+    old["snapshot"]["discards"][1] = ["东"]
+    old["snapshot"]["window_deadline_ms"] = clock.wall_ms() + 5000
+    next_get = asyncio.Event()
+    blocker = asyncio.Event()
+    gets = 0
+
+    async def handler(*, method, **kwargs):
+        nonlocal gets
+        if method == "POST":
+            return 200, '{"ok":true}'
+        gets += 1
+        if gets == 1:
+            return 200, json.dumps(old)
+        if gets == 2:
+            return 200, json.dumps({"events": [event(101, "pass", seat=2),
+                                              event(102, "tile_drawn", seat=2, tile="7w")]})
+        next_get.set()
+        await blocker.wait()
+        return 200, '{"pending":true}'
+
+    transport.handler = handler
+    session = make_game_session(transport=transport, clock=clock, audit=audit)
+    task = None
+    try:
+        old_window = await session.next_item()
+        assert old_window.window_key.phase is WindowPhase.RESPONSE_CHI
+        assert isinstance(await session.submit(attempt(old_window, clock)), SubmitAccepted)
+        draw = await session.next_item()
+        assert isinstance(draw, ObservedActionWindow)
+        assert draw.window_key.phase is WindowPhase.DRAW
+        discard = Discard(Tile("7w"))
+        sent = ActionAttempt(
+            decision_id="post-old-response", attempt_no=1, plan_revision=1,
+            window_key=draw.window_key, based_on_authoritative_seq=draw.authoritative_seq,
+            action=discard, action_key="discard:7w",
+            latest_send_at_monotonic=clock.monotonic() + 1.0)
+        assert isinstance(await session.submit(sent), SubmitAccepted)
+        task = asyncio.create_task(session.next_item())
+        await next_get.wait()
+        requests = [r.payload for r in audit.records if r.kind.value == "http_request"
+                    and r.payload.get("phase") == "started"
+                    and r.payload.get("endpoint") == "GET /api/games/g_room1_batch1/state"]
+        assert [r["request_timing"]["query_purpose"] for r in requests] == [
+            "state_sync", "response_progress", "discard_watch"]
+    finally:
+        if task is not None:
+            task.cancel()
+            await asyncio.gather(task, return_exceptions=True)
         await session.aclose("test_completed")
 
 

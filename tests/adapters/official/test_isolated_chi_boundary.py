@@ -76,6 +76,13 @@ async def test_chi_boundary_respects_shared_user_cooldown_and_discards_expired_p
         if other_game_rate_limited:
             peer_task = asyncio.create_task(start_peer_at_boundary())
         second = await clock.run(active.next_item())
+        response_queries = [
+            r.payload for r in audit.records
+            if r.kind.value == "http_request"
+            and r.payload.get("endpoint") == "GET /api/games/active/state"
+            and (r.payload.get("request_timing") or {}).get("query_purpose") == "response_progress"
+        ]
+        assert response_queries, "已知响应阶段的状态长轮询须单独标记并优先于普通场次轮询"
         expected = WindowPhase.DRAW if other_game_rate_limited else WindowPhase.RESPONSE_CHI
         assert second.window_key.phase is expected, (
             f"M={max_games}; 其他场429={other_game_rate_limited}; 下次可见阶段={second.window_key.phase}; "

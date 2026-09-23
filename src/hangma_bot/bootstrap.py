@@ -45,7 +45,9 @@ from hangma_bot.adapters.official import (
     OfficialTournamentSession,
     TransportConfig,
 )
-from hangma_bot.adapters.official.scheduler import DEFAULT_STATE_ARRIVAL_GUARD_SEC
+from hangma_bot.adapters.official.scheduler import (
+    DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC, DEFAULT_STATE_ARRIVAL_GUARD_SEC,
+)
 from hangma_bot.adapters.official.deadline_clock import DEADLINE_CLOCK_VERSION
 from hangma_bot.adapters.recording import JsonlAuditSink
 from hangma_bot.application.auto_match_runtime import AutoMatchRuntime, AutoMatchSettings
@@ -939,7 +941,8 @@ def build_runtime(
         "budget_policy_version": "fixed-post-reserve-v1",
         "post_network_reserve_sec": budget_policy.post_reserve_seconds,
         "state_arrival_guard_sec": DEFAULT_STATE_ARRIVAL_GUARD_SEC,
-        "state_scheduler_version": "send-boundary-guard-v1",
+        "state_min_spacing_sec": DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC,
+        "state_scheduler_version": "burst4-draw-hazard-aged-v6",
         "deadline_clock_version": DEADLINE_CLOCK_VERSION,
     }
     runtime = ParticipantRuntime(
@@ -1097,7 +1100,8 @@ def build_auto_match_runtime(
         "budget_policy_version": "fixed-post-reserve-v1",
         "post_network_reserve_sec": budget_policy.post_reserve_seconds,
         "state_arrival_guard_sec": DEFAULT_STATE_ARRIVAL_GUARD_SEC,
-        "state_scheduler_version": "send-boundary-guard-v1",
+        "state_min_spacing_sec": DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC,
+        "state_scheduler_version": "burst4-draw-hazard-aged-v6",
         "deadline_clock_version": DEADLINE_CLOCK_VERSION,
     }
     runtime = AutoMatchRuntime(

@@ -62,7 +62,9 @@ from .errors import (
 )
 from .game import OfficialGameSession
 from .notify import StreamBudget
-from .scheduler import DEFAULT_STATE_ARRIVAL_GUARD_SEC, Priority, RequestKind, RequestScheduler
+from .scheduler import (DEFAULT_PRODUCTION_STATE_BURST, DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC,
+                        DEFAULT_STATE_ARRIVAL_GUARD_SEC,
+                        Priority, RequestKind, RequestScheduler)
 from .transport import OfficialTransport, TransportConfig
 
 
@@ -118,7 +120,9 @@ class OfficialTournamentSession:
         self._scheduler = scheduler if scheduler is not None else RequestScheduler(
             clock=monotonic_clock, sleep=retry_sleep if retry_sleep is not None else asyncio.sleep,
             max_concurrent=2, state_startup_delay_sec=1.0,
-            state_arrival_guard_sec=DEFAULT_STATE_ARRIVAL_GUARD_SEC)
+            burst=DEFAULT_PRODUCTION_STATE_BURST,
+            state_arrival_guard_sec=DEFAULT_STATE_ARRIVAL_GUARD_SEC,
+            state_min_spacing_sec=DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC)
         self._monotonic = monotonic_clock
         self._wall_ms = wall_clock_unix_ms
         self._audit = audit

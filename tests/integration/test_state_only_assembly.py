@@ -48,7 +48,8 @@ def test_production_assembly_disables_sse_and_records_effective_mode(monkeypatch
     assert manifest["budget_policy_version"] == 'fixed-post-reserve-v1'
     assert manifest["post_network_reserve_sec"] == .1
     assert manifest["state_arrival_guard_sec"] == .05
-    assert manifest["state_scheduler_version"] == "send-boundary-guard-v1"
+    assert manifest["state_min_spacing_sec"] == pytest.approx(1 / 14.5)
+    assert manifest["state_scheduler_version"] == "burst4-draw-hazard-aged-v6"
     policy = captured["runtime"]["budget_policy"]
     assert policy.build(100, 1, 101).latest_send_at_monotonic == pytest.approx(100.9)
     assert policy.build(100, 3, 103).latest_send_at_monotonic == pytest.approx(102.9)

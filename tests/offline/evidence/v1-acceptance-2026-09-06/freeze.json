@@ -1,7 +1,7 @@
 {
   "base_commit": "36b7acae89c085b39d7986b936d3c48a4b6e4256",
   "source_sha256": {
-    "scripts/evaluate.py": "efda2c830e2e9a39a7dde2f3cfb1b6c1c77c7fecf89bd1eee94f1f46c9b766db",
+    "scripts/evaluate.py": "ffbf444da213f10f40bd80ccfe78fa5c43dfc73f1e8335b80d492ebc7987bfc7",
     "src/hangma_bot/__init__.py": "825b34bad229681f1b84f4c4437bf77825abea1a25a15420b77eba7f5d8bc32f",
     "src/hangma_bot/adapters/__init__.py": "144047c2864316c251c4111567c7259b67e96afa207355c85786de66996f3319",
     "src/hangma_bot/adapters/official/__init__.py": "26b542cc794f40b4f3fdeb2af5be8782556f3f850209f479531898ddfd689709",
@@ -177,6 +177,23 @@
       "scope": "只新增一个未被任何既有策略引用的权重常量，外加一个新策略枚举；不改默认策略、不改默认权重、不改评分函数与规则层。",
       "supersedes": {
         "src/hangma_bot/policy/weights_v1.py": "9976c1ccc7dd330418eec54b418738c4f45e8fb2e0f204dc98e1b1adf85e8253"
+      }
+    },
+    {
+      "date": "2026-09-18",
+      "files": [
+        "scripts/evaluate.py"
+      ],
+      "change": "build_policy 增加一条 Tier-A 分支：v2_hu_upgrade_v1 / v2_hu_upgrade_v2，按线上组合根同口径注入风险表，权重分别取 DEFAULT_WEIGHTS_V1 与 V2_PARAM_BATCH_WEIGHTS。",
+      "reason": "离线对拍此前无法装配 Tier-A（白名单只有 weighted_heuristic*），参数批次策略无从做整桌比较；补这一条后「同牌山 + 换座位 + 按根聚类」的对比链路才通。",
+      "behavior_neutral_evidence": [
+        "只新增一条声明分支：既有四个名字（weighted_heuristic*、safe_fallback、action_value:、候选接缝）的代码路径与顺序一字未改。",
+        "未命中新分支的声明仍落到原候选接缝与同一条 ValueError，行为不变。",
+        "新分支只在声明名恰好为这两个 Tier-A 名字时生效，而此前这两个名字必然报未知策略名，属新增能力而非行为变更。"
+      ],
+      "scope": "只扩展离线评估脚本的策略装配白名单；不改评分、不改模拟、不改线上组合根。",
+      "supersedes": {
+        "scripts/evaluate.py": "efda2c830e2e9a39a7dde2f3cfb1b6c1c77c7fecf89bd1eee94f1f46c9b766db"
       }
     }
   ],

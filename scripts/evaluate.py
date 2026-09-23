@@ -148,6 +148,21 @@ def build_policy(declaration: PolicyDeclaration, monotonic: Callable[[], float])
             policy = WhiteDiscardGuardPolicy(policy)
         policy.policy_id = declaration.policy_id
         return policy
+    if declaration.name in ("v2_hu_upgrade_v1", "v2_hu_upgrade_v2"):
+        # 2026-09-18：Tier-A（V2 有界等胡）的离线对拍入口。两臂只差权重常量——
+        # v1 用冻结的 DEFAULT_WEIGHTS_V1，v2 用参数批次 V2_PARAM_BATCH_WEIGHTS；
+        # 风险表按线上组合根同口径注入，否则离线跑的 Tier-A 与线上不是同一个策略。
+        from hangma_bot.bootstrap import RISK_CELLS, RISK_VERSION, SAFETY_MARGIN
+        from hangma_bot.policy.v2_hu_upgrade import V2HuUpgradePolicy
+        from hangma_bot.policy.weights_v1 import DEFAULT_WEIGHTS_V1, V2_PARAM_BATCH_WEIGHTS
+
+        weights = (DEFAULT_WEIGHTS_V1 if declaration.name == "v2_hu_upgrade_v1"
+                   else V2_PARAM_BATCH_WEIGHTS)
+        policy = V2HuUpgradePolicy(weights=weights, monotonic=monotonic,
+                                   risk_cells=RISK_CELLS, risk_version=RISK_VERSION,
+                                   safety_margin=SAFETY_MARGIN)
+        policy.policy_id = declaration.policy_id
+        return policy
     # 候选启发式接缝（README §17 2.2）：注册表在 policy 包内，**新增候选不必再改本文件**。
     # 这是打通接缝的**唯一一次**生产改动；之后加候选只改 policy/heuristics/__init__.py 一行。
     # 候选模块是 hangma_bot 包成员，因此这里的 import 不破坏模块边界

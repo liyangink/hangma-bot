@@ -12,6 +12,8 @@ run_test_room.py
 
 ``config.M`` 是每个身份的同时场数，不是 Token 数。四个身份完全隔离：
 各自子进程独享连接池、限速器、动作门状态与审计目录（audit_root/slot-X/）。
+R18 发布包身份可由房间级配置提供；同房间混用 v1/v2 时，各身份分别填写
+``expected_policy_release_id``，子进程在组合根再次校验。
 
 Token 安全：Token 只经环境变量 ``HM_IDENTITY_TOKEN`` 传给子进程，
 不写入任何派生配置文件、命令行参数或本进程输出；身份重启会重新执行
@@ -168,6 +170,7 @@ class IdentitySlot:
     token: str
     token_source: str  # "inline" 或 "env:<变量名>"；用于审计启动来源，不含 Token
     strategy: Optional[str] = None  # 未指定时继承房间策略；在本次进程生命周期内固定
+    expected_policy_release_id: Optional[str] = None  # 本身份 R18 包摘要；为空时沿用房间级
 
     def __repr__(self) -> str:
         return f"IdentitySlot(slot={self.slot!r}, token=<redacted>, token_source={self.token_source!r})"
@@ -271,7 +274,8 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
     for item in identities_value:
         if not isinstance(item, Mapping):
             raise ValueError("每个身份槽位必须是 JSON 对象")
-        unknown_keys = sorted(set(item) - {"slot", "token", "token_env", "token_file", "strategy"})
+        unknown_keys = sorted(set(item) - {"slot", "token", "token_env", "token_file", "strategy",
+                                           "expected_policy_release_id"})
         if unknown_keys:
             raise ValueError("身份槽位包含未知字段: " + ", ".join(unknown_keys))
         slot = _require_non_empty_str(item.get("slot"), "identity.slot")
@@ -306,8 +310,12 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
             token = lines[0]
             source = "file:" + file_path
         identity_strategy = _require_strategy(item["strategy"]) if "strategy" in item else None
+        identity_release = (_require_non_empty_str(item["expected_policy_release_id"],
+                                                   "identity.expected_policy_release_id")
+                            if "expected_policy_release_id" in item else None)
         identities.append(IdentitySlot(
             slot=slot, token=token, token_source=source, strategy=identity_strategy,
+            expected_policy_release_id=identity_release,
         ))
     if len(set(slots)) != 4:
         raise ValueError("四个身份槽位标签必须互不相同，得到 " + ", ".join(slots))
@@ -361,20 +369,21 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
         R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
     }
+    if expected_release is not None:
+        expected_release = _require_non_empty_str(expected_release, "expected_policy_release_id")
     selected_releases = {name for name in effective_strategies if name in release_packages}
-    if len(selected_releases) > 1:
-        raise ValueError("测试房单份配置不能混用不同 R18 冻结发布包")
-    if selected_releases:
-        if expected_release is None:
-            raise ValueError("测试房 R18 配置必须显式绑定发布包 expected_policy_release_id")
-        expected_release = _require_non_empty_str(
-            expected_release, "expected_policy_release_id"
-        )
-        selected_strategy = next(iter(selected_releases))
-        if expected_release != release_packages[selected_strategy]:
-            raise ValueError("测试房配置绑定的 R18 发布包摘要与当前批准包不一致")
-    elif expected_release is not None:
+    if not selected_releases and expected_release is not None:
         raise ValueError("expected_policy_release_id 只能与已冻结发布策略共同使用")
+    for identity, selected_strategy in zip(identities, effective_strategies):
+        identity_release = identity.expected_policy_release_id
+        if selected_strategy in release_packages:
+            bound_release = identity_release or expected_release
+            if bound_release is None:
+                raise ValueError("测试房 R18 配置必须显式绑定发布包 expected_policy_release_id")
+            if bound_release != release_packages[selected_strategy]:
+                raise ValueError("测试房身份绑定的 R18 发布包摘要与当前批准包不一致")
+        elif identity_release is not None:
+            raise ValueError("expected_policy_release_id 只能与已冻结发布策略共同使用")
     hosts = data.get("insecure_hosts", [])
     if not isinstance(hosts, (list, tuple)):
         raise ValueError("insecure_hosts 必须是数组")
@@ -418,7 +427,9 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
         R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
     ):
-        config["expected_policy_release_id"] = room.expected_policy_release_id
+        config["expected_policy_release_id"] = (
+            identity.expected_policy_release_id or room.expected_policy_release_id
+        )
     if room.insecure_hosts:
         config["insecure_hosts"] = sorted(room.insecure_hosts)
     if room.sequence_model_dir is not None:

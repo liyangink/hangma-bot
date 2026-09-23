@@ -109,6 +109,89 @@ async def test_all_games_share_one_rolling_sixteen_request_window():
         await cancel_tasks(blocked)
 
 
+async def test_response_progress_state_query_precedes_ordinary_poll_when_quota_returns():
+    """已确认响应进度、对手已摸牌、其他弃牌监听、普通同步依次发放。"""
+    clock = ControlledClock()
+    root = scheduler(clock)
+    games = [root.for_game(str(i), max_games=10) for i in range(10)]
+    await spend(games[0], 16)
+    order = []
+
+    async def query(scope, priority, label):
+        lease = await scope.acquire(priority)
+        order.append(label)
+        lease.release()
+
+    ordinary = asyncio.create_task(query(games[1], Priority.POLL, "ordinary"))
+    await settle()
+    watch = asyncio.create_task(query(games[2], Priority.DISCARD_WATCH, "discard_watch"))
+    await settle()
+    progress = asyncio.create_task(query(games[3], Priority.RECOVERY, "progress"))
+    await settle()
+    drawn = asyncio.create_task(query(games[4], Priority.DRAW_WATCH, "draw_watch"))
+    try:
+        await settle()
+        assert not ordinary.done() and not watch.done() and not progress.done() and not drawn.done()
+        clock.advance(1.0)
+        await settle()
+        assert order == ["progress", "discard_watch", "draw_watch", "ordinary"]
+    finally:
+        await cancel_tasks(ordinary, watch, progress, drawn)
+
+
+async def test_waiting_ordinary_and_watch_join_draw_class_before_starvation():
+    """查询等过可服务上限后与新摸牌监听同级，按入队先后发放。"""
+    clock = ControlledClock()
+    root = scheduler(clock, state_arrival_guard_sec=.25)
+    games = [root.for_game(str(i), max_games=10) for i in range(10)]
+    await spend(games[0], 16)
+    order = []
+
+    async def query(scope, priority, label):
+        lease = await scope.acquire(priority)
+        order.append(label)
+        lease.release()
+
+    ordinary = asyncio.create_task(query(games[1], Priority.POLL, "old-sync"))
+    await settle()
+    watch = asyncio.create_task(query(games[2], Priority.DISCARD_WATCH, "old-watch"))
+    await settle()
+    clock.advance(.85)
+    drawn = asyncio.create_task(query(games[3], Priority.DRAW_WATCH, "new-draw"))
+    try:
+        await settle()
+        clock.advance(.40)
+        await settle()
+        assert order == ["old-sync", "old-watch", "new-draw"]
+    finally:
+        await cancel_tasks(ordinary, watch, drawn)
+
+
+async def test_fresh_draw_watch_precedes_fresh_general_watch():
+    """启动保护结束时，未到晋级年龄的摸牌监听仍优于一般监听。"""
+    clock = ControlledClock()
+    root = scheduler(clock, state_startup_delay_sec=1.0)
+    games = [root.for_game(str(i), max_games=10) for i in range(2)]
+    clock.advance(.5)
+    order = []
+
+    async def query(scope, priority, label):
+        lease = await scope.acquire(priority)
+        order.append(label)
+        lease.release()
+
+    watch = asyncio.create_task(query(games[0], Priority.DISCARD_WATCH, "general"))
+    await settle()
+    drawn = asyncio.create_task(query(games[1], Priority.DRAW_WATCH, "drawn"))
+    try:
+        await settle()
+        clock.advance(.5)
+        await settle()
+        assert order == ["drawn", "general"]
+    finally:
+        await cancel_tasks(watch, drawn)
+
+
 async def test_four_distinct_users_have_independent_state_accounts():
     clock = ControlledClock()
     users = [scheduler(clock).for_game("same-game-name", max_games=16) for _ in range(4)]
@@ -432,6 +515,65 @@ async def test_known_future_boundary_keeps_the_last_credit_from_background_polli
         await settle()
         assert not background.done(), "最后一份额度已用于边界，不应把提示和GET重复计费或提前给背景"
         clock.advance(.95)
+        (await asyncio.wait_for(background, .5)).release()
+    finally:
+        hint.cancel()
+        await cancel_tasks(background, pending_boundary)
+
+
+async def test_future_boundary_is_protected_from_the_next_paced_state_gap():
+    """普通查询不能占用未来必要查询前唯一可用的平滑发放时机。"""
+    clock = ControlledClock()
+    root = scheduler(clock, rate_per_second=16, burst=4,
+                     state_arrival_guard_sec=.05, state_min_spacing_sec=1 / 14.5)
+    ordinary = root.for_game("ordinary", max_games=10)
+    boundary = root.for_game("boundary", max_games=10)
+    await spend(ordinary, 4)
+    for _ in range(12):
+        clock.advance(1 / 16)
+        await spend(ordinary, 1)
+    assert clock.monotonic() == pytest.approx(.75)
+    clock.advance(.3)  # 首批四笔于 1.05 秒释放，已进入 14.5/s 平滑阶段。
+    hint = boundary.protect_state_query(
+        ready_at_monotonic=1.08, latest_start_at_monotonic=1.10)
+    background = asyncio.create_task(ordinary.acquire(Priority.POLL))
+    pending_boundary = asyncio.create_task(boundary.acquire(
+        Priority.POLL, deadline_monotonic=1.10,
+        not_before_monotonic=1.08, reservation=hint))
+    try:
+        await settle()
+        assert not background.done(), "先发普通查询会把下一许可推到 1.119 秒，越过必要查询截止"
+        clock.advance(.03)
+        (await asyncio.wait_for(pending_boundary, .5)).release()
+        assert clock.monotonic() == pytest.approx(1.08)
+    finally:
+        hint.cancel()
+        await cancel_tasks(background, pending_boundary)
+
+
+async def test_future_boundary_is_protected_from_token_refill_gap():
+    """突发令牌只剩一枚时，普通 GET 不得令稍后必要查询等到下一次补充。"""
+    clock = ControlledClock()
+    root = scheduler(clock, rate_per_second=16, burst=1)
+    ordinary = root.for_game("ordinary", max_games=10)
+    boundary = root.for_game("boundary", max_games=10)
+    await spend(ordinary, 1)
+    clock.advance(1 / 16)
+    hint = boundary.protect_state_query(
+        ready_at_monotonic=.09, latest_start_at_monotonic=.10)
+    background = asyncio.create_task(ordinary.acquire(Priority.POLL))
+    pending_boundary = asyncio.create_task(boundary.acquire(
+        Priority.POLL, deadline_monotonic=.10,
+        not_before_monotonic=.09, reservation=hint))
+    try:
+        await settle()
+        assert not background.done(), "当前令牌要留给 .09 秒的已知边界"
+        clock.advance(.0275)
+        (await asyncio.wait_for(pending_boundary, .5)).release()
+        assert clock.monotonic() == pytest.approx(.09)
+        await settle()
+        assert not background.done()
+        clock.advance(1 / 16)
         (await asyncio.wait_for(background, .5)).release()
     finally:
         hint.cancel()

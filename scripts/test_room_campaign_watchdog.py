@@ -139,6 +139,21 @@ def _public_config(campaign: dict) -> dict:
             "insecure_hosts": list(INSECURE_HOSTS)}
 
 
+def _release_id_for_strategy(strategy: str) -> str | None:
+    """获批 R18 候选的真实网络配置必须绑定当前发布包摘要。"""
+    from hangma_bot.bootstrap import (
+        R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
+        R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
+        R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
+        R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
+    )
+
+    return {
+        R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
+        R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
+    }.get(strategy)
+
+
 def _runtime_config(root: Path, round_no: int, campaign: dict) -> tuple:
     """生成本轮 run_test_room.py 的房间配置与审计会话目录。
 
@@ -157,16 +172,20 @@ def _runtime_config(root: Path, round_no: int, campaign: dict) -> tuple:
         "strategy": campaign["arms"][SLOT_ORDER[0]],
         "insecure_hosts": list(INSECURE_HOSTS),
         "sse_enabled": False,
-        "identities": [
-            {"slot": slot, "token_file": str(tokens / (slot + ".token")),
-             "strategy": campaign["arms"][slot]}
-            for slot in SLOT_ORDER
-        ],
+        "identities": [],
         # 允许两次有界重启：致命协议错误在无人值守的长轮里必须能被消化，
         # 但重启后仍由权威 /api/me 与 seq=0 快照恢复，复用的是协议而不是内存判断。
         "restart": {"max_restarts": 2, "base_delay_seconds": 2.0, "factor": 2.0,
                     "max_delay_seconds": 20.0, "finished_restart_delay_seconds": 2.0},
     }
+    for slot in SLOT_ORDER:
+        strategy = campaign["arms"][slot]
+        identity = {"slot": slot, "token_file": str(tokens / (slot + ".token")),
+                    "strategy": strategy}
+        release_id = _release_id_for_strategy(strategy)
+        if release_id is not None:
+            identity["expected_policy_release_id"] = release_id
+        config["identities"].append(identity)
     return config, session
 
 
@@ -350,6 +369,7 @@ def cmd_preflight(args) -> int:
             token_kind=TokenKind.TEST,
             audit_root=scratch / slot,
             strategy=strategy,
+            expected_policy_release_id=_release_id_for_strategy(strategy),
             slot=slot,
             insecure_hosts=frozenset(INSECURE_HOSTS),
         )

@@ -171,6 +171,7 @@ class OfficialGameSession:
         self._event_time_floors = {}  # 后续新事件不可能早于已证明水位的形成时间
         self._gate = ActionGate()
         self._delivered_windows = set()
+        self._window_received_at = {}  # 首次交付动作窗的本机单调秒；缓发不得重新起算
         self._window_expiries = {}  # 每 WindowKey 首次单调截止，只允许收紧；单位秒
         self._boundary_expiries = {}  # 同弃牌同阶段的边界截止，防无事件/重复 pass 重开计时
         self._final: Optional[GameFinished] = None
@@ -281,6 +282,10 @@ class OfficialGameSession:
 
         rebuild_streak = 0
         boundary_stalls = 0  # 跨局边界连续无进度 gap 快照计数（退避用，见 _boundary_stall_sleep）
+        # next_item 每次交付动作窗后都会重新进入本循环。若本人刚提交弃牌
+        # 或过牌，他家可能立即鸣牌再弃牌，首个查询不能因局部标志重置而降级。
+        watch_opponent_discard = self._sync.has_snapshot and not self._sync.finished
+        imminent_discard = self._snapshot_imminent_discard(self._sync.snapshot)
         while True:
             if self._closed:
                 return GameFailed(self.game_id, False, "session_closed:" + self._close_reason)
@@ -300,7 +305,20 @@ class OfficialGameSession:
                     # 静默/边界/降级路径见 _sse_or_boundary_wait
                     response = await self._sse_or_boundary_wait(boundary_timeout)
                 elif boundary_timeout is None:
-                    response = await self._get_state(long_poll=True)
+                    # 他家摸牌/副露或响应标记后，下一次增量查询是发现未知弃牌
+                    # 的唯一入口。响应标记可能是下一位对手摸牌之前的最后
+                    # 可见事件；若等看见摸牌才提高优先级，同一响应窗口内的
+                    # 摸打会在普通查询排队时一起积压。
+                    # 响应窗尚未可见，不能依赖已有窗口的恢复优先级；长轮询
+                    # 返回 pending 时保持此用途，直到事件或快照确认阶段改变。
+                    # 任一活跃场的长轮询都可能发现新的 1 秒响应窗，包含局间
+                    # 进入下一局的首个事件。已看到他家摸牌的查询风险更高；
+                    # 一般监听与普通同步等久后晋级，避免长期饥饿。
+                    response = await self._get_state(
+                        long_poll=True, priority=(Priority.DRAW_WATCH if imminent_discard
+                                                 else Priority.DISCARD_WATCH if watch_opponent_discard
+                                                 else Priority.POLL),
+                        query_purpose="discard_watch" if watch_opponent_discard else "state_sync")
                 else:
                     response = await self._long_poll_racing_boundary(boundary_timeout)
             except _PollFailure as failure:
@@ -345,6 +363,9 @@ class OfficialGameSession:
                         # （否则间歇性进展的长边界会因 streak 累积误判 rebuild_loop）
                         boundary_stalls = 0
                         rebuild_streak = 0
+                    snapshot = self._sync.snapshot
+                    watch_opponent_discard = self._snapshot_needs_discard_watch(snapshot)
+                    imminent_discard = self._snapshot_imminent_discard(snapshot)
                 continue
             if response.kind in ("snapshot", "finished"):
                 pre_seq = self._sync.last_seq
@@ -379,6 +400,9 @@ class OfficialGameSession:
                     await self._boundary_stall_sleep(boundary_stalls)
                 else:
                     boundary_stalls = 0
+                snapshot = self._sync.snapshot
+                watch_opponent_discard = self._snapshot_needs_discard_watch(snapshot)
+                imminent_discard = self._snapshot_imminent_discard(snapshot)
                 continue
             # 增量事件：按事件是否可推导权威事实决定投递路径（游标纪律修复）。
             # 弃牌/timeout/本人副露等触发权威快照刷新；否则直接走增量投递，
@@ -420,6 +444,9 @@ class OfficialGameSession:
                 delivered = self._maybe_deliver_window()
                 if delivered is not None:
                     return delivered
+                snapshot = self._sync.snapshot
+                watch_opponent_discard = self._snapshot_needs_discard_watch(snapshot)
+                imminent_discard = self._snapshot_imminent_discard(snapshot)
                 continue
             rebuild_streak = 0
             boundary_stalls = 0
@@ -428,6 +455,27 @@ class OfficialGameSession:
                     self._event_time_floors.setdefault(event.seq, self._watermark_known_since)
             if not self._last_state_history_only:
                 self._watermark_known_since = self._last_state_started_at
+            my_seat = self._sync.snapshot.seat
+            for event in response.events:
+                if event.type == "tile_drawn":
+                    watch_opponent_discard = event.seat != my_seat
+                    imminent_discard = event.seat != my_seat
+                elif event.type in ("chi", "peng") and event.seat != my_seat:
+                    watch_opponent_discard = True
+                    imminent_discard = True
+                elif event.type == "tile_discarded":
+                    # 他家可立即碰/吃后再弃牌；即使当前弃牌与我无鸣牌兴趣，
+                    # 后续新弃牌仍可能给我打开一秒响应窗。
+                    watch_opponent_discard = True
+                    imminent_discard = False
+                elif event.type in ("round_ended", "game_ended"):
+                    watch_opponent_discard = False
+                    imminent_discard = False
+                elif event.type in ("pass", "timeout"):
+                    # 无鸣牌兴趣的响应周期不拉边界快照；其末尾标记可能直接
+                    # 交接到对手摸打。提前保护下一次增量查询，不增添 GET。
+                    watch_opponent_discard = True
+                    imminent_discard = False
             if self._sync.events_need_authoritative_refresh(response.events):
                 self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
                     "snapshot_refresh_reason": "events_require_snapshot",
@@ -450,6 +498,41 @@ class OfficialGameSession:
                 delivered = self._maybe_deliver_window()
                 if delivered is not None:
                     return delivered
+                snapshot = self._sync.snapshot
+                watch_opponent_discard = (snapshot is not None and snapshot.phase == "draw"
+                                          and snapshot.turn != snapshot.seat)
+                imminent_discard = self._snapshot_imminent_discard(snapshot)
+                continue
+            rescue_deadline = self._estimated_response_rescue_deadline()
+            if rescue_deadline is not None:
+                # 增量牌面可直接投影，但整秒事件时间与较早的已知水位只能
+                # 给出过早截止。只有本地估算已不足以发动作且仍可能鸣牌时，
+                # 再花一次 state 额度读取官方毫秒截止；未知窗若已关闭由快照
+                # 纠正，绝不据乐观时间直接 POST。
+                self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                    "snapshot_refresh_reason": "estimated_deadline_rescue",
+                    "consumed_seq": self._sync.last_seq,
+                }, trigger_seq=self._sync.last_seq)
+                try:
+                    snapshot_response = await self._get_state(
+                        long_poll=False, force_full=True,
+                        deadline_monotonic=rescue_deadline - _ACTION_AFTER_STATE_RESERVE_SEC,
+                        priority=Priority.RECOVERY,
+                        query_purpose="estimated_deadline_rescue")
+                except _PollFailure as failure:
+                    return failure.item
+                if snapshot_response.kind not in ("snapshot", "finished"):
+                    return GameFailed(self.game_id, True, "snapshot_expected_got_" + snapshot_response.kind)
+                apply_failure = self._apply_or_fail(snapshot_response, finished=snapshot_response.finished)
+                if apply_failure is not None:
+                    return apply_failure
+                if snapshot_response.finished:
+                    return self._finish_game()
+                delivered = self._maybe_deliver_window()
+                if delivered is not None:
+                    return delivered
+                watch_opponent_discard = self._snapshot_needs_discard_watch(self._sync.snapshot)
+                imminent_discard = self._snapshot_imminent_discard(self._sync.snapshot)
                 continue
             if any(event.type in ("tile_discarded", "timeout") for event in response.events):
                 # 2026-09-18：与我校无鸣牌兴趣的弃牌/标记事件不再触发全量
@@ -474,6 +557,44 @@ class OfficialGameSession:
             delivered = self._maybe_deliver_incremental_draw_window()
             if delivered is not None:
                 return delivered
+
+    @staticmethod
+    def _snapshot_needs_discard_watch(snapshot) -> bool:
+        """响应阶段可由他家立即鸣牌再弃牌；对手摸牌阶段也须盯首次弃牌。"""
+        return snapshot is not None and (
+            snapshot.phase in ("response_peng", "response_chi")
+            or (snapshot.phase == "draw" and snapshot.turn != snapshot.seat))
+
+    @staticmethod
+    def _snapshot_imminent_discard(snapshot) -> bool:
+        """已知他家正持摸牌行动权时，下一条公开事件大概率是弃牌。"""
+        return (snapshot is not None and snapshot.phase == "draw"
+                and snapshot.turn != snapshot.seat)
+
+    def _estimated_response_rescue_deadline(self) -> Optional[float]:
+        """仅在增量响应的早界已无动作预算时，给权威 GET 一个宽松完成上限。
+
+        官方事件 ts 仅到整秒；[ts, ts+1) 内的弃牌都可能对应本窗口。
+        晚界只约束这次 GET 的等待，不能作为 POST 截止。POST 随后必须
+        使用快照的 window_deadline_ms；无事件 ts 时只给 GET 一次窗口时长。
+        """
+        detected = self._sync.incremental_response_window()
+        if detected is None or not self._sync.claim_interest_for_cycle():
+            return None
+        timing = self._window_timing(detected)
+        now = self._monotonic()
+        if (not timing["deadline_is_estimated"]
+                or timing["expires_at_monotonic"] - now > _ACTION_AFTER_STATE_RESERVE_SEC):
+            return None
+        event = next((e for e in reversed(self._sync.history)
+                      if e.seq == detected.window_key.trigger_seq), None)
+        if event is None or event.occurred_at_unix_sec is None or event.occurred_at_unix_sec <= 0:
+            return now + detected.timeout_seconds
+        latest_unix_ms = int((event.occurred_at_unix_sec + 1 + detected.timeout_seconds) * 1000)
+        wall_estimate = now + (latest_unix_ms - self._wall_ms()) / 1000.0
+        interval = self._scheduler.deadline_clock.deadline(latest_unix_ms, now)
+        estimate = max(wall_estimate, interval.latest) if interval is not None else wall_estimate
+        return min(estimate, now + detected.timeout_seconds)
 
     def _ensure_sse_task(self) -> None:
         """SSE 帧监听任务懒启动（首次 next_item 时）；降级后不再重启。"""
@@ -598,6 +719,15 @@ class OfficialGameSession:
         snapshot = self._sync.snapshot
         if snapshot is None or self._sync.finished:
             return None
+        if snapshot.phase in ("response_peng", "response_chi"):
+            # 增量摸牌已证明旧响应周期结束；本人摸牌窗口交付并提交后，
+            # 快照仍可能停在旧吃窗。继续用它的截止定时器会取消新长轮询，
+            # 再把无关的 phase_boundary 快照排进普通额度队列。
+            for event in reversed(self._sync.history):
+                if event.seq <= snapshot.seq:
+                    break
+                if event.kind == "tile_drawn":
+                    return None
         if not self._sync.claim_interest_for_cycle():
             return None  # 无关周期：标记事件推进投影即可，不做边界刷新
         incremental = self._sync.incremental_response_window()
@@ -672,8 +802,11 @@ class OfficialGameSession:
                 expiry = min(expiry, floor + detected.timeout_seconds)
         previous = self._window_expiries.get(key)
         if previous is not None:
-            expiry = min(expiry, previous[0])
-            estimated = estimated and previous[1]
+            if not (previous[1] and not estimated and key not in self._delivered_windows):
+                # 已交付窗口的应用预算只能收紧；两份同级估计或权威值
+                # 也按旧值收紧。唯有尚未交付的暂定估计可被官方毫秒截止纠正。
+                expiry = min(expiry, previous[0])
+                estimated = estimated and previous[1]
         self._window_expiries[key] = (expiry, estimated)
         return {"expires_at_monotonic": expiry, "deadline_is_estimated": estimated}
 
@@ -688,12 +821,13 @@ class OfficialGameSession:
         """
 
         reservation, response_deadline, window_end = self._protect_next_chi_query(timeout_seconds)
-        # 已临近边界时不再挂一条几乎必被取消的GET；这是查询往返余量，
-        # 不是每场固定限频间隔。显式小burst的诊断仍保留其平滑限制。
+        # 已临近边界时不再挂一条几乎必被取消的GET；阈值只由查询往返
+        # 余量决定。令牌桶的平均间隔不是这条请求实际入队后的等待时长，
+        # 将其乘二用作边界阈值会在M=10时过早跳过必要的进度长轮询。
         # 2026-09-18：timeout_seconds 已含看门狗容错，判定须用扣除容错后
         # 的真实边界剩余，否则短路永假、临近边界反而先挂必被取消的轮询。
         boundary_remaining = timeout_seconds - _BOUNDARY_WATCHDOG_TOLERANCE_SEC
-        if boundary_remaining < max(_STATE_RESPONSE_RESERVE_SEC, 2 * self._scheduler.state_interval_sec):
+        if boundary_remaining < _STATE_RESPONSE_RESERVE_SEC:
             try:
                 await self._boundary_timer(timeout_seconds)
                 return await self._get_state(
@@ -703,7 +837,12 @@ class OfficialGameSession:
             finally:
                 if reservation is not None:
                     reservation.cancel()
-        poll_task = asyncio.ensure_future(self._get_state(long_poll=True))
+        # 已确认处在我方有鸣牌兴趣的响应周期：标记事件一到就需要判断
+        # 下一吃窗。此时状态长轮询的额度许可优先于无关场的普通轮询；
+        # 仍受同用户总额与既有边界保留约束，不提前假定吃窗已经存在。
+        poll_task = asyncio.ensure_future(self._get_state(
+            long_poll=True, priority=Priority.RECOVERY,
+            query_purpose="response_progress"))
         timer_task = asyncio.ensure_future(self._boundary_timer(timeout_seconds))
         for task in (poll_task, timer_task):
             self._active_tasks.add(task)
@@ -913,6 +1052,7 @@ class OfficialGameSession:
             **self._window_timing(detected),
         )
         self._delivered_windows.add(key)
+        self._window_received_at[key] = window.received_at_monotonic
         if detected.trigger_projection_note is not None:
             # 触发序号退化兜底（事件历史空 + 纯牌码 last_discard）：
             # 与 last_discard_projection_note 同款审计，供赛后核对身份稳定性
@@ -1207,6 +1347,7 @@ class OfficialGameSession:
             attempts += 1
             request_timing = {"queued_at_monotonic": self._monotonic(),
                               "query_purpose": query_purpose,
+                              "scheduler_priority": chosen_priority.name,
                               "latest_start_monotonic": latest_start_monotonic,
                               "response_deadline_monotonic": deadline_monotonic}
             if latest_start_monotonic is not None and self._monotonic() >= latest_start_monotonic:
@@ -1373,8 +1514,8 @@ class OfficialGameSession:
             self._sse_event.set()
         return outcome
 
-    def _discard_pacing_plan(self, attempt, detected, observation, timing, state_used):
-        """正常摸牌增量可缓发；快照恢复、重试、白板及本人特殊动作链直接跳过。"""
+    def _discard_pacing_plan(self, attempt, detected, observation, timing, backlog_delay_sec):
+        """普通弃牌按首次见到动作窗缓发；重试和本人特殊动作链直接跳过。"""
         now = self._monotonic()
         if not self._discard_pacing_enabled:
             return DiscardPacing(now, "disabled")
@@ -1384,26 +1525,34 @@ class OfficialGameSession:
                 or attempt.action.tile == observation.rule_state.wealth_god
                 or observation.rule_state.chain_count > 0 or observation.gang_draw is True):
             return DiscardPacing(now, "special_action")
+        observed_at = self._window_received_at.get(attempt.window_key)
+        if observed_at is None:
+            return DiscardPacing(now, "missing_local_observation")
+        expiry = timing["expires_at_monotonic"]
         incremental = self._sync.incremental_draw_window()
-        if incremental is None or incremental.window_key != attempt.window_key:
-            return DiscardPacing(now, "snapshot_or_recovery")
-        start_floor = self._event_time_floors.get(attempt.window_key.trigger_seq)
-        if start_floor is None:
-            return DiscardPacing(now, "missing_local_time_bound")
-        # 前次权威查询尚未包含本次摸牌，因此其发起时刻不晚于本次摸牌。
-        # 只用这一独立的本机单调下界；服务端ts有钟差，不能用它推迟等待目标。
-        # 保守起点过早会少等或不等，不会把收到快照的时刻当作新的3秒窗口。
-        expiry = min(timing["expires_at_monotonic"], start_floor + detected.timeout_seconds)
+        if incremental is not None and incremental.window_key == attempt.window_key:
+            # 整秒服务端时间可能偏快；保留上一次已知水位的本地时间下界，
+            # 不能因快事件迟到而把三秒弃牌窗从本次收包时刻重新起算。
+            start_floor = self._event_time_floors.get(attempt.window_key.trigger_seq)
+            if start_floor is None and timing["deadline_is_estimated"]:
+                return DiscardPacing(now, "missing_local_time_bound")
+            if start_floor is not None:
+                expiry = min(expiry, start_floor + detected.timeout_seconds)
+        elif timing["deadline_is_estimated"]:
+            # 快照恢复后的窗口若无官方截止，无法证明还剩0.5秒安全等待。
+            return DiscardPacing(now, "snapshot_estimated_deadline")
         return plan_discard_pacing(
-            now=now, state_used=state_used, start_lower_bound=start_floor,
-            expires_lower_bound=expiry, latest_send=attempt.latest_send_at_monotonic)
+            now=now, observed_at=observed_at, backlog_delay_sec=backlog_delay_sec,
+            expires_lower_bound=expiry,
+            latest_send=attempt.latest_send_at_monotonic)
 
-    async def _wait_discard_pacing(self, attempt, plan, state_used):
+    async def _wait_discard_pacing(self, attempt, plan, state_used, backlog_delay_sec):
         """等到一次性目标；关会话可取消，等待不占HTTP槽或state额度。"""
         started = self._monotonic()
         payload = {"discard_pacing_status": "scheduled", "reason": plan.reason,
                    "target_at_monotonic": plan.target_at_monotonic,
                    "started_at_monotonic": started, "state_used": state_used,
+                   "state_backlog_delay_sec": backlog_delay_sec,
                    "latest_send_at_monotonic": attempt.latest_send_at_monotonic}
         context = dict(decision_id=attempt.decision_id, attempt_no=attempt.attempt_no,
                        trigger_seq=attempt.window_key.trigger_seq, round_no=attempt.window_key.round_no)
@@ -1461,15 +1610,18 @@ class OfficialGameSession:
             return self._finish_submit(attempt, SubmitNotSent("pass_deferred_until_chi"))
         if not pacing_checked and isinstance(attempt.action, Discard):
             state_used = self._scheduler.state_used_count
-            plan = self._discard_pacing_plan(attempt, detected, observation, timing, state_used)
+            backlog_delay_sec = self._scheduler.state_backlog_delay_sec
+            plan = self._discard_pacing_plan(
+                attempt, detected, observation, timing, backlog_delay_sec)
             if plan.target_at_monotonic > self._monotonic():
                 attempt = replace(attempt, latest_send_at_monotonic=plan.latest_send_at_monotonic)
-                await self._wait_discard_pacing(attempt, plan, state_used)
+                await self._wait_discard_pacing(attempt, plan, state_used, backlog_delay_sec)
                 # 等待期间可能关场、窗口迁移或期限收紧；重新校验且不再补时。
                 return await self._submit_locked(attempt, pacing_checked=True)
             self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
                 "discard_pacing_status": "skipped", "reason": plan.reason,
-                "state_used": state_used}, decision_id=attempt.decision_id,
+                "state_used": state_used,
+                "state_backlog_delay_sec": backlog_delay_sec}, decision_id=attempt.decision_id,
                 attempt_no=attempt.attempt_no, trigger_seq=attempt.window_key.trigger_seq,
                 round_no=attempt.window_key.round_no)
         self._emit_audit(

@@ -64,6 +64,7 @@ def _session(documents):
         scheduler=RequestScheduler(clock=clock.monotonic, poll_interval=0), timing=TIMING,
         monotonic_clock=clock.monotonic, wall_clock_unix_ms=clock.wall_ms,
         retry_sleep=timer,
+        discard_pacing_enabled=False,  # 本夹具不推进单调时钟；缓发由专门的虚拟时间测试覆盖
     ), transport, clock
 
 

@@ -500,23 +500,31 @@ def test_room_r18_release_binding_is_required_and_reaches_every_child(tmp_path):
             )
 
 
-def test_room_cannot_mix_r18_release_packages(tmp_path):
+def test_room_binds_each_r18_release_when_packages_are_mixed(tmp_path):
     data = _room_config(
         strategy='r18_integrated_positive_v2',
         known_guide_version=34,
         expected_policy_release_id=room.R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
         identities=[
-            {'slot': 'A', 'token_env': 'HM_ROOM_A', 'strategy': 'r18_integrated_positive_v1'},
+            {'slot': 'A', 'token_env': 'HM_ROOM_A', 'strategy': 'r18_integrated_positive_v1',
+             'expected_policy_release_id': room.R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID},
             {'slot': 'B', 'token_env': 'HM_ROOM_B'},
             {'slot': 'C', 'token': SECRET_C},
             {'slot': 'D', 'token': SECRET_D},
         ],
     )
-    with pytest.raises(ValueError, match='不能混用不同 R18 冻结发布包'):
-        room.load_room_config(
-            _write_config(tmp_path, data),
-            environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B},
-        )
+    cfg = room.load_room_config(
+        _write_config(tmp_path, data),
+        environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B},
+    )
+    children = [room.child_config_mapping(cfg, identity) for identity in cfg.identities]
+    assert children[0]['expected_policy_release_id'] == room.R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID
+    assert all(child['expected_policy_release_id'] == room.R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID
+               for child in children[1:])
+    data['identities'][0]['expected_policy_release_id'] = '0' * 64
+    with pytest.raises(ValueError, match='发布包'):
+        room.load_room_config(_write_config(tmp_path, data),
+                              environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B})
 
 
 def test_room_passes_sequence_model_dir_to_every_child(tmp_path):

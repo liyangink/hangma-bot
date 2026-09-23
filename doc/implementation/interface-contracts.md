@@ -274,8 +274,9 @@ V0/V1 评分源码的**行为**不变；线上不含任何 LLM 调用。相关�
 
 R18 的真实网络配置必须包含 `expected_policy_release_id`，值严格等于上述完整包 ID。该字段是公开制品身份，
 不是 Token。`runtime_config_from_mapping` 在建立会话前拒绝缺失或不匹配；普通策略携带该字段同样拒绝。
-测试房的房间级配置只保存一次，由 `run_test_room.py` 仅向实际使用 R18 的身份派生配置透传，四个子进程各自
-再次通过组合根校验。P59 的测试房与测试赛事专用冻结件分别绑定模板、入口脚本、组合根、当前发布包和
+测试房可在房间级配置填写单一发布包 ID，或由各 R18 身份分别填写 `expected_policy_release_id`；
+`run_test_room.py` 仅向实际使用 R18 的身份派生配置透传，每个子进程再次通过组合根校验。
+同房间混用 v1/v2 时必须按身份分别绑定对应包 ID。P59 的测试房与测试赛事专用冻结件分别绑定模板、入口脚本、组合根、当前发布包和
 P57/P58 状态证据；离线装配通过不替代真实官方测试。
 
 规则适用域固定为 `hangma-mvp-v10-public-counts`、底分 1、`YouCaiBiKao=false`，最低已适配官方指南为 v34。测试房、测试赛事和
@@ -298,7 +299,7 @@ P57 以 P47 冻结的 377 个正式请求核对发布包
 冻结候选源码 `a2d9b8af93beabdba75716fccae56b0668a6fd84f0bdce558d2ff3e569443618`、
 同一 v10 规则源与分值分析依赖摘要，以及 P45/P46/P55/P66B/P67/P69/P70/P71 结果摘要。
 完整包 ID 为 `e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486`；
-任何一种模式都必须用这个 ID 填写 `expected_policy_release_id`。测试房房间级配置不能混用 v1/v2 两个冻结包。
+任何一种模式都必须用这个 ID 填写 `expected_policy_release_id`。测试房按身份绑定发布包 ID 时可以混用 v1/v2 两个冻结包。
 离线名 `action_value:r18_integrated_positive_v2` 仍被全部网络入口拒绝，默认策略保持原值。
 P73 使用四份模式配置、生产解析器和组合根完成无网络装配，并将 409 个正式策略计划与离线父代逐项对账；
 真实赛事效果和运行可靠性仍以各模式实际审计为准，详见同目录 `r18-p73-v2-network-release-wiring-01-20260923/`。
@@ -687,7 +688,7 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 
 圈内非白弃牌只向当前圈主开放响应，吃仍须来自上家且本人已有吃摊少于2组。其他家弃白立即换主；白板本身不允许吃碰杠。圈主吃碰明杠/补杠及任意出牌不受圈限制；非圈主只摸切、暗杠与自摸胡。圈主弃非白结束当前圈；弃白重开。弃白是否计飘仍须满足原爆头条件，不把普通弃白自动当作财飘。依据[官方v27全文](../references/official-guide-v27-content.txt)与[变更日志](../references/official-guide-version-v27.json)，采集日期2026-09-09。
 
-2026-09-09内部HTTP时序审计增加`started_wall_unix_ms`、`completed_wall_unix_ms`（本机Unix毫秒，非服务端时间）及`started_clock_sample_end_monotonic`、`completed_clock_sample_end_monotonic`（单调秒，分别与原开始/完成时刻包住墙钟采样）。仅state/action当前提供，旧记录及其他端点允许缺失。发送账与HTTP开始审计共用一次单调采样；运行清单增加`state_scheduler_version`与`state_arrival_guard_sec`（秒）。四个外部端口及动作预算类型不变。
+2026-09-09内部HTTP时序审计增加`started_wall_unix_ms`、`completed_wall_unix_ms`（本机Unix毫秒，非服务端时间）及`started_clock_sample_end_monotonic`、`completed_clock_sample_end_monotonic`（单调秒，分别与原开始/完成时刻包住墙钟采样）。仅state/action当前提供，旧记录及其他端点允许缺失。发送账与HTTP开始审计共用一次单调采样；运行清单增加`state_scheduler_version`与`state_arrival_guard_sec`（秒）。2026-09-23 的 M=10 平滑调度试验再增加 `state_min_spacing_sec`（同一身份的状态查询最小许可间距，单调秒；旧运行清单缺失表示当时未记录，不能倒推为零）。四个外部端口及动作预算类型不变。
 
 ## 2026-09-09 期限映射运行事实（无外部端口变更）
 

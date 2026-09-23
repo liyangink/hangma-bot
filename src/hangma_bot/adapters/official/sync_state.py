@@ -924,8 +924,12 @@ class ProtocolSyncState:
         response = self.incremental_response_window()
         if response is not None:
             return response
-        if self._masked_draws_since_snapshot():
-            # 他家开始摸牌已证明旧响应结束；不能继续使用快照里的我方响应资格。
+        if self.snapshot.phase in ("response_peng", "response_chi") and any(
+            event.seq > self.snapshot.seq and event.kind == "tile_drawn"
+            for event in self.history
+        ):
+            # 任一人开始摸牌都已证明旧响应结束。本人摸牌窗口被交付后又
+            # 弃牌时，增量末条不再是摸牌；若回退旧快照，会伪造第二个吃窗。
             return None
         detected = projector.detect_window(
             self.snapshot,
@@ -1034,6 +1038,9 @@ class ProtocolSyncState:
         """只让与当前触发身份一致的历史参与窗口识别；旧历史不能覆盖新快照。"""
         fact = self._last_discarded_event()
         if fact is None or self.snapshot is None:
+            return None
+        if fact[2] == self.snapshot.seat:
+            # 本人弃牌不能触发本人的响应；旧响应快照不能借新弃牌复活。
             return None
         raw = self.snapshot.last_discard
         if isinstance(raw, tuple):
