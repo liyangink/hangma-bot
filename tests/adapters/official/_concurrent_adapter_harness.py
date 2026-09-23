@@ -205,7 +205,8 @@ async def run_scenario(monkeypatch, *, latency=.04, stagger=0, cooldown=False,
         original = participant.OfficialGameSession
 
         def without_pacing(**kwargs):
-            return original(**kwargs, discard_pacing_enabled=False)
+            kwargs["discard_pacing_enabled"] = False
+            return original(**kwargs)
 
         monkeypatch.setattr(participant, "OfficialGameSession", without_pacing)
     # 固定退避附加抖动，仅用于429注入重现；不替换调度器或消费假额度。

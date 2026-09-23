@@ -670,6 +670,8 @@ SupervisionPolicy.game_finalization_timeout_seconds 默认为5秒，0表示不�
 
 2026-09-09已接入普通弃牌缓发（`DiscardPacing`，在查询繁忙时利用我方宽裕弃牌时间短暂等待）。默认对正常摸牌增量生效：同用户滚动state用量达到10次，且本机保守起点后1秒尚未到达、原预算仍有余量时，补足剩余时间；策略计算时间已经计入。快照恢复、重试、白板及特殊动作链跳过。等待不占HTTP槽或state额度，醒后复核窗口和收紧的发送截止。时间依据来自前次已确认状态的查询发起时刻，不要求快照有毫秒截止，也不依赖服务端钟差。SSE继续关闭。实现、取消契约及32个新模型场景见[缓发验证](../../review/adapter-rate-identity-2026-09-08/discard-pacing-2026-09-09/README.md)；本地结果不等于实网收益。
 
+2026-09-24 测试房配置可设 `discard_pacing_enabled=false`，并以 `ordinary_long_poll_min_interval_ms=50` 对同一场连续的普通增量长轮询加最短重挂间隔（从上一响应完成到下一 GET 发起，单调时钟毫秒）。新查询立即入队，通过调度器 `not_before_monotonic` 与排队重叠；不作用于 `seq=0`、已知期限、高优先级摸牌预警或恢复查询。默认 0 毫秒，非测试房模式禁止实验值。运行清单与请求时序审计都能对账；四个外部端口不变，见[试验记录](../../review/r18-four-arm-evaluation-2026-09-23/LIVE-R7-LONGPOLL-50MS-2026-09-24.md)。
+
 
 ## 提交前取消的受控扩展（2026-09-09）
 

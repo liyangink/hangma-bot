@@ -130,6 +130,8 @@ _ROOM_FIELDS = frozenset({
     "identities",
     "restart",
     "sse_enabled",
+    "discard_pacing_enabled",
+    "ordinary_long_poll_min_interval_ms",
     "sequence_model_dir",
     "expected_policy_release_id",
 })
@@ -222,6 +224,8 @@ class RoomConfig:
     identities: tuple
     restart: RoomRestart
     sse_enabled: bool = False  # SSE 帧驱动开关（透传给每身份子进程）
+    discard_pacing_enabled: bool = True  # 默认沿用弃牌提交缓发；实验房可关闭
+    ordinary_long_poll_min_interval_ms: int = 0  # 同场普通增量长轮询底档，毫秒
     max_completed_batches: Optional[int] = None  # 每身份完成批次数上限；None 沿用持续续赛
     # 序列策略网络部署包根目录；仅当某个身份/房间策略取 sequence_model_* 时生效。
     # None 表示由子进程回退到仓库内 prebuilt/sequence-policy-models。
@@ -391,6 +395,12 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
     sse_value = data.get("sse_enabled", False)
     if not isinstance(sse_value, bool):
         raise ValueError("sse_enabled 必须是布尔值，得到 {0!r}".format(sse_value))
+    discard_pacing_enabled = data.get("discard_pacing_enabled", True)
+    if not isinstance(discard_pacing_enabled, bool):
+        raise ValueError("discard_pacing_enabled 必须是布尔值")
+    interval = data.get("ordinary_long_poll_min_interval_ms", 0)
+    if isinstance(interval, bool) or not isinstance(interval, int) or not 0 <= interval <= 1000:
+        raise ValueError("ordinary_long_poll_min_interval_ms 必须是 0..1000 的整数")
     return RoomConfig(
         base_url=_require_non_empty_str(data.get("base_url"), "base_url"),
         expected_tournament_id=_require_non_empty_str(data.get("expected_tournament_id"), "expected_tournament_id"),
@@ -401,6 +411,8 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         identities=tuple(identities),
         restart=restart,
         sse_enabled=sse_value,
+        discard_pacing_enabled=discard_pacing_enabled,
+        ordinary_long_poll_min_interval_ms=interval,
         max_completed_batches=(_require_positive_int(data["max_completed_batches"], "max_completed_batches")
                                if data.get("max_completed_batches") is not None else None),
         sequence_model_dir=(_require_non_empty_str(data["sequence_model_dir"], "sequence_model_dir")
@@ -422,6 +434,8 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
         "audit_root": str(room.audit_root / ("slot-" + identity.slot)),
         "strategy": identity.strategy if identity.strategy is not None else room.strategy,
         "sse_enabled": room.sse_enabled,
+        "discard_pacing_enabled": room.discard_pacing_enabled,
+        "ordinary_long_poll_min_interval_ms": room.ordinary_long_poll_min_interval_ms,
     }
     if config["strategy"] in (
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,

@@ -429,6 +429,10 @@ class RuntimeConfig:
     # SSE 帧驱动开关（2026-09-05 接入，默认关）：开启后各场次在长轮询之外
     # 兼容旧配置；生产组合根固定使用 state，实际生效值写入运行清单。
     sse_enabled: bool = False
+    # 实验配置：普通弃牌 POST 缓发开关、同场普通长轮询最短重挂间隔（毫秒）。
+    # 缺省保持既有行为；只允许测试房调整，正式/自由赛不借用实验档。
+    discard_pacing_enabled: bool = True
+    ordinary_long_poll_min_interval_ms: int = 0
     # 部署配置中的逻辑平台实例名（契约 §4.1）：同一官方平台跨地址/节点
     # 保持相同，进入审计 RUN_MANIFEST 与统一牌谱身份；不是 Token、主机名
     # 或 Git 分支。默认 hangma-official，按部署覆盖。
@@ -553,6 +557,13 @@ class RuntimeConfig:
             _require_non_empty_str(self.slot, "RuntimeConfig.slot")
         if not isinstance(self.sse_enabled, bool):
             raise ValueError("RuntimeConfig.sse_enabled 必须是布尔值，得到 {0!r}".format(self.sse_enabled))
+        if not isinstance(self.discard_pacing_enabled, bool):
+            raise ValueError("discard_pacing_enabled 必须是布尔值")
+        interval = self.ordinary_long_poll_min_interval_ms
+        if isinstance(interval, bool) or not isinstance(interval, int) or not 0 <= interval <= 1000:
+            raise ValueError("ordinary_long_poll_min_interval_ms 必须是 0..1000 的整数")
+        if self.mode is not RuntimeMode.TEST_ROOM and (not self.discard_pacing_enabled or interval):
+            raise ValueError("轮询/弃牌缓发实验配置仅允许 mode=test_room")
         _require_non_empty_str(self.source_namespace, "RuntimeConfig.source_namespace")
         if not isinstance(self.audit_raw_gzip, bool):
             raise ValueError("audit_raw_gzip 必须是布尔，得到 {0!r}".format(self.audit_raw_gzip))
@@ -602,6 +613,8 @@ _CONFIG_FIELDS = frozenset({
     "insecure_hosts",
     "slot",
     "sse_enabled",
+    "discard_pacing_enabled",
+    "ordinary_long_poll_min_interval_ms",
     "audit_raw_gzip",
     "audit_raw_rotate_bytes",
     "source_namespace",
@@ -695,6 +708,9 @@ def runtime_config_from_mapping(
         slot=data.get("slot"),
         audit_raw_gzip=_require_bool(data.get("audit_raw_gzip", False), "audit_raw_gzip"),
         sse_enabled=_require_bool(data.get("sse_enabled", False), "sse_enabled"),
+        discard_pacing_enabled=_require_bool(
+            data.get("discard_pacing_enabled", True), "discard_pacing_enabled"),
+        ordinary_long_poll_min_interval_ms=data.get("ordinary_long_poll_min_interval_ms", 0),
         audit_raw_rotate_bytes=_require_positive_int(
             data.get("audit_raw_rotate_bytes", 32 * 1024 * 1024),
             "audit_raw_rotate_bytes",
@@ -913,6 +929,8 @@ def build_runtime(
             # 官方 SSE 可选；观察完整性修复期仅运行 state 与阶段边界查询。
             sse_enabled=False,
             sse_budget=None,
+            discard_pacing_enabled=config.discard_pacing_enabled,
+            ordinary_long_poll_min_interval_ms=config.ordinary_long_poll_min_interval_ms,
         )
     else:
         inner = session_factory()
@@ -938,6 +956,8 @@ def build_runtime(
         "official_sync_mode": "state",
         "sse_requested": config.sse_enabled,
         "sse_effective": False,
+        "discard_pacing_enabled": config.discard_pacing_enabled,
+        "ordinary_long_poll_min_interval_ms": config.ordinary_long_poll_min_interval_ms,
         "budget_policy_version": "fixed-post-reserve-v1",
         "post_network_reserve_sec": budget_policy.post_reserve_seconds,
         "state_arrival_guard_sec": DEFAULT_STATE_ARRIVAL_GUARD_SEC,

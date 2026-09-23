@@ -184,6 +184,29 @@ class TestRunTestRoomScript:
         assert SECRET_A not in serialized
         assert SECRET_C not in serialized
 
+    def test_room_long_poll_experiment_passes_through_and_rejects_invalid_values(self, tmp_path):
+        configured = _room_config(
+            discard_pacing_enabled=False, ordinary_long_poll_min_interval_ms=50)
+        room_config = room.load_room_config(
+            _write_room_json(tmp_path, configured),
+            environ={"HM_ROOM_A": SECRET_A, "HM_ROOM_B": SECRET_B},
+        )
+        child = room.child_config_mapping(room_config, room_config.identities[0])
+        assert child["discard_pacing_enabled"] is False
+        assert child["ordinary_long_poll_min_interval_ms"] == 50
+        runtime = participant.load_config(
+            _write_config(tmp_path, {**child, "token": SECRET_A, "token_env": None}),
+            environ={},
+        )
+        assert runtime.discard_pacing_enabled is False
+        assert runtime.ordinary_long_poll_min_interval_ms == 50
+        for invalid in (True, -1, 1001, 50.5):
+            with pytest.raises(ValueError, match="ordinary_long_poll_min_interval_ms"):
+                room.load_room_config(_write_room_json(
+                    tmp_path, _room_config(ordinary_long_poll_min_interval_ms=invalid)),
+                    environ={"HM_ROOM_A": SECRET_A, "HM_ROOM_B": SECRET_B},
+                )
+
     def test_room_rejects_invalid_finished_restart_delay(self, tmp_path):
         with pytest.raises(ValueError, match="finished_restart_delay_seconds"):
             room.load_room_config(

@@ -105,6 +105,8 @@ class OfficialTournamentSession:
         retry_sleep: Optional[Callable[[float], Any]] = None,
         sse_enabled: bool = False,  # SSE 帧驱动开关（透传给每场会话）
         sse_budget: Optional[StreamBudget] = None,  # 每 Token 共享 SSE 预算
+        discard_pacing_enabled: bool = True,  # 测试房可关闭普通弃牌提交缓发
+        ordinary_long_poll_min_interval_ms: int = 0,  # 同场普通增量长轮询底档，毫秒
     ) -> None:
         self._transport = OfficialTransport(token, transport_config)
         # 控制面独享连接槽，各场共享用户16/s状态账；新账先跨过旧进程
@@ -125,6 +127,8 @@ class OfficialTournamentSession:
         self._backoff_base = retry_backoff_base_sec
         self._sse_enabled = sse_enabled
         self._sse_budget = sse_budget
+        self._discard_pacing_enabled = discard_pacing_enabled
+        self._ordinary_long_poll_min_interval_ms = ordinary_long_poll_min_interval_ms
         self._retry_sleep = retry_sleep if retry_sleep is not None else asyncio.sleep
         self._registration: Optional[_Registration] = None
         self._last_snapshot: Optional[TournamentSnapshot] = None
@@ -506,6 +510,8 @@ class OfficialTournamentSession:
             audit_context=self._audit_context,
             sse_enabled=self._sse_enabled,
             sse_budget=self._sse_budget,
+            discard_pacing_enabled=self._discard_pacing_enabled,
+            ordinary_long_poll_min_interval_ms=self._ordinary_long_poll_min_interval_ms,
         )
         self._games[game_id] = session
         return session

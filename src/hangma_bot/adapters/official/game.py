@@ -149,6 +149,7 @@ class OfficialGameSession:
         sse_enabled: bool = False,  # SSE 帧驱动开关（默认关=行为与现状一致）
         sse_budget: Optional[StreamBudget] = None,  # 每 Token 共享的 SSE 并发预算
         discard_pacing_enabled: bool = True,  # 只缓发有时间依据的普通弃牌；内部诊断可关闭
+        ordinary_long_poll_min_interval_ms: int = 0,  # 同场普通增量长轮询响应至下次发起的最短毫秒数
     ) -> None:
         self.game_id = game_id
         self._transport = transport
@@ -163,6 +164,12 @@ class OfficialGameSession:
         self._retry_sleep = retry_sleep if retry_sleep is not None else asyncio.sleep
         self._sync = ProtocolSyncState(game_id, timing)
         self._discard_pacing_enabled = discard_pacing_enabled
+        if isinstance(ordinary_long_poll_min_interval_ms, bool) or not isinstance(
+            ordinary_long_poll_min_interval_ms, int
+        ) or not 0 <= ordinary_long_poll_min_interval_ms <= 1000:
+            raise ValueError("ordinary_long_poll_min_interval_ms 必须是 0..1000 的整数")
+        self._ordinary_long_poll_min_interval_sec = ordinary_long_poll_min_interval_ms / 1000
+        self._last_ordinary_long_poll_completed_at: Optional[float] = None
         self._state_request_no = 0  # /state 请求单调计数（原始事件对账键，跨会话重启归零安全）
         self._last_state_started_at = None  # 最近响应对应的请求开始时刻，单调秒
         self._last_clock_response = None  # 已收到但尚待投影验证的响应与单调起止时刻
@@ -1350,12 +1357,32 @@ class OfficialGameSession:
                               "scheduler_priority": chosen_priority.name,
                               "latest_start_monotonic": latest_start_monotonic,
                               "response_deadline_monotonic": deadline_monotonic}
+            # 只整形同场连续普通增量长轮询。立即入队，让 50ms 与共享额度
+            # 排队重叠；已知期限、摸牌预警、恢复与 seq=0 快照不附加等待。
+            ordinary_long_poll = (
+                long_poll and not force_full and not degraded_to_full
+                and chosen_priority is Priority.DISCARD_WATCH
+                and query_purpose == "discard_watch"
+                and latest_start_monotonic is None and deadline_monotonic is None
+                and self._sync.history_query_seq() > 0
+            )
+            last_completed = self._last_ordinary_long_poll_completed_at
+            not_before = (
+                last_completed + self._ordinary_long_poll_min_interval_sec
+                if ordinary_long_poll and last_completed is not None
+                and self._ordinary_long_poll_min_interval_sec > 0 else None
+            )
+            if not_before is not None:
+                request_timing["ordinary_long_poll_not_before_monotonic"] = not_before
+                request_timing["ordinary_long_poll_min_interval_ms"] = (
+                    self._ordinary_long_poll_min_interval_sec * 1000
+                )
             if latest_start_monotonic is not None and self._monotonic() >= latest_start_monotonic:
                 raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline"), request_sent=False) from None
             try:
                 lease = await self._scheduler.acquire(
                     chosen_priority, deadline_monotonic=latest_start_monotonic, request_kind=RequestKind.STATE,
-                    reservation=state_reservation, reserve_only=True,
+                    not_before_monotonic=not_before, reservation=state_reservation, reserve_only=True,
                 )
             except DeadlineExceeded:
                 # 冷却/槽竞争在预算内未让出许可：按预算耗尽上交，
@@ -1392,6 +1419,9 @@ class OfficialGameSession:
                     wall_clock=self._wall_ms,
                     long_poll=long_poll,
                     request_budget_sec=read_timeout,
+                )
+                self._last_ordinary_long_poll_completed_at = (
+                    request_timing["completed_at_monotonic"] if ordinary_long_poll else None
                 )
                 self._state_request_no += 1
                 try:
