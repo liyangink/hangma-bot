@@ -236,7 +236,8 @@ class RequestScheduler:
     def state_backlog_delay_sec(self) -> float:
         """按当前state许可等待和已排队工作量估计新增查询的等待秒数。
 
-        只供动作缓发的0.5秒上限使用；这不是将来事件的预测或截止保证。
+        当前只进入弃牌缓发审计，不决定200/500毫秒档；它不是将来事件
+        的预测或截止保证，返回值仍以0.5秒为上限。
         不把尚未到达ready时刻的保护提示计为实际排队请求。
         """
         root = self._root
