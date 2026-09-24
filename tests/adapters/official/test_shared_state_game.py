@@ -198,6 +198,9 @@ async def test_boundary_waits_for_cancelled_poll_cleanup_before_reusing_the_stat
         assert root.state_used_count == 3, "取消已发长轮询不能退state次数"
         assert root.for_game("active", max_games=10).active_count == 0
         assert [call.params["seq"] for call in transport.calls] == [0, 179, 0]
+        starts = [record.payload for record in audit.records
+                  if record.payload.get("phase") == "started" and record.payload.get("method") == "GET"]
+        assert starts[-1]["request_timing"]["query_origin"] == "phase_boundary"
         assert any(record.payload.get("outcome") == "cancelled" for record in audit.records)
     finally:
         await session.aclose("test_complete")
@@ -303,6 +306,7 @@ async def test_expired_queued_chi_query_is_replaced_by_one_current_state_sync(te
                   if record.payload.get("phase") == "started" and record.payload.get("method") == "GET"]
         assert len(starts) == 2
         assert starts[-1]["request_timing"]["query_purpose"] == "current_state_sync"
+        assert starts[-1]["request_timing"]["query_origin"] == "phase_boundary"
         assert root.state_used_count == 1, "只有新的现状同步在当前滚动秒内实际发送"
     finally:
         await session.aclose("test_complete")

@@ -1271,6 +1271,9 @@ class OfficialGameSession:
         # 自动跨窗重试；普通阶段刷新可以丢弃旧目的后同步现状。
         explicit_budget = deadline_monotonic is not None
         purpose_started = self._monotonic()
+        # 一次查询可能因旧窗口过期改为现状同步；保留原始触发原因，
+        # 才能把看门狗实际消耗的 state 次数与普通恢复分开统计。
+        query_origin = query_purpose
         detected = self._sync.current_window()
         query_window = detected.window_key if detected is not None else None
         if state_reservation is not None:
@@ -1298,7 +1301,8 @@ class OfficialGameSession:
                 long_poll=long_poll, force_full=force_full,
                 deadline_monotonic=deadline_monotonic, priority=priority,
                 latest_start_monotonic=latest_start_monotonic,
-                state_reservation=state_reservation, query_purpose=query_purpose)
+                state_reservation=state_reservation, query_purpose=query_purpose,
+                query_origin=query_origin)
         except _PollFailure as failure:
             if (failure.item.reason != "refresh_deadline"
                     or (explicit_budget and state_reservation is None)):
@@ -1326,7 +1330,8 @@ class OfficialGameSession:
                 if delay:
                     await self._retry_sleep(delay)
             return await self._request_state(
-                long_poll=False, force_full=True, query_purpose="current_state_sync")
+                long_poll=False, force_full=True, query_purpose="current_state_sync",
+                query_origin=query_origin)
 
     async def _request_state(
         self,
@@ -1338,6 +1343,7 @@ class OfficialGameSession:
         latest_start_monotonic: Optional[float] = None,
         state_reservation: Optional[StateQueryReservation] = None,
         query_purpose: str = "state_sync",
+        query_origin: str = "state_sync",
     ) -> StateResponse:
         """带预算内有界重试的 state 请求；失败升级为 _PollFailure。
 
@@ -1358,6 +1364,7 @@ class OfficialGameSession:
             attempts += 1
             request_timing = {"queued_at_monotonic": self._monotonic(),
                               "query_purpose": query_purpose,
+                              "query_origin": query_origin,
                               "scheduler_priority": chosen_priority.name,
                               "latest_start_monotonic": latest_start_monotonic,
                               "response_deadline_monotonic": deadline_monotonic}
