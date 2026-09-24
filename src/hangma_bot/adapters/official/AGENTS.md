@@ -4,7 +4,7 @@
 
 本模块实现 `TournamentSessionPort` 与 `GameSessionPort`，隐藏官方 HTTP、DTO、长轮询、序号恢复和非幂等动作状态。先阅读根规范、官方 API v8 记录、接口协议和 `doc/implementation/modules/official-adapter.md`。
 
-- 每Token共享一个OfficialTransport及连接池；同一user_id的所有场次共享state滚动发送账与state 429冷却，不再静态分配每场速率。每场保留独立HTTP槽（最多2个在途且state最多1个）、动作门和OTHER端点冷却；赛事控制通道的槽与OTHER冷却独立。不同用户的额度和冷却隔离。
+- 每Token共享一个OfficialTransport及连接池；同一user_id的所有场次共享state滚动发送账，不再静态分配每场速率。`/state` 收到429时只让被拒查询按有效 `Retry-After` 与本地退避重排，其他桌继续按共享发送账领取额度，不冻结整个身份。每场保留独立HTTP槽（最多2个在途且state最多1个）、动作门和OTHER端点冷却；赛事控制通道的槽与OTHER冷却独立。不同用户的额度隔离。
 - 四个测试 Token 之间不得共享认证头、限速状态、动作门或审计身份。
 - 适配器只输出 `ObservedActionWindow`，只接收 `ActionAttempt`；禁止导入 `DecisionRequest`、`DecisionPlan` 或启发式评分类型。
 - `StageIdentity.observed_revision` 只用于防止陈旧 `ready` 调用；应用层审计使用的 `stage_attempt_id` 不由适配器生成。
@@ -31,7 +31,7 @@
 ## 验收标准
 
 - 官方 v8 保存响应 fixture 全部解析；允许兼容新增字段但拒绝未知破坏性指南版本。
-- 同用户M场覆盖共享滚动16/s、共享state冷却、明确截止排序、未知发现公平及未来边界保护；各场HTTP槽和OTHER冷却、四个不同用户的额度与冷却保持隔离。
+- 同用户M场覆盖共享滚动16/s、`/state` 429仅被拒查询重排且其他桌继续服务、明确截止排序、未知发现公平及未来边界保护；各场HTTP槽和OTHER冷却、四个不同用户的额度保持隔离。
 - 覆盖 `seq` 重复/缺口、`gap=true`、兼容未知事件、关键未知事件、409、429、401、超时和断连。
 - 任意时刻每场最多一个在途 POST；模糊结果后同窗零次追加提交。
 - `aclose()` 能取消最长 30 秒长轮询或 SSE 监听，且不误关同 Token 的其他场次。
