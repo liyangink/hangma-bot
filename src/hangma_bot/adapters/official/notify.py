@@ -1,8 +1,8 @@
 """官方 SSE 通知流客户端（SSE Notify Stream，指南 v12 引入、v14 全文确认）。
 
-为 GET /api/games/{id}/notify 提供独立客户端，作为 /state 长轮询之外的
-变化信号通道；本任务只交付"可用的客户端 + 集成设计"，不接入运行链路
-（运行行为零变化），集成契约见 doc/implementation/notes/sse-notify-client.md。
+为 GET /api/games/{id}/notify 提供独立客户端。2026-09-24 起运行配置显式
+开启 SSE 时由场次适配器用于帧驱动状态同步；该模式暂不挂 /state 长轮询。
+早期客户端集成契约见 doc/implementation/notes/sse-notify-client.md。
 
 实现的协议要点与出处（指南 v14 全文 doc/references/official-guide-v14-content.txt
 端点表与 §2.1，2026-09-05 抓取；v12 变更记录 doc/references/official-guide-version-v14.json，

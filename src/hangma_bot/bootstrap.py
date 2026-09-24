@@ -45,6 +45,7 @@ from hangma_bot.adapters.official import (
     OfficialTournamentSession,
     TransportConfig,
 )
+from hangma_bot.adapters.official.notify import StreamBudget
 from hangma_bot.adapters.official.scheduler import (
     DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC, DEFAULT_STATE_ARRIVAL_GUARD_SEC,
 )
@@ -426,8 +427,8 @@ class RuntimeConfig:
     # 序列策略网络部署包根目录；仅 ``strategy`` 取 ``_SEQUENCE_MODEL_STRATEGIES``
     # 的键时使用。None 表示取仓库内 ``prebuilt/sequence-policy-models``。
     sequence_model_dir: Optional[Path] = None
-    # SSE 帧驱动开关（2026-09-05 接入，默认关）：开启后各场次在长轮询之外
-    # 兼容旧配置；生产组合根固定使用 state，实际生效值写入运行清单。
+    # SSE 通知主监听开关；开启后场次不挂 /state 长轮询。
+    # 缺省关闭以避免旧运行配置在验证前被静默切换。
     sse_enabled: bool = False
     # 实验配置：普通弃牌 POST 缓发开关、同场普通长轮询最短重挂间隔（毫秒）。
     # 缺省保持既有行为；只允许测试房调整，正式/自由赛不借用实验档。
@@ -934,9 +935,8 @@ def build_runtime(
             audit=sink,
             audit_context=provider.context,
             ruleset_version=DEFAULT_RULESET_VERSION,
-            # 官方 SSE 可选；观察完整性修复期仅运行 state 与阶段边界查询。
-            sse_enabled=False,
-            sse_budget=None,
+            sse_enabled=config.sse_enabled,
+            sse_budget=StreamBudget() if config.sse_enabled else None,
             discard_pacing_enabled=config.discard_pacing_enabled,
             discard_pacing_profile=config.discard_pacing_profile,
             ordinary_long_poll_min_interval_ms=config.ordinary_long_poll_min_interval_ms,
@@ -962,9 +962,9 @@ def build_runtime(
         "policy_release": _policy_release_snapshot(policy),
         "ruleset_version": DEFAULT_RULESET_VERSION,
         "hand_math": hand_math_runtime_metadata(),
-        "official_sync_mode": "state",
+        "official_sync_mode": "sse_only" if config.sse_enabled else "state",
         "sse_requested": config.sse_enabled,
-        "sse_effective": False,
+        "sse_effective": config.sse_enabled,
         "discard_pacing_enabled": config.discard_pacing_enabled,
         "discard_pacing_profile": config.discard_pacing_profile,
         "ordinary_long_poll_min_interval_ms": config.ordinary_long_poll_min_interval_ms,
@@ -1094,8 +1094,8 @@ def build_auto_match_runtime(
             audit=sink,
             audit_context=provider.context,
             ruleset_version=DEFAULT_RULESET_VERSION,
-            sse_enabled=False,
-            sse_budget=None,
+            sse_enabled=config.sse_enabled,
+            sse_budget=StreamBudget() if config.sse_enabled else None,
             # 自动匹配操作参数（运行配置注入；不是官方字段）
             declared_max_games=settings.declared_max_games,
             declared_rounds=settings.declared_rounds,
@@ -1124,9 +1124,9 @@ def build_auto_match_runtime(
         "policy_release": _policy_release_snapshot(policy),
         "ruleset_version": DEFAULT_RULESET_VERSION,
         "hand_math": hand_math_runtime_metadata(),
-        "official_sync_mode": "state",
+        "official_sync_mode": "sse_only" if config.sse_enabled else "state",
         "sse_requested": config.sse_enabled,
-        "sse_effective": False,
+        "sse_effective": config.sse_enabled,
         "budget_policy_version": "fixed-post-reserve-v1",
         "post_network_reserve_sec": budget_policy.post_reserve_seconds,
         "state_arrival_guard_sec": DEFAULT_STATE_ARRIVAL_GUARD_SEC,

@@ -99,16 +99,11 @@ class TestSelfWakeAfterOwnAction:
 
         monkeypatch.setattr(game_module, "SSENotifyClient", InitialFrameOnlyClient)
         draw_doc = load_fixture("state_response_snapshot_draw.json")
-        # 真实形态：我方弃牌被服务端记为新 seq（102），杠/摸牌续排（103）；
-        # 本人弃牌回显在刷新触发集内 → 权威刷新（seq=0）返回新快照投递下一窗
-        events_doc = {"seq": 103, "gap": False, "events": [
-            {"seq": 102, "type": "tile_discarded", "seat": 2, "tile": "5w", "data": None, "ts": 0},
-            {"seq": 103, "type": "tile_drawn", "seat": 2, "tile": "6b", "data": None, "ts": 0},
-        ], "pending": False}
+        monkeypatch.setattr(game_module, "_SSE_OWN_DISCARD_PROBE_SEC", 0.01)
+        # 完全无后续通知时，本人动作探针直接取权威快照，不挂长轮询。
         refreshed = load_fixture("state_response_snapshot_draw.json")
         refreshed["seq"] = 103  # 刷新快照水位推进到新事件之后
-        queue = [(200, json.dumps(draw_doc)), (200, json.dumps(draw_doc)),
-                 (200, json.dumps(events_doc)), (200, json.dumps(refreshed))]
+        queue = [(200, json.dumps(draw_doc)), (200, "{}"), (200, json.dumps(refreshed))]
 
         def handler(*, method, path, json_body=None, params=None, long_poll=False):
             return queue.pop(0)
