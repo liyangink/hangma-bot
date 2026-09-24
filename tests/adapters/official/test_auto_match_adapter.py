@@ -673,6 +673,43 @@ async def test_initialize_restore_missing_room_404(transport, clock, audit) -> N
 
 
 @pytest.mark.asyncio
+async def test_next_update_discovers_first_games_within_response_window(transport, clock, audit) -> None:
+    """自动房入席后快速发现首批场次，房间详情仍按常规间隔检查。"""
+
+    calls: List[tuple[str, float]] = []
+    started_at = clock.monotonic()
+
+    def handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):
+        now = clock.monotonic() - started_at
+        calls.append((path, now))
+        if path == "/portal/api/guide/version":
+            return 200, json.dumps(_guide_doc())
+        if path == "/api/me":
+            return 200, json.dumps(_me_doc(active_games=("g1",) if now >= 0.5 else ()))
+        if path == "/api/tournaments/r_auto_1":
+            return 200, json.dumps(
+                _room_doc(
+                    status="running" if now >= 0.5 else "registering",
+                    my_games=("g1",) if now >= 0.5 else (),
+                )
+            )
+        raise AssertionError("unexpected " + method + " " + path)
+
+    transport.handler = handler
+    session = make_auto_session(clock=clock, transport=transport, audit=audit)
+    outcome = await initialize_once(session, _target(room_id="r_auto_1"))
+    assert isinstance(outcome, SessionBootstrap)
+    assert not outcome.initial_snapshot.active_games
+
+    snapshot = await asyncio.wait_for(session.next_update(), timeout=3)
+    assert not isinstance(snapshot, ParticipantTerminal)
+    assert snapshot.active_games == ("g1",)
+    assert clock.monotonic() - started_at < 1.0
+    assert len([path for path, _ in calls if path == "/api/me"]) >= 3
+    assert len([path for path, _ in calls if path == "/api/tournaments/r_auto_1"]) == 3
+
+
+@pytest.mark.asyncio
 async def test_next_update_active_intersection_and_finished(transport, clock, audit) -> None:
     """next_update：active_games 只取与房间 my_games 的交集；finished 是普通
     变化快照（终态判定在 application）。"""

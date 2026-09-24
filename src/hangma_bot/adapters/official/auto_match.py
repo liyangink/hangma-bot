@@ -78,6 +78,8 @@ from .scheduler import (DEFAULT_PRODUCTION_STATE_BURST, DEFAULT_PRODUCTION_STATE
                         Priority, RequestKind, RequestScheduler)
 from .transport import OfficialTransport, TransportConfig
 
+_FAST_GAME_START_POLL_SEC = 0.25  # 匹配完成前仅快速检查 /api/me；秒
+
 # 服务端 v15 自动房默认配置（API 文档 §2.6，抓取 2026-09-05）：显式声明上限
 # 低于服务默认（M∈1..9 或 Rounds∈1..7）→ 永久 404 NO_ROOM_AVAILABLE。客户端
 # 在同一次操作开始前就拦截，避免白费每分钟配额；服务端默认上调属 breaking
@@ -216,6 +218,7 @@ class OfficialAutoMatchSession:
         self._audit_context = audit_context
         self._ruleset_version = ruleset_version
         self._poll_interval = room_poll_interval_sec
+        self._waiting_for_games = False
         self._max_retries = max_retries
         self._backoff_base = retry_backoff_base_sec
         self._retry_sleep = retry_sleep if retry_sleep is not None else asyncio.sleep
@@ -386,6 +389,13 @@ class OfficialAutoMatchSession:
         if isinstance(registration, ParticipantTerminal):
             return registration
         self._registration = registration
+        self._waiting_for_games = bool(
+            self._last_snapshot is not None
+            and not self._last_snapshot.active_games
+            and self._last_snapshot.status not in (
+                TournamentStatus.FINISHED, TournamentStatus.CLOSED, TournamentStatus.VOID,
+            )
+        )
         self._emit_audit(
             AuditKind.AUTHORITATIVE_STATE,
             {
@@ -430,6 +440,7 @@ class OfficialAutoMatchSession:
 
         reg = self._require_registration()
         exhausted_rounds = 0
+        next_detail_at = self._monotonic()
         while not self._closed:
             try:
                 me = parse_me(await self._get_me())
@@ -442,9 +453,16 @@ class OfficialAutoMatchSession:
                             me.tournament_id
                         ),
                     )
+                if (self._waiting_for_games and not me.active_games
+                        and self._monotonic() < next_detail_at):
+                    # 房间详情仍按原间隔检查无场次的终态；场次出现前
+                    # 加快 /api/me，避免 2 秒发现间隔吞掉第一张弃牌。
+                    await self._retry_sleep(min(self._poll_interval, _FAST_GAME_START_POLL_SEC))
+                    continue
                 detail_doc = await self._request_with_retry(
                     "GET", "/api/tournaments/{}".format(reg.room_id), priority=Priority.BACKGROUND
                 )
+                next_detail_at = self._monotonic() + self._poll_interval
             except AuthError:
                 return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "next_update 401")
             except NotFoundError:
@@ -508,8 +526,13 @@ class OfficialAutoMatchSession:
                 )
             if self._snapshot_changed(snapshot):
                 self._adopt_snapshot(snapshot)
+                if snapshot.active_games or snapshot.status in (
+                    TournamentStatus.FINISHED, TournamentStatus.CLOSED, TournamentStatus.VOID,
+                ):
+                    self._waiting_for_games = False
                 return snapshot
-            await self._retry_sleep(self._poll_interval)
+            await self._retry_sleep(min(self._poll_interval, _FAST_GAME_START_POLL_SEC)
+                                    if self._waiting_for_games else self._poll_interval)
         return self._terminal(ParticipantTerminalReason.FATAL_PROTOCOL_ERROR, "session_closed_by_aclose")
 
     def open_game(self, game_id: str) -> GameSessionPort:

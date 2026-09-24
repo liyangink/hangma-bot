@@ -41,21 +41,24 @@ def _rank(tile_code: str) -> Optional[tuple]:
 
 
 def chi_shape_superset(tile_code: str, hand_codes: Sequence[str]) -> bool:
-    """吃形保守超集：同花色距离 ≤2 内我方持有任意牌即认为可能成搭。
+    """在暗牌保守超集里查完整吃搭；不把它当作合法动作判定。
 
-    精确吃形（两侧/嵌张双缺）由规则模块在候选里判定；这里宁可多判
-    （多花一次 GET），不漏判真实可吃窗口。
+    真实暗牌始终包含于传入的 hand_codes；若真实暗牌有两张成搭，超集
+    中也必有这两张。因此要求两张齐全仍无假阴性，并可排除只有一张邻牌
+    的假兴趣。财神、抓打圈及未知暗牌由调用方另行保守处理。
     """
 
     target = _rank(tile_code)
     if target is None:
         return False  # 字牌不能组成顺子
     suit, digit = target
-    for code in hand_codes:
-        held = _rank(code)
-        if held is not None and held[0] == suit and abs(held[1] - digit) <= 2:
-            return True
-    return False
+    held = set(hand_codes)
+    return any(
+        1 <= left <= 9 and 1 <= right <= 9
+        and f"{left}{suit}" in held and f"{right}{suit}" in held
+        for left, right in ((digit - 2, digit - 1), (digit - 1, digit + 1),
+                            (digit + 1, digit + 2))
+    )
 
 
 def discard_interesting(

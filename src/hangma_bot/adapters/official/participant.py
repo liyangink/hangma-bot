@@ -73,6 +73,8 @@ from .transport import OfficialTransport, TransportConfig
 # TOURNAMENT_NOT_FOUND 或缺 code 才表示永久不存在。不能用重试次数
 # 把前者重新判成后者。身份和规则归属仍由 /api/me 与 /me/rules 核验。
 
+_FAST_GAME_START_POLL_SEC = 0.25  # ready 后仅 /api/me 使用；秒，避免 1 秒首响应窗被 2 秒发现间隔吞掉
+
 
 @dataclass(frozen=True)
 class _Registration:
@@ -124,6 +126,7 @@ class OfficialTournamentSession:
         self._audit_context = audit_context
         self._ruleset_version = ruleset_version
         self._poll_interval = tournament_poll_interval_sec
+        self._waiting_for_games_after_ready = False
         self._max_retries = max_retries
         self._backoff_base = retry_backoff_base_sec
         self._sse_enabled = sse_enabled
@@ -399,6 +402,9 @@ class OfficialTournamentSession:
         )
         try:
             await self._request_with_retry("POST", path, priority=Priority.RECOVERY)
+            # ready 可能立即启动十桌；原 2 秒赛事轮询实网错过首张弃牌
+            # 的 1 秒碰窗。进入场次前仅加快 /api/me 发现，不高频拉详情。
+            self._waiting_for_games_after_ready = True
             return ReadyResult(status=OperationStatus.ACCEPTED)
         except AuthError:
             return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "ready 401")
@@ -426,6 +432,7 @@ class OfficialTournamentSession:
     async def next_update(self) -> Union[TournamentSnapshot, ParticipantTerminal]:
         reg = self._require_registration()
         exhausted_rounds = 0
+        next_detail_at = self._monotonic()
         while not self._closed:
             try:
                 me = parse_me(await self._request_with_retry("GET", "/api/me", priority=Priority.BACKGROUND))
@@ -436,10 +443,17 @@ class OfficialTournamentSession:
                         ParticipantTerminalReason.TARGET_MISMATCH,
                         "Token 绑定漂移：{} → {}".format(reg.tournament_id, me.tournament_id or "(空)"),
                     )
+                if (self._waiting_for_games_after_ready and not me.active_games
+                        and self._monotonic() < next_detail_at):
+                    # /api/me 可直接证明场次尚未出现；仍按原 2 秒间距读取
+                    # 赛事详情，以便发现不伴随 active_games 的终态变化。
+                    await self._retry_sleep(min(self._poll_interval, _FAST_GAME_START_POLL_SEC))
+                    continue
                 detail_parsed = parse_tournament_detail(
                     # 共享请求层重试暂时的 GONE；这里只会收到永久 NOT_FOUND。
                     await self._tournament_detail(reg.tournament_id, priority=Priority.BACKGROUND)
                 )
+                next_detail_at = self._monotonic() + self._poll_interval
             except AuthError:
                 return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "next_update 401")
             except NotFoundError:
@@ -480,8 +494,11 @@ class OfficialTournamentSession:
             # 适配器只做协议投影，不重复实现终态化。
             if self._snapshot_changed(snapshot):
                 self._adopt(snapshot)
+                if snapshot.active_games or snapshot.status.value in ("finished", "closed", "void"):
+                    self._waiting_for_games_after_ready = False
                 return snapshot
-            await self._retry_sleep(self._poll_interval)
+            await self._retry_sleep(min(self._poll_interval, _FAST_GAME_START_POLL_SEC)
+                                    if self._waiting_for_games_after_ready else self._poll_interval)
         # 正常关停（aclose）不是协议错误；detail 约定供应用层区分
         return self._terminal(ParticipantTerminalReason.FATAL_PROTOCOL_ERROR, "session_closed_by_aclose")
 

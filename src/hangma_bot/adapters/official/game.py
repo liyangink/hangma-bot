@@ -72,7 +72,6 @@ from hangma_bot.kernel.serialization import observation_to_json, public_event_to
 from .request_audit import audited_request
 from . import projector
 from .action_gate import ActionGate
-from .claim_interest import WEALTH_GOD_CODE
 from .dto import StateResponse, parse_state_response
 from .discard_pacing import DiscardPacing, plan_discard_pacing
 from .errors import (
@@ -129,6 +128,7 @@ _BOUNDARY_STALL_BACKOFF_SEC = (0.5, 1.0)
 # SSE 帧驱动模式下的静默对齐周期（秒）：帧通道无帧时按此周期短拉对齐水位，
 # 防御帧丢失（服务端 keepalive 30s 之外的极端静默）导致的漂移。
 _SSE_IDLE_POLL_SEC = 5.0
+_SSE_SETTLED_IDLE_POLL_SEC = 5.25  # v31 局间固定停 5 秒，错开新局首弃牌的 SSE 帧
 # 本人普通弃牌被接收但通知流完全不推帧时，短时权威探针避免长达 5 秒
 # 的未知区间；一旦看到预期回显即取消，不给正常流增加 GET。
 _SSE_OWN_DISCARD_PROBE_SEC = 1.2
@@ -711,13 +711,18 @@ class OfficialGameSession:
 
         - 需读取的帧到达 → 短拉增量（GET /state?seq=本地已消费游标）；
         - 已知无我方动作权的帧暂缓读取，并设短快照探针检查后续沉默；
-        - 静默超时（无边界时 _SSE_IDLE_POLL_SEC）→ seq=0 权威对齐；
+        - 静默超时（局间取 5.25 秒，其他取 5 秒）→ seq=0 权威对齐；
         - 边界超时（响应阶段官方 deadline 推导）→ 对齐边界定时器语义，
-          主动 seq=0 权威刷新捕获无事件的阶段切换（普通优先级）；
+          主动 seq=0 权威刷新捕获无事件的阶段切换；
         - SSE 失效（等待期间流终局）→ 可恢复故障，由上层监督处理。
         """
 
-        timeout = boundary_timeout if boundary_timeout is not None else _SSE_IDLE_POLL_SEC
+        if boundary_timeout is not None:
+            timeout = boundary_timeout
+        elif self._sync.snapshot is not None and self._sync.snapshot.phase == "settled":
+            timeout = _SSE_SETTLED_IDLE_POLL_SEC
+        else:
+            timeout = _SSE_IDLE_POLL_SEC
         assert self._sse_event is not None  # sse_enabled 时必有
         deadline = asyncio.get_running_loop().time() + timeout
         while True:
@@ -754,6 +759,20 @@ class OfficialGameSession:
                         "consumed_seq": self._sync.last_seq,
                     }, trigger_seq=frame.seq)
                     continue
+                if self._sse_can_skip_chi_timeout_opponent_draw(frame.seq, base_seq):
+                    self._sse_skipped_seq = frame.seq
+                    self._sse_phase_probe_at = (
+                        asyncio.get_running_loop().time() + self._timing.discard_timeout_sec + 0.2)
+                    self._sse_skip_expectations.append(
+                        (base_seq + 1, frame.seq, "chi_timeout_opponent_draw", None))
+                    self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                        "sse_skip_reason": "chi_timeout_opponent_draw",
+                        "sse_skip_basis": ("authoritative_peng_timeouts"
+                                           if base_seq == self._sync.last_seq else "prior_peng_skip"),
+                        "observed_seq": frame.seq,
+                        "consumed_seq": self._sync.last_seq,
+                    }, trigger_seq=frame.seq)
+                    continue
                 if self._sse_can_skip_opponent_draw(frame.seq, base_seq):
                     self._sse_skipped_seq = frame.seq
                     self._sse_phase_probe_at = (
@@ -768,13 +787,18 @@ class OfficialGameSession:
                 self._sse_own_discard_probe_at = None
                 self._sse_phase_probe_at = None
                 return await self._get_state(
-                    long_poll=False, priority=Priority.DISCARD_WATCH,
+                    # SSE 只有水位，没有事件类型；此帧可能已开启 1 秒吃碰窗。
+                    # 实网 R3 普通监听排队 1.0–1.4 秒，权威状态到达时窗口已关。
+                    long_poll=False, priority=Priority.RECOVERY,
                     query_purpose="sse_frame")
             if self._sse_wake_pending:
                 self._sse_wake_pending = False
                 self._sse_own_discard_probe_at = None
                 self._sse_phase_probe_at = None
-                return await self._get_state(long_poll=False, query_purpose="sse_self_wake")
+                # 本人动作后对手可能马上弃牌；该查询同样承担 1 秒窗发现。
+                return await self._get_state(
+                    long_poll=False, priority=Priority.RECOVERY,
+                    query_purpose="sse_self_wake")
             next_deadline = deadline
             for probe_at in (self._sse_own_discard_probe_at, self._sse_phase_probe_at):
                 if probe_at is not None:
@@ -788,7 +812,9 @@ class OfficialGameSession:
                 self._sse_own_discard_probe_at = None
                 self._sse_phase_probe_at = None
                 return await self._get_state(
-                    long_poll=False, force_full=True, priority=Priority.POLL,
+                    # 保底可能发现已开启的 1 秒窗，也会占住本场单 GET 槽；
+                    # 与帧查询同级，避免排队时把随后到达的帧挡在槽外。
+                    long_poll=False, force_full=True, priority=Priority.RECOVERY,
                     query_purpose=("sse_own_discard_probe" if own_probe else
                                    "sse_phase_probe" if phase_probe else
                                    "sse_boundary" if boundary_timeout is not None else "sse_idle"))
@@ -816,19 +842,77 @@ class OfficialGameSession:
         """
 
         snapshot = self._sync.snapshot
+        observation = self._sync.current_observation()
         cycle = self._sync.response_cycle_key
         virtual_own_discard = (self._sse_virtual_discard is not None
                                and self._sse_virtual_discard[0] == base_seq)
-        if (not self._sse_filter_active or snapshot is None
-                or (snapshot.phase != "response_peng" and not virtual_own_discard)
-                or snapshot.god_catch_play or self._gate.in_flight
+        last_event = self._sync.history[-1] if self._sync.history else None
+        if (not self._sse_filter_active or snapshot is None or observation is None
+                or snapshot.god_catch_play or observation.rule_state.catch_play
+                or self._gate.in_flight
                 or self._gate.blocked_window is not None
                 or observed_seq != base_seq + 3
                 or (not virtual_own_discard and (base_seq != self._sync.last_seq
-                    or cycle is None or cycle[1] != base_seq
+                    or cycle is None or cycle[0] != snapshot.round_no
+                    or cycle[1] != base_seq
+                    or not (
+                        (observation.phase == "response_peng"
+                         and observation.last_discard is not None
+                         and observation.last_discard.seq == base_seq)
+                        # 旧快照可能还在 draw/response_chi；已消费的最新弃牌
+                        # 事件与本地周期身份同样能证明 +3 紧跟哪一张牌。
+                        or (last_event is not None and last_event.seq == base_seq
+                            and last_event.kind == "tile_discarded"
+                            and last_event.catch_play is False
+                            and last_event.seat == cycle[3]
+                            and len(last_event.tiles) == 1
+                            and last_event.tiles[0].code == cycle[2])
+                    )
                     or self._sync.claim_interest_for_cycle()))):
             return False
         return True
+
+    def _sse_can_skip_chi_timeout_opponent_draw(self, observed_seq: int, base_seq: int) -> bool:
+        """碰窗走满组已甄别或权威确认后，原子 +2 为吃窗走满和下家摸牌。
+
+        v35 实网多轮帧审计中，该位置的 +2 均是此组合。前一帧 +3 即使
+        因我方潜在鸣牌而读了状态，只要三条碰窗走满已权威确认，也可
+        同样暂缓；下一摸牌者必须是他家。后续仍逐条权威核对，文法变化
+        则本场停用甄别。
+        """
+
+        snapshot = self._sync.snapshot
+        observation = self._sync.current_observation()
+        cycle = self._sync.response_cycle_key
+        last_skip = self._sse_skip_expectations[-1] if self._sse_skip_expectations else None
+        if (not self._sse_filter_active or snapshot is None or observation is None
+                or snapshot.god_catch_play or observation.rule_state.catch_play
+                or self._gate.in_flight or self._gate.blocked_window is not None
+                or observed_seq != base_seq + 2):
+            return False
+        skipped_peng = bool(last_skip is not None and last_skip[2] == "peng_timeout"
+                            and last_skip[1] == base_seq)
+        recent = self._sync.history[-3:]
+        confirmed_peng = bool(
+            base_seq == self._sync.last_seq and cycle is not None
+            and cycle[1] == base_seq - 3
+            # 本人副露后旧快照可仍是 draw；三条权威碰超时及弃牌周期
+            # 已足以证明碰窗走满，不能再要求当前观察恰为 response_chi。
+            and len(recent) == 3
+            and all(event.seq == base_seq - 2 + index
+                    and event.kind == "timeout" and event.response_window == "peng"
+                    for index, event in enumerate(recent))
+        )
+        if not skipped_peng and not confirmed_peng:
+            return False
+        virtual = self._sse_virtual_discard
+        if skipped_peng and virtual is not None and virtual[0] == base_seq - 3:
+            discarder = virtual[2]
+        elif cycle is not None and cycle[1] == base_seq - 3:
+            discarder = cycle[3]
+        else:
+            return False
+        return (discarder + 1) % 4 != snapshot.seat
 
     def _sse_can_skip_opponent_draw(self, observed_seq: int, base_seq: int) -> bool:
         """已消费吃窗走满标记后，下一摸牌者确定为他家才暂缓读取。"""
@@ -860,6 +944,13 @@ class OfficialGameSession:
             if kind == "peng_timeout":
                 valid = all(event is not None and event.type == "timeout"
                             and event.response_window == "peng" for event in observed)
+            elif kind == "chi_timeout_opponent_draw":
+                snapshot = self._sync.snapshot
+                valid = bool(len(observed) == 2 and observed[0] is not None
+                             and observed[0].type == "timeout"
+                             and observed[0].response_window == "chi"
+                             and observed[1] is not None and observed[1].type == "tile_drawn"
+                             and observed[1].seat != (snapshot.seat if snapshot is not None else None))
             elif kind == "opponent_draw":
                 snapshot = self._sync.snapshot
                 valid = bool(observed[0] is not None and observed[0].type == "tile_drawn"
@@ -1732,22 +1823,27 @@ class OfficialGameSession:
         if not allowed:
             return self._finish_submit(attempt, SubmitNotSent(reason))
         self._gate.enter()
+        # POST 前的增量观察已包含本人摸牌；快照可能仍停在上一吃窗。
+        before_discard = (self._sync.current_observation()
+                          if self._sse_event is not None and isinstance(attempt.action, Discard)
+                          else None)
         try:
             outcome = await self._submit_locked(attempt)
         finally:
             self._gate.leave()
         if isinstance(outcome, SubmitAccepted) and self._sse_event is not None:
-            snapshot = self._sync.snapshot
             ordinary_discard = (
                 isinstance(attempt.action, Discard)
                 and attempt.window_key.phase is WindowPhase.DRAW
-                and attempt.action.tile.code != WEALTH_GOD_CODE
-                and snapshot is not None and snapshot.phase == "draw"
-                and not snapshot.god_catch_play and snapshot.god_chain_count == 0
+                and before_discard is not None and before_discard.phase == "draw"
+                and attempt.action.tile != before_discard.rule_state.wealth_god
+                and not before_discard.rule_state.catch_play
+                and before_discard.rule_state.chain_count == 0
+                and before_discard.gang_draw is not True
             )
             if ordinary_discard:
                 self._sse_expected_own_discard = (
-                    self._sync.last_seq + 1, attempt.action.tile.code, snapshot.seat)
+                    self._sync.last_seq + 1, attempt.action.tile.code, before_discard.seat)
                 self._sse_own_discard_probe_at = (
                     asyncio.get_running_loop().time() + _SSE_OWN_DISCARD_PROBE_SEC)
                 self._sse_event.set()

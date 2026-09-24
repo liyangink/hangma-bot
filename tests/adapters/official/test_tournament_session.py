@@ -221,6 +221,44 @@ class TestRegisterAndReady:
 
 
 class TestNextUpdate:
+    async def test_ready_discovers_first_games_before_one_second_response_window(self, transport, clock) -> None:
+        """到位后快速读 /api/me；原 2 秒发现间隔会漏掉新桌第一张弃牌。"""
+
+        empty_me = load_fixture("me.json")
+        empty_me["active_games"] = []
+        active_me = load_fixture("me.json")
+        ready_at = {"time": None}
+
+        def handler(*, method, path, **kw):
+            if path == "/portal/api/guide/version":
+                return 200, json.dumps(_guide_doc())
+            if path == "/api/me":
+                active = ready_at["time"] is not None and clock.monotonic() >= ready_at["time"] + .5
+                return 200, json.dumps(active_me if active else empty_me)
+            if path == "/api/tournaments/me/rules":
+                return 200, json.dumps(load_fixture("rules.json"))
+            if path == "/api/tournaments/t_test_room_1":
+                active = ready_at["time"] is not None and clock.monotonic() >= ready_at["time"] + .5
+                return 200, json.dumps(load_fixture(
+                    "tournament_detail.json" if active else "tournament_stage_open.json"))
+            if method == "POST" and path == "/api/tournaments/me/ready":
+                return 200, "{}"
+            raise AssertionError("unexpected " + method + " " + path)
+
+        transport.handler = handler
+        session = make_tournament_session(clock=clock, transport=transport)
+        boot = await session.initialize(TARGET)
+        assert not isinstance(boot, ParticipantTerminal)
+        assert (await session.ready(boot.initial_snapshot.stage)).status is OperationStatus.ACCEPTED
+        ready_at["time"] = clock.monotonic()
+        transport.calls.clear()
+        update = await asyncio.wait_for(session.next_update(), timeout=2)
+        assert update.active_games == ("g_room1_batch1",)
+        assert clock.monotonic() - ready_at["time"] < 1.0
+        assert sum(call.path == "/api/me" for call in transport.calls) >= 3
+        assert sum(call.path == "/api/tournaments/t_test_room_1" for call in transport.calls) == 2
+        await session.aclose()
+
     async def test_change_then_finished_snapshot_in_test_room(self, transport, clock) -> None:
         """测试房间 finished 非终态：适配器透传快照，由应用层按模式复用。"""
 

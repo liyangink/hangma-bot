@@ -470,7 +470,7 @@ class TestRefreshPredicate:
         assert state.events_need_authoritative_refresh(
             (_parsed_event(104, "tile_discarded", 0, "5w"),)
         )
-        # 上家弃 2w：同花色距离≤2 搭子超集 → 可能吃 → 刷新
+        # 上家弃 2w：手牌超集含 1w、3w 完整吃搭 → 可能吃 → 刷新
         assert state.events_need_authoritative_refresh(
             (_parsed_event(105, "tile_discarded", 1, "2w"),)
         )
@@ -776,4 +776,3 @@ async def test_pending_gap_progress_restores_incremental(transport, clock):
     assert item.window_key.trigger_seq == 301  # 第二轮进展后恢复增量直达
     assert get_calls == [0, 101, 0, 101, 0, 101, 0, 200, 0, 200]
     assert history_polls["n"] == 0
-

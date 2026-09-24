@@ -29,10 +29,22 @@ class TestPengSuperset:
 
 
 class TestChiSuperset:
-    def test_upper_house_same_suit_within_two(self):
-        # 上家弃 6w，我持 4w/5w/8w 任一（距离≤2）→ 超集命中
-        for held in ("4w", "5w", "7w", "8w"):
-            assert discard_interesting(my_seat=2, discarder_seat=1, tile_code="6w", hand_codes=(held, "9t"))
+    def test_upper_house_requires_complete_chi_pair(self):
+        # 上家弃 6w，真实可吃所需的两张必须都在暗牌超集中。
+        for pair in (("4w", "5w"), ("5w", "7w"), ("7w", "8w")):
+            assert discard_interesting(my_seat=2, discarder_seat=1,
+                                       tile_code="6w", hand_codes=pair + ("9t",))
+        for single in ("4w", "5w", "7w", "8w"):
+            assert not discard_interesting(my_seat=2, discarder_seat=1,
+                                           tile_code="6w", hand_codes=(single, "9t"))
+
+    def test_every_numbered_chi_pair_is_covered(self):
+        for suit in "wbt":
+            for discard in range(1, 10):
+                for start in range(max(1, discard - 2), min(7, discard) + 1):
+                    pair = tuple(f"{rank}{suit}" for rank in range(start, start + 3)
+                                 if rank != discard)
+                    assert chi_shape_superset(f"{discard}{suit}", pair)
 
     def test_non_upper_house_never_chi(self):
         # 非上家弃牌不可吃：即使搭子齐也只看碰（无对子 → 无关）

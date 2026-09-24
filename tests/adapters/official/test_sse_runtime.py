@@ -220,7 +220,7 @@ class TestSseFrameDriven:
         assert calls and not any(calls)
         await session.aclose("done")
 
-    @pytest.mark.parametrize("frame_seq", [121, 123])
+    @pytest.mark.parametrize("frame_seq", [121, 122, 123])
     async def test_frame_during_response_phase_reads_incremental(self, monkeypatch, frame_seq) -> None:
         """有我方鸣牌兴趣时即使帧 +3 也读增量；收帧不等于看门狗到时。"""
 
@@ -294,10 +294,247 @@ class TestSseFrameDriven:
                    and record.payload.get("skip_kind") == "peng_timeout"
                    for record in audit.records)
         assert any(record.payload.get("request_timing", {}).get("query_purpose") == "sse_frame"
-                   and record.payload["request_timing"]["scheduler_priority"] == "DISCARD_WATCH"
+                   and record.payload["request_timing"]["scheduler_priority"] == "RECOVERY"
                    for record in audit.records)
         await session.aclose("done")
         await asyncio.wait_for(consume, timeout=2)
+
+    async def test_confirmed_peng_timeouts_also_skip_opponent_chi_timeout_and_draw(self, monkeypatch) -> None:
+        """已权威读过三条碰超时，后续 +2 他家摸牌仍无需再占一次状态额度。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        peng = load_fixture("state_response_snapshot_peng.json")
+        peng["snapshot"].update({
+            "turn": 3, "responding_seats": [0, 1],
+            "last_discard": {"seat": 3, "tile": "2w", "seq": 120},
+        })
+        triple = {"seq": 123, "gap": False, "events": [
+            {"seq": seq, "type": "timeout", "seat": seat, "tile": "",
+             "data": {"kind": "response", "window": "peng"}, "ts": 0}
+            for seq, seat in ((121, 0), (122, 1), (123, 2))
+        ]}
+        chi = json.loads(json.dumps(peng))
+        chi["seq"] = 123
+        chi["snapshot"].update({"seq": 123, "phase": "response_chi", "responding_seats": [0]})
+        after = {"seq": 126, "gap": False, "events": [
+            {"seq": 124, "type": "timeout", "seat": 0, "tile": "",
+             "data": {"kind": "response", "window": "chi"}, "ts": 0},
+            {"seq": 125, "type": "tile_drawn", "seat": 0, "tile": "", "data": None, "ts": 0},
+            {"seq": 126, "type": "tile_discarded", "seat": 0, "tile": "4w",
+             "data": {"catch_play": False}, "ts": 0},
+        ]}
+        calls = []
+
+        def handler(*, method, path, json_body=None, params=None, long_poll=False):
+            seq = params["seq"]
+            calls.append(seq)
+            if seq == 0:
+                return 200, json.dumps(peng if calls.count(0) == 1 else chi)
+            return 200, json.dumps({120: triple, 123: after}[seq])
+
+        transport = FakeTransport()
+        transport.handler = handler
+        audit = FakeAuditSink()
+        session = _make_session(transport, FakeClock(), audit=audit)
+        consume = asyncio.create_task(session.next_item())
+        for _ in range(100):
+            if calls and FakeSseClient.instances:
+                break
+            await asyncio.sleep(0)
+        assert calls == [0]
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=123))
+        for _ in range(100):
+            if 120 in calls:
+                break
+            await asyncio.sleep(0)
+        assert 120 in calls
+        before = len(calls)
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=125))
+        for _ in range(100):
+            await asyncio.sleep(0)
+        assert len(calls) == before
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=126))
+        for _ in range(100):
+            if 123 in calls:
+                break
+            await asyncio.sleep(0)
+        assert 123 in calls
+        assert any(record.payload.get("sse_skip_reason") == "chi_timeout_opponent_draw"
+                   and record.payload.get("sse_skip_basis") == "authoritative_peng_timeouts"
+                   for record in audit.records)
+        assert any(record.payload.get("sse_skip_verification") == "verified"
+                   and record.payload.get("skip_kind") == "chi_timeout_opponent_draw"
+                   for record in audit.records)
+        await session.aclose("done")
+        await asyncio.wait_for(consume, timeout=2)
+
+    async def test_incremental_discard_skips_atomic_peng_and_opponent_draw(self, monkeypatch) -> None:
+        """快照仍在摸牌阶段时，也要凭已消费弃牌与相位跳过 +3、+2。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        base = load_fixture("state_response_snapshot_draw.json")
+        base["seq"] = 120
+        base["snapshot"].update({"turn": 3, "drawn_tile": None, "hand_counts": [10, 10, 13, 11]})
+        discard = {"seq": 121, "gap": False, "events": [
+            {"seq": 121, "type": "tile_discarded", "seat": 3, "tile": "9b",
+             "data": {"catch_play": False}, "ts": 0}]}
+        through_next_discard = {"seq": 127, "gap": False, "events": [
+            *({"seq": seq, "type": "timeout", "seat": seat, "tile": "",
+               "data": {"kind": "response", "window": "peng"}, "ts": 0}
+              for seq, seat in ((122, 0), (123, 1), (124, 2))),
+            {"seq": 125, "type": "timeout", "seat": 0, "tile": "",
+             "data": {"kind": "response", "window": "chi"}, "ts": 0},
+            {"seq": 126, "type": "tile_drawn", "seat": 0, "tile": "", "data": None, "ts": 0},
+            {"seq": 127, "type": "tile_discarded", "seat": 0, "tile": "8b",
+             "data": {"catch_play": False}, "ts": 0},
+        ]}
+        calls = []
+
+        def handler(*, method, path, json_body=None, params=None, long_poll=False):
+            calls.append(params["seq"])
+            return 200, json.dumps({0: base, 120: discard, 121: through_next_discard}[params["seq"]])
+
+        transport = FakeTransport()
+        transport.handler = handler
+        audit = FakeAuditSink()
+        session = _make_session(transport, FakeClock(), audit=audit)
+        consume = asyncio.create_task(session.next_item())
+        for _ in range(100):
+            if calls and FakeSseClient.instances:
+                break
+            await asyncio.sleep(0)
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=121))
+        for _ in range(100):
+            if len(calls) >= 2:
+                break
+            await asyncio.sleep(0)
+        assert calls == [0, 120]
+        first_window = await asyncio.wait_for(consume, timeout=2)
+        assert isinstance(first_window, ObservedActionWindow)
+        consume = asyncio.create_task(session.next_item())
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=124))
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=126))
+        for _ in range(100):
+            await asyncio.sleep(0)
+        assert calls == [0, 120]
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=127))
+        for _ in range(100):
+            if len(calls) >= 3:
+                break
+            await asyncio.sleep(0)
+        assert calls[:3] == [0, 120, 121]
+        assert {record.payload.get("skip_kind") for record in audit.records
+                if record.payload.get("sse_skip_verification") == "verified"} >= {
+                    "peng_timeout", "chi_timeout_opponent_draw"}
+        await session.aclose("done")
+        await asyncio.wait_for(consume, timeout=2)
+
+    @pytest.mark.parametrize("catch_play_known", [True, False])
+    async def test_peng_timeout_skip_uses_consumed_discard_when_snapshot_phase_is_stale(
+        self, monkeypatch, catch_play_known,
+    ) -> None:
+        """旧快照阶段可用明确普通弃牌锚定；缺失抓打标记仍须权威查询。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        base = load_fixture("state_response_snapshot_draw.json")
+        base["seq"] = 120
+        base["snapshot"].update({
+            "phase": "response_chi", "turn": 2, "responding_seats": [3],
+            "drawn_tile": None, "last_discard": {"seat": 2, "tile": "9t", "seq": 120},
+            "hand_counts": [10, 10, 13, 11],
+        })
+        new_discard = {"seq": 123, "gap": False, "events": [
+            {"seq": 121, "type": "timeout", "seat": 3, "tile": "",
+             "data": {"kind": "response", "window": "chi"}, "ts": 0},
+            {"seq": 122, "type": "tile_drawn", "seat": 3, "tile": "",
+             "data": None, "ts": 0},
+            {"seq": 123, "type": "tile_discarded", "seat": 3, "tile": "中",
+             "data": {"catch_play": False} if catch_play_known else {}, "ts": 0},
+        ]}
+        after_timeout = {"seq": 127, "gap": False, "events": [
+            *({"seq": seq, "type": "timeout", "seat": seat, "tile": "",
+               "data": {"kind": "response", "window": "peng"}, "ts": 0}
+              for seq, seat in ((124, 0), (125, 1), (126, 2))),
+            {"seq": 127, "type": "pass", "seat": 0, "tile": "", "data": None, "ts": 0},
+        ]}
+        calls = []
+
+        def handler(*, method, path, json_body=None, params=None, long_poll=False):
+            calls.append(params["seq"])
+            return 200, json.dumps({0: base, 120: new_discard, 123: after_timeout}[params["seq"]])
+
+        transport = FakeTransport()
+        transport.handler = handler
+        audit = FakeAuditSink()
+        session = _make_session(transport, FakeClock(), audit=audit)
+        consume = asyncio.create_task(session.next_item())
+        for _ in range(100):
+            if calls and FakeSseClient.instances:
+                break
+            await asyncio.sleep(0)
+        assert calls == [0]
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=123))
+        for _ in range(100):
+            if len(calls) >= 2:
+                break
+            await asyncio.sleep(0)
+        assert calls == [0, 120]
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=126))
+        for _ in range(100):
+            if not catch_play_known and len(calls) >= 3:
+                break
+            await asyncio.sleep(0)
+        if not catch_play_known:
+            assert calls[:3] == [0, 120, 123]
+            assert not any(record.payload.get("sse_skip_reason") == "plain_peng_timeout_group"
+                           for record in audit.records)
+            await session.aclose("done")
+            await asyncio.wait_for(consume, timeout=2)
+            return
+        assert calls == [0, 120], "已知无鸣牌兴趣的 +3 不应因旧快照阶段再查一次"
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=127))
+        for _ in range(100):
+            if len(calls) >= 3:
+                break
+            await asyncio.sleep(0)
+        assert calls[:3] == [0, 120, 123]
+        assert any(record.payload.get("sse_skip_verification") == "verified"
+                   and record.payload.get("skip_kind") == "peng_timeout"
+                   for record in audit.records)
+        await session.aclose("done")
+        await asyncio.wait_for(consume, timeout=2)
+
+    async def test_unanchored_plus_three_still_reads_authoritative_state(self, monkeypatch) -> None:
+        """新连接首帧 +3 可能合并抢占动作；无前置弃牌证据时必须查询。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        base = load_fixture("state_response_snapshot_draw.json")
+        base["seq"] = 120
+        base["snapshot"].update({"turn": 3, "drawn_tile": None})
+        finished = load_fixture("state_response_finished.json")
+        calls = []
+
+        def handler(*, method, path, json_body=None, params=None, long_poll=False):
+            calls.append(params["seq"])
+            return 200, json.dumps(base if len(calls) == 1 else finished)
+
+        transport = FakeTransport()
+        transport.handler = handler
+        session = _make_session(transport, FakeClock())
+        consume = asyncio.create_task(session.next_item())
+        for _ in range(100):
+            if calls and FakeSseClient.instances:
+                break
+            await asyncio.sleep(0)
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=123))
+        result = await asyncio.wait_for(consume, timeout=2)
+        assert isinstance(result, GameFinished)
+        assert calls == [0, 120]
+        await session.aclose("done")
 
     async def test_skipped_timeout_silence_uses_short_snapshot_probe(self, monkeypatch) -> None:
         """碰窗 +3 后没有任何新帧，短探针仍对齐权威状态；不挂长轮询。"""
@@ -333,6 +570,34 @@ class TestSseFrameDriven:
         assert any(record.payload.get("sse_skip_verification") == "unobservable"
                    and record.payload.get("filter_active") is True
                    for record in audit.records)
+        await session.aclose("done")
+
+    async def test_settled_idle_probe_uses_recovery_priority(self, monkeypatch) -> None:
+        """局间静默探针不能以普通队列占住单场 GET 槽并遮挡首弃牌帧。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        monkeypatch.setattr(game_module, "_SSE_SETTLED_IDLE_POLL_SEC", 0.01)
+        settled = load_fixture("state_response_snapshot_draw.json")
+        settled["snapshot"].update({"phase": "settled", "turn": 1, "responding_seats": [],
+                                     "drawn_tile": None})
+        finished = load_fixture("state_response_finished.json")
+        calls = []
+
+        def handler(*, method, path, json_body=None, params=None, long_poll=False):
+            calls.append((params["seq"], long_poll))
+            return 200, json.dumps(settled if len(calls) == 1 else finished)
+
+        transport = FakeTransport()
+        transport.handler = handler
+        audit = FakeAuditSink()
+        session = _make_session(transport, FakeClock(), audit=audit)
+        result = await asyncio.wait_for(session.next_item(), timeout=2)
+        assert isinstance(result, GameFinished)
+        assert calls == [(0, False), (0, False)]
+        idle = [record for record in audit.records
+                if record.payload.get("request_timing", {}).get("query_purpose") == "sse_idle"]
+        assert idle and idle[0].payload["request_timing"]["scheduler_priority"] == "RECOVERY"
         await session.aclose("done")
 
     async def test_accepted_plain_discard_echo_does_not_read_state(self, monkeypatch) -> None:
@@ -374,6 +639,84 @@ class TestSseFrameDriven:
         await asyncio.wait_for(consume, timeout=2)
         assert [c for c in calls if c[0] == "GET"][:2] == [("GET", 0, False), ("GET", 101, False)]
         await session.aclose("done")
+
+    async def test_special_action_self_wake_uses_recovery_priority(self, monkeypatch) -> None:
+        """本人特殊动作无 SSE 回显时，自唤醒必须及时取得后续权威状态。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        draw = load_fixture("state_response_snapshot_draw.json")
+        finished = load_fixture("state_response_finished.json")
+        calls = []
+
+        def handler(*, method, path, json_body=None, params=None, long_poll=False):
+            calls.append(method)
+            if method == "POST":
+                return 200, "{}"
+            return 200, json.dumps(draw if calls.count("GET") == 1 else finished)
+
+        transport = FakeTransport()
+        transport.handler = handler
+        audit = FakeAuditSink()
+        session = _make_session(transport, FakeClock(), audit=audit)
+        window = await asyncio.wait_for(session.next_item(), timeout=2)
+        assert isinstance(window, ObservedActionWindow)
+        attempt = ActionAttempt(
+            decision_id="d-sse-special", attempt_no=1, plan_revision=1,
+            window_key=window.window_key, based_on_authoritative_seq=window.window_key.trigger_seq,
+            action=Discard(Tile("白")), action_key="discard:白", latest_send_at_monotonic=1005.0,
+        )
+        assert isinstance(await session.submit(attempt), SubmitAccepted)
+        assert isinstance(await asyncio.wait_for(session.next_item(), timeout=2), GameFinished)
+        wake = [record.payload["request_timing"] for record in audit.records
+                if record.payload.get("request_timing", {}).get("query_purpose") == "sse_self_wake"]
+        assert wake and wake[0]["scheduler_priority"] == "RECOVERY"
+        assert calls == ["GET", "POST", "GET"]
+        await session.aclose("done")
+
+    async def test_incremental_draw_discard_uses_observation_not_stale_snapshot(self, monkeypatch) -> None:
+        """本人增量摸牌后旧快照仍是吃窗，普通弃牌无需自唤醒 GET。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        base = load_fixture("state_response_snapshot_draw.json")
+        base["snapshot"].update({
+            "phase": "response_chi", "turn": 1, "responding_seats": [], "drawn_tile": None,
+        })
+        draw = {"seq": 102, "gap": False, "events": [
+            {"seq": 102, "type": "tile_drawn", "seat": 2, "tile": "1w",
+             "data": None, "ts": 0}]}
+        calls = []
+
+        def handler(*, method, path, json_body=None, params=None, long_poll=False):
+            calls.append((method, params["seq"] if params else None))
+            return (200, "{}") if method == "POST" else (200, json.dumps(base if params["seq"] == 0 else draw))
+
+        transport = FakeTransport()
+        transport.handler = handler
+        session = _make_session(transport, FakeClock())
+        consume = asyncio.create_task(session.next_item())
+        for _ in range(100):
+            if calls and FakeSseClient.instances:
+                break
+            await asyncio.sleep(0)
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=102))
+        window = await asyncio.wait_for(consume, timeout=2)
+        assert isinstance(window, ObservedActionWindow)
+        assert window.observation.phase == "draw"
+        attempt = ActionAttempt(
+            decision_id="d-stale-snapshot", attempt_no=1, plan_revision=1,
+            window_key=window.window_key, based_on_authoritative_seq=window.window_key.trigger_seq,
+            action=Discard(Tile("1w")), action_key="discard:1w", latest_send_at_monotonic=1005.0,
+        )
+        assert isinstance(await session.submit(attempt), SubmitAccepted)
+        consume = asyncio.create_task(session.next_item())
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=103))
+        for _ in range(100):
+            await asyncio.sleep(0)
+        assert [call for call in calls if call[0] == "GET"] == [("GET", 0), ("GET", 101)]
+        await session.aclose("done")
+        await asyncio.wait_for(consume, timeout=2)
 
     async def test_opponent_draw_after_confirmed_chi_timeout_waits_for_discard(self, monkeypatch) -> None:
         """吃窗走满已由状态确认且下个摸牌者为他家时，单帧摸牌不占 GET。"""
