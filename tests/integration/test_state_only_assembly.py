@@ -10,7 +10,10 @@ from hangma_bot.application.auto_match_runtime import AutoMatchSettings
 
 @pytest.mark.parametrize("mode", ['test_room', 'test_tournament', 'official_tournament', 'auto_match'])
 @pytest.mark.parametrize("requested", [False, True])
-def test_production_assembly_uses_requested_sync_mode(monkeypatch, tmp_path, mode, requested):
+@pytest.mark.parametrize("pacing", [False, True])
+def test_production_assembly_uses_independent_sync_and_pacing(
+    monkeypatch, tmp_path, mode, requested, pacing,
+):
     captured = {}
     auto_match = mode == 'auto_match'
 
@@ -34,6 +37,7 @@ def test_production_assembly_uses_requested_sync_mode(monkeypatch, tmp_path, mod
         "token_kind": "test" if mode.startswith('test_') else "official",
         "audit_root": str(tmp_path),
         "sse_enabled": requested,
+        "discard_pacing_enabled": pacing,
     })
     if auto_match:
         bootstrap.build_auto_match_runtime(config, settings=AutoMatchSettings())
@@ -41,10 +45,13 @@ def test_production_assembly_uses_requested_sync_mode(monkeypatch, tmp_path, mod
         bootstrap.build_runtime(config)
     assert captured["session"]["sse_enabled"] is requested
     assert (captured["session"]["sse_budget"] is not None) is requested
+    assert captured["session"]["discard_pacing_enabled"] is pacing
     manifest = captured["runtime"]["manifest_extra"]
     assert manifest["official_sync_mode"] == ("sse_only" if requested else "state")
     assert manifest["sse_requested"] is requested
     assert manifest["sse_effective"] is requested
+    assert manifest["discard_pacing_enabled"] is pacing
+    assert manifest["discard_pacing_profile"] == "fixed_1000"
     assert manifest["budget_policy_version"] == 'fixed-post-reserve-v1'
     assert manifest["post_network_reserve_sec"] == .1
     assert manifest["state_arrival_guard_sec"] == .05

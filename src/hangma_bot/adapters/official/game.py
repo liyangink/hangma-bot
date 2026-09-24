@@ -125,11 +125,13 @@ _ACTION_AFTER_STATE_RESERVE_SEC = DEFAULT_POST_NETWORK_RESERVE_SEC + 0.05
 _BOUNDARY_STALL_FAST_POLLS = 2
 _BOUNDARY_STALL_BACKOFF_SEC = (0.5, 1.0)
 
-# SSE 帧驱动模式下的静默对齐周期（秒）：帧通道无帧时按此周期短拉对齐水位，
-# 防御帧丢失（服务端 keepalive 30s 之外的极端静默）导致的漂移。
-_SSE_IDLE_POLL_SEC = 5.0
+# SSE 帧驱动模式下的两只保底时钟（秒）：新水位静默与权威状态陈旧分别计时。
+# 正常跳过的帧只重置静默钟；成功查询当前状态才重置权威钟。
+_SSE_SILENCE_POLL_SEC = 2.0
+_SSE_STATE_AGE_POLL_SEC = 5.0
+_SSE_PROBE_COALESCE_SEC = 0.25  # 高优先级专用探针即将到点时，合并相邻普通保底
 _SSE_SETTLED_IDLE_POLL_SEC = 5.25  # v31 局间固定停 5 秒，错开新局首弃牌的 SSE 帧
-# 本人普通弃牌被接收但通知流完全不推帧时，短时权威探针避免长达 5 秒
+# 本人普通弃牌被接收但通知流完全不推帧时，短时权威探针避免等满 2 秒
 # 的未知区间；一旦看到预期回显即取消，不给正常流增加 GET。
 _SSE_OWN_DISCARD_PROBE_SEC = 1.2
 _SSE_PHASE_PROBE_SEC = 1.2  # 已跳过固定响应标记后若后续业务帧沉默，短快照对齐
@@ -154,6 +156,7 @@ class OfficialGameSession:
         retry_sleep: Optional[Callable[[float], Any]] = None,  # 测试注入
         sse_enabled: bool = False,  # SSE 帧驱动开关（默认关=行为与现状一致）
         sse_budget: Optional[StreamBudget] = None,  # 每 Token 共享的 SSE 并发预算
+        sse_snapshot_first: bool = True,  # SSE 通知后的状态读取：权威快照优先；False 仅用于旧路径对照
         discard_pacing_enabled: bool = True,  # 只缓发有时间依据的普通弃牌；内部诊断可关闭
         discard_pacing_profile: str = "fixed_1000",  # 测试房可选：额度过半时 200/500 毫秒档
         ordinary_long_poll_min_interval_ms: int = 0,  # 同场普通增量长轮询响应至下次发起的最短毫秒数
@@ -170,6 +173,7 @@ class OfficialGameSession:
         self._backoff_base = retry_backoff_base_sec
         self._retry_sleep = retry_sleep if retry_sleep is not None else asyncio.sleep
         self._sync = ProtocolSyncState(game_id, timing)
+        self._sse_snapshot_first = sse_snapshot_first
         self._discard_pacing_enabled = discard_pacing_enabled
         if discard_pacing_profile not in ("fixed_1000", "quota_half_200_500"):
             raise ValueError("未知 discard_pacing_profile")
@@ -207,6 +211,9 @@ class OfficialGameSession:
         self._sse_failure = GameFailed(self.game_id, True, "sse_unavailable")
         self._sse_task: Optional[asyncio.Future] = None
         self._sse_frames = deque()  # 收到但尚未判定的通知水位；不等同已消费状态游标
+        self._sse_latest_frame_seq = 0  # 去重后的已观察通知水位，不替代权威 last_seq
+        self._sse_silence_covered_at = None  # 事件环单调秒；新帧或成功当前状态结束静默
+        self._sse_last_authoritative_at = None  # 事件环单调秒；最近一次成功取得当前状态
         self._sse_skipped_seq = 0  # 已判可暂缓读取的最高水位，不写入 ProtocolSyncState.last_seq
         self._sse_skip_expectations = deque()  # (首 seq, 末 seq, 文法类, 可选牌码)
         self._sse_filter_active = True  # 一旦回补事实与文法不符，本场停止推断性跳过
@@ -674,8 +681,15 @@ class OfficialGameSession:
             trigger_seq=frame.seq,
         )
         if self._sse_event is not None:
-            self._sse_frames.append(frame)
-            self._sse_event.set()
+            if frame.closed:
+                self._sse_frames.append(frame)
+                self._sse_event.set()
+            elif frame.seq > max(self._sse_latest_frame_seq, self._sync.last_seq):
+                self._sse_latest_frame_seq = frame.seq
+                self._sse_silence_covered_at = asyncio.get_running_loop().time()
+                self._sse_frames.append(frame)
+                self._sse_event.set()
+            # 已消费／已观察的重复水位只留原文，不取消排队中的保底。
 
     async def _sse_run(self, client: SSENotifyClient) -> None:
         """SSE 流生命周期守护；任何终局都上交可恢复故障并留审计。
@@ -709,22 +723,20 @@ class OfficialGameSession:
     async def _sse_or_boundary_wait(self, boundary_timeout):
         """帧驱动模式下等待通知；流失效上交，不静默切回长轮询。
 
-        - 需读取的帧到达 → 短拉增量（GET /state?seq=本地已消费游标）；
+        - 需读取的帧到达 → 默认直接取权威快照（GET /state?seq=0）；
         - 已知无我方动作权的帧暂缓读取，并设短快照探针检查后续沉默；
-        - 静默超时（局间取 5.25 秒，其他取 5 秒）→ seq=0 权威对齐；
+        - 活跃阶段新水位静默 2 秒或权威状态已 5 秒未对齐 → seq=0；
+          局间固定停顿单独在 5.25 秒探测；普通保底排队时可被新帧撤销；
         - 边界超时（响应阶段官方 deadline 推导）→ 对齐边界定时器语义，
           主动 seq=0 权威刷新捕获无事件的阶段切换；
         - SSE 失效（等待期间流终局）→ 可恢复故障，由上层监督处理。
         """
 
-        if boundary_timeout is not None:
-            timeout = boundary_timeout
-        elif self._sync.snapshot is not None and self._sync.snapshot.phase == "settled":
-            timeout = _SSE_SETTLED_IDLE_POLL_SEC
-        else:
-            timeout = _SSE_IDLE_POLL_SEC
         assert self._sse_event is not None  # sse_enabled 时必有
-        deadline = asyncio.get_running_loop().time() + timeout
+        loop = asyncio.get_running_loop()
+        entered_at = loop.time()
+        boundary_deadline = (entered_at + boundary_timeout
+                             if boundary_timeout is not None else None)
         while True:
             if not self._sse_healthy:
                 raise _PollFailure(self._sse_failure, request_sent=False)
@@ -787,9 +799,10 @@ class OfficialGameSession:
                 self._sse_own_discard_probe_at = None
                 self._sse_phase_probe_at = None
                 return await self._get_state(
-                    # SSE 只有水位，没有事件类型；此帧可能已开启 1 秒吃碰窗。
-                    # 实网 R3 普通监听排队 1.0–1.4 秒，权威状态到达时窗口已关。
-                    long_poll=False, priority=Priority.RECOVERY,
+                    # SSE 已发现新水位；需要牌面时一次取得决策所需的权威观察，
+                    # 避免先拉增量再条件刷新快照的串行两笔请求。
+                    long_poll=False, force_full=self._sse_snapshot_first,
+                    priority=Priority.RECOVERY,
                     query_purpose="sse_frame")
             if self._sse_wake_pending:
                 self._sse_wake_pending = False
@@ -797,33 +810,95 @@ class OfficialGameSession:
                 self._sse_phase_probe_at = None
                 # 本人动作后对手可能马上弃牌；该查询同样承担 1 秒窗发现。
                 return await self._get_state(
-                    long_poll=False, priority=Priority.RECOVERY,
+                    long_poll=False, force_full=self._sse_snapshot_first,
+                    priority=Priority.RECOVERY,
                     query_purpose="sse_self_wake")
-            next_deadline = deadline
+            now = loop.time()
+            last_state_at = self._sse_last_authoritative_at or entered_at
+            if self._sync.snapshot is not None and self._sync.snapshot.phase == "settled":
+                ordinary_deadline = last_state_at + _SSE_SETTLED_IDLE_POLL_SEC
+                ordinary_purpose = "sse_settled_probe"
+            else:
+                silence_at = self._sse_silence_covered_at or entered_at
+                silence_deadline = silence_at + _SSE_SILENCE_POLL_SEC
+                authority_deadline = last_state_at + _SSE_STATE_AGE_POLL_SEC
+                ordinary_deadline = min(silence_deadline, authority_deadline)
+                ordinary_purpose = ("sse_silence_probe" if silence_deadline <= authority_deadline
+                                    else "sse_state_age_probe")
+            # 同一场本来就会很快发专用探针时，等它取一笔权威快照；
+            # 否则 2 秒普通保底与 1.2 秒动作链探针可能相隔数百毫秒各发一笔。
+            for probe_at in (self._sse_own_discard_probe_at, self._sse_phase_probe_at):
+                if (probe_at is not None and
+                        ordinary_deadline <= probe_at <= ordinary_deadline + _SSE_PROBE_COALESCE_SEC):
+                    ordinary_deadline = probe_at
+            next_deadline = ordinary_deadline
+            if boundary_deadline is not None:
+                next_deadline = min(next_deadline, boundary_deadline)
             for probe_at in (self._sse_own_discard_probe_at, self._sse_phase_probe_at):
                 if probe_at is not None:
                     next_deadline = min(next_deadline, probe_at)
-            remaining = next_deadline - asyncio.get_running_loop().time()
+            remaining = next_deadline - now
             if remaining <= 0:
                 own_probe = (self._sse_own_discard_probe_at is not None
                              and next_deadline == self._sse_own_discard_probe_at)
                 phase_probe = (self._sse_phase_probe_at is not None
                                and next_deadline == self._sse_phase_probe_at)
-                self._sse_own_discard_probe_at = None
-                self._sse_phase_probe_at = None
-                return await self._get_state(
-                    # 保底可能发现已开启的 1 秒窗，也会占住本场单 GET 槽；
-                    # 与帧查询同级，避免排队时把随后到达的帧挡在槽外。
-                    long_poll=False, force_full=True, priority=Priority.RECOVERY,
-                    query_purpose=("sse_own_discard_probe" if own_probe else
-                                   "sse_phase_probe" if phase_probe else
-                                   "sse_boundary" if boundary_timeout is not None else "sse_idle"))
+                boundary_probe = (boundary_deadline is not None
+                                  and next_deadline == boundary_deadline)
+                if own_probe or phase_probe or boundary_probe:
+                    self._sse_own_discard_probe_at = None
+                    self._sse_phase_probe_at = None
+                    return await self._get_state(
+                        # 已知动作链或边界可能临近一秒窗，仍按恢复优先级领取。
+                        long_poll=False, force_full=True, priority=Priority.RECOVERY,
+                        query_purpose=("sse_own_discard_probe" if own_probe else
+                                       "sse_phase_probe" if phase_probe else "sse_boundary"))
+                # 普通保底没有已知一秒动作截止：低优先级排队；若新帧先到，
+                # 撤销未发查询，让真正的帧查询按 RECOVERY 领取同场唯一 GET 槽。
+                response = await self._sse_watchdog_snapshot(ordinary_purpose)
+                if response is not None:
+                    return response
+                continue
             # 检查队列后清标志之间无 await；新帧不会被入口 clear 抹掉。
             self._sse_event.clear()
             try:
                 await asyncio.wait_for(self._sse_event.wait(), timeout=remaining)
             except asyncio.TimeoutError:
                 pass  # 下一轮先检查流健康和帧，再判原始截止
+
+    async def _sse_watchdog_snapshot(self, purpose: str) -> Optional[StateResponse]:
+        """普通静默探针仅在发送前可撤销；已发送则消费这笔权威快照。"""
+
+        assert self._sse_event is not None
+        # 调用方已检查待处理帧与自唤醒；clear 到首次 await 之间不会丢回调。
+        self._sse_event.clear()
+        in_flight = asyncio.Event()
+        query = asyncio.create_task(self._get_state(
+            long_poll=False, force_full=True, priority=Priority.POLL,
+            query_purpose=purpose, in_flight_event=in_flight))
+        wake = asyncio.create_task(self._sse_event.wait())
+        self._active_tasks.add(query)
+        try:
+            done, _ = await asyncio.wait({query, wake}, return_when=asyncio.FIRST_COMPLETED)
+            if query in done:
+                return await query
+            if not in_flight.is_set():
+                # 未发送或上次发送已收到 429／失败、正等重试时均可撤销；
+                # 单事件环内检查与 cancel 之间无 await，未发预占可退还。
+                query.cancel()
+                try:
+                    await query
+                except asyncio.CancelledError:
+                    pass
+                return None
+            # 快照已实际发送：读取它的结果，下一轮再判帧水位是否仍领先。
+            return await query
+        finally:
+            wake.cancel()
+            if not query.done():
+                query.cancel()
+            await asyncio.gather(query, wake, return_exceptions=True)
+            self._active_tasks.discard(query)
 
     def _sse_can_skip_own_discard_echo(self, observed_seq: int, base_seq: int) -> bool:
         """已获 POST 接受的普通弃牌，第一条新增事件只能是本人弃牌回显。"""
@@ -837,8 +912,8 @@ class OfficialGameSession:
         """仅在已消费的普通弃牌后识别一帧 +3，保留权威状态游标。
 
         若当前弃牌可能给我方开碰/吃窗、抓打圈或动作结果未决，直接查状态。
-        三条超时一帧是当前实网观测，不把通知水位当成事件内容真相；下一次
-        非跳过帧必须从 last_seq 补领并核对这三条事件。
+        三条超时一帧是当前实网观测，不把通知水位当成事件内容真相；
+        后续快照若附带这三条事件则逐条核对，否则记为不可核对。
         """
 
         snapshot = self._sync.snapshot
@@ -877,8 +952,8 @@ class OfficialGameSession:
 
         v35 实网多轮帧审计中，该位置的 +2 均是此组合。前一帧 +3 即使
         因我方潜在鸣牌而读了状态，只要三条碰窗走满已权威确认，也可
-        同样暂缓；下一摸牌者必须是他家。后续仍逐条权威核对，文法变化
-        则本场停用甄别。
+        同样暂缓；下一摸牌者必须是他家。后续快照附带对应事件时核对，
+        文法不符则本场停用甄别；缺少明细时记录不可核对。
         """
 
         snapshot = self._sync.snapshot
@@ -1525,6 +1600,7 @@ class OfficialGameSession:
         state_reservation: Optional[StateQueryReservation] = None,
         obsolete_window_end: Optional[float] = None,
         query_purpose: str = "state_sync",
+        in_flight_event: Optional[asyncio.Event] = None,
     ) -> StateResponse:
         """一次状态查询：快照立即成为基线，普通查询顺带领取已知历史缺口。
 
@@ -1567,7 +1643,7 @@ class OfficialGameSession:
                 deadline_monotonic=deadline_monotonic, priority=priority,
                 latest_start_monotonic=latest_start_monotonic,
                 state_reservation=state_reservation, query_purpose=query_purpose,
-                query_origin=query_origin)
+                query_origin=query_origin, in_flight_event=in_flight_event)
         except _PollFailure as failure:
             if (failure.item.reason != "refresh_deadline"
                     or (explicit_budget and state_reservation is None)):
@@ -1596,7 +1672,7 @@ class OfficialGameSession:
                     await self._retry_sleep(delay)
             return await self._request_state(
                 long_poll=False, force_full=True, query_purpose="current_state_sync",
-                query_origin=query_origin)
+                query_origin=query_origin, in_flight_event=in_flight_event)
 
     async def _request_state(
         self,
@@ -1609,6 +1685,7 @@ class OfficialGameSession:
         state_reservation: Optional[StateQueryReservation] = None,
         query_purpose: str = "state_sync",
         query_origin: str = "state_sync",
+        in_flight_event: Optional[asyncio.Event] = None,
     ) -> StateResponse:
         """带预算内有界重试的 state 请求；失败升级为 _PollFailure。
 
@@ -1695,14 +1772,20 @@ class OfficialGameSession:
                 def state_started(at):
                     lease.mark_sent(at)
                     self._last_state_started_at = at
-                result = await audited_request(self._transport, self._emit_audit, self._monotonic,
-                    "GET",
-                    "/api/games/{}/state".format(self.game_id),
-                    params={"seq": seq}, timing=request_timing, raw_source=None, on_start=state_started,
-                    wall_clock=self._wall_ms,
-                    long_poll=long_poll,
-                    request_budget_sec=read_timeout,
-                )
+                    if in_flight_event is not None:
+                        in_flight_event.set()
+                try:
+                    result = await audited_request(self._transport, self._emit_audit, self._monotonic,
+                        "GET",
+                        "/api/games/{}/state".format(self.game_id),
+                        params={"seq": seq}, timing=request_timing, raw_source=None, on_start=state_started,
+                        wall_clock=self._wall_ms,
+                        long_poll=long_poll,
+                        request_budget_sec=read_timeout,
+                    )
+                finally:
+                    if in_flight_event is not None:
+                        in_flight_event.clear()
                 self._state_request_no += 1
                 try:
                     parsed = parse_state_response(_loads(result.text))
@@ -1749,6 +1832,12 @@ class OfficialGameSession:
                     recovering_history and parsed.kind in ("pending", "events") and not parsed.events)
                 self._last_clock_response = (parsed, request_timing["transport_started_at_monotonic"],
                                              request_timing["completed_at_monotonic"])
+                if self._sse_enabled and not self._last_state_history_only:
+                    # 旧历史补领不代表当前真相；其余成功查询覆盖静默区间，
+                    # 同时给两只保底钟一个共同的新起点。
+                    aligned_at = asyncio.get_running_loop().time()
+                    self._sse_last_authoritative_at = aligned_at
+                    self._sse_silence_covered_at = aligned_at
                 return parsed
             except asyncio.CancelledError:
                 self._emit_raw_state_error(UncertainTransportError("cancelled"), seq, request_timing=request_timing)

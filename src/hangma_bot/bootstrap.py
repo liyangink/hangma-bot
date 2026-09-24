@@ -430,8 +430,8 @@ class RuntimeConfig:
     # SSE 通知主监听开关；开启后场次不挂 /state 长轮询。
     # 缺省关闭以避免旧运行配置在验证前被静默切换。
     sse_enabled: bool = False
-    # 实验配置：普通弃牌 POST 缓发开关、同场普通长轮询最短重挂间隔（毫秒）。
-    # 缺省保持既有行为；只允许测试房调整，正式/自由赛不借用实验档。
+    # 普通弃牌 POST 缓发独立开关；SSE 不隐式改变它。档位和同场长轮询
+    # 最短重挂间隔仍仅供测试房实验，缺省保持既有行为。
     discard_pacing_enabled: bool = True
     discard_pacing_profile: str = "fixed_1000"
     ordinary_long_poll_min_interval_ms: int = 0
@@ -567,10 +567,9 @@ class RuntimeConfig:
         if isinstance(interval, bool) or not isinstance(interval, int) or not 0 <= interval <= 1000:
             raise ValueError("ordinary_long_poll_min_interval_ms 必须是 0..1000 的整数")
         if self.mode is not RuntimeMode.TEST_ROOM and (
-            not self.discard_pacing_enabled or interval
-            or self.discard_pacing_profile != "fixed_1000"
+            interval or self.discard_pacing_profile != "fixed_1000"
         ):
-            raise ValueError("轮询/弃牌缓发实验配置仅允许 mode=test_room")
+            raise ValueError("轮询间隔和弃牌缓发档位实验仅允许 mode=test_room")
         _require_non_empty_str(self.source_namespace, "RuntimeConfig.source_namespace")
         if not isinstance(self.audit_raw_gzip, bool):
             raise ValueError("audit_raw_gzip 必须是布尔，得到 {0!r}".format(self.audit_raw_gzip))
@@ -1096,6 +1095,7 @@ def build_auto_match_runtime(
             ruleset_version=DEFAULT_RULESET_VERSION,
             sse_enabled=config.sse_enabled,
             sse_budget=StreamBudget() if config.sse_enabled else None,
+            discard_pacing_enabled=config.discard_pacing_enabled,
             # 自动匹配操作参数（运行配置注入；不是官方字段）
             declared_max_games=settings.declared_max_games,
             declared_rounds=settings.declared_rounds,
@@ -1127,6 +1127,8 @@ def build_auto_match_runtime(
         "official_sync_mode": "sse_only" if config.sse_enabled else "state",
         "sse_requested": config.sse_enabled,
         "sse_effective": config.sse_enabled,
+        "discard_pacing_enabled": config.discard_pacing_enabled,
+        "discard_pacing_profile": config.discard_pacing_profile,
         "budget_policy_version": "fixed-post-reserve-v1",
         "post_network_reserve_sec": budget_policy.post_reserve_seconds,
         "state_arrival_guard_sec": DEFAULT_STATE_ARRIVAL_GUARD_SEC,

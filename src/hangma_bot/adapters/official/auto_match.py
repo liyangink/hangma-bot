@@ -184,6 +184,7 @@ class OfficialAutoMatchSession:
         retry_sleep: Optional[Callable[[float], Any]] = None,
         sse_enabled: bool = False,  # SSE 帧驱动开关（透传给每场会话）
         sse_budget: Optional[StreamBudget] = None,  # 每 Token 共享 SSE 预算
+        discard_pacing_enabled: bool = True,  # 独立弃牌缓发开关，不随 SSE 隐式变化
         # ---- 自动匹配操作参数（运行配置注入；不是官方字段） ----
         declared_max_games: int = 0,  # 请求体声明的可承受 M；0 = 不声明（不限）
         declared_rounds: int = 0,  # 请求体声明的可承受 Rounds；0 = 不声明
@@ -224,6 +225,7 @@ class OfficialAutoMatchSession:
         self._retry_sleep = retry_sleep if retry_sleep is not None else asyncio.sleep
         self._sse_enabled = sse_enabled
         self._sse_budget = sse_budget
+        self._discard_pacing_enabled = discard_pacing_enabled
         self._declared_max_games = declared_max_games
         self._declared_rounds = declared_rounds
         self._match_min_interval = match_min_interval_sec
@@ -556,6 +558,7 @@ class OfficialAutoMatchSession:
             audit_context=self._audit_context,
             sse_enabled=self._sse_enabled,
             sse_budget=self._sse_budget,
+            discard_pacing_enabled=self._discard_pacing_enabled,
         )
         self._games[game_id] = session
         return session

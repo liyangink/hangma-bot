@@ -1,6 +1,6 @@
 """SSE 帧驱动运行链路集成回归（2026-09-05 接入，配置默认关）。
 
-覆盖：帧到达 → 短拉增量 → 投递窗口；SSE 流终局（RECONNECTS_EXHAUSTED）
+覆盖：帧到达 → 权威快照 → 投递窗口，以及旧增量路径的跳帧文法对照；SSE 流终局（RECONNECTS_EXHAUSTED）
 → 返回可恢复故障，不切回长轮询；aclose 取消 SSE 任务无悬挂。
 默认关闭路径的行为一致性由既有全套件保证（零新代码路径触发）。
 """
@@ -13,7 +13,7 @@ import json
 import pytest
 
 from hangma_bot.adapters.official import game as game_module
-from hangma_bot.adapters.official.errors import AuthError, ForbiddenError, NotFoundError
+from hangma_bot.adapters.official.errors import AuthError, ForbiddenError, NotFoundError, RateLimitedError
 from hangma_bot.adapters.official.notify import NotifyEndKind, NotifyFrame, NotifyRunResult
 from hangma_bot.application.contracts import ActionAttempt, AuditKind, GameFailed, GameFinished, ObservedActionWindow, SubmitAccepted
 from hangma_bot.kernel.actions import Discard, Tile, WindowPhase
@@ -27,7 +27,7 @@ from _official_testkit import (
     make_audit_context,
 )
 from hangma_bot.adapters.official.game import OfficialGameSession
-from hangma_bot.adapters.official.scheduler import RequestScheduler
+from hangma_bot.adapters.official.scheduler import Priority, RequestScheduler
 
 
 class FakeSseClient:
@@ -54,7 +54,7 @@ class FakeSseClient:
         return None
 
 
-def _make_session(transport, clock, audit=None):
+def _make_session(transport, clock, audit=None, *, snapshot_first=False):
     return OfficialGameSession(
         game_id="g_room1_batch1",
         transport=transport,
@@ -66,6 +66,7 @@ def _make_session(transport, clock, audit=None):
         audit_context=make_audit_context,
         retry_sleep=_instant_sleep(clock),
         sse_enabled=True,
+        sse_snapshot_first=snapshot_first,
     )
 
 
@@ -76,6 +77,76 @@ def _instant_sleep(clock):
 
 
 class TestSseFrameDriven:
+    async def test_frame_reads_one_full_snapshot_and_delivers_draw_window(self, monkeypatch) -> None:
+        """默认 SSE 路径从通知直接取完整观察，不再串联增量与补救快照。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        waiting = load_fixture("state_response_snapshot_draw.json")
+        waiting["snapshot"].update({"turn": 1, "drawn_tile": None})
+        draw = load_fixture("state_response_snapshot_draw.json")
+        draw["seq"] = waiting["seq"] + 1
+        draw["snapshot"]["seq"] = draw["seq"]
+        calls = []
+
+        def handler(*, method, path, json_body=None, params=None, long_poll=False):
+            calls.append((params["seq"], long_poll))
+            return 200, json.dumps(waiting if len(calls) == 1 else draw)
+
+        transport = FakeTransport()
+        transport.handler = handler
+        session = _make_session(transport, FakeClock(), snapshot_first=True)
+        pending = asyncio.create_task(session.next_item())
+        for _ in range(100):
+            if calls and FakeSseClient.instances:
+                break
+            await asyncio.sleep(0)
+        assert calls == [(0, False)]
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=draw["seq"]))
+
+        window = await asyncio.wait_for(pending, timeout=2)
+        assert isinstance(window, ObservedActionWindow)
+        assert window.window_key.phase is WindowPhase.DRAW
+        assert calls == [(0, False), (0, False)]
+        await session.aclose("done")
+
+    async def test_snapshot_first_marks_skipped_events_unobservable(self, monkeypatch) -> None:
+        """跳帧后直接取快照时，未附事件明细不得误报为文法验证通过。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        peng = load_fixture("state_response_snapshot_peng.json")
+        peng["snapshot"].update({
+            "turn": 3, "responding_seats": [0, 1],
+            "last_discard": {"seat": 3, "tile": "9b", "seq": 120},
+        })
+        finished = load_fixture("state_response_finished.json")
+        transport = FakeTransport()
+        transport.handler = lambda **kw: (200, json.dumps(
+            peng if len(transport.calls) == 1 else finished))
+        audit = FakeAuditSink()
+        session = _make_session(transport, FakeClock(), audit=audit, snapshot_first=True)
+        consume = asyncio.create_task(session.next_item())
+        for _ in range(100):
+            if transport.calls and FakeSseClient.instances:
+                break
+            await asyncio.sleep(0)
+        assert len(transport.calls) == 1
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=123))
+        for _ in range(100):
+            await asyncio.sleep(0)
+        assert len(transport.calls) == 1, "已甄别的 +3 帧不应查询状态"
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=124))
+
+        result = await asyncio.wait_for(consume, timeout=2)
+        assert isinstance(result, GameFinished)
+        assert [(call.params["seq"], call.long_poll) for call in transport.calls] == [
+            (0, False), (0, False)]
+        assert any(record.payload.get("sse_skip_verification") == "unobservable"
+                   and record.payload.get("skip_kind") == "peng_timeout"
+                   for record in audit.records)
+        await session.aclose("done")
+
     async def test_frame_wakes_short_poll_and_delivers(self, monkeypatch) -> None:
         FakeSseClient.instances = []
         monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
@@ -572,8 +643,8 @@ class TestSseFrameDriven:
                    for record in audit.records)
         await session.aclose("done")
 
-    async def test_settled_idle_probe_uses_recovery_priority(self, monkeypatch) -> None:
-        """局间静默探针不能以普通队列占住单场 GET 槽并遮挡首弃牌帧。"""
+    async def test_settled_idle_probe_uses_low_priority(self, monkeypatch) -> None:
+        """局间固定停顿独立计时，普通探针不抢真实帧的发送优先级。"""
 
         FakeSseClient.instances = []
         monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
@@ -596,8 +667,244 @@ class TestSseFrameDriven:
         assert isinstance(result, GameFinished)
         assert calls == [(0, False), (0, False)]
         idle = [record for record in audit.records
-                if record.payload.get("request_timing", {}).get("query_purpose") == "sse_idle"]
-        assert idle and idle[0].payload["request_timing"]["scheduler_priority"] == "RECOVERY"
+                if record.payload.get("request_timing", {}).get("query_purpose") == "sse_settled_probe"]
+        assert idle and idle[0].payload["request_timing"]["scheduler_priority"] == "POLL"
+        await session.aclose("done")
+
+    async def test_sse_silence_uses_low_priority_snapshot(self, monkeypatch) -> None:
+        """活跃阶段两秒无新通知才查一次当前快照，且不挂长轮询。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        monkeypatch.setattr(game_module, "_SSE_SILENCE_POLL_SEC", 0.01)
+        monkeypatch.setattr(game_module, "_SSE_STATE_AGE_POLL_SEC", 0.1)
+        neutral = load_fixture("state_response_snapshot_draw.json")
+        neutral["snapshot"].update({"turn": 1, "drawn_tile": None})
+        finished = load_fixture("state_response_finished.json")
+        transport = FakeTransport()
+        transport.handler = lambda **kw: (200, json.dumps(
+            neutral if len(transport.calls) == 1 else finished))
+        audit = FakeAuditSink()
+        session = _make_session(transport, FakeClock(), audit=audit)
+
+        result = await asyncio.wait_for(session.next_item(), timeout=2)
+        assert isinstance(result, GameFinished)
+        assert [(call.params["seq"], call.long_poll) for call in transport.calls] == [
+            (0, False), (0, False)]
+        probe = [record for record in audit.records
+                 if record.payload.get("request_timing", {}).get("query_purpose") == "sse_silence_probe"]
+        assert probe and probe[0].payload["request_timing"]["scheduler_priority"] == "POLL"
+        await session.aclose("done")
+
+    async def test_nearby_own_discard_probe_coalesces_silence_snapshot(self, monkeypatch) -> None:
+        """已接受弃牌的短探针将到时，仅发这一笔，避免普通保底紧邻重复。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        monkeypatch.setattr(game_module, "_SSE_SILENCE_POLL_SEC", 0.02)
+        monkeypatch.setattr(game_module, "_SSE_STATE_AGE_POLL_SEC", 0.1)
+        monkeypatch.setattr(game_module, "_SSE_OWN_DISCARD_PROBE_SEC", 0.025)
+        draw = load_fixture("state_response_snapshot_draw.json")
+        finished = load_fixture("state_response_finished.json")
+        transport = FakeTransport()
+
+        def handler(*, method, **kw):
+            if method == "POST":
+                return 200, "{}"
+            gets = sum(call.method == "GET" for call in transport.calls)
+            return 200, json.dumps(draw if gets == 1 else finished)
+
+        transport.handler = handler
+        audit = FakeAuditSink()
+        session = _make_session(transport, FakeClock(), audit=audit)
+        window = await asyncio.wait_for(session.next_item(), timeout=2)
+        assert isinstance(window, ObservedActionWindow)
+        attempt = ActionAttempt(
+            decision_id="d-sse-coalesce", attempt_no=1, plan_revision=1,
+            window_key=window.window_key, based_on_authoritative_seq=window.window_key.trigger_seq,
+            action=Discard(Tile("5w")), action_key="discard:5w", latest_send_at_monotonic=1005.0,
+        )
+        assert isinstance(await session.submit(attempt), SubmitAccepted)
+
+        result = await asyncio.wait_for(session.next_item(), timeout=2)
+        assert isinstance(result, GameFinished)
+        assert sum(call.method == "GET" for call in transport.calls) == 2
+        assert any(record.payload.get("request_timing", {}).get("query_purpose")
+                   == "sse_own_discard_probe" for record in audit.records)
+        assert not any(record.payload.get("request_timing", {}).get("query_purpose")
+                       == "sse_silence_probe" for record in audit.records)
+        await session.aclose("done")
+
+    async def test_advancing_skipped_frame_preserves_five_second_alignment(self, monkeypatch) -> None:
+        """可跳过的新水位重置静默钟，但不能延后权威状态最大陈旧时间。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        monkeypatch.setattr(game_module, "_SSE_SILENCE_POLL_SEC", 0.035)
+        monkeypatch.setattr(game_module, "_SSE_STATE_AGE_POLL_SEC", 0.04)
+        peng = load_fixture("state_response_snapshot_peng.json")
+        peng["snapshot"].update({
+            "turn": 3, "responding_seats": [0, 1],
+            "last_discard": {"seat": 3, "tile": "9b", "seq": 120},
+        })
+        finished = load_fixture("state_response_finished.json")
+        transport = FakeTransport()
+        transport.handler = lambda **kw: (200, json.dumps(
+            peng if len(transport.calls) == 1 else finished))
+        audit = FakeAuditSink()
+        session = _make_session(transport, FakeClock(), audit=audit)
+        consume = asyncio.create_task(session.next_item())
+        await asyncio.sleep(0.025)
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=123))
+
+        result = await asyncio.wait_for(consume, timeout=2)
+        assert isinstance(result, GameFinished)
+        assert any(record.payload.get("sse_skip_reason") == "plain_peng_timeout_group"
+                   for record in audit.records)
+        assert any(record.payload.get("request_timing", {}).get("query_purpose")
+                   == "sse_state_age_probe" for record in audit.records)
+        assert [(call.params["seq"], call.long_poll) for call in transport.calls] == [
+            (0, False), (0, False)]
+        await session.aclose("done")
+
+    async def test_queued_watchdog_yields_to_new_frame(self, monkeypatch) -> None:
+        """普通保底尚未获许可时撤销，帧查询立即按恢复优先级进入同场槽。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        monkeypatch.setattr(game_module, "_SSE_SILENCE_POLL_SEC", 0.01)
+        monkeypatch.setattr(game_module, "_SSE_STATE_AGE_POLL_SEC", 0.1)
+        neutral = load_fixture("state_response_snapshot_draw.json")
+        neutral["snapshot"].update({"turn": 1, "drawn_tile": None})
+        finished = load_fixture("state_response_finished.json")
+        clock = FakeClock()
+        queued = asyncio.Event()
+        cancelled = asyncio.Event()
+
+        class BlockingScheduler(RequestScheduler):
+            async def acquire(self, priority, *args, **kwargs):
+                if priority is Priority.POLL:
+                    queued.set()
+                    try:
+                        await asyncio.Event().wait()
+                    except asyncio.CancelledError:
+                        cancelled.set()
+                        raise
+                return await super().acquire(priority, *args, **kwargs)
+
+        transport = FakeTransport()
+        transport.handler = lambda **kw: (200, json.dumps(
+            neutral if len(transport.calls) == 1 else finished))
+        audit = FakeAuditSink()
+        session = OfficialGameSession(
+            game_id="g_room1_batch1", transport=transport,
+            scheduler=BlockingScheduler(clock=clock.monotonic, sleep=_instant_sleep(clock)),
+            timing=TIMING, monotonic_clock=clock.monotonic, wall_clock_unix_ms=clock.wall_ms,
+            audit=audit, audit_context=make_audit_context,
+            retry_sleep=_instant_sleep(clock), sse_enabled=True,
+        )
+        consume = asyncio.create_task(session.next_item())
+        await asyncio.wait_for(queued.wait(), timeout=2)
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=101))
+        await asyncio.sleep(0)
+        assert not cancelled.is_set(), "重复水位不能撤销仍需执行的静默保底"
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=102))
+
+        result = await asyncio.wait_for(consume, timeout=2)
+        assert isinstance(result, GameFinished)
+        assert cancelled.is_set()
+        assert [(call.params["seq"], call.long_poll) for call in transport.calls] == [
+            (0, False), (0, False)]
+        assert any(record.payload.get("request_timing", {}).get("query_purpose") == "sse_frame"
+                   for record in audit.records)
+        await session.aclose("done")
+
+    async def test_watchdog_429_retry_yields_to_new_frame(self, monkeypatch) -> None:
+        """低优先级快照已获 429 且等待重排时，新帧撤销其重试。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        monkeypatch.setattr(game_module, "_SSE_SILENCE_POLL_SEC", 0.01)
+        monkeypatch.setattr(game_module, "_SSE_STATE_AGE_POLL_SEC", 0.1)
+        neutral = load_fixture("state_response_snapshot_draw.json")
+        neutral["snapshot"].update({"turn": 1, "drawn_tile": None})
+        finished = load_fixture("state_response_finished.json")
+        retry_waiting = asyncio.Event()
+        retry_cancelled = asyncio.Event()
+
+        async def blocked_retry(seconds):
+            retry_waiting.set()
+            try:
+                await asyncio.Event().wait()
+            except asyncio.CancelledError:
+                retry_cancelled.set()
+                raise
+
+        transport = FakeTransport()
+
+        def handler(**kw):
+            if len(transport.calls) == 1:
+                return 200, json.dumps(neutral)
+            if len(transport.calls) == 2:
+                return RateLimitedError(429, "RATE_LIMITED", "retry", 0.2)
+            return 200, json.dumps(finished)
+
+        transport.handler = handler
+        clock = FakeClock()
+        session = OfficialGameSession(
+            game_id="g_room1_batch1", transport=transport,
+            scheduler=RequestScheduler(clock=clock.monotonic, sleep=_instant_sleep(clock)),
+            timing=TIMING, monotonic_clock=clock.monotonic, wall_clock_unix_ms=clock.wall_ms,
+            retry_sleep=blocked_retry, sse_enabled=True,
+        )
+        consume = asyncio.create_task(session.next_item())
+        await asyncio.wait_for(retry_waiting.wait(), timeout=2)
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=102))
+
+        result = await asyncio.wait_for(consume, timeout=2)
+        assert isinstance(result, GameFinished)
+        assert retry_cancelled.is_set()
+        assert [(call.params["seq"], call.long_poll) for call in transport.calls] == [
+            (0, False), (0, False), (0, False)]
+        await session.aclose("done")
+
+    @pytest.mark.parametrize("covers_frame", [True, False])
+    async def test_sent_watchdog_reuses_result_after_frame(self, monkeypatch, covers_frame) -> None:
+        """快照已发则先用其结果；水位落后新帧时才补一次紧急增量。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        monkeypatch.setattr(game_module, "_SSE_SILENCE_POLL_SEC", 0.01)
+        monkeypatch.setattr(game_module, "_SSE_STATE_AGE_POLL_SEC", 0.1)
+        neutral = load_fixture("state_response_snapshot_draw.json")
+        neutral["snapshot"].update({"turn": 1, "drawn_tile": None})
+        finished = load_fixture("state_response_finished.json")
+        started = asyncio.Event()
+        release = asyncio.Event()
+        transport = FakeTransport()
+
+        async def handler(**kw):
+            if len(transport.calls) == 1:
+                return 200, json.dumps(neutral)
+            if len(transport.calls) == 2:
+                started.set()
+                await release.wait()
+                if not covers_frame:
+                    return 200, json.dumps(neutral)
+            return 200, json.dumps(finished)
+
+        transport.handler = handler
+        session = _make_session(transport, FakeClock())
+        consume = asyncio.create_task(session.next_item())
+        await asyncio.wait_for(started.wait(), timeout=2)
+        await FakeSseClient.instances[0].on_frame(_Frame(seq=102))
+        release.set()
+
+        result = await asyncio.wait_for(consume, timeout=2)
+        assert isinstance(result, GameFinished)
+        assert [(call.params["seq"], call.long_poll) for call in transport.calls] == (
+            [(0, False), (0, False)] if covers_frame else
+            [(0, False), (0, False), (101, False)])
         await session.aclose("done")
 
     async def test_accepted_plain_discard_echo_does_not_read_state(self, monkeypatch) -> None:

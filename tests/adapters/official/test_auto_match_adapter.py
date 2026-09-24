@@ -903,6 +903,48 @@ async def test_open_game_returns_shared_game_session(transport, clock, audit) ->
 
 
 @pytest.mark.asyncio
+async def test_open_game_forwards_independent_discard_pacing_switch(
+    transport, clock, audit, monkeypatch,
+) -> None:
+    """自动匹配的场次保留显式弃牌缓发选择，不由 SSE 开关推导。"""
+
+    from hangma_bot.adapters.official import auto_match as auto_match_module
+
+    def handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):
+        if path == "/portal/api/guide/version":
+            return 200, json.dumps(_guide_doc())
+        if path == "/api/me":
+            return 200, json.dumps(_me_doc())
+        if path == "/api/tournaments/r_auto_1":
+            return 200, json.dumps(_room_doc(status="running", my_games=("g1",)))
+        raise AssertionError("unexpected " + method + " " + path)
+
+    captured = {}
+
+    class GameStub:
+        closed = False
+
+        async def aclose(self, reason):
+            self.closed = True
+
+    def game_factory(**kwargs):
+        captured.update(kwargs)
+        return GameStub()
+
+    monkeypatch.setattr(auto_match_module, "OfficialGameSession", game_factory)
+    transport.handler = handler
+    session = make_auto_session(
+        clock=clock, transport=transport, audit=audit,
+        sse_enabled=True, discard_pacing_enabled=False,
+    )
+    assert isinstance(await initialize_once(session, _target(room_id="r_auto_1")), SessionBootstrap)
+    session.open_game("g1")
+    assert captured["sse_enabled"] is True
+    assert captured["discard_pacing_enabled"] is False
+    await session.aclose()
+
+
+@pytest.mark.asyncio
 async def test_match_raw_recorded_when_builder_registered(transport, clock, audit) -> None:
     """match 完整响应原文落 RAW（source=match_response，payload v1）。
 

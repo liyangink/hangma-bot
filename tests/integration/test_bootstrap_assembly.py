@@ -86,6 +86,20 @@ class TestConfigValidation:
         with pytest.raises(ValueError, match="不匹配"):
             runtime_config_from_mapping(_valid(mode="test_room", token_kind="official"))
 
+    @pytest.mark.parametrize("mode", ["official_tournament", "auto_match"])
+    def test_pacing_can_be_disabled_independently_of_sse(self, mode):
+        data = _valid(
+            mode=mode, token_kind="official", sse_enabled=True,
+            discard_pacing_enabled=False,
+        )
+        if mode == "auto_match":
+            data["expected_tournament_id"] = ""
+        config = runtime_config_from_mapping(data)
+        assert config.sse_enabled is True
+        assert config.discard_pacing_enabled is False
+        with pytest.raises(ValueError, match="仅允许 mode=test_room"):
+            runtime_config_from_mapping({**data, "discard_pacing_profile": "quota_half_200_500"})
+
     def test_bad_base_url_rejected(self):
         with pytest.raises(ValueError, match="http"):
             runtime_config_from_mapping(_valid(base_url="platform.invalid"))
