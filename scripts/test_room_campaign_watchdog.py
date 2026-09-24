@@ -131,7 +131,7 @@ def portal_cookie() -> str:
     if not PORTAL_COOKIE.is_file():
         raise SystemExit("缺少门户会话 Cookie：%s" % PORTAL_COOKIE)
     raw = PORTAL_COOKIE.read_text(encoding="utf-8").strip()
-    return raw if "=" in raw else "session=" + raw
+    return raw if "=" in raw else "majiang_sid=" + raw
 
 
 def _public_config(campaign: dict) -> dict:
@@ -209,7 +209,8 @@ def _create_room(m: int, rounds: int, timeout_min: int) -> dict:
         "discard_timeout_sec": 3,
         "timeout_min": timeout_min,
     }
-    with httpx.Client(verify=False, timeout=40.0, headers={"Cookie": portal_cookie()}) as client:
+    with httpx.Client(verify=False, trust_env=False, timeout=40.0,
+                      headers={"Cookie": portal_cookie()}) as client:
         response = client.post(BASE_URL + "/portal/api/test-rooms", json=payload)
         if response.status_code != 200:
             raise SystemExit("建房失败 HTTP %s：%s" % (response.status_code, response.text[:300]))

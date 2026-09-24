@@ -13,6 +13,7 @@ import json
 import pytest
 
 from hangma_bot.adapters.official import game as game_module
+from hangma_bot.adapters.official.dto import parse_state_response
 from hangma_bot.adapters.official.errors import AuthError, ForbiddenError, NotFoundError, RateLimitedError
 from hangma_bot.adapters.official.notify import NotifyEndKind, NotifyFrame, NotifyRunResult
 from hangma_bot.application.contracts import ActionAttempt, AuditKind, GameFailed, GameFinished, ObservedActionWindow, SubmitAccepted
@@ -369,6 +370,21 @@ class TestSseFrameDriven:
                    for record in audit.records)
         await session.aclose("done")
         await asyncio.wait_for(consume, timeout=2)
+
+    def test_last_wall_chi_timeout_can_end_round(self) -> None:
+        """官方实测 seq1194-1195：牌墙余 20 时 +2 是吃超时加流局。"""
+
+        state = load_fixture("state_response_snapshot_peng.json")
+        state["snapshot"].update({
+            "turn": 3, "responding_seats": [0, 1],
+            "last_discard": {"seat": 3, "tile": "2w", "seq": 120},
+            "wall_remaining": 20,
+        })
+        session = _make_session(FakeTransport(), FakeClock(), snapshot_first=True)
+        parsed = parse_state_response(state)
+        session._sync.apply_full_snapshot(parsed.snapshot, events=parsed.events)
+        session._sse_skip_expectations.append((121, 123, "peng_timeout", None))
+        assert not session._sse_can_skip_chi_timeout_opponent_draw(125, 123)
 
     async def test_confirmed_peng_timeouts_also_skip_opponent_chi_timeout_and_draw(self, monkeypatch) -> None:
         """已权威读过三条碰超时，后续 +2 他家摸牌仍无需再占一次状态额度。"""

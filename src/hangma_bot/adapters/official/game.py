@@ -64,6 +64,7 @@ from hangma_bot.application.contracts import (
     SUBMISSION_CANCELLED_IN_FLIGHT,
 )
 from hangma_bot.kernel.actions import Discard, Pass, WindowKey, WindowPhase
+from hangma_bot.hangma.action_families import WALL_RESERVE_TILES
 from hangma_bot.hangma.catch_play import analyze_catch_play
 from hangma_bot.kernel.config import TimingConfig
 from hangma_bot.kernel.observation import PlayerObservation
@@ -980,6 +981,11 @@ class OfficialGameSession:
         )
         if not skipped_peng and not confirmed_peng:
             return False
+        # 牌墙只剩保留区时，吃窗走满后的第二个事件是 round_ended，
+        # 不能把 +2 帧当作「吃超时 + 下家摸牌」而跳过终局。
+        if (observation.remaining_tile_count is None
+                or observation.remaining_tile_count <= WALL_RESERVE_TILES):
+            return False
         virtual = self._sse_virtual_discard
         if skipped_peng and virtual is not None and virtual[0] == base_seq - 3:
             discarder = virtual[2]
@@ -993,8 +999,12 @@ class OfficialGameSession:
         """已消费吃窗走满标记后，下一摸牌者确定为他家才暂缓读取。"""
 
         snapshot = self._sync.snapshot
+        observation = self._sync.current_observation()
         cycle = self._sync.response_cycle_key
-        if (not self._sse_filter_active or snapshot is None or snapshot.god_catch_play
+        if (not self._sse_filter_active or snapshot is None or observation is None
+                or observation.remaining_tile_count is None
+                or observation.remaining_tile_count <= WALL_RESERVE_TILES
+                or snapshot.god_catch_play
                 or observed_seq != base_seq + 1 or base_seq != self._sync.last_seq
                 or not self._sync.history or cycle is None or self._gate.in_flight
                 or self._gate.blocked_window is not None):
