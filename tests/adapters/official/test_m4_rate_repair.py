@@ -36,9 +36,10 @@ async def test_one_game_state_429_does_not_block_other_game_action_on_same_token
     """真实会话调用点验证429分类、共享调度、动作成功和审计计时。"""
     import asyncio
     import json
-    from _official_testkit import FakeTransport, FakeAuditSink, make_game_session
+    from _official_testkit import FakeTransport, FakeAuditSink, TIMING, make_audit_context, make_game_session
     from test_sync_repair_regressions import snapshot
     from hangma_bot.adapters.official.errors import RateLimitedError
+    from hangma_bot.adapters.official.game import OfficialGameSession
     from hangma_bot.application.contracts import ActionAttempt, SubmitAccepted
     from hangma_bot.kernel.actions import Discard, Tile
     clock, transport, audit = FakeClock(), FakeTransport(), FakeAuditSink()
@@ -53,7 +54,11 @@ async def test_one_game_state_429_does_not_block_other_game_action_on_same_token
         return 200, json.dumps({'ok': True} if method == 'POST' else snapshot(100, turn=2, drawn='7w'))
     transport.handler = handler
     active = make_game_session(transport=transport, clock=clock, scheduler=scheduler, audit=audit, game_id='active')
-    poller = make_game_session(transport=transport, clock=clock, scheduler=scheduler, audit=audit, game_id='poller')
+    poller = OfficialGameSession(
+        game_id='poller', transport=transport, scheduler=scheduler, timing=TIMING,
+        monotonic_clock=clock.monotonic, wall_clock_unix_ms=clock.wall_ms,
+        audit=audit, audit_context=make_audit_context, retry_sleep=pause,
+    )
     task = None
     try:
         window = await active.next_item()
@@ -72,6 +77,82 @@ async def test_one_game_state_429_does_not_block_other_game_action_on_same_token
         if task:
             task.cancel(); await asyncio.gather(task, return_exceptions=True)
         await active.aclose('test'); await poller.aclose('test')
+
+
+@pytest.mark.parametrize('retry_after,expected_delay', [(None, .2), (.7, .7)])
+async def test_state_429_requeues_only_rejected_game_while_peer_state_continues(
+        retry_after, expected_delay):
+    """同用户一桌收到 429 时，另一桌照常查询，重试遵守头部或本地退避。"""
+    import asyncio
+    import json
+    from _official_testkit import FakeTransport, FakeAuditSink, TIMING, make_audit_context
+    from hangma_bot.adapters.official.errors import RateLimitedError
+    from hangma_bot.adapters.official.game import OfficialGameSession
+
+    clock, transport, audit = FakeClock(start=0), FakeTransport(), FakeAuditSink()
+    scheduler = RequestScheduler(clock=clock.monotonic, sleep=instant_sleep(clock), jitter_rng=NoJitter())
+    retry_started = asyncio.Event()
+    retry_allowed = asyncio.Event()
+    peer_started = asyncio.Event()
+    retry_sent = asyncio.Event()
+    hold_transport = asyncio.Event()
+    attempts = {'rejected': 0}
+
+    async def retry_sleep(seconds):
+        retry_started.set()
+        await retry_allowed.wait()
+        clock.advance(seconds)
+
+    async def handler(*, path, **kwargs):
+        if path == '/api/games/rejected/state':
+            attempts['rejected'] += 1
+            if attempts['rejected'] == 1:
+                raise RateLimitedError(429, 'RATE_LIMITED', 'poll rate exceeded', retry_after)
+            retry_sent.set()
+        else:
+            peer_started.set()
+        await hold_transport.wait()
+        return 200, json.dumps({})
+
+    transport.handler = handler
+    def session(game_id, sleep):
+        return OfficialGameSession(
+            game_id=game_id, transport=transport,
+            scheduler=scheduler.for_game(game_id, max_games=10), timing=TIMING,
+            monotonic_clock=clock.monotonic, wall_clock_unix_ms=clock.wall_ms,
+            audit=audit, audit_context=make_audit_context, retry_sleep=sleep,
+            max_get_retries=1,
+        )
+
+    rejected = session('rejected', retry_sleep)
+    peer = session('peer', instant_sleep(clock))
+    task = asyncio.create_task(rejected.next_item())
+    peer_task = None
+    try:
+        await asyncio.wait_for(retry_started.wait(), 1)
+        assert scheduler.cooldown_remaining == 0
+        peer_task = asyncio.create_task(peer.next_item())
+        await asyncio.wait_for(peer_started.wait(), 1)
+        assert clock.monotonic() == 0
+        assert scheduler.state_used_count == 2, "被拒 GET 和另一桌 GET 都保留在本地发送账"
+        retry_allowed.set()
+        await asyncio.wait_for(retry_sent.wait(), 1)
+        assert attempts['rejected'] == 2
+        assert clock.monotonic() == pytest.approx(expected_delay)
+        assert scheduler.state_used_count == 3
+        state_calls = [call for call in transport.calls if call.path.endswith('/state')]
+        assert [call.path for call in state_calls] == [
+            '/api/games/rejected/state', '/api/games/peer/state',
+            '/api/games/rejected/state',
+        ]
+    finally:
+        task.cancel()
+        if peer_task is not None:
+            peer_task.cancel()
+        await asyncio.gather(*(item for item in (task, peer_task) if item is not None),
+                             return_exceptions=True)
+        await rejected.aclose('test')
+        await peer.aclose('test')
 
 
 async def test_state_cooldown_cannot_shorten_global_cooldown_or_affect_another_token():

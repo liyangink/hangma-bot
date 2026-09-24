@@ -1627,6 +1627,7 @@ class OfficialGameSession:
         degraded_to_full = False
         while True:
             attempts += 1
+            rate_limited_retry_delay = 0.0
             request_timing = {"queued_at_monotonic": self._monotonic(),
                               "query_purpose": query_purpose,
                               "query_origin": query_origin,
@@ -1754,12 +1755,16 @@ class OfficialGameSession:
                 raise
             except RateLimitedError as exc:
                 retry_after = exc.retry_after_seconds
-                request_timing["retry_after_seconds"] = (retry_after if retry_after is not None
+                valid_retry_after = (retry_after if retry_after is not None
                     and math.isfinite(retry_after) and retry_after >= 0 else None)
+                request_timing["retry_after_seconds"] = valid_retry_after
                 # F-05：非 2xx 响应原文（限速拒绝体等诊断证据）也落审计，
                 # request_no 不递增（只随成功计数，连续性检查不受影响）
                 self._emit_raw_state_error(exc, seq, request_timing=request_timing)
-                self._scheduler.note_rate_limited(exc.retry_after_seconds, request_kind=RequestKind.STATE)
+                # 已发送的失败请求仍留在共享额度账中。本场按 Retry-After／退避
+                # 重新入队；其他桌继续依共享发送账领取许可。固定全身份停发一秒
+                # 会把另一桌的 429 传播到当前一秒鸣牌窗（SSE R8 实网复盘）。
+                rate_limited_retry_delay = valid_retry_after or 0.0
             except (UncertainTransportError, RecoverableServerError) as exc:
                 # 超时/断连无响应体：raw="" + http_status=None 记录"原文不存在"
                 self._emit_raw_state_error(exc, seq, request_timing=request_timing)
@@ -1805,7 +1810,8 @@ class OfficialGameSession:
                 lease.release()  # 幂等：deadline 分支已手动释放时为 no-op
             if attempts > self._max_retries:
                 raise _PollFailure(GameFailed(self.game_id, True, "get_exhausted")) from None
-            delay = self._backoff_base * (2 ** (attempts - 1))
+            delay = max(self._backoff_base * (2 ** (attempts - 1)),
+                        rate_limited_retry_delay)
             if latest_start_monotonic is not None:
                 delay = min(delay, max(0.0, latest_start_monotonic - self._monotonic()))
             await self._retry_sleep(delay)

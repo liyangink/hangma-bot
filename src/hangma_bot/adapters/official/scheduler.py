@@ -21,7 +21,7 @@ from .deadline_clock import DeadlineClock
 
 # 工程余量（秒），不是官方窗口长度：本机发起与服务端到达存在波动。
 # 16笔记账至少保留1.05秒。长期均匀放行让服务器收到的短时簇更小；
-# 到达波动超出本地余量时仍由共享429冷却恢复。
+# 到达波动超出本地余量时，/state 被拒请求局部退避重排；共享发送账仍保留该次发送。
 DEFAULT_STATE_ARRIVAL_GUARD_SEC = 0.05
 DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC = 1.0 / 14.5
 # 十场会话共用16/s时不能先发满16笔再出现近一秒查询盲区。
@@ -29,7 +29,7 @@ DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC = 1.0 / 14.5
 # 16/s 补充令牌。滚动窗口仍负责官方硬上限与到达余量。
 DEFAULT_PRODUCTION_STATE_BURST = 4.0
 # 软等待上限只改变无已知期限查询的排序，不绕过 16/1.05 硬账。
-# 从该身份实际可服务的时刻起算，避免启动或 429 冷却使低类请求
+# 从该身份实际可服务的时刻起算，避免启动等待或显式冷却使低类请求
 # 一解冻就压过刚出现的一秒风险；到龄后与摸牌监听同级，先入先发。
 DEFAULT_DISCARD_WATCH_PROMOTION_SEC = 0.8
 DEFAULT_POLL_PROMOTION_SEC = 1.2
@@ -526,7 +526,7 @@ class RequestScheduler:
 
     def note_rate_limited(self, retry_after_seconds: Optional[float], *,
                           request_kind: RequestKind = RequestKind.OTHER) -> None:
-        """state 429 冷却同用户全部状态查询；OTHER 429 只冷却所属资源域。"""
+        """显式冷却指定资源域；生产 /state 429 已改为当前查询局部重排。"""
         if (retry_after_seconds is None or not math.isfinite(retry_after_seconds)
                 or retry_after_seconds < 0):
             retry_after_seconds = 1.0

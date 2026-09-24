@@ -26,22 +26,19 @@ async def test_ten_real_sessions_mix_draw_chi_recovery_and_action_conflict(monke
                    for e in server.exchanges) for r in paced), "已调度缓发不得提前发送本场POST"
 
 
-async def test_ten_sessions_expire_old_chi_purposes_during_shared_cooldown(monkeypatch):
+async def test_ten_sessions_keep_chi_windows_while_one_429_retries(monkeypatch):
     server, audit, outcomes = await run_scenario(monkeypatch, cooldown=True)
     verify_safety(server, audit)
     expired = [r for r in audit.records if r.payload.get("state_query_cancel_reason") == "expired_window_purpose"]
-    assert len(expired) + sum(row[1] == "chi" for row in server.accepted) == 6, (
-        "六个碰转吃场次须在冷却前完成吃，或废弃旧目的后同步现状")
-    assert all(r.payload["replacement_purpose"] == "current_state_sync" for r in expired)
-    assert sum(row[1] == "discard" for row in server.accepted) == 3 + len(expired)
-    assert {r.context.game_id for r in expired} <= set(GAMES[3:9])
-    syncs = [r for r in audit.records if r.payload.get("phase") == "started"
-             and r.payload.get("request_timing", {}).get("query_purpose") == "current_state_sync"]
-    assert len(syncs) == len(expired), "每个过期旧目的只替换为一次现状同步"
-    assert all(r.monotonic_ns / 1e9 >= server.cooldown_until - 1e-9 for r in syncs)
+    assert not expired, "其他桌不能因被拒请求的 Retry-After 而错过原吃窗"
+    assert sum(row[1] == "chi" for row in server.accepted) == 6
+    assert sum(row[1] == "discard" for row in server.accepted) == 3
     rate_limited_at = next(at for _, kind, at in server.faults if kind == "429")
-    assert all(not (rate_limited_at + 1e-9 < e["start"] < server.cooldown_until - 1e-9)
-               for e in server.exchanges if e["method"] == "GET"), "429冷却必须覆盖同用户全部场次"
+    during_retry = [e for e in server.exchanges if e["method"] == "GET"
+                    and rate_limited_at + 1e-9 < e["start"] < server.cooldown_until - 1e-9]
+    assert during_retry and all(e["game"] != GAMES[9] for e in during_retry)
+    assert any(e["game"] == GAMES[9] and e["method"] == "GET"
+               and e["start"] >= server.cooldown_until - 1e-9 for e in server.exchanges)
 
 
 async def test_ambiguous_post_stays_blocked_while_other_nine_games_progress(monkeypatch):

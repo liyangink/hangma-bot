@@ -1,4 +1,4 @@
-"""同用户共享state额度和冷却；每场连接槽、非state冷却及控制面隔离。"""
+"""同用户共享state额度；每场连接槽、局部重试及非state冷却隔离。"""
 import asyncio
 import json
 
@@ -35,7 +35,7 @@ async def test_control_concurrency_does_not_block_open_game(monkeypatch):
         await session.aclose()
 
 
-async def test_user_state_rate_limit_cools_other_games_state_queries():
+async def test_user_state_429_does_not_cool_other_games_state_queries():
     clock, transport = FakeClock(), FakeTransport()
     owner = RequestScheduler(clock=clock.monotonic, sleep=instant_sleep(clock))
     times = []
@@ -53,8 +53,7 @@ async def test_user_state_rate_limit_cools_other_games_state_queries():
     try:
         await slow.next_item()
         assert isinstance(await fast.next_item(), ObservedActionWindow)
-        assert times[1] >= times[0] + 5
-        assert times[1] <= times[0] + 5.25
+        assert times[1] == times[0], "另一桌的 GET 不等待被拒请求的五秒 Retry-After"
     finally:
         await slow.aclose("test")
         await fast.aclose("test")
