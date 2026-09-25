@@ -859,7 +859,9 @@ class OfficialGameSession:
                         query_purpose=("sse_own_discard_probe" if own_probe else
                                        "sse_phase_probe" if phase_probe else "sse_boundary"))
                 # 普通保底没有已知一秒动作截止：低优先级排队；若新帧先到，
-                # 撤销未发查询，让真正的帧查询按 RECOVERY 领取同场唯一 GET 槽。
+                # 撤销未发查询。本人是新局庄家时，发牌没有 SSE 事件，
+                # 跨局 GET 是发现首弃牌窗的唯一途径，必须与帧恢复同级；
+                # 高负载自由赛曾让 DRAW_WATCH 连续约 7 秒领不到额度。
                 settled_long_poll = ordinary_purpose == "sse_settled_long_poll"
                 snapshot = self._sync.snapshot
                 own_settled = bool(
@@ -869,7 +871,7 @@ class OfficialGameSession:
                 response = await self._sse_watchdog_snapshot(
                     ordinary_purpose, long_poll=settled_long_poll,
                     force_full=not settled_long_poll,
-                    priority=Priority.DRAW_WATCH if own_settled else Priority.POLL,
+                    priority=Priority.RECOVERY if own_settled else Priority.POLL,
                 )
                 if response is not None:
                     return response

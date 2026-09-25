@@ -720,7 +720,7 @@ class TestSseFrameDriven:
             boundary = [record for record in audit.records
                         if record.payload.get("request_timing", {}).get("query_purpose")
                         == "sse_settled_long_poll"]
-            assert boundary and boundary[0].payload["request_timing"]["scheduler_priority"] == "DRAW_WATCH"
+            assert boundary and boundary[0].payload["request_timing"]["scheduler_priority"] == "RECOVERY"
         finally:
             await session.aclose("done")
 
