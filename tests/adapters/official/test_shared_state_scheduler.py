@@ -640,3 +640,70 @@ async def test_expired_or_cancelled_waiting_queries_never_consume_a_future_credi
         assert game.active_count == 0
     finally:
         await cancel_tasks(expired, cancelled)
+
+async def test_settled_discovery_reservation_outranks_undeadlined_recovery():
+    """结算态跨局发现查询必须优先于无期限恢复查询。
+
+    依据：生产 M=10 单 Token 自由赛实测（review/wiring-queue-rootcause-
+    2026-09-25/ROOT-CAUSE-2026-09-25.md），跨局查询原按 (优先级, 入队序号)
+    排在全部 RECOVERY 之后，出现连续 7.58 秒零获准、本人新局首弃牌被官方
+    模切。登记已知必需查询后它带绝对最迟发起时刻，进入有期限档。
+    """
+    clock = ControlledClock()
+    root = scheduler(clock, rate_per_second=16, burst=4,
+                     state_arrival_guard_sec=.05, state_min_spacing_sec=1 / 14.5)
+    discovery = root.for_game("discovery", max_games=10)
+    others = [root.for_game("other{}".format(index), max_games=10) for index in range(3)]
+    await spend(others[0], 4)  # 用尽即刻突发；此后每 1/16 秒才补充一笔许可
+    assert clock.monotonic() == 0.0
+    hint = discovery.protect_state_query(
+        ready_at_monotonic=0.0, latest_start_at_monotonic=5.0)
+    # 无期限恢复查询先入队：按 (优先级, 序号) 它们本应排在发现查询之前。
+    queued = [asyncio.create_task(other.acquire(Priority.RECOVERY)) for other in others]
+    await settle()
+    pending = asyncio.create_task(discovery.acquire(Priority.POLL, reservation=hint))
+    try:
+        await settle()
+        assert all(not task.done() for task in queued)
+        clock.advance(1 / 16)
+        (await asyncio.wait_for(pending, .5)).release()
+        assert all(not task.done() for task in queued), (
+            "跨局发现查询带绝对最迟发起时刻时，必须先于无期限恢复查询获得许可")
+    finally:
+        hint.cancel()
+        await cancel_tasks(pending, *queued)
+
+
+async def test_settled_discovery_requeue_keeps_seniority_through_absolute_deadline():
+    """撤销后重新入队不得丢失排序资历。
+
+    这是 F1 修复的另一半：跨局长轮询在新帧到达时会被撤销，调用方随后重新
+    入队。纯优先级队列按入队序号排序，重新入队等于排到所有后来者之后，
+    饱和时会活锁；登记预约后排序资历由绝对最迟发起时刻承载。
+    """
+    clock = ControlledClock()
+    root = scheduler(clock, rate_per_second=16, burst=4,
+                     state_arrival_guard_sec=.05, state_min_spacing_sec=1 / 14.5)
+    discovery = root.for_game("discovery", max_games=10)
+    others = [root.for_game("other{}".format(index), max_games=10) for index in range(3)]
+    await spend(others[0], 4)
+    hint = discovery.protect_state_query(
+        ready_at_monotonic=0.0, latest_start_at_monotonic=5.0)
+    first = asyncio.create_task(discovery.acquire(Priority.POLL, reservation=hint))
+    await settle()
+    first.cancel()
+    await asyncio.gather(first, return_exceptions=True)
+    # 发现查询撤销之后，无期限恢复查询才入队：它们拿到更大的入队序号。
+    queued = [asyncio.create_task(other.acquire(Priority.RECOVERY)) for other in others]
+    await settle()
+    retry = asyncio.create_task(discovery.acquire(Priority.POLL, reservation=hint))
+    try:
+        await settle()
+        clock.advance(1 / 16)
+        (await asyncio.wait_for(retry, .5)).release()
+        assert all(not task.done() for task in queued), (
+            "重新入队的跨局发现查询仍应优先于其间新入队的无期限恢复查询")
+    finally:
+        hint.cancel()
+        await cancel_tasks(retry, *queued)
+

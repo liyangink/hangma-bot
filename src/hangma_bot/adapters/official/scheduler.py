@@ -248,6 +248,41 @@ class RequestScheduler:
         return min(0.5, max(root._state_quota_delay(), queued / root._rate))
 
     @property
+    def state_queue_snapshot(self) -> dict:
+        """当前等待者的只读快照，用于把"饥饿"从推断变成可核对的事实。
+
+        为什么需要：生产审计只记录**已获准**的请求（http_request 的
+        phase=started），未发送即被撤销的 waiter 不产生任何审计行；因此
+        "这条查询等了多久、队列里有多少竞争者在它前面"无法从既有审计重建
+        （2026-09-25 根因分析：M=10 单 Token 自由赛里本人跨局首弃牌查询
+        连续 7.58 秒零获准，但无法判定是"已入队被反复撤销"还是"从未入队"）。
+        调用方在获准或撤销时读取本属性随审计落盘，即可直接判定饥饿。
+        """
+        root = self._root
+        root._refresh()
+        now = root._clock()
+        by_priority: dict[str, int] = {}
+        by_kind: dict[str, int] = {}
+        ready_state = 0
+        for waiter in root._waiters:
+            if not waiter.active:
+                continue
+            by_priority[waiter.priority.name] = by_priority.get(waiter.priority.name, 0) + 1
+            by_kind[waiter.request_kind.value] = by_kind.get(waiter.request_kind.value, 0) + 1
+            if (waiter.request_kind is RequestKind.STATE and waiter.ready <= now
+                    and (waiter.deadline is None or now < waiter.deadline)):
+                ready_state += 1
+        return {
+            "waiters_total": len(root._waiters),
+            "by_priority": by_priority,
+            "by_kind": by_kind,
+            "ready_state": ready_state,
+            "reservations": sum(1 for hint in root._reservations if not hint.cancelled),
+            "state_used_in_window": len(root._state_grants),
+            "window_capacity": root._window_capacity,
+        }
+
+    @property
     def cooldown_remaining(self) -> float:
         """本资源域及用户 state 冷却中的最长剩余秒数，仅用于诊断。"""
         return max(0.0, self._cooldown_until - self._clock(),

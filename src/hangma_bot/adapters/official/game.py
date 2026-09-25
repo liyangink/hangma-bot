@@ -136,6 +136,14 @@ _SSE_PROBE_COALESCE_SEC = 0.25  # 高优先级专用探针即将到点时，合�
 _SSE_OWN_DISCARD_PROBE_SEC = 1.2
 _SSE_PHASE_PROBE_SEC = 1.2  # 已跳过固定响应标记后若后续业务帧沉默，短快照对齐
 
+# 官方指南 v31：局间固定停 5 秒再发下一局，且**新局发牌不产生 SSE 事件**。
+# 因此"结算态 → 新局"之间的那次状态查询，是本场发现"本人新局首弃牌窗"
+# 的唯一途径：该窗口之前没有任何属于本场的帧可以预警。
+# 生产实测（M=10 单 Token 自由赛）显示，这条查询原本排在最低优先级且未
+# 发出时可被新帧撤销，撤销后重新入队会拿到更大的全局序号，于是在饱和时
+# 永远排在后来者之后，出现过连续 7.58 秒零获准、首弃牌被官方模切的窗口。
+_INTER_ROUND_PAUSE_SEC = 5.0
+
 
 class OfficialGameSession:
     """共享用户状态额度，独享本场连接槽、同步状态与动作门的官方会话。"""
@@ -868,11 +876,20 @@ class OfficialGameSession:
                     settled_long_poll and snapshot is not None
                     and snapshot.dealer == snapshot.seat
                 )
-                response = await self._sse_watchdog_snapshot(
-                    ordinary_purpose, long_poll=settled_long_poll,
-                    force_full=not settled_long_poll,
-                    priority=Priority.RECOVERY if own_settled else Priority.POLL,
-                )
+                # 跨局发现查询是本人首弃牌窗的唯一预警来源，登记为已知必需
+                # 查询：带绝对最迟发起时刻后，它既保护额度也按 deadline 排序，
+                # 不再依赖 own_settled 座位判断与可被撤销的优先级路径。
+                reservation = self._settled_discovery_reservation(settled_long_poll)
+                try:
+                    response = await self._sse_watchdog_snapshot(
+                        ordinary_purpose, long_poll=settled_long_poll,
+                        force_full=not settled_long_poll,
+                        priority=Priority.RECOVERY if own_settled else Priority.POLL,
+                        state_reservation=reservation,
+                    )
+                finally:
+                    if reservation is not None:
+                        reservation.cancel()
                 if response is not None:
                     return response
                 continue
@@ -883,9 +900,45 @@ class OfficialGameSession:
             except asyncio.TimeoutError:
                 pass  # 下一轮先检查流健康和帧，再判原始截止
 
+    def _settled_discovery_reservation(
+        self, settled_long_poll: bool,
+    ) -> Optional[StateQueryReservation]:
+        """结算态到新局之间的发现查询预约；没有安全发起窗口时返回 None。
+
+        官方指南 v31：局间固定停 5 秒再发下一局，且新局发牌不产生 SSE
+        事件。因此这次状态查询是本场发现"本人新局首弃牌窗"的唯一途径。
+
+        为什么登记预约而不是只提高优先级：调度器在额度饱和时是零和分配器，
+        无期限请求按 (优先级, 入队序号) 排序；本查询未发出时可被新帧撤销，
+        而撤销后重新入队会拿到更大的全局序号，于是永远排在后来者之后——
+        生产 M=10 实网出现过连续 7.58 秒零获准、首弃牌被官方模切的窗口。
+        登记已知必需查询后它带绝对最迟发起时刻：既进入 _required_queries
+        让 _spending_preserves_known_queries 拒绝其他查询吃掉它的额度，也按
+        (deadline, last_service, seq) 与有期限的恢复查询同档排序。排序资历
+        由**绝对时刻**承载，因此撤销后重新入队不会像纯优先级队列那样丢失
+        位置——这正是只调优先级补不上的那一半。
+
+        最迟发起时刻取"最近一次权威状态的单调时刻 + 局间停顿时长 − 响应
+        余量"，不自行编造更长的窗口；已经错过该时刻时返回 None 退回原有
+        优先级路径，不伪造一个已经过期的期限。
+        """
+        if not settled_long_poll:
+            return None
+        now = self._monotonic()
+        last_state_at = self._sse_last_authoritative_at
+        if last_state_at is None:
+            return None
+        latest_start = (last_state_at + _INTER_ROUND_PAUSE_SEC
+                        - _STATE_RESPONSE_RESERVE_SEC)
+        if now >= latest_start:
+            return None
+        return self._scheduler.protect_state_query(
+            ready_at_monotonic=now, latest_start_at_monotonic=latest_start)
+
     async def _sse_watchdog_snapshot(
         self, purpose: str, *, long_poll: bool = False,
         force_full: bool = True, priority: Priority = Priority.POLL,
+        state_reservation: Optional[StateQueryReservation] = None,
     ) -> Optional[StateResponse]:
         """普通探针发前可撤销；跨局长轮询遇新帧可安全改查权威快照。"""
 
@@ -893,9 +946,13 @@ class OfficialGameSession:
         # 调用方已检查待处理帧与自唤醒；clear 到首次 await 之间不会丢回调。
         self._sse_event.clear()
         in_flight = asyncio.Event()
+        queued_at = self._monotonic()
         query = asyncio.create_task(self._get_state(
             long_poll=long_poll, force_full=force_full, priority=priority,
-            query_purpose=purpose, in_flight_event=in_flight))
+            query_purpose=purpose, in_flight_event=in_flight,
+            state_reservation=state_reservation,
+            # 本入口只承载结算态跨局发现预约，没有对应动作窗。
+            expected_chi_reservation=False))
         wake = asyncio.create_task(self._sse_event.wait())
         self._active_tasks.add(query)
         try:
@@ -910,6 +967,17 @@ class OfficialGameSession:
                     await query
                 except asyncio.CancelledError:
                     pass
+                # 未发送的 waiter 不产生 http_request 审计行；没有这一条就
+                # 无法事后区分"排了很久最终被撤销"与"从未入队"。
+                self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                    "state_wait_outcome": "cancelled_before_send",
+                    "query_purpose": purpose,
+                    "scheduler_priority": priority.name,
+                    "waited_sec": max(0.0, self._monotonic() - queued_at),
+                    "had_reservation": state_reservation is not None,
+                    "queue": self._scheduler.state_queue_snapshot,
+                    "consumed_seq": self._sync.last_seq,
+                }, trigger_seq=self._sync.last_seq)
                 return None
             if long_poll and (self._sse_frames or not self._sse_healthy):
                 # GET 是幂等查询；若通知流已先发现更高水位或失效，
@@ -1636,11 +1704,17 @@ class OfficialGameSession:
         priority: Optional[Priority] = None,
         latest_start_monotonic: Optional[float] = None,
         state_reservation: Optional[StateQueryReservation] = None,
+        expected_chi_reservation: bool = True,
         obsolete_window_end: Optional[float] = None,
         query_purpose: str = "state_sync",
         in_flight_event: Optional[asyncio.Event] = None,
     ) -> StateResponse:
         """一次状态查询：快照立即成为基线，普通查询顺带领取已知历史缺口。
+
+        expected_chi_reservation 缺省 True 保持既有吃窗提示语义；结算态跨局
+        发现预约没有对应动作窗，必须传 False，否则会把查询审计与失败回退的
+        窗口身份错标成 response_chi。
+
 
         seq=0 返回当前快照；其水位以内的效果已经包含在牌面中。
         当前活窗先交付，不串行追加补史。后续普通查询可使用历史游标，
@@ -1658,7 +1732,7 @@ class OfficialGameSession:
         if state_reservation is not None:
             latest_start_monotonic = state_reservation.latest_start_at_monotonic
             snapshot = self._sync.snapshot
-            if snapshot is not None:
+            if snapshot is not None and expected_chi_reservation:
                 # 提示针对预期下一吃窗，仅用于查询审计；真实动作权仍须快照确认。
                 cycle = self._sync.response_cycle_key
                 query_window = WindowKey(
@@ -1781,6 +1855,10 @@ class OfficialGameSession:
                 # 409 路径由调用方保守映射 SubmitRejectedNoRefresh
                 raise _PollFailure(GameFailed(self.game_id, True, "refresh_deadline"), request_sent=False) from None
             request_timing["granted_at_monotonic"] = self._monotonic()
+            # 获准瞬间的等待者构成：把"这条查询排了多久、前面有多少竞争者"
+            # 与用途一起落盘，使跨局饥饿可以从事后审计直接判定，而不是只能
+            # 从"某场在一段时间内零获准"反推。
+            request_timing["state_queue_at_grant"] = self._scheduler.state_queue_snapshot
             # acquire 等待（429 冷却/槽竞争）会消耗预算：拿到 lease 后必须
             # 复查截止并按最新剩余设置读取超时——不得用过期的估算值发请求
             read_timeout: Optional[float] = None
