@@ -57,7 +57,14 @@ def test_deep_condition_is_the_residual_not_a_failure():
     ({"filter_active": False}, "filter_inactive"),
     ({"gate_in_flight": True}, "gate_busy"),
     ({"gate_blocked": True}, "gate_busy"),
-    ({"seq_delta": 9}, "offset_unsupported"),
+    # delta 不在任何规则覆盖的偏移上（no_rule_for_offset）——第一次实现把它
+    # 误报成 offset_unsupported，且会连带把"没有规则覆盖"说成"快照落后"。
+    ({"seq_delta": 9}, "no_rule_for_offset"),
+    ({"seq_delta": None}, "no_rule_for_offset"),
+    # +1 帧只有"我方弃牌回显"规则覆盖；没有待回显就不可能跳过
+    # （基线行是 delta=3，属碰超时规则，因此这里必须显式给 delta=1）。
+    ({"seq_delta": 1, "expected_own_discard_seq": None}, "no_pending_own_discard"),
+    ({"seq_delta": 1, "expected_own_discard_seq": 104}, "deep_condition"),
     ({"base_seq": 100, "last_seq": 101}, "freshness"),
     ({"cycle": None, "cycle_known": False}, "cycle_unknown"),
     ({"cycle": [3, 99, "5w", 2]}, "cycle_mismatch"),
@@ -74,9 +81,16 @@ def test_precedence_freshness_before_claim_interest():
     assert attr.classify(row) == "freshness"
 
 
-def test_precedence_gate_before_offset():
-    row = _row(gate_in_flight=True, seq_delta=99)
-    assert attr.classify(row) == "gate_busy"
+def test_offset_routing_precedes_gate_and_freshness():
+    """先按偏移路由到能覆盖它的规则，再判该规则的前提。
+
+    顺序错了会把"根本没有规则覆盖这个偏移"报成"快照落后"或"动作门忙"——这正是第一次
+    实现（未按偏移路由）把 78% 的 +1 帧误报为 freshness 的原因。
+    """
+
+    assert attr.classify(_row(gate_in_flight=True, seq_delta=99)) == "no_rule_for_offset"
+    assert attr.classify(_row(gate_in_flight=True, seq_delta=3)) == "gate_busy"
+    assert attr.classify(_row(base_seq=100, last_seq=101, seq_delta=2)) == "freshness"
 
 
 def _write(audit_root: Path, rows: list) -> None:
