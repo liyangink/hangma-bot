@@ -807,6 +807,38 @@ class OfficialGameSession:
                     continue
                 self._sse_own_discard_probe_at = None
                 self._sse_phase_probe_at = None
+                # 本帧未被任何跳过规则接受，将发一次权威快照。把**判定所依赖的
+                # 输入**一并落盘：跳过规则本身只返回真/假，事后无法区分是被
+                # "快照不够新"、"本周期有鸣牌兴趣"还是"周期身份不明"挡住的，
+                # 而三者的修法与风险完全不同（2026-09-25 F2 归因需求）。
+                # 纯只读：不改判定、不改调度、不改变量。
+                self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                    "sse_frame_not_skipped": True,
+                    "observed_seq": frame.seq,
+                    "base_seq": base_seq,
+                    "seq_delta": frame.seq - base_seq,
+                    "last_seq": self._sync.last_seq,
+                    "skipped_seq": self._sse_skipped_seq,
+                    "filter_active": self._sse_filter_active,
+                    "claim_interest": self._sync.claim_interest_for_cycle(),
+                    "cycle_known": self._sync.response_cycle_key is not None,
+                    # 周期身份四元组 (round_no, 触发弃牌 seq, 牌码, 弃牌座位)：
+                    # 跳过规则要求它与当前帧的 base_seq 吻合，缺少它就无法判定
+                    # "是身份对不上"还是"快照落后"。
+                    "cycle": (list(self._sync.response_cycle_key)
+                              if self._sync.response_cycle_key is not None else None),
+                    "expected_own_discard_seq": (
+                        self._sse_expected_own_discard[0]
+                        if self._sse_expected_own_discard is not None else None),
+                    "last_skip_expectation": (
+                        list(self._sse_skip_expectations[-1])
+                        if self._sse_skip_expectations else None),
+                    "gate_in_flight": self._gate.in_flight,
+                    "gate_blocked": self._gate.blocked_window is not None,
+                    "snapshot_phase": (self._sync.snapshot.phase
+                                       if self._sync.snapshot is not None else None),
+                    "skip_expectations": len(self._sse_skip_expectations),
+                }, trigger_seq=frame.seq)
                 return await self._get_state(
                     # SSE 已发现新水位；需要牌面时一次取得决策所需的权威观察，
                     # 避免先拉增量再条件刷新快照的串行两笔请求。
