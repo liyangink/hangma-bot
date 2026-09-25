@@ -818,7 +818,8 @@ class OfficialGameSession:
             last_state_at = self._sse_last_authoritative_at or entered_at
             if self._sync.snapshot is not None and self._sync.snapshot.phase == "settled":
                 # 官方 v31 新局发牌没有 SSE 事件，却会唤醒从旧游标
-                # 挂起的轮询并返回 gap 快照。一局只需这一笔状态查询；
+                # 挂起的轮询并返回 gap 快照；若旧游标还欠结算事件，
+                # 先消费一次旧状态，再继续挂到新局发牌。
                 # 旧方案等 5.25 秒后才排低优先级探针，可能错过庄家首打。
                 ordinary_deadline = last_state_at
                 ordinary_purpose = "sse_settled_long_poll"

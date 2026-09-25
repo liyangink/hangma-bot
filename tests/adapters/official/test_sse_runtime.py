@@ -724,6 +724,48 @@ class TestSseFrameDriven:
         finally:
             await session.aclose("done")
 
+    async def test_settled_long_poll_yields_to_new_sse_frame(self, monkeypatch) -> None:
+        """已发出的局间 GET 若未及时醒来，新事件仍能抢救一秒动作窗。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        settled = load_fixture("state_response_snapshot_draw.json")
+        settled["snapshot"].update({"phase": "settled", "dealer": 2, "turn": 2,
+                                     "responding_seats": [], "drawn_tile": None})
+        new_deal = load_fixture("state_response_snapshot_draw.json")
+        new_deal["seq"] = 102
+        new_deal["snapshot"].update({"round_no": 2, "dealer": 2, "turn": 2})
+        started = asyncio.Event()
+        cancelled = asyncio.Event()
+        calls = []
+
+        async def handler(*, method, path, json_body=None, params=None, long_poll=False):
+            calls.append((params["seq"], long_poll))
+            if len(calls) == 1:
+                return 200, json.dumps(settled)
+            if long_poll:
+                started.set()
+                try:
+                    await asyncio.Event().wait()
+                finally:
+                    cancelled.set()
+            return 200, json.dumps(new_deal)
+
+        transport = FakeTransport()
+        transport.handler = handler
+        session = _make_session(transport, FakeClock())
+        pending = asyncio.create_task(session.next_item())
+        try:
+            await asyncio.wait_for(started.wait(), timeout=0.5)
+            await FakeSseClient.instances[0].on_frame(_Frame(seq=102))
+            window = await asyncio.wait_for(pending, timeout=0.5)
+            assert isinstance(window, ObservedActionWindow)
+            assert window.window_key.round_no == 2
+            assert cancelled.is_set()
+            assert calls == [(0, False), (101, True), (101, False)]
+        finally:
+            await session.aclose("done")
+
     async def test_sse_silence_uses_low_priority_snapshot(self, monkeypatch) -> None:
         """活跃阶段两秒无新通知才查一次当前快照，且不挂长轮询。"""
 
