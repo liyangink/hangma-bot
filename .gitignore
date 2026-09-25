@@ -93,3 +93,9 @@ review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r
 review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p25-luxury-one-shanten-development-teacher-01-20260922/snapshots/
 # R18 P27 精确中局快照可由 P24 复验目标与冻结 P5 自然前缀重建；配对结果和摘要入库。
 review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p27-luxury-one-shanten-blind-replication-01-20260922/snapshots/
+# 大规模派生中间产物：可由同目录脚本从 artifacts/sessions/ 重建，不进版本库。
+# 只忽略这些明确的文件/后缀，不影响既有 review/**/stages/ 的入库约定。
+review/round-level-autopsy-20260925/**/*.jsonl
+review/round-level-autopsy-20260925/crash-games/crash-decisions.json
+review/bad-start-subgroup-20260925/rounds.jsonl
+review/baotou-anatomy-20260925/rounds.jsonl
