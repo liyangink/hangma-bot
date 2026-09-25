@@ -131,7 +131,6 @@ _BOUNDARY_STALL_BACKOFF_SEC = (0.5, 1.0)
 _SSE_SILENCE_POLL_SEC = 2.0
 _SSE_STATE_AGE_POLL_SEC = 5.0
 _SSE_PROBE_COALESCE_SEC = 0.25  # 高优先级专用探针即将到点时，合并相邻普通保底
-_SSE_SETTLED_IDLE_POLL_SEC = 5.25  # v31 局间固定停 5 秒，错开新局首弃牌的 SSE 帧
 # 本人普通弃牌被接收但通知流完全不推帧时，短时权威探针避免等满 2 秒
 # 的未知区间；一旦看到预期回显即取消，不给正常流增加 GET。
 _SSE_OWN_DISCARD_PROBE_SEC = 1.2
@@ -727,7 +726,8 @@ class OfficialGameSession:
         - 需读取的帧到达 → 默认直接取权威快照（GET /state?seq=0）；
         - 已知无我方动作权的帧暂缓读取，并设短快照探针检查后续沉默；
         - 活跃阶段新水位静默 2 秒或权威状态已 5 秒未对齐 → seq=0；
-          局间固定停顿单独在 5.25 秒探测；普通保底排队时可被新帧撤销；
+          局间挂一次增量长轮询，借官方 v31 的新局发牌唤醒；
+          我方预期首打时提高优先级，未发查询仍可被新帧撤销；
         - 边界超时（响应阶段官方 deadline 推导）→ 对齐边界定时器语义，
           主动 seq=0 权威刷新捕获无事件的阶段切换；
         - SSE 失效（等待期间流终局）→ 可恢复故障，由上层监督处理。
@@ -817,8 +817,11 @@ class OfficialGameSession:
             now = loop.time()
             last_state_at = self._sse_last_authoritative_at or entered_at
             if self._sync.snapshot is not None and self._sync.snapshot.phase == "settled":
-                ordinary_deadline = last_state_at + _SSE_SETTLED_IDLE_POLL_SEC
-                ordinary_purpose = "sse_settled_probe"
+                # 官方 v31 新局发牌没有 SSE 事件，却会唤醒从旧游标
+                # 挂起的轮询并返回 gap 快照。一局只需这一笔状态查询；
+                # 旧方案等 5.25 秒后才排低优先级探针，可能错过庄家首打。
+                ordinary_deadline = last_state_at
+                ordinary_purpose = "sse_settled_long_poll"
             else:
                 silence_at = self._sse_silence_covered_at or entered_at
                 silence_deadline = silence_at + _SSE_SILENCE_POLL_SEC
@@ -856,7 +859,17 @@ class OfficialGameSession:
                                        "sse_phase_probe" if phase_probe else "sse_boundary"))
                 # 普通保底没有已知一秒动作截止：低优先级排队；若新帧先到，
                 # 撤销未发查询，让真正的帧查询按 RECOVERY 领取同场唯一 GET 槽。
-                response = await self._sse_watchdog_snapshot(ordinary_purpose)
+                settled_long_poll = ordinary_purpose == "sse_settled_long_poll"
+                snapshot = self._sync.snapshot
+                own_settled = bool(
+                    settled_long_poll and snapshot is not None
+                    and snapshot.dealer == snapshot.seat
+                )
+                response = await self._sse_watchdog_snapshot(
+                    ordinary_purpose, long_poll=settled_long_poll,
+                    force_full=not settled_long_poll,
+                    priority=Priority.DRAW_WATCH if own_settled else Priority.POLL,
+                )
                 if response is not None:
                     return response
                 continue
@@ -867,15 +880,18 @@ class OfficialGameSession:
             except asyncio.TimeoutError:
                 pass  # 下一轮先检查流健康和帧，再判原始截止
 
-    async def _sse_watchdog_snapshot(self, purpose: str) -> Optional[StateResponse]:
-        """普通静默探针仅在发送前可撤销；已发送则消费这笔权威快照。"""
+    async def _sse_watchdog_snapshot(
+        self, purpose: str, *, long_poll: bool = False,
+        force_full: bool = True, priority: Priority = Priority.POLL,
+    ) -> Optional[StateResponse]:
+        """普通探针发前可撤销；跨局长轮询遇新帧可安全改查权威快照。"""
 
         assert self._sse_event is not None
         # 调用方已检查待处理帧与自唤醒；clear 到首次 await 之间不会丢回调。
         self._sse_event.clear()
         in_flight = asyncio.Event()
         query = asyncio.create_task(self._get_state(
-            long_poll=False, force_full=True, priority=Priority.POLL,
+            long_poll=long_poll, force_full=force_full, priority=priority,
             query_purpose=purpose, in_flight_event=in_flight))
         wake = asyncio.create_task(self._sse_event.wait())
         self._active_tasks.add(query)
@@ -886,6 +902,15 @@ class OfficialGameSession:
             if not in_flight.is_set():
                 # 未发送或上次发送已收到 429／失败、正等重试时均可撤销；
                 # 单事件环内检查与 cancel 之间无 await，未发预占可退还。
+                query.cancel()
+                try:
+                    await query
+                except asyncio.CancelledError:
+                    pass
+                return None
+            if long_poll and (self._sse_frames or not self._sse_healthy):
+                # GET 是幂等查询；若通知流已先发现更高水位或失效，
+                # 不让仍挂起的局间长轮询挡住一秒窗的恢复快照。
                 query.cancel()
                 try:
                     await query

@@ -659,12 +659,11 @@ class TestSseFrameDriven:
                    for record in audit.records)
         await session.aclose("done")
 
-    async def test_settled_idle_probe_uses_low_priority(self, monkeypatch) -> None:
-        """局间固定停顿独立计时，普通探针不抢真实帧的发送优先级。"""
+    async def test_other_dealer_settled_long_poll_uses_low_priority(self, monkeypatch) -> None:
+        """他家首打的跨局轮询不抢本人已知动作风险的请求优先级。"""
 
         FakeSseClient.instances = []
         monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
-        monkeypatch.setattr(game_module, "_SSE_SETTLED_IDLE_POLL_SEC", 0.01)
         settled = load_fixture("state_response_snapshot_draw.json")
         settled["snapshot"].update({"phase": "settled", "turn": 1, "responding_seats": [],
                                      "drawn_tile": None})
@@ -681,11 +680,49 @@ class TestSseFrameDriven:
         session = _make_session(transport, FakeClock(), audit=audit)
         result = await asyncio.wait_for(session.next_item(), timeout=2)
         assert isinstance(result, GameFinished)
-        assert calls == [(0, False), (0, False)]
         idle = [record for record in audit.records
-                if record.payload.get("request_timing", {}).get("query_purpose") == "sse_settled_probe"]
+                if record.payload.get("request_timing", {}).get("query_purpose") == "sse_settled_long_poll"]
         assert idle and idle[0].payload["request_timing"]["scheduler_priority"] == "POLL"
+        assert calls == [(0, False), (101, True)]
         await session.aclose("done")
+
+    async def test_own_dealer_settled_waits_for_new_deal_without_sse_frame(
+        self, monkeypatch,
+    ) -> None:
+        """新局发牌无 SSE 事件时，已知本人将首打也要在动作窗前取得快照。"""
+
+        FakeSseClient.instances = []
+        monkeypatch.setattr(game_module, "SSENotifyClient", FakeSseClient)
+        settled = load_fixture("state_response_snapshot_draw.json")
+        settled["snapshot"].update({"phase": "settled", "dealer": 2, "turn": 2,
+                                     "responding_seats": [], "drawn_tile": None})
+        new_deal = load_fixture("state_response_snapshot_draw.json")
+        new_deal["gap"] = True
+        new_deal["snapshot"].update({"round_no": 2, "dealer": 2, "turn": 2})
+        calls = []
+
+        def handler(*, method, path, json_body=None, params=None, long_poll=False):
+            calls.append((params["seq"], long_poll))
+            if len(calls) == 1:
+                return 200, json.dumps(settled)
+            return 200, json.dumps(new_deal if long_poll else settled)
+
+        transport = FakeTransport()
+        transport.handler = handler
+        audit = FakeAuditSink()
+        session = _make_session(transport, FakeClock(), audit=audit)
+        try:
+            window = await asyncio.wait_for(session.next_item(), timeout=0.5)
+            assert isinstance(window, ObservedActionWindow)
+            assert window.window_key.round_no == 2
+            assert window.window_key.phase is WindowPhase.DRAW
+            assert calls == [(0, False), (101, True)]
+            boundary = [record for record in audit.records
+                        if record.payload.get("request_timing", {}).get("query_purpose")
+                        == "sse_settled_long_poll"]
+            assert boundary and boundary[0].payload["request_timing"]["scheduler_priority"] == "DRAW_WATCH"
+        finally:
+            await session.aclose("done")
 
     async def test_sse_silence_uses_low_priority_snapshot(self, monkeypatch) -> None:
         """活跃阶段两秒无新通知才查一次当前快照，且不挂长轮询。"""
