@@ -6,7 +6,7 @@
 
 接手者的目标是持续生成、检验并保留在杭麻规则下真正增加**完整桌赛和赛事晋级效用**的窄域策略，同时保持官方协议、动作时限、合法性和审计。大语言模型（`LLM`，离线提出算法与解释的工具）不能进入线上动作闭环。没有根级盲测正证据的提案可作为材料归档，不能宣称“有效进化”；测试房全为自家 Bot 的总净分恒为零，只验接线和对局机制。发布仍需完整测试赛事、可靠性、规则和人工审核。
 
-2026-09-25 的最新实网状态：[四席 R18 v2 SSE 房](../review/r18-four-arm-evaluation-2026-09-23/LIVE-R18-V2-SSE-ACCEPTANCE-2026-09-25.md)自然完赛 80/80 单局、规则确认的合法吃碰漏窗 0、SSE 错帧 0、R18 显式评分回退 0；`/state` 有 1 次 429，容量风险未归零。两席 R18 对两席牌效等胡的新测试房正在后续执行，结果应单列，不能与上述全同策略房混算。测试赛事的 SSE 配置模板已准备，但独立赛事 Token、赛程与正式终态还未验收。[执行清单](../review/r18-four-arm-evaluation-2026-09-23/NEXT-STAGE-2026-09-25.md)。
+2026-09-25 的最新实网状态：[四席 R18 v2 SSE 房](../review/r18-four-arm-evaluation-2026-09-23/LIVE-R18-V2-SSE-ACCEPTANCE-2026-09-25.md)自然完赛 80/80 单局、规则确认的合法吃碰漏窗 0、SSE 错帧 0、R18 显式评分回退 0；`/state` 有 1 次 429，容量风险未归零。[两房两臂换位测试](../review/r18-four-arm-evaluation-2026-09-23/LIVE-R18-VS-HUUP-2026-09-25.md)各自然完赛 80/80 单局，R18 合计 −670，但同一观察重放显示 22,949 个动作窗口只发生 9 次首选差异，均为立即胡与弃牌；随机房总分不能判强度。第二房的指南版本端点有三次开局 429，`/state` 429 为零。测试赛事的 SSE 配置模板已准备，但独立赛事 Token、赛程与正式终态还未验收。[执行清单](../review/r18-four-arm-evaluation-2026-09-23/NEXT-STAGE-2026-09-25.md)。
 
 ## 科学依据与项目改编
 
@@ -42,13 +42,14 @@
 | 同墙四臂研究 | `review/r18-four-arm-evaluation-2026-09-23/paired_study.py --out <新目录> --panel-seed <新种子> --roots-per-mix 2`；之后 `analyze_paired.py --study-dir <目录>` | 小批只测执行和方差；正式独立根数与对比先冻结；H/M 旧池不等于近期强池 |
 | 测试房 | `scripts/test_room_campaign_watchdog.py open/preflight/round/status --campaign runs/<战役>` | 新建房默认 SSE；所有身份同接线；房有时效，建好立即跑，启动后让进程自然完赛 |
 | 实网动作机会核对 | `review/r18-four-arm-evaluation-2026-09-23/audit_claim_opportunities.py <审计根> <官方事件根>`、`verify_sse_live.py`、`analyze_state_runtime.py` | 先用官方手牌/事件找牌形，再正式规则复核；未知窗不当作通过 |
+| 同观察动作分歧与弃胡结果 | `review/r18-four-arm-evaluation-2026-09-23/replay_cross_policy_actions.py --audit-root <审计根> --out <结果.json>`；`analyze_hu_deferral_outcomes.py` 接审计根、官方原文根和前项结果 | 先核原策略重放与发布包摘要；即时胡对实际续打只是同局描述，不能当完整桌因果效果 |
 | 赛后库 | `datamart/build.py` 与 `datamart/build.py --check` | 身份来自官方 `seats`，本方策略来自冻结归因映射；全自家房不能算自由赛净收益 |
 
-强对手池当前事实：[9 月 25 日官方榜快照](../datasets/leaderboard/snapshots/20260925T004627Z/leaderboard-week.json)的上周前四已与 R18 31 房/310 桌赛后原文对齐。R18 v2 遇榜前四的 2 房合计 +155，其余 5 房 −269；这无法证明榜前较弱，却足以否定“仅模仿榜前选手就能解释负分”的简单方向。优先在四间负分房查先胡时点、吃碰杠节奏和我方自然动作分歧，同时在新自由赛开赛**之前**冻结榜单标签。[房级数据](../review/r18-four-arm-evaluation-2026-09-23/RANKED-OPPONENTS-2026-09-25.md)。
+强对手池当前事实：[9 月 25 日官方榜快照](../datasets/leaderboard/snapshots/20260925T004627Z/leaderboard-week.json)的上周前四已与 R18 31 房/310 桌赛后原文对齐。R18 v2 遇榜前四的 2 房合计 +155，其余 5 房 −269；这无法证明榜前较弱，却足以否定“仅模仿榜前选手就能解释负分”的简单方向。[七间自由赛房的同观察重放](../review/r18-four-arm-evaluation-2026-09-23/FREE-R18-HU-DEFERRAL-2026-09-25.md)进一步发现 11,063 个 R18 动作窗口只有 7 次相对牌效等胡改选，全部为弃胡；其中 4 次事后增分、3 次被抢胡。优先在新自由赛开赛**之前**冻结榜单标签，查四间负分房的本人先胡时点及可复现的自然动作分歧，不能从总分猜普通牌效弱点。[房级数据](../review/r18-four-arm-evaluation-2026-09-23/RANKED-OPPONENTS-2026-09-25.md)。
 
 ## 下一代候选和预算分配
 
-首个待证家族是“可立即平胡、两财神、早巡、当前未爆头，但下次本人摸牌后可再弃牌建爆头”的[自然个案](../review/llm-guided-heuristic-route-2026-09-15/R18-P76-TWO-WHITE-LIVE-CASE-2026-09-23.md)。它证明路线可达，**没有证明弃胡有利**；必须先做共同隐藏世界下的立即胡与合法首弃完整续打。若因对手抢先胡、牌墙余量或根级盲测失败，就关闭这一家族，转向常见弃牌风险/有效牌评分的单项消融和近期强对手情景。不得沿一个已看过结果不断加财神数、巡数等补丁。
+下一项应先复用[两房真实分歧](../review/r18-four-arm-evaluation-2026-09-23/LIVE-R18-VS-HUUP-ACTION-DIFF-20260925.json)与[自由赛七个真实弃胡](../review/r18-four-arm-evaluation-2026-09-23/FREE-R18-HU-DEFERRAL-2026-09-25.md)。测试房 R18 实际五次弃胡落在四局，后续都由本人胡且本局积分更高；自由赛七局只有四次成功、三次被他家抢先胡，事后增益 +54 与损失 −55 几乎抵消。把这些自然状态归为“立即胡还是继续”的共同隐藏世界续打试验，同时报告本人先胡、他家抢先胡、连庄和完整桌赛结果。原定“可立即平胡、两财神、早巡、下次摸后再弃牌建爆头”的[自然个案](../review/llm-guided-heuristic-route-2026-09-15/R18-P76-TWO-WHITE-LIVE-CASE-2026-09-23.md)仍是待证家族，**没有证明一般弃胡有利**。若因生存风险或盲测失败，就关闭该家族；当前真实观察相对牌效等胡几乎无非胡改选，应测量更常见杭麻专长家族的自然触发与改选密度。不得沿一个已看过结果不断加财神数、巡数等补丁。
 
 模型投入按**每有效新行为的成本**，不按模型品牌或生成字数决定。GLM 5.3 可承担常规 I1/M1 作者与失败反思；小修可用较低推理档，难机制设计可用 `max` 与更大输出上限，但必须把请求实际 `provider/model/reasoningEffort/maxTokens` 和 token/耗时记账。能力较低模型只负责可机械验证的整理、报告和小范围候选。Sol/Astra 仅对经过反例归纳、能明确写出待解难点的少量困难种子尝试；比较合法率、行为差分率、盲测正效和时间成本后再决定是否常用。运行已有 `dsh` 包装器与账本格式可参照[GLM 接管与证据](../review/llm-guided-heuristic-route-2026-09-15/R9-TAKEOVER-REPAIR-AND-SEARCH-2026-09-19.md)及[候选搜索工具](../review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route_microfunction_search_b.py)。
 

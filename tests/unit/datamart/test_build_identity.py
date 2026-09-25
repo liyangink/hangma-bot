@@ -54,3 +54,22 @@ def test_late_official_identity_backfills_only_unattributed_seat():
         (0, "u_new", "r18_integrated_positive_v2", 1),
         (1, "u_existing", "weighted_heuristic_v2", 1),
     ]
+
+
+def test_closed_previous_week_leaderboard_is_tagged_separately(tmp_path, monkeypatch):
+    """本周实时 top 与已结束的上周 prev.top 不能共用一个强手标签。"""
+    build = _build_module()
+    monkeypatch.setattr(build, "REPO_ROOT", tmp_path)
+    snapshot = tmp_path / "datasets" / "leaderboard" / "snapshots" / "20260925T004627Z"
+    snapshot.mkdir(parents=True)
+    (snapshot / "snapshot.json").write_text(json.dumps({"captured_at_unix_ms": 1790297187000}))
+    (snapshot / "leaderboard-week.json").write_text(json.dumps({
+        "period": "week", "from": 1789920000,
+        "top": [{"user_id": "u_current", "rank": 1, "name": "本周"}],
+        "prev": {"from": 1789315200, "to": 1789920000,
+                 "top": [{"user_id": "u_previous", "rank": 1, "name": "上周"}]},
+    }, ensure_ascii=False))
+
+    tags = build.load_opponent_tags()["tags"]
+    assert tags[("u_previous", "上周榜", "2026-W37")]["rank"] == 1
+    assert ("u_current", "上周榜", "2026-W37") not in tags

@@ -9,7 +9,7 @@
 新测试房的赛后链为 `official/events.json` → `offline.postgame` →
 `datasets/derived/<pool>/official/<room>/official/` 与单局分片 → `datamart/build.py`。
 入库时按官方 `seats.user_id` 关联身份、按冻结策略映射关联本方策略；官方身份晚于单局分片到达时，
-仅回填原先未知的座位，保留已有归因和结算。数据集源摘要同时涵盖座位与策略映射，避免测量修正未被 `--check` 察觉。
+仅回填原先未知的座位，保留已有归因和结算。数据集源摘要同时涵盖座位、策略映射与排行榜标签，避免测量修正未被 `--check` 察觉。已结束的 `week.prev.top` 前四独立登记为“上周榜”，与实时“周榜”分开。
 
 2026-09-23 R18 累计机会能力候选完成第二版接线。`r18_integrated_positive_v1` 保留既有测试房、
 测试赛事与自由赛冻结包；用户另行批准 `r18_integrated_positive_v2` 接入测试房、测试赛事、自由赛与正式赛事。
