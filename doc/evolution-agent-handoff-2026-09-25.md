@@ -1,0 +1,55 @@
+# 杭麻启发式进化：接手指南（2026-09-25）
+
+## 当前结论和任务边界
+
+当前最值得保留的机会父代是 `OPTY-R18-C02`，运行名 `r18_integrated_positive_v2`；可直接比较的牌效等胡基线是 `PAIEFF-B02-HU01`，运行名 `v2_hu_upgrade_v1`。[算法命名与血缘](algorithm-lineage-names.md)记录了源文件和发布包摘要，切勿把小写源码版本号与大写牌效基线混同。旧 H/M 同墙面板上 R18 v2 有正向结果；近期自由赛 7 房/70 桌的 R18 v2 合计 `−114`，两者属于不同对手和时间分布，不能互相抵消或据此发布。[冻结四臂确认](../review/r18-four-arm-evaluation-2026-09-23/CONFIRMATION.md)、[自由赛复核](../review/r18-four-arm-evaluation-2026-09-23/RANKED-OPPONENTS-2026-09-25.md)。
+
+接手者的目标是持续生成、检验并保留在杭麻规则下真正增加**完整桌赛和赛事晋级效用**的窄域策略，同时保持官方协议、动作时限、合法性和审计。大语言模型（`LLM`，离线提出算法与解释的工具）不能进入线上动作闭环。没有根级盲测正证据的提案可作为材料归档，不能宣称“有效进化”；测试房全为自家 Bot 的总净分恒为零，只验接线和对局机制。发布仍需完整测试赛事、可靠性、规则和人工审核。
+
+2026-09-25 的最新实网状态：[四席 R18 v2 SSE 房](../review/r18-four-arm-evaluation-2026-09-23/LIVE-R18-V2-SSE-ACCEPTANCE-2026-09-25.md)自然完赛 80/80 单局、规则确认的合法吃碰漏窗 0、SSE 错帧 0、R18 显式评分回退 0；`/state` 有 1 次 429，容量风险未归零。两席 R18 对两席牌效等胡的新测试房正在后续执行，结果应单列，不能与上述全同策略房混算。测试赛事的 SSE 配置模板已准备，但独立赛事 Token、赛程与正式终态还未验收。[执行清单](../review/r18-four-arm-evaluation-2026-09-23/NEXT-STAGE-2026-09-25.md)。
+
+## 科学依据与项目改编
+
+以下一手来源只支持**搜索方法**，没有任何一篇证明它在杭州麻将必然增分。规则和结算只能以官方指南与本仓库 `hangma` 的对拍为准，不能照搬日麻和组合优化指标。
+
+| 一手来源 | 可采纳的具体机制 | 本项目的证据边界 |
+| --- | --- | --- |
+| [EoH，ICML 2024](https://proceedings.mlr.press/v235/liu24bs.html) | 同时保存自然语言“思路”和可执行启发式，在外部评价中演化两者 | 只让模型改有界 `score_actions`；源码通过合同、行为改变、盲测收益分别判定 |
+| [ReEvo，NeurIPS 2024](https://arxiv.org/abs/2402.01145) | 对可重复评价的成功与失败做语言反思，引导下一批提案 | 反馈包含事实、置信度和反例；模型的归因属于待检假设 |
+| [FunSearch，DeepMind 官方说明](https://deepmind.google/blog/funsearch-making-new-discoveries-in-mathematical-sciences-using-large-language-models/) | 固定程序骨架、自动评价并保留有用候选 | 规则、合法性和在线调度不开放给生成模型；保存行为不同的专长 |
+| [AlphaEvolve，技术报告](https://arxiv.org/abs/2506.13131) | 从廉价检查到昂贵评价的级联，以及多指标程序档案 | 本项目按静态合同→规则金例→自然触发→反事实→完整桌→实网顺序花预算 |
+| [Suphx，原论文](https://arxiv.org/abs/2003.13590) | Mahjong 决策需要前瞻和长期回报视角 | 仅借鉴问题分解；其日麻规则、训练规模和胜负数字不能移植到杭麻 |
+
+[本仓库文献与模型投入复核](../review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md)、[失败后的文献与规则复盘](../review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/R14-G1-FAILURE-LITERATURE-REAUDIT-2026-09-21.md)给出进一步来源。尤其记住 P9/P10 七对教师的反例：成功胡时番数提高，却因本人先胡减少而总体退化；番值代理不能替代到达概率与他家抢先胡风险。[机制证据](../review/llm-guided-heuristic-route-2026-09-15/R18-P10-MULTISTEP-SURVIVAL-TRACE-RESULT-2026-09-22.md)。
+
+## 一次进化迭代怎么跑
+
+1. **冻结问题。** 写明机会家族的玩家可见触发谓词、决策窗口、基线首选、拟改变动作、为什么可能改善、最强反例、杭麻规则依据。固定父代源码摘要、规则哈希、指南版本、对手池、来源房、牌山根、预算和停机条件。一个提案只动一个机制；R18 v2 发布包绝不原地改名覆盖。
+2. **先查事实是否存在。** `hangma` 是合法动作、胡牌、番数、爆头、财神、抓打圈的唯一来源。用自然牌谱和机会题库确认触发率、事实完备率、真实改选率；`score_parts` 非零不等于首选动作改变。公开未见张数是容量，不是下一摸概率；玩家观察（`PlayerObservation`）不能读取模拟完整世界（`WorldState`）的暗牌或未来牌墙。
+3. **生成与准入。** 用 GLM 5.3 的禁工具 headless 通道生成思想、代码、反例；冻结原始输入、输出、用量、模型标识和请求头。每份最多一次合同修复，失败分类为传输、语法、合同、规则、无行为改变或真实负效。`action_value_executor.py`、评分视图 `action_value.py` 和策略接缝 `action_value_policy.py` 是正式边界；不得让生成代码提交 HTTP、读取文件/时间或拓宽信息权限。
+4. **廉价机制验证。** 用规则金例和真实观察重放检查算术与动作身份，再取同一来源状态的共同隐藏世界，强制比较候选与父代的具体动作。分别报告本人先胡率、成功时番数、他家先胡/流局、当局积分和阶段/完整桌积分。若只是胡时分高而先胡率显著降，机制应关闭或改写，不继续补阈值。
+5. **昂贵独立验证。** 来源房/牌山根先分开发和未见盲测；同一对手组合、同牌山、四座换位、整桌完成。根而非动作、单局或换位桌是统计单位。预先冻结主指标、机会指标、分层退化上限和置信区间；未知/作废结果单列，不补零。结果不显著则保留父代，并把该家族与失败机制归档。
+6. **实网与发布。** 测试房检查 M=10/SSE/429/漏窗/非法与审计；自由赛按房看现实对手和时间分布；测试赛事验报名、阶段、终态与晋级。算法强度由盲配对完整桌赛主判，实网是外部检验。候选通过全部门禁才冻结新包，人工审核发布。
+
+每个迭代文件夹最少保存：`proposal.md`（思想、触发、反例、官方规则核对）、`source.py`/SHA、`lineage.json`、`call-ledger.json`、`preflight.json`、`behavior-diff.json`、`development.json`、`blind-confirmation.json`、`reliability.json`、`decision.md`。日志只放脱敏身份和哈希，不写 Token、Cookie 或授权头。失败提案也写 `decision.md`，这使中等模型可以从结构化反例继续，而不靠会话记忆。
+
+## 立即可用的工具与证据
+
+| 目的 | 入口与用法 | 使用边界 |
+| --- | --- | --- |
+| 官方榜单刷新 | `scripts/fetch_leaderboard.py --insecure --out datasets/leaderboard/snapshots` | 门户会话只从 `.private/` 读取；周榜 `prev.top` 是已结束上周，`top` 是本周未结算快照；保存抓取时间 |
+| 榜单对手与自由赛联表 | `review/r18-four-arm-evaluation-2026-09-23/analyze_ranked_opponents.py --snapshot <快照目录> --out <结果.json>` | 身份用 `user_id`，9/25 标签晚于 9/23 对局，只能回顾描述 |
+| 同墙四臂研究 | `review/r18-four-arm-evaluation-2026-09-23/paired_study.py --out <新目录> --panel-seed <新种子> --roots-per-mix 2`；之后 `analyze_paired.py --study-dir <目录>` | 小批只测执行和方差；正式独立根数与对比先冻结；H/M 旧池不等于近期强池 |
+| 测试房 | `scripts/test_room_campaign_watchdog.py open/preflight/round/status --campaign runs/<战役>` | 新建房默认 SSE；所有身份同接线；房有时效，建好立即跑，启动后让进程自然完赛 |
+| 实网动作机会核对 | `review/r18-four-arm-evaluation-2026-09-23/audit_claim_opportunities.py <审计根> <官方事件根>`、`verify_sse_live.py`、`analyze_state_runtime.py` | 先用官方手牌/事件找牌形，再正式规则复核；未知窗不当作通过 |
+| 赛后库 | `datamart/build.py` 与 `datamart/build.py --check` | 身份来自官方 `seats`，本方策略来自冻结归因映射；全自家房不能算自由赛净收益 |
+
+强对手池当前事实：[9 月 25 日官方榜快照](../datasets/leaderboard/snapshots/20260925T004627Z/leaderboard-week.json)的上周前四已与 R18 31 房/310 桌赛后原文对齐。R18 v2 遇榜前四的 2 房合计 +155，其余 5 房 −269；这无法证明榜前较弱，却足以否定“仅模仿榜前选手就能解释负分”的简单方向。优先在四间负分房查先胡时点、吃碰杠节奏和我方自然动作分歧，同时在新自由赛开赛**之前**冻结榜单标签。[房级数据](../review/r18-four-arm-evaluation-2026-09-23/RANKED-OPPONENTS-2026-09-25.md)。
+
+## 下一代候选和预算分配
+
+首个待证家族是“可立即平胡、两财神、早巡、当前未爆头，但下次本人摸牌后可再弃牌建爆头”的[自然个案](../review/llm-guided-heuristic-route-2026-09-15/R18-P76-TWO-WHITE-LIVE-CASE-2026-09-23.md)。它证明路线可达，**没有证明弃胡有利**；必须先做共同隐藏世界下的立即胡与合法首弃完整续打。若因对手抢先胡、牌墙余量或根级盲测失败，就关闭这一家族，转向常见弃牌风险/有效牌评分的单项消融和近期强对手情景。不得沿一个已看过结果不断加财神数、巡数等补丁。
+
+模型投入按**每有效新行为的成本**，不按模型品牌或生成字数决定。GLM 5.3 可承担常规 I1/M1 作者与失败反思；小修可用较低推理档，难机制设计可用 `max` 与更大输出上限，但必须把请求实际 `provider/model/reasoningEffort/maxTokens` 和 token/耗时记账。能力较低模型只负责可机械验证的整理、报告和小范围候选。Sol/Astra 仅对经过反例归纳、能明确写出待解难点的少量困难种子尝试；比较合法率、行为差分率、盲测正效和时间成本后再决定是否常用。运行已有 `dsh` 包装器与账本格式可参照[GLM 接管与证据](../review/llm-guided-heuristic-route-2026-09-15/R9-TAKEOVER-REPAIR-AND-SEARCH-2026-09-19.md)及[候选搜索工具](../review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route_microfunction_search_b.py)。
+
+如再次停滞，按顺序复盘：官方杭麻规则和实际事件链是否被读错；评估器是否漏掉改选与生存风险；对手池与排行榜标签是否时间错配；候选是否只有语法通过而没有新行为；统计是否把同根换位当独立样本；最后再决定增大 LLM 预算或换结构。每次复盘都要提出下一项可证伪实验或明确关闭家族，不能只写“继续优化”。

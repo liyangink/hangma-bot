@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 
 SCRIPTS_DIR = Path(__file__).resolve().parents[2] / "scripts"
+ROOT = SCRIPTS_DIR.parent
 
 
 def _load_script(name: str):
@@ -94,7 +95,39 @@ class TestRunParticipantScript:
         assert config.mode.value in lines
         assert config.expected_tournament_id in lines
         assert config.strategy in lines
+        assert "状态接线: 状态长轮询" in lines
         assert assembled.run_id in lines
+
+    def test_test_tournament_sse_configuration_reaches_runtime_and_banner(self, tmp_path):
+        path = _write_config(tmp_path, _participant_config(
+            tmp_path, mode="test_tournament", sse_enabled=True,
+            discard_pacing_enabled=False,
+        ))
+        config = participant.load_config(
+            path, environ={"HM_PARTICIPANT_TOKEN": "fixture-not-a-real-token"}
+        )
+        assembled = participant.build_runtime(config, session_factory=lambda: _StubSession())
+        assert config.sse_enabled is True
+        assert config.discard_pacing_enabled is False
+        assert "状态接线: SSE 通知＋权威快照；普通弃牌缓发: 关" in "\n".join(
+            participant.banner_lines(assembled)
+        )
+
+    def test_r18_test_tournament_example_keeps_release_and_sse_together(self, tmp_path):
+        example = json.loads((ROOT / "configs" / "r18-v2-test-tournament-sse.example.json").read_text())
+        example["expected_tournament_id"] = "t-example"
+        example["audit_root"] = str(tmp_path / "audit")
+        path = _write_config(tmp_path, example)
+        config = participant.load_config(path, environ={
+            "HM_PARTICIPANT_TOKEN": "fixture-not-a-real-token",
+        })
+        assert config.mode.value == "test_tournament"
+        assert config.sse_enabled is True
+        assert config.discard_pacing_enabled is False
+        assembled = participant.build_runtime(config, session_factory=lambda: _StubSession())
+        assert assembled.policy.release_metadata["release_package_id"] == (
+            example["expected_policy_release_id"]
+        )
 
     def test_main_reports_usage_error_without_network(self, capsys):
         code = participant.main(["--config", "/nonexistent/config.json"])
@@ -575,6 +608,27 @@ def test_room_binds_each_r18_release_when_packages_are_mixed(tmp_path):
     with pytest.raises(ValueError, match='发布包'):
         room.load_room_config(_write_config(tmp_path, data),
                               environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B})
+
+
+def test_r18_vs_huup_test_room_example_uses_same_sse_wiring_for_all_seats(tmp_path):
+    example = json.loads((ROOT / 'configs' / 'r18-v2-vs-huup-test-room-sse.example.json').read_text())
+    example['expected_tournament_id'] = 't-example'
+    example['audit_root'] = str(tmp_path / 'audit')
+    for index, identity in enumerate(example['identities']):
+        token_file = tmp_path / f'token-{index}'
+        token_file.write_text(f'fixture-token-{index}', encoding='utf-8')
+        identity['token_file'] = str(token_file)
+    cfg = room.load_room_config(_write_config(tmp_path, example))
+    assert cfg.sse_enabled is True
+    assert cfg.discard_pacing_enabled is False
+    children = [room.child_config_mapping(cfg, identity) for identity in cfg.identities]
+    assert [child['strategy'] for child in children].count('r18_integrated_positive_v2') == 2
+    for child in children:
+        assert child['sse_enabled'] is True
+        assert child['discard_pacing_enabled'] is False
+        participant.runtime_config_from_mapping(
+            child, environ={room.TOKEN_ENV_VAR: 'fixture-not-a-real-token'}
+        )
 
 
 def test_room_passes_sequence_model_dir_to_every_child(tmp_path):

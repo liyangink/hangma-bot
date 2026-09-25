@@ -55,6 +55,27 @@ def test_runtime_config_is_one_identity_per_slot_with_its_own_strategy(tmp_path)
     assert session == watchdog.REPO_ROOT / "artifacts" / "sessions" / "demo-campaign-r3"
     assert config["audit_root"] == str(session / "audit")
     assert config["restart"]["max_restarts"] == 2
+    assert config["sse_enabled"] is False
+    assert config["discard_pacing_enabled"] is True
+
+
+def test_runtime_config_uses_campaign_sse_for_every_arm(tmp_path):
+    campaign = _campaign()
+    campaign["sse_enabled"] = True
+    campaign["discard_pacing_enabled"] = False
+    config, _ = watchdog._runtime_config(tmp_path / "sse-campaign", 1, campaign)
+    assert config["sse_enabled"] is True
+    assert config["discard_pacing_enabled"] is False
+    assert config["ordinary_long_poll_min_interval_ms"] == 0
+    assert watchdog.build_arg_parser().parse_args([
+        "open", "--campaign", "sse-campaign", "--sse-enabled",
+    ]).sse_enabled is True
+    assert watchdog.build_arg_parser().parse_args([
+        "open", "--campaign", "sse-campaign",
+    ]).sse_enabled is True
+    assert watchdog.build_arg_parser().parse_args([
+        "open", "--campaign", "sse-campaign", "--no-sse",
+    ]).sse_enabled is False
 
 
 def test_r18_runtime_config_binds_each_approved_release(tmp_path):
@@ -170,3 +191,25 @@ def test_degradation_summary_counts_decisions_not_reasons(tmp_path):
     assert rows[0]["degraded"] == 1                 # 按「决策」计，不按原因条数计
     assert rows[0]["degraded_rate"] == 50.0         # 两条原因不能算成 100%
     assert rows[0]["reasons"]["sequence_model"] == 1
+
+
+def test_degradation_summary_does_not_count_successful_action_value_as_fallback(tmp_path):
+    """实网 R18 成功评分会在说明字段留下“评分完成”，不能算回退。"""
+    session = tmp_path / "session"
+    decisions = session / "audit" / "slot-qinglong" / "runs" / "run-1" / "participants" / "u_1"
+    decisions.mkdir(parents=True)
+    records = [
+        {"kind": "decision_planned", "payload": {"candidates": [{"action_key": "discard:1w"}],
+         "degraded_reasons": ["action_value: r18_integrated_positive_v2 评分完成"]}},
+        {"kind": "decision_planned", "payload": {"candidates": [{"action_key": "pass"}],
+         "degraded_reasons": ["action_value: scorer 执行异常",
+                              "action_value_failed: 降级为紧急候选 + 规则合法顺序，未拼 V2 分数"]}},
+    ]
+    decisions.joinpath("decisions.jsonl").write_text(
+        "".join(json.dumps(record, ensure_ascii=False) + "\n" for record in records), encoding="utf-8")
+
+    rows = watchdog._degradation_summary(session)
+    assert rows[0]["plans"] == 2
+    assert rows[0]["degraded"] == 1
+    assert rows[0]["degraded_rate"] == 50.0
+    assert rows[0]["reasons"] == {"action_value_failed": 1}

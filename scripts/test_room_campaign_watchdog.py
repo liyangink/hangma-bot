@@ -171,7 +171,9 @@ def _runtime_config(root: Path, round_no: int, campaign: dict) -> tuple:
         "audit_root": str(session / "audit"),
         "strategy": campaign["arms"][SLOT_ORDER[0]],
         "insecure_hosts": list(INSECURE_HOSTS),
-        "sse_enabled": False,
+        "sse_enabled": bool(campaign.get("sse_enabled", False)),
+        "discard_pacing_enabled": bool(campaign.get("discard_pacing_enabled", True)),
+        "ordinary_long_poll_min_interval_ms": int(campaign.get("ordinary_long_poll_min_interval_ms", 0)),
         "identities": [],
         # 允许两次有界重启：致命协议错误在无人值守的长轮里必须能被消化，
         # 但重启后仍由权威 /api/me 与 seq=0 快照恢复，复用的是协议而不是内存判断。
@@ -264,6 +266,9 @@ def cmd_open(args) -> int:
         "pool": args.pool or root.name,
         "rules": dict(ROOM_RULES),
         "arms": arms,
+        "sse_enabled": bool(args.sse_enabled),
+        "discard_pacing_enabled": not bool(args.sse_enabled),
+        "ordinary_long_poll_min_interval_ms": 0,
         "created_at": datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"),
         "rounds_done": 0,
         "rounds_log": [],
@@ -370,6 +375,9 @@ def cmd_preflight(args) -> int:
             token_kind=TokenKind.TEST,
             audit_root=scratch / slot,
             strategy=strategy,
+            sse_enabled=bool(campaign.get("sse_enabled", False)),
+            discard_pacing_enabled=bool(campaign.get("discard_pacing_enabled", True)),
+            ordinary_long_poll_min_interval_ms=int(campaign.get("ordinary_long_poll_min_interval_ms", 0)),
             expected_policy_release_id=_release_id_for_strategy(strategy),
             slot=slot,
             insecure_hosts=frozenset(INSECURE_HOSTS),
@@ -497,11 +505,11 @@ def _promote(campaign: dict, round_no: int, session: Path, job: Path) -> dict:
 
 
 def _degradation_summary(session: Path) -> list:
-    """按槽位统计本轮降级原因：这是「模型到底跑没跑」的唯一硬指标。
+    """按策略的显式失败标记统计回退；普通审计说明不算回退。
 
-    序列策略在观察历史不完整、规则降级或预算耗尽时会明确回退到保底基线并在
-    plan.degraded_reasons 里留痕（sequence_model_policy.py 第 90 行起）。若不看这一栏，
-    「三条模型臂与基线打平」会被误读成「模型不更强」，而真实原因是模型根本没执行。
+    ``degraded_reasons`` 是历史上复用的说明字段：action_value 成功评分也会写
+    ``action_value: ... 评分完成``。只有明确的 ``*_failed`` 或模型回退前缀
+    才能证明增强策略没有完成，不能把非空字段直接解释为基线回退。
     """
 
     import collections
@@ -523,11 +531,13 @@ def _degradation_summary(session: Path) -> list:
                 if not payload.get("candidates"):
                     continue
                 plans += 1
-                reasons = list(payload.get("degraded_reasons") or [])
+                reasons = [str(reason) for reason in (payload.get("degraded_reasons") or [])
+                           if str(reason).startswith(("sequence_model:", "action_value_failed:",
+                                                      "outcome:"))]
                 if reasons:
                     degraded_decisions += 1
                 for reason in reasons:
-                    counter[str(reason).split(":")[0] if str(reason).startswith("sequence_model") else str(reason)[:24]] += 1
+                    counter[reason.split(":", 1)[0]] += 1
         if plans:
             rows.append({"slot": slot_dir.name[len("slot-"):], "plans": plans,
                          "degraded": degraded_decisions,
@@ -708,7 +718,7 @@ def cmd_round(args) -> int:
             log(failures[-1])
 
     summary["degradation"] = _degradation_summary(session)
-    log("—— 本轮策略执行健康（降级 = 回退到基线）——")
+    log("—— 本轮策略执行健康（仅统计显式增强策略回退）——")
     for row in summary["degradation"]:
         log("  %-9s 决策 %-5d 降级 %-5d (%.1f%%)  原因 %s"
             % (row["slot"], row["plans"], row["degraded"], row["degraded_rate"],
@@ -778,9 +788,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     open_parser.add_argument("--target-rounds", type=int, default=4, help="战役目标整轮数（默认 4 = 640 单局）")
     open_parser.add_argument("--pool", default=None, help="datasets/derived 下的数据池名（默认同战役名）")
     open_parser.add_argument("--arms", default=None, help="覆盖对比臂，形如 slot=strategy,slot=strategy")
+    sync_group = open_parser.add_mutually_exclusive_group()
+    sync_group.add_argument("--sse-enabled", dest="sse_enabled", action="store_true",
+                            help="四身份统一使用 SSE 通知与权威快照（新战役默认）")
+    sync_group.add_argument("--no-sse", dest="sse_enabled", action="store_false",
+                            help="仅供旧状态轮询对照；保留固定弃牌缓发")
     open_parser.add_argument("--no-attribute", action="store_true", help="不写 strategy-map.json")
     open_parser.add_argument("--force", action="store_true", help="战役已存在时重新建房")
-    open_parser.set_defaults(func=cmd_open)
+    open_parser.set_defaults(func=cmd_open, sse_enabled=True)
 
     preflight_parser = sub.add_parser("preflight", help="不联网装配四个策略，验证模型与规则范围")
     preflight_parser.add_argument("--campaign", required=True)

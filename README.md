@@ -3,6 +3,7 @@
 面向官方杭麻竞赛平台的全自动 AI Bot。
 
 迁移机器继续启发式进化时，从[当前交接速览](EVOLUTION-HANDOFF-2026-09-23.md)开始。
+后续候选报告统一使用[算法路线与候选命名](doc/algorithm-lineage-names.md)，本轮验证与进化按[后续执行清单](review/r18-four-arm-evaluation-2026-09-23/NEXT-STAGE-2026-09-25.md)。
 
 ## 安装与常用操作
 

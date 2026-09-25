@@ -134,6 +134,10 @@ def banner_lines(assembled: AssembledRuntime) -> Sequence[str]:
         "已适配指南版本下限: {0}".format(config.known_guide_version),
         "本地规则语义版本: {0}".format(DEFAULT_RULESET_VERSION),
         "策略: {0}".format(config.strategy),
+        "状态接线: {0}；普通弃牌缓发: {1}".format(
+            "SSE 通知＋权威快照" if config.sse_enabled else "状态长轮询",
+            "开" if config.discard_pacing_enabled else "关",
+        ),
         "身份槽位: {0}（Token 不显示）".format(config.slot or "<未指定>"),
         "审计根目录: {0}".format(config.audit_root),
         "本次 run_id: {0}".format(assembled.run_id),

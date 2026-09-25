@@ -1,5 +1,16 @@
 # 杭麻 AI Bot 架构与运行流程
 
+2026-09-25 测试房与测试赛事新运行模板统一使用 SSE 通知＋直接 `seq=0` 权威快照，
+并关闭普通弃牌缓发；测试房多策略战役的四身份共享同一接线配置，测试赛事沿用
+`run_participant.py` 的单身份配置解析和组合根。此前两轮 SSE 实网验收只覆盖
+`weighted_heuristic_v2`；R18 v2 已完成一轮四席测试房，测试赛事门禁仍须另做。流程与身份见
+[运行指引](operations.md)和[后续执行清单](../review/r18-four-arm-evaluation-2026-09-23/NEXT-STAGE-2026-09-25.md)。
+
+新测试房的赛后链为 `official/events.json` → `offline.postgame` →
+`datasets/derived/<pool>/official/<room>/official/` 与单局分片 → `datamart/build.py`。
+入库时按官方 `seats.user_id` 关联身份、按冻结策略映射关联本方策略；官方身份晚于单局分片到达时，
+仅回填原先未知的座位，保留已有归因和结算。数据集源摘要同时涵盖座位与策略映射，避免测量修正未被 `--check` 察觉。
+
 2026-09-23 R18 累计机会能力候选完成第二版接线。`r18_integrated_positive_v1` 保留既有测试房、
 测试赛事与自由赛冻结包；用户另行批准 `r18_integrated_positive_v2` 接入测试房、测试赛事、自由赛与正式赛事。
 两个发布策略各有独立包 ID，组合根在构造时核对内嵌候选源码、完整 `hangma` 规则源和分值分析依赖摘要，

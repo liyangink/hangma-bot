@@ -52,17 +52,25 @@ export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 
 `--once` 使每个身份在收到一次 `tournament_finished` 后退出，不再创建下一批次的注册进程；等四身份汇总退出后再执行赛后分析。配置 `max_completed_batches: 2` 可完成两个批次；省略或设为 `null` 沿用持续续赛，`--once` 优先于配置。正常完赛不消耗失败重启预算。Ctrl-C、SIGINT、SIGTERM 会转发给子进程并中止当前工作，不能当成“打完本批次后停”。新测试优先在启动时定好批次数。
 
-单身份测试赛事使用 `configs/participant.example.json`：
+单身份测试赛事使用 `configs/participant.example.json`；R18 与牌效等胡的同接线配置分别见
+[R18 测试赛事模板](../configs/r18-v2-test-tournament-sse.example.json)和
+[牌效等胡测试赛事模板](../configs/huup-v1-test-tournament-sse.example.json)。
+新模板采用已在测试房验证的 `sse_enabled=true`、`discard_pacing_enabled=false` 与指南 v35；
+R18 模板显式绑定当前冻结发布包摘要。启动前仍要替换赛事 ID、审计目录和相应 Token：
 
 ```bash
 .venv/bin/python scripts/run_participant.py --config .private/participant.json
 ```
 
-正式赛事需将配置改为实际赛事 ID、`mode: official_tournament`、`token_kind: official`，并提供正式 Token。自由赛使用 `configs/auto-match.example.json` 和 `run_auto_match.py --config .private/auto-match.json`，一个全局 Token 同时只运行一个实例；默认一次自动房会话结束即退出。具体参数见 [自由赛指引](implementation/free-match-start.md)。示例使用当前代码基线 v18 和 `sse_enabled: false`；遇到指南变化先同步、审查兼容性，不能只把版本号改大。
+正式赛事需将配置改为实际赛事 ID、`mode: official_tournament`、`token_kind: official`，并提供正式 Token。自由赛使用 `configs/auto-match.example.json` 和 `run_auto_match.py --config .private/auto-match.json`，一个全局 Token 同时只运行一个实例；默认一次自动房会话结束即退出。具体参数见 [自由赛指引](implementation/free-match-start.md)。本节测试房与测试赛事示例采用本仓已审查的指南 v35 和 SSE 通知＋直接权威快照，关闭固定弃牌缓发；旧私有配置不会自动改动。遇到后续指南变化先同步、审查兼容性，不能只把版本号改大。
 
 ### 2.1 持续多策略对比战役（测试房 watchdog）
 
 `scripts/test_room_campaign_watchdog.py` 把「开房 → 按整轮续打 → 下载牌谱 → 赛后封存 → 提升到数据池 → 增量落库」串成一条可反复调用的命令，用于在同一张桌上长期对比多条策略。四条臂坐在同一场、同一单局里，官方每个场次重新随机换座，因此每个单局天然是一组配对观测。
+新战役默认启用四身份同一 SSE 直接快照接线，并关闭普通弃牌缓发；旧战役配置缺字段时仍按原长轮询运行。
+需要旧链路诊断时建房传 `--no-sse`。R18 与牌效等胡两臂可按[专项模板](../configs/r18-v2-vs-huup-test-room-sse.example.json)直接运行，
+或在 `open` 使用 `--arms qinglong=r18_integrated_positive_v2,baihu=v2_hu_upgrade_v1,zhuque=r18_integrated_positive_v2,xuanwu=v2_hu_upgrade_v1`；
+两个 R18 身份由战役脚本逐席绑定完整发布包 ID。
 
 ```bash
 # 1) 建房（M=10、Rounds=16、空闲 30 分钟自动关闭），落盘令牌、战役记录与策略归因

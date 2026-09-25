@@ -5,10 +5,11 @@
   "known_guide_version": 35,
   "token_env": "HM_PARTICIPANT_TOKEN",
   "token_kind": "test",
-  "audit_root": "artifacts/sessions/participant-example/audit",
-  "strategy": "weighted_heuristic_v2",
+  "audit_root": "artifacts/sessions/huup-v1-test-tournament/audit",
+  "strategy": "v2_hu_upgrade_v1",
   "insecure_hosts": ["10.240.169.190"],
   "sse_enabled": true,
   "discard_pacing_enabled": false,
+  "ordinary_long_poll_min_interval_ms": 0,
   "source_namespace": "hangma-official"
 }
