@@ -119,12 +119,17 @@ def main():
     else:
         print("会话进程：未运行（结算与续开请运行 auto_match_watch.sh）")
     if not audit or not os.path.isdir(audit):
-        if ledger:
-            print("无进行中房间。账本：累计 %d，%d 房，最近一房 %s（%+d）"
-                  % (ledger.get("cumulative_total", 0), len(ledger.get("rooms", [])),
-                     ledger["rooms"][-1]["room_id"], ledger["rooms"][-1]["room_subtotal"]))
-        else:
+        rooms = (ledger or {}).get("rooms") or []
+        if not ledger:
             print("无进行中房间，无账本。")
+        elif not rooms:
+            # 新战役账本刚建立、尚无已结算房：不能索引 rooms[-1]（会 IndexError）
+            print("无进行中房间。账本：累计 %d，尚无已结算房。"
+                  % ledger.get("cumulative_total", 0))
+        else:
+            print("无进行中房间。账本：累计 %d，%d 房，最近一房 %s（%+d）"
+                  % (ledger.get("cumulative_total", 0), len(rooms),
+                     rooms[-1]["room_id"], rooms[-1]["room_subtotal"]))
         return 0
 
     games = game_states(audit)
