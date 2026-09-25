@@ -105,14 +105,26 @@ def load_cookie_header(path: Path) -> str:
 
 
 def http_get(url: str, cookie: str, insecure: bool):
-    """GET 一个 JSON 端点；返回 (http_status, body_text, error)。不抛网络异常。"""
+    """GET 一个 JSON 端点；返回 (http_status, body_text, error)。不抛网络异常。
+
+    必须显式绕过环境代理：本项目其余 HTTP 客户端统一以 `trust_env=False`
+    建连，而 urllib 的默认 opener 会读取 `http_proxy`/`https_proxy`/`no_proxy`。
+    2026-09-25 本机实测——同一 URL 走默认 opener 报
+    `_ssl.c:999: The handshake operation timed out`，绕过代理后正常返回
+    （HTTP 401，即会话过期），说明失败原因是代理而非网络、DNS 或证书；
+    当时五个门户端点全部失败并误报为 TLS 问题。
+    """
     headers = {"Accept": "application/json", "User-Agent": "hangma-bot-leaderboard-fetch/1"}
     if cookie:
         headers["Cookie"] = cookie
     req = urllib.request.Request(url, headers=headers)
     ctx = ssl._create_unverified_context() if insecure else None
+    opener = urllib.request.build_opener(
+        urllib.request.ProxyHandler({}),  # 绕过环境代理，与其余客户端口径一致
+        urllib.request.HTTPSHandler(context=ctx),  # 仅 insecure 时关闭证书校验
+    )
     try:
-        with urllib.request.urlopen(req, timeout=TIMEOUT_SEC, context=ctx) as resp:
+        with opener.open(req, timeout=TIMEOUT_SEC) as resp:
             return resp.status, resp.read().decode("utf-8", "replace"), None
     except urllib.error.HTTPError as exc:
         return exc.code, exc.read().decode("utf-8", "replace"), None
