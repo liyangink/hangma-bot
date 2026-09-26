@@ -31,8 +31,15 @@ KNOWN_OFFICIAL_CODES = frozenset({
     # 2026-09-17：详情端点 GET /api/tournaments/{id} 的 404 实际码（本次实测原文
     # {"code":"TOURNAMENT_GONE","message":"tournament unavailable"}）。白名单外的码会被
     # sanitize_official_code 置为 None，使审计失去"现场码"证据——与 FEATURE_DISABLED
-    # 同类问题，故登记。该码**既可能是真消失也可能是一次瞬时读取失败**：判定容忍
-    # 次数与语义边界见 official/participant.py 的 TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE。
+    # 同类问题，故登记。该码**既可能是真消失也可能是一次瞬时读取失败**：
+    # 【v35 语义，2026-09-23】它表示「房 actor 暂时不可达」，按轮询间隔**重试**，
+    # 不设数值上限；只有显式 TOURNAMENT_NOT_FOUND 或缺 code 才作永久判定。
+    # 实现见 official/participant.py 的 _request_json 的 NotFoundError 分支
+    # （重试时把 attempts 归零并审计 PROTOCOL_RECOVERED）；回归用例见
+    # tests/adapters/official/test_tournament_session.py 的
+    # test_v35_gone_retries_idempotent_register_and_ready。
+    # 此前本注释引用的 TOURNAMENT_DETAIL_NOT_FOUND_TOLERANCE 常量**从未存在**
+    # （2026-09-26 审计发现并更正），不要按「有容忍次数」理解本码。
     "TOURNAMENT_GONE",
     "GAME_NOT_FOUND",
     "INVALID_ACTION",
