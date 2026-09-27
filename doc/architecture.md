@@ -472,6 +472,8 @@ flowchart LR
 
 2026-09-22 R18 P9 增加离线教师专用的公开状态一致隐藏分配。`SimulationEngine.resample_public_consistent_hidden_world` 只允许在焦点座位自己的摸牌决策窗口调用：固定焦点 `PlayerObservation`、公开历史、各区域张数和物理牌张多重集，把三家暗手与未消费牌墙（含保留区）共同重排，并在返回前逐字段核对焦点观察不变。候选与续打策略仍只经正式 `BotPolicy` 接缝读取玩家观察，不能读取 `WorldState`。该抽样未使用历史动作似然，只用于离线稳健性教师；它不是对手行为条件后验、不能进入线上动作闭环，也不能单独签发候选准入或发布资格。重排后的 `WorldState.history_consistent=false`，导出入口拒绝生成 `full_world` 牌谱，防止把当前状态稳健性样本伪装成可重放的历史事实。首个消费方及边界见 [P9 中后盘七对教师结果](../review/llm-guided-heuristic-route-2026-09-15/R18-P9-MIDGAME-HIDDEN-WORLD-TEACHER-RESULT-2026-09-22.md)。
 
+2026-09-28 同单局双分支研究新增模拟器结算专用出口 `SimulationEngine.export_hand_settlement`：只接受已完成单局，返回座位 0–3 的起止积分和分差、赢家、番数与结算说明，不含牌墙、暗手或事件。它可读取公开状态一致重采样后标记为 `history_consistent=false` 的离线世界，用于同隐藏样本下比较两种合法动作；原 `export_hand` 对这种世界的 `full_world` 拒绝保持不变。分支结算是教师诊断，不是完整桌赛适应度或正式牌谱，也不进入 `BotPolicy` 输入。
+
 2026-09-28 杠后隐藏世界重采样守恒修复：真实未知牌墙是当前可摸区 `wall[wall_front:wall_back]` 与原始末尾 20 张保留区 `wall[round_start_wall_back:]`，两者之间的牌已作为杠上补牌被取走，虽仍留在不可变底层元组中，不得再次进入隐藏池。旧实现使用 `wall[wall_front:]`，在发生杠后会把已摸补牌重新洗进三家暗手或墙，改变真实牌码多重集；只校验 `PlayerObservation` 相等不足以发现它。修复保留已消费间隙、只重排真实未知池，并以杠后完整 136 张金例核对。此前调用该入口的离线教师结果如包含杠后截取窗，须按修复后源码重测；既有结果不得直接升级为确认依据。
 
 2026-09-22 R18 P10 在离线教师中给正式 `BotPolicy.choose` 接缝增加只读轨迹包装器。包装器只记录当时 `DecisionRequest` 中的公开观察、规则事实和策略返回计划，用于生成“本人先胡、他家先胡、无胡终止”及分牌型进展标签；它不改变计划、不读取 `WorldState`，也不进入生产组合根。轨迹消费方必须用截取窗口的 `round_no` 隔离当前局，后续局只允许作执行对账，禁止混入当前机会的终止或向听标签。完整世界终态的赢家、番数与支付只能在后续离线教师侧作为监督标签读取，禁止回流为候选输入。结果和字段边界见 [P10 七对多步生存轨迹结果](../review/llm-guided-heuristic-route-2026-09-15/R18-P10-MULTISTEP-SURVIVAL-TRACE-RESULT-2026-09-22.md)。

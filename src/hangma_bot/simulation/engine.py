@@ -327,6 +327,41 @@ class SimulationEngine:
         )
         return self._settle(new_world)
 
+    def export_hand_settlement(self, world: WorldState, round_no: int) -> dict:
+        """仅导出已完成单局的结算，供离线非历史一致世界配对比较。
+
+        输入是模拟器拥有的完整世界及单局号；返回四座顺序的起止积分、分差、
+        赢家、番数和结算说明。不导出起手、暗手、牌墙或事件，也不宣称该世界
+        能由局初历史重放。目标单局未完成、身份或积分不守恒时抛出 ValueError；
+        本方法不修改世界，不能代替 ``export_hand`` 生成正式牌谱。
+        """
+        if not isinstance(world, WorldState):
+            raise ValueError("export_hand_settlement 需要 WorldState")
+        if isinstance(round_no, bool) or not isinstance(round_no, int) or round_no < 1:
+            raise ValueError("round_no 必须是正整数")
+        records = [record for record in world.round_records if record.round_no == round_no]
+        if len(records) != 1:
+            raise ValueError("round_no 无唯一已完成单局记录")
+        record = records[0]
+        if (
+            any(record.scores_before[i] + record.score_delta[i] != record.scores_after[i]
+                for i in range(SEAT_COUNT))
+            or sum(record.score_delta) != 0
+        ):
+            raise ValueError("单局结算积分不守恒")
+        return {
+            "coverage": "settlement_only",
+            "round_no": record.round_no,
+            "dealer_seat": record.dealer_seat,
+            "scores_before": list(record.scores_before),
+            "scores_after": list(record.scores_after),
+            "score_delta": list(record.score_delta),
+            "winner_seat": record.winner_seat,
+            "is_draw": record.is_draw,
+            "fan": record.fan,
+            "details": list(record.details),
+        }
+
     def export_hand(
         self, world: WorldState, round_no: int, *, match_id: Optional[str] = None
     ) -> dict:

@@ -834,6 +834,7 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 | 输出 | SCORED 必须每动作一项有限评分；ABSTAIN 或非法返回使整批降级；trace 有界，非线性分项不强求求和 | 固定骨架排序/去重/拒绝过滤/紧急动作保留；记录器落盘，policy 无 IO |
 | 分值分析接线 | 同一 AnalysisProfile 显式传入生产与普通/阶段模拟的规则 analyze | drive_match 与所有调用方补配置；未开启增强不得伪装有路线事实 |
 | 条件续打 | 通过公开 start/frame/advance 合法前缀重建到不透明世界；共享完整桌赛驱动循环 | simulation 继续独占 WorldState；offline 持有阶段已完成结果、当前桌累计与剩余赛程 |
+| 离线单局结算 | `SimulationEngine.export_hand_settlement(world, round_no)` 仅在指定单局已完成时返回 `coverage=settlement_only`、四座起止积分/分差、赢家、番数和结算说明；不返回牌墙、暗手、事件或 `full_world` | simulation 从自身完成记录投影并验积分守恒；offline 可消费非历史一致隐藏样本的结算，但策略输入与正式 `export_hand` 的历史一致校验不变；契约测试覆盖两种世界与未完局拒绝 |
 | 阶段目标 | 新 group-only 入口、group_advance_v1、未知排名上下界 | 四人档位默认决赛不能冒用；旧 stage_advance_score 保持旧代理含义 |
 | 候选身份 | 新 action_value_v1 种类绑定源码/参数/骨架/特征/工具/执行器/依赖闭包 | scoring_sources、装载、门禁、普通/阶段槽、缓存、恢复一致；旧 manifest 不直接放行 |
 | 研究资格 | sitin-action-value-admission/1 区分执行安全、覆盖、研究范围与发布资格 | 旧 admitted 与 trigger/research 记录不重解释；自然均分显著为正不再是新阶段入口的前置 |

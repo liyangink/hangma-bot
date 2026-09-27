@@ -208,6 +208,36 @@ def test_public_consistent_hidden_world_is_deterministic_and_preserves_observati
     with pytest.raises(ValueError, match="不是历史一致世界"):
         engine.export_hand(terminal, terminal.round_no)
 
+    # 非历史一致样本只能读取结算，不能把重新分配的暗手伪装为正式全世界牌谱。
+    settlement = engine.export_hand_settlement(terminal, 1)
+    assert settlement["coverage"] == "settlement_only"
+    assert set(settlement) == {
+        "coverage", "round_no", "dealer_seat", "scores_before", "scores_after",
+        "score_delta", "winner_seat", "is_draw", "fan", "details",
+    }
+    assert [settlement["scores_before"][seat] + settlement["score_delta"][seat]
+            for seat in range(4)] == settlement["scores_after"]
+    assert sum(settlement["score_delta"]) == 0
+
+
+def test_settlement_only_export_matches_full_replay_and_rejects_open_hand():
+    """历史一致世界的结算投影与完整牌谱相同；未结算单局不可导出。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    world = engine.start(make_spec(rules, rounds=1, seed=792))
+    with pytest.raises(ValueError, match="无唯一已完成"):
+        engine.export_hand_settlement(world, 1)
+    with pytest.raises(ValueError, match="正整数"):
+        engine.export_hand_settlement(world, True)
+    terminal = drive(engine, world, simple_chooser(rules))
+    settlement = engine.export_hand_settlement(terminal, 1)
+    replay = engine.export_hand(terminal, 1)
+    for field in ("round_no", "scores_before", "scores_after", "score_delta",
+                  "winner_seat", "is_draw", "fan", "details"):
+        assert settlement[field] == replay[field]
+    assert "world_payload" not in json.dumps(settlement)
+
 
 def test_public_consistent_hidden_world_rejects_nonacting_focal_seat():
     rules = make_rules()
