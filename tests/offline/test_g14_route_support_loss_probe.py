@@ -12,6 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] /
 
 from g14_natural_second_discard_distribution import _capacity
 from g14_route_support_loss_probe import _route_support
+from g14_route_support_loss_fast import route_support_fast
 
 
 def test_completion_route_survives_one_public_loss_only_on_supported_arm():
@@ -31,3 +32,21 @@ def test_completion_route_survives_one_public_loss_only_on_supported_arm():
     assert (scores["9w"]["natural_need"], scores["9w"]["routes"],
             scores["9w"]["q1"]) == (2, 1, 1)
     assert scores["9w"]["route_examples"] == [["2w", "3w"]]
+
+
+def test_pruned_route_enumerator_matches_brute_gold_example():
+    hand = Counter("1b 2b 3b 4b 5b 6b 7b 8b 9b 东 东 1w 5w 9w".split())
+    public = Counter({**{f"{i}b": 3 for i in range(1, 10)}, "东": 2,
+                      **{f"{i}w": amount for i, amount in
+                         enumerate((2, 1, 2, 4, 3, 4, 4, 1, 2), 1)}})
+    for discarded in ("1w", "9w"):
+        after = hand.copy()
+        after[discarded] -= 1
+        capacity = _capacity(after, public, Counter(), "discard:" + discarded)
+        brute = _route_support(after, 0, capacity)
+        fast = route_support_fast(after, 0, capacity)
+        assert (fast["natural_need"], fast["routes"], fast["q1"],
+                fast["route_examples"]) == (
+                    brute["natural_need"], brute["routes"], brute["q1"],
+                    brute["route_examples"])
+        assert fast["tested_states"] < brute["tested_multisets"]
