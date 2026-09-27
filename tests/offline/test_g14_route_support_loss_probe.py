@@ -1,0 +1,33 @@
+"""最短自然完成组合的一张公开损失压力测试金例。"""
+
+from __future__ import annotations
+
+from collections import Counter
+from pathlib import Path
+import sys
+
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] /
+                       "review/freematch-deep-dive-20260925"))
+
+from g14_natural_second_discard_distribution import _capacity
+from g14_route_support_loss_probe import _route_support
+
+
+def test_completion_route_survives_one_public_loss_only_on_supported_arm():
+    hand = Counter("1b 2b 3b 4b 5b 6b 7b 8b 9b 东 东 1w 5w 9w".split())
+    public = Counter({**{f"{i}b": 3 for i in range(1, 10)}, "东": 2,
+                      **{f"{i}w": amount for i, amount in
+                         enumerate((2, 1, 2, 4, 3, 4, 4, 1, 2), 1)}})
+    scores = {}
+    for discarded in ("1w", "9w"):
+        after = hand.copy()
+        after[discarded] -= 1
+        action = "discard:" + discarded
+        scores[discarded] = _route_support(
+            after, 0, _capacity(after, public, Counter(), action))
+    assert (scores["1w"]["natural_need"], scores["1w"]["routes"],
+            scores["1w"]["q1"]) == (2, 0, 0)
+    assert (scores["9w"]["natural_need"], scores["9w"]["routes"],
+            scores["9w"]["q1"]) == (2, 1, 1)
+    assert scores["9w"]["route_examples"] == [["2w", "3w"]]
