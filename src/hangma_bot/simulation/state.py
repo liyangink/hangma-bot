@@ -58,9 +58,9 @@ class WorldState:
     revision: int
     completed_hands: int
     progression: ProgressionState
-    wall: Tuple[Tile, ...]  # 当前局剩余牌墙（含保留区，物理顺序）
+    wall: Tuple[Tile, ...]  # 本局底层牌墙（含保留区；已摸牌仍留在不可变数组中）
     wall_front: int  # 普通摸牌端游标
-    wall_back: int  # 补牌端游标；wall[wall_back:] 为保留区
+    wall_back: int  # 补牌端游标；至 round_start_wall_back 为已消费补牌间隙，末尾 20 张才是保留区
     round_initial_hands: Tuple[Tuple[Tile, ...], ...]  # 当前局 4×13 起手
     round_dealer_drawn: Tile  # 当前局庄家直抽
     round_start_wall: Tuple[Tile, ...]  # 当前局起点牌墙（导出 world_payload）

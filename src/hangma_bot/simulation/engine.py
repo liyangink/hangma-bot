@@ -195,7 +195,12 @@ class SimulationEngine:
             raise ValueError("非焦点座位存在当前摸牌，拒绝隐藏世界重采样")
 
         before = projection.observation(world, focal_seat)
-        unseen_wall = world.wall[world.wall_front:]
+        # 杠上补牌从可摸区尾端取走后，底层不可变 wall 元组仍保留该牌，
+        # 位置落在 wall_back..round_start_wall_back 的已消费间隙。它既不在
+        # 可摸区也不在固定保留区；重采样时不能再次放进未知牌池。
+        drawable_wall = world.wall[world.wall_front:world.wall_back]
+        reserved_wall = world.wall[world.round_start_wall_back:]
+        unseen_wall = drawable_wall + reserved_wall
         opponent_sizes = {
             index: len(seat.hand)
             for index, seat in enumerate(state.seats)
@@ -237,7 +242,11 @@ class SimulationEngine:
         sampled_wall_suffix = tuple(sampled[cursor:])
         if len(sampled_wall_suffix) != len(unseen_wall):
             raise ValueError("隐藏世界重采样内部张数不守恒")
-        wall = tuple(world.wall[:world.wall_front]) + sampled_wall_suffix
+        drawable_count = len(drawable_wall)
+        wall = (tuple(world.wall[:world.wall_front])
+                + sampled_wall_suffix[:drawable_count]
+                + tuple(world.wall[world.wall_back:world.round_start_wall_back])
+                + sampled_wall_suffix[drawable_count:])
         sampled_world = replace(
             world,
             progression=replace(

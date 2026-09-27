@@ -358,6 +358,8 @@ class HangmaRules:
 
 2026-09-05 已由[parallel-v1 §6](./implementation/parallel-contracts.md#6-模拟模块接口-simulation-v1)取代早期 SimulationGame/reset/step 草案。唯一具体接口为 SimulationEngine.start/frame/advance/export_hand/from_replay；MatchSpec 使用完整 TournamentConfig，按 Rounds 完成桌赛；同帧响应统一裁决，advance 不修改原世界。实施见[模拟指南](./implementation/simulation-start.md)，历史路径另走 check_hand，评估不读 WorldState 字段。
 
+2026-09-28 离线隐藏世界教师修正：杠上补牌会缩小可摸区的 `wall_back`，但底层不可变牌墙仍存放该已摸牌。公开状态一致重采样只能取当前 `wall_front:wall_back` 的可摸区和原始末尾 20 张保留区，不能把中间已消费的补牌再次加入三家暗手／牌墙隐藏池；修复后仍保持同一 `PlayerObservation`、各区域张数及牌码多重集。历史教师产物若含杠后截取窗，须按修复后的模拟器复核，不能直接当独立确认样本。
+
 #### 实现要求
 
 - 固定 seed 可完全重放；

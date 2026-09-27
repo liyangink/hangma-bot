@@ -7,9 +7,13 @@ QueuedChooser 按窗口脚本化选择，逐项对拍推进语义与官方证据
 
 from __future__ import annotations
 
+from collections import Counter
+
 import pytest
 
-from hangma_bot.kernel.actions import Chi, Discard, Gang, GangKind, Hu, Pass, Peng, Tile
+from hangma_bot.kernel.actions import (
+    CANONICAL_TILE_ORDER, Chi, Discard, Gang, GangKind, Hu, Pass, Peng, Tile,
+)
 from hangma_bot.simulation import SimulationChoice, SimulationEngine
 
 from ._helpers import QueuedChooser, build_full_world_row, make_rules, simple_chooser
@@ -195,6 +199,57 @@ def test_concealed_gang_then_gang_win():
     round_ended = next(e for e in world.events if e.kind == "round_ended")
     assert dict(round_ended.data)["fan"] == 2
     assert list(dict(round_ended.data)["detail"]) == ["平胡", "杠开"]
+
+
+def test_hidden_resample_after_gang_excludes_spent_replacement_tile():
+    """杠后重采样只能改三家暗手、真实可摸区和保留区，不能复活补牌。"""
+
+    rules = make_rules()
+    # 这里用完整 136 张物理牌池；旧手工金例的 20 张同码保留区不适合
+    # 重采样（会制造本来就超过四张的非法暗手）。
+    hand13 = ["1w", "1w", "1w"] + [code for code in CANONICAL_TILE_ORDER if code != "1w"][:10]
+    remaining = [code for code in CANONICAL_TILE_ORDER for _ in range(4)]
+    for code in hand13 + ["1w"]:
+        remaining.remove(code)
+    other_hands = []
+    for _ in range(3):
+        other_hands.append(remaining[:13])
+        del remaining[:13]
+    row = build_full_world_row(
+        rules,
+        hands13=[hand13, *other_hands],
+        dealer_drawn="1w",
+        wall=remaining,
+        dealer=0,
+    )
+    engine = SimulationEngine(rules)
+    world = engine.from_replay(row)
+    chooser = QueuedChooser(rules)
+    chooser.enqueue("draw", 0, Gang(Tile("1w"), GangKind.CONCEALED))
+    world = _drive_frames(engine, world, chooser, 1)
+    assert world.wall_back == world.round_start_wall_back - 1
+    original_observation = engine.frame(world).decisions[0].observation
+
+    def unseen_active_codes(value):
+        return Counter(
+            tile.code
+            for seat, state in enumerate(value.progression.seats)
+            if seat != 0
+            for tile in state.hand
+        ) + Counter(tile.code for tile in (
+            value.wall[value.wall_front:value.wall_back]
+            + value.wall[value.round_start_wall_back:]
+        ))
+
+    before = unseen_active_codes(world)
+    sampled = engine.resample_public_consistent_hidden_world(
+        world, focal_seat=0, sample_key="probe-1"
+    )
+    assert engine.frame(sampled).decisions[0].observation == original_observation
+    assert sampled.wall[world.wall_back:world.round_start_wall_back] == (
+        world.wall[world.wall_back:world.round_start_wall_back]
+    )
+    assert unseen_active_codes(sampled) == before
 
 
 def test_added_gang_after_peng():
