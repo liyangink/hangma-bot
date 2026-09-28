@@ -310,6 +310,8 @@ P74 传输修复：当 `OfficialTransport` 的 `base_url` 主机命中配置的 
 未命中主机的 TLS/环境代理语义不变。该边界用本地目标/假代理双端点回归与真实免认证指南端点验证；
 旧测试房随后返回 `TOURNAMENT_NOT_FOUND`，详见 `r18-p74-v2-test-room-and-proxy-diagnosis-01-20260923/`。
 
+2026-09-29 当前规则绑定：新增吃／碰后继逐分支规则事实后，完整 `hangma` 源码摘要变为 `14e670edd631cb91a2c4c31d8131e360e9ebfb2d82d7c9ac9425f01d099e678d`。上段 `e82f…de486` 是**原规则的历史 R18 v2 包 ID**，当前主线不会用旧 ID 装配。当前规则的独立 R18 v2 包 ID 为 `61cab4b539efb401f46aab2fd9f79cc85ce5653d64d1b9a72ffb3048eeb884c7`；`expected_policy_release_id` 必须填写该值，旧 ID 明确拒绝。两包都保留自身候选、规则及证据摘要，不在业务模块绕过绑定守卫。测试房脚本按当前策略映射新 ID；旧 v1 包仍拒绝当前规则。32 对完整桌行为兼容性与门禁边界见[G194](../../review/freematch-deep-dive-20260925/G194-R18-V2-RULE-BINDING-RESULT-2026-09-29.md)。
+
 ### 4.9 坐隐研究工具的产物 schema 与实验清单身份字段（2026-09-15）
 
 **范围与边界（先读这一句）**：本节的 schema 全部属于**离线研究工具**（`review/llm-guided-heuristic-route-2026-09-15/`），

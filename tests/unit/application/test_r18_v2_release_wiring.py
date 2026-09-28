@@ -26,6 +26,11 @@ from hangma_bot.policy.r18_integrated_positive_v2_release import (
     R18_INTEGRATED_POSITIVE_V2_RULES_SOURCE_HASH,
     R18_INTEGRATED_POSITIVE_V2_VALUE_ANALYSIS_SHA256,
 )
+from hangma_bot.policy.r18_integrated_positive_v2_rules_20260929_release import (
+    R18IntegratedPositiveV2Rules20260929ReleasePolicy,
+    R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
+    R18_V2_RULES_20260929_SOURCE_HASH,
+)
 
 
 def _config_data(tmp_path: Path, mode: str) -> dict[str, object]:
@@ -40,7 +45,7 @@ def _config_data(tmp_path: Path, mode: str) -> dict[str, object]:
         "known_guide_version": R18_INTEGRATED_POSITIVE_V2_KNOWN_GUIDE_VERSION,
         "audit_root": str(tmp_path / mode),
         "strategy": R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
-        "expected_policy_release_id": R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
+        "expected_policy_release_id": R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
     }
 
 
@@ -72,21 +77,25 @@ def test_v2_release_assembles_only_with_matching_binding_and_rule_scope(
         )
     else:
         assembled = build_runtime(config, session_factory=lambda: session)
-    assert isinstance(assembled.policy, R18IntegratedPositiveV2ReleasePolicy)
+    assert isinstance(assembled.policy, R18IntegratedPositiveV2Rules20260929ReleasePolicy)
     assert assembled.runtime._value_limits is not None
     assert assembled.runtime._manifest_extra["policy_release"]["release_package_id"] == (
-        R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID
+        R18_V2_RULES_20260929_RELEASE_PACKAGE_ID
     )
     assert assembled.runtime._rules_factory(
         RuleConfig("hangma-mvp-v10-public-counts", 1, False)
     ).__class__.__name__ == "HangmaRules"
-    with pytest.raises(ValueError, match="测试范围要求"):
-        assembled.runtime._rules_factory(
-            RuleConfig("hangma-mvp-v10-public-counts", 2, False)
-        )
+    for bad in (
+        RuleConfig("hangma-mvp-v10-public-counts", 2, False),
+        RuleConfig("hangma-mvp-v10-public-counts", 1, True),
+        RuleConfig("other-rules", 1, False),
+    ):
+        with pytest.raises(ValueError, match="测试范围要求"):
+            assembled.runtime._rules_factory(bad)
 
 
-@pytest.mark.parametrize("release_id", (None, "0" * 64))
+@pytest.mark.parametrize("release_id", (None, "0" * 64,
+                                       R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID))
 def test_v2_release_rejects_missing_or_stale_binding(
     tmp_path: Path, release_id: str | None
 ) -> None:
@@ -119,5 +128,17 @@ def test_v2_release_rejects_dependency_drift() -> None:
     with pytest.raises(RuntimeError, match="完整规则源摘要漂移"):
         R18IntegratedPositiveV2ReleasePolicy(
             rules_source_hash="0" * 64,
+            value_analysis_sha256=R18_INTEGRATED_POSITIVE_V2_VALUE_ANALYSIS_SHA256,
+        )
+    current = R18IntegratedPositiveV2Rules20260929ReleasePolicy(
+        rules_source_hash=R18_V2_RULES_20260929_SOURCE_HASH,
+        value_analysis_sha256=R18_INTEGRATED_POSITIVE_V2_VALUE_ANALYSIS_SHA256,
+    )
+    assert current.release_metadata["release_package_id"] == (
+        R18_V2_RULES_20260929_RELEASE_PACKAGE_ID
+    )
+    with pytest.raises(RuntimeError, match="当前规则发布包源码摘要漂移"):
+        R18IntegratedPositiveV2Rules20260929ReleasePolicy(
+            rules_source_hash=R18_INTEGRATED_POSITIVE_V2_RULES_SOURCE_HASH,
             value_analysis_sha256=R18_INTEGRATED_POSITIVE_V2_VALUE_ANALYSIS_SHA256,
         )

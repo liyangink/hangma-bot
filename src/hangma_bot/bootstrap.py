@@ -96,11 +96,13 @@ from hangma_bot.policy.r18_integrated_positive_v1_release import (
     R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
 )
 from hangma_bot.policy.r18_integrated_positive_v2_release import (
-    R18IntegratedPositiveV2ReleasePolicy,
     R18_INTEGRATED_POSITIVE_V2_ALLOWED_MODES,
     R18_INTEGRATED_POSITIVE_V2_KNOWN_GUIDE_VERSION,
-    R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
     R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
+)
+from hangma_bot.policy.r18_integrated_positive_v2_rules_20260929_release import (
+    R18IntegratedPositiveV2Rules20260929ReleasePolicy,
+    R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
 )
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.application.audit_codec import (
@@ -195,9 +197,10 @@ R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: (
             value_analysis_sha256=_value_analysis_source_hash(),
         )
     ),
-    # R18 P69/P71 候选经用户批准接入四种真实环境模式；每次装配核对冻结摘要。
+    # R18 v2 评分源码仍是 P69/P71 已批准版本；主线规则事实扩展另用新包绑定，
+    # 旧发布包身份保留且不能在当前规则源码下静默装配。
     R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY: (
-        lambda: R18IntegratedPositiveV2ReleasePolicy(
+        lambda: R18IntegratedPositiveV2Rules20260929ReleasePolicy(
             rules_source_hash=compute_rules_hash(_REPO_ROOT),
             value_analysis_sha256=_value_analysis_source_hash(),
         )
@@ -545,7 +548,7 @@ class RuntimeConfig:
                     "r18_integrated_positive_v2 真实网络配置必须显式绑定发布包 "
                     "expected_policy_release_id"
                 )
-            if self.expected_policy_release_id != R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID:
+            if self.expected_policy_release_id != R18_V2_RULES_20260929_RELEASE_PACKAGE_ID:
                 raise ValueError(
                     "r18_integrated_positive_v2 配置绑定的发布包摘要与当前批准包不一致"
                 )

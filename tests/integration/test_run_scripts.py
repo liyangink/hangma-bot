@@ -538,7 +538,7 @@ def test_room_launcher_accepts_every_available_strategy(tmp_path, strategy):
         data['expected_policy_release_id'] = (
             room.R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID
             if strategy == 'r18_integrated_positive_v1'
-            else room.R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID
+            else room.R18_V2_RULES_20260929_RELEASE_PACKAGE_ID
         )
     cfg = room.load_room_config(
         _write_config(tmp_path, data), environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B}
@@ -587,7 +587,7 @@ def test_room_binds_each_r18_release_when_packages_are_mixed(tmp_path):
     data = _room_config(
         strategy='r18_integrated_positive_v2',
         known_guide_version=34,
-        expected_policy_release_id=room.R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
+        expected_policy_release_id=room.R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
         identities=[
             {'slot': 'A', 'token_env': 'HM_ROOM_A', 'strategy': 'r18_integrated_positive_v1',
              'expected_policy_release_id': room.R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID},
@@ -602,7 +602,7 @@ def test_room_binds_each_r18_release_when_packages_are_mixed(tmp_path):
     )
     children = [room.child_config_mapping(cfg, identity) for identity in cfg.identities]
     assert children[0]['expected_policy_release_id'] == room.R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID
-    assert all(child['expected_policy_release_id'] == room.R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID
+    assert all(child['expected_policy_release_id'] == room.R18_V2_RULES_20260929_RELEASE_PACKAGE_ID
                for child in children[1:])
     data['identities'][0]['expected_policy_release_id'] = '0' * 64
     with pytest.raises(ValueError, match='发布包'):

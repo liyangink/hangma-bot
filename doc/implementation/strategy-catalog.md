@@ -7,7 +7,8 @@
 | `weighted_heuristic` | 全部 | 冻结V0，省略配置时的默认值 |
 | `weighted_heuristic_v1` | 全部 | 冻结V1，历史对照 |
 | `weighted_heuristic_v2` | 全部 | 稳定基线；Tier-A 的对照基准 |
-| `r18_integrated_positive_v1` | **仅 `test_room` / `test_tournament` / `auto_match`** | 2026-09-23 人工批准的累计杭麻机会能力候选；固定候选摘要、P45—P48/P55 证据摘要与完整规则源摘要。不得进入正式赛事，不是默认策略 |
+| `r18_integrated_positive_v1` | 历史冻结范围为 `test_room` / `test_tournament` / `auto_match`；**当前主线规则下拒绝装配** | 旧包绑定原规则源码，没有制作当前规则的新包；历史身份保留，不是默认策略 |
+| `r18_integrated_positive_v2` | 四种真实模式均可显式配置，当前规则须绑定新包 ID | R18 v2 评分源码不变；2026-09-29 规则事实扩展后，当前主线使用独立绑定包，实网接线门仍需复核 |
 | `v2_hu_upgrade_v1` | **全部（含正式赛事）** | V2有界等胡（Tier-A）。**当前验证过的最优策略**，见下方状态。2026-09-18 起冻结：后续数值调整一律走 `v2_hu_upgrade_v2` |
 | `v2_hu_upgrade_v2` | 全部（与 v1 同口径） | **新参数批次载体**：与 v1 同结构，只换 `policy/weights_v1.py` 的 `V2_PARAM_BATCH_WEIGHTS`。2026-09-18 着陆时该常量与冻结 V2 逐字相同（零行为变更），数值由「一次一个参数、单独提交 + 策略目录门禁」逐步标定；候选取值与扫描协议见 `review/test-tournament-20260917/policy-param-batch-spec-2026-09-18.md` |
 | `v2_balanced_shadow_v1` | **仅 `test_room` / `auto_match`** | 多路线前沿审计层：复用 `v2_hu_upgrade_v1` 保底并追加路线理由，**不改变动作顺序**；不得用于正式赛事提交 |
@@ -17,6 +18,8 @@
 | `catch_play_probe` | 仅测试房 | 抓打圈取证探针，可将弃白排在胡前，不用于争取积分 |
 
 ## `r18_integrated_positive_v1` 测试与自由赛冻结包
+
+**当前主线状态（2026-09-29）：**下述旧身份只适用于原规则源码；新增吃碰后继事实后，旧 v1 发布包会在装配时拒绝规则摘要漂移。它保留作历史对照，不能把解析器接受该策略名误作当前可启动。[G194](../../review/freematch-deep-dive-20260925/G194-R18-V2-RULE-BINDING-RESULT-2026-09-29.md)只为活动的 R18 v2 制作了新规则绑定包。
 
 该枚举是候选 `r18_integrated_positive_v1` 的真实环境发布包，不是离线研究名的别名。发布包身份为
 `0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a`，候选源码摘要为

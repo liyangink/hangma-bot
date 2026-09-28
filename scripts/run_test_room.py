@@ -99,8 +99,8 @@ from hangma_bot.bootstrap import (  # noqa: E402
     AVAILABLE_STRATEGIES,
     R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
     R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
-    R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
     R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
+    R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
 )
 
 TOKEN_ENV_VAR = "HM_IDENTITY_TOKEN"
@@ -373,7 +373,7 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
     expected_release = data.get("expected_policy_release_id")
     release_packages = {
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
-        R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V2_RELEASE_PACKAGE_ID,
+        R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY: R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
     }
     if expected_release is not None:
         expected_release = _require_non_empty_str(expected_release, "expected_policy_release_id")

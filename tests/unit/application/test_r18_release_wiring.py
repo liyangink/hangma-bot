@@ -15,7 +15,6 @@ from hangma_bot.bootstrap import (
     build_runtime,
     runtime_config_from_mapping,
 )
-from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.policy.r18_integrated_positive_v1_release import (
     R18IntegratedPositiveV1ReleasePolicy,
     R18_INTEGRATED_POSITIVE_V1_ALLOWED_MODES,
@@ -85,35 +84,20 @@ def test_release_candidate_rejects_value_analysis_drift() -> None:
     "mode,token_kind",
     (("test_room", "test"), ("test_tournament", "test"), ("auto_match", "official")),
 )
-def test_release_candidate_is_only_available_in_approved_modes(
+def test_historical_v1_release_fails_closed_on_current_rule_source(
     tmp_path: Path, mode: str, token_kind: str
 ) -> None:
     config = _config(tmp_path, mode, token_kind)
     session = FakeTournamentSession(bootstrap=None)
-    if mode == "auto_match":
-        assembled = build_auto_match_runtime(
-            config,
-            AutoMatchSettings(),
-            session_factory=lambda: session,
-        )
-    else:
-        assembled = build_runtime(config, session_factory=lambda: session)
-
-    assert isinstance(assembled.policy, R18IntegratedPositiveV1ReleasePolicy)
-    assert assembled.policy.release_metadata["release_package_id"] == (
-        R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID
-    )
-    assert assembled.runtime._value_limits is not None
-    release_manifest = assembled.runtime._manifest_extra["policy_release"]
-    assert release_manifest["release_package_id"] == (
-        R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID
-    )
-    assert release_manifest["candidate_id"] == R18_INTEGRATED_POSITIVE_V1_CANDIDATE_ID
-    assert tuple(release_manifest["allowed_modes"]) == (
-        R18_INTEGRATED_POSITIVE_V1_ALLOWED_MODES
-    )
-    valid = RuleConfig("hangma-mvp-v10-public-counts", 1, False)
-    assert assembled.runtime._rules_factory(valid).__class__.__name__ == "HangmaRules"
+    with pytest.raises(RuntimeError, match="完整规则源摘要漂移"):
+        if mode == "auto_match":
+            build_auto_match_runtime(
+                config,
+                AutoMatchSettings(),
+                session_factory=lambda: session,
+            )
+        else:
+            build_runtime(config, session_factory=lambda: session)
 
 
 def test_release_candidate_rejects_official_tournament(tmp_path: Path) -> None:
@@ -171,33 +155,6 @@ def test_non_release_strategy_rejects_release_binding(tmp_path: Path) -> None:
     }
     with pytest.raises(ValueError, match="冻结发布策略"):
         runtime_config_from_mapping(data)
-
-
-@pytest.mark.parametrize(
-    "bad_rules",
-    (
-        RuleConfig("hangma-mvp-v10-public-counts", 2, False),
-        RuleConfig("hangma-mvp-v10-public-counts", 1, True),
-        RuleConfig("other-rules", 1, False),
-    ),
-)
-def test_release_candidate_fails_closed_outside_calibrated_rules(
-    tmp_path: Path, bad_rules: RuleConfig
-) -> None:
-    for mode, token_kind in (("test_room", "test"), ("auto_match", "official")):
-        config = _config(tmp_path / mode, mode, token_kind)
-        session = FakeTournamentSession(bootstrap=None)
-        assembled = (
-            build_auto_match_runtime(
-                config,
-                AutoMatchSettings(),
-                session_factory=lambda: session,
-            )
-            if mode == "auto_match"
-            else build_runtime(config, session_factory=lambda: session)
-        )
-        with pytest.raises(ValueError, match="测试范围要求"):
-            assembled.runtime._rules_factory(bad_rules)
 
 
 def test_raw_research_name_remains_rejected_in_every_network_mode(tmp_path: Path) -> None:
