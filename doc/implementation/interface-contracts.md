@@ -843,6 +843,8 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 
 实现上述变更时必须同批更新本协议的具体类型定义、全部调用方、旧记录往返与契约测试；当前不预建空端口，不改变 HTTP 协议或默认上线策略。
 
+**2026-09-28 吃碰后继分支事实补充**：`FollowupBranchFacts` 的每个合法后继弃牌分支增加可选的 `baotou_after`、`chain_count_after`、`chain_piao_after` 与 `four_white_qualified_after`。它们分别表示该次后继弃牌**完成后**的爆头、连续飘/杠次数、链内飘白数，以及当时手留白加链内飘白是否恰为四；最后一项只描述当前资格，不保证将来能胡。`hangma` 先依弃后暗牌重新判爆头，再以吃碰前状态和吃碰后的暂态爆头计算下一弃牌的链；`policy` 只能读取，不能自行推断。候选级 `baotou_after` 仍表示吃碰**刚完成**的暂态，不得代替各分支。旧审计记录没有这些键时解码为 `None`，新审计只写入已知值，不用 `False` 或零填未知；四个外部端口、候选评分源码和默认上线版本不变。依据为[官方指南 v34 §1.2/§1.3](../references/official-guide-v34-content.txt)及 2026-09-28 [G184 复盘对照](../../review/freematch-deep-dive-20260925/G184-CLASSIC-HIGHHAND-OPPORTUNITY-AUDIT-2026-09-28.md)。
+
 **2026-09-16 A 包合同冻结 → 2026-09-17 实施完成**：机器合同 [contracts/action-value-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json)（score_actions 接口、受限子集、限额与白名单、身份与门禁 schema）与 [contracts/group-dev-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json)（group_advance_v1 目标 + group_dev_v1 赛制，group-only 单组阶段合同）已冻结并实施：B1 进展载荷（FollowupBranchFacts/FamilyProgress）、B2 受限执行器与三种子、B3 codec 升级与 ActionValuePolicy 装配、C1 legal-prefix-v1 与中途续打、C2 根级统计与八席档案、D 生成门禁与七命令、E 最小真实闭环（I1/M1 血缘完整）全部落地。本节上表接缝行随之从拟实施转为已实施（审计 trace 与决策路径接线除外——决策记录仍按原 codec）。效果结论见 evidence/v4-impl/batch8/CLOSURE.md 四态报告：框架完成、开发候选完成、no_positive_candidate（未选出整体优胜，如实未进入确认）。
 
 ### 显式离线执行配置（2026-09-20）

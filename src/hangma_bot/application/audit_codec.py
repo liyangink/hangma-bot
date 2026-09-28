@@ -207,6 +207,14 @@ def candidate_facts_to_json(facts: CandidateFacts) -> dict[str, object]:
                     for item in branch.useful_tiles
                 ],
                 "support_remaining": branch.support_remaining,
+                **({"baotou_after": branch.baotou_after}
+                   if branch.baotou_after is not None else {}),
+                **({"chain_count_after": branch.chain_count_after}
+                   if branch.chain_count_after is not None else {}),
+                **({"chain_piao_after": branch.chain_piao_after}
+                   if branch.chain_piao_after is not None else {}),
+                **({"four_white_qualified_after": branch.four_white_qualified_after}
+                   if branch.four_white_qualified_after is not None else {}),
             }
             for branch in facts.followup_branches
         ]
@@ -270,6 +278,19 @@ def _branch_facts_from_json(value: object) -> Tuple[FollowupBranchFacts, ...] | 
             useful_tiles=() if useful is None else useful,
             support_remaining=_as_optional_int(
                 entry.get("support_remaining"), type_name, "support_remaining"
+            ),
+            baotou_after=(None if entry.get("baotou_after") is None else
+                          _as_bool(entry.get("baotou_after"), type_name, "baotou_after")),
+            chain_count_after=_as_optional_int(
+                entry.get("chain_count_after"), type_name, "chain_count_after"
+            ),
+            chain_piao_after=_as_optional_int(
+                entry.get("chain_piao_after"), type_name, "chain_piao_after"
+            ),
+            four_white_qualified_after=(
+                None if entry.get("four_white_qualified_after") is None else
+                _as_bool(entry.get("four_white_qualified_after"), type_name,
+                         "four_white_qualified_after")
             ),
         ))
     return tuple(result)

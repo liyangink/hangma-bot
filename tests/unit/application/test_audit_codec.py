@@ -26,6 +26,7 @@ from hangma_bot.application.audit_codec import (
 from hangma_bot.hangma.interface import (
     CandidateFactKind,
     CandidateFacts,
+    FollowupBranchFacts,
     RuleAnalysis,
     RuleCandidate,
     RuleCompleteness,
@@ -185,6 +186,35 @@ def test_analysis_failed_facts_round_trip():
     ))
     restored = candidate_facts_from_json(candidate_facts_to_json(candidate.facts))
     assert restored == candidate.facts
+
+
+def test_followup_rule_state_round_trip_and_legacy_unknown():
+    """吃后弃白分支的爆头/飘链事实可审计，旧载荷缺键仍是未知。"""
+
+    branch = FollowupBranchFacts(
+        followup_key="chi:4w,5w,6w#白", followup_discard="白",
+        combined_shanten=0, standard_shanten_after=0,
+        seven_pairs_shanten_after=None,
+        baotou_after=True, chain_count_after=2, chain_piao_after=2,
+        four_white_qualified_after=False,
+    )
+    facts = CandidateFacts(
+        fact_kind=CandidateFactKind.HAND_PROGRESS, shanten_after=0,
+        best_followup_discard="白", followup_branches=(branch,),
+    )
+    encoded = candidate_facts_to_json(facts)
+    assert candidate_facts_from_json(encoded) == facts
+    legacy = dict(encoded)
+    legacy_branch = dict(encoded["followup_branches"][0])
+    for key in ("baotou_after", "chain_count_after", "chain_piao_after",
+                "four_white_qualified_after"):
+        del legacy_branch[key]
+    legacy["followup_branches"] = [legacy_branch]
+    old = candidate_facts_from_json(legacy).followup_branches[0]
+    assert old.baotou_after is None
+    assert old.chain_count_after is None
+    assert old.chain_piao_after is None
+    assert old.four_white_qualified_after is None
 
 
 def test_missing_required_field_raises():

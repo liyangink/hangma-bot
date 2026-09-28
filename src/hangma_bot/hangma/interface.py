@@ -110,6 +110,10 @@ class FollowupBranchFacts:
     seven_pairs_shanten_after: Optional[int] # 七对向听；有副露或未分析 None
     useful_tiles: Tuple[UsefulTileFact, ...] = ()  # 该分支等待态的一步推进有效牌
     support_remaining: Optional[int] = None  # 一步推进有效牌的未见枚数总和（牌码去重后求和）；计数未知 None，不得写 0 冒充
+    baotou_after: Optional[bool] = None  # 完成该分支弃牌后的爆头；None=旧载荷或未分析，不继承候选级吃碰暂态
+    chain_count_after: Optional[int] = None  # 完成后续弃牌后的连续飘/杠次数；None=未分析
+    chain_piao_after: Optional[int] = None  # 完成后续弃牌后的链内飘白数；None=权威归因未知/未分析
+    four_white_qualified_after: Optional[bool] = None  # 此时手留白+链内飘白是否恰为4；不是未来胡牌保证
 
     def __post_init__(self) -> None:
         if self.followup_discard not in CANONICAL_TILE_CODES:
@@ -133,6 +137,16 @@ class FollowupBranchFacts:
             type(self.support_remaining) is not int or self.support_remaining < 0
         ):
             raise ValueError("FollowupBranchFacts.support_remaining 必须是非负整数或空")
+        for name in ("baotou_after", "four_white_qualified_after"):
+            value = getattr(self, name)
+            if value is not None and type(value) is not bool:
+                raise ValueError("FollowupBranchFacts." + name + " 必须是布尔或空")
+        for name in ("chain_count_after", "chain_piao_after"):
+            value = getattr(self, name)
+            if value is not None and (type(value) is not int or value < 0):
+                raise ValueError("FollowupBranchFacts." + name + " 必须是非负整数或空")
+        if self.chain_count_after == 0 and self.chain_piao_after not in (None, 0):
+            raise ValueError("FollowupBranchFacts 断链后链内飘白数必须为0或未知")
 
 
 @dataclass(frozen=True)

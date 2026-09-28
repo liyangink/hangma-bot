@@ -29,7 +29,7 @@ from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import Optional, Tuple
 
-from hangma_bot.kernel.actions import Action, Chi, Discard, Gang, GangKind, Peng
+from hangma_bot.kernel.actions import Action, Chi, Discard, Gang, GangKind, Peng, Tile
 from hangma_bot.kernel.observation import PlayerObservation
 
 from . import hand_analysis, progression, special_rules
@@ -338,6 +338,29 @@ def attach_payload(
     entries, baotou_after = _build_payload(
         state, candidate.action, facts, value_facts
     )
+    if isinstance(candidate.action, (Chi, Peng)) and facts.followup_branches is not None:
+        if baotou_after is None:
+            raise ProgressionPayloadError("鸣牌后爆头暂态未知，不能计算后继弃牌链状态")
+        chain, piao = progression.chain_after_action(
+            state.chain_count, state.chain_piao, state.baotou, candidate.action
+        )
+        whites = sum(tile.code == WEALTH_CODE for tile in state.hand)
+        branches = []
+        for branch in facts.followup_branches:
+            discard = Discard(Tile(branch.followup_discard))
+            branch_chain, branch_piao = progression.chain_after_action(
+                chain, piao, baotou_after, discard
+            )
+            remaining_whites = progression.wealth_after_action(whites, discard)
+            four_white = special_rules.four_white_indicator(
+                remaining_whites, branch_piao
+            )
+            branches.append(replace(
+                branch, chain_count_after=branch_chain,
+                chain_piao_after=branch_piao,
+                four_white_qualified_after=four_white,
+            ))
+        facts = replace(facts, followup_branches=tuple(branches))
     return value_facts, replace(
         facts, family_progress=entries, baotou_after=baotou_after
     )

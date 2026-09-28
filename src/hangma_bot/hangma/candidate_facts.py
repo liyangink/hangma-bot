@@ -31,7 +31,7 @@ from typing import Dict, List, Optional, Tuple
 
 from hangma_bot.kernel.actions import Chi, Discard, Gang, GangKind, Hu, Pass, Peng, Tile
 
-from . import hand_analysis
+from . import hand_analysis, progression
 from .interface import (
     CandidateFactKind,
     CandidateFacts,
@@ -273,6 +273,9 @@ def _followup_branches(
                 seven_pairs_shanten_after=summary.chiitoi_shanten,
                 useful_tiles=useful,
                 support_remaining=support,
+                # 吃/碰候选级 baotou_after 只表示鸣牌后的暂态继承；真正
+                # 后继弃牌必须按其独立暗手重新判定，不能复用最佳分支或暂态。
+                baotou_after=progression.baotou_after_discard(after, basis.melds),
             )
         )
         if best is None or order_key < best[0]:

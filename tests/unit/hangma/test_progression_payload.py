@@ -145,6 +145,31 @@ def test_t02_chi_branches_cover_all_legal_followup_discards():
     assert {b.followup_discard for b in branches} == hand_after
 
 
+def test_chi_then_white_branch_uses_own_baotou_and_chain_state():
+    """官方大牌榜第4手同型：吃暂态继承爆头，弃白分支单独复核并续飘。"""
+
+    own_melds = (
+        PublicMeld(3, "chi", _tiles("1w 2w 3w"), 2),
+        PublicMeld(3, "peng", _tiles("7b 7b 7b"), 1),
+    )
+    observation = _observation(
+        "4w 5w 1t 2t 3t 白 白", response="6w", phase="response_chi",
+        seat=3, melds=own_melds, baotou=True, chain=1, piao=1,
+    )
+    facts = _candidate(observation, "chi:4w,5w,6w").facts
+    branches = {branch.followup_discard: branch
+                for branch in facts.followup_branches}
+
+    assert facts.baotou_after is True  # 吃后、尚未弃牌的暂态
+    assert branches["白"].baotou_after is True
+    assert branches["白"].chain_count_after == 2
+    assert branches["白"].chain_piao_after == 2
+    assert branches["白"].four_white_qualified_after is False
+    assert branches["1t"].chain_count_after == 0
+    assert branches["1t"].chain_piao_after == 0
+    assert branches["1t"].four_white_qualified_after is False
+
+
 # ---------------------------------------------------------------------------
 # T03：UNANALYZED 不产出数值；未知 ≠ 0；七对关闭 CLOSED_PROVEN
 # ---------------------------------------------------------------------------
@@ -414,6 +439,12 @@ class TestInterfaceValidation:
             _branch(support_remaining=-1)
         with pytest.raises(ValueError, match="combined_shanten"):
             _branch(combined_shanten=-2)
+        with pytest.raises(ValueError, match="baotou_after"):
+            _branch(baotou_after=1)
+        with pytest.raises(ValueError, match="chain_count_after"):
+            _branch(chain_count_after=-1)
+        with pytest.raises(ValueError, match="断链"):
+            _branch(chain_count_after=0, chain_piao_after=1)
 
     def test_family_progress_requires_enum_and_basis(self):
         with pytest.raises(ValueError, match="family"):
