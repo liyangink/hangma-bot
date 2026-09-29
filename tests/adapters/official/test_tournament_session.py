@@ -428,8 +428,39 @@ class TestTournamentDetailNotFoundTolerance:
         assert state["detail_calls"] == 7
         assert len(self._not_found_notices(audit)) == 6
 
-    async def test_not_found_is_permanent_without_retry(self, transport, clock, audit) -> None:
-        """明确不存在的房间不等待；只按 code 而不按 HTTP 404 判型。"""
+    async def test_persistent_gone_has_bounded_cooldown_without_target_mismatch(
+        self, transport, clock, audit
+    ) -> None:
+        """房 actor 长期不可达时有界停止；不能改判为赛事永久不存在。"""
+
+        state = {"calls": 0, "times": []}
+
+        def handler(*, path, **kw):
+            if path == "/portal/api/guide/version":
+                return 200, json.dumps(_guide_doc())
+            if path == "/api/me":
+                return 200, json.dumps(load_fixture("me.json"))
+            if path == "/api/tournaments/me/rules":
+                return 200, json.dumps(load_fixture("rules.json"))
+            if path == "/api/tournaments/t_test_room_1":
+                state["calls"] += 1
+                state["times"].append(clock.monotonic())
+                if state["calls"] > 8:
+                    raise AssertionError("暂态详情读取超过单次有界预算")
+                raise NotFoundError(404, "TOURNAMENT_GONE", "tournament unavailable")
+            raise AssertionError("unexpected path " + path)
+
+        transport.handler = handler
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        outcome = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert isinstance(outcome, ParticipantTerminal)
+        assert outcome.reason is ParticipantTerminalReason.FATAL_PROTOCOL_ERROR
+        assert state["calls"] == 8
+        assert all(later - earlier >= 2.0 for earlier, later in zip(state["times"], state["times"][1:]))
+
+    @pytest.mark.parametrize("official_code", ["TOURNAMENT_NOT_FOUND", "UNRECOGNIZED_CODE"])
+    async def test_not_found_is_permanent_without_retry(self, transport, clock, audit, official_code) -> None:
+        """明确不存在或未知码均立即保守停止；只按官方已知 code 判型。"""
         _initialize_handler(transport)
         calls = {"detail": 0}
         prior = transport.handler
@@ -437,7 +468,7 @@ class TestTournamentDetailNotFoundTolerance:
         def handler(**kw):
             if kw["path"] == "/api/tournaments/t_test_room_1":
                 calls["detail"] += 1
-                raise NotFoundError(404, "TOURNAMENT_NOT_FOUND", "not found")
+                raise NotFoundError(404, official_code, "not found")
             return prior(**kw)
 
         transport.handler = handler
@@ -447,6 +478,73 @@ class TestTournamentDetailNotFoundTolerance:
         assert outcome.reason is ParticipantTerminalReason.TARGET_MISMATCH
         assert calls["detail"] == 1
         assert not self._not_found_notices(audit)
+
+    async def test_me_gone_does_not_enter_detail_cooldown(self, transport, clock, audit) -> None:
+        """身份 GET 即使异常码为 GONE，也不按赛事详情进行多次重读。"""
+
+        _initialize_handler(transport)
+        previous = transport.handler
+        calls = {"me": 0}
+
+        def handler(**kw):
+            if kw["path"] == "/api/me":
+                calls["me"] += 1
+                raise NotFoundError(404, "TOURNAMENT_GONE", "unexpected on /api/me")
+            return previous(**kw)
+
+        transport.handler = handler
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        before = clock.monotonic()
+        outcome = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert isinstance(outcome, ParticipantTerminal)
+        assert outcome.reason is ParticipantTerminalReason.FATAL_PROTOCOL_ERROR
+        assert calls["me"] == 1
+        assert clock.monotonic() == before
+
+    async def test_rules_gone_does_not_enter_detail_cooldown(self, transport, clock, audit) -> None:
+        """规则 GET 不是赛事详情 GET；404 立即保守停止。"""
+
+        _initialize_handler(transport)
+        previous = transport.handler
+        calls = {"rules": 0}
+
+        def handler(**kw):
+            if kw["path"] == "/api/tournaments/me/rules":
+                calls["rules"] += 1
+                raise NotFoundError(404, "TOURNAMENT_GONE", "unexpected on rules")
+            return previous(**kw)
+
+        transport.handler = handler
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        before = clock.monotonic()
+        item = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert isinstance(item, ParticipantTerminal)
+        assert item.reason is ParticipantTerminalReason.FATAL_PROTOCOL_ERROR
+        assert "/rules" in item.detail
+        assert calls["rules"] == 1
+        assert clock.monotonic() == before
+
+    async def test_next_update_me_gone_is_not_detail_exhaustion(self, transport, clock, audit) -> None:
+        """运行中的身份 GET 404 应定位到身份端点，不伪称详情耗尽。"""
+
+        _initialize_handler(transport)
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        assert not isinstance(await session.initialize(TARGET), ParticipantTerminal)
+        calls = {"me": 0}
+        previous = transport.handler
+
+        def handler(**kw):
+            if kw["path"] == "/api/me":
+                calls["me"] += 1
+                raise NotFoundError(404, "TOURNAMENT_GONE", "unexpected on /api/me")
+            return previous(**kw)
+
+        transport.handler = handler
+        item = await asyncio.wait_for(session.next_update(), timeout=2)
+        assert isinstance(item, ParticipantTerminal)
+        assert item.reason is ParticipantTerminalReason.FATAL_PROTOCOL_ERROR
+        assert "/api/me" in item.detail
+        assert calls["me"] == 1
 
     async def test_transient_detail_404_does_not_end_polling(self, transport, clock, audit) -> None:
         """轮询中的单次 404 不得终结：重读拿到权威快照并正常返回。

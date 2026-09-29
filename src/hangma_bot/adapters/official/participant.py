@@ -74,6 +74,7 @@ from .transport import OfficialTransport, TransportConfig
 # 把前者重新判成后者。身份和规则归属仍由 /api/me 与 /me/rules 核验。
 
 _FAST_GAME_START_POLL_SEC = 0.25  # ready 后仅 /api/me 使用；秒，避免 1 秒首响应窗被 2 秒发现间隔吞掉
+_TOURNAMENT_GONE_MAX_ATTEMPTS = 8  # v35 暂态 404 的单次调用上限，含首次请求
 
 
 @dataclass(frozen=True)
@@ -189,7 +190,7 @@ class OfficialTournamentSession:
         priority: Priority = Priority.BACKGROUND,
         with_auth: bool = True,
     ) -> Any:
-        """请求 JSON；临时 TOURNAMENT_GONE 不得耗尽成永久 404。"""
+        """请求 JSON；临时 TOURNAMENT_GONE 有界冷却后仍保留原码。"""
 
         attempts = 0
         last_exc: Optional[BaseException] = None
@@ -210,17 +211,22 @@ class OfficialTournamentSession:
             except (UncertainTransportError, RecoverableServerError) as exc:
                 last_exc = exc
             except NotFoundError as exc:
-                if exc.official_code != "TOURNAMENT_GONE":
+                detail_get = (method == "GET" and path.startswith("/api/tournaments/")
+                              and path.count("/") == 3)
+                idempotent_command = (method == "POST" and path.startswith("/api/tournaments/")
+                                      and path.endswith(("/register", "/ready")))
+                if exc.official_code != "TOURNAMENT_GONE" or not (detail_get or idempotent_command):
                     raise
-                # v35：register/ready 均幂等；详情和规则读取也可安全重试。
-                # 只有明确 NOT_FOUND（或缺 code）才交给调用方作永久判定。
+                # v35：详情可重复读取，register/ready 已有幂等重试契约；
+                # /api/me、规则与其他端点的 404 不进入此冷却。
+                # 耗尽单次调用预算仍保留 GONE 原码，不能伪装为永久不存在。
                 self._emit_audit(AuditKind.PROTOCOL_RECOVERED, {
                     "area": "tournament_temporarily_unavailable",
                     "official_code": exc.official_code,
                     "path": path,
                 })
-                attempts = 0
-                last_exc = None
+                if attempts >= _TOURNAMENT_GONE_MAX_ATTEMPTS:
+                    raise
                 await self._retry_sleep(self._poll_interval)
                 continue
             if attempts > self._max_retries:
@@ -278,6 +284,7 @@ class OfficialTournamentSession:
 
         try:
             rules_path = "/api/tournaments/me/rules" if scoped else "/api/tournaments/{}/rules".format(tournament_id)
+            request_path = rules_path
             rules_raw = await self._request_with_retry("GET", rules_path, priority=Priority.RECOVERY)
             rules_parsed = parse_rules_config(rules_raw)
             if rules_parsed.tournament_id != tournament_id:
@@ -288,6 +295,7 @@ class OfficialTournamentSession:
                     "rules 归属 {} 与目标 {} 不符".format(rules_parsed.tournament_id, tournament_id),
                 )
             # v35：GONE 在共享请求层退避重试；明确 NOT_FOUND 才是目标错配。
+            request_path = "/api/tournaments/{}".format(tournament_id)
             detail_raw = await self._tournament_detail(tournament_id, priority=Priority.RECOVERY)
             detail_parsed = parse_tournament_detail(detail_raw)
             # 配置构造（M/Rounds/时限约束）与初始投影都在 try 内完成：
@@ -303,7 +311,18 @@ class OfficialTournamentSession:
             projection = self._project_snapshot(detail_parsed, me.active_games, reg=candidate)
         except AuthError:
             return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "发现请求 401")
-        except (ForbiddenError, NotFoundError) as exc:
+        except NotFoundError as exc:
+            if exc.official_code == "TOURNAMENT_GONE":
+                return self._terminal(
+                    ParticipantTerminalReason.FATAL_PROTOCOL_ERROR,
+                    "{} 暂态 TOURNAMENT_GONE {}".format(
+                        request_path,
+                        "连续读取耗尽" if request_path == "/api/tournaments/{}".format(tournament_id)
+                        else "读取失败",
+                    ),
+                )
+            return self._terminal(ParticipantTerminalReason.TARGET_MISMATCH, "目标赛事不可访问: " + (exc.official_code or str(exc.http_status)))
+        except ForbiddenError as exc:
             return self._terminal(ParticipantTerminalReason.TARGET_MISMATCH, "目标赛事不可访问: " + (exc.official_code or str(exc.http_status)))
         except (OfficialError, DtoError, ValueError) as exc:
             return self._terminal(ParticipantTerminalReason.FATAL_PROTOCOL_ERROR, "发现请求失败: " + str(exc)[:120])
@@ -434,6 +453,7 @@ class OfficialTournamentSession:
         exhausted_rounds = 0
         next_detail_at = self._monotonic()
         while not self._closed:
+            request_path = "/api/me"
             try:
                 me = parse_me(await self._request_with_retry("GET", "/api/me", priority=Priority.BACKGROUND))
                 # 身份绑定每轮核验：Token 被改绑/重置后，他赛事的 active_games
@@ -449,14 +469,25 @@ class OfficialTournamentSession:
                     # 赛事详情，以便发现不伴随 active_games 的终态变化。
                     await self._retry_sleep(min(self._poll_interval, _FAST_GAME_START_POLL_SEC))
                     continue
+                request_path = "/api/tournaments/{}".format(reg.tournament_id)
                 detail_parsed = parse_tournament_detail(
-                    # 共享请求层重试暂时的 GONE；这里只会收到永久 NOT_FOUND。
+                    # 共享请求层冷却重读暂态 GONE；耗尽仍保留原码交此处分类。
                     await self._tournament_detail(reg.tournament_id, priority=Priority.BACKGROUND)
                 )
                 next_detail_at = self._monotonic() + self._poll_interval
             except AuthError:
                 return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "next_update 401")
-            except NotFoundError:
+            except NotFoundError as exc:
+                if request_path == "/api/me":
+                    return self._terminal(
+                        ParticipantTerminalReason.FATAL_PROTOCOL_ERROR,
+                        "next_update /api/me 404：code={}".format(exc.official_code or "?"),
+                    )
+                if exc.official_code == "TOURNAMENT_GONE":
+                    return self._terminal(
+                        ParticipantTerminalReason.FATAL_PROTOCOL_ERROR,
+                        "next_update 暂态 TOURNAMENT_GONE 连续读取耗尽",
+                    )
                 return self._terminal(ParticipantTerminalReason.TARGET_MISMATCH, "tournament gone")
             except ForbiddenError:
                 # 授权类永久终态：不得伪装成可重试网络故障（模块规范）

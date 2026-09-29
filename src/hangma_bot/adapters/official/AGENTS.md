@@ -40,7 +40,7 @@
 
 ## 2026-09-08 调度修订边界
 
-2026-09-23 指南 v35 将同为 HTTP 404 的赛事错误正式区分：`TOURNAMENT_GONE` 是房 actor 暂时不可达，需按原端点退避重试；`TOURNAMENT_NOT_FOUND` 或缺失 code 才是永久不存在。不得按 HTTP 状态码或固定连续次数把前者判为目标错配。`register`/`ready` 的重试保持幂等，详情与规则 GET 可重复读取。版本完整条目保存在 `doc/references/official-guide-version-v35.json`，只有内容摘要匹配才放行该 breaking 变更。
+2026-09-23 指南 v35 将同为 HTTP 404 的赛事错误正式区分：`TOURNAMENT_GONE` 是房 actor 暂时不可达，详情 `GET /api/tournaments/{id}` 按房轮询周期有界重读，耗尽仍保留暂态原码与结果未知；`TOURNAMENT_NOT_FOUND` 或缺失/未知 code 立即保守停止。不得按 HTTP 状态码或固定连续次数把前者判为目标错配。正式赛 `register`/`ready` 保留幂等重试，`/api/me`、规则 GET 与 `/api/match` 不进入详情冷却。版本完整条目保存在 `doc/references/official-guide-version-v35.json`，只有内容摘要匹配才放行该 breaking 变更。
 
 依据本日抓取的官方指南v25，每用户state上限为16/s；滚动实际发送账是本地保守实现，不能声称复刻未公开的服务器计次算法。四个外部端口和 `ActionAttempt` 字段不变，预算仍由应用层提供，策略不读取限频状态。2026-09-09普通弃牌缓发已默认接线：滚动state用量达到10次，正常摸牌增量有本机水位下界且余量足够时，补到保守起点后1秒。快照恢复、重试、白板和本人特殊动作链跳过。等待不占HTTP槽/查询额度；醒后复核窗口，并保留收紧的原始最迟发送时刻。等待取消用SubmissionCancelledBeforeSend穿透应用层并记未发送，不得记在途模糊结果。当时 SSE 保持关闭；当前验证模式见上文。方案与验收边界见[算法草案](../../../../review/adapter-rate-identity-2026-09-08/algorithm-design.md)及[实施验证](../../../../review/adapter-rate-identity-2026-09-08/implementation-validation.md)。
 

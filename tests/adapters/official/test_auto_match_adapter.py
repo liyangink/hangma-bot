@@ -749,6 +749,167 @@ async def test_next_update_active_intersection_and_finished(transport, clock, au
 
 
 @pytest.mark.asyncio
+async def test_next_update_v35_gone_retries_same_room_after_cooldown(transport, clock, audit) -> None:
+    """v35 暂态房详情 404 应冷却后重读同房，不丢掉下一次 finished 事实。"""
+
+    detail_calls: List[float] = []
+
+    def handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):
+        if path == "/portal/api/guide/version":
+            return 200, json.dumps(_guide_doc())
+        if path == "/api/me":
+            return 200, json.dumps(_me_doc())
+        if path == "/api/tournaments/r_auto_1":
+            detail_calls.append(clock.monotonic())
+            if len(detail_calls) == 1:
+                return 200, json.dumps(_room_doc(status="running"))
+            if len(detail_calls) == 2:
+                raise NotFoundError(404, "TOURNAMENT_GONE", "tournament unavailable")
+            return 200, json.dumps(_room_doc(status="finished"))
+        raise AssertionError("unexpected " + method + " " + path)
+
+    transport.handler = handler
+    session = make_auto_session(clock=clock, transport=transport, audit=audit)
+    bootstrap = await initialize_once(session, _target(room_id="r_auto_1"))
+    assert isinstance(bootstrap, SessionBootstrap)
+    snapshot = await asyncio.wait_for(session.next_update(), timeout=3)
+    assert not isinstance(snapshot, ParticipantTerminal)
+    assert snapshot.status is TournamentStatus.FINISHED
+    assert len(detail_calls) == 3
+    assert detail_calls[2] - detail_calls[1] >= 2.0
+
+
+@pytest.mark.asyncio
+async def test_next_update_v35_gone_exhausts_only_detail_get(transport, clock, audit) -> None:
+    """同一详情持续暂态 404 只冷却七次，耗尽后保留结果未知。"""
+
+    detail_times: List[float] = []
+
+    def handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):
+        if path == "/portal/api/guide/version":
+            return 200, json.dumps(_guide_doc())
+        if path == "/api/me":
+            return 200, json.dumps(_me_doc())
+        if path == "/api/tournaments/r_auto_1":
+            if not detail_times:
+                detail_times.append(clock.monotonic())
+                return 200, json.dumps(_room_doc(status="running"))
+            detail_times.append(clock.monotonic())
+            if len(detail_times) > 9:
+                raise AssertionError("详情重读超过单次有界预算")
+            raise NotFoundError(404, "TOURNAMENT_GONE", "tournament unavailable")
+        raise AssertionError("unexpected " + method + " " + path)
+
+    transport.handler = handler
+    session = make_auto_session(clock=clock, transport=transport, audit=audit)
+    assert isinstance(await initialize_once(session, _target(room_id="r_auto_1")), SessionBootstrap)
+    item = await asyncio.wait_for(session.next_update(), timeout=3)
+    assert isinstance(item, ParticipantTerminal)
+    assert item.reason is ParticipantTerminalReason.MATCHING_UNAVAILABLE
+    assert "结果仍未知" in item.detail
+    assert len(detail_times) == 9  # 初始化一次，单次 next_update 最多八次
+    assert all(b - a >= 2.0 for a, b in zip(detail_times[1:], detail_times[2:]))
+
+
+@pytest.mark.asyncio
+async def test_initialize_v35_gone_exhaustion_keeps_room_result_unknown(transport, clock, audit) -> None:
+    """恢复核验持续暂态 404 时停止本次读取，但不宣称房间永久关闭。"""
+
+    calls = {"detail": 0}
+
+    def handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):
+        if path == "/portal/api/guide/version":
+            return 200, json.dumps(_guide_doc())
+        if path == "/api/me":
+            return 200, json.dumps(_me_doc())
+        if path == "/api/tournaments/r_auto_1":
+            calls["detail"] += 1
+            if calls["detail"] > 8:
+                raise AssertionError("恢复核验超过单次有界预算")
+            raise NotFoundError(404, "TOURNAMENT_GONE", "tournament unavailable")
+        raise AssertionError("unexpected " + method + " " + path)
+
+    transport.handler = handler
+    session = make_auto_session(clock=clock, transport=transport, audit=audit)
+    item = await asyncio.wait_for(session.initialize(_target(room_id="r_auto_1")), timeout=3)
+    assert isinstance(item, ParticipantTerminal)
+    assert item.reason is ParticipantTerminalReason.MATCHING_UNAVAILABLE
+    assert "仍未知" in item.detail
+    assert calls["detail"] == 8
+
+
+@pytest.mark.asyncio
+async def test_me_gone_stops_without_detail_cooldown(transport, clock, audit) -> None:
+    """赛事暂态 404 冷却只适用于详情 GET；身份 GET 立即交由调用方。"""
+
+    calls = {"me": 0}
+
+    def handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):
+        if path == "/portal/api/guide/version":
+            return 200, json.dumps(_guide_doc())
+        if path == "/api/me":
+            calls["me"] += 1
+            raise NotFoundError(404, "TOURNAMENT_GONE", "unexpected on /api/me")
+        raise AssertionError("unexpected " + method + " " + path)
+
+    transport.handler = handler
+    session = make_auto_session(clock=clock, transport=transport, audit=audit)
+    before = clock.monotonic()
+    item = await asyncio.wait_for(session.initialize(_target(room_id="r_auto_1")), timeout=3)
+    assert isinstance(item, ParticipantTerminal)
+    assert item.reason is ParticipantTerminalReason.FATAL_PROTOCOL_ERROR
+    assert calls["me"] == 1
+    assert clock.monotonic() == before
+
+
+@pytest.mark.asyncio
+async def test_match_gone_is_not_detail_get_retry(transport, clock, audit) -> None:
+    """`POST /api/match` 的 404 不进入房间详情八次重读。"""
+
+    observed = discovery_handler(
+        transport,
+        match_exc=NotFoundError(404, "TOURNAMENT_GONE", "unexpected on /api/match"),
+    )
+    session = make_auto_session(clock=clock, transport=transport, audit=audit)
+    item = await asyncio.wait_for(session.initialize(_target()), timeout=3)
+    assert isinstance(item, ParticipantTerminal)
+    assert item.reason is ParticipantTerminalReason.MATCHING_UNAVAILABLE
+    assert observed["counts"]["match"] == 1
+
+
+@pytest.mark.asyncio
+async def test_next_update_me_gone_never_synthesizes_room_closed(transport, clock, audit) -> None:
+    """身份端点 404 不可借此前房间 finished 证据合成 closed。"""
+
+    states = {"me_gone": False, "me_calls": 0, "detail_calls": 0}
+
+    def handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):
+        if path == "/portal/api/guide/version":
+            return 200, json.dumps(_guide_doc())
+        if path == "/api/me":
+            states["me_calls"] += 1
+            if states["me_gone"]:
+                raise NotFoundError(404, "TOURNAMENT_GONE", "unexpected on /api/me")
+            return 200, json.dumps(_me_doc())
+        if path == "/api/tournaments/r_auto_1":
+            states["detail_calls"] += 1
+            return 200, json.dumps(_room_doc(status="finished"))
+        raise AssertionError("unexpected " + method + " " + path)
+
+    transport.handler = handler
+    session = make_auto_session(clock=clock, transport=transport, audit=audit)
+    assert isinstance(await initialize_once(session, _target(room_id="r_auto_1")), SessionBootstrap)
+    baseline_me_calls = states["me_calls"]
+    states["me_gone"] = True
+    item = await asyncio.wait_for(session.next_update(), timeout=3)
+    assert isinstance(item, ParticipantTerminal)
+    assert item.reason is ParticipantTerminalReason.FATAL_PROTOCOL_ERROR
+    assert "/api/me" in item.detail
+    assert states["me_calls"] == baseline_me_calls + 1
+    assert states["detail_calls"] == 1
+
+
+@pytest.mark.asyncio
 async def test_next_update_404_after_finished_synthesizes_closed(transport, clock, audit) -> None:
     """finished 后房间 404（官方约 60s 关停）：合成 closed 变化快照按证据收尾。"""
 
@@ -782,10 +943,11 @@ async def test_next_update_404_after_finished_synthesizes_closed(transport, cloc
 
 
 @pytest.mark.asyncio
-async def test_next_update_404_without_finished_evidence_stops(transport, clock, audit) -> None:
+@pytest.mark.parametrize("official_code", ["TOURNAMENT_NOT_FOUND", "UNRECOGNIZED_CODE"])
+async def test_next_update_404_without_finished_evidence_stops(transport, clock, audit, official_code) -> None:
     """无 finished 证据的房间 404：不能证明正常完赛，MATCHING_UNAVAILABLE。"""
 
-    states = {"room_visible": True}
+    states = {"room_visible": True, "detail_calls": 0}
 
     def handler(*, method: str, path: str, json_body=None, params=None, long_poll=False):
         if path == "/portal/api/guide/version":
@@ -793,8 +955,9 @@ async def test_next_update_404_without_finished_evidence_stops(transport, clock,
         if path == "/api/me":
             return 200, json.dumps(_me_doc())
         if path == "/api/tournaments/r_auto_1":
+            states["detail_calls"] += 1
             if not states["room_visible"]:
-                raise NotFoundError(404, "TOURNAMENT_NOT_FOUND", "gone")
+                raise NotFoundError(404, official_code, "gone")
             return 200, json.dumps(_room_doc(status="running", my_games=("g1",)))
         raise AssertionError("unexpected " + method + " " + path)
 
@@ -806,6 +969,7 @@ async def test_next_update_404_without_finished_evidence_stops(transport, clock,
     item = await asyncio.wait_for(session.next_update(), timeout=3)
     assert isinstance(item, ParticipantTerminal)
     assert item.reason is ParticipantTerminalReason.MATCHING_UNAVAILABLE
+    assert states["detail_calls"] == 2  # 初始化一次、终态前只读一次
 
 
 @pytest.mark.asyncio

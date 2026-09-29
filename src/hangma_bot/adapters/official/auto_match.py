@@ -79,6 +79,7 @@ from .scheduler import (DEFAULT_PRODUCTION_STATE_BURST, DEFAULT_PRODUCTION_STATE
 from .transport import OfficialTransport, TransportConfig
 
 _FAST_GAME_START_POLL_SEC = 0.25  # 匹配完成前仅快速检查 /api/me；秒
+_TOURNAMENT_GONE_MAX_ATTEMPTS = 8  # v35 暂态 404 的单次调用上限，含首次请求
 
 # 服务端 v15 自动房默认配置（API 文档 §2.6，抓取 2026-09-05）：显式声明上限
 # 低于服务默认（M∈1..9 或 Rounds∈1..7）→ 永久 404 NO_ROOM_AVAILABLE。客户端
@@ -309,6 +310,22 @@ class OfficialAutoMatchSession:
                 last_exc = exc
             except (UncertainTransportError, RecoverableServerError) as exc:
                 last_exc = exc
+            except NotFoundError as exc:
+                detail_get = (method == "GET" and path.startswith("/api/tournaments/")
+                              and path.count("/") == 3)
+                if exc.official_code != "TOURNAMENT_GONE" or not detail_get:
+                    raise
+                # 仅赛事详情 GET 的明确暂态 404 重读；每次间隔房详情
+                # 轮询周期。耗尽后保留 GONE 原码交调用方，不伪造永久消失。
+                self._emit_auto_recovery(
+                    reason="room_temporarily_unavailable",
+                    official_code=exc.official_code,
+                    path=path,
+                )
+                if attempts >= _TOURNAMENT_GONE_MAX_ATTEMPTS:
+                    raise
+                await self._retry_sleep(self._poll_interval)
+                continue
             if attempts > self._max_retries:
                 if last_exc is not None:
                     raise last_exc
@@ -444,6 +461,7 @@ class OfficialAutoMatchSession:
         exhausted_rounds = 0
         next_detail_at = self._monotonic()
         while not self._closed:
+            request_path = "/api/me"
             try:
                 me = parse_me(await self._get_me())
                 # 身份绑定每轮核验：全局 Token 被改绑为报名 Token 后，其它
@@ -461,13 +479,17 @@ class OfficialAutoMatchSession:
                     # 加快 /api/me，避免 2 秒发现间隔吞掉第一张弃牌。
                     await self._retry_sleep(min(self._poll_interval, _FAST_GAME_START_POLL_SEC))
                     continue
-                detail_doc = await self._request_with_retry(
-                    "GET", "/api/tournaments/{}".format(reg.room_id), priority=Priority.BACKGROUND
-                )
+                request_path = "/api/tournaments/{}".format(reg.room_id)
+                detail_doc = await self._request_with_retry("GET", request_path, priority=Priority.BACKGROUND)
                 next_detail_at = self._monotonic() + self._poll_interval
             except AuthError:
                 return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "next_update 401")
-            except NotFoundError:
+            except NotFoundError as exc:
+                if request_path == "/api/me":
+                    return self._terminal(
+                        ParticipantTerminalReason.FATAL_PROTOCOL_ERROR,
+                        "next_update /api/me 404：code={}".format(exc.official_code or "?"),
+                    )
                 # 房间 404：官方 finished 后约 60 秒关闭的正常形态。只有本进程
                 # 已确认过 finished（或已按同样证据合成 closed）才能按"已按
                 # 证据收尾"继续；404 本身不能证明正常完赛（API 文档 §2.6）。
@@ -491,6 +513,11 @@ class OfficialAutoMatchSession:
                             self._adopt_snapshot(closed_snapshot)
                             return closed_snapshot
                 else:
+                    if exc.official_code == "TOURNAMENT_GONE":
+                        return self._terminal(
+                            ParticipantTerminalReason.MATCHING_UNAVAILABLE,
+                            "目标房 {} 暂态 TOURNAMENT_GONE 连续读取耗尽：结果仍未知".format(reg.room_id),
+                        )
                     return self._terminal(
                         ParticipantTerminalReason.MATCHING_UNAVAILABLE,
                         "目标房 {} 404 且无此前 finished 证据：结果缺失/未知".format(reg.room_id),
@@ -869,6 +896,11 @@ class OfficialAutoMatchSession:
         except AuthError:
             return self._terminal(ParticipantTerminalReason.AUTHENTICATION_FAILED, "房间核验 401")
         except NotFoundError as exc:
+            if exc.official_code == "TOURNAMENT_GONE":
+                return self._terminal(
+                    ParticipantTerminalReason.MATCHING_UNAVAILABLE,
+                    "房间 {} 暂态 TOURNAMENT_GONE 连续核验耗尽：归属/结果仍未知".format(room_id),
+                )
             return self._terminal(
                 ParticipantTerminalReason.MATCHING_UNAVAILABLE,
                 "房间 {} 不存在/已关闭（code={}）：恢复证据不足".format(
