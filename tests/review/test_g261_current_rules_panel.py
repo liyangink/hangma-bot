@@ -16,6 +16,7 @@ if str(REVIEW) not in sys.path:
     sys.path.insert(0, str(REVIEW))
 
 import g261_current_rules_panel as subject  # noqa: E402
+import g193_early_shape_policy as research_parent  # noqa: E402
 from hangma_bot.policy.action_value_policy import ActionValuePolicy  # noqa: E402
 from hangma_bot.policy.r18_integrated_positive_v2_release import (  # noqa: E402
     R18IntegratedPositiveV2ReleasePolicy,
@@ -39,7 +40,7 @@ def test_research_arm_is_explicit_and_single_candidate() -> None:
 
 
 def test_both_arms_build_under_same_analysis_limits(monkeypatch) -> None:
-    """研究父代沿用冻结评分源码，候选仍是既有受限执行器源码臂。"""
+    """通过工厂入参核双臂源码和分析限额，不读取策略私有状态。"""
 
     monkeypatch.setattr(
         subject.panel.paired, "R18IntegratedPositiveV2ReleasePolicy",
@@ -48,10 +49,27 @@ def test_both_arms_build_under_same_analysis_limits(monkeypatch) -> None:
     candidate = subject.policy_factory(CANDIDATE)(lambda: 800.0)
     assert isinstance(parent, ActionValuePolicy)
     assert isinstance(candidate, ActionValuePolicy)
-    assert parent._scorer.source == subject.R18_INTEGRATED_POSITIVE_V2_SOURCE
-    assert parent._value_limits == candidate._value_limits == subject.panel.paired.LIMITS
+    assert parent.scorer_name == research_parent.R18_INTEGRATED_POSITIVE_V2_NAME
+    assert candidate.scorer_name == "research:" + Path(CANDIDATE).stem
     assert not parent.policy_id.startswith("release:")
-    assert candidate._scorer.source == (ROOT / CANDIDATE.removeprefix("candidate@")).read_text()
+
+    assembled = []
+
+    def record_policy(scorer, *, value_limits):
+        assembled.append((scorer.name, scorer.source, value_limits))
+        return object()
+
+    monkeypatch.setattr(research_parent, "ActionValuePolicy", record_policy)
+    monkeypatch.setattr(subject.panel.paired, "ActionValuePolicy", record_policy)
+    subject.policy_factory(subject.RESEARCH_PARENT_ARM)(lambda: 800.0)
+    subject.policy_factory(CANDIDATE)(lambda: 800.0)
+    assert assembled == [
+        (research_parent.R18_INTEGRATED_POSITIVE_V2_NAME,
+         subject.R18_INTEGRATED_POSITIVE_V2_SOURCE, subject.panel.paired.LIMITS),
+        ("research:" + Path(CANDIDATE).stem,
+         (ROOT / CANDIDATE.removeprefix("candidate@")).read_text(encoding="utf-8"),
+         subject.panel.paired.LIMITS),
+    ]
 
 
 def test_manifest_separates_research_identity_from_release() -> None:
