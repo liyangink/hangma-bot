@@ -751,7 +751,14 @@ def project_legal_roots(
                         issues=(RuleIssue("route_transition.settlement",
                                           "合法胡缺当前结算事实"),)))
                     continue
-                roots.append(ConditionalRoot(candidate.action_key, (), settlement))
+                current = replace(
+                    _state(observation, context, ConditionalPhase.DRAW_ACTION),
+                    identity=ConditionalIdentity(
+                        observation.game_id, observation.round_no,
+                        candidate.action_key))
+                ended = _terminal_hu_state(current, settlement)
+                roots.append(ConditionalRoot(
+                    candidate.action_key, (ConditionalBranch(ended),), settlement))
                 continue
             if isinstance(action, Pass):
                 state = _state(observation, context, ConditionalPhase.RESPONSE_RESOLUTION,
@@ -890,7 +897,10 @@ def project_legal_roots(
         branches = tuple(replace(
             branch,
             state=replace(branch.state,
-                identity=local_id.step(branch.followup_key or "root-success")),
+                identity=local_id.step(
+                    branch.followup_key or
+                    ("hu" if branch.state.phase is ConditionalPhase.TERMINAL
+                     else "root-success"))),
         ) for branch in root.branches)
         root = replace(
             root, branches=branches,
@@ -1049,6 +1059,10 @@ def analyze_given_self_draw(
 
     if config.base_score != 1 or config.you_cai_bi_kao:
         raise ValueError("条件转移首版只绑定 BaseScore=1、YouCaiBiKao=false")
+    if (seat not in range(4) or dealer_seat not in range(4)
+            or (state.seat != seat
+                and not (state.seat is None and state.local_witness_only))):
+        raise ValueError("给定摸牌的本人或庄家座位与条件状态不一致")
     if state.phase is not ConditionalPhase.DRAW_ACTION or state.last_draw_replacement is None:
         raise ValueError("必须先给定已发生的本人摸牌")
     if state.drawn_tile is None:
@@ -1094,6 +1108,8 @@ def analyze_given_claim_action(
 
     if config.base_score != 1 or config.you_cai_bi_kao:
         raise ValueError("条件转移首版只绑定 BaseScore=1、YouCaiBiKao=false")
+    if state.seat != seat:
+        raise ValueError("吃碰后动作的本人座位与条件状态不一致")
     if state.phase is not ConditionalPhase.CLAIM_DISCARD or state.drawn_tile is not None:
         raise ValueError("必须是吃碰已获裁决且尚未摸牌的本人动作状态")
     if not state.claim_awarded:
@@ -1145,11 +1161,17 @@ def apply_legal_draw_hu(analysis: GivenDrawAnalysis) -> ConditionalRouteState:
         raise ValueError("胡不在本次给定摸牌合法动作全集")
     if analysis.immediate_settlement is None:
         raise ValueError("给定摸牌合法胡缺已证四座结算")
-    state = analysis.source_state
+    return _terminal_hu_state(analysis.source_state, analysis.immediate_settlement)
+
+
+def _terminal_hu_state(
+    state: ConditionalRouteState, result: Settlement,
+) -> ConditionalRouteState:
+    """把同源合法胡结算转换为条件终局；根胡和给定摸牌胡共用。"""
+
     if (state.phase is not ConditionalPhase.DRAW_ACTION or state.seat is None
             or state.identity is None):
-        raise ValueError("给定摸牌胡缺本人动作状态、座位或本地身份")
-    result = analysis.immediate_settlement
+        raise ValueError("合法胡缺本人动作状态、座位或本地身份")
     return replace(
         state, phase=ConditionalPhase.TERMINAL,
         terminal_result=progression.HandResult(

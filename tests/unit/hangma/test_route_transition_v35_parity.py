@@ -219,6 +219,20 @@ def test_v35_minggang_replacement_hu_and_four_seat_settlement_parity():
     result = conditional.immediate_settlement
     assert result is not None
     assert result == authoritative_result
+    current_hu_root = _root(rules, landed, "hu")
+    assert current_hu_root.gap_kinds == ()
+    assert current_hu_root.pending_condition is None
+    assert current_hu_root.settlement == result
+    assert len(current_hu_root.branches) == 1
+    current_ended = current_hu_root.branches[0].state
+    assert current_ended.phase is ConditionalPhase.TERMINAL
+    assert current_ended.terminal_result is not None
+    assert (current_ended.terminal_result.fan,
+            current_ended.terminal_result.details,
+            current_ended.terminal_result.score_delta) == (
+        terminal.result_fan, terminal.result_details, terminal.result_scores)
+    _watermark_is_official_root(current_ended, landed)
+    assert current_ended.identity.path[-1] == "hu"
     with pytest.raises(ValueError, match="已证四座结算"):
         apply_legal_draw_hu(replace(conditional, immediate_settlement=None))
     ended = apply_legal_draw_hu(conditional)

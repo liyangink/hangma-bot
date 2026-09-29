@@ -369,6 +369,12 @@ def test_concealed_gang_given_replacement_can_hu_or_continue_by_same_rule_source
                  if route.conditions.draw_kind == "replacement"
                  and any(tile.code == "东" for tile in route.useful_tiles))
     assert actual.immediate_settlement == route.conditional_settlement
+    with pytest.raises(ValueError, match="座位"):
+        analyze_given_replacement_draw(
+            landed, seat=1, dealer_seat=0, config=config)
+    with pytest.raises(ValueError, match="座位"):
+        analyze_given_replacement_draw(
+            landed, seat=0, dealer_seat=4, config=config)
     with pytest.raises(ValueError, match="杠补牌"):
         analyze_given_replacement_draw(
             replace(landed, last_draw_replacement=False),
@@ -474,6 +480,9 @@ def test_official_chi_then_gang_then_replacement_keeps_all_legal_claim_actions()
     assert claim_result.resolution.status == "resolved"
     claim = analyze_given_claim_action(
         claim_result.state, seat=before.seat, config=config)
+    with pytest.raises(ValueError, match="座位"):
+        analyze_given_claim_action(
+            claim_result.state, seat=(before.seat + 1) % 4, config=config)
     assert {item.action_key for item in claim.legal_candidates} == {
         item.action_key for item in rules.analyze(views[2267]).legal_candidates}
     assert "gang:concealed:2w" in {item.action_key for item in claim.legal_candidates}
