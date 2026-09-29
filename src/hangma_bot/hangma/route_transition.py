@@ -20,7 +20,7 @@ from hangma_bot.kernel.observation import PlayerObservation, PublicDiscard, Publ
 
 from . import action_families, hand_analysis, progression, settlement
 from .catch_play import analyze_catch_play
-from .interface import RuleCandidate, RuleIssue, Settlement
+from .interface import RuleCandidate, RuleIssue, Settlement, ValueCoverage
 from .internal_types import TILE_INDEX, WindowContext, is_wealth
 from .observation_rules import enrich_observation
 from .public_tile_counts import (
@@ -746,10 +746,22 @@ def project_legal_roots(
                 settlement = (candidate.value_facts.immediate_settlement
                               if candidate.value_facts is not None else None)
                 if settlement is None:
+                    facts = candidate.value_facts
+                    kind = (
+                        RouteGapKind.SEARCH_TRUNCATED
+                        if facts is not None and facts.coverage is ValueCoverage.PARTIAL
+                        else RouteGapKind.INPUT_EVIDENCE_GAP
+                        if facts is not None and any(
+                            issue.area == "value_analysis.missing_evidence"
+                            for issue in facts.issues)
+                        else RouteGapKind.MECHANICAL_GAP)
                     roots.append(ConditionalRoot(candidate.action_key, (),
-                        gap_kind=RouteGapKind.MECHANICAL_GAP,
+                        gap_kind=kind,
                         issues=(RuleIssue("route_transition.settlement",
-                                          "合法胡缺当前结算事实"),)))
+                                          "合法胡缺当前结算事实；来源: " +
+                                          "; ".join(issue.reason for issue in facts.issues)
+                                          if facts is not None and facts.issues
+                                          else "合法胡缺当前结算事实"),)))
                     continue
                 current = replace(
                     _state(observation, context, ConditionalPhase.DRAW_ACTION),

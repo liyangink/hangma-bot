@@ -302,6 +302,25 @@ def test_missing_chain_piao_is_input_evidence_gap_not_zero():
     assert any("链内飘白次数" in issue.reason for issue in root.issues)
 
 
+def test_legal_hu_missing_chain_evidence_is_input_gap_not_mechanical_fault():
+    observation = _observation(
+        hand=("1w", "1w", "1w", "2w", "3w", "4w", "5w", "6w", "7w",
+              "7w", "8w", "9w", "东"),
+        drawn=Tile("东"), chain=1, piao=None)
+    config = RuleConfig("conditional-test", 1, False)
+    analysis = HangmaRules(config).analyze(
+        observation, value_limits=ValueAnalysisLimits())
+    roots = {root.action_key: root for root in project_legal_roots(
+        observation, _build_context(observation), analysis.legal_candidates,
+        config=config)}
+    assert "hu" in {candidate.action_key for candidate in analysis.legal_candidates}
+    root = roots["hu"]
+    assert root.gap_kind is RouteGapKind.INPUT_EVIDENCE_GAP
+    assert root.gap_kinds == (RouteGapKind.INPUT_EVIDENCE_GAP,)
+    assert root.branches == ()
+    assert "当前结算事实" in root.issues[0].reason
+
+
 def test_independent_observation_issue_does_not_turn_future_into_mechanical_gap():
     observation = replace(
         _observation(drawn=Tile("南")),
