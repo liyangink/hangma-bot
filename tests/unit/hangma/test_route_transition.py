@@ -814,6 +814,60 @@ def test_public_wait_enforces_next_actor_and_white_discard_changes_circle():
     assert discarded.public_view.snapshot_seq == observation.snapshot_seq
 
 
+def test_all_pass_public_circle_reaches_next_own_draw_without_future_hand_leak():
+    """一条给定的整圈公开事件链，下一次本人摸牌才重新求合法动作。"""
+
+    observation = _observation(drawn=Tile("3b"))
+    _, roots = _roots(observation)
+    first = advance_given_response(
+        roots["discard:3b"], window="response_peng", discard_seat=0,
+        discarded_tile=Tile("3b"), responding=(1, 2, 3),
+        choices=((1, Pass()), (2, Pass()), (3, Pass())))
+    waiting = advance_response_state(
+        first.state, window="response_chi", discard_seat=0,
+        discarded_tile=Tile("3b"), responding=(1,),
+        choices=((1, Pass()),)).state
+    for seat, code, responders in (
+        (1, "2b", (2, 3, 0)),
+        (2, "4b", (3, 0, 1)),
+        (3, "6b", (0, 1, 2)),
+    ):
+        assert waiting.expected_draw_seat == seat
+        drawn = advance_given_other_draw(waiting, seat=seat)
+        discarded = advance_given_other_discard(
+            drawn, seat=seat, tile=Tile(code))
+        peng = advance_response_state(
+            discarded, window="response_peng", discard_seat=seat,
+            discarded_tile=Tile(code), responding=responders,
+            choices=tuple((member, Pass()) for member in responders))
+        assert peng.resolution.status == "resolved"
+        next_seat = (seat + 1) % 4
+        waiting = advance_response_state(
+            peng.state, window="response_chi", discard_seat=seat,
+            discarded_tile=Tile(code), responding=(next_seat,),
+            choices=((next_seat, Pass()),)).state
+        assert waiting.concealed == roots["discard:3b"].branches[0].state.concealed
+    assert waiting.phase is ConditionalPhase.NORMAL_DRAW
+    assert waiting.expected_draw_seat == observation.seat
+    assert waiting.wall_remaining == observation.remaining_tile_count - 3
+    assert waiting.public_view.hand_counts == (13, 13, 13, 13)
+    landed = apply_given_draw(waiting, Tile("东"), replacement=False)
+    assert landed.wall_remaining == observation.remaining_tile_count - 4
+    assert landed.seat == observation.seat
+    assert landed.last_draw_replacement is False
+    assert landed.identity.path[-1] == "draw:东"
+    assert tuple(step for step in landed.identity.path
+                 if step.startswith("other-draw:")) == (
+        "other-draw:1", "other-draw:2", "other-draw:3")
+    assert landed.public_view.snapshot_seq == observation.snapshot_seq
+    conditional = analyze_given_self_draw(
+        landed, seat=observation.seat, dealer_seat=observation.dealer_seat,
+        config=RuleConfig("conditional-test", 1, False))
+    assert conditional.issues == ()
+    assert {candidate.action_key for candidate in conditional.legal_candidates}
+    assert not conditional.local_witness_only
+
+
 def test_given_other_discard_can_open_same_source_chi_without_official_seq():
     """给定他座摸弃后，碰窗全过、吃窗合法性仍由生产动作族判断。"""
 
