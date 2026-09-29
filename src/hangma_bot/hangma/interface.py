@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Tuple
+from typing import TYPE_CHECKING, Optional, Tuple
+
+if TYPE_CHECKING:
+    from .route_frontier import RouteFrontierDraft
 
 from hangma_bot.kernel.actions import (
     Action,
@@ -303,13 +306,18 @@ class RuleIssue:
 
 @dataclass(frozen=True)
 class RuleAnalysis:
-    """一个动作窗口的合法候选、紧急动作和规则降级信息。"""
+    """一个动作窗口的合法候选、紧急动作和规则降级信息。
+
+    ``route_frontier`` 仅在研发调用显式请求时生成；空值表示未请求，
+    不能解释为当前没有可发展的胡牌路线。它不改变紧急动作或合法性。
+    """
 
     legal_candidates: Tuple[RuleCandidate, ...]
     emergency_candidate: Optional[RuleCandidate]
     completeness: RuleCompleteness
     ruleset_version: str
     issues: Tuple[RuleIssue, ...]
+    route_frontier: Optional["RouteFrontierDraft"] = None
 
 
 @dataclass(frozen=True)

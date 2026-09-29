@@ -20,7 +20,7 @@ from __future__ import annotations
 from dataclasses import replace
 from typing import Optional, Tuple
 
-from hangma_bot.kernel.actions import Action, Tile, action_key
+from hangma_bot.kernel.actions import Action, Discard, Tile, action_key
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.observation import PlayerObservation
 
@@ -69,16 +69,25 @@ class HangmaRules:
     # ------------------------------------------------------------------
 
     def analyze(
-        self, observation: PlayerObservation, *, value_limits: Optional[ValueAnalysisLimits] = None,
+        self, observation: PlayerObservation, *,
+        value_limits: Optional[ValueAnalysisLimits] = None,
+        route_limits: Optional[ValueAnalysisLimits] = None,
     ) -> RuleAnalysis:
         """先构造紧急动作，再隔离分析各动作族；不访问网络或时钟。
 
         value_limits 默认关闭；显式启用后补充一次未来摸牌的条件结算。
         增强失败只标记 value_facts，不改变已生成的合法候选和基础牌效。
+        route_limits 显式开启 P1 条件前沿；其工作上限当前复用一次摸牌
+        资格检查上限，公开后继投影的工作量另在研发证据中报告。
         """
 
         if value_limits is not None and not isinstance(value_limits, ValueAnalysisLimits):
             raise ValueError("value_limits 必须是 ValueAnalysisLimits 或 None")
+        if route_limits is not None and not isinstance(route_limits, ValueAnalysisLimits):
+            raise ValueError("route_limits 必须是 ValueAnalysisLimits 或 None")
+        if value_limits is not None and route_limits is not None and value_limits != route_limits:
+            raise ValueError("路线与一次摸牌分析必须使用同一 ValueAnalysisLimits")
+        effective_value_limits = route_limits if route_limits is not None else value_limits
 
         issues: list = [
             RuleIssue("observation", message) for message in observation.observation_issues
@@ -122,9 +131,9 @@ class HangmaRules:
                 candidates = ()
             candidates = self._filter_youcai(observation, context, candidates, issues)
             candidates = self._attach_facts(observation, context, candidates, issues)
-            if value_limits is not None:
+            if effective_value_limits is not None:
                 candidates = self._attach_value_facts(
-                    observation, context, candidates, value_limits, issues
+                    observation, context, candidates, effective_value_limits, issues
                 )
 
         candidates = _ensure_emergency_membership(candidates, emergency)
@@ -139,13 +148,78 @@ class HangmaRules:
         completeness = (
             RuleCompleteness.DEGRADED if issues else RuleCompleteness.COMPLETE
         )
+        route_frontier = None
+        if route_limits is not None:
+            route_frontier = self._analyze_route_frontier(
+                observation, context, candidates, completeness
+            )
         return RuleAnalysis(
             legal_candidates=candidates,
             emergency_candidate=emergency,
             completeness=completeness,
             ruleset_version=self.config.ruleset_version,
             issues=tuple(issues),
+            route_frontier=route_frontier,
         )
+
+    def _analyze_route_frontier(
+        self,
+        observation: PlayerObservation,
+        context: Optional[WindowContext],
+        candidates: Tuple[RuleCandidate, ...],
+        completeness: RuleCompleteness,
+    ):
+        """用本次合法候选拼接 P1 事实；研究故障不得改变合法候选。"""
+
+        from .public_successor import analyze_public_self_draw_successors
+        from .route_frontier import RouteFrontierDraft, RouteFrontierRoot, RouteGapKind, join_one_draw_frontier
+
+        if context is None or completeness is not RuleCompleteness.COMPLETE:
+            reason = "当前规则输入/合法候选未完整，路线资格不能确证"
+            return RouteFrontierDraft(
+                roots=tuple(RouteFrontierRoot(
+                    action_key=candidate.action_key,
+                    gap_kind=RouteGapKind.INPUT_EVIDENCE_GAP,
+                    issues=(RuleIssue("route_frontier.input_evidence_gap", reason),),
+                ) for candidate in candidates),
+                ruleset_version=self.config.ruleset_version,
+            )
+        try:
+            public_counts = _public_counts(observation)
+            successors = analyze_public_self_draw_successors(
+                context,
+                public_counts,
+                len(observation.melds[observation.seat]),
+                tuple(candidate for candidate in candidates if isinstance(candidate.action, Discard)),
+                self.config,
+            )
+            return join_one_draw_frontier(
+                candidates,
+                successors,
+                expected_ruleset_version=self.config.ruleset_version,
+                ordinary_draw_source_proven=observation.gang_draw is False,
+                white_capacity_evidence_complete=(
+                    observation.rule_state.chain_count == 0
+                    or (
+                        observation.chain_piao is not None
+                        and observation.chain_piao <= sum(
+                            tile.code == WEALTH_CODE
+                            for tile in observation.discards[observation.seat]
+                        )
+                    )
+                ),
+                you_cai_bi_kao=self.config.you_cai_bi_kao,
+            )
+        except Exception as exc:
+            reason = "路线前沿组合异常: {0}: {1}".format(type(exc).__name__, exc)
+            return RouteFrontierDraft(
+                roots=tuple(RouteFrontierRoot(
+                    action_key=candidate.action_key,
+                    gap_kind=RouteGapKind.MECHANICAL_GAP,
+                    issues=(RuleIssue("route_frontier.mechanical_gap", reason),),
+                ) for candidate in candidates),
+                ruleset_version=self.config.ruleset_version,
+            )
 
     def validate(self, observation: PlayerObservation, action: Action) -> ActionValidation:
         """按当前观察重新复核动作；无副作用且不调用官方 API。

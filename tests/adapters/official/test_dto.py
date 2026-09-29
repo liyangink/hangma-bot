@@ -16,6 +16,8 @@ from hangma_bot.adapters.official.dto import (
     parse_tournament_detail,
 )
 from hangma_bot.adapters.official.errors import DtoError
+from hangma_bot.adapters.official.projector import tournament_snapshot
+from hangma_bot.kernel.serialization import competition_from_json, competition_to_json
 
 from _official_testkit import FIXTURE_DIR, load_fixture
 
@@ -172,6 +174,26 @@ def test_tournament_detail_fixtures_parse() -> None:
 
     finished = parse_tournament_detail(load_fixture("tournament_finished.json"))
     assert finished.status == "finished"
+
+
+def test_official_stage_identity_survives_projection_and_serialization() -> None:
+    """官方阶段 2 与离线第 7 桌不是同一种编号。"""
+
+    payload = load_fixture("tournament_detail.json")
+    payload["stage"]["no"] = 2
+    payload["stage"]["total"] = 4
+    parsed = parse_tournament_detail(payload)
+    projected = tournament_snapshot(
+        parsed,
+        tournament_id="t-stage-identity",
+        participant_id="u_player_a",
+        active_games=(),
+        observed_revision=1,
+        observed_at_unix_ms=0,
+    ).snapshot.competition
+    restored = competition_from_json(competition_to_json(projected))
+    assert (restored.stage_no, restored.stage_total) == (2, 4)
+    assert restored.ranking[0].games_played == 4  # 官方原始口径；不是桌序。
 
 
 def test_state_response_classification() -> None:

@@ -933,17 +933,18 @@ def _safe_mean(values: List[float]) -> Optional[float]:
 
 @dataclass(frozen=True)
 class StageSituationProjection:
-    """阶段处境的当时可见投影（Q8：第二桌起策略可读已知阶段事实）。
+    """模拟阶段处境的当时可见投影（Q8：第二桌起策略可读已知阶段账）。
 
     - 只承载**已完成桌赛**的公开事实（四座位累计积分/名次分、已完成桌数）
-      与本阶段形状（当前桌序/总桌数）；不包含任何进行中桌赛的未来结果、
+      与本模拟阶段形状（当前桌序/总桌数）；不包含任何进行中桌赛的未来结果、
       未发生桌赛或他家暗牌（T09 红线）；
-    - 进入策略请求的通道是 CompetitionContext：stage_no=当前桌序（1 起）、
-      stage_total=阶段总桌数（策略可推剩余桌数 = stage_total − stage_no）、
-      ranking=四座位已完成桌账（god_count 离线不可复现，按 0 建模并在此
+    - 当前桌序和阶段桌数只保存在本类型及其模拟证据中；它们不是官方
+      `stage.no`/`stage.total`。进入策略请求的 `CompetitionContext` 因此
+      将 `stage_no`/`stage_total` 留空，不能据此推导剩余桌数；
+      `ranking`=四座位已完成桌的模拟账（god_count 离线不可复现，按 0 建模并在此
       注明**不参与 U 识别区间**——U 由 sitin_stage.group_advance_utility
       单独计算，不读本投影）；名次按已知键 (total_score, place_points) 的
-      平均名次表达（并列共享区间平均，不冒充官方名次）；
+      平均名次表达（并列共享区间平均，不冒充官方名次或榜单）；
     - participant_ids_by_seat 把座位 0—3 映射到参赛者身份（焦点/对手），
       供面板按臂装配与阶段账累计；本类型不改 kernel 任何受控契约。
     """
@@ -996,7 +997,7 @@ class StageSituationProjection:
         return (ranks[0], ranks[1], ranks[2], ranks[3])
 
     def competition_context(self, tournament_id: str, seat: int) -> CompetitionContext:
-        """构造指定座位策略请求内的可见赛事上下文（只含已完成桌公开事实）。"""
+        """构造指定座位的模拟已完成桌账；官方阶段号保持未知。"""
         if not 0 <= seat < 4:
             raise ValueError("seat 必须是 0—3")
         from hangma_bot.kernel.observation import RankingEntry
@@ -1015,9 +1016,9 @@ class StageSituationProjection:
         )
         return CompetitionContext(
             tournament_id=tournament_id,
-            stage_no=self.stage_table_no,
+            stage_no=None,  # 模拟桌序不是官方 stage.no
             stage_role=self.stage_role,
-            stage_total=self.tables_in_stage,
+            stage_total=None,  # 模拟阶段桌数不是官方 stage.total
             participant_rank=max(1, int(round(ranks[seat]))),
             ranking=entries,
             observed_at_unix_ms=0,
@@ -1025,6 +1026,8 @@ class StageSituationProjection:
 
     def to_json(self) -> dict:
         return {
+            "schema_version": "offline-stage-situation/2",
+            "source_kind": "offline_simulation",
             "stage_table_no": self.stage_table_no,
             "tables_in_stage": self.tables_in_stage,
             "stage_role": self.stage_role,
@@ -1046,12 +1049,18 @@ class MatchDriverConfig:
     step_limit: int  # 步数上限；到顶是 error，不是 complete/合成流局
     budget_policy: BudgetPolicy  # deadline.py 公开预算比例
     competition_tournament_id: str  # 可见事实：模拟实验标识，不伪造海选晋级线
+    strict_policy: bool = False  # 研发独立策略：失败即停止整桌，不以紧急动作续打冒充候选成绩
+    route_limits: Optional[ValueAnalysisLimits] = None  # 显式开启纯规则 P1 路线事实；不改变旧评测默认载荷
 
     def __post_init__(self) -> None:
         if self.clock_mode not in CLOCK_MODES:
             raise ValueError("clock_mode 必须是 {0} 之一".format(CLOCK_MODES))
         if self.step_limit <= 0:
             raise ValueError("step_limit 必须是正整数")
+        if not isinstance(self.strict_policy, bool):
+            raise ValueError("strict_policy 必须是布尔值")
+        if self.route_limits is not None and not isinstance(self.route_limits, ValueAnalysisLimits):
+            raise ValueError("route_limits 必须是 ValueAnalysisLimits 或 None")
 
 
 @dataclass(frozen=True)
@@ -1190,11 +1199,12 @@ async def drive_match(
     - value_limits 是普通/阶段驱动共用的统一分析配置（T08/B3）：非 None 时
       每个窗口的 rules.analyze 携带同一 ValueAnalysisLimits（等值即可），
       产出 B1 分支进展与条件分值载荷；默认 None 保持旧行为零变化。
-    - stage_situation 是阶段处境的当时可见投影（Q8）：非 None 时注入每个
-      策略请求的 CompetitionContext（策略可见自己座位的已完成桌累计积分/
-      名次分与剩余桌数）；None 保持旧空上下文零变化。
-    - 策略异常/超时按紧急候选保底并计数；复核非法同样转紧急候选；
-      任何窗口都拿不到动作时整场以 error 结束，不合成流局。
+    - stage_situation 是模拟阶段处境投影（Q8）：非 None 时注入已完成桌的
+      模拟积分/名次分；桌序和剩余桌数只保存在投影与离线证据中，
+      不写入 CompetitionContext 的官方阶段字段。None 保持旧空上下文。
+    - 默认策略异常/超时按紧急候选保底并计数，复核非法同样转紧急候选；
+      strict_policy=True 的独立研发桌遇这些情况立即以 error 结束，
+      不把旧保底续打的成绩归给新策略。任何窗口都拿不到动作时不合成流局。
     - advance 抛 ValueError（旧 revision/缺窗/非法动作）按 error 结束。
     """
     world = engine.start(spec)
@@ -1332,7 +1342,11 @@ async def _advance_frames(
                     completed_hands=frame.completed_hands,
                     final_scores=None,
                     blocked_reason=None,
-                    error_reason="窗口无可用动作（策略与紧急候选都不可得），不静默换成 Pass",
+                    error_reason=(
+                        "严格研发窗口停止：{0}".format(record.fallback_reason)
+                        if config.strict_policy else
+                        "窗口无可用动作（策略与紧急候选都不可得），不静默换成 Pass"
+                    ),
                     steps=steps,
                     decisions=tuple(decisions),
                     runtime_counts=RuntimeCounts(
@@ -1560,7 +1574,11 @@ async def _resolve_window(
     if not 0 <= seat < 4:
         raise ValueError("窗口座位越界: {0!r}".format(seat))
     rules_started = None if wall_clock is None else wall_clock()
-    if value_limits is None:
+    if config.route_limits is not None:
+        analysis = rules.analyze(
+            observation, value_limits=value_limits, route_limits=config.route_limits
+        )
+    elif value_limits is None:
         analysis = rules.analyze(observation)
     else:
         analysis = rules.analyze(observation, value_limits=value_limits)
@@ -1579,8 +1597,8 @@ async def _resolve_window(
             observed_at_unix_ms=0,
         )
     else:
-        # Q8：策略可见自己座位所在阶段已完成桌的公开事实与阶段形状
-        # （stage_no=当前桌序、stage_total=阶段总桌数 → 剩余桌数可推）。
+        # Q8：策略可见模拟阶段已完成桌账；模拟桌序和总桌数只保留在
+        # stage_situation，不占用 CompetitionContext 的官方阶段字段。
         competition = stage_situation.competition_context(
             config.competition_tournament_id, seat
         )
@@ -1609,15 +1627,33 @@ async def _resolve_window(
     started = None if wall_clock is None else wall_clock()
     plan: Optional[DecisionPlan] = None
     fallback_reason: Optional[str] = None
-    policy_error: Optional[str] = None
     try:
         remaining = max(0.0, budget.fallback_deadline_monotonic - now_monotonic())
         plan = await asyncio.wait_for(policy.choose(request, budget), timeout=remaining)
     except (asyncio.TimeoutError, PolicyTimeoutError):
         fallback_reason = "timeout"
     except Exception as exc:
-        fallback_reason = "policy_error"
-        policy_error = "{0}: {1}".format(type(exc).__name__, exc)
+        fallback_reason = (
+            "policy_error: {0}: {1}".format(type(exc).__name__, exc)
+            if config.strict_policy else "policy_error"
+        )
+
+    if config.strict_policy and fallback_reason is not None:
+        record = MatchDecisionRecord(
+            decision_id=decision_id,
+            seat=seat,
+            policy_id=_policy_id_from_policy(policy),
+            window_key=window_key_to_json(window_key),
+            action_key=None,
+            legal=None,
+            is_emergency=False,
+            fallback_reason=fallback_reason,
+            plan_revision=None,
+            degraded_reasons=(),
+            elapsed_ms=None if wall_clock is None or started is None else (wall_clock() - started) * 1000.0,
+            rules_elapsed_ms=rules_elapsed_ms,
+        )
+        return record, None, False
 
     elapsed_ms = None
     if wall_clock is not None and started is not None:
@@ -1635,6 +1671,22 @@ async def _resolve_window(
         is_emergency = bool(chosen.is_emergency)
     else:
         fallback_reason = fallback_reason or "empty_plan"
+        if config.strict_policy:
+            record = MatchDecisionRecord(
+                decision_id=decision_id,
+                seat=seat,
+                policy_id=_policy_id_from_policy(policy),
+                window_key=window_key_to_json(window_key),
+                action_key=None,
+                legal=None,
+                is_emergency=False,
+                fallback_reason=fallback_reason,
+                plan_revision=None,
+                degraded_reasons=(),
+                elapsed_ms=elapsed_ms,
+                rules_elapsed_ms=rules_elapsed_ms,
+            )
+            return record, None, False
         if emergency is None:
             record = MatchDecisionRecord(
                 decision_id=decision_id,
@@ -1659,6 +1711,22 @@ async def _resolve_window(
     key = action_key(action)
     legal = key in legal_keys
     if not legal:
+        if config.strict_policy:
+            record = MatchDecisionRecord(
+                decision_id=decision_id,
+                seat=seat,
+                policy_id=_policy_id_from_policy(policy),
+                window_key=window_key_to_json(window_key),
+                action_key=key,
+                legal=False,
+                is_emergency=is_emergency,
+                fallback_reason="illegal_choice",
+                plan_revision=plan_revision,
+                degraded_reasons=degraded,
+                elapsed_ms=elapsed_ms,
+                rules_elapsed_ms=rules_elapsed_ms,
+            )
+            return record, None, False
         # 复核非法：按相同保底规则转紧急候选（计数），不把非法动作送进 advance。
         if emergency is None or emergency.action_key not in legal_keys:
             record = MatchDecisionRecord(
@@ -1794,6 +1862,8 @@ async def run_match_experiment(
     budget_policy: BudgetPolicy,
     source_kind: str = "simulation",
     value_limits: Optional[ValueAnalysisLimits] = None,
+    challenger_route_limits: Optional[ValueAnalysisLimits] = None,
+    strict_challenger: bool = False,
 ) -> MatchExperimentOutcome:
     """按声明执行完整同牌山复式实验：seed × 换座 × 稳定/候选。
 
@@ -1804,9 +1874,19 @@ async def run_match_experiment(
       同步映射；
     - value_limits 透传给每个 drive_match（T08 统一分析配置）；默认 None
       保持旧行为零变化。
+    - challenger_route_limits 只为候选臂生成可选条件前沿；
+      strict_challenger 只让候选臂在策略失败时中止，A 与对手原行为不变。
+      C_proto 的不完整桌不能作为 C_alg 强度结果。
     - 单场异常记录后继续其余场次，不崩溃整批；blocked/error 行照常落盘
       （status 非 complete），供汇总排除计数。
     """
+    if not isinstance(strict_challenger, bool):
+        raise ValueError("strict_challenger 必须是布尔值")
+    if challenger_route_limits is not None and not isinstance(challenger_route_limits, ValueAnalysisLimits):
+        raise ValueError("challenger_route_limits 必须是 ValueAnalysisLimits 或 None")
+    if (value_limits is not None and challenger_route_limits is not None
+            and value_limits != challenger_route_limits):
+        raise ValueError("候选路线分析与共同分值分析须使用相同 ValueAnalysisLimits")
     results: List[MatchResult] = []
     excluded: List[str] = []
     records: List[Tuple[str, MatchRunOutcome]] = []
@@ -1868,6 +1948,10 @@ async def run_match_experiment(
                     step_limit=experiment.step_limit,
                     budget_policy=budget_policy,
                     competition_tournament_id=seed_spec.scenario_id,
+                    strict_policy=strict_challenger and test_role == "challenger",
+                    route_limits=(
+                        challenger_route_limits if test_role == "challenger" else None
+                    ),
                 )
                 try:
                     outcome = await drive_match(

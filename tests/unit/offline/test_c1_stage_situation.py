@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Q8（阶段处境投影）测试：驱动把已完成桌账与阶段形状注入策略请求。
+"""Q8（阶段处境投影）测试：驱动注入模拟已完成桌账，桌序另行记录。
 
 权威依据 REVIEW-V4-COMPLETION-2026-09-17.md 补充缺口 Q8 与
 CONTINUOUS-EVOLUTION-PLAN-2026-09-17.md R3：第二桌起策略可见自己座位的
-阶段累计积分/名次分与剩余桌数；不泄未来。验收形态：同手牌不同已知阶段
-积分应产生可见差异（策略读到并据此行动）。
+阶段累计积分/名次分；模拟剩余桌数保留在 StageSituationProjection，
+不占用官方阶段字段。验收形态：同手牌不同已知模拟阶段积分产生可见差异。
 
 零真实桌赛：SimpleNamespace 帧假引擎（tests/unit/offline 既有先例）。
 """
@@ -173,7 +173,9 @@ class TestStageSituationProjection:
     def test_competition_context_exposes_own_stage_facts(self):
         situation = _situation((3, -7, 1, 0), places=(1, -1, 0, 0))
         context = situation.competition_context("t", seat=0)
-        assert context.stage_no == 2 and context.stage_total == 2
+        # 模拟第 2 桌不能冒充官方第 2 阶段及官方阶段总数。
+        assert context.stage_no is None and context.stage_total is None
+        assert situation.stage_table_no == 2 and situation.tables_in_stage == 2
         own = context.ranking[0]
         assert own.participant_id == "focal"
         assert own.total_score == 3 and own.place_points == 1
@@ -182,9 +184,18 @@ class TestStageSituationProjection:
 
     def test_to_json_carries_remaining_tables(self):
         payload = _situation((0, 0, 0, 0)).to_json()
+        assert payload["schema_version"] == "offline-stage-situation/2"
+        assert payload["source_kind"] == "offline_simulation"
         assert payload["tables_remaining_after_current"] == 0
         assert payload["tables_completed"] == 1
         assert "god_count_modeling" in payload
+
+    def test_official_stage_identity_is_not_inferred_from_simulated_table_progress(self):
+        situation = _situation((0, 0, 0, 0), table_no=7, tables=9, completed=6)
+        context = situation.competition_context("simulation", seat=0)
+        assert (situation.stage_table_no, situation.tables_in_stage) == (7, 9)
+        assert (context.stage_no, context.stage_total) == (None, None)
+        assert context.ranking[0].games_played == 6 * situation.rounds_per_game
 
 
 class TestDriverStageSituation:

@@ -1027,17 +1027,21 @@ class TestStageCompositionUnknownAndScheduleGap:
         assert mapped["current_stage_scores"] == E3_TABLE
 
     def test_remaining_schedule_is_invisible_and_registered_as_a_gap(self):
-        """剩余赛程未投影（0→6 逐字不变）⇒ 必须在合同里登记为剩余缺口。"""
+        """模拟剩余桌数未投影；官方阶段字段不可由模拟桌序冒充。"""
         import json
         from pathlib import Path
 
-        near = build_scoring_view(
-            _e3_request(stage_table_no=2, tables_in_stage=2)).candidate_view()
-        far = build_scoring_view(
-            _e3_request(stage_table_no=2, tables_in_stage=8)).candidate_view()
-        remaining_near, remaining_far = 2 - 2, 8 - 2      # 0 桌 vs 6 桌
+        near_request = _e3_request(stage_table_no=2, tables_in_stage=2)
+        far_request = _e3_request(stage_table_no=2, tables_in_stage=8)
+        assert (near_request.competition.stage_no,
+                near_request.competition.stage_total) == (None, None)
+        assert (far_request.competition.stage_no,
+                far_request.competition.stage_total) == (None, None)
+        near = build_scoring_view(near_request).candidate_view()
+        far = build_scoring_view(far_request).candidate_view()
+        remaining_near, remaining_far = 2 - 2, 8 - 2      # 模拟计划：0 桌 vs 6 桌
         assert (remaining_near, remaining_far) == (0, 6)
-        # 整份候选可见映射逐字不变：赛程信息没有投影进任何字段。
+        # 整份候选可见映射逐字不变：模拟赛程信息没有投影进任何字段。
         assert (json.dumps(near, sort_keys=True, ensure_ascii=False)
                 == json.dumps(far, sort_keys=True, ensure_ascii=False))
         assert near["competition"] == far["competition"]
@@ -1054,11 +1058,12 @@ class TestStageCompositionUnknownAndScheduleGap:
             / "review/llm-guided-heuristic-route-2026-09-15"
               "/contracts/action-value-v1.json"
         ).read_text(encoding="utf-8"))
+        # 旧机器合同按摘要冻结；其 stage_no/stage_total 的桌序解释已由
+        # interface-contracts.md 的 2026-09-30 勘误废止，不能被新策略采用。
         gaps = contract["scoring_view"]["competition_bases"]["residual_gaps"]
         assert gaps, "剩余赛程必须显式登记为剩余缺口，不得默认已可见"
         gap = [item for item in gaps if "剩余" in item][0]
         for token in ("stage_no", "stage_total", "单位", "不得当 0", "剩余桌数"):
             assert token in gap, token
-        print("[E3-E] 剩余赛程 0/6 → 候选视图逐字不变；合同登记缺口：{0}".format(
+        print("[E3-E] 模拟剩余桌数 0/6 → 候选视图逐字不变；历史合同登记缺口：{0}".format(
             gap[:60]))
-

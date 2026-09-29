@@ -368,6 +368,14 @@ P74 传输修复：当 `OfficialTransport` 的 `base_url` 主机命中配置的 
 
 同一基础状态展开的财神数、链深、horizon、座位或赛事处境共享 `base_scenario_id` 和数据分割。聚合先在基础场景内取变体均值，再对基础场景等权，逐家族输出；不得按展开题数混成总命中率。该离线向量可供 Pareto/Lexicase 保留专长，但不能代替完整桌赛非劣、独立确认、时限和官方发布门禁。机器合同见 [r18-opportunity-capability-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/r18-opportunity-capability-v1.json)。
 
+### 4.11 独立路线策略的 P1 研究接口（2026-09-30）
+
+**当前只交付条件前沿的窄范围规则量具，不代表新算法已经覆盖正常动作。**`HangmaRules.analyze(observation, route_limits=ValueAnalysisLimits(...))` 在同一次合法候选分析内可选地产生 `RuleAnalysis.route_frontier`；默认 `None` 是未请求，不能解释为没有胡牌路线。它逐一保留每个合法 `action_key`，并仅对来源已证实的本人普通 `draw`、`YouCaiBiKao=false` 的合法弃牌，给出“当前弃牌已执行、单局未结束、期间没有改变相关规则状态、本人下一次普通摸牌”的全部正公开容量牌码条件边。合法胡根给当前四座结算；每条摸牌边即使不能立即胡也保留结构后继。公开未见容量是物理张数上限，**不是墙内张数或真实摸牌概率**。
+
+规则侧分别记录结构与资格完整性；`COMPLETE` 只针对上述一次条件摸牌的已声明范围。普通摸牌来源、链内白板、公开计数或圈主证据不足记 `INPUT_EVIDENCE_GAP`；已知正常动作族未接通或两套同源事实冲突记 `MECHANICAL_GAP`；分析上限截断记 `SEARCH_TRUNCATED`。当前吃碰、过牌、三类杠及后续补牌等正常转移是 P2 工程待办，不能以此量具的 P1 成功率称独立 `C_alg` 已完成。所有根必须与本次 `RuleAnalysis.legal_candidates` 一一对应；规则分析降级时前沿不可当完整事实使用。P1 规则组合器在 `hangma/route_frontier.py` 复用现有条件胡和公开后继分析，不重实现番数、向听或合法动作。
+
+离线 `MatchDriverConfig.route_limits` 才会请求该可选规则载荷，默认 `None` 不改变旧驱动；`strict_policy=True` 时策略异常、空计划或非法首选使整张桌赛未完成，不使用紧急动作填补新策略缺口。`C_proto` 只用于上述研究窗口；`C_alg` 必须先通过[机械完成门](../../review/NEXT-GENERATION-ROUTE-HEURISTIC-IMPLEMENTATION-ASTRA-2026-09-30.md#34-p1-研究矩阵机械完成门与覆盖分母)，再用自身策略完成全部正常窗口。目标规则配置先取当前实际验证的 `BaseScore=1, YouCaiBiKao=false`；新增配置需另过规则矩阵。赛事阶段身份与离线桌序按本协议既有勘误分开，P1 仍使用通用积分研究代理，不实施阶段压力排序。
+
 ## 5. 动作提交协议
 
 2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；四白例外已在 v23 修订中取消，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。
@@ -843,6 +851,8 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 | 审计 | DecisionPlan/codec 增加可选版本化完整评分 trace 与事实身份 | 缺旧字段仍可解码；不覆盖旧原始观察；候选哈希由有 IO 权限的装配方生成 |
 | 时限 | 受限且有工作量计数的候选执行器；规则/特征/评分/计划整链计时 | asyncio timeout 不负责抢占同步无限计算；保留原网络余量与同窗不延长契约 |
 
+**VIP 独立算法离线门（2026-09-30）：**`MatchDriverConfig.strict_policy=True` 用于新算法 `C_alg` 完整续打。策略异常、空计划或非法首选属于能力/实现缺口，应中止该桌赛并记录失败，不能用规则紧急候选或旧策略续打后再把成绩记给 `C_alg`。默认 `False` 维持历史驱动的原有保底语义；此门只约束离线归因，不改变线上应用层的合法动作与截止时间保底。
+
 实现上述变更时必须同批更新本协议的具体类型定义、全部调用方、旧记录往返与契约测试；当前不预建空端口，不改变 HTTP 协议或默认上线策略。
 
 **2026-09-28 吃碰后继分支事实补充**：`FollowupBranchFacts` 的每个合法后继弃牌分支增加可选的 `baotou_after`、`chain_count_after`、`chain_piao_after` 与 `four_white_qualified_after`。它们分别表示该次后继弃牌**完成后**的爆头、连续飘/杠次数、链内飘白数，以及当时手留白加链内飘白是否恰为四；最后一项只描述当前资格，不保证将来能胡。`hangma` 先依弃后暗牌重新判爆头，再以吃碰前状态和吃碰后的暂态爆头计算下一弃牌的链；`policy` 只能读取，不能自行推断。候选级 `baotou_after` 仍表示吃碰**刚完成**的暂态，不得代替各分支。旧审计记录没有这些键时解码为 `None`，新审计只写入已知值，不用 `False` 或零填未知；四个外部端口、候选评分源码和默认上线版本不变。依据为[官方指南 v34 §1.2/§1.3](../references/official-guide-v34-content.txt)及 2026-09-28 [G184 复盘对照](../../review/freematch-deep-dive-20260925/G184-CLASSIC-HIGHHAND-OPPORTUNITY-AUDIT-2026-09-28.md)。
@@ -894,6 +904,8 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 
 **结构版本：`sitin-scoring-view/4`（2026-09-22 R18 升位；`/3` 为 R8 E3，`/2` 为 R7 P11b，`/1` 为阶段账未进入候选视图的冻结版）。** `/1` = `competition` 只有一句「无权获知或陈旧为空」、无 `competition_bases`；`/2` = `competition_bases` 口径；`/3` = 追加第三概念 `current_stage_scores`（= 已完成账 + 当前桌账）与 `residual_gaps`（剩余赛程未投影的显式登记）；`/4` = 在每个动作上增加 `baotou_after`。该字段由 `hangma.progression.baotou_after_action` 经 `CandidateFacts` 产生：弃牌按弃后暗牌重算，吃、碰、杠、过继承，胡为终局返回 `None`；`policy` 只投影，规则分析未运行或转移未知也保持 `None`。合同内容与版本串必须同步升级，否则属**静默漂移**——守卫见 `tests/unit/policy/test_action_value_policy.py::TestScoringViewVersionGuard` 以及公开接口逐字段测试。运行期同样拒绝旧版本；候选身份绑定合同摘要，因此旧候选不得无重验收迁移到 `/4`。
 
+**2026-09-30 语义勘误（不改变旧候选身份）：**历史冻结机器合同 `review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json` 的 `residual_gaps` 把 `CompetitionContext.stage_no/stage_total` 误写成「当前桌序/阶段总桌数」，并写出错误等式 `stage_total − stage_no = 剩余桌数`。真实官方字段分别是 `stage.no`（阶段号）与动态 `stage.total`（推断阶段总数），不是桌序与桌数。旧 JSON 保留原始字节和 SHA256 供历史候选复算；其这条说明不能作为新算法的赛程事实。若新候选要消费剩余完整桌赛数，须在独立合同中注明来源、单位、未知条件与版本，且重新验证候选，不得从这两个官方字段相减。旧离线证据中若 `CompetitionContext.stage_no/stage_total` 源自 `StageSituationProjection`，只按旧模拟格式解读；不能把它反向当成官方阶段身份。新离线产物使用 `offline-stage-situation/2` 并明确 `source_kind=offline_simulation`；原始桌序与阶段桌数保留在其 `stage_table_no/tables_in_stage`，不再挤入 `CompetitionContext`。
+
 **结论：候选评分器读到的 `ScoringView.competition` 不再是恒空视图。** R6 冻结版 `_competition_view()` 直接 `return CompetitionView()`，面板侧（P2）已注入到公开策略输入 `DecisionRequest.competition` 的阶段账对**真实候选臂不可见**——门线/追分逻辑只能退回桌内积分。本节固定投影契约（实现见 [`src/hangma_bot/policy/action_value_policy.py`](../../src/hangma_bot/policy/action_value_policy.py) 的 `_stage_account_vector` / `_competition_view`，机器合同见 [action-value-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json) 的 `scoring_view.competition_bases`）。
 
 - **三份账、各自命名**：`competition.stage_scores` = 本阶段**已完成各完整桌赛**的积分和（单位：积分点，整数、允许负分；不含当前桌进行中积分、不含名次分、不含未来桌赛结果）；`competition.table_scores` = 本桌**进行中**积分，与 `visible_state.scores`（候选可见名 `visible_state.table_scores`）是同一事实的另一个基准名；`competition.current_stage_scores` = **当前阶段合计** = 前者 + 后者（逐座位），两项互不重叠故可相加，`stage_scores` 为空时它同时为空（未知不得当 0）。一致性是机器不变量：`CompetitionView` 构造期校验 `current_stage_scores == stage_scores + table_scores`；唯一被禁止的重复累计是 `table_scores` 与同一份 `visible_state.table_scores` 相加。门线一节「三份账」口径与本条同源。
@@ -902,7 +914,7 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 - **可空条件与未知≠零**：`ranking` 为空 ⇒ `stage_scores = None` + `stage_account:absent`；有排名事实但不满足任一准入条件 ⇒ `stage_scores = None` + `stage_account:unmappable`。**两种情形都不得补零、不得当成「四家同分」、不得用另一基准顶替**。反之，驱动在尚无已完成桌（第 1 桌）时注入的**四座全 0 账是已知的零**，按 `stage_account:complete` 投影——「已知的零」与「无账」由掩码区分。
 - **掩码词表**（`freshness_masks`，固定两元组，位置序 `[stage_scores, table_scores]`，闭集）：`stage_account:complete` / `stage_account:absent` / `stage_account:unmappable` / `table_account:live`（后两者分别描述阶段基准缺失原因与本桌基准恒可用）。词表以代码常量为准，机器合同 `scoring_view.competition_bases.freshness_masks.values` 逐字对账（见 `tests/unit/policy/test_action_value_policy.py`）。
 - **陈旧边界**：策略不读时钟，投影不判陈旧；上游判定排名陈旧时应注入空 `ranking`/空名次（→ `absent`），不得注入陈旧数值冒充可用。
-- **剩余缺口（显式登记，不得默认已可见）**：剩余赛程当前**未投影**——`CompetitionContext.stage_no`/`stage_total` 在请求里可见，但候选视图不携带其任何推导值（把剩余桌数从 0 改为 6，`candidate_view()` 逐字不变）。补齐时必须遵守的单位与未知语义（机器合同 `competition_bases.residual_gaps` 逐字登记）：剩余桌数 = `stage_total − stage_no`，整数、非负、单位「桌」、不含当前桌；任一为 null 或不可比时一律 null（未知，不得当 0），不得由积分/已完成局数/名次反推；补齐需单独升结构版本并附「最后机会追分 / 仍有多桌可保守」策略的验收。
+- **剩余缺口（显式登记，不得默认已可见）**：当前候选视图没有「本阶段剩余完整桌赛数」。离线模拟的 `StageSituationProjection.stage_table_no/tables_in_stage` 可以在该模拟计划已冻结且两值可比时，计算「当前桌之后的模拟剩余桌数」；这与 `CompetitionContext.stage_no/stage_total` 无关。真实赛事要从已确认的场次安排及阶段进度单独构造带来源的赛程事实；官方阶段号、榜单 `games_played`、积分和名次均不能独自反推出剩余桌数。真实安排未知时留空，不能填 0；未来若投影到候选动作，须新合同版本及独立验收。历史机器合同中不一致的文字仅保留给旧候选按摘要复算，以上述勘误为现行语义。
 - **残留风险**：平台级 4 人榜单恰好在请求座位携带我方名次、且四条 `games_played` 一致时，与座位序账结构上不可区分。当前该通道唯一生产者是离线驱动的桌内投影；在线路径若要用该字段，须先给 `CompetitionContext` 增加显式座位序声明（kernel 契约变更）。
 - **金例与验收**：`tests/unit/policy/test_action_value_policy.py`（投影契约：座位序、不可映射形态、掩码对齐、词表对账）与 `tests/unit/policy/test_action_value_projection_facts.py`（同一第 2 桌观察下领先/落后注入改变候选选择、四换座不串位、缺账为未知、第 1 桌已知零账）；证据见 [P11 FIX-REPORT](../../review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r7-fixes/P11-scoringview-stage-account/FIX-REPORT.md)。本包不改统计、门禁、调度与作者提示词模板（后者属 P10）。
 

@@ -24,6 +24,7 @@ from hangma_bot.hangma.interface import (
     RuleCandidate,
     RuleCompleteness,
     RuleIssue,
+    ValueAnalysisLimits,
 )
 from hangma_bot.kernel.actions import (
     Action,
@@ -170,6 +171,63 @@ def driver_config(step_limit: int = 20) -> MatchDriverConfig:
         clock_mode="logical", step_limit=step_limit, budget_policy=BudgetPolicy(),
         competition_tournament_id="c1",
     )
+
+
+def test_strict_research_policy_failure_stops_complete_table_without_emergency_continuation():
+    """独立候选缺正常机械时，已有紧急动作也不能替它完成整桌。"""
+
+    class MechanicalGapPolicy:
+        policy_id = "vip-c-alg"
+
+        async def choose(self, request, budget):
+            raise RuntimeError("MECHANICAL_GAP: response_peng 尚无条件转移")
+
+    engine = ScriptEngine([frame_of([(0, 1)], 1), final_frame(2)])
+    config = MatchDriverConfig(
+        clock_mode="logical", step_limit=20, budget_policy=BudgetPolicy(),
+        competition_tournament_id="vip", strict_policy=True,
+    )
+    outcome = asyncio.run(drive_match(
+        engine=engine, spec=SPEC,
+        policies_by_seat=(MechanicalGapPolicy(),) * 4,
+        rules=StubRules(emergency=True), choice_factory=choice,
+        config=config, now_monotonic=lambda: 800.0, wall_clock=None,
+    ))
+    assert outcome.status == "error"
+    assert "MECHANICAL_GAP" in (outcome.error_reason or "")
+    assert outcome.final_scores is None
+    assert engine.advance_calls == []
+    assert outcome.decisions[0].action_key is None
+    assert outcome.decisions[0].fallback_reason.startswith("policy_error:")
+
+
+def test_route_research_driver_requests_frontier_from_same_rule_analysis():
+    """研究驱动只显式开启路线事实；默认驱动的规则调用保持不变。"""
+
+    class RouteAwareRules(StubRules):
+        def __init__(self):
+            super().__init__()
+            self.requested_limits = []
+
+        def analyze(self, observation, value_limits=None, route_limits=None):
+            self.requested_limits.append((value_limits, route_limits))
+            return self.analysis
+
+    limits = ValueAnalysisLimits(max_expansions=128)
+    config = MatchDriverConfig(
+        clock_mode="logical", step_limit=20, budget_policy=BudgetPolicy(),
+        competition_tournament_id="vip", strict_policy=True, route_limits=limits,
+    )
+    rules = RouteAwareRules()
+    policy = RecordingPolicy("vip-c-proto")
+    outcome = asyncio.run(drive_match(
+        engine=ScriptEngine([frame_of([(0, 1)], 1), final_frame(2)]),
+        spec=SPEC, policies_by_seat=(policy,) * 4,
+        rules=rules, choice_factory=choice, config=config,
+        now_monotonic=lambda: 800.0, wall_clock=None,
+    ))
+    assert outcome.status == "complete"
+    assert rules.requested_limits == [(None, limits)]
 
 
 def frame_of(seats_seqs, revision):

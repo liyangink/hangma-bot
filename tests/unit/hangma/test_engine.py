@@ -33,7 +33,7 @@ from hangma_bot.kernel.observation import (
     RulePublicState,
 )
 from hangma_bot.hangma.engine import HangmaRules
-from hangma_bot.hangma.interface import RuleCompleteness
+from hangma_bot.hangma.interface import RuleCompleteness, ValueAnalysisLimits
 
 # ---------------------------------------------------------------------------
 # 测试脚手架
@@ -91,6 +91,40 @@ def _engine_stubbed() -> bool:
 requires_engine = pytest.mark.skipif(
     _engine_stubbed(), reason="HangmaRules.analyze 尚未实现（等待子模块集成）"
 )
+
+
+def test_optional_route_frontier_preserves_legal_candidates_and_marks_unknown_draw_source():
+    """公开路线分析默认关闭；开启后不改本窗合法性，来源未知不伪造未来胡。"""
+
+    rules = HangmaRules(RuleConfig("route-engine-contract", 1, False))
+    ordinary = make_observation(
+        drawn_tile=Tile("南"), hand_counts=(13, 14, 13, 13),
+        chain_piao=0, gang_draw=False,
+    )
+    baseline = rules.analyze(ordinary)
+    augmented = rules.analyze(
+        ordinary, route_limits=ValueAnalysisLimits(max_expansions=8192)
+    )
+    assert baseline.route_frontier is None
+    assert tuple(item.action_key for item in augmented.legal_candidates) == tuple(
+        item.action_key for item in baseline.legal_candidates
+    )
+    assert augmented.route_frontier is not None
+    assert tuple(root.action_key for root in augmented.route_frontier.roots) == tuple(
+        item.action_key for item in augmented.legal_candidates
+    )
+    assert augmented.route_frontier.complete
+
+    unknown_source = make_observation(
+        drawn_tile=Tile("南"), hand_counts=(13, 14, 13, 13),
+        chain_piao=0, gang_draw=None,
+    )
+    uncertain = rules.analyze(
+        unknown_source, route_limits=ValueAnalysisLimits(max_expansions=8192)
+    )
+    assert uncertain.route_frontier is not None
+    assert not uncertain.route_frontier.complete
+    assert any(root.gap_kind is not None for root in uncertain.route_frontier.roots)
 
 GOLDEN_FILES = (
     "cases.jsonl",

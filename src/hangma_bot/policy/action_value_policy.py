@@ -222,9 +222,10 @@ def _competition_view(
       给出（缺账的原因是可核事实，不是未知）。`current_stage_scores` 的
       可用性与 `stage_scores` 同掩码（masks[0] == complete 才非空），
       故不单列第三个掩码位。
-    - **未投影的可见事实**（合同 `residual_gaps` 显式登记）：剩余赛程
-      （`CompetitionContext.stage_no`/`stage_total`）不进候选视图——把剩余
-      桌数从 0 改为 6，候选视图逐字不变；不得默认它已可见。
+    - **未投影的赛程事实**：候选视图没有当前阶段的剩余完整桌赛数。
+      `CompetitionContext.stage_no`/`stage_total` 是官方阶段号/动态阶段总数，
+      不是当前桌序/阶段桌数，二者相减不能得到剩余桌赛。历史 R8 E3
+      冻结合同的 `residual_gaps` 错把两种单位混用；见接口协议勘误。
     """
     stage_scores, stage_mask = _stage_account_vector(context, seat)
     live_scores = tuple(int(score) for score in table_scores)

@@ -260,14 +260,18 @@ def test_seat_permutation_mapping_direction():
     assert ids_by_seat == ("o1", "o2", "t", "o3")
 
 
-def _run_two_rotation_experiment(source_kind):
+def _run_two_rotation_experiment(source_kind, *, strict_challenger=False, challenger_error=None):
     def frames_factory(spec):
         challenger = ":candidate" in spec.match_id
         scores = [7, 0, 0, 0] if challenger else [3, 0, 0, 0]
-        return [draw_frame(1, [0]), final_frame(2, scores, completed_hands=1)]
+        return [draw_frame(1, [spec.initial_dealer]), final_frame(2, scores, completed_hands=1)]
 
     engine = FakeEngine(frames_factory)
     policies = [ScriptedPolicy(pick_key("discard:2w")) for _ in range(5)]
+    if challenger_error is not None:
+        policies[1] = ScriptedPolicy(
+            pick_key("discard:2w"), raise_error=challenger_error
+        )
     for index, policy in enumerate(policies):
         policy.policy_id = ["stable", "candidate", "opp-1", "opp-2", "opp-3"][index]
     policies_by_id = {policy.policy_id: policy for policy in policies}
@@ -297,9 +301,27 @@ def _run_two_rotation_experiment(source_kind):
             wall_clock=None,
             budget_policy=BudgetPolicy(),
             source_kind=source_kind,
+            strict_challenger=strict_challenger,
         )
     )
     return outcome
+
+
+def test_vip_strict_challenger_failure_does_not_inherit_emergency_results():
+    """A 照常完整续打；C 的机械缺口在全部换座都保留为未完成。"""
+
+    outcome = _run_two_rotation_experiment(
+        "mock", strict_challenger=True,
+        challenger_error=RuntimeError("MECHANICAL_GAP: chi followup"),
+    )
+    assert len(outcome.results) == 4
+    baseline = [row for row in outcome.results if "stable" in row.policy_ids_by_seat]
+    challenger = [row for row in outcome.results if "candidate" in row.policy_ids_by_seat]
+    assert len(baseline) == len(challenger) == 2
+    assert all(row.status == "complete" for row in baseline)
+    assert all(row.status == "error" for row in challenger)
+    assert all("MECHANICAL_GAP" in row.invalid_reasons[0] for row in challenger)
+    assert all(row.scores_after is None for row in challenger)
 
 
 def test_run_match_experiment_mock_labeled_and_excluded_from_strength():
