@@ -19,7 +19,8 @@ from hangma_bot.hangma.route_transition import (
     advance_given_other_discard, advance_given_other_draw,
     advance_given_other_gang,
     advance_given_response, advance_response_state,
-    finish_given_exhaustive_draw, project_legal_roots,
+    finish_given_exhaustive_draw, finish_given_official_other_win,
+    project_legal_roots,
 )
 from hangma_bot.kernel.actions import Discard, Gang, GangKind, Hu, Pass, Tile
 from hangma_bot.kernel.config import RuleConfig
@@ -400,10 +401,42 @@ def test_v35_other_concealed_gang_replacement_public_state_parity():
     replenished = advance_given_other_draw(pending, seat=3, replacement=True)
     _same_observable_state(replenished, settled)
     _watermark_is_official_root(replenished, before)
+    assert replenished.dealer_seat == before.dealer_seat == 3
     assert replenished.wall_remaining == before.remaining_tile_count - 2 == 59
     assert replenished.public_view.melds[3][-1].kind == "gang_an"
     # 后继是他座胡；玩家观察无法读其暗牌，本条件前缀不伪称能复算该胡。
     assert replenished.phase is ConditionalPhase.PUBLIC_WAIT
+    with pytest.raises(ValueError, match="已摸牌"):
+        finish_given_official_other_win(
+            pending, terminal_event, game_id=before.game_id,
+            round_no=before.round_no)
+    with pytest.raises(ValueError, match="当前行动他座"):
+        finish_given_official_other_win(
+            replenished, replace(terminal_event, seat=before.seat),
+            game_id=before.game_id, round_no=before.round_no)
+    with pytest.raises(ValueError, match="积分缺失"):
+        finish_given_official_other_win(
+            replenished, replace(terminal_event, result_scores=None),
+            game_id=before.game_id, round_no=before.round_no)
+    with pytest.raises(ValueError, match="条件单局"):
+        finish_given_official_other_win(
+            replenished, terminal_event, game_id=before.game_id,
+            round_no=before.round_no + 1)
+    ended = finish_given_official_other_win(
+        replenished, terminal_event, game_id=before.game_id,
+        round_no=before.round_no)
+    assert ended.phase is ConditionalPhase.TERMINAL
+    assert ended.terminal_result is not None
+    assert (ended.terminal_result.winner_seat, ended.terminal_result.is_draw,
+            ended.terminal_result.fan, ended.terminal_result.details,
+            ended.terminal_result.score_delta) == (
+        3, False, terminal_event.result_fan, terminal_event.result_details,
+        terminal_event.result_scores)
+    assert ended.concealed == before.my_hand
+    assert settled.scores == tuple(
+        before.scores[seat] + ended.terminal_result.score_delta[seat]
+        for seat in range(4))
+    _watermark_is_official_root(ended, before)
 
 
 def test_v35_other_added_gang_replacement_and_discard_public_parity():

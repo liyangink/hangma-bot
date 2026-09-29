@@ -16,7 +16,9 @@ from hangma_bot.kernel.actions import (
     Action, Chi, Discard, Gang, GangKind, Hu, Pass, Peng, Tile, action_key,
 )
 from hangma_bot.kernel.config import RuleConfig
-from hangma_bot.kernel.observation import PlayerObservation, PublicDiscard, PublicMeld
+from hangma_bot.kernel.observation import (
+    PlayerObservation, PublicDiscard, PublicEvent, PublicMeld,
+)
 
 from . import action_families, hand_analysis, progression, settlement
 from .catch_play import analyze_catch_play
@@ -80,6 +82,7 @@ class ConditionalRouteState:
     catch_circle: Optional[progression.CatchPlayState] = None  # 当前条件圈主；未来未投影时为空
     identity: Optional[ConditionalIdentity] = None
     seat: Optional[int] = None
+    dealer_seat: Optional[int] = None  # 根观察公开庄家，后续结算不可由调用方改写
     response_window: Optional[str] = None
     response_trigger: Optional[Tuple[int, Tile]] = None  # 座位、牌码；无本地伪 seq
     response_public_discard: Optional[PublicDiscard] = None  # 仅已有官方弃牌带原 seq
@@ -92,6 +95,10 @@ class ConditionalRouteState:
     claim_awarded: bool = False  # 吃碰成功条件需经给定裁决确认
 
     def __post_init__(self) -> None:
+        if self.dealer_seat is not None and self.dealer_seat not in range(4):
+            raise ValueError("条件状态庄家座位无效")
+        if self.seat is not None and self.dealer_seat is None:
+            raise ValueError("带本人座位的条件状态必须绑定根观察庄家")
         if self.chain_piao is not None and self.chain_piao > self.chain_count:
             raise ValueError("链内飘白数不能超过链动作数")
         if self.phase in (ConditionalPhase.NORMAL_DRAW, ConditionalPhase.REPLACEMENT_DRAW):
@@ -621,6 +628,47 @@ def finish_given_exhaustive_draw(state: ConditionalRouteState) -> ConditionalRou
     )
 
 
+def finish_given_official_other_win(
+    state: ConditionalRouteState, event: PublicEvent, *,
+    game_id: str, round_no: int,
+) -> ConditionalRouteState:
+    """给定他座自摸胡的已公开官方结果，终止条件链而不复算其暗牌。
+
+    只消费当前应行动他座的完整 ``round_ended``；官方番数与四座增量
+    是赛后/事件已公开事实，不作为动作前的预测标签。保留根快照水位。
+    """
+
+    if (state.phase is not ConditionalPhase.PUBLIC_WAIT
+            or state.seat is None or state.identity is None
+            or state.public_view is None):
+        raise ValueError("他座胡缺已给定的公开行动状态")
+    if (state.identity.game_id != game_id
+            or state.identity.round_no != round_no):
+        raise ValueError("他座胡事件身份与条件单局不一致")
+    if (state.expected_discard_seat is None
+            or state.expected_draw_seat is not None
+            or state.expected_replacement_draw):
+        raise ValueError("他座胡尚未到合法的已摸牌行动点")
+    if (event.kind != "round_ended" or event.result_draw is not False
+            or event.seat != state.expected_discard_seat
+            or event.seat == state.seat):
+        raise ValueError("公开终局不是当前行动他座的自摸胡")
+    if (event.result_fan is None or event.result_details is None
+            or event.result_scores is None):
+        raise ValueError("他座胡的官方番数、明细或四座积分缺失")
+    if event.seq <= state.public_view.snapshot_seq:
+        raise ValueError("他座胡事件不晚于条件根官方快照水位")
+    return replace(
+        state, phase=ConditionalPhase.TERMINAL,
+        expected_discard_seat=None,
+        terminal_result=progression.HandResult(
+            winner_seat=event.seat, is_draw=False,
+            fan=event.result_fan, details=event.result_details,
+            score_delta=event.result_scores),
+        identity=state.identity.step("official-other-hu:" + str(event.seat)),
+    )
+
+
 def advance_given_other_discard(
     state: ConditionalRouteState, *, seat: int, tile: Tile,
 ) -> ConditionalRouteState:
@@ -700,6 +748,7 @@ def _state(
         public_view=public_view,
         catch_circle=circle,
         seat=observation.seat,
+        dealer_seat=observation.dealer_seat,
         response_window=(
             observation.phase if observation.phase.startswith("response_") else
             ("response_peng" if isinstance(action, Discard)
@@ -855,6 +904,8 @@ def project_legal_roots(
                         unseen_evidence=claim_state.unseen_evidence,
                         root_public_view=claim_state.root_public_view,
                         catch_circle=circle,
+                        seat=observation.seat,
+                        dealer_seat=observation.dealer_seat,
                         structural_only=True)
                     branches.append(ConditionalBranch(
                         state, followup.followup_key, code))
@@ -1001,6 +1052,7 @@ def apply_given_draw(state: ConditionalRouteState, tile: Tile, *, replacement: b
         identity=(state.identity.step("draw:" + tile.code)
                   if state.identity is not None else None),
         seat=state.seat,
+        dealer_seat=state.dealer_seat,
         structural_only=state.structural_only,
         local_witness_only=state.local_witness_only,
         claim_awarded=state.claim_awarded,
@@ -1071,7 +1123,7 @@ def analyze_given_self_draw(
 
     if config.base_score != 1 or config.you_cai_bi_kao:
         raise ValueError("条件转移首版只绑定 BaseScore=1、YouCaiBiKao=false")
-    if (seat not in range(4) or dealer_seat not in range(4)
+    if (seat not in range(4) or dealer_seat != state.dealer_seat
             or (state.seat != seat
                 and not (state.seat is None and state.local_witness_only))):
         raise ValueError("给定摸牌的本人或庄家座位与条件状态不一致")
@@ -1277,6 +1329,7 @@ def apply_legal_followup_gang(
         identity=(state.identity.step("gang:" + action_key)
                   if state.identity is not None else None),
         seat=state.seat,
+        dealer_seat=state.dealer_seat,
         local_witness_only=state.local_witness_only,
         claim_awarded=state.claim_awarded,
     )

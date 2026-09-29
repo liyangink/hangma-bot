@@ -384,6 +384,8 @@ P74 传输修复：当 `OfficialTransport` 的 `base_url` 主机命中配置的 
 
 合法胡根缺结算时须检查同次 `value_facts` 的原因：明确的 `value_analysis.missing_evidence` 归 `INPUT_EVIDENCE_GAP`，工作量 `PARTIAL` 归 `SEARCH_TRUNCATED`；完全未请求结算或其他计算冲突才归 `MECHANICAL_GAP`。不能把链内飘白证据缺失误报成规则实现故障。
 
+**庄家与他座公开终局。**`ConditionalRouteState.dealer_seat` 来源为根 `PlayerObservation.dealer_seat`，含本人座位的物理条件状态必须携带它；给定本人摸牌后结算只接受与此字段相同的庄家参数，禁止在一条条件链中改算庄家支付。`finish_given_official_other_win(state, event, *, game_id, round_no)` 先核官方事件所属场与单局身份，再只接受当前已摸牌行动他座的完整、晚于根快照水位的官方 `round_ended`，且 `draw=false`；必须有 `fan`、`detail` 和按 0—3 座位顺序的 `scores`。它保留本座暗牌与根官方水位，只将已经公开的他座终局结果写入条件终点，不从本座观察复算他座暗牌、牌型或未来胡牌概率。调用方仍须通过官方事件流的连续序号校验；此条件入口只核本根水位之后，不代替适配器的 `seq` 缺口处理。
+
 **给定未来弃牌只有座位和牌值，不得为调用生产合法动作族伪造官方事件序号。**`hangma.internal_types.WindowContext` 追加可空 `conditional_discard: tuple[int, Tile]`。它只在离线条件响应窗口使用：必须是 `response_peng` 或 `response_chi`，座位须等于当前 `turn_seat`，且不得同时填写官方 `last_discard: PublicDiscard`。两种来源经 `response_trigger()` 统一给出 `(seat, tile)`；无触发牌时继续保守降级并记录规则问题。`action_families` 的吃、碰、明杠与 `candidate_facts` 的吃后移牌共用此入口；官方观察经 `_build_context` 仍仅填写 `last_discard`，行为不变。
 
 该内部字段不是 `PlayerObservation`、官方 `PublicEvent` 或 `seq` 的扩展。条件根的合法性只在给定公开弃牌、本人暗牌和窗口事实齐备时成立；他家隐藏手牌的动作仍须作为明示条件或未知裁决处理。P2 仍按[机械矩阵](../../review/vip-route-2026-09-30/P2-MECHANICAL-MATRIX.md)逐格验收，不能因触发牌入口补齐而认定响应后的全部公开事件闭合。`tests/unit/hangma/test_conditional_response_trigger.py` 将条件与官方同牌触发的三类合法动作全集对拍，并验证两种身份不得混填。
