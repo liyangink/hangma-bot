@@ -698,8 +698,8 @@ class OfficialGameSession:
 
         frame_at = asyncio.get_running_loop().time()
         self._sse_last_frame_received_at = frame_at
-        if (self._sse_last_frame_progress_at is None
-                or frame.seq > self._sse_last_frame_received_seq):
+        watermark_progressed = frame.seq > self._sse_last_frame_received_seq
+        if self._sse_last_frame_progress_at is None or watermark_progressed:
             self._sse_last_frame_received_seq = frame.seq
             self._sse_last_frame_progress_at = frame_at
             self._sse_same_watermark_probe_seq = None
@@ -710,8 +710,8 @@ class OfficialGameSession:
             self._sse_stale_restarts = 0
             self._sse_stale_episode_base_seq = None
         if (self._sse_get_failure_at is not None and frame_at >= self._sse_get_failure_at
-                and frame.seq >= self._sync.last_seq):
-            # 新流已对齐到最近权威水位；立即退回普通 2 秒探针，避免额外 GET。
+                and watermark_progressed and frame.seq >= self._sync.last_seq):
+            # 旧水位重复帧不能证明 GET 故障后流已恢复；仅新水位追上权威才退出加密。
             self._sse_get_recovery_started_at = None
             self._sse_get_failure_at = None
             self._sse_get_recovery_until = None

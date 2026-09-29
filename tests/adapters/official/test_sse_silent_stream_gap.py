@@ -6,6 +6,8 @@ import asyncio
 from collections import Counter
 import json
 
+import pytest
+
 from _concurrent_adapter_harness import ConcurrentClock
 from _official_testkit import FakeAuditSink, FakeTransport, TIMING, load_fixture, make_audit_context
 from _official_testkit import make_game_session
@@ -620,8 +622,11 @@ async def test_continuous_uncertain_get_does_not_extend_recovery_probes_past_20s
         await session.aclose("test_complete")
 
 
-async def test_repeated_old_frames_do_not_cancel_bounded_get_recovery_probes(monkeypatch):
-    """GET 不确定后重复旧帧未追上权威，仍须探测且首次故障上限不续期。"""
+@pytest.mark.parametrize("authoritative_ahead", [False, True])
+async def test_repeated_old_frames_do_not_cancel_bounded_get_recovery_probes(
+    monkeypatch, authoritative_ahead,
+):
+    """GET 不确定后重复旧帧即使等于旧权威水位，也不得取消恢复探针。"""
 
     clock = ConcurrentClock()
     monkeypatch.setattr(asyncio.get_running_loop(), "time", clock.monotonic)
@@ -647,11 +652,14 @@ async def test_repeated_old_frames_do_not_cancel_bounded_get_recovery_probes(mon
         calls["get"] += 1
         now = clock.monotonic()
         if calls["get"] == 1:
-            return 200, json.dumps(snapshot(101, turn=1, phase="draw", drawn=""))
+            return 200, json.dumps(snapshot(
+                101 if authoritative_ahead else 100, turn=1, phase="draw", drawn=""))
         if calls["get"] == 2:
             failures.append(now)
             raise UncertainTransportError("injected_get_failure")
-        return 200, json.dumps(finished if now >= 25 else history)
+        return 200, json.dumps(
+            finished if now >= 25 else history if authoritative_ahead else
+            snapshot(100, turn=1, phase="draw", drawn=""))
 
     transport.handler = handler
     session = OfficialGameSession(
