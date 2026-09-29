@@ -623,6 +623,8 @@ v2 Demo 没有多阶段主循环，**不能作为当前参赛入口**。v7 Demo 
 
 ## 8. 常见错误与恢复策略
 
+赛事 404 的两种语义依据[官方指南 v35 版本记录](references/official-guide-version-v35.json)（2026-09-23 更新，2026-09-29 复核）；须读取响应体 `code`，不能只看 HTTP 状态。
+
 | HTTP | 错误码 | 含义 | 推荐处理 |
 | --- | --- | --- | --- |
 | 400 | `TOKEN_NOT_SCOPED` | 全局 Token 调用了 `/me/rules` 或 `/me/ready` | 改用报名 Token 或显式锦标赛 ID |
@@ -630,6 +632,7 @@ v2 Demo 没有多阶段主循环，**不能作为当前参赛入口**。v7 Demo 
 | 403 | `FORBIDDEN` | 无赛事/比赛访问权 | 检查 Token 作用域和 game_id |
 | 403 | `GAME_NOT_FINISHED` | 试图读取进行中场次完整数据 | 等待比赛结束 |
 | 404 | `TOURNAMENT_NOT_FOUND` | 锦标赛不存在 | 停止该赛事任务 |
+| 404 | `TOURNAMENT_GONE` | 房间已登记但 actor 暂时不可达（指南 v35，2026-09-23 变更记录） | 按响应 `code` 判型；在具名赛事端点退避后有界重试，耗尽保留暂态结果，不能改判为赛事不存在 |
 | 404 | `GAME_NOT_FOUND` | 对局不存在 | 从 `/api/me` 重新发现 active_games |
 | 409 | `INVALID_ACTION` | 动作失效或不合法 | `seq=0` 重建；同窗仍开放时排除原动作并按原预算降级，否则结束旧窗口 |
 | 409 | `NOT_QUALIFIED` | `stage_open` 中当前身份不在晋级或候补名单 | 停止为该身份确认；记录正常淘汰，不做故障重试 |

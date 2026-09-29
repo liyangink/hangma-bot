@@ -148,14 +148,14 @@ peng→chi无事件边界到点时，取消并等待旧长轮询回收，释放�
 
 正常完整快照直接建立当前状态，快照前未归档的原事件不属于观察异常。`ProtocolSyncState.history_complete`及同名观察字段只描述本地记录覆盖；不再登记`history_gap_snapshot`，也不以它决定模型是否可用。跨单局、409及真实增量缺口仍按官方协议恢复；补领保留为独立证据增强，不是恢复完成或模型调用的前置条件。见[模型快照输入契约](../interface-contracts.md#官方快照输入与序列模型准入2026-09-14)。
 
-## 赛事详情端点暂态 404 恢复（指南 v35，2026-09-23）
+## 赛事端点暂态 404 恢复（指南 v35，2026-09-23）
 
-**结论：仅 `GET /api/tournaments/{id}` 的 `TOURNAMENT_GONE` 按房详情轮询周期冷却重读；`TOURNAMENT_NOT_FOUND` 与未知码立即停止。** 这是对 2026-09-17 偶发 404 观察的 v35 协议分类修正；四个外部端口签名、场次动作链和数据流不变。
+**结论：`GET /api/tournaments/{id}` 与 `GET /api/tournaments/me/rules` 的 `TOURNAMENT_GONE` 按房详情轮询周期冷却重读；`TOURNAMENT_NOT_FOUND` 与未知码立即停止。** 这是对 2026-09-17 偶发 404 观察及 v35 端点清单的协议分类修正；四个外部端口签名、场次动作链和数据流不变。
 
 【2026-09-17 真实平台证据】测试赛事 `t_65d538e905c5`（1024杭麻竞技二测，状态 `registering`，尚未开赛）在本机 2 秒轮询下，同一端点连续 48 次 200 之后**单次**返回 `404 {"code":"TOURNAMENT_GONE","message":"tournament unavailable"}`；同时刻 `/api/me` 为 200，随后同一端点又恢复 200。2026-09-17 18:39—18:45 CST 的 5 次独立运行共命中 4 次（分别在启动后 +100.1s、+8.2s、+125.2s、+38.4s），每次都是孤立单发。原实现一见 404 即返回 `ParticipantTerminal(TARGET_MISMATCH)`，而 `run_participant.py` 对 `target_mismatch` 使用退出码 10（守护器不得重启）——一次平台侧瞬时读取失败就会丢掉整场赛事。
 
 实现：正式赛 `OfficialTournamentSession._tournament_detail()` 和自动房的恢复核验、`next_update()` 均由后台请求层重读同一详情 GET。单次调用最多 8 次（含首次），相邻 `TOURNAMENT_GONE` 后等一个房详情轮询周期，默认 2 秒、最多 7 次冷却。8 次是本地可靠性上限，不是官方“连续 8 次即永久消失”的规则：既有六次 GONE 后第七次恢复的回归需要保留，再留一次余量；持续 GONE 耗尽时，正式赛返回 `FATAL_PROTOCOL_ERROR`，自动房返回 `MATCHING_UNAVAILABLE` 并明确结果未知，不改判 `TARGET_MISMATCH` 或正常完赛。每次暂态失败记 `PROTOCOL_RECOVERED`（正式赛 `area=tournament_temporarily_unavailable`；自动房 `area=auto_match, reason=room_temporarily_unavailable`）。
 
-边界：`/api/me`、规则 GET 和 `/api/match` 不进入详情冷却；正式赛 `register`/`ready` 保留既有幂等 GONE 重试，但现在同样有单次 8 次上限。自动房 `POST /api/match` 的 404 继续按其专用错误码分类。冷却用异步等待，详情 GET 在进入等待前释放赛事控制请求槽；场次会话使用独立槽，1 秒吃碰和 3 秒弃牌动作窗可继续交付。`TOURNAMENT_NOT_FOUND`、缺失或未知码均不重试；尤其 G257 七房观察到的 `TOURNAMENT_NOT_FOUND` 不因本修复改变根因分类。
+边界：`/api/me` 与 `/api/match` 不进入赛事 GONE 冷却；正式赛 `register`/`ready` 保留既有幂等 GONE 重试，规则 GET 与详情 GET 共用单次 8 次上限。自动房 `POST /api/match` 的 404 继续按其专用错误码分类。冷却用异步等待，请求在进入等待前释放赛事控制请求槽；场次会话使用独立槽，1 秒吃碰和 3 秒弃牌动作窗可继续交付。`TOURNAMENT_NOT_FOUND`、缺失或未知码均不重试；尤其 G257 七房观察到的 `TOURNAMENT_NOT_FOUND` 不因本修复改变根因分类。
 
-回归：`tests/adapters/official/test_tournament_session.py::TestTournamentDetailNotFoundTolerance` 和 `tests/adapters/official/test_auto_match_adapter.py` 覆盖恢复、持续耗尽、端点隔离及负例；`tests/adapters/official/test_session_resource_isolation.py` 覆盖后台冷却期间的场次动作窗交付。`TOURNAMENT_GONE` 已列入 `errors.KNOWN_OFFICIAL_CODES` 以保留现场码；未知码仍会白名单化为空。
+回归：`tests/adapters/official/test_tournament_session.py::TestTournamentDetailNotFoundTolerance` 和 `tests/adapters/official/test_auto_match_adapter.py` 覆盖详情与规则 GET 的恢复、持续耗尽、端点隔离及负例；`tests/adapters/official/test_session_resource_isolation.py` 覆盖后台冷却期间的场次动作窗交付。`TOURNAMENT_GONE` 已列入 `errors.KNOWN_OFFICIAL_CODES` 以保留现场码；未知码仍会白名单化为空。

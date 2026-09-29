@@ -501,8 +501,8 @@ class TestTournamentDetailNotFoundTolerance:
         assert calls["me"] == 1
         assert clock.monotonic() == before
 
-    async def test_rules_gone_does_not_enter_detail_cooldown(self, transport, clock, audit) -> None:
-        """规则 GET 不是赛事详情 GET；404 立即保守停止。"""
+    async def test_rules_gone_retries_then_recovers(self, transport, clock, audit) -> None:
+        """指南 v35 将规则 GET 列为暂态 GONE 端点；一次 GONE 后保留原房继续发现。"""
 
         _initialize_handler(transport)
         previous = transport.handler
@@ -511,7 +511,35 @@ class TestTournamentDetailNotFoundTolerance:
         def handler(**kw):
             if kw["path"] == "/api/tournaments/me/rules":
                 calls["rules"] += 1
-                raise NotFoundError(404, "TOURNAMENT_GONE", "unexpected on rules")
+                if calls["rules"] == 1:
+                    raise NotFoundError(404, "TOURNAMENT_GONE", "tournament unavailable")
+            return previous(**kw)
+
+        transport.handler = handler
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        before = clock.monotonic()
+        item = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert not isinstance(item, ParticipantTerminal)
+        assert item.tournament_id == TARGET.expected_tournament_id
+        assert calls["rules"] == 2
+        assert clock.monotonic() - before == 2.0
+        notices = self._not_found_notices(audit)
+        assert len(notices) == 1
+        assert notices[0].payload["path"] == "/api/tournaments/me/rules"
+
+    async def test_rules_gone_exhaustion_is_bounded_and_not_permanent(
+        self, transport, clock, audit
+    ) -> None:
+        """规则 GET 连续暂不可达仍按原有八次预算停机，不能误判目标永久不存在。"""
+
+        _initialize_handler(transport)
+        previous = transport.handler
+        calls = {"rules": 0}
+
+        def handler(**kw):
+            if kw["path"] == "/api/tournaments/me/rules":
+                calls["rules"] += 1
+                raise NotFoundError(404, "TOURNAMENT_GONE", "tournament unavailable")
             return previous(**kw)
 
         transport.handler = handler
@@ -521,8 +549,36 @@ class TestTournamentDetailNotFoundTolerance:
         assert isinstance(item, ParticipantTerminal)
         assert item.reason is ParticipantTerminalReason.FATAL_PROTOCOL_ERROR
         assert "/rules" in item.detail
+        assert "连续读取耗尽" in item.detail
+        assert calls["rules"] == 8
+        assert clock.monotonic() - before == 14.0
+        assert len(self._not_found_notices(audit)) == 8
+
+    @pytest.mark.parametrize("official_code", ["TOURNAMENT_NOT_FOUND", "UNRECOGNIZED_CODE"])
+    async def test_rules_not_found_or_unknown_remains_permanent(
+        self, transport, clock, audit, official_code
+    ) -> None:
+        """规则 GET 只重试显式 GONE；永久不存在和未知码均在首次响应停机。"""
+
+        _initialize_handler(transport)
+        previous = transport.handler
+        calls = {"rules": 0}
+
+        def handler(**kw):
+            if kw["path"] == "/api/tournaments/me/rules":
+                calls["rules"] += 1
+                raise NotFoundError(404, official_code, "not found")
+            return previous(**kw)
+
+        transport.handler = handler
+        session = make_tournament_session(clock=clock, transport=transport, audit=audit)
+        before = clock.monotonic()
+        item = await asyncio.wait_for(session.initialize(TARGET), timeout=2)
+        assert isinstance(item, ParticipantTerminal)
+        assert item.reason is ParticipantTerminalReason.TARGET_MISMATCH
         assert calls["rules"] == 1
         assert clock.monotonic() == before
+        assert not self._not_found_notices(audit)
 
     async def test_next_update_me_gone_is_not_detail_exhaustion(self, transport, clock, audit) -> None:
         """运行中的身份 GET 404 应定位到身份端点，不伪称详情耗尽。"""

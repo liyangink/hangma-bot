@@ -213,12 +213,13 @@ class OfficialTournamentSession:
             except NotFoundError as exc:
                 detail_get = (method == "GET" and path.startswith("/api/tournaments/")
                               and path.count("/") == 3)
+                rules_get = (method == "GET" and path == "/api/tournaments/me/rules")
                 idempotent_command = (method == "POST" and path.startswith("/api/tournaments/")
                                       and path.endswith(("/register", "/ready")))
-                if exc.official_code != "TOURNAMENT_GONE" or not (detail_get or idempotent_command):
+                if exc.official_code != "TOURNAMENT_GONE" or not (detail_get or rules_get or idempotent_command):
                     raise
-                # v35：详情可重复读取，register/ready 已有幂等重试契约；
-                # /api/me、规则与其他端点的 404 不进入此冷却。
+                # v35：详情与规则 GET 可重复读取，register/ready 幂等；
+                # 仅这些具名赛事端点的暂态 GONE 进入有界冷却。
                 # 耗尽单次调用预算仍保留 GONE 原码，不能伪装为永久不存在。
                 self._emit_audit(AuditKind.PROTOCOL_RECOVERED, {
                     "area": "tournament_temporarily_unavailable",
@@ -294,7 +295,7 @@ class OfficialTournamentSession:
                     ParticipantTerminalReason.TARGET_MISMATCH,
                     "rules 归属 {} 与目标 {} 不符".format(rules_parsed.tournament_id, tournament_id),
                 )
-            # v35：GONE 在共享请求层退避重试；明确 NOT_FOUND 才是目标错配。
+            # v35：规则和详情 GONE 均在共享请求层退避重试；明确 NOT_FOUND 才是目标错配。
             request_path = "/api/tournaments/{}".format(tournament_id)
             detail_raw = await self._tournament_detail(tournament_id, priority=Priority.RECOVERY)
             detail_parsed = parse_tournament_detail(detail_raw)
@@ -315,11 +316,7 @@ class OfficialTournamentSession:
             if exc.official_code == "TOURNAMENT_GONE":
                 return self._terminal(
                     ParticipantTerminalReason.FATAL_PROTOCOL_ERROR,
-                    "{} 暂态 TOURNAMENT_GONE {}".format(
-                        request_path,
-                        "连续读取耗尽" if request_path == "/api/tournaments/{}".format(tournament_id)
-                        else "读取失败",
-                    ),
+                    "{} 暂态 TOURNAMENT_GONE 连续读取耗尽".format(request_path),
                 )
             return self._terminal(ParticipantTerminalReason.TARGET_MISMATCH, "目标赛事不可访问: " + (exc.official_code or str(exc.http_status)))
         except ForbiddenError as exc:
