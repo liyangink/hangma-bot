@@ -2,7 +2,11 @@
 
 import json
 import importlib.util
+from dataclasses import replace
 from pathlib import Path
+
+from hangma_bot.hangma.interface import RuleIssue
+from hangma_bot.hangma.route_frontier import RouteGapKind
 
 SCRIPT = Path(__file__).parents[3] / "scripts/vip_p2_matrix_audit.py"
 SPEC = importlib.util.spec_from_file_location("vip_p2_matrix_audit", SCRIPT)
@@ -22,6 +26,9 @@ def test_current_official_fixture_matrix_is_reproducible():
             result["official_pair_state_match_count"]) == (9, 9)
     assert sum(cell["legal_roots"] for cell in result["matrix"]) == 48
     assert sum(cell["mechanical_gap"] for cell in result["matrix"]) == 47
+    assert sum(cell["root_projection_mechanical_gap"]
+               for cell in result["matrix"]) == 0
+    assert sum(cell["future_condition_open"] for cell in result["matrix"]) == 47
     assert sum(cell["input_evidence_gap"] for cell in result["matrix"]) == 0
     assert sum(cell["both_gaps"] for cell in result["matrix"]) == 0
     assert {row["config_provenance"] for row in result["rows"]} == {
@@ -53,3 +60,29 @@ def test_missing_full_snapshot_is_explicitly_skipped(tmp_path, monkeypatch):
                for row in result["skipped"])
     assert any(row["seq"] == 2269 and "后继" in row["reason"]
                for row in result["skipped"])
+
+
+def test_real_root_projection_failure_is_not_counted_as_future_unknown(monkeypatch):
+    """故障注入：根动作投影失败须与仅待给定未来条件分开。"""
+
+    original = audit_module.project_legal_roots
+    injected = False
+
+    def fail_one_root(*args, **kwargs):
+        nonlocal injected
+        roots = list(original(*args, **kwargs))
+        if roots and not injected:
+            roots[0] = replace(
+                roots[0], branches=(), claim_state=None, proposal_state=None,
+                gap_kind=RouteGapKind.MECHANICAL_GAP,
+                gap_kinds=(RouteGapKind.MECHANICAL_GAP,),
+                issues=(RuleIssue("route_transition.mechanical", "故障注入"),),
+            )
+            injected = True
+        return tuple(roots)
+
+    monkeypatch.setattr(audit_module, "project_legal_roots", fail_one_root)
+    result = audit_module.audit()
+    assert injected
+    assert sum(cell["root_projection_mechanical_gap"]
+               for cell in result["matrix"]) == 1
