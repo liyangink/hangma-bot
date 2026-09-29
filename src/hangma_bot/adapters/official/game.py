@@ -229,6 +229,7 @@ class OfficialGameSession:
         self._sse_virtual_discard = None  # 已跳过回显的弃牌；仅供随后一帧 +3 阶段甄别
         self._sse_own_discard_probe_at = None  # 单调秒；本人弃牌后完全无帧的权威探针
         self._sse_phase_probe_at = None  # 单调秒；跳过固定阶段后下个预期事件失联探针
+        self._last_anticipated_chi_window: Optional[WindowKey] = None  # 每弃牌周期至多提权一笔后继快照
         # 唤醒挂起标志：帧/自唤醒置位后、等待方消费前的信号保留——
         # 纯 Event 在"等待入口 clear()"时会把未消费的唤醒抹掉（回归
         # test_sse_self_wake 行为用例锁定该竞态）
@@ -1794,6 +1795,20 @@ class OfficialGameSession:
                 raise
             # 旧目的已过最迟安全发起时刻，不能继续排队重试。若旧窗口尚未
             # 结束，等到其边界后只留一次当前快照需求，不积压历次抢窗请求。
+            # 但 SSE 新水位到达时，权威碰窗可能正转入紧随其后的一秒吃窗。
+            # 只有已见官方碰窗截止、本人是该弃牌的下家且尚未表态时，才为
+            # 这**同一笔**后继快照保留最迟发起时刻；通知帧本身不构成
+            # 吃牌事实，也不允许据帧直接提交动作。
+            chi_budget = self._anticipated_chi_sync_budget(
+                query_origin=query_origin, old_window=query_window,
+                old_window_end=obsolete_window_end)
+            chi_reservation = None
+            if chi_budget is not None:
+                chi_ready, chi_latest_start, _, _ = chi_budget
+                chi_reservation = self._scheduler.protect_state_query(
+                    ready_at_monotonic=chi_ready,
+                    latest_start_at_monotonic=chi_latest_start)
+                self._last_anticipated_chi_window = query_window
             self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
                 "state_query_cancel_reason": "expired_window_purpose",
                 "query_purpose": query_purpose,
@@ -1810,13 +1825,71 @@ class OfficialGameSession:
                 round_no=query_window.round_no if query_window is not None else None)
             if state_reservation is not None:
                 state_reservation.cancel()
-            if obsolete_window_end is not None:
-                delay = max(0.0, obsolete_window_end + _BOUNDARY_MARGIN_SEC - self._monotonic())
-                if delay:
-                    await self._retry_sleep(delay)
+            try:
+                if obsolete_window_end is not None:
+                    delay = max(0.0, obsolete_window_end + _BOUNDARY_MARGIN_SEC - self._monotonic())
+                    if delay:
+                        await self._retry_sleep(delay)
+                if chi_budget is not None:
+                    _, chi_latest_start, chi_response_deadline, _ = chi_budget
+                    if self._monotonic() < chi_latest_start:
+                        try:
+                            return await self._request_state(
+                                long_poll=False, force_full=True,
+                                deadline_monotonic=chi_response_deadline,
+                                latest_start_monotonic=chi_latest_start,
+                                state_reservation=chi_reservation,
+                                query_purpose="anticipated_chi_sync",
+                                query_origin=query_origin,
+                                in_flight_event=in_flight_event)
+                        except _PollFailure as chi_failure:
+                            if chi_failure.item.reason != "refresh_deadline":
+                                raise
+                            # 429/排队已耗尽可安全取态余量；撤销从旧碰窗
+                            # 推出的期限，但立即继续权威现状同步。新水位也
+                            # 可能是一张全新弃牌，不能等假定吃窗边界才读。
+                            self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                                "state_query_cancel_reason": "expired_anticipated_chi",
+                                "query_purpose": "anticipated_chi_sync",
+                                "latest_start_monotonic": chi_latest_start,
+                                "consumed_seq": self._sync.last_seq,
+                            }, trigger_seq=self._sync.last_seq)
+            finally:
+                if chi_reservation is not None:
+                    chi_reservation.cancel()
             return await self._request_state(
                 long_poll=False, force_full=True, query_purpose="current_state_sync",
                 query_origin=query_origin, in_flight_event=in_flight_event)
+
+    def _anticipated_chi_sync_budget(
+        self, *, query_origin: str, old_window: Optional[WindowKey],
+        old_window_end: Optional[float],
+    ) -> Optional[tuple[float, float, float, float]]:
+        """从已见官方碰窗推导下一吃窗查询预算；不推导动作或新阶段。"""
+
+        snapshot = self._sync.snapshot
+        if (not self._sse_enabled or query_origin != "sse_frame"
+                or old_window is None or old_window.phase is not WindowPhase.RESPONSE_PENG
+                or old_window == self._last_anticipated_chi_window
+                or old_window_end is None or snapshot is None
+                or snapshot.phase != "response_peng"
+                or snapshot.round_no != old_window.round_no
+                or snapshot.window_deadline_ms is None
+                or snapshot.window_deadline_ms <= 0
+                or (snapshot.turn + 1) % 4 != snapshot.seat
+                or not self._sync.claim_interest_for_cycle()
+                or self._sync.response_suppressed_for_self
+                or self._sse_latest_frame_seq <= snapshot.seq):
+            return None
+        # _window_timing 已将官方 Unix 毫秒截止映射到只收紧的单调早界；
+        # 沿用它，不以新 SSE 帧或重试时刻重开一秒动作预算。
+        chi_window_end = old_window_end + self._timing.chi_timeout_sec
+        response_deadline = chi_window_end - _ACTION_AFTER_STATE_RESERVE_SEC
+        latest_start = response_deadline - _STATE_RESPONSE_RESERVE_SEC
+        ready = max(self._monotonic(), old_window_end + _BOUNDARY_MARGIN_SEC)
+        if ready >= latest_start:
+            return None
+        return ready, latest_start, response_deadline, chi_window_end
 
     async def _request_state(
         self,
