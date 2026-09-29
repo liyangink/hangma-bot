@@ -389,6 +389,11 @@ def test_concealed_gang_given_replacement_can_hu_or_continue_by_same_rule_source
                  and any(tile.code == "东" for tile in route.useful_tiles))
     assert actual.immediate_settlement == route.conditional_settlement
     assert landed.dealer_seat == observation.dealer_seat == 0
+    assert landed.identity.ruleset_version == config.ruleset_version
+    with pytest.raises(ValueError, match="规则版本"):
+        analyze_given_replacement_draw(
+            landed, seat=0, dealer_seat=0,
+            config=RuleConfig("wrong-ruleset", 1, False))
     with pytest.raises(ValueError, match="座位"):
         analyze_given_replacement_draw(
             landed, seat=1, dealer_seat=0, config=config)
@@ -503,6 +508,11 @@ def test_official_chi_then_gang_then_replacement_keeps_all_legal_claim_actions()
     assert claim_result.resolution.status == "resolved"
     claim = analyze_given_claim_action(
         claim_result.state, seat=before.seat, config=config)
+    assert claim_result.state.identity.ruleset_version == config.ruleset_version
+    with pytest.raises(ValueError, match="规则版本"):
+        analyze_given_claim_action(
+            claim_result.state, seat=before.seat,
+            config=RuleConfig("wrong-ruleset", 1, False))
     with pytest.raises(ValueError, match="座位"):
         analyze_given_claim_action(
             claim_result.state, seat=(before.seat + 1) % 4, config=config)

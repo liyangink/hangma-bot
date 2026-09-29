@@ -52,6 +52,11 @@ class ConditionalIdentity:
     round_no: int
     root_action_key: str
     path: Tuple[str, ...] = ()
+    ruleset_version: Optional[str] = None  # 根规则实例身份；旧手工公开前缀可空
+
+    def __post_init__(self) -> None:
+        if self.ruleset_version is not None and not self.ruleset_version:
+            raise ValueError("条件根规则版本不得为空串")
 
     def step(self, label: str) -> "ConditionalIdentity":
         if not label:
@@ -816,7 +821,8 @@ def project_legal_roots(
                     _state(observation, context, ConditionalPhase.DRAW_ACTION),
                     identity=ConditionalIdentity(
                         observation.game_id, observation.round_no,
-                        candidate.action_key))
+                        candidate.action_key,
+                        ruleset_version=config.ruleset_version))
                 ended = _terminal_hu_state(current, settlement)
                 roots.append(ConditionalRoot(
                     candidate.action_key, (ConditionalBranch(ended),), settlement))
@@ -956,7 +962,8 @@ def project_legal_roots(
     checked = []
     for root in roots:
         local_id = ConditionalIdentity(
-            observation.game_id, observation.round_no, root.action_key)
+            observation.game_id, observation.round_no, root.action_key,
+            ruleset_version=config.ruleset_version)
         branches = tuple(replace(
             branch,
             state=replace(branch.state,
@@ -1123,6 +1130,9 @@ def analyze_given_self_draw(
 
     if config.base_score != 1 or config.you_cai_bi_kao:
         raise ValueError("条件转移首版只绑定 BaseScore=1、YouCaiBiKao=false")
+    if (state.identity is None
+            or state.identity.ruleset_version != config.ruleset_version):
+        raise ValueError("给定摸牌的规则版本与条件根不一致")
     if (seat not in range(4) or dealer_seat != state.dealer_seat
             or (state.seat != seat
                 and not (state.seat is None and state.local_witness_only))):
@@ -1172,6 +1182,9 @@ def analyze_given_claim_action(
 
     if config.base_score != 1 or config.you_cai_bi_kao:
         raise ValueError("条件转移首版只绑定 BaseScore=1、YouCaiBiKao=false")
+    if (state.identity is None
+            or state.identity.ruleset_version != config.ruleset_version):
+        raise ValueError("吃碰后动作的规则版本与条件根不一致")
     if state.seat != seat:
         raise ValueError("吃碰后动作的本人座位与条件状态不一致")
     if state.phase is not ConditionalPhase.CLAIM_DISCARD or state.drawn_tile is not None:
