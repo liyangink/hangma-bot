@@ -17,9 +17,11 @@ scripts/audit_tool.py collect-test-room 下载进会话 official/；
 
 import fcntl
 import glob
+import hashlib
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 import time
@@ -75,7 +77,9 @@ def room_id_of(audit_dir):
     files = glob.glob(os.path.join(audit_dir, "participants", "*", "games", "*.jsonl"))
     ids = {os.path.basename(f).rsplit("_r1_", 1)[0] for f in files}
     ids.discard("unknown")
-    return sorted(ids)[0] if ids else None
+    # 一次会话出现多个房号时无法安全把终局归到单一房间，交给人工核对。
+    return next(iter(ids)) if len(ids) == 1 and all(
+        re.fullmatch(r"[A-Za-z0-9_-]+", room) for room in ids) else None
 
 
 def audit_outcomes(audit_dir):
@@ -116,6 +120,20 @@ def audit_finals(audit_dir):
     return {gid: row["final_scores"] for gid, row in audit_outcomes(audit_dir).items()}
 
 
+def provisional_audit_games(audit_dir, room_id):
+    """只保留已取得本人座位及终局分的完整场次，不从未完牌谱推算分数。"""
+    games = []
+    for gid, outcome in sorted(audit_outcomes(audit_dir).items()):
+        if not gid.startswith(room_id + "_r1_"):
+            continue
+        seat = outcome["seat"]
+        scores = outcome["final_scores"]
+        if type(seat) is int and 0 <= seat < 4 and all(type(s) is int for s in scores):
+            games.append({"game_id": gid, "seat": seat,
+                          "final_score": scores[seat], "source": "audit"})
+    return games
+
+
 def _declared_batches():
     """从运行配置读自动房场次数（declared_max_games），决定要下载的批次范围。"""
     cfg = json.load(open(RUNTIME_CONFIG, encoding="utf-8"))
@@ -136,7 +154,7 @@ def _downloaded_batches(session_dir, room_id):
     return batches
 
 
-def download(room_id, session_dir):
+def download(room_id, session_dir, *, max_attempts=2, max_elapsed_sec=None):
     """经 audit_tool collect-test-room 按批次下载官方牌谱到会话 official/。
 
     不再调用已废弃的 runs/download_auto_match.py 私有脚本；免认证采集、
@@ -145,26 +163,112 @@ def download(room_id, session_dir):
     """
     batches = _declared_batches()
     expected = set(range(batches))
+    deadline = time.monotonic() + max_elapsed_sec if max_elapsed_sec is not None else None
     if expected.issubset(_downloaded_batches(session_dir, room_id)):
         return session_dir
-    for attempt in (1, 2):
+    for attempt in range(1, max_attempts + 1):
         for batch in range(batches):
+            if deadline is not None and time.monotonic() >= deadline:
+                print("!! 牌谱下载超出时间预算，本房停止自动恢复")
+                return None
             if batch in _downloaded_batches(session_dir, room_id):
                 continue
-            r = sh(".venv/bin/python3 scripts/audit_tool.py collect-test-room "
-                   "--runtime-config %s --room %s --batch %d --out %s" % (RUNTIME_CONFIG, room_id, batch, session_dir),
-                   cwd=ROOT)
+            args = [".venv/bin/python3", "scripts/audit_tool.py", "collect-test-room",
+                    "--runtime-config", RUNTIME_CONFIG, "--room", room_id,
+                    "--batch", str(batch), "--out", session_dir]
+            r = sh(" ".join(shlex.quote(arg) for arg in args), cwd=ROOT)
             if r.returncode != 0:
                 tail = (r.stderr or r.stdout or "").strip()[-200:]
                 print("批次 %d 下载失败：%s" % (batch, tail))
                 break
         if expected.issubset(_downloaded_batches(session_dir, room_id)):
             return session_dir
-        if attempt == 1:
+        if attempt < max_attempts:
             print("牌谱下载失败，30 秒后重试一次…")
             time.sleep(30)
-    print("!! 牌谱缺失：%s 两次下载均失败，本房仅按审计可结算场次记账" % room_id)
+    print("!! 牌谱缺失：%s 下载未补齐，本房仅按审计可结算场次记账" % room_id)
     return None
+
+
+def _four_scores(value, label):
+    """验证官方积分按座位 0—3 给出四个整数；布尔值不可冒充积分。"""
+    if not isinstance(value, list) or len(value) != 4 or any(type(n) is not int for n in value):
+        raise ValueError(label + "_invalid")
+    if sum(value) != 0:
+        raise ValueError(label + "_not_zero_sum")
+    return value
+
+
+def verified_official_room(session_dir, room_id, audit_dir):
+    """验证同房十桌八局和桌末四座积分；只返回可直接入账的本人分数。"""
+    batches = {}
+    for source_path in glob.glob(os.path.join(session_dir, "official", "dl-*", "source.json")):
+        source = json.load(open(source_path, encoding="utf-8"))
+        if source.get("room_id") != room_id:
+            continue
+        batch = source.get("batch")
+        if type(batch) is not int or batch not in range(10):
+            raise ValueError("batch_invalid")
+        events_path = os.path.join(os.path.dirname(source_path), "events.json")
+        raw = open(events_path, "rb").read()
+        if hashlib.sha256(raw).hexdigest() != source.get("original_sha256"):
+            raise ValueError("source_digest_mismatch")
+        doc = json.loads(raw)
+        game_id = "%s_r1_b%d_t0" % (room_id, batch)
+        if (doc.get("room_id") != room_id or type(doc.get("batch")) is not int or
+                doc.get("batch") != batch or
+                doc.get("game_id") != game_id or source.get("game_id") != game_id or
+                doc.get("status") != "finished"):
+            raise ValueError("official_identity_or_status_mismatch")
+        seats = [s.get("user_id") for s in doc.get("seats", []) if isinstance(s, dict)]
+        if (len(seats) != 4 or len(set(seats)) != 4 or
+                any(not isinstance(s, str) or not s for s in seats) or
+                seats.count(ME) != 1):
+            raise ValueError("official_seat_identity_invalid")
+        # 顶层 rounds 摘要在实房可缺项；以 blocks 的八个 round_ended 为准，
+        # 再与 game_ended 四座总分对账，不能因摘要缺项丢弃完整事件事实。
+        blocks = doc.get("blocks")
+        if not isinstance(blocks, list) or not blocks:
+            raise ValueError("official_blocks_missing")
+        endings, game_endings = {}, []
+        for block in blocks:
+            if not isinstance(block, dict) or type(block.get("round_no")) is not int:
+                raise ValueError("official_block_invalid")
+            for event in block.get("events", []):
+                if not isinstance(event, dict):
+                    raise ValueError("official_event_invalid")
+                if event.get("type") == "round_ended":
+                    no = block["round_no"]
+                    if no in endings or no not in range(1, 9):
+                        raise ValueError("official_round_end_duplicate_or_extra")
+                    data = event.get("data") or {}
+                    if type(data.get("round_no")) is not int or data.get("round_no") != no:
+                        raise ValueError("official_round_end_number_mismatch")
+                    scores = _four_scores(data.get("scores"), "round_end")
+                    endings[no] = scores
+                elif event.get("type") == "game_ended":
+                    game_endings.append(event)
+        if set(endings) != set(range(1, 9)) or len(game_endings) != 1:
+            raise ValueError("official_terminal_events_incomplete")
+        totals = [sum(endings[no][seat] for no in range(1, 9)) for seat in range(4)]
+        ended = _four_scores((game_endings[0].get("data") or {}).get("final_scores"),
+                             "game_end")
+        if totals != ended:
+            raise ValueError("official_game_total_mismatch")
+        seat = seats.index(ME)
+        row = {"game_id": game_id, "seat": seat, "final_score": totals[seat],
+               "source": "official_recovered_round_ended"}
+        if batch in batches and batches[batch][0] != hashlib.sha256(raw).hexdigest():
+            raise ValueError("official_duplicate_batch_conflict")
+        batches[batch] = (hashlib.sha256(raw).hexdigest(), row, totals)
+    if set(batches) != set(range(10)):
+        raise ValueError("official_ten_batches_incomplete")
+    rows = [batches[batch][1] for batch in range(10)]
+    for game_id, outcome in audit_outcomes(audit_dir).items():
+        match = next((batch for batch in batches.values() if batch[1]["game_id"] == game_id), None)
+        if match is None or outcome["final_scores"] != match[2] or outcome["seat"] != match[1]["seat"]:
+            raise ValueError("official_audit_conflict")
+    return rows
 
 
 def official_table(dest, room_id=None):
@@ -385,11 +489,24 @@ def run_cycle():
         maybe_restart()
         return 0
 
-    # 幂等：最新日志已结算过（续开失败/止损后重复巡检）→ 不二次入账，直接按需续开
+    # 幂等：已入账日志不可二次入账。matching_unavailable 不代表房间作废，
+    # 其已有局可能计入官方周榜；此终态是永久停止原因，不能自动续开。
     rel_log = os.path.relpath(log, ROOT)
-    if ledger["rooms"] and ledger["rooms"][-1].get("session_log") == rel_log:
+    accounted = next((room for room in ledger["rooms"]
+                      if room.get("session_log") == rel_log), None)
+    if accounted is not None:
+        if accounted.get("terminal_reason") == "matching_unavailable":
+            if accounted.get("settlement_status") != "official_recovered_complete":
+                print("房间 %s 仍待官方结算核对；停止自动续开" % accounted.get("room_id"))
+                return 3
+            maybe_restart()
+            return 0
         maybe_restart()
         return 0
+    if any(row.get("session_log") == rel_log
+           for row in ledger.get("unresolved_sessions", [])):
+        print("最新会话仍无可确认房间结算；停止自动续开")
+        return 3
 
     last = open(log, encoding="utf-8", errors="replace").readlines()[-1].strip()
     m = re.match(r"RESULT (\{.*\})", last)
@@ -404,7 +521,85 @@ def run_cycle():
         print("!! 硬错误终态 %s，按纪律不重试，请人工介入。日志 %s" % (reason, log))
         return 3
 
-    if reason in ("tournament_void", "matching_unavailable", "cancelled"):
+    if reason == "matching_unavailable":
+        # 该终态可由已有目标房 404 且缺 finished 证据产生；房间里的完整局
+        # 仍可能已被官方计分。只在十桌八局牌谱及四座总分全部对齐后续开；
+        # 否则保留审计已知分、粘滞停机，不把缺失场次记零分。
+        room_id = room_id_of(audit_dir) if audit_dir and os.path.isdir(audit_dir) else None
+        games = []
+        already_accounted = any(room.get("room_id") == room_id
+                                for room in ledger["rooms"]) if room_id else False
+        if room_id:
+            games = provisional_audit_games(audit_dir, room_id)
+            if not already_accounted:
+                try:
+                    if _declared_batches() != 10:
+                        raise ValueError("declared_games_not_ten")
+                    session_dir = os.path.dirname(os.path.dirname(os.path.dirname(audit_dir)))
+                    dest = download(room_id, session_dir, max_attempts=1,
+                                    max_elapsed_sec=180)
+                    if dest is None:
+                        raise ValueError("official_download_incomplete")
+                    complete = verified_official_room(dest, room_id, audit_dir)
+                except Exception as exc:  # noqa: BLE001 - 未知/429/不完整均停机，不猜分
+                    verification_issue = "%s:%s" % (type(exc).__name__, str(exc)[:100])
+                else:
+                    subtotal = sum(game["final_score"] for game in complete)
+                    ledger["rooms"].append({
+                        "room_id": room_id,
+                        "session_log": rel_log,
+                        "audit_dir": os.path.relpath(audit_dir, ROOT),
+                        "download_dir": os.path.relpath(dest, ROOT),
+                        "terminal_reason": reason,
+                        "settlement_status": "official_recovered_complete",
+                        "room_subtotal": subtotal,
+                        "games": complete,
+                    })
+                    ledger["cumulative_total"] += subtotal
+                    ledger["current_lose_streak"] = (ledger["current_lose_streak"] + 1
+                                                     if subtotal < 0 else 0)
+                    ledger["updated_at"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+                    if ledger["cumulative_total"] < STOP_FLOOR:
+                        ledger["stopped"] = True
+                        ledger["last_stop_reason"] = "score_stop_floor"
+                    save_ledger(ledger)
+                    print("第 %d 房 %s 官方追回完整十桌：%d，累计 %d" %
+                          (len(ledger["rooms"]), room_id, subtotal, ledger["cumulative_total"]))
+                    if not ledger.get("stopped"):
+                        maybe_restart()
+                    return 0
+            if games and not already_accounted:
+                subtotal = sum(game["final_score"] for game in games)
+                ledger["rooms"].append({
+                    "room_id": room_id,
+                    "session_log": rel_log,
+                    "audit_dir": os.path.relpath(audit_dir, ROOT),
+                    "download_dir": None,
+                    "terminal_reason": reason,
+                    "settlement_status": "provisional",
+                    "verification_issue": verification_issue,
+                    "room_subtotal": subtotal,
+                    "games": games,
+                })
+                ledger["cumulative_total"] += subtotal
+        if not games or already_accounted:
+            ledger.setdefault("unresolved_sessions", []).append({
+                "session_log": rel_log,
+                "audit_dir": os.path.relpath(audit_dir, ROOT) if audit_dir else None,
+                "room_id": room_id,
+                "terminal_reason": reason,
+                "reason": "room_already_accounted" if already_accounted else "no_complete_game",
+            })
+        ledger["stopped"] = True
+        ledger["last_stop_reason"] = reason
+        ledger["updated_at"] = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+        save_ledger(ledger)
+        print("!! matching_unavailable：房间 %s 已确认 %d 场、已知小计 %d；"
+              "整房结果未获权威确认，停止自动续开" %
+              (room_id or "未知", len(games), sum(g["final_score"] for g in games)))
+        return 3
+
+    if reason in ("tournament_void", "cancelled"):
         print("本房无结算（%s），成绩不计入账本也不计入连败，直接重开。" % reason)
         cfg = json.load(open(RUNTIME_CONFIG, encoding="utf-8"))
         if cfg.get("expected_tournament_id") is not None:
