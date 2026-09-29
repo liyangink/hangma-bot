@@ -5,6 +5,8 @@ from collections import Counter
 from dataclasses import replace
 from pathlib import Path
 
+import pytest
+
 from hangma_bot.adapters.official.dto import parse_state_response
 from hangma_bot.adapters.official.projector import observation, public_event
 from hangma_bot.hangma.engine import HangmaRules, _build_context
@@ -12,7 +14,7 @@ from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.hangma.observation_rules import enrich_observation, reconcile_observation
 from hangma_bot.hangma.route_transition import (
     ConditionalPhase, analyze_given_replacement_draw, apply_given_draw,
-    advance_given_response, project_legal_roots,
+    apply_legal_draw_discard, advance_given_response, project_legal_roots,
 )
 from hangma_bot.kernel.actions import Discard, Gang, GangKind, Hu, Pass, Tile
 from hangma_bot.kernel.config import RuleConfig
@@ -135,13 +137,18 @@ def test_v35_bugang_replacement_and_followup_discard_parity():
     conditional, actual = _same_legal_keys(rules, given, confirmed)
     assert conditional.immediate_settlement is None
     assert "discard:6t" in {candidate.action_key for candidate in actual.legal_candidates}
+    with pytest.raises(ValueError, match="合法动作全集"):
+        apply_legal_draw_discard(conditional, "discard:不存在")
+    with pytest.raises(ValueError, match="合法动作全集"):
+        apply_legal_draw_discard(conditional, "gang:added:2t")
 
-    discard_root = _root(rules, confirmed, "discard:6t")
-    after_discard = discard_root.branches[0].state
+    after_discard = apply_legal_draw_discard(conditional, "discard:6t")
     assert isinstance(next(candidate.action for candidate in actual.legal_candidates
                            if candidate.action_key == "discard:6t"), Discard)
     _same_observable_state(after_discard, discarded)
-    _watermark_is_official_root(after_discard, confirmed)
+    _watermark_is_official_root(after_discard, before)
+    assert after_discard.identity.path[-2:] == ("draw:7t", "discard:6t")
+    assert after_discard.phase is ConditionalPhase.RESPONSE_RESOLUTION
     assert (waiting.chain_count, given.chain_count, after_discard.chain_count) == (1, 1, 0)
 
 

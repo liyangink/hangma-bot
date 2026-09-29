@@ -384,6 +384,8 @@ P74 传输修复：当 `OfficialTransport` 的 `base_url` 主机命中配置的 
 
 **同次合法候选与条件根必须共享可见事实富集。**`HangmaRules.analyze` 会先调用纯函数 `enrich_observation`，从已见连续事件推导能证实的 `chain_piao` 和 `gang_draw`；`project_legal_roots` 在消费原始观察时也执行同一富集，再投影根。它不得修改原始 `PlayerObservation`、补未来事件或改变官方 `seq`。v35 明杠补摸胡反例显示：旧入口若仅富集合法候选、条件根却吃原始 `chain_piao=None`，会列出合法胡但漏掉可计算的 2 番四座结算。现由[自然轨迹对拍](../../review/vip-route-2026-09-30/P2-V35-CONDITIONAL-PARITY.md)验证原始与预富集两种入口结果相同；仍要求调用方传同一次规则分析的候选，不接受来自其他观察或规则配置的候选。
 
+**给定摸牌后的本人弃牌仍须属于同次合法动作全集。**内部 `apply_legal_draw_discard(GivenDrawAnalysis, action_key)` 只接收动作族列出的 `Discard`，与吃碰获裁决后的 `apply_legal_claim_discard` 共用暗牌移除、杠链清零/延续、爆头、抓打圈主、公开河、手牌数与未见容量转移。它不接收“胡”或杠动作，也不将条件路径步号写成官方 `seq`。v35 `1510` 补杠→给定补摸 `7t`→弃 `6t` 的同一路径已与 `1512/1514` 权威后态逐项对拍；该证据只覆盖这一给定轨迹，不表示所有未来摸牌与公开响应已经闭合。
+
 ## 5. 动作提交协议
 
 2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；四白例外已在 v23 修订中取消，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。

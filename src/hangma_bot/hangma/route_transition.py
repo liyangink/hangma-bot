@@ -1047,10 +1047,30 @@ def apply_legal_claim_discard(
                       if item.action_key == action_key_value), None)
     if candidate is None or not isinstance(candidate.action, Discard):
         raise ValueError("弃牌不在本次吃碰后未摸动作全集")
-    state = analysis.source_state
+    return _apply_legal_self_discard(analysis.source_state, candidate.action)
+
+
+def apply_legal_draw_discard(
+    analysis: GivenDrawAnalysis, action_key_value: str,
+) -> ConditionalRouteState:
+    """给定本人普通或杠补摸牌后，执行同次动作族确认的弃牌。"""
+
+    candidate = next((item for item in analysis.legal_candidates
+                      if item.action_key == action_key_value), None)
+    if candidate is None or not isinstance(candidate.action, Discard):
+        raise ValueError("弃牌不在本次给定摸牌合法动作全集")
+    if analysis.source_state.phase is not ConditionalPhase.DRAW_ACTION:
+        raise ValueError("给定摸牌分析的源状态不是本人摸牌动作窗口")
+    return _apply_legal_self_discard(analysis.source_state, candidate.action)
+
+
+def _apply_legal_self_discard(
+    state: ConditionalRouteState, action: Discard,
+) -> ConditionalRouteState:
+    """复用本人弃牌的物理与公开状态转移；合法性由各入口先核对。"""
+
     if state.seat is None or state.public_view is None or state.catch_circle is None:
-        raise ValueError("吃碰后状态缺公开视图、座位或圈主")
-    action = candidate.action
+        raise ValueError("本人弃牌状态缺公开视图、座位或圈主")
     hand = _remove(state.concealed, action.tile.code, 1)
     count, piao = progression.chain_after_action(
         state.chain_count, state.chain_piao, state.baotou, action)
