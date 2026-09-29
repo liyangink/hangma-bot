@@ -18,11 +18,6 @@ from hangma_bot.kernel.config import RuleConfig
 REPO = Path(__file__).resolve().parents[1]
 V18 = "tests/fixtures/official/v18/action-chain/chi-gang-draw.json"
 V35 = "tests/fixtures/official/v35/vip-p2-natural"
-_FUTURE_CONDITION_ISSUES = frozenset({
-    "route_transition.response_resolution",
-    "route_transition.postclaim_resolution",
-    "route_transition.replacement_qualification",
-})
 # (动作前快照 seq, 已执行动作键, 官方动作事件 seq, 后继权威快照 seq)。
 # 这是仅四条轨迹的索引，不是按结果挑选的全域抽样框。
 TRACES = {
@@ -143,15 +138,8 @@ def audit() -> dict:
             for root in roots:
                 gaps = set(root.gap_kinds or (() if root.gap_kind is None else (root.gap_kind,)))
                 issue_areas = [issue.area for issue in root.issues]
-                future_condition_open = any(
-                    area in _FUTURE_CONDITION_ISSUES for area in issue_areas)
-                # 旧 root.gap_kind 把“未来尚未给定”也编码成机械缺口。
-                # 根单步失效须另计；未来事件组合是否全闭合由 P2 矩阵验收。
-                root_projection_mechanical_gap = (
-                    RouteGapKind.MECHANICAL_GAP in gaps
-                    and (not future_condition_open or not root.branches
-                         and root.claim_state is None and root.proposal_state is None)
-                )
+                future_condition_open = root.pending_condition is not None
+                root_projection_mechanical_gap = RouteGapKind.MECHANICAL_GAP in gaps
                 if root.settlement is not None:
                     structure = "settlement"
                 elif root.branches:
@@ -170,8 +158,12 @@ def audit() -> dict:
                     "action_key": root.action_key, "structure": structure,
                     "branch_count": len(root.branches),
                     "mechanical_gap": RouteGapKind.MECHANICAL_GAP in gaps,
+                    "legacy_mechanical_or_future_placeholder": (
+                        RouteGapKind.MECHANICAL_GAP in gaps or future_condition_open),
                     "root_projection_mechanical_gap": root_projection_mechanical_gap,
                     "future_condition_open": future_condition_open,
+                    "pending_condition": (root.pending_condition.value
+                                          if root.pending_condition is not None else None),
                     "input_evidence_gap": RouteGapKind.INPUT_EVIDENCE_GAP in gaps,
                     "issue_areas": issue_areas,
                     "official_pair_anchor": anchored,
@@ -185,6 +177,8 @@ def audit() -> dict:
         matrix.append({"window": window, "family": family, "legal_roots": len(cell),
                        "structures": dict(sorted(structures.items())),
                        "mechanical_gap": sum(r["mechanical_gap"] for r in cell),
+                       "legacy_mechanical_or_future_placeholder": sum(
+                           r["legacy_mechanical_or_future_placeholder"] for r in cell),
                        "root_projection_mechanical_gap": sum(
                            r["root_projection_mechanical_gap"] for r in cell),
                        "future_condition_open": sum(r["future_condition_open"]

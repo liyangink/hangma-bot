@@ -132,13 +132,14 @@ class ConditionalBranch:
 
 @dataclass(frozen=True)
 class ConditionalRoot:
-    """一个合法根的最小机械投影；未闭合的资格用故障和说明保留。"""
+    """合法根的当前机械投影；未来待给定条件与已知故障分别记录。"""
 
     action_key: str
     branches: Tuple[ConditionalBranch, ...]
     settlement: Optional[Settlement] = None
     claim_state: Optional[ConditionalRouteState] = None
     proposal_state: Optional[ConditionalRouteState] = None  # 吃碰尚未获裁决，暗牌未移
+    pending_condition: Optional[ConditionalPhase] = None  # 下一待给定事件，不表示机械故障或已认证闭包
     gap_kind: Optional[RouteGapKind] = None
     gap_kinds: Tuple[RouteGapKind, ...] = ()  # 双轴审计：机械与输入可同时缺失
     issues: Tuple[RuleIssue, ...] = ()
@@ -757,9 +758,7 @@ def project_legal_roots(
                                concealed=context.full_hand(), action=action)
                 roots.append(ConditionalRoot(candidate.action_key, (ConditionalBranch(state),),
                     proposal_state=state,
-                    gap_kind=RouteGapKind.MECHANICAL_GAP,
-                    issues=(RuleIssue("route_transition.response_resolution",
-                                      "过牌后仍须给定响应裁决及后续公开事件"),)))
+                    pending_condition=ConditionalPhase.RESPONSE_RESOLUTION))
                 continue
             if isinstance(action, Discard):
                 hand = _remove(context.full_hand(), action.tile.code, 1)
@@ -772,9 +771,7 @@ def project_legal_roots(
                 state = _refresh_public(state, _append_discard(
                     state.public_view, observation.seat, action.tile))
                 roots.append(ConditionalRoot(candidate.action_key, (ConditionalBranch(state),),
-                    gap_kind=RouteGapKind.MECHANICAL_GAP,
-                    issues=(RuleIssue("route_transition.response_resolution",
-                                      "弃牌后须给定他家响应及后续公开事件"),)))
+                    pending_condition=state.phase))
                 continue
             if isinstance(action, (Chi, Peng)):
                 if observation.last_discard is None:
@@ -845,9 +842,7 @@ def project_legal_roots(
                 roots.append(ConditionalRoot(candidate.action_key, tuple(branches),
                     claim_state=claim_state,
                     proposal_state=proposal_state,
-                    gap_kind=RouteGapKind.MECHANICAL_GAP,
-                    issues=(RuleIssue("route_transition.postclaim_resolution",
-                                      "鸣牌后的全部弃牌已保留；后续响应裁决和摸牌资格待接通"),)))
+                    pending_condition=ConditionalPhase.RESPONSE_RESOLUTION))
                 continue
             if isinstance(action, Gang):
                 amount = {GangKind.CONCEALED: 4, GangKind.EXPOSED: 3,
@@ -872,9 +867,9 @@ def project_legal_roots(
                     state = replace(state, my_peng_codes=tuple(upgraded))
                 roots.append(ConditionalRoot(candidate.action_key, (ConditionalBranch(state),),
                     proposal_state=proposal_state,
-                    gap_kind=RouteGapKind.MECHANICAL_GAP,
-                    issues=(RuleIssue("route_transition.replacement_qualification",
-                                      "杠后补牌未知；给定补牌后的合法动作和结算待接通"),)))
+                    pending_condition=(ConditionalPhase.RESPONSE_RESOLUTION
+                                       if proposal_state is not None
+                                       else ConditionalPhase.REPLACEMENT_DRAW)))
                 continue
             raise ValueError("未知合法动作类型")
         except _MissingObservationEvidence as exc:

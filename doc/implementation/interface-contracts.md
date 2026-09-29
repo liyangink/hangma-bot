@@ -378,6 +378,8 @@ P74 传输修复：当 `OfficialTransport` 的 `base_url` 主机命中配置的 
 
 ### 4.12 P2 条件响应触发牌的内部契约（2026-09-30）
 
+**条件根的下一事件与故障分开记录。**`ConditionalRoot.pending_condition: ConditionalPhase | None` 表示下一待给定的公开裁决、普通摸或杠补摸；这不是已发生事件，也不证明未来组合已闭合。`gap_kind`/`gap_kinds` 只记录当前已知动作或给定条件无法机械投影、输入证据缺失等实际故障。一个根可以有待给定条件且同时有独立输入缺口；只有持续转移和给定条件资格的 P2 矩阵验收，才能宣称该正常动作格完成。有限夹具审计把历史混算列命名为 `legacy_mechanical_or_future_placeholder`，新 `mechanical_gap` 不再把未来未知算入故障。
+
 **给定未来弃牌只有座位和牌值，不得为调用生产合法动作族伪造官方事件序号。**`hangma.internal_types.WindowContext` 追加可空 `conditional_discard: tuple[int, Tile]`。它只在离线条件响应窗口使用：必须是 `response_peng` 或 `response_chi`，座位须等于当前 `turn_seat`，且不得同时填写官方 `last_discard: PublicDiscard`。两种来源经 `response_trigger()` 统一给出 `(seat, tile)`；无触发牌时继续保守降级并记录规则问题。`action_families` 的吃、碰、明杠与 `candidate_facts` 的吃后移牌共用此入口；官方观察经 `_build_context` 仍仅填写 `last_discard`，行为不变。
 
 该内部字段不是 `PlayerObservation`、官方 `PublicEvent` 或 `seq` 的扩展。条件根的合法性只在给定公开弃牌、本人暗牌和窗口事实齐备时成立；他家隐藏手牌的动作仍须作为明示条件或未知裁决处理。P2 仍按[机械矩阵](../../review/vip-route-2026-09-30/P2-MECHANICAL-MATRIX.md)逐格验收，不能因触发牌入口补齐而认定响应后的全部公开事件闭合。`tests/unit/hangma/test_conditional_response_trigger.py` 将条件与官方同牌触发的三类合法动作全集对拍，并验证两种身份不得混填。

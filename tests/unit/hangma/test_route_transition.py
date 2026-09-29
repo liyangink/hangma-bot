@@ -72,7 +72,9 @@ def test_draw_roots_preserve_all_legal_candidates_and_same_source_lifecycle():
     assert roots["discard:东"].branches[0].state.chain_count == 0
     assert roots["discard:东"].branches[0].state.chain_piao == 0
     for key in ("discard:白", "discard:东"):
-        assert roots[key].gap_kind is RouteGapKind.MECHANICAL_GAP
+        assert roots[key].gap_kind is None
+        assert roots[key].gap_kinds == ()
+        assert roots[key].pending_condition is roots[key].branches[0].state.phase
         assert roots[key].branches[0].state.baotou == progression.baotou_after_action(
             True, next(candidate.action for candidate in
                        HangmaRules(RuleConfig("conditional-test", 1, False)).analyze(observation).legal_candidates
@@ -111,6 +113,10 @@ def test_peng_keeps_every_followup_discard_and_pass_keeps_waiting_hand():
     assert all(len(branch.state.concealed) == 10 for branch in roots["peng:1w"].branches)
     assert roots["pass"].branches[0].state.concealed == observation.my_hand
     assert roots["pass"].branches[0].state.phase is ConditionalPhase.RESPONSE_RESOLUTION
+    for key in ("pass", "peng:1w"):
+        assert roots[key].gap_kinds == ()
+        assert roots[key].issues == ()
+        assert roots[key].pending_condition is ConditionalPhase.RESPONSE_RESOLUTION
 
 
 def test_chi_keeps_every_followup_and_exposed_gang_waits_for_replacement():
@@ -126,12 +132,16 @@ def test_chi_keeps_every_followup_and_exposed_gang_waits_for_replacement():
         assert tuple(branch.followup_key for branch in roots[candidate.action_key].branches) == expected
         assert roots[candidate.action_key].claim_state.phase is ConditionalPhase.CLAIM_DISCARD
         assert roots[candidate.action_key].claim_state.my_chi_count == 1
+        assert roots[candidate.action_key].pending_condition is ConditionalPhase.RESPONSE_RESOLUTION
+        assert roots[candidate.action_key].gap_kinds == ()
 
     gang_observation = _observation(
         phase="response_peng", last=PublicDiscard(1, Tile("1w"), 10))
     _, gang_roots = _roots(gang_observation)
     exposed = gang_roots["gang:exposed:1w"].branches[0].state
     assert exposed.phase is ConditionalPhase.REPLACEMENT_DRAW
+    assert gang_roots["gang:exposed:1w"].pending_condition is ConditionalPhase.RESPONSE_RESOLUTION
+    assert gang_roots["gang:exposed:1w"].gap_kinds == ()
     assert exposed.meld_count == 1
     assert len(exposed.concealed) == 10
 
@@ -173,6 +183,8 @@ def test_added_gang_preserves_meld_count_and_rejects_other_rules_config():
     analysis, roots = _roots(observation)
     added = roots["gang:added:1w"].branches[0].state
     assert added.phase is ConditionalPhase.REPLACEMENT_DRAW
+    assert roots["gang:added:1w"].pending_condition is ConditionalPhase.REPLACEMENT_DRAW
+    assert roots["gang:added:1w"].gap_kinds == ()
     assert added.meld_count == 1
     assert len(added.concealed) == 10
     with pytest.raises(ValueError, match="BaseScore"):
@@ -285,20 +297,21 @@ def test_missing_chain_piao_is_input_evidence_gap_not_zero():
     _, roots = _roots(observation)
     root = roots["discard:白"]
     assert root.gap_kind is RouteGapKind.INPUT_EVIDENCE_GAP
-    assert root.gap_kinds == (RouteGapKind.MECHANICAL_GAP, RouteGapKind.INPUT_EVIDENCE_GAP)
+    assert root.gap_kinds == (RouteGapKind.INPUT_EVIDENCE_GAP,)
     assert root.branches[0].state.chain_piao is None
     assert any("链内飘白次数" in issue.reason for issue in root.issues)
 
 
-def test_independent_observation_issue_does_not_hide_mechanical_gap():
+def test_independent_observation_issue_does_not_turn_future_into_mechanical_gap():
     observation = replace(
         _observation(drawn=Tile("南")),
         observation_issues=("独立的公开事实缺项",),
     )
     _, roots = _roots(observation)
     root = roots["discard:东"]
-    assert root.gap_kinds == (RouteGapKind.MECHANICAL_GAP, RouteGapKind.INPUT_EVIDENCE_GAP)
-    assert any("他家响应" in issue.reason for issue in root.issues)
+    assert root.gap_kinds == (RouteGapKind.INPUT_EVIDENCE_GAP,)
+    assert root.pending_condition is ConditionalPhase.RESPONSE_RESOLUTION
+    assert all(issue.area == "route_transition.input_evidence" for issue in root.issues)
 
 
 def test_injected_candidate_hand_conflict_is_mechanical_gap_not_missing_input():
@@ -312,6 +325,23 @@ def test_injected_candidate_hand_conflict_is_mechanical_gap_not_missing_input():
     assert root.gap_kind is RouteGapKind.MECHANICAL_GAP
     assert root.branches == ()
     assert "同次合法事实冲突" in root.issues[0].reason
+
+
+def test_real_root_failure_and_independent_missing_input_keep_both_axes():
+    observation = replace(
+        _observation(drawn=Tile("白")),
+        observation_issues=("独立的公开事实缺项",),
+    )
+    impossible = Gang(Tile("9w"), GangKind.CONCEALED)
+    root = project_legal_roots(
+        observation, _build_context(observation),
+        (RuleCandidate(impossible, action_key(impossible), ("故障注入",)),),
+        config=RuleConfig("conditional-test", 1, False),
+    )[0]
+    assert root.gap_kind is RouteGapKind.MECHANICAL_GAP
+    assert root.gap_kinds == (
+        RouteGapKind.MECHANICAL_GAP, RouteGapKind.INPUT_EVIDENCE_GAP)
+    assert root.pending_condition is None
 
 
 def test_concealed_gang_given_replacement_can_hu_or_continue_by_same_rule_sources():

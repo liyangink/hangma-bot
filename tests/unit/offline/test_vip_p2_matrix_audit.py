@@ -25,7 +25,9 @@ def test_current_official_fixture_matrix_is_reproducible():
     assert (result["official_pair_anchor_count"],
             result["official_pair_state_match_count"]) == (9, 9)
     assert sum(cell["legal_roots"] for cell in result["matrix"]) == 48
-    assert sum(cell["mechanical_gap"] for cell in result["matrix"]) == 47
+    assert sum(cell["mechanical_gap"] for cell in result["matrix"]) == 0
+    assert sum(cell["legacy_mechanical_or_future_placeholder"]
+               for cell in result["matrix"]) == 47
     assert sum(cell["root_projection_mechanical_gap"]
                for cell in result["matrix"]) == 0
     assert sum(cell["future_condition_open"] for cell in result["matrix"]) == 47
@@ -73,7 +75,8 @@ def test_real_root_projection_failure_is_not_counted_as_future_unknown(monkeypat
         roots = list(original(*args, **kwargs))
         if roots and not injected:
             roots[0] = replace(
-                roots[0], branches=(), claim_state=None, proposal_state=None,
+            roots[0], branches=(), claim_state=None, proposal_state=None,
+                pending_condition=None,
                 gap_kind=RouteGapKind.MECHANICAL_GAP,
                 gap_kinds=(RouteGapKind.MECHANICAL_GAP,),
                 issues=(RuleIssue("route_transition.mechanical", "故障注入"),),
@@ -86,3 +89,4 @@ def test_real_root_projection_failure_is_not_counted_as_future_unknown(monkeypat
     assert injected
     assert sum(cell["root_projection_mechanical_gap"]
                for cell in result["matrix"]) == 1
+    assert sum(cell["future_condition_open"] for cell in result["matrix"]) == 46
