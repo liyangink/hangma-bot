@@ -13,9 +13,12 @@ from hangma_bot.hangma.engine import HangmaRules, _build_context
 from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.hangma.observation_rules import enrich_observation, reconcile_observation
 from hangma_bot.hangma.route_transition import (
-    ConditionalPhase, analyze_given_replacement_draw, apply_given_draw,
+    ConditionalIdentity, ConditionalPhase, _state,
+    analyze_given_replacement_draw, apply_given_draw,
     apply_legal_draw_discard, apply_legal_draw_hu,
-    advance_given_response, project_legal_roots,
+    advance_given_other_discard, advance_given_other_draw,
+    advance_given_response, advance_response_state,
+    finish_given_exhaustive_draw, project_legal_roots,
 )
 from hangma_bot.kernel.actions import Discard, Gang, GangKind, Hu, Pass, Tile
 from hangma_bot.kernel.config import RuleConfig
@@ -254,3 +257,100 @@ def test_v35_raw_projection_uses_same_inferable_chain_fact():
     # 生产候选与条件根均在各自入口使用同一可见事实富集；原始快照仍保持
     # chain_piao=None，不能把条件结论写回官方观察或伪造事件序号。
     assert analysis.immediate_settlement is not None
+
+
+def test_v35_other_minggang_replacement_and_discard_public_parity():
+    """本座只见公开牌，给定他座明杠裁决后按原始 v35 轨迹续补摸和弃牌。"""
+
+    data, (before, landed, discarded), events, rules = _case(
+        "other-minggang-1201-1209.json")
+    assert data["seat"] == before.seat == 2
+    assert all(item["tile"] == "" for item in data["public_or_own_events"]
+               if item["type"] == "tile_drawn" and item["seat"] != before.seat)
+    assert tuple(view.snapshot_seq for view in (before, landed, discarded)) == (1201, 1207, 1209)
+    assert next(item for item in events if item.seq == 1206).detail_kind == "ming"
+    assert next(item for item in events if item.seq == 1207).gang_replenish
+    assert before.phase == "response_chi" and before.last_discard is not None
+
+    # 1201 本座不是吃窗响应人：从本座权威观察播种公开条件状态。
+    # 1202 的他座过与 1205/1206 的明杠结果在测试中作为给定公开裁决；
+    # 不把看不见的其余响应选择当成已证历史。
+    seed = _state(before, _build_context(before), ConditionalPhase.RESPONSE_RESOLUTION)
+    seed = replace(seed, identity=ConditionalIdentity(
+        before.game_id, before.round_no, "public-prefix"))
+    chi = advance_response_state(
+        seed, window="response_chi", discard_seat=before.last_discard.seat,
+        discarded_tile=before.last_discard.tile, responding=(0,),
+        choices=((0, Pass()),))
+    assert chi.resolution.status == "resolved"
+    assert chi.state.expected_draw_seat == 0
+    drawn = advance_given_other_draw(chi.state, seat=0)
+    offered = advance_given_other_discard(drawn, seat=0, tile=Tile("1w"))
+    gang = advance_response_state(
+        offered, window="response_peng", discard_seat=0,
+        discarded_tile=Tile("1w"), responding=(1, 2, 3),
+        choices=((1, Gang(Tile("1w"), GangKind.EXPOSED)),
+                 (2, Pass()), (3, Pass())), retained_in_river=False)
+    assert gang.resolution.status == "resolved" and gang.gap_kinds == ()
+    assert gang.state.expected_draw_seat == 1
+    assert gang.state.expected_replacement_draw
+    with pytest.raises(ValueError, match="摸牌来源"):
+        advance_given_other_draw(gang.state, seat=1)
+    replenished = advance_given_other_draw(gang.state, seat=1, replacement=True)
+    _same_observable_state(replenished, landed)
+    _watermark_is_official_root(replenished, before)
+    after = advance_given_other_discard(replenished, seat=1, tile=Tile("1t"))
+    _same_observable_state(after, discarded)
+    _watermark_is_official_root(after, before)
+    assert after.response_trigger == (1, Tile("1t"))
+    assert after.identity.path[-2:] == ("other-replacement-draw:1", "other-discard:1:1t")
+
+
+def test_v35_last_draw_then_full_responses_end_as_draw():
+    """权威 21→20 末墙片段中，不能在碰吃响应完成前抢先流局。"""
+
+    data, (before, offered, settled), events, rules = _case(
+        "exhaustive-draw-1147-1159.json")
+    assert data["seat"] == before.seat == 0
+    assert tuple(view.snapshot_seq for view in (before, offered, settled)) == (
+        1147, 1154, 1159)
+    assert (before.remaining_tile_count, offered.remaining_tile_count,
+            settled.remaining_tile_count) == (21, 20, 20)
+    assert all(item["tile"] == "" for item in data["public_or_own_events"]
+               if item["type"] == "tile_drawn" and item["seat"] != before.seat)
+    ended_event = next(item for item in events if item.kind == "round_ended")
+    assert ended_event.result_draw and ended_event.result_scores == (0, 0, 0, 0)
+
+    root = _root(rules, before, "discard:南")
+    after_own_discard = root.branches[0].state
+    first_peng = advance_response_state(
+        after_own_discard, window="response_peng", discard_seat=0,
+        discarded_tile=Tile("南"), responding=(1, 2, 3),
+        choices=((1, Pass()), (2, Pass()), (3, Pass())))
+    first_chi = advance_response_state(
+        first_peng.state, window="response_chi", discard_seat=0,
+        discarded_tile=Tile("南"), responding=(1,), choices=((1, Pass()),))
+    assert first_chi.state.expected_draw_seat == 1
+    other_draw = advance_given_other_draw(first_chi.state, seat=1)
+    assert other_draw.wall_remaining == 20
+    after_other_discard = advance_given_other_discard(
+        other_draw, seat=1, tile=Tile("9w"))
+    _same_observable_state(after_other_discard, offered)
+    with pytest.raises(ValueError, match="已裁决"):
+        finish_given_exhaustive_draw(after_other_discard)
+    second_peng = advance_response_state(
+        after_other_discard, window="response_peng", discard_seat=1,
+        discarded_tile=Tile("9w"), responding=(2, 3, 0),
+        choices=((2, Pass()), (3, Pass()), (0, Pass())))
+    second_chi = advance_response_state(
+        second_peng.state, window="response_chi", discard_seat=1,
+        discarded_tile=Tile("9w"), responding=(2,), choices=((2, Pass()),))
+    assert second_chi.state.expected_draw_seat == 2
+    terminal = finish_given_exhaustive_draw(second_chi.state)
+    assert terminal.phase is ConditionalPhase.TERMINAL
+    assert terminal.terminal_result is not None
+    assert terminal.terminal_result.is_draw
+    assert terminal.terminal_result.score_delta == ended_event.result_scores
+    assert terminal.public_view.remaining_tile_count == settled.remaining_tile_count
+    assert terminal.public_view.discards == settled.discards
+    _watermark_is_official_root(terminal, before)
