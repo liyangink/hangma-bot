@@ -14,7 +14,8 @@ from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.hangma.observation_rules import enrich_observation, reconcile_observation
 from hangma_bot.hangma.route_transition import (
     ConditionalPhase, analyze_given_replacement_draw, apply_given_draw,
-    apply_legal_draw_discard, advance_given_response, project_legal_roots,
+    apply_legal_draw_discard, apply_legal_draw_hu,
+    advance_given_response, project_legal_roots,
 )
 from hangma_bot.kernel.actions import Discard, Gang, GangKind, Hu, Pass, Tile
 from hangma_bot.kernel.config import RuleConfig
@@ -136,6 +137,8 @@ def test_v35_bugang_replacement_and_followup_discard_parity():
     assert confirmed.chain_piao == 0 and confirmed.gang_draw is True
     conditional, actual = _same_legal_keys(rules, given, confirmed)
     assert conditional.immediate_settlement is None
+    with pytest.raises(ValueError, match="合法动作全集"):
+        apply_legal_draw_hu(conditional)
     assert "discard:6t" in {candidate.action_key for candidate in actual.legal_candidates}
     with pytest.raises(ValueError, match="合法动作全集"):
         apply_legal_draw_discard(conditional, "discard:不存在")
@@ -212,6 +215,18 @@ def test_v35_minggang_replacement_hu_and_four_seat_settlement_parity():
     result = conditional.immediate_settlement
     assert result is not None
     assert result == authoritative_result
+    with pytest.raises(ValueError, match="已证四座结算"):
+        apply_legal_draw_hu(replace(conditional, immediate_settlement=None))
+    ended = apply_legal_draw_hu(conditional)
+    assert ended.phase is ConditionalPhase.TERMINAL
+    assert ended.terminal_result is not None
+    assert (ended.terminal_result.winner_seat, ended.terminal_result.is_draw,
+            ended.terminal_result.fan, ended.terminal_result.details,
+            ended.terminal_result.score_delta) == (
+        before.seat, False, terminal.result_fan, terminal.result_details,
+        terminal.result_scores)
+    _watermark_is_official_root(ended, before)
+    assert ended.identity.path[-1] == "hu"
 
 
 def test_v35_raw_projection_uses_same_inferable_chain_fact():

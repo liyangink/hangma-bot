@@ -604,9 +604,16 @@ def end_as_draw(state: ProgressionState) -> ProgressionState:
         responding=(),
         last_discard=None,
         pending_draw=None,
-        hand_result=HandResult(
-            winner_seat=None, is_draw=True, fan=0, details=(), score_delta=(0, 0, 0, 0)
-        ),
+        hand_result=exhaustive_draw_result(),
+    )
+
+
+def exhaustive_draw_result() -> HandResult:
+    """可摸区耗尽的同源流局结算：无胜者、无支付，庄家由调用方连庄。"""
+
+    return HandResult(
+        winner_seat=None, is_draw=True, fan=0, details=(),
+        score_delta=(0, 0, 0, 0),
     )
 
 

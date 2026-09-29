@@ -19,6 +19,8 @@ from hangma_bot.hangma.route_transition import (
     analyze_given_self_draw, apply_given_draw, apply_legal_followup_gang,
     apply_legal_claim_discard, advance_given_response, advance_response_state,
     advance_given_other_draw, advance_given_other_discard,
+    advance_given_other_gang,
+    finish_given_exhaustive_draw,
     given_next_normal_draw,
     project_legal_roots,
 )
@@ -503,6 +505,130 @@ def test_given_peng_resolution_updates_current_view_and_every_tile_capacity(reta
     assert after_discard.public_view.discards[0][-1] == Tile("东")
     assert after_discard.public_view.hand_counts[0] == observation.hand_counts[0] - 3
     assert after_discard.public_view.snapshot_seq == observation.snapshot_seq
+
+
+def test_other_exposed_gang_requires_replacement_draw_before_discard():
+    """他座明杠公开获裁决后，必须接补摸，不能误走普通摸或直接跟打。"""
+
+    before = replace(
+        _observation(
+            phase="response_peng", last=PublicDiscard(1, Tile("1w"), 10),
+            hand=("2w", "2w", "3w", "4w", "5w", "6w", "7w",
+                  "8w", "9w", "东", "南", "西", "北")),
+        discards=((), (Tile("1w"),), (), ()),
+    )
+    _, roots = _roots(before)
+    result = advance_given_response(
+        roots["pass"], window="response_peng", discard_seat=1,
+        discarded_tile=Tile("1w"), responding=(2, 3, 0),
+        choices=((2, Gang(Tile("1w"), GangKind.EXPOSED)),
+                 (3, Pass()), (0, Pass())), retained_in_river=False)
+    assert result.resolution.status == "resolved"
+    assert result.gap_kinds == ()
+    waiting = result.state
+    assert waiting.phase is ConditionalPhase.PUBLIC_WAIT
+    assert waiting.expected_draw_seat == 2 and waiting.expected_replacement_draw
+    assert waiting.public_view.melds[2][-1].kind == "gang_ming"
+    assert waiting.public_view.hand_counts[2] == 10
+    with pytest.raises(ValueError, match="摸牌来源"):
+        advance_given_other_draw(waiting, seat=2)
+    with pytest.raises(ValueError, match="当前行动座位"):
+        advance_given_other_discard(waiting, seat=2, tile=Tile("9b"))
+    drawn = advance_given_other_draw(waiting, seat=2, replacement=True)
+    assert drawn.public_view.hand_counts[2] == 11
+    assert drawn.wall_remaining == before.remaining_tile_count - 1
+    assert drawn.expected_discard_seat == 2
+    discarded = advance_given_other_discard(drawn, seat=2, tile=Tile("9b"))
+    assert discarded.phase is ConditionalPhase.RESPONSE_RESOLUTION
+    assert discarded.response_trigger == (2, Tile("9b"))
+    assert discarded.public_view.snapshot_seq == before.snapshot_seq
+
+
+def test_other_concealed_gang_after_normal_draw_preserves_unknown_hand():
+    """他座已给定暗杠只改变公开副露和手牌数，不借牌码推断其余暗牌。"""
+
+    before = _observation(drawn=Tile("白"))
+    _, roots = _roots(before)
+    waiting = roots["discard:白"].branches[0].state
+    drawn = advance_given_other_draw(waiting, seat=1)
+    with pytest.raises(ValueError, match="当前行动座位"):
+        advance_given_other_gang(waiting, seat=1,
+                                 action=Gang(Tile("9b"), GangKind.CONCEALED))
+    pending = advance_given_other_gang(
+        drawn, seat=1, action=Gang(Tile("9b"), GangKind.CONCEALED))
+    assert pending.public_view.melds[1][-1].kind == "gang_an"
+    assert pending.public_view.hand_counts[1] == drawn.public_view.hand_counts[1] - 4
+    assert pending.expected_draw_seat == 1 and pending.expected_replacement_draw
+    assert pending.wall_remaining == drawn.wall_remaining
+    assert pending.concealed == waiting.concealed
+    with pytest.raises(ValueError, match="摸牌来源"):
+        advance_given_other_draw(pending, seat=1)
+    replenished = advance_given_other_draw(pending, seat=1, replacement=True)
+    assert replenished.public_view.hand_counts[1] == drawn.public_view.hand_counts[1] - 3
+    assert replenished.wall_remaining == drawn.wall_remaining - 1
+    with pytest.raises(ValueError, match="公开容量冲突"):
+        advance_given_other_gang(
+            replenished, seat=1,
+            action=Gang(Tile("9b"), GangKind.CONCEALED))
+
+
+def test_other_added_gang_upgrades_awarded_peng_without_new_hidden_fact():
+    """给定他座已领我方弃牌，再给定补杠，沿用原碰的供牌证据。"""
+
+    before = _observation(drawn=Tile("2b"))
+    _, roots = _roots(before)
+    awarded = advance_given_response(
+        roots["discard:2b"], window="response_peng", discard_seat=0,
+        discarded_tile=Tile("2b"), responding=(1, 2, 3),
+        choices=((1, Peng(Tile("2b"))), (2, Pass()), (3, Pass())),
+        retained_in_river=False)
+    assert awarded.resolution.status == "resolved"
+    claim = awarded.state
+    assert claim.expected_discard_seat == 1
+    assert claim.unseen_capacities[CANONICAL_TILE_INDEX["2b"]] == 1
+    assert claim.unseen_evidence[CANONICAL_TILE_INDEX["2b"]] == "exact"
+    added = advance_given_other_gang(
+        claim, seat=1, action=Gang(Tile("2b"), GangKind.ADDED))
+    assert len(added.public_view.melds[1]) == 1
+    assert added.public_view.melds[1][0].kind == "gang_bu"
+    assert added.public_view.melds[1][0].from_seat == 0
+    assert added.public_view.claim_evidence == claim.public_view.claim_evidence
+    assert added.public_view.hand_counts[1] == claim.public_view.hand_counts[1] - 1
+    assert added.expected_replacement_draw and added.expected_draw_seat == 1
+    assert added.unseen_capacities[CANONICAL_TILE_INDEX["2b"]] == 0
+    with pytest.raises(ValueError, match="受限他座不能补杠"):
+        advance_given_other_gang(
+            replace(claim, catch_circle=progression.CatchPlayState(True, 0)),
+            seat=1, action=Gang(Tile("2b"), GangKind.ADDED))
+
+
+def test_exhaustive_draw_waits_for_responses_then_uses_shared_zero_settlement():
+    """最后可摸区结束仍须先裁决碰吃；流局按同源规则零支付。"""
+
+    before = replace(_observation(drawn=Tile("2b")), remaining_tile_count=20)
+    _, roots = _roots(before)
+    discarded = roots["discard:2b"].branches[0].state
+    with pytest.raises(ValueError, match="已裁决"):
+        finish_given_exhaustive_draw(discarded)
+    peng_pass = advance_response_state(
+        discarded, window="response_peng", discard_seat=0,
+        discarded_tile=Tile("2b"), responding=(1, 2, 3),
+        choices=((1, Pass()), (2, Pass()), (3, Pass())))
+    assert peng_pass.state.phase is ConditionalPhase.RESPONSE_RESOLUTION
+    with pytest.raises(ValueError, match="已裁决"):
+        finish_given_exhaustive_draw(peng_pass.state)
+    chi_pass = advance_response_state(
+        peng_pass.state, window="response_chi", discard_seat=0,
+        discarded_tile=Tile("2b"), responding=(1,), choices=((1, Pass()),))
+    pending = chi_pass.state
+    assert pending.phase is ConditionalPhase.PUBLIC_WAIT
+    assert pending.expected_draw_seat == 1
+    ended = finish_given_exhaustive_draw(pending)
+    assert ended.phase is ConditionalPhase.TERMINAL
+    assert ended.terminal_result == progression.exhaustive_draw_result()
+    assert ended.terminal_result.score_delta == (0, 0, 0, 0)
+    assert ended.public_view == pending.public_view
+    assert ended.identity.path[-1] == "exhaustive-draw"
 
 
 def test_given_response_missing_member_wrong_trigger_and_multi_claim_stay_visible():

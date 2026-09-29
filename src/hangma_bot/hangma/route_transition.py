@@ -85,6 +85,8 @@ class ConditionalRouteState:
     response_public_discard: Optional[PublicDiscard] = None  # 仅已有官方弃牌带原 seq
     expected_draw_seat: Optional[int] = None  # 已裁决下一普通摸牌座位，非牌墙预言
     expected_discard_seat: Optional[int] = None  # 已获吃碰或摸牌后应行动的他座
+    expected_replacement_draw: bool = False  # 他座已给定杠后下一摸须为补牌
+    terminal_result: Optional[progression.HandResult] = None  # 已确认局末；四座积分顺序 0—3
     structural_only: bool = False  # 未裁决吃碰的预列弃牌分支，禁止作为已生效事件状态
     local_witness_only: bool = False  # 无完整公开事件前缀的旧一次摸牌见证
     claim_awarded: bool = False  # 吃碰成功条件需经给定裁决确认
@@ -95,6 +97,14 @@ class ConditionalRouteState:
         if self.phase in (ConditionalPhase.NORMAL_DRAW, ConditionalPhase.REPLACEMENT_DRAW):
             if self.drawn_tile is not None:
                 raise ValueError("待摸状态不能预填未来牌")
+        if self.expected_replacement_draw and (
+            self.phase is not ConditionalPhase.PUBLIC_WAIT
+            or self.expected_draw_seat is None
+            or self.expected_discard_seat is not None
+        ):
+            raise ValueError("他座杠补待摸必须有唯一待摸座位且不能已进入弃牌")
+        if (self.phase is ConditionalPhase.TERMINAL) != (self.terminal_result is not None):
+            raise ValueError("条件终局阶段和局末结果必须同时成立")
         if self.unseen_capacities is not None and len(self.unseen_capacities) != 34:
             raise ValueError("条件状态的未见容量必须按规范牌序含 34 项")
         if self.unseen_capacities is not None and any(
@@ -254,7 +264,7 @@ def _claim_public_view(
     )
 
 
-def _own_gang_public_view(
+def _seat_gang_public_view(
     view: PublicTileView, seat: int, action: Gang,
 ) -> PublicTileView:
     """已执行暗杠/补杠的公开副露；补杠保留原碰供牌归属。"""
@@ -412,20 +422,21 @@ def advance_given_response(
         response_public_discard=(
             state.response_public_discard
             if resolution.next_window == "response_chi" else None),
-        expected_draw_seat=(resolution.next_draw_seat if phase in (
-            ConditionalPhase.NORMAL_DRAW, ConditionalPhase.PUBLIC_WAIT) else None),
+        expected_draw_seat=(
+            resolution.claim_seat
+            if phase is ConditionalPhase.PUBLIC_WAIT
+            and isinstance(resolution.claim_action, Gang)
+            else (resolution.next_draw_seat if phase in (
+                ConditionalPhase.NORMAL_DRAW, ConditionalPhase.PUBLIC_WAIT) else None)),
         expected_discard_seat=(
             resolution.claim_seat
             if phase is ConditionalPhase.PUBLIC_WAIT
             and isinstance(resolution.claim_action, (Chi, Peng)) else None),
+        expected_replacement_draw=(
+            phase is ConditionalPhase.PUBLIC_WAIT
+            and isinstance(resolution.claim_action, Gang)),
     )
     state = _refresh_public(state, view)
-    if (phase is ConditionalPhase.PUBLIC_WAIT
-            and isinstance(resolution.claim_action, Gang)):
-        return GivenResponseTransition(
-            resolution, state, (RouteGapKind.MECHANICAL_GAP,),
-            (RuleIssue("route_transition.other_gang",
-                       "他座明杠后的补牌及后续动作尚无条件事件入口"),))
     return GivenResponseTransition(resolution, state)
 
 
@@ -512,9 +523,9 @@ def advance_response_state(
 
 
 def advance_given_other_draw(
-    state: ConditionalRouteState, *, seat: int,
+    state: ConditionalRouteState, *, seat: int, replacement: bool = False,
 ) -> ConditionalRouteState:
-    """给定他座普通摸牌已发生；只更新公开手牌数和墙余，不填其暗牌值。"""
+    """给定他座普通摸或杠补已发生；只更新公开张数，不填其暗牌值。"""
 
     if state.phase is not ConditionalPhase.PUBLIC_WAIT:
         raise ValueError("他座摸牌只能接在公开等待状态之后")
@@ -524,7 +535,10 @@ def advance_given_other_draw(
         raise ValueError("给定他座摸牌座位无效")
     if state.expected_draw_seat != seat:
         raise ValueError("给定他座摸牌与已裁决的下一摸座位不一致")
-    if state.wall_remaining is None or state.wall_remaining <= 20:
+    if replacement is not state.expected_replacement_draw:
+        raise ValueError("给定他座摸牌来源与待摸阶段不一致")
+    if (state.wall_remaining is None
+            or state.wall_remaining <= action_families.WALL_RESERVE_TILES):
         raise ValueError("缺可摸墙余或已进入保留区")
     view = state.public_view
     if view.remaining_tile_count != state.wall_remaining:
@@ -537,9 +551,73 @@ def advance_given_other_draw(
     next_state = replace(
         state, wall_remaining=state.wall_remaining - 1,
         expected_draw_seat=None, expected_discard_seat=seat,
-        identity=state.identity.step("other-draw:" + str(seat)),
+        expected_replacement_draw=False,
+        identity=state.identity.step(
+            ("other-replacement-draw:" if replacement else "other-draw:")
+            + str(seat)),
     )
     return _refresh_public(next_state, view)
+
+
+def advance_given_other_gang(
+    state: ConditionalRouteState, *, seat: int, action: Gang,
+) -> ConditionalRouteState:
+    """给定他座已发生的暗杠/补杠公开事件，保留其暗牌内容未知。"""
+
+    if state.phase is not ConditionalPhase.PUBLIC_WAIT:
+        raise ValueError("他座杠只能接在公开等待状态之后")
+    if state.seat is None or state.public_view is None or state.identity is None:
+        raise ValueError("条件状态缺公开视图、本人座位或身份")
+    if seat not in range(4) or seat == state.seat or state.expected_discard_seat != seat:
+        raise ValueError("他座杠与已裁决当前行动座位不一致")
+    if action.kind not in (GangKind.CONCEALED, GangKind.ADDED) or is_wealth(action.tile):
+        raise ValueError("他座公开杠事件只接受非白暗杠或补杠")
+    if state.catch_circle is None:
+        raise ValueError("他座杠缺抓打圈主证据")
+    if (action.kind is GangKind.ADDED and state.catch_circle.active
+            and state.catch_circle.owner != seat):
+        raise ValueError("抓打圈内受限他座不能补杠")
+    if (state.wall_remaining is None
+            or state.wall_remaining <= action_families.WALL_RESERVE_TILES):
+        raise ValueError("缺可杠墙余或已进入保留区")
+    amount = 4 if action.kind is GangKind.CONCEALED else 1
+    index = TILE_INDEX[action.tile.code]
+    if (state.unseen_capacities is None or state.unseen_evidence is None
+            or state.unseen_evidence[index] != "exact"):
+        raise ValueError("他座杠所需牌码的公开容量证据不精确")
+    capacity = state.unseen_capacities[index]
+    if capacity is None or capacity < amount:
+        raise ValueError("他座杠与已知公开容量冲突")
+    if state.public_view.remaining_tile_count != state.wall_remaining:
+        raise ValueError("条件视图墙余与状态不一致")
+    view = _seat_gang_public_view(state.public_view, seat, action)
+    next_state = replace(
+        state, expected_discard_seat=None, expected_draw_seat=seat,
+        expected_replacement_draw=True,
+        identity=state.identity.step("other-gang:" + str(seat) + ":" + action_key(action)),
+    )
+    return _refresh_public(next_state, view)
+
+
+def finish_given_exhaustive_draw(state: ConditionalRouteState) -> ConditionalRouteState:
+    """响应已裁决且下一普通摸牌因可摸区耗尽而流局，不预结束响应窗。"""
+
+    if state.public_view is None or state.identity is None:
+        raise ValueError("流局条件状态缺公开视图或本地身份")
+    if state.phase not in (ConditionalPhase.NORMAL_DRAW, ConditionalPhase.PUBLIC_WAIT):
+        raise ValueError("流局只能接已裁决的下一普通摸牌请求")
+    if (state.expected_draw_seat is None or state.expected_discard_seat is not None
+            or state.expected_replacement_draw):
+        raise ValueError("流局仍有未完成动作或杠补摸请求")
+    if state.wall_remaining != action_families.WALL_RESERVE_TILES:
+        raise ValueError("可摸区边界不是精确保留张数")
+    if state.public_view.remaining_tile_count != state.wall_remaining:
+        raise ValueError("条件视图墙余与流局状态不一致")
+    return replace(
+        state, phase=ConditionalPhase.TERMINAL,
+        expected_draw_seat=None, terminal_result=progression.exhaustive_draw_result(),
+        identity=state.identity.step("exhaustive-draw"),
+    )
 
 
 def advance_given_other_discard(
@@ -781,7 +859,7 @@ def project_legal_roots(
                                concealed=hand, meld_count=melds, action=action)
                 proposal_state = None
                 if action.kind is not GangKind.EXPOSED:
-                    state = _refresh_public(state, _own_gang_public_view(
+                    state = _refresh_public(state, _seat_gang_public_view(
                         state.public_view, observation.seat, action))
                 else:
                     proposal_state = _state(
@@ -873,7 +951,8 @@ def apply_given_draw(state: ConditionalRouteState, tile: Tile, *, replacement: b
                 else ConditionalPhase.NORMAL_DRAW)
     if state.phase is not expected:
         raise ValueError("条件摸牌来源与待摸阶段不符")
-    if state.wall_remaining is not None and state.wall_remaining <= 20:
+    if (state.wall_remaining is not None
+            and state.wall_remaining <= action_families.WALL_RESERVE_TILES):
         raise ValueError("已进入保留区，不能假定继续摸牌")
     if state.unseen_capacities is None:
         raise ValueError("给定摸牌缺公开未见容量证据")
@@ -1064,6 +1143,27 @@ def apply_legal_draw_discard(
     return _apply_legal_self_discard(analysis.source_state, candidate.action)
 
 
+def apply_legal_draw_hu(analysis: GivenDrawAnalysis) -> ConditionalRouteState:
+    """给定本人摸牌后按同次合法胡及已证结算进入条件终局。"""
+
+    if not any(isinstance(item.action, Hu) for item in analysis.legal_candidates):
+        raise ValueError("胡不在本次给定摸牌合法动作全集")
+    if analysis.immediate_settlement is None:
+        raise ValueError("给定摸牌合法胡缺已证四座结算")
+    state = analysis.source_state
+    if (state.phase is not ConditionalPhase.DRAW_ACTION or state.seat is None
+            or state.identity is None):
+        raise ValueError("给定摸牌胡缺本人动作状态、座位或本地身份")
+    result = analysis.immediate_settlement
+    return replace(
+        state, phase=ConditionalPhase.TERMINAL,
+        terminal_result=progression.HandResult(
+            winner_seat=state.seat, is_draw=False, fan=result.fan,
+            details=result.details, score_delta=result.score_delta),
+        identity=state.identity.step("hu"),
+    )
+
+
 def _apply_legal_self_discard(
     state: ConditionalRouteState, action: Discard,
 ) -> ConditionalRouteState:
@@ -1152,6 +1252,6 @@ def apply_legal_followup_gang(
         claim_awarded=state.claim_awarded,
     )
     if state.public_view is not None and state.seat is not None:
-        return _refresh_public(next_state, _own_gang_public_view(
+        return _refresh_public(next_state, _seat_gang_public_view(
             state.public_view, state.seat, action))
     return next_state
