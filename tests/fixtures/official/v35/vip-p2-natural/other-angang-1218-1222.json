@@ -1,0 +1,394 @@
+{
+  "schema_version": 1,
+  "evidence_type": "own-seat-state-and-public-events",
+  "scenario": "他座暗杠→杠补摸→立即胡；本座只核公开副露与墙余，不推他家暗牌",
+  "game_id": "a_249948268dab_r1_b5_t0",
+  "seat": 2,
+  "provenance": {
+    "state_audit_file": "artifacts/sessions/r18-sse-freematch-campaign-20260925b/audit/runs/run-299a9fb4b549465e8e4f8c59e0b46d29/participants/u_13495c3d79c8/raw/a_249948268dab_r1_b5_t0.00001.jsonl.gz",
+    "state_audit_sha256": "a00aa508932c4efb99118b1e68a8aa364a3f8d9b79a35e89004a61356ddcef8d",
+    "state_audit_line_basis": "解压后 JSONL 的 1 起始行号",
+    "official_events_file": "artifacts/sessions/r18-sse-freematch-campaign-20260925b/official/dl-0b4d748a5a4944d08fbfbbcf0d6594ff/events.json",
+    "official_events_sha256": "7c9339fec3cc802ddc89e7095e35683a03d3c6937ffcedd59d048b191737fdda",
+    "official_events_source_file": "artifacts/sessions/r18-sse-freematch-campaign-20260925b/official/dl-0b4d748a5a4944d08fbfbbcf0d6594ff/source.json",
+    "official_events_captured_at": "2026-09-28T10:47:23.498231+00:00",
+    "run_manifest_file": "artifacts/sessions/r18-sse-freematch-campaign-20260925b/audit/runs/run-299a9fb4b549465e8e4f8c59e0b46d29/manifest.json",
+    "run_manifest_sha256": "79f6436bf357a9e5b7b2dc2f0c92b3e4e6371aa042b7756df95e99e15e2b31cd",
+    "guide_version": 35,
+    "guide_updated_at": "2026-09-23",
+    "rule_config": {
+      "base_score": 1,
+      "you_cai_bi_kao": false,
+      "ruleset_version": "hangma-mvp-v10-public-counts"
+    },
+    "official_events_file_line": 1
+  },
+  "state_responses": [
+    {
+      "source_line": 1856,
+      "response": {
+        "seq": 1218,
+        "gap": false,
+        "snapshot": {
+          "game_id": "a_249948268dab_r1_b5_t0",
+          "phase": "response_chi",
+          "round_no": 5,
+          "dealer": 3,
+          "turn": 2,
+          "waited_seat": 3,
+          "responding_seats": [
+            3
+          ],
+          "window_deadline_ms": 1790592132714,
+          "wall_remaining": 61,
+          "discards": [
+            [
+              "西",
+              "北",
+              "南",
+              "南",
+              "中"
+            ],
+            [
+              "南",
+              "2b",
+              "1t",
+              "8t",
+              "1t"
+            ],
+            [
+              "1b",
+              "7w",
+              "9t",
+              "8b",
+              "2b",
+              "9t"
+            ],
+            [
+              "西",
+              "北",
+              "9t",
+              "9w",
+              "8b",
+              "中"
+            ]
+          ],
+          "melds": [
+            [
+              {
+                "kind": "chi",
+                "tiles": [
+                  "8t",
+                  "9t",
+                  "7t"
+                ]
+              }
+            ],
+            [
+              {
+                "kind": "gang_ming",
+                "tiles": [
+                  "1w",
+                  "1w",
+                  "1w",
+                  "1w"
+                ]
+              }
+            ],
+            [
+              {
+                "kind": "chi",
+                "tiles": [
+                  "2t",
+                  "3t",
+                  "4t"
+                ]
+              }
+            ],
+            [
+              {
+                "kind": "peng",
+                "tiles": [
+                  "发",
+                  "发",
+                  "发"
+                ]
+              }
+            ]
+          ],
+          "hand_counts": [
+            10,
+            10,
+            10,
+            10
+          ],
+          "my_hand": [
+            "4b",
+            "2w",
+            "4w",
+            "5t",
+            "东",
+            "东",
+            "5t",
+            "5b",
+            "4w",
+            "4w"
+          ],
+          "seat": 2,
+          "last_discard": "9t",
+          "drawn_tile": "",
+          "god": {
+            "baotou": false,
+            "chain_count": 0,
+            "catch_play": false,
+            "god_discarder_seat": -1
+          },
+          "scores": [
+            -32,
+            -25,
+            -25,
+            82
+          ]
+        },
+        "events": null,
+        "pending": false,
+        "finished": false
+      }
+    },
+    {
+      "source_line": 1861,
+      "response": {
+        "seq": 1222,
+        "gap": false,
+        "snapshot": {
+          "game_id": "a_249948268dab_r1_b5_t0",
+          "phase": "settled",
+          "round_no": 5,
+          "dealer": 3,
+          "turn": 3,
+          "waited_seat": -1,
+          "wall_remaining": 59,
+          "discards": [
+            [
+              "西",
+              "北",
+              "南",
+              "南",
+              "中"
+            ],
+            [
+              "南",
+              "2b",
+              "1t",
+              "8t",
+              "1t"
+            ],
+            [
+              "1b",
+              "7w",
+              "9t",
+              "8b",
+              "2b",
+              "9t"
+            ],
+            [
+              "西",
+              "北",
+              "9t",
+              "9w",
+              "8b",
+              "中"
+            ]
+          ],
+          "melds": [
+            [
+              {
+                "kind": "chi",
+                "tiles": [
+                  "8t",
+                  "9t",
+                  "7t"
+                ]
+              }
+            ],
+            [
+              {
+                "kind": "gang_ming",
+                "tiles": [
+                  "1w",
+                  "1w",
+                  "1w",
+                  "1w"
+                ]
+              }
+            ],
+            [
+              {
+                "kind": "chi",
+                "tiles": [
+                  "2t",
+                  "3t",
+                  "4t"
+                ]
+              }
+            ],
+            [
+              {
+                "kind": "peng",
+                "tiles": [
+                  "发",
+                  "发",
+                  "发"
+                ]
+              },
+              {
+                "kind": "gang_an",
+                "tiles": [
+                  "3b",
+                  "3b",
+                  "3b",
+                  "3b"
+                ]
+              }
+            ]
+          ],
+          "hand_counts": [
+            10,
+            10,
+            10,
+            8
+          ],
+          "my_hand": [
+            "4b",
+            "2w",
+            "4w",
+            "5t",
+            "东",
+            "东",
+            "5t",
+            "5b",
+            "4w",
+            "4w"
+          ],
+          "seat": 2,
+          "last_discard": "9t",
+          "drawn_tile": "",
+          "god": {
+            "baotou": false,
+            "chain_count": 0,
+            "catch_play": false,
+            "god_discarder_seat": -1
+          },
+          "scores": [
+            -48,
+            -41,
+            -41,
+            130
+          ]
+        },
+        "events": null,
+        "pending": false,
+        "finished": false
+      }
+    }
+  ],
+  "successful_action_receipts": [],
+  "public_or_own_events": [
+    {
+      "seq": 1218,
+      "type": "pass",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790592131
+    },
+    {
+      "seq": 1219,
+      "type": "tile_drawn",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790592132
+    },
+    {
+      "seq": 1220,
+      "type": "gang",
+      "seat": 3,
+      "tile": "3b",
+      "data": {
+        "kind": "an"
+      },
+      "ts": 1790592133
+    },
+    {
+      "seq": 1221,
+      "type": "tile_drawn",
+      "seat": 3,
+      "tile": "",
+      "data": {
+        "gang_replenish": true
+      },
+      "ts": 1790592133
+    },
+    {
+      "seq": 1222,
+      "type": "round_ended",
+      "seat": 3,
+      "tile": "",
+      "data": {
+        "dealer": 3,
+        "detail": [
+          "平胡",
+          "杠开"
+        ],
+        "draw": false,
+        "fan": 2,
+        "round_no": 5,
+        "scores": [
+          -16,
+          -16,
+          -16,
+          48
+        ]
+      },
+      "ts": 1790592133
+    }
+  ],
+  "limitations": [
+    "赛后他座普通摸及杠补摸的具体牌值从输入夹具置空；本座不能据此验他家胡牌合法性或重算番。",
+    "只核他座暗杠和补摸后的公开牌面、手牌数与墙余；他座立即胡的四座结算仅作官方结果标签。",
+    "未执行备选动作与未来牌墙不在夹具内。"
+  ],
+  "public_or_own_event_refs": [
+    {
+      "seq": 1218,
+      "source_json_pointers": [
+        "/blocks/11/events/18"
+      ]
+    },
+    {
+      "seq": 1219,
+      "source_json_pointers": [
+        "/blocks/11/events/19"
+      ]
+    },
+    {
+      "seq": 1220,
+      "source_json_pointers": [
+        "/blocks/11/events/20"
+      ]
+    },
+    {
+      "seq": 1221,
+      "source_json_pointers": [
+        "/blocks/11/events/21"
+      ]
+    },
+    {
+      "seq": 1222,
+      "source_json_pointers": [
+        "/blocks/11/events/22"
+      ]
+    }
+  ]
+}

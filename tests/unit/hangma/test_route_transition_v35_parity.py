@@ -17,6 +17,7 @@ from hangma_bot.hangma.route_transition import (
     analyze_given_replacement_draw, apply_given_draw,
     apply_legal_draw_discard, apply_legal_draw_hu,
     advance_given_other_discard, advance_given_other_draw,
+    advance_given_other_gang,
     advance_given_response, advance_response_state,
     finish_given_exhaustive_draw, project_legal_roots,
 )
@@ -354,3 +355,74 @@ def test_v35_last_draw_then_full_responses_end_as_draw():
     assert terminal.public_view.remaining_tile_count == settled.remaining_tile_count
     assert terminal.public_view.discards == settled.discards
     _watermark_is_official_root(terminal, before)
+
+
+def test_v35_other_concealed_gang_replacement_public_state_parity():
+    """他座暗杠及补摸只核本座可见公开后态，不用赛后暗摸牌计算其胡番。"""
+
+    data, (before, settled), events, _ = _case("other-angang-1218-1222.json")
+    assert data["seat"] == before.seat == 2
+    assert (before.snapshot_seq, settled.snapshot_seq) == (1218, 1222)
+    assert all(item["tile"] == "" for item in data["public_or_own_events"]
+               if item["type"] == "tile_drawn" and item["seat"] != before.seat)
+    assert before.phase == "response_chi" and before.last_discard is not None
+    assert next(item for item in events if item.seq == 1220).detail_kind == "an"
+    assert next(item for item in events if item.seq == 1221).gang_replenish
+    terminal_event = next(item for item in events if item.kind == "round_ended")
+    assert terminal_event.result_fan == 2
+
+    seed = _state(before, _build_context(before), ConditionalPhase.RESPONSE_RESOLUTION)
+    seed = replace(seed, identity=ConditionalIdentity(
+        before.game_id, before.round_no, "public-prefix"))
+    chi = advance_response_state(
+        seed, window="response_chi", discard_seat=before.last_discard.seat,
+        discarded_tile=before.last_discard.tile, responding=(3,),
+        choices=((3, Pass()),))
+    assert chi.state.expected_draw_seat == 3
+    drawn = advance_given_other_draw(chi.state, seat=3)
+    pending = advance_given_other_gang(
+        drawn, seat=3, action=Gang(Tile("3b"), GangKind.CONCEALED))
+    assert pending.expected_replacement_draw and pending.expected_draw_seat == 3
+    replenished = advance_given_other_draw(pending, seat=3, replacement=True)
+    _same_observable_state(replenished, settled)
+    _watermark_is_official_root(replenished, before)
+    assert replenished.wall_remaining == before.remaining_tile_count - 2 == 59
+    assert replenished.public_view.melds[3][-1].kind == "gang_an"
+    # 后继是他座胡；玩家观察无法读其暗牌，本条件前缀不伪称能复算该胡。
+    assert replenished.phase is ConditionalPhase.PUBLIC_WAIT
+
+
+def test_v35_other_added_gang_replacement_and_discard_public_parity():
+    """原碰的公开供牌证据随他座补杠保留，补摸跟打与本座后态相等。"""
+
+    data, (before, landed, discarded), events, _ = _case(
+        "other-bugang-781-787.json")
+    assert data["seat"] == before.seat == 2
+    assert tuple(view.snapshot_seq for view in (before, landed, discarded)) == (
+        781, 785, 787)
+    assert all(item["tile"] == "" for item in data["public_or_own_events"]
+               if item["type"] == "tile_drawn" and item["seat"] != before.seat)
+    assert next(item for item in events if item.seq == 727).kind == "peng"
+    assert next(item for item in events if item.seq == 784).detail_kind == "bu"
+    assert next(item for item in events if item.seq == 785).gang_replenish
+
+    seed = _state(before, _build_context(before), ConditionalPhase.RESPONSE_RESOLUTION)
+    seed = replace(seed, identity=ConditionalIdentity(
+        before.game_id, before.round_no, "public-prefix"))
+    chi = advance_response_state(
+        seed, window="response_chi", discard_seat=before.last_discard.seat,
+        discarded_tile=before.last_discard.tile, responding=(1,),
+        choices=((1, Pass()),))
+    assert chi.state.expected_draw_seat == 1
+    drawn = advance_given_other_draw(chi.state, seat=1)
+    pending = advance_given_other_gang(
+        drawn, seat=1, action=Gang(Tile("9b"), GangKind.ADDED))
+    assert pending.expected_replacement_draw and pending.expected_draw_seat == 1
+    assert pending.public_view.melds[1][0].kind == "gang_bu"
+    replenished = advance_given_other_draw(pending, seat=1, replacement=True)
+    _same_observable_state(replenished, landed)
+    _watermark_is_official_root(replenished, before)
+    after = advance_given_other_discard(replenished, seat=1, tile=Tile("北"))
+    _same_observable_state(after, discarded)
+    _watermark_is_official_root(after, before)
+    assert after.wall_remaining == before.remaining_tile_count - 2 == 66

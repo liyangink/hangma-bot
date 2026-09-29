@@ -1,0 +1,1348 @@
+{
+  "schema_version": 1,
+  "evidence_type": "own-seat-state-and-public-events",
+  "scenario": "他座碰牌公开前缀→普通摸→补杠→杠补摸→跟打；本座只读公开事实",
+  "game_id": "a_8a86663508e5_r1_b6_t0",
+  "seat": 2,
+  "provenance": {
+    "state_audit_file": "artifacts/sessions/r18-sse-freematch-campaign-20260925b/audit/runs/run-dc38b0891ac240ef9225c7ab55890277/participants/u_13495c3d79c8/raw/a_8a86663508e5_r1_b6_t0.00001.jsonl.gz",
+    "state_audit_sha256": "4bc32b86184be3efda37496c947805f2f781b32a70350b5337f5d6dc4a012d18",
+    "state_audit_line_basis": "解压后 JSONL 的 1 起始行号",
+    "official_events_file": "artifacts/sessions/r18-sse-freematch-campaign-20260925b/official/dl-0dbabff2dba24228a973111bb2665fbd/events.json",
+    "official_events_sha256": "a550b2fd83cd74857dd0415176ce30a768e99d274565bf05c921d27a29a87713",
+    "official_events_source_file": "artifacts/sessions/r18-sse-freematch-campaign-20260925b/official/dl-0dbabff2dba24228a973111bb2665fbd/source.json",
+    "official_events_captured_at": "2026-09-26T16:14:43.338855+00:00",
+    "run_manifest_file": "artifacts/sessions/r18-sse-freematch-campaign-20260925b/audit/runs/run-dc38b0891ac240ef9225c7ab55890277/manifest.json",
+    "run_manifest_sha256": "6029a75b4fb4b346d654e7ca1a0e8ebf65aaa4dbaab6a521a209145c3bed482b",
+    "guide_version": 35,
+    "guide_updated_at": "2026-09-23",
+    "rule_config": {
+      "base_score": 1,
+      "you_cai_bi_kao": false,
+      "ruleset_version": "hangma-mvp-v10-public-counts"
+    },
+    "official_events_file_line": 1
+  },
+  "state_responses": [
+    {
+      "source_line": 1203,
+      "response": {
+        "seq": 781,
+        "gap": false,
+        "snapshot": {
+          "game_id": "a_8a86663508e5_r1_b6_t0",
+          "phase": "response_chi",
+          "round_no": 4,
+          "dealer": 2,
+          "turn": 0,
+          "waited_seat": 1,
+          "responding_seats": [
+            1
+          ],
+          "window_deadline_ms": 1790438853105,
+          "wall_remaining": 68,
+          "discards": [
+            [
+              "发",
+              "3b",
+              "8t",
+              "6w"
+            ],
+            [
+              "西",
+              "发",
+              "西"
+            ],
+            [
+              "3b",
+              "4w",
+              "3b",
+              "2w"
+            ],
+            [
+              "中",
+              "西",
+              "1w",
+              "9t",
+              "9w"
+            ]
+          ],
+          "melds": [
+            [],
+            [
+              {
+                "kind": "peng",
+                "tiles": [
+                  "9b",
+                  "9b",
+                  "9b"
+                ]
+              }
+            ],
+            [],
+            [
+              {
+                "kind": "peng",
+                "tiles": [
+                  "南",
+                  "南",
+                  "南"
+                ]
+              },
+              {
+                "kind": "peng",
+                "tiles": [
+                  "1t",
+                  "1t",
+                  "1t"
+                ]
+              }
+            ]
+          ],
+          "hand_counts": [
+            13,
+            10,
+            13,
+            7
+          ],
+          "my_hand": [
+            "7b",
+            "2b",
+            "1b",
+            "1b",
+            "6t",
+            "7w",
+            "白",
+            "2b",
+            "2b",
+            "8t",
+            "3t",
+            "2t",
+            "白"
+          ],
+          "seat": 2,
+          "last_discard": "6w",
+          "drawn_tile": "",
+          "god": {
+            "baotou": false,
+            "chain_count": 0,
+            "catch_play": false,
+            "god_discarder_seat": -1
+          },
+          "scores": [
+            -6,
+            -3,
+            8,
+            1
+          ]
+        },
+        "events": null,
+        "pending": false,
+        "finished": false
+      }
+    },
+    {
+      "source_line": 1206,
+      "response": {
+        "seq": 785,
+        "gap": false,
+        "snapshot": {
+          "game_id": "a_8a86663508e5_r1_b6_t0",
+          "phase": "draw",
+          "round_no": 4,
+          "dealer": 2,
+          "turn": 1,
+          "waited_seat": 1,
+          "wall_remaining": 66,
+          "discards": [
+            [
+              "发",
+              "3b",
+              "8t",
+              "6w"
+            ],
+            [
+              "西",
+              "发",
+              "西"
+            ],
+            [
+              "3b",
+              "4w",
+              "3b",
+              "2w"
+            ],
+            [
+              "中",
+              "西",
+              "1w",
+              "9t",
+              "9w"
+            ]
+          ],
+          "melds": [
+            [],
+            [
+              {
+                "kind": "gang_bu",
+                "tiles": [
+                  "9b",
+                  "9b",
+                  "9b",
+                  "9b"
+                ]
+              }
+            ],
+            [],
+            [
+              {
+                "kind": "peng",
+                "tiles": [
+                  "南",
+                  "南",
+                  "南"
+                ]
+              },
+              {
+                "kind": "peng",
+                "tiles": [
+                  "1t",
+                  "1t",
+                  "1t"
+                ]
+              }
+            ]
+          ],
+          "hand_counts": [
+            13,
+            11,
+            13,
+            7
+          ],
+          "my_hand": [
+            "7b",
+            "2b",
+            "1b",
+            "1b",
+            "6t",
+            "7w",
+            "白",
+            "2b",
+            "2b",
+            "8t",
+            "3t",
+            "2t",
+            "白"
+          ],
+          "seat": 2,
+          "last_discard": "6w",
+          "drawn_tile": "",
+          "god": {
+            "baotou": false,
+            "chain_count": 0,
+            "catch_play": false,
+            "god_discarder_seat": -1
+          },
+          "scores": [
+            -6,
+            -3,
+            8,
+            1
+          ]
+        },
+        "events": null,
+        "pending": false,
+        "finished": false
+      }
+    },
+    {
+      "source_line": 1209,
+      "response": {
+        "seq": 787,
+        "gap": false,
+        "snapshot": {
+          "game_id": "a_8a86663508e5_r1_b6_t0",
+          "phase": "response_peng",
+          "round_no": 4,
+          "dealer": 2,
+          "turn": 1,
+          "waited_seat": 2,
+          "responding_seats": [
+            2,
+            3,
+            0
+          ],
+          "window_deadline_ms": 1790438855085,
+          "wall_remaining": 66,
+          "discards": [
+            [
+              "发",
+              "3b",
+              "8t",
+              "6w"
+            ],
+            [
+              "西",
+              "发",
+              "西",
+              "北"
+            ],
+            [
+              "3b",
+              "4w",
+              "3b",
+              "2w"
+            ],
+            [
+              "中",
+              "西",
+              "1w",
+              "9t",
+              "9w"
+            ]
+          ],
+          "melds": [
+            [],
+            [
+              {
+                "kind": "gang_bu",
+                "tiles": [
+                  "9b",
+                  "9b",
+                  "9b",
+                  "9b"
+                ]
+              }
+            ],
+            [],
+            [
+              {
+                "kind": "peng",
+                "tiles": [
+                  "南",
+                  "南",
+                  "南"
+                ]
+              },
+              {
+                "kind": "peng",
+                "tiles": [
+                  "1t",
+                  "1t",
+                  "1t"
+                ]
+              }
+            ]
+          ],
+          "hand_counts": [
+            13,
+            10,
+            13,
+            7
+          ],
+          "my_hand": [
+            "7b",
+            "2b",
+            "1b",
+            "1b",
+            "6t",
+            "7w",
+            "白",
+            "2b",
+            "2b",
+            "8t",
+            "3t",
+            "2t",
+            "白"
+          ],
+          "seat": 2,
+          "last_discard": "北",
+          "drawn_tile": "",
+          "god": {
+            "baotou": false,
+            "chain_count": 0,
+            "catch_play": false,
+            "god_discarder_seat": -1
+          },
+          "scores": [
+            -6,
+            -3,
+            8,
+            1
+          ]
+        },
+        "events": null,
+        "pending": false,
+        "finished": false
+      }
+    }
+  ],
+  "successful_action_receipts": [],
+  "public_or_own_events": [
+    {
+      "seq": 725,
+      "type": "tile_discarded",
+      "seat": 3,
+      "tile": "9b",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438829
+    },
+    {
+      "seq": 726,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438829
+    },
+    {
+      "seq": 727,
+      "type": "peng",
+      "seat": 1,
+      "tile": "9b",
+      "data": null,
+      "ts": 1790438830
+    },
+    {
+      "seq": 728,
+      "type": "tile_discarded",
+      "seat": 1,
+      "tile": "发",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438830
+    },
+    {
+      "seq": 729,
+      "type": "pass",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790438830
+    },
+    {
+      "seq": 730,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438831
+    },
+    {
+      "seq": 731,
+      "type": "timeout",
+      "seat": 2,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438831
+    },
+    {
+      "seq": 732,
+      "type": "pass",
+      "seat": 2,
+      "tile": "",
+      "data": null,
+      "ts": 1790438831
+    },
+    {
+      "seq": 733,
+      "type": "tile_drawn",
+      "seat": 2,
+      "tile": "3b",
+      "data": null,
+      "ts": 1790438832
+    },
+    {
+      "seq": 734,
+      "type": "tile_discarded",
+      "seat": 2,
+      "tile": "3b",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438832
+    },
+    {
+      "seq": 735,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438832
+    },
+    {
+      "seq": 736,
+      "type": "pass",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790438832
+    },
+    {
+      "seq": 737,
+      "type": "timeout",
+      "seat": 1,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438833
+    },
+    {
+      "seq": 738,
+      "type": "pass",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790438833
+    },
+    {
+      "seq": 739,
+      "type": "tile_drawn",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790438834
+    },
+    {
+      "seq": 740,
+      "type": "tile_discarded",
+      "seat": 3,
+      "tile": "1w",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438834
+    },
+    {
+      "seq": 741,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438834
+    },
+    {
+      "seq": 742,
+      "type": "timeout",
+      "seat": 1,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438835
+    },
+    {
+      "seq": 743,
+      "type": "timeout",
+      "seat": 2,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438835
+    },
+    {
+      "seq": 744,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438835
+    },
+    {
+      "seq": 745,
+      "type": "tile_drawn",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438836
+    },
+    {
+      "seq": 746,
+      "type": "tile_discarded",
+      "seat": 0,
+      "tile": "8t",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438836
+    },
+    {
+      "seq": 747,
+      "type": "pass",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790438836
+    },
+    {
+      "seq": 748,
+      "type": "timeout",
+      "seat": 1,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438837
+    },
+    {
+      "seq": 749,
+      "type": "timeout",
+      "seat": 2,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438837
+    },
+    {
+      "seq": 750,
+      "type": "timeout",
+      "seat": 1,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "chi"
+      },
+      "ts": 1790438838
+    },
+    {
+      "seq": 751,
+      "type": "tile_drawn",
+      "seat": 1,
+      "tile": "",
+      "data": null,
+      "ts": 1790438838
+    },
+    {
+      "seq": 752,
+      "type": "tile_discarded",
+      "seat": 1,
+      "tile": "西",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438838
+    },
+    {
+      "seq": 753,
+      "type": "pass",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790438838
+    },
+    {
+      "seq": 754,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438838
+    },
+    {
+      "seq": 755,
+      "type": "timeout",
+      "seat": 2,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438839
+    },
+    {
+      "seq": 756,
+      "type": "pass",
+      "seat": 2,
+      "tile": "",
+      "data": null,
+      "ts": 1790438839
+    },
+    {
+      "seq": 757,
+      "type": "tile_drawn",
+      "seat": 2,
+      "tile": "2w",
+      "data": null,
+      "ts": 1790438840
+    },
+    {
+      "seq": 758,
+      "type": "tile_discarded",
+      "seat": 2,
+      "tile": "2w",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438841
+    },
+    {
+      "seq": 759,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438841
+    },
+    {
+      "seq": 760,
+      "type": "pass",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790438842
+    },
+    {
+      "seq": 761,
+      "type": "timeout",
+      "seat": 1,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438842
+    },
+    {
+      "seq": 762,
+      "type": "pass",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790438843
+    },
+    {
+      "seq": 763,
+      "type": "tile_drawn",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790438843
+    },
+    {
+      "seq": 764,
+      "type": "tile_discarded",
+      "seat": 3,
+      "tile": "9t",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438844
+    },
+    {
+      "seq": 765,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438844
+    },
+    {
+      "seq": 766,
+      "type": "timeout",
+      "seat": 1,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438845
+    },
+    {
+      "seq": 767,
+      "type": "timeout",
+      "seat": 2,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438845
+    },
+    {
+      "seq": 768,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438845
+    },
+    {
+      "seq": 769,
+      "type": "tile_drawn",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438846
+    },
+    {
+      "seq": 770,
+      "type": "tile_discarded",
+      "seat": 0,
+      "tile": "1t",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438846
+    },
+    {
+      "seq": 771,
+      "type": "peng",
+      "seat": 3,
+      "tile": "1t",
+      "data": null,
+      "ts": 1790438847
+    },
+    {
+      "seq": 772,
+      "type": "tile_discarded",
+      "seat": 3,
+      "tile": "9w",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438848
+    },
+    {
+      "seq": 773,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438849
+    },
+    {
+      "seq": 774,
+      "type": "timeout",
+      "seat": 1,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438849
+    },
+    {
+      "seq": 775,
+      "type": "timeout",
+      "seat": 2,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438849
+    },
+    {
+      "seq": 776,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438850
+    },
+    {
+      "seq": 777,
+      "type": "tile_drawn",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438850
+    },
+    {
+      "seq": 778,
+      "type": "tile_discarded",
+      "seat": 0,
+      "tile": "6w",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438851
+    },
+    {
+      "seq": 779,
+      "type": "pass",
+      "seat": 3,
+      "tile": "",
+      "data": null,
+      "ts": 1790438851
+    },
+    {
+      "seq": 780,
+      "type": "timeout",
+      "seat": 1,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438852
+    },
+    {
+      "seq": 781,
+      "type": "timeout",
+      "seat": 2,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "peng"
+      },
+      "ts": 1790438852
+    },
+    {
+      "seq": 782,
+      "type": "timeout",
+      "seat": 1,
+      "tile": "",
+      "data": {
+        "kind": "response",
+        "window": "chi"
+      },
+      "ts": 1790438853
+    },
+    {
+      "seq": 783,
+      "type": "tile_drawn",
+      "seat": 1,
+      "tile": "",
+      "data": null,
+      "ts": 1790438853
+    },
+    {
+      "seq": 784,
+      "type": "gang",
+      "seat": 1,
+      "tile": "9b",
+      "data": {
+        "kind": "bu"
+      },
+      "ts": 1790438853
+    },
+    {
+      "seq": 785,
+      "type": "tile_drawn",
+      "seat": 1,
+      "tile": "",
+      "data": {
+        "gang_replenish": true
+      },
+      "ts": 1790438853
+    },
+    {
+      "seq": 786,
+      "type": "tile_discarded",
+      "seat": 1,
+      "tile": "北",
+      "data": {
+        "catch_play": false
+      },
+      "ts": 1790438854
+    },
+    {
+      "seq": 787,
+      "type": "pass",
+      "seat": 0,
+      "tile": "",
+      "data": null,
+      "ts": 1790438854
+    }
+  ],
+  "limitations": [
+    "事件前缀自 seq=725 的他座弃 9b 开始，覆盖原碰供牌证据；此前同局事件不用于构造本次条件分支。",
+    "所有他座 tile_drawn 的赛后牌值置空，保留公开序号、座位和杠补标记。",
+    "给定他座动作是已执行公开事件；不能从玩家观察推断未公开的他家暗牌或备选动作。"
+  ],
+  "public_or_own_event_refs": [
+    {
+      "seq": 725,
+      "source_json_pointers": [
+        "/blocks/7/events/45"
+      ]
+    },
+    {
+      "seq": 726,
+      "source_json_pointers": [
+        "/blocks/7/events/46"
+      ]
+    },
+    {
+      "seq": 727,
+      "source_json_pointers": [
+        "/blocks/7/events/47"
+      ]
+    },
+    {
+      "seq": 728,
+      "source_json_pointers": [
+        "/blocks/7/events/48"
+      ]
+    },
+    {
+      "seq": 729,
+      "source_json_pointers": [
+        "/blocks/7/events/49"
+      ]
+    },
+    {
+      "seq": 730,
+      "source_json_pointers": [
+        "/blocks/7/events/50"
+      ]
+    },
+    {
+      "seq": 731,
+      "source_json_pointers": [
+        "/blocks/7/events/51"
+      ]
+    },
+    {
+      "seq": 732,
+      "source_json_pointers": [
+        "/blocks/7/events/52"
+      ]
+    },
+    {
+      "seq": 733,
+      "source_json_pointers": [
+        "/blocks/7/events/53"
+      ]
+    },
+    {
+      "seq": 734,
+      "source_json_pointers": [
+        "/blocks/7/events/54"
+      ]
+    },
+    {
+      "seq": 735,
+      "source_json_pointers": [
+        "/blocks/7/events/55"
+      ]
+    },
+    {
+      "seq": 736,
+      "source_json_pointers": [
+        "/blocks/7/events/56"
+      ]
+    },
+    {
+      "seq": 737,
+      "source_json_pointers": [
+        "/blocks/7/events/57"
+      ]
+    },
+    {
+      "seq": 738,
+      "source_json_pointers": [
+        "/blocks/7/events/58"
+      ]
+    },
+    {
+      "seq": 739,
+      "source_json_pointers": [
+        "/blocks/7/events/59"
+      ]
+    },
+    {
+      "seq": 740,
+      "source_json_pointers": [
+        "/blocks/7/events/60"
+      ]
+    },
+    {
+      "seq": 741,
+      "source_json_pointers": [
+        "/blocks/7/events/61"
+      ]
+    },
+    {
+      "seq": 742,
+      "source_json_pointers": [
+        "/blocks/7/events/62"
+      ]
+    },
+    {
+      "seq": 743,
+      "source_json_pointers": [
+        "/blocks/7/events/63"
+      ]
+    },
+    {
+      "seq": 744,
+      "source_json_pointers": [
+        "/blocks/7/events/64"
+      ]
+    },
+    {
+      "seq": 745,
+      "source_json_pointers": [
+        "/blocks/7/events/65"
+      ]
+    },
+    {
+      "seq": 746,
+      "source_json_pointers": [
+        "/blocks/7/events/66"
+      ]
+    },
+    {
+      "seq": 747,
+      "source_json_pointers": [
+        "/blocks/7/events/67"
+      ]
+    },
+    {
+      "seq": 748,
+      "source_json_pointers": [
+        "/blocks/7/events/68"
+      ]
+    },
+    {
+      "seq": 749,
+      "source_json_pointers": [
+        "/blocks/7/events/69"
+      ]
+    },
+    {
+      "seq": 750,
+      "source_json_pointers": [
+        "/blocks/7/events/70"
+      ]
+    },
+    {
+      "seq": 751,
+      "source_json_pointers": [
+        "/blocks/7/events/71"
+      ]
+    },
+    {
+      "seq": 752,
+      "source_json_pointers": [
+        "/blocks/7/events/72"
+      ]
+    },
+    {
+      "seq": 753,
+      "source_json_pointers": [
+        "/blocks/7/events/73"
+      ]
+    },
+    {
+      "seq": 754,
+      "source_json_pointers": [
+        "/blocks/7/events/74"
+      ]
+    },
+    {
+      "seq": 755,
+      "source_json_pointers": [
+        "/blocks/7/events/75"
+      ]
+    },
+    {
+      "seq": 756,
+      "source_json_pointers": [
+        "/blocks/7/events/76"
+      ]
+    },
+    {
+      "seq": 757,
+      "source_json_pointers": [
+        "/blocks/7/events/77"
+      ]
+    },
+    {
+      "seq": 758,
+      "source_json_pointers": [
+        "/blocks/7/events/78"
+      ]
+    },
+    {
+      "seq": 759,
+      "source_json_pointers": [
+        "/blocks/7/events/79"
+      ]
+    },
+    {
+      "seq": 760,
+      "source_json_pointers": [
+        "/blocks/7/events/80"
+      ]
+    },
+    {
+      "seq": 761,
+      "source_json_pointers": [
+        "/blocks/7/events/81"
+      ]
+    },
+    {
+      "seq": 762,
+      "source_json_pointers": [
+        "/blocks/7/events/82"
+      ]
+    },
+    {
+      "seq": 763,
+      "source_json_pointers": [
+        "/blocks/7/events/83"
+      ]
+    },
+    {
+      "seq": 764,
+      "source_json_pointers": [
+        "/blocks/7/events/84"
+      ]
+    },
+    {
+      "seq": 765,
+      "source_json_pointers": [
+        "/blocks/7/events/85"
+      ]
+    },
+    {
+      "seq": 766,
+      "source_json_pointers": [
+        "/blocks/7/events/86"
+      ]
+    },
+    {
+      "seq": 767,
+      "source_json_pointers": [
+        "/blocks/7/events/87"
+      ]
+    },
+    {
+      "seq": 768,
+      "source_json_pointers": [
+        "/blocks/7/events/88"
+      ]
+    },
+    {
+      "seq": 769,
+      "source_json_pointers": [
+        "/blocks/7/events/89"
+      ]
+    },
+    {
+      "seq": 770,
+      "source_json_pointers": [
+        "/blocks/7/events/90"
+      ]
+    },
+    {
+      "seq": 771,
+      "source_json_pointers": [
+        "/blocks/7/events/91"
+      ]
+    },
+    {
+      "seq": 772,
+      "source_json_pointers": [
+        "/blocks/7/events/92"
+      ]
+    },
+    {
+      "seq": 773,
+      "source_json_pointers": [
+        "/blocks/7/events/93"
+      ]
+    },
+    {
+      "seq": 774,
+      "source_json_pointers": [
+        "/blocks/7/events/94"
+      ]
+    },
+    {
+      "seq": 775,
+      "source_json_pointers": [
+        "/blocks/7/events/95"
+      ]
+    },
+    {
+      "seq": 776,
+      "source_json_pointers": [
+        "/blocks/7/events/96"
+      ]
+    },
+    {
+      "seq": 777,
+      "source_json_pointers": [
+        "/blocks/7/events/97"
+      ]
+    },
+    {
+      "seq": 778,
+      "source_json_pointers": [
+        "/blocks/7/events/98"
+      ]
+    },
+    {
+      "seq": 779,
+      "source_json_pointers": [
+        "/blocks/7/events/99"
+      ]
+    },
+    {
+      "seq": 780,
+      "source_json_pointers": [
+        "/blocks/7/events/100"
+      ]
+    },
+    {
+      "seq": 781,
+      "source_json_pointers": [
+        "/blocks/7/events/101"
+      ]
+    },
+    {
+      "seq": 782,
+      "source_json_pointers": [
+        "/blocks/7/events/102"
+      ]
+    },
+    {
+      "seq": 783,
+      "source_json_pointers": [
+        "/blocks/7/events/103"
+      ]
+    },
+    {
+      "seq": 784,
+      "source_json_pointers": [
+        "/blocks/7/events/104"
+      ]
+    },
+    {
+      "seq": 785,
+      "source_json_pointers": [
+        "/blocks/7/events/105"
+      ]
+    },
+    {
+      "seq": 786,
+      "source_json_pointers": [
+        "/blocks/7/events/106"
+      ]
+    },
+    {
+      "seq": 787,
+      "source_json_pointers": [
+        "/blocks/7/events/107"
+      ]
+    }
+  ]
+}
