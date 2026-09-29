@@ -58,11 +58,11 @@ def test_production_assembly_uses_independent_sync_and_pacing(
     assert manifest["post_network_reserve_sec"] == .1
     assert manifest["state_arrival_guard_sec"] == .05
     assert manifest["state_min_spacing_sec"] == pytest.approx(1 / 14.5)
-    assert manifest["state_scheduler_version"] == "sse-chi-priority-v7"
+    assert manifest["state_scheduler_version"] == "sse-stale-recovery-v8"
     # 清单走结构与 JSONL 两层脱敏；版本名必须在真实审计中仍可直接辨认。
-    assert redact_value(manifest)["state_scheduler_version"] == "sse-chi-priority-v7"
+    assert redact_value(manifest)["state_scheduler_version"] == "sse-stale-recovery-v8"
     assert json.loads(redact_json_line(json.dumps(manifest)))[
-        "state_scheduler_version"] == "sse-chi-priority-v7"
+        "state_scheduler_version"] == "sse-stale-recovery-v8"
     policy = captured["runtime"]["budget_policy"]
     assert policy.build(100, 1, 101).latest_send_at_monotonic == pytest.approx(100.9)
     assert policy.build(100, 3, 103).latest_send_at_monotonic == pytest.approx(102.9)

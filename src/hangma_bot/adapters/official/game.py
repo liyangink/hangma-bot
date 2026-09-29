@@ -130,6 +130,12 @@ _BOUNDARY_STALL_BACKOFF_SEC = (0.5, 1.0)
 # 正常跳过的帧只重置静默钟；成功查询当前状态才重置权威钟。
 _SSE_SILENCE_POLL_SEC = 2.0
 _SSE_STATE_AGE_POLL_SEC = 5.0
+_SSE_GET_RECOVERY_POLL_SEC = 0.75  # 近期 GET 失败且流未恢复时，十场理论需求 13.3/s
+_SSE_GET_RECOVERY_MAX_SEC = 20.0  # 从首次故障起的最长加密时段，连续失败不续期
+_SSE_STALE_FRAME_AGE_SEC = 2.0  # 权威序号领先且旧流两秒无帧，才判流可能半开
+_SSE_ACTIVE_FRAME_SILENCE_SEC = 8.0  # 活动阶段同水位静默只探测一次，不视作已证实断流
+_SSE_STALE_RESTART_GAP_SEC = 5.0  # 已证实落后时主动重连的最小间隔
+_SSE_STALE_RESTART_MAX = 2  # 已证实落后的有界修复；自然断线仍由 notify 自身重连
 _SSE_PROBE_COALESCE_SEC = 0.25  # 高优先级专用探针即将到点时，合并相邻普通保底
 # 本人普通弃牌被接收但通知流完全不推帧时，短时权威探针避免等满 2 秒
 # 的未知区间；一旦看到预期回显即取消，不给正常流增加 GET。
@@ -220,6 +226,17 @@ class OfficialGameSession:
         self._sse_task: Optional[asyncio.Future] = None
         self._sse_frames = deque()  # 收到但尚未判定的通知水位；不等同已消费状态游标
         self._sse_latest_frame_seq = 0  # 去重后的已观察通知水位，不替代权威 last_seq
+        self._sse_last_frame_received_at = None  # 事件环单调秒；包含重复/重连初始帧
+        self._sse_last_frame_received_seq = 0  # 最近收到的真实帧水位，供权威状态检查流健康
+        self._sse_last_frame_progress_at = None  # 单调秒；首帧（可为 seq=0）或序号前进时更新
+        self._sse_get_failure_at = None  # 单调秒；最近一次 GET 不确定结果，供静默探针判定
+        self._sse_get_recovery_started_at = None  # 单调秒；连续失败只以首次故障计20秒上限
+        self._sse_get_recovery_until = None  # 单调秒；到期自动恢复正常探针间隔
+        self._sse_stale_restart_at = float("-inf")  # 单调秒；已证实落后的重连节流
+        self._sse_stale_restarts = 0  # 本次已证实落后故障的重连次数
+        self._sse_stale_episode_base_seq = None  # 本次半开故障前的真实通知水位
+        self._sse_same_watermark_probe_seq = None  # 同一权威水位只允许一次预防性换流
+        self._sse_stale_restart_task = None
         self._sse_silence_covered_at = None  # 事件环单调秒；新帧或成功当前状态结束静默
         self._sse_last_authoritative_at = None  # 事件环单调秒；最近一次成功取得当前状态
         self._sse_skipped_seq = 0  # 已判可暂缓读取的最高水位，不写入 ProtocolSyncState.last_seq
@@ -650,7 +667,7 @@ class OfficialGameSession:
         return min(estimate, now + detected.timeout_seconds)
 
     def _ensure_sse_task(self) -> None:
-        """SSE 帧监听任务懒启动（首次 next_item 时）；流失效后不在本场重启。"""
+        """首次 next_item 懒启动监听；自然流终局上交，半开流可有界换接。"""
 
         if (
             not self._sse_enabled
@@ -679,6 +696,25 @@ class OfficialGameSession:
         任务上且非阻塞，不触碰动作窗口的提交路径。
         """
 
+        frame_at = asyncio.get_running_loop().time()
+        self._sse_last_frame_received_at = frame_at
+        if (self._sse_last_frame_progress_at is None
+                or frame.seq > self._sse_last_frame_received_seq):
+            self._sse_last_frame_received_seq = frame.seq
+            self._sse_last_frame_progress_at = frame_at
+            self._sse_same_watermark_probe_seq = None
+        if (self._sse_stale_episode_base_seq is not None
+                and frame.seq > self._sse_stale_episode_base_seq
+                and frame.seq >= self._sync.last_seq):
+            # 新连接确实推进并追上权威水位，下一次静默属于新故障周期。
+            self._sse_stale_restarts = 0
+            self._sse_stale_episode_base_seq = None
+        if (self._sse_get_failure_at is not None and frame_at >= self._sse_get_failure_at
+                and frame.seq >= self._sync.last_seq):
+            # 新流已对齐到最近权威水位；立即退回普通 2 秒探针，避免额外 GET。
+            self._sse_get_recovery_started_at = None
+            self._sse_get_failure_at = None
+            self._sse_get_recovery_until = None
         self._emit_audit(
             AuditKind.RAW_PROTOCOL_STATE,
             build_sse_frame_payload(
@@ -728,6 +764,78 @@ class OfficialGameSession:
             {"trigger": "sse_degraded", "reason": reason},
             trigger_seq=self._sync.last_seq,
         )
+
+    def _consider_stale_sse_restart(self, response: StateResponse) -> None:
+        """同水位只探测一次；仅当前权威持续领先时有界重连或上交故障。"""
+
+        snapshot = response.snapshot
+        last_progress_at = self._sse_last_frame_progress_at
+        if (not self._sse_enabled or not self._sse_healthy or self._closed
+                or snapshot is None or response.finished or snapshot.phase == "settled"
+                or last_progress_at is None):
+            return
+        now = self._monotonic()
+        frame_silence = now - last_progress_at
+        watermark_lag = snapshot.seq > self._sse_last_frame_received_seq
+        if not watermark_lag and snapshot.seq != self._sse_last_frame_received_seq:
+            return  # 旧状态批次不能证明当前连接与服务端水位相等
+        if frame_silence < (_SSE_STALE_FRAME_AGE_SEC if watermark_lag
+                            else _SSE_ACTIVE_FRAME_SILENCE_SEC):
+            return
+        if (self._sse_stale_restart_task is not None
+                and not self._sse_stale_restart_task.done()):
+            return
+        if watermark_lag:
+            if now - self._sse_stale_restart_at < _SSE_STALE_RESTART_GAP_SEC:
+                return
+            if self._sse_stale_restarts >= _SSE_STALE_RESTART_MAX:
+                # 只有当前权威持续领先，才证明两次换流仍未追回水位。
+                self._sse_healthy = False
+                self._sse_failure = GameFailed(self.game_id, True, "sse_stale_reconnects_exhausted")
+                if self._sse_task is not None and not self._sse_task.done():
+                    self._sse_task.cancel()
+                if self._sse_event is not None:
+                    self._sse_event.set()
+                self._emit_audit(AuditKind.PROTOCOL_RECOVERED, {
+                    "trigger": "sse_degraded", "reason": "stale_reconnects_exhausted",
+                    "authoritative_seq": snapshot.seq,
+                    "last_frame_seq": self._sse_last_frame_received_seq,
+                }, trigger_seq=snapshot.seq, round_no=snapshot.round_no)
+                return
+            self._sse_stale_restarts += 1
+            if self._sse_stale_episode_base_seq is None:
+                self._sse_stale_episode_base_seq = self._sse_last_frame_received_seq
+            self._sse_stale_restart_at = now
+            attempt_no = self._sse_stale_restarts
+        else:
+            if self._sse_same_watermark_probe_seq == snapshot.seq:
+                return
+            # 平台可能健康暂停；同一水位只换流一次，且不消耗已证实落后的额度。
+            self._sse_same_watermark_probe_seq = snapshot.seq
+            attempt_no = 1
+        self._emit_audit(AuditKind.PROTOCOL_RECOVERED, {
+            "trigger": "sse_stale_reconnect",
+            "authoritative_seq": snapshot.seq,
+            "last_frame_seq": self._sse_last_frame_received_seq,
+            "frame_silence_sec": frame_silence,
+            "reason": "watermark_lag" if watermark_lag else "active_frame_silence",
+            "attempt_no": attempt_no,
+        }, trigger_seq=snapshot.seq, round_no=snapshot.round_no)
+        task = asyncio.create_task(self._restart_stale_sse())
+        self._sse_stale_restart_task = task
+        self._active_tasks.add(task)
+        task.add_done_callback(self._active_tasks.discard)
+
+    async def _restart_stale_sse(self) -> None:
+        """旧流完全释放预算槽后重新连接；取消只影响本场通知流。"""
+
+        old = self._sse_task
+        if old is not None and not old.done():
+            old.cancel()
+            await asyncio.gather(old, return_exceptions=True)
+        if not self._closed and self._sse_healthy:
+            self._sse_task = None
+            self._ensure_sse_task()
 
     async def _sse_or_boundary_wait(self, boundary_timeout):
         """帧驱动模式下等待通知；流失效上交，不静默切回长轮询。
@@ -857,6 +965,11 @@ class OfficialGameSession:
                     query_purpose="sse_self_wake")
             now = loop.time()
             last_state_at = self._sse_last_authoritative_at or entered_at
+            recovery_probe = bool(
+                self._sse_get_recovery_until is not None
+                and now < self._sse_get_recovery_until
+                and self._sse_get_failure_at is not None
+            )
             if self._sync.snapshot is not None and self._sync.snapshot.phase == "settled":
                 # 官方 v31 新局发牌没有 SSE 事件，却会唤醒从旧游标
                 # 挂起的轮询并返回 gap 快照；若旧游标还欠结算事件，
@@ -866,11 +979,14 @@ class OfficialGameSession:
                 ordinary_purpose = "sse_settled_long_poll"
             else:
                 silence_at = self._sse_silence_covered_at or entered_at
-                silence_deadline = silence_at + _SSE_SILENCE_POLL_SEC
+                silence_deadline = silence_at + (
+                    _SSE_GET_RECOVERY_POLL_SEC if recovery_probe else _SSE_SILENCE_POLL_SEC)
                 authority_deadline = last_state_at + _SSE_STATE_AGE_POLL_SEC
                 ordinary_deadline = min(silence_deadline, authority_deadline)
-                ordinary_purpose = ("sse_silence_probe" if silence_deadline <= authority_deadline
-                                    else "sse_state_age_probe")
+                ordinary_purpose = (
+                    "sse_recovery_probe" if recovery_probe and silence_deadline <= authority_deadline
+                    else "sse_silence_probe" if silence_deadline <= authority_deadline
+                    else "sse_state_age_probe")
             # 同一场本来就会很快发专用探针时，等它取一笔权威快照；
             # 否则 2 秒普通保底与 1.2 秒动作链探针可能相隔数百毫秒各发一笔。
             for probe_at in (self._sse_own_discard_probe_at, self._sse_phase_probe_at):
@@ -917,7 +1033,8 @@ class OfficialGameSession:
                     response = await self._sse_watchdog_snapshot(
                         ordinary_purpose, long_poll=settled_long_poll,
                         force_full=not settled_long_poll,
-                        priority=Priority.RECOVERY if own_settled else Priority.POLL,
+                        priority=(Priority.RECOVERY if own_settled else
+                                  Priority.DRAW_WATCH if recovery_probe else Priority.POLL),
                         state_reservation=reservation,
                     )
                 finally:
@@ -2053,6 +2170,7 @@ class OfficialGameSession:
                     recovering_history and parsed.kind in ("pending", "events") and not parsed.events)
                 self._last_clock_response = (parsed, request_timing["transport_started_at_monotonic"],
                                              request_timing["completed_at_monotonic"])
+                self._consider_stale_sse_restart(parsed)
                 if self._sse_enabled and not self._last_state_history_only:
                     # 旧历史补领不代表当前真相；其余成功查询覆盖静默区间，
                     # 同时给两只保底钟一个共同的新起点。
@@ -2078,6 +2196,12 @@ class OfficialGameSession:
             except (UncertainTransportError, RecoverableServerError) as exc:
                 # 超时/断连无响应体：raw="" + http_status=None 记录"原文不存在"
                 self._emit_raw_state_error(exc, seq, request_timing=request_timing)
+                if self._sse_enabled and isinstance(exc, UncertainTransportError):
+                    failure_at = self._monotonic()
+                    if self._sse_get_recovery_started_at is None:
+                        self._sse_get_recovery_started_at = failure_at
+                        self._sse_get_recovery_until = failure_at + _SSE_GET_RECOVERY_MAX_SEC
+                    self._sse_get_failure_at = failure_at
             except AuthError as exc:
                 self._emit_raw_state_error(exc, seq, request_timing=request_timing)
                 raise _PollFailure(GameFailed(self.game_id, False, "authentication_failed")) from None

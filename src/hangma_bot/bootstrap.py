@@ -974,7 +974,7 @@ def build_runtime(
         "post_network_reserve_sec": budget_policy.post_reserve_seconds,
         "state_arrival_guard_sec": DEFAULT_STATE_ARRIVAL_GUARD_SEC,
         "state_min_spacing_sec": DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC,
-        "state_scheduler_version": "sse-chi-priority-v7",
+        "state_scheduler_version": "sse-stale-recovery-v8",
         "deadline_clock_version": DEADLINE_CLOCK_VERSION,
     }
     runtime = ParticipantRuntime(
@@ -1136,7 +1136,7 @@ def build_auto_match_runtime(
         "post_network_reserve_sec": budget_policy.post_reserve_seconds,
         "state_arrival_guard_sec": DEFAULT_STATE_ARRIVAL_GUARD_SEC,
         "state_min_spacing_sec": DEFAULT_PRODUCTION_STATE_MIN_SPACING_SEC,
-        "state_scheduler_version": "sse-chi-priority-v7",
+        "state_scheduler_version": "sse-stale-recovery-v8",
         "deadline_clock_version": DEADLINE_CLOCK_VERSION,
     }
     runtime = AutoMatchRuntime(
