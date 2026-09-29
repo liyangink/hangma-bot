@@ -1,6 +1,6 @@
 # 运行、观测、赛后分析与迁移
 
-本文说明仓库现有脚本的固定用法。所有命令从仓库根目录运行；路径均相对仓库，换机器后无需修改源码。官方依据使用 [2026-09-06 抓取的指南 v18](../review/official-adapter/chain-rate-alignment/guide.txt) 与 [API 说明](official-platform-api-v2.md)，不是对远端当前版本的再次确认。
+本文说明仓库现有脚本的操作方式。所有命令从仓库根目录运行；路径均相对仓库。本文最初依据 [2026-09-06 抓取的指南 v18](../review/official-adapter/chain-rate-alignment/guide.txt) 编写，当前配置模板已推进到 v35；规则和接口解释须同时核对[已同步的 API 文档（v34 全文基线）](official-platform-api-v2.md)、[v35 差异审查](../review/freematch-deep-dive-20260925/OFFICIAL-GUIDE-V35-G266-RULE-DELTA-2026-09-29.md)与本次运行清单，不把旧说明当作远端现行事实。
 
 ## 1. 制品目录
 
@@ -62,7 +62,7 @@ R18 模板显式绑定当前冻结发布包摘要。启动前仍要替换赛事 
 .venv/bin/python scripts/run_participant.py --config .private/participant.json
 ```
 
-正式赛事需将配置改为实际赛事 ID、`mode: official_tournament`、`token_kind: official`，并提供正式 Token。自由赛使用 `configs/auto-match.example.json` 和 `run_auto_match.py --config .private/auto-match.json`，一个全局 Token 同时只运行一个实例；默认一次自动房会话结束即退出。具体参数见 [自由赛指引](implementation/free-match-start.md)。本节测试房与测试赛事示例采用本仓已审查的指南 v35 和 SSE 通知＋直接权威快照，关闭固定弃牌缓发；旧私有配置不会自动改动。遇到后续指南变化先同步、审查兼容性，不能只把版本号改大。
+正式赛事需将配置改为实际赛事 ID、`mode: official_tournament`、`token_kind: official`，并提供正式 Token。自由赛使用 `configs/auto-match.example.json` 和 `run_auto_match.py --config .private/auto-match.json`，一个全局 Token 同时只运行一个实例；默认一次自动房会话结束即退出。连续房次的启动、结算和暂停见[当前自由赛盯盘操作](auto-match-watchdog.md)；[自由赛首版设计](implementation/free-match-start.md)仅用于追溯历史接入决策。本节测试房与测试赛事示例采用本仓已审查的指南 v35 和 SSE 通知＋直接权威快照，关闭固定弃牌缓发；旧私有配置不会自动改动。遇到后续指南变化先同步、审查兼容性，不能只把版本号改大。
 
 ### 2.1 持续多策略对比战役（测试房 watchdog）
 

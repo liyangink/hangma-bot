@@ -1,6 +1,6 @@
 # `policy` 模块实施规范
 
-> **坐隐 v4 范围说明（2026-09-16 立项；2026-09-17 骨架落地但完成度评审判定 9 项 P1 待修，见 review/llm-guided-heuristic-route-2026-09-15/REVIEW-V4-COMPLETION-2026-09-17.md）**：新 `action_value_v1` 采用[完整评分合同](../../../review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)，V1/V2 的胡优先层和旧 delta 约束只约束这些旧实现。新入口显式比较所有合法动作，不能据此改写规则合法性、紧急路径或冻结旧策略；生成代码只进入受限评分接缝，不生成完整 choose/提交/评估器。
+> **研究评分接缝：**`action_value_v1` 的历史设计见[完整评分合同](../../../review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)；2026-09-17 的骨架评审是当时快照，不作为当前完成度。V1/V2 的胡优先层和旧 delta 约束只约束旧实现。研究入口显式比较合法动作，不能据此改写规则合法性、紧急路径或冻结旧策略；生成代码只进入受限评分接缝。当前可配置策略和身份以[策略目录](../../../doc/implementation/strategy-catalog.md)为准。
 
 ## 目标与边界
 

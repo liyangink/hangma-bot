@@ -2,8 +2,16 @@
 
 面向官方杭麻竞赛平台的全自动 AI Bot。
 
-迁移机器继续启发式进化时，从[当前交接速览](EVOLUTION-HANDOFF-2026-09-23.md)开始。
-后续候选报告统一使用[算法路线与候选命名](doc/algorithm-lineage-names.md)，本轮验证与进化按[后续执行清单](review/r18-four-arm-evaluation-2026-09-23/NEXT-STAGE-2026-09-25.md)。
+按任务进入对应资料；历史交接与日期型执行清单保留作当时证据，不代表当前结论。
+
+| 任务 | 首要入口 |
+| --- | --- |
+| 了解当前候选、进化停线与接线证据 | [研究证据索引](review/INDEX.md) |
+| 核对策略名称与可配置候选 | [算法路线与候选命名](doc/algorithm-lineage-names.md)、[策略目录](doc/implementation/strategy-catalog.md) |
+| 启动测试房、测试赛事或正式赛事 | [运行与赛后操作](doc/operations.md#2-启动测试房间与赛事) |
+| 启动或暂停自由赛 watchdog | [自由赛盯盘操作](doc/auto-match-watchdog.md) |
+| 观测、审计与赛后处理 | [本地观测](doc/operations.md#3-持续观测与定位)、[完赛后下载与复核](doc/operations.md#4-完赛后下载封存与复核) |
+| 修改模块或接口 | [架构与运行流程](doc/architecture.md)、[冻结接口协议](doc/implementation/interface-contracts.md) |
 
 ## 安装与常用操作
 
@@ -81,20 +89,8 @@ export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 
 ## 文档
 
-- [技术方案与一个月实施计划](./doc/hangma-ai-bot-technical-plan.md)
-- [架构图、运行流程与场景边界](./doc/architecture.md)
-- [第一阶段实施导航与 Agent 分工](./doc/implementation/README.md)
-- [冻结接口协议](./doc/implementation/interface-contracts.md)
-- [第一阶段 MVP 验收标准](./doc/implementation/mvp-acceptance.md)
-- [MVP 后并行施工导航与委派文本](./doc/implementation/parallel-workstreams.md)
-- [并行开发共享契约 parallel-v1](./doc/implementation/parallel-contracts.md)
-- [审计增强实施方案](./doc/implementation/audit-enhancement.md)
-- [ADR-0001：第一阶段模块接缝与提交语义](./doc/decisions/0001-freeze-mvp-module-contracts.md)
-- [统一术语表](./UBIQUITOUS_LANGUAGE.md)
-- [官方赛事流程与多阶段晋级规则（2026-09-03）](./doc/official-tournament-flow-2026-09-03.md)
-- [官方平台 API（已同步 v15）与时间模型](./doc/official-platform-api-v2.md)
-- [仓库统一开发与文档规范](./AGENTS.md)
+当前工作按上方任务表进入。[统一术语表](./UBIQUITOUS_LANGUAGE.md)、[架构与运行流程](./doc/architecture.md)、[接口协议](./doc/implementation/interface-contracts.md)及[官方平台 API（v34 全文基线）](./doc/official-platform-api-v2.md)用于核对实现。早期 MVP 计划、并行施工方案和按日期命名的交接报告保留为历史设计与证据，从[实施导航](./doc/implementation/README.md)或[研究证据索引](review/INDEX.md)按需查阅。
 
-## 实验策略选用
+## 策略选用
 
-主线现有策略与默认值见[枚举目录](doc/implementation/strategy-catalog.md)。`v2_hu_upgrade_v1` 可显式用于自由赛/测试房实验，尚未替换稳定V2；实际规则不适用时自由赛完整退回V2并记录原因。
+截至 2026-09-29 的连续自由赛使用显式配置的 `r18_integrated_positive_v2` 冻结候选；之后的实际身份须逐次核对运行清单。是否适合测试赛事或正式赛事仍以发布门禁为准。新旧候选的可配置范围和发布包摘要以[策略目录](doc/implementation/strategy-catalog.md)及对应[配置模板](configs/r18-integrated-positive-v2.auto-match.example.json)为准。
