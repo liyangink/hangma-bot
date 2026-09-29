@@ -139,7 +139,12 @@ class WinSplit:
 
 @dataclass(frozen=True)
 class WindowContext:
-    """一个动作窗口内生成候选所需的机械事实（信息权限与 PlayerObservation 相同）。"""
+    """一个动作窗口内生成候选所需的机械事实。
+
+    ``conditional_discard`` 只给离线条件分支使用：它携带响应触发者和
+    牌值，不含官方事件序号；正式观察始终使用 ``last_discard``。
+    两种来源不能同时填写，避免给假设事件制造官方身份。
+    """
 
     seat: int
     phase: str  # 规范官方阶段：deal / draw / response_peng / response_chi / settled / finished
@@ -152,6 +157,24 @@ class WindowContext:
     last_discard: Optional[PublicDiscard]  # 触发响应窗口的最近公开弃牌
     catch_play: bool  # 本座是否受抓打约束：活跃圈的非圈主或归属未知，不是原始全局标记
     remaining_tile_count: Optional[int]  # 官方牌墙剩余；未知为 None（最后 20 张内禁杠）
+    conditional_discard: Optional[Tuple[int, Tile]] = None  # 离线给定触发弃牌；无官方 seq
+
+    def __post_init__(self) -> None:
+        if self.last_discard is not None and self.conditional_discard is not None:
+            raise ValueError("官方触发弃牌与条件触发弃牌不能同时填写")
+        if self.conditional_discard is not None:
+            seat, tile = self.conditional_discard
+            if (self.phase not in ("response_peng", "response_chi")
+                    or seat not in range(4) or seat != self.turn_seat
+                    or not isinstance(tile, Tile)):
+                raise ValueError("条件触发弃牌必须匹配响应窗口、弃牌座位与牌值")
+
+    def response_trigger(self) -> Optional[Tuple[int, Tile]]:
+        """读取响应触发的座位与牌值，不把条件假设转成官方弃牌。"""
+
+        if self.last_discard is not None:
+            return self.last_discard.seat, self.last_discard.tile
+        return self.conditional_discard
 
     def full_hand(self) -> Tuple[Tile, ...]:
         """暗牌全集 = 手牌 + 刚摸牌（若在本窗口）；保留官方顺序，摸牌置尾。"""

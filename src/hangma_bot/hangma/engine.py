@@ -184,6 +184,19 @@ class HangmaRules:
                 ) for candidate in candidates),
                 ruleset_version=self.config.ruleset_version,
             )
+        if context.phase != _DRAW_PHASE or context.turn_seat != context.seat or observation.gang_draw is True:
+            reason = (
+                "P2 尚未闭合响应动作或杠补已落地后的连续条件转移；"
+                "这是正常机械待办，不能由旧策略续打"
+            )
+            return RouteFrontierDraft(
+                roots=tuple(RouteFrontierRoot(
+                    action_key=candidate.action_key,
+                    gap_kind=RouteGapKind.MECHANICAL_GAP,
+                    issues=(RuleIssue("route_frontier.mechanical_gap", reason),),
+                ) for candidate in candidates),
+                ruleset_version=self.config.ruleset_version,
+            )
         try:
             public_counts = _public_counts(observation)
             successors = analyze_public_self_draw_successors(

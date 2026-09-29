@@ -182,10 +182,10 @@ def _claim_removal(action, context: WindowContext) -> Dict[str, int]:
     if isinstance(action, Peng):
         return {action.tile.code: 2}
     if isinstance(action, Chi):
-        claimed = context.last_discard
-        if claimed is None:
+        trigger = context.response_trigger()
+        if trigger is None:
             raise FactsAnalysisError("吃窗口缺少触发弃牌，无法确定被吃牌")
-        partners = [tile.code for tile in action.tiles if tile.code != claimed.tile.code]
+        partners = [tile.code for tile in action.tiles if tile.code != trigger[1].code]
         removal: Dict[str, int] = {}
         for code in partners:
             removal[code] = removal.get(code, 0) + 1

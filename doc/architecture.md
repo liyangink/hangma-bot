@@ -672,3 +672,5 @@ R17 候选侧使用后继叶视图（`LeafView`，一次只含一个后继弃牌
 当前新路线仍是 P1 研究纵切面：`hangma` 在原 `analyze` 调用中可选地把同次合法动作、一次条件胡结算和公开自摸后继拼成条件路线前沿。`policy` 只通过 `DecisionRequest.rules.route_frontier` 读取规则事实，并独立估计动作值；它不自行判断胡牌、番数或未来摸牌。`offline` 显式开启 `route_limits` 和 `strict_policy` 后驱动研究策略，机械缺口使整桌未完成，完整性核验器不把幸存桌平均分冒充总体。现行线上默认装配和紧急动作路径不变。
 
 这条研发数据流只涵盖本人普通摸牌后的单次条件边。吃、碰、过及三类杠的连续转移、杠补后再决策、抓打圈主变化仍是 P2 正常机械待办；它们完成并对拍前，研究策略称 `C_proto`，不能称 `C_alg` 或参与完整新算法强度结论。阶段号与离线桌序已拆开；第一版赛事上下文仅记录供赛后评价，不改变动作排序。完整实施门与双账统计见[路线实施方案](../review/NEXT-GENERATION-ROUTE-HEURISTIC-IMPLEMENTATION-ASTRA-2026-09-30.md)和[评测合同](../review/vip-route-2026-09-30/EVALUATION-CONTRACT.md)。
+
+P2 内部研发量具现从同次规则候选投影本人条件状态；`hangma.public_tile_counts` 抽出公开牌视图与逐码证据，旧观察入口保留，`hangma.progression` 抽出公开响应裁决及圈主转移供模拟与条件路径共用。条件状态不造未来 `PlayerObservation` 或官方 `seq`，只在已声明的给定事件组合核验动作。官方 v18 吃→暗杠→补牌实见轨迹已证明吃后未摸不能只列弃牌。完整公开事件投影及逐格资格仍未接通，P2 门未过；范围和缺口见[P2 机械矩阵](../review/vip-route-2026-09-30/P2-MECHANICAL-MATRIX.md)。

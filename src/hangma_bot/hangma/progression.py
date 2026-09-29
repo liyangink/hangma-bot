@@ -136,6 +136,44 @@ class Transition:
     blocked: Optional[str] = None
 
 
+@dataclass(frozen=True)
+class CatchPlayState:
+    """公开抓打圈状态；活跃而圈主为空表示现有证据不足，不能当作无圈。"""
+
+    active: bool
+    owner: Optional[int]  # 座位 0—3；仅 inactive 时必须为空
+
+    def __post_init__(self) -> None:
+        if self.owner is not None and (
+            isinstance(self.owner, bool)
+            or not isinstance(self.owner, int)
+            or not 0 <= self.owner < SEAT_COUNT
+        ):
+            raise ValueError("圈主座位必须在 0—3")
+        if not self.active and self.owner is not None:
+            raise ValueError("无抓打圈时不能指定圈主")
+
+
+@dataclass(frozen=True)
+class PublicResponseResolution:
+    """只含公开裁决事实，不携带他家暗牌、牌墙或官方事件序号。
+
+    status 为 resolved/unready/blocked；unready 时缺选择或圈主证据，
+    blocked 只表示无官方优先级依据的多人碰/明杠冲突。获裁决的吃碰进入
+    draw 暂态，后续合法弃牌或杠由动作族决定，不在此处强制弃牌。
+    """
+
+    status: str
+    pass_seats: Tuple[int, ...] = ()
+    claim_seat: Optional[int] = None
+    claim_action: Optional[Action] = None
+    next_window: Optional[str] = None
+    next_responding: Tuple[int, ...] = ()
+    next_draw_seat: Optional[int] = None
+    missing_seats: Tuple[int, ...] = ()
+    reason: Optional[str] = None
+
+
 _WINDOW_DRAW = "draw"
 _WINDOW_RESPONSE_PENG = "response_peng"
 _WINDOW_RESPONSE_CHI = "response_chi"
@@ -171,6 +209,106 @@ def _ev(
 def _other_three(seat: int) -> Tuple[int, int, int]:
     """弃牌者之外的三个座位，按弃牌者下家起的座位序（固定序，保证确定性）。"""
     return ((seat + 1) % SEAT_COUNT, (seat + 2) % SEAT_COUNT, (seat + 3) % SEAT_COUNT)
+
+
+def catch_play_after_discard(
+    circle: CatchPlayState, seat: int, tile: Tile,
+) -> CatchPlayState:
+    """按公开弃牌更新圈主；弃白接力，仅当前圈主弃非白关圈。
+
+    官方指南 v34 §1.1 与 RULES_EVIDENCE.md 的 v26 修订。圈主证据未知时，
+    非白弃牌不能擅自判定关圈；摸牌和杠不调用此函数。
+    """
+    if not 0 <= seat < SEAT_COUNT:
+        raise ValueError("弃牌座位必须在 0—3")
+    if is_wealth(tile):
+        return CatchPlayState(True, seat)
+    if circle.active and circle.owner == seat:
+        return CatchPlayState(False, None)
+    return circle
+
+
+def resolve_public_response(
+    window: str,
+    discard_seat: int,
+    discarded_tile: Tile,
+    responding: Tuple[int, ...],
+    choices: Tuple[Tuple[int, Action], ...],
+    circle: CatchPlayState,
+) -> PublicResponseResolution:
+    """仅凭公开窗口与完整给定选择集合裁决碰/明杠或吃响应。
+
+    选择的暗牌合法性须由调用方事先验证；此处只检查动作属于当前窗口、
+    对应触发弃牌以及响应身份。缺成员选择返回 unready，不推断全过；
+    多人碰/明杠按现有规则 blocked。返回值不生成官方 seq，也不修改暗牌。
+    """
+    if window not in (_WINDOW_RESPONSE_PENG, _WINDOW_RESPONSE_CHI):
+        raise ValueError("公开裁决只接受碰或吃窗口")
+    if not 0 <= discard_seat < SEAT_COUNT or is_wealth(discarded_tile):
+        raise ValueError("响应窗口必须由非白合法座位弃牌触发")
+    if len(set(responding)) != len(responding) or any(
+        seat == discard_seat or not 0 <= seat < SEAT_COUNT for seat in responding
+    ):
+        raise ValueError("响应成员含重复、弃牌者或非法座位")
+    if window == _WINDOW_RESPONSE_CHI and responding != ((discard_seat + 1) % SEAT_COUNT,):
+        raise ValueError("吃窗口只能由弃牌者下家响应")
+    if window == _WINDOW_RESPONSE_PENG:
+        expected = (circle.owner,) if circle.active else _other_three(discard_seat)
+        if circle.owner is not None or not circle.active:
+            if responding != expected:
+                raise ValueError("碰窗口响应身份与抓打圈状态不一致")
+    elif circle.active and circle.owner is not None and circle.owner != responding[0]:
+        raise ValueError("抓打圈内仅圈主可吃")
+    selected = {}
+    for seat, action in choices:
+        if seat in selected or seat not in responding:
+            raise ValueError("选择含重复或非响应座位")
+        selected[seat] = action
+
+    for action in selected.values():
+        if isinstance(action, Pass):
+            continue
+        if window == _WINDOW_RESPONSE_PENG and isinstance(action, Peng):
+            if action.tile != discarded_tile:
+                raise ValueError("碰牌与触发弃牌不一致")
+            continue
+        if window == _WINDOW_RESPONSE_PENG and isinstance(action, Gang):
+            if action.kind is not GangKind.EXPOSED or action.tile != discarded_tile:
+                raise ValueError("明杠类型或牌码与触发弃牌不一致")
+            continue
+        if window == _WINDOW_RESPONSE_CHI and isinstance(action, Chi):
+            if discarded_tile not in action.tiles:
+                raise ValueError("吃牌组合不含触发弃牌")
+            continue
+        raise ValueError("响应动作不属于当前窗口")
+
+    if circle.active and circle.owner is None:
+        return PublicResponseResolution("unready", reason="活跃抓打圈缺圈主证据")
+    missing = tuple(seat for seat in responding if seat not in selected)
+    if missing:
+        return PublicResponseResolution("unready", missing_seats=missing, reason="响应成员选择未齐")
+
+    claims = tuple((seat, selected[seat]) for seat in responding if not isinstance(selected[seat], Pass))
+    if window == _WINDOW_RESPONSE_PENG and len(claims) >= 2:
+        return PublicResponseResolution("blocked", reason=_MULTI_CLAIM_BLOCK)
+    claim_seat, claim_action = claims[0] if claims else (None, None)
+    pass_seats = tuple(seat for seat in responding if seat != claim_seat)
+    if claim_action is not None:
+        return PublicResponseResolution(
+            "resolved", pass_seats, claim_seat, claim_action,
+            _WINDOW_PENDING_DRAW if isinstance(claim_action, Gang) else _WINDOW_DRAW,
+        )
+    next_seat = (discard_seat + 1) % SEAT_COUNT
+    if window == _WINDOW_RESPONSE_PENG:
+        if not circle.active or circle.owner == next_seat:
+            return PublicResponseResolution(
+                "resolved", pass_seats, next_window=_WINDOW_RESPONSE_CHI,
+                next_responding=(next_seat,),
+            )
+    return PublicResponseResolution(
+        "resolved", pass_seats, next_window=_WINDOW_PENDING_DRAW,
+        next_draw_seat=next_seat,
+    )
 
 
 def _replace_seat(state: ProgressionState, seat: int, new_seat: SeatProgression) -> ProgressionState:
@@ -606,6 +744,10 @@ def _resolve_draw(state: ProgressionState, choices: Tuple[Tuple[int, Action], ..
     if isinstance(action, Discard):
         new_hand, new_drawn = _remove_from_hand(s, action.tile)
         wealth_discard = is_wealth(action.tile)
+        current_owner = next((i for i, other in enumerate(state.seats) if other.catch_play), None)
+        circle = catch_play_after_discard(
+            CatchPlayState(current_owner is not None, current_owner), seat, action.tile,
+        )
         # 本次是否飘取动作前爆头；弃后可新入爆头，但不能反向把本次打白算飘。
         chain_count, chain_piao = chain_after_discard(
             s.chain_count, s.chain_piao, s.baotou, action.tile,
@@ -615,22 +757,20 @@ def _resolve_draw(state: ProgressionState, choices: Tuple[Tuple[int, Action], ..
             hand=new_hand,
             drawn=new_drawn,
             discards=s.discards + (action.tile,),
-            catch_play=wealth_discard,
+            catch_play=circle.owner == seat,
             baotou=baotou_after_discard(new_hand, len(s.melds)),
             chain_count=chain_count,
             chain_piao=chain_piao,
         )
         state = _replace_seat(state, seat, new_seat)
-        if wealth_discard:
-            # 2026-09-08 官方换圈轨迹：包括被迫摸切白在内，每次弃白均换主。
-            # 仅撤销旧圈主标记，不改变他家的爆头或飘杠链。
-            state = replace(state, seats=tuple(
-                replace(other, catch_play=False)
-                if index != seat and other.catch_play else other
-                for index, other in enumerate(state.seats)
-            ))
+        # 仅变更公开圈主；他家爆头与飘杠链保持原值。
+        state = replace(state, seats=tuple(
+            replace(other, catch_play=index == circle.owner)
+            if other.catch_play != (index == circle.owner) else other
+            for index, other in enumerate(state.seats)
+        ))
         seq = state.seq + 1
-        circle_active = any(other.catch_play for other in state.seats)
+        circle_active = circle.active
         events = (_ev(
             seq, EVENT_KIND_DISCARDED, seat, action.tile,
             (("catch_play", circle_active),),
@@ -652,13 +792,12 @@ def _resolve_draw(state: ProgressionState, choices: Tuple[Tuple[int, Action], ..
             ))
         # v26：圈内普通弃牌只给最新圈主碰/明杠响应权，窗口仍固定走满。
         # 圈主本次非白已关圈，此时与普通状态一样恢复三家响应。
-        responders = tuple(index for index, other in enumerate(state.seats) if other.catch_play)
         return Transition(events, replace(
             state,
             seq=seq,
             window=_WINDOW_RESPONSE_PENG,
             turn_seat=seat,
-            responding=responders if circle_active else _other_three(seat),
+            responding=(circle.owner,) if circle_active else _other_three(seat),
             trigger_seq=seq,
             last_discard=PublicDiscard(seat=seat, tile=action.tile, seq=seq),
         ))
@@ -735,27 +874,25 @@ def _resolve_peng_window(
     discarder = state.turn_seat
     if discarder is None or state.last_discard is None:
         raise ValueError("碰窗口缺少弃牌事实")
-    responders = state.responding
-    claims = [
-        (seat, action)
-        for seat, action in choices
-        if isinstance(action, (Peng, Gang))
-    ]
-    if len(claims) >= 2:
-        return Transition((), state, blocked=_MULTI_CLAIM_BLOCK)
+    owner = next((i for i, other in enumerate(state.seats) if other.catch_play), None)
+    result = resolve_public_response(
+        state.window, state.last_discard.seat, state.last_discard.tile,
+        state.responding, choices,
+        CatchPlayState(owner is not None, owner),
+    )
+    if result.status == "blocked":
+        return Transition((), state, blocked=result.reason)
+    if result.status != "resolved":
+        raise ValueError("完整模拟响应不应缺公开裁决证据：{0}".format(result.reason))
 
     seq = state.seq
     events = []
-    claim_seat = claims[0][0] if claims else None
-    for responder in responders:
-        if claim_seat is not None and responder == claim_seat:
-            continue
+    for responder in result.pass_seats:
         seq += 1
         events.append(_ev(seq, EVENT_KIND_PASS, responder))
 
-    if not claims:
-        next_seat = (discarder + 1) % SEAT_COUNT
-        if any(other.catch_play for other in state.seats) and not state.seats[next_seat].catch_play:
+    if result.claim_action is None:
+        if result.next_window == _WINDOW_PENDING_DRAW:
             # v26：圈主不是下家时没有合法吃响应方，继续正常顺序摸牌。
             return Transition(tuple(events), replace(
                 state,
@@ -766,7 +903,7 @@ def _resolve_peng_window(
                 trigger_seq=seq,
                 last_discard=None,
                 pending_draw=DrawRequest(
-                    seat=next_seat, replacement=False,
+                    seat=result.next_draw_seat, replacement=False,
                     seq=seq + 1, emit_event=True, consumes_wall=True,
                 ),
             ))
@@ -775,10 +912,10 @@ def _resolve_peng_window(
             state,
             seq=seq,
             window=_WINDOW_RESPONSE_CHI,
-            responding=(next_seat,),
+            responding=result.next_responding,
         ))
 
-    seat, action = claims[0]
+    seat, action = result.claim_seat, result.claim_action
     tile = state.last_discard.tile
     s = state.seats[seat]
     if isinstance(action, Peng):
@@ -842,9 +979,16 @@ def _resolve_chi_window(
     if seat is None:
         raise ValueError("吃窗口缺少响应座位")
     action = _exactly_one(choices, seat)
+    owner = next((i for i, other in enumerate(state.seats) if other.catch_play), None)
+    result = resolve_public_response(
+        state.window, discarder, state.last_discard.tile, state.responding,
+        choices, CatchPlayState(owner is not None, owner),
+    )
+    if result.status != "resolved":
+        raise ValueError("完整模拟吃响应不应缺公开裁决证据：{0}".format(result.reason))
     seq = state.seq + 1
 
-    if isinstance(action, Pass):
+    if result.claim_action is None:
         events = (_ev(seq, EVENT_KIND_PASS, seat),)
         return Transition(events, replace(
             state,
@@ -855,7 +999,7 @@ def _resolve_chi_window(
             trigger_seq=seq,
             last_discard=None,
             pending_draw=DrawRequest(
-                seat=(discarder + 1) % SEAT_COUNT, replacement=False,
+                seat=result.next_draw_seat, replacement=False,
                 seq=seq + 1, emit_event=True, consumes_wall=True,
             ),
         ))

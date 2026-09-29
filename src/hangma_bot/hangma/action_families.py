@@ -229,18 +229,18 @@ def chi_candidates(context: WindowContext) -> FamilyOutcome:
     if context.catch_play:
         # 本座为非圈主或归属未知时禁吃碰明杠；已知圈主不走本分支。
         return _EMPTY
-    last = context.last_discard
-    if last is None:
+    trigger = context.response_trigger()
+    if trigger is None:
         return FamilyOutcome(
             (),
             (RuleIssue(_area("chi"), "吃窗口缺少触发弃牌，观察不完整（§6）"),),
         )
-    if last.seat == context.seat:
+    if trigger[0] == context.seat:
         return FamilyOutcome(
             (),
             (RuleIssue(_area("chi"), "触发弃牌来自本人，与响应窗口语义矛盾"),),
         )
-    discarded = last.tile
+    discarded = trigger[1]
     if is_wealth(discarded):
         return _EMPTY  # 财神不能被吃（§1）。
     if context.my_chi_count >= MAX_CHI_MELDS:
@@ -288,18 +288,18 @@ def peng_candidates(context: WindowContext) -> FamilyOutcome:
         return _EMPTY
     if context.catch_play:
         return _EMPTY  # 抓打圈：圈内不能吃/碰/明杠（§6）。
-    last = context.last_discard
-    if last is None:
+    trigger = context.response_trigger()
+    if trigger is None:
         return FamilyOutcome(
             (),
             (RuleIssue(_area("peng"), "碰窗口缺少触发弃牌，观察不完整（§6）"),),
         )
-    if last.seat == context.seat:
+    if trigger[0] == context.seat:
         return FamilyOutcome(
             (),
             (RuleIssue(_area("peng"), "触发弃牌来自本人，与响应窗口语义矛盾"),),
         )
-    discarded = last.tile
+    discarded = trigger[1]
     if is_wealth(discarded):
         return _EMPTY  # 财神不能被碰（§1）。
     hand_counts = counts_from_tiles(context.full_hand())
@@ -357,18 +357,18 @@ def gang_candidates(context: WindowContext) -> FamilyOutcome:
     if _responding(context, _RESPONSE_PENG):
         if context.catch_play:
             return _EMPTY  # 抓打圈：圈内不能明杠（§6）。
-        last = context.last_discard
-        if last is None:
+        trigger = context.response_trigger()
+        if trigger is None:
             return FamilyOutcome(
                 (),
                 (RuleIssue(_area("gang"), "碰窗口缺少触发弃牌，明杠无法判定（§6）"),),
             )
-        if last.seat == context.seat:
+        if trigger[0] == context.seat:
             return FamilyOutcome(
                 (),
                 (RuleIssue(_area("gang"), "触发弃牌来自本人，与响应窗口语义矛盾"),),
             )
-        discarded = last.tile
+        discarded = trigger[1]
         if is_wealth(discarded):
             return _EMPTY  # 财神不能被杠（§1）。
         hand_counts = counts_from_tiles(context.full_hand())
