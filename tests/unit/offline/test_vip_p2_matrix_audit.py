@@ -1,0 +1,55 @@
+"""P2 有限夹具诊断：根分母、双轴缺口与缺快照跳过。"""
+
+import json
+import importlib.util
+from pathlib import Path
+
+SCRIPT = Path(__file__).parents[3] / "scripts/vip_p2_matrix_audit.py"
+SPEC = importlib.util.spec_from_file_location("vip_p2_matrix_audit", SCRIPT)
+assert SPEC is not None and SPEC.loader is not None
+audit_module = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(audit_module)
+
+
+def test_current_official_fixture_matrix_is_reproducible():
+    """按同次合法候选登记全部根；官方对拍仅指这九个已执行单步。"""
+
+    result = audit_module.audit()
+    assert result["target_config"] == {"BaseScore": 1, "YouCaiBiKao": False}
+    assert (result["fixture_count"], result["snapshot_count"],
+            result["legal_root_count"]) == (4, 9, 48)
+    assert (result["official_pair_anchor_count"],
+            result["official_pair_state_match_count"]) == (9, 9)
+    assert sum(cell["legal_roots"] for cell in result["matrix"]) == 48
+    assert sum(cell["mechanical_gap"] for cell in result["matrix"]) == 47
+    assert sum(cell["input_evidence_gap"] for cell in result["matrix"]) == 0
+    assert sum(cell["both_gaps"] for cell in result["matrix"]) == 0
+    assert {row["config_provenance"] for row in result["rows"]} == {
+        "v18_target_config_assumed",
+        "v35_local_run_config_recorded_no_official_rules_response",
+    }
+    assert result["skipped"] == [{
+        "fixture": "tests/fixtures/official/v35/vip-p2-natural/minggang-replenish-hu-1228-1231.json",
+        "reason": "非本人可决策窗口", "seq": 1231,
+    }]
+
+
+def test_missing_full_snapshot_is_explicitly_skipped(tmp_path, monkeypatch):
+    """动作后状态缺失时不可继续声称成对官方对拍。"""
+
+    source = audit_module.REPO / audit_module.V18
+    fixture = json.loads(source.read_text())
+    fixture["snapshots"]["2269"] = {"seq": 2269, "gap": True}
+    target = tmp_path / audit_module.V18
+    target.parent.mkdir(parents=True)
+    target.write_text(json.dumps(fixture, ensure_ascii=False))
+    monkeypatch.setattr(audit_module, "REPO", Path(tmp_path))
+    monkeypatch.setattr(audit_module, "TRACES", {
+        audit_module.V18: audit_module.TRACES[audit_module.V18]})
+    result = audit_module.audit()
+    assert result["snapshot_count"] == 2
+    assert result["official_pair_anchor_count"] == 1
+    assert any(row["seq"] == 2269 and "gap=true" in row["reason"]
+               for row in result["skipped"])
+    assert any(row["seq"] == 2269 and "后继" in row["reason"]
+               for row in result["skipped"])

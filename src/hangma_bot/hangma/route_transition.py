@@ -22,6 +22,7 @@ from . import action_families, hand_analysis, progression, settlement
 from .catch_play import analyze_catch_play
 from .interface import RuleCandidate, RuleIssue, Settlement
 from .internal_types import TILE_INDEX, WindowContext, is_wealth
+from .observation_rules import enrich_observation
 from .public_tile_counts import (
     PublicClaimEvidence, PublicTileView, UnseenCounts34, count_unseen_tiles_from_view,
     public_view_from_observation,
@@ -646,11 +647,14 @@ def project_legal_roots(
 ) -> Tuple[ConditionalRoot, ...]:
     """保留同次全部合法根和吃碰后的全部弃牌，不择优、不推断裁决。
 
-    ``context`` 须由规则模块从 ``observation`` 生成；此内部 API 不自行
-    重建官方归一化手牌。杠根只到待补牌，胡根仅使用已有结算事实。
+    ``context`` 须由规则模块从 ``observation`` 生成；此入口和
+    ``HangmaRules.analyze`` 使用同一可见事实富集，避免同批合法候选
+    与裸快照的链内飘白/杠补来源不同步。富集不改手牌或官方序号，
+    因而不重建官方归一化手牌。杠根只到待补牌，胡根仅使用已有结算事实。
     不能形成状态时仍保留根并标明机械或输入证据缺口。
     """
 
+    observation = enrich_observation(observation)
     if config.base_score != 1 or config.you_cai_bi_kao:
         raise ValueError("条件转移首版只绑定 BaseScore=1、YouCaiBiKao=false")
     if len({item.action_key for item in candidates}) != len(candidates):

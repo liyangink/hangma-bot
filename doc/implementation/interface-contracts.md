@@ -382,6 +382,8 @@ P74 传输修复：当 `OfficialTransport` 的 `base_url` 主机命中配置的 
 
 该内部字段不是 `PlayerObservation`、官方 `PublicEvent` 或 `seq` 的扩展。条件根的合法性只在给定公开弃牌、本人暗牌和窗口事实齐备时成立；他家隐藏手牌的动作仍须作为明示条件或未知裁决处理。P2 仍按[机械矩阵](../../review/vip-route-2026-09-30/P2-MECHANICAL-MATRIX.md)逐格验收，不能因触发牌入口补齐而认定响应后的全部公开事件闭合。`tests/unit/hangma/test_conditional_response_trigger.py` 将条件与官方同牌触发的三类合法动作全集对拍，并验证两种身份不得混填。
 
+**同次合法候选与条件根必须共享可见事实富集。**`HangmaRules.analyze` 会先调用纯函数 `enrich_observation`，从已见连续事件推导能证实的 `chain_piao` 和 `gang_draw`；`project_legal_roots` 在消费原始观察时也执行同一富集，再投影根。它不得修改原始 `PlayerObservation`、补未来事件或改变官方 `seq`。v35 明杠补摸胡反例显示：旧入口若仅富集合法候选、条件根却吃原始 `chain_piao=None`，会列出合法胡但漏掉可计算的 2 番四座结算。现由[自然轨迹对拍](../../review/vip-route-2026-09-30/P2-V35-CONDITIONAL-PARITY.md)验证原始与预富集两种入口结果相同；仍要求调用方传同一次规则分析的候选，不接受来自其他观察或规则配置的候选。
+
 ## 5. 动作提交协议
 
 2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；四白例外已在 v23 修订中取消，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。
