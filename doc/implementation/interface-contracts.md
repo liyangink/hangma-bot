@@ -388,6 +388,8 @@ P74 传输修复：当 `OfficialTransport` 的 `base_url` 主机命中配置的 
 
 **规则版本身份。**`ConditionalIdentity.ruleset_version` 在 `project_legal_roots` 建根时取本次 `RuleConfig.ruleset_version`，本地 `step()` 沿用；`analyze_given_self_draw` 与 `analyze_given_claim_action` 拒绝不同版本。字段可空仅供旧手工公开前缀试验，不能凭空版本进行完整本人资格/结算。当前目标配置仍由各入口固定 `BaseScore=1`、`YouCaiBiKao=false`，规则版本字符串不是官方 `/rules` 响应凭据。
 
+**旧一摸见证始终局部。**`given_next_normal_draw` 无法还原从当前弃牌到下一自摸间全部公开事件，调用方必须显式设置 `allow_local_witness=True`，输出永久为 `local_witness_only=True`；若未显式设置则拒绝。它不能根据本地分支路径里任意旧 `response:` 推断当前响应已裁决。完整路径只从已给定当前响应及期间公开事件后的 `NORMAL_DRAW` 状态调用 `apply_given_draw`，否则不能进入 P2 完成分子。
+
 **给定未来弃牌只有座位和牌值，不得为调用生产合法动作族伪造官方事件序号。**`hangma.internal_types.WindowContext` 追加可空 `conditional_discard: tuple[int, Tile]`。它只在离线条件响应窗口使用：必须是 `response_peng` 或 `response_chi`，座位须等于当前 `turn_seat`，且不得同时填写官方 `last_discard: PublicDiscard`。两种来源经 `response_trigger()` 统一给出 `(seat, tile)`；无触发牌时继续保守降级并记录规则问题。`action_families` 的吃、碰、明杠与 `candidate_facts` 的吃后移牌共用此入口；官方观察经 `_build_context` 仍仅填写 `last_discard`，行为不变。
 
 该内部字段不是 `PlayerObservation`、官方 `PublicEvent` 或 `seq` 的扩展。条件根的合法性只在给定公开弃牌、本人暗牌和窗口事实齐备时成立；他家隐藏手牌的动作仍须作为明示条件或未知裁决处理。P2 仍按[机械矩阵](../../review/vip-route-2026-09-30/P2-MECHANICAL-MATRIX.md)逐格验收，不能因触发牌入口补齐而认定响应后的全部公开事件闭合。`tests/unit/hangma/test_conditional_response_trigger.py` 将条件与官方同牌触发的三类合法动作全集对拍，并验证两种身份不得混填。

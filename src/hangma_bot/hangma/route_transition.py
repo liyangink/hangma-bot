@@ -1086,22 +1086,21 @@ def given_next_normal_draw(
     wall_remaining_before_draw: int, catch_restricted: bool,
     allow_local_witness: bool = False,
 ) -> ConditionalRouteState:
-    """给定响应已裁决、单局仍继续、期间本人未再行动的下一普通自摸。
+    """构造旧的一摸局部见证；不得冒充完整公开事件链的下一自摸。
 
     墙余（张）与抓打限制须由未来权威公开事件或假设条件显式传入；
     该函数不推断响应结果、圈主或对手动作。它沿用根时点未见容量，
     只能构造局部条件见证；其它公开牌变化会影响有效牌容量，须另用
     完整公开事件投影计算，不能由本状态估算或用于 P2 完成判定。
+    调用方必须显式接受 ``local_witness_only``；完整路径应在本次响应
+    获裁决及全部中间公开事件给定后，从 ``NORMAL_DRAW`` 调用
+    ``apply_given_draw``。旧路径曾有裁决不能证明当前响应已裁决。
     """
 
     if state.phase is not ConditionalPhase.RESPONSE_RESOLUTION:
         raise ValueError("下一普通自摸必须接在待响应裁决状态之后")
-    if state.structural_only and not allow_local_witness:
-        raise ValueError("预列吃碰弃牌尚未获裁决，缺完整公开事件前缀")
-    if state.identity is not None and not any(
-        part.startswith("response:") for part in state.identity.path
-    ) and not allow_local_witness:
-        raise ValueError("下一普通摸牌缺响应裁决与期间公开事件前缀")
+    if not allow_local_witness:
+        raise ValueError("旧下一摸入口只允许显式局部见证；完整路径须推进当前响应")
     if type(wall_remaining_before_draw) is not int or wall_remaining_before_draw < 0:
         raise ValueError("给定摸牌前墙余必须是非负整数")
     if type(catch_restricted) is not bool:
@@ -1112,7 +1111,7 @@ def given_next_normal_draw(
         catch_restricted=catch_restricted,
         catch_circle=None,  # 期间公开事件未投影，不能继承旧圈主
         structural_only=False,
-        local_witness_only=allow_local_witness,
+        local_witness_only=True,
     )
     return apply_given_draw(waiting, tile, replacement=False)
 

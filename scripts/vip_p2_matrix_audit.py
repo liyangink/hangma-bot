@@ -33,6 +33,13 @@ TRACES = {
         (1228, "gang:exposed:4b", 1229, 1230),
         (1230, "hu", 1231, 1231)),
 }
+EXTENDED_TRACES = {
+    **TRACES,
+    f"{V35}/other-minggang-1201-1209.json": (),
+    f"{V35}/other-angang-1218-1222.json": (),
+    f"{V35}/other-bugang-781-787.json": (),
+    f"{V35}/exhaustive-draw-1147-1159.json": (),
+}
 
 
 def _family(key: str) -> str:
@@ -49,6 +56,7 @@ def _load(path: str):
     v18 = path == V18
     raw_events = data["events"] if v18 else data["public_or_own_events"]
     if not v18 and any(e["type"] == "tile_drawn" and e["seat"] != data["seat"]
+                      and e.get("tile")
                       for e in raw_events):
         raise ValueError(path + ": 夹具含他座私有摸牌")
     events = tuple(public_event(e) for e in
@@ -96,11 +104,13 @@ def _pair_matches(root, after, event) -> bool:
     return expected == Counter(_build_context(after).full_hand())
 
 
-def audit() -> dict:
-    """登记所有样本合法根，并单列可核事件与成对快照的已执行根。"""
+def audit(*, traces: dict | None = None) -> dict:
+    """登记指定本座轨迹的所有合法根；默认保留冻结四轨迹基线。"""
 
+    if traces is None:
+        traces = TRACES
     rows, skipped = [], []
-    for path, anchors in TRACES.items():
+    for path, anchors in traces.items():
         views, raw_events, events, config, provenance, missing = _load(path)
         skipped.extend(missing)
         event_by_seq = {e.seq: e for e in events}
@@ -114,6 +124,10 @@ def audit() -> dict:
                                 "reason": "非本人可决策窗口"})
                 continue
             analysis = rules.analyze(view, value_limits=ValueAnalysisLimits())
+            if not analysis.legal_candidates:
+                skipped.append({"fixture": path, "seq": seq,
+                                "reason": "该公开窗口本座无合法候选，不进入根分母"})
+                continue
             roots = project_legal_roots(
                 view, _build_context(view), analysis.legal_candidates, config=config)
             if tuple(r.action_key for r in roots) != tuple(
@@ -189,9 +203,11 @@ def audit() -> dict:
                        "official_pair_anchors": sum(r["official_pair_anchor"] for r in cell),
                        "official_pair_state_matches": sum(
                            r["official_pair_state_match"] for r in cell)})
-    return {"scope": "four_selected_official_traces_not_global_coverage",
+    return {"scope": ("four_selected_official_traces_not_global_coverage"
+                      if traces is TRACES else
+                      "eight_selected_official_traces_not_global_coverage"),
             "target_config": {"BaseScore": 1, "YouCaiBiKao": False},
-            "fixture_count": len(TRACES), "snapshot_count": len({(r["fixture"], r["seq"])
+            "fixture_count": len(traces), "snapshot_count": len({(r["fixture"], r["seq"])
                                                                 for r in rows}),
             "legal_root_count": len(rows), "official_pair_anchor_count": sum(
                 r["official_pair_anchor"] for r in rows),

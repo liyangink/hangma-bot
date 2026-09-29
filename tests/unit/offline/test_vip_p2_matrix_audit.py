@@ -5,6 +5,8 @@ import importlib.util
 from dataclasses import replace
 from pathlib import Path
 
+import pytest
+
 from hangma_bot.hangma.interface import RuleIssue
 from hangma_bot.hangma.route_frontier import RouteGapKind
 
@@ -37,10 +39,49 @@ def test_current_official_fixture_matrix_is_reproducible():
         "v18_target_config_assumed",
         "v35_local_run_config_recorded_no_official_rules_response",
     }
-    assert result["skipped"] == [{
-        "fixture": "tests/fixtures/official/v35/vip-p2-natural/minggang-replenish-hu-1228-1231.json",
-        "reason": "非本人可决策窗口", "seq": 1231,
-    }]
+    assert [(item["fixture"].split("/")[-1], item["seq"])
+            for item in result["skipped"]] == [
+        ("chi-gang-draw.json", 2270),
+        ("peng-followup-1114-1117.json", 1117),
+        ("bugang-replenish-1510-1514.json", 1514),
+        ("minggang-replenish-hu-1228-1231.json", 1231),
+    ]
+
+
+def test_extended_redacted_public_traces_keep_root_denominator_separate():
+    """扩展四条他座/末墙片段只增加根登记，不冒充已执行动作对拍。"""
+
+    result = audit_module.audit(traces=audit_module.EXTENDED_TRACES)
+    assert result["fixture_count"] == 8
+    assert (result["snapshot_count"], result["legal_root_count"]) == (13, 60)
+    assert (result["official_pair_anchor_count"],
+            result["official_pair_state_match_count"]) == (9, 9)
+    assert sum(cell["mechanical_gap"] for cell in result["matrix"]) == 0
+    assert sum(cell["input_evidence_gap"] for cell in result["matrix"]) == 0
+    assert sum(cell["future_condition_open"] for cell in result["matrix"]) == 59
+    assert {row["fixture"].split("/")[-1] for row in result["rows"]} >= {
+        "other-minggang-1201-1209.json",
+        "other-bugang-781-787.json", "exhaustive-draw-1147-1159.json",
+    }
+    assert any(item["fixture"].endswith("other-angang-1218-1222.json")
+               and item["seq"] == 1218 and "无合法候选" in item["reason"]
+               for item in result["skipped"])
+
+
+def test_extended_trace_loader_rejects_other_seat_hidden_draw_tile(
+    tmp_path, monkeypatch,
+):
+    path = (audit_module.V35 + "/other-angang-1218-1222.json")
+    data = json.loads((audit_module.REPO / path).read_text())
+    hidden_draw = next(item for item in data["public_or_own_events"]
+                       if item["type"] == "tile_drawn" and item["seat"] != data["seat"])
+    hidden_draw["tile"] = "1w"
+    target = tmp_path / path
+    target.parent.mkdir(parents=True)
+    target.write_text(json.dumps(data, ensure_ascii=False))
+    monkeypatch.setattr(audit_module, "REPO", tmp_path)
+    with pytest.raises(ValueError, match="他座私有摸牌"):
+        audit_module._load(path)
 
 
 def test_missing_full_snapshot_is_explicitly_skipped(tmp_path, monkeypatch):

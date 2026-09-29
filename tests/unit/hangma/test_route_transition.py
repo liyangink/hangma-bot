@@ -16,7 +16,8 @@ from hangma_bot.hangma.public_tile_counts import (
 from hangma_bot.hangma.route_transition import (
     ConditionalPhase, ConditionalRouteState, analyze_given_claim_action,
     analyze_given_replacement_draw,
-    analyze_given_self_draw, apply_given_draw, apply_legal_followup_gang,
+    analyze_given_self_draw, apply_given_draw, apply_legal_draw_discard,
+    apply_legal_followup_gang,
     apply_legal_claim_discard, advance_given_response, advance_response_state,
     advance_given_other_draw, advance_given_other_discard,
     advance_given_other_gang,
@@ -880,6 +881,17 @@ def test_all_pass_public_circle_reaches_next_own_draw_without_future_hand_leak()
     assert conditional.issues == ()
     assert {candidate.action_key for candidate in conditional.legal_candidates}
     assert not conditional.local_witness_only
+    new_discard = apply_legal_draw_discard(conditional, "discard:东")
+    assert new_discard.phase is ConditionalPhase.RESPONSE_RESOLUTION
+    assert any(step.startswith("response:") for step in new_discard.identity.path)
+    with pytest.raises(ValueError, match="只允许显式局部见证"):
+        given_next_normal_draw(
+            new_discard, Tile("5b"), wall_remaining_before_draw=50,
+            catch_restricted=False)
+    local = given_next_normal_draw(
+        new_discard, Tile("5b"), wall_remaining_before_draw=50,
+        catch_restricted=False, allow_local_witness=True)
+    assert local.local_witness_only
 
 
 def test_given_other_discard_can_open_same_source_chi_without_official_seq():
