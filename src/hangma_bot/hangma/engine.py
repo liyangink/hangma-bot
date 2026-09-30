@@ -149,9 +149,13 @@ class HangmaRules:
             RuleCompleteness.DEGRADED if issues else RuleCompleteness.COMPLETE
         )
         route_frontier = None
+        conditional_roots = None
         if route_limits is not None:
             route_frontier = self._analyze_route_frontier(
                 observation, context, candidates, completeness
+            )
+            conditional_roots = self._analyze_conditional_roots(
+                observation, context, candidates, completeness,
             )
         return RuleAnalysis(
             legal_candidates=candidates,
@@ -160,7 +164,48 @@ class HangmaRules:
             ruleset_version=self.config.ruleset_version,
             issues=tuple(issues),
             route_frontier=route_frontier,
+            conditional_roots=conditional_roots,
         )
+
+    def _analyze_conditional_roots(
+        self,
+        observation: PlayerObservation,
+        context: Optional[WindowContext],
+        candidates: Tuple[RuleCandidate, ...],
+        completeness: RuleCompleteness,
+    ):
+        """显式研发根逐一保留；投影异常不得破坏合法集或紧急候选。"""
+
+        from .route_frontier import RouteGapKind
+        from .route_transition import ConditionalRoot, project_legal_roots
+
+        reason = None
+        kind = RouteGapKind.INPUT_EVIDENCE_GAP
+        if context is None or completeness is not RuleCompleteness.COMPLETE:
+            reason = "当前规则输入或合法动作分析未完整，不能建立 P2 条件根"
+        elif self.config.base_score != 1 or self.config.you_cai_bi_kao:
+            kind = RouteGapKind.MECHANICAL_GAP
+            reason = "P2 条件根尚未覆盖该规则配置"
+        if reason is not None:
+            return tuple(ConditionalRoot(
+                candidate.action_key, (), gap_kind=kind,
+                issues=(RuleIssue("route_transition.root", reason),),
+            ) for candidate in candidates)
+        try:
+            roots = project_legal_roots(
+                observation, context, candidates, config=self.config,
+            )
+            if tuple(root.action_key for root in roots) != tuple(
+                candidate.action_key for candidate in candidates
+            ):
+                raise ValueError("P2 条件根与同次合法候选顺序或集合不一致")
+            return roots
+        except Exception as exc:
+            reason = "条件根投影异常: {0}: {1}".format(type(exc).__name__, exc)
+            return tuple(ConditionalRoot(
+                candidate.action_key, (), gap_kind=RouteGapKind.MECHANICAL_GAP,
+                issues=(RuleIssue("route_transition.root", reason),),
+            ) for candidate in candidates)
 
     def _analyze_route_frontier(
         self,

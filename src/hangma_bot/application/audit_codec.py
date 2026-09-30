@@ -519,7 +519,9 @@ def rule_candidate_from_json(payload: object) -> RuleCandidate:
 
 
 def rule_analysis_to_json(analysis: RuleAnalysis) -> dict[str, object]:
-    """把规则分析转为 JSON；紧急候选为空时保留 null，不用空数组冒充。"""
+    """把生产规则分析转为 JSON；研发路线载荷尚无无损编解码时拒绝。"""
+    if analysis.route_frontier is not None or analysis.conditional_roots is not None:
+        raise ValueError("研发路线事实尚无无损审计编解码，不能记录为完整决策输入")
     return {
         "codec_version": DECISION_CODEC_VERSION,
         "legal_candidates": [rule_candidate_to_json(item) for item in analysis.legal_candidates],

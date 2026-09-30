@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Optional, Tuple
 
 if TYPE_CHECKING:
     from .route_frontier import RouteFrontierDraft
+    from .route_transition import ConditionalRoot
 
 from hangma_bot.kernel.actions import (
     Action,
@@ -310,6 +311,8 @@ class RuleAnalysis:
 
     ``route_frontier`` 仅在研发调用显式请求时生成；空值表示未请求，
     不能解释为当前没有可发展的胡牌路线。它不改变紧急动作或合法性。
+    ``conditional_roots`` 同样只在显式研究调用产生，逐一对应合法根；
+    下一待给定事件不等于机械完成，根故障仍由各根的 ``gap_kind`` 标明。
     """
 
     legal_candidates: Tuple[RuleCandidate, ...]
@@ -318,6 +321,7 @@ class RuleAnalysis:
     ruleset_version: str
     issues: Tuple[RuleIssue, ...]
     route_frontier: Optional["RouteFrontierDraft"] = None
+    conditional_roots: Optional[Tuple["ConditionalRoot", ...]] = None
 
 
 @dataclass(frozen=True)

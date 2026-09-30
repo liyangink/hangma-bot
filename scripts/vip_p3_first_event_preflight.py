@@ -209,6 +209,7 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
         group_hu_points = {item.action_key: 0 for item in arms}
         group_tail_points = {item.action_key: 0 for item in arms}
         group_tail_high = {item.action_key: 0 for item in arms}
+        group_tail_by_event = {item.action_key: {} for item in arms}
         for sample in range(worlds_per_root):
             hidden = engine.resample_public_consistent_hidden_world(
                 root, focal_seat=0, sample_key=f"vip-p3-first-event-{sample}",
@@ -237,9 +238,15 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
                     terminal = _finish_hand(engine, rules, after,
                                             reference=reference)
                     points = terminal["score_delta"][0]
+                    if kind in ("other_win", "draw") and points != event["score_delta"][0]:
+                        raise ValueError("首次终局事件与完整单局结算不一致")
                     group_tail_points[arm.action_key] += points
                     group_tail_high[arm.action_key] += (
                         terminal["winner_seat"] == 0 and terminal["fan"] >= 4)
+                    event_bucket = group_tail_by_event[arm.action_key].setdefault(
+                        key, {"count": 0, "net_points_sum": 0})
+                    event_bucket["count"] += 1
+                    event_bucket["net_points_sum"] += points
                     tail_points[arm.action_key] = points
             baseline_event = outcomes[arms[0].action_key]
             baseline = _event_key(baseline_event)
@@ -254,6 +261,14 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
                                 "negative" if delta < 0 else "zero"] += 1
         if any(sum(counts.values()) != worlds_per_root for counts in group.values()):
             raise ValueError("同根动作的首次事件质量不守恒")
+        if full_tail:
+            for arm in arms:
+                key = arm.action_key
+                buckets = group_tail_by_event[key]
+                if (sum(row["count"] for row in buckets.values()) != worlds_per_root
+                        or sum(row["net_points_sum"] for row in buckets.values())
+                        != group_tail_points[key]):
+                    raise ValueError("按首次互斥事件分解的完整单局积分不守恒")
         roots.append({
             "seed": seed, "observation_sha256": root_id,
             "arms": [item.action_key for item in arms],
@@ -263,7 +278,19 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
                 key: dict(sorted(value.items())) for key, value in group_hu.items()},
             "immediate_hu_net_points_by_arm": group_hu_points,
             **({"full_hand_net_points_by_arm": group_tail_points,
-                "full_hand_self_high_counts_by_arm": group_tail_high}
+                "full_hand_self_high_counts_by_arm": group_tail_high,
+                "first_event_value_decomposition_by_arm": {
+                    key: {
+                        event_key: {
+                            "count": row["count"],
+                            "probability": row["count"] / worlds_per_root,
+                            "conditional_net_points": row["net_points_sum"] / row["count"],
+                            "contribution_net_points": row["net_points_sum"] / worlds_per_root,
+                        }
+                        for event_key, row in sorted(buckets.items())
+                    }
+                    for key, buckets in group_tail_by_event.items()
+                }}
                if full_tail else {}),
         })
     expected = sum(len(item["arms"]) for item in roots) * worlds_per_root

@@ -42,6 +42,12 @@ def test_paired_immediate_hu_is_checked_against_complete_hand_settlement():
     assert report["root_groups"][0]["full_hand_net_points_by_arm"] == {
         "discard:6t": 0, "discard:中": 48, "discard:发": 144,
     }
+    group = report["root_groups"][0]
+    for arm, events in group["first_event_value_decomposition_by_arm"].items():
+        assert sum(row["count"] for row in events.values()) == 8
+        assert sum(row["probability"] for row in events.values()) == 1.0
+        assert sum(row["contribution_net_points"] for row in events.values()) == (
+            group["full_hand_net_points_by_arm"][arm] / 8)
 
 
 def test_shape_reference_is_independent_and_completes_same_world_arms():

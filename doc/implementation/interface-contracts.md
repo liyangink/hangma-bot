@@ -404,6 +404,8 @@ P74 传输修复：当 `OfficialTransport` 的 `base_url` 主机命中配置的 
 
 **给定本人摸牌后的合法胡只能携已证结算进终局。**`apply_legal_draw_hu` 同时要求本次 `GivenDrawAnalysis.legal_candidates` 含 `Hu`，且 `immediate_settlement` 非空；结果只把同源番数、明细及座位 `0—3` 净分写入条件 `HandResult`，不重新估番或伪造 `round_ended` 事件。v35 明杠补摸胡的条件终点已与官方 2 番、四座净分及生产规则对拍；缺结算和无胡候选均显式拒绝。
 
+**P2 条件根的受控读取入口。**显式调用 `HangmaRules.analyze(observation, route_limits=...)` 时，`RuleAnalysis.conditional_roots` 与同次 `legal_candidates` 按 `action_key` 同序一一对应；默认 `None` 表示未请求。此研究入口当前只支持 `BaseScore=1`、`YouCaiBiKao=false`。`pending_condition` 是尚待给定的事件，不是失败；`gap_kind/gap_kinds` 才记录根投影或输入证据缺口。规则分析降级时逐根标输入缺口，投影异常不删除合法或紧急动作。离线驱动在内存中把该字段交给 `DecisionRequest.rules`，现行线上运行入口不请求它。生产 `audit_codec` 尚未提供条件状态的无损编码：对带 `route_frontier` 或 `conditional_roots` 的规则分析显式拒绝序列化，不能把普通审计 JSON 称作完整 VIP 决策输入或用于无损重放。正式接线前还需完成编解码、应用层重建保留或失效、工作量与截止时间验收。
+
 ## 5. 动作提交协议
 
 2026-09-06 动作链修订使用 `hangma-mvp-v3-action-chain`，继承 §4.3 的过牌事实。外部四个端口与 `PlayerObservation` 编码保持兼容：官方 `rule_state` 原样传递；本地增量推进由 `hangma` 接收完整摸前暗牌、旧爆头和本次补牌来源。吃碰杠继承、补牌可新进入、弃牌先判本次飘再更新后态；四白例外已在 v23 修订中取消，链清零与退出爆头分开。来源未知且会改变结果时必须恢复权威快照，不补 False。完整语义和证据级别见[规则清单](../../src/hangma_bot/hangma/RULES_EVIDENCE.md)。模拟和牌谱读取使用同一实现，旧审计不按新版本覆盖。
