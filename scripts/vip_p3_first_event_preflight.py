@@ -14,6 +14,7 @@ import json
 from collections import Counter
 
 from hangma_bot.hangma.engine import HangmaRules
+from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.kernel.actions import Discard, Hu, Pass
 from hangma_bot.kernel.config import RuleConfig, TimingConfig, TournamentConfig
 from hangma_bot.simulation import MatchSpec, SimulationChoice, SimulationEngine
@@ -55,10 +56,29 @@ def _first_event(engine: SimulationEngine, rules: HangmaRules, world, *, seat: i
             if observation.phase == "draw":
                 if observation.drawn_tile is None:
                     raise ValueError("本人自摸机会缺已摸牌")
+                analysis = rules.analyze(
+                    observation, value_limits=ValueAnalysisLimits(max_expansions=8192))
+                win = next((item for item in analysis.legal_candidates
+                            if isinstance(item.action, Hu)), None)
+                settlement = (win.value_facts.immediate_settlement
+                              if win is not None and win.value_facts is not None else None)
+                if win is not None and settlement is None:
+                    raise ValueError("给定本人摸牌合法胡缺同次四座结算")
+                if settlement is not None and (
+                    len(settlement.score_delta) != 4
+                    or sum(settlement.score_delta) != 0
+                    or settlement.fan < 1
+                ):
+                    raise ValueError("给定本人摸牌结算的四座积分或番数无效")
                 return {
                     "kind": ("self_replacement_draw" if observation.gang_draw
                              else "self_normal_draw"),
                     "tile": observation.drawn_tile.code,
+                    "immediate_hu": (
+                        None if settlement is None else {
+                            "fan": settlement.fan,
+                            "score_delta": list(settlement.score_delta),
+                        }),
                 }
             if observation.phase not in ("response_peng", "response_chi"):
                 raise ValueError("未知本人窗口")
@@ -137,6 +157,8 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
     histogram: Counter[str] = Counter()
     event_keys: Counter[str] = Counter()
     paired: Counter[str] = Counter()
+    paired_hu: Counter[str] = Counter()
+    immediate_hu = 0
     roots = []
     skipped: list[dict] = []
     for seed in range(start_seed, start_seed + seeds):
@@ -162,6 +184,8 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
             continue
         root_id = hashlib.sha256(repr(observation).encode("utf-8")).hexdigest()
         group = {item.action_key: Counter() for item in arms}
+        group_hu = {item.action_key: Counter() for item in arms}
+        group_hu_points = {item.action_key: 0 for item in arms}
         for sample in range(worlds_per_root):
             hidden = engine.resample_public_consistent_hidden_world(
                 root, focal_seat=0, sample_key=f"vip-p3-first-event-{sample}",
@@ -179,10 +203,18 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
                 histogram[kind] += 1
                 event_keys[key] += 1
                 group[arm.action_key][key] += 1
-                outcomes[arm.action_key] = key
-            baseline = outcomes[arms[0].action_key]
+                if event.get("immediate_hu") is not None:
+                    immediate_hu += 1
+                    group_hu[arm.action_key][str(event["immediate_hu"]["fan"])] += 1
+                    group_hu_points[arm.action_key] += event["immediate_hu"]["score_delta"][0]
+                outcomes[arm.action_key] = event
+            baseline_event = outcomes[arms[0].action_key]
+            baseline = _event_key(baseline_event)
             for arm in arms[1:]:
-                paired[baseline + "->" + outcomes[arm.action_key]] += 1
+                other = outcomes[arm.action_key]
+                paired[baseline + "->" + _event_key(other)] += 1
+                paired_hu[("hu" if baseline_event.get("immediate_hu") else "no_hu")
+                          + "->" + ("hu" if other.get("immediate_hu") else "no_hu")] += 1
         if any(sum(counts.values()) != worlds_per_root for counts in group.values()):
             raise ValueError("同根动作的首次事件质量不守恒")
         roots.append({
@@ -190,6 +222,9 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
             "arms": [item.action_key for item in arms],
             "event_counts_by_arm": {key: dict(sorted(value.items()))
                                     for key, value in group.items()},
+            "immediate_hu_fan_counts_by_arm": {
+                key: dict(sorted(value.items())) for key, value in group_hu.items()},
+            "immediate_hu_net_points_by_arm": group_hu_points,
         })
     expected = sum(len(item["arms"]) for item in roots) * worlds_per_root
     if sum(histogram.values()) != expected or sum(paired.values()) != sum(
@@ -205,6 +240,8 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
         "action_worlds": expected,
         "event_counts": dict(sorted(histogram.items())),
         "event_key_counts": dict(sorted(event_keys.items())),
+        "immediate_hu_action_worlds": immediate_hu,
+        "paired_immediate_hu": dict(sorted(paired_hu.items())),
         "paired_event_changes": dict(sorted(paired.items())),
         "root_groups": roots,
     }
