@@ -373,20 +373,136 @@ def _validate_operator(operator: str, parents: Sequence[Mapping[str, Any]]) -> N
 
 
 def load_vip_parents(paths: Sequence[Path], batch: VipEohBatch) -> list[dict[str, Any]]:
-    """按输入顺序逐字节核验父包；仅接受当前新profile与相同实际额度。"""
+    """按序核验当前执行身份；研究重绑定须递归复核原件，不能假冒新作者。"""
+
+    return _load_vip_parents(paths, batch, lineage=())
+
+
+def _validate_rebound_parent(path, record, source, batch, identity, lineage):
+    """递归核验研究额度谱系；原生成批次与当前源执行批次明确分开。"""
+
+    from .vip_eoh_rebind import (
+        ORIGINAL_AUTHOR_FIELDS, VIP_RESEARCH_REBIND_PROVENANCE_SCHEMA,
+        VIP_RESEARCH_REBIND_ROLE, validate_vip_research_budget_batches,
+        validate_vip_research_rebind_identities,
+    )
+
+    provenance = record.get("provenance")
+    admission, publication, load = record.get("admission"), record.get("publication"), record.get("load")
+    if (not isinstance(provenance, dict)
+            or not isinstance(admission, dict) or not isinstance(publication, dict) or not isinstance(load, dict)
+            or provenance.get("schema") != VIP_RESEARCH_REBIND_PROVENANCE_SCHEMA
+            or record.get("backend") != VIP_RESEARCH_REBIND_ROLE
+            or record.get("is_model_output") is not False
+            or record.get("operator_requested") is not None or record.get("operator_actual") is not None
+            or record.get("model_identity") is not None or record.get("behavior_change_credit") is not False
+            or type(record.get("tables_run")) is not int or record["tables_run"] != 0
+            or admission.get("eligible") is not False
+            or admission.get("gates_run") != []
+            or publication.get("published") is not False
+            or load.get("method") != "ActionValueExecutor_constructor_and_recursive_origin_validation"
+            or load.get("gates_run") != [] or load.get("full_return_or_behavior_verified") is not False
+            or provenance.get("allowed_configuration_changes") != ["max_operations_increase", "batch_id_audit_label"]):
+        raise VipEohError("研究重绑定角色、模型/准入声明或谱系不合法")
+    billing = record.get("billing", {})
+    if not isinstance(billing, dict):
+        raise VipEohError("研究重绑定费用结构不合法")
+    charged = billing.get("charged", {})
+    if (not isinstance(charged, dict) or billing.get("status") != "not_a_model_call" or billing.get("call_started") is not False
+            or set(charged) != set(ACCOUNTS)
+            or any(type(value) is not int or value != 0 for value in charged.values())):
+        raise VipEohError("研究重绑定不能发生或冒称新的作者费用")
+    try:
+        origin_path = Path(provenance["original_package_path"]).resolve()
+        source_batch_path = Path(provenance["source_batch_path"]).resolve()
+        source_batch = VipEohBatch.read(source_batch_path)
+        # 原重绑定的两个配置证明当时仅提高操作额度；后代调用方可以有新的
+        # 作者预算和标签，只通过外层已经核验的评分身份消费这个父代。
+        target_batch = VipEohBatch.read(Path(provenance["target_batch_path"]))
+        validate_vip_research_budget_batches(source_batch, target_batch)
+        if (source_batch.raw != (path / "source-batch.json").read_bytes()
+                or provenance.get("source_batch_sha256") != _sha(source_batch.raw)
+                or (path / "batch.json").read_bytes() != target_batch.raw
+                or provenance.get("target_batch_sha256") != _sha(target_batch.raw)
+                or record.get("batch_sha256") != _sha(target_batch.raw)
+                or record.get("batch_id") != target_batch.batch_id
+                or target_batch.identity(source) != identity):
+            raise VipEohError("重绑定当前执行批次或源批次原件漂移")
+        original = _load_vip_parents([origin_path], source_batch, lineage=lineage)[0]
+        if original["artifact_role"] not in ("candidate_proposal", VIP_RESEARCH_REBIND_ROLE):
+            raise VipEohError("重绑定原来源不是当前提案")
+        original_record_bytes = (origin_path / "generation.json").read_bytes()
+        original_source_bytes = (origin_path / "candidate.py").read_bytes()
+        if (provenance.get("original_generation_sha256") != original["record_sha256"]
+                or _sha(original_record_bytes) != original["record_sha256"]
+                or (path / "original-generation.json").read_bytes() != original_record_bytes
+                or original_source_bytes != source.encode("utf-8")
+                or (path / "original-candidate.py").read_bytes() != original_source_bytes
+                or provenance.get("original_source_sha256") != _sha(original_source_bytes)
+                or provenance.get("source_identity") != original["identity"]
+                or provenance.get("target_identity") != identity):
+            raise VipEohError("重绑定的原记录、源码或两执行身份漂移")
+        original_record = json.loads(original_record_bytes)
+        if (provenance.get("original_author_evidence") != {
+                name: original_record.get(name) for name in ORIGINAL_AUTHOR_FIELDS}
+                or record.get("thought") != original_record.get("thought")
+                or record.get("mechanism") != original_record.get("mechanism")):
+            raise VipEohError("重绑定不能改写原作者、费用、思想或机制")
+        validate_vip_research_rebind_identities(original["identity"], identity)
+        expected_optional = {
+            "original-source-raw.py": origin_path / "source-raw.py",
+            "original-author-batch.json": origin_path / "batch.json",
+        }
+        optional = provenance.get("optional_original_files")
+        evidence = provenance.get("execution_evidence")
+        if not isinstance(optional, list) or not isinstance(evidence, list):
+            raise VipEohError("原作者材料与执行证据须显式列出")
+        if {item.get("snapshot_path") for item in optional} != {
+                name for name, original_file in expected_optional.items() if original_file.exists()}:
+            raise VipEohError("原作者材料遗漏或替换")
+        for item in optional + evidence:
+            snapshot_name = item["snapshot_path"]
+            snapshot = Path(snapshot_name)
+            if snapshot.is_absolute() or ".." in snapshot.parts:
+                raise VipEohError("谱系快照必须位于重绑定包内")
+            original_file = Path(item["original_path"])
+            if item in optional:
+                if original_file.resolve() != expected_optional[snapshot_name].resolve():
+                    raise VipEohError("原作者材料路径不对应原包")
+            elif snapshot.parent != Path("execution-evidence"):
+                raise VipEohError("执行证据快照路径不合法")
+            data = original_file.read_bytes()
+            if (data != (path / snapshot).read_bytes() or item.get("sha256") != _sha(data)
+                    or type(item.get("bytes")) is not int or item["bytes"] != len(data)):
+                raise VipEohError("原作者材料或执行失败证据漂移")
+    except (KeyError, TypeError, AttributeError) as error:
+        raise VipEohError("研究重绑定谱系结构不完整") from error
+
+
+def _load_vip_parents(paths, batch, *, lineage):
+    """单父重绑定链最多32层；拒绝循环，不反复信任嵌入身份。"""
 
     parents = []
     for path in paths:
-        path = Path(path)
+        path = Path(path).resolve()
+        if path in lineage or len(lineage) >= 32:
+            raise VipEohError("研究重绑定来源循环或超过32层")
         record_bytes = (path / "generation.json").read_bytes()
         record = json.loads(record_bytes)
+        if (record.get("artifact_role") != "research_budget_rebind" and (
+                record.get("backend") == "research_budget_rebind"
+                or isinstance(record.get("provenance"), dict) and record["provenance"].get("schema")
+                == "vip-research-budget-rebind-provenance/1"
+                or (path / "original-generation.json").exists())):
+            raise VipEohError("重绑定原件不能伪装为新作者提案或人工种子")
         if (record.get("schema") != VIP_EOH_GENERATION_SCHEMA
                 or record.get("profile") != VIP_EOH_PROFILE
                 or record.get("candidate_kind") != VIP_ROUTE_CANDIDATE_KIND
                 or record.get("status") != "loaded_not_admitted"
                 or record.get("load", {}).get("ok") is not True
                 or record.get("identity_stable") is not True
-                or record.get("artifact_role") not in ("candidate_proposal", "manual_seed")):
+                or record.get("artifact_role") not in (
+                    "candidate_proposal", "manual_seed", "research_budget_rebind")):
             raise VipEohError("父代不是新版已装载且未失效提案或人工种子")
         source = (path / "candidate.py").read_bytes().decode("utf-8")
         identity = batch.identity(source)
@@ -394,6 +510,12 @@ def load_vip_parents(paths: Sequence[Path], batch: VipEohBatch) -> list[dict[str
             raise VipEohError("父代源码、合同、依赖或额度与当前逐字节身份不一致")
         if record["artifact_role"] == "manual_seed" and source != VIP_ROUTE_HEURISTIC_SEED_SOURCE:
             raise VipEohError("人工种子身份不对应当前完整人工种子源码")
+        if record["artifact_role"] == "research_budget_rebind":
+            _validate_rebound_parent(path, record, source, batch, identity, (*lineage, path))
+            if (batch.identity(source) != identity
+                    or (path / "candidate.py").read_bytes().decode("utf-8") != source
+                    or (path / "generation.json").read_bytes() != record_bytes):
+                raise VipEohError("重绑定装载首尾身份或包原件漂移")
         ActionValueExecutor(source, max_operations=batch.max_operations)
         parents.append({"path": str(path.resolve()), "identity": identity, "source": source,
                         "source_sha256": _sha(source), "record_sha256": _sha(record_bytes),

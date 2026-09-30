@@ -14,6 +14,8 @@
 
 跨模块契约见 [`test_vip_route_scoring_contract.py`](../../tests/contracts/test_vip_route_scoring_contract.py)：精确新／旧类型互斥、全合法输出完整性及严格失败分类。候选身份由离线 `freeze_vip_identity` 绑定实际 `RuleConfig`、`ValueAnalysisLimits`、投影／评分额度和源码／数学后端内容；评估次数、作者与父代出处另记，不替代实际运行配置。
 
+离线研究执行额度重绑定（`research_budget_rebind`，源码不变而操作计数上限提高的独立身份）由 `rebind_vip_research_budget` 消费源执行配置、已装载提案、目标执行配置和可选旧执行证据，写必须不存在的新包；错误、源漂移或其他配置变化拒绝。唯一可变执行字段为更大的整数 `max_operations`，另允许新的 `batch_id` 审计标签。`load_vip_parents` 对新角色递归核原生成记录、源码、两配置及费用证据；原作者账完整保留，新包不算一次作者调用，也不取得行为／准入信用。相同源码必须在新额度重新运行全窗口及完整桌。原绝对路径当前须在线；只携复制件移交尚未支持。公开行为回归见 [`test_vip_eoh_rebind.py`](../../tests/unit/offline/test_vip_eoh_rebind.py)；线上端口、新／旧评分视图和规则事实均不变。
+
 
 > **2026-09-24 同步模式补充：**显式 `sse_enabled=true` 接通 SSE 通知水位，暂停该模式的增量长轮询与自动长轮询回退；未显式开启的历史配置仍沿用 `state`。旧段落中“组合根固定关闭 SSE”记录的是当时状态。具体边界见文末验证模式段与[架构 §7](../architecture.md#7-状态同步与请求资源)。
 
