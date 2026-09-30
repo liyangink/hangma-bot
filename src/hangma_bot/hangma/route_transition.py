@@ -1122,9 +1122,10 @@ def analyze_given_self_draw(
 ) -> GivenDrawAnalysis:
     """给定本人摸牌，复用动作族、分解和结算求立即合法动作。
 
-    杠补紧接已确认的杠；普通自摸须先用 ``given_next_normal_draw``
-    显式给出后来墙余及抓打限制。这里只需要本座暗牌和已知公开权限，
-    不读他家暗牌或未来墙序；全量公开容量仍待条件投影接通。
+    杠补紧接已确认的杠；完整普通自摸须先沿已裁决的公开事件链到
+    ``NORMAL_DRAW``，再用 ``apply_given_draw`` 给定本人实际摸牌。
+    旧 ``given_next_normal_draw`` 仅产生标记过的局部见证。这里只读取
+    本座暗牌和已给定公开事实，不读他家暗牌或未来墙序。
     """
 
     if config.base_score != 1 or config.you_cai_bi_kao:

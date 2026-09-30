@@ -12,9 +12,13 @@ from hangma_bot.hangma.route_transition import (
     advance_given_response,
     advance_response_state,
     apply_given_draw,
+    apply_legal_draw_discard,
+    apply_legal_draw_hu,
+    finish_given_exhaustive_draw,
+    analyze_given_self_draw,
     project_legal_roots,
 )
-from hangma_bot.kernel.actions import Discard, Pass
+from hangma_bot.kernel.actions import Discard, Hu, Pass
 from hangma_bot.simulation import SimulationChoice, SimulationEngine
 from hangma_bot.simulation.projection import observation as project_observation
 
@@ -249,3 +253,106 @@ def test_given_other_claim_matches_simulator_public_award(
     assert transition.state.expected_discard_seat == 1
     _assert_public_equal(transition.state, world)
 
+
+def test_full_no_claim_hands_reach_same_rule_terminal():
+    """完整单局复用同一条件链：流局与一次本座合法胡均同源终止。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    own_wins = 0
+    for seed in (*range(11, 21), 39):
+        world = engine.start(make_spec(rules, rounds=1, seed=seed))
+        frame = engine.frame(world)
+        own = frame.decisions[0]
+        analysis = rules.analyze(own.observation)
+        first = next(item for item in analysis.legal_candidates
+                     if isinstance(item.action, Discard)
+                     and item.action.tile.code != "白")
+        root = next(item for item in project_legal_roots(
+            own.observation, _build_context(own.observation),
+            analysis.legal_candidates, config=rules.config,
+        ) if item.action_key == first.action_key)
+        state = root.branches[0].state
+        world = engine.advance(world, frame.revision, (
+            SimulationChoice(own.window_key, first.action),
+        ))
+        _assert_public_equal(state, world)
+
+        for _ in range(300):
+            if world.progression.window in ("ended", "match_end"):
+                if state.phase is not ConditionalPhase.TERMINAL:
+                    state = finish_given_exhaustive_draw(state)
+                assert state.terminal_result == world.progression.hand_result
+                break
+            frame = engine.frame(world)
+            if world.progression.window.startswith("response_"):
+                assert state.phase is ConditionalPhase.RESPONSE_RESOLUTION
+                assert state.response_trigger is not None
+                feeder, tile = state.response_trigger
+                transition = advance_response_state(
+                    state, window=world.progression.window,
+                    discard_seat=feeder, discarded_tile=tile,
+                    responding=world.progression.responding,
+                    choices=tuple((item.window_key.seat, Pass())
+                                  for item in frame.decisions),
+                )
+                assert transition.resolution.status == "resolved"
+                state = transition.state
+                world = engine.advance(world, frame.revision, tuple(
+                    SimulationChoice(item.window_key, Pass())
+                    for item in frame.decisions
+                ))
+                if world.progression.window not in ("ended", "match_end", "draw"):
+                    _assert_public_equal(state, world)
+                continue
+
+            assert world.progression.window == "draw"
+            decision = frame.decisions[0]
+            seat = decision.window_key.seat
+            if seat == 0:
+                assert state.phase is ConditionalPhase.NORMAL_DRAW
+                assert decision.observation.drawn_tile is not None
+                state = apply_given_draw(
+                    state, decision.observation.drawn_tile,
+                    replacement=False,
+                )
+                given = analyze_given_self_draw(
+                    state, seat=0, dealer_seat=world.progression.dealer_seat,
+                    config=rules.config,
+                )
+                production = rules.analyze(decision.observation)
+                assert {item.action_key for item in given.legal_candidates} == {
+                    item.action_key for item in production.legal_candidates
+                }
+                if seed == 39 and any(
+                    isinstance(item.action, Hu) for item in given.legal_candidates
+                ):
+                    candidate = next(item for item in given.legal_candidates
+                                     if isinstance(item.action, Hu))
+                    state = apply_legal_draw_hu(given)
+                    own_wins += 1
+                else:
+                    candidate = next(item for item in given.legal_candidates
+                                     if isinstance(item.action, Discard)
+                                     and item.action.tile.code != "白")
+                    state = apply_legal_draw_discard(given, candidate.action_key)
+            else:
+                assert state.phase is ConditionalPhase.PUBLIC_WAIT
+                state = advance_given_other_draw(state, seat=seat)
+                production = rules.analyze(decision.observation)
+                candidate = next(item for item in production.legal_candidates
+                                 if isinstance(item.action, Discard)
+                                 and item.action.tile.code != "白")
+                state = advance_given_other_discard(
+                    state, seat=seat, tile=candidate.action.tile,
+                )
+            world = engine.advance(world, frame.revision, (
+                SimulationChoice(decision.window_key, candidate.action),
+            ))
+            if state.phase is ConditionalPhase.TERMINAL:
+                assert state.terminal_result == world.progression.hand_result
+            else:
+                _assert_public_equal(state, world)
+        else:
+            raise AssertionError("固定单局未在 300 个窗口内结束")
+    assert own_wins == 1
