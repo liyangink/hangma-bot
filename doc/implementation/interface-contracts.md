@@ -609,6 +609,8 @@ kernel JSON 编码保留 schema_version=1 的可选字段增补；新编码完�
 
 这些字段经 DTO、事件投影、`PlayerObservation.public_history` 和审计 JSON 编解码传递。schema_version 仍为 1，旧记录缺字段解码为 `None`。不透传任意 `data`，不扩大隐藏牌权限。他家无牌值 `tile_drawn` 是合法可见事件，必须保留；收到他家私有牌值须隔离并标记异常。
 
+2026-09-30 模拟公开投影对齐：`SimulationEngine` 已产生含 `draw/fan/detail/scores` 的 `round_ended` 和含 `final_scores` 的 `game_ended`；`simulation.projection.public_history_for` 现将这些已公开字段写入同一 `PublicEvent` 可选字段。仅修复模拟器原先丢失的公开结算，仍不投影他座摸牌值。模拟器的完整世界和牌墙顺序不进入条件策略输入；[信息权限回归](../../tests/simulation/test_info_permission.py)核对终局公开字段。
+
 2026-09-14 吃供牌契约增补：`PublicEvent` 末尾新增 `claimed_tile: Optional[Tile] = None`，表示该次吃明确领取的上家弃牌。官方来源为 `chi.tile`，与完整组合 `chi.data.tiles` 分开保存；v18 玩家原文（2026-09-06 抓取）见[动作链金例](../../tests/fixtures/official/v18/action-chain/chi-gang-draw.json)。适配器解析类型同步增加 `Optional[str]` 字段。值对象只允许有座位的 `chi` 事件携带此事实，且牌码必须出现在 `tiles` 中；不在 kernel 校验顺子规则。字段缺失、空牌值或审计空值均为未知，不能按组合位置猜供牌。
 
 公开牌计数优先使用明确供牌，缺字段时退回连续公开事件或上家牌河唯一交集。 **2026-09-18 修订**：上条已过期——平台自 2026-09-14 前后起不再把被鸣弃牌留在快照牌河（2026-09-10 前仍保留，指南更新日志 v1—v34 无此记录），因此不再用「上家牌河唯一交集」猜测；改为逐副露实证（官方吃事件原文，或紧邻弃牌配对）+ 牌张守恒守卫，无证据不扣、不降级。证据见 review/test-tournament-20260917/probes/discard-river-accounting-evidence.md。明确供牌不要求更早历史完整，但仍须通过当前单局、水位、重复冲突、同形副露实例、源牌河及供牌张数校验；与连续弃牌冲突时不选择任意一份历史。存在歧义仍按逐候选 `ANALYSIS_FAILED` 降级。官方投影、模拟公开投影、离线牌谱转换、观察和单局封存的审计编解码均保留此字段；JSON 使用牌码字符串或 null，旧记录缺键读为 `None`，schema_version 保持 1。历史审计不回写，新字段不自动填入原决策或改变学习特征宽度。四个外部端口、动作窗口、网络请求和同步水位语义不变。跨模块回归见[吃供牌契约测试](../../tests/contracts/test_chi_claimed_tile.py)。

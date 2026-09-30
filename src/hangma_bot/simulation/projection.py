@@ -52,6 +52,14 @@ def public_history_for(events: Tuple[object, ...], seat: int) -> Tuple[PublicEve
                    else (event.tile,) if event.tile is not None and not hidden_draw else ()),
             detail_kind=data.get("kind"),
             catch_play=data.get("catch_play") if kind == "tile_discarded" else None,
+            result_draw=data.get("draw") if kind == "round_ended" else None,
+            result_fan=data.get("fan") if kind == "round_ended" else None,
+            result_details=(tuple(data["detail"])
+                            if kind == "round_ended" and "detail" in data else None),
+            result_scores=(tuple(data["scores"])
+                           if kind == "round_ended" and "scores" in data else None),
+            final_scores=(tuple(data["final_scores"])
+                          if kind == "game_ended" and "final_scores" in data else None),
             claimed_tile=event.tile if kind == "chi" else None,
         ))
     return tuple(out)

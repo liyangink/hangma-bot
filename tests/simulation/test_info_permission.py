@@ -7,8 +7,9 @@ from dataclasses import replace
 
 from hangma_bot.kernel.serialization import observation_to_json
 from hangma_bot.simulation import SimulationEngine
+from hangma_bot.simulation.projection import public_history_for
 
-from ._helpers import make_rules, make_spec, simple_chooser
+from ._helpers import drive, make_rules, make_spec, simple_chooser
 
 
 def _advance_once(engine, world, chooser):
@@ -73,3 +74,26 @@ def test_public_change_does_change_observation():
         for d in engine.frame(modified).decisions
     ]
     assert after != baseline
+
+
+def test_public_history_keeps_official_result_facts_at_hand_and_game_end():
+    """模拟事件的公开终局字段与官方 PublicEvent 合同一致。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    world = drive(
+        engine, engine.start(make_spec(rules, rounds=1, seed=39)),
+        simple_chooser(rules),
+    )
+    record = world.round_records[0]
+    history = public_history_for(world.events, seat=0)
+    ended = next(item for item in history if item.kind == "round_ended")
+    assert ended.result_draw == record.is_draw
+    assert ended.result_fan == (None if record.is_draw else record.fan)
+    assert ended.result_details == (None if record.is_draw else record.details)
+    assert ended.result_scores == record.score_delta
+    assert ended.seat == record.winner_seat
+    game_end = next(item for item in history if item.kind == "game_ended")
+    assert game_end.final_scores == world.scores
+    assert all(item.result_scores is None for item in history
+               if item.kind not in ("round_ended",))

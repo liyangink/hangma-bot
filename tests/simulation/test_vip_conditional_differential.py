@@ -10,20 +10,24 @@ from hangma_bot.hangma.route_transition import (
     ConditionalPhase,
     advance_given_other_discard,
     advance_given_other_draw,
+    advance_given_other_gang,
     advance_given_response,
     advance_response_state,
     apply_given_draw,
     apply_legal_draw_discard,
     apply_legal_draw_hu,
     finish_given_exhaustive_draw,
+    finish_given_official_other_win,
     analyze_given_self_draw,
     project_legal_roots,
 )
 from hangma_bot.kernel.actions import (
-    CANONICAL_TILE_ORDER, Discard, Gang, GangKind, Hu, Pass, Tile,
+    CANONICAL_TILE_ORDER, Discard, Gang, GangKind, Hu, Pass, Peng, Tile,
 )
 from hangma_bot.simulation import SimulationChoice, SimulationEngine
-from hangma_bot.simulation.projection import observation as project_observation
+from hangma_bot.simulation.projection import (
+    observation as project_observation, public_history_for,
+)
 
 from ._helpers import build_full_world_row, make_rules, make_spec
 
@@ -268,12 +272,13 @@ def test_given_other_claim_matches_simulator_public_award(
 
 
 def test_full_no_claim_hands_reach_same_rule_terminal():
-    """完整单局复用同一条件链：流局与一次本座合法胡均同源终止。"""
+    """完整单局同一条件链：流局、本座胡与给定他座胡同源终止。"""
 
     rules = make_rules()
     engine = SimulationEngine(rules)
     own_wins = 0
-    for seed in (*range(11, 21), 39):
+    other_wins = 0
+    for seed in (*range(11, 21), 34, 39):
         world = engine.start(make_spec(rules, rounds=1, seed=seed))
         frame = engine.frame(world)
         own = frame.decisions[0]
@@ -353,6 +358,22 @@ def test_full_no_claim_hands_reach_same_rule_terminal():
                 assert state.phase is ConditionalPhase.PUBLIC_WAIT
                 state = advance_given_other_draw(state, seat=seat)
                 production = rules.analyze(decision.observation)
+                if seed == 34 and any(
+                    isinstance(item.action, Hu)
+                    for item in production.legal_candidates
+                ):
+                    world = engine.advance(world, frame.revision, (
+                        SimulationChoice(decision.window_key, Hu()),
+                    ))
+                    event = next(item for item in public_history_for(
+                        world.events, seat=0) if item.kind == "round_ended")
+                    state = finish_given_official_other_win(
+                        state, event, game_id=world.match_id,
+                        round_no=world.round_no,
+                    )
+                    assert state.terminal_result == world.progression.hand_result
+                    other_wins += 1
+                    continue
                 candidate = next(item for item in production.legal_candidates
                                  if isinstance(item.action, Discard)
                                  and item.action.tile.code != "白")
@@ -369,6 +390,7 @@ def test_full_no_claim_hands_reach_same_rule_terminal():
         else:
             raise AssertionError("固定单局未在 300 个窗口内结束")
     assert own_wins == 1
+    assert other_wins == 1
 
 
 def test_initial_white_discard_catch_circle_reaches_next_own_draw():
@@ -589,3 +611,117 @@ def test_other_exposed_gang_award_replacement_and_discard_match_simulator():
         SimulationChoice(frame.decisions[0].window_key, their_discard),
     ))
     _assert_public_equal(state, world)
+
+
+def test_other_added_gang_after_peng_matches_continuous_public_path():
+    """他座先碰再等真实第四张补杠；全程不给条件量具他座暗牌。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    pool = [code for code in CANONICAL_TILE_ORDER for _ in range(4)]
+    for _ in range(4):
+        pool.remove("5w")
+    wall = pool[50:] + ["5w"]
+    source = wall.index("5w")
+    wall[source], wall[3] = wall[3], wall[source]
+    row = build_full_world_row(
+        rules,
+        hands13=[
+            pool[:13], ["5w", "5w"] + pool[13:24],
+            pool[24:37], pool[37:50],
+        ],
+        dealer_drawn="5w", wall=wall, dealer=0,
+    )
+    world = engine.from_replay(row)
+    frame = engine.frame(world)
+    own = frame.decisions[0]
+    analysis = rules.analyze(own.observation)
+    root = next(item for item in project_legal_roots(
+        own.observation, _build_context(own.observation),
+        analysis.legal_candidates, config=rules.config,
+    ) if item.action_key == "discard:5w")
+    state = root.branches[0].state
+    world = engine.advance(world, frame.revision, (
+        SimulationChoice(own.window_key, Discard(Tile("5w"))),
+    ))
+    _assert_public_equal(state, world)
+
+    for step in range(1, 30):
+        frame = engine.frame(world)
+        if world.progression.window.startswith("response_"):
+            window = world.progression.window
+            claim = step == 1
+            choices = tuple((item.window_key.seat,
+                             Peng(Tile("5w")) if claim and
+                             item.window_key.seat == 1 else Pass())
+                            for item in frame.decisions)
+            assert state.response_trigger is not None
+            feeder, tile = state.response_trigger
+            common = dict(
+                window=window, discard_seat=feeder, discarded_tile=tile,
+                responding=world.progression.responding, choices=choices,
+                retained_in_river=True if claim else None,
+            )
+            transition = (advance_given_response(root, **common) if claim
+                          else advance_response_state(state, **common))
+            assert transition.resolution.status == "resolved"
+            state = transition.state
+            world = engine.advance(world, frame.revision, tuple(
+                SimulationChoice(item.window_key, action)
+                for item, (_, action) in zip(frame.decisions, choices)
+            ))
+            if world.progression.window.startswith("response_") or claim:
+                _assert_public_equal(state, world)
+            continue
+
+        assert world.progression.window == "draw"
+        decision = frame.decisions[0]
+        seat = decision.window_key.seat
+        observed = decision.observation
+        if observed.drawn_tile is None:
+            assert seat == 1 and state.expected_discard_seat == 1
+        elif seat == 0:
+            assert state.phase is ConditionalPhase.NORMAL_DRAW
+            state = apply_given_draw(
+                state, observed.drawn_tile, replacement=False,
+            )
+            _assert_public_equal(state, world)
+        else:
+            state = advance_given_other_draw(state, seat=seat)
+            _assert_public_equal(state, world)
+
+        if seat == 1 and observed.drawn_tile == Tile("5w"):
+            gang = Gang(Tile("5w"), GangKind.ADDED)
+            assert any(item.action_key == "gang:added:5w" for item in
+                       rules.analyze(observed).legal_candidates)
+            state = advance_given_other_gang(state, seat=1, action=gang)
+            world = engine.advance(world, frame.revision, (
+                SimulationChoice(decision.window_key, gang),
+            ))
+            state = advance_given_other_draw(state, seat=1, replacement=True)
+            _assert_public_equal(state, world)
+            break
+
+        production = rules.analyze(observed)
+        discard = next(item for item in production.legal_candidates
+                       if isinstance(item.action, Discard)
+                       and item.action.tile.code != "白")
+        if seat == 0:
+            given = analyze_given_self_draw(
+                state, seat=0, dealer_seat=world.progression.dealer_seat,
+                config=rules.config,
+            )
+            assert {item.action_key for item in given.legal_candidates} == {
+                item.action_key for item in production.legal_candidates
+            }
+            state = apply_legal_draw_discard(given, discard.action_key)
+        else:
+            state = advance_given_other_discard(
+                state, seat=seat, tile=discard.action.tile,
+            )
+        world = engine.advance(world, frame.revision, (
+            SimulationChoice(decision.window_key, discard.action),
+        ))
+        _assert_public_equal(state, world)
+    else:
+        raise AssertionError("物理指定的第四张 5w 未进入他座补杠窗口")
