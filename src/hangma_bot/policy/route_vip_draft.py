@@ -120,7 +120,13 @@ class RouteVipDraftPolicy:
             ))
         if not scored:
             raise RouteDraftError("NO_CANDIDATE", "全部合法动作已明确拒绝")
-        scored.sort(key=lambda item: (-item.total_score, item.action_key))
+        # 未校准代理浮点累加可能比真实胡净分高约 1e-14；近似同分时
+        # 选确定已结算的胡，不能把数值尾差解释成有证据的等待优势。
+        scored.sort(key=lambda item: (
+            -round(item.total_score, 8),
+            not isinstance(item.action, Hu),
+            item.action_key,
+        ))
         ranked = tuple(RankedCandidate(
             action=item.action, action_key=item.action_key, rank=index,
             total_score=item.total_score, score_parts=item.score_parts,

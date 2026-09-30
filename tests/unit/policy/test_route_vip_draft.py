@@ -14,6 +14,7 @@ from hangma_bot.kernel.actions import WindowPhase
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.serialization import observation_from_json
 from hangma_bot.policy.route_vip_draft import RouteDraftError, RouteVipDraftPolicy
+from hangma_bot.policy.interface import ScorePart
 
 from .support import make_budget, make_request, rejected, run_choose
 
@@ -93,3 +94,18 @@ def test_mechanical_gap_is_not_masked_by_rejected_action(representative_windows)
             phase=WindowPhase(observation.phase)), make_budget())
     assert error.value.category == "MECHANICAL_GAP"
     assert error.value.action_key == root.action_key
+
+
+def test_floating_point_near_tie_prefers_confirmed_hu(representative_windows):
+    """约 1e-12 的代理尾差不能冒充继续的真实积分优势。"""
+
+    observation = observation_from_json(representative_windows["hu"])
+    rules = HangmaRules(RuleConfig("hangma-mvp-v10-public-counts", 1, False)).analyze(
+        observation, route_limits=ValueAnalysisLimits(max_expansions=8192))
+    exact = next(root.settlement.score_delta[observation.seat]
+                 for root in rules.conditional_roots if root.action_key == "hu")
+    policy = RouteVipDraftPolicy()
+    policy._one_draw._score_discard = lambda request, root: (
+        (ScorePart("test_near_tie", float(exact) + 1e-12),), ())
+    plan = run_choose(policy, make_request(observation, rules), make_budget())
+    assert plan.candidates[0].action_key == "hu"
