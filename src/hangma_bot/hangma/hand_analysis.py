@@ -27,6 +27,7 @@ from .internal_types import (
     Counts34,
     HandProgressSummary,
     HandSummary,
+    HandWinEvidence,
     UsefulTile,
     WinSplit,
     counts_from_tiles,
@@ -198,6 +199,19 @@ def _analyse_counts_progress_math(
         None if standard_entries is None else tuple(standard_entries),
         None if seven_pairs_entries is None else tuple(seven_pairs_entries),
     )
+
+
+def analyse_hand_win(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandWinEvidence:
+    """只判当前完整暗牌是否成胡，不展开向听或下一摸有效牌。
+
+    输入只含本人已知牌和固定副露数；副露数非法时抛 ``ValueError``。
+    复用完整手牌分析的同一成胡判定，不能据此绕过动作资格或结算。
+    本函数不访问外部状态，也不伪造未计算的完整分析字段。
+    """
+
+    _validate_melds(meld_set_count)
+    is_win = _is_win_counts(counts_from_tiles(hand_tiles), meld_set_count)
+    return HandWinEvidence(is_win, ("仅胡资格数学:同源标准型或七对成胡判定",))
 
 
 def analyse_hand(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> HandSummary:

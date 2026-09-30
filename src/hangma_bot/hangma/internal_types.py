@@ -80,6 +80,18 @@ class UsefulTile:
 
 
 @dataclass(frozen=True)
+class HandWinEvidence:
+    """只判定当前暗牌是否成胡的规则事实，不承诺向听或后续进张。
+
+    用于仅需胡资格的条件见证；由同一手牌分解器产出，避免以未计算
+    的向听和有效牌字段拼装完整 ``HandSummary``。
+    """
+
+    is_win: bool  # 当前完整暗牌能否成胡；不含动作窗口或有财必靠门禁
+    evidence: Tuple[str, ...]  # 同一确定性胡牌分解器给出的人读证据
+
+
+@dataclass(frozen=True)
 class HandSummary:
     """一次确定性手牌分析的完整结果（不含动作窗口合法性）。
 

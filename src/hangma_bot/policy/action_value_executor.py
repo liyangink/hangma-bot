@@ -2172,6 +2172,26 @@ class ActionValueExecutor:
         charge_structure(raw, self._meter, "候选返回值")
         return raw
 
+    def score_vip_route(self, view) -> ScoreBatch:
+        """受限执行独立 VIP 视图；失败原样交严格研究包装，不补保底。
+
+        只接受新合同的精确视图类型；复用静态检查、工作量计费与跨调用
+        状态复核。旧 ScoringView 的版本和执行入口保持原语义。
+        """
+        from .route_heuristic_view import (
+            VipRouteScoringView,
+            run_vip_route_scoring_skeleton,
+        )
+
+        if not isinstance(view, VipRouteScoringView):
+            raise ValueError("ActionValueExecutor.score_vip_route 需要 VipRouteScoringView 输入")
+        self._meter.used = 0
+        try:
+            return run_vip_route_scoring_skeleton(view, self._guarded_candidate)
+        finally:
+            self.last_operation_count = self._meter.used
+            self._verify_no_shared_mutation()
+
     def score(self, view: ScoringView) -> ScoreBatch:
         """受限执行 score_actions 并验证完整返回；失败整批抛错，不部分补零。"""
         if not isinstance(view, ScoringView):

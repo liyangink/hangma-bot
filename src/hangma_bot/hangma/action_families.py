@@ -58,6 +58,7 @@ from .internal_types import (
     TILE_ORDER,
     WEALTH_CODE,
     HandSummary,
+    HandWinEvidence,
     WindowContext,
     counts_from_tiles,
     is_wealth,
@@ -389,13 +390,13 @@ def gang_candidates(context: WindowContext) -> FamilyOutcome:
 
 
 def hu_candidates(
-    context: WindowContext, hand: Optional[HandSummary] = None
+    context: WindowContext, hand: Optional[HandSummary | HandWinEvidence] = None
 ) -> FamilyOutcome:
     """胡族：本人摸牌窗口、刚摸牌存在且完整手牌成胡时的自摸胡候选（§2/§6）。
 
     【官方】§2/§6：只能自摸、不允许点炮、禁止抢杠胡——响应窗口永不
     产生胡候选；抓打圈内仍可自摸胡。胡牌形判定复用手牌数学
-    （`HandSummary.is_win`，摸牌含在内），本模块不复制分解算法。
+    （完整分析或仅胡见证的 `is_win`，摸牌含在内），本模块不复制分解算法。
 
     【官方】「刚摸牌」门禁（指南变更日志 v1，2026-09-02「碰后禁止胡牌」；
     API 记录 §2.4「碰、吃、杠后，在下一次摸牌之前提交 hu 会返回 409」）：

@@ -94,6 +94,7 @@ class ConditionalRouteState:
     expected_draw_seat: Optional[int] = None  # 已裁决下一普通摸牌座位，非牌墙预言
     expected_discard_seat: Optional[int] = None  # 已获吃碰或摸牌后应行动的他座
     expected_replacement_draw: bool = False  # 他座已给定杠后下一摸须为补牌
+    other_draw_replacement: Optional[bool] = None  # 他座当前已摸来源：False普通/True杠补；None未摸或已被动作消费
     terminal_result: Optional[progression.HandResult] = None  # 已确认局末；四座积分顺序 0—3
     structural_only: bool = False  # 未裁决吃碰的预列弃牌分支，禁止作为已生效事件状态
     local_witness_only: bool = False  # 无完整公开事件前缀的旧一次摸牌见证
@@ -115,6 +116,14 @@ class ConditionalRouteState:
             or self.expected_discard_seat is not None
         ):
             raise ValueError("他座杠补待摸必须有唯一待摸座位且不能已进入弃牌")
+        if self.other_draw_replacement is not None and (
+            type(self.other_draw_replacement) is not bool
+            or self.phase is not ConditionalPhase.PUBLIC_WAIT
+            or self.expected_discard_seat is None
+            or self.expected_draw_seat is not None
+            or self.expected_replacement_draw
+        ):
+            raise ValueError("他座已摸来源必须绑定唯一当前行动座位")
         if (self.phase is ConditionalPhase.TERMINAL) != (self.terminal_result is not None):
             raise ValueError("条件终局阶段和局末结果必须同时成立")
         if self.unseen_capacities is not None and len(self.unseen_capacities) != 34:
@@ -448,6 +457,7 @@ def advance_given_response(
         expected_replacement_draw=(
             phase is ConditionalPhase.PUBLIC_WAIT
             and isinstance(resolution.claim_action, Gang)),
+        other_draw_replacement=None,
     )
     state = _refresh_public(state, view)
     return GivenResponseTransition(resolution, state)
@@ -565,6 +575,7 @@ def advance_given_other_draw(
         state, wall_remaining=state.wall_remaining - 1,
         expected_draw_seat=None, expected_discard_seat=seat,
         expected_replacement_draw=False,
+        other_draw_replacement=replacement,
         identity=state.identity.step(
             ("other-replacement-draw:" if replacement else "other-draw:")
             + str(seat)),
@@ -607,6 +618,7 @@ def advance_given_other_gang(
     next_state = replace(
         state, expected_discard_seat=None, expected_draw_seat=seat,
         expected_replacement_draw=True,
+        other_draw_replacement=None,
         identity=state.identity.step("other-gang:" + str(seat) + ":" + action_key(action)),
     )
     return _refresh_public(next_state, view)
@@ -652,7 +664,8 @@ def finish_given_official_other_win(
         raise ValueError("他座胡事件身份与条件单局不一致")
     if (state.expected_discard_seat is None
             or state.expected_draw_seat is not None
-            or state.expected_replacement_draw):
+            or state.expected_replacement_draw
+            or state.other_draw_replacement is None):
         raise ValueError("他座胡尚未到合法的已摸牌行动点")
     if (event.kind != "round_ended" or event.result_draw is not False
             or event.seat != state.expected_discard_seat
@@ -661,11 +674,15 @@ def finish_given_official_other_win(
     if (event.result_fan is None or event.result_details is None
             or event.result_scores is None):
         raise ValueError("他座胡的官方番数、明细或四座积分缺失")
-    if event.seq <= state.public_view.snapshot_seq:
-        raise ValueError("他座胡事件不晚于条件根官方快照水位")
+    official_watermark = (state.public_view.consumed_seq
+                          if state.public_view.consumed_seq is not None
+                          else state.public_view.snapshot_seq)
+    if event.seq <= official_watermark:
+        raise ValueError("他座胡事件不晚于条件根已消费官方水位")
     return replace(
         state, phase=ConditionalPhase.TERMINAL,
         expected_discard_seat=None,
+        other_draw_replacement=None,
         terminal_result=progression.HandResult(
             winner_seat=event.seat, is_draw=False,
             fan=event.result_fan, details=event.result_details,
@@ -714,6 +731,7 @@ def advance_given_other_discard(
         response_public_discard=None,
         expected_draw_seat=(next_seat if is_wealth(tile) else None),
         expected_discard_seat=None,
+        other_draw_replacement=None,
         identity=state.identity.step("other-discard:" + str(seat) + ":" + tile.code),
     )
     return _refresh_public(next_state, _append_discard(state.public_view, seat, tile))
@@ -1175,6 +1193,59 @@ def analyze_given_self_draw(
     return GivenDrawAnalysis(
         state, outcome.candidates, immediate, outcome.issues,
         state.local_witness_only)
+
+
+def analyze_waiting_draw_witness(
+    state: ConditionalRouteState, tile: Tile, *,
+    wall_remaining_before_draw: int, catch_restricted: bool, config: RuleConfig,
+) -> GivenDrawAnalysis:
+    """对本人合法弃后等待手牌作一次局部摸牌见证，绝不承诺能走到该点。
+
+    只支持已完成本人弃牌的 ``13-3m`` 张暗牌；吃碰预列分支须先获裁决，
+    再依法弃牌后进入本入口。响应裁决、他家先胡、途中公开变化及圈主
+    尚未展开，故结果永久标记 ``local_witness_only=True``，不能用于 P2
+    机械闭包或到达概率。墙余单位为张、抓打限制由调用方明示为局部条件。
+    公开容量仍需精确且为正；保守或未知容量抛出输入证据错误，调用方须
+    保留该牌码的未知分支，不能删除它或伪造精确证据。无副作用。
+    """
+
+    if state.structural_only:
+        raise ValueError("未裁决的结构预列分支不能建立等待摸牌见证")
+    if state.phase not in (ConditionalPhase.RESPONSE_RESOLUTION, ConditionalPhase.PUBLIC_WAIT):
+        raise ValueError("局部摸牌见证只接受本人合法弃后等待状态")
+    if (state.seat is None or state.dealer_seat is None or state.identity is None
+            or state.public_view is None):
+        raise ValueError("局部摸牌见证缺本人、庄家、规则身份或公开视图")
+    if (type(state.seat) is not int or state.seat not in range(4)
+            or type(state.dealer_seat) is not int or state.dealer_seat not in range(4)):
+        raise ValueError("局部摸牌见证的本人和庄家座位须为0—3整数")
+    if (state.drawn_tile is not None or state.expected_discard_seat is not None
+            or state.expected_replacement_draw
+            or len(state.concealed) != 13 - 3 * state.meld_count
+            or state.public_view.hand_counts[state.seat] != len(state.concealed)):
+        raise ValueError("局部摸牌见证不是本人13-3m张合法弃后等待手牌")
+    if type(wall_remaining_before_draw) is not int or wall_remaining_before_draw < 0:
+        raise ValueError("局部摸牌见证的墙余必须是非负整数张数")
+    if type(catch_restricted) is not bool:
+        raise ValueError("局部摸牌见证的抓打限制必须是布尔值")
+    if (config.base_score != 1 or config.you_cai_bi_kao
+            or state.identity.ruleset_version != config.ruleset_version):
+        raise ValueError("局部摸牌见证的规则配置与条件根不一致")
+    waiting = replace(
+        state, phase=ConditionalPhase.NORMAL_DRAW,
+        wall_remaining=wall_remaining_before_draw,
+        public_view=replace(state.public_view,
+                            remaining_tile_count=wall_remaining_before_draw),
+        expected_draw_seat=state.seat, expected_discard_seat=None,
+        expected_replacement_draw=False, other_draw_replacement=None,
+        response_window=None, response_trigger=None, response_public_discard=None,
+        catch_restricted=catch_restricted, catch_circle=None,
+        local_witness_only=True,
+        identity=state.identity.step("local-waiting-draw-witness"),
+    )
+    landed = apply_given_draw(waiting, tile, replacement=False)
+    return analyze_given_self_draw(
+        landed, seat=state.seat, dealer_seat=state.dealer_seat, config=config)
 
 
 def analyze_given_claim_action(

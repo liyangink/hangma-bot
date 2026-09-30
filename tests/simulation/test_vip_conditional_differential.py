@@ -32,7 +32,7 @@ from hangma_bot.simulation.projection import (
     observation as project_observation, public_history_for,
 )
 
-from ._helpers import build_full_world_row, make_rules, make_spec
+from ._helpers import build_full_world_row, make_rules, make_spec, total_tiles
 
 
 def _assert_public_equal(state, world):
@@ -728,6 +728,139 @@ def test_other_added_gang_after_peng_matches_continuous_public_path():
         _assert_public_equal(state, world)
     else:
         raise AssertionError("物理指定的第四张 5w 未进入他座补杠窗口")
+
+
+def _triple_gang_world(rules, engine, *, focal_seat):
+    """完整136实体牌构造三杠链；预定摸牌仅属于模拟裁判的墙。"""
+
+    focal = ["1w"] * 4 + ["2w"] * 4 + ["3w"] * 4 + ["东"]
+    dealer_drawn = "东" if focal_seat == 0 else "白"
+    required_wall = (["东"] if focal_seat == 1 else []) + ["4w", "5w", "6w"]
+    pool = [code for code in CANONICAL_TILE_ORDER for _ in range(4)]
+    for code in focal + [dealer_drawn] + required_wall:
+        pool.remove(code)
+    others, wall = pool[:39], pool[39:] + required_wall
+    hands = [others[:13], others[13:26], others[26:]]
+    hands.insert(focal_seat, focal)
+    if focal_seat == 1:
+        normal = wall.index("东")
+        wall[normal], wall[0] = wall[0], wall[normal]
+    for offset, code in enumerate(("4w", "5w", "6w"), 21):
+        source = wall.index(code)
+        wall[source], wall[-offset] = wall[-offset], wall[source]
+    row = build_full_world_row(rules, hands13=hands, dealer_drawn=dealer_drawn,
+                               wall=wall, dealer=0)
+    world = engine.from_replay(row)
+    assert total_tiles(world) == 136
+    return world
+
+
+@pytest.mark.parametrize("focal_seat", (0, 1))
+@pytest.mark.parametrize("start_wall", (83, 23))
+def test_three_gangs_and_terminal_match_independent_public_projection(focal_seat, start_wall):
+    """本人/他座三次暗杠补摸至胡，逐步核136张守恒与公开投影。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    world = _triple_gang_world(rules, engine, focal_seat=focal_seat)
+    if start_wall == 23:
+        # 构造具有完整实体牌的末墙公开快照。移到河中的60张是已发生公开
+        # 前缀，后续条件量具仍只消费投影，不读取余墙。这不冒充自然牌谱。
+        consumed = world.wall[:60]
+        if focal_seat == 1:
+            # 第1张原定普通摸东留在未消费区，临界场景仍先正常摸后再杠。
+            wall = list(world.wall)
+            wall[0], wall[60] = wall[60], wall[0]
+            world = replace(world, wall=tuple(wall))
+            consumed = world.wall[:60]
+        seats = list(world.progression.seats)
+        for seat, prefix in zip((1, 2, 3), (consumed[:20], consumed[20:40], consumed[40:])):
+            seats[seat] = replace(seats[seat], discards=tuple(prefix))
+        world = replace(world, wall_front=60,
+                        progression=replace(world.progression, seats=tuple(seats),
+                                            wall_drawable=3, wall_total=23))
+        assert total_tiles(world) == 136
+    own = engine.frame(world).decisions[0]
+    analysis = rules.analyze(own.observation)
+    roots = project_legal_roots(
+        own.observation, _build_context(own.observation),
+        analysis.legal_candidates, config=rules.config)
+    if focal_seat == 0:
+        state = next(item for item in roots if item.action_key == "gang:concealed:1w").branches[0].state
+        first = 0
+    else:
+        state = next(item for item in roots if item.action_key == "discard:白").branches[0].state
+        world = engine.advance(world, engine.frame(world).revision, (
+            SimulationChoice(own.window_key, Discard(Tile("白"))),))
+        state = advance_given_other_draw(state, seat=1)
+        _assert_public_equal(state, world)
+        first = 1
+    gang_count = min(3, start_wall - 20 - first)
+    for index, code in enumerate(("1w", "2w", "3w")[:gang_count]):
+        frame = engine.frame(world)
+        decision = frame.decisions[0]
+        production = rules.analyze(decision.observation)
+        key = "gang:concealed:" + code
+        assert key in {item.action_key for item in production.legal_candidates}
+        if focal_seat == 1:
+            state = advance_given_other_gang(
+                state, seat=1, action=Gang(Tile(code), GangKind.CONCEALED))
+        elif index > 0:
+            given = analyze_given_self_draw(state, seat=0, dealer_seat=0, config=rules.config)
+            assert {item.action_key for item in given.legal_candidates} == {
+                item.action_key for item in production.legal_candidates}
+            state = apply_legal_followup_gang(given, key)
+        world = engine.advance(world, frame.revision, (
+            SimulationChoice(decision.window_key, Gang(Tile(code), GangKind.CONCEALED)),))
+        if focal_seat == 0:
+            landed = project_observation(world, 0)
+            state = apply_given_draw(state, landed.drawn_tile, replacement=True)
+        else:
+            # 条件量具只读公开的补摸来源，永远不获他座的补牌码。
+            state = advance_given_other_draw(state, seat=1, replacement=True)
+        _assert_public_equal(state, world)
+        assert total_tiles(world) == 136
+        assert state.wall_remaining == start_wall - 1 - first - index
+    frame = engine.frame(world)
+    final_candidates = rules.analyze(frame.decisions[0].observation).legal_candidates
+    if start_wall == 23:
+        assert not any(isinstance(item.action, Gang) for item in final_candidates)
+    if gang_count < 3:
+        # 他座先普通摸耗掉一张，所以23张仅容两次杠补；不能再假定第三杠。
+        assert focal_seat == 1 and state.wall_remaining == 20
+        discard = next(item.action for item in final_candidates
+                       if isinstance(item.action, Discard))
+        state = advance_given_other_discard(state, seat=1, tile=discard.tile)
+        world = engine.advance(world, frame.revision, (
+            SimulationChoice(frame.decisions[0].window_key, discard),))
+        while world.progression.window.startswith("response_"):
+            frame = engine.frame(world)
+            window = world.progression.window
+            responding = world.progression.responding
+            transition = advance_response_state(
+                state, window=window, discard_seat=1, discarded_tile=discard.tile,
+                responding=responding, choices=tuple((seat, Pass()) for seat in responding))
+            state = transition.state
+            world = engine.advance(world, frame.revision, tuple(
+                SimulationChoice(item.window_key, Pass()) for item in frame.decisions))
+        state = finish_given_exhaustive_draw(state)
+        assert state.terminal_result == world.progression.hand_result
+        assert total_tiles(world) == 136
+        return
+    assert any(isinstance(item.action, Hu) for item in final_candidates)
+    if focal_seat == 0:
+        given = analyze_given_self_draw(state, seat=0, dealer_seat=0, config=rules.config)
+        state = apply_legal_draw_hu(given)
+    next_world = engine.advance(world, frame.revision, (
+        SimulationChoice(frame.decisions[0].window_key, Hu()),))
+    if focal_seat == 1:
+        event = next(item for item in public_history_for(next_world.events, seat=0)
+                     if item.kind == "round_ended")
+        state = finish_given_official_other_win(
+            state, event, game_id=world.match_id, round_no=world.round_no)
+    assert state.terminal_result == next_world.progression.hand_result
+    assert total_tiles(next_world) == 136
+    assert state.public_view.snapshot_seq == own.observation.snapshot_seq
 
 
 def test_mixed_claim_and_gang_public_paths_match_simulator():

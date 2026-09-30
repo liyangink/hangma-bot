@@ -1,5 +1,20 @@
 # 第一阶段接口协议
 
+## 2026-09-30 VIP 固定框架新合同
+
+**本节登记新研究接缝，不改四个外部端口与旧评分视图。**详细[实施合同](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md)是当前依据，旧 P1/P3 记录保留历史身份。
+
+候选类型 `vip_route_heuristic_v1`；只读输入 `VipRouteScoringView` 的 `schema_version=vip-route-scoring-view/1`；输出沿用 `ScoreBatch` 与有界 `ActionScore`，全部同次合法动作键各一项，有限评分点仅用于排序。`ActionValueExecutor.score_vip_route` 接收该精确类型并复用原安全计费与共享状态守卫；`score(ScoringView)` 与 `sitin-scoring-view/4` 不变。结构内部入口 `analyze_route_structure(counts34, meld_set_count)` 仅接 `13-3m` 等待手牌；自然缺口和合法胡集合分开，资格由原条件规则源生成。
+
+赛事阶段／排名／累计积分不进入首版新输入，仅由外层记录。当前源码／规则／配置／事实版本和工作量进入身份；具体冻结字段随实现与契约测试同步，不允许候选自造隐藏输入。新研究包装评分失败、弃权、超量、缺必需事实都显式停止；原离线 `strict_policy` 单独不能识别策略内部紧急降级，须配合该包装。正常评分首选同紧急键不是回退。
+
+规则内局部等待见证明确 `local_witness_only`，不生成官方观察、序号或到达概率。条件状态新增他座已摸来源标记 `other_draw_replacement`，未摸吃碰暂态不能接受自摸终局；公开协议不变。完整机械、无损审计、实机截止及官方发布门均未因新评分合同自动通过。
+
+仅胡资格的公开规则入口`analyze_waiting_hu_witness(state,tile,*,wall_remaining_before_draw,catch_restricted,config)`与完整局部入口使用相同前置；返回冻结`WaitingHuWitness`，只承诺给定普通摸的合法胡、四座即时结算、胡相关问题、墙余与该牌码精确容量变化。未成胡时结算为空；资格成立但结算证据缺失时保留真值及问题。它不返回完整后态、弃牌、向听或进张，不能作为后续事件推进输入；容量非精确、不可摸、结构未裁决等输入抛`ValueError`。纯函数，无网络或记录副作用。内部`HandWinEvidence`只承载同源成胡数学，不补造`HandSummary`。新入口与完整见证对照覆盖白板量、两种抓打限制、末墙、副露、链、分解故障及真实慢观察。
+
+跨模块契约见 [`test_vip_route_scoring_contract.py`](../../tests/contracts/test_vip_route_scoring_contract.py)：精确新／旧类型互斥、全合法输出完整性及严格失败分类。候选身份由离线 `freeze_vip_identity` 绑定实际 `RuleConfig`、`ValueAnalysisLimits`、投影／评分额度和源码／数学后端内容；评估次数、作者与父代出处另记，不替代实际运行配置。
+
+
 > **2026-09-24 同步模式补充：**显式 `sse_enabled=true` 接通 SSE 通知水位，暂停该模式的增量长轮询与自动长轮询回退；未显式开启的历史配置仍沿用 `state`。旧段落中“组合根固定关闭 SSE”记录的是当时状态。具体边界见文末验证模式段与[架构 §7](../architecture.md#7-状态同步与请求资源)。
 
 > **2026-09-17 状态（评审校正）**：坐隐 `action_value_v1` v4 工程骨架已按文末合同落地，但完成度评审（review/llm-guided-heuristic-route-2026-09-15/REVIEW-V4-COMPLETION-2026-09-17.md，9 项 P1 已复现）判定行为合同未闭合——本节接缝行以评审与 R0—R7 修复计划为准，勿据旧收口报告引用“已完成”。
