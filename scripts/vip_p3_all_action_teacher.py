@@ -93,8 +93,8 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
 
     if start_seed < 0 or seeds < 1 or worlds_per_root < 1:
         raise ValueError("教师抽样范围无效")
-    if continuation_reference not in ("shape", "r18_frozen"):
-        raise ValueError("教师续打者必须是冻结 shape 或 R18")
+    if continuation_reference not in ("shape", "shape_white_hold", "r18_frozen"):
+        raise ValueError("教师续打者必须是冻结 shape、shape_white_hold 或 R18")
     selected_by_seed: dict[int, dict[int, tuple[str, ...]]] = {}
     selected_hashes: dict[tuple[int, int], str] = {}
     if selection_report is not None:
@@ -243,7 +243,8 @@ def main() -> None:
     parser.add_argument("--worlds-per-root", type=int, default=2)
     parser.add_argument("--selection-file", type=str)
     parser.add_argument("--selection-tag", type=str)
-    parser.add_argument("--continuation-reference", choices=("shape", "r18_frozen"),
+    parser.add_argument("--continuation-reference", choices=(
+        "shape", "shape_white_hold", "r18_frozen"),
                         default="shape")
     args = parser.parse_args()
     selection = None if args.selection_file is None else json.loads(
