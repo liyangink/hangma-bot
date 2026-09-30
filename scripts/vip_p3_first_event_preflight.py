@@ -17,12 +17,14 @@ from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.kernel.actions import Discard, Hu, Pass
 from hangma_bot.kernel.config import RuleConfig, TimingConfig, TournamentConfig
+from hangma_bot.kernel.serialization import observation_to_json
 from hangma_bot.offline.vip_reference import choose_reference_action
 from hangma_bot.simulation import MatchSpec, SimulationChoice, SimulationEngine
 
 
 def _first_event(engine: SimulationEngine, rules: HangmaRules, world, *,
-                 seat: int, reference: str) -> dict:
+                 seat: int, reference: str,
+                 include_next_observation: bool = False) -> dict:
     """按冻结参考者续打，仅返回首次本人行动机会或公开终局。"""
 
     for _ in range(500):
@@ -34,7 +36,8 @@ def _first_event(engine: SimulationEngine, rules: HangmaRules, world, *,
             if result is None or sum(result.score_delta) != 0:
                 raise ValueError("首次事件终局缺守恒的四座结算")
             return {
-                "kind": "draw" if result.is_draw else "other_win",
+                "kind": ("draw" if result.is_draw else
+                         "self_win" if result.winner_seat == seat else "other_win"),
                 "winner_seat": result.winner_seat,
                 "score_delta": list(result.score_delta),
             }
@@ -45,7 +48,12 @@ def _first_event(engine: SimulationEngine, rules: HangmaRules, world, *,
             observation = mine[0].observation
             if observation.phase == "draw":
                 if observation.drawn_tile is None:
-                    raise ValueError("本人自摸机会缺已摸牌")
+                    # 吃碰获裁决后仍由 draw 窗口处理跟打/杠；本次没有摸牌，
+                    # 是独立决策事件，不能误算普通摸牌或当成缺失输入。
+                    event = {"kind": "self_claim_followup"}
+                    if include_next_observation:
+                        event["next_observation"] = observation_to_json(observation)
+                    return event
                 analysis = rules.analyze(
                     observation, value_limits=ValueAnalysisLimits(max_expansions=8192))
                 win = next((item for item in analysis.legal_candidates
@@ -60,7 +68,7 @@ def _first_event(engine: SimulationEngine, rules: HangmaRules, world, *,
                     or settlement.fan < 1
                 ):
                     raise ValueError("给定本人摸牌结算的四座积分或番数无效")
-                return {
+                event = {
                     "kind": ("self_replacement_draw" if observation.gang_draw
                              else "self_normal_draw"),
                     "tile": observation.drawn_tile.code,
@@ -70,14 +78,20 @@ def _first_event(engine: SimulationEngine, rules: HangmaRules, world, *,
                             "score_delta": list(settlement.score_delta),
                         }),
                 }
+                if include_next_observation:
+                    event["next_observation"] = observation_to_json(observation)
+                return event
             if observation.phase not in ("response_peng", "response_chi"):
                 raise ValueError("未知本人窗口")
             if any(not isinstance(item.action, Pass) for item in
                    rules.analyze(observation).legal_candidates):
                 if observation.last_discard is None:
                     raise ValueError("可行动响应缺触发弃牌")
-                return {"kind": "self_actionable_response", "window": observation.phase,
-                        "tile": observation.last_discard.tile.code}
+                event = {"kind": "self_actionable_response", "window": observation.phase,
+                         "tile": observation.last_discard.tile.code}
+                if include_next_observation:
+                    event["next_observation"] = observation_to_json(observation)
+                return event
         world = engine.advance(world, frame.revision, tuple(
             SimulationChoice(item.window_key,
                              choose_reference_action(rules, item, mode=reference))
@@ -129,9 +143,11 @@ def _event_key(event: dict) -> str:
     kind = event["kind"]
     if kind in ("self_normal_draw", "self_replacement_draw"):
         return kind + ":" + event["tile"]
+    if kind == "self_claim_followup":
+        return kind
     if kind == "self_actionable_response":
         return kind + ":" + event["window"] + ":" + event["tile"]
-    if kind == "other_win":
+    if kind in ("self_win", "other_win"):
         return kind + ":" + str(event["winner_seat"])
     if kind == "draw":
         return kind

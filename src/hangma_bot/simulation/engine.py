@@ -162,7 +162,7 @@ class SimulationEngine:
     ) -> WorldState:
         """重采样焦点玩家不可见的三家暗手与未消费牌墙。
 
-        本入口只供离线教师在焦点座位自己的摸牌窗口使用。它固定焦点暗手、
+        本入口只供离线教师在焦点座位自己的摸牌或响应窗口使用。它固定焦点暗手、
         当前摸牌、全部公开事件/牌河/副露、各家手牌张数、积分、链状态、墙
         游标和牌张总多重集；三家暗手与尚未消费的牌墙（含保留区）共同洗牌
         后按原张数重新分配。返回世界的焦点 ``PlayerObservation`` 必须与输入
@@ -183,10 +183,12 @@ class SimulationEngine:
         ):
             raise ValueError("focal_seat 必须是 0..3 整数")
         state = world.progression
-        if world.blocked_reason is not None or state.window != "draw":
-            raise ValueError("隐藏世界只可在未阻塞的本人摸牌决策窗口重采样")
-        if state.turn_seat != focal_seat:
+        if world.blocked_reason is not None or state.window not in _DECISION_WINDOWS:
+            raise ValueError("隐藏世界只可在未阻塞的本人动作窗口重采样")
+        if state.window == "draw" and state.turn_seat != focal_seat:
             raise ValueError("focal_seat 必须是当前摸牌窗口行动座位")
+        if state.window in ("response_peng", "response_chi") and focal_seat not in state.responding:
+            raise ValueError("focal_seat 必须是当前响应窗口的回应座位")
         if any(
             seat.drawn is not None
             for index, seat in enumerate(state.seats)

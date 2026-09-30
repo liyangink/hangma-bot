@@ -7,7 +7,7 @@ import json
 import pytest
 
 from hangma_bot.kernel.serialization import observation_to_json
-from hangma_bot.simulation import SimulationEngine, WorldState
+from hangma_bot.simulation import SimulationChoice, SimulationEngine, WorldState
 
 from ._helpers import (
     make_rules,
@@ -249,6 +249,35 @@ def test_public_consistent_hidden_world_rejects_nonacting_focal_seat():
         engine.resample_public_consistent_hidden_world(
             world, focal_seat=(focal + 1) % 4, sample_key="hidden"
         )
+
+
+def test_response_hidden_resampling_preserves_focal_observation_and_rejects_discarder():
+    """离线响应配对可换他家暗牌，但当前回应座位的全部可见事实不变。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    world = engine.start(make_spec(rules, rounds=1, seed=13))
+    first = engine.frame(world)
+    decision = first.decisions[0]
+    discard = simple_chooser(rules)(decision)
+    world = engine.advance(world, first.revision,
+                           (SimulationChoice(decision.window_key, discard),))
+    frame = engine.frame(world)
+    assert world.progression.window == "response_peng"
+    focal = frame.decisions[0].window_key.seat
+    before = frame.decisions[0].observation
+    sampled = engine.resample_public_consistent_hidden_world(
+        world, focal_seat=focal, sample_key="response-sample")
+    repeated = engine.resample_public_consistent_hidden_world(
+        world, focal_seat=focal, sample_key="response-sample")
+    assert sampled == repeated
+    assert sampled.history_consistent is False
+    assert engine.frame(sampled).decisions[0].observation == before
+    assert sampled.progression.seats[focal] == world.progression.seats[focal]
+    assert total_tiles(sampled) == 136
+    with pytest.raises(ValueError, match="当前响应窗口的回应座位"):
+        engine.resample_public_consistent_hidden_world(
+            world, focal_seat=0, sample_key="not-responder")
 
 
 def test_conservation_during_full_match():
