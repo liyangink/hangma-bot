@@ -1,8 +1,10 @@
 # 杭麻 AI Bot 技术方案与一个月实施计划
 
+2026-10-01 条件支付升版：当前依据为[条件胡支付合同 v2](../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)，历史 v1 合同及证据不改。等待态新增 `normal_draw_hu_payments`，逐牌码、逐抓打假设保留既有唯一规则源窄见证的结算；不增加见证调用，不把未知补0，不把两假设相加或把公开容量当墙内概率。当前胡节点即时结算与等待态条件结算分开；局部见证不保证未来本人能摸牌。只读视图／图升为 `/2`，支付语义为 `vip-normal-draw-hu-payment/1`，架构类型仍为 `vip_route_heuristic_v1`。新候选绑定新合同、源码和依赖身份并重做实际评测，旧成绩不迁移。
+
 ## 2026-09-30 VIP 固定框架与 EoH 联合进化更新
 
-**已采纳[实施增补](../review/vip-route-2026-09-30/VIP-FIXED-FRAMEWORK-EOH-IMPLEMENTATION-REVISION-ASTRA.md)，以[新合同](../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md)为当前实施依据。**取消先校准长期精确积分的必经门，保留规则、独立完赛、机会／自然双账、独立确认与实机发布门；下文旧估值研究继续保留为历史证据。
+**已采纳[实施增补](../review/vip-route-2026-09-30/VIP-FIXED-FRAMEWORK-EOH-IMPLEMENTATION-REVISION-ASTRA.md)，当时以[原 v1 合同](../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md)为实施依据。**取消先校准长期精确积分的必经门，保留规则、独立完赛、机会／自然双账、独立确认与实机发布门；下文旧估值研究继续保留为历史证据。
 
 先由唯一规则模块计算指定白板用途的自然牌缺口、进张及条件资格，再交一个完整启发式评分器联合比较弃、吃、碰、杠、胡、过。吃碰不预选最小向听跟打，胡真实支付不直接混加任意代理分。人工种子独立打完完整桌后，用 EoH 的思想＋代码、单／多父代修改与参数调整探索；按行为保留专长，不把题库成绩当自然桌优势。
 

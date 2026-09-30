@@ -29,7 +29,7 @@ from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
 
 from hangma_bot.hangma.route_structure import RouteStructureFacts, RouteStructureTarget
-from hangma_bot.hangma.interface import ValueAnalysisLimits
+from hangma_bot.hangma.interface import Settlement, ValueAnalysisLimits
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.policy.action_value import ActionScore, ScoreBatch
 from hangma_bot.policy.action_value_executor import (
@@ -37,8 +37,10 @@ from hangma_bot.policy.action_value_executor import (
     MAX_SOURCE_BYTES, MAX_TRACE_BYTES, ActionValueExecutor,
 )
 from hangma_bot.policy.route_heuristic_view import (
-    VIP_ROUTE_CANDIDATE_KIND, VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
-    RouteHeuristicAction, RouteHeuristicNode, RouteWaitingView, VipRouteScoringView,
+    VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION, VIP_ROUTE_CANDIDATE_KIND,
+    VIP_ROUTE_GRAPH_SCHEMA_VERSION, VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
+    RouteConditionalHuPayment, RouteHeuristicAction, RouteHeuristicNode,
+    RouteWaitingView, VipRouteScoringView,
 )
 from hangma_bot.policy.route_vip_heuristic import (
     VIP_ROUTE_HEURISTIC_SEED_SOURCE, VipRouteProjectionLimits,
@@ -341,10 +343,13 @@ def _framework(batch: VipEohBatch) -> dict[str, Any]:
 def vip_readonly_appendix(batch: VipEohBatch) -> dict[str, Any]:
     """从实际版本类型与白名单映射取完整字段附录，不传真实观察对象。"""
 
-    classes = (RouteStructureFacts, RouteStructureTarget, RouteWaitingView,
+    classes = (RouteStructureFacts, RouteStructureTarget, Settlement,
+               RouteConditionalHuPayment, RouteWaitingView,
                RouteHeuristicNode, RouteHeuristicAction, ActionScore, ScoreBatch)
     return {
         "schema_version": VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
+        "graph_schema_version": VIP_ROUTE_GRAPH_SCHEMA_VERSION,
+        "normal_draw_hu_payment_semantics_version": VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
         "candidate_kind": VIP_ROUTE_CANDIDATE_KIND,
         "readonly_mapping_source": inspect.getsource(VipRouteScoringView.candidate_view),
         "fact_type_definitions": {cls.__name__: inspect.getsource(cls) for cls in classes},
@@ -359,6 +364,11 @@ def vip_readonly_appendix(batch: VipEohBatch) -> dict[str, Any]:
                   "仅纯函数、常量和受限局部容器；无文件、网络、时钟、随机或跨调用缓存。",
         "result": "返回status=SCORED及entries，每个输入action_key恰一有限评分点和有界trace；"
                   "评分点越大越优，不是积分或真实EV。ABSTAIN/漏项/异常/超量使研究未完成。",
+        "conditional_payment_scope": "normal_draw_hu_payments是逐牌码、逐catch_restricted假设的条件支付；"
+                  "settlement.score_delta按座位0—3，分数单位为积分。它不保证本人能再摸牌。"
+                  "相同牌码的两抓打假设不是两次机会，不能重复计数；draw_capacity_before包含他家暗牌，"
+                  "不可除以墙余冒充摸牌概率，draw_capacity_after是给定摸入后的容量。"
+                  "未分析None、已分析无胡()、未知资格码分别保留；等待节点settlement仍为空。",
     }
 
 

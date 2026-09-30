@@ -1,8 +1,10 @@
 # 杭麻 AI Bot 架构与运行流程
 
+2026-10-01 条件支付升版：当前依据为[条件胡支付合同 v2](../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)，历史 v1 合同及证据不改。等待态新增 `normal_draw_hu_payments`，逐牌码、逐抓打假设保留既有唯一规则源窄见证的结算；不增加见证调用，不把未知补0，不把两假设相加或把公开容量当墙内概率。当前胡节点即时结算与等待态条件结算分开；局部见证不保证未来本人能摸牌。只读视图／图升为 `/2`，支付语义为 `vip-normal-draw-hu-payment/1`，架构类型仍为 `vip_route_heuristic_v1`。新候选绑定新合同、源码和依赖身份并重做实际评测，旧成绩不迁移。
+
 ## 2026-09-30 VIP 联合启发式实施更新
 
-**当前实施依据为[固定框架合同](../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md)。**后文旧 P3 积分校准要求是历史研发路径，本更新取消该前置，不追改旧证据。
+**2026-09-30 时的实施依据为[固定框架合同](../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md)。**后文旧 P3 积分校准要求是历史研发路径，本更新取消该前置，不追改旧证据。
 
 `hangma.route_structure` 负责白板用途约束的自然牌缺口；条件转移继续负责资格和结算。新 `VipRouteScoringView` 只投影这些规则事实与牌局上下文，候选通过 `score_actions` 联合排名全部动作。赛事压力仅留外层审计，不进入新视图；完整模拟世界只属于离线评估。候选执行复用现有受限执行器的新精确类型入口，不改变旧 `/4` 合同。
 

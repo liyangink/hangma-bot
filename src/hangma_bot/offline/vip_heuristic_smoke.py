@@ -17,6 +17,10 @@ from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.kernel.config import RuleConfig, TimingConfig, TournamentConfig
 from hangma_bot.kernel.serialization import observation_to_json, window_key_to_json
+from hangma_bot.policy.route_heuristic_view import (
+    VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION, VIP_ROUTE_GRAPH_SCHEMA_VERSION,
+    VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
+)
 from hangma_bot.policy.route_vip_heuristic import (
     VIP_ROUTE_HEURISTIC_SEED_SOURCE, RouteVipHeuristicPolicy,
     VipRouteProjectionLimits, compute_vip_candidate_identity,
@@ -58,7 +62,7 @@ def freeze_vip_identity(
     都纳入身份，避免仅凭语义标签沿用另一份实现的成绩。无网络副作用。
     """
 
-    contract = REPO_ROOT / "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md"
+    contract = REPO_ROOT / "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md"
     manifest = source_manifest(VIP_IDENTITY_ROOTS)
     native_source = "src/hangma_bot/hangma/_grouped_native.c"
     manifest[native_source] = digest_of_file(REPO_ROOT / native_source)
@@ -79,6 +83,9 @@ def freeze_vip_identity(
         "contract_path": str(contract.relative_to(REPO_ROOT)),
         "contract_sha256": contract_sha, "deps_digest": deps,
         "source_manifest": manifest, "math_backend": backend, "params": params,
+        "view_schema_version": VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
+        "graph_schema_version": VIP_ROUTE_GRAPH_SCHEMA_VERSION,
+        "normal_draw_hu_payment_semantics_version": VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
     }
 
 

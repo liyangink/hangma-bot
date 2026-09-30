@@ -30,7 +30,8 @@ from .errors import PolicyError
 from .interface import DecisionBudget, DecisionPlan, DecisionRequest, RankedCandidate, ScorePart
 from .route_heuristic_view import (
     VIP_ROUTE_CANDIDATE_KIND, VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
-    VIP_ROUTE_TRACE_SCHEMA_VERSION, RouteHeuristicAction, RouteHeuristicNode,
+    VIP_ROUTE_TRACE_SCHEMA_VERSION, VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
+    RouteConditionalHuPayment, RouteHeuristicAction, RouteHeuristicNode,
     RouteWaitingView, VipRouteScoringView,
 )
 from .safe_fallback import SafeFallbackPolicy
@@ -214,6 +215,7 @@ class _Projection:
         union_codes = tuple(code for code in CANONICAL_TILE_ORDER if code in union_set)
         known_hu: set[str] = set()
         hu_by_scope: dict[bool, set[str]] = {False: set(), True: set()}
+        payments: list[RouteConditionalHuPayment] = []
         unknown: list[str] = []
         if qualification and state.wall_remaining is None:
             raise RouteHeuristicResearchError("INPUT_EVIDENCE_GAP", "终点胡条件见证缺墙余")
@@ -242,6 +244,20 @@ class _Projection:
                             raise RouteHeuristicResearchError("INPUT_EVIDENCE_GAP", "给定摸牌合法胡缺结算")
                         known_hu.add(code)
                         hu_by_scope[restricted].add(code)
+                        # 保留本次已算的窄见证，不再求解或调用规则。两抓打
+                        # 假设分别记录，支付只在给定下一次普通摸牌发生时成立。
+                        payments.append(RouteConditionalHuPayment(
+                            draw_code=code, catch_restricted=restricted,
+                            wall_remaining_before_draw=analysis.wall_remaining_before_draw,
+                            wall_remaining_after_draw=analysis.wall_remaining_after_draw,
+                            draw_capacity_before=analysis.draw_capacity_before,
+                            draw_capacity_after=analysis.draw_capacity_after,
+                            baotou_after_draw=analysis.baotou_after_draw,
+                            chain_count=state.chain_count, chain_piao=state.chain_piao,
+                            winner_seat=state.seat, dealer_seat=state.dealer_seat,
+                            ruleset_version=analysis.ruleset_version,
+                            settlement=analysis.immediate_settlement,
+                        ))
         result = RouteWaitingView(
             structure=structure, useful_codes=union_codes,
             unseen_capacities=state.unseen_capacities,
@@ -249,6 +265,7 @@ class _Projection:
             legal_hu_draw_codes=(tuple(code for code in CANONICAL_TILE_ORDER if code in known_hu)
                                 if qualification else None),
             qualification_scope="conditional_witness" if qualification else "unanalysed",
+            normal_draw_hu_payments=tuple(payments) if qualification else None,
             qualification_missing_reason=None if qualification else "补牌码公开容量未知，保留真实补牌前结构",
             qualification_unknown_codes=tuple(unknown) if qualification else codes,
             qualification_math_closed_codes=tuple(code for code in codes if code not in combined_codes)
@@ -438,6 +455,7 @@ def build_vip_route_scoring_view(
         ruleset_version=config.ruleset_version, base_score=config.base_score,
         you_cai_bi_kao=config.you_cai_bi_kao,
         structure_semantics_version=ROUTE_STRUCTURE_SCHEMA_VERSION,
+        normal_draw_hu_payment_semantics_version=VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
         executor_version=EXECUTOR_VERSION,
         max_nodes=projection.limits.max_nodes, max_branches=projection.limits.max_branches,
         max_waiting_draw_witnesses=projection.limits.max_waiting_draw_witnesses,
@@ -462,6 +480,7 @@ def compute_vip_candidate_identity(
         "params": dict(params or {}),
         "view_schema_version": VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
         "structure_semantics_version": ROUTE_STRUCTURE_SCHEMA_VERSION,
+        "normal_draw_hu_payment_semantics_version": VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
         "executor_version": EXECUTOR_VERSION,
     }
     return hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True,
@@ -515,7 +534,10 @@ class RouteVipHeuristicPolicy:
             reasons=("完整联合评分成功；排名点不是实际积分或未来期望积分",),
             is_emergency=entry.action_key == emergency_key,
             score_trace={"trace_schema": VIP_ROUTE_TRACE_SCHEMA_VERSION,
-                         "candidate_kind": self.name, "detail": dict(entry.trace)},
+                         "candidate_kind": self.name,
+                         "view_schema_version": VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
+                         "normal_draw_hu_payment_semantics_version": VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
+                         "detail": dict(entry.trace)},
         ) for index, entry in enumerate(ordered, start=1))
         return DecisionPlan(
             request.decision_id, request.window_key, request.observation.snapshot_seq,

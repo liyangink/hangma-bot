@@ -141,6 +141,31 @@ def test_emit_records_full_view_seed_and_never_reads_credentials(batch_file, tmp
     assert appendix["executor"]["route_limits"]["max_expansions"] == 8192
 
 
+def test_v2_prompt_and_identity_bind_conditional_payment_contract(batch_file, tmp_path):
+    """实际交接包必须把新事实类型、单位范围与独立合同一起交给作者。"""
+
+    from hangma_bot.offline.scoring_sources import REPO_ROOT
+
+    out = tmp_path / "v2-emit"
+    record = run_vip_eoh_generate(batch_file=batch_file, out_dir=out, operator="i1")
+    assert record["status"] == "prompt_emitted"
+    appendix = json.loads((out / "readonly-appendix.json").read_bytes())
+    assert appendix["schema_version"] == "vip-route-scoring-view/2"
+    assert appendix["graph_schema_version"] == "vip-route-action-graph/2"
+    assert appendix["normal_draw_hu_payment_semantics_version"] == "vip-normal-draw-hu-payment/1"
+    assert "RouteConditionalHuPayment" in appendix["fact_type_definitions"]
+    assert "Settlement" in appendix["fact_type_definitions"]
+    assert "normal_draw_hu_payments" in appendix["fact_type_definitions"]["RouteWaitingView"]
+    assert "不能重复计数" in appendix["conditional_payment_scope"]
+    identity = VipEohBatch.read(batch_file).identity(VIP_ROUTE_HEURISTIC_SEED_SOURCE)
+    contract = REPO_ROOT / identity["contract_path"]
+    assert contract.name == "FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md"
+    assert (out / "contract.md").read_bytes() == contract.read_bytes()
+    assert hashlib.sha256(contract.read_bytes()).hexdigest() == identity["contract_sha256"]
+    old = REPO_ROOT / "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md"
+    assert hashlib.sha256(old.read_bytes()).hexdigest() != identity["contract_sha256"]
+
+
 @pytest.mark.parametrize("operator", ["i1", "m1", "m2", "e1", "e2"])
 def test_five_operator_fixture_paths(batch_file, seed_parent, tmp_path, operator):
     batch = VipEohBatch.read(batch_file)

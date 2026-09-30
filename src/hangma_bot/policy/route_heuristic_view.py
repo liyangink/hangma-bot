@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, field, fields
 from typing import Any, Callable, Mapping, Optional, Tuple, TYPE_CHECKING
 
 from hangma_bot.hangma.interface import Settlement
@@ -20,9 +20,10 @@ if TYPE_CHECKING:
     from hangma_bot.hangma.route_structure import RouteStructureFacts
 
 VIP_ROUTE_CANDIDATE_KIND = "vip_route_heuristic_v1"
-VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION = "vip-route-scoring-view/1"
-VIP_ROUTE_GRAPH_SCHEMA_VERSION = "vip-route-action-graph/1"
+VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION = "vip-route-scoring-view/2"
+VIP_ROUTE_GRAPH_SCHEMA_VERSION = "vip-route-action-graph/2"
 VIP_ROUTE_TRACE_SCHEMA_VERSION = "vip-route-score-trace/1"
+VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION = "vip-normal-draw-hu-payment/1"
 
 
 def _plain(value: Any) -> Any:
@@ -35,6 +36,65 @@ def _plain(value: Any) -> Any:
     if hasattr(value, "__dataclass_fields__"):
         return {field.name: _plain(getattr(value, field.name)) for field in fields(value)}
     raise ValueError("VIP 事实含未允许的类型: " + type(value).__name__)
+
+
+@dataclass(frozen=True)
+class RouteConditionalHuPayment:
+    """合法弃后给定一次普通摸牌的支付，不是当前结算或未来期望积分。
+
+    一行只对应一个牌码及一个抓打限制假设。两包络互斥，不能相加成
+    两次机会；公开未见容量含他家暗牌，不能据此推算墙内概率。见证
+    不保证响应全过、途中无人先胡、本人能再次摸牌或此码位于牌墙。
+    """
+
+    draw_code: str  # 假定下一次本人普通摸牌的规范牌码，不读取未来牌墙
+    catch_restricted: bool  # 此行假设摸切限制；另一行可以假设自由抓打
+    wall_remaining_before_draw: int  # 给定局部摸前墙余，含20张保留区，单位张
+    wall_remaining_after_draw: int  # 仅扣本次给定普通摸牌的一张，不推进其他座位
+    draw_capacity_before: int  # 该码精确公开未见张数，1—4；不是墙内张数
+    draw_capacity_after: int  # 本次实体摸入后该码容量，恒为摸前减一
+    baotou_after_draw: bool  # 已由唯一规则源重算的普通摸牌后爆头
+    chain_count: int  # 本条件等待态的连续飘/杠数，不预测中途新增动作
+    chain_piao: int  # 同一链已飘白数；支付行只允许证据已知，未知不填0
+    winner_seat: int  # 假定自摸者，即本家座位0—3
+    dealer_seat: int  # 本单局庄家座位0—3，来自当前公开条件状态
+    ruleset_version: str  # 同源见证的本地规则身份，与外层视图严格匹配
+    settlement: Settlement  # 此行条件满足并立即胡时的支付；净积分按座位0—3
+    draw_kind: str = field(default="normal", init=False)
+    local_witness_only: bool = field(default=True, init=False)
+    scope: str = field(default="local_given_normal_draw_hu_only", init=False)
+
+    def __post_init__(self) -> None:
+        if type(self.draw_code) is not str or self.draw_code not in CANONICAL_TILE_ORDER:
+            raise ValueError("条件支付须使用规范牌码")
+        if type(self.catch_restricted) is not bool or type(self.baotou_after_draw) is not bool:
+            raise ValueError("条件支付的抓打假设和爆头必须是布尔值")
+        if any(type(value) is not int or value not in range(4)
+               for value in (self.winner_seat, self.dealer_seat)):
+            raise ValueError("条件支付本人和庄家座位须为0—3整数")
+        if (type(self.wall_remaining_before_draw) is not int
+                or self.wall_remaining_before_draw <= 20
+                or type(self.wall_remaining_after_draw) is not int
+                or self.wall_remaining_after_draw != self.wall_remaining_before_draw - 1):
+            raise ValueError("条件支付只允许保留区外给定一次普通摸牌的墙余增量")
+        if (type(self.draw_capacity_before) is not int or not 1 <= self.draw_capacity_before <= 4
+                or type(self.draw_capacity_after) is not int
+                or self.draw_capacity_after != self.draw_capacity_before - 1):
+            raise ValueError("条件支付须有精确正容量及一张实体增量")
+        if (type(self.chain_count) is not int or self.chain_count < 0
+                or type(self.chain_piao) is not int or not 0 <= self.chain_piao <= self.chain_count):
+            raise ValueError("条件支付的链数和飘白证据须是非负整数且一致")
+        if type(self.ruleset_version) is not str or not self.ruleset_version.strip():
+            raise ValueError("条件支付缺同源规则身份")
+        if (not isinstance(self.settlement, Settlement)
+                or type(self.settlement.score_delta) is not tuple
+                or len(self.settlement.score_delta) != 4
+                or any(type(amount) is not int for amount in self.settlement.score_delta)
+                or sum(self.settlement.score_delta) != 0
+                or type(self.settlement.fan) is not int or self.settlement.fan <= 0
+                or type(self.settlement.details) is not tuple
+                or any(type(detail) is not str for detail in self.settlement.details)):
+            raise ValueError("条件支付须有同源正番结算及0—3四座整数净积分守恒")
 
 
 @dataclass(frozen=True)
@@ -52,6 +112,8 @@ class RouteWaitingView:
     unseen_evidence: Tuple[str, ...]  # 同序 exact/conservative/unknown
     legal_hu_draw_codes: Optional[Tuple[str, ...]]  # 已分析的条件胡码；未分析为空值
     qualification_scope: str  # conditional_witness 或 unanalysed，不授予高番必达资格
+    normal_draw_hu_payments: Optional[Tuple[RouteConditionalHuPayment, ...]]
+    # 逐码、逐抓打假设的条件支付；未分析None、已分析无胡()，不作概率分布
     qualification_missing_reason: Optional[str] = None
     qualification_unknown_codes: Tuple[str, ...] = ()  # 相容码未能精确判资格，不能当已排除
     qualification_math_closed_codes: Tuple[str, ...] = ()  # 同源真实有效码并集以外，数学已证不能当次胡
@@ -87,6 +149,50 @@ class RouteWaitingView:
             raise ValueError("资格未分析必须说明原因")
         if self.legal_hu_draw_codes is not None and self.qualification_missing_reason is not None:
             raise ValueError("已分析资格不得携带缺口原因")
+        if type(self.baotou) is not bool or type(self.chain_count) is not int or self.chain_count < 0:
+            raise ValueError("等待态爆头和链数的类型或值无效")
+        code_sets = (self.legal_hu_draw_codes, self.restricted_hu_draw_codes,
+                     self.unrestricted_hu_draw_codes, self.qualification_unknown_codes,
+                     self.qualification_math_closed_codes)
+        for codes in code_sets:
+            if codes is not None and (type(codes) is not tuple
+                    or any(type(code) is not str or code not in CANONICAL_TILE_ORDER for code in codes)
+                    or codes != tuple(code for code in CANONICAL_TILE_ORDER if code in set(codes))):
+                raise ValueError("等待胡资格集合须按规范牌序去重")
+        if (self.normal_draw_hu_payments is None) != (self.legal_hu_draw_codes is None):
+            raise ValueError("条件支付表的未分析状态须与胡资格一致")
+        if self.normal_draw_hu_payments is None and (
+                self.restricted_hu_draw_codes or self.unrestricted_hu_draw_codes):
+            raise ValueError("未分析条件支付不能携带已知抓打包络胡码")
+        if self.legal_hu_draw_codes is not None and set(self.legal_hu_draw_codes) & (
+                set(self.qualification_unknown_codes) | set(self.qualification_math_closed_codes)):
+            raise ValueError("已见证胡码不能同时标为未知或数学关闭")
+        if self.normal_draw_hu_payments is not None:
+            payments = self.normal_draw_hu_payments
+            if (type(payments) is not tuple or len(payments) > 68
+                    or any(not isinstance(payment, RouteConditionalHuPayment) for payment in payments)):
+                raise ValueError("条件支付表须是至多两包络各34码的冻结元组")
+            keys = tuple((payment.draw_code, payment.catch_restricted) for payment in payments)
+            if keys != tuple(sorted(set(keys), key=lambda key: (CANONICAL_TILE_ORDER.index(key[0]), key[1]))):
+                raise ValueError("条件支付表须按牌码和抓打假设排列且不重复")
+            if (set(code for code, restricted in keys if restricted) != set(self.restricted_hu_draw_codes)
+                    or set(code for code, restricted in keys if not restricted) != set(self.unrestricted_hu_draw_codes)
+                    or set(code for code, _ in keys) != set(self.legal_hu_draw_codes)):
+                raise ValueError("条件支付表与两抓打包络胡码及其并集不匹配")
+            conditions = set()
+            held = self.structure.natural_counts33 + (self.structure.whites_held,)
+            for payment in payments:
+                index = CANONICAL_TILE_ORDER.index(payment.draw_code)
+                if (self.unseen_evidence[index] != "exact"
+                        or self.unseen_capacities[index] != payment.draw_capacity_before
+                        or held[index] >= 4):
+                    raise ValueError("条件支付码须有同码精确正容量且不能摸入物理第五张")
+                if payment.chain_count != self.chain_count or payment.chain_piao + self.structure.whites_held > 4:
+                    raise ValueError("条件支付的当前链或已飘白与等待态不一致")
+                conditions.add((payment.wall_remaining_before_draw, payment.chain_piao,
+                                payment.winner_seat, payment.dealer_seat, payment.ruleset_version))
+            if len(conditions) > 1:
+                raise ValueError("同一等待态的条件支付须绑定相同墙余、链证据和规则座位")
         if (len(self.target_improvement_code_widths) != len(self.structure.targets)
                 or any(type(width) is not int or not 0 <= width <= 34 for width in (
                     self.useful_code_width, self.legal_hu_code_width,
@@ -185,6 +291,7 @@ class VipRouteScoringView:
     executor_version: str
     max_nodes: int
     max_branches: int
+    normal_draw_hu_payment_semantics_version: str = VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION
     max_waiting_draw_witnesses: int = 16384
     waiting_draw_witness_count: int = 0  # 本次规则局部资格分析请求次数，非完整树节点数
     target_distance_evaluation_count: int = 0  # 结构目标距离请求计数，非后端实际节点数
@@ -198,6 +305,8 @@ class VipRouteScoringView:
             raise ValueError("VIP根和节点必须是冻结元组")
         if not self.ruleset_version or not self.structure_semantics_version or not self.executor_version:
             raise ValueError("VIP视图必须绑定规则、结构和执行器版本")
+        if self.normal_draw_hu_payment_semantics_version != VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION:
+            raise ValueError("VIP普通下一摸条件支付语义版本不匹配")
         if type(self.base_score) is not int or self.base_score <= 0:
             raise ValueError("BaseScore必须为正整数")
         if any(type(limit) is not int or limit <= 0 for limit in (self.max_nodes, self.max_branches)):
@@ -218,6 +327,12 @@ class VipRouteScoringView:
                 raise ValueError("VIP图必须无重复、无循环且子节点先于父节点")
             seen.add(node.node_key)
             branches += len(node.children)
+            if node.waiting is not None:
+                for payment in node.waiting.normal_draw_hu_payments or ():
+                    if (payment.winner_seat != self.visible_state.seat
+                            or payment.dealer_seat != self.visible_state.dealer_seat
+                            or payment.ruleset_version != self.ruleset_version):
+                        raise ValueError("条件支付本人、庄家或规则身份与外层VIP视图不一致")
         if any(item.node_key not in seen for item in self.actions):
             raise ValueError("VIP根存在悬空节点")
         if len(self.nodes) > self.max_nodes or branches > self.max_branches:
@@ -257,6 +372,7 @@ class VipRouteScoringView:
                 "base_score": self.base_score,
                 "you_cai_bi_kao": self.you_cai_bi_kao,
                 "structure_semantics_version": self.structure_semantics_version,
+                "normal_draw_hu_payment_semantics_version": self.normal_draw_hu_payment_semantics_version,
                 "executor_version": self.executor_version,
             },
             "limits": {"max_nodes": self.max_nodes, "max_branches": self.max_branches,

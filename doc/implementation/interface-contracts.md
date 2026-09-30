@@ -1,5 +1,13 @@
 # 第一阶段接口协议
 
+## 2026-10-01 条件胡支付合同 v2
+
+**本节是当前新候选视图的接口依据；下方 v1 条款保存历史版本。**[完整合同 v2](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)将 `VipRouteScoringView` 与事实图升为 `/2`，新增支付语义 `vip-normal-draw-hu-payment/1`；候选类型仍为 `vip_route_heuristic_v1`，旧 `/4` 输入不变。
+
+`RouteWaitingView.normal_draw_hu_payments: Optional[Tuple[RouteConditionalHuPayment, ...]]`是逐牌码、逐抓打假设的普通摸牌条件支付。字段含摸前／摸后墙余和精确容量、摸后爆头、已有链／飘白、本人／庄家座位、规则身份及同源 `Settlement`。四家积分按座位0—3，单位积分；两假设不能重复计算机会，公开未见容量含他家暗牌。未分析为None并给原因，已分析无胡为空元组，部分未知只交已有精确行并保留未知码。等待节点即时 `settlement` 仍为空。
+
+`freeze_vip_identity`与生成附录绑定独立 v2 合同及版本、依赖闭包；候选映射和评分轨迹携带支付语义。旧包身份失配即拒绝，不能继承历史执行成功或成绩。新增事实复用原胡见证查询，无额外查询和规则逻辑。条件范围及构造校验见完整合同，当前策略异常仍使严格研究桌未完成。
+
 ## 2026-09-30 VIP 固定框架新合同
 
 **本节登记新研究接缝，不改四个外部端口与旧评分视图。**详细[实施合同](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md)是当前依据，旧 P1/P3 记录保留历史身份。
