@@ -11,9 +11,8 @@ import argparse
 import json
 from collections import Counter
 
-from hangma_bot.hangma.engine import HangmaRules, _build_context
+from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.hangma.interface import ValueAnalysisLimits
-from hangma_bot.hangma.route_transition import project_legal_roots
 from hangma_bot.kernel.actions import Chi, Discard, Gang, Hu, Pass, Peng
 from hangma_bot.kernel.config import RuleConfig, TimingConfig, TournamentConfig
 from hangma_bot.simulation import MatchSpec, SimulationChoice, SimulationEngine
@@ -54,12 +53,11 @@ def audit(*, start_seed: int, seeds: int, max_steps: int = 500) -> dict:
             choices = []
             for decision in frame.decisions:
                 observation = decision.observation
-                # 当前胡根须用同次结算事实；不请求 value_facts 会制造假机械缺口。
-                analysis = rules.analyze(observation, value_limits=limits)
-                roots = project_legal_roots(
-                    observation, _build_context(observation),
-                    analysis.legal_candidates, config=rules.config,
-                )
+                # 由公开规则分析入口同时附同源结算和条件根，复核策略实际接线。
+                analysis = rules.analyze(observation, route_limits=limits)
+                roots = analysis.conditional_roots
+                if roots is None:
+                    raise ValueError("显式请求条件根后规则分析仍返回未请求状态")
                 counts["windows"] += 1
                 counts[f"window_{observation.phase}"] += 1
                 counts["legal_roots"] += len(roots)
