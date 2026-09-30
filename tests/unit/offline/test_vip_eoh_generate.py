@@ -588,3 +588,69 @@ def test_static_illegal_source_never_executes_outside_executor(batch_file, tmp_p
     assert record["admission"]["eligible"] is False
     assert (tmp_path / "unsafe/candidate.py").read_text() == source.strip()
     assert record["source_sha256"] == hashlib.sha256((tmp_path / "unsafe/candidate.py").read_bytes()).hexdigest()
+
+
+def test_plain_single_thought_line_preserves_source_and_mechanism():
+    """省略装饰性花括号只改变封套标签，完整源码和机制不被修写。"""
+    braced = reply_text("i1")
+    thought, remainder = braced.split("\n", 1)
+    plain = thought[1:-1] + "\n" + remainder
+    old = parse_vip_eoh_reply(braced, "i1", [])
+    compatible = parse_vip_eoh_reply(plain, "i1", [])
+    assert compatible["thought"] == old["thought"]
+    assert compatible["mechanism"] == old["mechanism"]
+    assert compatible["source"] == old["source"]
+    assert compatible["source_raw"] == old["source_raw"]
+    assert compatible["thought_envelope"] == "plain_single_line"
+    assert compatible["reply_format_version"] == "vip-eoh-reply-format/2"
+    assert old["thought_envelope"] == "braced"
+
+
+@pytest.mark.parametrize("prefix", ("思想一句\n又一段解释", "{思想\n第二行}", "{空缺", "额外```围栏"))
+def test_plain_thought_compatibility_rejects_extra_or_malformed_envelope(prefix):
+    """兼容单行不能接受多段说明、损坏括号或混入围栏。"""
+    _, remainder = reply_text("i1").split("\n", 1)
+    with pytest.raises(VipEohError):
+        parse_vip_eoh_reply(prefix + "\n" + remainder, "i1", [])
+
+
+def test_configuration_failure_before_call_has_known_zero_model_usage(batch_file, tmp_path):
+    """传输构造失败而未发起模型请求，模型用量已知为0，不挪用token预留。"""
+    def broken_factory(*args, **kwargs):
+        raise ValueError("人工测试配置缺项")
+    record = run_vip_eoh_generate(batch_file=batch_file, out_dir=tmp_path / "config-failed",
+        operator="i1", backend="api", model="synthetic-request", backend_factory=broken_factory)
+    assert record["status"] == "failed"
+    assert record["billing"]["call_started"] is False
+    for account in ("model_calls", "input_tokens", "output_tokens"):
+        assert record["billing"]["actual"][account] == 0
+        assert record["billing"]["charged"][account] == 0
+
+
+@pytest.mark.parametrize("prefix", (" \t ", "{ \t }", "思想\u2028第二行", "{思想\u2029第二行}"))
+def test_empty_and_unicode_multiline_thought_are_rejected(prefix):
+    """思想兼容不接受空白或Unicode意义下的多行思想。"""
+    _, remainder = reply_text("i1").split("\n", 1)
+    with pytest.raises(VipEohError):
+        parse_vip_eoh_reply(prefix + "\n" + remainder, "i1", [])
+
+
+@pytest.mark.parametrize("plain", (False, True))
+def test_indented_extra_python_fences_cannot_truncate_source(plain):
+    """缩进的第二个源码围栏不能被底层解析器截断后冒充完整程序。"""
+    text = reply_text("i1")
+    if plain:
+        text = text.replace("{人工测试联合机制}", "人工测试联合机制", 1)
+    text = text.rsplit("\n```", 1)[0] + "\n  ```\n  ```python\nx = 9\n```\n"
+    with pytest.raises(VipEohError):
+        parse_vip_eoh_reply(text, "i1", [])
+
+
+def test_plain_thought_keeps_raw_source_spacing_and_comments():
+    """source_raw保持原捕获字节；装载源码只沿用既有解析器的strip规范。"""
+    raw = "\n# 中文来源注释  \n" + VIP_ROUTE_HEURISTIC_SEED_SOURCE + "\n\n"
+    braced = reply_text("i1", raw)
+    plain = braced.replace("{人工测试联合机制}", "人工测试联合机制", 1)
+    a, b = parse_vip_eoh_reply(braced, "i1", []), parse_vip_eoh_reply(plain, "i1", [])
+    assert a["source_raw"] == b["source_raw"] == raw
+    assert a["source"] == b["source"]

@@ -513,12 +513,17 @@ def _unique_json_object(pairs):
 
 
 def parse_vip_eoh_reply(text: str, operator: str, parents: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
-    """要求唯一思想、唯一JSON、唯一Python；再复用旧解析器和受限装载。"""
+    """接受唯一单行思想（有/无花括号）、唯一JSON及Python；不改原源码。
+
+    vip-eoh-reply-format/2兼容模型省略思想句花括号，拒绝多行解释、
+    重复围栏或机制缺失。仅给旧思想解析器补内存封套；原回复/摘要与
+    source_raw保持原字节，既有失败记录不追改，不放宽执行器输出门。
+    """
 
     _validate_operator(operator, parents)
-    match = re.fullmatch(r"\s*\{([^{}]+)\}\s*```json\s*\n(.*?)\n```\s*```python\s*\n(.*?)\n```\s*",
+    match = re.fullmatch(r"\s*(\{[^{}\r\n]+\}|[^{}\r\n`]+)\s*```json[ \t]*\r?\n(.*?)\r?\n```\s*```python[ \t]*\r?\n(.*?)\r?\n```\s*",
                          text, flags=re.DOTALL)
-    if match is None or len(re.findall(r"(?m)^```", text)) != 4:
+    if match is None or len(re.findall(r"(?m)^[ \t]*```", text)) != 4:
         raise VipEohError("回复必须只有一句思想、一个JSON围栏和一个Python围栏")
     mechanism = json.loads(match.group(2), object_pairs_hook=_unique_json_object,
                            parse_constant=lambda value: (_ for _ in ()).throw(VipEohError("机制JSON不能有非有限数")))
@@ -543,9 +548,17 @@ def parse_vip_eoh_reply(text: str, operator: str, parents: Sequence[Mapping[str,
             if not isinstance(difference[name], list) or not difference[name] or any(
                 not isinstance(value, str) or not value for value in difference[name]):
                 raise VipEohError("预期窗口/动作键须为非空字符串列表")
+    thought_line = match.group(1).strip()
+    thought_envelope = "braced" if thought_line.startswith("{") else "plain_single_line"
+    thought_content = thought_line[1:-1].strip() if thought_envelope == "braced" else thought_line
+    if not thought_content or len(thought_content.splitlines()) != 1:
+        raise VipEohError("思想必须是唯一非空单行，不接受空白或Unicode换行")
+    legacy_text = (text if thought_envelope == "braced" else
+                   "{" + thought_line + "}\n```json\n" + match.group(2)
+                   + "\n```\n```python\n" + match.group(3) + "\n```")
     parsed = legacy_generation_tools().parse_model_reply(
-        text, entry_name="score_actions", require_entry_definition=True)
-    if parsed.status != "ok" or parsed.code is None or parsed.thought is None:
+        legacy_text, entry_name="score_actions", require_entry_definition=True)
+    if parsed.status != "ok" or parsed.code is None or parsed.thought is None or not parsed.thought.strip():
         raise VipEohError("底层思想/完整入口解析失败")
     source = parsed.code
     parameter_changes = mechanism["parameter_changes"]
@@ -567,7 +580,8 @@ def parse_vip_eoh_reply(text: str, operator: str, parents: Sequence[Mapping[str,
         raise VipEohError("仅m2可带参数变化声明")
     return {"thought": parsed.thought, "mechanism": mechanism,
             "source": source, "source_raw": match.group(3),
-            "numeric_literal_changes": actual_changes if operator == "m2" else []}
+            "numeric_literal_changes": actual_changes if operator == "m2" else [],
+            "reply_format_version": "vip-eoh-reply-format/2", "thought_envelope": thought_envelope}
 
 
 def _usage(reply, backend: str) -> dict[str, Any]:
@@ -876,7 +890,9 @@ def run_vip_eoh_generate(
                           m2_scope="numeric-literal m2" if operator == "m2" else None,
                           thought_sha256=_sha(parsed["thought"]),
                           mechanism_sha256=_sha(_json_bytes(parsed["mechanism"])),
-                          source_raw_sha256=_sha(parsed["source_raw"]))
+                          source_raw_sha256=_sha(parsed["source_raw"]),
+                          reply_format_version=parsed["reply_format_version"],
+                          thought_envelope=parsed["thought_envelope"])
             _atomic(out_dir / "source-raw.py", parsed["source_raw"].encode("utf-8"))
             _atomic(out_dir / "candidate.py", parsed["source"].encode("utf-8"))
             phase = "candidate_load"
@@ -903,8 +919,8 @@ def run_vip_eoh_generate(
         if reservation is not None:
             reported = usage["reported"] if usage and backend == "api" else {}
             actual = {"model_calls": int(call_started),
-                      "input_tokens": reported.get("input_tokens") if backend == "api" else 0,
-                      "output_tokens": reported.get("output_tokens") if backend == "api" else 0,
+                      "input_tokens": reported.get("input_tokens") if backend == "api" and call_started else 0,
+                      "output_tokens": reported.get("output_tokens") if backend == "api" and call_started else 0,
                       "table_instances": 0, "wall_clock_seconds": elapsed}
             record["billing"] = ledger.settle(attempt_id, actual=actual, outcome=record["status"])
             if record["billing"]["budget_exceeded"]:

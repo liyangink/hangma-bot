@@ -103,3 +103,14 @@ review/baotou-anatomy-20260925/rounds.jsonl
 # 保留本地展开副本便于复算，避免把 156 MB 重复原文推入 Git。
 review/freematch-deep-dive-20260925/evidence/g223-visible-multi-action-route-20260929/stages/
 review/freematch-deep-dive-20260925/evidence/g224-g223-vector-replay-20260929/stages/
+
+# VIP T2 冻结源码已封装同目录 code-snapshot.tar.gz；本地解压副本不重复入库。
+review/vip-route-2026-09-30/evidence/t2-*/code_snapshot/
+# T3 实验的逐文件源码快照同样保存为 code-snapshot.tar.gz，原始展开目录留本机。
+review/vip-route-2026-09-30/evidence/t3-development-batch-1/*/code_snapshot/
+review/vip-route-2026-09-30/evidence/t3-development-batch-2/*/code_snapshot/
+# 已闭合的T3自然开发原始池账保存为同目录H/M-evidence.tar.gz，展开件本机保留。
+review/vip-route-2026-09-30/evidence/t3-development-batch-1/*-natural-development-*/H/
+review/vip-route-2026-09-30/evidence/t3-development-batch-1/*-natural-development-*/M/
+review/vip-route-2026-09-30/evidence/t3-development-batch-1/*.json.lock
+review/vip-route-2026-09-30/evidence/t3-development-batch-2/*.json.lock
