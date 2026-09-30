@@ -693,4 +693,6 @@ P3 离线教师的基础续打动作现由 `offline.vip_reference` 在每个模�
 
 离线教师另增 `shape_white_hold` 负控续打者：只读本人实持白板、官方可见墙余、同源当前胡结算及动作后向听，在双白且仍有自然摸牌空间时有条件延后低番胡。它不接入 `policy.choose`；新根对照显示高番标签增加同时普通胡大量损失、他座先胡和流局增加。`scripts.vip_p3_competing_tail_audit` 按同观察根、同隐藏世界和全合法动作核互斥终局与积分差方向，证明首次事件键相同也可有不同后继价值。数值及相关样本限制见[新根复核](../review/vip-route-2026-09-30/evidence/p3-white-hold-new-roots-20260930/README.md)。
 
+P3 又增加**仅离线**的低番当前胡选根、同世界反事实教师和价值可学性探针：`scripts.vip_p3_hu_wait_root_scan` 只用行动前 `PlayerObservation` 与 `HangmaRules` 即时结算固定可胡／继续根；`scripts.vip_p3_all_action_teacher` 分别由 `shape`、冻结 R18 在同编号重采样世界续打，`scripts.vip_p3_hu_wait_audit` 逐根核当前胡真分与继续的四座终局。`scripts.vip_p3_value_fit_probe` 由同源规则事实提取可见特征，固定当前胡积分、仅拟合非胡末端；`scripts.vip_p3_tail_oracle_probe` 明确把**未来首次事件**当作不可上线的诊断上界。开发半区发现条件路线等待信号，模型文件在未读留出结果前冻结；这些训练、世界重采样和未来事件都不进入 `policy.choose`。证据见[当前胡开发账](../review/vip-route-2026-09-30/evidence/p3-hu-wait-teacher-20260930/README.md)。
+
 `policy.route_vip_draft` 新增研究策略 `C_draft_M0`：离线驱动显式请求 P2 同次全合法条件根，策略逐根检查机械缺口，再对当前胡使用规则真实本座净积分，对普通弃牌使用 P1 一摸代理，对其余合法动作使用动作后牌效的未校准末端代理。赛事阶段与排名只进入候选审计，不影响排序；模拟器和完整世界仍只在 `offline`，R18 不进入该策略。`strict_policy=True` 已使四桌各八局在逻辑时钟下由新策略全窗口完成；逐窗审计发现并修复了浮点尾差导致的两次假弃胡，修后 5,508 个动作窗口和第一桌 1,197 份计划另行重跑冻结。该代理不是通用预期积分，也没有证明 P2 全部组合闭包、生产审计序列化或官方窗口时限。范围和逐窗证据见[机械纵切面](../review/vip-route-2026-09-30/evidence/p3-draft-m0-mechanical-20260930/README.md)。
