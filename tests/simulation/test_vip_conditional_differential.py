@@ -42,6 +42,8 @@ def _assert_public_equal(state, world):
     assert state.baotou == observed.rule_state.baotou
     assert state.chain_count == observed.rule_state.chain_count
     assert state.chain_piao == observed.chain_piao
+    assert state.catch_circle.active == observed.rule_state.catch_play
+    assert state.catch_circle.owner == observed.rule_state.catch_play_owner_seat
 
 
 def test_every_initial_discard_root_matches_simulator_public_state():
@@ -356,3 +358,104 @@ def test_full_no_claim_hands_reach_same_rule_terminal():
         else:
             raise AssertionError("固定单局未在 300 个窗口内结束")
     assert own_wins == 1
+
+
+def test_initial_white_discard_catch_circle_reaches_next_own_draw():
+    """弃白跳过响应并开抓打圈后，给定三家真实公开动作到本人再摸。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    other_white_to_self = 0
+    for seed in (16, 20, 22, 28, 33, 36, 39, 40):
+        world = engine.start(make_spec(rules, rounds=1, seed=seed))
+        frame = engine.frame(world)
+        own = frame.decisions[0]
+        analysis = rules.analyze(own.observation)
+        discard = next(item for item in analysis.legal_candidates
+                       if item.action_key == "discard:白")
+        root = next(item for item in project_legal_roots(
+            own.observation, _build_context(own.observation),
+            analysis.legal_candidates, config=rules.config,
+        ) if item.action_key == discard.action_key)
+        state = root.branches[0].state
+        assert state.phase is ConditionalPhase.PUBLIC_WAIT
+        assert state.catch_circle.active and state.catch_circle.owner == 0
+        world = engine.advance(world, frame.revision, (
+            SimulationChoice(own.window_key, discard.action),
+        ))
+
+        for _ in range(30):
+            frame = engine.frame(world)
+            if world.progression.window == "draw":
+                decision = frame.decisions[0]
+                seat = decision.window_key.seat
+                if seat == 0:
+                    assert state.phase is ConditionalPhase.NORMAL_DRAW
+                    state = apply_given_draw(
+                        state, decision.observation.drawn_tile,
+                        replacement=False,
+                    )
+                    _assert_public_equal(state, world)
+                    given = analyze_given_self_draw(
+                        state, seat=0,
+                        dealer_seat=world.progression.dealer_seat,
+                        config=rules.config,
+                    )
+                    assert {item.action_key for item in given.legal_candidates} == {
+                        item.action_key for item in rules.analyze(
+                            decision.observation).legal_candidates
+                    }
+                    next_discard = next(
+                        item for item in given.legal_candidates
+                        if isinstance(item.action, Discard)
+                    )
+                    state = apply_legal_draw_discard(
+                        given, next_discard.action_key,
+                    )
+                    world = engine.advance(world, frame.revision, (
+                        SimulationChoice(decision.window_key,
+                                         next_discard.action),
+                    ))
+                    if next_discard.action.tile.code == "白":
+                        state = advance_given_other_draw(state, seat=1)
+                    _assert_public_equal(state, world)
+                    break
+                state = advance_given_other_draw(state, seat=seat)
+                _assert_public_equal(state, world)
+                candidates = rules.analyze(decision.observation).legal_candidates
+                their_discard = next(item.action for item in candidates
+                                     if isinstance(item.action, Discard))
+                state = advance_given_other_discard(
+                    state, seat=seat, tile=their_discard.tile,
+                )
+                if seat == 3 and their_discard.tile.code == "白":
+                    assert state.phase is ConditionalPhase.NORMAL_DRAW
+                    assert state.expected_draw_seat == 0
+                    other_white_to_self += 1
+                world = engine.advance(world, frame.revision, (
+                    SimulationChoice(decision.window_key, their_discard),
+                ))
+                if world.progression.window.startswith("response_"):
+                    _assert_public_equal(state, world)
+                continue
+            assert world.progression.window.startswith("response_")
+            assert state.response_trigger is not None
+            feeder, tile = state.response_trigger
+            transition = advance_response_state(
+                state, window=world.progression.window,
+                discard_seat=feeder, discarded_tile=tile,
+                responding=world.progression.responding,
+                choices=tuple((item.window_key.seat, Pass())
+                              for item in frame.decisions),
+            )
+            assert transition.resolution.status == "resolved"
+            state = transition.state
+            world = engine.advance(world, frame.revision, tuple(
+                SimulationChoice(item.window_key, Pass())
+                for item in frame.decisions
+            ))
+            if world.progression.window.startswith("response_"):
+                _assert_public_equal(state, world)
+        else:
+            raise AssertionError("弃白后未在 30 个窗口内回到本人普通摸牌")
+    assert other_white_to_self > 0

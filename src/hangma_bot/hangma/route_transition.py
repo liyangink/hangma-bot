@@ -698,15 +698,21 @@ def advance_given_other_discard(
             and state.unseen_capacities[index] == 0):
         raise ValueError("给定他座弃牌码公开未见容量为零")
     circle = progression.catch_play_after_discard(state.catch_circle, seat, tile)
+    next_seat = (seat + 1) % 4
+    # 他座弃白不经过吃碰窗口；下一座若正是本人，就已到本人普通摸牌点。
+    if is_wealth(tile):
+        phase = (ConditionalPhase.NORMAL_DRAW if next_seat == state.seat
+                 else ConditionalPhase.PUBLIC_WAIT)
+    else:
+        phase = ConditionalPhase.RESPONSE_RESOLUTION
     next_state = replace(
-        state, phase=(ConditionalPhase.PUBLIC_WAIT if is_wealth(tile)
-                      else ConditionalPhase.RESPONSE_RESOLUTION),
+        state, phase=phase,
         catch_circle=circle,
         catch_restricted=circle.active and circle.owner != state.seat,
         response_window=None if is_wealth(tile) else "response_peng",
         response_trigger=None if is_wealth(tile) else (seat, tile),
         response_public_discard=None,
-        expected_draw_seat=((seat + 1) % 4 if is_wealth(tile) else None),
+        expected_draw_seat=(next_seat if is_wealth(tile) else None),
         expected_discard_seat=None,
         identity=state.identity.step("other-discard:" + str(seat) + ":" + tile.code),
     )
