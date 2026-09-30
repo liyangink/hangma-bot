@@ -523,3 +523,69 @@ def test_concealed_gang_replacement_and_hu_match_simulator():
         SimulationChoice(frame.decisions[0].window_key, Hu()),
     ))
     assert state.terminal_result == world.progression.hand_result
+
+
+def test_other_exposed_gang_award_replacement_and_discard_match_simulator():
+    """物理有效四张明杠：公开裁决、他座补摸、跟打逐步对拍。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    pool = [code for code in CANONICAL_TILE_ORDER for _ in range(4)]
+    for _ in range(4):
+        pool.remove("5w")
+    row = build_full_world_row(
+        rules,
+        hands13=[
+            pool[:13], ["5w"] * 3 + pool[13:23],
+            pool[23:36], pool[36:49],
+        ],
+        dealer_drawn="5w", wall=pool[49:], dealer=0,
+    )
+    world = engine.from_replay(row)
+    frame = engine.frame(world)
+    own = frame.decisions[0]
+    analysis = rules.analyze(own.observation)
+    root = next(item for item in project_legal_roots(
+        own.observation, _build_context(own.observation),
+        analysis.legal_candidates, config=rules.config,
+    ) if item.action_key == "discard:5w")
+    world = engine.advance(world, frame.revision, (
+        SimulationChoice(own.window_key, Discard(Tile("5w"))),
+    ))
+    frame = engine.frame(world)
+    gang = Gang(Tile("5w"), GangKind.EXPOSED)
+    assert any(item.action_key == "gang:exposed:5w" for item in
+               rules.analyze(next(item for item in frame.decisions
+                                  if item.window_key.seat == 1).observation
+                             ).legal_candidates)
+    choices = tuple((item.window_key.seat,
+                     gang if item.window_key.seat == 1 else Pass())
+                    for item in frame.decisions)
+    transition = advance_given_response(
+        root, window="response_peng", discard_seat=0,
+        discarded_tile=Tile("5w"),
+        responding=world.progression.responding,
+        choices=choices, retained_in_river=True,
+    )
+    assert transition.resolution.status == "resolved"
+    assert transition.state.expected_replacement_draw
+    world = engine.advance(world, frame.revision, tuple(
+        SimulationChoice(item.window_key, action)
+        for item, (_, action) in zip(frame.decisions, choices)
+    ))
+    state = advance_given_other_draw(
+        transition.state, seat=1, replacement=True,
+    )
+    _assert_public_equal(state, world)
+    frame = engine.frame(world)
+    their_discard = next(item.action for item in
+                         rules.analyze(frame.decisions[0].observation
+                                       ).legal_candidates
+                         if isinstance(item.action, Discard))
+    state = advance_given_other_discard(
+        state, seat=1, tile=their_discard.tile,
+    )
+    world = engine.advance(world, frame.revision, (
+        SimulationChoice(frame.decisions[0].window_key, their_discard),
+    ))
+    _assert_public_equal(state, world)
