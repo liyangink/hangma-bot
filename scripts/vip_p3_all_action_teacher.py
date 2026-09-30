@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 from collections import Counter
+from typing import Mapping
 
 from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.hangma.interface import RuleCompleteness, ValueAnalysisLimits
@@ -29,7 +30,8 @@ else:
 _DRAW_ORDINALS = (1, 5, 10)
 
 
-def _selected_roots(engine: SimulationEngine, rules: HangmaRules, world):
+def _selected_roots(engine: SimulationEngine, rules: HangmaRules, world, *,
+                    target_draws: Mapping[int, tuple[str, ...]] | None = None):
     """按行动前窗口属性留根；同一窗口命中多个标签时只计算一次。"""
 
     selected = []
@@ -48,15 +50,20 @@ def _selected_roots(engine: SimulationEngine, rules: HangmaRules, world):
             analysis = rules.analyze(decision.observation)
             tags = []
             if decision.observation.phase == "draw":
-                draw_ordinal += 1
-                if draw_ordinal in _DRAW_ORDINALS:
-                    tags.append("draw_" + str(draw_ordinal))
-                if any(isinstance(item.action, Hu) for item in analysis.legal_candidates):
-                    tags.append("draw_hu")
-                if any(isinstance(item.action, Gang) for item in analysis.legal_candidates):
-                    tags.append("draw_gang")
+                if decision.observation.drawn_tile is not None:
+                    draw_ordinal += 1
+                if target_draws is not None:
+                    tags.extend(target_draws.get(draw_ordinal, ())
+                                if decision.observation.drawn_tile is not None else ())
+                else:
+                    if draw_ordinal in _DRAW_ORDINALS:
+                        tags.append("draw_" + str(draw_ordinal))
+                    if any(isinstance(item.action, Hu) for item in analysis.legal_candidates):
+                        tags.append("draw_hu")
+                    if any(isinstance(item.action, Gang) for item in analysis.legal_candidates):
+                        tags.append("draw_gang")
             elif decision.observation.phase in ("response_peng", "response_chi"):
-                if len(analysis.legal_candidates) > 1:
+                if target_draws is None and len(analysis.legal_candidates) > 1:
                     tags.append(decision.observation.phase + "_actionable")
             else:
                 raise ValueError("未知本人动作窗口")
@@ -78,11 +85,36 @@ def _selected_roots(engine: SimulationEngine, rules: HangmaRules, world):
     raise ValueError("选根续打超过 500 帧")
 
 
-def audit(*, start_seed: int, seeds: int, worlds_per_root: int) -> dict:
+def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
+          selection_report: dict | None = None,
+          selection_tag: str | None = None) -> dict:
     """全部合法臂同隐藏世界配对，并分别核互斥事件和四座净积分。"""
 
     if start_seed < 0 or seeds < 1 or worlds_per_root < 1:
         raise ValueError("教师抽样范围无效")
+    selected_by_seed: dict[int, dict[int, tuple[str, ...]]] = {}
+    selected_hashes: dict[tuple[int, int], str] = {}
+    if selection_report is not None:
+        if (selection_report.get("scope") !=
+                "result_blind_opportunity_root_selection_not_outcome_or_probability"
+                or selection_report.get("reference") != "shape"
+                or selection_report.get("rule_config") !=
+                {"BaseScore": 1, "YouCaiBiKao": False}
+                or selection_report.get("start_seed") != start_seed
+                or selection_report.get("requested_seeds") != seeds):
+            raise ValueError("机会选根报告的范围、配置或参考者与教师不一致")
+        for row in selection_report["selected_roots"]:
+            tags = tuple(tag for tag in row["tags"]
+                         if selection_tag is None or tag == selection_tag)
+            if not tags:
+                continue
+            seed, index = row["seed"], row["own_draw_index"]
+            if (seed, index) in selected_hashes:
+                raise ValueError("同一种子的本人摸牌序号重复选根")
+            selected_by_seed.setdefault(seed, {})[index] = tags
+            selected_hashes[(seed, index)] = row["observation_sha256"]
+    elif selection_tag is not None:
+        raise ValueError("选择标签需要结果盲机会选根报告")
     rules = HangmaRules(RuleConfig("hangma-mvp-v10-public-counts", 1, False))
     engine = SimulationEngine(rules)
     limits = ValueAnalysisLimits(max_expansions=8192)
@@ -90,14 +122,18 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int) -> dict:
     tag_counts: Counter[str] = Counter()
     action_worlds = 0
     for seed in range(start_seed, start_seed + seeds):
+        if selection_report is not None and seed not in selected_by_seed:
+            continue
+        prefix = "vip-p3-opportunity" if selection_report is not None else "vip-p3-all-action"
         spec = MatchSpec(
-            match_id=f"vip-p3-all-action-{seed}",
-            scenario_id=f"vip-p3-all-action-{seed}",
+            match_id=f"{prefix}-{seed}",
+            scenario_id=f"{prefix}-{seed}",
             config=TournamentConfig(1, 1, rules.config, TimingConfig(1.0, 1.0, 3.0)),
             seed=seed, initial_dealer=0, initial_scores=(0, 0, 0, 0),
         )
         for world, frame, decision, tags in _selected_roots(
-            engine, rules, engine.start(spec)
+            engine, rules, engine.start(spec),
+            target_draws=(selected_by_seed[seed] if selection_report is not None else None),
         ):
             observation = decision.observation
             analysis = rules.analyze(observation, route_limits=limits)
@@ -109,6 +145,15 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int) -> dict:
                 raise ValueError("选中窗口的同次合法候选与条件根不完整")
             candidates = analysis.legal_candidates
             root_id = hashlib.sha256(repr(observation).encode("utf-8")).hexdigest()
+            if selection_report is not None:
+                selected_indexes = [
+                    index for index, selected_tags in selected_by_seed[seed].items()
+                    if tuple(tags) == selected_tags
+                ]
+                if len(selected_indexes) != 1 or root_id != selected_hashes[
+                    (seed, selected_indexes[0])
+                ]:
+                    raise ValueError("机会根玩家观察与冻结扫描身份不一致")
             arms = {item.action_key: [] for item in candidates}
             # 摸牌和响应窗均使用同一观察下的相关隐藏世界；每个样本的
             # 全部合法臂共享同一个重采样世界，不把动作世界当独立根。
@@ -116,7 +161,7 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int) -> dict:
             for sample in range(sample_count):
                 hidden = engine.resample_public_consistent_hidden_world(
                     world, focal_seat=0,
-                    sample_key=f"vip-p3-all-action-{seed}-{sample}",
+                    sample_key=f"{prefix}-{seed}-{sample}",
                 )
                 sampled_frame = engine.frame(hidden)
                 focal = [item for item in sampled_frame.decisions
@@ -161,7 +206,9 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int) -> dict:
                 "outcomes_by_action": arms,
             })
             tag_counts.update(tags)
-    return {
+    if selection_report is not None and len(rows) != len(selected_hashes):
+        raise ValueError("冻结机会根未全部在同一参考续打路径到达")
+    report = {
         "scope": "P3_offline_teacher_labels_only_not_candidate_policy_value",
         "rule_config": {"BaseScore": 1, "YouCaiBiKao": False},
         "reference": "shape",
@@ -173,6 +220,11 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int) -> dict:
         "tag_counts": dict(sorted(tag_counts.items())),
         "rows": rows,
     }
+    if selection_report is not None:
+        report["selection_scope"] = selection_report["scope"]
+        report["selection_tag"] = selection_tag
+        report["selection_root_count"] = len(selected_hashes)
+    return report
 
 
 def main() -> None:
@@ -182,10 +234,17 @@ def main() -> None:
     parser.add_argument("--start-seed", type=int, default=1001)
     parser.add_argument("--seeds", type=int, default=1)
     parser.add_argument("--worlds-per-root", type=int, default=2)
+    parser.add_argument("--selection-file", type=str)
+    parser.add_argument("--selection-tag", type=str)
     args = parser.parse_args()
+    selection = None if args.selection_file is None else json.loads(
+        open(args.selection_file, encoding="utf-8").read())
+    start_seed = args.start_seed if selection is None else selection["start_seed"]
+    seeds = args.seeds if selection is None else selection["requested_seeds"]
     print(json.dumps(audit(
-        start_seed=args.start_seed, seeds=args.seeds,
+        start_seed=start_seed, seeds=seeds,
         worlds_per_root=args.worlds_per_root,
+        selection_report=selection, selection_tag=args.selection_tag,
     ), ensure_ascii=False, sort_keys=True))
 
 
