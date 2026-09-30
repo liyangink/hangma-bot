@@ -1,6 +1,7 @@
 """VIP 条件机械与真实模拟推进对拍；完整世界只在测试侧作裁判。"""
 
 from collections import Counter
+from dataclasses import replace
 
 import pytest
 
@@ -18,11 +19,13 @@ from hangma_bot.hangma.route_transition import (
     analyze_given_self_draw,
     project_legal_roots,
 )
-from hangma_bot.kernel.actions import Discard, Hu, Pass
+from hangma_bot.kernel.actions import (
+    CANONICAL_TILE_ORDER, Discard, Gang, GangKind, Hu, Pass, Tile,
+)
 from hangma_bot.simulation import SimulationChoice, SimulationEngine
 from hangma_bot.simulation.projection import observation as project_observation
 
-from ._helpers import make_rules, make_spec
+from ._helpers import build_full_world_row, make_rules, make_spec
 
 
 def _assert_public_equal(state, world):
@@ -30,7 +33,15 @@ def _assert_public_equal(state, world):
 
     observed = project_observation(world, 0)
     assert state.public_view.discards == observed.discards
-    assert state.public_view.melds == observed.melds
+    # 模拟器对外把三类杠统称 gang，内部 MeldRecord.gang_kind 才保留
+    # an/ming/bu；官方条件视图按实见快照使用 gang_an/ming/bu。
+    normalized_melds = tuple(tuple(
+        replace(observed.melds[seat][index],
+                kind=(f"gang_{meld.gang_kind}" if meld.kind == "gang"
+                      else meld.kind))
+        for index, meld in enumerate(world.progression.seats[seat].melds)
+    ) for seat in range(4))
+    assert state.public_view.melds == normalized_melds
     assert state.public_view.hand_counts == observed.hand_counts
     assert state.public_view.remaining_tile_count == observed.remaining_tile_count
     assert state.wall_remaining == observed.remaining_tile_count
@@ -459,3 +470,56 @@ def test_initial_white_discard_catch_circle_reaches_next_own_draw():
         else:
             raise AssertionError("弃白后未在 30 个窗口内回到本人普通摸牌")
     assert other_white_to_self > 0
+
+
+def test_concealed_gang_replacement_and_hu_match_simulator():
+    """构造四张暗杠后补摸胡，核公开副露、资格和四座真实结算。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    focal = ["1w", "1w", "1w", "2w", "3w", "4w", "7w",
+             "8w", "9w", "5w", "6w", "东", "东"]
+    remaining = [code for code in CANONICAL_TILE_ORDER for _ in range(4)]
+    for code in focal + ["1w"]:
+        remaining.remove(code)
+    other = remaining[-39:]
+    wall = remaining[:-39]
+    draw_index = wall.index("7w")
+    wall[draw_index], wall[-21] = wall[-21], wall[draw_index]
+    row = build_full_world_row(
+        rules,
+        hands13=[focal, other[:13], other[13:26], other[26:]],
+        dealer_drawn="1w",
+        wall=wall,
+        dealer=0,
+    )
+    world = engine.from_replay(row)
+    frame = engine.frame(world)
+    own = frame.decisions[0]
+    analysis = rules.analyze(own.observation)
+    root = next(item for item in project_legal_roots(
+        own.observation, _build_context(own.observation),
+        analysis.legal_candidates, config=rules.config,
+    ) if item.action_key == "gang:concealed:1w")
+    state = root.branches[0].state
+    assert state.phase is ConditionalPhase.REPLACEMENT_DRAW
+    world = engine.advance(world, frame.revision, (
+        SimulationChoice(own.window_key,
+                         Gang(Tile("1w"), GangKind.CONCEALED)),
+    ))
+    observed = project_observation(world, 0)
+    assert observed.drawn_tile is not None
+    state = apply_given_draw(state, observed.drawn_tile, replacement=True)
+    _assert_public_equal(state, world)
+    given = analyze_given_self_draw(
+        state, seat=0, dealer_seat=0, config=rules.config,
+    )
+    assert {item.action_key for item in given.legal_candidates} == {
+        item.action_key for item in rules.analyze(observed).legal_candidates
+    }
+    state = apply_legal_draw_hu(given)
+    frame = engine.frame(world)
+    world = engine.advance(world, frame.revision, (
+        SimulationChoice(frame.decisions[0].window_key, Hu()),
+    ))
+    assert state.terminal_result == world.progression.hand_result
