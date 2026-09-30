@@ -17,33 +17,8 @@ from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.kernel.actions import Discard, Hu, Pass
 from hangma_bot.kernel.config import RuleConfig, TimingConfig, TournamentConfig
+from hangma_bot.offline.vip_reference import choose_reference_action
 from hangma_bot.simulation import MatchSpec, SimulationChoice, SimulationEngine
-
-
-def _reference_action(rules: HangmaRules, decision, *, reference: str):
-    """冻结续打者：仅消费合法候选及同源牌效事实，不调用 R18。"""
-
-    candidates = rules.analyze(decision.observation).legal_candidates
-    if decision.observation.phase.startswith("response_"):
-        return Pass()
-    win = next((item.action for item in candidates if isinstance(item.action, Hu)), None)
-    if win is not None:
-        return win
-    discards = [item for item in candidates if isinstance(item.action, Discard)]
-    if reference == "first_discard":
-        return discards[0].action
-    if reference != "shape":
-        raise ValueError("未知参考续打者")
-
-    def shape_key(item):
-        facts = item.facts
-        if facts is None or facts.shanten_after is None:
-            raise ValueError("基础牌效参考者缺规则模块动作后牌效")
-        return (facts.shanten_after,
-                -sum(tile.remaining_estimate for tile in facts.useful_tiles),
-                item.action_key)
-
-    return min(discards, key=shape_key).action
 
 
 def _first_event(engine: SimulationEngine, rules: HangmaRules, world, *,
@@ -105,7 +80,7 @@ def _first_event(engine: SimulationEngine, rules: HangmaRules, world, *,
                         "tile": observation.last_discard.tile.code}
         world = engine.advance(world, frame.revision, tuple(
             SimulationChoice(item.window_key,
-                             _reference_action(rules, item, reference=reference))
+                             choose_reference_action(rules, item, mode=reference))
             for item in frame.decisions
         ))
     raise ValueError("首次事件续打超过 500 帧")
@@ -128,7 +103,7 @@ def _finish_hand(engine: SimulationEngine, rules: HangmaRules, world, *,
                     "score_delta": list(result.score_delta)}
         world = engine.advance(world, frame.revision, tuple(
             SimulationChoice(item.window_key,
-                             _reference_action(rules, item, reference=reference))
+                             choose_reference_action(rules, item, mode=reference))
             for item in frame.decisions
         ))
     raise ValueError("完整单局续打超过 500 帧")
@@ -181,7 +156,7 @@ def _target_root(engine: SimulationEngine, rules: HangmaRules, world, *,
                     return world, frame, decision
         world = engine.advance(world, frame.revision, tuple(
             SimulationChoice(item.window_key,
-                             _reference_action(rules, item, reference=reference))
+                             choose_reference_action(rules, item, mode=reference))
             for item in frame.decisions
         ))
     raise ValueError("目标本人摸牌窗口未在 500 帧内出现")
