@@ -87,11 +87,14 @@ def _selected_roots(engine: SimulationEngine, rules: HangmaRules, world, *,
 
 def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
           selection_report: dict | None = None,
-          selection_tag: str | None = None) -> dict:
+          selection_tag: str | None = None,
+          continuation_reference: str = "shape") -> dict:
     """全部合法臂同隐藏世界配对，并分别核互斥事件和四座净积分。"""
 
     if start_seed < 0 or seeds < 1 or worlds_per_root < 1:
         raise ValueError("教师抽样范围无效")
+    if continuation_reference not in ("shape", "r18_frozen"):
+        raise ValueError("教师续打者必须是冻结 shape 或 R18")
     selected_by_seed: dict[int, dict[int, tuple[str, ...]]] = {}
     selected_hashes: dict[tuple[int, int], str] = {}
     if selection_report is not None:
@@ -176,10 +179,13 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
                     ) for item in sampled_frame.decisions)
                     after = engine.advance(hidden, sampled_frame.revision, choices)
                     event = _first_event(
-                        engine, rules, after, seat=0, reference="shape",
+                        engine, rules, after, seat=0,
+                        reference=continuation_reference,
                         include_next_observation=True,
                     )
-                    terminal = _finish_hand(engine, rules, after, reference="shape")
+                    terminal = _finish_hand(
+                        engine, rules, after,
+                        reference=continuation_reference)
                     if event["kind"] in ("self_win", "other_win", "draw") and (
                         event["score_delta"] != terminal["score_delta"]
                     ):
@@ -212,6 +218,7 @@ def audit(*, start_seed: int, seeds: int, worlds_per_root: int,
         "scope": "P3_offline_teacher_labels_only_not_candidate_policy_value",
         "rule_config": {"BaseScore": 1, "YouCaiBiKao": False},
         "reference": "shape",
+        "continuation_reference": continuation_reference,
         "start_seed": start_seed,
         "requested_seeds": seeds,
         "worlds_per_root": worlds_per_root,
@@ -236,6 +243,8 @@ def main() -> None:
     parser.add_argument("--worlds-per-root", type=int, default=2)
     parser.add_argument("--selection-file", type=str)
     parser.add_argument("--selection-tag", type=str)
+    parser.add_argument("--continuation-reference", choices=("shape", "r18_frozen"),
+                        default="shape")
     args = parser.parse_args()
     selection = None if args.selection_file is None else json.loads(
         open(args.selection_file, encoding="utf-8").read())
@@ -245,6 +254,7 @@ def main() -> None:
         start_seed=start_seed, seeds=seeds,
         worlds_per_root=args.worlds_per_root,
         selection_report=selection, selection_tag=args.selection_tag,
+        continuation_reference=args.continuation_reference,
     ), ensure_ascii=False, sort_keys=True))
 
 

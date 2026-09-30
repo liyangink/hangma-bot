@@ -39,3 +39,22 @@ def test_frozen_opportunity_root_identity_rejects_changed_observation():
     with pytest.raises(ValueError, match="玩家观察与冻结扫描身份不一致"):
         audit(start_seed=1310, seeds=1, worlds_per_root=1,
               selection_report=corrupt, selection_tag="high_fan_witness")
+
+
+def test_second_frozen_continuation_keeps_same_root_and_worlds():
+    """冻结 R18 仅替换强制动作后的续打，根身份和同世界样本数不漂移。"""
+
+    selection = scan(start_seed=1310, seeds=1)
+    teacher = audit(start_seed=1310, seeds=1, worlds_per_root=1,
+                    selection_report=selection, selection_tag="high_fan_witness",
+                    continuation_reference="r18_frozen")
+    assert teacher["reference"] == "shape"
+    assert teacher["continuation_reference"] == "r18_frozen"
+    assert teacher["root_count"] == 1
+    assert teacher["rows"][0]["root_id"] == (
+        selection["selected_roots"][0]["observation_sha256"])
+    compared = compare(selection, teacher)
+    assert compared["continuation_reference"] == "r18_frozen"
+    assert compared["rows"][0]["selected_action"] == "discard:7t"
+    assert compared["rows"][0]["r18_top_action"] == "discard:7t"
+    assert compared["rows"][0]["paired_delta"] == [0]

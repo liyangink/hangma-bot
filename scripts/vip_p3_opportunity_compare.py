@@ -32,7 +32,9 @@ def compare(selection: dict, teacher: dict) -> dict:
             "result_blind_opportunity_root_selection_not_outcome_or_probability"
             or teacher.get("scope") !=
             "P3_offline_teacher_labels_only_not_candidate_policy_value"
-            or teacher.get("selection_tag") != "high_fan_witness"):
+            or teacher.get("selection_tag") != "high_fan_witness"
+            or teacher.get("continuation_reference", "shape") not in
+            ("shape", "r18_frozen")):
         raise ValueError("输入不是高番机会层的冻结选根与教师账")
     selected = {(row["seed"], row["observation_sha256"]): row
                 for row in selection["selected_roots"]
@@ -104,6 +106,7 @@ def compare(selection: dict, teacher: dict) -> dict:
     return {
         "scope": "diagnostic_shape_continuation_not_candidate_policy_value",
         "rule_config": selection["rule_config"],
+        "continuation_reference": teacher.get("continuation_reference", "shape"),
         "selected_root_count": len(rows),
         "same_action_roots": sum(row["selected_action"] == row["r18_top_action"]
                                  for row in rows),
