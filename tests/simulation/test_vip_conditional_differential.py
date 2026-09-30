@@ -16,13 +16,16 @@ from hangma_bot.hangma.route_transition import (
     apply_given_draw,
     apply_legal_draw_discard,
     apply_legal_draw_hu,
+    analyze_given_claim_action,
     finish_given_exhaustive_draw,
     finish_given_official_other_win,
     analyze_given_self_draw,
+    apply_legal_claim_discard,
+    apply_legal_followup_gang,
     project_legal_roots,
 )
 from hangma_bot.kernel.actions import (
-    CANONICAL_TILE_ORDER, Discard, Gang, GangKind, Hu, Pass, Peng, Tile,
+    CANONICAL_TILE_ORDER, Chi, Discard, Gang, GangKind, Hu, Pass, Peng, Tile,
 )
 from hangma_bot.simulation import SimulationChoice, SimulationEngine
 from hangma_bot.simulation.projection import (
@@ -725,3 +728,152 @@ def test_other_added_gang_after_peng_matches_continuous_public_path():
         _assert_public_equal(state, world)
     else:
         raise AssertionError("物理指定的第四张 5w 未进入他座补杠窗口")
+
+
+def test_mixed_claim_and_gang_public_paths_match_simulator():
+    """多种自然牌山持续推进；他家暗牌仅供模拟器裁判，不进入条件转移。"""
+
+    rules = make_rules()
+    engine = SimulationEngine(rules)
+    coverage = Counter()
+    for seed in range(101, 131):
+        world = engine.start(make_spec(rules, rounds=1, seed=seed))
+        frame = engine.frame(world)
+        own = frame.decisions[0]
+        analysis = rules.analyze(own.observation)
+        first = next(item for item in analysis.legal_candidates
+                     if isinstance(item.action, Discard)
+                     and item.action.tile.code != "白")
+        root = next(item for item in project_legal_roots(
+            own.observation, _build_context(own.observation),
+            analysis.legal_candidates, config=rules.config,
+        ) if item.action_key == first.action_key)
+        state = root.branches[0].state
+        world = engine.advance(world, frame.revision, (
+            SimulationChoice(own.window_key, first.action),
+        ))
+        for step in range(400):
+            if world.progression.window in ("ended", "match_end"):
+                if state.phase is not ConditionalPhase.TERMINAL:
+                    state = finish_given_exhaustive_draw(state)
+                    coverage["draw"] += 1
+                assert state.terminal_result == world.progression.hand_result
+                break
+            frame = engine.frame(world)
+            coverage["windows"] += 1
+            if world.progression.window.startswith("response_"):
+                coverage["response_windows"] += 1
+                assert state.phase is ConditionalPhase.RESPONSE_RESOLUTION
+                choices = []
+                claimed = False
+                for decision in frame.decisions:
+                    candidates = rules.analyze(decision.observation).legal_candidates
+                    claims = [item.action for item in candidates
+                              if isinstance(item.action, (Chi, Peng, Gang))]
+                    if claims and not claimed and (seed + step) % 2 == 0:
+                        action = claims[0]
+                        claimed = True
+                        coverage[type(action).__name__] += 1
+                    else:
+                        action = Pass()
+                    choices.append((decision.window_key.seat, action))
+                feeder, tile = state.response_trigger
+                before = len(world.progression.seats[feeder].discards)
+                next_world = engine.advance(world, frame.revision, tuple(
+                    SimulationChoice(decision.window_key, action)
+                    for decision, (_, action) in zip(frame.decisions, choices)
+                ))
+                retained = (len(next_world.progression.seats[feeder].discards)
+                            == before) if claimed else None
+                transition = advance_response_state(
+                    state, window=world.progression.window,
+                    discard_seat=feeder, discarded_tile=tile,
+                    responding=world.progression.responding,
+                    choices=tuple(choices), retained_in_river=retained,
+                )
+                assert transition.resolution.status == "resolved"
+                state, world = transition.state, next_world
+                continue
+
+            assert world.progression.window == "draw"
+            coverage["action_windows"] += 1
+            decision = frame.decisions[0]
+            seat = decision.window_key.seat
+            observed = decision.observation
+            if observed.drawn_tile is not None:
+                replacement = state.phase is ConditionalPhase.REPLACEMENT_DRAW or (
+                    state.phase is ConditionalPhase.PUBLIC_WAIT and
+                    state.expected_replacement_draw)
+                if seat == 0:
+                    state = apply_given_draw(state, observed.drawn_tile,
+                                             replacement=replacement)
+                else:
+                    state = advance_given_other_draw(
+                        state, seat=seat, replacement=replacement)
+                if replacement:
+                    coverage["replacement_draws"] += 1
+            else:
+                coverage["claim_followup_windows"] += 1
+            _assert_public_equal(state, world)
+            production = rules.analyze(observed)
+            candidates = production.legal_candidates
+            if seat == 0:
+                given = (analyze_given_self_draw(
+                    state, seat=0, dealer_seat=observed.dealer_seat,
+                    config=rules.config,
+                ) if observed.drawn_tile is not None else
+                    analyze_given_claim_action(state, seat=0,
+                                               config=rules.config))
+                assert {item.action_key for item in given.legal_candidates} == {
+                    item.action_key for item in candidates
+                }
+            else:
+                given = None
+            wins = [item for item in candidates if isinstance(item.action, Hu)]
+            gangs = [item for item in candidates if isinstance(item.action, Gang)]
+            discards = [item for item in candidates
+                        if isinstance(item.action, Discard)]
+            if wins and (seed + step) % 3 != 0:
+                candidate = wins[0]
+                if seat == 0:
+                    state = apply_legal_draw_hu(given)
+                    coverage["self_hu"] += 1
+            elif gangs and (seed + step) % 2 == 0:
+                candidate = gangs[0]
+                if seat == 0:
+                    state = apply_legal_followup_gang(given,
+                                                       candidate.action_key)
+                else:
+                    state = advance_given_other_gang(
+                        state, seat=seat, action=candidate.action)
+                coverage["gang_" + candidate.action.kind.value] += 1
+            else:
+                pool = [item for item in discards
+                        if item.action.tile.code != "白"] or discards
+                candidate = pool[(seed + step) % len(pool)]
+                if seat == 0:
+                    state = (apply_legal_draw_discard(given, candidate.action_key)
+                             if observed.drawn_tile is not None else
+                             apply_legal_claim_discard(given,
+                                                       candidate.action_key))
+                else:
+                    state = advance_given_other_discard(
+                        state, seat=seat, tile=candidate.action.tile)
+            next_world = engine.advance(world, frame.revision, (
+                SimulationChoice(decision.window_key, candidate.action),
+            ))
+            if isinstance(candidate.action, Hu) and seat != 0:
+                event = next(item for item in public_history_for(
+                    next_world.events, seat=0) if item.kind == "round_ended")
+                state = finish_given_official_other_win(
+                    state, event, game_id=world.match_id,
+                    round_no=world.round_no)
+                coverage["other_hu"] += 1
+            world = next_world
+        else:
+            raise AssertionError("混合选择单局未在 400 帧内结束")
+    assert coverage["Peng"] > 0
+    assert coverage["Chi"] > 0
+    assert coverage["gang_concealed"] + coverage["gang_added"] > 0
+    assert coverage["self_hu"] + coverage["other_hu"] + coverage["draw"] == 30
+    print("VIP mixed conditional differential:", dict(sorted(coverage.items())))
