@@ -689,4 +689,6 @@ P2 条件状态现固定根观察的庄家座位，所有给定事件沿链继�
 
 旧一次摸牌入口 `given_next_normal_draw` 只产生显式标记的局部见证；历史上出现过响应裁决，不证明当前新响应已裁决。物理完整路径必须让当前响应与全部中间公开事件推进到 `NORMAL_DRAW`，再用 `apply_given_draw` 接本人摸牌，防止跨窗口误跳过他家碰杠。
 
-P3 离线教师的基础续打动作现由 `offline.vip_reference` 在每个模拟决策边界只读当前 `PlayerObservation` 和 `HangmaRules` 合法事实产生；`first_discard` 与 `shape` 两个冻结模式均不访问 `WorldState` 或 R18 评分。模拟器只在测试侧重采样同观察隐藏世界、强制一手和取得真实单局结算。另一路结果盲扫描在离线层读取冻结 R18 评分作**选根对照**，并读取 `hangma` 的一步条件胡前沿；这些来源不进入线上 `policy.choose`，也不把公开容量改名为真实牌墙概率。量具与限制见[P3 价值预检](../review/vip-route-2026-09-30/P3-VALUE-BOOTSTRAP.md)。
+P3 离线教师的基础续打动作现由 `offline.vip_reference` 在每个模拟决策边界只读当前 `PlayerObservation` 和 `HangmaRules` 合法事实产生；`first_discard` 与 `shape` 模式不调用 R18，另有 `r18_frozen` 模式仅供离线续打敏感性对照。三者均不访问 `WorldState`。模拟器只在测试侧重采样同观察隐藏世界、强制一手和取得真实单局结算。另一路结果盲扫描在离线层读取冻结 R18 评分作**选根对照**，并读取 `hangma` 的一步条件胡前沿；这些来源不进入新 VIP 的线上 `policy.choose`，也不把公开容量改名为真实牌墙概率。量具与限制见[P3 价值预检](../review/vip-route-2026-09-30/P3-VALUE-BOOTSTRAP.md)。
+
+`policy.route_vip_draft` 新增研究策略 `C_draft_M0`：离线驱动显式请求 P2 同次全合法条件根，策略逐根检查机械缺口，再对当前胡使用规则真实本座净积分，对普通弃牌使用 P1 一摸代理，对其余合法动作使用动作后牌效的未校准末端代理。赛事阶段与排名只进入候选审计，不影响排序；模拟器和完整世界仍只在 `offline`，R18 不进入该策略。`strict_policy=True` 已使四桌各八局在逻辑时钟下由新策略全窗口完成，但该代理不是通用预期积分，也没有证明 P2 全部组合闭包、生产审计序列化或官方窗口时限。范围和逐窗证据见[机械纵切面](../review/vip-route-2026-09-30/evidence/p3-draft-m0-mechanical-20260930/README.md)。
