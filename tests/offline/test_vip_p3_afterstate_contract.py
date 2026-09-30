@@ -43,10 +43,19 @@ def test_frozen_new_roots_keep_afterstate_evidence_separate():
                 assert facts.exact_current_hu_net is None
             if facts.status is AfterstateStatus.EFFECTIVE_PENDING_EVENT:
                 assert facts.public_after_effect_known and facts.own_shape is not None
+                if family == "discard":
+                    assert facts.own_shape.useful_positive_code_count is not None
+                    assert facts.own_shape.useful_unseen_capacity is not None
+                    assert facts.own_shape.useful_positive_code_count <= facts.own_shape.useful_code_count
+                    assert facts.own_shape.useful_unseen_capacity >= facts.own_shape.useful_positive_code_count
             else:
                 assert not facts.public_after_effect_known or facts.status is AfterstateStatus.EXACT_TERMINAL
             if facts.status is AfterstateStatus.CONDITIONAL_AWARD:
                 assert facts.own_shape is not None
+                assert facts.own_shape.useful_positive_code_count is None
+                assert facts.own_shape.useful_unseen_capacity is None
+                assert facts.own_shape.standard_unseen_capacity is None
+                assert facts.own_shape.seven_unseen_capacity is None
                 assert root.proposal_state is not None
                 assert all(branch.state.structural_only for branch in root.branches)
     assert counts == {

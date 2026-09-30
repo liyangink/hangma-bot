@@ -14,7 +14,9 @@ from hangma_bot.hangma.interface import RuleCandidate
 from hangma_bot.hangma.route_transition import (
     ConditionalPhase, ConditionalRoot, ConditionalRouteState,
 )
-from hangma_bot.kernel.actions import Chi, Discard, Gang, GangKind, Hu, Pass, Peng
+from hangma_bot.kernel.actions import (
+    CANONICAL_TILE_INDEX, Chi, Discard, Gang, GangKind, Hu, Pass, Peng,
+)
 
 
 class AfterstateStatus(str, Enum):
@@ -36,6 +38,12 @@ class OwnHandShape:
     standard_shanten: int  # 标准型向听；-1 为已胡
     seven_pairs_shanten: int | None  # 七对向听；有副露时为空
     useful_code_count: int  # 有效牌种类数，不等于未见物理张数
+    useful_positive_code_count: int | None  # 正容量进张牌码数；条件鸣牌未获裁决时为空
+    useful_unseen_capacity: int | None  # 公开未见物理张数上限；不是牌墙摸中概率
+    standard_positive_code_count: int | None  # 标准型正容量进张牌码数
+    standard_unseen_capacity: int | None  # 标准型公开未见容量上限
+    seven_positive_code_count: int | None  # 七对正容量进张牌码数；有副露时为空
+    seven_unseen_capacity: int | None  # 七对公开未见容量上限；有副露或证据缺口时为空
     baotou: bool  # 条件机械状态中的爆头资格
     chain_count: int  # 当前动作链长度
     chain_piao: int | None  # 链内飘白数；证据缺失时为空
@@ -54,16 +62,43 @@ class AfterstateFacts:
     public_after_effect_known: bool  # 真正已生效的条件公开视图是否存在
 
 
-def _shape(state: ConditionalRouteState) -> OwnHandShape:
-    """复用唯一规则数学来源，不在研究量具内重算向听。"""
+def _exact_support(state: ConditionalRouteState, tiles) -> tuple[int, int] | None:
+    """只聚合逐码精确的公开未见容量；保守或未知证据返回空。"""
+
+    if state.unseen_capacities is None or state.unseen_evidence is None:
+        return None
+    indexes = [CANONICAL_TILE_INDEX[item.code] for item in tiles]
+    if any(state.unseen_evidence[index] != "exact"
+           or state.unseen_capacities[index] is None for index in indexes):
+        return None
+    values = [state.unseen_capacities[index] for index in indexes]
+    return sum(value > 0 for value in values), sum(values)
+
+
+def _shape(state: ConditionalRouteState, *, public_after_effect_known: bool) -> OwnHandShape:
+    """复用唯一规则数学来源；未获裁决鸣牌不取旧公开视图容量。"""
 
     summary = analyse_hand(state.concealed, state.meld_count)
+    useful = (_exact_support(state, summary.useful_tiles)
+              if public_after_effect_known else None)
+    standard = (_exact_support(state, summary.standard_useful_tiles)
+                if public_after_effect_known and summary.standard_useful_tiles is not None
+                else None)
+    seven = (_exact_support(state, summary.seven_pairs_useful_tiles)
+             if public_after_effect_known and summary.seven_pairs_useful_tiles is not None
+             else None)
     return OwnHandShape(
         concealed_count=len(state.concealed), meld_count=state.meld_count,
         whites_held=summary.whites_held,
         standard_shanten=summary.standard_shanten,
         seven_pairs_shanten=summary.chiitoi_shanten,
         useful_code_count=len(summary.useful_tiles),
+        useful_positive_code_count=useful[0] if useful is not None else None,
+        useful_unseen_capacity=useful[1] if useful is not None else None,
+        standard_positive_code_count=standard[0] if standard is not None else None,
+        standard_unseen_capacity=standard[1] if standard is not None else None,
+        seven_positive_code_count=seven[0] if seven is not None else None,
+        seven_unseen_capacity=seven[1] if seven is not None else None,
         baotou=state.baotou, chain_count=state.chain_count,
         chain_piao=state.chain_piao, wall_remaining=state.wall_remaining,
     )
@@ -104,7 +139,8 @@ def project_afterstate(candidate: RuleCandidate, root: ConditionalRoot, seat: in
         if state is None:
             raise ValueError("获裁决条件牌形缺失")
         return AfterstateFacts(root.action_key, AfterstateStatus.CONDITIONAL_AWARD,
-                               root.pending_condition, _shape(state), None, False)
+                               root.pending_condition,
+                               _shape(state, public_after_effect_known=False), None, False)
     if isinstance(action, (Discard, Gang)):
         if (len(root.branches) != 1 or root.proposal_state is not None
                 or root.branches[0].state.structural_only
@@ -113,5 +149,6 @@ def project_afterstate(candidate: RuleCandidate, root: ConditionalRoot, seat: in
             raise ValueError("已生效动作缺完整条件公开后态")
         state = root.branches[0].state
         return AfterstateFacts(root.action_key, AfterstateStatus.EFFECTIVE_PENDING_EVENT,
-                               state.phase, _shape(state), None, True)
+                               state.phase,
+                               _shape(state, public_after_effect_known=True), None, True)
     raise ValueError("未知合法动作族")
