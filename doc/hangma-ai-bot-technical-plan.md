@@ -2,6 +2,8 @@
 
 2026-10-01 条件支付升版：当前依据为[条件胡支付合同 v2](../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)，历史 v1 合同及证据不改。等待态新增 `normal_draw_hu_payments`，逐牌码、逐抓打假设保留既有唯一规则源窄见证的结算；不增加见证调用，不把未知补0，不把两假设相加或把公开容量当墙内概率。当前胡节点即时结算与等待态条件结算分开；局部见证不保证未来本人能摸牌。只读视图／图升为 `/2`，支付语义为 `vip-normal-draw-hu-payment/1`，架构类型仍为 `vip_route_heuristic_v1`。新候选绑定新合同、源码和依赖身份并重做实际评测，旧成绩不迁移。
 
+2026-10-01 离线解释格式修复：`offline.vip_eoh_trace_repair` 对指定函数中已知解释记录及说明作确定性变换，另建 `trace_codec_repair` 工程身份。`load_vip_parents` 递归验原作者包、费用、执行配置和复制证据；只允许源码摘要及派生候选 ID 变化，原回复、失败、额度不改。修复包不冒称模型输出、不新增作者调用、不继承成绩。通用变换不证明全局数学等价；T8 调用还需绑定完整固定编辑政策，修后重过机械、数学及完整桌门。此能力只在离线层，线上策略接口与规则不变；与[架构](architecture.md)同步。
+
 ## 2026-09-30 VIP 固定框架与 EoH 联合进化更新
 
 **已采纳[实施增补](../review/vip-route-2026-09-30/VIP-FIXED-FRAMEWORK-EOH-IMPLEMENTATION-REVISION-ASTRA.md)，当时以[原 v1 合同](../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md)为实施依据。**取消先校准长期精确积分的必经门，保留规则、独立完赛、机会／自然双账、独立确认与实机发布门；下文旧估值研究继续保留为历史证据。

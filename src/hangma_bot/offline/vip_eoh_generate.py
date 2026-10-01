@@ -499,10 +499,11 @@ def _load_vip_parents(paths, batch, *, lineage):
             raise VipEohError("研究重绑定来源循环或超过32层")
         record_bytes = (path / "generation.json").read_bytes()
         record = json.loads(record_bytes)
-        if (record.get("artifact_role") != "research_budget_rebind" and (
+        if (record.get("artifact_role") not in ("research_budget_rebind", "trace_codec_repair") and (
                 record.get("backend") == "research_budget_rebind"
+                or record.get("backend") == "trace_codec_repair"
                 or isinstance(record.get("provenance"), dict) and record["provenance"].get("schema")
-                == "vip-research-budget-rebind-provenance/1"
+                in ("vip-research-budget-rebind-provenance/1", "vip-trace-codec-repair-provenance/1")
                 or (path / "original-generation.json").exists())):
             raise VipEohError("重绑定原件不能伪装为新作者提案或人工种子")
         if (record.get("schema") != VIP_EOH_GENERATION_SCHEMA
@@ -512,16 +513,21 @@ def _load_vip_parents(paths, batch, *, lineage):
                 or record.get("load", {}).get("ok") is not True
                 or record.get("identity_stable") is not True
                 or record.get("artifact_role") not in (
-                    "candidate_proposal", "manual_seed", "research_budget_rebind")):
+                    "candidate_proposal", "manual_seed", "research_budget_rebind", "trace_codec_repair")):
             raise VipEohError("父代不是新版已装载且未失效提案或人工种子")
         source = (path / "candidate.py").read_bytes().decode("utf-8")
         identity = batch.identity(source)
-        if record.get("identity") != identity or record.get("source_sha256") != _sha(source):
+        if _json_bytes(record.get("identity")) != _json_bytes(identity) or record.get("source_sha256") != _sha(source):
             raise VipEohError("父代源码、合同、依赖或额度与当前逐字节身份不一致")
         if record["artifact_role"] == "manual_seed" and source != VIP_ROUTE_HEURISTIC_SEED_SOURCE:
             raise VipEohError("人工种子身份不对应当前完整人工种子源码")
         if record["artifact_role"] == "research_budget_rebind":
             _validate_rebound_parent(path, record, source, batch, identity, (*lineage, path))
+        elif record["artifact_role"] == "trace_codec_repair":
+            from .vip_eoh_trace_repair import validate_vip_trace_repair_package
+
+            validate_vip_trace_repair_package(path, record, source, batch, identity, (*lineage, path))
+        if record["artifact_role"] in ("research_budget_rebind", "trace_codec_repair"):
             if (batch.identity(source) != identity
                     or (path / "candidate.py").read_bytes().decode("utf-8") != source
                     or (path / "generation.json").read_bytes() != record_bytes):
