@@ -1,5 +1,12 @@
 # 杭麻 AI Bot 技术方案与一个月实施计划
 
+## 2026-10-01 显式公开来源与开发探针 /2
+
+**仅改变离线研究接缝，线上动作和规则来源不变。** `read_public_input_source` 核原件、来源声明及历史生产快照；`build_public_input_panel` 按行动前公开信息分层并限制每母根窗口数。`run_public_input_probe` 按显式共同参照计划逐包真实评分，完整只读输入先保存，失败与未调用保留分母。`validate_public_input_panel`、`validate_public_input_probe` 只读校验实际原件，不补评分或世界推进。自然行动前来源只取原 A 路径；条件来源只取依法可见起手，隐藏教师信息不进策略。
+
+开发批次 `vip-route-development-batch/2` 增加 `behavior_reference_policy`（真实生成父或显式本批参照）及 `behavior_exploration`。不改作者原父代；记录探索即使首选未变也最多 16 个完整桌实例，不授效果。真实 /2 批次拒绝旧 /1 探针冒充新来源，人工旧夹具只有明确假驱动才能豁免。捕获、费用、严格 C 零正常 R18 回退沿用当前合同；旧原件不迁移信用。实际任务与预算见[恢复计划](../review/vip-route-2026-09-30/T10-RESUME-AND-CREDIT-DIAGNOSTIC-PLAN.md)。
+
+
 ## 2026-10-01 开发评测的完整输入证据
 
 **新完整桌开发改用显式预算的`vip-route-development-batch/2`。** 实际评分输入捕获（`ScoringInputCapture`，在真正评分前保存同次完整公开输入）集中拥有规范JSON、整图SHA去重、压缩、费用和终态验签；逐调用收据把实际观察、全合法评分和完整图关联。单图、累计去重字节及不同图数量必须事前声明；失败不静默丢图。新manifest与结果升为`/2`，历史`/1`可读，不能作为新运行配置。

@@ -577,6 +577,8 @@ def test_public_batch_reader_keeps_historical_bytes_and_explicit_new_budget(tmp_
         "table_instance_limit": 16, "wall_clock_limit_seconds": 1, "step_limit": 1}
     if schema.endswith("/2"):
         data["scoring_input_capture"] = {"max_view_json_bytes": 4096, "max_total_json_bytes": 16384, "max_unique_views": 8}
+        data["behavior_reference_policy"] = None  # 此测试行为验证为显式替身；真实/2另验。
+        data["behavior_exploration"] = None
     batch_path = tmp_path / "batch.json"
     raw = json.dumps(data).encode()
     batch_path.write_bytes(raw)

@@ -112,6 +112,8 @@ def development_file(tmp_path, generation_batch_file):
     path = tmp_path / "development-batch.json"
     write_json(path, {
         "schema": "vip-route-development-batch/2",
+        "behavior_reference_policy": None,  # 只用于显式mock结构fixture，不授真实参照证明。
+        "behavior_exploration": None,
         "scoring_input_capture": {"max_view_json_bytes": 16 * 1024 * 1024,
             "max_total_json_bytes": 512 * 1024 * 1024, "max_unique_views": 100000},
         "batch_id": "synthetic-development-plan",

@@ -132,7 +132,7 @@ class VipDevelopmentBatch:
         schema = data.get("schema")
         capture = None
         if schema == VIP_DEVELOPMENT_CAPTURE_BATCH_SCHEMA:
-            keys.add("scoring_input_capture")
+            keys |= {"scoring_input_capture", "behavior_reference_policy", "behavior_exploration"}
             capture = ScoringInputCaptureLimits.from_json(data.get("scoring_input_capture"))
         elif schema != VIP_DEVELOPMENT_BATCH_SCHEMA:
             raise ValueError("开发批次schema未知")
@@ -194,7 +194,12 @@ class VipDevelopmentBatch:
                 or candidate["record_sha256"] != files[str(package / "generation.json")]):
             raise ValueError("候选在公开摘要检查后发生字节漂移")
         _require_complete_behavior_difference(probe_file, candidate, generation, files,
-                                             allow_mock_behavior_fixture=allow_mock_behavior_fixture)
+                                             allow_mock_behavior_fixture=allow_mock_behavior_fixture,
+                                             reference_policy=data.get("behavior_reference_policy"),
+                                             exploration=data.get("behavior_exploration"),
+                                             planned_table_instances=len(seeds) * len(pools) * 8,
+                                             table_instance_limit=data["table_instance_limit"],
+                                             batch_schema=data["schema"])
         return cls(data["batch_id"], generation_file, package, probe_file, tuple(seeds), tuple(pools),
                    data["table_instance_limit"], float(data["wall_clock_limit_seconds"]),
                    data["step_limit"], raw, files, capture)
@@ -202,6 +207,8 @@ class VipDevelopmentBatch:
 
 def _require_complete_behavior_difference(
     probe_file, candidate, generation, frozen_files, *, allow_mock_behavior_fixture=False,
+    reference_policy=None, exploration=None, planned_table_instances=None,
+    table_instance_limit=None, batch_schema=VIP_DEVELOPMENT_BATCH_SCHEMA,
 ):
     """只读冻结探针门；同分尾序、仅分数或未完成比较不能投入完整桌。"""
 
@@ -209,6 +216,23 @@ def _require_complete_behavior_difference(
     if _sha(raw) != frozen_files[str(probe_file)]:
         raise ValueError("行为探针在公开摘要检查后发生字节漂移")
     summary = json.loads(raw)
+    if summary.get("schema") == "vip-eoh-development-probe/2":
+        if batch_schema != VIP_DEVELOPMENT_CAPTURE_BATCH_SCHEMA:
+            raise ValueError("/2真实来源探针须由显式/2开发批次声明参照及用途")
+        from .vip_eoh_probe_v2 import validate_public_input_probe, validate_development_scope
+        proof = validate_public_input_probe(probe_file, candidate, generation,
+                                            reference_policy=reference_policy)
+        validate_development_scope(proof, exploration, planned_table_instances, table_instance_limit)
+        frozen_files.update(proof["frozen_files"])
+        return
+    if batch_schema != VIP_DEVELOPMENT_BATCH_SCHEMA:
+        # 假驱动沿用显式结构fixture验证编排，不伪造一套真实/2来源。
+        # 自然驱动从不开放此豁免，mock结果也不能取得自然积分信用。
+        fixture_only = summary.get("fixture_kind") == "synthetic_structure_not_measured_behavior_for_mock_driver_only"
+        if fixture_only and not allow_mock_behavior_fixture:
+            raise ValueError("fixture只准假驱动，不能作为真实/2来源证明")
+        if not (allow_mock_behavior_fixture and fixture_only):
+            raise ValueError("/2开发批次不得借旧/1摘要冒充新来源证明")
     if (not isinstance(summary, dict) or summary.get("schema") != "vip-eoh-development-probe/1"
             or summary.get("status") != "probe_complete_not_admitted"
             or summary.get("identity_stable") is not True or summary.get("drift") != []
