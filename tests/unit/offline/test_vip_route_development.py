@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import hashlib
+import io
 import json
 from dataclasses import asdict, replace
 from pathlib import Path
@@ -46,6 +47,15 @@ def write_json(path: Path, value: object) -> None:
 
 def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+@pytest.fixture
+def scoring_input_capture():
+    """实际公开Interface的临时记录流；预算仅为测试，不是自然开发批次默认。"""
+    from hangma_bot.offline.scoring_input_capture import ScoringInputCapture, ScoringInputCaptureLimits
+    capture = ScoringInputCapture(io.BytesIO(), limits=ScoringInputCaptureLimits(16 * 1024 * 1024, 512 * 1024 * 1024, 100000))
+    yield capture
+    capture.finish()
 
 
 @pytest.fixture
@@ -101,7 +111,9 @@ def development_file(tmp_path, generation_batch_file):
     })
     path = tmp_path / "development-batch.json"
     write_json(path, {
-        "schema": "vip-route-development-batch/1",
+        "schema": "vip-route-development-batch/2",
+        "scoring_input_capture": {"max_view_json_bytes": 16 * 1024 * 1024,
+            "max_total_json_bytes": 512 * 1024 * 1024, "max_unique_views": 100000},
         "batch_id": "synthetic-development-plan",
         "generation_batch_file": generation_batch_file.name,
         "generation_batch_sha256": sha(generation_batch_file),
@@ -464,7 +476,7 @@ def test_emergency_key_flag_does_not_hide_internal_scoring_degradation(
         assert not any("运行计数非全零" in reason for reason in pool["extra_failures"])
 
 
-def test_real_single_hand_abstention_stops_and_preserves_action_before_failure(generation_batch_file):
+def test_real_single_hand_abstention_stops_and_preserves_action_before_failure(generation_batch_file, scoring_input_capture):
     """只启动一个自然单局，首窗ABSTAIN立即停止；不把机械失败补成流局。"""
 
     from hangma_bot.application.deadline import BudgetPolicy
@@ -488,7 +500,7 @@ def score_actions(view):
     engine = VipDevelopmentAuditEngine(runtime.engine)
     engine.context = {"pool": "H", "focal_physical_seat": 0}
     policy = VipDevelopmentAuditPolicy(runtime.policies_by_id[runtime.challenger_policy_id],
-        runtime.challenger_policy_id, lambda: dict(engine.context), rows.append, challenger=True)
+        runtime.challenger_policy_id, lambda: dict(engine.context), rows.append, challenger=True, capture=scoring_input_capture)
     outcome = asyncio.run(drive_match(engine=engine, spec=spec, policies_by_seat=(policy,) * 4,
         rules=runtime.rules, choice_factory=lambda key, action: SimulationChoice(key, action),
         config=MatchDriverConfig(clock_mode="logical", step_limit=10, budget_policy=BudgetPolicy(),
@@ -502,12 +514,16 @@ def score_actions(view):
     assert row["status"] == "failed" and row["c_self_scored"] is False
     assert row["legal_action_keys"] and "ABSTAIN" in row["error"]
     assert row["scoring_execution"]["status"] == "ABSTAIN"
+    assert row["scoring_cumulative_failed_calls"] == 1
+    assert row["scoring_execution"]["actual_score_calls"] == 1
+    assert row["scoring_execution"]["input_capture"]["saved_before_score"] is True
+    assert row["scoring_execution"]["status"] == "ABSTAIN"
     assert row["candidate_operations"] is not None
     assert row["current_opportunity"]["future_qualification"] == "unknown"
     assert "selected_action_key" not in row
 
 
-def test_actual_scored_emergency_key_keeps_full_keys_and_current_only_opportunity(generation_batch_file):
+def test_actual_scored_emergency_key_keeps_full_keys_and_current_only_opportunity(generation_batch_file, scoring_input_capture):
     """同源真实数学视图独立评分；首选与紧急键相同也保持成功评分信用。"""
 
     from hangma_bot.hangma.engine import HangmaRules
@@ -539,7 +555,7 @@ def score_actions(view):
     inner = RouteVipHeuristicPolicy(batch.rule_config, source=source)
     rows = []
     policy = VipDevelopmentAuditPolicy(inner, "synthetic-c", lambda: {"match_id": "fixture", "pool": "H"},
-        rows.append, challenger=True)
+        rows.append, challenger=True, capture=scoring_input_capture)
     plan = asyncio.run(policy.choose(request, make_budget()))
     assert plan.candidates[0].action_key == emergency_key
     assert plan.candidates[0].is_emergency is True and plan.degraded_reasons == ()

@@ -1,5 +1,13 @@
 # 第一阶段接口协议
 
+## 2026-10-01 离线实际输入捕获契约
+
+**本接缝只服务新开发评测。** 实际评分输入捕获（`ScoringInputCapture`，保存真正评分前同次完整公开DTO）由离线组合入口注入空、独占、可读写且可定位的二进制流。`store(dto)`返回每调用小收据，整图SHA引用去重压缩记录；普通编码/预算/I/O失败返回失败收据，通用中断保存失败后传播原异常。调用方仅在`saved_before_score=True`时进入真实评分。`finish()`关闭gzip并读回核有限JSON、SHA、长度、唯一性与调用分母，正常情况下底层流由调用者关闭。
+
+`ScoringInputCaptureLimits`三个必需正整数为`max_view_json_bytes`（单个完整DTO的UTF-8规范JSON字节）、`max_total_json_bytes`（成功保存的去重DTO字节累计）、`max_unique_views`（不同整图SHA数）。包装与压缩字节另计。`None`、空和精确0无损保留，捕获器不取得`WorldState`权限。预算属于`vip-route-development-batch/2`；旧`/1`的历史读取不补预算，新运行拒绝`/1`。记录schema为`vip-scoring-input-view/1`，新manifest与result为`/2`。
+
+逐调用收据保留实际score调用数、完成状态、操作数与`score_monotonic_seconds`（执行器入口到返回/抛错的单调持续秒；未调用为None）。未进入score时不能沿用上一窗操作数。`policy_compute_ms_observed`继续使用毫秒，但包含choose内捕获开销，scope显式为`policy_choose_with_input_capture_observed_not_official_runtime`。gzip是保存/关闭的子耗时，费用子项不能重复相加。任一记录/评分/收据/关闭失败否决整批，正常返回时各池积分估计为None；中断无完整summary。详细错误与副作用见[接口说明](../../review/vip-route-2026-09-30/evidence/t10-scoring-input-capture-preparation-1/INTERFACE-NOTES.md)，公开回归见[test_scoring_input_capture.py](../../tests/unit/offline/test_scoring_input_capture.py)与[test_vip_route_development.py](../../tests/unit/offline/test_vip_route_development.py)。
+
 ## 2026-10-01 条件胡支付合同 v2
 
 **本节是当前新候选视图的接口依据；下方 v1 条款保存历史版本。**[完整合同 v2](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)将 `VipRouteScoringView` 与事实图升为 `/2`，新增支付语义 `vip-normal-draw-hu-payment/1`；候选类型仍为 `vip_route_heuristic_v1`，旧 `/4` 输入不变。

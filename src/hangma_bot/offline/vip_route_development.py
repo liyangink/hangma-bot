@@ -13,8 +13,10 @@ import json
 import math
 import os
 import platform
+import sys
 import time
 from collections import Counter
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping
@@ -41,10 +43,12 @@ from hangma_bot.simulation.engine import WORLD_SCHEMA
 
 from .evaluate import MatchExperiment, MatchSeedSpec, PolicyDeclaration, run_match_experiment
 from .scoring_sources import REPO_ROOT, digest_of_file, source_manifest, write_code_snapshot
+from .scoring_input_capture import ScoringInputCapture, ScoringInputCaptureLimits
 from .vip_eoh_generate import VipEohBatch, load_vip_parents
 from .vip_evaluation import FrozenRoot, audit_vip_batch
 
-VIP_DEVELOPMENT_BATCH_SCHEMA = "vip-route-development-batch/1"
+VIP_DEVELOPMENT_BATCH_SCHEMA = "vip-route-development-batch/1"  # 历史读取保持旧身份
+VIP_DEVELOPMENT_CAPTURE_BATCH_SCHEMA = "vip-route-development-batch/2"
 VIP_DEVELOPMENT_ROOTS = ("hangma_bot.offline.vip_route_development",)
 NEW_POOL_IDS = {"H": "vip-development-newpool-r18-three/1",
                 "M": "vip-development-newpool-r18-full-v2-upgrade-v2/1"}
@@ -71,6 +75,21 @@ def _write(path: Path, value: Any) -> None:
         os.close(directory_fd)
 
 
+@contextmanager
+def _close_preserving_primary(stream):
+    """私有关闭实现；已有用户中断时，流关闭的第二故障只加说明。"""
+    try:
+        yield stream
+    finally:
+        primary = sys.exc_info()[1]
+        try:
+            stream.close()
+        except BaseException as secondary:
+            if primary is None:
+                raise
+            primary.add_note("离线审计流关闭再次失败:" + type(secondary).__name__ + ": " + str(secondary))
+
+
 def _positive(value: Any, name: str, *, integer: bool = True) -> None:
     if (type(value) not in ((int,) if integer else (int, float))
             or not math.isfinite(value) or value <= 0):
@@ -92,6 +111,7 @@ class VipDevelopmentBatch:
     step_limit: int
     raw: bytes
     frozen_files: Mapping[str, str]  # 实际公开文件绝对路径到字节摘要
+    scoring_input_capture: ScoringInputCaptureLimits | None  # /1历史读取为None；新运行须显式/2预算
 
     @classmethod
     def read(cls, path: Path, *, allow_mock_behavior_fixture: bool = False) -> "VipDevelopmentBatch":
@@ -107,7 +127,16 @@ class VipDevelopmentBatch:
                 "behavior_probe_summary_file", "behavior_probe_summary_sha256",
                 "seeds", "pools", "rounds", "initial_dealer_physical", "initial_scores",
                 "table_instance_limit", "wall_clock_limit_seconds", "step_limit"}
-        if not isinstance(data, dict) or set(data) != keys or data["schema"] != VIP_DEVELOPMENT_BATCH_SCHEMA:
+        if not isinstance(data, dict):
+            raise ValueError("开发批次须是完整JSON对象")
+        schema = data.get("schema")
+        capture = None
+        if schema == VIP_DEVELOPMENT_CAPTURE_BATCH_SCHEMA:
+            keys.add("scoring_input_capture")
+            capture = ScoringInputCaptureLimits.from_json(data.get("scoring_input_capture"))
+        elif schema != VIP_DEVELOPMENT_BATCH_SCHEMA:
+            raise ValueError("开发批次schema未知")
+        if set(data) != keys:
             raise ValueError("开发批次须使用完整独立 schema")
         if not isinstance(data["batch_id"], str) or not data["batch_id"].strip():
             raise ValueError("batch_id不能为空")
@@ -168,7 +197,7 @@ class VipDevelopmentBatch:
                                              allow_mock_behavior_fixture=allow_mock_behavior_fixture)
         return cls(data["batch_id"], generation_file, package, probe_file, tuple(seeds), tuple(pools),
                    data["table_instance_limit"], float(data["wall_clock_limit_seconds"]),
-                   data["step_limit"], raw, files)
+                   data["step_limit"], raw, files, capture)
 
 
 def _require_complete_behavior_difference(
@@ -367,11 +396,18 @@ class VipDevelopmentAuditEngine:
 
 
 class _ScoringAudit:
-    """观察实际VIP受控执行调用，不能由首选恰好等于保底推断回退。"""
+    """记录同一实际typed view；完整图保存成功之后才调用真实执行器。"""
 
-    def __init__(self, executor):
-        self.executor = executor
+    def __init__(self, executor, capture: ScoringInputCapture):
+        self.executor, self.capture = executor, capture
         self.last: dict | None = None
+        self.decision_calls: list[dict] = []
+        self.call_count = 0
+        self.failed_calls = 0  # 累计失败永不由下一窗成功抹除
+        self.audit_sink_failed_calls = 0
+
+    def begin_decision(self):
+        self.last, self.decision_calls = None, []
 
     @property
     def last_operation_count(self):
@@ -382,30 +418,77 @@ class _ScoringAudit:
         self.executor.last_operation_count = value
 
     def score_vip_route(self, view):
-        batch = self.executor.score_vip_route(view)
-        roots = tuple(action.action_key for action in view.actions)
-        self.last = {"status": batch.status,
-            "full_legal_keys": batch.status == STATUS_SCORED and set(roots) == {e.action_key for e in batch.entries},
-            "scored_action_keys": [e.action_key for e in batch.entries],
-            "future_qualification": "unknown_beyond_local_conditional_witness",
-            "unknown_nodes": [{"node_key": n.node_key, "kind": n.kind,
-                "unknown_codes": list(n.waiting.qualification_unknown_codes),
-                "unanalysed": n.waiting.legal_hu_draw_codes is None,
-                "reason": n.uncertainty_reason or n.waiting.qualification_missing_reason}
-                for n in view.nodes if n.waiting is not None and (
-                    n.kind == "unknown_draw" or n.waiting.qualification_unknown_codes
-                    or n.waiting.legal_hu_draw_codes is None)],
-            "waiting_draw_witness_count": view.waiting_draw_witness_count,
-            "target_distance_evaluation_count": view.target_distance_evaluation_count}
-        return batch
+        self.call_count += 1
+        row = {"call_no": self.call_count, "status": "unfinished", "full_legal_keys": False,
+            "actual_score_calls": 0, "score_completed": False, "input_capture": None,
+            "candidate_operations": None, "score_monotonic_seconds": None,
+            "future_qualification": "unknown_beyond_local_conditional_witness"}
+        self.last = row
+        self.decision_calls.append(row)
+        capture_store_attempted = False
+        try:
+            # 实际typed view产生的同源DTO；不事后重建、不追加完整世界。
+            dto = view.candidate_view()
+            capture_store_attempted = True
+            receipt = self.capture.store(dto)
+            row["input_capture"] = asdict(receipt)
+            if not receipt.saved_before_score:
+                raise ValueError("实际评分输入捕获失败:" + str(receipt.error))
+            roots = tuple(action["action_key"] for action in dto["actions"])
+            self.executor.last_operation_count = None  # 本次失败不能沿用上一窗操作数
+            row["actual_score_calls"] = 1
+            score_started = time.monotonic()
+            try:
+                batch = self.executor.score_vip_route(view)
+            finally:
+                row["score_monotonic_seconds"] = time.monotonic() - score_started
+            entry_keys = [e.action_key for e in batch.entries]
+            row.update(status=batch.status, score_completed=True,
+                full_legal_keys=batch.status == STATUS_SCORED and len(entry_keys) == len(roots)
+                    and len(set(entry_keys)) == len(entry_keys) and set(roots) == set(entry_keys),
+                scored_action_keys=entry_keys,
+                unknown_nodes=[{"node_key": n.node_key, "kind": n.kind,
+                    "unknown_codes": list(n.waiting.qualification_unknown_codes),
+                    "unanalysed": n.waiting.legal_hu_draw_codes is None,
+                    "reason": n.uncertainty_reason or n.waiting.qualification_missing_reason}
+                    for n in view.nodes if n.waiting is not None and (
+                        n.kind == "unknown_draw" or n.waiting.qualification_unknown_codes
+                        or n.waiting.legal_hu_draw_codes is None)],
+                waiting_draw_witness_count=view.waiting_draw_witness_count,
+                target_distance_evaluation_count=view.target_distance_evaluation_count)
+            if batch.status == STATUS_SCORED and not row["full_legal_keys"]:
+                raise ValueError("实际评分没有逐根完整覆盖录制DTO")
+            if batch.status != STATUS_SCORED:
+                # 审计不能把原ABSTAIN改成SCORING_FAILED；原策略负责停止，失败仍入分母。
+                self.failed_calls += 1
+                row.update(score_completed=False, error="候选原返回状态:" + batch.status)
+            return batch
+        except BaseException as exc:
+            self.failed_calls += 1
+            if row["input_capture"] is None and capture_store_attempted:
+                row["input_capture"] = self.capture.costs["last_store_failure"]
+            if row["input_capture"] is None:
+                row["input_capture"] = {"status": "candidate_view_failed", "view_sha256": None,
+                    "json_bytes": None, "saved_before_score": False,
+                    "error": type(exc).__name__ + ": " + str(exc)}
+            row.update(status="failed", score_completed=False, full_legal_keys=False,
+                error=type(exc).__name__ + ": " + str(exc))
+            raise
+        finally:
+            # 捕获失败不读上一调用留下的操作数，也不宣称真正score已完成。
+            if row["actual_score_calls"]:
+                row["candidate_operations"] = self.executor.last_operation_count
+            row["cumulative_failed_calls"] = self.failed_calls
 
 
 class VipDevelopmentAuditPolicy:
     """行动前机会账与实际调用审计；对手和A不会被标为C自己评分。"""
 
-    def __init__(self, inner, policy_id: str, context, sink, *, challenger=False):
+    def __init__(self, inner, policy_id: str, context, sink, *, challenger=False, capture=None):
         self.inner, self.policy_id, self.context, self.sink = inner, policy_id, context, sink
-        self.scoring = _ScoringAudit(inner.executor) if challenger else None
+        if challenger and capture is None:
+            raise ValueError("C审计必须显式注入实际评分输入捕获器")
+        self.scoring = _ScoringAudit(inner.executor, capture) if challenger else None
         if self.scoring is not None:
             inner.executor = self.scoring
 
@@ -427,7 +510,7 @@ class VipDevelopmentAuditPolicy:
                 "fan_evidence": "same_source_immediate_settlement" if hu and all(s is not None for s in immediate) else "unknown_or_no_current_hu",
                 "future_qualification": "unknown"}, "c_self_scored": False, "status": "unfinished"}
         if self.scoring is not None:
-            self.scoring.last = None
+            self.scoring.begin_decision()
         started = time.perf_counter()
         try:
             plan = await self.inner.choose(request, budget)
@@ -436,20 +519,33 @@ class VipDevelopmentAuditPolicy:
                              "trace": c.score_trace, "is_emergency": c.is_emergency} for c in plan.candidates],
                 degraded_reasons=list(plan.degraded_reasons))
             if self.scoring is not None:
-                row["c_self_scored"] = bool(self.scoring.last and self.scoring.last["status"] == STATUS_SCORED and self.scoring.last["full_legal_keys"])
+                row["c_self_scored"] = bool(self.scoring.decision_calls and all(
+                    call["status"] == STATUS_SCORED and call["full_legal_keys"] and call["score_completed"]
+                    and call["input_capture"]["saved_before_score"] for call in self.scoring.decision_calls))
                 if not row["c_self_scored"]:
                     raise ValueError("C未以SCORED完整独立评分本窗口")
             return plan
-        except (Exception, WorkloadExceeded) as exc:
+        except BaseException as exc:
             row.update(status="failed", error=type(exc).__name__ + ": " + str(exc))
             raise
         finally:
             row["policy_compute_ms_observed"] = (time.perf_counter() - started) * 1000
-            row["timing_scope"] = "policy_compute_observed_not_official_runtime_gate"
+            row["timing_scope"] = "policy_choose_with_input_capture_observed_not_official_runtime"
             if self.scoring is not None:
-                row["candidate_operations"] = self.scoring.last_operation_count
+                row["candidate_operations"] = None if self.scoring.last is None else self.scoring.last["candidate_operations"]
                 row["scoring_execution"] = self.scoring.last
-            self.sink(row)
+                row["scoring_calls"] = list(self.scoring.decision_calls)
+                row["scoring_cumulative_failed_calls"] = self.scoring.failed_calls
+            primary = sys.exc_info()[1]
+            try:
+                self.sink(row)
+            except BaseException as secondary:
+                row["audit_write_error"] = type(secondary).__name__ + ": " + str(secondary)
+                if self.scoring is not None:
+                    self.scoring.audit_sink_failed_calls += 1
+                if primary is None:
+                    raise
+                primary.add_note("决策小收据写入再次失败:" + row["audit_write_error"])
 
 
 def _pool_summary(frame, results, outcomes, runtime, additional_issues, *, source_kind):
@@ -496,6 +592,8 @@ async def run_vip_route_development(
     started = time.perf_counter()
     source_kind = "simulation" if match_runner is run_match_experiment else "mock"
     batch = VipDevelopmentBatch.read(batch_file, allow_mock_behavior_fixture=source_kind == "mock")
+    if batch.scoring_input_capture is None:
+        raise ValueError("batch/1仅供历史读取；新开发运行必须用batch/2显式冻结捕获预算")
     generation = VipEohBatch.read(batch.generation_batch_file)
     parent = load_vip_parents((batch.candidate_package,), generation)[0]
     source, identity = parent["source"], parent["identity"]
@@ -518,7 +616,7 @@ async def run_vip_route_development(
     if native_path is not None:
         (out_dir / "math-native.bin").write_bytes(Path(native_path).read_bytes())
     planned = len(batch.seeds) * len(batch.pools) * 8
-    prereg = {"schema": "vip-route-development-manifest/1", "batch_id": batch.batch_id,
+    prereg = {"schema": "vip-route-development-manifest/2", "batch_id": batch.batch_id,
         "development_only": True, "confirmation_claim": False, "published": False,
         "single_development_view": True, "source_kind": source_kind,
         "batch_sha256": _sha(batch.raw), "frozen_files": dict(batch.frozen_files),
@@ -530,97 +628,160 @@ async def run_vip_route_development(
         "clock_mode": "logical", "initial_dealer_physical": 0, "initial_scores_physical": [0] * 4,
         "selection_probabilities": {"all_natural": 1.0}, "frame": [asdict(r) for r, _ in batch.seeds],
         "environment": {"python": platform.python_version(), "platform": platform.platform()},
-        "opportunity_scope": "current_legal_hu_and_immediate_fan_only_future_unknown"}
+        "opportunity_scope": "current_legal_hu_and_immediate_fan_only_future_unknown",
+        "scoring_input_capture": {"schema": "vip-scoring-input-capture/1", "path": "views.jsonl.gz",
+            "scope": "same_actual_C_typed_view_candidate_view_before_each_score",
+            "limits": asdict(batch.scoring_input_capture), "terminal_verification": "pending",
+            "deduplication": "whole_canonical_DTO_sha256", "WorldState_added": False}}
     _write(out_dir / "manifest.json", prereg)
-    charges, pool_results, all_decisions = [], {}, []
-    _write(out_dir / "costs.json", {"planned_table_instances": planned, "entries": charges})
-    for pool in batch.pools:
-        pool_dir = out_dir / pool
-        pool_dir.mkdir()
-        results, outcomes, issues, opportunity_rows = [], [], [], []
-        with gzip.open(pool_dir / "decisions.jsonl.gz", "wt", encoding="utf-8") as stream, \
-                (pool_dir / "settlements.jsonl").open("w", encoding="utf-8") as settlements:
-            def settlement_sink(row):
-                settlements.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
-                settlements.flush()
-            engine = VipDevelopmentAuditEngine(runtime.engine, settlement_sink=settlement_sink)
-            def sink(row):
-                stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True, allow_nan=False) + "\n")
-                stream.flush()
-                opportunity_rows.append({key: row[key] for key in ("match_id", "seat", "policy_id", "phase", "white_count", "action_families", "current_opportunity", "c_self_scored", "status")})
-                all_decisions.append({key: row[key] for key in ("policy_id", "phase", "white_count", "action_families", "c_self_scored", "status", "policy_compute_ms_observed")})
-                if row["policy_id"] == runtime.challenger_policy_id and not row["c_self_scored"]:
-                    issues.append("C窗口未独立完整评分:" + row["decision_id"])
-                if any("action_value_failed" in reason for reason in row.get("degraded_reasons", ())):
-                    issues.append("内部R18评分回退:" + row["decision_id"])
-            # 每池独立实例，避免上一池评分观察器或未来可变策略状态进入下一池。
-            pool_runtime = build_vip_development_runtime(generation, source)
-            policies = {key: VipDevelopmentAuditPolicy(value, key, lambda: dict(engine.context), sink,
-                challenger=key == runtime.challenger_policy_id) for key, value in pool_runtime.policies_by_id.items()}
-            for root, seed in batch.seeds:
-                for permutation in root.permutations:
-                    if time.perf_counter() - started >= batch.wall_clock_limit_seconds:
-                        issues.append("批次墙钟预算耗尽，未启动:" + root.root_id + ":" + "".join(map(str, permutation)))
-                        continue
-                    if sum(r["charged_table_instances"] for r in charges) + 2 > batch.table_instance_limit:
-                        issues.append("桌实例预算耗尽，未启动:" + root.root_id + ":" + "".join(map(str, permutation)))
-                        continue
-                    label = "".join(map(str, permutation))
-                    prefix = f"{batch.batch_id}:{pool}"
-                    engine.context = {"pool": pool, "new_pool_id": NEW_POOL_IDS[pool],
-                        "root_id": root.root_id, "permutation": list(permutation), "focal_physical_seat": permutation[0],
-                        "initial_dealer_logical": permutation.index(0), "initial_dealer_physical": 0}
-                    entry = {"pool": pool, "root_id": root.root_id, "permutation": list(permutation),
-                        "initial_dealer_logical": permutation.index(0), "initial_dealer_physical": 0,
-                        "status": "reserved", "reserved_table_instances": 2, "charged_table_instances": 2,
-                        "duration_wall_seconds": None, "actual_started_table_instances": None}
-                    charges.append(entry)
-                    _write(out_dir / "costs.json", {"planned_table_instances": planned, "entries": charges})
-                    group_started, count_before = time.perf_counter(), engine.started_table_instances
-                    experiment = MatchExperiment("matches", "logical", runtime.declarations["A"], runtime.declarations["C"],
-                        tuple(runtime.declarations[p] for p in (("H1", "H2", "H3") if pool == "H" else ("M1", "M2", "M3"))),
-                        runtime.config, (MatchSeedSpec(seed, root.root_id),), (permutation,), permutation.index(0), (0, 0, 0, 0),
-                        step_limit=batch.step_limit, match_id_prefix=prefix, simulation_version=WORLD_SCHEMA,
-                        input_sha256=_sha(batch.raw), source_namespace="hangma-simulation")
-                    try:
-                        outcome = await match_runner(experiment, engine=engine, spec_factory=MatchSpec,
-                            choice_factory=lambda key, action: SimulationChoice(key, action), policies_by_id=policies,
-                            rules=runtime.rules, rules_hash=compute_rules_hash(REPO_ROOT), now_monotonic=lambda: 800.0,
-                            wall_clock=None, budget_policy=BudgetPolicy(), source_kind=source_kind,
-                            value_limits=generation.route_limits, challenger_route_limits=generation.route_limits,
-                            strict_challenger=True)
-                        results.extend(outcome.results)
-                        outcomes.extend(outcome.match_records)
-                        issues.extend(outcome.excluded)
-                        _write(pool_dir / f"group-{_sha(root.root_id)[:16]}-{label}.json", {
-                            "experiment": asdict(experiment), "results": [r.to_json() for r in outcome.results],
-                            "match_records": [{"match_id": key, "outcome": value.to_json()} for key, value in outcome.match_records],
-                            "excluded": list(outcome.excluded)})
-                        entry["status"] = "settled"
-                    except Exception as exc:
-                        entry.update(status="failed_cost_retained", error=type(exc).__name__ + ": " + str(exc))
-                        issues.append("桌组异常:" + root.root_id + ":" + label + ":" + type(exc).__name__)
-                    finally:
-                        entry["actual_started_table_instances"] = engine.started_table_instances - count_before
-                        if entry["actual_started_table_instances"] > 2:
-                            entry["charged_table_instances"] = entry["actual_started_table_instances"]
-                            issues.append("驱动超出预留桌实例:" + root.root_id + ":" + label)
-                        entry["duration_wall_seconds"] = time.perf_counter() - group_started
-                        _write(out_dir / "costs.json", {"planned_table_instances": planned, "entries": charges})
-            _write(pool_dir / "current-opportunity-ledger.json", {"scope": prereg["opportunity_scope"],
-                "decision_window_denominator": len(opportunity_rows), "rows": opportunity_rows,
-                "focal_windows_by_arm": {arm: sum(row["policy_id"] == policy_id for row in opportunity_rows)
-                    for arm, policy_id in (("A", runtime.baseline_policy_id), ("C", runtime.challenger_policy_id))},
-                "no_hindsight_labels": True})
-            natural = summarize_vip_natural_settlements(engine.settlements,
-                challenger_policy_id=runtime.challenger_policy_id,
-                planned_hands_by_arm={"A": len(batch.seeds) * 4 * 8, "C": len(batch.seeds) * 4 * 8})
-            _write(pool_dir / "natural-settlement-ledger.json", natural)
-        with (pool_dir / "results.jsonl").open("w", encoding="utf-8") as stream:
-            for row in results:
-                stream.write(json.dumps(row.to_json(), ensure_ascii=False, sort_keys=True) + "\n")
-        _write(pool_dir / "match-outcomes.json", [{"match_id": key, "outcome": value.to_json()} for key, value in outcomes])
-        pool_results[pool] = _pool_summary([r for r, _ in batch.seeds], results, outcomes, runtime, issues, source_kind=source_kind)
+    charges, pool_results, all_decisions, scoring_audits = [], {}, [], []
+    capture_stream = (out_dir / "views.jsonl.gz").open("x+b")
+    capture = ScoringInputCapture(capture_stream, limits=batch.scoring_input_capture)
+    try:
+        _write(out_dir / "costs.json", {"planned_table_instances": planned, "entries": charges, "scoring_input_capture": capture.costs})
+        for pool in batch.pools:
+            pool_dir = out_dir / pool
+            pool_dir.mkdir()
+            results, outcomes, issues, opportunity_rows = [], [], [], []
+            with _close_preserving_primary(gzip.open(pool_dir / "decisions.jsonl.gz", "wt", encoding="utf-8")) as stream, \
+                    _close_preserving_primary((pool_dir / "settlements.jsonl").open("w", encoding="utf-8")) as settlements:
+                def settlement_sink(row):
+                    settlements.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+                    settlements.flush()
+                engine = VipDevelopmentAuditEngine(runtime.engine, settlement_sink=settlement_sink)
+                def sink(row):
+                    stream.write(json.dumps(row, ensure_ascii=False, sort_keys=True, allow_nan=False) + "\n")
+                    stream.flush()
+                    opportunity_rows.append({key: row[key] for key in ("match_id", "seat", "policy_id", "phase", "white_count", "action_families", "current_opportunity", "c_self_scored", "status")})
+                    all_decisions.append({key: row[key] for key in ("policy_id", "phase", "white_count", "action_families", "c_self_scored", "status", "policy_compute_ms_observed")})
+                    if row["policy_id"] == runtime.challenger_policy_id and not row["c_self_scored"]:
+                        issues.append("C窗口未独立完整评分:" + row["decision_id"])
+                    if any("action_value_failed" in reason for reason in row.get("degraded_reasons", ())):
+                        issues.append("内部R18评分回退:" + row["decision_id"])
+                # 每池独立实例，避免上一池评分观察器或未来可变策略状态进入下一池。
+                pool_runtime = build_vip_development_runtime(generation, source)
+                policies = {key: VipDevelopmentAuditPolicy(value, key, lambda: dict(engine.context), sink,
+                    challenger=key == runtime.challenger_policy_id, capture=capture) for key, value in pool_runtime.policies_by_id.items()}
+                scoring_audits.extend(policy.scoring for policy in policies.values() if policy.scoring is not None)
+                for root, seed in batch.seeds:
+                    for permutation in root.permutations:
+                        if time.perf_counter() - started >= batch.wall_clock_limit_seconds:
+                            issues.append("批次墙钟预算耗尽，未启动:" + root.root_id + ":" + "".join(map(str, permutation)))
+                            continue
+                        if sum(r["charged_table_instances"] for r in charges) + 2 > batch.table_instance_limit:
+                            issues.append("桌实例预算耗尽，未启动:" + root.root_id + ":" + "".join(map(str, permutation)))
+                            continue
+                        label = "".join(map(str, permutation))
+                        prefix = f"{batch.batch_id}:{pool}"
+                        engine.context = {"pool": pool, "new_pool_id": NEW_POOL_IDS[pool],
+                            "root_id": root.root_id, "permutation": list(permutation), "focal_physical_seat": permutation[0],
+                            "initial_dealer_logical": permutation.index(0), "initial_dealer_physical": 0}
+                        entry = {"pool": pool, "root_id": root.root_id, "permutation": list(permutation),
+                            "initial_dealer_logical": permutation.index(0), "initial_dealer_physical": 0,
+                            "status": "reserved", "reserved_table_instances": 2, "charged_table_instances": 2,
+                            "duration_wall_seconds": None, "actual_started_table_instances": None}
+                        charges.append(entry)
+                        _write(out_dir / "costs.json", {"planned_table_instances": planned, "entries": charges, "scoring_input_capture": capture.costs})
+                        group_started, count_before = time.perf_counter(), engine.started_table_instances
+                        experiment = MatchExperiment("matches", "logical", runtime.declarations["A"], runtime.declarations["C"],
+                            tuple(runtime.declarations[p] for p in (("H1", "H2", "H3") if pool == "H" else ("M1", "M2", "M3"))),
+                            runtime.config, (MatchSeedSpec(seed, root.root_id),), (permutation,), permutation.index(0), (0, 0, 0, 0),
+                            step_limit=batch.step_limit, match_id_prefix=prefix, simulation_version=WORLD_SCHEMA,
+                            input_sha256=_sha(batch.raw), source_namespace="hangma-simulation")
+                        try:
+                            outcome = await match_runner(experiment, engine=engine, spec_factory=MatchSpec,
+                                choice_factory=lambda key, action: SimulationChoice(key, action), policies_by_id=policies,
+                                rules=runtime.rules, rules_hash=compute_rules_hash(REPO_ROOT), now_monotonic=lambda: 800.0,
+                                wall_clock=None, budget_policy=BudgetPolicy(), source_kind=source_kind,
+                                value_limits=generation.route_limits, challenger_route_limits=generation.route_limits,
+                                strict_challenger=True)
+                            results.extend(outcome.results)
+                            outcomes.extend(outcome.match_records)
+                            issues.extend(outcome.excluded)
+                            _write(pool_dir / f"group-{_sha(root.root_id)[:16]}-{label}.json", {
+                                "experiment": asdict(experiment), "results": [r.to_json() for r in outcome.results],
+                                "match_records": [{"match_id": key, "outcome": value.to_json()} for key, value in outcome.match_records],
+                                "excluded": list(outcome.excluded)})
+                            entry["status"] = "settled"
+                        except (Exception, WorkloadExceeded) as exc:
+                            entry.update(status="failed_cost_retained", error=type(exc).__name__ + ": " + str(exc))
+                            issues.append("桌组异常:" + root.root_id + ":" + label + ":" + type(exc).__name__)
+                        except BaseException as exc:
+                            entry.update(status="interrupted_cost_retained", error=type(exc).__name__ + ": " + str(exc))
+                            raise  # 记下原分母与未完成调用，用户中断不启动后续桌
+                        finally:
+                            entry["actual_started_table_instances"] = engine.started_table_instances - count_before
+                            if entry["actual_started_table_instances"] > 2:
+                                entry["charged_table_instances"] = entry["actual_started_table_instances"]
+                                issues.append("驱动超出预留桌实例:" + root.root_id + ":" + label)
+                            entry["duration_wall_seconds"] = time.perf_counter() - group_started
+                            primary = sys.exc_info()[1]
+                            try:
+                                _write(out_dir / "costs.json", {"planned_table_instances": planned, "entries": charges, "scoring_input_capture": capture.costs})
+                            except BaseException as secondary:
+                                if primary is None:
+                                    raise
+                                primary.add_note("桌组费用小收据再次失败:" + type(secondary).__name__ + ": " + str(secondary))
+                _write(pool_dir / "current-opportunity-ledger.json", {"scope": prereg["opportunity_scope"],
+                    "decision_window_denominator": len(opportunity_rows), "rows": opportunity_rows,
+                    "focal_windows_by_arm": {arm: sum(row["policy_id"] == policy_id for row in opportunity_rows)
+                        for arm, policy_id in (("A", runtime.baseline_policy_id), ("C", runtime.challenger_policy_id))},
+                    "no_hindsight_labels": True})
+                natural = summarize_vip_natural_settlements(engine.settlements,
+                    challenger_policy_id=runtime.challenger_policy_id,
+                    planned_hands_by_arm={"A": len(batch.seeds) * 4 * 8, "C": len(batch.seeds) * 4 * 8})
+                _write(pool_dir / "natural-settlement-ledger.json", natural)
+            with (pool_dir / "results.jsonl").open("w", encoding="utf-8") as stream:
+                for row in results:
+                    stream.write(json.dumps(row.to_json(), ensure_ascii=False, sort_keys=True) + "\n")
+            _write(pool_dir / "match-outcomes.json", [{"match_id": key, "outcome": value.to_json()} for key, value in outcomes])
+            pool_results[pool] = _pool_summary([r for r, _ in batch.seeds], results, outcomes, runtime, issues, source_kind=source_kind)
+    finally:
+        # 原中断优先；关闭/费用落盘的第二故障只加说明，不吞原异常或继续桌。
+        primary, cleanup_error = sys.exc_info()[1], None
+        capture_final = capture.costs
+        try:
+            capture_final = capture.finish()
+        except BaseException as exc:
+            cleanup_error = exc
+            capture_final = capture.costs
+        terminal = dict(capture_final["terminal"], storage_valid=capture_final["terminal"]["terminal_valid"],
+            errors=list(capture_final["terminal"].get("errors", ())),
+            scoring_audit_failed_calls=sum(audit.failed_calls for audit in scoring_audits),
+            decision_audit_sink_failed_calls=sum(audit.audit_sink_failed_calls for audit in scoring_audits))
+        terminal["terminal_valid"] = (terminal["storage_valid"] and terminal["scoring_audit_failed_calls"] == 0
+            and terminal["decision_audit_sink_failed_calls"] == 0 and primary is None and cleanup_error is None)
+        if primary is not None:
+            terminal["pending_run_exception"] = type(primary).__name__ + ": " + str(primary)
+        try:
+            capture_stream.close()
+            terminal["binary_stream_closed"] = True
+        except BaseException as exc:
+            terminal.update(terminal_valid=False, closed=False, binary_stream_closed=False)
+            terminal["errors"].append("底层stream关闭失败:" + type(exc).__name__ + ": " + str(exc))
+            if cleanup_error is None:
+                cleanup_error = exc
+        capture_final = dict(capture_final, terminal=terminal)
+        prereg["scoring_input_capture"]["terminal_verification"] = terminal
+        for path, value in ((out_dir / "costs.json", {"planned_table_instances": planned,
+                                "entries": charges, "scoring_input_capture": capture_final}),
+                            (out_dir / "manifest.json", prereg)):
+            try:
+                _write(path, value)
+            except BaseException as exc:
+                terminal["terminal_valid"] = False
+                terminal["errors"].append("终态小收据落盘失败:" + type(exc).__name__ + ": " + str(exc))
+                if cleanup_error is None:
+                    cleanup_error = exc
+        if primary is not None and cleanup_error is not None:
+            primary.add_note("录制终态清理再次失败:" + type(cleanup_error).__name__ + ": " + str(cleanup_error))
+        if primary is None and cleanup_error is not None:
+            raise cleanup_error
+    if not capture_final["terminal"]["terminal_valid"]:
+        for pool in pool_results.values():
+            pool["estimate_natural_score_delta"] = None
+            pool["positive_tail"], pool["negative_tail"], pool["development_complete"] = [], [], False
+            pool["extra_failures"].append("实际评分输入捕获不完整或终态关闭未验证")
     stable, drift_error, end_identity = True, None, None
     try:
         final_parent = load_vip_parents((batch.candidate_package,), VipEohBatch.read(batch.generation_batch_file))[0]
@@ -641,7 +802,7 @@ async def run_vip_route_development(
             pool["positive_tail"], pool["negative_tail"], pool["development_complete"] = [], [], False
             pool["extra_failures"].append("冻结身份漂移" if not stable else "批次墙钟预算超限")
     strata = Counter((r["phase"], r["white_count"], tuple(r["action_families"]), r["c_self_scored"], r["status"]) for r in all_decisions)
-    summary = {"schema": "vip-route-development-result/1", "batch_id": batch.batch_id,
+    summary = {"schema": "vip-route-development-result/2", "batch_id": batch.batch_id,
         "status": "development_complete_not_confirmed" if stable and all(p["development_complete"] for p in pool_results.values()) else "unfinished_or_invalid_development",
         "identity_stable": stable, "drift_error": drift_error, "development_only": True,
         "confirmation_claim": False, "published": False, "source_kind": source_kind,
@@ -649,10 +810,12 @@ async def run_vip_route_development(
         "duration_wall_seconds": duration, "pools": pool_results,
         "decision_strata": [{"phase": key[0], "white_count": key[1], "action_families": list(key[2]),
                              "c_self_scored": key[3], "status": key[4], "windows": count} for key, count in sorted(strata.items())],
-        "timing_scope": "observed_policy_compute_not_online_runtime_gate",
-        "max_policy_compute_ms_observed": max((r["policy_compute_ms_observed"] for r in all_decisions), default=None)}
+        "timing_scope": "policy_choose_with_input_capture_observed_not_official_runtime",
+        "max_policy_compute_ms_observed": max((r["policy_compute_ms_observed"] for r in all_decisions), default=None),
+        "scoring_input_capture": capture_final}
     _write(out_dir / "end-freeze.json", {"identity_stable": stable, "source_manifest": end_manifest,
-                                        "candidate_identity": end_identity, "end_error": drift_error})
+                                        "candidate_identity": end_identity, "end_error": drift_error,
+                                        "scoring_input_capture_terminal": capture_final["terminal"]})
     _write(out_dir / "summary.json", summary)
     return summary
 

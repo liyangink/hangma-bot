@@ -1,5 +1,11 @@
 # 杭麻 AI Bot 架构与运行流程
 
+## 2026-10-01 离线实际评分输入记录
+
+**T10补齐新开发批次的实际输入证据，不改变线上决策接缝。** `offline.scoring_input_capture`负责实际评分输入捕获（`ScoringInputCapture`，在候选评分前保存其依法可见的完整输入）。`VipDevelopmentAuditPolicy`把同一个类型化视图的完整`candidate_view()`交给记录器，保存成功才调用执行器；每次调用收据引用整图SHA，完整图去重压缩保存于`views.jsonl.gz`。未知、空集合、精确零、全合法根和条件支付保持原样，记录器不重建规则或读取完整世界。
+
+新运行须使用`vip-route-development-batch/2`显式冻结单图字节、累计去重字节及图数预算。终态关闭与读回验签、逐调用失败分母均完整才授开发完整性；失败使所有对手池的积分估计无效。中断保留失败并原样传播，旧`/1`仅供历史读取。包装总耗时包含记录开销，逐评分收据另记执行器入口持续秒；二者均不能代替官方动作时限验收。下一步扩充真实来源面板、竞争终局和未见确认，见[T10计划](../review/vip-route-2026-09-30/T10-FULL-INPUT-AND-COVERAGE-PLAN.md)与[接口契约](implementation/interface-contracts.md)。
+
 2026-10-01 条件支付升版：当前依据为[条件胡支付合同 v2](../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)，历史 v1 合同及证据不改。等待态新增 `normal_draw_hu_payments`，逐牌码、逐抓打假设保留既有唯一规则源窄见证的结算；不增加见证调用，不把未知补0，不把两假设相加或把公开容量当墙内概率。当前胡节点即时结算与等待态条件结算分开；局部见证不保证未来本人能摸牌。只读视图／图升为 `/2`，支付语义为 `vip-normal-draw-hu-payment/1`，架构类型仍为 `vip_route_heuristic_v1`。新候选绑定新合同、源码和依赖身份并重做实际评测，旧成绩不迁移。
 
 2026-10-01 离线解释格式修复：`offline.vip_eoh_trace_repair` 对指定函数中已知解释记录及说明作确定性变换，另建 `trace_codec_repair` 工程身份。`load_vip_parents` 递归验原作者包、费用、执行配置和复制证据；只允许源码摘要及派生候选 ID 变化，原回复、失败、额度不改。修复包不冒称模型输出、不新增作者调用、不继承成绩。通用变换不证明全局数学等价；T8 调用还需绑定完整固定编辑政策，修后重过机械、数学及完整桌门。此能力只在离线层，线上策略接口与规则不变；与[技术方案](hangma-ai-bot-technical-plan.md)同步。
