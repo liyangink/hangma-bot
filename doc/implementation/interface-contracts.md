@@ -1,5 +1,13 @@
 # 第一阶段接口协议
 
+## 2026-10-03 有界计算服务生命周期（显式研究入口）
+
+**保持`BotPolicy.choose(DecisionRequest, DecisionBudget)`外部契约，新增组合根拥有的计算服务生命周期。** `build_isolated_decision_policy(worker_factory, execution_id, clock, settings)`返回`BoundedDecisionCompute`；所有者预热`start()`，消费相同choose接口，最终关闭`close()`。可序列化工厂在spawn子进程返回`PreparedDecisionPolicy(policy, execution_id)`，身份须按实际源码/依赖核验；不得包含凭证或隐藏世界。
+
+`DecisionComputeSettings`规定工作进程、待处理数及消息字节上限，以及真实秒单位的启动、单任务和弃置宽限时间、每槽重启上限。排队使用原`fallback_deadline_monotonic`本机单调秒，不能重置。容量、期限、启动及计算失败抛`DecisionComputeError`交原应用紧急路径；外部取消仍传播取消，原计算资源继续回收。任务号、完整输入/预算摘要、执行身份及同场当前请求绑定结果；返回计划还验请求/窗口/权威序号和已拒候选。
+
+请求的内部pickle5只用于可信父/子进程私有socket，完整保留研究条件根；禁止外部pickle、模型原答、跨机器时基混用。结果仍经现有严格计划JSON解码；官方JSON及审计拒绝研究根规则不放宽。关闭失败显式报错且保留未回收资源引用。`snapshot()`仅固定诊断计数及当前资源量，没有历史请求表。当前同步传输编解码和spawn仍有阻塞风险，不授完整事件循环隔离；公开测试和真实请求证据见[T85](../../review/vip-route-2026-09-30/T85-BOUNDED-REAL-COMPUTE-RESULT.md)。
+
 ## 2026-10-02 自然面子准备与共享条件图 v3
 
 **当前研究候选使用[合同 v3](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md)，下面的 v2 为历史支付升版记录。**`RouteWaitingView.natural_preparation`必需且与同态`RouteStructureFacts`的真实自然手牌、白库存和副露组数一致。规则入口`analyze_natural_set_preparation(counts34, meld_set_count)`仅接收真实`13-3m`等待态，复用唯一标准型数学，返回不含将、不借白的自然面子缺张及弃牌下界、改善码；不授胡、爆头或未来白板资格。非法类型/数量显式抛错，无外部副作用。外层`natural_preparation_code_width`按同态公开容量保留相容码，非概率。新语义为`vip-natural-set-preparation/1`；视图和图为`/3`，原条件支付语义不变。
