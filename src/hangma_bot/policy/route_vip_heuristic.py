@@ -14,6 +14,9 @@ from typing import Any, Mapping, Optional
 
 from hangma_bot.hangma import hand_analysis, route_transition
 from hangma_bot.hangma.interface import RuleCompleteness
+from hangma_bot.hangma.natural_preparation import (
+    NATURAL_PREPARATION_SEMANTICS_VERSION, analyze_natural_set_preparation,
+)
 from hangma_bot.hangma.route_hu_witness import analyze_waiting_hu_witness
 from hangma_bot.hangma.route_structure import (
     ROUTE_STRUCTURE_SCHEMA_VERSION, analyze_route_structure,
@@ -25,7 +28,9 @@ from hangma_bot.kernel.actions import (
 from hangma_bot.kernel.config import RuleConfig
 
 from .action_value import STATUS_SCORED
-from .action_value_executor import ActionValueExecutor, EXECUTOR_VERSION, WorkloadExceeded
+from .action_value_executor import (
+    ActionValueExecutor, EXECUTOR_VERSION, MAX_SUPPORTED_LOCAL_COLLECTION_SIZE, WorkloadExceeded,
+)
 from .errors import PolicyError
 from .interface import DecisionBudget, DecisionPlan, DecisionRequest, RankedCandidate, ScorePart
 from .route_heuristic_view import (
@@ -144,6 +149,8 @@ class VipRouteProjectionLimits:
             self.max_nodes, self.max_branches, self.max_waiting_draw_witnesses,
         )):
             raise ValueError("VIP展开上限必须为正整数")
+        if self.max_nodes > MAX_SUPPORTED_LOCAL_COLLECTION_SIZE:
+            raise ValueError("VIP节点上限不能超过受限执行器16384项硬容量")
 
 
 class _Projection:
@@ -159,6 +166,7 @@ class _Projection:
         self.witness_count = 0
         self.target_distance_count = 0
         self.waiting_cache: dict[tuple, RouteWaitingView] = {}
+        self.semantic_nodes: dict[tuple, str] = {}
 
     @staticmethod
     def code_width(codes, state) -> int:
@@ -170,6 +178,14 @@ class _Projection:
     def add(self, key: str, kind: str, *, children=(), codes=(), waiting=None,
             settlement=None, pending=None, uncertainty=None, legal_action_key=None,
             followup_key=None) -> str:
+        # 同一请求中只复用整个冻结节点事实，不能只按手牌合并。条件边的
+        # 顺序和重复引用均保留，故补牌码及互斥包络的权重没有被去重。
+        # node_key只是引用名称；合法动作、跟打身份和未知说明都参与比较。
+        semantic = (kind, tuple(children), tuple(codes), waiting, settlement,
+                    pending, uncertainty, legal_action_key, followup_key)
+        existing = self.semantic_nodes.get(semantic)
+        if existing is not None:
+            return existing
         self.branch_count += len(children)
         if len(self.nodes) >= self.limits.max_nodes or self.branch_count > self.limits.max_branches:
             raise RouteHeuristicResearchError("SEARCH_TRUNCATED", "VIP条件图展开达到冻结工作量上限")
@@ -178,6 +194,7 @@ class _Projection:
             len(children), len(children), uncertainty_reason=uncertainty,
             legal_action_key=legal_action_key, followup_key=followup_key,
         ))
+        self.semantic_nodes[semantic] = key
         return key
 
     @staticmethod
@@ -204,6 +221,8 @@ class _Projection:
         codes = self.compatible_codes(state)
         structure = analyze_route_structure(counts, state.meld_count)
         self.target_distance_count += structure.target_distance_evaluation_count
+        preparation = analyze_natural_set_preparation(counts, state.meld_count)
+        self.target_distance_count += preparation.target_distance_evaluation_count
         summary = hand_analysis.analyse_hand(state.concealed, state.meld_count)
         if summary.shanten < 0:
             raise RouteHeuristicResearchError("MECHANICAL_GAP", "等待态真实向听不能是已胡-1")
@@ -266,6 +285,8 @@ class _Projection:
                                 if qualification else None),
             qualification_scope="conditional_witness" if qualification else "unanalysed",
             normal_draw_hu_payments=tuple(payments) if qualification else None,
+            natural_preparation=preparation,
+            natural_preparation_code_width=self.code_width(preparation.natural_need_improvement_codes, state),
             qualification_missing_reason=None if qualification else "补牌码公开容量未知，保留真实补牌前结构",
             qualification_unknown_codes=tuple(unknown) if qualification else codes,
             qualification_math_closed_codes=tuple(code for code in codes if code not in combined_codes)
@@ -456,6 +477,7 @@ def build_vip_route_scoring_view(
         you_cai_bi_kao=config.you_cai_bi_kao,
         structure_semantics_version=ROUTE_STRUCTURE_SCHEMA_VERSION,
         normal_draw_hu_payment_semantics_version=VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
+        natural_preparation_semantics_version=NATURAL_PREPARATION_SEMANTICS_VERSION,
         executor_version=EXECUTOR_VERSION,
         max_nodes=projection.limits.max_nodes, max_branches=projection.limits.max_branches,
         max_waiting_draw_witnesses=projection.limits.max_waiting_draw_witnesses,
@@ -481,6 +503,7 @@ def compute_vip_candidate_identity(
         "view_schema_version": VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
         "structure_semantics_version": ROUTE_STRUCTURE_SCHEMA_VERSION,
         "normal_draw_hu_payment_semantics_version": VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
+        "natural_preparation_semantics_version": NATURAL_PREPARATION_SEMANTICS_VERSION,
         "executor_version": EXECUTOR_VERSION,
     }
     return hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True,
@@ -501,8 +524,11 @@ class RouteVipHeuristicPolicy:
                  max_operations: int = 100_000,
                  projection_limits: Optional[VipRouteProjectionLimits] = None) -> None:
         self.config = config
-        self.executor = ActionValueExecutor(source, name=self.name, max_operations=max_operations)
         self.projection_limits = projection_limits or VipRouteProjectionLimits()
+        # 候选必须能为声明的整图建索引。容量随可信投影档绑定，仅本执行器
+        # 生效；旧评分器仍采用4096，不放宽共享全局或跳过计费。
+        self.executor = ActionValueExecutor(source, name=self.name, max_operations=max_operations,
+            max_local_collection_size=self.projection_limits.max_nodes)
         self.emergency_policy = SafeFallbackPolicy()
 
     async def choose(self, request: DecisionRequest, budget: DecisionBudget) -> DecisionPlan:
@@ -537,6 +563,7 @@ class RouteVipHeuristicPolicy:
                          "candidate_kind": self.name,
                          "view_schema_version": VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
                          "normal_draw_hu_payment_semantics_version": VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
+                         "natural_preparation_semantics_version": NATURAL_PREPARATION_SEMANTICS_VERSION,
                          "detail": dict(entry.trace)},
         ) for index, entry in enumerate(ordered, start=1))
         return DecisionPlan(

@@ -28,7 +28,8 @@ review/test-tournament-20260917/probes/discard-river-accounting-evidence.md。
 """
 
 from collections import Counter, defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
+from functools import lru_cache
 from typing import Optional, Tuple
 
 from hangma_bot.kernel.actions import Tile
@@ -46,6 +47,58 @@ UnseenCounts34 = Tuple[Optional[int], ...]
 _PHYSICAL_LIMIT = 4
 _TOTAL_TILES = 136
 """136 张牌的全量：四家手牌 + 四家牌河 + 全部副露 + 牌墙剩余。"""
+
+_CLAIM_HISTORY_CACHE_SIZE = 8
+_CLAIM_HISTORY_EVENT_LIMIT = 4096
+_PUBLIC_EVENT_FIELDS = tuple(field.name for field in fields(PublicEvent))
+
+
+@dataclass(frozen=True, eq=False)
+class _HistoryIdentity:
+    """以不可变历史原件身份作常数时间键，并强持有原件以防对象编号复用。"""
+
+    history: Tuple[PublicEvent, ...]
+
+    def __hash__(self) -> int:
+        return id(self.history)
+
+    def __eq__(self, other) -> bool:
+        return type(other) is _HistoryIdentity and self.history is other.history
+
+
+class _MutableHistory(Exception):
+    """非规范不可变输入不进入缓存；调用方仍按原逻辑解析，不拒绝输入。"""
+
+
+def _immutable_event_field(value) -> bool:
+    """只允许规范不可变值，排除带可变比较语义的容器或值对象子类。"""
+
+    if value is None or type(value) in (bool, int, str):
+        return True
+    if type(value) is Tile:
+        return type(value.code) is str
+    if type(value) is tuple:
+        return all(_immutable_event_field(item) for item in value)
+    return False
+
+
+@lru_cache(maxsize=_CLAIM_HISTORY_CACHE_SIZE)
+def _cached_claim_proofs(identity: _HistoryIdentity, watermark: int):
+    """最多保留八份历史的纯解析结果；LRU 自带并发维护保护。
+
+    每份历史首次纳入时验证所有字段；命中后只比较 tuple 身份与实际官方
+    水位，不再次散列或扫描事件。返回值全为不可变元组；不可变性不足时
+    抛内部异常，LRU 不缓存异常，外层继续原解析路径。
+    """
+
+    history = identity.history
+    if not all(type(event) is PublicEvent and all(
+            _immutable_event_field(getattr(event, name)) for name in _PUBLIC_EVENT_FIELDS
+    ) for event in history):
+        raise _MutableHistory
+    claims = _scan_claim_proofs(history, watermark)
+    return (isinstance(claims, defaultdict),
+            tuple((key, tuple(proofs)) for key, proofs in claims.items()))
 
 
 @dataclass(frozen=True)
@@ -164,14 +217,33 @@ def _claim_proofs(view: PublicTileView):
     无法分辨哪一份历史正确，沿用既有哲学：整体放弃证据（返回空表），不挑选有利的一份。
     """
 
+    watermark = view.consumed_seq
+    if watermark is None:
+        watermark = view.snapshot_seq
+    history = view.public_history
+    # 条件公开分支共享完整历史，但河、副露、守恒读数及直接领取证据仍会改变。
+    # 所以只缓存历史解析，绝不缓存公开计数、未见容量或对当前副露的匹配结果。
+    if (type(history) is tuple and len(history) <= _CLAIM_HISTORY_EVENT_LIMIT
+            and type(watermark) is int):
+        try:
+            was_defaultdict, frozen = _cached_claim_proofs(_HistoryIdentity(history), watermark)
+        except _MutableHistory:
+            pass
+        else:
+            # 下游会过滤并 pop；每次给独占字典和列表，不能消费缓存中的原证据。
+            result = {key: list(proofs) for key, proofs in frozen}
+            return defaultdict(list, result) if was_defaultdict else result
+    return _scan_claim_proofs(history, watermark)
+
+
+def _scan_claim_proofs(history, watermark):
+    """逐事件解析公开领取证据；冲突、缺口及跨单局清理沿用原有语义。"""
+
     claims = defaultdict(list)
     seen = {}
     previous = None
     pending = None
-    watermark = view.consumed_seq
-    if watermark is None:
-        watermark = view.snapshot_seq
-    for event in view.public_history:
+    for event in history:
         if event.seq > watermark:
             continue
         if event.seq in seen:

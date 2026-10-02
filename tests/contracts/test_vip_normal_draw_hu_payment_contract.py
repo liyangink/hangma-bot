@@ -55,8 +55,8 @@ def test_public_v2_payment_mapping_is_consumable_by_exact_executor_type(simulati
     assert all(entry.trace["payment_semantics"] == VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION
                for entry in result.entries)
     mapping = simulation_view.candidate_view()
-    assert mapping["schema_version"] == "vip-route-scoring-view/2"
-    assert mapping["graph_schema_version"] == "vip-route-action-graph/2"
+    assert mapping["schema_version"] == "vip-route-scoring-view/3"
+    assert mapping["graph_schema_version"] == "vip-route-action-graph/3"
     assert mapping["candidate_kind"] == VIP_ROUTE_CANDIDATE_KIND == "vip_route_heuristic_v1"
     assert all("normal_draw_hu_payments" in node["waiting"]
                for node in mapping["nodes"] if node["waiting"] is not None)

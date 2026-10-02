@@ -29,11 +29,14 @@ from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
 
 from hangma_bot.hangma.route_structure import RouteStructureFacts, RouteStructureTarget
+from hangma_bot.hangma.natural_preparation import (
+    NATURAL_PREPARATION_SEMANTICS_VERSION, NaturalSetPreparationFacts,
+)
 from hangma_bot.hangma.interface import Settlement, ValueAnalysisLimits
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.policy.action_value import ActionScore, ScoreBatch
 from hangma_bot.policy.action_value_executor import (
-    ALLOWED_BUILTINS, ALLOWED_METHODS, EXECUTOR_VERSION, MAX_LOCAL_COLLECTION_SIZE,
+    ALLOWED_BUILTINS, ALLOWED_METHODS, EXECUTOR_VERSION,
     MAX_SOURCE_BYTES, MAX_TRACE_BYTES, ActionValueExecutor,
 )
 from hangma_bot.policy.route_heuristic_view import (
@@ -343,20 +346,21 @@ def _framework(batch: VipEohBatch) -> dict[str, Any]:
 def vip_readonly_appendix(batch: VipEohBatch) -> dict[str, Any]:
     """从实际版本类型与白名单映射取完整字段附录，不传真实观察对象。"""
 
-    classes = (RouteStructureFacts, RouteStructureTarget, Settlement,
+    classes = (RouteStructureFacts, RouteStructureTarget, NaturalSetPreparationFacts, Settlement,
                RouteConditionalHuPayment, RouteWaitingView,
                RouteHeuristicNode, RouteHeuristicAction, ActionScore, ScoreBatch)
     return {
         "schema_version": VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
         "graph_schema_version": VIP_ROUTE_GRAPH_SCHEMA_VERSION,
         "normal_draw_hu_payment_semantics_version": VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
+        "natural_preparation_semantics_version": NATURAL_PREPARATION_SEMANTICS_VERSION,
         "candidate_kind": VIP_ROUTE_CANDIDATE_KIND,
         "readonly_mapping_source": inspect.getsource(VipRouteScoringView.candidate_view),
         "fact_type_definitions": {cls.__name__: inspect.getsource(cls) for cls in classes},
         "executor": {"version": EXECUTOR_VERSION, "allowed_builtins": sorted(ALLOWED_BUILTINS),
                      "allowed_methods": sorted(ALLOWED_METHODS),
                      "max_operations": batch.max_operations,
-                     "max_local_collection_size": MAX_LOCAL_COLLECTION_SIZE,
+                     "max_local_collection_size": batch.projection_limits.max_nodes,
                      "max_source_bytes": MAX_SOURCE_BYTES, "max_trace_bytes": MAX_TRACE_BYTES,
                      "projection_limits": asdict(batch.projection_limits),
                      "rule_config": asdict(batch.rule_config), "route_limits": asdict(batch.route_limits)},
@@ -369,6 +373,10 @@ def vip_readonly_appendix(batch: VipEohBatch) -> dict[str, Any]:
                   "相同牌码的两抓打假设不是两次机会，不能重复计数；draw_capacity_before包含他家暗牌，"
                   "不可除以墙余冒充摸牌概率，draw_capacity_after是给定摸入后的容量。"
                   "未分析None、已分析无胡()、未知资格码分别保留；等待节点settlement仍为空。",
+        "natural_preparation_scope": "natural_preparation只计算同一真实手牌的自然面子目标，"
+                  "不含将且不借白；D=0不是已胡、爆头或将来必摸到白。准备改善码及公开相容码宽度"
+                  "不表示摸牌概率。图节点可被多个父引用，边的顺序、重复引用和条件码均保留；"
+                  "节点键是引用名称，节点数量是存储工作量，不是机会次数。",
     }
 
 
@@ -532,7 +540,8 @@ def _load_vip_parents(paths, batch, *, lineage):
                     or (path / "candidate.py").read_bytes().decode("utf-8") != source
                     or (path / "generation.json").read_bytes() != record_bytes):
                 raise VipEohError("重绑定装载首尾身份或包原件漂移")
-        ActionValueExecutor(source, max_operations=batch.max_operations)
+        ActionValueExecutor(source, max_operations=batch.max_operations,
+                            max_local_collection_size=batch.projection_limits.max_nodes)
         parents.append({"path": str(path.resolve()), "identity": identity, "source": source,
                         "source_sha256": _sha(source), "record_sha256": _sha(record_bytes),
                         "thought": record.get("thought"), "mechanism": record.get("mechanism"),
@@ -873,7 +882,8 @@ def write_vip_seed_parent(out_dir: Path, batch_file: Path) -> dict[str, Any]:
 
     batch = VipEohBatch.read(batch_file)
     identity = batch.identity(VIP_ROUTE_HEURISTIC_SEED_SOURCE)
-    ActionValueExecutor(VIP_ROUTE_HEURISTIC_SEED_SOURCE, max_operations=batch.max_operations)
+    ActionValueExecutor(VIP_ROUTE_HEURISTIC_SEED_SOURCE, max_operations=batch.max_operations,
+                        max_local_collection_size=batch.projection_limits.max_nodes)
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=False)
     record = {"schema": VIP_EOH_GENERATION_SCHEMA, "profile": VIP_EOH_PROFILE,
@@ -1035,7 +1045,8 @@ def run_vip_eoh_generate(
             _atomic(out_dir / "candidate.py", parsed["source"].encode("utf-8"))
             phase = "candidate_load"
             ActionValueExecutor(parsed["source"], name=VIP_ROUTE_CANDIDATE_KIND,
-                                max_operations=batch.max_operations)
+                                max_operations=batch.max_operations,
+                                max_local_collection_size=batch.projection_limits.max_nodes)
             record["identity"] = batch.identity(parsed["source"])
             phase = "identity_verification"
             record["load"] = {"ok": True, "method": "ActionValueExecutor_constructor", "gates_run": [],

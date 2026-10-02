@@ -203,7 +203,8 @@ def repair_vip_trace_codec(
     repaired = repair_structure_trace_source(original["source"])
     identity = batch.identity(repaired)
     _validate_identities(original["identity"], identity)
-    ActionValueExecutor(repaired, max_operations=batch.max_operations)
+    ActionValueExecutor(repaired, max_operations=batch.max_operations,
+                        max_local_collection_size=batch.projection_limits.max_nodes)
     snapshots = {"original-generation.json": original_raw, "original-candidate.py": original_source,
                  "candidate.py": repaired.encode("utf-8"), "batch.json": batch.raw}
     optional, evidence = [], []

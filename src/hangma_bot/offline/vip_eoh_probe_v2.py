@@ -13,6 +13,7 @@ from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.kernel.observation import CompetitionContext
 from hangma_bot.kernel.actions import CANONICAL_TILE_ORDER
 from hangma_bot.hangma.route_structure import ROUTE_STRUCTURE_SCHEMA_VERSION
+from hangma_bot.hangma.natural_preparation import NATURAL_PREPARATION_SEMANTICS_VERSION
 from hangma_bot.policy.route_heuristic_view import VIP_ROUTE_CANDIDATE_KIND
 from hangma_bot.kernel.serialization import observation_from_json, window_key_from_json
 from hangma_bot.policy.action_value_executor import ActionValueExecutor, WorkloadExceeded, EXECUTOR_VERSION
@@ -127,7 +128,8 @@ def run_public_input_probe(panel_file, batch_file, plan_file, out_dir, *, parent
             material = _load(path, batch, frozen, cost)
             metadata.update({"loaded": True, "identity": material["identity"], "source_sha256": material["source_sha256"], "record_sha256": material["record_sha256"]})
             cost["executor_constructors"] += 1
-            executor = ActionValueExecutor(material["source"], max_operations=batch.max_operations)
+            executor = ActionValueExecutor(material["source"], max_operations=batch.max_operations,
+                                           max_local_collection_size=batch.projection_limits.max_nodes)
             if metadata["role"] == "candidate":
                 candidates.append(material)
         except (Exception, WorkloadExceeded) as error:
@@ -487,6 +489,7 @@ def validate_dto_binding(dto, item, generation, identity):
     if (any(binding[k] != v for k,v in asdict(generation.rule_config).items())
             or binding["normal_draw_hu_payment_semantics_version"] != identity["normal_draw_hu_payment_semantics_version"]
             or binding["structure_semantics_version"] != ROUTE_STRUCTURE_SCHEMA_VERSION
+            or binding["natural_preparation_semantics_version"] != NATURAL_PREPARATION_SEMANTICS_VERSION
             or binding["executor_version"] != EXECUTOR_VERSION):
         raise ValueError("完整DTO规则或条件支付语义漂移")
     workload = dto["workload"]

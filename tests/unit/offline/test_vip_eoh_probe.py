@@ -226,6 +226,23 @@ def test_shared_frozen_view_and_real_policy_tie_order(tmp_path, batch_file, real
         probe.run_vip_eoh_probe(panel_file, batch_file, out, parent_paths=[parent], candidate_paths=[candidate])
 
 
+def test_probe_uses_frozen_capacity_instead_of_legacy_default(tmp_path, batch_file, real_records):
+    """真实探针能执行4097项局部集合，容量与生成档声明的8192保持一致。"""
+    data = json.loads(batch_file.read_bytes())
+    data["projection_limits"]["max_nodes"] = 8192
+    write_json(batch_file, data)
+    source = '''
+def score_actions(view):
+    values = list(range(4097))
+    return {"status":"SCORED", "entries":[{"action_key":a["action_key"], "score":len(values), "trace":{}} for a in view["actions"]]}
+'''
+    panel_file = panel(tmp_path, batch_file, real_records, max_windows=1)
+    candidate = package(tmp_path / "candidate", batch_file, source)
+    result = probe.run_vip_eoh_probe(panel_file, batch_file, tmp_path / "probe",
+        parent_paths=[candidate], candidate_paths=[candidate])
+    assert result["status"] == "probe_complete_not_admitted"
+
+
 @pytest.mark.parametrize("source", (
     'def score_actions(view):\n return {"status":"ABSTAIN","entries":[],"reason":"test"}',
     'def score_actions(view):\n return {"status":"SCORED","entries":[]}',

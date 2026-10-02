@@ -116,6 +116,7 @@ from .action_value import (
 
 MAX_COUNTED_OPERATIONS = 100_000  # 总计数操作上限
 MAX_LOCAL_COLLECTION_SIZE = 4_096  # 局部单集合项数上限
+MAX_SUPPORTED_LOCAL_COLLECTION_SIZE = 16_384  # 可信研究配置可声明的单集合硬上限；旧默认不变
 MAX_SOURCE_BYTES = 65_536  # 候选源码字节上限
 MAX_INT_MAGNITUDE = 2**63 - 1  # 运行时整数幅度界限（拒绝大整数膨胀）
 MAX_POWER_EXPONENT = 4  # ** 仅允许 0—4 的整数常量指数
@@ -1418,7 +1419,7 @@ def _unique_in_order(items: Any) -> List[Any]:
     return ordered
 
 
-def _make_runtime(meter: _Meter) -> Dict[str, Any]:
+def _make_runtime(meter: _Meter, collection_cap: int = MAX_LOCAL_COLLECTION_SIZE) -> Dict[str, Any]:
     """构造受限运行时：插桩助手 + 白名单内建的计费包装。
 
     计费规范（合同 limits.metering_rules）：每个调用点计 1（_av_pass），
@@ -1426,7 +1427,7 @@ def _make_runtime(meter: _Meter) -> Dict[str, Any]:
     计 1；sum/sorted/all/any/map/filter/enumerate/reversed/zip 与容器构造
     按输入长度保守计费；禁止不计费的批量计算。
     """
-    cap = MAX_LOCAL_COLLECTION_SIZE
+    cap = collection_cap
 
     def seq_len(value: Any) -> Optional[int]:
         try:
@@ -2090,7 +2091,12 @@ class ActionValueExecutor:
         *,
         name: str = "<action_value_candidate>",
         max_operations: int = MAX_COUNTED_OPERATIONS,
+        max_local_collection_size: int = MAX_LOCAL_COLLECTION_SIZE,
     ) -> None:
+        if (type(max_local_collection_size) is not int
+                or not 0 < max_local_collection_size <= MAX_SUPPORTED_LOCAL_COLLECTION_SIZE):
+            raise ValueError("局部集合容量必须是1—16384的整数，不能是布尔值")
+        self._max_local_collection_size = max_local_collection_size
         if not isinstance(source, str):
             raise StaticCheckError("候选源码必须是字符串")
         self.name = str(name)
@@ -2107,7 +2113,7 @@ class ActionValueExecutor:
         self._code = compile(
             instrumented, "<action_value:{0}>".format(self.name), "exec"
         )
-        self._runtime = _make_runtime(self._meter)
+        self._runtime = _make_runtime(self._meter, max_local_collection_size)
         namespace: Dict[str, Any] = {"__builtins__": {}}
         namespace.update(self._runtime)
         # 模块级只有常量赋值与函数定义；静态检查已排除任意顶层执行。
@@ -2121,6 +2127,11 @@ class ActionValueExecutor:
         self._namespace = namespace
         self._module_snapshot = self._snapshot_module_bindings(namespace)
         self.last_operation_count: Optional[int] = None
+
+    @property
+    def max_local_collection_size(self) -> int:
+        """本执行器实际单集合容量；单位项，默认4096，不是操作额度或耗时。"""
+        return self._max_local_collection_size
 
     @staticmethod
     def _snapshot_module_bindings(

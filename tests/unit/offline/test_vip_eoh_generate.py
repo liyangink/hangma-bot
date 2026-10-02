@@ -141,25 +141,32 @@ def test_emit_records_full_view_seed_and_never_reads_credentials(batch_file, tmp
     assert appendix["executor"]["route_limits"]["max_expansions"] == 8192
 
 
-def test_v2_prompt_and_identity_bind_conditional_payment_contract(batch_file, tmp_path):
+def test_v3_prompt_and_identity_bind_preparation_payment_and_actual_capacity(batch_file, tmp_path):
     """实际交接包必须把新事实类型、单位范围与独立合同一起交给作者。"""
 
     from hangma_bot.offline.scoring_sources import REPO_ROOT
 
-    out = tmp_path / "v2-emit"
+    data = json.loads(batch_file.read_bytes())
+    data["projection_limits"]["max_nodes"] = 8192
+    write_json(batch_file, data)
+    out = tmp_path / "v3-emit"
     record = run_vip_eoh_generate(batch_file=batch_file, out_dir=out, operator="i1")
     assert record["status"] == "prompt_emitted"
     appendix = json.loads((out / "readonly-appendix.json").read_bytes())
-    assert appendix["schema_version"] == "vip-route-scoring-view/2"
-    assert appendix["graph_schema_version"] == "vip-route-action-graph/2"
+    assert appendix["schema_version"] == "vip-route-scoring-view/3"
+    assert appendix["graph_schema_version"] == "vip-route-action-graph/3"
     assert appendix["normal_draw_hu_payment_semantics_version"] == "vip-normal-draw-hu-payment/1"
     assert "RouteConditionalHuPayment" in appendix["fact_type_definitions"]
+    assert "NaturalSetPreparationFacts" in appendix["fact_type_definitions"]
+    assert appendix["natural_preparation_semantics_version"] == "vip-natural-set-preparation/1"
+    assert appendix["executor"]["max_local_collection_size"] == 8192
     assert "Settlement" in appendix["fact_type_definitions"]
     assert "normal_draw_hu_payments" in appendix["fact_type_definitions"]["RouteWaitingView"]
     assert "不能重复计数" in appendix["conditional_payment_scope"]
     identity = VipEohBatch.read(batch_file).identity(VIP_ROUTE_HEURISTIC_SEED_SOURCE)
     contract = REPO_ROOT / identity["contract_path"]
-    assert contract.name == "FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md"
+    assert contract.name == "FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md"
+    assert identity["params"]["max_local_collection_size"] == 8192
     assert (out / "contract.md").read_bytes() == contract.read_bytes()
     assert hashlib.sha256(contract.read_bytes()).hexdigest() == identity["contract_sha256"]
     old = REPO_ROOT / "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md"

@@ -229,7 +229,8 @@ def run_vip_eoh_probe(
             material = load_vip_parents([path], batch)[0]
             record.update({"loaded": True, "identity": material["identity"],
                            "record_sha256": material["record_sha256"], "source_sha256": material["source_sha256"]})
-            executor = ActionValueExecutor(material["source"], max_operations=batch.max_operations)
+            executor = ActionValueExecutor(material["source"], max_operations=batch.max_operations,
+                                           max_local_collection_size=batch.projection_limits.max_nodes)
         except (Exception, WorkloadExceeded) as error:
             material, executor = None, None
             record["error"] = {"type": type(error).__name__, "reason": str(error)}

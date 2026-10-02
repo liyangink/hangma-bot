@@ -21,14 +21,17 @@ def test_identity_includes_new_framework_and_native_source():
         "src/hangma_bot/policy/route_heuristic_view.py",
         "src/hangma_bot/policy/route_vip_heuristic.py",
         "src/hangma_bot/hangma/route_structure.py",
+        "src/hangma_bot/hangma/natural_preparation.py",
         "src/hangma_bot/hangma/route_transition.py",
         "src/hangma_bot/hangma/_grouped_native.c",
     } <= paths
+    assert identity["params"]["max_local_collection_size"] == 4096
     changed_budget = smoke.freeze_vip_identity(
         VIP_ROUTE_HEURISTIC_SEED_SOURCE,
         projection_limits=VipRouteProjectionLimits(max_nodes=2048),
     )
     assert changed_budget["candidate_id"] != identity["candidate_id"]
+    assert changed_budget["params"]["max_local_collection_size"] == 2048
     changed_rules = smoke.freeze_vip_identity(
         VIP_ROUTE_HEURISTIC_SEED_SOURCE,
         rule_config=RuleConfig("another-rules-instance", 1, False),

@@ -15,6 +15,7 @@ from hangma_bot.application.deadline import BudgetPolicy
 from hangma_bot.hangma._standard import backend_info
 from hangma_bot.hangma.engine import HangmaRules
 from hangma_bot.hangma.interface import ValueAnalysisLimits
+from hangma_bot.hangma.natural_preparation import NATURAL_PREPARATION_SEMANTICS_VERSION
 from hangma_bot.kernel.config import RuleConfig, TimingConfig, TournamentConfig
 from hangma_bot.kernel.serialization import observation_to_json, window_key_to_json
 from hangma_bot.policy.route_heuristic_view import (
@@ -62,7 +63,7 @@ def freeze_vip_identity(
     都纳入身份，避免仅凭语义标签沿用另一份实现的成绩。无网络副作用。
     """
 
-    contract = REPO_ROOT / "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md"
+    contract = REPO_ROOT / "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md"
     manifest = source_manifest(VIP_IDENTITY_ROOTS)
     native_source = "src/hangma_bot/hangma/_grouped_native.c"
     manifest[native_source] = digest_of_file(REPO_ROOT / native_source)
@@ -73,6 +74,7 @@ def freeze_vip_identity(
     params = {
         "max_operations": max_operations,
         "projection_limits": asdict(projection_limits or VipRouteProjectionLimits()),
+        "max_local_collection_size": (projection_limits or VipRouteProjectionLimits()).max_nodes,
         "rule_config": asdict(rule_config or RuleConfig("hangma-mvp-v10-public-counts", 1, False)),
         "route_limits": asdict(route_limits or ValueAnalysisLimits(max_expansions=8192)),
     }
@@ -86,6 +88,7 @@ def freeze_vip_identity(
         "view_schema_version": VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
         "graph_schema_version": VIP_ROUTE_GRAPH_SCHEMA_VERSION,
         "normal_draw_hu_payment_semantics_version": VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
+        "natural_preparation_semantics_version": NATURAL_PREPARATION_SEMANTICS_VERSION,
     }
 
 

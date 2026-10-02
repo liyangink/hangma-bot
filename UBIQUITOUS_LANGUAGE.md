@@ -1,5 +1,14 @@
 # 杭麻 AI Bot 统一术语表
 
+## 2026-10-02 自然面子准备增补
+
+- **自然面子准备（`NaturalSetPreparationFacts`）**：同一真实等待手牌不借白、只凑剩余自然面子且不含将的数学缺张及弃牌下界。缺张零不代表有白、已爆头、已胡或必摸到白。
+- **准备改善码宽度（`NaturalPreparationCodeWidth`）**：补一张能减少同一自然目标缺张、且仍与公开容量相容的不同牌码数量。不是胡牌宽度、剩余有效张数或概率。
+- **共享条件图（`SharedConditionalGraph`）**：完整冻结事实相同的节点可被多个父节点引用；条件边顺序和重复引用保持，节点计数只表示存储工作量。
+
+已标记的歧义：当前手牌的真实向听、指定自然目标缺张与胡牌资格分别表示；自然准备不是给零白手牌虚构新增白库存。当前合同为[v3](review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md)，下方v2为历史支付增补。
+
+
 ## 2026-10-01 评测输入证据增补
 
 - **实际评分输入捕获（`ScoringInputCapture`）**：离线评分前保存同次候选实际可见的完整DTO，整图去重而每调用仍保留收据；不是赛后重建图或牌型规则来源。
@@ -10,7 +19,7 @@
 
 ## 2026-09-30 VIP 固定框架增补
 
-本节用于当前[联合启发式合同 v2](review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)，不重解释历史积分估值实验。
+本节记录[联合启发式合同 v2](review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)，不重解释历史积分估值实验。
 
 | 统一术语 | 定义 | 已标记歧义 |
 | --- | --- | --- |

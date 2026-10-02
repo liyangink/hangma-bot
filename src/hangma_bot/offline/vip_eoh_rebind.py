@@ -94,7 +94,8 @@ def rebind_vip_research_budget(
     original_record = json.loads(original_generation)
     target_identity = target_batch.identity(original["source"])
     validate_vip_research_rebind_identities(original["identity"], target_identity)
-    ActionValueExecutor(original["source"], max_operations=target_batch.max_operations)
+    ActionValueExecutor(original["source"], max_operations=target_batch.max_operations,
+                        max_local_collection_size=target_batch.projection_limits.max_nodes)
     snapshots = {"original-generation.json": original_generation,
                  "original-candidate.py": original_source,
                  "source-batch.json": source_batch.raw, "candidate.py": original_source,

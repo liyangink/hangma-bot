@@ -17,11 +17,14 @@ from hangma_bot.kernel.observation import PlayerObservation
 from .action_value import ActionScore, ScoreBatch, STATUS_ABSTAIN, STATUS_SCORED
 
 if TYPE_CHECKING:
+    from hangma_bot.hangma.natural_preparation import NaturalSetPreparationFacts
     from hangma_bot.hangma.route_structure import RouteStructureFacts
 
+from hangma_bot.hangma.natural_preparation import NATURAL_PREPARATION_SEMANTICS_VERSION
+
 VIP_ROUTE_CANDIDATE_KIND = "vip_route_heuristic_v1"
-VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION = "vip-route-scoring-view/2"
-VIP_ROUTE_GRAPH_SCHEMA_VERSION = "vip-route-action-graph/2"
+VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION = "vip-route-scoring-view/3"
+VIP_ROUTE_GRAPH_SCHEMA_VERSION = "vip-route-action-graph/3"
 VIP_ROUTE_TRACE_SCHEMA_VERSION = "vip-route-score-trace/1"
 VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION = "vip-normal-draw-hu-payment/1"
 
@@ -114,6 +117,8 @@ class RouteWaitingView:
     qualification_scope: str  # conditional_witness 或 unanalysed，不授予高番必达资格
     normal_draw_hu_payments: Optional[Tuple[RouteConditionalHuPayment, ...]]
     # 逐码、逐抓打假设的条件支付；未分析None、已分析无胡()，不作概率分布
+    natural_preparation: "NaturalSetPreparationFacts"  # 同一真实手牌不借白、不含将的自然面子准备
+    natural_preparation_code_width: int = 0  # 准备改善码中仍与公开容量相容的码数；不是胡牌宽度
     qualification_missing_reason: Optional[str] = None
     qualification_unknown_codes: Tuple[str, ...] = ()  # 相容码未能精确判资格，不能当已排除
     qualification_math_closed_codes: Tuple[str, ...] = ()  # 同源真实有效码并集以外，数学已证不能当次胡
@@ -129,10 +134,17 @@ class RouteWaitingView:
     chain_count: int = 0  # 当前连续飘/杠动作次数；不是等待收益
 
     def __post_init__(self) -> None:
+        from hangma_bot.hangma.natural_preparation import NaturalSetPreparationFacts
         from hangma_bot.hangma.route_structure import RouteStructureFacts
 
         if not isinstance(self.structure, RouteStructureFacts):
             raise ValueError("RouteWaitingView.structure 必须是 RouteStructureFacts")
+        preparation = self.natural_preparation
+        if (not isinstance(preparation, NaturalSetPreparationFacts)
+                or preparation.natural_counts33 != self.structure.natural_counts33
+                or preparation.whites_held != self.structure.whites_held
+                or preparation.meld_set_count != self.structure.meld_set_count):
+            raise ValueError("自然面子准备必须与真实结构的手牌、白库存和副露组数一致")
         if len(self.unseen_capacities) != 34 or len(self.unseen_evidence) != 34:
             raise ValueError("公开容量和证据必须是规范34牌序")
         if any(type(count) is not int or not 0 <= count <= 4
@@ -196,7 +208,7 @@ class RouteWaitingView:
         if (len(self.target_improvement_code_widths) != len(self.structure.targets)
                 or any(type(width) is not int or not 0 <= width <= 34 for width in (
                     self.useful_code_width, self.legal_hu_code_width,
-                    *self.target_improvement_code_widths))):
+                    self.natural_preparation_code_width, *self.target_improvement_code_widths))):
             raise ValueError("集合宽度须逐目标同序且为0—34的整数码数")
 
 
@@ -292,6 +304,7 @@ class VipRouteScoringView:
     max_nodes: int
     max_branches: int
     normal_draw_hu_payment_semantics_version: str = VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION
+    natural_preparation_semantics_version: str = NATURAL_PREPARATION_SEMANTICS_VERSION
     max_waiting_draw_witnesses: int = 16384
     waiting_draw_witness_count: int = 0  # 本次规则局部资格分析请求次数，非完整树节点数
     target_distance_evaluation_count: int = 0  # 结构目标距离请求计数，非后端实际节点数
@@ -307,6 +320,8 @@ class VipRouteScoringView:
             raise ValueError("VIP视图必须绑定规则、结构和执行器版本")
         if self.normal_draw_hu_payment_semantics_version != VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION:
             raise ValueError("VIP普通下一摸条件支付语义版本不匹配")
+        if self.natural_preparation_semantics_version != NATURAL_PREPARATION_SEMANTICS_VERSION:
+            raise ValueError("VIP自然面子准备语义版本不匹配")
         if type(self.base_score) is not int or self.base_score <= 0:
             raise ValueError("BaseScore必须为正整数")
         if any(type(limit) is not int or limit <= 0 for limit in (self.max_nodes, self.max_branches)):
@@ -373,6 +388,7 @@ class VipRouteScoringView:
                 "you_cai_bi_kao": self.you_cai_bi_kao,
                 "structure_semantics_version": self.structure_semantics_version,
                 "normal_draw_hu_payment_semantics_version": self.normal_draw_hu_payment_semantics_version,
+                "natural_preparation_semantics_version": self.natural_preparation_semantics_version,
                 "executor_version": self.executor_version,
             },
             "limits": {"max_nodes": self.max_nodes, "max_branches": self.max_branches,

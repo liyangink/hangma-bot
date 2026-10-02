@@ -1,5 +1,11 @@
 # 第一阶段接口协议
 
+## 2026-10-02 自然面子准备与共享条件图 v3
+
+**当前研究候选使用[合同 v3](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md)，下面的 v2 为历史支付升版记录。**`RouteWaitingView.natural_preparation`必需且与同态`RouteStructureFacts`的真实自然手牌、白库存和副露组数一致。规则入口`analyze_natural_set_preparation(counts34, meld_set_count)`仅接收真实`13-3m`等待态，复用唯一标准型数学，返回不含将、不借白的自然面子缺张及弃牌下界、改善码；不授胡、爆头或未来白板资格。非法类型/数量显式抛错，无外部副作用。外层`natural_preparation_code_width`按同态公开容量保留相容码，非概率。新语义为`vip-natural-set-preparation/1`；视图和图为`/3`，原条件支付语义不变。
+
+图可以共享完整冻结事实相同的节点；全合法根、边顺序、重复引用及条件码不删。节点键为引用身份，节点/边计数表示存储工作量。`ActionValueExecutor(..., max_local_collection_size=4096)`新增单实例容量参数，须为1—16384整数，布尔拒绝；默认仍4096，操作计费、源码和解释守卫不变。VIP由冻结`projection_limits.max_nodes`导出该参数，生成、装载、探针、修复、重绑定与完整策略一致；`freeze_vip_identity.params`及模型附录显式保存容量，源码/依赖/合同变化形成新身份。旧包不自动兼容或继承成绩。新增公开契约见[test_vip_natural_preparation_contract.py](../../tests/contracts/test_vip_natural_preparation_contract.py)与[test_vip_graph_capacity.py](../../tests/unit/policy/test_vip_graph_capacity.py)。
+
 ## 2026-10-01 显式公开来源与开发探针 /2
 
 **仅改变离线研究接缝，线上动作和规则来源不变。** `read_public_input_source` 核原件、来源声明及历史生产快照；`build_public_input_panel` 按行动前公开信息分层并限制每母根窗口数。`run_public_input_probe` 按显式共同参照计划逐包真实评分，完整只读输入先保存，失败与未调用保留分母。`validate_public_input_panel`、`validate_public_input_probe` 只读校验实际原件，不补评分或世界推进。自然行动前来源只取原 A 路径；条件来源只取依法可见起手，隐藏教师信息不进策略。
@@ -17,7 +23,7 @@
 
 ## 2026-10-01 条件胡支付合同 v2
 
-**本节是当前新候选视图的接口依据；下方 v1 条款保存历史版本。**[完整合同 v2](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)将 `VipRouteScoringView` 与事实图升为 `/2`，新增支付语义 `vip-normal-draw-hu-payment/1`；候选类型仍为 `vip_route_heuristic_v1`，旧 `/4` 输入不变。
+**本节保存支付升版历史依据；当前新准备事实见顶部 v3，下方 v1 条款保存历史版本。**[完整合同 v2](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)将 `VipRouteScoringView` 与事实图升为 `/2`，新增支付语义 `vip-normal-draw-hu-payment/1`；候选类型仍为 `vip_route_heuristic_v1`，旧 `/4` 输入不变。
 
 `RouteWaitingView.normal_draw_hu_payments: Optional[Tuple[RouteConditionalHuPayment, ...]]`是逐牌码、逐抓打假设的普通摸牌条件支付。字段含摸前／摸后墙余和精确容量、摸后爆头、已有链／飘白、本人／庄家座位、规则身份及同源 `Settlement`。四家积分按座位0—3，单位积分；两假设不能重复计算机会，公开未见容量含他家暗牌。未分析为None并给原因，已分析无胡为空元组，部分未知只交已有精确行并保留未知码。等待节点即时 `settlement` 仍为空。
 
