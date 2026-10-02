@@ -1,12 +1,34 @@
 # 第一阶段接口协议
 
-## 2026-10-03 有界计算服务生命周期（显式研究入口）
+## 2026-10-03 T86传输与退出补充（显式研究入口）
+
+**`BotPolicy.choose(DecisionRequest, DecisionBudget)`和组合根生命周期契约保持。** `DecisionComputeSettings.resource_reap_seconds`为新增正有限真实秒持续时间，默认1.0；`startup_seconds`覆盖spawn与ready的同一次等待。服务先占有限槽/队列，派发才编码；独占至多`workers`个线程/未结束传输任务，取消保留原线程future。可信内部二进制pickle5同包传递任务号、完整请求及原预算，小头摘要/编号、整体字节上限和返回严格计划JSON检查均保留。
+
+`close()`并发调用共享受取消保护的资源回收任务。单槽回收失败仍继续其他槽及线程池shutdown；迟到spawn有每槽唯一自动清理线程，在真实启动终态后关闭socket并终止/join进程。迟到编码终态回调安全移除future，线程池已停止纳入。超时或无法回收抛`DecisionComputeError`，引用保留，不宣称物理资源已退出。`snapshot()`新增传输未结束数、线程存活数及迟到清理数；没有无限请求历史或Token。
+
+163项相关公开接口测试及18次实际请求读回已闭合。有限最终完成的迟到工作可自动回收；不能强推为永久卡死线程可强停、全局时延或线上准入。测试与细分分母见[T86](../../review/vip-route-2026-09-30/T86-BOUNDED-TRANSPORT-RESULT.md)。下方T85为历史快照，原预算JSON传输及同步缺口描述对应当时版本。
+
+## 历史快照：2026-10-03 有界计算服务生命周期（T85显式研究入口）
 
 **保持`BotPolicy.choose(DecisionRequest, DecisionBudget)`外部契约，新增组合根拥有的计算服务生命周期。** `build_isolated_decision_policy(worker_factory, execution_id, clock, settings)`返回`BoundedDecisionCompute`；所有者预热`start()`，消费相同choose接口，最终关闭`close()`。可序列化工厂在spawn子进程返回`PreparedDecisionPolicy(policy, execution_id)`，身份须按实际源码/依赖核验；不得包含凭证或隐藏世界。
 
 `DecisionComputeSettings`规定工作进程、待处理数及消息字节上限，以及真实秒单位的启动、单任务和弃置宽限时间、每槽重启上限。排队使用原`fallback_deadline_monotonic`本机单调秒，不能重置。容量、期限、启动及计算失败抛`DecisionComputeError`交原应用紧急路径；外部取消仍传播取消，原计算资源继续回收。任务号、完整输入/预算摘要、执行身份及同场当前请求绑定结果；返回计划还验请求/窗口/权威序号和已拒候选。
 
 请求的内部pickle5只用于可信父/子进程私有socket，完整保留研究条件根；禁止外部pickle、模型原答、跨机器时基混用。结果仍经现有严格计划JSON解码；官方JSON及审计拒绝研究根规则不放宽。关闭失败显式报错且保留未回收资源引用。`snapshot()`仅固定诊断计数及当前资源量，没有历史请求表。当前同步传输编解码和spawn仍有阻塞风险，不授完整事件循环隔离；公开测试和真实请求证据见[T85](../../review/vip-route-2026-09-30/T85-BOUNDED-REAL-COMPUTE-RESULT.md)。
+
+## 2026-10-03 一摸成胡资格查询剪枝（隔离工程）
+
+**完整路线、原未知标记及容量上限保持，旧冻结身份不自动兼容。** 同源手牌数学已给出逐码摸后向听；只在该码摸后为已胡−1时查询胡资格和结算。不能要求当前向听为0：自然虚牌四张配额受限时，东4/南3/西3/北3的向听为1，摸白却能成胡。此反例由独立复核发现并通过唯一规则源确认，已加入公开构图回归。
+
+全部合法根、跟打、杠补、自然准备及普通/七对/综合进张码保留；`qualification_unknown_codes`和`qualification_math_closed_codes`使用旧划分，不改变非精确库存的未知标记。实际`waiting_draw_witness_count`减少，其他事实、全分值和解释须精确对照。源码/合同/依赖产生新工程身份，原T78失败和历史成绩不改写；实机时限、并发及官方门仍须另验。首版重分类未知和次版要求当前向听0均已否决，证据保留。
+
+## 2026-10-02 构图内公开计数工程接缝
+
+**新增`public_count_result_scope()`仅控制纯结果复用寿命；共享规则、图和评分语义不变。** 无输入，作为同步contextmanager使用且yield None；作用域内缓存完整公开视图八字段及`legacy_four_meld`对应的`PublicTileCounts`，最多2048结果／16384严格形状检查条目。全部字段按共享值对象注解确认exact类型，区分bool与int、固定四元组与变长元组；不支持注解或可变值原样回原函数，不新增计数拒绝、不吞原异常。
+
+本人未见容量每次仍读取同态暗牌、单列摸牌、座位与飘白补记；未知、保守与精确证据不可互换。每个作用域独占缓存并强持有历史原件；嵌套、异常和正常退出通过token恢复外层并清空。ContextVar的对象引用显式继承时由RLock保护；关闭后旧上下文仅原算。规范冻结值不能通过__dict__/object.__setattr__主动改写。作用域只包同步全图构造，不含await、HTTP、模型、文件或时间。
+
+`build_vip_route_scoring_view(request, config, *, limits=None)`公开参数、返回类型和完整事实不变；原函数体只移到内部实现。`HangmaRules.analyze`、`BotPolicy.choose`、执行器、视图／图v3及条件支付语义不升版。源码依赖摘要形成新工程身份；旧作者来源和历史效果只保留在原身份下，不凭等价性直接授新包发布。公共行为覆盖见[test_public_count_result_scope.py](../../tests/unit/hangma/test_public_count_result_scope.py)，完整输入与评分对账见[T54](../../review/vip-route-2026-09-30/T54-NATIVE-PUBLIC-COUNT-CACHE.md)。
 
 ## 2026-10-02 自然面子准备与共享条件图 v3
 
@@ -50,8 +72,6 @@
 规则内局部等待见证明确 `local_witness_only`，不生成官方观察、序号或到达概率。条件状态新增他座已摸来源标记 `other_draw_replacement`，未摸吃碰暂态不能接受自摸终局；公开协议不变。完整机械、无损审计、实机截止及官方发布门均未因新评分合同自动通过。
 
 仅胡资格的公开规则入口`analyze_waiting_hu_witness(state,tile,*,wall_remaining_before_draw,catch_restricted,config)`与完整局部入口使用相同前置；返回冻结`WaitingHuWitness`，只承诺给定普通摸的合法胡、四座即时结算、胡相关问题、墙余与该牌码精确容量变化。未成胡时结算为空；资格成立但结算证据缺失时保留真值及问题。它不返回完整后态、弃牌、向听或进张，不能作为后续事件推进输入；容量非精确、不可摸、结构未裁决等输入抛`ValueError`。纯函数，无网络或记录副作用。内部`HandWinEvidence`只承载同源成胡数学，不补造`HandSummary`。新入口与完整见证对照覆盖白板量、两种抓打限制、末墙、副露、链、分解故障及真实慢观察。
-
-T73隔离原型新增`analyze_given_normal_draw_hu_qualification(state,tile,*,wall_remaining_before_draw,catch_restricted,config)`，共用原等待态／规则／墙余／限制前置，返回不可变`GivenNormalDrawHuQualification`：给定牌码、抓打限制、摸前后墙余（单位张）、规则身份、胡真假、四座0—3条件结算、问题、更新后爆头及原时点`PublicUnseenDrawSupport`。库存`exact`为精确0—4张、`conservative`为0—4张下界，`unknown`仅为`None`；正下界含他家暗牌，不是墙内概率。精确零或`known_tile_entity_lower_bound`≥4抛`ValueError`，保守零／未知不授正支持。输入矛盾与数学故障显式暴露；缺链／分解证据保留问题及空结算。纯函数、不扣保守库存，不返回`source_state`或`draw_capacity_after`，不可作未来事件推进输入。schema为`vip-given-normal-draw-hu-qualification/1`；旧入口与其精确类型不放宽。当前只有隔离探针消费，不修改`RuleAnalysis`、评分视图／候选合同或线上策略；后续跨模块接入必须新绑定、补契约与全调用方验证。公开行为控制见[隔离公开行为测试](../../review/vip-route-2026-09-30/evidence/t73-separated-hu-qualification-prototype-1/snapshot-v2/tests/unit/hangma/test_given_normal_draw_hu_qualification.py)。
 
 跨模块契约见 [`test_vip_route_scoring_contract.py`](../../tests/contracts/test_vip_route_scoring_contract.py)：精确新／旧类型互斥、全合法输出完整性及严格失败分类。候选身份由离线 `freeze_vip_identity` 绑定实际 `RuleConfig`、`ValueAnalysisLimits`、投影／评分额度和源码／数学后端内容；评估次数、作者与父代出处另记，不替代实际运行配置。
 
