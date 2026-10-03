@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any, Mapping, Optional
 
 from hangma_bot.hangma import hand_analysis, route_transition
@@ -138,11 +138,17 @@ class RouteHeuristicResearchError(PolicyError):
 
 @dataclass(frozen=True)
 class VipRouteProjectionLimits:
-    """整次第一方事实展开上限，不代替候选100,000计数操作限额。"""
+    """整次第一方事实展开上限，不代替候选计数操作限额。
+
+    max_replacement_depth 只限一次选择内嵌套杠补的条件展开层数，None
+    保持完整展开；1 完整保留当前杠补、将更远的合法杠补显式标为未知。
+    真实下一权威动作窗口重新从深度零分析，不限制实际连续杠次数。
+    """
 
     max_nodes: int = 4096
     max_branches: int = 16384
     max_waiting_draw_witnesses: int = 16384
+    max_replacement_depth: Optional[int] = None
 
     def __post_init__(self) -> None:
         if any(type(value) is not int or value <= 0 for value in (
@@ -151,6 +157,9 @@ class VipRouteProjectionLimits:
             raise ValueError("VIP展开上限必须为正整数")
         if self.max_nodes > MAX_SUPPORTED_LOCAL_COLLECTION_SIZE:
             raise ValueError("VIP节点上限不能超过受限执行器16384项硬容量")
+        if (self.max_replacement_depth is not None
+                and (type(self.max_replacement_depth) is not int or self.max_replacement_depth <= 0)):
+            raise ValueError("杠补展开深度须为正整数或None")
 
 
 class _Projection:
@@ -167,6 +176,7 @@ class _Projection:
         self.target_distance_count = 0
         self.waiting_cache: dict[tuple, RouteWaitingView] = {}
         self.semantic_nodes: dict[tuple, str] = {}
+        self._replacement_depth = 0  # 本投影正在展开的嵌套杠补层数，异常退出也恢复
 
     @staticmethod
     def code_width(codes, state) -> int:
@@ -342,24 +352,39 @@ class _Projection:
         codes = self.compatible_codes(state)
         if not codes:
             raise RouteHeuristicResearchError("MECHANICAL_GAP", "合法杠没有公开相容补牌码")
-        children = []
-        for code in codes:
-            child = key + "/draw:" + code
-            index = CANONICAL_TILE_ORDER.index(code)
-            if state.unseen_evidence[index] != "exact" or state.unseen_capacities[index] is None:
-                children.append(self.add(
-                    child, "unknown_draw", waiting=self.waiting(state, qualification=False),
-                    pending="replacement_draw:" + code,
-                    uncertainty="公开容量非精确，尚未给定此补牌及资格；不删除相容码",
-                ))
-                continue
-            landed = route_transition.apply_given_draw(state, Tile(code), replacement=True)
-            analysis = route_transition.analyze_given_replacement_draw(
-                landed, seat=self.request.observation.seat,
-                dealer_seat=self.request.observation.dealer_seat, config=self.config,
+        depth_limit = self.limits.max_replacement_depth
+        if depth_limit is not None and self._replacement_depth >= depth_limit:
+            # 合法性及公开相容性已由原路径确认。这里只缩短条件前瞻，不能
+            # 把更远补牌当成已失败、已胡或已发生，更不能删除这次合法杠。
+            waiting = replace(self.waiting(state, qualification=False),
+                qualification_missing_reason="后继杠补达到条件展开深度上限，未给定更远补牌及成胡资格")
+            return self.add(
+                key, "unknown_draw", waiting=waiting,
+                pending="replacement_draw_not_expanded_after_depth:" + str(depth_limit),
+                uncertainty="计算预算限制：后继杠已合法，但更远补牌及成胡资格未展开；下一权威窗重新判断",
             )
-            children.append(self.action_choices(analysis, child))
-        return self.add(key, "replacement", children=children, codes=codes, pending="unknown_replacement_draw")
+        self._replacement_depth += 1
+        try:
+            children = []
+            for code in codes:
+                child = key + "/draw:" + code
+                index = CANONICAL_TILE_ORDER.index(code)
+                if state.unseen_evidence[index] != "exact" or state.unseen_capacities[index] is None:
+                    children.append(self.add(
+                        child, "unknown_draw", waiting=self.waiting(state, qualification=False),
+                        pending="replacement_draw:" + code,
+                        uncertainty="公开容量非精确，尚未给定此补牌及资格；不删除相容码",
+                    ))
+                    continue
+                landed = route_transition.apply_given_draw(state, Tile(code), replacement=True)
+                analysis = route_transition.analyze_given_replacement_draw(
+                    landed, seat=self.request.observation.seat,
+                    dealer_seat=self.request.observation.dealer_seat, config=self.config,
+                )
+                children.append(self.action_choices(analysis, child))
+            return self.add(key, "replacement", children=children, codes=codes, pending="unknown_replacement_draw")
+        finally:
+            self._replacement_depth -= 1
 
     def claim_success(self, root, candidate):
         observation = self.request.observation
@@ -481,6 +506,7 @@ def build_vip_route_scoring_view(
         executor_version=EXECUTOR_VERSION,
         max_nodes=projection.limits.max_nodes, max_branches=projection.limits.max_branches,
         max_waiting_draw_witnesses=projection.limits.max_waiting_draw_witnesses,
+        max_replacement_depth=projection.limits.max_replacement_depth,
         waiting_draw_witness_count=projection.witness_count,
         target_distance_evaluation_count=projection.target_distance_count,
     )
@@ -564,6 +590,7 @@ class RouteVipHeuristicPolicy:
                          "view_schema_version": VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
                          "normal_draw_hu_payment_semantics_version": VIP_NORMAL_DRAW_HU_PAYMENT_SEMANTICS_VERSION,
                          "natural_preparation_semantics_version": NATURAL_PREPARATION_SEMANTICS_VERSION,
+                         "max_replacement_depth": view.max_replacement_depth,
                          "detail": dict(entry.trace)},
         ) for index, entry in enumerate(ordered, start=1))
         return DecisionPlan(

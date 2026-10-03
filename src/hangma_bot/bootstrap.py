@@ -60,8 +60,11 @@ from hangma_bot.application.contracts import (
     SessionBootstrap,
     TournamentSessionPort,
 )
-from hangma_bot.application.deadline import BudgetPolicy, SystemClock
+from hangma_bot.application.deadline import BudgetPolicy, SystemClock, RuntimeClock
 from hangma_bot.application.ids import IdGenerator, PrefixedUuidIds
+from hangma_bot.application.decision_compute import (
+    BoundedDecisionCompute, DecisionComputeSettings, PreparedDecisionPolicy,
+)
 from hangma_bot.application.participant_runtime import ParticipantRuntime
 from hangma_bot.application.tournament_supervisor import SupervisionPolicy
 from hangma_bot.hangma.engine import HangmaRules
@@ -123,6 +126,18 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 # 清单，用于区分「平台指南版本」与「本地规则引擎语义版本」。
 DEFAULT_RULESET_VERSION = "hangma-mvp-v10-public-counts"
 
+
+def build_isolated_decision_policy(
+    worker_factory: Callable[[], PreparedDecisionPolicy], *, execution_id: str,
+    clock: RuntimeClock, settings: DecisionComputeSettings | None = None,
+) -> BoundedDecisionCompute:
+    """显式装配独立计算服务；调用方须先 start 并在 finally 中 close。
+
+    工厂必须可经 spawn 序列化，只携带已验证的策略配置，禁止凭证及隐藏
+    世界。没有策略名注册或自动准入；现有网络配置不会因新增该入口而改变。
+    """
+    return BoundedDecisionCompute(worker_factory, execution_id=execution_id,
+                                  clock=clock, settings=settings or DecisionComputeSettings())
 
 def build_outcome_policy(
     *, baseline: BotPolicy, predictor: OutcomePredictor | None,

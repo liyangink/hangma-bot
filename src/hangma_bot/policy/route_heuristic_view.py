@@ -167,9 +167,14 @@ class RouteWaitingView:
                      self.unrestricted_hu_draw_codes, self.qualification_unknown_codes,
                      self.qualification_math_closed_codes)
         for codes in code_sets:
-            if codes is not None and (type(codes) is not tuple
-                    or any(type(code) is not str or code not in CANONICAL_TILE_ORDER for code in codes)
-                    or codes != tuple(code for code in CANONICAL_TILE_ORDER if code in set(codes))):
+            if codes is None:
+                continue
+            if (type(codes) is not tuple
+                    or any(type(code) is not str or code not in CANONICAL_TILE_ORDER for code in codes)):
+                raise ValueError("等待胡资格集合须按规范牌序去重")
+            # 类型和值域通过后只建一次集合，仍按原34牌序验证去重及顺序。
+            selected = set(codes)
+            if codes != tuple(code for code in CANONICAL_TILE_ORDER if code in selected):
                 raise ValueError("等待胡资格集合须按规范牌序去重")
         if (self.normal_draw_hu_payments is None) != (self.legal_hu_draw_codes is None):
             raise ValueError("条件支付表的未分析状态须与胡资格一致")
@@ -308,6 +313,7 @@ class VipRouteScoringView:
     max_waiting_draw_witnesses: int = 16384
     waiting_draw_witness_count: int = 0  # 本次规则局部资格分析请求次数，非完整树节点数
     target_distance_evaluation_count: int = 0  # 结构目标距离请求计数，非后端实际节点数
+    max_replacement_depth: Optional[int] = None  # 每次选择可展开的嵌套杠补层数；None保持完整展开
 
     def __post_init__(self) -> None:
         if self.schema_version != VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION:
@@ -326,6 +332,9 @@ class VipRouteScoringView:
             raise ValueError("BaseScore必须为正整数")
         if any(type(limit) is not int or limit <= 0 for limit in (self.max_nodes, self.max_branches)):
             raise ValueError("图工作量上限必须为正整数")
+        if (self.max_replacement_depth is not None
+                and (type(self.max_replacement_depth) is not int or self.max_replacement_depth <= 0)):
+            raise ValueError("杠补展开深度须为正整数或None")
         if (type(self.max_waiting_draw_witnesses) is not int or self.max_waiting_draw_witnesses <= 0
                 or type(self.waiting_draw_witness_count) is not int
                 or not 0 <= self.waiting_draw_witness_count <= self.max_waiting_draw_witnesses
@@ -392,7 +401,8 @@ class VipRouteScoringView:
                 "executor_version": self.executor_version,
             },
             "limits": {"max_nodes": self.max_nodes, "max_branches": self.max_branches,
-                       "max_waiting_draw_witnesses": self.max_waiting_draw_witnesses},
+                       "max_waiting_draw_witnesses": self.max_waiting_draw_witnesses,
+                       "max_replacement_depth": self.max_replacement_depth},
             "workload": {"expanded_node_count": len(self.nodes),
                          "expanded_branch_count": sum(len(node.children) for node in self.nodes),
                          "waiting_draw_witness_count": self.waiting_draw_witness_count,
