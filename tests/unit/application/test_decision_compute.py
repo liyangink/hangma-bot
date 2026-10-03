@@ -23,6 +23,8 @@ class ControlPolicy:
         if command == 'hang':
             while True:
                 time.sleep(0.1)
+        if command == 'policy_error':
+            raise ValueError('公开输入缺少所需的规则事实')
         if command == 'slow':
             await asyncio.sleep(0.12)
         plan = await FakePolicy().choose(request, budget)
@@ -175,6 +177,30 @@ async def test_worker_failure_restarts_bounded_and_next_request_succeeds(kind):
         assert result.decision_id == 'fast:recovered'
         assert compute.snapshot()['restarts'] == 1
         assert compute.snapshot()['owned'] == 0
+    finally:
+        await compute.close()
+    assert compute.snapshot()['live_processes'] == 0
+
+
+@pytest.mark.asyncio
+async def test_request_policy_errors_keep_healthy_worker_and_restart_quota():
+    """单请求拒绝不能耗尽进程重启额度；后续正常请求仍由同一计算进程处理。"""
+    compute = service(max_restarts=0)
+    await compute.start()
+    try:
+        child_pids = set()
+        for index in range(5):
+            with pytest.raises(DecisionComputeError, match='^POLICY_FAILED$'):
+                await compute.choose(request(f'policy_error:{index}'), budget())
+            result = await compute.choose(request(f'fast:{index}'), budget())
+            child_pids.add(result.candidates[0].score_parts[1].value)
+        snapshot = compute.snapshot()
+        assert len(child_pids) == 1
+        assert snapshot['policy_failures'] == 5
+        assert snapshot['completed'] == 5
+        assert snapshot['process_starts'] == 1
+        assert snapshot['faults'] == snapshot['restarts'] == 0
+        assert snapshot['owned'] == snapshot['current'] == 0
     finally:
         await compute.close()
     assert compute.snapshot()['live_processes'] == 0

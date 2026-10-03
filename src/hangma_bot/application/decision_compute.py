@@ -197,7 +197,7 @@ class BoundedDecisionCompute:
         self._started = self._closed = False
         self._close_task = None  # 并发退出共享同一个资源回收所有者
         self._counts = dict(submitted=0, dispatched=0, completed=0, discarded=0,
-                            rejected=0, faults=0, process_starts=0, restarts=0,
+                            rejected=0, faults=0, policy_failures=0, process_starts=0, restarts=0,
                             peak_owned=0, peak_pending=0, peak_transport=0)
 
     def snapshot(self):
@@ -369,7 +369,14 @@ class BoundedDecisionCompute:
             self._abandon(job, 'DEADLINE')
             return
         if 'error' in message:
-            raise DecisionComputeError('WORKER_POLICY_FAILED:' + message['error'])
+            # 子进程已捕获本次策略拒绝并继续服务。它不是进程/协议故障，
+            # 不能耗尽重启额度，令随后所有正常窗口永久进入紧急保底。
+            # 只有身份与错误信封都合法时才走此通道；不接受伪造成功计划。
+            if type(message['error']) is not str or 'plan' in message:
+                raise DecisionComputeError('RESULT_ERROR_ENVELOPE_INVALID')
+            self._counts['policy_failures'] += 1
+            job.future.set_exception(DecisionComputeError('POLICY_FAILED'))
+            return
         plan = message['plan']
         request = job.request
         allowed = {c.action_key for c in request.rules.legal_candidates}

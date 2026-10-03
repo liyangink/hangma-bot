@@ -19,10 +19,36 @@ from .special_rules import is_passive_observation_event
 def infer_gang_draw(observation: PlayerObservation) -> Optional[bool]:
     """判断当前本人摸牌来源；证据不足返回 None，明确非本人摸牌返回 False。
 
-    只接受与已消费水位对齐的连续事件后缀，避免刷新后把旧杠补牌沿用
-    到新的窗口。匹配本次摸牌的 gang_replenish 字段优先提供直接证据，
-    不要求存在更早杠事件；未提供时才使用本人杠/摸牌相邻关系。
+    当前连续事件给出直接证据；另按官方指南 v34 §1.3 与 god 定义，
+    当前有效摸牌的权威零链排除杠补：任何本人杠令链加一，到补摸窗口
+    尚无本人弃牌可断链。正链不反推杠补；观察问题或来源冲突保持未知。
     """
+    if observation.phase != "draw" or observation.turn_seat != observation.seat:
+        return False
+    if observation.drawn_tile is None:
+        return None
+    event_source = _infer_current_draw_event(observation)
+    if observation.observation_issues or _gang_draw_conflict(observation, event_source):
+        return None
+    if event_source is not None:
+        return event_source
+    if observation.rule_state.chain_count == 0 and _concealed_tiles(observation) is not None:
+        return False
+    return None
+
+
+def _gang_draw_conflict(observation: PlayerObservation, event_source: Optional[bool]) -> bool:
+    """当前来源与权威链或直接来源相矛盾时，不择一覆盖另一事实。"""
+    if (observation.phase != "draw" or observation.turn_seat != observation.seat
+            or observation.drawn_tile is None):
+        return False
+    direct = observation.gang_draw
+    return ((observation.rule_state.chain_count == 0 and (direct is True or event_source is True))
+            or (direct is not None and event_source is not None and direct != event_source))
+
+
+def _infer_current_draw_event(observation: PlayerObservation) -> Optional[bool]:
+    """只接受对齐当前水位的连续后缀，不把旧杠补事件带入新的窗口。"""
     if observation.phase != "draw" or observation.turn_seat != observation.seat:
         return False
     if observation.drawn_tile is None:
@@ -57,10 +83,10 @@ def infer_gang_draw(observation: PlayerObservation) -> Optional[bool]:
 
 
 def enrich_observation(observation: PlayerObservation) -> PlayerObservation:
-    """补充能精确推导的可见事实，保留调用方已明确提供的事实。
+    """补充能精确证明的可见事实；来源冲突回未知并记录核对问题。
 
     不要求整单局历史完整：连续当前链后缀足够；缺口前的片段不会拼接。
-    不修改官方 god；不会为未知事实填零或 False。
+    不修改官方 god；可信零链可按规则证明来源 False，证据不足不填默认值。
     """
     piao = observation.chain_piao
     if piao is None:
@@ -69,9 +95,13 @@ def enrich_observation(observation: PlayerObservation) -> PlayerObservation:
             observation.rule_state.chain_count, observation.consumed_seq,
         )
     gang_draw = observation.gang_draw
-    if gang_draw is None:
+    issues = observation.observation_issues
+    if _gang_draw_conflict(observation, _infer_current_draw_event(observation)):
+        gang_draw = None
+        issues = tuple(sorted(set(issues + ("gang_draw_mismatch:source_or_chain",))))
+    elif gang_draw is None:
         gang_draw = infer_gang_draw(observation)
-    return replace(observation, chain_piao=piao, gang_draw=gang_draw)
+    return replace(observation, chain_piao=piao, gang_draw=gang_draw, observation_issues=issues)
 
 
 def reconcile_observation(
@@ -90,7 +120,9 @@ def reconcile_observation(
 
     没有动作确认时，只在本人牌河、副露、链计数不变且暗牌未发生无法解释
     的变化时保留已知飘数。杠补来源另须证明还是同一次摸牌，不能只因牌值
-    相同就沿用。任一证据不足保留未知；after 已知字段优先，冲突时不混填。
+    相同就沿用。明确非本人待补牌的前态、同链且暗牌恰增加当前摸牌时，
+    可以证明新摸来源 False；本人待补牌或证据不足仍未知。after 已知字段
+    优先，来源冲突回未知并记录问题，飘数冲突不混填。
     本函数纯计算，无网络、时钟或副作用；不补造缺失事件。
     """
     after = enrich_observation(after)
@@ -113,8 +145,10 @@ def reconcile_observation(
     if facts is None:
         return after
     piao, gang_draw = facts
-    if ((after.chain_piao is not None and piao is not None and after.chain_piao != piao)
-            or (after.gang_draw is not None and gang_draw is not None and after.gang_draw != gang_draw)):
+    if after.gang_draw is not None and gang_draw is not None and after.gang_draw != gang_draw:
+        return replace(after, gang_draw=None, observation_issues=tuple(sorted(set(
+            after.observation_issues + ("gang_draw_mismatch:confirmed_transition",)))))
+    if after.chain_piao is not None and piao is not None and after.chain_piao != piao:
         return after
     return replace(
         after,
@@ -182,6 +216,13 @@ def _unchanged_chain_facts(
                                  and before.remaining_tile_count == after.remaining_tile_count)))
     if same_public_draw:
         gang_draw = before.gang_draw
+    elif (new_draw and not before.observation_issues and not after.observation_issues
+          and (before.phase in ("response_peng", "response_chi")
+               or (before.phase == "draw" and before.turn_seat != seat))):
+        # 可信前态明确不是本人杠后待补摸；本人河、副露和链不变、暗牌只增加
+        # 当前牌，排除中途本人杠。本人 draw 且 drawn=None 可是杠中间态，
+        # 不在此分支授普通摸来源。旧飘数仍按原值保留，未知不补零。
+        gang_draw = False
     return before.chain_piao, gang_draw
 
 

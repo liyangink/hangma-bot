@@ -129,9 +129,9 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 # 清单，用于区分「平台指南版本」与「本地规则引擎语义版本」。
 DEFAULT_RULESET_VERSION = "hangma-mvp-v10-public-counts"
 
-# 仅用于工程验收的首次冻结包；候选源与线上运行身份分别记录。
-VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v1"
-VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v1/manifest.json"
+# 仅用于工程验收；v1失败证据保留，修复后的运行源码绑定新的v2身份。
+VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v2"
+VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v2/manifest.json"
 VIP_S02_BASE_CANDIDATE_ID = "54d4029ba095572490c41406a481d73d27e350e385438b177013ce72f274b710"
 VIP_S02_ROUTE_LIMITS = ValueAnalysisLimits(max_expansions=8192, max_routes_per_candidate=128)
 VIP_S02_PROJECTION_LIMITS = VipRouteProjectionLimits(8192, 16384, 65536, 1)
@@ -149,7 +149,7 @@ def _vip_runtime_sources() -> dict[str, str]:
 
 
 def _vip_params() -> dict:
-    """首次测试房包的固定范围；工作量是次数、持续时间为单调秒。"""
+    """工程测试房包的固定范围；工作量是次数、持续时间为单调秒。"""
     return {"rule_config": asdict(RuleConfig(DEFAULT_RULESET_VERSION, 1, False)),
             "route_limits": asdict(VIP_S02_ROUTE_LIMITS),
             "projection_limits": asdict(VIP_S02_PROJECTION_LIMITS),

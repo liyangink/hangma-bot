@@ -118,6 +118,7 @@ def test_optional_route_frontier_preserves_legal_candidates_and_marks_unknown_dr
     unknown_source = make_observation(
         drawn_tile=Tile("南"), hand_counts=(13, 14, 13, 13),
         chain_piao=0, gang_draw=None,
+        rule_state=RulePublicState(Tile("白"), False, 1, False),
     )
     uncertain = rules.analyze(
         unknown_source, route_limits=ValueAnalysisLimits(max_expansions=8192)

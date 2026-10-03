@@ -151,7 +151,8 @@ def test_authoritative_facts_and_god_are_never_overwritten_or_mixed_with_conflic
     assert result.gang_draw is None
     assert result.rule_state == explicit.rule_state
     result = reconcile(before, replace(after, gang_draw=False), action)
-    assert result.gang_draw is False
+    assert result.gang_draw is None
+    assert "gang_draw_mismatch:confirmed_transition" in result.observation_issues
     assert result.chain_piao is None
 
 
@@ -189,7 +190,7 @@ def test_piao_survives_later_normal_draw_without_inheriting_old_draw_source():
                     remaining_tile_count=56, chain_piao=None, gang_draw=None)
     result = reconcile(before, after)
     assert result.chain_piao == 1
-    assert result.gang_draw is None
+    assert result.gang_draw is False
 
 
 def test_piao_survives_other_seats_moves_but_old_gang_draw_does_not():

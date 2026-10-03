@@ -63,9 +63,9 @@ def test_zero_chain_is_known_without_history():
 
 
 def test_gang_draw_gap_is_unknown_and_old_draw_is_not_reused():
-    gap = observation(public_history=(event(8, "gang"), event(10, "tile_drawn", tile="东")))
+    gap = with_chain(2, (event(8, "gang"), event(10, "tile_drawn", tile="东")))
     assert enrich_observation(gap).gang_draw is None
-    later = observation(public_history=(event(7, "gang"), event(8, "tile_drawn", tile="东"), event(9, "tile_discarded", tile="东"), event(10, "chi", tile="1b")))
+    later = with_chain(2, (event(7, "gang"), event(8, "tile_drawn", tile="东"), event(9, "tile_discarded", tile="东"), event(10, "chi", tile="1b")))
     assert enrich_observation(later).gang_draw is None
     assert enrich_observation(replace(later, phase="response_peng")).gang_draw is False
 
@@ -203,7 +203,7 @@ def test_confirmed_response_timeout_keeps_current_chain_and_draw_evidence():
 
 
 def test_unknown_timeout_immediately_before_draw_is_not_normal_draw_evidence():
-    after = observation(public_history=(PublicEvent(9, "timeout", 0), event(10, "tile_drawn", tile="东")))
+    after = with_chain(2, (PublicEvent(9, "timeout", 0), event(10, "tile_drawn", tile="东")))
     assert enrich_observation(after).gang_draw is None
 
 
