@@ -67,6 +67,10 @@ from hangma_bot.policy.interface import (
     RejectedAttempt,
     ScorePart,
 )
+from .route_fact_codec import (
+    conditional_roots_from_json, conditional_roots_to_json,
+    route_frontier_from_json, route_frontier_to_json,
+)
 
 # 决策采集 codec 的线格式版本；只在破坏性变更（删键、改含义、改单位）时递增。
 DECISION_CODEC_VERSION = 1
@@ -519,10 +523,8 @@ def rule_candidate_from_json(payload: object) -> RuleCandidate:
 
 
 def rule_analysis_to_json(analysis: RuleAnalysis) -> dict[str, object]:
-    """把生产规则分析转为 JSON；研发路线载荷尚无无损编解码时拒绝。"""
-    if analysis.route_frontier is not None or analysis.conditional_roots is not None:
-        raise ValueError("研发路线事实尚无无损审计编解码，不能记录为完整决策输入")
-    return {
+    """保存规则事实；路线扩展显式有界，普通旧负载的键集合保持兼容。"""
+    result = {
         "codec_version": DECISION_CODEC_VERSION,
         "legal_candidates": [rule_candidate_to_json(item) for item in analysis.legal_candidates],
         "emergency_candidate": (
@@ -534,6 +536,11 @@ def rule_analysis_to_json(analysis: RuleAnalysis) -> dict[str, object]:
         "ruleset_version": analysis.ruleset_version,
         "issues": [{"area": issue.area, "reason": issue.reason} for issue in analysis.issues],
     }
+    if analysis.route_frontier is not None:
+        result["route_frontier"] = route_frontier_to_json(analysis.route_frontier)
+    if analysis.conditional_roots is not None:
+        result["conditional_roots"] = conditional_roots_to_json(analysis.conditional_roots)
+    return result
 
 
 def rule_analysis_from_json(payload: object) -> RuleAnalysis:
@@ -573,6 +580,10 @@ def rule_analysis_from_json(payload: object) -> RuleAnalysis:
             _get(data, "ruleset_version", type_name), type_name, "ruleset_version"
         ),
         issues=tuple(issues),
+        route_frontier=(None if data.get("route_frontier") is None else
+                        route_frontier_from_json(data["route_frontier"])),
+        conditional_roots=(None if data.get("conditional_roots") is None else
+                           conditional_roots_from_json(data["conditional_roots"])),
     )
 
 
