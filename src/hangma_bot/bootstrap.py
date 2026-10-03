@@ -129,11 +129,11 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 # 清单，用于区分「平台指南版本」与「本地规则引擎语义版本」。
 DEFAULT_RULESET_VERSION = "hangma-mvp-v10-public-counts"
 
-# 仅用于工程验收；v1失败证据保留，修复后的运行源码绑定新的v2身份。
-VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v3"
-VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v3/manifest.json"
-VIP_S02_FREE_STRATEGY = "vip_s02_bounded_d1_free_v1"
-VIP_S02_FREE_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v1/manifest.json"
+# 仅用于显式工程实验；历史包及失败保留，每次运行修复另冻结新身份。
+VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v4"
+VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v4/manifest.json"
+VIP_S02_FREE_STRATEGY = "vip_s02_bounded_d1_free_v2"
+VIP_S02_FREE_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v2/manifest.json"
 VIP_S02_NETWORK_STRATEGIES = (VIP_S02_TESTROOM_STRATEGY, VIP_S02_FREE_STRATEGY)
 VIP_S02_BASE_CANDIDATE_ID = "54d4029ba095572490c41406a481d73d27e350e385438b177013ce72f274b710"
 VIP_S02_ROUTE_LIMITS = ValueAnalysisLimits(max_expansions=8192, max_routes_per_candidate=128)

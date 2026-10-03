@@ -9,8 +9,8 @@
 | `weighted_heuristic_v2` | 全部 | 稳定基线；Tier-A 的对照基准 |
 | `r18_integrated_positive_v1` | 历史冻结范围为 `test_room` / `test_tournament` / `auto_match`；**当前主线规则下拒绝装配** | 旧包绑定原规则源码，没有制作当前规则的新包；历史身份保留，不是默认策略 |
 | `r18_integrated_positive_v2` | 历史四种模式；当前main规则源码绑定不匹配，拒绝重新装配 | 原评分源码和旧包保留，未绕过旧摘要；需要另行验证新绑定，既有旧运行身份不受重写 |
-| `vip_s02_bounded_d1_testroom_v3` | 仅 `test_room`，显式绑定当前包 ID、SSE | 当前工程包；v1/v2保留历史，完整v2房仍有4摸打超时，v3尚未联网 |
-| `vip_s02_bounded_d1_free_v1` | 仅显式实验 `auto_match`，绑定当前包 ID、SSE | 根许可一房实验取样；不授独立强度确认或正式赛事 |
+| `vip_s02_bounded_d1_testroom_v4` | 仅 `test_room`，显式绑定当前包 ID、SSE | T147生命周期修复的新工程包；旧v1/v2/v3留作历史，v4未联网 |
+| `vip_s02_bounded_d1_free_v2` | 仅显式实验 `auto_match`，绑定当前包 ID、SSE | T147修复新包，尚未联网；旧v1首房自然完赛我方代弃/429为0但有2计划失败，不授独立强度或正式赛事 |
 | `v2_hu_upgrade_v1` | **全部（含正式赛事）** | V2有界等胡（Tier-A）；下方是 2026-09-11 的本地验证快照，不代表当前最强策略。2026-09-18 起冻结：后续数值调整一律走 `v2_hu_upgrade_v2` |
 | `v2_hu_upgrade_v2` | 全部（与 v1 同口径） | **新参数批次载体**：与 v1 同结构，只换 `policy/weights_v1.py` 的 `V2_PARAM_BATCH_WEIGHTS`。2026-09-18 着陆时该常量与冻结 V2 逐字相同（零行为变更），数值由「一次一个参数、单独提交 + 策略目录门禁」逐步标定；候选取值与扫描协议见 `review/test-tournament-20260917/policy-param-batch-spec-2026-09-18.md` |
 | `v2_balanced_shadow_v1` | **仅 `test_room` / `auto_match`** | 多路线前沿审计层：复用 `v2_hu_upgrade_v1` 保底并追加路线理由，**不改变动作顺序**；不得用于正式赛事提交 |

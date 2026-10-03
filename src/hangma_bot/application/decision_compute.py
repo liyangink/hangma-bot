@@ -151,6 +151,7 @@ class _Job:
     budget: DecisionBudget
     future: asyncio.Future
     digest: str | None = None
+    wire_started: bool = False  # 已开始向子进程写入；仅父侧编码不能视为子进程工作。
     deadline: asyncio.TimerHandle | None = None
     reap: asyncio.TimerHandle | None = None
 
@@ -330,14 +331,17 @@ class BoundedDecisionCompute:
         if job in self._pending:
             self._pending.remove(job)
             self._forget(job)
-        elif job.reap is None:
-            # 活跃任务仍归原槽；不把取消误当作进程已经空闲。
+        elif job.reap is None and job.wire_started:
+            # 只有已发送的活跃任务可能占住子进程。父侧编码到期后会在
+            # _exchange 的发送前检查退出，不得因此误杀等待输入的健康进程。
+            # 已发送任务仍归原槽；不把取消误当作进程已经空闲。
             slot = next(s for s in self._slots if s.active is job)
             job.reap = asyncio.get_running_loop().call_later(
                 self.settings.abandon_grace_seconds, self._kill_stale, slot, job)
 
     def _kill_stale(self, slot, job):
-        if slot.active is job and slot.process is not None and slot.process.is_alive():
+        if (slot.active is job and job.wire_started
+                and slot.process is not None and slot.process.is_alive()):
             slot.process.terminate()
 
     async def _read(self, reader):
@@ -352,6 +356,8 @@ class BoundedDecisionCompute:
         if job.future.done() or self.clock.now() >= job.budget.fallback_deadline_monotonic:
             self._abandon(job, 'DEADLINE')
             return None
+        # write 可能已送出部分字节后抛错，必须在调用前标记通信已开始。
+        job.wire_started = True
         slot.writer.write(struct.pack('!I', len(wire)) + wire)
         await slot.writer.drain()
         return await self._read(reader)
