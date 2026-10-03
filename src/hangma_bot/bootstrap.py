@@ -33,8 +33,9 @@ from __future__ import annotations
 
 import os
 import hashlib
+import json
 import time
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from enum import Enum
 from pathlib import Path
 from typing import TYPE_CHECKING, Callable, FrozenSet, Mapping, Optional
@@ -108,6 +109,8 @@ from hangma_bot.policy.r18_integrated_positive_v2_rules_20260929_release import 
     R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
 )
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
+from hangma_bot.policy.route_vip_heuristic import RouteVipHeuristicPolicy, VipRouteProjectionLimits
+from hangma_bot.policy.vip_s02_frozen_source import VIP_S02_SOURCE, VIP_S02_SOURCE_SHA256
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
     decision_request_from_json,
@@ -125,6 +128,145 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 # 本地规则语义版本（非官方字段）；进入官方会话的审计 manifest 与启动核对
 # 清单，用于区分「平台指南版本」与「本地规则引擎语义版本」。
 DEFAULT_RULESET_VERSION = "hangma-mvp-v10-public-counts"
+
+# 仅用于工程验收的首次冻结包；候选源与线上运行身份分别记录。
+VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v1"
+VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v1/manifest.json"
+VIP_S02_BASE_CANDIDATE_ID = "54d4029ba095572490c41406a481d73d27e350e385438b177013ce72f274b710"
+VIP_S02_ROUTE_LIMITS = ValueAnalysisLimits(max_expansions=8192, max_routes_per_candidate=128)
+VIP_S02_PROJECTION_LIMITS = VipRouteProjectionLimits(8192, 16384, 65536, 1)
+VIP_S02_COMPUTE_SETTINGS = DecisionComputeSettings(workers=2, max_pending=8)
+
+
+def _vip_runtime_sources() -> dict[str, str]:
+    """在组合根冻结整个线上源码；不包含凭证、测试或历史研究工作区。"""
+    root = _REPO_ROOT / "src/hangma_bot"
+    sources = {p.relative_to(_REPO_ROOT).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
+            for p in sorted(root.rglob("*")) if p.is_file() and p.suffix in (".py", ".c", ".h")}
+    for relative in ("scripts/run_participant.py", "scripts/run_test_room.py"):
+        sources[relative] = hashlib.sha256((_REPO_ROOT / relative).read_bytes()).hexdigest()
+    return sources
+
+
+def _vip_params() -> dict:
+    """首次测试房包的固定范围；工作量是次数、持续时间为单调秒。"""
+    return {"rule_config": asdict(RuleConfig(DEFAULT_RULESET_VERSION, 1, False)),
+            "route_limits": asdict(VIP_S02_ROUTE_LIMITS),
+            "projection_limits": asdict(VIP_S02_PROJECTION_LIMITS),
+            "max_operations": 4_800_000,
+            "compute_settings": asdict(VIP_S02_COMPUTE_SETTINGS)}
+
+
+def _vip_package_id(payload: Mapping) -> str:
+    """完整规范JSON摘要；发布包ID自身不参与计算。"""
+    body = {key: value for key, value in payload.items() if key != "release_package_id"}
+    return hashlib.sha256(json.dumps(body, ensure_ascii=False, sort_keys=True,
+        separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+
+
+def build_vip_testroom_manifest(evidence_sha256: Mapping[str, str]) -> dict:
+    """生成可审查工程测试包，不写文件或自动运行；证据不授独立强度。"""
+    from hangma_bot.adapters.official.dto import KNOWN_GUIDE_VERSION
+    metadata = hand_math_runtime_metadata()
+    if metadata.get("implementation") != "c_grouped" or metadata.get("fallback_reason") is not None:
+        raise RuntimeError("VIP测试房冻结需要已验证的C数学后端")
+    if not evidence_sha256 or any(type(name) is not str or type(value) is not str or len(value) != 64
+           or any(c not in "0123456789abcdef" for c in value)
+           for name, value in evidence_sha256.items()):
+        raise ValueError("VIP工程证据必须是命名的完整SHA-256")
+    _verify_vip_evidence(evidence_sha256)
+    payload = {"schema": "vip-s02-bounded-testroom-release/1",
+        "strategy": VIP_S02_TESTROOM_STRATEGY, "allowed_modes": ["test_room"],
+        "known_guide_version": KNOWN_GUIDE_VERSION, "params": _vip_params(),
+        "base_candidate_id": VIP_S02_BASE_CANDIDATE_ID,
+        "source_sha256": VIP_S02_SOURCE_SHA256,
+        "source_manifest": _vip_runtime_sources(), "hand_math": metadata,
+        "evidence_sha256": dict(evidence_sha256),
+        "admission": "engineering_test_room_only", "strength_admission": False,
+        "production_default": False, "llm_online": False}
+    payload["release_package_id"] = _vip_package_id(payload)
+    return payload
+
+
+def _verify_vip_evidence(evidence_sha256: Mapping[str, str]) -> None:
+    """证据必须是仓库内公开文件，按实际字节核验；不读取私有凭证目录。"""
+    for name, expected in evidence_sha256.items():
+        path = Path(name)
+        if path.is_absolute() or ".." in path.parts or not path.parts or path.parts[0] not in ("review", "doc"):
+            raise ValueError("VIP证据只接受仓库内review/doc相对文件路径")
+        actual = (_REPO_ROOT / path).resolve()
+        if not actual.is_relative_to(_REPO_ROOT.resolve()) or hashlib.sha256(actual.read_bytes()).hexdigest() != expected:
+            raise RuntimeError("VIP工程证据摘要漂移: " + name)
+
+
+def _load_vip_testroom_manifest(expected_id: str | None = None) -> dict:
+    """读取固定包并校验实际源码/参数/后端；漂移在联网前拒绝。"""
+    payload = json.loads((_REPO_ROOT / VIP_S02_TESTROOM_MANIFEST).read_text())
+    from hangma_bot.adapters.official.dto import KNOWN_GUIDE_VERSION
+    required = {"schema", "strategy", "allowed_modes", "known_guide_version", "params",
+        "base_candidate_id", "source_sha256", "source_manifest", "hand_math", "evidence_sha256",
+        "admission", "strength_admission", "production_default", "llm_online", "release_package_id"}
+    if (type(payload) is not dict or set(payload) != required
+            or payload.get("schema") != "vip-s02-bounded-testroom-release/1"
+            or payload.get("strategy") != VIP_S02_TESTROOM_STRATEGY
+            or payload.get("allowed_modes") != ["test_room"]
+            or payload.get("admission") != "engineering_test_room_only"
+            or payload.get("strength_admission") is not False
+            or payload.get("production_default") is not False
+            or payload.get("llm_online") is not False
+            or type(payload.get("known_guide_version")) is not int
+            or payload.get("known_guide_version") != KNOWN_GUIDE_VERSION
+            or json.dumps(payload.get("params"), sort_keys=True, allow_nan=False)
+                != json.dumps(_vip_params(), sort_keys=True, allow_nan=False)
+            or payload.get("base_candidate_id") != VIP_S02_BASE_CANDIDATE_ID
+            or payload.get("source_sha256") != VIP_S02_SOURCE_SHA256):
+        raise RuntimeError("VIP工程冻结包范围或参数不匹配")
+    actual_id = _vip_package_id(payload)
+    if payload.get("release_package_id") != actual_id or (expected_id is not None and expected_id != actual_id):
+        raise ValueError("VIP测试房配置绑定的冻结包摘要不匹配")
+    if hashlib.sha256(VIP_S02_SOURCE.encode()).hexdigest() != VIP_S02_SOURCE_SHA256:
+        raise RuntimeError("VIP原作者公式摘要漂移")
+    if payload.get("source_manifest") != _vip_runtime_sources():
+        raise RuntimeError("VIP完整运行源码摘要漂移；需重新冻结并复核")
+    if payload.get("hand_math") != hand_math_runtime_metadata():
+        raise RuntimeError("VIP实际数学后端与冻结包不匹配")
+    evidence = payload.get("evidence_sha256")
+    if type(evidence) is not dict or not evidence or any(type(n) is not str or type(s) is not str
+            or len(s) != 64 or any(c not in "0123456789abcdef" for c in s) for n, s in evidence.items()):
+        raise ValueError("VIP工程证据清单格式错误")
+    _verify_vip_evidence(evidence)
+    return payload
+
+
+@dataclass(frozen=True)
+class _VipTestroomWorkerFactory:
+    """spawn可序列化工厂，只携带公开冻结包ID，绝不包含Token。"""
+    expected_id: str
+
+    def __call__(self) -> PreparedDecisionPolicy:
+        package = _load_vip_testroom_manifest(self.expected_id)
+        policy = RouteVipHeuristicPolicy(
+            RuleConfig(**package["params"]["rule_config"]), source=VIP_S02_SOURCE,
+            max_operations=package["params"]["max_operations"],
+            projection_limits=VIP_S02_PROJECTION_LIMITS)
+        return PreparedDecisionPolicy(policy, self.expected_id)
+
+
+def _build_vip_testroom_compute(config, clock: RuntimeClock) -> BoundedDecisionCompute:
+    """显式拥有有限计算服务；公式失败仍由原应用独立紧急动作接管。"""
+    package = _load_vip_testroom_manifest(config.expected_policy_release_id)
+    compute = build_isolated_decision_policy(_VipTestroomWorkerFactory(package["release_package_id"]),
+        execution_id=package["release_package_id"], clock=clock, settings=VIP_S02_COMPUTE_SETTINGS)
+    compute.release_metadata = package
+    compute.policy_id = "engineering:vip-s02-bounded-d1:" + package["release_package_id"][:12]
+    return compute
+
+
+def _vip_testroom_rules(config: RuleConfig) -> HangmaRules:
+    """规则范围由官方初始化确认；测试房包不接受未经验证的必拷或基础分。"""
+    if config != RuleConfig(DEFAULT_RULESET_VERSION, 1, False):
+        raise ValueError("VIP测试房只覆盖冻结规则版本、BaseScore=1、YouCaiBiKao=false")
+    return HangmaRules(config)
 
 
 def build_isolated_decision_policy(
@@ -290,7 +432,8 @@ _SEQUENCE_MODEL_STRATEGIES: Mapping[str, str] = {
 # 全部可配置策略名的唯一来源。启动脚本（run_test_room.py 等）与 RuntimeConfig
 # 校验都必须引用本常量，不得各自维护副本——否则会出现"组合根已支持、启动器
 # 白名单却拒绝"的静默漂移（2026-09-14 序列模型接入即发生过一次）。
-AVAILABLE_STRATEGIES: tuple[str, ...] = tuple(_STRATEGY_FACTORIES) + tuple(_SEQUENCE_MODEL_STRATEGIES)
+AVAILABLE_STRATEGIES: tuple[str, ...] = (tuple(_STRATEGY_FACTORIES)
+    + tuple(_SEQUENCE_MODEL_STRATEGIES) + (VIP_S02_TESTROOM_STRATEGY,))
 
 # 默认部署包根目录；可用 RuntimeConfig.sequence_model_dir 覆盖。相对路径按
 # 仓库根解析，模型权重随仓库分发，不从训练工作区读取。
@@ -354,6 +497,8 @@ def _sequence_model_policy(config, monotonic: Callable[[], float] = time.monoton
 def _build_policy(config, monotonic: Callable[[], float] = time.monotonic) -> BotPolicy:
     """按运行配置构造策略；模型类候选走显式装载，其余走原工厂表。"""
 
+    if config.strategy == VIP_S02_TESTROOM_STRATEGY:
+        raise RuntimeError("VIP测试房必须由组合根显式装配计算服务")
     if config.strategy in _SEQUENCE_MODEL_STRATEGIES:
         return _sequence_model_policy(config, monotonic)
     return _STRATEGY_FACTORIES[config.strategy]()
@@ -567,6 +712,16 @@ class RuntimeConfig:
                 raise ValueError(
                     "r18_integrated_positive_v2 配置绑定的发布包摘要与当前批准包不一致"
                 )
+        elif self.strategy == VIP_S02_TESTROOM_STRATEGY:
+            if self.mode is not RuntimeMode.TEST_ROOM:
+                raise ValueError("VIP工程冻结包仅允许测试房，不授其他运行模式")
+            if self.expected_policy_release_id is None:
+                raise ValueError("VIP测试房必须绑定expected_policy_release_id")
+            package = _load_vip_testroom_manifest(self.expected_policy_release_id)
+            if self.known_guide_version < package["known_guide_version"]:
+                raise ValueError("VIP配置指南版本低于冻结工程包")
+            if not self.sse_enabled:
+                raise ValueError("VIP首次工程测试房要求使用已验证SSE接线")
         elif self.expected_policy_release_id is not None:
             raise ValueError(
                 "expected_policy_release_id 只能与已冻结发布策略共同使用"
@@ -872,11 +1027,29 @@ class AssembledRuntime:
     session: TournamentSessionPort
     policy: BotPolicy
     runtime: ParticipantRuntime
+    compute: Optional[BoundedDecisionCompute] = None  # 仅显式VIP包拥有；普通策略不启动子进程
 
     async def run(self):
         """运行到当前身份的参赛者终态；返回值类型见应用层契约。"""
 
-        return await self.runtime.run()
+        runtime_entered = False
+        try:
+            # 在initialize/register/ready之前预热；任何公式/源码漂移都不进入动作窗口。
+            if self.compute is not None:
+                await self.compute.start()
+            runtime_entered = True
+            return await self.runtime.run()
+        finally:
+            try:
+                if self.compute is not None:
+                    await self.compute.close()
+            finally:
+                # ParticipantRuntime.run自身拥有正常出口的HTTP/审计关闭；预热失败尚未进入它。
+                if not runtime_entered:
+                    try:
+                        await self.session.aclose()
+                    finally:
+                        await self.sink.aclose(timeout_seconds=2.0)
 
     @property
     def audit_degraded(self) -> bool:
@@ -929,6 +1102,15 @@ def build_runtime(
     ids_source: IdGenerator = PrefixedUuidIds()
     run_id = ids_source.new_run_id()
     fixed_ids = _FixedRunIds(ids_source, run_id)
+    clock = SystemClock()
+    # 装配时再验冻结身份，且必须先于任何记录线程/HTTP客户端副作用。
+    # RuntimeConfig构造后发生的源码漂移不能遗留一个无法由run关闭的会话。
+    if policy_factory is not None:
+        policy = policy_factory()
+    elif config.strategy == VIP_S02_TESTROOM_STRATEGY:
+        policy = _build_vip_testroom_compute(config, clock)
+    else:
+        policy = _build_policy(config)
 
     # F-08：原始事件 gzip 分段按配置透传（默认关；笔记 E5 接线落地）
     sink = JsonlAuditSink(
@@ -938,7 +1120,6 @@ def build_runtime(
         raw_rotate_bytes=config.audit_raw_rotate_bytes,
     )
     provider = _AuditContextProvider(run_id, config.expected_tournament_id)
-    clock = SystemClock()
 
     if session_factory is None:
         inner: TournamentSessionPort = OfficialTournamentSession(
@@ -961,11 +1142,6 @@ def build_runtime(
     else:
         inner = session_factory()
     session = _IdentityAwareSession(inner, provider)
-
-    if policy_factory is not None:
-        policy = policy_factory()
-    else:
-        policy = _build_policy(config)
 
     # audit-plus-v1 版本事实（契约 §4.2）：代码提交/脏状态、策略版本与
     # 生效权重、本地规则语义版本；缺省取不到为 null，不冒充已提交代码。
@@ -1001,8 +1177,10 @@ def build_runtime(
             expected_tournament_id=config.expected_tournament_id,
             known_guide_version=config.known_guide_version,
         ),
-        rules_factory=(_test_room_upgrade_rules if config.strategy in _VALUE_ANALYSIS_STRATEGIES else HangmaRules),
+        rules_factory=(_vip_testroom_rules if config.strategy == VIP_S02_TESTROOM_STRATEGY else
+            _test_room_upgrade_rules if config.strategy in _VALUE_ANALYSIS_STRATEGIES else HangmaRules),
         value_limits=_value_limits_for(config.strategy),
+        route_limits=(VIP_S02_ROUTE_LIMITS if config.strategy == VIP_S02_TESTROOM_STRATEGY else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,
@@ -1017,6 +1195,7 @@ def build_runtime(
         session=session,
         policy=policy,
         runtime=runtime,
+        compute=policy if isinstance(policy, BoundedDecisionCompute) else None,
     )
 
 

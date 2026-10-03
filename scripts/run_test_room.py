@@ -101,6 +101,8 @@ from hangma_bot.bootstrap import (  # noqa: E402
     R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
     R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
     R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
+    VIP_S02_TESTROOM_STRATEGY,
+    _load_vip_testroom_manifest,
 )
 
 TOKEN_ENV_VAR = "HM_IDENTITY_TOKEN"
@@ -252,6 +254,7 @@ class IdentityReport:
     participant_id_prefix: Optional[str] = None
     audit_degraded: Optional[bool] = None
     audit_summary: Optional[dict] = None
+    decision_compute: Optional[dict] = None  # 固定大小计数与退出后资源量，不含输入或凭证
     audit_complete: Optional[bool] = None
     audit_violations: Optional[int] = None
     games_finished: Optional[int] = None
@@ -375,6 +378,8 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
         R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY: R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
     }
+    if VIP_S02_TESTROOM_STRATEGY in effective_strategies:
+        release_packages[VIP_S02_TESTROOM_STRATEGY] = _load_vip_testroom_manifest()["release_package_id"]
     if expected_release is not None:
         expected_release = _require_non_empty_str(expected_release, "expected_policy_release_id")
     selected_releases = {name for name in effective_strategies if name in release_packages}
@@ -385,9 +390,9 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         if selected_strategy in release_packages:
             bound_release = identity_release or expected_release
             if bound_release is None:
-                raise ValueError("测试房 R18 配置必须显式绑定发布包 expected_policy_release_id")
+                raise ValueError("测试房冻结策略必须显式绑定发布包 expected_policy_release_id")
             if bound_release != release_packages[selected_strategy]:
-                raise ValueError("测试房身份绑定的 R18 发布包摘要与当前批准包不一致")
+                raise ValueError("测试房身份绑定的发布包摘要与当前冻结包不一致")
         elif identity_release is not None:
             raise ValueError("expected_policy_release_id 只能与已冻结发布策略共同使用")
     hosts = data.get("insecure_hosts", [])
@@ -447,6 +452,7 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
     if config["strategy"] in (
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
         R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
+        VIP_S02_TESTROOM_STRATEGY,
     ):
         config["expected_policy_release_id"] = (
             identity.expected_policy_release_id or room.expected_policy_release_id
@@ -600,6 +606,7 @@ async def _run_identity(
         report.participant_id_prefix = result.get("participant_id_prefix")
         report.audit_degraded = result.get("audit_degraded")
         report.audit_summary = result.get("audit_summary")
+        report.decision_compute = result.get("decision_compute")
 
         if shutdown.is_set():
             report.outcome = "interrupted"
@@ -696,6 +703,8 @@ def report_lines(reports: Sequence[IdentityReport]) -> Sequence[str]:
             lines.append(f"        终局分数 {game_key}: {scores}")
         if report.outcome_histogram:
             lines.append(f"        提交结果分布: {report.outcome_histogram}")
+        if report.decision_compute is not None:
+            lines.append("        计算服务退出: " + json.dumps(report.decision_compute, sort_keys=True))
         if report.detail:
             lines.append(f"        详情: {report.detail}")
     return lines

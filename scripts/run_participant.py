@@ -249,6 +249,8 @@ def _result_line(
             "detail": detail,
             "audit_degraded": assembled.audit_degraded,
             "audit_summary": audit,
+            "decision_compute": (assembled.compute.snapshot()
+                                 if getattr(assembled, "compute", None) is not None else None),
         },
         ensure_ascii=False,
     )

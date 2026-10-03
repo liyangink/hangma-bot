@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 import asyncio
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from hangma_bot.application.audit import AuditTrail, audit_error_text, audit_text
 
@@ -78,6 +78,15 @@ class RuntimeServices:
     abandoned_tasks: set = field(default_factory=set)
     # 可选分值分析工作量；None 保持普通规则路径，不能延长原始动作预算。
     value_limits: ValueAnalysisLimits | None = None
+    # 可选条件路线事实工作量；仅在原增强截止时间前请求，不重新获得预算。
+    route_limits: ValueAnalysisLimits | None = None
+
+    def __post_init__(self) -> None:
+        for name, limits in (("value_limits", self.value_limits), ("route_limits", self.route_limits)):
+            if limits is not None and not isinstance(limits, ValueAnalysisLimits):
+                raise TypeError(name + " 必须是 ValueAnalysisLimits 或 None")
+        if self.value_limits is not None and self.route_limits is not None and self.value_limits != self.route_limits:
+            raise ValueError("路线与一次摸牌分析必须使用同一 ValueAnalysisLimits")
 
 
 @dataclass(frozen=True)
@@ -189,12 +198,18 @@ def _safe_analyze(
     observation: PlayerObservation,
     notes: list[str],
     value_limits: ValueAnalysisLimits | None = None,
+    route_limits: ValueAnalysisLimits | None = None,
 ) -> RuleAnalysis:
     """规则分析异常降级为空候选 + DEGRADED，不吞噬窗口。"""
 
     try:
-        analysis = (rules.analyze(observation) if value_limits is None else
-                    rules.analyze(observation, value_limits=value_limits))
+        # 默认路径不增加关键字参数，保留旧规则实现的调用契约。
+        limits = {}
+        if value_limits is not None:
+            limits["value_limits"] = value_limits
+        if route_limits is not None:
+            limits["route_limits"] = route_limits
+        analysis = rules.analyze(observation, **limits)
     except Exception as exc:  # noqa: BLE001 - 单分支异常不得丢失紧急动作
         notes.append("analyze 异常: {}".format(audit_error_text(exc)))
         return RuleAnalysis(
@@ -213,11 +228,9 @@ def _safe_analyze(
             issues = analysis.issues + (
                 RuleIssue(area="engine", reason="analyze 未包含紧急候选，已按独立紧急路径补齐"),
             )
-            analysis = RuleAnalysis(
+            analysis = replace(
+                analysis,
                 legal_candidates=merged,
-                emergency_candidate=analysis.emergency_candidate,
-                completeness=analysis.completeness,
-                ruleset_version=analysis.ruleset_version,
                 issues=issues,
             )
             notes.append("analyze 缺少紧急候选，已补齐")
@@ -233,12 +246,10 @@ def _merge_emergency_into_analysis(
         return analysis
     if any(candidate.action_key == emergency.action_key for candidate in analysis.legal_candidates):
         return analysis
-    return RuleAnalysis(
+    return replace(
+        analysis,
         legal_candidates=analysis.legal_candidates + (emergency,),
         emergency_candidate=emergency,
-        completeness=analysis.completeness,
-        ruleset_version=analysis.ruleset_version,
-        issues=analysis.issues,
     )
 
 
@@ -473,9 +484,12 @@ async def run_action_window(
             rules_started_at = clock.now()
             emergency = _safe_emergency(services.rules, current.observation, loop_notes)
             # 紧急动作准备后才启用增强；迟到窗口及 409 刷新不重新获得预算。
-            value_limits = (services.value_limits
-                            if clock.now() < budget.enhancement_deadline_monotonic else None)
-            analysis = _safe_analyze(services.rules, current.observation, loop_notes, value_limits)
+            enhancement_available = clock.now() < budget.enhancement_deadline_monotonic
+            value_limits = services.value_limits if enhancement_available else None
+            route_limits = services.route_limits if enhancement_available else None
+            analysis = _safe_analyze(
+                services.rules, current.observation, loop_notes, value_limits, route_limits,
+            )
             analysis = _merge_emergency_into_analysis(analysis, emergency)
             rule_elapsed_ms = (clock.now() - rules_started_at) * 1000.0
             request = DecisionRequest(

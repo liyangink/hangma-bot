@@ -540,6 +540,11 @@ def test_room_launcher_accepts_every_available_strategy(tmp_path, strategy):
             if strategy == 'r18_integrated_positive_v1'
             else room.R18_V2_RULES_20260929_RELEASE_PACKAGE_ID
         )
+    elif strategy == room.VIP_S02_TESTROOM_STRATEGY:
+        package = room._load_vip_testroom_manifest()
+        data['known_guide_version'] = package['known_guide_version']
+        data['sse_enabled'] = True
+        data['expected_policy_release_id'] = package['release_package_id']
     cfg = room.load_room_config(
         _write_config(tmp_path, data), environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B}
     )

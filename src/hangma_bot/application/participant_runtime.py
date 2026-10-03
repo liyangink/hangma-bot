@@ -102,6 +102,7 @@ class ParticipantRuntime:
         source_namespace: Optional[str] = None,
         manifest_extra: Optional[Mapping[str, object]] = None,
         value_limits: Optional[ValueAnalysisLimits] = None,
+        route_limits: Optional[ValueAnalysisLimits] = None,
     ) -> None:
         self._session = session
         self._policy = policy
@@ -126,7 +127,12 @@ class ParticipantRuntime:
         # 组合根按候选策略显式启用，普通参赛身份不承担这部分规则工作量。
         if value_limits is not None and not isinstance(value_limits, ValueAnalysisLimits):
             raise TypeError("value_limits 必须是 ValueAnalysisLimits 或 None")
+        if route_limits is not None and not isinstance(route_limits, ValueAnalysisLimits):
+            raise TypeError("route_limits 必须是 ValueAnalysisLimits 或 None")
+        if value_limits is not None and route_limits is not None and value_limits != route_limits:
+            raise ValueError("路线与一次摸牌分析必须使用同一 ValueAnalysisLimits")
         self._value_limits = value_limits
+        self._route_limits = route_limits
 
     @property
     def run_id(self) -> Optional[str]:
@@ -283,6 +289,12 @@ class ParticipantRuntime:
                             "max_routes_per_candidate": self._value_limits.max_routes_per_candidate,
                         }
                     ),
+                    "route_analysis_limits": (
+                        None if self._route_limits is None else {
+                            "max_expansions": self._route_limits.max_expansions,
+                            "max_routes_per_candidate": self._route_limits.max_routes_per_candidate,
+                        }
+                    ),
                     "max_games": bootstrap.config.max_games,
                     "rounds_per_game": bootstrap.config.rounds_per_game,
                     "timing": {
@@ -302,6 +314,7 @@ class ParticipantRuntime:
                 budget_policy=self._budget_policy,
                 abandoned_tasks=self._abandoned_policy_tasks,
                 value_limits=self._value_limits,
+                route_limits=self._route_limits,
             )
             supervisor = TournamentSupervisor(
                 bootstrap=bootstrap,
