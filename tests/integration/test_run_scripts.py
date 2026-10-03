@@ -518,8 +518,8 @@ def test_room_rejects_bad_identity_strategy_before_launch(tmp_path,strategy):
 
 def _available_strategies() -> tuple:
     """组合根声明的全部可配置策略名；启动器白名单的唯一真源。"""
-    from hangma_bot.bootstrap import AVAILABLE_STRATEGIES
-    return AVAILABLE_STRATEGIES
+    from hangma_bot.bootstrap import AVAILABLE_STRATEGIES, VIP_S02_FREE_STRATEGY
+    return tuple(s for s in AVAILABLE_STRATEGIES if s != VIP_S02_FREE_STRATEGY)
 
 
 @pytest.mark.parametrize('strategy', _available_strategies())
@@ -667,3 +667,10 @@ def test_room_omits_sequence_model_dir_when_unset(tmp_path):
         'sequence_model_dir' not in room.child_config_mapping(cfg, identity)
         for identity in cfg.identities
     )
+
+
+def test_testroom_launcher_rejects_free_only_vip_package(tmp_path):
+    from hangma_bot.bootstrap import VIP_S02_FREE_STRATEGY
+    with pytest.raises(ValueError,match="自由赛冻结包"):
+        room.load_room_config(_write_config(tmp_path,_room_config(strategy=VIP_S02_FREE_STRATEGY)),
+            environ={'HM_ROOM_A':SECRET_A,'HM_ROOM_B':SECRET_B})

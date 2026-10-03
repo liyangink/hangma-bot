@@ -102,6 +102,7 @@ from hangma_bot.bootstrap import (  # noqa: E402
     R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
     R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
     VIP_S02_TESTROOM_STRATEGY,
+    VIP_S02_FREE_STRATEGY,
     _load_vip_testroom_manifest,
 )
 
@@ -164,6 +165,8 @@ def _require_strategy(value: object) -> str:
 
     if not isinstance(value, str) or value not in AVAILABLE_STRATEGIES:
         raise ValueError("未知策略名；可用：" + " / ".join(AVAILABLE_STRATEGIES))
+    if value == VIP_S02_FREE_STRATEGY:
+        raise ValueError("VIP自由赛冻结包只允许auto_match，不能用于测试房")
     return value
 
 

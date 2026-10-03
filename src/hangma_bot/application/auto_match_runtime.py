@@ -147,11 +147,14 @@ class AutoMatchRuntime:
         sleep: Callable[[float], Awaitable[None]] = DEFAULT_SLEEP,
         manifest_extra: Optional[Mapping[str, object]] = None,
         value_limits: Optional[ValueAnalysisLimits] = None,
+        route_limits: Optional[ValueAnalysisLimits] = None,
         value_rules_scope: Optional[RuleConfig] = None,
     ) -> None:
         """可选分值只在声明的实际规则范围内启用；匹配后不适用时继续保底运行。
 
-        value_limits 是每次规则分析的固定工作量，不是时长；None 保持原路径。
+        value_limits 与 route_limits 是每次规则分析的固定工作量，不是时长；
+        None 保持原调用路径，两种额度同时声明时必须相同。路线事实只在
+        原增强截止前请求，迟到与刷新不重新授预算。
         value_rules_scope 由组合根提供校准范围，不修改平台返回的真实规则。
         """
         if target.mode is not RuntimeMode.AUTO_MATCH:
@@ -171,11 +174,16 @@ class AutoMatchRuntime:
         self._manifest_extra = manifest_extra
         if value_limits is not None and not isinstance(value_limits, ValueAnalysisLimits):
             raise TypeError("value_limits 必须是 ValueAnalysisLimits 或 None")
+        if route_limits is not None and not isinstance(route_limits, ValueAnalysisLimits):
+            raise TypeError("route_limits 必须是 ValueAnalysisLimits 或 None")
+        if value_limits is not None and route_limits is not None and value_limits != route_limits:
+            raise ValueError("路线与一次摸牌分析必须使用同一 ValueAnalysisLimits")
         if value_rules_scope is not None and not isinstance(value_rules_scope, RuleConfig):
             raise TypeError("value_rules_scope 必须是 RuleConfig 或 None")
         if value_rules_scope is not None and value_limits is None:
             raise ValueError("value_rules_scope 需要同时声明 value_limits")
         self._value_limits = value_limits
+        self._route_limits = route_limits
         self._value_rules_scope = value_rules_scope
         self._run_id: Optional[str] = None
         self._audit_trail: Optional[AuditTrail] = None
@@ -329,6 +337,10 @@ class AutoMatchRuntime:
                         "max_expansions": value_limits.max_expansions,
                         "max_routes_per_candidate": value_limits.max_routes_per_candidate,
                     }),
+                    "route_analysis_limits": (None if self._route_limits is None else {
+                        "max_expansions": self._route_limits.max_expansions,
+                        "max_routes_per_candidate": self._route_limits.max_routes_per_candidate,
+                    }),
                     "value_analysis_disabled_reason": (
                         "uncalibrated_rule_config" if not scope_matches else
                         "not_requested" if value_limits is None else None
@@ -352,6 +364,7 @@ class AutoMatchRuntime:
                 budget_policy=self._budget_policy,
                 abandoned_tasks=self._abandoned_policy_tasks,
                 value_limits=value_limits,
+                route_limits=self._route_limits,
             )
             terminal = await self._run_room(bootstrap, services)
             trail.emit(
