@@ -130,10 +130,10 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 DEFAULT_RULESET_VERSION = "hangma-mvp-v10-public-counts"
 
 # 仅用于显式工程实验；历史包及失败保留，每次运行修复另冻结新身份。
-VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v5"
-VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v5/manifest.json"
-VIP_S02_FREE_STRATEGY = "vip_s02_bounded_d1_free_v3"
-VIP_S02_FREE_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v3/manifest.json"
+VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v6"
+VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v6/manifest.json"
+VIP_S02_FREE_STRATEGY = "vip_s02_bounded_d1_free_v4"
+VIP_S02_FREE_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v4/manifest.json"
 VIP_S02_NETWORK_STRATEGIES = (VIP_S02_TESTROOM_STRATEGY, VIP_S02_FREE_STRATEGY)
 VIP_S02_BASE_CANDIDATE_ID = "54d4029ba095572490c41406a481d73d27e350e385438b177013ce72f274b710"
 VIP_S02_ROUTE_LIMITS = ValueAnalysisLimits(max_expansions=8192, max_routes_per_candidate=128)

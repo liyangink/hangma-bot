@@ -152,6 +152,7 @@ class _Job:
     future: asyncio.Future
     digest: str | None = None
     wire_started: bool = False  # 已开始向子进程写入；仅父侧编码不能视为子进程工作。
+    reply_received: bool = False  # 完整响应已读入父侧；解码仍归原槽，但子进程已结束本次计算。
     deadline: asyncio.TimerHandle | None = None
     reap: asyncio.TimerHandle | None = None
 
@@ -331,7 +332,7 @@ class BoundedDecisionCompute:
         if job in self._pending:
             self._pending.remove(job)
             self._forget(job)
-        elif job.reap is None and job.wire_started:
+        elif job.reap is None and job.wire_started and not job.reply_received:
             # 只有已发送的活跃任务可能占住子进程。父侧编码到期后会在
             # _exchange 的发送前检查退出，不得因此误杀等待输入的健康进程。
             # 已发送任务仍归原槽；不把取消误当作进程已经空闲。
@@ -340,15 +341,21 @@ class BoundedDecisionCompute:
                 self.settings.abandon_grace_seconds, self._kill_stale, slot, job)
 
     def _kill_stale(self, slot, job):
-        if (slot.active is job and job.wire_started
+        if (slot.active is job and job.wire_started and not job.reply_received
                 and slot.process is not None and slot.process.is_alive()):
             slot.process.terminate()
 
-    async def _read(self, reader):
+    async def _read(self, reader, job=None):
         size = struct.unpack('!I', await reader.readexactly(4))[0]
         if size > self.settings.max_message_bytes:
             raise DecisionComputeError('MESSAGE_LIMIT')
-        return await self._offload(_decode_message, await reader.readexactly(size))
+        raw = await reader.readexactly(size)
+        if job is not None:
+            # 收齐报文不等于接受结果：后续仍解码、核身份及原截止。
+            # 这里只证明子进程已完成发送；父侧解码迟到不能误杀空闲进程。
+            # 槽和线程所有权保留到解码/丢弃结束，防止下一请求交叉读写。
+            job.reply_received = True
+        return await self._offload(_decode_message, raw)
 
     async def _exchange(self, slot, reader, job):
         wire, job.digest = await self._offload(_pack_job, job.number, job.request,
@@ -360,7 +367,7 @@ class BoundedDecisionCompute:
         job.wire_started = True
         slot.writer.write(struct.pack('!I', len(wire)) + wire)
         await slot.writer.drain()
-        return await self._read(reader)
+        return await self._read(reader, job)
 
     def _deliver(self, slot, job, message):
         if message is None:
