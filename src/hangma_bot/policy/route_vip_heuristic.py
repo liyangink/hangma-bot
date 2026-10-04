@@ -237,6 +237,11 @@ class _Projection:
         if summary.shanten < 0:
             raise RouteHeuristicResearchError("MECHANICAL_GAP", "等待态真实向听不能是已胡-1")
         combined_codes = tuple(tile.code for tile in summary.useful_tiles)
+        # 有效进张包含“只改善牌形、还没成胡”的牌。同源逐码数学已给出
+        # 摸后向听；只有-1才需要继续复核杭麻胡资格及支付。不能要求当前
+        # 向听先为0：四张配额受限时，白板可能跨档直接成胡。
+        hu_math_codes = frozenset(tile.code for tile in summary.useful_tiles
+                                  if tile.shanten_after == -1)
         standard_codes = tuple(tile.code for tile in summary.standard_useful_tiles or ())
         seven_codes = (tuple(tile.code for tile in summary.seven_pairs_useful_tiles)
                        if summary.seven_pairs_useful_tiles is not None else None)
@@ -257,6 +262,10 @@ class _Projection:
                 index = CANONICAL_TILE_ORDER.index(code)
                 if state.unseen_evidence[index] != "exact" or state.unseen_capacities[index] is None:
                     unknown.append(code)
+                    continue
+                # 保留容量未知的原证据；本剪枝只跳过已知容量、数学明确
+                # 不能直接胡的资格查询，不删有效牌、自然路线或合法动作。
+                if code not in hu_math_codes:
                     continue
                 for restricted in (False, True):
                     self.witness_count += 1

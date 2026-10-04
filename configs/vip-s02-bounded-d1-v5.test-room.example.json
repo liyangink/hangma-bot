@@ -1,0 +1,36 @@
+{
+  "mode": "test_room",
+  "base_url": "https://10.240.169.190:18080",
+  "expected_tournament_id": "<new-test-room-id>",
+  "known_guide_version": 35,
+  "audit_root": "artifacts/sessions/vip-s02-bounded-d1-testroom-v5/audit",
+  "strategy": "vip_s02_bounded_d1_testroom_v5",
+  "expected_policy_release_id": "72f055c05f8e6b8200413b9737d53da56b70e869b22444816f82e50d547d9fe6",
+  "insecure_hosts": [
+    "10.240.169.190"
+  ],
+  "sse_enabled": true,
+  "discard_pacing_enabled": false,
+  "max_completed_batches": 1,
+  "identities": [
+    {
+      "slot": "qinglong",
+      "token_file": ".private/vip-s02-testroom/qinglong.token"
+    },
+    {
+      "slot": "baihu",
+      "token_file": ".private/vip-s02-testroom/baihu.token"
+    },
+    {
+      "slot": "zhuque",
+      "token_file": ".private/vip-s02-testroom/zhuque.token"
+    },
+    {
+      "slot": "xuanwu",
+      "token_file": ".private/vip-s02-testroom/xuanwu.token"
+    }
+  ],
+  "restart": {
+    "max_restarts": 0
+  }
+}
