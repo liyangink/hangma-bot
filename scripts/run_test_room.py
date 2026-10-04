@@ -104,6 +104,8 @@ from hangma_bot.bootstrap import (  # noqa: E402
     VIP_S02_TESTROOM_STRATEGY,
     VIP_S02_FREE_STRATEGY,
     _load_vip_testroom_manifest,
+    R18_CURRENT_TESTROOM_STRATEGY,
+    _load_r18_current_testroom_manifest,
 )
 
 TOKEN_ENV_VAR = "HM_IDENTITY_TOKEN"
@@ -383,6 +385,8 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
     }
     if VIP_S02_TESTROOM_STRATEGY in effective_strategies:
         release_packages[VIP_S02_TESTROOM_STRATEGY] = _load_vip_testroom_manifest()["release_package_id"]
+    if R18_CURRENT_TESTROOM_STRATEGY in effective_strategies:
+        release_packages[R18_CURRENT_TESTROOM_STRATEGY] = _load_r18_current_testroom_manifest()["release_package_id"]
     if expected_release is not None:
         expected_release = _require_non_empty_str(expected_release, "expected_policy_release_id")
     selected_releases = {name for name in effective_strategies if name in release_packages}
@@ -456,6 +460,7 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
         R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
         VIP_S02_TESTROOM_STRATEGY,
+        R18_CURRENT_TESTROOM_STRATEGY,
     ):
         config["expected_policy_release_id"] = (
             identity.expected_policy_release_id or room.expected_policy_release_id

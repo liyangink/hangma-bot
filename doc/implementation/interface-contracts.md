@@ -1,5 +1,7 @@
 # 第一阶段接口协议
 
+2026-10-04 T167：公共策略/规则/赛事端口签名未变；新增显式测试房对照枚举`r18_v2_current_rules_testroom_20261004`，仅test_room、SSE、当前指南及精确冻结ID，运行源码/规则/数学漂移在副作用前拒绝。房间各`identities`分别绑定该席`strategy`和`expected_policy_release_id`，两种算法不能共用一个ID；子配置完整透传。T110新testroom_v7/free_v5另冻身份，原算法、限深和截止不变。新对照不继承旧正式包权限、默认值或强度；旧正式R18摘要漂移继续拒绝。[混合房契约验证](../../review/vip-route-2026-09-30/evidence/t167-mixed-testroom-current-r18-wiring-1/REPORT.md)。下方为历史快照。
+
 2026-10-04更新：新testroom_v6／free_v4已完成T161自由赛和T163四席M10/R8快速测试房的真实工程验收；对局摸切、429、计算故障/重启均0，原截止、限深1、公式和稳定默认版本不变。T163一只过评分超期及两只过零规划例外保留，严格零降级false；T161缓发虽开启但因快照时间依据不足全跳过，不能授缓发改善信用。T148强度false仍保留，正式/测试赛事发布门未授。详情见[验收报告](../../review/vip-route-2026-09-30/evidence/t163-received-fix-fast-four-seat-testroom-1/REPORT.md)。
 
 ## 2026-10-04 T159 完整回信后的计算回收

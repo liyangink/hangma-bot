@@ -108,6 +108,12 @@ from hangma_bot.policy.r18_integrated_positive_v2_rules_20260929_release import 
     R18IntegratedPositiveV2Rules20260929ReleasePolicy,
     R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
 )
+from hangma_bot.policy.r18_v2_current_rules_testroom_release import (
+    R18CurrentRulesTestroomPolicy, R18_CURRENT_TESTROOM_STRATEGY,
+    R18_CURRENT_TESTROOM_RULES_SHA256,
+)
+from hangma_bot.policy.r18_integrated_positive_v2 import R18_INTEGRATED_POSITIVE_V2_SHA256
+from hangma_bot.policy.r18_integrated_positive_v2_release import R18_INTEGRATED_POSITIVE_V2_VALUE_ANALYSIS_SHA256
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.policy.route_vip_heuristic import RouteVipHeuristicPolicy, VipRouteProjectionLimits
 from hangma_bot.policy.vip_s02_frozen_source import VIP_S02_SOURCE, VIP_S02_SOURCE_SHA256
@@ -130,10 +136,11 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 DEFAULT_RULESET_VERSION = "hangma-mvp-v10-public-counts"
 
 # 仅用于显式工程实验；历史包及失败保留，每次运行修复另冻结新身份。
-VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v6"
-VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v6/manifest.json"
-VIP_S02_FREE_STRATEGY = "vip_s02_bounded_d1_free_v4"
-VIP_S02_FREE_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v4/manifest.json"
+VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v7"
+VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v7/manifest.json"
+VIP_S02_FREE_STRATEGY = "vip_s02_bounded_d1_free_v5"
+VIP_S02_FREE_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v5/manifest.json"
+R18_CURRENT_TESTROOM_MANIFEST = "prebuilt/r18-v2-current-rules-testroom-20261004/manifest.json"
 VIP_S02_NETWORK_STRATEGIES = (VIP_S02_TESTROOM_STRATEGY, VIP_S02_FREE_STRATEGY)
 VIP_S02_BASE_CANDIDATE_ID = "54d4029ba095572490c41406a481d73d27e350e385438b177013ce72f274b710"
 VIP_S02_ROUTE_LIMITS = ValueAnalysisLimits(max_expansions=8192, max_routes_per_candidate=128)
@@ -272,6 +279,56 @@ def _load_vip_manifest(strategy: str, expected_id: str | None = None) -> dict:
     return payload
 
 
+def build_r18_current_testroom_manifest(evidence_sha256: Mapping[str, str]) -> dict:
+    """冻结原R18的实验对照；旧正式包、公式、限额与默认值不改变。"""
+    from hangma_bot.adapters.official.dto import KNOWN_GUIDE_VERSION
+    if (not evidence_sha256 or any(type(n) is not str or type(s) is not str or len(s) != 64
+            or any(c not in "0123456789abcdef" for c in s) for n, s in evidence_sha256.items())):
+        raise ValueError("R18测试对照需要完整工程证据SHA-256")
+    _verify_vip_evidence(evidence_sha256)
+    metadata = hand_math_runtime_metadata()
+    if metadata.get("implementation") != "c_grouped" or metadata.get("fallback_reason") is not None:
+        raise RuntimeError("R18测试对照需要已验证C数学后端")
+    if compute_rules_hash(_REPO_ROOT) != R18_CURRENT_TESTROOM_RULES_SHA256:
+        raise RuntimeError("R18测试对照规则源码摘要漂移")
+    if _value_analysis_source_hash() != R18_INTEGRATED_POSITIVE_V2_VALUE_ANALYSIS_SHA256:
+        raise RuntimeError("R18测试对照分值分析源码摘要漂移")
+    payload = {"schema": "r18-current-rules-testroom-release/1",
+        "strategy": R18_CURRENT_TESTROOM_STRATEGY, "allowed_modes": ["test_room"],
+        "known_guide_version": KNOWN_GUIDE_VERSION,
+        "rules_source_hash": R18_CURRENT_TESTROOM_RULES_SHA256,
+        "value_analysis_sha256": R18_INTEGRATED_POSITIVE_V2_VALUE_ANALYSIS_SHA256,
+        "source_sha256": R18_INTEGRATED_POSITIVE_V2_SHA256,
+        "source_manifest": _vip_runtime_sources(), "hand_math": metadata,
+        "params": {"rule_config": asdict(RuleConfig(DEFAULT_RULESET_VERSION, 1, False)),
+                   "value_limits": asdict(ValueAnalysisLimits())},
+        "evidence_sha256": dict(evidence_sha256), "admission": "experimental_testroom_control_only",
+        "strength_admission": False, "production_default": False, "llm_online": False}
+    payload["release_package_id"] = _vip_package_id(payload)
+    return payload
+
+
+def _load_r18_current_testroom_manifest(expected_id: str | None = None) -> dict:
+    """完整当前依赖重核，失败发生在创建HTTP或审计资源之前。"""
+    payload = json.loads((_REPO_ROOT / R18_CURRENT_TESTROOM_MANIFEST).read_text())
+    if type(payload) is not dict or type(payload.get("evidence_sha256")) is not dict:
+        raise ValueError("R18测试对照清单结构错误")
+    actual_id = _vip_package_id(payload)
+    if payload.get("release_package_id") != actual_id or expected_id is not None and expected_id != actual_id:
+        raise ValueError("R18测试对照冻结包摘要不匹配")
+    expected = build_r18_current_testroom_manifest(payload["evidence_sha256"])
+    if json.dumps(payload, sort_keys=True, allow_nan=False) != json.dumps(expected, sort_keys=True, allow_nan=False):
+        raise RuntimeError("R18测试对照范围、参数或完整运行源码摘要漂移")
+    return payload
+
+
+def _build_r18_current_testroom_policy() -> BotPolicy:
+    """组合根验签后构造纯策略，不读取官方身份或未来信息。"""
+    return R18CurrentRulesTestroomPolicy(rules_source_hash=compute_rules_hash(_REPO_ROOT),
+        value_analysis_sha256=_value_analysis_source_hash(),
+        package=_load_r18_current_testroom_manifest())
+
+
 @dataclass(frozen=True)
 class _VipWorkerFactory:
     """spawn可序列化工厂，只携带公开冻结包ID，绝不包含Token。"""
@@ -402,6 +459,7 @@ R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: (
             value_analysis_sha256=_value_analysis_source_hash(),
         )
     ),
+    R18_CURRENT_TESTROOM_STRATEGY: _build_r18_current_testroom_policy,
 }
 
 # 研究/离线专用注册表（2026-09-17 R1/S3 修复）：action_value:* 研究候选
@@ -487,6 +545,7 @@ _VALUE_ANALYSIS_STRATEGIES = (
 ) + tuple(_SEQUENCE_MODEL_STRATEGIES) + (
     R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
     R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
+    R18_CURRENT_TESTROOM_STRATEGY,
 )
 
 # action_value_v1 策略名（B3）：ScoringView 依赖 B1 载荷（followup_branches/
@@ -770,6 +829,14 @@ class RuntimeConfig:
                 raise ValueError("VIP配置指南版本低于冻结工程包")
             if not self.sse_enabled:
                 raise ValueError("VIP网络实验要求使用已验证SSE接线")
+        elif self.strategy == R18_CURRENT_TESTROOM_STRATEGY:
+            if self.mode is not RuntimeMode.TEST_ROOM:
+                raise ValueError("R18当前规则对照仅允许测试房，不授自由赛或赛事模式")
+            if self.expected_policy_release_id is None:
+                raise ValueError("R18测试对照必须绑定expected_policy_release_id")
+            package = _load_r18_current_testroom_manifest(self.expected_policy_release_id)
+            if self.known_guide_version < package["known_guide_version"] or not self.sse_enabled:
+                raise ValueError("R18测试对照需要当前指南和SSE接线")
         elif self.expected_policy_release_id is not None:
             raise ValueError(
                 "expected_policy_release_id 只能与已冻结发布策略共同使用"

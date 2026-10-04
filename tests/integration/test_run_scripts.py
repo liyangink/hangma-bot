@@ -545,6 +545,11 @@ def test_room_launcher_accepts_every_available_strategy(tmp_path, strategy):
         data['known_guide_version'] = package['known_guide_version']
         data['sse_enabled'] = True
         data['expected_policy_release_id'] = package['release_package_id']
+    elif strategy == room.R18_CURRENT_TESTROOM_STRATEGY:
+        package = room._load_r18_current_testroom_manifest()
+        data['known_guide_version'] = package['known_guide_version']
+        data['sse_enabled'] = True
+        data['expected_policy_release_id'] = package['release_package_id']
     cfg = room.load_room_config(
         _write_config(tmp_path, data), environ={'HM_ROOM_A': SECRET_A, 'HM_ROOM_B': SECRET_B}
     )
