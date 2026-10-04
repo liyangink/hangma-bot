@@ -94,7 +94,7 @@ import math
 import operator
 import re
 from collections.abc import ItemsView, KeysView, ValuesView
-from dataclasses import fields as dataclass_fields
+from dataclasses import dataclass, fields as dataclass_fields
 from typing import Any, Callable, Dict, FrozenSet, List, Mapping, Optional, Set, Tuple
 
 from .action_value import (
@@ -2076,6 +2076,25 @@ def _make_runtime(meter: _Meter, collection_cap: int = MAX_LOCAL_COLLECTION_SIZE
 # ---------------------------------------------------------------------------
 
 
+@dataclass(frozen=True)
+class ActionValueCompiledRuntime:
+    """组合根验签后注入的专用执行体；纯策略不自行读磁盘或装载扩展。
+
+    每个执行器独占计量器、受限命名空间和候选闭包。源码摘要必须逐字
+    匹配；原静态检查、返回合同、操作额度和模块状态复核继续执行。
+    编译候选工厂为空时保留原插桩体，只使用原体编译助手。
+    """
+
+    source_sha256: str  # 精确UTF-8候选源码摘要，不接受同名或日期替代身份
+    execution_id: str  # 组合根核实际源与二进制后给出的身份，不含凭据
+    meter_factory: Callable[[int], Any]  # 新建独占计量器；额度与used使用Python整数
+    runtime_factory: Callable[[Any, int], Dict[str, Any]]  # 生成原受限助手，第二参为单集合项数
+    candidate_factory: Optional[Callable[[Dict[str, Any], Any, int], Dict[str, Any]]]
+    # 工厂须返回原函数/不可变常量命名空间；None仅保留原Python插桩候选
+    charge_return_value: Callable[[Any, Any, str], int]  # 同原结构逐节点计费，含重复引用
+    copy_facts: Callable[[Any], Any]  # 原冻结事实的全新原始值副本，不共享候选容器
+
+
 class ActionValueExecutor:
     """静态检查、插桩编译与进程内受限执行一个 score_actions 候选。
 
@@ -2092,6 +2111,7 @@ class ActionValueExecutor:
         name: str = "<action_value_candidate>",
         max_operations: int = MAX_COUNTED_OPERATIONS,
         max_local_collection_size: int = MAX_LOCAL_COLLECTION_SIZE,
+        compiled_runtime: Optional[ActionValueCompiledRuntime] = None,
     ) -> None:
         if (type(max_local_collection_size) is not int
                 or not 0 < max_local_collection_size <= MAX_SUPPORTED_LOCAL_COLLECTION_SIZE):
@@ -2107,17 +2127,32 @@ class ActionValueExecutor:
                 "候选源码 {0} 字节超过 {1} 字节上限".format(len(encoded), MAX_SOURCE_BYTES)
             )
         tree = static_check(source)
-        self._meter = _Meter(int(max_operations))
+        if compiled_runtime is not None:
+            if (type(compiled_runtime) is not ActionValueCompiledRuntime
+                    or hashlib.sha256(encoded).hexdigest() != compiled_runtime.source_sha256
+                    or not compiled_runtime.execution_id):
+                raise ValueError("专用编译执行体与候选源码身份不匹配")
+        self._compiled_runtime = compiled_runtime
+        self._charge_return_value = (charge_structure if compiled_runtime is None
+                                     else compiled_runtime.charge_return_value)
+        self._meter = (_Meter(int(max_operations)) if compiled_runtime is None
+                       else compiled_runtime.meter_factory(int(max_operations)))
         instrumented = _Instrumentor().visit(tree)
         ast.fix_missing_locations(instrumented)
         self._code = compile(
             instrumented, "<action_value:{0}>".format(self.name), "exec"
         )
-        self._runtime = _make_runtime(self._meter, max_local_collection_size)
+        self._runtime = (_make_runtime(self._meter, max_local_collection_size)
+                         if compiled_runtime is None else
+                         compiled_runtime.runtime_factory(self._meter, max_local_collection_size))
         namespace: Dict[str, Any] = {"__builtins__": {}}
         namespace.update(self._runtime)
         # 模块级只有常量赋值与函数定义；静态检查已排除任意顶层执行。
-        exec(self._code, namespace)
+        if compiled_runtime is None or compiled_runtime.candidate_factory is None:
+            exec(self._code, namespace)
+        else:
+            namespace = compiled_runtime.candidate_factory(
+                self._runtime, self._meter, max_local_collection_size)
         fn = namespace.get("score_actions")
         if not callable(fn):  # pragma: no cover - 静态检查已保证
             raise StaticCheckError("score_actions 未定义或不可调用")
@@ -2180,7 +2215,7 @@ class ActionValueExecutor:
         量级不变。
         """
         raw = self._fn(candidate_view)
-        charge_structure(raw, self._meter, "候选返回值")
+        self._charge_return_value(raw, self._meter, "候选返回值")
         return raw
 
     def score_vip_route(self, view) -> ScoreBatch:
@@ -2198,7 +2233,10 @@ class ActionValueExecutor:
             raise ValueError("ActionValueExecutor.score_vip_route 需要 VipRouteScoringView 输入")
         self._meter.used = 0
         try:
-            return run_vip_route_scoring_skeleton(view, self._guarded_candidate)
+            if self._compiled_runtime is None:
+                return run_vip_route_scoring_skeleton(view, self._guarded_candidate)
+            return run_vip_route_scoring_skeleton(view, self._guarded_candidate,
+                fact_copy=self._compiled_runtime.copy_facts)
         finally:
             self.last_operation_count = self._meter.used
             self._verify_no_shared_mutation()

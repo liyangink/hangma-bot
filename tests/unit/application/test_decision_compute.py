@@ -390,6 +390,7 @@ async def test_restart_exhaustion_expires_remaining_queue_without_hanging():
     await compute.start()
     try:
         active = asyncio.create_task(compute.choose(request('crash:a', 'a'), budget()))
+        await wait_snapshot(compute, 'dispatched', 1)
         queued = asyncio.create_task(compute.choose(request('fast:b', 'b'), budget(.1)))
         results = await asyncio.wait_for(asyncio.gather(active, queued, return_exceptions=True), 1)
         assert all(isinstance(r, DecisionComputeError) for r in results)

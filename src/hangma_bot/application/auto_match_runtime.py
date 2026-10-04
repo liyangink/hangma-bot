@@ -31,7 +31,9 @@ from typing import Awaitable, Callable, Dict, List, Optional
 from hangma_bot.application.audit import AuditTrail, audit_error_text, audit_text
 # audit-plus-v1 RUN_MANIFEST 增强字段共享助手（participant_runtime 定义，
 # 方案 §3.2；字段集以该处为唯一来源，避免两个运行时各自维护一份词表）。
-from hangma_bot.application.participant_runtime import _audit_plus_manifest_fields
+from hangma_bot.application.participant_runtime import (
+    _audit_plus_manifest_fields, _decision_compute_game_lifecycle,
+)
 from hangma_bot.application.contracts import (
     AuditKind,
     AuditSink,
@@ -52,7 +54,7 @@ from hangma_bot.application.deadline import (
     SystemClock,
 )
 from hangma_bot.application.decision_loop import RuntimeServices
-from hangma_bot.application.game_task import GameTask, GameTaskStatus
+from hangma_bot.application.game_task import GameTask, GameTaskResult, GameTaskStatus
 from hangma_bot.application.ids import IdGenerator, PrefixedUuidIds
 from hangma_bot.application.tournament_supervisor import SupervisionPolicy
 from hangma_bot.hangma.engine import HangmaRules
@@ -365,6 +367,8 @@ class AutoMatchRuntime:
                 abandoned_tasks=self._abandoned_policy_tasks,
                 value_limits=value_limits,
                 route_limits=self._route_limits,
+                requires_conditional_roots=getattr(self._policy, "requires_conditional_roots", False),
+                **_decision_compute_game_lifecycle(self._policy, bootstrap.config.max_games),
             )
             terminal = await self._run_room(bootstrap, services)
             trail.emit(
@@ -785,8 +789,10 @@ class AutoMatchRuntime:
                 continue
             if outcome in ("unrecoverable_failure", "abandoned"):
                 continue
-            if game_id in self._games or game_id in self._closing:
-                continue  # 在管任务自己会完成终局记录
+            if game_id in self._closing:
+                continue  # 原会话仍在关闭，不并开第二个消费者
+            # 在管任务也属于期望集合。收到GameFinished后可能还在回收专属
+            # 计算槽；不能因房间finished快照先到而取消、丢掉已取得的终局。
             pending.append(game_id)
         return sorted(pending)
 
@@ -1016,10 +1022,14 @@ class AutoMatchRuntime:
 
         async def _close() -> None:
             try:
-                await asyncio.wait_for(
+                results = await asyncio.wait_for(
                     asyncio.gather(slot.task, return_exceptions=True),
                     timeout=self._supervision.audit_flush_seconds,
                 )
+                # active_games 可先于专属槽回收移除本桌。任务已取得的权威
+                # 终局仍须退休登记，不能因取消发生在收尾而随后重复补开。
+                if isinstance(results[0], GameTaskResult) and results[0].status is GameTaskStatus.FINISHED:
+                    self._retire_game(game_id, "finished")
             except Exception:  # noqa: BLE001 - 关闭失败只影响该场收尾
                 pass
             try:

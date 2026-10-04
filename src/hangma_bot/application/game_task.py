@@ -71,6 +71,53 @@ class GameTask:
         self._sleep = sleep
 
     async def run(self, *, read_only: bool = False) -> GameTaskResult:
+        """拥有专属计算桌绑定；正常结束、故障重开和取消都完成原桌回收。"""
+        acquired = False
+        result = None
+        try:
+            if not read_only and self._services.compute_game_started is not None:
+                try:
+                    await self._services.compute_game_started(self._game_id)
+                except Exception as exc:
+                    self._services.audit.emit(
+                        AuditKind.PROTOCOL_RECOVERED,
+                        {"area": "decision_compute_lifecycle", "outcome": "acquire_failed",
+                         "reason": audit_error_text(exc)},
+                        game_id=self._game_id,
+                        stage_attempt_id=self._stage_attempt_provider(),
+                    )
+                    return GameTaskResult(game_id=self._game_id,
+                        status=GameTaskStatus.RECOVERABLE_FAILURE, detail="专属计算桌绑定失败")
+                acquired = True
+            result = await self._consume_items(read_only=read_only)
+            return result
+        finally:
+            if acquired:
+                cleanup = asyncio.create_task(self._services.compute_game_finished(self._game_id))
+                cancelled_during_cleanup = False
+                while not cleanup.done():
+                    try:
+                        await asyncio.shield(cleanup)
+                    except asyncio.CancelledError:
+                        # 不能把shield抛出的取消当成底层已回收；重开必须等待旧桌结束。
+                        cancelled_during_cleanup = True
+                    except Exception:
+                        break
+                try:
+                    cleanup.result()
+                except Exception as exc:
+                    # 原取消/终局优先保留；计算服务仍保留失败绑定和全部回收所有权。
+                    self._services.audit.emit(
+                        AuditKind.PROTOCOL_RECOVERED,
+                        {"area": "decision_compute_lifecycle", "outcome": "release_failed",
+                         "reason": audit_error_text(exc)},
+                        game_id=self._game_id,
+                        stage_attempt_id=self._stage_attempt_provider(),
+                    )
+                if cancelled_during_cleanup and (result is None or result.status is not GameTaskStatus.FINISHED):
+                    raise asyncio.CancelledError()
+
+    async def _consume_items(self, *, read_only: bool = False) -> GameTaskResult:
         """消费权威条目；收尾模式只同步终局，不分析窗口、不调用策略或提交。
 
         read_only 只能在原动作消费者取消并完成回收后启动。总体收尾截止

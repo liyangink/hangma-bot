@@ -28,6 +28,8 @@ review/test-tournament-20260917/probes/discard-river-accounting-evidence.md。
 """
 
 from collections import Counter, defaultdict
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass, fields
 from functools import lru_cache
 from typing import Optional, Tuple
@@ -37,6 +39,7 @@ from hangma_bot.kernel.observation import PlayerObservation, PublicEvent, Public
 
 from .internal_types import TILE_ORDER
 from .special_rules import is_passive_observation_event
+from ._public_tile_reuse import _PublicCountScope
 
 PublicCounts34 = Tuple[Optional[int], ...]
 """按规范34种牌排列；None表示该牌种的公开计数因输入自相矛盾而无法确定。"""
@@ -349,7 +352,7 @@ def _claim_vote(meld, proof, fixed_code, removed_regime, all_overlaps_retained, 
     return (code, present)
 
 
-def _count_public_tiles_from_view(view: PublicTileView, *, legacy_four_meld: bool) -> PublicTileCounts:
+def _compute_public_tiles_from_view(view: PublicTileView, *, legacy_four_meld: bool) -> PublicTileCounts:
     """从公开视图和已见证据计算34牌张数，不读取任何暗牌。
 
     证据不足时沿用保守不扣重叠的计数，并逐牌码标为 ``conservative``；
@@ -526,6 +529,128 @@ def _count_public_tiles_from_view(view: PublicTileView, *, legacy_four_meld: boo
                 evidence.append("conservative" if code in conservative else "exact")
     return PublicTileCounts(tuple(result), tuple(evidence))
 
+
+
+_PUBLIC_COUNT_ACTIVE = ContextVar("hangma_public_count_result_scope", default=None)
+_PUBLIC_COUNT_DEPENDENCIES = ('Counter', 'PublicClaimEvidence', 'PublicEvent', 'PublicMeld', 'PublicTileCounts', 'PublicTileView', 'TILE_ORDER', 'Tile', '_CLAIM_HISTORY_EVENT_LIMIT', '_HistoryIdentity', '_MutableHistory', '_PHYSICAL_LIMIT', '_PUBLIC_EVENT_FIELDS', '_TOTAL_TILES', '_cached_claim_proofs', '_claim_proofs', '_claim_token', '_claim_vote', '_compute_public_tiles_from_view', '_conservation_excess', '_immutable_event_field', '_is_inherited_claim', '_pending_proof', '_scan_claim_proofs', 'all', 'any', 'bool', 'defaultdict', 'enumerate', 'getattr', 'id', 'int', 'is_passive_observation_event', 'isinstance', 'iter', 'len', 'list', 'next', 'set', 'sorted', 'str', 'sum', 'tuple', 'type')
+_PUBLIC_COUNT_VIEW_FIELDS = (
+    "discards", "melds", "hand_counts", "remaining_tile_count", "public_history",
+    "snapshot_seq", "consumed_seq", "claim_evidence",
+)
+_PUBLIC_COUNT_MISSING = object()
+
+
+def _public_count_dependency_guard():
+    """绑定有限传递依赖；每次命中前检查身份，不在动作窗读取源码。"""
+    namespace = globals()
+    fallback = getattr(_compute_public_tiles_from_view, "__builtins__", None)
+    if type(fallback) is not dict:
+        return lambda: False
+    missing = _PUBLIC_COUNT_MISSING
+    bindings = []
+    for name in _PUBLIC_COUNT_DEPENDENCIES:
+        value = namespace.get(name, missing)
+        if value is missing:
+            value = fallback.get(name, missing)
+        bindings.append((name, value))
+    functions = []
+    classes = []
+    methods = []
+    for _, value in bindings:
+        wrapped = getattr(value, "__wrapped__", None)
+        for function in (value, wrapped):
+            code = getattr(function, "__code__", None)
+            if code is not None:
+                functions.append((function, code))
+    for name in ("Tile", "PublicMeld", "PublicEvent", "PublicClaimEvidence", "PublicTileView", "PublicTileCounts"):
+        cls = namespace[name]
+        if isinstance(cls, type):
+            names = tuple(getattr(cls, "__dataclass_fields__", {}))
+            classes.append((cls, tuple((name, cls.__dict__.get(name, _PUBLIC_COUNT_MISSING))
+                                      for name in names)))
+            for method_name in ("__init__", "__getattribute__", "__eq__", "__hash__"):
+                method = getattr(cls, method_name, None)
+                classes.append((cls, ((method_name, method),)))
+                code = getattr(method, "__code__", None)
+                if code is not None:
+                    functions.append((method, code))
+    for name, method_names in (
+        ("Counter", ("__init__", "update", "__add__", "__missing__", "__getitem__")),
+        ("_HistoryIdentity", ("__init__", "__eq__", "__hash__")),
+        ("PublicTileCounts", ("__new__",)),
+    ):
+        cls = namespace[name]
+        for method_name in method_names:
+            method = getattr(cls, method_name, None)
+            methods.append((cls, method_name, method))
+            code = getattr(method, "__code__", None)
+            if code is not None:
+                functions.append((method, code))
+
+    def current():
+        for name, value in bindings:
+            actual = namespace.get(name, missing)
+            if actual is missing:
+                actual = fallback.get(name, missing)
+            if actual is not value:
+                return False
+        for function, code in functions:
+            if getattr(function, "__code__", None) is not code:
+                return False
+        for cls, name, method in methods:
+            if getattr(cls, name, None) is not method:
+                return False
+        for cls, values in classes:
+            for name, value in values:
+                if name in ("__init__", "__getattribute__", "__eq__", "__hash__"):
+                    if getattr(cls, name, None) is not value:
+                        return False
+                elif cls.__dict__.get(name, _PUBLIC_COUNT_MISSING) is not value:
+                    return False
+        return True
+    return current
+
+
+@contextmanager
+def public_count_result_scope(*, public_capacity: int = 4096):
+    """一次同步构图内只复用完整公开计数；yield持续统计，退出清空引用。
+
+    守恒所需全部公开输入进入完整键；未见容量、本人暗牌/单列摸牌、
+    飘白和资格仍按各自输入执行原体，不复用旧条件分支的库存数值。
+    ContextVar隔离未加入上下文的线程；嵌套作用域独立，异常退出恢复外层。
+    不替换任何函数或全局业务绑定，不在原输入上新增合法性拒绝。
+    """
+    if type(public_capacity) is not int or not 1 <= public_capacity <= 4096:
+        raise ValueError("public_capacity必须为1—4096的整数")
+    scope = _PublicCountScope(globals(), public_capacity, _public_count_dependency_guard())
+    try:
+        view_fields = tuple(field.name for field in fields(PublicTileView))
+    except (AttributeError, TypeError):
+        view_fields = ()
+    if view_fields != _PUBLIC_COUNT_VIEW_FIELDS:
+        scope.registry_valid = False
+    token = _PUBLIC_COUNT_ACTIVE.set(scope)
+    try:
+        yield scope.stats
+    finally:
+        _PUBLIC_COUNT_ACTIVE.reset(token)
+        scope.closed = True
+        scope.clear()
+        scope.stats.update(closed=True, restored=True)
+
+
+def _record_public_river_append(old, new, tile):
+    """内部构造证明：new须是调用方刚由old+(tile,)产生的实际元组。"""
+    scope = _PUBLIC_COUNT_ACTIVE.get()
+    if scope is not None:
+        scope.note_river_append(old, new, tile)
+
+
+def _count_public_tiles_from_view(view: PublicTileView, *, legacy_four_meld: bool) -> PublicTileCounts:
+    scope = _PUBLIC_COUNT_ACTIVE.get()
+    if scope is None:
+        return _compute_public_tiles_from_view(view, legacy_four_meld=legacy_four_meld)
+    return scope.count(_compute_public_tiles_from_view, view, legacy_four_meld)
 
 def count_public_tiles_from_view(view: PublicTileView) -> PublicTileCounts:
     """计算条件分支公开计数及证据；明确的第五张公开牌标为空。"""

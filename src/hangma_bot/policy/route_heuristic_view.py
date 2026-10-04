@@ -367,10 +367,11 @@ class VipRouteScoringView:
 
         return tuple(item.action_key for item in self.actions)
 
-    def candidate_view(self) -> dict[str, Any]:
+    def candidate_view(self, *, fact_copy: Optional[Callable[[Any], Any]] = None) -> dict[str, Any]:
         """返回全新原始值容器；不含积分、阶段、名次或隐藏未来。"""
 
         observation = self.visible_state
+        copy = _plain if fact_copy is None else fact_copy
         return {
             "schema_version": self.schema_version,
             "candidate_kind": VIP_ROUTE_CANDIDATE_KIND,
@@ -414,13 +415,14 @@ class VipRouteScoringView:
                 "pending_condition": item.pending_condition,
                 "skipped_seats": item.skipped_seats,
             } for item in self.actions),
-            "nodes": tuple(_plain(node) for node in self.nodes),
+            "nodes": tuple(copy(node) for node in self.nodes),
         }
 
 
 def run_vip_route_scoring_skeleton(
     view: VipRouteScoringView,
     candidate_fn: Callable[[Mapping[str, Any]], Mapping[str, Any]],
+    *, fact_copy: Optional[Callable[[Any], Any]] = None,
 ) -> ScoreBatch:
     """独立实类型入口；共用既有ScoreBatch的有限数与有界解释校验。"""
 
@@ -429,7 +431,8 @@ def run_vip_route_scoring_skeleton(
     if any(node.gap_kind is not None for node in view.nodes):
         raise ValueError("VIP当前机械/输入/工作量缺口不能进入成功评分")
     try:
-        raw = candidate_fn(view.candidate_view())
+        raw = candidate_fn(view.candidate_view() if fact_copy is None
+                           else view.candidate_view(fact_copy=fact_copy))
     except Exception as exc:
         raise ValueError("VIP候选执行失败: " + type(exc).__name__ + ": " + str(exc)) from exc
     if not isinstance(raw, dict):

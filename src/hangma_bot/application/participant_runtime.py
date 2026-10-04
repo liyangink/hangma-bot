@@ -29,6 +29,7 @@ from hangma_bot.application.contracts import (
 )
 from hangma_bot.application.deadline import BudgetPolicy, RuntimeClock, SystemClock
 from hangma_bot.application.decision_loop import RuntimeServices
+from hangma_bot.application.decision_compute import BoundedDecisionCompute
 from hangma_bot.application.ids import IdGenerator, PrefixedUuidIds
 from hangma_bot.application.tournament_supervisor import (
     SupervisionPolicy,
@@ -39,6 +40,15 @@ from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.policy.interface import BotPolicy
 
 DEFAULT_SLEEP = asyncio.sleep
+
+
+def _decision_compute_game_lifecycle(policy: BotPolicy, official_max_games: int) -> dict:
+    """按官方 config.M 核专属槽容量，并只为真实应用计算服务注入桌生命周期。"""
+    if not isinstance(policy, BoundedDecisionCompute) or not policy.settings.per_game_workers:
+        return {}
+    if official_max_games > policy.settings.workers:
+        raise ValueError("官方 config.M 超过每桌专属计算进程容量")
+    return dict(compute_game_started=policy.acquire_game, compute_game_finished=policy.release_game)
 
 
 def _audit_plus_manifest_fields(
@@ -315,6 +325,8 @@ class ParticipantRuntime:
                 abandoned_tasks=self._abandoned_policy_tasks,
                 value_limits=self._value_limits,
                 route_limits=self._route_limits,
+                requires_conditional_roots=getattr(self._policy, "requires_conditional_roots", False),
+                **_decision_compute_game_lifecycle(self._policy, bootstrap.config.max_games),
             )
             supervisor = TournamentSupervisor(
                 bootstrap=bootstrap,

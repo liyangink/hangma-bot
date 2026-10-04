@@ -1,5 +1,15 @@
 # 第一阶段接口协议
 
+## 2026-10-04 T179：每桌专属计算生命周期与编译运行时身份
+
+**保持BotPolicy.choose、官方端口、原三段单调截止和合法复核不变；以下新接线已验收并启用实验free_v6。** `DecisionComputeSettings.per_game_workers: bool=False` 默认保留原共享服务。VIP新包设True、workers=10、max_pending=0；后者表示不设跨桌等待队列，同桌仍可有至多一个替代请求等待自己的旧作业回收。最多十个活跃与十个同桌待回收替代请求；不能把这些等待记录误作跨桌计算排队。
+
+`BoundedDecisionCompute.acquire_game(game_id)` / `release_game(game_id)` 是应用层异步资源方法，只接收官方场次键，返回None，不发HTTP。预热后取得专属计算进程和传输线程；容量超限立即明确拒绝，不等待其他桌。释放等待该桌已发送工作响应或故障回收；取消等待不丢失底层清理所有权，失败保留绑定由close最终回收。资源已彻底关闭的耗尽槽仍能绑定新桌，让choose明确不可用并触发原合法保底；不重置重启额度或借用其他桌。
+
+`RuntimeServices` 尾部新增成对可空的 `compute_game_started` / `compute_game_finished` 回调（输入game_id、异步返回None；None表示无专属计算生命周期）及 `requires_conditional_roots: bool=False`（仅VIP明确依赖条件根时为True）。两个运行时核官方config.M不超过专属容量，并注入真实应用计算服务回调。GameTask正常/故障/取消均回收原桌；只读收尾不申请计算。已取得GameFinished后，清理阶段取消不得丢掉权威结果。
+
+`snapshot()` 新增 `bound_games` / `releasing_games`，是当前绑定/回收中的桌数量，关闭后必须为0；历史计数不伪造为0。新冻结包格式为 `vip-s02-bounded-release/2`，必需 `compiled_runtime` 完整清单、清单字节SHA、ABI、原体源码/生成源/二进制身份；父校验与子工厂加载共用验证。新枚举只授测试房和实验自由赛，旧包原件保留而不能复用旧ID。验证及状态见[T179](../../review/vip-route-2026-09-30/evidence/t179-production-wiring-1/README.md)。下方为历史快照。
+
 2026-10-04 T167：公共策略/规则/赛事端口签名未变；新增显式测试房对照枚举`r18_v2_current_rules_testroom_20261004`，仅test_room、SSE、当前指南及精确冻结ID，运行源码/规则/数学漂移在副作用前拒绝。房间各`identities`分别绑定该席`strategy`和`expected_policy_release_id`，两种算法不能共用一个ID；子配置完整透传。T110新testroom_v7/free_v5另冻身份，原算法、限深和截止不变。新对照不继承旧正式包权限、默认值或强度；旧正式R18摘要漂移继续拒绝。[混合房契约验证](../../review/vip-route-2026-09-30/evidence/t167-mixed-testroom-current-r18-wiring-1/REPORT.md)。下方为历史快照。
 
 2026-10-04更新：新testroom_v6／free_v4已完成T161自由赛和T163四席M10/R8快速测试房的真实工程验收；对局摸切、429、计算故障/重启均0，原截止、限深1、公式和稳定默认版本不变。T163一只过评分超期及两只过零规划例外保留，严格零降级false；T161缓发虽开启但因快照时间依据不足全跳过，不能授缓发改善信用。T148强度false仍保留，正式/测试赛事发布门未授。详情见[验收报告](../../review/vip-route-2026-09-30/evidence/t163-received-fix-fast-four-seat-testroom-1/REPORT.md)。

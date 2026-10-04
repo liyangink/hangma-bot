@@ -27,6 +27,7 @@ from .internal_types import TILE_INDEX, WindowContext, is_wealth
 from .observation_rules import enrich_observation
 from .public_tile_counts import (
     PublicClaimEvidence, PublicTileView, UnseenCounts34, count_unseen_tiles_from_view,
+    _record_public_river_append,
     public_view_from_observation,
 )
 from .route_frontier import RouteGapKind
@@ -226,11 +227,15 @@ def _append_discard(view: PublicTileView, seat: int, tile: Tile) -> PublicTileVi
 
     if view.hand_counts[seat] <= 0:
         raise ValueError("公开手牌数不足以执行弃牌")
-    return replace(
+    result = replace(
         view,
-        discards=_replace_four(view.discards, seat, view.discards[seat] + (tile,)),
+        discards=_replace_four(
+            view.discards, seat, (new_river := (old_river := view.discards[seat]) + (tile,))),
         hand_counts=_replace_four(view.hand_counts, seat, view.hand_counts[seat] - 1),
     )
+
+    _record_public_river_append(old_river, new_river, tile)
+    return result
 
 
 def _refresh_public(state: ConditionalRouteState, view: PublicTileView) -> ConditionalRouteState:

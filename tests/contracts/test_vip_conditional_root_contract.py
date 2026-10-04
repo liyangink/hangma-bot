@@ -2,7 +2,7 @@
 
 import pytest
 
-from hangma_bot.application.audit_codec import rule_analysis_to_json
+from hangma_bot.application.audit_codec import rule_analysis_to_json, rule_analysis_from_json
 from hangma_bot.hangma import route_transition
 from hangma_bot.hangma.interface import ValueAnalysisLimits
 from hangma_bot.hangma.route_frontier import RouteGapKind
@@ -68,8 +68,8 @@ def test_conditional_projection_failure_keeps_legal_and_emergency_actions(monkey
                for root in research.conditional_roots)
 
 
-def test_research_roots_cannot_be_silently_dropped_by_production_audit_codec():
-    """当前离线策略只能内存消费完整根，生产审计不得冒称可重放。"""
+def test_research_roots_are_losslessly_preserved_by_production_audit_codec():
+    """当前路线审计已支持完整根；严格JSON往返不得遗漏条件事实。"""
 
     rules = make_rules()
     engine = SimulationEngine(rules)
@@ -79,5 +79,8 @@ def test_research_roots_cannot_be_silently_dropped_by_production_audit_codec():
     assert rule_analysis_to_json(ordinary)["legal_candidates"]
     research = rules.analyze(
         observation, route_limits=ValueAnalysisLimits(max_expansions=8192))
-    with pytest.raises(ValueError, match="无损审计编解码"):
-        rule_analysis_to_json(research)
+    import json
+    encoded = rule_analysis_to_json(research)
+    restored = rule_analysis_from_json(json.loads(json.dumps(encoded, allow_nan=False)))
+    assert restored.conditional_roots == research.conditional_roots
+    assert rule_analysis_to_json(restored) == encoded

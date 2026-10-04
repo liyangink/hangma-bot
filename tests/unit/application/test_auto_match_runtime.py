@@ -101,6 +101,7 @@ def build_auto_runtime(
     clock: Optional[ManualClock] = None,
     sleep: Optional[Callable[[float], object]] = None,
     ids=None,
+    policy=None,
 ):
     """组装 AutoMatchRuntime（默认替身与 fakes.build_runtime 对齐）。"""
 
@@ -109,7 +110,7 @@ def build_auto_runtime(
     ids = ids if ids is not None else SequencedIds()
     runtime = AutoMatchRuntime(
         session=session,
-        policy=object(),  # 本组测试无动作窗口，策略不会被调用
+        policy=object() if policy is None else policy,  # 无动作窗口时策略不会被调用
         audit_sink=sink,
         target=target if target is not None else auto_target(),
         settings=settings,
@@ -447,3 +448,46 @@ async def wait_till(condition, *, limit: int = 5000) -> None:
             pass
         await asyncio.sleep(0)
     raise AssertionError("等待条件超时")
+
+
+@pytest.mark.asyncio
+async def test_active_removal_during_dedicated_release_preserves_final_without_reopen():
+    """权威终局已收到但槽回收未完，active移除不能丢终局或再次开桌。"""
+    from hangma_bot.application.decision_compute import BoundedDecisionCompute, DecisionComputeSettings
+    from test_decision_compute import ControlFactory
+    releasing, released = asyncio.Event(), asyncio.Event()
+
+    class GatedCompute(BoundedDecisionCompute):
+        async def release_game(self, game_id):
+            releasing.set()
+            await released.wait()
+            await super().release_game(game_id)
+
+    compute = GatedCompute(ControlFactory(), execution_id="control-source-v1", clock=ManualClock(),
+        settings=DecisionComputeSettings(workers=1, max_pending=0, per_game_workers=True, startup_seconds=2))
+    bootstrap = make_bootstrap(snapshot=running_snapshot(["g1"], ["g1"]), config=make_config(max_games=1))
+    game = FakeGameSession(items=[make_finished_game("g1")])
+    session = FakeTournamentSession(bootstrap=bootstrap,
+        updates=[running_snapshot([], ["g1"], revision=3), finished_snapshot(["g1"], revision=4)],
+        game_factory=lambda gid: game)
+    runtime, sink = build_auto_runtime(session=session, policy=compute)
+    await compute.start()
+    running = asyncio.create_task(runtime.run())
+    try:
+        await asyncio.wait_for(releasing.wait(), 2)
+        session.grant_updates(1)
+        await wait_till(lambda: "game_closed" in auto_events(sink))
+        released.set()
+        await wait_till(lambda: game.closed)
+        session.grant_updates(1)
+        terminal = await asyncio.wait_for(running, 5)
+        assert terminal.reason is ParticipantTerminalReason.TOURNAMENT_FINISHED
+        assert session.game_opens == ["g1"]
+        assert len([r for r in sink.records if r.kind is AuditKind.GAME_FINISHED]) == 1
+        assert compute.snapshot()["bound_games"] == compute.snapshot()["releasing_games"] == 0
+    finally:
+        released.set()
+        if not running.done():
+            running.cancel()
+        await asyncio.gather(running, return_exceptions=True)
+        await compute.close()

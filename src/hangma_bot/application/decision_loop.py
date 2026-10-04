@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass, field, replace
+from typing import Awaitable, Callable
 
 from hangma_bot.application.audit import AuditTrail, audit_error_text, audit_text
 
@@ -80,8 +81,16 @@ class RuntimeServices:
     value_limits: ValueAnalysisLimits | None = None
     # 可选条件路线事实工作量；仅在原增强截止时间前请求，不重新获得预算。
     route_limits: ValueAnalysisLimits | None = None
+    # 应用计算服务的桌生命周期；只接收game_id，不扩充BotPolicy或传递隐藏状态。
+    compute_game_started: Callable[[str], Awaitable[None]] | None = None
+    compute_game_finished: Callable[[str], Awaitable[None]] | None = None
+    requires_conditional_roots: bool = False  # 仅依赖条件根的已接线VIP设True；普通策略不被预算跳过
 
     def __post_init__(self) -> None:
+        if type(self.requires_conditional_roots) is not bool:
+            raise TypeError("requires_conditional_roots 必须是布尔值")
+        if (self.compute_game_started is None) != (self.compute_game_finished is None):
+            raise ValueError("计算场次生命周期必须成对注入")
         for name, limits in (("value_limits", self.value_limits), ("route_limits", self.route_limits)):
             if limits is not None and not isinstance(limits, ValueAnalysisLimits):
                 raise TypeError(name + " 必须是 ValueAnalysisLimits 或 None")
@@ -265,6 +274,15 @@ async def _guarded_choose(
     无法按截止时间立刻走紧急保底。超时后只请求取消并转入后台回收，
     动作路径绝不等待策略的收尾。
     """
+
+    # 原增强预算已经用尽且未请求条件事实时，不把缺输入交给必须依赖
+    # 这些事实的路线策略；明确保留预算降级，由独立规则紧急动作接管。
+    # 有完整事实的请求仍能使用剩余保底预算，期限未过但缺输入仍报错。
+    if (services.requires_conditional_roots and services.route_limits is not None
+            and request.rules.conditional_roots is None
+            and services.clock.now() >= budget.enhancement_deadline_monotonic):
+        notes.append("路线增强预算已过，条件事实未请求；跳过策略并使用独立紧急动作")
+        return None
 
     choose_task = asyncio.ensure_future(services.policy.choose(request, budget))
     wait_seconds = services.clock.budget_wait_seconds(budget.fallback_deadline_monotonic)

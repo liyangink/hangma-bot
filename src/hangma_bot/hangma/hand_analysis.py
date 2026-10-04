@@ -17,11 +17,16 @@ Python 分组算法。运行中不编译、不访问网络、文件或系统时�
 from __future__ import annotations
 
 from typing import Optional, Tuple
+from builtins import int as _builtin_int, len as _builtin_len, tuple as _builtin_tuple, type as _builtin_type
+from functools import lru_cache
+from types import FunctionType
 
 from hangma_bot.kernel.actions import Tile
 
 from ._standard import backend_info as math_backend_info, need as _need_std
 from .internal_types import (
+    _COUNTS_FROM_TILES_CANONICAL_FUNCTION,
+    _COUNTS_FROM_TILES_CANONICAL_CODE,
     TILE_ORDER,
     WEALTH_CODE,
     Counts34,
@@ -465,6 +470,32 @@ def win_split(hand_tiles: Tuple[Tile, ...], meld_set_count: int) -> Optional[Win
 
     _validate_melds(meld_set_count)
     counts34 = counts_from_tiles(hand_tiles)
+    # 先执行原公共校验和原计数；未知/子类输入不新增访问或拒绝。
+    # 原计数的0初始化与逐牌+1证明结果为0..14的内建整数，不逐34项重扫。
+    if (
+        _builtin_type(hand_tiles) is _builtin_tuple
+        and _builtin_len(hand_tiles) <= 14
+        and _builtin_type(meld_set_count) is _builtin_int
+        and 0 <= meld_set_count <= 4
+        and _builtin_type(counts34) is _builtin_tuple
+        and _win_split_cache_dependencies_unchanged()
+    ):
+        result = _win_split_counts_cached(counts34, meld_set_count)
+        if result is None:
+            return None
+        # 缓存不把结果对象借给调用方；每次仍是原WinSplit类型的新实例。
+        return WinSplit(result.branch, result.luxury_pairs, result.whites_held,
+                        result.any_tile_tenpai, result.evidence)
+    return _win_split_counts(counts34, meld_set_count)
+
+
+def _win_split_counts(counts34: Counts34, meld_set_count: int) -> Optional[WinSplit]:
+    """已构造计数的原分解主体；顺序、七对优先和全部证据逐句保持。
+
+    仅由先完成原副露校验、原牌值计数的入口调用。研究装配可在此
+    复用同计数结果，不缓存输入校验、不混用不同副露数。
+    """
+
     counts, whites = _split_counts(counts34)
 
     if meld_set_count == 0:
@@ -538,3 +569,80 @@ def any_tile_win(hand_tiles_13: Tuple[Tile, ...], meld_set_count: int) -> bool:
         if not _is_win_counts(tuple(drawn), meld_set_count):
             return False
     return True
+
+
+# 仅完整确定性分解复用：每解释器最多1024条，不缓存布尔判胡或递归后缀。
+# 内建LRU不存异常；值/键只含本手牌计数与副露数，不含座位、世界或时间。
+_WIN_SPLIT_CACHE_LIMIT = 1024
+_win_split_counts_cached = lru_cache(maxsize=_WIN_SPLIT_CACHE_LIMIT, typed=True)(_win_split_counts)
+_WIN_SPLIT_NAMESPACE = globals()
+_WIN_SPLIT_BUILTINS = win_split.__builtins__
+_WIN_SPLIT_COUNT_GLOBALS = _COUNTS_FROM_TILES_CANONICAL_FUNCTION.__globals__
+_WIN_SPLIT_COUNT_BUILTINS = _COUNTS_FROM_TILES_CANONICAL_FUNCTION.__builtins__
+_WIN_SPLIT_FUNCTION_NAMES = (
+    "_need_std", "_chiitoi_pairs", "_split_counts", "_dec", "_block_label",
+    "_split_std_evidence", "_validate_melds", "_win_split_counts",
+)
+_WIN_SPLIT_VALUE_NAMES = (
+    "TILE_ORDER", "WinSplit", "_BRANCH_PLAIN", "_BRANCH_CHIITOI",
+    # 只绑定原数学主体实际使用的builtin；不扫描全部模块或计数元素。
+    "sum", "min", "max", "range", "enumerate", "tuple", "list", "sorted",
+)
+
+
+def _win_split_global(name):
+    if name in _WIN_SPLIT_NAMESPACE:
+        return _WIN_SPLIT_NAMESPACE[name]
+    return _WIN_SPLIT_BUILTINS.get(name)
+
+
+def _win_split_code(value):
+    return value.__code__ if _builtin_type(value) is FunctionType else None
+
+
+_WIN_SPLIT_FUNCTION_DEPENDENCIES = tuple(
+    (name, _win_split_global(name), _win_split_code(_win_split_global(name)))
+    for name in _WIN_SPLIT_FUNCTION_NAMES
+)
+_WIN_SPLIT_VALUE_DEPENDENCIES = tuple(
+    (name, _win_split_global(name)) for name in _WIN_SPLIT_VALUE_NAMES
+)
+_WIN_SPLIT_RESULT_TYPE = WinSplit
+_WIN_SPLIT_RESULT_METHODS = tuple(
+    (name, getattr(WinSplit, name), _win_split_code(getattr(WinSplit, name)))
+    for name in ("__new__", "__init__", "__getattribute__")
+)
+
+
+def _win_split_cache_dependencies_unchanged():
+    """只认可原同源依赖；热漂移原算，不为未知替代函数重新授缓存证明。"""
+
+    if (counts_from_tiles is not _COUNTS_FROM_TILES_CANONICAL_FUNCTION
+            or counts_from_tiles.__code__ is not _COUNTS_FROM_TILES_CANONICAL_CODE):
+        return False
+    # counts_from_tiles的tuple是另一模块实际解析的全局/builtin绑定。
+    # builtins字典可原地改写，不能只捕获字典对象后跳过逐次值校验。
+    constructor = (
+        _WIN_SPLIT_COUNT_GLOBALS["tuple"] if "tuple" in _WIN_SPLIT_COUNT_GLOBALS
+        else _WIN_SPLIT_COUNT_BUILTINS.get("tuple")
+    )
+    if constructor is not _builtin_tuple:
+        return False
+    for name, expected, code in _WIN_SPLIT_FUNCTION_DEPENDENCIES:
+        current = _win_split_global(name)
+        if current is not expected or _win_split_code(current) is not code:
+            return False
+    for name, expected in _WIN_SPLIT_VALUE_DEPENDENCIES:
+        if _win_split_global(name) is not expected:
+            return False
+    for name, expected, code in _WIN_SPLIT_RESULT_METHODS:
+        current = getattr(_WIN_SPLIT_RESULT_TYPE, name)
+        if current is not expected or _win_split_code(current) is not code:
+            return False
+    return True
+
+
+# 仅提供原数学缓存的回归/诊断属性；choose与规则受控接口不增加参数。
+# clear后释放全部键/值，进程/解释器退出同样回收；调用不读文件或时钟。
+win_split.cache_info = _win_split_counts_cached.cache_info
+win_split.cache_clear = _win_split_counts_cached.cache_clear

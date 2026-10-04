@@ -266,3 +266,20 @@ async def test_participant_runtime_passes_actual_route_limits_and_records_manife
     restored = decision_request_from_json(inputs(sink)[0]["request"])
     assert_all_fields_equal(policy.calls[0], restored)
     assert (restored.rules.conditional_roots is not None) == (route_limits is not None)
+
+
+@pytest.mark.parametrize("requires,called", ((False, True), (True, False)))
+async def test_missing_expired_conditional_facts_skip_only_declared_vip(requires, called):
+    """条件事实预算耗尽时仅VIP跳过，普通路线策略仍按原预算调用。"""
+    clock = ManualClock(100.5)
+    rules = WorkRules(clock)
+    result, game, sink, policy = await run_window(
+        rules, clock=clock, route_limits=LIMITS, requires_conditional_roots=requires)
+    assert result.outcome_kind == "accepted" and len(game.submitted) == 1
+    assert bool(policy.budgets) is called
+    assert rules.events == ["emergency", {}]
+    if requires:
+        planned = [r.payload for r in sink.records if r.kind is AuditKind.DECISION_PLANNED]
+        assert planned and planned[0]["returned_plan"] is None
+        recovered = [r.payload for r in sink.records if r.kind is AuditKind.PROTOCOL_RECOVERED]
+        assert any("跳过策略" in note for row in recovered for note in row.get("reasons", []))

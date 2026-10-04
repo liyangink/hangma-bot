@@ -72,6 +72,8 @@ async def test_free_bootstrap_real_worker_rule_audit_submission_and_normal_close
             return await super().initialize(target)
 
         async def next_update(self):
+            if "room-finished" in lifecycle:
+                await asyncio.Event().wait()  # 终态后无新通知，等待监督器关闭会话
             await finished.wait()
             lifecycle.append("room-finished")
             return make_snapshot(TournamentStatus.FINISHED, my_games=("g1",), active_games=())
@@ -98,9 +100,11 @@ async def test_free_bootstrap_real_worker_rule_audit_submission_and_normal_close
     assert len(game.submitted) == 1
     resources = unit.compute.snapshot()
     assert resources["completed"] == resources["submitted"] == resources["dispatched"] == 1
-    assert resources["process_starts"] == 2 and resources["restarts"] == resources["faults"] == 0
+    assert resources["process_starts"] == package["params"]["compute_settings"]["workers"]
+    assert resources["restarts"] == resources["faults"] == 0
     for field in ("owned", "pending", "active", "current", "ready", "live_processes",
-                  "transport_inflight", "transport_threads_alive", "late_reap_inflight", "late_reap_threads_alive"):
+                  "transport_inflight", "transport_threads_alive", "late_reap_inflight", "late_reap_threads_alive",
+                  "bound_games", "releasing_games"):
         assert resources[field] == 0, field
     assert resources["closed"] is True
     assert not unit.audit_degraded

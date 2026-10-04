@@ -136,16 +136,129 @@ DEFAULT_STRATEGY = "weighted_heuristic"
 DEFAULT_RULESET_VERSION = "hangma-mvp-v10-public-counts"
 
 # 仅用于显式工程实验；历史包及失败保留，每次运行修复另冻结新身份。
-VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v7"
-VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v7/manifest.json"
-VIP_S02_FREE_STRATEGY = "vip_s02_bounded_d1_free_v5"
-VIP_S02_FREE_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v5/manifest.json"
+VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v8"
+VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v8/manifest.json"
+VIP_S02_FREE_STRATEGY = "vip_s02_bounded_d1_free_v6"
+VIP_S02_FREE_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v6/manifest.json"
 R18_CURRENT_TESTROOM_MANIFEST = "prebuilt/r18-v2-current-rules-testroom-20261004/manifest.json"
 VIP_S02_NETWORK_STRATEGIES = (VIP_S02_TESTROOM_STRATEGY, VIP_S02_FREE_STRATEGY)
 VIP_S02_BASE_CANDIDATE_ID = "54d4029ba095572490c41406a481d73d27e350e385438b177013ce72f274b710"
 VIP_S02_ROUTE_LIMITS = ValueAnalysisLimits(max_expansions=8192, max_routes_per_candidate=128)
 VIP_S02_PROJECTION_LIMITS = VipRouteProjectionLimits(8192, 16384, 65536, 1)
-VIP_S02_COMPUTE_SETTINGS = DecisionComputeSettings(workers=2, max_pending=8)
+VIP_S02_COMPUTE_SETTINGS = DecisionComputeSettings(
+    workers=10, max_pending=0, per_game_workers=True)
+VIP_S02_COMPILED_DIRECTORY = "prebuilt/vip-s02-compiled-runtime-v1"
+_VIP_S02_NATIVE_CACHE = None  # 只由组合根启动期装入，保存实际验签身份及四模块
+
+
+def _verify_vip_s02_runtime(expected_manifest_sha256: str | None = None) -> tuple[dict, dict]:
+    """启动期核对编译原件，返回完整身份与四模块路径，不执行或编译扩展。
+
+    父进程冻结、配置校验和工作进程装载共用此验签路径。摘要绑定实际
+    清单字节；完整清单还绑定解释器ABI、评分原体、生成体和二进制原件。
+    """
+    import platform
+    import sys
+    import sysconfig
+
+    directory = _REPO_ROOT / VIP_S02_COMPILED_DIRECTORY
+    raw = (directory / "manifest.json").read_bytes()
+    actual_manifest_sha256 = hashlib.sha256(raw).hexdigest()
+    if expected_manifest_sha256 is not None and actual_manifest_sha256 != expected_manifest_sha256:
+        raise RuntimeError("S02编译制品清单身份不匹配")
+    manifest = json.loads(raw)
+    names = ("_s02_meter", "_s02_candidate", "_s02_facts", "_s02_runtime")
+    source_names = ("src/hangma_bot/policy/action_value_executor.py",
+                    "src/hangma_bot/policy/route_heuristic_view.py")
+    generated_names = tuple(name + ".pyx" for name in names) + ("_s02_meter.pxd",)
+    required = {"schema", "candidate_source_sha256", "python_implementation",
+        "python_cache_tag", "platform", "machine", "ext_suffix", "source_sha256",
+        "generated_source_sha256", "build_plan_sha256", "binaries"}
+    if (type(manifest) is not dict or set(manifest) != required
+            or manifest.get("schema") != "vip-s02-compiled-original-runtime/1"
+            or manifest.get("candidate_source_sha256") != VIP_S02_SOURCE_SHA256
+            or manifest.get("python_implementation") != sys.implementation.name
+            or manifest.get("python_cache_tag") != sys.implementation.cache_tag
+            or manifest.get("platform") != sys.platform
+            or manifest.get("machine") != platform.machine()
+            or manifest.get("ext_suffix") != sysconfig.get_config_var("EXT_SUFFIX")
+            or set(manifest.get("source_sha256", {})) != set(source_names)
+            or set(manifest.get("generated_source_sha256", {})) != set(generated_names)
+            or set(manifest.get("binaries", {})) != set(names)):
+        raise RuntimeError("S02编译制品范围、公式或ABI不匹配")
+    digests = (*manifest["source_sha256"].values(),
+               *manifest["generated_source_sha256"].values(), manifest["build_plan_sha256"])
+    if any(type(value) is not str or len(value) != 64
+           or any(c not in "0123456789abcdef" for c in value) for value in digests):
+        raise RuntimeError("S02编译制品摘要格式错误")
+    for relative, expected in manifest["source_sha256"].items():
+        if hashlib.sha256((_REPO_ROOT / relative).read_bytes()).hexdigest() != expected:
+            raise RuntimeError("S02编译体依赖源码漂移: " + relative)
+    for name, expected in manifest["generated_source_sha256"].items():
+        if hashlib.sha256((directory / name).read_bytes()).hexdigest() != expected:
+            raise RuntimeError("S02编译体生成源码漂移: " + name)
+    paths = {}
+    for name in names:
+        row = manifest["binaries"][name]
+        filename = name + manifest["ext_suffix"]
+        if (type(row) is not dict or set(row) != {"filename", "sha256", "bytes"}
+                or row.get("filename") != filename or type(row.get("bytes")) is not int
+                or row["bytes"] < 1 or type(row.get("sha256")) is not str
+                or len(row["sha256"]) != 64
+                or any(c not in "0123456789abcdef" for c in row["sha256"])):
+            raise RuntimeError("S02扩展文件名不匹配")
+        path = directory / filename
+        value = path.read_bytes()
+        if len(value) != row.get("bytes") or hashlib.sha256(value).hexdigest() != row.get("sha256"):
+            raise RuntimeError("S02扩展二进制漂移: " + name)
+        paths[name] = path
+    return {"directory": VIP_S02_COMPILED_DIRECTORY,
+            "manifest_sha256": actual_manifest_sha256, "manifest": manifest}, paths
+
+
+def _load_vip_s02_runtime(expected_manifest_sha256: str):
+    """工作进程启动期验签后装入原体编译制品；动作窗口不读盘、不编译。
+
+    扩展在每个spawn工作进程独立装载；执行器原公式与计费语义不变。
+    同一解释器只复用已验签模块，拒绝预先占名或模块绑定漂移。
+    """
+    import importlib.util
+    import sys
+    from hangma_bot.policy.action_value_executor import ActionValueCompiledRuntime
+
+    global _VIP_S02_NATIVE_CACHE
+    identity, paths = _verify_vip_s02_runtime(expected_manifest_sha256)
+    actual_manifest_sha256 = identity["manifest_sha256"]
+    names = ("_s02_meter", "_s02_candidate", "_s02_facts", "_s02_runtime")
+    if _VIP_S02_NATIVE_CACHE is not None:
+        identity, modules = _VIP_S02_NATIVE_CACHE
+        if identity != actual_manifest_sha256 or any(sys.modules.get(name) is not modules[name] for name in names):
+            raise RuntimeError("S02已装入扩展身份或绑定漂移")
+    else:
+        if any(name in sys.modules for name in names):
+            raise RuntimeError("S02扩展名已被未经本组合根验签的模块占用")
+        modules = {}
+        installed = []
+        try:
+            for name in names:
+                spec = importlib.util.spec_from_file_location(name, paths[name])
+                module = importlib.util.module_from_spec(spec)
+                sys.modules[name] = module
+                installed.append(name)
+                spec.loader.exec_module(module)
+                modules[name] = module
+        except BaseException:
+            for name in installed:
+                sys.modules.pop(name, None)
+            raise
+        _VIP_S02_NATIVE_CACHE = (actual_manifest_sha256, modules)
+    return ActionValueCompiledRuntime(
+        source_sha256=VIP_S02_SOURCE_SHA256, execution_id=actual_manifest_sha256,
+        meter_factory=modules["_s02_meter"].Meter,
+        runtime_factory=modules["_s02_runtime"]._make_runtime,
+        candidate_factory=modules["_s02_candidate"].make_candidate,
+        charge_return_value=modules["_s02_runtime"].charge_structure,
+        copy_facts=modules["_s02_facts"]._plain)
 
 
 def _vip_runtime_sources() -> dict[str, str]:
@@ -205,12 +318,13 @@ def _build_vip_manifest(strategy: str, evidence_sha256: Mapping[str, str]) -> di
            for name, value in evidence_sha256.items()):
         raise ValueError("VIP工程证据必须是命名的完整SHA-256")
     _verify_vip_evidence(evidence_sha256)
-    payload = {"schema": "vip-s02-bounded-testroom-release/1",
+    payload = {"schema": "vip-s02-bounded-release/2",
         "strategy": strategy, "allowed_modes": [mode],
         "known_guide_version": KNOWN_GUIDE_VERSION, "params": _vip_params(),
         "base_candidate_id": VIP_S02_BASE_CANDIDATE_ID,
         "source_sha256": VIP_S02_SOURCE_SHA256,
         "source_manifest": _vip_runtime_sources(), "hand_math": metadata,
+        "compiled_runtime": _verify_vip_s02_runtime()[0],
         "evidence_sha256": dict(evidence_sha256),
         "admission": admission, "strength_admission": False,
         "production_default": False, "llm_online": False}
@@ -246,9 +360,10 @@ def _load_vip_manifest(strategy: str, expected_id: str | None = None) -> dict:
     from hangma_bot.adapters.official.dto import KNOWN_GUIDE_VERSION
     required = {"schema", "strategy", "allowed_modes", "known_guide_version", "params",
         "base_candidate_id", "source_sha256", "source_manifest", "hand_math", "evidence_sha256",
-        "admission", "strength_admission", "production_default", "llm_online", "release_package_id"}
+        "admission", "strength_admission", "production_default", "llm_online", "release_package_id",
+        "compiled_runtime"}
     if (type(payload) is not dict or set(payload) != required
-            or payload.get("schema") != "vip-s02-bounded-testroom-release/1"
+            or payload.get("schema") != "vip-s02-bounded-release/2"
             or payload.get("strategy") != strategy
             or payload.get("allowed_modes") != [mode]
             or payload.get("admission") != admission
@@ -271,6 +386,12 @@ def _load_vip_manifest(strategy: str, expected_id: str | None = None) -> dict:
         raise RuntimeError("VIP完整运行源码摘要漂移；需重新冻结并复核")
     if payload.get("hand_math") != hand_math_runtime_metadata():
         raise RuntimeError("VIP实际数学后端与冻结包不匹配")
+    compiled = payload.get("compiled_runtime")
+    if type(compiled) is not dict or set(compiled) != {"directory", "manifest_sha256", "manifest"}:
+        raise RuntimeError("VIP编译运行时冻结身份缺失")
+    actual_compiled, _paths = _verify_vip_s02_runtime(compiled.get("manifest_sha256"))
+    if compiled != actual_compiled:
+        raise RuntimeError("VIP编译运行时清单与冻结包不匹配")
     evidence = payload.get("evidence_sha256")
     if type(evidence) is not dict or not evidence or any(type(n) is not str or type(s) is not str
             or len(s) != 64 or any(c not in "0123456789abcdef" for c in s) for n, s in evidence.items()):
@@ -340,7 +461,8 @@ class _VipWorkerFactory:
         policy = RouteVipHeuristicPolicy(
             RuleConfig(**package["params"]["rule_config"]), source=VIP_S02_SOURCE,
             max_operations=package["params"]["max_operations"],
-            projection_limits=VIP_S02_PROJECTION_LIMITS)
+            projection_limits=VIP_S02_PROJECTION_LIMITS,
+            compiled_runtime=_load_vip_s02_runtime(package["compiled_runtime"]["manifest_sha256"]))
         return PreparedDecisionPolicy(policy, self.expected_id)
 
 
@@ -355,6 +477,7 @@ def _build_vip_compute(config, clock: RuntimeClock) -> BoundedDecisionCompute:
     compute = build_isolated_decision_policy(_VipWorkerFactory(package["release_package_id"], config.strategy),
         execution_id=package["release_package_id"], clock=clock, settings=VIP_S02_COMPUTE_SETTINGS)
     compute.release_metadata = package
+    compute.requires_conditional_roots = True
     compute.policy_id = package["admission"] + ":" + package["release_package_id"][:12]
     return compute
 

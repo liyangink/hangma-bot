@@ -57,6 +57,13 @@ def counts_from_tiles(tiles: Tuple[Tile, ...]) -> Counts34:
     return tuple(counts)
 
 
+# 原函数体产生内建34项整数元组；仅供同模块群的缓存准入证明。
+# 紧邻定义保存对象和代码，避免先换计数函数、后导入手牌模块被误认可。
+# 私有证明不改变原计数的非法牌码/第五张行为，也不新增公共契约。
+_COUNTS_FROM_TILES_CANONICAL_FUNCTION = counts_from_tiles
+_COUNTS_FROM_TILES_CANONICAL_CODE = counts_from_tiles.__code__
+
+
 def codes_from_counts(counts: Counts34) -> Tuple[str, ...]:
     """把计数向量还原为按规范顺序排列的牌值元组（每个 code 重复其张数）。"""
 

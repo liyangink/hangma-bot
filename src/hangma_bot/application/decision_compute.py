@@ -43,8 +43,11 @@ class DecisionComputeSettings:
     abandon_grace_seconds: float = 0.1  # 取消/过期后仍未退出则终止对应计算进程
     resource_reap_seconds: float = 1.0  # 单次资源回收等待上限；失败仍保留迟到清理所有权
     max_restarts: int = 2  # 每槽整个服务生命周期的重启上限，不随请求重置
+    per_game_workers: bool = False  # True 时每场独占一个预热槽，直到场次任务完成回收
 
     def __post_init__(self):
+        if type(self.per_game_workers) is not bool:
+            raise ValueError('per_game_workers')
         for name in ('workers', 'max_message_bytes'):
             if type(getattr(self, name)) is not int or getattr(self, name) <= 0:
                 raise ValueError(name)
@@ -171,6 +174,11 @@ class _Slot:
     child_socket: object = None
     late_reap_future: object = None  # 回收期限之后的自动清理；不依赖调用方再close
     late_reap_thread: object = None  # 每槽最多一个独占迟到清理线程，只在退出退化时启用
+    game_id: str | None = None  # 独占模式下的场次绑定；其他场次不能借用这个槽
+    settled: asyncio.Event = field(default_factory=asyncio.Event)  # 作业/失败回收已结束，允许解绑
+    release_error: BaseException | None = None  # 回收失败保留真实所有权，不能冒称槽已释放
+    transport: object = None  # 专属模式每槽自己的单线程传输器，不借用其他桌的线程
+    transport_future: object = None  # 实际未结束编码/解码线程仍归本槽，迟到时也不能转移
 
 
 class BoundedDecisionCompute:
@@ -189,13 +197,24 @@ class BoundedDecisionCompute:
         self._slots = [_Slot() for _ in range(settings.workers)]
         self._jobs = {}
         self._pending = []
+        self._staged_slots = []  # 初次准入已占槽、尚未唤醒的请求，数量至多workers
+        self._admission_flush = None  # 同一事件循环批次仅有一个无固定延迟的派发回调
         self._current = {}
+        self._game_slots = {}  # 最多 workers 个活跃场次，终局/重开显式释放
+        self._releasing_games = {}  # 同场次并发释放共享唯一任务；调用方取消不丢失所有权
         self._number = 0
         self._transport_futures = set()  # 至多workers份未结束传输；不借用全局默认线程池
         self._transport_threads = set()  # 每服务最多workers个固定线程，退出时逐个确认结束
         self._thread_lock = threading.Lock()
-        self._transport = ThreadPoolExecutor(max_workers=settings.workers,
-            thread_name_prefix='hangma-decision-transport', initializer=self._register_transport_thread)
+        self._transport = None
+        if settings.per_game_workers:
+            for number, slot in enumerate(self._slots):
+                slot.transport = ThreadPoolExecutor(max_workers=1,
+                    thread_name_prefix=f'hangma-decision-transport-{number}',
+                    initializer=self._register_transport_thread)
+        else:
+            self._transport = ThreadPoolExecutor(max_workers=settings.workers,
+                thread_name_prefix='hangma-decision-transport', initializer=self._register_transport_thread)
         self._started = self._closed = False
         self._close_task = None  # 并发退出共享同一个资源回收所有者
         self._counts = dict(submitted=0, dispatched=0, completed=0, discarded=0,
@@ -218,7 +237,84 @@ class BoundedDecisionCompute:
                     active=sum(s.active is not None for s in self._slots),
                     ready=sum(s.ready for s in self._slots),
                     live_processes=sum(self._process_live(s) for s in self._slots), current=len(self._current),
+                    bound_games=len(self._game_slots), releasing_games=len(self._releasing_games),
                     closed=self._closed)
+
+    async def acquire_game(self, game_id: str) -> None:
+        """将场次绑定到专属槽；优先已预热槽，已回收的永久故障槽仅保留紧急路径。
+
+        容量不足立即失败，不排队等待他桌。普通共享模式保持无副作用；
+        场次失败重开前必须 await release_game；
+        故障重启沿用原槽的绑定，不将该场任务转给其他场次的进程。
+        """
+        if not self.settings.per_game_workers:
+            return
+        if not isinstance(game_id, str) or not game_id:
+            raise ValueError('game_id')
+        if self._closed or not self._started:
+            raise DecisionComputeError('NOT_READY')
+        if game_id in self._releasing_games:
+            raise DecisionComputeError('GAME_RELEASING')
+        if game_id in self._game_slots:
+            return
+        slot = next((s for s in self._slots
+                     if s.game_id is None and s.ready and s.active is None
+                     and s.settled.is_set() and s.release_error is None), None)
+        if slot is None:
+            # 故障额度耗尽的槽仍可拥有新桌的紧急动作路径；不能因为没有计算
+            # 进程而连权威窗口都不消费。只有真实回收终结的槽才允许这种绑定，
+            # choose立即报不可用，不重置重启额度或借用其他桌的健康进程。
+            slot = next((s for s in self._slots if s.game_id is None
+                         and self._dead_slot_settled(s)), None)
+        if slot is None:
+            self._counts['rejected'] += 1
+            raise DecisionComputeError('GAME_CAPACITY')
+        slot.game_id = game_id
+        self._game_slots[game_id] = slot
+
+    @staticmethod
+    def _dead_slot_settled(slot):
+        """仅确认故障槽所有异步/进程回收已终结；不把取消等待当成资源已退出。"""
+        late = slot.late_reap_future
+        return (not slot.ready and slot.active is None and slot.settled.is_set()
+                and slot.release_error is None and slot.task is not None and slot.task.done()
+                and slot.process is None and slot.writer is None
+                and slot.parent_socket is None and slot.child_socket is None
+                and slot.start_future is None
+                and (slot.transport_future is None or slot.transport_future.done())
+                and (late is None or (late.done() and not late.cancelled() and late.exception() is None))
+                and (slot.late_reap_thread is None or not slot.late_reap_thread.is_alive()))
+
+    async def release_game(self, game_id: str) -> None:
+        """放弃该场未完成作业并等待原槽收齐回复或故障回收，再允许新场绑定。
+
+        取消 await 只放弃本次等待，唯一回收任务仍由服务拥有；失败时保留绑定，
+        最终 close 继续回收全部资源。绝不借用、终止其他场次的计算进程。
+        """
+        if not self.settings.per_game_workers or game_id not in self._game_slots:
+            return
+        task = self._releasing_games.get(game_id)
+        if task is None:
+            task = asyncio.create_task(self._release_game_resources(game_id))
+            self._releasing_games[game_id] = task
+            task.add_done_callback(lambda done: None if done.cancelled() else done.exception())
+        return await asyncio.shield(task)
+
+    async def _release_game_resources(self, game_id):
+        slot = self._game_slots[game_id]
+        try:
+            for job in tuple(self._jobs.values()):
+                if job.request.window_key.game_id == game_id:
+                    self._abandon(job, 'GAME_RELEASED')
+            await slot.settled.wait()
+            if slot.release_error is not None:
+                raise DecisionComputeError('GAME_REAP_FAILED') from slot.release_error
+            if slot.active is not None:
+                raise DecisionComputeError('GAME_REAP_INCOMPLETE')
+            self._game_slots.pop(game_id, None)
+            slot.game_id = None
+        finally:
+            self._releasing_games.pop(game_id, None)
 
     @staticmethod
     def _process_live(slot):
@@ -237,13 +333,23 @@ class BoundedDecisionCompute:
         with self._thread_lock:
             self._transport_threads.add(threading.current_thread())
 
-    async def _offload(self, function, *args, slot=None):
+    async def _offload(self, function, *args, slot=None, owner_slot=None):
         """只接受至多workers份传输任务；取消等待后仍保留实际线程future直到终态。"""
         with self._thread_lock:
             self._transport_futures = {f for f in self._transport_futures if not f.done()}
             if self._closed or len(self._transport_futures) >= self.settings.workers:
                 raise DecisionComputeError('TRANSPORT_NOT_AVAILABLE')
-            future = self._transport.submit(function, *args)
+            transport = self._transport
+            if self.settings.per_game_workers:
+                owner_slot = owner_slot or slot
+                if owner_slot is None:
+                    raise DecisionComputeError('TRANSPORT_GAME_OWNER_REQUIRED')
+                if owner_slot.transport_future is not None and not owner_slot.transport_future.done():
+                    raise DecisionComputeError('TRANSPORT_NOT_AVAILABLE')
+                transport = owner_slot.transport
+            future = transport.submit(function, *args)
+            if self.settings.per_game_workers:
+                owner_slot.transport_future = future
             self._transport_futures.add(future)
             self._counts['peak_transport'] = max(self._counts['peak_transport'], len(self._transport_futures))
         future.add_done_callback(self._transport_done)
@@ -272,7 +378,8 @@ class BoundedDecisionCompute:
 
     async def choose(self, request: DecisionRequest, budget: DecisionBudget) -> DecisionPlan:
         """返回同输入计划；过期、拥堵、故障抛异常，调用方取消保持资源回收所有权。"""
-        if self._closed or not self._started or not any(s.ready for s in self._slots):
+        if (self._closed or not self._started
+                or (not self.settings.per_game_workers and not any(s.ready for s in self._slots))):
             raise DecisionComputeError('NOT_READY')
         if not all(isfinite(v) for v in (budget.enhancement_deadline_monotonic,
                     budget.fallback_deadline_monotonic, budget.latest_send_at_monotonic)):
@@ -280,11 +387,19 @@ class BoundedDecisionCompute:
         if self.clock.now() >= budget.fallback_deadline_monotonic:
             raise DecisionComputeError('DEADLINE')
         game = request.window_key.game_id
+        if self.settings.per_game_workers:
+            await self.acquire_game(game)
+            assigned = self._game_slots[game]
+            if not assigned.ready:
+                raise DecisionComputeError('GAME_WORKER_NOT_READY')
+        else:
+            assigned = None
         old = self._current.get(game)
         if old is not None:
             self._abandon(old, 'SUPERSEDED')
-        idle = next((s for s in self._slots if s.ready and s.active is None), None)
-        if idle is None and len(self._pending) >= self.settings.max_pending:
+        idle = (assigned if assigned is not None and assigned.active is None else None) if self.settings.per_game_workers else next(
+            (s for s in self._slots if s.ready and s.active is None), None)
+        if not self.settings.per_game_workers and idle is None and len(self._pending) >= self.settings.max_pending:
             self._counts['rejected'] += 1
             raise DecisionComputeError('QUEUE_FULL')
         # 先占有限槽/队列，只有真正派发时才编码；拒绝及排队过期不编码大载荷。
@@ -300,8 +415,10 @@ class BoundedDecisionCompute:
         if idle is None:
             self._pending.append(job)
             self._pending.sort(key=lambda j: (j.budget.fallback_deadline_monotonic, j.number))
-        else:
+        elif self.settings.per_game_workers:
             self._assign(idle, job)
+        else:
+            self._stage_assignment(idle, job)
         self._counts['peak_owned'] = max(self._counts['peak_owned'], len(self._jobs))
         self._counts['peak_pending'] = max(self._counts['peak_pending'], len(self._pending))
         try:
@@ -311,8 +428,43 @@ class BoundedDecisionCompute:
             raise
 
     def _assign(self, slot, job):
+        slot.settled.clear()
         slot.active = job
         slot.wake.set()
+
+    def _stage_assignment(self, slot, job):
+        """立即占原空槽，下一事件循环回调按截止派发；不增加容量或固定延迟。"""
+        slot.active = job
+        self._staged_slots.append(slot)
+        if self._admission_flush is None:
+            self._admission_flush = asyncio.get_running_loop().call_soon(self._flush_admissions)
+
+    def _flush_admissions(self):
+        """合并未唤醒槽和原待处理队列；不抢占已编码或发送的计算任务。"""
+        self._admission_flush = None
+        slots, self._staged_slots = self._staged_slots, []
+        if self._closed:
+            return
+        staged = []
+        for slot in slots:
+            job = slot.active
+            assert job is not None and not job.wire_started
+            if job.future.done() or self.clock.now() >= job.budget.fallback_deadline_monotonic:
+                self._abandon(job, 'DEADLINE')
+                self._forget(job)
+            else:
+                staged.append(job)
+            slot.active = None
+        for job in tuple(self._pending):
+            if job.future.done() or self.clock.now() >= job.budget.fallback_deadline_monotonic:
+                self._abandon(job, 'DEADLINE')
+        available = sorted(staged + self._pending,
+            key=lambda job: (job.budget.fallback_deadline_monotonic, job.number))
+        self._pending = available[len(slots):]
+        assert len(self._pending) <= self.settings.max_pending
+        for slot, job in zip(slots, available):
+            self._assign(slot, job)
+        self._counts['peak_pending'] = max(self._counts['peak_pending'], len(self._pending))
 
     def _forget(self, job):
         self._jobs.pop(job.number, None)
@@ -345,7 +497,7 @@ class BoundedDecisionCompute:
                 and slot.process is not None and slot.process.is_alive()):
             slot.process.terminate()
 
-    async def _read(self, reader, job=None):
+    async def _read(self, reader, job=None, *, slot=None):
         size = struct.unpack('!I', await reader.readexactly(4))[0]
         if size > self.settings.max_message_bytes:
             raise DecisionComputeError('MESSAGE_LIMIT')
@@ -355,11 +507,11 @@ class BoundedDecisionCompute:
             # 这里只证明子进程已完成发送；父侧解码迟到不能误杀空闲进程。
             # 槽和线程所有权保留到解码/丢弃结束，防止下一请求交叉读写。
             job.reply_received = True
-        return await self._offload(_decode_message, raw)
+        return await self._offload(_decode_message, raw, owner_slot=slot)
 
     async def _exchange(self, slot, reader, job):
         wire, job.digest = await self._offload(_pack_job, job.number, job.request,
-                                             job.budget, self.settings.max_message_bytes)
+                                             job.budget, self.settings.max_message_bytes, owner_slot=slot)
         if job.future.done() or self.clock.now() >= job.budget.fallback_deadline_monotonic:
             self._abandon(job, 'DEADLINE')
             return None
@@ -367,7 +519,7 @@ class BoundedDecisionCompute:
         job.wire_started = True
         slot.writer.write(struct.pack('!I', len(wire)) + wire)
         await slot.writer.drain()
-        return await self._read(reader, job)
+        return await self._read(reader, job, slot=slot)
 
     def _deliver(self, slot, job, message):
         if message is None:
@@ -426,30 +578,39 @@ class BoundedDecisionCompute:
             try:
                 async def startup():
                     reader = await self._start_slot(slot)
-                    message = await self._read(reader)
+                    message = await self._read(reader, slot=slot)
                     return reader, message
                 reader, message = await asyncio.wait_for(startup(), self.settings.startup_seconds)
                 if message != dict(kind='ready', execution_id=self.execution_id):
                     raise DecisionComputeError('WORKER_START_FAILED')
                 slot.ready = True
+                slot.settled.set()
                 if not ready.done():
                     ready.set_result(None)
                 while not self._closed:
                     if slot.active is None and self._pending:
-                        self._assign(slot, self._pending.pop(0))
+                        pending = next((j for j in self._pending
+                            if not self.settings.per_game_workers
+                            or j.request.window_key.game_id == slot.game_id), None)
+                        if pending is not None:
+                            self._pending.remove(pending)
+                            self._assign(slot, pending)
                     if slot.active is None:
                         slot.wake.clear()
                         await slot.wake.wait()
                         continue
                     job = slot.active
+                    exchange_finished = False
                     try:
                         if self.clock.now() >= job.budget.fallback_deadline_monotonic:
                             self._abandon(job, 'DEADLINE')
+                            exchange_finished = True  # 未触碰传输或子进程，原槽已可安全解绑
                             continue
                         self._counts['dispatched'] += 1
                         message = await asyncio.wait_for(self._exchange(slot, reader, job),
                                                          self.settings.max_job_seconds)
                         self._deliver(slot, job, message)
+                        exchange_finished = True
                     except Exception:
                         if not job.future.done():
                             job.future.set_exception(DecisionComputeError('WORKER_FAILED'))
@@ -457,6 +618,8 @@ class BoundedDecisionCompute:
                     finally:
                         self._forget(job)
                         slot.active = None
+                        if exchange_finished:
+                            slot.settled.set()
             except asyncio.CancelledError:
                 if not ready.done():
                     ready.set_exception(DecisionComputeError('CLOSED'))
@@ -475,7 +638,13 @@ class BoundedDecisionCompute:
                     return
             finally:
                 slot.ready = False
-                await self._stop(slot)
+                try:
+                    await self._stop(slot)
+                except BaseException as exc:
+                    slot.release_error = exc
+                    raise
+                finally:
+                    slot.settled.set()
             if slot.restarts >= self.settings.max_restarts:
                 return
             slot.restarts += 1
@@ -573,6 +742,10 @@ class BoundedDecisionCompute:
 
     async def _close_resources(self):
         self._closed = True
+        if self._admission_flush is not None:
+            self._admission_flush.cancel()
+            self._admission_flush = None
+        self._staged_slots.clear()
         for job in list(self._jobs.values()):
             self._abandon(job, 'CLOSED')
         tasks = [s.task for s in self._slots if s.task is not None]
@@ -583,6 +756,14 @@ class BoundedDecisionCompute:
         # 每个失败也继续回收其他槽，并始终关闭线程池入队口。
         errors = [r for r in await asyncio.gather(*(self._stop(s) for s in self._slots),
                                                   return_exceptions=True) if isinstance(r, BaseException)]
+        if not errors:
+            for slot in self._slots:
+                slot.release_error = None
+                slot.settled.set()
+        releases = tuple(self._releasing_games.values())
+        if releases:
+            errors.extend(r for r in await asyncio.gather(*releases, return_exceptions=True)
+                          if isinstance(r, BaseException))
         with self._thread_lock:
             active = [f for f in self._transport_futures if not f.done()]
         if active:
@@ -593,7 +774,10 @@ class BoundedDecisionCompute:
             if pending:
                 errors.append(DecisionComputeError('TRANSPORT_REAP_FAILED'))
         # wait=False不能等价于线程已退出：未结束raw futures继续拥有，done回调自动移除。
-        self._transport.shutdown(wait=False, cancel_futures=True)
+        transports = ([slot.transport for slot in self._slots]
+                      if self.settings.per_game_workers else [self._transport])
+        for transport in transports:
+            transport.shutdown(wait=False, cancel_futures=True)
         for _ in range(max(1, int(self.settings.resource_reap_seconds / .01))):
             with self._thread_lock:
                 alive = any(t.is_alive() for t in self._transport_threads)
@@ -610,3 +794,7 @@ class BoundedDecisionCompute:
             slot.active = None
         if errors:
             raise errors[0]
+        self._game_slots.clear()
+        self._releasing_games.clear()
+        for slot in self._slots:
+            slot.game_id = None

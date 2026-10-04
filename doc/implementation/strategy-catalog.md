@@ -1,5 +1,7 @@
 # 主线可用策略枚举
 
+2026-10-04 T179当前枚举：已启用实验 `testroom_v8` / `free_v6`，冻结包格式 `/2`，绑定四模块编译制品、181件运行源码及每桌专属计算。396项回归、10原预算工厂及四席小房通过；自由赛M10/R8已实际开打。旧v7/v5及R18旧绑定只保留历史身份，摘要漂移保持拒装，不重授正式门。[当前接线与验收](../../review/vip-route-2026-09-30/evidence/t179-production-wiring-1/REPORT.md)。下方为历史快照。
+
 2026-10-04 T167当前枚举：T110新testroom_v7/free_v5与当前规则R18测试对照只增加实验接线，不改公式或正式门。137处R18包装全计划精确，114接线检查通过；原T112全部137限深触发输入首选无一改变，旧/新批均值差不能直接归因限深。[最新接线](../../review/vip-route-2026-09-30/evidence/t167-mixed-testroom-current-r18-wiring-1/REPORT.md)、[持续实战](../../review/vip-route-2026-09-30/evidence/t165-live-watchdog-1/README.md)。
 
 2026-10-04更新：新testroom_v6／free_v4已完成T161自由赛和T163四席M10/R8快速测试房的真实工程验收；对局摸切、429、计算故障/重启均0，原截止、限深1、公式和稳定默认版本不变。T163一只过评分超期及两只过零规划例外保留，严格零降级false；T161缓发虽开启但因快照时间依据不足全跳过，不能授缓发改善信用。T148强度false仍保留，正式/测试赛事发布门未授。详情见[验收报告](../../review/vip-route-2026-09-30/evidence/t163-received-fix-fast-four-seat-testroom-1/REPORT.md)。
@@ -13,9 +15,11 @@
 | `weighted_heuristic_v2` | 全部 | 稳定基线；Tier-A 的对照基准 |
 | `r18_integrated_positive_v1` | 历史冻结范围为 `test_room` / `test_tournament` / `auto_match`；**当前主线规则下拒绝装配** | 旧包绑定原规则源码，没有制作当前规则的新包；历史身份保留，不是默认策略 |
 | `r18_integrated_positive_v2` | 历史四种模式；当前main规则源码绑定不匹配，拒绝重新装配 | 原评分源码和旧包保留，未绕过旧摘要；需要另行验证新绑定，既有旧运行身份不受重写 |
-| `vip_s02_bounded_d1_testroom_v7` | 仅 `test_room`，显式绑定当前包 ID、SSE | T167混合接线源码的新冻结；原S02/限深1不变，旧v6完整十桌零摸切/对局429/故障，三个只过边界保留；新包未完赛不授新实测 |
-| `vip_s02_bounded_d1_free_v5` | 仅显式实验 `auto_match`，绑定当前包 ID、SSE | T167新冻结；原公式/限深/截止不变，旧v4十桌−141仅观察，工程全评分通过；新包不授强度或正式赛事 |
-| `r18_v2_current_rules_testroom_20261004` | 仅 `test_room`、SSE、当前指南及精确包 ID | 原R18公式/默认2048分析限额，绑定当前规则与全部运行源码；供两席T110两席R18对照，不改变旧正式包、默认或发布权限 |
+| `vip_s02_bounded_d1_testroom_v8` | 仅 `test_room`，显式绑定新包ID、SSE | T179实际编译接线；十个专属预热槽；四席小房656完整评分，测试房不续 |
+| `vip_s02_bounded_d1_free_v6` | 仅显式实验 `auto_match`，绑定新包ID、SSE | T179已实际启用M10/R8，后台自动续；原公式不变，不授正式或新强度 |
+| `vip_s02_bounded_d1_testroom_v7` | 历史实验身份；当前接线不再装配 | T167混合接线源码的新冻结；原S02/限深1不变，旧v6完整十桌零摸切/对局429/故障，三个只过边界保留；新包未完赛不授新实测 |
+| `vip_s02_bounded_d1_free_v5` | 历史实验身份；已自然换版，不重开 | T167新冻结；原公式/限深/截止不变，旧v4十桌−141仅观察，工程全评分通过；新包不授强度或正式赛事 |
+| `r18_v2_current_rules_testroom_20261004` | 历史 `test_room` 对照；旧包与新源码摘要不匹配，拒装 | 原R18公式/默认2048分析限额，绑定当前规则与全部运行源码；供两席T110两席R18对照，不改变旧正式包、默认或发布权限 |
 | `v2_hu_upgrade_v1` | **全部（含正式赛事）** | V2有界等胡（Tier-A）；下方是 2026-09-11 的本地验证快照，不代表当前最强策略。2026-09-18 起冻结：后续数值调整一律走 `v2_hu_upgrade_v2` |
 | `v2_hu_upgrade_v2` | 全部（与 v1 同口径） | **新参数批次载体**：与 v1 同结构，只换 `policy/weights_v1.py` 的 `V2_PARAM_BATCH_WEIGHTS`。2026-09-18 着陆时该常量与冻结 V2 逐字相同（零行为变更），数值由「一次一个参数、单独提交 + 策略目录门禁」逐步标定；候选取值与扫描协议见 `review/test-tournament-20260917/policy-param-batch-spec-2026-09-18.md` |
 | `v2_balanced_shadow_v1` | **仅 `test_room` / `auto_match`** | 多路线前沿审计层：复用 `v2_hu_upgrade_v1` 保底并追加路线理由，**不改变动作顺序**；不得用于正式赛事提交 |

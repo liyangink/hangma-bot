@@ -12,6 +12,7 @@ import json
 from dataclasses import dataclass, replace
 from typing import Any, Mapping, Optional
 
+from hangma_bot.hangma.public_tile_counts import public_count_result_scope
 from hangma_bot.hangma import hand_analysis, route_transition
 from hangma_bot.hangma.interface import RuleCompleteness
 from hangma_bot.hangma.natural_preparation import (
@@ -29,6 +30,7 @@ from hangma_bot.kernel.config import RuleConfig
 
 from .action_value import STATUS_SCORED
 from .action_value_executor import (
+    ActionValueCompiledRuntime,
     ActionValueExecutor, EXECUTOR_VERSION, MAX_SUPPORTED_LOCAL_COLLECTION_SIZE, WorkloadExceeded,
 )
 from .errors import PolicyError
@@ -416,6 +418,15 @@ def build_vip_route_scoring_view(
     request: DecisionRequest, config: RuleConfig, *,
     limits: Optional[VipRouteProjectionLimits] = None,
 ) -> VipRouteScoringView:
+    """同次全合法根投影；仅在规则深模块作用域内复用完整公开计数。"""
+    with public_count_result_scope():
+        return _build_vip_route_scoring_view(request, config, limits=limits)
+
+
+def _build_vip_route_scoring_view(
+    request: DecisionRequest, config: RuleConfig, *,
+    limits: Optional[VipRouteProjectionLimits] = None,
+) -> VipRouteScoringView:
     """投影同次全部合法根；正常机械缺口抛错，未知未来保持条件。
 
     所有合法根先分析、评分，再在严格包装中过滤明确拒绝项。吃碰的成功
@@ -557,13 +568,14 @@ class RouteVipHeuristicPolicy:
 
     def __init__(self, config: RuleConfig, *, source: str = VIP_ROUTE_HEURISTIC_SEED_SOURCE,
                  max_operations: int = 100_000,
-                 projection_limits: Optional[VipRouteProjectionLimits] = None) -> None:
+                 projection_limits: Optional[VipRouteProjectionLimits] = None,
+                 compiled_runtime: Optional[ActionValueCompiledRuntime] = None) -> None:
         self.config = config
         self.projection_limits = projection_limits or VipRouteProjectionLimits()
         # 候选必须能为声明的整图建索引。容量随可信投影档绑定，仅本执行器
         # 生效；旧评分器仍采用4096，不放宽共享全局或跳过计费。
         self.executor = ActionValueExecutor(source, name=self.name, max_operations=max_operations,
-            max_local_collection_size=self.projection_limits.max_nodes)
+            max_local_collection_size=self.projection_limits.max_nodes, compiled_runtime=compiled_runtime)
         self.emergency_policy = SafeFallbackPolicy()
 
     async def choose(self, request: DecisionRequest, budget: DecisionBudget) -> DecisionPlan:
