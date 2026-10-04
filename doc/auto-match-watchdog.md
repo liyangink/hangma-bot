@@ -1,6 +1,8 @@
 # 自由赛盯盘操作
 
-**用途：**自由赛自动房的一次参赛由 `scripts/run_auto_match.py` 完成；连续盯盘由 `scripts/auto_match_watch_loop.sh` 每 60 秒调用一次幂等的 `scripts/auto_match_watch.sh`。后者负责发现会话、下载已完赛牌谱、结算账本，并在允许时续开下一房。运行状态以本机账本和审计为准，历史交接文档不代表当前进程状态。
+**2026-10-04 当前实验入口：**T110-S02 自由赛使用 [T170 独立自动续赛](../review/vip-route-2026-09-30/evidence/t170-free-only-watchdog-1/README.md)，测试房已停续。先用其 `free_watchdog.py status` 核真实玩家；自然完赛后先接续，再由独立单后台统计。不要并开下述旧循环，也不要恢复 T165 两路守护。旧测试房失败不能作为当前自由赛无 owner 的证据。
+
+**历史通用入口：**自由赛自动房的一次参赛由 `scripts/run_auto_match.py` 完成；旧连续盯盘由 `scripts/auto_match_watch_loop.sh` 每 60 秒调用一次幂等的 `scripts/auto_match_watch.sh`。后者负责发现会话、下载已完赛牌谱、结算账本，并在允许时续开下一房。以下保留其运维说明，不是当前 T110 的默认启动步骤。运行状态以本机实际进程和审计为准。
 
 ## 启动前
 
