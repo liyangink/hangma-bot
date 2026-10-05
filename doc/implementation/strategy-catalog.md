@@ -1,5 +1,17 @@
 # 主线可用策略枚举
 
+## 2026-10-05 T191：原S02赛事运行候选
+
+**隔离副本新增四个独立模式候选，主线自由赛尚未迁移。** 测试房后继 `vip_s02_bounded_d1_testroom_v9`、自由赛后继 `vip_s02_bounded_d1_free_v7`、测试赛事 `vip_s02_bounded_d1_test_tournament_v1`、正式赛事 `vip_s02_bounded_d1_official_tournament_v1` 各自只能绑定一个模式及完整包ID。包仍为 `vip-s02-bounded-release/2`，绑定实际完整源码、C数学后端和四模块编译原件；旧v8/v6清单及旧R18摘要拒绝保留。候选装配范围不授实际官方测试赛事、独立强度、生产默认或正式上线。
+
+赛事组合根复用 `ParticipantRuntime` 与 `TournamentSupervisor`，预热在初始化/报名/到位前完成，规则分析始终先准备合法保底。实际规则只接受 `hangma-mvp-v10-public-counts`、底分1、`YouCaiBiKao=false`；实际 `config.M` 超过10时在报名/到位前拒绝，不静默缩小容量。应用按 `active_games` 取得/回收每桌专属槽，使用原增强/保底/提交截止；空集合不等于结束，动态阶段、候补资格、阶段中断及决赛新场次继续走既有生命周期。
+
+十个同步3秒弃牌窗的同一绝对截止检查已观察到10次及时合法提交，其中部分窗口按原增强截止跳过完整评分；不能因此授十窗全评分门。实际官方ID、开赛时间、M/Rounds、时限及规则配置仍待取得，官方大厅空时只做离线验收。证据与门禁详见[T191接线报告](../../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wiring/REPORT.md)。
+
+测试房启动器的 `load_room_config` 复用新后继包核验；`child_config_mapping` 逐身份透传精确包ID与SSE，四份凭证仍只经隔离子进程环境注入。自由赛身份不能误接测试房；不启动子进程也能通过公开解析与派生接口检查。
+
+明确拒绝后合法备用（`rejected_emergency_backup`，同一权威窗口中原规则紧急候选确认未执行且被拒后，准备同次合法集中未拒的动作）在主评分之前按动作键确定并审计。原规则无紧急候选或合法集全拒时仍为空；窗口变更与 `AMBIGUOUS` 不走追加提交。应用统一核对备用的合法键及动作，并在提交前调用唯一规则引擎复核。完整S02评分与排名优先，备用仅补缺，标记 `is_emergency=false`，不修改规则紧急身份、不重授原预算。它修复原紧急候选被拒后评分失败或增强截止已过时无可提交退路的缺口；SafeFallbackPolicy 的既有语义保持。
+
 2026-10-04 T179当前枚举：已启用实验 `testroom_v8` / `free_v6`，冻结包格式 `/2`，绑定四模块编译制品、181件运行源码及每桌专属计算。396项回归、10原预算工厂及四席小房通过；自由赛M10/R8已实际开打。旧v7/v5及R18旧绑定只保留历史身份，摘要漂移保持拒装，不重授正式门。[当前接线与验收](../../review/vip-route-2026-09-30/evidence/t179-production-wiring-1/REPORT.md)。下方为历史快照。
 
 2026-10-04 T167当前枚举：T110新testroom_v7/free_v5与当前规则R18测试对照只增加实验接线，不改公式或正式门。137处R18包装全计划精确，114接线检查通过；原T112全部137限深触发输入首选无一改变，旧/新批均值差不能直接归因限深。[最新接线](../../review/vip-route-2026-09-30/evidence/t167-mixed-testroom-current-r18-wiring-1/REPORT.md)、[持续实战](../../review/vip-route-2026-09-30/evidence/t165-live-watchdog-1/README.md)。
@@ -15,6 +27,10 @@
 | `weighted_heuristic_v2` | 全部 | 稳定基线；Tier-A 的对照基准 |
 | `r18_integrated_positive_v1` | 历史冻结范围为 `test_room` / `test_tournament` / `auto_match`；**当前主线规则下拒绝装配** | 旧包绑定原规则源码，没有制作当前规则的新包；历史身份保留，不是默认策略 |
 | `r18_integrated_positive_v2` | 历史四种模式；当前main规则源码绑定不匹配，拒绝重新装配 | 原评分源码和旧包保留，未绕过旧摘要；需要另行验证新绑定，既有旧运行身份不受重写 |
+| `vip_s02_bounded_d1_testroom_v9` | 仅 `test_room`，绑定新包ID、SSE | T191隔离接线后继候选；不覆盖旧v8清单，不授新联网门 |
+| `vip_s02_bounded_d1_free_v7` | 仅实验 `auto_match`，绑定新包ID、SSE | 与赛事候选共享新源码/原公式；不迁移正在运行的free_v6 |
+| `vip_s02_bounded_d1_test_tournament_v1` | 仅 `test_tournament`，测试类别Token、绑定新包ID、SSE | 原S02测试赛事运行候选；实际官方测试赛事待验 |
+| `vip_s02_bounded_d1_official_tournament_v1` | 仅 `official_tournament`，正式类别Token、绑定新包ID、SSE | 原S02正式赛事运行候选；实际规则/日期与官方发布门未授 |
 | `vip_s02_bounded_d1_testroom_v8` | 仅 `test_room`，显式绑定新包ID、SSE | T179实际编译接线；十个专属预热槽；四席小房656完整评分，测试房不续 |
 | `vip_s02_bounded_d1_free_v6` | 仅显式实验 `auto_match`，绑定新包ID、SSE | T179已实际启用M10/R8，后台自动续；原公式不变，不授正式或新强度 |
 | `vip_s02_bounded_d1_testroom_v7` | 历史实验身份；当前接线不再装配 | T167混合接线源码的新冻结；原S02/限深1不变，旧v6完整十桌零摸切/对局429/故障，三个只过边界保留；新包未完赛不授新实测 |

@@ -102,8 +102,9 @@ from hangma_bot.bootstrap import (  # noqa: E402
     R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
     R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
     VIP_S02_TESTROOM_STRATEGY,
-    VIP_S02_FREE_STRATEGY,
-    _load_vip_testroom_manifest,
+    VIP_S02_TESTROOM_SUCCESSOR_STRATEGY,
+    VIP_S02_AUTO_MATCH_STRATEGIES,
+    _load_vip_manifest,
     R18_CURRENT_TESTROOM_STRATEGY,
     _load_r18_current_testroom_manifest,
 )
@@ -167,7 +168,7 @@ def _require_strategy(value: object) -> str:
 
     if not isinstance(value, str) or value not in AVAILABLE_STRATEGIES:
         raise ValueError("未知策略名；可用：" + " / ".join(AVAILABLE_STRATEGIES))
-    if value == VIP_S02_FREE_STRATEGY:
+    if value in VIP_S02_AUTO_MATCH_STRATEGIES:
         raise ValueError("VIP自由赛冻结包只允许auto_match，不能用于测试房")
     return value
 
@@ -383,8 +384,9 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
         R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY: R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
     }
-    if VIP_S02_TESTROOM_STRATEGY in effective_strategies:
-        release_packages[VIP_S02_TESTROOM_STRATEGY] = _load_vip_testroom_manifest()["release_package_id"]
+    for vip_strategy in (VIP_S02_TESTROOM_STRATEGY, VIP_S02_TESTROOM_SUCCESSOR_STRATEGY):
+        if vip_strategy in effective_strategies:
+            release_packages[vip_strategy] = _load_vip_manifest(vip_strategy)["release_package_id"]
     if R18_CURRENT_TESTROOM_STRATEGY in effective_strategies:
         release_packages[R18_CURRENT_TESTROOM_STRATEGY] = _load_r18_current_testroom_manifest()["release_package_id"]
     if expected_release is not None:
@@ -460,6 +462,7 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
         R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
         VIP_S02_TESTROOM_STRATEGY,
+        VIP_S02_TESTROOM_SUCCESSOR_STRATEGY,
         R18_CURRENT_TESTROOM_STRATEGY,
     ):
         config["expected_policy_release_id"] = (

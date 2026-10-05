@@ -1,5 +1,17 @@
 # 第一阶段接口协议
 
+## 2026-10-05 T191：S02模式与冻结身份接线
+
+**四个外部端口和 `choose(DecisionRequest, DecisionBudget)` 签名保持原契约；新增的是组合根模式枚举及公开候选包生成函数。** `build_vip_testroom_successor_manifest`、`build_vip_free_successor_manifest`、`build_vip_test_tournament_manifest`、`build_vip_official_tournament_manifest` 各消费仓库公开证据相对路径到完整SHA-256的映射，返回独立模式的完整冻结清单。它们不写盘、不联网、不批准发布；路径越界、证据/源码/编译原件漂移或数学后端不符明确抛错。
+
+`RuntimeConfig.expected_policy_release_id` 必须匹配该枚举的包ID；跨模式、Token类别错配、缺包ID/指南/SSE在HTTP会话或审计线程前拒绝。`build_runtime` 仅装配测试房及两类赛事身份；实验自由赛仍经 `build_auto_match_runtime`。工厂只携带公开包ID与策略枚举；规则从权威 `SessionBootstrap.config.rules` 核对，范围外配置或实际 `config.M>10` 在报名/到位前形成明确失败终态并回收全部资源。
+
+原截止、合法紧急路径、409原窗口重试、模糊结果不重发及 `active_games` 编排契约不变。候选包范围与工程验收不等于官方测试赛事/正式发布资格；当前门禁和补丁使用边界见[T191接线报告](../../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wiring/REPORT.md)。
+
+测试房启动器的 `load_room_config` 复用新后继包核验；`child_config_mapping` 逐身份透传精确包ID与SSE，四份凭证仍只经隔离子进程环境注入。自由赛身份不能误接测试房；不启动子进程也能通过公开解析与派生接口检查。
+
+明确拒绝后合法备用（`rejected_emergency_backup`，同一权威窗口中原规则紧急候选确认未执行且被拒后，准备同次合法集中未拒的动作）在主评分之前按动作键确定并审计。原规则无紧急候选或合法集全拒时仍为空；窗口变更与 `AMBIGUOUS` 不走追加提交。应用统一核对备用的合法键及动作，并在提交前调用唯一规则引擎复核。完整S02评分与排名优先，备用仅补缺，标记 `is_emergency=false`，不修改规则紧急身份、不重授原预算。它修复原紧急候选被拒后评分失败或增强截止已过时无可提交退路的缺口；SafeFallbackPolicy 的既有语义保持。
+
 ## 2026-10-04 T179：每桌专属计算生命周期与编译运行时身份
 
 **保持BotPolicy.choose、官方端口、原三段单调截止和合法复核不变；以下新接线已验收并启用实验free_v6。** `DecisionComputeSettings.per_game_workers: bool=False` 默认保留原共享服务。VIP新包设True、workers=10、max_pending=0；后者表示不设跨桌等待队列，同桌仍可有至多一个替代请求等待自己的旧作业回收。最多十个活跃与十个同桌待回收替代请求；不能把这些等待记录误作跨桌计算排队。
@@ -270,6 +282,8 @@ flowchart LR
 评分分解使用不可变 `ScorePart` 元组而不是可变字典，保证同输入的计划可以稳定比较和序列化。
 
 应用层不盲信策略结果。它校验 `decision_id/window_key/based_on_authoritative_seq`、候选成员关系和重复项，再对最终动作执行 `HangmaRules.validate()`。
+
+2026-10-05增补：原紧急候选明确拒绝后、同窗刷新确认仍有动作权时，应用在主评分前调用纯函数 `rejected_emergency_backup(DecisionRequest)` 准备上述合法备用。该函数只返回同次规则候选或None，无副作用；缺原紧急候选、原紧急候选未拒及全拒时返回None。备用经相同键/动作与最终合法性复核后在计划末尾补缺；审计使用 `legal_retry_backup` 零分项和非规则紧急身份，不影响成功全根评分分解。
 
 ### 4.1 候选牌效事实（2026-09-04 集成阶段契约收口）
 

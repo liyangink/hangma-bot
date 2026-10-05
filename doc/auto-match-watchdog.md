@@ -1,6 +1,6 @@
 # 自由赛盯盘操作
 
-**2026-10-04 当前实验入口：**T110-S02 自由赛使用 [T179 每桌独立计算自动续赛](../review/vip-route-2026-09-30/evidence/t179-production-wiring-1/README.md)，测试房已停续。先用其 `free_watchdog.py status` 核真实玩家；自然完赛后先接续，再由独立单后台统计。接续由常驻后台进程直接触发，不依赖 Codex 定时任务；冗余 heartbeat `t110` 已按用户要求删除，不重新创建。不要并开下述旧循环，也不要恢复旧 T170 或 T165 两路守护。旧测试房失败不能作为当前自由赛无 owner 的证据。
+**2026-10-05 当前实验入口：**T110-S02使用[T191 free_v7自动续赛](../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/LIVE-WATCHDOG.md)，算法原公式保持，main已整合明确拒绝后合法备用和四作用域接线。先用其`free_watchdog.py status`核真实玩家；自然完赛先接续，独立后台统计。常驻后台直接续赛，不依赖Codex定时任务；已删除的`t110` heartbeat不恢复。旧T179控制已关，禁止恢复T179、T170、T165或下述历史循环；测试房不自动续。
 
 **历史通用入口：**自由赛自动房的一次参赛由 `scripts/run_auto_match.py` 完成；旧连续盯盘由 `scripts/auto_match_watch_loop.sh` 每 60 秒调用一次幂等的 `scripts/auto_match_watch.sh`。后者负责发现会话、下载已完赛牌谱、结算账本，并在允许时续开下一房。以下保留其运维说明，不是当前 T110 的默认启动步骤。运行状态以本机实际进程和审计为准。
 

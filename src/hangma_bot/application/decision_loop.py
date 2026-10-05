@@ -63,6 +63,7 @@ from hangma_bot.policy.interface import (
     RejectedAttempt,
     ScorePart,
 )
+from hangma_bot.policy.retry_backup import rejected_emergency_backup
 
 
 @dataclass(frozen=True)
@@ -341,10 +342,12 @@ def _sanitize_plan(
     window_key: WindowKey,
     based_on_authoritative_seq: int,
     notes: list[str],
+    retry_backup: RuleCandidate | None = None,
 ) -> list[RankedCandidate]:
     """应用层不盲信策略：校验归属、排除拒绝项、去重并保底紧急候选。"""
 
     candidates: list[RankedCandidate] = []
+    legal_by_key = {candidate.action_key: candidate for candidate in analysis.legal_candidates}
     if plan is None:
         notes.append("策略计划不可用，使用紧急保底")
     elif (
@@ -354,7 +357,6 @@ def _sanitize_plan(
     ):
         notes.append("策略返回的 decision_id/窗口/序号不匹配，丢弃该计划")
     else:
-        legal_by_key = {candidate.action_key: candidate for candidate in analysis.legal_candidates}
         seen: set[str] = set()
         for candidate in plan.candidates:
             key = candidate.action_key
@@ -401,6 +403,23 @@ def _sanitize_plan(
                 )
             )
             notes.append("追加紧急保底候选 {}".format(emergency.action_key))
+    if retry_backup is not None:
+        key = retry_backup.action_key
+        legal = legal_by_key.get(key)
+        try:
+            valid = (legal is not None and key not in rejected_keys
+                and retry_backup.action == legal.action and action_key(retry_backup.action) == key)
+        except (TypeError, ValueError):
+            valid = False
+        if valid and key not in {candidate.action_key for candidate in candidates}:
+            # 备用来自同次规则合法集，仅在完整评分计划缺失它时补入；
+            # 不改 RuleAnalysis 的紧急身份，也不将其标成规则紧急候选。
+            candidates.append(RankedCandidate(action=retry_backup.action, action_key=key,
+                rank=len(candidates) + 1, total_score=0.0,
+                score_parts=(ScorePart("legal_retry_backup", 0.0),),
+                reasons=("原规则紧急候选已明确拒绝，使用同次规则确认的未拒合法备用",),
+                is_emergency=False))
+            notes.append("追加未拒合法备用 {}（非规则紧急候选）".format(key))
     return candidates
 
 
@@ -519,6 +538,19 @@ async def run_action_window(
                 window_key=window.window_key,
                 rejected_attempts=tuple(rejected),
             )
+            retry_backup = rejected_emergency_backup(request)
+            if retry_backup is not None:
+                # 必须先于任何主评分准备，并留下独立来源；不把模糊结果
+                # 写入 rejected，只有明确拒绝且同一权威窗口的刷新能到此。
+                audit.emit(AuditKind.PROTOCOL_RECOVERED, {
+                    "area": "rejected_emergency_backup",
+                    "action_key": retry_backup.action_key,
+                    "is_rule_emergency": False,
+                    "basis": "same_authoritative_rule_legal_set_after_explicit_rejection",
+                    "window": _window_payload(window.window_key),
+                }, stage_attempt_id=stage_attempt_id, game_id=window.window_key.game_id,
+                    round_no=window.window_key.round_no, trigger_seq=window.window_key.trigger_seq,
+                    decision_id=decision_id)
             # DECISION_INPUT：分析完成、策略调用前落完整当时输入。
             # 刷新后另存新 plan_revision，截止时间（原预算）不变。
             audit.emit_safe(
@@ -562,6 +594,7 @@ async def run_action_window(
                 window.window_key,
                 current.authoritative_seq,
                 loop_notes,
+                retry_backup=retry_backup,
             )
             filter_reasons = [audit_text(note) for note in loop_notes[filter_start:]]
             issue_reasons = [issue.area + ":" + audit_text(issue.reason) for issue in analysis.issues]

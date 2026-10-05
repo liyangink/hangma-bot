@@ -42,6 +42,7 @@ from .route_heuristic_view import (
     RouteWaitingView, VipRouteScoringView,
 )
 from .safe_fallback import SafeFallbackPolicy
+from .retry_backup import rejected_emergency_backup
 
 
 def _counts_from_visible_tiles(tiles: tuple[Tile, ...]) -> tuple[int, ...]:
@@ -583,7 +584,9 @@ class RouteVipHeuristicPolicy:
 
         self.executor.last_operation_count = None  # 本次若建图失败，不冒认上次评分工作量
         emergency_plan = await self.emergency_policy.choose(request, budget)
-        if not emergency_plan.candidates:
+        # 明确拒绝后原规则紧急候选不能重发；同次规则确认的未拒合法备用
+        # 已由应用在主评分前准备。它不是规则紧急候选，也不改变全根评分。
+        if not emergency_plan.candidates and rejected_emergency_backup(request) is None:
             raise RouteHeuristicResearchError("NO_EMERGENCY", "独立规则保底为空，研究窗口未完成")
         view = build_vip_route_scoring_view(request, self.config, limits=self.projection_limits)
         try:

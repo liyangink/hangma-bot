@@ -140,8 +140,19 @@ VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v8"
 VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v8/manifest.json"
 VIP_S02_FREE_STRATEGY = "vip_s02_bounded_d1_free_v6"
 VIP_S02_FREE_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v6/manifest.json"
+VIP_S02_TESTROOM_SUCCESSOR_STRATEGY = "vip_s02_bounded_d1_testroom_v9"
+VIP_S02_TESTROOM_SUCCESSOR_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v9/manifest.json"
+VIP_S02_FREE_SUCCESSOR_STRATEGY = "vip_s02_bounded_d1_free_v7"
+VIP_S02_FREE_SUCCESSOR_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v7/manifest.json"
+VIP_S02_TEST_TOURNAMENT_STRATEGY = "vip_s02_bounded_d1_test_tournament_v1"
+VIP_S02_TEST_TOURNAMENT_MANIFEST = "prebuilt/vip-s02-bounded-d1-test-tournament-v1/manifest.json"
+VIP_S02_OFFICIAL_TOURNAMENT_STRATEGY = "vip_s02_bounded_d1_official_tournament_v1"
+VIP_S02_OFFICIAL_TOURNAMENT_MANIFEST = "prebuilt/vip-s02-bounded-d1-official-tournament-v1/manifest.json"
 R18_CURRENT_TESTROOM_MANIFEST = "prebuilt/r18-v2-current-rules-testroom-20261004/manifest.json"
-VIP_S02_NETWORK_STRATEGIES = (VIP_S02_TESTROOM_STRATEGY, VIP_S02_FREE_STRATEGY)
+VIP_S02_PARTICIPANT_STRATEGIES = (VIP_S02_TESTROOM_STRATEGY, VIP_S02_TESTROOM_SUCCESSOR_STRATEGY,
+    VIP_S02_TEST_TOURNAMENT_STRATEGY, VIP_S02_OFFICIAL_TOURNAMENT_STRATEGY)
+VIP_S02_AUTO_MATCH_STRATEGIES = (VIP_S02_FREE_STRATEGY, VIP_S02_FREE_SUCCESSOR_STRATEGY)
+VIP_S02_NETWORK_STRATEGIES = (*VIP_S02_PARTICIPANT_STRATEGIES, *VIP_S02_AUTO_MATCH_STRATEGIES)
 VIP_S02_BASE_CANDIDATE_ID = "54d4029ba095572490c41406a481d73d27e350e385438b177013ce72f274b710"
 VIP_S02_ROUTE_LIMITS = ValueAnalysisLimits(max_expansions=8192, max_routes_per_candidate=128)
 VIP_S02_PROJECTION_LIMITS = VipRouteProjectionLimits(8192, 16384, 65536, 1)
@@ -288,11 +299,19 @@ def _vip_package_id(payload: Mapping) -> str:
 
 
 def _vip_package_scope(strategy: str) -> tuple[str, str, str]:
-    """固定实验策略对应模式、准入边界及路径；不接受任意磁盘制品。"""
+    """固定策略对应唯一模式、工程候选范围及路径；不接受任意磁盘制品。"""
     if strategy == VIP_S02_TESTROOM_STRATEGY:
         return "test_room", "engineering_test_room_only", VIP_S02_TESTROOM_MANIFEST
     if strategy == VIP_S02_FREE_STRATEGY:
         return "auto_match", "experimental_free_match_only", VIP_S02_FREE_MANIFEST
+    if strategy == VIP_S02_TESTROOM_SUCCESSOR_STRATEGY:
+        return "test_room", "engineering_test_room_only", VIP_S02_TESTROOM_SUCCESSOR_MANIFEST
+    if strategy == VIP_S02_FREE_SUCCESSOR_STRATEGY:
+        return "auto_match", "experimental_free_match_only", VIP_S02_FREE_SUCCESSOR_MANIFEST
+    if strategy == VIP_S02_TEST_TOURNAMENT_STRATEGY:
+        return "test_tournament", "test_tournament_runtime_candidate_only", VIP_S02_TEST_TOURNAMENT_MANIFEST
+    if strategy == VIP_S02_OFFICIAL_TOURNAMENT_STRATEGY:
+        return "official_tournament", "official_tournament_runtime_candidate_only", VIP_S02_OFFICIAL_TOURNAMENT_MANIFEST
     raise ValueError("未知VIP冻结策略")
 
 
@@ -304,6 +323,26 @@ def build_vip_testroom_manifest(evidence_sha256: Mapping[str, str]) -> dict:
 def build_vip_free_manifest(evidence_sha256: Mapping[str, str]) -> dict:
     """生成显式实验自由赛包；不能用于测试赛事或正式赛事。"""
     return _build_vip_manifest(VIP_S02_FREE_STRATEGY, evidence_sha256)
+
+
+def build_vip_testroom_successor_manifest(evidence_sha256: Mapping[str, str]) -> dict:
+    """生成新源码的测试房后继候选；旧测试房清单与批准身份不得覆盖。"""
+    return _build_vip_manifest(VIP_S02_TESTROOM_SUCCESSOR_STRATEGY, evidence_sha256)
+
+
+def build_vip_free_successor_manifest(evidence_sha256: Mapping[str, str]) -> dict:
+    """生成新源码的实验自由赛后继候选；不迁移正在运行的旧身份。"""
+    return _build_vip_manifest(VIP_S02_FREE_SUCCESSOR_STRATEGY, evidence_sha256)
+
+
+def build_vip_test_tournament_manifest(evidence_sha256: Mapping[str, str]) -> dict:
+    """生成测试赛事运行候选，绑定已完成工程证据；不写盘、不授官方验收。"""
+    return _build_vip_manifest(VIP_S02_TEST_TOURNAMENT_STRATEGY, evidence_sha256)
+
+
+def build_vip_official_tournament_manifest(evidence_sha256: Mapping[str, str]) -> dict:
+    """生成正式赛事运行候选；实际配置与官方测试赛事通过仍须另行验收。"""
+    return _build_vip_manifest(VIP_S02_OFFICIAL_TOURNAMENT_STRATEGY, evidence_sha256)
 
 
 def _build_vip_manifest(strategy: str, evidence_sha256: Mapping[str, str]) -> dict:
@@ -720,7 +759,7 @@ def _build_policy(config, monotonic: Callable[[], float] = time.monotonic) -> Bo
     """按运行配置构造策略；模型类候选走显式装载，其余走原工厂表。"""
 
     if config.strategy in VIP_S02_NETWORK_STRATEGIES:
-        raise RuntimeError("VIP测试房必须由组合根显式装配计算服务")
+        raise RuntimeError("VIP网络策略必须由组合根显式装配计算服务")
     if config.strategy in _SEQUENCE_MODEL_STRATEGIES:
         return _sequence_model_policy(config, monotonic)
     return _STRATEGY_FACTORIES[config.strategy]()
@@ -944,7 +983,7 @@ class RuntimeConfig:
         elif self.strategy in VIP_S02_NETWORK_STRATEGIES:
             mode, _admission, _path = _vip_package_scope(self.strategy)
             if self.mode.value != mode:
-                raise ValueError("VIP工程冻结包仅允许测试房或各自绑定的实验自由赛模式，不授其他运行模式")
+                raise ValueError("VIP工程冻结包仅允许测试房、自由赛或赛事身份各自绑定的模式，不授其他运行模式")
             if self.expected_policy_release_id is None:
                 raise ValueError("VIP网络运行必须绑定expected_policy_release_id")
             package = _load_vip_manifest(self.strategy, self.expected_policy_release_id)
@@ -1347,8 +1386,8 @@ def build_runtime(
     # RuntimeConfig构造后发生的源码漂移不能遗留一个无法由run关闭的会话。
     if policy_factory is not None:
         policy = policy_factory()
-    elif config.strategy == VIP_S02_TESTROOM_STRATEGY:
-        policy = _build_vip_testroom_compute(config, clock)
+    elif config.strategy in VIP_S02_PARTICIPANT_STRATEGIES:
+        policy = _build_vip_compute(config, clock)
     else:
         policy = _build_policy(config)
 
@@ -1417,10 +1456,10 @@ def build_runtime(
             expected_tournament_id=config.expected_tournament_id,
             known_guide_version=config.known_guide_version,
         ),
-        rules_factory=(_vip_testroom_rules if config.strategy == VIP_S02_TESTROOM_STRATEGY else
+        rules_factory=(_vip_testroom_rules if config.strategy in VIP_S02_PARTICIPANT_STRATEGIES else
             _test_room_upgrade_rules if config.strategy in _VALUE_ANALYSIS_STRATEGIES else HangmaRules),
         value_limits=_value_limits_for(config.strategy),
-        route_limits=(VIP_S02_ROUTE_LIMITS if config.strategy == VIP_S02_TESTROOM_STRATEGY else None),
+        route_limits=(VIP_S02_ROUTE_LIMITS if config.strategy in VIP_S02_PARTICIPANT_STRATEGIES else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,
@@ -1528,7 +1567,7 @@ def build_auto_match_runtime(
     # 冻结包/后端/源码先校验，再创建持有线程、文件或HTTP的资源。
     if policy_factory is not None:
         policy = policy_factory()
-    elif config.strategy == VIP_S02_FREE_STRATEGY:
+    elif config.strategy in VIP_S02_AUTO_MATCH_STRATEGIES:
         policy = _build_vip_compute(config, clock)
     else:
         policy = _build_policy(config)
@@ -1606,7 +1645,7 @@ def build_auto_match_runtime(
         # 范围内获批。自由赛发现房间后若规则不符，明确终止该候选会话，
         # 不能用缺失分值事实静默退化成未经验证的另一种行为。
         rules_factory=(
-            _vip_testroom_rules if config.strategy == VIP_S02_FREE_STRATEGY else
+            _vip_testroom_rules if config.strategy in VIP_S02_AUTO_MATCH_STRATEGIES else
             _test_room_upgrade_rules
             if config.strategy in (
                 R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
@@ -1615,7 +1654,7 @@ def build_auto_match_runtime(
             else HangmaRules
         ),
         value_limits=_value_limits_for(config.strategy),
-        route_limits=(VIP_S02_ROUTE_LIMITS if config.strategy == VIP_S02_FREE_STRATEGY else None),
+        route_limits=(VIP_S02_ROUTE_LIMITS if config.strategy in VIP_S02_AUTO_MATCH_STRATEGIES else None),
         value_rules_scope=(RuleConfig(RISK_RULESET_VERSION, 1, False)
                            if config.strategy in _VALUE_ANALYSIS_STRATEGIES else None),
         clock=clock,
@@ -1780,5 +1819,9 @@ __all__ = [
     "build_decision_codec",
     "build_evaluation_runtime",
     "build_runtime",
+    "build_vip_test_tournament_manifest",
+    "build_vip_official_tournament_manifest",
+    "build_vip_testroom_successor_manifest",
+    "build_vip_free_successor_manifest",
     "runtime_config_from_mapping",
 ]

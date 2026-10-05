@@ -9,7 +9,7 @@
 | 了解当前候选、进化停线与接线证据 | [研究证据索引](review/INDEX.md) |
 | 核对策略名称与可配置候选 | [算法路线与候选命名](doc/algorithm-lineage-names.md)、[策略目录](doc/implementation/strategy-catalog.md) |
 | 启动测试房、测试赛事或正式赛事 | [运行与赛后操作](doc/operations.md#2-启动测试房间与赛事) |
-| 启动或暂停自由赛 watchdog | [当前 T110 每桌独立计算续赛](review/vip-route-2026-09-30/evidence/t179-production-wiring-1/README.md)、[通用盯盘操作](doc/auto-match-watchdog.md) |
+| 启动或暂停自由赛 watchdog | [当前 T110 每桌独立计算续赛](review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/LIVE-WATCHDOG.md)、[通用盯盘操作](doc/auto-match-watchdog.md) |
 | 观测、审计与赛后处理 | [本地观测](doc/operations.md#3-持续观测与定位)、[完赛后下载与复核](doc/operations.md#4-完赛后下载封存与复核) |
 | 修改模块或接口 | [架构与运行流程](doc/architecture.md)、[冻结接口协议](doc/implementation/interface-contracts.md) |
 
