@@ -1,5 +1,18 @@
 # 主线可用策略枚举
 
+## 2026-10-06 T191：T110-S03候选与S02备用
+
+**S03是成熟胡等待的单项修复；当前是否启用查实际交接与玩家身份。** 独立冻结混合池净分通过，伴随大牌收入下降，不授榜前或晋级优势。[公式、接线及运行证据](../../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/successor-wiring-1/README.md)。
+
+| 策略 | 唯一模式 | configs内模板 |
+| --- | --- | --- |
+| `vip_s03_bounded_d1_testroom_v1` | `test_room` | `vip-s03-bounded-d1-v1.test-room.example.json` |
+| `vip_s03_bounded_d1_free_v1` | `auto_match` | `vip-s03-bounded-d1-v1.free-match.example.json` |
+| `vip_s03_bounded_d1_official_tournament_v1` | `official_tournament` | `vip-s03-bounded-d1.official-tournament.example.json` |
+| `vip_s03_bounded_d1_test_tournament_v1` | `test_tournament`兼容 | `vip-s03-bounded-d1.test-tournament.example.json` |
+
+S03格式`vip-route-bounded-release/3`，必须对应完整包ID和SSE。S02当前来源备用为测试房v10、自由赛v8、两类锦标赛v2；旧包不因名称相近恢复资格。正式模板须真实赛事ID和专用Token；测试锦标赛已取消，兼容包不要求该活动ID。
+
 ## 2026-10-05 T191：原S02赛事运行候选
 
 用户于2026-10-05确认官方测试锦标赛已无安排，不再等待其开放。测试赛事模式和历史未执行记录保留；后续按[当前验收依赖纠正](../../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/ACCEPTANCE-CORRECTION-2026-10-05.md)使用工程生命周期、必要测试房及自由赛证据，并核正式赛实际配置。

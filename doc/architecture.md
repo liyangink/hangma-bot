@@ -1,5 +1,11 @@
 # 杭麻 AI Bot 架构与运行流程
 
+## 2026-10-06 T191：S03成熟胡等待接线
+
+**S03只修正已有合法胡时重复计入的普通胡等待收益。** 路线前沿、规则与合法保底、补牌限深1、十桌专属预热进程、原截止和动作门保持。组合根启动时验183来源、实际数学二进制、独立确认原件与S03编译公式，复用原S02共享助手；动作窗口不读盘、编译或调用LLM。
+
+S03四模式用`vip-route-bounded-release/3`独立包，S02原公式另以当前来源重冻备用。隔离副本80项装配、公开工厂59次原截止已过；主线只在必要房通过与旧自由赛自然结束后换入。真实身份见[S03接线与交接](../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/successor-wiring-1/README.md)。增强仅限冻结本地混合池净分，不授榜前或正式现场优势；已取消的测试锦标赛不再等待。
+
 ## 2026-10-05 T191：原S02赛事运行候选
 
 **四个独立模式候选已整合main，2026-10-05旧第113房自然结束后自由赛已迁移free_v7。** 测试房后继 `vip_s02_bounded_d1_testroom_v9`、自由赛后继 `vip_s02_bounded_d1_free_v7`、测试赛事 `vip_s02_bounded_d1_test_tournament_v1`、正式赛事 `vip_s02_bounded_d1_official_tournament_v1` 各自只能绑定一个模式及完整包ID。包仍为 `vip-s02-bounded-release/2`，绑定实际完整源码、C数学后端和四模块编译原件；旧v8/v6清单及旧R18摘要拒绝保留。候选装配范围不授实际官方测试赛事、独立强度、生产默认或正式上线。 当前真实身份与唯一路径见[T191上线与盯盘](../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/LIVE-WATCHDOG.md)；本节工程测试边界保持。

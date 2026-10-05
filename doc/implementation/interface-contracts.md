@@ -1,5 +1,11 @@
 # 第一阶段接口协议
 
+## 2026-10-06 T191：S03编译公式和模式包
+
+**四个外部端口、`choose(DecisionRequest, DecisionBudget)`、每桌计算生命周期和原截止不变。** 组合根新增`build_vip_s03_manifest(strategy, evidence_sha256)`：消费固定模式枚举及公共证据相对路径到完整SHA映射，返回`vip-route-bounded-release/3`清单，无写盘、联网、编译或评分副作用。缺本次实际确认、等价、截止、重型或原件恢复证据，或来源、公式、数学、参数、ABI漂移时明确抛错。
+
+清单绑定183来源与编译原件，`strength_scope`仅`t191-frozen-local-mixed-pool-net-vs-s02`；工作工厂序列化仍仅`expected_id`、`strategy`，服务执行身份为模式包ID。测试房逐身份透传包ID与SSE，跨模式拒绝。S02另有当前来源备用包，锦标赛生命周期复用原契约。正式现场另核，取消的测试锦标赛不再是前置。见[接线原件](../../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/successor-wiring-1/README.md)。
+
 ## 2026-10-05 T191：S02模式与冻结身份接线
 
 **四个外部端口和 `choose(DecisionRequest, DecisionBudget)` 签名保持原契约；新增的是组合根模式枚举及公开候选包生成函数。** `build_vip_testroom_successor_manifest`、`build_vip_free_successor_manifest`、`build_vip_test_tournament_manifest`、`build_vip_official_tournament_manifest` 各消费仓库公开证据相对路径到完整SHA-256的映射，返回独立模式的完整冻结清单。它们不写盘、不联网、不批准发布；路径越界、证据/源码/编译原件漂移或数学后端不符明确抛错。
