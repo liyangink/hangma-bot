@@ -52,6 +52,8 @@ export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 
 `--once` 使每个身份在收到一次 `tournament_finished` 后退出，不再创建下一批次的注册进程；等四身份汇总退出后再执行赛后分析。配置 `max_completed_batches: 2` 可完成两个批次；省略或设为 `null` 沿用持续续赛，`--once` 优先于配置。正常完赛不消耗失败重启预算。Ctrl-C、SIGINT、SIGTERM 会转发给子进程并中止当前工作，不能当成“打完本批次后停”。新测试优先在启动时定好批次数。
 
+2026-10-05用户确认官方测试锦标赛已无安排，以下测试赛事命令作为历史入口保留，不要求等待其开放。当前参赛准备使用已有工程生命周期、必要测试房和持续自由赛证据；正式赛配置取得后另核，不能把这些证据冒称官方锦标赛现场通过。详见[验收依赖纠正](../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/ACCEPTANCE-CORRECTION-2026-10-05.md)。
+
 单身份测试赛事使用 `configs/participant.example.json`；R18 与牌效等胡的同接线配置分别见
 [R18 测试赛事模板](../configs/r18-v2-test-tournament-sse.example.json)和
 [牌效等胡测试赛事模板](../configs/huup-v1-test-tournament-sse.example.json)。
