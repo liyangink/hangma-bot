@@ -1,0 +1,27 @@
+{
+  "mode": "auto_match",
+  "base_url": "https://10.240.169.190:18080",
+  "expected_tournament_id": null,
+  "known_guide_version": 35,
+  "audit_root": "artifacts/sessions/vip-s03-bounded-d1-free-v1",
+  "strategy": "vip_s03_bounded_d1_free_v1",
+  "expected_policy_release_id": "da14abb6be5a82c93f56e1fee74a73984d2067d05d9d7ddb64056c5435416b45",
+  "insecure_hosts": [
+    "10.240.169.190"
+  ],
+  "sse_enabled": true,
+  "discard_pacing_enabled": false,
+  "token_kind": "official",
+  "token_env": "HM_AUTO_MATCH_TOKEN",
+  "source_namespace": "hangma-official",
+  "audit_raw_gzip": true,
+  "auto_match": {
+    "declared_max_games": 10,
+    "declared_rounds": 8,
+    "match_min_interval_sec": 6.5,
+    "match_max_attempts": 5,
+    "match_busy_wait_cap_sec": 60,
+    "drain_grace_seconds": 45,
+    "room_poll_interval_sec": 2
+  }
+}

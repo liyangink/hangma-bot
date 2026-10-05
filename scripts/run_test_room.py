@@ -103,7 +103,9 @@ from hangma_bot.bootstrap import (  # noqa: E402
     R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
     VIP_S02_TESTROOM_STRATEGY,
     VIP_S02_TESTROOM_SUCCESSOR_STRATEGY,
-    VIP_S02_AUTO_MATCH_STRATEGIES,
+    VIP_AUTO_MATCH_STRATEGIES,
+    VIP_TESTROOM_STRATEGIES,
+    VIP_NETWORK_STRATEGIES,
     _load_vip_manifest,
     R18_CURRENT_TESTROOM_STRATEGY,
     _load_r18_current_testroom_manifest,
@@ -168,8 +170,10 @@ def _require_strategy(value: object) -> str:
 
     if not isinstance(value, str) or value not in AVAILABLE_STRATEGIES:
         raise ValueError("未知策略名；可用：" + " / ".join(AVAILABLE_STRATEGIES))
-    if value in VIP_S02_AUTO_MATCH_STRATEGIES:
+    if value in VIP_AUTO_MATCH_STRATEGIES:
         raise ValueError("VIP自由赛冻结包只允许auto_match，不能用于测试房")
+    if value in VIP_NETWORK_STRATEGIES and value not in VIP_TESTROOM_STRATEGIES:
+        raise ValueError("VIP赛事冻结包不能用于测试房；须使用对应模式的单身份入口")
     return value
 
 
@@ -384,7 +388,7 @@ def load_room_config(path: Path, environ: Optional[Mapping[str, str]] = None) ->
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
         R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY: R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
     }
-    for vip_strategy in (VIP_S02_TESTROOM_STRATEGY, VIP_S02_TESTROOM_SUCCESSOR_STRATEGY):
+    for vip_strategy in VIP_TESTROOM_STRATEGIES:
         if vip_strategy in effective_strategies:
             release_packages[vip_strategy] = _load_vip_manifest(vip_strategy)["release_package_id"]
     if R18_CURRENT_TESTROOM_STRATEGY in effective_strategies:
@@ -461,8 +465,7 @@ def child_config_mapping(room: RoomConfig, identity: IdentitySlot) -> dict:
     if config["strategy"] in (
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
         R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
-        VIP_S02_TESTROOM_STRATEGY,
-        VIP_S02_TESTROOM_SUCCESSOR_STRATEGY,
+        *VIP_TESTROOM_STRATEGIES,
         R18_CURRENT_TESTROOM_STRATEGY,
     ):
         config["expected_policy_release_id"] = (

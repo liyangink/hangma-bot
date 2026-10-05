@@ -117,6 +117,8 @@ from hangma_bot.policy.r18_integrated_positive_v2_release import R18_INTEGRATED_
 from hangma_bot.policy.legacy_pass import LegacyWeightedHeuristicPolicy, LegacyClaimIfLegalPolicy
 from hangma_bot.policy.route_vip_heuristic import RouteVipHeuristicPolicy, VipRouteProjectionLimits
 from hangma_bot.policy.vip_s02_frozen_source import VIP_S02_SOURCE, VIP_S02_SOURCE_SHA256
+from hangma_bot.policy.vip_s03_frozen_source import (VIP_S03_SOURCE, VIP_S03_IDENTITY,
+    VIP_S03_REQUIRED_EVIDENCE_SHA256)
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
     decision_request_from_json,
@@ -161,6 +163,33 @@ VIP_S02_COMPUTE_SETTINGS = DecisionComputeSettings(
 VIP_S02_COMPILED_DIRECTORY = "prebuilt/vip-s02-compiled-runtime-v1"
 _VIP_S02_NATIVE_CACHE = None  # 只由组合根启动期装入，保存实际验签身份及四模块
 
+
+
+# S03四个固定模式；S02备用另冻结，不覆盖旧包或公式。
+VIP_S03_TESTROOM_STRATEGY = "vip_s03_bounded_d1_testroom_v1"
+VIP_S03_FREE_STRATEGY = "vip_s03_bounded_d1_free_v1"
+VIP_S03_TEST_TOURNAMENT_STRATEGY = "vip_s03_bounded_d1_test_tournament_v1"
+VIP_S03_OFFICIAL_TOURNAMENT_STRATEGY = "vip_s03_bounded_d1_official_tournament_v1"
+VIP_S03_PACKAGE_SCOPES = {
+    VIP_S03_TESTROOM_STRATEGY: ("test_room", "engineering_test_room_only", "prebuilt/vip-s03-bounded-d1-testroom-v1/manifest.json"),
+    VIP_S03_FREE_STRATEGY: ("auto_match", "experimental_free_match_only", "prebuilt/vip-s03-bounded-d1-free-v1/manifest.json"),
+    VIP_S03_TEST_TOURNAMENT_STRATEGY: ("test_tournament", "test_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-test-tournament-v1/manifest.json"),
+    VIP_S03_OFFICIAL_TOURNAMENT_STRATEGY: ("official_tournament", "official_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-official-tournament-v1/manifest.json"),
+}
+VIP_S03_COMPILED_DIRECTORY = "prebuilt/vip-s03-compiled-formula-v1"
+_VIP_S03_NATIVE_CACHE = None
+VIP_S02_BACKUP_PACKAGE_SCOPES = {
+    "vip_s02_bounded_d1_testroom_v10": ("test_room", "engineering_test_room_only", "prebuilt/vip-s02-bounded-d1-testroom-v10/manifest.json"),
+    "vip_s02_bounded_d1_free_v8": ("auto_match", "experimental_free_match_only", "prebuilt/vip-s02-bounded-d1-free-v8/manifest.json"),
+    "vip_s02_bounded_d1_test_tournament_v2": ("test_tournament", "test_tournament_runtime_candidate_only", "prebuilt/vip-s02-bounded-d1-test-tournament-v2/manifest.json"),
+    "vip_s02_bounded_d1_official_tournament_v2": ("official_tournament", "official_tournament_runtime_candidate_only", "prebuilt/vip-s02-bounded-d1-official-tournament-v2/manifest.json"),
+}
+VIP_S02_PARTICIPANT_STRATEGIES += tuple(k for k,v in VIP_S02_BACKUP_PACKAGE_SCOPES.items() if v[0] != 'auto_match')
+VIP_S02_AUTO_MATCH_STRATEGIES += tuple(k for k,v in VIP_S02_BACKUP_PACKAGE_SCOPES.items() if v[0] == 'auto_match')
+VIP_PARTICIPANT_STRATEGIES = (*VIP_S02_PARTICIPANT_STRATEGIES, *(k for k,v in VIP_S03_PACKAGE_SCOPES.items() if v[0] != 'auto_match'))
+VIP_AUTO_MATCH_STRATEGIES = (*VIP_S02_AUTO_MATCH_STRATEGIES, VIP_S03_FREE_STRATEGY)
+VIP_NETWORK_STRATEGIES = (*VIP_PARTICIPANT_STRATEGIES, *VIP_AUTO_MATCH_STRATEGIES)
+VIP_TESTROOM_STRATEGIES = tuple(k for k in VIP_NETWORK_STRATEGIES if 'testroom' in k)
 
 def _verify_vip_s02_runtime(expected_manifest_sha256: str | None = None) -> tuple[dict, dict]:
     """启动期核对编译原件，返回完整身份与四模块路径，不执行或编译扩展。
@@ -272,6 +301,151 @@ def _load_vip_s02_runtime(expected_manifest_sha256: str):
         copy_facts=modules["_s02_facts"]._plain)
 
 
+
+def _verify_vip_s03_runtime(expected_manifest_sha256: str | None = None) -> tuple[dict, Path]:
+    """启动期验签新公式及原共享助手；不编译，不扫描确认牌桌原流。"""
+    import platform
+    import sys
+    import sysconfig
+    directory = _REPO_ROOT / VIP_S03_COMPILED_DIRECTORY
+    raw = (directory / "manifest.json").read_bytes()
+    actual = hashlib.sha256(raw).hexdigest()
+    if expected_manifest_sha256 is not None and actual != expected_manifest_sha256:
+        raise RuntimeError("S03编译清单身份不匹配")
+    manifest = json.loads(raw)
+    required = {"schema", "identity", "module", "files", "shared_original_helpers",
+        "original_execution_id", "python_implementation", "python_cache_tag", "platform", "machine", "ext_suffix"}
+    name = "_t191_candidate_" + VIP_S03_IDENTITY["candidate_id"][:12]
+    names = {"source.py", name + ".pyx", "_s02_meter.pxd", name + ".c",
+        name + sysconfig.get_config_var("EXT_SUFFIX"), "BUILD-PLAN.json", "BUILD-CLOSED.json"}
+    if (type(manifest) is not dict or set(manifest) != required
+            or manifest.get("schema") != "vip-s03-compiled-formula/1"
+            or manifest.get("identity") != VIP_S03_IDENTITY or manifest.get("module") != name
+            or manifest.get("python_implementation") != sys.implementation.name
+            or manifest.get("python_cache_tag") != sys.implementation.cache_tag
+            or manifest.get("platform") != sys.platform or manifest.get("machine") != platform.machine()
+            or manifest.get("ext_suffix") != sysconfig.get_config_var("EXT_SUFFIX")
+            or type(manifest.get("files")) is not dict or set(manifest["files"]) != names):
+        raise RuntimeError("S03公式、编译范围或ABI不匹配")
+    for relative, expected in VIP_S03_IDENTITY["source_manifest"].items():
+        body = (_REPO_ROOT / relative).read_bytes()
+        if len(body) != expected["bytes"] or hashlib.sha256(body).hexdigest() != expected["sha256"]:
+            raise RuntimeError("S03已确认核心源码漂移: " + relative)
+    for filename, expected in manifest["files"].items():
+        if (type(expected) is not dict or set(expected) != {"bytes", "sha256"}
+                or type(expected["bytes"]) is not int or expected["bytes"] < 1
+                or type(expected["sha256"]) is not str or len(expected["sha256"]) != 64
+                or any(c not in "0123456789abcdef" for c in expected["sha256"])):
+            raise RuntimeError("S03编译文件摘要格式错误")
+        body = (directory / filename).read_bytes()
+        if len(body) != expected["bytes"] or hashlib.sha256(body).hexdigest() != expected["sha256"]:
+            raise RuntimeError("S03编译文件漂移: " + filename)
+    if (hashlib.sha256(VIP_S03_SOURCE.encode()).hexdigest() != VIP_S03_IDENTITY["source_sha256"]
+            or manifest["files"]["source.py"]["sha256"] != VIP_S03_IDENTITY["source_sha256"]):
+        raise RuntimeError("S03已确认公式原文漂移")
+    shared, _ = _verify_vip_s02_runtime()
+    if manifest["shared_original_helpers"] != shared:
+        raise RuntimeError("S03共享编译助手漂移")
+    build_raw = (directory / "BUILD-PLAN.json").read_bytes()
+    build = json.loads(build_raw)
+    closed = json.loads((directory / "BUILD-CLOSED.json").read_text())
+    binary = directory / (name + manifest["ext_suffix"])
+    build_pin = {"bytes": len(build_raw), "sha256": hashlib.sha256(build_raw).hexdigest()}
+    binary_pin = manifest["files"][binary.name]
+    execution = hashlib.sha256(json.dumps({"build_plan_pin": build_pin, "binary_pin": binary_pin},
+        sort_keys=True, separators=(",", ":"), allow_nan=False).encode()).hexdigest()
+    if (closed.get("complete") is not True or closed.get("candidate_identity") != VIP_S03_IDENTITY
+            or build.get("candidate_identity") != VIP_S03_IDENTITY or build.get("module") != name
+            or build.get("shared_original_helpers") != shared or closed.get("build_plan_pin") != build_pin
+            or closed.get("binary_pin") != binary_pin or manifest["original_execution_id"] != execution):
+        raise RuntimeError("S03未绑定实际已验证编译原件")
+    return {"directory": VIP_S03_COMPILED_DIRECTORY, "manifest_sha256": actual, "manifest": manifest}, binary
+
+
+def _load_vip_s03_runtime(expected_manifest_sha256: str):
+    """每个工作进程启动时装载新公式，复用原助手；动作窗口没有文件访问。"""
+    import importlib.util
+    import sys
+    from dataclasses import replace
+    global _VIP_S03_NATIVE_CACHE
+    identity, binary = _verify_vip_s03_runtime(expected_manifest_sha256)
+    name = identity["manifest"]["module"]
+    base = _load_vip_s02_runtime(identity["manifest"]["shared_original_helpers"]["manifest_sha256"])
+    if _VIP_S03_NATIVE_CACHE is not None:
+        digest, module = _VIP_S03_NATIVE_CACHE
+        if digest != identity["manifest_sha256"] or sys.modules.get(name) is not module:
+            raise RuntimeError("S03已装模块身份漂移")
+    else:
+        if name in sys.modules:
+            raise RuntimeError("S03扩展名已被未验签模块占用")
+        spec = importlib.util.spec_from_file_location(name, binary)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[name] = module
+        try:
+            spec.loader.exec_module(module)
+        except BaseException:
+            sys.modules.pop(name, None)
+            raise
+        _VIP_S03_NATIVE_CACHE = identity["manifest_sha256"], module
+    return replace(base, source_sha256=VIP_S03_IDENTITY["source_sha256"],
+        execution_id=identity["manifest"]["original_execution_id"], candidate_factory=module.make_candidate)
+
+
+def build_vip_s03_manifest(strategy: str, evidence_sha256: Mapping[str, str]) -> dict:
+    """冻结已确认候选的单一模式包；不写文件、不发HTTP，不授榜前对手优势。"""
+    if strategy not in VIP_S03_PACKAGE_SCOPES:
+        raise ValueError("未知S03冻结作用域")
+    if (not evidence_sha256 or any(type(k) is not str or type(v) is not str or len(v) != 64
+            or any(c not in "0123456789abcdef" for c in v) for k, v in evidence_sha256.items())
+            or any(evidence_sha256.get(k) != v for k, v in VIP_S03_REQUIRED_EVIDENCE_SHA256.items())):
+        raise ValueError("S03缺本次实际确认、等价、原截止、重型或原件封存证据")
+    _verify_vip_evidence(evidence_sha256)
+    from hangma_bot.adapters.official.dto import KNOWN_GUIDE_VERSION
+    math = hand_math_runtime_metadata()
+    # 离线身份另存原生二进制大小；线上元数据使用native_sha256，不能直接比较两种结构。
+    expected_math = VIP_S03_IDENTITY["math_backend"]
+    expected_runtime_math = {k: expected_math[k] for k in ("implementation", "semantics_version", "fallback_reason")}
+    expected_runtime_math["native_sha256"] = expected_math["native_binary"]["sha256"]
+    if math != expected_runtime_math:
+        raise RuntimeError("S03实际数学后端与独立确认不同")
+    from hangma_bot.hangma import _grouped_native
+    actual_native = Path(_grouped_native.__file__).read_bytes()
+    if (len(actual_native) != expected_math["native_binary"]["bytes"]
+            or hashlib.sha256(actual_native).hexdigest() != expected_math["native_binary"]["sha256"]):
+        raise RuntimeError("S03实际数学二进制与独立确认不同")
+    params = _vip_params()
+    accepted_params = VIP_S03_IDENTITY["params"]
+    if (any(params[k] != accepted_params[k] for k in
+            ("rule_config", "route_limits", "projection_limits", "max_operations"))
+            or accepted_params["max_local_collection_size"] != 8192):
+        raise RuntimeError("S03运行参数与独立确认不同")
+    mode, admission, _ = VIP_S03_PACKAGE_SCOPES[strategy]
+    payload = {"schema": "vip-route-bounded-release/3", "strategy": strategy, "allowed_modes": [mode],
+        "known_guide_version": KNOWN_GUIDE_VERSION, "params": params,
+        "base_candidate_id": VIP_S02_BASE_CANDIDATE_ID, "candidate_identity": VIP_S03_IDENTITY,
+        "source_sha256": VIP_S03_IDENTITY["source_sha256"], "source_manifest": _vip_runtime_sources(),
+        "hand_math": math, "compiled_runtime": _verify_vip_s03_runtime()[0],
+        "evidence_sha256": dict(evidence_sha256), "admission": admission,
+        "strength_admission": True, "strength_scope": "t191-frozen-local-mixed-pool-net-vs-s02",
+        "production_default": False, "llm_online": False}
+    payload["release_package_id"] = _vip_package_id(payload)
+    return payload
+
+
+def _load_vip_s03_manifest(strategy: str, expected_id: str | None = None) -> dict:
+    """配置、当前来源、实际二进制及确认证据全部绑定；错配在联网前拒绝。"""
+    payload = json.loads((_REPO_ROOT / VIP_S03_PACKAGE_SCOPES[strategy][2]).read_text())
+    if type(payload) is not dict or type(payload.get("evidence_sha256")) is not dict:
+        raise ValueError("S03冻结包结构错误")
+    actual = _vip_package_id(payload)
+    if payload.get("release_package_id") != actual or expected_id is not None and expected_id != actual:
+        raise ValueError("S03配置绑定的冻结包摘要不匹配")
+    expected = build_vip_s03_manifest(strategy, payload["evidence_sha256"])
+    if json.dumps(payload, sort_keys=True, allow_nan=False) != json.dumps(expected, sort_keys=True, allow_nan=False):
+        raise RuntimeError("S03冻结范围、完整源码、参数或编译绑定漂移")
+    return payload
+
+
 def _vip_runtime_sources() -> dict[str, str]:
     """在组合根冻结整个线上源码；不包含凭证、测试或历史研究工作区。"""
     root = _REPO_ROOT / "src/hangma_bot"
@@ -300,6 +474,10 @@ def _vip_package_id(payload: Mapping) -> str:
 
 def _vip_package_scope(strategy: str) -> tuple[str, str, str]:
     """固定策略对应唯一模式、工程候选范围及路径；不接受任意磁盘制品。"""
+    if strategy in VIP_S03_PACKAGE_SCOPES:
+        return VIP_S03_PACKAGE_SCOPES[strategy]
+    if strategy in VIP_S02_BACKUP_PACKAGE_SCOPES:
+        return VIP_S02_BACKUP_PACKAGE_SCOPES[strategy]
     if strategy == VIP_S02_TESTROOM_STRATEGY:
         return "test_room", "engineering_test_room_only", VIP_S02_TESTROOM_MANIFEST
     if strategy == VIP_S02_FREE_STRATEGY:
@@ -341,7 +519,7 @@ def build_vip_test_tournament_manifest(evidence_sha256: Mapping[str, str]) -> di
 
 
 def build_vip_official_tournament_manifest(evidence_sha256: Mapping[str, str]) -> dict:
-    """生成正式赛事运行候选；实际配置与官方测试赛事通过仍须另行验收。"""
+    """生成正式赛事运行候选；实际正式配置与现场流程另核；已取消的测试锦标赛不作为前置。"""
     return _build_vip_manifest(VIP_S02_OFFICIAL_TOURNAMENT_STRATEGY, evidence_sha256)
 
 
@@ -394,6 +572,8 @@ def _load_vip_free_manifest(expected_id: str | None = None) -> dict:
 
 def _load_vip_manifest(strategy: str, expected_id: str | None = None) -> dict:
     """校验真实字节、范围和后端；配置不能绕过白名单扩大准入。"""
+    if strategy in VIP_S03_PACKAGE_SCOPES:
+        return _load_vip_s03_manifest(strategy, expected_id)
     mode, admission, manifest_path = _vip_package_scope(strategy)
     payload = json.loads((_REPO_ROOT / manifest_path).read_text())
     from hangma_bot.adapters.official.dto import KNOWN_GUIDE_VERSION
@@ -497,11 +677,13 @@ class _VipWorkerFactory:
 
     def __call__(self) -> PreparedDecisionPolicy:
         package = _load_vip_manifest(self.strategy, self.expected_id)
+        is_s03 = self.strategy in VIP_S03_PACKAGE_SCOPES
+        runtime = (_load_vip_s03_runtime if is_s03 else _load_vip_s02_runtime)(package["compiled_runtime"]["manifest_sha256"])
         policy = RouteVipHeuristicPolicy(
-            RuleConfig(**package["params"]["rule_config"]), source=VIP_S02_SOURCE,
+            RuleConfig(**package["params"]["rule_config"]), source=VIP_S03_SOURCE if is_s03 else VIP_S02_SOURCE,
             max_operations=package["params"]["max_operations"],
             projection_limits=VIP_S02_PROJECTION_LIMITS,
-            compiled_runtime=_load_vip_s02_runtime(package["compiled_runtime"]["manifest_sha256"]))
+            compiled_runtime=runtime)
         return PreparedDecisionPolicy(policy, self.expected_id)
 
 
@@ -693,7 +875,7 @@ _SEQUENCE_MODEL_STRATEGIES: Mapping[str, str] = {
 # 校验都必须引用本常量，不得各自维护副本——否则会出现"组合根已支持、启动器
 # 白名单却拒绝"的静默漂移（2026-09-14 序列模型接入即发生过一次）。
 AVAILABLE_STRATEGIES: tuple[str, ...] = (tuple(_STRATEGY_FACTORIES)
-    + tuple(_SEQUENCE_MODEL_STRATEGIES) + VIP_S02_NETWORK_STRATEGIES)
+    + tuple(_SEQUENCE_MODEL_STRATEGIES) + VIP_NETWORK_STRATEGIES)
 
 # 默认部署包根目录；可用 RuntimeConfig.sequence_model_dir 覆盖。相对路径按
 # 仓库根解析，模型权重随仓库分发，不从训练工作区读取。
@@ -758,7 +940,7 @@ def _sequence_model_policy(config, monotonic: Callable[[], float] = time.monoton
 def _build_policy(config, monotonic: Callable[[], float] = time.monotonic) -> BotPolicy:
     """按运行配置构造策略；模型类候选走显式装载，其余走原工厂表。"""
 
-    if config.strategy in VIP_S02_NETWORK_STRATEGIES:
+    if config.strategy in VIP_NETWORK_STRATEGIES:
         raise RuntimeError("VIP网络策略必须由组合根显式装配计算服务")
     if config.strategy in _SEQUENCE_MODEL_STRATEGIES:
         return _sequence_model_policy(config, monotonic)
@@ -980,7 +1162,7 @@ class RuntimeConfig:
                 raise ValueError(
                     "r18_integrated_positive_v2 配置绑定的发布包摘要与当前批准包不一致"
                 )
-        elif self.strategy in VIP_S02_NETWORK_STRATEGIES:
+        elif self.strategy in VIP_NETWORK_STRATEGIES:
             mode, _admission, _path = _vip_package_scope(self.strategy)
             if self.mode.value != mode:
                 raise ValueError("VIP工程冻结包仅允许测试房、自由赛或赛事身份各自绑定的模式，不授其他运行模式")
@@ -1386,7 +1568,7 @@ def build_runtime(
     # RuntimeConfig构造后发生的源码漂移不能遗留一个无法由run关闭的会话。
     if policy_factory is not None:
         policy = policy_factory()
-    elif config.strategy in VIP_S02_PARTICIPANT_STRATEGIES:
+    elif config.strategy in VIP_PARTICIPANT_STRATEGIES:
         policy = _build_vip_compute(config, clock)
     else:
         policy = _build_policy(config)
@@ -1456,10 +1638,10 @@ def build_runtime(
             expected_tournament_id=config.expected_tournament_id,
             known_guide_version=config.known_guide_version,
         ),
-        rules_factory=(_vip_testroom_rules if config.strategy in VIP_S02_PARTICIPANT_STRATEGIES else
+        rules_factory=(_vip_testroom_rules if config.strategy in VIP_PARTICIPANT_STRATEGIES else
             _test_room_upgrade_rules if config.strategy in _VALUE_ANALYSIS_STRATEGIES else HangmaRules),
         value_limits=_value_limits_for(config.strategy),
-        route_limits=(VIP_S02_ROUTE_LIMITS if config.strategy in VIP_S02_PARTICIPANT_STRATEGIES else None),
+        route_limits=(VIP_S02_ROUTE_LIMITS if config.strategy in VIP_PARTICIPANT_STRATEGIES else None),
         clock=clock,
         ids=fixed_ids,
         budget_policy=budget_policy,
@@ -1567,7 +1749,7 @@ def build_auto_match_runtime(
     # 冻结包/后端/源码先校验，再创建持有线程、文件或HTTP的资源。
     if policy_factory is not None:
         policy = policy_factory()
-    elif config.strategy in VIP_S02_AUTO_MATCH_STRATEGIES:
+    elif config.strategy in VIP_AUTO_MATCH_STRATEGIES:
         policy = _build_vip_compute(config, clock)
     else:
         policy = _build_policy(config)
@@ -1645,7 +1827,7 @@ def build_auto_match_runtime(
         # 范围内获批。自由赛发现房间后若规则不符，明确终止该候选会话，
         # 不能用缺失分值事实静默退化成未经验证的另一种行为。
         rules_factory=(
-            _vip_testroom_rules if config.strategy in VIP_S02_AUTO_MATCH_STRATEGIES else
+            _vip_testroom_rules if config.strategy in VIP_AUTO_MATCH_STRATEGIES else
             _test_room_upgrade_rules
             if config.strategy in (
                 R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
@@ -1654,7 +1836,7 @@ def build_auto_match_runtime(
             else HangmaRules
         ),
         value_limits=_value_limits_for(config.strategy),
-        route_limits=(VIP_S02_ROUTE_LIMITS if config.strategy in VIP_S02_AUTO_MATCH_STRATEGIES else None),
+        route_limits=(VIP_S02_ROUTE_LIMITS if config.strategy in VIP_AUTO_MATCH_STRATEGIES else None),
         value_rules_scope=(RuleConfig(RISK_RULESET_VERSION, 1, False)
                            if config.strategy in _VALUE_ANALYSIS_STRATEGIES else None),
         clock=clock,
