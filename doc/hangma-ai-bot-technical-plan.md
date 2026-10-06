@@ -12,6 +12,8 @@
 
 当前胡、后继摸牌、模拟结算及离线核算共用新资格；外部接口与线上信息权限不扩大，源码／核心／编译／四模式包重新绑定。P0规则、32完整桌影响、原截止及时合法／保底运行门、自然交接与首房工程均已关闭；main四模式基本装配也已通过，实际自由赛仍用原冻结根。A同分弃牌、B吃碰费用、C备用信用共P0窄筛选；有开发信号的唯一组合才做一次独立确认。当前A进入固定首8自然诊断；B本批首选无变化、C无完整机会、GLM连接原型缺正向诊断信号，不自动组合，不把机械改选当净收益。详见[T199执行记录](../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/README.md)及[T198修订计划](../review/vip-route-2026-09-30/evidence/t198-four-step-release-plan-1/PLAN.md)，下文为历史快照。
 
+后续固定全32母开发已闭，A-H0每桌净差+2.375，母来源聚类95%区间仍跨0，只授一次独立确认准备。实际新S选择的70输入核验及32原截止动作窗通过（26完整评分、6明确保底），S尚未上线。P0自由赛第5房被一次迟回碰拒绝挡续，后继全量权威新窗口已核，保留原NoRefresh／机会损失及错误原件；恢复版只改独立控制工具的精确相位拒绝分类，P0公式、规则、native、原动作截止、四模式包均不改。原窗口合法复核、wire报文一致、及时发出、全窗口唯一意图与后继权威恢复任一缺失，仍阻止续赛。原raw/games扫描限256MiB／3秒，疑似相位拒绝额外限1GiB／5秒，均在自然房界进行；当前唯一owner已恢复，首个恢复房工程门仍待自然终态。细节见[当前续赛入口](../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/LIVE-WATCHDOG.md)及[全32开发](../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/strategy/natural-A-H0-all32/DIAGNOSTIC.md)。
+
 ## 2026-10-06 T194：T110-S03-E2审计工程后继
 
 **E2只减少审计同步重复编码，不改变S03公式、38核心、D1、原截止、QPS或十桌专属计算。** S03四scope v3；S02备用testroom_v12/free_v10/两赛事v4。八包绑定同183完整来源，全部旧包逐字保留并在新来源下明确拒装。正式／测试赛事只验基础接线及生命周期；必要四席M10/R2十桌已通过strict及OPERABILITY，2026-10-06 04:27 UTC旧自由赛自然结束后已换入main并自动续S03-E2/free_v3。公式仍S03，不授新算法增强；[实际身份](../review/vip-route-2026-09-30/evidence/t194-xuanwu-income-gap-1/wiring/LIVE-IDENTITY-CLOSED.json)记录十个专属计算进程及连续owner交接。

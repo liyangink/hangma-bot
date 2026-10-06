@@ -14,6 +14,8 @@
 
 main四模式包的默认装配、作用域及拒启动检查通过。main包与live包只因组合根文字修正而摘要不同，38核心、公式、参数及native执行身份相同；现行自由赛继续绑定原live冻结根，不热换为main包。实际入口与两份身份见[T199执行记录](../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/README.md)和[main装配](../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/main-integration/MAIN-FOUR-MODE-CLOSED.json)，下文为历史上线快照。
 
+当前控制工具已迁至独立的`runtime-root-p0-recovery-v2`，P0算法与ad086自由赛包保持不变。第5房的一笔合法碰在原截止内发出，迟回HTTP409后得到后继权威新窗口；轻量门现在只将具备精确Peng相位消息、合法复核、实际报文一致、原截止内发送、全窗口唯一意图与后继已应用全量快照的情形记为告警。即时`SubmitRejectedNoRefresh`语义不改，真正非法、未知或未恢复仍阻止续赛；不延长动作预算、不改适配器提交逻辑。原始失败留存，旧空闲统计自然退出，新唯一owner已恢复。原raw/games扫描仍限256MiB／3秒，只有疑似相位拒绝才额外有界扫描决策证据（1GiB／5秒），不在动作窗口内运行。实际入口以[当前续赛记录](../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/LIVE-WATCHDOG.md)为准。
+
 ## 2026-10-06 T194：T110-S03-E2审计工程后继
 
 **E2只减少审计同步重复编码，不改变S03公式、38核心、D1、原截止、QPS或十桌专属计算。** S03四scope v3；S02备用testroom_v12/free_v10/两赛事v4。八包绑定同183完整来源，全部旧包逐字保留并在新来源下明确拒装。正式／测试赛事只验基础接线及生命周期；必要四席M10/R2十桌已通过strict及OPERABILITY，2026-10-06 04:27 UTC旧自由赛自然结束后已换入main并自动续S03-E2/free_v3。公式仍S03，不授新算法增强；[实际身份](../review/vip-route-2026-09-30/evidence/t194-xuanwu-income-gap-1/wiring/LIVE-IDENTITY-CLOSED.json)记录十个专属计算进程及连续owner交接。
