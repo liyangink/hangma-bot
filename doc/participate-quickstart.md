@@ -1,4 +1,4 @@
-# 参赛说明
+# 正式赛接入说明
 
 ## 一、参赛程序说明
 
@@ -6,60 +6,49 @@
 
 ```bash
 cd <仓库根目录>
-python3 -m venv .venv
-.venv/bin/python -m pip install -e '.[dev]'
+python3 -m venv .venv && .venv/bin/python -m pip install -e '.[dev]'
 
 # 代理例外：必须与启动赛事的终端相同，否则 guide/version 超时、未报名即退出
 export NO_PROXY="${NO_PROXY:+$NO_PROXY,}10.240.169.190"
 export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
+
+# 取正式赛模板 + 落 Token（单行文件；.private/ 不入版本库）
+cp configs/r18-integrated-positive-v2.official-tournament.example.json .private/official.json
+printf '%s\n' '<正式赛 Token>' > .private/official.token
 ```
+
+### 关键配置项（`.private/official.json`）
+
+| 字段 | 必填 | 怎么填 |
+| --- | --- | --- |
+| `mode` | 是 | 固定 `official_tournament` |
+| `token_kind` | 是 | 固定 `official`；与 `mode` 交叉校验，填 `test` 直接拒绝启动 |
+| `base_url` | 是 | `https://10.240.169.190:18080` |
+| `expected_tournament_id` | 是 | 本次正式赛赛事 ID，必须非空；填错会在报名阶段暴露 |
+| `known_guide_version` | 是 | 仓库当前已适配版本（见 `src/hangma_bot/adapters/official/dto.py` 的 `KNOWN_GUIDE_VERSION`，当前 35）；模板里的值可能滞后 |
+| `audit_root` | 是 | 本次独立审计目录，如 `artifacts/sessions/official-20261007/audit` |
+| `strategy` | 是 | 已批准的策略名（如 `r18_integrated_positive_v2`）；不要留默认 `weighted_heuristic` |
+| `expected_policy_release_id` | 冻结包策略必填 | 人工批准发布包的完整 SHA-256；缺失或不匹配会拒绝启动 |
+| `token` 或 `token_env` | 二选一 | 内联 Token 或环境变量名；与命令行 `--token-file` 三选一，同时给会报错 |
+
+其余项按模板保留：`insecure_hosts: ["10.240.169.190"]`（仅对赛事内网关闭证书校验）、`sse_enabled`、
+`discard_pacing_enabled`、`source_namespace`。**配置不接受未知字段**，字段名拼错会在组装期直接报错。
+
+### 开赛
+
+开赛脚本是 `scripts/run_participant.py`（单身份跑到参赛者终态）：
 
 ```bash
-cp configs/participant.example.json .private/participant.json   # 改 mode / token_kind / expected_tournament_id / audit_root
-printf '%s\n' '<参赛 Token>' > .private/participant.token      # 单行文件；.private/ 不入版本库
+.venv/bin/python scripts/run_participant.py --config .private/official.json \
+  --token-file .private/official.token
+
+# 开赛前只读核对「这个 Token 绑的是哪一场」（不 register / 不 ready）
+.venv/bin/python scripts/resolve_tournament.py --token-file .private/official.token \
+  --config .private/official.json
 ```
 
-Token 三种给法**三选一**：配置内 `token`、`token_env`、命令行 `--token-file`（同时给会直接报错）；
-同一 Token 同一时刻只能有一个进程在用。平台地址写在配置里：`base_url` = `https://10.240.169.190:18080`。
-
-### 开始比赛
-
-**有开赛脚本**，赛事走单身份入口 `scripts/run_participant.py`：
-
-| 场景 | 开赛脚本 | 关键配置 |
-| --- | --- | --- |
-| 测试赛事 | `scripts/run_participant.py` | `mode: test_tournament`、`token_kind: test` |
-| 正式赛事 | `scripts/run_participant.py` | `mode: official_tournament`、`token_kind: official` |
-| 官方测试房 | `scripts/run_test_room.py` | 四身份、四个 Token；`--once` 打一批就退 |
-| 自由赛 | `scripts/run_auto_match.py` | 一个全局 Token，一房结束即退 |
-
-```bash
-# 开打（测试赛事 / 正式赛事）
-.venv/bin/python scripts/run_participant.py --config .private/participant.json \
-  --token-file .private/participant.token
-
-# 开打前用只读接口核对「这个 Token 绑的是哪一场」（不 register / 不 ready）
-.venv/bin/python scripts/resolve_tournament.py --token-file .private/participant.token --config .private/participant.json
-```
-
-连续自由赛不由单次脚本负责，用当前 watchdog 入口续赛（入口见[研究证据索引](../review/INDEX.md)顶部）。
-
-### 日志怎么看
-
-| 目的 | 命令 | 看什么 |
-| --- | --- | --- |
-| 单场实时状态 | `.venv/bin/python scripts/monitor_run.py --audit-root artifacts/sessions/<会话> --interval 5` | 进程存活、当前场次与单局、动作与截止 |
-| 全量原始审计 | `.venv/bin/python scripts/audit_tool.py watch artifacts/sessions/<会话>` | 每个身份的决策链、提交结果、异常（`--once` 只看一次） |
-| 图形界面（只读本机） | `./scripts/run_spectator.sh` → `http://127.0.0.1:8765/` | 牌桌、手牌、决策候选与增量事件 |
-
-落盘位置 `artifacts/sessions/<会话>/audit/runs/<run_id>/`：
-
-- `participants/<身份>/decisions.jsonl`：每次决策的观察、候选、选择、耗时与提交结果
-- `raw/*.jsonl`：官方原始报文留痕；`lifecycle.jsonl`：生命周期；`summary.json`：终态汇总
-- 连续自由赛的守护日志：所属 watchdog 目录下的 `watch.stdout.log`、`background.stdout.log`
-
-常见问题：`guide/version` 超时未报名 → 代理例外没设；启动报 Token/身份错误 → Token 文件多行或与赛事不符；
-报「`--token-file` 与配置内 `token/token_env` 互斥」→ 二选一，别同时给。
+注意：同一 Token 同一时刻只能有一个实例；`--token-file` 与配置里的 `token`/`token_env` 互斥；
+结果不确定（网络中断、终态未确认、审计缺失）不要盲目重跑，先取证。
 
 ## 二、源码地址
 
