@@ -21,6 +21,7 @@ from dataclasses import dataclass
 from typing import Optional, Tuple
 
 from hangma_bot.kernel.actions import SEAT_COUNT
+from hangma_bot.kernel.actions import Tile
 from hangma_bot.kernel.observation import PublicEvent, ScoreVector
 
 from .interface import Settlement
@@ -133,8 +134,10 @@ def compute_fan(
       baotou：爆头标志。运行时传平台权威 `rule_state.baotou`，
         对拍/审计可传 `special_rules.static_baotou(win)`（注意先覆盖
         win_split 的 any_tile_tenpai=False 占位，警示见该函数）；
-        本函数消费已确认的爆头事实。官方 v23 §1.2 与 2026-09-08
-        fan-calc 实测允许四白与爆头分别 ×2，不再按四白数量清除爆头。
+        它用于全局资格，不等同于七对分支支付资格。七对且旗为真时，
+        win.seven_pairs_baotou 必须已由准确摸前13张确认，否则抛 ValueError。
+        官方 v35、2026-10-06 fan-calc 同14张不同draw对照确认此区别。
+        四白与成立的分支爆头分别 ×2，不按四白数量清除全局旗。
 
     校验失败抛 ValueError（含官方 400 同口径的白板总数校验）；
     未胡牌不进入本路径，由调用方以流局（番 0）处理。
@@ -149,6 +152,13 @@ def compute_fan(
     if isinstance(win.whites_held, bool) or not 0 <= win.whites_held <= 4:
         raise ValueError("手留白板数必须在 0-4，得到 {0!r}".format(win.whites_held))
     _validate_chain(chain_count, piao, win.whites_held)
+    if win.seven_pairs_baotou is not None and type(win.seven_pairs_baotou) is not bool:
+        raise ValueError("七对爆头支付资格必须是 bool 或 None")
+    paid_baotou = baotou
+    if baotou and win.branch == _BRANCH_CHIITOI:
+        if win.seven_pairs_baotou is None:
+            raise ValueError("七对爆头支付资格未知，需要准确摸前13张上下文")
+        paid_baotou = win.seven_pairs_baotou
 
     details: list = []
     if win.branch == _BRANCH_PLAIN:
@@ -170,14 +180,14 @@ def compute_fan(
     if four_white:
         details.append(_WHITE_TOTAL_DETAIL)
 
-    if baotou:
+    if paid_baotou:
         details.append(_BAOTOU_DETAIL)
 
     fan = branch_factor
     fan <<= chain_count
     if four_white:
         fan <<= 1
-    if baotou:
+    if paid_baotou:
         fan <<= 1
     return FanResult(fan=fan, details=tuple(details))
 
@@ -243,14 +253,23 @@ def settle_win(
     base_score: int,
     winner_seat: int,
     dealer_seat: int,
+    *,
+    pre_draw_hand: Optional[Tuple[Tile, ...]] = None,
+    meld_set_count: int = 0,
 ) -> Settlement:
     """一次胡牌的完整结算便捷入口；供 engine.score 组装公开结果。
 
-    输入语义与 `compute_fan`/`settle_scores` 完全一致；本函数只做
-    组装，不引入额外语义。流局（番 0）不经本路径——engine 应直接以
-    全零向量与空明细构造 Settlement。
+    pre_draw_hand 是本人准确摸前暗牌，不含摸牌、他家手牌或未来牌墙；
+    meld_set_count 是当时副露面子数。七对且全局爆头为真时必须提供
+    该上下文或已核的 WinSplit 支付资格，缺失明确失败，不猜测倍率。
+    14张分解缓存不保存13张资格，本入口每次据真实前驱补充元数据。
+    流局（番0）不经本路径。函数不访问网络、文件或时钟。
     """
 
+    if baotou and win.branch == _BRANCH_CHIITOI and pre_draw_hand is not None:
+        from .hand_analysis import qualify_seven_pairs_baotou
+
+        win = qualify_seven_pairs_baotou(win, pre_draw_hand, meld_set_count)
     result = compute_fan(win, chain_count, piao, baotou)
     return Settlement(
         score_delta=settle_scores(result.fan, base_score, winner_seat, dealer_seat),

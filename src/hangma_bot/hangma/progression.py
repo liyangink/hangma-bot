@@ -685,16 +685,17 @@ def _settle_win_exact(state: ProgressionState, winner: int) -> HandResult:
         raise ValueError(
             "胡牌选择已通过合法性验证但 win_split 分解失败（内部不一致）"
         )
-    fan_result = settlement.compute_fan(split, s.chain_count, s.chain_piao, s.baotou)
-    score_delta = settlement.settle_scores(
-        fan_result.fan, state.base_score, winner, state.dealer_seat
+    fan_result = settlement.settle_win(
+        split, s.chain_count, s.chain_piao, s.baotou,
+        state.base_score, winner, state.dealer_seat,
+        pre_draw_hand=s.hand, meld_set_count=len(s.melds),
     )
     return HandResult(
         winner_seat=winner,
         is_draw=False,
         fan=fan_result.fan,
         details=fan_result.details,
-        score_delta=score_delta,
+        score_delta=fan_result.score_delta,
     )
 
 

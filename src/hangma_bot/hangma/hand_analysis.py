@@ -16,6 +16,7 @@ Python 分组算法。运行中不编译、不访问网络、文件或系统时�
 
 from __future__ import annotations
 
+from dataclasses import replace
 from typing import Optional, Tuple
 from builtins import int as _builtin_int, len as _builtin_len, tuple as _builtin_tuple, type as _builtin_type
 from functools import lru_cache
@@ -569,6 +570,33 @@ def any_tile_win(hand_tiles_13: Tuple[Tile, ...], meld_set_count: int) -> bool:
         if not _is_win_counts(tuple(drawn), meld_set_count):
             return False
     return True
+
+
+def qualify_seven_pairs_baotou(
+    win: WinSplit, pre_draw_hand: Tuple[Tile, ...], meld_set_count: int,
+) -> WinSplit:
+    """补充当前七对分支的爆头支付资格；不修改全局爆头旗或合法动作。
+
+    官方 v35、2026-10-06 纯计算器同14张不同draw对照（SYN01/SYN02）
+    确认：平胡任意听产生的全局 baotou 不给非任意听七对再乘2。
+    输入必须是准确摸前13张，不能从最终14张任意移除一张来猜测。
+    七对的白板先补自然落单；任意新增自然牌的最坏情形是新增落单，
+    因此白板数必须大于自然奇数张种类数。13张最多占13种牌，必有
+    未持有种类，此最坏情形确实存在；满足它也覆盖摸白与补已有单张。
+    这是 _chiitoi_pairs 的闭式任意听条件，只扫一次计数，不重复34次分解。
+    """
+
+    _validate_melds(meld_set_count)
+    if win.branch != _BRANCH_CHIITOI:
+        return win
+    if meld_set_count != 0 or len(pre_draw_hand) != 13:
+        raise ValueError("七对爆头支付资格需要无副露的准确摸前13张手牌")
+    counts34 = counts_from_tiles(pre_draw_hand)
+    if any(value > 4 for value in counts34):
+        raise ValueError("七对爆头支付资格的摸前手牌不能含第五张同种牌")
+    counts, whites = _split_counts(counts34)
+    eligible = whites > sum(value % 2 for value in counts)
+    return replace(win, seven_pairs_baotou=eligible)
 
 
 # 仅完整确定性分解复用：每解释器最多1024条，不缓存布尔判胡或递归后缀。

@@ -139,8 +139,8 @@ class WinSplit:
     """胡牌分解的规则元数据（结算与爆头判定输入）。
 
     `any_tile_tenpai` 按摸牌前 13 张暗牌判定（指南 1.2"听任意牌"）；
-    运行时结算优先用 `observation.rule_state.baotou` 权威状态，
-    本字段用于金例对拍、审计与 YouCaiBiKao 推断。
+    全局爆头旗用于资格门；它可能来自平胡任意听，不能独自证明七对
+    分支有爆头支付倍率。七对支付资格须另由准确摸前手牌计算。
     """
 
     branch: str  # "平胡" 或 "七对"（与官方 detail 命名一致）
@@ -148,6 +148,7 @@ class WinSplit:
     whites_held: int  # 胡牌暗牌全集（含摸牌）中的白板张数
     any_tile_tenpai: bool  # 摸牌前 13 张暗牌 + 任意一张牌都胡（爆头静态判定）
     evidence: Tuple[str, ...]
+    seven_pairs_baotou: Optional[bool] = None  # 仅七对支付：True/False=已核资格；None=缺摸前上下文，不能默认可加番
 
 
 # ---------------------------------------------------------------------------

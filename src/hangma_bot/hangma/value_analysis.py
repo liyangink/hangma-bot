@@ -272,6 +272,7 @@ def _analyze_basis(
         result = settlement.settle_win(
             split, basis.chain_count, basis.chain_piao, baotou,
             config.base_score, observation.seat, observation.dealer_seat,
+            pre_draw_hand=hand, meld_set_count=basis.waiting.melds,
         )
         groups.add(result, conditions, basis.followup, UsefulTileFact(code, unseen))
 
@@ -296,6 +297,7 @@ def _for_candidate(
                 immediate_settlement=settlement.settle_win(
                     split, count, piao, observation.rule_state.baotou,
                     config.base_score, observation.seat, observation.dealer_seat,
+                    pre_draw_hand=context.hand_tiles, meld_set_count=meld_count,
                 ),
                 coverage=ValueCoverage.COMPLETE,
             )

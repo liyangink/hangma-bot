@@ -1,4 +1,4 @@
-"""按完整请求读取 v23 官方响应；历史文件保持原样，测试不访问网络。"""
+"""按完整请求读封存官方回执；同请求v35优先，未复核者保留v23版本事实。"""
 
 from functools import lru_cache
 import json
@@ -6,6 +6,7 @@ from pathlib import Path
 
 
 FIXTURE_DIR = Path(__file__).resolve().parents[2] / "fixtures/official/v23/fan-calc"
+CURRENT_DIR = Path(__file__).resolve().parents[2] / "fixtures/official/v35/fan-calc-branch-baotou"
 
 
 def request_key(request: dict) -> str:
@@ -20,9 +21,21 @@ def request_key(request: dict) -> str:
 @lru_cache(maxsize=1)
 def _responses() -> dict:
     rows = [json.loads(line) for line in (FIXTURE_DIR / "cases.jsonl").read_text().splitlines()]
+    rows += [json.loads(line) for line in (CURRENT_DIR / "cases.jsonl").read_text().splitlines()]
     return {request_key(row["request"]): row["response"] for row in rows if row["http_status"] == 200}
 
 
 def current_response(request: dict) -> dict:
-    """返回同一请求的当前官方金例；缺失时报错，禁止退回旧版本期望值。"""
+    """返回同请求最新封存响应；v23来源不代表2026-10-06已重新核验。"""
     return _responses()[request_key(request)]
+
+
+@lru_cache(maxsize=1)
+def _current_overrides() -> dict:
+    rows = [json.loads(line) for line in (CURRENT_DIR / "cases.jsonl").read_text().splitlines()]
+    return {request_key(row["request"]): row["response"] for row in rows if row["http_status"] == 200}
+
+
+def current_override(request: dict, recorded_response: dict) -> dict:
+    """只用精确同请求v35回执覆盖独立历史oracle；缺复核保留原版本事实。"""
+    return _current_overrides().get(request_key(request), recorded_response)

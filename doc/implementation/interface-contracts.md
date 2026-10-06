@@ -1,10 +1,10 @@
 # 第一阶段接口协议
 
-## 2026-10-07 T199：七对分支支付资格，隔离实现
+## 2026-10-07 T199：七对分支支付资格，已发布
 
-**外部端口和`HangmaRules`公共签名不变；以下是待发布P0的内部契约，线上仍S03-E2。** `WinSplit.seven_pairs_baotou: Optional[bool]`区分已核可付、已核不可付、缺摸前上下文。它不代替`RulePublicState.baotou`、合法胡门或静态任意听事实；最终14张缓存保留None。
+**外部端口和`HangmaRules`公共签名不变；以下P0内部契约已在main和冻结自由赛根生效。** `WinSplit.seven_pairs_baotou: Optional[bool]`区分已核可付、已核不可付、缺摸前上下文。它不代替`RulePublicState.baotou`、合法胡门或静态任意听事实；最终14张缓存保留None。
 
-内部`settle_win`新增keyword-only的`pre_draw_hand`（本人准确摸前暗牌，不含摸牌、他家暗手或未来墙）与`meld_set_count`（当时副露面子数）。七对且全局爆头true时，由唯一数学入口重新资格化；缺上下文且未核资格、错误长度、第五张同种牌或非bool资格显式抛错。`compute_fan`签名保持，仅消费已核资格。当前胡、后继摸牌、模拟结算、离线审计调用方和13现行官方金例已同步；正式源码仍在隔离验收。完整语义及收据见[P0契约](../../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/RULE-CONTRACT.md)。
+内部`settle_win`新增keyword-only的`pre_draw_hand`（本人准确摸前暗牌，不含摸牌、他家暗手或未来墙）与`meld_set_count`（当时副露面子数）。七对且全局爆头true时，由唯一数学入口重新资格化；缺上下文且未核资格、错误长度、第五张同种牌或非bool资格显式抛错。`compute_fan`签名保持，仅消费已核资格。当前胡、后继摸牌、模拟结算、离线审计调用方和13现行官方金例已同步；13现行金例、32完整桌影响与首房工程已经验收。完整语义及收据见[P0契约](../../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/RULE-CONTRACT.md)。
 
 ## 2026-10-06 T194：T110-S03-E2审计工程后继
 

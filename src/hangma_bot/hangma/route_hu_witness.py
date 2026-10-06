@@ -137,7 +137,8 @@ def analyze_waiting_hu_witness(
             else:
                 immediate = settlement.settle_win(
                     split, state.chain_count, state.chain_piao, baotou,
-                    config.base_score, state.seat, state.dealer_seat)
+                    config.base_score, state.seat, state.dealer_seat,
+                    pre_draw_hand=state.concealed, meld_set_count=state.meld_count)
     return WaitingHuWitness(
         tile, catch_restricted, wall_remaining_before_draw, wall_remaining_before_draw - 1,
         config.ruleset_version, legal_hu, immediate, issues, baotou, capacity, capacity - 1,

@@ -503,7 +503,7 @@ class TestGoldenPipelineParity:
 
         pytest.importorskip("hangma_bot.hangma.hand_analysis")
         from hangma_bot.hangma.hand_analysis import any_tile_win, win_split
-        from hangma_bot.hangma.settlement import compute_fan
+        from hangma_bot.hangma.settlement import settle_win
         from hangma_bot.hangma.special_rules import static_baotou
 
         checked = 0
@@ -525,11 +525,13 @@ class TestGoldenPipelineParity:
             ), "金例 {0} 爆头判定不一致".format(row["tag"])
 
             chain = request["chain"]
-            fan = compute_fan(
+            fan = settle_win(
                 split,
                 chain["count"],
                 chain["piao"],
                 bool(response["baotou"]),
+                request.get("base", 1), 0, 0,
+                pre_draw_hand=hand13, meld_set_count=0,
             )
             assert fan.fan == response["fan"], "金例 {0} 番数不一致".format(row["tag"])
             assert list(fan.details) == list(

@@ -1,8 +1,8 @@
 """settlement 单元测试：番数公式、明细命名、四家结算与官方金例重放。
 
 输入沿用 tests/fixtures/official/v9/fan-calc/*.jsonl 的 61 例成胡金例，
-期望来自同请求的 v23 官方响应（2026-09-08 重新抓取）；旧原始响应
-保持不变。离线只读，不联网。重放口径：分支与豪华组数取自当前官方
+期望来自同请求最新封存官方响应（v35精确请求优先，否则v23历史事实）；旧原始响应
+保持不变。离线只读，不联网。重放口径：分支、已支付爆头与豪华组数取自官方
 期望 detail[0]，手留白板数由手牌机械计数，链参数取自请求——
 因此本测试只验证番数公式/命名/结算层，不复制通用牌型分解（hand_analysis
 的职责）。分解层金例由规则主 Agent 的集成对拍覆盖。
@@ -101,6 +101,7 @@ def _split_from_golden(request: dict, response: dict) -> WinSplit:
         whites_held=whites.count("白"),
         any_tile_tenpai=response["baotou"],
         evidence=(),
+        seven_pairs_baotou=("爆头" in response["detail"]) if branch == "七对" else None,
     )
 
 
@@ -109,7 +110,7 @@ _GOLDEN_PARAMS = _golden_params()
 
 @pytest.mark.parametrize("tag,req,response", _GOLDEN_PARAMS, ids=[p[0] for p in _GOLDEN_PARAMS])
 def test_golden_fan_details_and_scores(tag, req, response):
-    """当前官方金例重放：总番、明细命名与庄/闲两种结算场景逐字一致。"""
+    """封存金例的公式重放；已付资格来自回执，不充当当前物理手牌资格测试。"""
 
     chain = req.get("chain") or {"count": 0, "piao": 0}
     base = req.get("base", 1)
@@ -278,14 +279,14 @@ class TestGlobalMaxFan:
     """
 
     def test_max_fan_512(self):
-        win = WinSplit("七对", 3, 1, True, ())
+        win = WinSplit("七对", 3, 1, True, (), seven_pairs_baotou=True)
         result = compute_fan(win, 3, 3, True)
         assert list(result.details) == ["豪华七对×3", "三财飘", "4个白板", "爆头"]
         assert result.fan == 512
         assert settle_scores(512, 1, 0, 0) == (12288, -4096, -4096, -4096)
 
     def test_max_fan_non_dealer(self):
-        win = WinSplit("七对", 3, 1, True, ())
+        win = WinSplit("七对", 3, 1, True, (), seven_pairs_baotou=True)
         result = compute_fan(win, 3, 3, True)
         assert result.fan == 512
         # 闲家胡：庄家付 4096，另外两个闲家各付 512，胜者共得 5120（官方 fan-calc 实测）
@@ -470,7 +471,7 @@ class TestSettleWin:
     """便捷入口组装 Settlement：只组装、不改变两个核心函数的语义。"""
 
     def test_wires_fan_details_and_delta(self):
-        win = WinSplit("七对", 0, 1, True, ())
+        win = WinSplit("七对", 0, 1, True, (), seven_pairs_baotou=True)
         result = settle_win(win, 0, 0, True, base_score=2, winner_seat=3, dealer_seat=1)
         assert isinstance(result, Settlement)
         assert result.fan == 4

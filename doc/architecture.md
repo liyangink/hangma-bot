@@ -6,11 +6,13 @@
 
 准备工具不报名、不到位、不装配策略或计算服务。之后仍通过冻结的 `run_participant.py`、`bootstrap.py` 进入完整生命周期；四身份测试房仍由 `run_test_room.py` 启动隔离进程。本次未改变运行源码或发布包摘要绑定，现有外部端口不变。操作见[参赛说明](participate-quickstart.md)。
 
-## 2026-10-07 T199：P0分支支付资格，隔离验收中
+## 2026-10-07 T199：P0分支支付资格已上线
 
-**规则修复已在隔离根实现，尚未替换线上S03-E2。** 全局爆头状态和合法胡门保持；七对支付额外消费本人准确摸前13张，由`hand_analysis.qualify_seven_pairs_baotou`产生内部资格，再交唯一`settlement.settle_win`计付。当前胡、条件下一摸、模拟推进和赛后核算共用，不在策略或适配器另算番数。最终14张分解缓存不存某次摸入牌的资格。
+**规则修复已整合main，T110-S03-P0已自然接入自由赛并通过首房工程门。** 全局爆头状态和合法胡门保持；七对支付额外消费本人准确摸前13张，由`hand_analysis.qualify_seven_pairs_baotou`产生内部资格，再交唯一`settlement.settle_win`计付。当前胡、条件下一摸、模拟推进和赛后核算共用，不在策略或适配器另算番数。最终14张分解缓存不存某次摸入牌的资格。
 
-外部端口及观察字段不增加；内部`WinSplit`增加可空支付资格，缺准确前驱时显式失败，不猜加番。S03公式、原截止及十桌专属计算保持。新发布入口采用独立冻结运行根、根外共用owner／postprocess锁，当前玩家和旧后台保持旧根；完整桌影响、性能与自然切换尚待验收。依据和状态见[T199执行记录](../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/README.md)，下文为历史上线快照。
+外部端口及观察字段不增加；内部`WinSplit`增加可空支付资格，缺准确前驱时显式失败，不猜加番。S03公式、原截止及十桌专属计算保持。发布入口使用独立冻结运行根和根外共用owner／postprocess锁；旧房与旧统计自然闭合后接棒，没有终止玩家。首房10桌R8的及时合法／关键审计／计算故障和资源门通过，第二房自动续；不授十桌全部完整评分或新增策略增强。
+
+main四模式包的默认装配、作用域及拒启动检查通过。main包与live包只因组合根文字修正而摘要不同，38核心、公式、参数及native执行身份相同；现行自由赛继续绑定原live冻结根，不热换为main包。实际入口与两份身份见[T199执行记录](../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/README.md)和[main装配](../review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/main-integration/MAIN-FOUR-MODE-CLOSED.json)，下文为历史上线快照。
 
 ## 2026-10-06 T194：T110-S03-E2审计工程后继
 

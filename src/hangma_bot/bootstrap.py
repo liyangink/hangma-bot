@@ -184,7 +184,17 @@ VIP_S03_PACKAGE_SCOPES = {
     VIP_S03_TEST_TOURNAMENT_STRATEGY: ("test_tournament", "test_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-test-tournament-v3/manifest.json"),
     VIP_S03_OFFICIAL_TOURNAMENT_STRATEGY: ("official_tournament", "official_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-official-tournament-v3/manifest.json"),
 }
-VIP_S03_COMPILED_DIRECTORY = "prebuilt/vip-s03-compiled-formula-v1"
+VIP_S03_PARENT_IDENTITY = VIP_S03_IDENTITY
+from hangma_bot.policy.vip_s03_rulefix_p0_identity import VIP_S03_RULEFIX_P0_IDENTITY
+VIP_S03_IDENTITY = VIP_S03_RULEFIX_P0_IDENTITY
+VIP_S03_COMPILED_DIRECTORY = "prebuilt/vip-s03-rulefix-p0-compiled-v1"
+VIP_S03_RULEFIX_P0_PACKAGE_SCOPES = {
+    "vip_s03_rulefix_p0_testroom_v1": ("test_room", "correctness_fix_testroom_only", "prebuilt/vip-s03-rulefix-p0-testroom-approved-v1/manifest.json"),
+    "vip_s03_rulefix_p0_free_v1": ("auto_match", "correctness_fix_free_only", "prebuilt/vip-s03-rulefix-p0-free-approved-v1/manifest.json"),
+    "vip_s03_rulefix_p0_test_tournament_v1": ("test_tournament", "correctness_fix_test_tournament_only", "prebuilt/vip-s03-rulefix-p0-test-tournament-approved-v1/manifest.json"),
+    "vip_s03_rulefix_p0_official_tournament_v1": ("official_tournament", "correctness_fix_official_tournament_only", "prebuilt/vip-s03-rulefix-p0-official-tournament-approved-v1/manifest.json"),
+}
+VIP_S03_PACKAGE_SCOPES.update(VIP_S03_RULEFIX_P0_PACKAGE_SCOPES)
 _VIP_S03_NATIVE_CACHE = None
 VIP_S02_BACKUP_PACKAGE_SCOPES = {
     "vip_s02_bounded_d1_testroom_v11": ("test_room", "engineering_test_room_only", "prebuilt/vip-s02-bounded-d1-testroom-v11/manifest.json"),
@@ -331,7 +341,7 @@ def _verify_vip_s03_runtime(expected_manifest_sha256: str | None = None) -> tupl
     manifest = json.loads(raw)
     required = {"schema", "identity", "module", "files", "shared_original_helpers",
         "original_execution_id", "python_implementation", "python_cache_tag", "platform", "machine", "ext_suffix"}
-    name = "_t191_candidate_" + VIP_S03_IDENTITY["candidate_id"][:12]
+    name = "_t199_p0_candidate_" + VIP_S03_IDENTITY["candidate_id"][:12]
     names = {"source.py", name + ".pyx", "_s02_meter.pxd", name + ".c",
         name + sysconfig.get_config_var("EXT_SUFFIX"), "BUILD-PLAN.json", "BUILD-CLOSED.json"}
     if (type(manifest) is not dict or set(manifest) != required
@@ -462,6 +472,131 @@ def _load_vip_s03_manifest(strategy: str, expected_id: str | None = None) -> dic
     return payload
 
 
+
+def _verify_vip_s03_rulefix_p0_qualification() -> tuple[bool, dict]:
+    """核当前正确规则世界的真实离线收据；缺最终批准仍只能离线验装。"""
+    directory = _REPO_ROOT / "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/release"
+    rules = json.loads((directory / "RULES-QUALIFICATION-CLOSED.json").read_text())
+    runtime = json.loads((directory / "ENGINEERING-CLOSED.json").read_text())
+    impact = json.loads((directory / "IMPACT-CLOSED.json").read_text())
+    approval = json.loads((directory / "P0-PUBLISH-APPROVAL.json").read_text())
+    compiled = _verify_vip_s03_runtime()[0]
+    for proof in (rules, runtime, impact):
+        if (proof.get("complete") is not True or proof.get("candidate_identity") != VIP_S03_IDENTITY
+                or proof.get("rules_source_hash") != compute_rules_hash(_REPO_ROOT)):
+            raise RuntimeError("P0适用离线门身份不符或未闭合")
+    if (runtime.get("runtime_passed_for_covered_legal_deadline_and_fault_recovery") is not True
+            or runtime.get("corrected_fallback_passed_for_covered_faults") is not True
+            or runtime.get("native", {}).get("execution_id") != compiled["manifest"]["original_execution_id"]
+            or runtime.get("full_ten_scoring_admitted") is not False):
+        raise RuntimeError("P0及时合法与故障保底门未闭合或范围被扩大")
+    if (impact.get("compiled_runtime") != compiled or impact.get("natural_complete_table_instances") != 32
+            or impact.get("natural_complete_hands") != 256 or impact.get("source_and_map_stable") is not True
+            or impact.get("all_four_resource_slots_released") is not True
+            or any(type(n) is not int or n != 0 for n in impact.get("runtime_counts", {}).values())
+            or set(impact.get("runtime_counts", {})) != {"timeouts", "illegal_choices", "fallbacks", "auto_actions", "audit_missing"}
+            or impact.get("all_true_degradation_reasons") != []):
+        raise RuntimeError("P0正确世界32完整桌及可靠性门未闭合")
+    required = {"rules_passed": "RULES-QUALIFICATION-CLOSED.json", "runtime_passed": "ENGINEERING-CLOSED.json",
+        "corrected_fallback_passed": "ENGINEERING-CLOSED.json", "full_table_impact_passed": "IMPACT-CLOSED.json"}
+    receipts = {}
+    for key, name in required.items():
+        path = directory / name
+        raw = path.read_bytes()
+        receipts[key] = {"path": str(path.relative_to(_REPO_ROOT)),
+            "pin": {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}}
+    if (approval.get("schema") != "t199-p0-publish-approval/1" or type(approval.get("complete")) is not bool
+            or approval.get("candidate_identity") != VIP_S03_IDENTITY or approval.get("compiled_runtime") != compiled
+            or approval.get("rules_source_hash") != compute_rules_hash(_REPO_ROOT)
+            or approval.get("correctness_fix") is not True or approval.get("strength_admission") is not False
+            or approval.get("approved_modes") != ["test_room", "auto_match", "test_tournament", "official_tournament"]
+            or approval.get("receipts") != receipts):
+        raise RuntimeError("P0最终批准内容或原件绑定不符")
+    approved = approval["complete"]
+    if approved and (type(approval.get("reviewer")) is not str or not approval["reviewer"].strip()):
+        raise RuntimeError("P0最终批准缺审阅人")
+    return approved, {"release_kind": "P0", **{key: True for key in required}, "receipts": receipts,
+        "final_approval_passed": approved, "strength_confirmation_required": False}
+
+
+def build_vip_s03_rulefix_p0_manifest(strategy: str, evidence_sha256: Mapping[str, str]) -> dict:
+    """P0正确性修复包：核实际离线门与最终批准；不继承旧错误世界的增强证明。"""
+    if strategy not in VIP_S03_RULEFIX_P0_PACKAGE_SCOPES:
+        raise ValueError("未知P0作用域")
+    needed = {
+        "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/P0-FROZEN.json",
+        "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/NATIVE-MECHANICAL-CLOSED.json",
+        "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/current-official/cases.jsonl",
+        "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/current-official/manifest.json",
+        "doc/P0-RULE-CONTRACT-DRAFT.md",
+        "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/release/RULES-QUALIFICATION-CLOSED.json",
+        "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/release/ENGINEERING-CLOSED.json",
+        "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/release/IMPACT-CLOSED.json",
+        "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/release/P0-PUBLISH-APPROVAL.json",
+    }
+    if set(evidence_sha256) != needed:
+        raise ValueError("P0缺冻结规则、实际编译机械核验、当前官方原件或契约")
+    _verify_vip_evidence(evidence_sha256)
+    proof = json.loads((_REPO_ROOT / "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/NATIVE-MECHANICAL-CLOSED.json").read_text())
+    if (proof.get("complete") is not True or proof.get("candidate_identity") != VIP_S03_IDENTITY
+            or proof.get("native_reference_outputs_equal") is not True
+            or proof.get("new_tables") != 0 or proof.get("HTTP_calls") != 0
+            or proof.get("LLM_calls") != 0):
+        raise RuntimeError("P0实际编译机械证明未闭合；不接受旧T191增强证据替代")
+    params = _vip_params()
+    accepted = VIP_S03_IDENTITY["params"]
+    if (any(params[k] != accepted[k] for k in
+            ("rule_config", "route_limits", "projection_limits", "max_operations"))
+            or accepted["max_local_collection_size"] != 8192):
+        raise RuntimeError("P0运行参数漂移")
+    math = hand_math_runtime_metadata()
+    expected_math = VIP_S03_IDENTITY["math_backend"]
+    if (math != {"implementation": expected_math["implementation"],
+            "semantics_version": expected_math["semantics_version"],
+            "fallback_reason": expected_math["fallback_reason"],
+            "native_sha256": expected_math["native_binary"]["sha256"]}):
+        raise RuntimeError("P0数学后端身份漂移")
+    approved, qualification = _verify_vip_s03_rulefix_p0_qualification()
+    from hangma_bot.adapters.official.dto import KNOWN_GUIDE_VERSION
+    mode, admission, _ = VIP_S03_RULEFIX_P0_PACKAGE_SCOPES[strategy]
+    payload = {"schema": "vip-s03-rulefix-p0-release/2", "display": "T110-S03-P0",
+        "strategy": strategy, "allowed_modes": [mode], "known_guide_version": KNOWN_GUIDE_VERSION,
+        "params": params, "base_candidate_id": VIP_S02_BASE_CANDIDATE_ID,
+        "candidate_identity": VIP_S03_IDENTITY, "source_sha256": VIP_S03_IDENTITY["source_sha256"],
+        "rules_source_hash": compute_rules_hash(_REPO_ROOT), "source_manifest": _vip_runtime_sources(),
+        "hand_math": math, "compiled_runtime": _verify_vip_s03_runtime()[0],
+        "evidence_sha256": dict(evidence_sha256), "admission": admission,
+        "correctness_fix": True, "release_status": "approved" if approved else "draft", "startup_admitted": approved,
+        "qualification": qualification,
+        "strength_admission": False, "strength_scope": "no-new-net-enhancement-claim",
+        "full_table_impact_admitted": True, "original_deadline_admitted": True,
+        "original_deadline_scope": "及时合法提交含显式保底；不授十窗完整评分",
+        "full_ten_scoring_admitted": False, "real_HTTP_submissions_verified": False,
+        "production_default": False, "llm_online": False,
+        "formula_lineage": {"parent_display": "T110-S03-E2", "parent_identity": VIP_S03_PARENT_IDENTITY,
+            "historical_strength_evidence": VIP_S03_REQUIRED_EVIDENCE_SHA256,
+            "inherits_strength_admission": False, "inherits_original_deadline_admission": False}}
+    payload["release_package_id"] = _vip_package_id(payload)
+    return payload
+
+
+def _load_vip_s03_rulefix_p0_manifest(strategy: str, expected_id: str | None = None,
+        *, offline_validation_only: bool = False) -> dict:
+    """核完整P0包；未批准默认拒绝，显式离线验装不授发布资格。"""
+    if strategy not in VIP_S03_RULEFIX_P0_PACKAGE_SCOPES:
+        raise ValueError("未知P0作用域")
+    payload = json.loads((_REPO_ROOT / VIP_S03_RULEFIX_P0_PACKAGE_SCOPES[strategy][2]).read_text())
+    actual = _vip_package_id(payload)
+    if payload.get("release_package_id") != actual or expected_id is not None and expected_id != actual:
+        raise ValueError("P0配置绑定的草稿包摘要不匹配")
+    expected = build_vip_s03_rulefix_p0_manifest(strategy, payload["evidence_sha256"])
+    if json.dumps(payload, sort_keys=True, allow_nan=False) != json.dumps(expected, sort_keys=True, allow_nan=False):
+        raise RuntimeError("P0源码、核心、批准资格、参数或编译绑定漂移")
+    if offline_validation_only is not True and payload["startup_admitted"] is not True:
+        raise RuntimeError("P0包仍是draft；最终发布批准未闭合，禁止启动")
+    return payload
+
+
 def _vip_runtime_sources() -> dict[str, str]:
     """在组合根冻结整个线上源码；不包含凭证、测试或历史研究工作区。"""
     root = _REPO_ROOT / "src/hangma_bot"
@@ -588,6 +723,8 @@ def _load_vip_free_manifest(expected_id: str | None = None) -> dict:
 
 def _load_vip_manifest(strategy: str, expected_id: str | None = None) -> dict:
     """校验真实字节、范围和后端；配置不能绕过白名单扩大准入。"""
+    if strategy in VIP_S03_RULEFIX_P0_PACKAGE_SCOPES:
+        return _load_vip_s03_rulefix_p0_manifest(strategy, expected_id)
     if strategy in VIP_S03_PACKAGE_SCOPES:
         return _load_vip_s03_manifest(strategy, expected_id)
     mode, admission, manifest_path = _vip_package_scope(strategy)

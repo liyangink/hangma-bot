@@ -20,7 +20,7 @@ from hangma_bot.hangma.interface import ValueAnalysisLimits, ValueCoverage
 from hangma_bot.kernel.actions import Chi, Discard, Gang, GangKind, Hu, Peng, Tile
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.observation import PublicDiscard
-from tests.unit.hangma.official_fan_tools import request_key
+from tests.unit.hangma.official_fan_tools import request_key, current_override
 from tests.unit.hangma.test_official_action_chain_trace import trace
 from tests.unit.hangma.test_youcai_integration import make_observation, meld
 
@@ -133,7 +133,7 @@ def test_conditional_value_matches_independent_official_response(binding):
     q = {"hand": list(cond.pre_draw_hand) + binding["padding"], "draw": binding["draw"],
          "chain": {"count": cond.chain_count, "piao": cond.chain_piao}, "base": 1}
     assert request_key(q) == request_key(ref["request"])
-    official = ref["response"]
+    official = current_override(q, ref["response"])
     assert official["hu"] and official["baotou"] == cond.baotou
     if binding["evidence_kind"] == "exact_input":
         assert cond.meld_count == 0 and binding["padding"] == []

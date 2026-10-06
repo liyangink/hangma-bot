@@ -408,6 +408,8 @@ class HangmaRules:
             self.config.base_score,
             win.winner_seat,
             observation.dealer_seat,
+            pre_draw_hand=_concealed_without_drawn(observation),
+            meld_set_count=meld_count,
         )
 
     # ------------------------------------------------------------------

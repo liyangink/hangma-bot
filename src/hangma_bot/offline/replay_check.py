@@ -785,8 +785,11 @@ def _verify_round_ended(
             issues.append(_issue(seq, "conflict.winner_hand_not_win",
                 "官方赢家手牌无法分解成胡牌"))
             return False, True
-        fan_result = settlement.compute_fan(
-            split, win_seat.chain_count, win_seat.chain_piao, win_seat.baotou
+        fan_result = settlement.settle_win(
+            split, win_seat.chain_count, win_seat.chain_piao, win_seat.baotou,
+            rules.config.base_score, winner, dealer,
+            pre_draw_hand=tuple(Tile(code) for code in win_seat.hand),
+            meld_set_count=len(win_seat.melds),
         )
         official_fan = data.get("fan")
         if isinstance(official_fan, int) and official_fan != fan_result.fan:
@@ -798,9 +801,7 @@ def _verify_round_ended(
                 issues.append(_issue(seq, "conflict.detail_mismatch",
                     "官方 detail={0} != 本地重算 detail={1}".format(
                         official_detail, list(fan_result.details))))
-        recomputed_delta = settlement.settle_scores(
-            fan_result.fan, rules.config.base_score, winner, dealer
-        )
+        recomputed_delta = fan_result.score_delta
         official_scores = data.get("scores")
         if isinstance(official_scores, list) and len(official_scores) == 4:
             if list(official_scores) != list(recomputed_delta):

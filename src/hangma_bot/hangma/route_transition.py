@@ -1194,7 +1194,8 @@ def analyze_given_self_draw(
             ), state.local_witness_only)
         immediate = settlement.settle_win(
             split, state.chain_count, state.chain_piao, state.baotou,
-            config.base_score, seat, dealer_seat)
+            config.base_score, seat, dealer_seat,
+            pre_draw_hand=context.hand_tiles, meld_set_count=state.meld_count)
     return GivenDrawAnalysis(
         state, outcome.candidates, immediate, outcome.issues,
         state.local_witness_only)

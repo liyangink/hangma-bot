@@ -16,6 +16,7 @@ from hangma_bot.hangma.interface import ValueAnalysisLimits, ValueCoverage, WinD
 from hangma_bot.kernel.actions import CANONICAL_TILE_ORDER, Tile
 from hangma_bot.kernel.config import RuleConfig
 from hangma_bot.kernel.observation import PlayerObservation, PublicDiscard, PublicMeld, RulePublicState
+from tests.unit.hangma.official_fan_tools import current_response
 
 
 _ROOT = Path(__file__).resolve().parents[2] / "fixtures/official/v23/fan-calc"
@@ -84,7 +85,8 @@ def _by_draw(facts, followup=None):
 @pytest.mark.parametrize("row", _OFFICIAL, ids=lambda row: row["tags"][0])
 def test_conditional_pass_matches_every_current_official_fan_input(row):
     """652 个 v23 200 响应覆盖一次摸牌分值及房间开关；无网络、无旧版本回退。"""
-    request, expected = row["request"], row["response"]
+    request = row["request"]
+    expected = current_response(request)
     hand, draw = request["hand"], request["draw"]
     claim = next(code for code in CANONICAL_TILE_ORDER if code not in hand and code != draw and code != "白")
     chain = request.get("chain", {"count": 0, "piao": 0})

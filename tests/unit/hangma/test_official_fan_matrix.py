@@ -17,7 +17,7 @@ from hangma_bot.hangma.progression import baotou_after_draw
 from hangma_bot.kernel.actions import Hu, Tile
 from hangma_bot.kernel.config import RuleConfig
 from tests.unit.hangma.test_youcai_integration import make_observation
-from tests.unit.hangma.official_fan_tools import FIXTURE_DIR, request_key
+from tests.unit.hangma.official_fan_tools import FIXTURE_DIR, request_key, current_response
 
 FIXTURES=FIXTURE_DIR
 ROWS=[json.loads(line) for line in (FIXTURES/'cases.jsonl').read_text().splitlines()]
@@ -53,7 +53,7 @@ def test_previous_matrix_inputs_remain_covered():
 
 @pytest.mark.parametrize('row',VALID,ids=[r['tags'][0] for r in VALID])
 def test_shape_baotou_fan_details_scores_and_both_room_configs(row):
-    q=row['request'];official=row['response'];hand=tuple(Tile(t) for t in q['hand']);draw=Tile(q['draw'])
+    q=row['request'];official=current_response(q);hand=tuple(Tile(t) for t in q['hand']);draw=Tile(q['draw'])
     split=win_split(hand+(draw,),0)
     assert (split is not None)==official['hu']
     baotou=baotou_after_draw(False,hand,0,draw,replacement=False)
