@@ -44,7 +44,7 @@ from typing import IO, Callable, NamedTuple
 
 from hangma_bot.adapters.recording.chain_piao import normalize_decision_input_payload
 from hangma_bot.adapters.recording.raw_events import is_new_shape_raw_payload
-from hangma_bot.adapters.recording.redact import redact_json_line, redact_value
+from hangma_bot.adapters.recording.redact import redact_json_line, redact_value, redact_record_line
 from hangma_bot.adapters.recording.schema import (
     AUDIT_SCHEMA_VERSION,
     RUN_MANIFEST_PATH,
@@ -225,9 +225,15 @@ class JsonlAuditSink:
             "context": dataclasses.asdict(record.context),
             "wall_time_unix_ms": record.wall_time_unix_ms,
             "monotonic_ns": record.monotonic_ns,
-            "payload": redact_value(dict(payload)),
+            "payload": dict(payload),
         }
-        line = redact_json_line(json.dumps(envelope, ensure_ascii=False, allow_nan=False))
+        # 行级兜底本来会再次解析并脱敏整个信封。标准JSON形态直接共享
+        # 同一保护／兜底编码；非字符串键或坏JSON等保持旧路径与失败语义。
+        line = redact_record_line(envelope)
+        if line is None:
+            envelope["payload"] = redact_value(dict(payload))
+            line = redact_json_line(json.dumps(envelope, ensure_ascii=False, allow_nan=False))
+
         pending = _PendingRecord(
             path=path,
             line=line,

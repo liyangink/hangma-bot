@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import re
 import json
+import math
 from typing import Any
 
 # 脱敏后统一写入的占位标记；本身不包含任何触发形态，可安全重复扫描。
@@ -76,12 +77,23 @@ def _redact_string_weak(text: str) -> str:
     return text
 
 
-def _redact_value(value: Any, path: tuple[str, ...]) -> Any:
+class _LegacyAuditShape(Exception):
+    """快速路径遇非原生形态立即回旧路径，不能先消费自定义容器再重复消费。"""
+
+
+def _redact_value(value: Any, path: tuple[str, ...], canonical: bool = False) -> Any:
     """携带结构路径执行脱敏；发布包摘要只在受控清单子树内豁免。"""
 
+    if canonical:
+        if type(value) not in (dict, list, tuple, str, int, float, bool, type(None)):
+            raise _LegacyAuditShape
+        elif type(value) is float and not math.isfinite(value):
+            raise _LegacyAuditShape
     if isinstance(value, dict):
         result: dict[Any, Any] = {}
         for key, item in value.items():
+            if canonical and type(key) is not str:
+                raise _LegacyAuditShape
             key_path = path + ((key,) if isinstance(key, str) else ())
             if isinstance(key, str) and _SENSITIVE_KEY_RE.search(key):
                 result[key] = REDACTED
@@ -95,10 +107,10 @@ def _redact_value(value: Any, path: tuple[str, ...]) -> Any:
                 # policy_release 由组合根生成；严格 SHA-256 是审计身份而非凭证。
                 result[key] = item
             else:
-                result[key] = _redact_value(item, key_path)
+                result[key] = _redact_value(item, key_path, canonical)
         return result
     if isinstance(value, (list, tuple)):
-        return [_redact_value(item, path) for item in value]
+        return [_redact_value(item, path, canonical) for item in value]
     if isinstance(value, str):
         return _redact_string(value)
     return value
@@ -122,6 +134,45 @@ _ENDPOINT_VALUE_RE = re.compile(r'"endpoint"\s*:\s*"((?:[^"\\]|\\.)*)"')
 _ENDPOINT_SENTINEL = "\u0000{0}\u0000"
 
 
+def _redact_document_json(document: Any) -> str:
+    """复用原结构保护和行级兜底；只省略已结构化输入的首次JSON往返。"""
+
+    masked: list[str] = []
+
+    def _protect(value: Any, path: tuple[str, ...]) -> Any:
+        if isinstance(value, dict):
+            return {
+                key: _protect(item, path + ((key,) if isinstance(key, str) else ()))
+                for key, item in value.items()
+            }
+        if isinstance(value, list):
+            return [_protect(item, path) for item in value]
+        if isinstance(value, str) and (
+            (path and path[-1] == ENDPOINT_KEY)
+            or (POLICY_RELEASE_KEY in path and _SHA256_RE.fullmatch(value))
+        ):
+            marker = "[AUDIT-PROTECTED-{0}]".format(len(masked))
+            masked.append(value)
+            return marker
+        return value
+
+    def _restore(value: Any) -> Any:
+        if isinstance(value, dict):
+            return {key: _restore(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [_restore(item) for item in value]
+        if isinstance(value, str):
+            match = re.fullmatch(r"\[AUDIT-PROTECTED-(\d+)\]", value)
+            if match and int(match.group(1)) < len(masked):
+                return masked[int(match.group(1))]
+        return value
+
+    protected = json.dumps(_protect(document, ()), ensure_ascii=False, allow_nan=False)
+    scanned = _redact_string(protected)
+    restored = _restore(json.loads(scanned))
+    return json.dumps(restored, ensure_ascii=False, allow_nan=False)
+
+
 def redact_json_line(line: str) -> str:
     """对序列化后的 JSON 行做最后一道形态扫描（纵深防御的兜底层）。
 
@@ -139,40 +190,7 @@ def redact_json_line(line: str) -> str:
         document = None
 
     if document is not None:
-        masked: list[str] = []
-
-        def _protect(value: Any, path: tuple[str, ...]) -> Any:
-            if isinstance(value, dict):
-                return {
-                    key: _protect(item, path + ((key,) if isinstance(key, str) else ()))
-                    for key, item in value.items()
-                }
-            if isinstance(value, list):
-                return [_protect(item, path) for item in value]
-            if isinstance(value, str) and (
-                (path and path[-1] == ENDPOINT_KEY)
-                or (POLICY_RELEASE_KEY in path and _SHA256_RE.fullmatch(value))
-            ):
-                marker = "[AUDIT-PROTECTED-{0}]".format(len(masked))
-                masked.append(value)
-                return marker
-            return value
-
-        def _restore(value: Any) -> Any:
-            if isinstance(value, dict):
-                return {key: _restore(item) for key, item in value.items()}
-            if isinstance(value, list):
-                return [_restore(item) for item in value]
-            if isinstance(value, str):
-                match = re.fullmatch(r"\[AUDIT-PROTECTED-(\d+)\]", value)
-                if match and int(match.group(1)) < len(masked):
-                    return masked[int(match.group(1))]
-            return value
-
-        protected = json.dumps(_protect(document, ()), ensure_ascii=False, allow_nan=False)
-        scanned = _redact_string(protected)
-        restored = _restore(json.loads(scanned))
-        return json.dumps(restored, ensure_ascii=False, allow_nan=False)
+        return _redact_document_json(document)
 
     masked: list[str] = []
 
@@ -188,6 +206,30 @@ def redact_json_line(line: str) -> str:
             '"endpoint": "' + value + '"',
         )
     return scanned
+
+
+def redact_record_line(envelope: dict[str, Any]) -> str | None:
+    """同步编码已结构化审计信封；非标准JSON形态返回None走原路径。
+
+    只允许普通字符串键和原生JSON值；tuple由原脱敏器变list。敏感键下
+    的非JSON对象仍整值掩码，不遍历秘密。外部时间和context必须是平面
+    JSON标量，以免在第一次编码前改变旧路径对坏context的失败语义。
+    返回前已有不可变、完整脱敏字符串；不改输入、不排队或写盘。
+    """
+
+    context = envelope.get("context")
+    if type(context) is not dict or any(type(v) not in (str, int, float, bool, type(None))
+                                      or (type(v) is float and not math.isfinite(v))
+                                      for v in context.values()):
+        return None
+    if any(type(envelope.get(k)) is not int for k in
+           ("schema_version", "wall_time_unix_ms", "monotonic_ns")):
+        return None
+    try:
+        document = _redact_value(envelope, (), canonical=True)
+    except _LegacyAuditShape:
+        return None
+    return _redact_document_json(document)
 
 
 def is_sensitive_key(key: str) -> bool:

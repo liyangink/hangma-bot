@@ -142,14 +142,14 @@ VIP_S02_TESTROOM_STRATEGY = "vip_s02_bounded_d1_testroom_v8"
 VIP_S02_TESTROOM_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v8/manifest.json"
 VIP_S02_FREE_STRATEGY = "vip_s02_bounded_d1_free_v6"
 VIP_S02_FREE_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v6/manifest.json"
-VIP_S02_TESTROOM_SUCCESSOR_STRATEGY = "vip_s02_bounded_d1_testroom_v9"
-VIP_S02_TESTROOM_SUCCESSOR_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v9/manifest.json"
-VIP_S02_FREE_SUCCESSOR_STRATEGY = "vip_s02_bounded_d1_free_v7"
-VIP_S02_FREE_SUCCESSOR_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v7/manifest.json"
-VIP_S02_TEST_TOURNAMENT_STRATEGY = "vip_s02_bounded_d1_test_tournament_v1"
-VIP_S02_TEST_TOURNAMENT_MANIFEST = "prebuilt/vip-s02-bounded-d1-test-tournament-v1/manifest.json"
-VIP_S02_OFFICIAL_TOURNAMENT_STRATEGY = "vip_s02_bounded_d1_official_tournament_v1"
-VIP_S02_OFFICIAL_TOURNAMENT_MANIFEST = "prebuilt/vip-s02-bounded-d1-official-tournament-v1/manifest.json"
+VIP_S02_TESTROOM_SUCCESSOR_STRATEGY = "vip_s02_bounded_d1_testroom_v12"
+VIP_S02_TESTROOM_SUCCESSOR_MANIFEST = "prebuilt/vip-s02-bounded-d1-testroom-v12/manifest.json"
+VIP_S02_FREE_SUCCESSOR_STRATEGY = "vip_s02_bounded_d1_free_v10"
+VIP_S02_FREE_SUCCESSOR_MANIFEST = "prebuilt/vip-s02-bounded-d1-free-v10/manifest.json"
+VIP_S02_TEST_TOURNAMENT_STRATEGY = "vip_s02_bounded_d1_test_tournament_v4"
+VIP_S02_TEST_TOURNAMENT_MANIFEST = "prebuilt/vip-s02-bounded-d1-test-tournament-v4/manifest.json"
+VIP_S02_OFFICIAL_TOURNAMENT_STRATEGY = "vip_s02_bounded_d1_official_tournament_v4"
+VIP_S02_OFFICIAL_TOURNAMENT_MANIFEST = "prebuilt/vip-s02-bounded-d1-official-tournament-v4/manifest.json"
 R18_CURRENT_TESTROOM_MANIFEST = "prebuilt/r18-v2-current-rules-testroom-20261004/manifest.json"
 VIP_S02_PARTICIPANT_STRATEGIES = (VIP_S02_TESTROOM_STRATEGY, VIP_S02_TESTROOM_SUCCESSOR_STRATEGY,
     VIP_S02_TEST_TOURNAMENT_STRATEGY, VIP_S02_OFFICIAL_TOURNAMENT_STRATEGY)
@@ -165,20 +165,36 @@ _VIP_S02_NATIVE_CACHE = None  # 只由组合根启动期装入，保存实际验
 
 
 
-# S03四个固定模式；S02备用另冻结，不覆盖旧包或公式。
-VIP_S03_TESTROOM_STRATEGY = "vip_s03_bounded_d1_testroom_v1"
-VIP_S03_FREE_STRATEGY = "vip_s03_bounded_d1_free_v1"
-VIP_S03_TEST_TOURNAMENT_STRATEGY = "vip_s03_bounded_d1_test_tournament_v1"
-VIP_S03_OFFICIAL_TOURNAMENT_STRATEGY = "vip_s03_bounded_d1_official_tournament_v1"
+# T110-S03-E2只绑定工程后继，不改已确认公式；旧八包保持原件与来源拒绝。
+VIP_S03_TESTROOM_STRATEGY = "vip_s03_bounded_d1_testroom_v3"
+VIP_S03_FREE_STRATEGY = "vip_s03_bounded_d1_free_v3"
+VIP_S03_TEST_TOURNAMENT_STRATEGY = "vip_s03_bounded_d1_test_tournament_v3"
+VIP_S03_OFFICIAL_TOURNAMENT_STRATEGY = "vip_s03_bounded_d1_official_tournament_v3"
 VIP_S03_PACKAGE_SCOPES = {
-    VIP_S03_TESTROOM_STRATEGY: ("test_room", "engineering_test_room_only", "prebuilt/vip-s03-bounded-d1-testroom-v1/manifest.json"),
-    VIP_S03_FREE_STRATEGY: ("auto_match", "experimental_free_match_only", "prebuilt/vip-s03-bounded-d1-free-v1/manifest.json"),
-    VIP_S03_TEST_TOURNAMENT_STRATEGY: ("test_tournament", "test_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-test-tournament-v1/manifest.json"),
-    VIP_S03_OFFICIAL_TOURNAMENT_STRATEGY: ("official_tournament", "official_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-official-tournament-v1/manifest.json"),
+    'vip_s03_bounded_d1_testroom_v2': ("test_room", "engineering_test_room_only", "prebuilt/vip-s03-bounded-d1-testroom-v2/manifest.json"),
+    'vip_s03_bounded_d1_free_v2': ("auto_match", "experimental_free_match_only", "prebuilt/vip-s03-bounded-d1-free-v2/manifest.json"),
+    'vip_s03_bounded_d1_test_tournament_v2': ("test_tournament", "test_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-test-tournament-v2/manifest.json"),
+    'vip_s03_bounded_d1_official_tournament_v2': ("official_tournament", "official_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-official-tournament-v2/manifest.json"),
+    "vip_s03_bounded_d1_testroom_v1": ("test_room", "engineering_test_room_only", "prebuilt/vip-s03-bounded-d1-testroom-v1/manifest.json"),
+    "vip_s03_bounded_d1_free_v1": ("auto_match", "experimental_free_match_only", "prebuilt/vip-s03-bounded-d1-free-v1/manifest.json"),
+    "vip_s03_bounded_d1_test_tournament_v1": ("test_tournament", "test_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-test-tournament-v1/manifest.json"),
+    "vip_s03_bounded_d1_official_tournament_v1": ("official_tournament", "official_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-official-tournament-v1/manifest.json"),
+    VIP_S03_TESTROOM_STRATEGY: ("test_room", "engineering_test_room_only", "prebuilt/vip-s03-bounded-d1-testroom-v3/manifest.json"),
+    VIP_S03_FREE_STRATEGY: ("auto_match", "experimental_free_match_only", "prebuilt/vip-s03-bounded-d1-free-v3/manifest.json"),
+    VIP_S03_TEST_TOURNAMENT_STRATEGY: ("test_tournament", "test_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-test-tournament-v3/manifest.json"),
+    VIP_S03_OFFICIAL_TOURNAMENT_STRATEGY: ("official_tournament", "official_tournament_runtime_candidate_only", "prebuilt/vip-s03-bounded-d1-official-tournament-v3/manifest.json"),
 }
 VIP_S03_COMPILED_DIRECTORY = "prebuilt/vip-s03-compiled-formula-v1"
 _VIP_S03_NATIVE_CACHE = None
 VIP_S02_BACKUP_PACKAGE_SCOPES = {
+    "vip_s02_bounded_d1_testroom_v11": ("test_room", "engineering_test_room_only", "prebuilt/vip-s02-bounded-d1-testroom-v11/manifest.json"),
+    "vip_s02_bounded_d1_free_v9": ("auto_match", "experimental_free_match_only", "prebuilt/vip-s02-bounded-d1-free-v9/manifest.json"),
+    "vip_s02_bounded_d1_test_tournament_v3": ("test_tournament", "test_tournament_runtime_candidate_only", "prebuilt/vip-s02-bounded-d1-test-tournament-v3/manifest.json"),
+    "vip_s02_bounded_d1_official_tournament_v3": ("official_tournament", "official_tournament_runtime_candidate_only", "prebuilt/vip-s02-bounded-d1-official-tournament-v3/manifest.json"),
+    "vip_s02_bounded_d1_testroom_v9": ("test_room", "engineering_test_room_only", "prebuilt/vip-s02-bounded-d1-testroom-v9/manifest.json"),
+    "vip_s02_bounded_d1_free_v7": ("auto_match", "experimental_free_match_only", "prebuilt/vip-s02-bounded-d1-free-v7/manifest.json"),
+    "vip_s02_bounded_d1_test_tournament_v1": ("test_tournament", "test_tournament_runtime_candidate_only", "prebuilt/vip-s02-bounded-d1-test-tournament-v1/manifest.json"),
+    "vip_s02_bounded_d1_official_tournament_v1": ("official_tournament", "official_tournament_runtime_candidate_only", "prebuilt/vip-s02-bounded-d1-official-tournament-v1/manifest.json"),
     "vip_s02_bounded_d1_testroom_v10": ("test_room", "engineering_test_room_only", "prebuilt/vip-s02-bounded-d1-testroom-v10/manifest.json"),
     "vip_s02_bounded_d1_free_v8": ("auto_match", "experimental_free_match_only", "prebuilt/vip-s02-bounded-d1-free-v8/manifest.json"),
     "vip_s02_bounded_d1_test_tournament_v2": ("test_tournament", "test_tournament_runtime_candidate_only", "prebuilt/vip-s02-bounded-d1-test-tournament-v2/manifest.json"),
@@ -187,7 +203,7 @@ VIP_S02_BACKUP_PACKAGE_SCOPES = {
 VIP_S02_PARTICIPANT_STRATEGIES += tuple(k for k,v in VIP_S02_BACKUP_PACKAGE_SCOPES.items() if v[0] != 'auto_match')
 VIP_S02_AUTO_MATCH_STRATEGIES += tuple(k for k,v in VIP_S02_BACKUP_PACKAGE_SCOPES.items() if v[0] == 'auto_match')
 VIP_PARTICIPANT_STRATEGIES = (*VIP_S02_PARTICIPANT_STRATEGIES, *(k for k,v in VIP_S03_PACKAGE_SCOPES.items() if v[0] != 'auto_match'))
-VIP_AUTO_MATCH_STRATEGIES = (*VIP_S02_AUTO_MATCH_STRATEGIES, VIP_S03_FREE_STRATEGY)
+VIP_AUTO_MATCH_STRATEGIES = (*VIP_S02_AUTO_MATCH_STRATEGIES, *(k for k,v in VIP_S03_PACKAGE_SCOPES.items() if v[0] == 'auto_match'))
 VIP_NETWORK_STRATEGIES = (*VIP_PARTICIPANT_STRATEGIES, *VIP_AUTO_MATCH_STRATEGIES)
 VIP_TESTROOM_STRATEGIES = tuple(k for k in VIP_NETWORK_STRATEGIES if 'testroom' in k)
 

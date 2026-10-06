@@ -1,5 +1,21 @@
 # 第一阶段接口协议
 
+## 2026-10-06 T194：T110-S03-E2审计工程后继
+
+**E2只减少审计同步重复编码，不改变S03公式、38核心、D1、原截止、QPS或十桌专属计算。** S03四scope v3；S02备用testroom_v12/free_v10/两赛事v4。八包绑定同183完整来源，全部旧包逐字保留并在新来源下明确拒装。正式／测试赛事只验基础接线及生命周期，实际工程房和自然切换由总筹执行；未授strict/OPERABILITY通过。
+
+`JsonlAuditSink.emit`在返回前仍拥有新不可变字符串，结构快速编码复用原protect、最终字符串扫描、restore及JSON编码；敏感键下非JSON秘密先整值脱敏。非原生形态、typed键或坏context立即回旧路径，不能额外消费自定义容器。高优先级、队列容量、失败计数、后台写盘、关闭和快照所有权不变。公开`redact_json_line(str)`原语义保留；新增内部`redact_record_line(envelope)`同步返回完整字符串或None（需旧路径），不排队、不写盘、不修改输入。
+
+3对真实1.55MB记录实省46.562–60.500ms，中位52.250ms；20ms计时器仍迟，不能冒称原477ms完全解释或漏吃已修。初次自定义dict红例保留，公共E1对照26+5同字节、相关175pass/1历史缺夹具skip。证据及候选边界见[本轮工程交付](../../review/vip-route-2026-09-30/evidence/t194-xuanwu-income-gap-1/engineering/AUDIT-READOUT.md)。
+
+## 2026-10-06 T192：T110-S03-E1工程后继
+
+**E1只接入已复核的适配器可靠性修复，不改S03公式、确认CID或算法强度范围。** S03四模式分别为`vip_s03_bounded_d1_testroom_v2`、`vip_s03_bounded_d1_free_v2`、`vip_s03_bounded_d1_test_tournament_v2`、`vip_s03_bounded_d1_official_tournament_v2`；S02备用为testroom_v11、free_v9及两赛事v3。八包绑定同183件完整运行来源；旧八包保存并在新来源下明确拒装。38件S03核心、编译公式／共享助手、C数学、D1、原截止／QPS和10个每桌专属进程不改。
+
+`OfficialGameSession.aclose`只对尚未取消的本场owned任务发cancel，shield等待HTTP／SSE finally完成后才返回；重入不二次打断，调用者取消完成收尾后传播。永久不协作关闭并未被证明可回收。无兴趣响应单步只在新鲜snapshot-first、同单局／phase／弃牌周期、非本人下家、无抓打圈／保留墙／未决动作时暂缓一次GET；不推进last_seq、不猜timeout，原1.2秒探针与核验失败关闭过滤保持。下一未知帧照常读取。
+
+正式／测试赛事只验基础接线、配置绑定和生命周期，按用户2026-10-06[现行口径](../../review/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)执行；官方现场不是候选上线门。上线与真实必要测试房由总筹按已有授权在旧房自然边界接入，副本不启动网络玩家、迁移watchdog或触碰Token。旧S03实测与效果证据复用，不冒称新工程包已联网；两次真实worker故障仍未知。当前核验与模板见[工程后继交付](../../review/vip-route-2026-09-30/evidence/t192-targeted-followup-1/wiring/REPORT.md)。
+
 ## 2026-10-06 T191：S03编译公式和模式包
 
 **四个外部端口、`choose(DecisionRequest, DecisionBudget)`、每桌计算生命周期和原截止不变。** 组合根新增`build_vip_s03_manifest(strategy, evidence_sha256)`：消费固定模式枚举及公共证据相对路径到完整SHA映射，返回`vip-route-bounded-release/3`清单，无写盘、联网、编译或评分副作用。缺本次实际确认、等价、截止、重型或原件恢复证据，或来源、公式、数学、参数、ABI漂移时明确抛错。

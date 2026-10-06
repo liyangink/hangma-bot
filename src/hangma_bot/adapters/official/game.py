@@ -326,13 +326,35 @@ class OfficialGameSession:
         return self._closed
 
     async def aclose(self, reason: str) -> None:
-        """取消本场挂起轮询；不触碰同 Token 共享传输与其他场次。"""
+        """取消本场任务并等待HTTP／SSE审计收尾；不关闭共享传输或其他场。
 
-        self._seal_history("session_closed:" + reason)
-        self._closed = True
-        self._close_reason = reason
-        for task in list(self._active_tasks):
-            task.cancel()
+        监督器随后可以关闭审计记录器，因此不能只发cancel便返回。并发重入
+        不再次取消正在收尾的任务；调用者取消仍先完成本场收尾，再向外传播。
+        """
+
+        first_close = not self._closed
+        if first_close:
+            self._seal_history("session_closed:" + reason)
+            self._closed = True
+            self._close_reason = reason
+        current = asyncio.current_task()
+        tasks = [task for task in self._active_tasks if task is not current and not task.done()]
+        if first_close:
+            for task in tasks:
+                # next_item的外部取消可能已进入HTTP finally；再次cancel会
+                # 打断它的异步收尾。Future没有取消计数，已取消者由done排除。
+                if not getattr(task, "cancelling", lambda: 0)():
+                    task.cancel()
+        if tasks:
+            cleanup = asyncio.gather(*tasks, return_exceptions=True)
+            cancelled = False
+            while not cleanup.done():
+                try:
+                    await asyncio.shield(cleanup)
+                except asyncio.CancelledError:
+                    cancelled = True
+            if cancelled:
+                raise asyncio.CancelledError()
 
     # ---------- 轮询循环 ----------
 
@@ -914,6 +936,19 @@ class OfficialGameSession:
                         "consumed_seq": self._sync.last_seq,
                     }, trigger_seq=frame.seq)
                     continue
+                if self._sse_can_skip_uninteresting_response_step(frame.seq, base_seq):
+                    # 只暂缓紧跟已消费响应态的一步。下一未知帧必须读取，
+                    # 不能将水位+1的内容猜成timeout后连续跳过。
+                    self._sse_skipped_seq = frame.seq
+                    self._sse_phase_probe_at = asyncio.get_running_loop().time() + _SSE_PHASE_PROBE_SEC
+                    self._sse_skip_expectations.append(
+                        (frame.seq, frame.seq, "uninteresting_response_step", None))
+                    self._emit_audit(AuditKind.AUTHORITATIVE_STATE, {
+                        "sse_skip_reason": "uninteresting_response_single_step",
+                        "observed_seq": frame.seq,
+                        "consumed_seq": self._sync.last_seq,
+                    }, trigger_seq=frame.seq)
+                    continue
                 self._sse_own_discard_probe_at = None
                 self._sse_phase_probe_at = None
                 # 本帧未被任何跳过规则接受，将发一次权威快照。把**判定所依赖的
@@ -1155,6 +1190,38 @@ class OfficialGameSession:
                     and expected[0] == observed_seq and base_seq == self._sync.last_seq
                     and not self._gate.in_flight and self._gate.blocked_window is None)
 
+    def _sse_can_skip_uninteresting_response_step(self, observed_seq: int, base_seq: int) -> bool:
+        """无鸣牌兴趣响应期的一步不开放我方行动，下一步仍必须取态。
+
+        指南v35的响应动作是过／吃碰杠，鸣牌后的弃牌或补摸属于后续事件。
+        当前弃牌的保守兴趣为假，且下家不是我时，单步响应进度或他家鸣牌
+        都不需要我方新决策。只允许last_seq后的一个事件；跳帧、抓打圈、
+        牌墙保留区、窗口身份未知和未确认动作均保持取态。
+        """
+
+        snapshot = self._sync.snapshot
+        observation = self._sync.current_observation()
+        cycle = self._sync.response_cycle_key
+        return bool(self._sse_snapshot_first and self._sse_filter_active
+                    and snapshot is not None and observation is not None
+                    and snapshot.phase in ("response_peng", "response_chi")
+                    and snapshot.seq == self._sync.last_seq
+                    and observation.snapshot_seq == self._sync.last_seq
+                    and observation.phase == snapshot.phase
+                    and cycle is not None and cycle[0] == snapshot.round_no
+                    and observation.round_no == cycle[0]
+                    and observation.last_discard is not None
+                    and observation.last_discard.seat == cycle[3]
+                    and observation.last_discard.tile.code == cycle[2]
+                    and snapshot.turn == cycle[3]
+                    and (cycle[3] + 1) % 4 != snapshot.seat
+                    and not snapshot.god_catch_play and not observation.rule_state.catch_play
+                    and observation.remaining_tile_count is not None
+                    and observation.remaining_tile_count > WALL_RESERVE_TILES
+                    and not self._sync.claim_interest_for_cycle()
+                    and base_seq == self._sync.last_seq and observed_seq == base_seq + 1
+                    and not self._gate.in_flight and self._gate.blocked_window is None)
+
     def _sse_can_skip_peng_timeout(self, observed_seq: int, base_seq: int) -> bool:
         """仅在已消费的普通弃牌后识别一帧 +3，保留权威状态游标。
 
@@ -1272,7 +1339,14 @@ class OfficialGameSession:
         while self._sse_skip_expectations and self._sse_skip_expectations[0][1] <= through:
             first, last, kind, tile_code = self._sse_skip_expectations.popleft()
             observed = [events.get(seq) for seq in range(first, last + 1)]
-            if kind == "peng_timeout":
+            if kind == "uninteresting_response_step":
+                snapshot = self._sync.snapshot
+                event = observed[0]
+                valid = bool(event is not None and (
+                    event.type in ("pass", "timeout")
+                    or (event.type in ("peng", "gang", "chi", "tile_drawn")
+                        and snapshot is not None and event.seat != snapshot.seat)))
+            elif kind == "peng_timeout":
                 valid = all(event is not None and event.type == "timeout"
                             and event.response_window == "peng" for event in observed)
             elif kind == "chi_timeout_opponent_draw":
