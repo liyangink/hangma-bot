@@ -6,6 +6,7 @@ import json
 from contextlib import redirect_stdout
 from io import StringIO
 import threading
+import urllib.error
 import urllib.request
 
 from spectator.model import SpectatorRepository
@@ -53,3 +54,39 @@ def test_server_binds_loopback_and_serves_json(tmp_path):
         server.shutdown()
         server.server_close()
         thread.join(timeout=2)
+
+def test_server_serves_assets_and_rejects_traversal(tmp_path):
+    """只读素材目录可被同源页面引用，且拒绝路径穿越与白名单外后缀。"""
+
+    server = create_server(SpectatorRepository((tmp_path,)), 0)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        host, port = server.server_address[:2]
+        opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+        base = f"http://{host}:{port}"
+        with opener.open(f"{base}/assets/tiles/Man1.svg", timeout=2) as response:
+            body = response.read().decode("utf-8")
+            content_type = response.headers["Content-Type"]
+            cache_control = response.headers["Cache-Control"]
+        assert body.lstrip().startswith("<?xml") or body.lstrip().startswith("<svg")
+        assert content_type == "image/svg+xml"
+        # 素材是固定插画：允许浏览器缓存，牌桌重绘时不再重新拉取。
+        assert "max-age" in cache_control
+        for rejected in (
+            "/assets/../server.py",
+            "/assets/../../AGENTS.md",
+            "/assets/tiles/Man1.txt",
+            "/assets/tiles/missing.svg",
+        ):
+            try:
+                opener.open(f"{base}{rejected}", timeout=2)
+            except urllib.error.HTTPError as error:
+                assert error.code == 404
+            else:  # pragma: no cover - 放行即失败
+                raise AssertionError(f"不应放行 {rejected}")
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=2)
+

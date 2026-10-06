@@ -95,6 +95,67 @@ def _is_audit_run_manifest(path: Path) -> bool:
     return envelope is not None and envelope.get("schema_version") == 1 and envelope.get("kind") == "run_manifest"
 
 
+# 自由赛/赛事按批次写入各自的 audit_root；跟随父目录时按写入时间判断哪些批次仍在进行。
+_MAX_FOLLOWED_ROOTS = 2
+_LIVE_WINDOW_SECONDS = 1800.0
+_FOLLOW_RESCAN_SECONDS = 5.0
+_SESSION_RUNS_SUBPATHS = ("runs", os.path.join("audit", "runs"))
+
+
+def _newest_write_seconds(tree: Path) -> float | None:
+    """返回目录树内文件的最新修改时间（Unix 秒）；没有可读文件时为空。"""
+
+    newest: float | None = None
+    for base, _dirs, files in os.walk(tree):
+        for name in files:
+            try:
+                stamp = os.path.getmtime(os.path.join(base, name))
+            except OSError:
+                continue
+            if newest is None or stamp > newest:
+                newest = stamp
+    return newest
+
+
+def discover_live_audit_roots(
+    sessions_root: str | Path,
+    *,
+    window_seconds: float = _LIVE_WINDOW_SECONDS,
+    now_seconds: float | None = None,
+) -> tuple[Path, ...]:
+    """在赛事父目录下发现仍在写入的 audit_root，用于自动跟随换批。
+
+    每个自由赛批次都有自己的 audit_root（``<会话>/audit/runs``，旧布局为
+    ``<会话>/runs``）。活跃度只按 ``runs/`` 子树内最新一次写入判断：赛后
+    ``postgame/`` 仍在写不算活跃，否则刚结束的批次会被误显示为进行中。
+    结果按最新写入倒序，最多 ``_MAX_FOLLOWED_ROOTS`` 个，用于覆盖换批瞬间
+    「旧批次刚停、新批次刚开」的过渡。``now_seconds`` 供测试注入时钟。
+    """
+
+    root = Path(sessions_root).expanduser()
+    try:
+        root = root.resolve(strict=False)
+    except OSError:
+        return ()
+    if not root.is_dir():
+        return ()
+    reference = time.time() if now_seconds is None else now_seconds
+    ranked: list[tuple[float, Path]] = []
+    for session in sorted(root.iterdir()):
+        if not session.is_dir():
+            continue
+        for relative in _SESSION_RUNS_SUBPATHS:
+            runs_dir = session / relative
+            if not runs_dir.is_dir():
+                continue
+            newest = _newest_write_seconds(runs_dir)
+            if newest is not None and reference - newest <= window_seconds:
+                ranked.append((newest, runs_dir.parent))
+            break
+    ranked.sort(key=lambda item: item[0], reverse=True)
+    return tuple(path for _stamp, path in ranked[:_MAX_FOLLOWED_ROOTS])
+
+
 @dataclass
 class _TailCursor:
     """一条活动 JSONL 文件的读取游标；offset 是字节偏移而非行号。"""
@@ -557,7 +618,14 @@ class SpectatorRepository:
     审计目录不存在、正在写入或含未知记录，均返回带问题提示的快照而不抛出。
     """
 
-    def __init__(self, watch_dirs: Iterable[str | Path]) -> None:
+    def __init__(
+        self,
+        watch_dirs: Iterable[str | Path] = (),
+        *,
+        follow_sessions_root: str | Path | None = None,
+        live_window_seconds: float = _LIVE_WINDOW_SECONDS,
+        rescan_seconds: float = _FOLLOW_RESCAN_SECONDS,
+    ) -> None:
         configured: list[Path] = []
         for item in watch_dirs:
             root = Path(item).expanduser()
@@ -567,18 +635,65 @@ class SpectatorRepository:
             except OSError:
                 pass
             configured.append(root)
-        if not configured:
-            raise ValueError("至少提供一个观战目录")
+        if not configured and follow_sessions_root is None:
+            raise ValueError("至少提供一个观战目录或一个跟随父目录")
         self._configured = tuple(configured)
+        self._follow_root: Path | None = None
+        if follow_sessions_root is not None:
+            follow = Path(follow_sessions_root).expanduser()
+            try:
+                follow = follow.resolve(strict=False)
+            except OSError:
+                pass
+            self._follow_root = follow
+        self._live_window_seconds = live_window_seconds
+        self._rescan_seconds = rescan_seconds
+        self._followed: tuple[Path, ...] = ()
+        self._last_rescan_monotonic: float | None = None
         self._runs: dict[Path, _RunProjection] = {}
         self._lock = threading.RLock()
+        # 构造时就解析一次，便于启动提示与 --once 诊断直接给出当前批次。
+        self._rescan_followed_roots(force=True)
+
+    @property
+    def followed_roots(self) -> tuple[Path, ...]:
+        """当前跟随到的活跃批次 audit_root；非跟随模式为空。"""
+
+        with self._lock:
+            return self._followed
+
+    def _rescan_followed_roots(self, *, force: bool = False) -> None:
+        """按节流间隔重新发现仍在写入的批次；非跟随模式不做任何事。
+
+        节流是必要的：每次重新发现都要遍历各批次的 ``runs/`` 子树取最新写入时间。
+        """
+
+        if self._follow_root is None:
+            return
+        now = time.monotonic()
+        if (
+            not force
+            and self._last_rescan_monotonic is not None
+            and now - self._last_rescan_monotonic < self._rescan_seconds
+        ):
+            return
+        self._last_rescan_monotonic = now
+        self._followed = discover_live_audit_roots(
+            self._follow_root, window_seconds=self._live_window_seconds
+        )
 
     def refresh(self) -> None:
         """发现新增运行目录并增量读取所有已发现来源。"""
 
         with self._lock:
+            self._rescan_followed_roots()
+            active_roots = set(self._configured) | set(self._followed)
+            # 批次换掉后不再跟随的来源要连同投影一起丢弃，避免长时间运行累积旧批次。
+            for run_dir, projection in list(self._runs.items()):
+                if projection.configured_root not in active_roots:
+                    del self._runs[run_dir]
             discovered: dict[Path, Path] = {}
-            for configured in self._configured:
+            for configured in (*self._configured, *self._followed):
                 for run_dir in discover_run_directories((configured,)):
                     discovered[run_dir] = configured
             for run_dir, configured in discovered.items():
