@@ -83,7 +83,7 @@ export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 | `probe_event_stream.py` | 专项协议取证，会向平台发请求；常规观测用本地 `watch` |
 | `sync_official_guide.py / resolve_tournament.py` | 同步官方指南、核对 Token 对应赛事 |
 | `evaluate.py` | 用已筛选的数据集复评决策或模拟桌赛，见评估指引 |
-| `run_spectator.sh` | 本地观战页面，见 [观战说明](spectator/README.md) |
+| `run_spectator.sh` | 本地观战页面；无参数时自动跟随最新活跃自由赛批次，见 [观战说明](spectator/README.md) |
 
 历史整理结果见 [2026-09-07 制品清单](doc/artifact-inventory-2026-09-07.md)。`review/` 中按房间编写的脚本保留为历史取证依据，后续常规操作使用上述入口。
 

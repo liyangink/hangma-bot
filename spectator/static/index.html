@@ -15,92 +15,166 @@
       <div id="connection" class="connection">正在读取审计目录…</div>
     </header>
 
-    <main>
-      <section class="selectors" aria-label="活跃官方场次与观战角色选择">
-        <label>活跃官方场次
-          <select id="game-select" disabled></select>
-        </label>
-        <label>观战角色
-          <select id="source-select" disabled></select>
-        </label>
-        <button id="refresh-button" type="button">立即刷新</button>
-      </section>
-
-      <section id="empty-state" class="empty-state">
-        当前没有可展示的活跃官方场次。若比赛正在进行，请稍候等待下一份审计记录；
-        否则请检查 <code>--watch-dir</code> 是否指向运行目录、<code>audit_root</code>
-        或测试房间 slot 的父目录。
-      </section>
-
-      <section id="game-view" hidden>
-        <section class="game-summary">
-          <div>
-            <p class="eyebrow">官方场次</p>
-            <h2 id="game-title">—</h2>
+    <div class="app">
+      <aside class="sidebar" aria-label="活跃场次与观战角色">
+          <div class="sidebar-head">
+            <p class="eyebrow">活跃官方场次</p>
+            <span id="game-count" class="muted">—</span>
           </div>
-          <div id="freshness" class="freshness"></div>
+          <ul id="game-list" class="game-list"></ul>
+          <div class="sidebar-block">
+            <label class="sidebar-label" for="source-select">观战角色</label>
+            <select id="source-select" disabled></select>
+          </div>
+          <div class="sidebar-actions">
+            <button id="refresh-button" type="button">立即刷新</button>
+            <span id="last-refresh" class="muted">—</span>
+          </div>
+        </aside>
+
+      <main class="stage">
+        <section id="empty-state" class="empty-state">
+          当前没有可展示的活跃官方场次。若比赛正在进行，请稍候等待下一份审计记录；
+          否则请检查 <code>--watch-dir</code> 是否指向运行目录、<code>audit_root</code>
+          或测试房间 slot 的父目录。
         </section>
 
-        <section id="warning" class="warning" hidden></section>
+        <section id="game-view" class="game-view" hidden>
+          <div class="stage-head">
+            <div>
+              <p class="eyebrow">官方场次</p>
+              <h2 id="game-title">—</h2>
+            </div>
+            <div id="freshness" class="freshness"></div>
+          </div>
 
-        <section class="perspective-table" aria-label="以本家为底边的第一视角麻将牌桌">
-          <article id="player-top" class="table-seat seat-top">
-            <div class="seat-heading"><span id="seat-label-top">对家</span><strong id="score-top">—</strong></div>
-            <div id="hand-top" class="concealed-tiles" aria-label="对家手牌张数"></div>
-            <div id="melds-top" class="seat-melds"></div>
-            <div id="river-top" class="river-grid" aria-label="对家牌河"></div>
-          </article>
+          <section id="warning" class="warning" hidden></section>
 
-          <article id="player-left" class="table-seat seat-left">
-            <div class="seat-heading"><span id="seat-label-left">左侧座位</span><strong id="score-left">—</strong></div>
-            <div id="hand-left" class="concealed-tiles" aria-label="左侧座位手牌张数"></div>
-            <div id="melds-left" class="seat-melds"></div>
-            <div id="river-left" class="river-grid" aria-label="左侧座位牌河"></div>
-          </article>
+          <!-- 牌桌按窗口等比缩放：board-fit 是可用区域，缩放由 app.js 计算。 -->
+          <div id="board-fit" class="board-fit">
+            <!-- board-frame 由 app.js 按缩放后的尺寸撑开，使牌桌在布局上就完整居中。 -->
+            <div id="board-frame" class="board-frame">
+              <!-- 牌桌仿实体麻将桌：由外向内依次是牌墙（暗手）、副露、牌河，中央为风盘。 -->
+              <section class="mahjong-board" aria-label="以本家为底边的麻将牌桌">
+              <article id="player-top" class="seat seat-top">
+                <div class="seat-card">
+                  <img class="seat-avatar" src="/assets/avatars/seat-top.svg" alt="对家头像">
+                  <span id="wind-top" class="seat-wind">—</span>
+                  <span id="seat-label-top" class="seat-name">对家</span>
+                  <span class="seat-meta">
+                    <span id="fortune-top" class="badge-pill is-fortune" hidden></span>
+                    <span id="dealer-top" class="badge-pill is-dealer" hidden>庄</span>
+                    <span id="turn-top" class="badge-pill is-turn" hidden>行动中</span>
+                    <strong id="score-top" class="seat-score">—</strong>
+                  </span>
+                </div>
+                <div class="seat-body">
+                  <div id="hand-top" class="wall" aria-label="对家暗手张数"></div>
+                  <div id="melds-top" class="seat-melds"></div>
+                  <div id="river-top" class="river-grid" aria-label="对家牌河"></div>
+                </div>
+              </article>
 
-          <article class="table-center">
-            <p class="eyebrow">牌桌中心</p>
-            <strong id="turn-state" class="turn-indicator">—</strong>
-            <p id="last-discard" class="last-discard">最近弃牌：—</p>
-            <dl id="table-facts" class="facts center-facts"></dl>
-            <dl id="rule-state" class="facts center-facts"></dl>
-          </article>
+              <article id="player-left" class="seat seat-left">
+                <div class="seat-card">
+                  <img class="seat-avatar" src="/assets/avatars/seat-left.svg" alt="上家头像">
+                  <span id="wind-left" class="seat-wind">—</span>
+                  <span id="seat-label-left" class="seat-name">上家</span>
+                  <span class="seat-meta">
+                    <span id="fortune-left" class="badge-pill is-fortune" hidden></span>
+                    <span id="dealer-left" class="badge-pill is-dealer" hidden>庄</span>
+                    <span id="turn-left" class="badge-pill is-turn" hidden>行动中</span>
+                    <strong id="score-left" class="seat-score">—</strong>
+                  </span>
+                </div>
+                <div class="seat-body">
+                  <div id="hand-left" class="wall" aria-label="上家暗手张数"></div>
+                  <div id="melds-left" class="seat-melds"></div>
+                  <div id="river-left" class="river-grid" aria-label="上家牌河"></div>
+                </div>
+              </article>
 
-          <article id="player-right" class="table-seat seat-right">
-            <div class="seat-heading"><span id="seat-label-right">右侧座位</span><strong id="score-right">—</strong></div>
-            <div id="hand-right" class="concealed-tiles" aria-label="右侧座位手牌张数"></div>
-            <div id="melds-right" class="seat-melds"></div>
-            <div id="river-right" class="river-grid" aria-label="右侧座位牌河"></div>
-          </article>
+              <article class="board-center">
+                <div class="dial">
+                  <span id="dial-wind-bottom" class="dial-wind wind-bottom">—</span>
+                  <span id="dial-wind-right" class="dial-wind wind-right">—</span>
+                  <span id="dial-wind-top" class="dial-wind wind-top">—</span>
+                  <span id="dial-wind-left" class="dial-wind wind-left">—</span>
+                  <div class="dial-core">
+                    <span id="dial-remaining" class="dial-remaining">—</span>
+                    <span class="dial-label">牌墙余量</span>
+                    <span id="dial-round" class="dial-label">—</span>
+                  </div>
+                </div>
+                <strong id="turn-state" class="turn-indicator">—</strong>
+                <p id="last-discard" class="last-discard">最近弃牌：—</p>
+                <dl id="rule-state" class="facts center-facts"></dl>
+                <dl id="table-facts" class="facts center-facts"></dl>
+              </article>
 
-          <article id="player-bottom" class="table-seat seat-bottom">
-            <div class="seat-heading"><span id="seat-label-bottom">本家</span><strong id="score-bottom">—</strong></div>
-            <div id="melds-bottom" class="seat-melds"></div>
-            <div id="river-bottom" class="river-grid" aria-label="本家牌河"></div>
-            <div id="my-hand" class="tiles own-hand" aria-label="本家手牌"></div>
-            <p id="drawn-tile" class="muted"></p>
-          </article>
+              <article id="player-right" class="seat seat-right">
+                <div class="seat-card">
+                  <img class="seat-avatar" src="/assets/avatars/seat-right.svg" alt="下家头像">
+                  <span id="wind-right" class="seat-wind">—</span>
+                  <span id="seat-label-right" class="seat-name">下家</span>
+                  <span class="seat-meta">
+                    <span id="fortune-right" class="badge-pill is-fortune" hidden></span>
+                    <span id="dealer-right" class="badge-pill is-dealer" hidden>庄</span>
+                    <span id="turn-right" class="badge-pill is-turn" hidden>行动中</span>
+                    <strong id="score-right" class="seat-score">—</strong>
+                  </span>
+                </div>
+                <div class="seat-body">
+                  <div id="hand-right" class="wall" aria-label="下家暗手张数"></div>
+                  <div id="melds-right" class="seat-melds"></div>
+                  <div id="river-right" class="river-grid" aria-label="下家牌河"></div>
+                </div>
+              </article>
+
+              <article id="player-bottom" class="seat seat-bottom">
+                <div class="seat-body">
+                  <div id="river-bottom" class="river-grid" aria-label="本家牌河"></div>
+                  <div id="melds-bottom" class="seat-melds"></div>
+                  <div id="my-hand" class="tiles own-hand" aria-label="本家手牌"></div>
+                </div>
+                <div class="seat-card">
+                  <img class="seat-avatar" src="/assets/avatars/seat-me.svg" alt="本家头像">
+                  <span id="wind-bottom" class="seat-wind">—</span>
+                  <span id="seat-label-bottom" class="seat-name">本家（我）</span>
+                  <span class="seat-meta">
+                    <span id="fortune-bottom" class="badge-pill is-fortune" hidden></span>
+                    <span id="dealer-bottom" class="badge-pill is-dealer" hidden>庄</span>
+                    <span id="turn-bottom" class="badge-pill is-turn" hidden>行动中</span>
+                    <strong id="score-bottom" class="seat-score">—</strong>
+                  </span>
+                </div>
+                <p id="drawn-tile" class="muted drawn-note"></p>
+              </article>
+              </section>
+            </div>
+          </div>
         </section>
+      </main>
 
+      <aside class="inspector" aria-label="决策信息">
         <section class="panel">
-          <div class="panel-heading"><h3>本次决策提示</h3><span class="muted">仅展示规则模块当时已产生的事实</span></div>
+          <div class="panel-heading"><h3>本次决策提示</h3><span class="muted">规则模块当时已产生的事实</span></div>
           <div id="candidates" class="candidates"></div>
         </section>
 
-        <section class="two-column">
-          <article class="panel">
-            <div class="panel-heading"><h3>最新提交</h3></div>
-            <div id="submission" class="muted">暂无提交审计。</div>
-          </article>
-          <article class="panel">
-            <div class="panel-heading"><h3>最新增量事件</h3><span class="muted">未用事件猜造完整牌桌</span></div>
-            <ol id="events" class="events"></ol>
-          </article>
+        <section class="panel">
+          <div class="panel-heading"><h3>最新提交</h3></div>
+          <div id="submission" class="muted">暂无提交审计。</div>
         </section>
-      </section>
 
-      <section id="issues" class="issues" hidden></section>
-    </main>
+        <section class="panel">
+          <div class="panel-heading"><h3>最新增量事件</h3><span class="muted">未用事件猜造牌桌</span></div>
+          <ol id="events" class="events"></ol>
+        </section>
+
+        <section id="issues" class="issues" hidden></section>
+      </aside>
+    </div>
 
     <footer>观战器只读取已写入的审计记录；不会请求官方平台，也不能提交动作。</footer>
     <script src="/app.js"></script>
