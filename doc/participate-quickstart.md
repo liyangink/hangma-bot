@@ -23,4 +23,4 @@ bash participate.sh check
 bash participate.sh start
 ```
 
-保持终端运行，程序自动参赛直至结束。
+可提前启动；阶段之间自动等待，无须重新启动。保持电脑联网、终端运行，程序自动参赛直至结束。报名和到位须在赛事规定时限内完成。
