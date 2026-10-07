@@ -35,14 +35,9 @@ runs/                             # 运行态（进程 stdout 日志、盯盘账
 
 ## 2. 启动测试房间与赛事
 
-只想照抄命令：见[参赛说明](participate-quickstart.md)（准备、开赛、日志查看）；本节其余内容给出完整口径与理由。
+只想照抄命令：见[参赛说明](participate-quickstart.md)。Apple Silicon Mac 使用 `bash participate.sh check` 和 `bash participate.sh start`；环境、凭证和赛事配置自动准备，测试赛事加 `--test`。本节保留既有入口的完整操作口径。
 
-启用系统代理的机器，应在启动赛事的同一终端为官方内网设置代理例外。2026-09-07 实测：免认证采集客户端直连成功，但参赛客户端默认继承 macOS 系统代理，可能在 `guide/version` 连接超时，尚未报名即退出。以下只设置子进程环境，不修改系统代理；换平台主机时同步修改地址。测试房、单身份赛事与自由赛均适用。
-
-```bash
-export NO_PROXY="${NO_PROXY:+$NO_PROXY,}10.240.169.190"
-export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
-```
+当前运行客户端和赛事查询工具对 `insecure_hosts` 中配置的官方内网主机自动直连，无需手动设置 `NO_PROXY`。这只作用于该客户端，不改系统代理；其他主机仍使用正常证书校验与代理行为。2026-09-07 的代理超时是旧实现的历史观察，不是当前参赛准备步骤。
 
 先按 [README](../README.md) 安装依赖。复制 `configs/test-room.example.json` 到 `.private/test-room.json`，修改 `expected_tournament_id`、`audit_root`，把四个真实 Token 各保存为一个单行文件。四个文件名与配置中的 `token_file` 一致。也可使用 `token_env`；同一身份的 `token/token_env/token_file` 只能选一个。
 
@@ -56,17 +51,19 @@ export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 
 按用户 2026-10-06 修正，正式／测试赛事只验证基础接线、配置与包作用域、完整生命周期回归；官方现场实测、实际赛事 ID／日期／Token 不作为候选上线前置。已取消的测试锦标赛命令保留作兼容入口。实际参赛启动时仍须核真实赛事配置并注入对应凭据；本地工程通过不写成官方现场通过。详见[现行验收口径](../review/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)。
 
-单身份测试赛事使用 `configs/participant.example.json`；R18 与牌效等胡的同接线配置分别见
-[R18 测试赛事模板](../configs/r18-v2-test-tournament-sse.example.json)和
-[牌效等胡测试赛事模板](../configs/huup-v1-test-tournament-sse.example.json)。
-新模板采用已在测试房验证的 `sse_enabled=true`、`discard_pacing_enabled=false` 与指南 v35；
-R18 模板显式绑定当前冻结发布包摘要。启动前仍要替换赛事 ID、审计目录和相应 Token：
+正式赛和单身份测试赛事共用“查询并生成配置 → 启动”流程，完整命令见[参赛说明](participate-quickstart.md)。当前 P0 分别使用[正式赛事模板](../configs/vip-s03-rulefix-p0-approved-v1.official-tournament.example.json)与[测试赛事模板](../configs/vip-s03-rulefix-p0-approved-v1.test-tournament.example.json)，选择其他策略先核对[策略目录](implementation/strategy-catalog.md)。旧 R18 模板保留作历史资料，在当前主线因绑定漂移拒装，不作为默认启动范例。
+
+`resolve_tournament.py --config <模板> --token-file <文件> --write-config <新配置>` 会查询绑定赛事、校验配置、填入赛事 ID，并生成独立 `audit_root`。输出文件不含 Token 原文；文件凭证仍用启动参数注入。使用 `--token-env <变量名>` 则保存变量名，启动时仍需该环境变量。准备只发幂等 GET，不报名、不到位，不装配模型或启动参赛进程；实际装配、规则适用范围和生命周期仍在运行入口核验。
+
+已填写的真实赛事 ID 不一致会拒绝生成，模板占位符才自动替换。目标文件已存在时不覆盖，可用另一个输出路径；`--audit-root <目录>` 可覆盖自动生成的审计目录。只查询时不加 `--write-config`，沿用原有只读用法。
+
+生成配置后执行：
 
 ```bash
-.venv/bin/python scripts/run_participant.py --config .private/participant.json
+.venv/bin/python scripts/run_participant.py --config .private/participant.json --token-file .private/participant.token
 ```
 
-正式赛事需将配置改为实际赛事 ID、`mode: official_tournament`、`token_kind: official`，并提供正式 Token。自由赛使用 `configs/auto-match.example.json` 和 `run_auto_match.py --config .private/auto-match.json`，一个全局 Token 同时只运行一个实例；默认一次自动房会话结束即退出。连续房次的启动、结算和暂停见[当前自由赛盯盘操作](auto-match-watchdog.md)；[自由赛首版设计](implementation/free-match-start.md)仅用于追溯历史接入决策。本节测试房与测试赛事示例采用本仓已审查的指南 v35 和 SSE 通知＋直接权威快照，关闭固定弃牌缓发；旧私有配置不会自动改动。遇到后续指南变化先同步、审查兼容性，不能只把版本号改大。
+正式赛事与测试赛事须选用对应模式的模板和 Token，不能只改 `mode` 复用策略包。自由赛使用 `configs/auto-match.example.json` 和 `run_auto_match.py --config .private/auto-match.json`，一个全局 Token 同时只运行一个实例；默认一次自动房会话结束即退出。连续房次的启动、结算和暂停见[当前自由赛盯盘操作](auto-match-watchdog.md)；[自由赛首版设计](implementation/free-match-start.md)仅用于追溯历史接入决策。本节模板采用本仓已审查的指南 v35 和 SSE 通知＋直接权威快照，关闭固定弃牌缓发；旧私有配置不会自动改动。遇到后续指南变化先同步、审查兼容性，不能只把版本号改大。
 
 ### 2.1 持续多策略对比战役（测试房 watchdog）
 

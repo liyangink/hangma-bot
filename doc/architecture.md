@@ -2,9 +2,11 @@
 
 ## 参赛准备入口（2026-10-07）
 
-**正式赛与测试赛事共用两步操作：生成配置，再启动单身份运行入口。** `resolve_tournament.py --write-config` 只查询绑定赛事并复用组合根的配置校验，保存目标赛事、独立审计目录及模板运行参数；Token 文件内容不落入配置。已填真实目标不得自动改成另一个赛事，输出文件不得覆盖。内网直连与证书例外均限配置中的官方主机。
+**正式赛与测试赛事共用 `participate.sh check` 和 `participate.sh start` 两个入口。** Mac 启动包装在 `.private/participant-runtime/` 自动准备 CPython 3.11 和依赖，复用已验证预编译件，安装指纹一致时跳过安装。它不依赖当前终端的 Python 版本；首次准备需要网络，Windows／Linux 缺完整正式包时在安装前拒绝。
 
-准备工具不报名、不到位、不装配策略或计算服务。之后仍通过冻结的 `run_participant.py`、`bootstrap.py` 进入完整生命周期；四身份测试房仍由 `run_test_room.py` 启动隔离进程。本次未改变运行源码或发布包摘要绑定，现有外部端口不变。操作见[参赛说明](participate-quickstart.md)。
+`scripts/participate.py` 委托 `resolve_tournament.py --write-config` 查询并生成配置，复用组合根校验正式包、源码及二进制。凭证和生成配置集中保存在 `.private/participate/<模式>/`；Token 不写入配置或命令参数，输入不回显，凭证文件权限为 0600。已有真实目标错配时拒绝覆盖；身份文件锁防止检查覆盖活跃凭证或重复启动。检查只发 GET，不报名、不到位、不启动计算服务。
+
+启动仍委托冻结的 `run_participant.py` 和 `bootstrap.py` 进入原生命周期，测试赛事用 `--test` 选择独立模板、凭证和身份锁；四身份测试房仍由原入口启动隔离进程。环境准备均在赛事运行前完成，不重编译或重签正式策略，外部端口和发布包摘要不变。操作见[参赛说明](participate-quickstart.md)。
 
 ## 2026-10-07 T199：P0分支支付资格已上线
 

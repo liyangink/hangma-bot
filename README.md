@@ -15,7 +15,24 @@
 
 ## 安装与常用操作
 
-在仓库根目录执行，需要 Python 3.11 或更高版本：
+Apple Silicon Mac 参赛只需两条命令，在仓库根目录执行：
+
+```bash
+bash participate.sh check   # 按提示输入报名 Token，只检查赛事
+bash participate.sh start   # 确认赛事正确后启动，保持终端运行
+```
+
+入口自动准备独立的 CPython 3.11 环境、安装依赖并生成赛事配置，现场已有其他 Python 版本也可使用。当前正式策略直接复用已验证的预编译文件，无须编译器或手动激活环境；首次准备需要联网，后续复用已安装环境。测试赛事在两条命令末尾加 `--test`。Windows／Linux 尚需对应正式策略发布包；编译准备见 [Windows 编译指南](doc/windows-build-guide.md)。
+
+终端显示安装进度、赛事检查结果、运行模式、策略、审计目录和结束结果。详细生命周期、动作决策及官方事件写入启动时显示的审计目录；可另开终端查看实时状态，将下方路径替换为该目录：
+
+```bash
+.private/participant-runtime/venv/bin/python scripts/monitor_run.py --run-dir '<审计目录>'
+```
+
+2026-10-07 已完成 75 项相关回归、系统 Python 3.9 下的干净环境自动安装、免再次下载的环境复用，以及假赛事完整启动验证。假赛事完成报名、到位和结束，10 个计算进程正常关闭、计算故障为 0；这些是工程核验结果，尚未进行官方现场参赛。
+
+开发安装在仓库根目录执行，需要 Python 3.11 或更高版本：
 
 ```bash
 python3 -m venv .venv
@@ -49,8 +66,6 @@ GCC/Clang 和对应 Python 开发头文件；默认允许同语义的 Python 退
 mkdir -p .private
 cp configs/test-room.example.json .private/test-room.json
 # 编辑配置并准备四个 Token 文件后，完成一个批次就退出：
-export NO_PROXY="${NO_PROXY:+$NO_PROXY,}10.240.169.190"
-export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 .venv/bin/python scripts/run_test_room.py --config .private/test-room.json --once
 
 # 另一个终端只读四身份审计，不向平台发请求：
@@ -64,12 +79,13 @@ export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 
 `rule-config.json` 按本次房间真实配置填写，模板见 [规则配置](configs/rule-config.example.json)。不提供时会保留“规则配置未知”，不会默认开启有财必烤响。`--once` 是完成一个测试房间批次；每场单局数由服务器的 `Rounds` 决定。
 
-上面的 `NO_PROXY` 只让当前终端启动的进程直连赛事内网，避免系统代理阻断连接；更换平台地址时同步修改该主机。测试房、单身份赛事和自由赛启动均需留意此项，赛前免认证下载成功不能替代运行客户端的连接检查。
+运行客户端会对配置在 `insecure_hosts` 中的官方内网主机自动直连，无需手动设置代理例外。正式赛和单身份测试赛事可用 `resolve_tournament.py --write-config` 自动生成配置，见[两步参赛说明](doc/participate-quickstart.md)。
 
 新制品统一放在 `artifacts/`；赛后入口输出 `report.json`、原始证据包、统一数据集和独立诊断。命令成功表示生成制品成功，是否完整、是否适合训练须看报告。`artifacts/` 不随 Git 提交，迁移机器时须另外复制。
 
 | 脚本 | 用途 |
 | --- | --- |
+| `participate.sh check / start` | Mac 自动准备环境，检查正式／测试赛事并启动；`--test` 选择测试赛事 |
 | `run_test_room.py` | 四身份测试房间，`--once` 或 `max_completed_batches` 限制完成批次数 |
 | `run_participant.py` | 单身份测试赛事或正式赛事 |
 | `run_auto_match.py` | 一个全局 Token 参加一次自由赛自动房会话 |
@@ -81,7 +97,7 @@ export no_proxy="${no_proxy:+$no_proxy,}10.240.169.190"
 | `monitor_run.py` | 单个运行的紧凑状态与进程存活观测；四身份汇总用 `watch` |
 | `export_game_records.py` | 人工查看多身份合并的审计视图，不作为官方牌谱或训练输入 |
 | `probe_event_stream.py` | 专项协议取证，会向平台发请求；常规观测用本地 `watch` |
-| `sync_official_guide.py / resolve_tournament.py` | 同步官方指南、核对 Token 对应赛事 |
+| `sync_official_guide.py / resolve_tournament.py` | 同步官方指南；查询 Token 绑定赛事，`--write-config` 从模板生成参赛配置 |
 | `evaluate.py` | 用已筛选的数据集复评决策或模拟桌赛，见评估指引 |
 | `run_spectator.sh` | 本地观战页面；无参数时自动跟随最新活跃自由赛批次，见 [观战说明](spectator/README.md) |
 
