@@ -48,6 +48,15 @@ exports/
 # 统一本机制品与凭证；迁移须另外复制 artifacts，不能只 git clone。
 artifacts/
 .private/
+# macOS目录元数据不属于源码或赛事证据。
+.DS_Store
+# 2026-10-08：只提交赛事赛后处理包；原始审计保存在.private本地冷归档。
+/datasets/official-tournament/*/raw-audit*
+/datasets/official-tournament/*/audit/
+# 旧R18四臂评测的阶段展开件已冷归档，保留Git内冻结清单和结果。
+/review/r18-four-arm-evaluation-2026-09-23/*/stages/
+# 已过期的本机测试房配置不作为共享示例提交。
+/configs/test-room-m10-ab-ccac15cb-20260918.json
 # 项目内 DSH 无头通道的 harness home（profile + 会话记录）；含运行痕迹，不入库。
 # 生成端 headless 通道用法见 review/llm-guided-heuristic-route-2026-09-15/evidence/3.1-generation/。
 .dsh-headless/

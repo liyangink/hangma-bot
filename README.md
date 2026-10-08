@@ -85,6 +85,8 @@ cp configs/test-room.example.json .private/test-room.json
 
 新制品统一放在 `artifacts/`；赛后入口输出 `report.json`、原始证据包、统一数据集和独立诊断。命令成功表示生成制品成功，是否完整、是否适合训练须看报告。`artifacts/` 不随 Git 提交，迁移机器时须另外复制。
 
+2026-10-08最后一次测试赛的[赛后处理数据包](datasets/official-tournament/t_e3c195576228/README.md)已精选入库，压缩2.15MB，含逐局轨迹、合法候选摘要和复算脚本；原始审计仅本地归档。旧展开数据的清理及发布包重新绑定记录见[归档与清理记录](doc/maintenance/local-archive-20261008.md)。
+
 | 脚本 | 用途 |
 | --- | --- |
 | `participate.sh check / start` | Mac 自动准备环境，检查正式／测试赛事并启动；`--test` 选择测试赛事 |
