@@ -58,13 +58,12 @@ BASE_URL = "https://10.240.169.190:18080"
 INSECURE_HOSTS = ["10.240.169.190"]
 SOURCE_NAMESPACE = "hangma-official"
 
-# 本战役的四条对比臂：等胡（V2+等胡）是当前验证过的最强启发式基线，
-# 另外三条是 2026-09-14 部署的序列策略网络候选（同一 V2+等胡 基线 + 网络重排）。
+# 当前默认四席同RF1，用于机械接入压力测试；策略对比须显式指定--arms。
 DEFAULT_ARMS = {
-    "qinglong": "v2_hu_upgrade_v1",
-    "baihu": "sequence_model_2048_projected_v1",
-    "zhuque": "sequence_model_4096_direct_v1",
-    "xuanwu": "sequence_model_4096_projected_v1",
+    "qinglong": "vip_g37_rf1_testroom_v1",
+    "baihu": "vip_g37_rf1_testroom_v1",
+    "zhuque": "vip_g37_rf1_testroom_v1",
+    "xuanwu": "vip_g37_rf1_testroom_v1",
 }
 SLOT_ORDER = ("qinglong", "baihu", "zhuque", "xuanwu")
 # 建房规则必须落在 _test_room_upgrade_rules 的适用范围内（BaseScore=1、
@@ -140,13 +139,18 @@ def _public_config(campaign: dict) -> dict:
 
 
 def _release_id_for_strategy(strategy: str) -> str | None:
-    """获批 R18 候选的真实网络配置必须绑定当前发布包摘要。"""
+    """网络候选按其唯一作用域绑定当前包；不绕过RF1修复批准。"""
     from hangma_bot.bootstrap import (
+        VIP_NETWORK_STRATEGIES,
+        _load_vip_manifest,
         R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY,
         R18_INTEGRATED_POSITIVE_V2_RELEASE_STRATEGY,
         R18_V2_RULES_20260929_RELEASE_PACKAGE_ID,
     )
+
+    if strategy in VIP_NETWORK_STRATEGIES:
+        return _load_vip_manifest(strategy)["release_package_id"]
 
     return {
         R18_INTEGRATED_POSITIVE_V1_RELEASE_STRATEGY: R18_INTEGRATED_POSITIVE_V1_RELEASE_PACKAGE_ID,

@@ -56,7 +56,10 @@ check 只查询并保存准备结果；start 需要检查生成的配置。两�
     folder = root / ".private/participate" / kind
     config_path = folder / "participant.json"
     token_path = folder / "participant.token"
-    template = root / "configs" / f"vip-s03-rulefix-p0-approved-v4.{kind}-tournament.example.json"
+    # 实验/测试默认RF1；正式锦标赛继续使用稳定P0，不跨模式复用包。
+    template_name = ("vip-g37-rf1-v1.test-tournament.example.json" if args.test
+                     else "vip-s03-rulefix-p0-approved-v4.official-tournament.example.json")
+    template = root / "configs" / template_name
     token = ""
     try:
         folder.mkdir(mode=0o700, parents=True, exist_ok=True)

@@ -29,7 +29,8 @@ def setup(tmp_path, monkeypatch):
         pytest.skip("现有正式预编译包只覆盖 macOS arm64 CPython 3.11")
     (tmp_path / "configs").mkdir()
     for kind in ("official", "test"):
-        name = f"vip-s03-rulefix-p0-approved-v4.{kind}-tournament.example.json"
+        name = ("vip-g37-rf1-v1.test-tournament.example.json" if kind == "test"
+                else "vip-s03-rulefix-p0-approved-v4.official-tournament.example.json")
         shutil.copyfile(ROOT / "configs" / name, tmp_path / "configs" / name)
         monkeypatch.delenv(f"HM_{kind.upper()}_TOURNAMENT_TOKEN", raising=False)
     token_file = tmp_path / "input.token"
@@ -64,7 +65,8 @@ def test_check_then_start_with_no_manual_config_or_token_flags(setup, monkeypatc
     config_path = folder / "participant.json"
     data = json.loads(config_path.read_text())
     assert data["expected_tournament_id"] == "t_fixture"
-    assert data["strategy"] == f"vip_s03_rulefix_p0_{kind}_tournament_v1"
+    assert data["strategy"] == ("vip_g37_rf1_test_tournament_v1" if kind == "test"
+                                else "vip_s03_rulefix_p0_official_tournament_v1")
     assert "token" not in data and "token_env" not in data
     assert SECRET not in config_path.read_text()
     assert config_path.stat().st_mode & 0o777 == 0o600
@@ -201,7 +203,7 @@ def test_check_rejects_missing_or_modified_published_evidence_before_network(set
 async def test_published_test_tournament_package_preheats_actual_policy_workers(setup):
     """稀疏源码树装配真实编译策略，预热十个专属计算进程；不运行赛事。"""
     root, _, _, _ = setup
-    data = json.loads((root / "configs/vip-s03-rulefix-p0-approved-v4.test-tournament.example.json").read_text())
+    data = json.loads((root / "configs/vip-g37-rf1-v1.test-tournament.example.json").read_text())
     data.pop("token_env", None)
     data.update(token=SECRET, base_url="https://platform.invalid", insecure_hosts=[],
                 expected_tournament_id="t_fixture", audit_root=str(root / "audit"))

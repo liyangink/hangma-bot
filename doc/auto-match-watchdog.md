@@ -1,5 +1,7 @@
 # 自由赛盯盘操作
 
+**2026-10-09当前：**使用[G37-RF1独立冻结根续赛](../review/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)。用户已恢复自由赛，唯一watch启用自动续，独立后台按完整桌分账；测试房160单局压力测试不会自动续。不要启动下方历史入口，也不要建立重复定时任务。
+
 **2026-10-05 当前实验入口：**T110-S02使用[T191 free_v7自动续赛](../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/LIVE-WATCHDOG.md)，算法原公式保持，main已整合明确拒绝后合法备用和四作用域接线。先用其`free_watchdog.py status`核真实玩家；自然完赛先接续，独立后台统计。常驻后台直接续赛，不依赖Codex定时任务；已删除的`t110` heartbeat不恢复。旧T179控制已关，禁止恢复T179、T170、T165或下述历史循环；测试房不自动续。
 
 **历史通用入口：**自由赛自动房的一次参赛由 `scripts/run_auto_match.py` 完成；旧连续盯盘由 `scripts/auto_match_watch_loop.sh` 每 60 秒调用一次幂等的 `scripts/auto_match_watch.sh`。后者负责发现会话、下载已完赛牌谱、结算账本，并在允许时续开下一房。以下保留其运维说明，不是当前 T110 的默认启动步骤。运行状态以本机实际进程和审计为准。
