@@ -1,0 +1,27 @@
+{
+  "audit_raw_gzip": true,
+  "audit_root": "artifacts/sessions/G37-RF1/vip_g37_rf1_free_v1/audit",
+  "auto_match": {
+    "declared_max_games": 10,
+    "declared_rounds": 8,
+    "drain_grace_seconds": 45,
+    "match_busy_wait_cap_sec": 60,
+    "match_max_attempts": 5,
+    "match_min_interval_sec": 6.5,
+    "room_poll_interval_sec": 2
+  },
+  "base_url": "https://10.240.169.190:18080",
+  "discard_pacing_enabled": false,
+  "expected_policy_release_id": "ef5ed016c2ec08b5dddea38ac4531cf559b3e950084b3fa013c8609ff4eb7024",
+  "expected_tournament_id": null,
+  "insecure_hosts": [
+    "10.240.169.190"
+  ],
+  "known_guide_version": 35,
+  "mode": "auto_match",
+  "source_namespace": "hangma-official",
+  "sse_enabled": true,
+  "strategy": "vip_g37_rf1_free_v1",
+  "token_env": "HM_AUTO_MATCH_TOKEN",
+  "token_kind": "official"
+}

@@ -1,0 +1,367 @@
+{
+  "schema": "t226-minimal-scoring-repair-close/1",
+  "complete": true,
+  "repair_passed": true,
+  "candidate_identity": {
+    "candidate_id": "e5dd3f5ed5d7d413d7479f9751a33e6bb4757ed9b63bb64989456033a08649b3",
+    "source_sha256": "63125dcea8d88bb30172be8330fa1ac4c5d500d60c0ee79fd51f7b6cd0f6fd16",
+    "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+    "contract_sha256": "4ee18be7935430f53b84cd096767a88b88252260ecc4afd63130ccb26791efca",
+    "deps_digest": "58426462e7c91cd7b520bf5b71a7be9ae36589cf0545b6eb11d60a270335fc64",
+    "source_manifest": {
+      "src/hangma_bot/hangma/__init__.py": {
+        "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c",
+        "bytes": 145
+      },
+      "src/hangma_bot/hangma/_public_tile_reuse.py": {
+        "sha256": "e22c0f3d7a4d38ef5f78fd7532ad963ae198b8e2914623c717af488139d8f934",
+        "bytes": 10595
+      },
+      "src/hangma_bot/hangma/_standard.py": {
+        "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98",
+        "bytes": 1542
+      },
+      "src/hangma_bot/hangma/_standard_python.py": {
+        "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7",
+        "bytes": 14730
+      },
+      "src/hangma_bot/hangma/action_families.py": {
+        "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900",
+        "bytes": 20884
+      },
+      "src/hangma_bot/hangma/candidate_facts.py": {
+        "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2",
+        "bytes": 19139
+      },
+      "src/hangma_bot/hangma/catch_play.py": {
+        "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693",
+        "bytes": 10173
+      },
+      "src/hangma_bot/hangma/emergency.py": {
+        "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7",
+        "bytes": 4153
+      },
+      "src/hangma_bot/hangma/engine.py": {
+        "sha256": "9f39fc2e6f45eacf64ee2df7b1368782ddc8ef095e86c470a8e9a1e7ebdd19bc",
+        "bytes": 32225
+      },
+      "src/hangma_bot/hangma/hand_analysis.py": {
+        "sha256": "1612051204f1b960989650da979ddb674d49c18606228f0fc90607e0909409ea",
+        "bytes": 27261
+      },
+      "src/hangma_bot/hangma/interface.py": {
+        "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc",
+        "bytes": 37378
+      },
+      "src/hangma_bot/hangma/internal_types.py": {
+        "sha256": "7e8e6bf22778ec537fbd275179015adc513e8dd32a0ea71de50915391efdb81e",
+        "bytes": 9201
+      },
+      "src/hangma_bot/hangma/natural_preparation.py": {
+        "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b",
+        "bytes": 5636
+      },
+      "src/hangma_bot/hangma/observation_rules.py": {
+        "sha256": "25f4fa8bb66c881e8b7583f92aae110f099192c62cbcb8b6b5520cc33c7d0b03",
+        "bytes": 24098
+      },
+      "src/hangma_bot/hangma/progression.py": {
+        "sha256": "edfcaf6eb41df277cd9b8b363534c3d26653964dbe989df06533f8d167c9d8bc",
+        "bytes": 44215
+      },
+      "src/hangma_bot/hangma/progression_payload.py": {
+        "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a",
+        "bytes": 15798
+      },
+      "src/hangma_bot/hangma/public_successor.py": {
+        "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f",
+        "bytes": 21173
+      },
+      "src/hangma_bot/hangma/public_tile_counts.py": {
+        "sha256": "b86866d7aa43a985292ec99fd39e7378b7c259e2799c21741d5fea0dbc78eb27",
+        "bytes": 35715
+      },
+      "src/hangma_bot/hangma/route_frontier.py": {
+        "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a",
+        "bytes": 11581
+      },
+      "src/hangma_bot/hangma/route_hu_witness.py": {
+        "sha256": "438f0e524e87f54d735fc682a76e05ce9babaf9af26028612430c4ecb3e9bb8e",
+        "bytes": 8267
+      },
+      "src/hangma_bot/hangma/route_structure.py": {
+        "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb",
+        "bytes": 10649
+      },
+      "src/hangma_bot/hangma/route_transition.py": {
+        "sha256": "fa7a1b186208bd4845fdae85a9a137fb7d590ee01b7618d3902d68dfe716f200",
+        "bytes": 72726
+      },
+      "src/hangma_bot/hangma/settlement.py": {
+        "sha256": "c2aaf247a05cbff02e42c70f4d8f664ce6b12f42f2a4063dfd9ac428c60ced72",
+        "bytes": 11839
+      },
+      "src/hangma_bot/hangma/special_rules.py": {
+        "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70",
+        "bytes": 11609
+      },
+      "src/hangma_bot/hangma/value_analysis.py": {
+        "sha256": "cb320dc8651cfb2415a3cf4770c9db7f2f339549129118c3ace7a9d7fc67553d",
+        "bytes": 18400
+      },
+      "src/hangma_bot/kernel/actions.py": {
+        "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9",
+        "bytes": 10754
+      },
+      "src/hangma_bot/kernel/config.py": {
+        "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97",
+        "bytes": 3236
+      },
+      "src/hangma_bot/kernel/observation.py": {
+        "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6",
+        "bytes": 17784
+      },
+      "src/hangma_bot/kernel/outcomes.py": {
+        "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6",
+        "bytes": 8643
+      },
+      "src/hangma_bot/policy/action_value.py": {
+        "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c",
+        "bytes": 45125
+      },
+      "src/hangma_bot/policy/action_value_executor.py": {
+        "sha256": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb",
+        "bytes": 106868
+      },
+      "src/hangma_bot/policy/errors.py": {
+        "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9",
+        "bytes": 372
+      },
+      "src/hangma_bot/policy/interface.py": {
+        "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa",
+        "bytes": 3546
+      },
+      "src/hangma_bot/policy/retry_backup.py": {
+        "sha256": "71078b5ccd2cf3fb1295a8f6f0c563778bd046b11921824dbf007fc42da2360b",
+        "bytes": 1111
+      },
+      "src/hangma_bot/policy/route_heuristic_view.py": {
+        "sha256": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1",
+        "bytes": 28880
+      },
+      "src/hangma_bot/policy/route_vip_heuristic.py": {
+        "sha256": "c70b469d0aa2a4871e78436434f5ef5c49c9625492690b164a8f7f93fd6b299f",
+        "bytes": 37369
+      },
+      "src/hangma_bot/policy/safe_fallback.py": {
+        "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281",
+        "bytes": 2352
+      },
+      "src/hangma_bot/hangma/_grouped_native.c": {
+        "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b",
+        "bytes": 19322
+      }
+    },
+    "math_backend": {
+      "implementation": "c_grouped",
+      "semantics_version": "hangma-standard-grouped-v1",
+      "fallback_reason": null,
+      "native_binary": {
+        "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6",
+        "bytes": 52552
+      }
+    },
+    "params": {
+      "max_operations": 4800000,
+      "projection_limits": {
+        "max_nodes": 8192,
+        "max_branches": 16384,
+        "max_waiting_draw_witnesses": 65536,
+        "max_replacement_depth": 1
+      },
+      "max_local_collection_size": 8192,
+      "rule_config": {
+        "ruleset_version": "hangma-mvp-v10-public-counts",
+        "base_score": 1,
+        "you_cai_bi_kao": false
+      },
+      "route_limits": {
+        "max_expansions": 8192,
+        "max_routes_per_candidate": 128
+      }
+    },
+    "view_schema_version": "vip-route-scoring-view/3",
+    "graph_schema_version": "vip-route-action-graph/3",
+    "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+    "natural_preparation_semantics_version": "vip-natural-set-preparation/1"
+  },
+  "rules_source_hash": "8be50281eeabd6c4d81090bae0aa0e1187ec947b770e2fa548e50a17486a1e58",
+  "release_kind": "scoring_defect_repair",
+  "strength_admission": false,
+  "fault_scope": "G37已核研究公式；P0并非此故障源",
+  "original_fault_source": {
+    "bytes": 21913,
+    "sha256": "b3960980015519d1da24e63273310fe2872b159eea77cac7126660e71c411bca"
+  },
+  "reproduction": {
+    "red": {
+      "pin": {
+        "bytes": 5722,
+        "sha256": "a40d6e4596a37aada55cd2c20ff7b1daeb943bdbd263f52daac81a2ee89e209e"
+      },
+      "failures": [
+        "PURPOSE_EXCLUDED_BY_FEES",
+        "MEANINGFUL_SECONDARY_QUALITY_NOT_TRANSMITTED"
+      ],
+      "score_calls": 2
+    },
+    "green": {
+      "pin": {
+        "bytes": 6228,
+        "sha256": "19d15e7671131695a056e31ed24b2e96079cc3dc05d496a1288cd6ccedd3f170"
+      },
+      "failures": [],
+      "score_calls": 2,
+      "3b_score": 15.993222843747574,
+      "7b_score": 16.00148919363564,
+      "hu_score": 14.716981132075471
+    }
+  },
+  "minimality": {
+    "module_constants_exact": true,
+    "unmodified_functions": [
+      "paypoints",
+      "stockof",
+      "summaryof",
+      "speedof",
+      "ladder",
+      "horizon",
+      "paysummary",
+      "payroute",
+      "huoffer"
+    ],
+    "changed_functions": [
+      "routewait",
+      "score_actions"
+    ],
+    "added_functions": [
+      "rank_continuation_ties"
+    ],
+    "rules_core_files_unchanged": 38,
+    "F2_numeric_scores_IEEE_exact_F1": true,
+    "RF1_highest_continuation_Hu_and_strict_price_order_preserved": true
+  },
+  "matrix": {
+    "receipt_pin": {
+      "bytes": 25707,
+      "sha256": "facb823efb627fb449ac2f0e7664cfdcda950771c322e079b1066eac0142cf04"
+    },
+    "unique_inputs": 90,
+    "phases": [
+      "F1",
+      "F2",
+      "RF1"
+    ],
+    "repeat_count": 2,
+    "actual_scores": 540,
+    "case_order": [
+      "TARGET-1",
+      "TARGET-2",
+      "TARGET-3",
+      "TARGET-4",
+      "CONTROL-2",
+      "CONTROL-1",
+      "NEW-SOURCE-03",
+      "T200-frontier-04",
+      "G04",
+      "T200-frontier-01",
+      "T200-frontier-02",
+      "T200-frontier-03",
+      "T200-frontier-05",
+      "T200-frontier2-01",
+      "T200-frontier2-02",
+      "T200-frontier2-03",
+      "T200-frontier2-04",
+      "T200-frontier2-05",
+      "T200-frontier2-06",
+      "T200-cache-01",
+      "H01",
+      "D01",
+      "O01",
+      "O02",
+      "validation-000:joint-development:038:0",
+      "C01",
+      "C02",
+      "X02",
+      "validation-008:development-stage1:001:1",
+      "X01",
+      "validation-088:fresh:008:07",
+      "R05",
+      "O03",
+      "X03",
+      "X04",
+      "validation-006:development-stage1:003:1",
+      "C03",
+      "C04",
+      "X09",
+      "C08",
+      "T200-Sol-g5-loss-02",
+      "T200-Sol-g5-high-01",
+      "T200-Sol-g7-small-loss-01",
+      "T200-g9-payment-01",
+      "T200-early-W2-01",
+      "T200-early-W2-02",
+      "T200-early-W2-03",
+      "T200-early-W2-04",
+      "T200-early-W3-01",
+      "T200-early-W3-02",
+      "T200-early-W3-03",
+      "T200-early-W3-04",
+      "T200-quantity-near-01",
+      "LATE-MW-01",
+      "LATE-MW-02",
+      "LATE-MW-03",
+      "LATE-MW-04",
+      "LATE-MW-05",
+      "NEW-SOURCE-01",
+      "NEW-SOURCE-02",
+      "NEW-SOURCE-04",
+      "NEW-SOURCE-05",
+      "NEW-SOURCE-06",
+      "NEW-SOURCE-07",
+      "NEW-SOURCE-08",
+      "NEW-SOURCE-09",
+      "NEW-SOURCE-10",
+      "NEW-SOURCE-11",
+      "NEW-SOURCE-12",
+      "T207-TRAINING-A",
+      "T207-TRAINING-B",
+      "T207-PUBLIC-01",
+      "T207-PUBLIC-02",
+      "T207-PUBLIC-03",
+      "T210-TARGET-1",
+      "T210-TARGET-2",
+      "T210-TARGET-4",
+      "T211-EARLY-MULTIWHITE-01",
+      "T211-ORDINARY-NATURAL-BACKUP-01",
+      "T218-TRAINING-01",
+      "T218-TRAINING-02",
+      "T218-TRAINING-03",
+      "T216-TRAINING-01",
+      "T221-MATURE-SAMPLE1",
+      "T221-MATURE-SAMPLE2",
+      "T222-NATURAL-SINGLEWHITE-FIRSTDIV",
+      "T214-T1-NOHU_ZERO_WHITE_COMPETITION",
+      "T214-T2-NOHU_WHITE_NATURAL",
+      "T215-G34-MULTIWHITE_HU_UPGRADE-01",
+      "T215-G34-ZERO_WHITE_HU_CASH_CONTROL-01"
+    ],
+    "F1_changed_cases": 37,
+    "RF1_tie_changed_cases": 6,
+    "unknown_float_boundaries": 0,
+    "failures": []
+  },
+  "new_LLM_calls": 0,
+  "new_author_count": 0,
+  "no_P0_strength_or_profit_gate": true
+}

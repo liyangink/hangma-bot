@@ -1,0 +1,44 @@
+{
+  "audit_root": "artifacts/sessions/G37-RF1/test-room/audit",
+  "base_url": "https://10.240.169.190:18080",
+  "discard_pacing_enabled": false,
+  "expected_policy_release_id": "7663bef2d2d1c2a1d17e7081334244eb6072f634ae0934bf365ee0443bdd4033",
+  "expected_tournament_id": "<actual-test_room-id>",
+  "identities": [
+    {
+      "expected_policy_release_id": "7663bef2d2d1c2a1d17e7081334244eb6072f634ae0934bf365ee0443bdd4033",
+      "slot": "qinglong",
+      "strategy": "vip_g37_rf1_testroom_v1",
+      "token_env": "HM_ROOM_TOKEN_QINGLONG"
+    },
+    {
+      "expected_policy_release_id": "7663bef2d2d1c2a1d17e7081334244eb6072f634ae0934bf365ee0443bdd4033",
+      "slot": "baihu",
+      "strategy": "vip_g37_rf1_testroom_v1",
+      "token_env": "HM_ROOM_TOKEN_BAIHU"
+    },
+    {
+      "expected_policy_release_id": "7663bef2d2d1c2a1d17e7081334244eb6072f634ae0934bf365ee0443bdd4033",
+      "slot": "zhuque",
+      "strategy": "vip_g37_rf1_testroom_v1",
+      "token_env": "HM_ROOM_TOKEN_ZHUQUE"
+    },
+    {
+      "expected_policy_release_id": "7663bef2d2d1c2a1d17e7081334244eb6072f634ae0934bf365ee0443bdd4033",
+      "slot": "xuanwu",
+      "strategy": "vip_g37_rf1_testroom_v1",
+      "token_env": "HM_ROOM_TOKEN_XUANWU"
+    }
+  ],
+  "insecure_hosts": [
+    "10.240.169.190"
+  ],
+  "known_guide_version": 35,
+  "max_completed_batches": 1,
+  "mode": "test_room",
+  "restart": {
+    "max_restarts": 0
+  },
+  "sse_enabled": true,
+  "strategy": "vip_g37_rf1_testroom_v1"
+}

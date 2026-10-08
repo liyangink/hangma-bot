@@ -507,11 +507,12 @@ def _load_vip_parents(paths, batch, *, lineage):
             raise VipEohError("研究重绑定来源循环或超过32层")
         record_bytes = (path / "generation.json").read_bytes()
         record = json.loads(record_bytes)
-        if (record.get("artifact_role") not in ("research_budget_rebind", "trace_codec_repair") and (
+        if (record.get("artifact_role") not in ("research_budget_rebind", "trace_codec_repair", "scoring_defect_repair") and (
                 record.get("backend") == "research_budget_rebind"
                 or record.get("backend") == "trace_codec_repair"
+                or record.get("backend") == "scoring_defect_repair"
                 or isinstance(record.get("provenance"), dict) and record["provenance"].get("schema")
-                in ("vip-research-budget-rebind-provenance/1", "vip-trace-codec-repair-provenance/1")
+                in ("vip-research-budget-rebind-provenance/1", "vip-trace-codec-repair-provenance/1", "vip-scoring-defect-repair-provenance/1")
                 or (path / "original-generation.json").exists())):
             raise VipEohError("重绑定原件不能伪装为新作者提案或人工种子")
         if (record.get("schema") != VIP_EOH_GENERATION_SCHEMA
@@ -521,7 +522,7 @@ def _load_vip_parents(paths, batch, *, lineage):
                 or record.get("load", {}).get("ok") is not True
                 or record.get("identity_stable") is not True
                 or record.get("artifact_role") not in (
-                    "candidate_proposal", "manual_seed", "research_budget_rebind", "trace_codec_repair")):
+                    "candidate_proposal", "manual_seed", "research_budget_rebind", "trace_codec_repair", "scoring_defect_repair")):
             raise VipEohError("父代不是新版已装载且未失效提案或人工种子")
         source = (path / "candidate.py").read_bytes().decode("utf-8")
         identity = batch.identity(source)
@@ -535,7 +536,10 @@ def _load_vip_parents(paths, batch, *, lineage):
             from .vip_eoh_trace_repair import validate_vip_trace_repair_package
 
             validate_vip_trace_repair_package(path, record, source, batch, identity, (*lineage, path))
-        if record["artifact_role"] in ("research_budget_rebind", "trace_codec_repair"):
+        elif record["artifact_role"] == "scoring_defect_repair":
+            from .vip_scoring_repair import validate_scoring_repair_package
+            validate_scoring_repair_package(path, record, source, batch, identity, (*lineage, path))
+        if record["artifact_role"] in ("research_budget_rebind", "trace_codec_repair", "scoring_defect_repair"):
             if (batch.identity(source) != identity
                     or (path / "candidate.py").read_bytes().decode("utf-8") != source
                     or (path / "generation.json").read_bytes() != record_bytes):

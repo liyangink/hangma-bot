@@ -1,12 +1,22 @@
 # 杭麻 AI Bot 架构与运行流程
 
+## G37-RF1 独立可选评分修复接线（2026-10-08）
+
+**G37-RF1 是评分缺陷修复（`scoring_defect_repair`，修复故障 G37 的费用恒压与可胡分支自然质量未传递），当前四模式均已完成修复启动准入；参赛默认保留 P0。** 此修复不改变唯一规则模块，也不表示 P0 存在相同缺陷。修复验收按[当前问题修复口径](../review/vip-route-2026-09-30/evidence/t224-G38-four-source-effect-1/REPAIR-ACCEPTANCE.md)执行，不要求随机净均分达到 +8，也不以参加官方现场比赛为门禁。
+
+组合根按唯一模式分别选择 `vip_g37_rf1_testroom_v1`、`vip_g37_rf1_free_v1`、`vip_g37_rf1_test_tournament_v1` 和 `vip_g37_rf1_official_tournament_v1`，不得跨作用域复用包。RF1 编译制品使用独立目录 `prebuilt/vip-g37-rf1-compiled-v1/`；运行接线复用 S03 的合法保底、原截止、服务器通知流（`SSE Notify Stream`，推送事件水位后仍由权威状态恢复观察）及原生规则后端（`native`，已核验的 C 数学实现）。每桌一个专属预热工作进程，共 10 个，`max_pending=0` 表示不排队等待评分；RF1 不与 P0 混用编译评分身份。
+
+四个 RF1 模板和包已正式冻结：启动准入字段（`startup_admitted`，该冻结包获准按指定模式启动）为 `true`，强度准入字段（`strength_admission`，授予相对稳定版本的增强资格）为 `false`。本轮真实修复、原生评分等价、原截止及时合法与代表性回归收据均已完成审批；此审批不授强度晋级。测试／正式赛事另核基础接线、配置与包作用域、生命周期；真实赛事配置仍在实际参赛启动前核验。
+
+本轮实包和回归结果见[G37-RF1交付报告](../review/vip-route-2026-09-30/evidence/t226-minimal-scoring-repair-1/REPORT.md)；真实自由赛继续暂停，接线不自动启动比赛。
+
 ## 参赛发布依赖独立交付（2026-10-08）
 
 **当前 P0 四模式的启动校验只读取程序源码和 `prebuilt/` 发布原件，可以在稀疏检出（`sparse-checkout`，仅下载并检出所选路径）下参赛。** `review/`、`datasets/`、`datamart/` 和 `game-records/` 不属于当前 P0 运行依赖。
 
 9 件资格证明、官方金例及规则契约逐字复制到 `prebuilt/vip-s03-rulefix-p0-release-evidence-v1/`，总计 215670 字节；来源为主线 `8f916b44c75403e73de97dfc420236686dd867e4`，取回日期为 2026-10-08。原件摘要和原批准内容继续复核；收据中的 `review/` 路径仅保留来源身份，不用于读取。缺失、篡改、源码漂移或范围错配仍在联网前拒绝。
 
-四模式当前使用 `prebuilt/vip-s03-rulefix-p0-*-approved-v3/` 和 `configs/vip-s03-rulefix-p0-approved-v3.*.example.json`。v2独立交付发布证明，v3重新冻结主线更新后的源码；策略枚举仍为原 P0 v1。旧 v1/v2 清单与模板保留，测试赛v2快照不重写。公式、规则核心、二进制、参数、资格和截止保持原批准身份。`participate.py` 选择 v3 模板；旧私有配置若绑定旧包，仍明确拒绝，不自动换策略。
+P0 四模式当前使用 `prebuilt/vip-s03-rulefix-p0-*-approved-v4/` 清单与 `configs/vip-s03-rulefix-p0-approved-v4.*.example.json` 模板：仅因 `bootstrap.py` 增加 RF1 接线导致包源码清单（`source_manifest`，冻结运行源码的路径及摘要）漂移而重冻。v2独立交付发布证明，v3重新冻结此前主线更新后的源码；策略枚举仍为原 P0 v1。旧 v1/v2/v3 清单与模板保留，测试赛v2快照不重写。v4 不改变候选身份、公式、规则核心、二进制、参数、原批准资格和截止；参赛默认仍选 P0。旧私有配置若绑定旧包，仍明确拒绝，不自动换策略。
 
 当前源码清单冻结整个`src/hangma_bot`，包括离线模块。2026-10-08快进主线后，离线`vip_eoh_generate.py`变化使v2清单拒绝启动；v3按原批准资格生成新的源码绑定。后续源码变化仍须重新核验/冻结，不能放宽摘要校验绕过旧配置错配。
 

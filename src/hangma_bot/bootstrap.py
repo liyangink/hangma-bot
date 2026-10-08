@@ -119,6 +119,7 @@ from hangma_bot.policy.route_vip_heuristic import RouteVipHeuristicPolicy, VipRo
 from hangma_bot.policy.vip_s02_frozen_source import VIP_S02_SOURCE, VIP_S02_SOURCE_SHA256
 from hangma_bot.policy.vip_s03_frozen_source import (VIP_S03_SOURCE, VIP_S03_IDENTITY,
     VIP_S03_REQUIRED_EVIDENCE_SHA256)
+from hangma_bot.policy import vip_g37_rf1_release as rf1_release
 from hangma_bot.application.audit_codec import (
     decision_budget_from_json,
     decision_request_from_json,
@@ -191,10 +192,10 @@ VIP_S03_COMPILED_DIRECTORY = "prebuilt/vip-s03-rulefix-p0-compiled-v1"
 VIP_S03_RULEFIX_P0_EVIDENCE_DIRECTORY = "prebuilt/vip-s03-rulefix-p0-release-evidence-v1"
 VIP_S03_RULEFIX_P0_EVIDENCE_SOURCE = "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0"
 VIP_S03_RULEFIX_P0_PACKAGE_SCOPES = {
-    "vip_s03_rulefix_p0_testroom_v1": ("test_room", "correctness_fix_testroom_only", "prebuilt/vip-s03-rulefix-p0-testroom-approved-v3/manifest.json"),
-    "vip_s03_rulefix_p0_free_v1": ("auto_match", "correctness_fix_free_only", "prebuilt/vip-s03-rulefix-p0-free-approved-v3/manifest.json"),
-    "vip_s03_rulefix_p0_test_tournament_v1": ("test_tournament", "correctness_fix_test_tournament_only", "prebuilt/vip-s03-rulefix-p0-test-tournament-approved-v3/manifest.json"),
-    "vip_s03_rulefix_p0_official_tournament_v1": ("official_tournament", "correctness_fix_official_tournament_only", "prebuilt/vip-s03-rulefix-p0-official-tournament-approved-v3/manifest.json"),
+    "vip_s03_rulefix_p0_testroom_v1": ("test_room", "correctness_fix_testroom_only", "prebuilt/vip-s03-rulefix-p0-testroom-approved-v4/manifest.json"),
+    "vip_s03_rulefix_p0_free_v1": ("auto_match", "correctness_fix_free_only", "prebuilt/vip-s03-rulefix-p0-free-approved-v4/manifest.json"),
+    "vip_s03_rulefix_p0_test_tournament_v1": ("test_tournament", "correctness_fix_test_tournament_only", "prebuilt/vip-s03-rulefix-p0-test-tournament-approved-v4/manifest.json"),
+    "vip_s03_rulefix_p0_official_tournament_v1": ("official_tournament", "correctness_fix_official_tournament_only", "prebuilt/vip-s03-rulefix-p0-official-tournament-approved-v4/manifest.json"),
 }
 VIP_S03_PACKAGE_SCOPES.update(VIP_S03_RULEFIX_P0_PACKAGE_SCOPES)
 _VIP_S03_NATIVE_CACHE = None
@@ -214,8 +215,11 @@ VIP_S02_BACKUP_PACKAGE_SCOPES = {
 }
 VIP_S02_PARTICIPANT_STRATEGIES += tuple(k for k,v in VIP_S02_BACKUP_PACKAGE_SCOPES.items() if v[0] != 'auto_match')
 VIP_S02_AUTO_MATCH_STRATEGIES += tuple(k for k,v in VIP_S02_BACKUP_PACKAGE_SCOPES.items() if v[0] == 'auto_match')
-VIP_PARTICIPANT_STRATEGIES = (*VIP_S02_PARTICIPANT_STRATEGIES, *(k for k,v in VIP_S03_PACKAGE_SCOPES.items() if v[0] != 'auto_match'))
-VIP_AUTO_MATCH_STRATEGIES = (*VIP_S02_AUTO_MATCH_STRATEGIES, *(k for k,v in VIP_S03_PACKAGE_SCOPES.items() if v[0] == 'auto_match'))
+VIP_G37_RF1_PACKAGE_SCOPES = rf1_release.PACKAGE_SCOPES
+VIP_PARTICIPANT_STRATEGIES = (*VIP_S02_PARTICIPANT_STRATEGIES, *(k for k,v in VIP_S03_PACKAGE_SCOPES.items() if v[0] != 'auto_match'),
+    *(k for k,v in VIP_G37_RF1_PACKAGE_SCOPES.items() if v[0] != 'auto_match'))
+VIP_AUTO_MATCH_STRATEGIES = (*VIP_S02_AUTO_MATCH_STRATEGIES, *(k for k,v in VIP_S03_PACKAGE_SCOPES.items() if v[0] == 'auto_match'),
+    *(k for k,v in VIP_G37_RF1_PACKAGE_SCOPES.items() if v[0] == 'auto_match'))
 VIP_NETWORK_STRATEGIES = (*VIP_PARTICIPANT_STRATEGIES, *VIP_AUTO_MATCH_STRATEGIES)
 VIP_TESTROOM_STRATEGIES = tuple(k for k in VIP_NETWORK_STRATEGIES if 'testroom' in k)
 
@@ -637,6 +641,21 @@ def _vip_params() -> dict:
             "compute_settings": asdict(VIP_S02_COMPUTE_SETTINGS)}
 
 
+def build_vip_g37_rf1_manifest(strategy: str) -> dict:
+    """冻结独立人工评分修复包，缺实际收据保持draft，不继承P0批准。"""
+    from hangma_bot.adapters.official.dto import KNOWN_GUIDE_VERSION
+    from hangma_bot.hangma import _grouped_native
+    identity = rf1_release.VIP_G37_RF1_IDENTITY
+    raw = Path(_grouped_native.__file__).read_bytes()
+    expected = identity["math_backend"]["native_binary"]
+    if len(raw) != expected["bytes"] or hashlib.sha256(raw).hexdigest() != expected["sha256"]:
+        raise RuntimeError("RF1规则数学二进制漂移")
+    return rf1_release.build_manifest(_REPO_ROOT, strategy, runtime_sources=_vip_runtime_sources(),
+        params=_vip_params(), hand_math=hand_math_runtime_metadata(),
+        shared_runtime_identity=_verify_vip_s02_runtime()[0],
+        rules_source_hash=compute_rules_hash(_REPO_ROOT), known_guide_version=KNOWN_GUIDE_VERSION)
+
+
 def _vip_package_id(payload: Mapping) -> str:
     """完整规范JSON摘要；发布包ID自身不参与计算。"""
     body = {key: value for key, value in payload.items() if key != "release_package_id"}
@@ -646,6 +665,8 @@ def _vip_package_id(payload: Mapping) -> str:
 
 def _vip_package_scope(strategy: str) -> tuple[str, str, str]:
     """固定策略对应唯一模式、工程候选范围及路径；不接受任意磁盘制品。"""
+    if strategy in VIP_G37_RF1_PACKAGE_SCOPES:
+        return VIP_G37_RF1_PACKAGE_SCOPES[strategy]
     if strategy in VIP_S03_PACKAGE_SCOPES:
         return VIP_S03_PACKAGE_SCOPES[strategy]
     if strategy in VIP_S02_BACKUP_PACKAGE_SCOPES:
@@ -745,6 +766,9 @@ def _load_vip_free_manifest(expected_id: str | None = None) -> dict:
 
 def _load_vip_manifest(strategy: str, expected_id: str | None = None) -> dict:
     """校验真实字节、范围和后端；配置不能绕过白名单扩大准入。"""
+    if strategy in VIP_G37_RF1_PACKAGE_SCOPES:
+        return rf1_release.load_manifest(_REPO_ROOT, strategy, expected_id,
+            build=build_vip_g37_rf1_manifest)
     if strategy in VIP_S03_RULEFIX_P0_PACKAGE_SCOPES:
         return _load_vip_s03_rulefix_p0_manifest(strategy, expected_id)
     if strategy in VIP_S03_PACKAGE_SCOPES:
@@ -853,9 +877,17 @@ class _VipWorkerFactory:
     def __call__(self) -> PreparedDecisionPolicy:
         package = _load_vip_manifest(self.strategy, self.expected_id)
         is_s03 = self.strategy in VIP_S03_PACKAGE_SCOPES
-        runtime = (_load_vip_s03_runtime if is_s03 else _load_vip_s02_runtime)(package["compiled_runtime"]["manifest_sha256"])
+        if self.strategy in VIP_G37_RF1_PACKAGE_SCOPES:
+            compiled, _binary = rf1_release.verify_compiled_runtime(_REPO_ROOT,
+                _verify_vip_s02_runtime()[0], package["compiled_runtime"]["manifest_sha256"])
+            base = _load_vip_s02_runtime(compiled["manifest"]["shared_original_helpers"]["manifest_sha256"])
+            runtime = rf1_release.load_compiled_runtime(_REPO_ROOT, compiled, base)
+            source = rf1_release.source_body(_REPO_ROOT)
+        else:
+            runtime = (_load_vip_s03_runtime if is_s03 else _load_vip_s02_runtime)(package["compiled_runtime"]["manifest_sha256"])
+            source = VIP_S03_SOURCE if is_s03 else VIP_S02_SOURCE
         policy = RouteVipHeuristicPolicy(
-            RuleConfig(**package["params"]["rule_config"]), source=VIP_S03_SOURCE if is_s03 else VIP_S02_SOURCE,
+            RuleConfig(**package["params"]["rule_config"]), source=source,
             max_operations=package["params"]["max_operations"],
             projection_limits=VIP_S02_PROJECTION_LIMITS,
             compiled_runtime=runtime)

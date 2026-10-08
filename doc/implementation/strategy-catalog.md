@@ -1,8 +1,25 @@
 # 主线可用策略枚举
 
-## 2026-10-08：P0参赛发布包装v2
+## 2026-10-08：G37-RF1 独立可选评分修复（修复发布）
 
-**当前参赛模板为 `configs/vip-s03-rulefix-p0-approved-v3.*.example.json`，对应四个 `prebuilt/vip-s03-rulefix-p0-*-approved-v3/` 清单。** 策略枚举仍为 `vip_s03_rulefix_p0_*_v1`；v2迁移启动依赖，v3重新冻结主线更新后的源码，原公式、核心、二进制、资格及参数保持。9件批准原件随 `prebuilt/vip-s03-rulefix-p0-release-evidence-v1/` 交付，运行无需 `review/` 或 `datasets/`。旧包装保留，测试赛v2快照不重写，旧摘要不自动升级。目录和验签边界见[架构](../architecture.md#参赛发布依赖独立交付2026-10-08)。
+**四个 G37-RF1 策略已作为独立可选修复版发布，当前获启动准入；参赛默认保留 P0。** 资格类型为评分缺陷修复（`scoring_defect_repair`，修复故障 G37 的费用恒压与可胡分支自然质量未传递）；该修复不表示 P0 规则有误，也不授强度晋级。
+
+| 策略枚举 | 唯一运行模式 | `configs/` 内模板 | 当前资格 |
+| --- | --- | --- | --- |
+| `vip_g37_rf1_testroom_v1` | `test_room` | `vip-g37-rf1-v1.test-room.example.json` | 修复准入，非强度晋级 |
+| `vip_g37_rf1_free_v1` | `auto_match` | `vip-g37-rf1-v1.free-match.example.json` | 修复准入，非强度晋级 |
+| `vip_g37_rf1_test_tournament_v1` | `test_tournament` | `vip-g37-rf1-v1.test-tournament.example.json` | 修复准入，非强度晋级 |
+| `vip_g37_rf1_official_tournament_v1` | `official_tournament` | `vip-g37-rf1-v1.official-tournament.example.json` | 修复准入，非强度晋级 |
+
+启动准入字段（`startup_admitted`，允许该冻结包在指定模式启动）为 `true`，绑定已获批的真实修复、原生评分等价、原截止及时合法和代表性回归收据。强度准入字段（`strength_admission`，相对稳定版本的增强资格）保持 `false`。按[当前修复验收](../../review/vip-route-2026-09-30/evidence/t224-G38-four-source-effect-1/REPAIR-ACCEPTANCE.md)，不要求 +8 或参加官方现场比赛；正式／测试赛事另验基础接线、配置与包作用域和生命周期。
+
+RF1 编译目录为 `prebuilt/vip-g37-rf1-compiled-v1/`，复用 S03 合法保底、原生规则后端（`native`，已核验的 C 数学实现）、原截止和服务器通知流（`SSE Notify Stream`，事件水位通知）。独立预热 10 个每桌专属工作进程，`max_pending=0`；配置必须明确选择本模式策略与对应冻结包，不能因枚举存在而忽略准入。资源及依赖见[架构](../architecture.md#g37-rf1-独立可选评分修复接线2026-10-08)。
+
+本轮实包和回归结果见[G37-RF1交付报告](../../review/vip-route-2026-09-30/evidence/t226-minimal-scoring-repair-1/REPORT.md)；真实自由赛继续暂停，接线不自动启动比赛。
+
+## 2026-10-08：P0参赛发布包装
+
+**P0 四模式当前使用 `approved-v4` 清单与 `configs/vip-s03-rulefix-p0-approved-v4.*.example.json` 模板，策略枚举仍为 `vip_s03_rulefix_p0_*_v1`。** v2迁移启动依赖，v3重新冻结此前主线更新后的源码；v4仅因 `bootstrap.py` 增加 RF1 接线造成包源码清单（`source_manifest`，运行源码路径及摘要）漂移而重冻，候选身份、原公式、核心、二进制、旧批准资格、参数及原截止保持。9件批准原件随 `prebuilt/vip-s03-rulefix-p0-release-evidence-v1/` 交付，运行无需 `review/` 或 `datasets/`。旧包装保留，测试赛v2快照不重写，旧摘要不自动升级。目录和验签边界见[架构](../architecture.md#参赛发布依赖独立交付2026-10-08)。
 
 ## 2026-10-06 T194：T110-S03-E2审计工程后继
 
