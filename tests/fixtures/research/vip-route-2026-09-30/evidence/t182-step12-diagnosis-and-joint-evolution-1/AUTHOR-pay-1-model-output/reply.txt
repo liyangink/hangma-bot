@@ -1,0 +1,475 @@
+以当前合法胡的真实支付为统一机会成本锚，把近端条件支付的容量加权盈余、按k平方饱和递增并在层间共享扣减容量的保白用途阶梯、异族与自然准备的回落多样性压入同一排序点域经主通道压制次通道聚合，再以随风险、晚巡和已有链放大的锚比例持有费把等价或更差的等待收敛回立即胡。
+
+```json
+{
+  "operator": "i1",
+  "trigger": "无父代i1首发：当需要在同一排序尺度内统一当前合法胡的真实支付、保持听牌的零额外动作升级、按k递增的保白远端用途、已有链的断链暴露与回落多样性，且不得读他家暗牌、未来墙、完整世界或赛事阶段压力时，触发本联合排名机制。",
+  "changed_branches": [
+    "wait/unknown_draw：近端条件支付由独立信用改为对当前胡锚点的容量加权盈余通道，盈余与缺口分离，缺口只进持有费，公开容量不除以墙余",
+    "wait/unknown_draw：保白用途由逐目标取最大改为k平方饱和递增先验的共享容量阶梯，层间按先验降序逐码扣减容量并以LAYERDAMP压制次层",
+    "wait/unknown_draw：零额外物理动作的k层获CHEAPF乘子，显式标记保持听牌的便宜升级",
+    "wait/unknown_draw：新增异族出口与自然准备改善码的回落多样性通道，与近端、阶梯两通道做主次压制聚合",
+    "wait/unknown_draw：当前胡机会成本由锚价加风险费改为维持度与缺口的锚比例持有费，并按已有链数放大处理断链回落",
+    "hu根与choices/replacement/condition聚合保留合同语义并重定标到新锚差分尺度；chi/peng/gang根保留有界小调整，未裁决鸣牌仅条件评价"
+  ],
+  "expected_direction": "墙早中期对高k保白与便宜升级给出比人工种子更连续的估值梯度，k1不再因同常数奖励独占；晚巡、对手副露增多或已链缺口扩大时持有费上升，把等价或更差的等待压回立即胡；全部为预期声明，生成或装载不等于准入、性能改进或发布，须整套候选重评测并独立确认，现有烟测不证明1秒在线可用。",
+  "counterexample": "四白在手且自然准备改善宽度精确为零时，高层阶梯仍可凭k平方先验获得正信用压过即时小胡，弱对手长批次追大失败；k层改善码与主出口码高度重合时，共享容量逐层扣减可使k1层低于种子估值而错误弃保白；条件支付恰好等于当前锚时维持度为零、持有费最大，可能在等价支付面上错误转立即胡；流局边缘的非听远手因阶梯与回落通道仍为正而错过安全弃牌；这些反例未被现有烟测覆盖。",
+  "parent_differences": [],
+  "parameter_changes": []
+}
+```
+
+```python
+"""i1联合机制：锚差分三通道压制聚合、共享容量保白阶梯与链放大持有费。"""
+
+PAYCAP = 46.0
+PAYREF = 176.0
+HUBASE = 9.0
+WAITBASE = 11.0
+EXITCAP = 4.6
+EXITREF = 11.0
+FORMCOST = 3.4
+VARREF = 4.0
+SOFT = 0.72
+RETENTION = 20
+WALLSOFT = 8.0
+UNKNOWNSCALE = 0.70
+OPPDECAY = 0.05
+DEALERBOOST = 1.16
+HORIZONCOST = 0.42
+MATURELINEAR = 0.35
+PURPOSEMAX = 11.0
+PURPOSEGROW = 3.0
+LAYERMASSREF = 6.0
+LAYERSTEP = 0.38
+CHEAPF = 1.28
+PREPSHARE = 0.22
+LAYERDAMP = 0.45
+DAMP = 0.45
+PAYW = 5.2
+PAYMASSREF = 14.0
+COVREF = 3.0
+COVMIN = 0.72
+HOLDA = 0.34
+HOLDB = 0.90
+GAPREF = 24.0
+CHAINRISK = 0.18
+FALLCAP = 1.30
+FALLREF = 10.0
+FALLW1 = 1.0
+FALLW2 = 0.8
+PAIRPRIORWEIGHT = 0.30
+QUALUNKNOWN = 0.66
+QUALUNANALYSED = 0.90
+UNKNOWNDRAW = 2.20
+UNANCHOR = 0.15
+CLAIMCOST = 0.24
+SKIPVALUE = 0.10
+GANGCOST = 0.12
+RISKBASE = 1.8
+OPPRISK = 0.12
+LATERISK = 3.4
+UNKNOWNWALLRISK = 0.7
+
+
+def paypoints(amount):
+    """本家净积分除基础分后的有界排序点；不是期望积分或摸牌概率。"""
+    return PAYCAP * amount / (PAYREF + abs(amount))
+
+
+def purposek(retained):
+    """k层保白先验按k平方饱和递增；修正种子同常数且罚随k加重的k1偏置。"""
+    square = float(retained) * float(retained)
+    return PURPOSEMAX * square / (PURPOSEGROW + square)
+
+
+def stockof(slot, waiting):
+    """排序库存、精确张数与未知标记；精确零关闭，保守正与未知软保留。"""
+    capacity = waiting["unseen_capacities"][slot]
+    evidence = waiting["unseen_evidence"][slot]
+    if evidence == "exact" and capacity is not None:
+        return float(capacity), capacity, 0
+    if evidence == "conservative" and capacity is not None and capacity > 0:
+        return float(capacity), 0, 1
+    return SOFT, 0, 1
+
+
+def routesupport(codes, codeindex, drawscale, stock):
+    """按规范牌码去重的一步推进支持；同码只计一次，不跨路线相加。"""
+    mass = 0.0
+    width = 0
+    seen = set()
+    for code in codes:
+        if code not in seen:
+            seen.add(code)
+            cell = stock[codeindex[code]]
+            if cell[0] > 0.0:
+                mass += cell[0]
+                width += 1
+    credit = (drawscale * EXITCAP * mass / (EXITREF + mass)
+              * float(width) / (VARREF + float(width)))
+    return credit, mass, width
+
+
+def actualroute(shanten, support, structural):
+    """真实向听加出口支持的路线上限；L不是保证还需摸几次。"""
+    length = max(0, shanten) + 1
+    value = support[0] - FORMCOST * float(length - 1) + structural
+    return shanten, length, support[0], support[1], support[2], value
+
+
+def prepvalue(waiting):
+    """不借白、不含将的自然面子准备事实与单一负担成熟度。"""
+    prep = waiting["natural_preparation"]
+    need = prep["natural_draw_lower_bound"]
+    discard = prep["natural_discard_lower_bound"]
+    width = waiting["natural_preparation_code_width"]
+    burden = float(max(need, discard))
+    readiness = 1.0 / (1.0 + MATURELINEAR * burden)
+    if need > 0 and width == 0:
+        readiness = 0.0
+    return need, discard, width, readiness
+
+
+def paysummary(waiting, seat, base):
+    """逐码条件支付的下端包络摘要；同码两抓打假设互斥只取下端。"""
+    payments = waiting["normal_draw_hu_payments"]
+    if payments is None:
+        return 0, None, 0, 0.0, ()
+    partial = len(waiting["qualification_unknown_codes"]) > 0
+    if not payments:
+        if partial:
+            return 3, 0.0, 0, 0.0, ()
+        return 1, 0.0, 0, 0.0, ()
+    groups = []
+    currentcode = None
+    lower = 0.0
+    capacity = 0.0
+    for payment in payments:
+        amount = float(payment["settlement"]["score_delta"][seat]) / base
+        point = paypoints(amount)
+        code = payment["draw_code"]
+        if code != currentcode:
+            if currentcode is not None:
+                groups.append((capacity, lower))
+            currentcode = code
+            lower = point
+            capacity = float(payment["draw_capacity_before"])
+        else:
+            if point < lower:
+                lower = point
+    groups.append((capacity, lower))
+    mass = 0.0
+    total = 0.0
+    for group in groups:
+        mass += group[0]
+        total += group[0] * group[1]
+    average = total / mass if mass > 0.0 else 0.0
+    state = 3 if partial else 2
+    return state, average, len(groups), mass, tuple(groups)
+
+
+def paychannel(payment, anchor, discount, covfactor):
+    """锚差分近端通道：只取超过当前锚的容量加权盈余，缺口另入持有费。"""
+    if payment[0] == 0 or payment[1] is None:
+        return 0.0, 0.0, 0.0, 0.0
+    base = 0.0 if anchor is None else anchor
+    surplus = 0.0
+    gaps = 0.0
+    upwidth = 0
+    for offer in payment[4]:
+        difference = offer[1] - base
+        if difference > 0.0:
+            surplus += offer[0] * difference
+            upwidth += 1
+        else:
+            gaps += offer[0] * max(0.0, -difference)
+    maintained = 0.0
+    if surplus + gaps > 0.0:
+        maintained = surplus / (surplus + gaps)
+    width = float(upwidth)
+    credit = (discount * covfactor * PAYW * surplus / (PAYMASSREF + surplus)
+              * width / (VARREF + width))
+    return credit, maintained, gaps, surplus
+
+
+def purposeladder(waiting, standard, seven, prep, codeindex, room, drawscale,
+                  pressure, stock, dealerboost):
+    """保白用途阶梯：k层先验随k平方饱和递增，层间共享容量逐层扣减并降序压制。"""
+    whites = waiting["structure"]["whites_held"]
+    layers = []
+    order = 0
+    for target in waiting["structure"]["targets"]:
+        if target["target_stage"] != "waiting_predecessor":
+            continue
+        retained = target["retained_whites"]
+        if retained <= 0 or retained > whites:
+            continue
+        route = standard if target["family"] == "standard" else seven
+        if route is None:
+            continue
+        terminal = 1 if target["requires_terminal_draw"] else 0
+        need = target["natural_need"]
+        burden = max(need + terminal,
+                     target["target_natural_discard_lower_bound"]
+                     + target["target_white_discard_lower_bound"])
+        extra = max(0, burden - route[1])
+        prior = purposek(retained) * dealerboost
+        prepfactor = 1.0
+        if retained >= 2:
+            prepfactor = 1.0 - PREPSHARE + PREPSHARE * prep[3]
+        layers.append((prior, order, extra, float(burden),
+                       1.0 if extra <= 0 else 0.0, prepfactor,
+                       list(target["conditional_need_improvement_codes"])))
+        order += 1
+    ordered = sorted(layers, reverse=True)
+    consumed = []
+    layervalues = []
+    topcodes = ()
+    for layer in ordered:
+        seen = set()
+        mass = 0.0
+        for code in layer[6]:
+            if code not in seen:
+                seen.add(code)
+                residual = stock[codeindex[code]][0] - float(consumed.count(code))
+                if residual > 0.0:
+                    mass += residual
+        consumed.extend(sorted(seen))
+        if not topcodes:
+            topcodes = tuple(layer[6])
+        widthgate = mass / (LAYERMASSREF + mass)
+        excess = 0.0 if room is None else max(0.0, layer[3] - room)
+        burdengate = 1.0 / (1.0 + HORIZONCOST * excess)
+        stepgate = 1.0 / (1.0 + LAYERSTEP * float(layer[2]))
+        cheapflag = CHEAPF if layer[4] > 0.0 else 1.0
+        credit = (widthgate * burdengate * stepgate * cheapflag * layer[5]
+                  * drawscale * pressure)
+        layervalues.append(layer[0] * credit)
+    total = 0.0
+    factor = 1.0
+    for layervalue in sorted(layervalues, reverse=True):
+        total += factor * layervalue
+        factor *= LAYERDAMP
+    return total, topcodes, len(layervalues)
+
+
+def fallbackchannel(waiting, seven, mainfamily, occupied, codeindex, stock):
+    """回落通道：主出口与占用码之外异族及自然准备恢复码的有界多样性。"""
+    claims = []
+    if mainfamily == "standard" and seven is not None:
+        for code in waiting["seven_pairs_useful_codes"]:
+            claims.append((code, FALLW1))
+    if mainfamily == "seven_pairs":
+        for code in waiting["standard_useful_codes"]:
+            claims.append((code, FALLW1))
+    for code in waiting["natural_preparation"]["natural_need_improvement_codes"]:
+        claims.append((code, FALLW2))
+    mass = 0.0
+    diversity = 0
+    seen = set()
+    for claim in claims:
+        code = claim[0]
+        if code not in occupied and code not in seen:
+            seen.add(code)
+            cell = stock[codeindex[code]]
+            if cell[0] > 0.0:
+                mass += claim[1] * cell[0]
+                diversity += 1
+    return (FALLCAP * mass / (FALLREF + mass)
+            * float(diversity) / (VARREF + float(diversity)))
+
+
+def waitvalue(waiting, codeindex, seat, base, room, drawscale, pressure, discount,
+              risk, anchor, unknowncost, dealerboost):
+    """锚差分三通道压制聚合：近端盈余、保白阶梯、回落多样性与链放大持有费。"""
+    structure = waiting["structure"]
+    stock = []
+    for slot in range(len(waiting["unseen_capacities"])):
+        stock.append(stockof(slot, waiting))
+    prep = prepvalue(waiting)
+    standard = actualroute(structure["standard_shanten"],
+                           routesupport(waiting["standard_useful_codes"], codeindex,
+                                        drawscale, stock),
+                           0.0)
+    seven = None
+    main = standard
+    mainfamily = "standard"
+    if structure["seven_pairs_shanten"] is not None:
+        sevenlength = max(0, structure["seven_pairs_shanten"]) + 1
+        pairprior = (PAIRPRIORWEIGHT
+                     * float(min(2, max(0, structure["natural_pair_count"] - 4)))
+                     / float(sevenlength))
+        seven = actualroute(structure["seven_pairs_shanten"],
+                            routesupport(waiting["seven_pairs_useful_codes"], codeindex,
+                                         drawscale, stock),
+                            pairprior * drawscale * pressure)
+        if seven[5] > main[5]:
+            main = seven
+            mainfamily = "seven_pairs"
+    exitc = main[5]
+    payment = paysummary(waiting, seat, base)
+    known = payment[2]
+    unknown = len(waiting["qualification_unknown_codes"])
+    coverage = float(known) / (COVREF + float(known))
+    covfactor = COVMIN + (1.0 - COVMIN) * coverage
+    if payment[0] == 0:
+        qualcost = QUALUNANALYSED
+    else:
+        qualcost = QUALUNKNOWN * float(unknown) / float(1 + known + unknown)
+    credit, maintained, gaps, surplus = paychannel(payment, anchor, discount, covfactor)
+    occupied = set(waiting["standard_useful_codes"])
+    if mainfamily == "seven_pairs":
+        occupied = set(waiting["seven_pairs_useful_codes"])
+    hu = waiting["legal_hu_draw_codes"]
+    if hu is not None:
+        for code in hu:
+            occupied.add(code)
+    purposec, topcodes, layercount = purposeladder(waiting, standard, seven, prep,
+                                                   codeindex, room, drawscale, pressure,
+                                                   stock, dealerboost)
+    for code in topcodes:
+        occupied.add(code)
+    fallbackc = fallbackchannel(waiting, seven, mainfamily, occupied, codeindex, stock)
+    channels = sorted([credit, purposec, fallbackc], reverse=True)
+    joint = 0.0
+    factor = 1.0
+    for channelvalue in channels:
+        joint += factor * channelvalue
+        factor *= DAMP
+    chain = waiting["chain_count"]
+    holdfee = 0.0
+    if anchor is not None:
+        holdfee = ((HOLDA * anchor * (1.0 - maintained)
+                    + HOLDB * gaps / (GAPREF + gaps)) * risk
+                   * (1.0 + CHAINRISK * float(chain)))
+        value = WAITBASE + exitc + joint - holdfee - qualcost - unknowncost
+    else:
+        value = WAITBASE + exitc + joint - qualcost - unknowncost - UNANCHOR * risk
+    facts = (credit, purposec, fallbackc, payment, holdfee, chain, exitc, prep,
+             mainfamily, layercount)
+    return value, facts
+
+
+def score_actions(view):
+    """对全部冻结后序节点一次共享计算，并给每个合法根恰一条有限评分。
+
+    choices在合法续行中择优；replacement与condition消费全部相容边的
+    下端加有界价差，不挑最好补牌；机械缺口显式弃权。庄家身份只作
+    公开先验乘子。无文件、网络、时钟、随机或跨调用缓存。
+    """
+    context = view["visible_state"]
+    seat = context["seat"]
+    base = float(view["binding"]["base_score"])
+    wall = context["remaining_tile_count"]
+    dealerboost = DEALERBOOST if seat == context["dealer_seat"] else 1.0
+    opponents = 0
+    for otherseat, melds in enumerate(context["melds"]):
+        if otherseat != seat:
+            opponents += len(melds)
+    pressure = 1.0 / (1.0 + OPPDECAY * float(opponents))
+    if wall is None:
+        room = None
+        drawscale = UNKNOWNSCALE
+        discount = drawscale * pressure
+        risk = RISKBASE + OPPRISK * float(opponents) + UNKNOWNWALLRISK
+    else:
+        margin = max(0.0, float(wall) - float(RETENTION))
+        room = max(1.0, margin / 4.0)
+        drawscale = 1.0 if margin > 0.0 else 0.0
+        discount = drawscale * pressure * (0.30 + 0.70 * margin / (WALLSOFT + margin))
+        risk = (RISKBASE + OPPRISK * float(opponents)
+                + LATERISK * WALLSOFT / (WALLSOFT + margin))
+    codeindex = {code: index for index, code in enumerate(view["tile_order"])}
+    nodes = view["nodes"]
+    indexes = {node["node_key"]: index for index, node in enumerate(nodes)}
+    anchor = None
+    for action in view["actions"]:
+        node = nodes[indexes[action["node_key"]]]
+        if node["kind"] == "hu":
+            amount = float(node["settlement"]["score_delta"][seat]) / base
+            point = paypoints(amount)
+            if anchor is None or point > anchor:
+                anchor = point
+    values = []
+    factslist = []
+    for node in nodes:
+        if node["gap_kind"] is not None:
+            return {"status": "ABSTAIN", "reason": "graph_gap"}
+        kind = node["kind"]
+        children = node["children"]
+        if kind == "wait" or kind == "unknown_draw":
+            unknowncost = UNKNOWNDRAW if kind == "unknown_draw" else 0.0
+            value, facts = waitvalue(node["waiting"], codeindex, seat, base, room,
+                                     drawscale, pressure, discount, risk, anchor,
+                                     unknowncost, dealerboost)
+        elif kind == "hu":
+            amount = float(node["settlement"]["score_delta"][seat]) / base
+            value = HUBASE + paypoints(amount)
+            facts = None
+        elif kind == "choices":
+            if not children:
+                return {"status": "ABSTAIN", "reason": "empty_choices"}
+            bestindex = indexes[children[0]]
+            value = values[bestindex]
+            for child in children:
+                childindex = indexes[child]
+                if values[childindex] > value:
+                    bestindex = childindex
+                    value = values[childindex]
+            facts = factslist[bestindex]
+        else:
+            if not children:
+                return {"status": "ABSTAIN", "reason": "empty_condition"}
+            value = values[indexes[children[0]]]
+            total = 0.0
+            for child in children:
+                childvalue = values[indexes[child]]
+                total += childvalue
+                if childvalue < value:
+                    value = childvalue
+            mean = total / float(len(children))
+            blend = 0.40 if kind == "replacement" else 0.20
+            cap = 2.3 if kind == "replacement" else 1.0
+            value = value + min(cap, blend * max(0.0, mean - value))
+            facts = None
+        values.append(value)
+        factslist.append(facts)
+    entries = []
+    actioncount = len(view["actions"])
+    for action in view["actions"]:
+        index = indexes[action["node_key"]]
+        kind = action["action_type"]
+        adjustment = 0.0
+        if kind == "chi" or kind == "peng":
+            adjustment = SKIPVALUE * float(action["skipped_seats"]) * drawscale - CLAIMCOST
+        elif kind == "gang":
+            adjustment = -GANGCOST
+        value = values[index] + adjustment
+        pairs = [("condition", action["pending_condition"]), ("adjust", round(adjustment, 3))]
+        facts = factslist[index]
+        if facts is not None and actioncount <= 24:
+            payment = facts[3]
+            if payment[1] is None:
+                avgpoint = None
+            else:
+                avgpoint = round(payment[1], 3)
+            pairs.append(("pay", (payment[0], avgpoint, payment[2], round(payment[3], 3))))
+            pairs.append(("exit", (facts[8], round(facts[6], 3), facts[9])))
+            pairs.append(("chan", (round(facts[0], 3), round(facts[1], 3), round(facts[2], 3))))
+            pairs.append(("hold", (round(facts[4], 3), facts[5])))
+            pairs.append(("prep", (facts[7][0], facts[7][1], facts[7][2], round(facts[7][3], 3))))
+        if not entries:
+            pairs.append(("unit", "heuristic_rank_points"))
+            pairs.append(("formula", "vip_anchor_ladder_shared_capacity/1"))
+            if anchor is None:
+                anchorvalue = None
+            else:
+                anchorvalue = round(anchor, 3)
+            pairs.append(("context", (wall, opponents, round(dealerboost, 3),
+                                      round(discount, 3), round(risk, 3), anchorvalue)))
+            pairs.append(("unknown", "opponent_hu_and_future_draw_reachability"))
+            pairs.append(("scope", "conditional_facts_not_probability_or_guaranteed_highfan"))
+        entries.append({"action_key": action["action_key"], "score": value, "trace": dict(pairs)})
+    return {"status": "SCORED", "entries": entries}
+```

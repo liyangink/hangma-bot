@@ -1,0 +1,97 @@
+{
+  "schema": "r16-generation2-preflight-result/1",
+  "status": "FAIL_ALL_R16_G2_ZERO_TABLE_GATE",
+  "deduplicated_windows": 226,
+  "candidates": [
+    {
+      "candidate_id": "C",
+      "status": "FAIL_R16_G2_ZERO_TABLE_GATE",
+      "counts": {
+        "active_windows": 0,
+        "changed_choices": 0,
+        "determinism_mismatches": 0,
+        "missing_goal_trace_windows": 0,
+        "non_tie_changed_choices": 0,
+        "partial_coverage_mismatches": 0,
+        "route_ablation_mismatches": 0,
+        "route_order_mismatches": 0,
+        "stage_ablation_mismatches": 0,
+        "windows": 226
+      },
+      "goal_reasons": {
+        "goal_set_unknown_or_incompatible": 1805,
+        "legal_hu_exact_v2": 111,
+        "stable_v2_baseline": 7,
+        "strictly_dominated": 7
+      },
+      "non_tie_changed_origins": [],
+      "non_tie_changed_seats": [],
+      "total_preflight_seconds": 2.114847250049934,
+      "mean_evaluate_ms": 1.0794568492668326,
+      "max_operations_observed": 9838,
+      "gate_checks": {
+        "active_windows": false,
+        "changed_choices": false,
+        "non_tie_changed_origins": false,
+        "non_tie_changed_seats": false,
+        "stage_ablation_exact_v2": true,
+        "route_ablation_exact_v2": true,
+        "partial_coverage_exact_v2": true,
+        "route_order_invariant": true,
+        "deterministic": true,
+        "goal_trace_complete": true,
+        "mean_evaluate_ms": true,
+        "operations_within_limit": true,
+        "no_contract_failures": true
+      },
+      "failures": []
+    },
+    {
+      "candidate_id": "D",
+      "status": "FAIL_R16_G2_ZERO_TABLE_GATE",
+      "counts": {
+        "active_windows": 0,
+        "changed_choices": 0,
+        "determinism_mismatches": 0,
+        "missing_goal_trace_windows": 0,
+        "non_tie_changed_choices": 0,
+        "partial_coverage_mismatches": 0,
+        "route_ablation_mismatches": 0,
+        "route_order_mismatches": 0,
+        "stage_ablation_mismatches": 0,
+        "windows": 226
+      },
+      "goal_reasons": {
+        "fewer_than_two_frontier_actions": 66,
+        "legal_hu_exact_v2": 111,
+        "no_unique_strict_dominator": 4,
+        "unknown_frontier_goal_set": 1749
+      },
+      "non_tie_changed_origins": [],
+      "non_tie_changed_seats": [],
+      "total_preflight_seconds": 3.1399162500165403,
+      "mean_evaluate_ms": 1.7984651716269422,
+      "max_operations_observed": 21138,
+      "gate_checks": {
+        "active_windows": false,
+        "changed_choices": false,
+        "non_tie_changed_origins": false,
+        "non_tie_changed_seats": false,
+        "stage_ablation_exact_v2": true,
+        "route_ablation_exact_v2": true,
+        "partial_coverage_exact_v2": true,
+        "route_order_invariant": true,
+        "deterministic": true,
+        "goal_trace_complete": true,
+        "mean_evaluate_ms": true,
+        "operations_within_limit": true,
+        "no_contract_failures": true
+      },
+      "failures": []
+    }
+  ],
+  "tables_run": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "next": "全部失败则按冻结停止条件关闭R16并复盘公开投影充分性"
+}

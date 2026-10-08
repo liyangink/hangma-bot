@@ -1,11 +1,28 @@
 """杠链预算只截断未来事实，不截断当前合法动作或跨窗口继续杠。"""
+
+from pathlib import Path as _StoragePath
+import sys as _storage_sys
+_PROJECT_ROOT = next(p for p in _StoragePath(__file__).resolve().parents
+                     if (p / "src/hangma_bot/bootstrap.py").is_file())
+_storage_sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from hangma_bot.adapters.recording.project_storage import project_file as _resolve_project_file
+_PROJECT_STORAGE_ORIGIN = 'tests/unit/policy'
+
+def _project_file(root, source):
+    """共享脚本的相邻数据沿用原逻辑目录，相邻代码从共享目录读取。"""
+    source = _StoragePath(source)
+    here = _StoragePath(__file__).resolve().parent
+    if source.is_absolute() and source.is_relative_to(here):
+        if not source.is_dir() and not (source.suffix == ".py" and source.is_file()):
+            source = root / _PROJECT_STORAGE_ORIGIN / source.relative_to(here)
+    return _resolve_project_file(root, source)
 import importlib.util
 from pathlib import Path
 from types import SimpleNamespace
 import pytest
 from hangma_bot.hangma.route_transition import ConditionalPhase
 
-PATH = Path(__file__).resolve().parents[3] / 'review/vip-route-2026-09-30/evidence/t129-s02-grouped-optimization-1/bounded_chain.py'
+PATH = _project_file(_PROJECT_ROOT, Path(__file__).resolve().parents[3] / 'review/vip-route-2026-09-30/evidence/t129-s02-grouped-optimization-1/bounded_chain.py')
 spec = importlib.util.spec_from_file_location('t129_chain_test', PATH)
 module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)

@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "purpose": "官方同手计算器确认的支付反例；没有网络调用，仅作生产规则回归。",
+  "rule_config": {
+    "ruleset_version": "hangma-mvp-v10-public-counts",
+    "base_score": 1,
+    "you_cai_bi_kao": false
+  },
+  "minimal_observation": {
+    "schema_version": 1,
+    "game_id": "a_19a598200049_r1_b1_t0",
+    "seat": 0,
+    "round_no": 3,
+    "snapshot_seq": 647,
+    "consumed_seq": 647,
+    "history_complete": false,
+    "chain_piao": 0,
+    "gang_draw": false,
+    "observation_issues": [],
+    "phase": "draw",
+    "dealer_seat": 0,
+    "turn_seat": 0,
+    "responding_seats": [],
+    "my_hand": [
+      "8b",
+      "6t",
+      "白",
+      "1b",
+      "2b",
+      "8t",
+      "白",
+      "8b",
+      "8t",
+      "3b",
+      "6t",
+      "白",
+      "6t",
+      "1b"
+    ],
+    "drawn_tile": "1b",
+    "discards": [
+      [],
+      [],
+      [],
+      []
+    ],
+    "melds": [
+      [],
+      [],
+      [],
+      []
+    ],
+    "hand_counts": [
+      14,
+      13,
+      13,
+      13
+    ],
+    "last_discard": null,
+    "remaining_tile_count": 49,
+    "scores": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "rule_state": {
+      "wealth_god": "白",
+      "baotou": true,
+      "chain_count": 0,
+      "catch_play": false
+    },
+    "public_history": []
+  },
+  "official_request": {
+    "hand": [
+      "8b",
+      "6t",
+      "白",
+      "1b",
+      "2b",
+      "8t",
+      "白",
+      "8b",
+      "8t",
+      "3b",
+      "6t",
+      "白",
+      "6t"
+    ],
+    "draw": "1b",
+    "chain": {
+      "count": 0,
+      "piao": 0
+    },
+    "base": 1
+  },
+  "official_response": {
+    "hu": true,
+    "baotou": true,
+    "fan": 2,
+    "detail": [
+      "七对"
+    ],
+    "scores": {
+      "dealer_hu": {
+        "win": 48,
+        "lose": [
+          16,
+          16,
+          16
+        ]
+      },
+      "nondealer_hu": {
+        "win": 20,
+        "lose": [
+          16,
+          2,
+          2
+        ]
+      }
+    }
+  },
+  "official_response_sha256": "880c0606c5450127c128b738fb80e7bc1e69de12afa9915d4eb9e3e3b39c32f1",
+  "actual_game": {
+    "game_id": "a_19a598200049_r1_b1_t0",
+    "round_no": 3,
+    "seat": 0,
+    "draw_seq": 647,
+    "hu_seq": 648
+  },
+  "scope": "最小公开观察为研究合成，非玄武原HTTP快照；原实战仍按官方2番。"
+}

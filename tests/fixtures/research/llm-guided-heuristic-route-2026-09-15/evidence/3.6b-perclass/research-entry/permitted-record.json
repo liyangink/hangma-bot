@@ -1,0 +1,67 @@
+{
+  "schema": "sitin-gates-research/1",
+  "entry_version": "perclass-research/1",
+  "permitted": true,
+  "refusals": [],
+  "evidence_kind": "research",
+  "admitted": false,
+  "gate_level_admitted": false,
+  "candidate": "four_component_path_value",
+  "identities": {
+    "candidate_bound_identity": "four_component_path_value|adj(default)|base(default)|src88c8e8f16fc4b687",
+    "panel": {
+      "path": "review/llm-guided-heuristic-route-2026-09-15/evidence/3.6b-perclass/corpus-manifest.json",
+      "rows": 16851,
+      "sha256": "0f7d4906731123284421536688260bd881fd2cf5cb5e1a1fcebda18bf009f956",
+      "constructed_trigger_set": false
+    },
+    "sampler": {
+      "id": "scenario-visible-sampler",
+      "version": "1.0.0",
+      "frozen_before_run": true,
+      "seeds": [
+        20260916,
+        20260917,
+        20260918
+      ],
+      "unit": "scenario_root"
+    }
+  },
+  "research_scope": {
+    "classes": [
+      "chain.open",
+      "chain.piao_discard",
+      "chain.break_discard"
+    ],
+    "evidence_pending": [
+      "chain.open",
+      "chain.piao_discard",
+      "chain.break_discard"
+    ],
+    "note": "研究范围内的类**允许**尚未验证（这正是研究的目的）；它们不得被写成已有结论。"
+  },
+  "claim_scope": {
+    "classes": [
+      "branch.chiitoi_live",
+      "branch.luxury_locked"
+    ],
+    "kinds": [
+      "behavior"
+    ],
+    "class_verdicts": {
+      "branch.chiitoi_live": "reliable",
+      "branch.luxury_locked": "reliable"
+    },
+    "note": "结论范围只允许落在逐类判定为 reliable 的类上，且种类限于 behavior / conditional_effect。"
+  },
+  "perclass_status": "INSUFFICIENT",
+  "gate_failures": [],
+  "not_admission_basis": true,
+  "boundaries": [
+    "研究执行资格**不是**发布准入，也不是效果结论（PHASE3-RULE-AWARE §4.4）。",
+    "条件结果只落条件效应，不外推整体积分或实际赛事发生率。",
+    "构造触发集上只能研究行为，不得声明条件效果或准入。",
+    "研究记录必须与候选/面板/采样器身份一起引用；身份不符即作废。"
+  ],
+  "note": "拒绝路径**先于**执行：refusals 非空即 permitted=False，且本记录永不带准入结论。"
+}

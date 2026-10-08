@@ -1,0 +1,43 @@
+{
+  "schema": "r16-rule-gold-verification/1",
+  "date": "2026-09-21",
+  "status": "PASS",
+  "command": "env PYTHONPATH=. .venv/bin/pytest -q tests/unit/hangma/test_value_official_oracle.py tests/unit/hangma/test_settlement.py tests/unit/hangma/test_pattern_progress_facts.py tests/unit/hangma/test_snapshot_chain_facts.py tests/unit/policy/test_action_value_policy.py",
+  "result": {
+    "tests_passed": 336,
+    "subtests_passed": 5,
+    "failures": 0,
+    "duration_seconds": 0.43
+  },
+  "sources": [
+    {
+      "path": "tests/unit/hangma/test_value_official_oracle.py",
+      "sha256": "2c28b9c16866898c092806d2b21c2b52b9e04018d2fd73e875855dd7421eef26",
+      "scope": "官方 fan-calc 金例、条件番、四座位支付、路线条件和补牌链"
+    },
+    {
+      "path": "tests/unit/hangma/test_settlement.py",
+      "sha256": "9592f8c3bfd1017e24470cc5eb223d005b9e49911d3ccac0234618b074a673c6",
+      "scope": "结算向量、七对、财飘、爆头与座位顺序"
+    },
+    {
+      "path": "tests/unit/hangma/test_pattern_progress_facts.py",
+      "sha256": "888c84106802c2984eef069eec4042ac7a2cb7f4f6ce36ca6f63cff8e58cb4e3",
+      "scope": "副露后七对关闭及分牌型进展事实"
+    },
+    {
+      "path": "tests/unit/hangma/test_snapshot_chain_facts.py",
+      "sha256": "66db9adb2d0f94a24d11c630335872ba0772c793efba984216ba0ca19513a61a",
+      "scope": "抓打圈、财飘与未知快照传播"
+    },
+    {
+      "path": "tests/unit/policy/test_action_value_policy.py",
+      "sha256": "4d241a551f55568f4191cadebad31e909f74d06d3f043d0d936d4d76386db347",
+      "scope": "公开评分视图投影、阶段账不变量和候选合同"
+    }
+  ],
+  "interpretation": "候选不重算杭麻规则；它只消费 HangmaRules 投影的条件路线和四座位结算。此证据验证规则源与投影合同，不构成候选强度证据。",
+  "tables_run": 0,
+  "strength_claim": false,
+  "release_eligible": false
+}

@@ -1,0 +1,32 @@
+{
+  "schema": "t24-root-formula-scope-static/1",
+  "status": "accepted_static_scope_no_scores",
+  "original_source_sha256": "748d79066be12c6e8578e6710faf8682b4da1ac6b6291605dd5d7720e84664f0",
+  "eight_helpers_exact_source": {
+    "pay_points": "d975aa120daf85fe5c21d2d54d4f00246796e7f75c22a724ad3d4ac9e965b8ed",
+    "route_support": "e4ac1b51761b8d7c92862037217f2f208515d9f256a599848ca1cdc06a2c571b",
+    "actual_route": "7ca5241040b879e7570551405c2d5f864496377cec7b67fbad0fe9a4039f6eb2",
+    "natural_offer": "2bb69376ca4d667dc658002280e98cdee1b2c8b456457d8ba9e79a5636989694",
+    "payment_summary": "d2636628a71b14ba60d2350308d6d920b7218ac74ef16740c2819d03f905fd58",
+    "wait_value": "bcdaf1056b519a46ddc9fde0cffc49f4da267218f998698b67163aaf9e21edae",
+    "public_interaction": "225f360393d285950bf13dae43aabb0ae450a0c792cdc41c20ea24e7d148bd96",
+    "maintained_ready": "9cea71cb7f1dd2620ba9cc035f99ba488806f884844b55b3a23a04327c01854b"
+  },
+  "old_constants_ast_equal": true,
+  "new_constants": [
+    "ROOTHELP_BLEND",
+    "ROOTORD_BLEND",
+    "ROOTPORT_CAP",
+    "ROOTPORT_REF",
+    "ROOTPURPOSE_BLEND"
+  ],
+  "score_prefix_ast_identical_after_removing_one_guard": true,
+  "guard": "anchor is None and discard and direct wait and drawscale>0",
+  "new_helper_call_sites": 1,
+  "trace_changes_separate_from_value_computation": true,
+  "protected_runtime_values_still_require_mechanics": true,
+  "rules_graph_payment_or_interface_changes": 0,
+  "root_formula_repairs": 0,
+  "new_independent_reviews": 0,
+  "new_business_scores": 0
+}

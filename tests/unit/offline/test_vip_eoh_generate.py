@@ -2,6 +2,23 @@
 
 from __future__ import annotations
 
+from pathlib import Path as _StoragePath
+import sys as _storage_sys
+_PROJECT_ROOT = next(p for p in _StoragePath(__file__).resolve().parents
+                     if (p / "src/hangma_bot/bootstrap.py").is_file())
+_storage_sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from hangma_bot.adapters.recording.project_storage import project_file as _resolve_project_file
+_PROJECT_STORAGE_ORIGIN = 'tests/unit/offline'
+
+def _project_file(root, source):
+    """共享脚本的相邻数据沿用原逻辑目录，相邻代码从共享目录读取。"""
+    source = _StoragePath(source)
+    here = _StoragePath(__file__).resolve().parent
+    if source.is_absolute() and source.is_relative_to(here):
+        if not source.is_dir() and not (source.suffix == ".py" and source.is_file()):
+            source = root / _PROJECT_STORAGE_ORIGIN / source.relative_to(here)
+    return _resolve_project_file(root, source)
+
 import hashlib
 import json
 import time
@@ -164,12 +181,12 @@ def test_v3_prompt_and_identity_bind_preparation_payment_and_actual_capacity(bat
     assert "normal_draw_hu_payments" in appendix["fact_type_definitions"]["RouteWaitingView"]
     assert "不能重复计数" in appendix["conditional_payment_scope"]
     identity = VipEohBatch.read(batch_file).identity(VIP_ROUTE_HEURISTIC_SEED_SOURCE)
-    contract = REPO_ROOT / identity["contract_path"]
+    contract = _project_file(_PROJECT_ROOT, REPO_ROOT / identity["contract_path"])
     assert contract.name == "FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md"
     assert identity["params"]["max_local_collection_size"] == 8192
     assert (out / "contract.md").read_bytes() == contract.read_bytes()
     assert hashlib.sha256(contract.read_bytes()).hexdigest() == identity["contract_sha256"]
-    old = REPO_ROOT / "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md"
+    old = _project_file(_PROJECT_ROOT, REPO_ROOT / "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md")
     assert hashlib.sha256(old.read_bytes()).hexdigest() != identity["contract_sha256"]
 
 

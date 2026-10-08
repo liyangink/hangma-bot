@@ -1,0 +1,201 @@
+{
+  "scope": "read_only_closed_T161_budget_diagnostic",
+  "raw_state_response_records": 3540,
+  "recovery_reasons_all_canonical_game_and_decision_files": {
+    "窗口结束: not_sent": 2027,
+    "reconnects_exhausted": 8
+  },
+  "zero_plan_count": 0,
+  "zero_plan_visible_snapshot_reconstructions": [],
+  "query_stats_by_purpose": {
+    "sse_initial": {
+      "http_status_counts": {
+        "200": 11
+      },
+      "queue": {
+        "n": 11,
+        "mean_ms": 428.5072082738307,
+        "p95_ms": 979.0503329131752,
+        "max_ms": 979.6760410536081
+      },
+      "transport": {
+        "n": 11,
+        "mean_ms": 136.59408320249483,
+        "p95_ms": 289.52933312393725,
+        "max_ms": 363.03654103539884
+      },
+      "same_seq_as_previous_state": 0,
+      "exact_same_snapshot_as_previous_state": 0
+    },
+    "sse_frame": {
+      "http_status_counts": {
+        "200": 1217
+      },
+      "queue": {
+        "n": 1217,
+        "mean_ms": 40.76981067105717,
+        "p95_ms": 234.87087502144277,
+        "max_ms": 618.4980419930071
+      },
+      "transport": {
+        "n": 1217,
+        "mean_ms": 16.98143963396684,
+        "p95_ms": 18.419125117361546,
+        "max_ms": 542.188584106043
+      },
+      "same_seq_as_previous_state": 0,
+      "exact_same_snapshot_as_previous_state": 0
+    },
+    "current_state_sync": {
+      "http_status_counts": {
+        "200": 1853
+      },
+      "queue": {
+        "n": 1853,
+        "mean_ms": 37.8093205918083,
+        "p95_ms": 219.03295791707933,
+        "max_ms": 767.4458750989288
+      },
+      "transport": {
+        "n": 1853,
+        "mean_ms": 17.686984236153616,
+        "p95_ms": 18.585457932204008,
+        "max_ms": 926.985708065331
+      },
+      "same_seq_as_previous_state": 0,
+      "exact_same_snapshot_as_previous_state": 0
+    },
+    "known_window_refresh": {
+      "http_status_counts": {
+        "200": 75
+      },
+      "queue": {
+        "n": 75,
+        "mean_ms": 19.98422668936352,
+        "p95_ms": 65.87887508794665,
+        "max_ms": 231.12441692501307
+      },
+      "transport": {
+        "n": 75,
+        "mean_ms": 15.92532493484517,
+        "p95_ms": 17.832000041380525,
+        "max_ms": 20.428458927199244
+      },
+      "same_seq_as_previous_state": 0,
+      "exact_same_snapshot_as_previous_state": 0
+    },
+    "anticipated_chi_sync": {
+      "http_status_counts": {
+        "200": 98
+      },
+      "queue": {
+        "n": 98,
+        "mean_ms": 15.375332436429298,
+        "p95_ms": 68.01983388140798,
+        "max_ms": 293.3977080974728
+      },
+      "transport": {
+        "n": 98,
+        "mean_ms": 15.747621142286427,
+        "p95_ms": 18.172415904700756,
+        "max_ms": 20.735708996653557
+      },
+      "same_seq_as_previous_state": 0,
+      "exact_same_snapshot_as_previous_state": 0
+    },
+    "sse_self_wake": {
+      "http_status_counts": {
+        "200": 155
+      },
+      "queue": {
+        "n": 155,
+        "mean_ms": 84.30022422164198,
+        "p95_ms": 291.4248341694474,
+        "max_ms": 483.48366585560143
+      },
+      "transport": {
+        "n": 155,
+        "mean_ms": 14.467061824736096,
+        "p95_ms": 17.05129211768508,
+        "max_ms": 20.03300003707409
+      },
+      "same_seq_as_previous_state": 71,
+      "exact_same_snapshot_as_previous_state": 71
+    },
+    "sse_settled_long_poll": {
+      "http_status_counts": {
+        "200": 129
+      },
+      "queue": {
+        "n": 129,
+        "mean_ms": 53.47631392141356,
+        "p95_ms": 56.58270791172981,
+        "max_ms": 120.5152499023825
+      },
+      "transport": {
+        "n": 129,
+        "mean_ms": 2611.9609325059305,
+        "p95_ms": 4955.433417111635,
+        "max_ms": 5192.4516670405865
+      },
+      "same_seq_as_previous_state": 121,
+      "exact_same_snapshot_as_previous_state": 51
+    },
+    "sse_phase_probe": {
+      "http_status_counts": {
+        "200": 2
+      },
+      "queue": {
+        "n": 2,
+        "mean_ms": 0.06781204137951136,
+        "p95_ms": 0.050791073590517044,
+        "max_ms": 0.08483300916850567
+      },
+      "transport": {
+        "n": 2,
+        "mean_ms": 862.9407079424709,
+        "p95_ms": 716.6509160306305,
+        "max_ms": 1009.2304998543113
+      },
+      "same_seq_as_previous_state": 0,
+      "exact_same_snapshot_as_previous_state": 0
+    }
+  },
+  "expired_query_purpose_waits": {
+    "expired_window_purpose": {
+      "n": 1952,
+      "mean_ms": 0.2156255240017762,
+      "p95_ms": 0.44700014404952526,
+      "max_ms": 1.0137499775737524
+    }
+  },
+  "interpretation": "重复观测不证明可安全跳过。零规划最近快照重建不是补造完整候选评分；未授强度、时限或发布。",
+  "official_calls": 0,
+  "llm_calls": 0,
+  "full_candidate_score_calls": 0,
+  "sources_sha256": {
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/decisions.jsonl": "67152b7196b7ba0ac7bbcb77647340471cfbfdbb32046ec99a329a26ed82d4dc",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b0_t0.jsonl": "37a3038235f91116e57de9d5c2f812e6e9dba6da871b9b8a64b7eecb6ff91453",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b1_t0.jsonl": "e344b43f320a3e0a0a34479a0f8620815785896eb0de7c982409469439117668",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b2_t0.jsonl": "83e769ea75e1dcaa31d1886cf294dd3958fd262d966d5f1068cb57f82abcbe42",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b3_t0.jsonl": "5fcb6c426d365ac73289cfe0981b5913e74bdbac37e506c4a81fb92773377ab6",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b4_t0.jsonl": "252d8375c77a4333b31696f454446fb65c8175bdb0d32b224d5a35f97a348996",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b5_t0.jsonl": "510d7834ada84b117353d7255ed7590da27ce656d4853b067114159e0f836dee",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b6_t0.jsonl": "0cc41aa9a146492bd4e029d4c9384b137f837cae2b61c7bd1e9e2e9a233461f7",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b7_t0.jsonl": "35847e41dc71e89891e09e72830810d98ea2d930f8df5e9279f2a87f9ec2fdcc",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b8_t0.jsonl": "2566e31c6fc6144dd525e95159ef4ce3d62f9dddf28514180fef711494ca375e",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b9_t0.jsonl": "9cedfa1edb4834d1f26576009abf62233fa4172b6a33cb964ac5bd65975aeb74",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b0_t0.00001.jsonl.gz": "7abcc32cd33b1d1073388dd71f816727bc7fc4bffc3f986addc8791e2bd9ad8c",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b1_t0.00001.jsonl.gz": "459a6f49f2cac38fd494774774e8b7446c4df8c4ee5aa903a9f030c53afadd81",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b2_t0.00001.jsonl.gz": "554259b98302e77b457afa4bd4d1d11447af38cf98ad8e4b89636b241891bd5e",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b3_t0.00001.jsonl.gz": "c409ff130acd54f041db152e3c5aac88ea4d87e4035cca83d0fa311b5560b8ba",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b4_t0.00001.jsonl.gz": "d9ae91f535f62ddc1dd58748a86b1c89f6bb2625b072d0ae1e2f1ecd68f78622",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b5_t0.00001.jsonl.gz": "279bbd8daa0c123cf72d7e476b8f9f8e4c34d8635bd86f4735bdab34b1daa090",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b6_t0.00001.jsonl.gz": "f1aaf3cbba0e5487f8a38e39913b1d1a14a7f2fdd09f2b03b3155bf48c4561a2",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b7_t0.00001.jsonl.gz": "f3dcfbc36f858f7941c9d4f0a904e2d30a4209f0247db0f3ed9114c9440c0b81",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b8_t0.00001.jsonl.gz": "d5bbd05dc72ede63624a70a740a38a2b737cf6f6429fbb70e7a322a85e7fd0d0",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b9_t0.00001.jsonl.gz": "1467a8b88662c4d871d2cdfe425d79f1a737bcf94b07351b06b9016f5d672039",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/raw/global.00001.jsonl.gz": "f382dcc4d6130efce268341095af9ee5f42e47f617aa5216579a17c62c86a992",
+    "artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/unknown/raw/global.00001.jsonl.gz": "1a9bdf9fadb32c6c9ae32196cb65fd1e6bf80a1c89b58c2830f170d4b677a453"
+  }
+}

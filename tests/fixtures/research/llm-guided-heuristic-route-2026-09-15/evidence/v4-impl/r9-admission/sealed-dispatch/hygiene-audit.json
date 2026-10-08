@@ -1,0 +1,3294 @@
+{
+ "schema": "sitin-sealed-dispatch-audit/1",
+ "sessions_root": "/Users/liyang/.dsh/sessions",
+ "rows": [
+  {
+   "task_id": "T01",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 351,
+   "answer_sha256": "b00460faa9dd7cbe0ac9d730f9fe2ccac2131ab8d5584898c55b7f53c8b278b1",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "669ea158-ab14-481d-b0a9-84a38062b790"
+  },
+  {
+   "task_id": "T11",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 232,
+   "answer_sha256": "688083defd7c5f131b9938ab18c8fdf54302c013c5499d7693fd5321a767a082",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "8663e571-7b6e-4eff-8e6b-17c08a604602"
+  },
+  {
+   "task_id": "T12",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 291,
+   "answer_sha256": "3d40bf4f39cb1c9fb2abb91520ccfd08887c4ec369c69452a5cac1a6b014fc24",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "7f62a2c5-864d-4b47-9e90-0679f7b352d1"
+  },
+  {
+   "task_id": "T22",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 389,
+   "answer_sha256": "3e010c3c8369adf03e72dfe5780dd3a2391e95f094b307c94f6925588652b441",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "de0dbda9-c184-4441-8518-db845daf27bd"
+  },
+  {
+   "task_id": "T14",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 235,
+   "answer_sha256": "3d583c94918200ec533feb7f53a8b7b20ab00fe68851168440402f03df247cbe",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "02e51df7-2c3f-4619-9f46-7b2de6f429a9"
+  },
+  {
+   "task_id": "T16",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 466,
+   "answer_sha256": "44f67c41be9354c7f468e9bf351f8f0c3c03028aa4c14eeaf27e38f1e525ceef",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "6b0113b3-2c67-4c46-aeff-475d27121178"
+  },
+  {
+   "task_id": "T15",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 272,
+   "answer_sha256": "016fd578ec52959d30208c3ccbffa7ed3eee69dc8703338a1978df8ccd71049b",
+   "tool_calls": 14,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 14,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const out: any = {};\\ntry {\\n  const g1 = await tools.grep({ pattern: \\\"sitin-confirm-roots\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\n  out.g1 = g1.matches.slice(0, 30);\\n} catch (e: any) { out.g1err = String(e.message).slice(0, 200); }\\ntry {\\n  const g2 = await tools.grep({ pattern: \\\"确认隔离|MODEL-EVOLUTION-RESEARCH-2026-09-17|三段反馈\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\n  out.g2 = g"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-confirm-roots', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-confirm-roots', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': '确认隔离|MODEL-EVOLUTION-RESEARCH-2026-09-17|三段反馈', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': '确认隔离|MODEL-EVOLUTION-RESEARCH-2026-09-17|三段反馈', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const r = await tools.read({ file_path: \\\"/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md\\\" });\\nconst text = r.lines.map(l => `${l.number}: ${l.text}`).join(\\\"\\\\n\\\");\\n// print §4 and §7 regions\\nconst lines = r.lines;\\nconst idx = lines.filter(l => /^## /.test(l.text)).map(l => `${l.number}: ${l.text}`);\\nreturn { headings: i"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const out: any = {};\\ntry {\\n  const g1 = await tools.grep({ pattern: \\\"sitin-confirm-roots\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\n  out.g1 = g1.matches.slice(0, 30);\\n} catch (e: any) { out.g1err = String(e.message).slice(0, 200); }\\ntry {\\n  const g2 = await tools.grep({ pattern: \\\"确认隔离|MODEL-EVOLUTION-RESEARCH-2026-09-17|三段反馈\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\n  out.g2 = g"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-confirm-roots', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-confirm-roots', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': '确认隔离|MODEL-EVOLUTION-RESEARCH-2026-09-17|三段反馈', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': '确认隔离|MODEL-EVOLUTION-RESEARCH-2026-09-17|三段反馈', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const r = await tools.read({ file_path: \\\"/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md\\\" });\\nconst text = r.lines.map(l => `${l.number}: ${l.text}`).join(\\\"\\\\n\\\");\\n// print §4 and §7 regions\\nconst lines = r.lines;\\nconst idx = lines.filter(l => /^## /.test(l.text)).map(l => `${l.number}: ${l.text}`);\\nreturn { headings: i"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "read",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md'}"
+     }
+    ]
+   },
+   "kind": "r1",
+   "run_id": "0dcd96a0-f28e-40b3-bc27-b7a74ef65708"
+  },
+  {
+   "task_id": "T13",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 613,
+   "answer_sha256": "4228b13a4e3d9dc4f506c4fc3b61a3f907924daea87707fada61e6a0b9c615db",
+   "tool_calls": 38,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 38,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Search repo for delta_bounds and interval_95 semantics\", \"code\": \"\\nconst pats = [\\\"delta_bounds\\\", \\\"interval_95\\\", \\\"unresolved_roots\\\", \\\"d_low\\\", \\\"mean_delta_low\\\"];\\nconst out: any = {};\\nfor (const p of pats) {\\n  try {\\n    const r = await tools.grep({ pattern: p, path: \\\".\\\" });\\n    out[p] = r.matches.slice(0, 25).map(m => `${m.path}:${m.lineNumber}: ${m.line.trim().slic"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'delta_bounds', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'delta_bounds', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'interval_95', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'interval_95', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'unresolved_roots', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'unresolved_roots', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'd_low', 'path': '.'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Search repo for delta_bounds and interval_95 semantics\", \"code\": \"\\nconst pats = [\\\"delta_bounds\\\", \\\"interval_95\\\", \\\"unresolved_roots\\\", \\\"d_low\\\", \\\"mean_delta_low\\\"];\\nconst out: any = {};\\nfor (const p of pats) {\\n  try {\\n    const r = await tools.grep({ pattern: p, path: \\\".\\\" });\\n    out[p] = r.matches.slice(0, 25).map(m => `${m.path}:${m.lineNumber}: ${m.line.trim().slic"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'delta_bounds', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'delta_bounds', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'interval_95', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'interval_95', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'unresolved_roots', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'unresolved_roots', 'path': '.'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'd_low', 'path': '.'}"
+     }
+    ]
+   },
+   "kind": "r1",
+   "run_id": "da3f2253-54c4-4c9b-b1d6-1c51954b55ca"
+  },
+  {
+   "task_id": "T21",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 627,
+   "answer_sha256": "35df05b1da9796adce7aa96ff5528d9abae814379217096882f02c5e5110a2cc",
+   "tool_calls": 64,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 64,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Locate sitin_search.py and ledger code\", \"code\": \"const g = await tools.glob({ pattern: \\\"**/sitin_search*.py\\\" });\\nconsole.log(JSON.stringify(g, null, 1));\\nconst g2 = await tools.grep({ pattern: \\\"sitin-search-ledger|sitin-search-state|reserved|reconcile|reservation_id\\\", path: \\\"/Users/liyang/hangma-bot\\\", include: \\\"*.py\\\" });\\nconsole.log(g2.matches.slice(0, 80).map(m => `${"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin_search*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin_search*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-search-ledger|sitin-search-state|reserved|reconcile|reservation_id', 'path': '/Users/liyang/hangma-bot', 'include': '*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-search-ledger|sitin-search-state|reserved|reconcile|reservation_id', 'path': '/Users/liyang/hangma-bot', 'include': '*.py'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const p = \\\"review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py\\\";\\nconst r = await tools.read({ file_path: p });\\nconsole.log(\\\"totalLines\\\", r.totalLines);\\nconsole.log(r.lines.map(l => `${l.number}: ${l.text}`).join(\\\"\\\\n\\\").slice(0, 20000));\\n\", \"description\": \"Read sitin_search.py driver source\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Locate sitin_search.py and ledger code\", \"code\": \"const g = await tools.glob({ pattern: \\\"**/sitin_search*.py\\\" });\\nconsole.log(JSON.stringify(g, null, 1));\\nconst g2 = await tools.grep({ pattern: \\\"sitin-search-ledger|sitin-search-state|reserved|reconcile|reservation_id\\\", path: \\\"/Users/liyang/hangma-bot\\\", include: \\\"*.py\\\" });\\nconsole.log(g2.matches.slice(0, 80).map(m => `${"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin_search*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin_search*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-search-ledger|sitin-search-state|reserved|reconcile|reservation_id', 'path': '/Users/liyang/hangma-bot', 'include': '*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-search-ledger|sitin-search-state|reserved|reconcile|reservation_id', 'path': '/Users/liyang/hangma-bot', 'include': '*.py'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const p = \\\"review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py\\\";\\nconst r = await tools.read({ file_path: p });\\nconsole.log(\\\"totalLines\\\", r.totalLines);\\nconsole.log(r.lines.map(l => `${l.number}: ${l.text}`).join(\\\"\\\\n\\\").slice(0, 20000));\\n\", \"description\": \"Read sitin_search.py driver source\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py'}"
+     }
+    ]
+   },
+   "kind": "r1",
+   "run_id": "4eb68473-b384-4ab6-b7ce-c05d39951e50"
+  },
+  {
+   "task_id": "T01",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 247,
+   "answer_sha256": "350b3d827778f1c08ad0093aac6d524e5bc1bb52fcb4658ee23df43af5771095",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "20ea3a91-1c90-4b92-ba6b-184974c3dbb1"
+  },
+  {
+   "task_id": "T23",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 337,
+   "answer_sha256": "601eb6ebb75040de684ebe883604f3333f7b3e2d2d8bf73899d0190600ae5059",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "19c7c969-333f-4b33-ae0d-d78318f43eb6"
+  },
+  {
+   "task_id": "T04",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 430,
+   "answer_sha256": "de76b4592b9dda631e5cd4724f92ff9084790ed5bb6eee20c14f3c4cf43c50ce",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "0ac933c7-50c0-49a4-aa10-62b280a3c13c"
+  },
+  {
+   "task_id": "T24",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 256,
+   "answer_sha256": "ec5372172d111b23e2201f4b090d8de9fadf1eca7f77f6666c9f2c76a66aaf88",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "e53ebf88-542a-4a6a-9254-71152f33ee1a"
+  },
+  {
+   "task_id": "T18",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 3914,
+   "answer_sha256": "4e4543b414194372c65980e25b492f5f726c399976a1269f2827a26b879bd0b6",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "6b232061-9de8-499e-b437-fdac9713eb34"
+  },
+  {
+   "task_id": "T02",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 313,
+   "answer_sha256": "7ce72a12a565692c818803e96a8e8cf84a068efb439d23e6bcc4ac3db1e59756",
+   "tool_calls": 4,
+   "file_access_hits": 3,
+   "evidence": {
+    "tool_calls": 4,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Check contract file for scoring fields\", \"code\": \"const g = await tools.glob({ pattern: \\\"contracts/action-value-v1.json\\\" });\\nconsole.log(JSON.stringify(g));\\n\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Check contract file for scoring fields\", \"code\": \"const g = await tools.glob({ pattern: \\\"contracts/action-value-v1.json\\\" });\\nconsole.log(JSON.stringify(g));\\n\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': 'contracts/action-value-v1.json'}"
+     }
+    ]
+   },
+   "kind": "r1",
+   "run_id": "5abf396c-70ed-4de9-b7f2-b92d7366584a"
+  },
+  {
+   "task_id": "T20",
+   "status": "CONTAMINATED_TOOL_USE",
+   "sealed_clause": false,
+   "answer_chars": 3544,
+   "answer_sha256": "de154fa0127098e8f15d80ba5a4a6dda7fb6119f0cb78776c12cfb85c83e892d",
+   "tool_calls": 4,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 4,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Syntax-check and behavior-test the fixed candidate\", \"code\": \"const src = String.raw`\\n\\\"\\\"\\\"[夹具·修复版] 派生自 batch7/seeds/efficiency_seed.py。\\n\\n修复记录：原 branch_number 把 True/False 当 1/0 参与评分（布尔冒充数），\\n现按合同将布尔一律视为未知（返回 None），布尔不再作为数值进入评分。\\n\\\"\\\"\\\"\\n\\nSHANTEN_WEIGHT = 3.0\\nSUPPORT_WEIGHT = 0.5\\nUNKNOWN_FIELD = \\\"combined_shanten\\\"\\n\\n\\ndef branch_number(branch, key):\\n    value = branch.g"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'python3 - <<\\'PYEOF\\'\\n\\n\"\"\"[夹具·修复版] 派生自 batch7/seeds/efficiency_seed.py。\\n\\n修复记录：原 branch_number 把 True/False 当 1/0 参与评分（布尔冒充数），\\n现按合同将布尔一律视为未知（返回 None），布尔不再作为数值进入评分。\\n\"\"\"\\n\\nSHANTEN_WEIGHT = 3.0\\nSUPPORT_WEIGHT = 0.5\\nUNKNOWN_FIELD = \"combined_shanten\"\\n\\n\\ndef branch_number(branch, key):\\n    value = branch.get(key)\\n    if value is None:\\n        return None\\n    if isinstance(val"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'python3 - <<\\'PYEOF\\'\\n\\n\"\"\"[夹具·修复版] 派生自 batch7/seeds/efficiency_seed.py。\\n\\n修复记录：原 branch_number 把 True/False 当 1/0 参与评分（布尔冒充数），\\n现按合同将布尔一律视为未知（返回 None），布尔不再作为数值进入评分。\\n\"\"\"\\n\\nSHANTEN_WEIGHT = 3.0\\nSUPPORT_WEIGHT = 0.5\\nUNKNOWN_FIELD = \"combined_shanten\"\\n\\n\\ndef branch_number(branch, key):\\n    value = branch.get(key)\\n    if value is None:\\n        return None\\n    if isinstance(val"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "02c56d35-602d-42e6-99f3-4487f47ffc24"
+  },
+  {
+   "task_id": "T19",
+   "status": "CONTAMINATED_TOOL_USE",
+   "sealed_clause": false,
+   "answer_chars": 4179,
+   "answer_sha256": "2c37a870aa79e1dd3d46e32fe21414c1028f4ee3a7a4e8274522aacb58ab782d",
+   "tool_calls": 4,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 4,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Verify fixed scorer against fixture cases\", \"code\": \"const py = String.raw`\\n\\\"\\\"\\\"模块 docstring 测试用\\\"\\\"\\\"\\n\\nSHANTEN_WEIGHT = 3.0\\nSUPPORT_WEIGHT = 0.5\\nUNKNOWN_FIELD = \\\"combined_shanten\\\"\\n\\n\\ndef branch_number(branch, key):\\n    value = branch.get(key)\\n    if value is None:\\n        return None\\n    if value is True or value is False:\\n        return None\\n    if value < 0:\\n "
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'python3 - <<\\'PYEOF\\'\\n\\n\"\"\"模块 docstring 测试用\"\"\"\\n\\nSHANTEN_WEIGHT = 3.0\\nSUPPORT_WEIGHT = 0.5\\nUNKNOWN_FIELD = \"combined_shanten\"\\n\\n\\ndef branch_number(branch, key):\\n    value = branch.get(key)\\n    if value is None:\\n        return None\\n    if value is True or value is False:\\n        return None\\n    if value < 0:\\n        return None\\n    return value\\n\\n\\ndef best_branch(branch"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'python3 - <<\\'PYEOF\\'\\n\\n\"\"\"模块 docstring 测试用\"\"\"\\n\\nSHANTEN_WEIGHT = 3.0\\nSUPPORT_WEIGHT = 0.5\\nUNKNOWN_FIELD = \"combined_shanten\"\\n\\n\\ndef branch_number(branch, key):\\n    value = branch.get(key)\\n    if value is None:\\n        return None\\n    if value is True or value is False:\\n        return None\\n    if value < 0:\\n        return None\\n    return value\\n\\n\\ndef best_branch(branch"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "7484ffb1-b3e6-47c0-9949-0b4b7f10a09e"
+  },
+  {
+   "task_id": "T03",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 524,
+   "answer_sha256": "1bc237957524c3eee365e4620319196c9cfb2b6b99b6f02f697fb0a03f145d44",
+   "tool_calls": 26,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 26,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Read action-value contract file\", \"code\": \"const g = await tools.glob({ pattern: \\\"contracts/action-value-v1.json\\\" });\\nconsole.log(JSON.stringify(g));\\nconst r = await tools.read({ file_path: \\\"contracts/action-value-v1.json\\\" });\\nconsole.log(r.lines.map(l => `${l.number}\\\\t${l.text}`).join(\\\"\\\\n\\\"));\\nconsole.log(\\\"TOTAL\\\", r.totalLines);\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "read",
+      "args": "{'file_path': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const [g1, g2, gr] = await Promise.all([\\n  tools.glob({ pattern: \\\"*action-value*\\\" }),\\n  tools.glob({ pattern: \\\"contracts/*\\\" }),\\n  tools.grep({ pattern: \\\"hu_mode|compare_legal|emergency_action\\\", path: \\\".\\\" }),\\n]);\\nconsole.log(\\\"glob1\\\", JSON.stringify(g1));\\nconsole.log(\\\"glob2\\\", JSON.stringify(g2));\\nconsole.log(\\\"grep\\\", JSON.stringify(gr).slice(0, 3000));\", \"description\": "
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '*action-value*'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Read action-value contract file\", \"code\": \"const g = await tools.glob({ pattern: \\\"contracts/action-value-v1.json\\\" });\\nconsole.log(JSON.stringify(g));\\nconst r = await tools.read({ file_path: \\\"contracts/action-value-v1.json\\\" });\\nconsole.log(r.lines.map(l => `${l.number}\\\\t${l.text}`).join(\\\"\\\\n\\\"));\\nconsole.log(\\\"TOTAL\\\", r.totalLines);\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "read",
+      "args": "{'file_path': 'contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const [g1, g2, gr] = await Promise.all([\\n  tools.glob({ pattern: \\\"*action-value*\\\" }),\\n  tools.glob({ pattern: \\\"contracts/*\\\" }),\\n  tools.grep({ pattern: \\\"hu_mode|compare_legal|emergency_action\\\", path: \\\".\\\" }),\\n]);\\nconsole.log(\\\"glob1\\\", JSON.stringify(g1));\\nconsole.log(\\\"glob2\\\", JSON.stringify(g2));\\nconsole.log(\\\"grep\\\", JSON.stringify(gr).slice(0, 3000));\", \"description\": "
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '*action-value*'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': 'contracts/*'}"
+     }
+    ]
+   },
+   "kind": "r1",
+   "run_id": "3e956dac-890d-473c-8822-81376ff5f0eb"
+  },
+  {
+   "task_id": "T17",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 3152,
+   "answer_sha256": "ddf2a739a0b30ba4a84a33c1607ee2887535b3b710e158261fe6d010421c0057",
+   "tool_calls": 80,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 80,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Search workspace for the seed and related contracts\", \"code\": \"const out: any = {};\\ntry {\\n  const g1 = await tools.grep({ pattern: \\\"combined_shanten\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\n  out.combined = g1.matches.slice(0, 30);\\n} catch (e) { out.combinedErr = String(e); }\\ntry {\\n  const g2 = await tools.grep({ pattern: \\\"efficiency_seed\\\", path: \\\"/Users/liyang/hangma-b"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'combined_shanten', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'combined_shanten', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'efficiency_seed', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'efficiency_seed', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/efficiency_seed*.py', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/efficiency_seed*.py', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': '未知字段不得按已知', 'path': '/Users/liyang/hangma-bot'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Search workspace for the seed and related contracts\", \"code\": \"const out: any = {};\\ntry {\\n  const g1 = await tools.grep({ pattern: \\\"combined_shanten\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\n  out.combined = g1.matches.slice(0, 30);\\n} catch (e) { out.combinedErr = String(e); }\\ntry {\\n  const g2 = await tools.grep({ pattern: \\\"efficiency_seed\\\", path: \\\"/Users/liyang/hangma-b"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'combined_shanten', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'combined_shanten', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'efficiency_seed', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'efficiency_seed', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/efficiency_seed*.py', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/efficiency_seed*.py', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': '未知字段不得按已知', 'path': '/Users/liyang/hangma-bot'}"
+     }
+    ]
+   },
+   "kind": "r1",
+   "run_id": "4d61fb58-c642-4dae-86a8-f7429f8b04c2"
+  },
+  {
+   "task_id": "T09",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 26332,
+   "answer_sha256": "6279f27fe5ecaa834a3d66785319cefa61651a256c5b77694c9f0003c7fc1903",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "c23afa68-fe55-4f02-8323-399342546d1b"
+  },
+  {
+   "task_id": "T10",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 25611,
+   "answer_sha256": "9017d78133b51a79aa15c8bd65460cd7b06e6f5f67b318847c7cb241d1a3b160",
+   "tool_calls": 274,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 274,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Locate action-value contract and scoring view schema\", \"code\": \"const [g1, g2, g3, g4] = await Promise.all([\\n  tools.glob({ pattern: \\\"**/action-value-v1.json\\\" }),\\n  tools.glob({ pattern: \\\"**/*sitin*\\\" }),\\n  tools.glob({ pattern: \\\"**/*score*action*\\\" }),\\n  tools.glob({ pattern: \\\"**/group-dev-v1.json\\\" }),\\n]);\\nconsole.log(\\\"action-value:\\\", JSON.stringify(g1.paths));\\ncon"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/*sitin*'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/*score*action*'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/*sitin*'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/group-dev-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/*score*action*'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Locate action-value contract and scoring view schema\", \"code\": \"const [g1, g2, g3, g4] = await Promise.all([\\n  tools.glob({ pattern: \\\"**/action-value-v1.json\\\" }),\\n  tools.glob({ pattern: \\\"**/*sitin*\\\" }),\\n  tools.glob({ pattern: \\\"**/*score*action*\\\" }),\\n  tools.glob({ pattern: \\\"**/group-dev-v1.json\\\" }),\\n]);\\nconsole.log(\\\"action-value:\\\", JSON.stringify(g1.paths));\\ncon"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/*sitin*'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/*score*action*'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/*sitin*'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/group-dev-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/*score*action*'}"
+     }
+    ]
+   },
+   "kind": "r1",
+   "run_id": "7ab7bc0b-500c-4c3e-8326-11b6191470b1"
+  },
+  {
+   "task_id": "T05",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 28397,
+   "answer_sha256": "0220e24b2598789131c78f68c2a3b7d68dff8fbd987923f91b03d9b915f41c56",
+   "tool_calls": 218,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 218,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const out: any = {};\\ntry {\\n  const g1 = await tools.grep({ pattern: \\\"ScoringView\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\n  out.ScoringView = g1.matches.slice(0, 40).map(m => `${m.path}:${m.lineNumber}: ${m.line.trim().slice(0,120)}`);\\n} catch (e) { out.ScoringView = String(e); }\\ntry {\\n  const g2 = await tools.grep({ pattern: \\\"def score_actions|score_actions\\\\\\\\(\\\", path: \\\"/Use"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'def score_actions|score_actions\\\\(', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'def score_actions|score_actions\\\\(', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'candidate_view|sitin-scoring-view|action_key', 'path': '/Users/liyang/hangma-bot'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const out: any = {};\\ntry {\\n  const g1 = await tools.grep({ pattern: \\\"ScoringView\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\n  out.ScoringView = g1.matches.slice(0, 40).map(m => `${m.path}:${m.lineNumber}: ${m.line.trim().slice(0,120)}`);\\n} catch (e) { out.ScoringView = String(e); }\\ntry {\\n  const g2 = await tools.grep({ pattern: \\\"def score_actions|score_actions\\\\\\\\(\\\", path: \\\"/Use"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'def score_actions|score_actions\\\\(', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'def score_actions|score_actions\\\\(', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'candidate_view|sitin-scoring-view|action_key', 'path': '/Users/liyang/hangma-bot'}"
+     }
+    ]
+   },
+   "kind": "r1",
+   "run_id": "7747097b-ed17-4dee-bd70-823533f05cb7"
+  },
+  {
+   "task_id": "T06",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 21842,
+   "answer_sha256": "3e24fed7c63705aeb1078cf611656711ad9ed0dfef8cd08a86952d9831f34dc8",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "0477123f-d28c-432f-ad04-2ba9acd7fc96"
+  },
+  {
+   "task_id": "T08",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 26004,
+   "answer_sha256": "2a384dc7079e7d915bedceb8bd11e368f271933454550f3f400e223716708993",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1",
+   "run_id": "4ae15667-c168-4893-8329-4eed3ee3e358"
+  },
+  {
+   "task_id": "T07",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 16621,
+   "answer_sha256": "5aa41e52f40769a68569a29bfa8063469971145dc29c248e192fb07eae94a348",
+   "tool_calls": 276,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 276,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Explore repo for batch7 feedback and contracts\", \"code\": \"\\nconst [pwd, ls] = await Promise.all([\\n  tools.bash({command: \\\"pwd\\\", description: \\\"Show working directory\\\"}),\\n  tools.bash({command: \\\"ls -la /Users/liyang/hangma-bot | head -60\\\", description: \\\"List workspace root\\\"}),\\n]);\\nconsole.log(pwd.stdout.text);\\nconsole.log(ls.stdout.text);\\nconst g1 = await tools.glob({p"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'pwd', 'description': 'Show working directory'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'ls -la /Users/liyang/hangma-bot | head -60', 'description': 'List workspace root'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'pwd', 'description': 'Show working directory'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'ls -la /Users/liyang/hangma-bot | head -60', 'description': 'List workspace root'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/feedback-i1.md'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/feedback-i1.md'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': 'batch7/**/*.md'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Explore repo for batch7 feedback and contracts\", \"code\": \"\\nconst [pwd, ls] = await Promise.all([\\n  tools.bash({command: \\\"pwd\\\", description: \\\"Show working directory\\\"}),\\n  tools.bash({command: \\\"ls -la /Users/liyang/hangma-bot | head -60\\\", description: \\\"List workspace root\\\"}),\\n]);\\nconsole.log(pwd.stdout.text);\\nconsole.log(ls.stdout.text);\\nconst g1 = await tools.glob({p"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'ls -la /Users/liyang/hangma-bot | head -60', 'description': 'List workspace root'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'ls -la /Users/liyang/hangma-bot | head -60', 'description': 'List workspace root'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/feedback-i1.md'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/feedback-i1.md'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': 'batch7/**/*.md'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': 'batch7/**/*.md'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': 'contracts/*.json'}"
+     }
+    ]
+   },
+   "kind": "r1",
+   "run_id": "9d5b9b70-71cb-4c7d-bbcd-8d310c36af7d"
+  },
+  {
+   "task_id": "T09",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 8843,
+   "answer_sha256": "92f8130a8e913b89106a6e579fc2709c7b15bfd693fe7b25cacc61d2ff0765d8",
+   "tool_calls": 166,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 166,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst r1 = await tools.grep({ pattern: \\\"ScoringView|sitin-scoring-view|score_actions\\\", path: \\\".\\\", include: \\\"*.py\\\" });\\nconst paths = [];\\nfor (const m of r1.matches.slice(0, 40)) { paths.push(m.path + \\\":\\\" + m.lineNumber + \\\" \\\" + m.line.trim().slice(0, 120)); }\\nconst r2 = await tools.bash({ command: \\\"ls; echo ---; python3 -V\\\", description: \\\"List workspace root and python ve"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView|sitin-scoring-view|score_actions', 'path': '.', 'include': '*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView|sitin-scoring-view|score_actions', 'path': '.', 'include': '*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'ls; echo ---; python3 -V', 'description': 'List workspace root and python version'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'ls; echo ---; python3 -V', 'description': 'List workspace root and python version'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst a = await tools.read({ file_path: \\\"src/hangma_bot/policy/action_value.py\\\", offset: 620, limit: 200 });\\nconst b = await tools.grep({ pattern: \\\"^class |^@dataclass|^def \\\", path: \\\"src/hangma_bot/policy/action_value.py\\\" });\\nreturn {\\n  classes: b.matches.map(m => m.lineNumber + \\\" \\\" + m.line),\\n  body: a.lines.map(l => l.number + \\\": \\\" + l.text).join(\\\"\\\\n\\\"),\\n};\\n\", \"desc"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'src/hangma_bot/policy/action_value.py', 'offset': 620, 'limit': 200}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst r1 = await tools.grep({ pattern: \\\"ScoringView|sitin-scoring-view|score_actions\\\", path: \\\".\\\", include: \\\"*.py\\\" });\\nconst paths = [];\\nfor (const m of r1.matches.slice(0, 40)) { paths.push(m.path + \\\":\\\" + m.lineNumber + \\\" \\\" + m.line.trim().slice(0, 120)); }\\nconst r2 = await tools.bash({ command: \\\"ls; echo ---; python3 -V\\\", description: \\\"List workspace root and python ve"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView|sitin-scoring-view|score_actions', 'path': '.', 'include': '*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView|sitin-scoring-view|score_actions', 'path': '.', 'include': '*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'ls; echo ---; python3 -V', 'description': 'List workspace root and python version'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'ls; echo ---; python3 -V', 'description': 'List workspace root and python version'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst a = await tools.read({ file_path: \\\"src/hangma_bot/policy/action_value.py\\\", offset: 620, limit: 200 });\\nconst b = await tools.grep({ pattern: \\\"^class |^@dataclass|^def \\\", path: \\\"src/hangma_bot/policy/action_value.py\\\" });\\nreturn {\\n  classes: b.matches.map(m => m.lineNumber + \\\" \\\" + m.line),\\n  body: a.lines.map(l => l.number + \\\": \\\" + l.text).join(\\\"\\\\n\\\"),\\n};\\n\", \"desc"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'src/hangma_bot/policy/action_value.py', 'offset': 620, 'limit': 200}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "read",
+      "args": "{'file_path': 'src/hangma_bot/policy/action_value.py', 'offset': 620, 'limit': 200}"
+     }
+    ]
+   },
+   "kind": "r1-dup",
+   "run_id": "138f97d8-9943-45f4-8095-ae3b97e94422"
+  },
+  {
+   "task_id": "T13",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 548,
+   "answer_sha256": "7529380cb73befbaf0a19782d25932637f5bf8ef029f2c51d5fd3c6148895bec",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1-repair",
+   "run_id": "2c4a0fcf-187d-4c08-acea-339340ca8005"
+  },
+  {
+   "task_id": "T15",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 258,
+   "answer_sha256": "b9d1f4cc1e7a996074718d292a13376e69d0216e67d3bfec5ef2477acae77cfe",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1-repair",
+   "run_id": "35ed6de2-5613-4b74-934a-49137f4a6107"
+  },
+  {
+   "task_id": "T18",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 3955,
+   "answer_sha256": "3ec738a84869cf1cae8c31cd68013f6a45ed3592405040a1d31ff2e2b38d85fc",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1-repair",
+   "run_id": "79550ef2-d39d-4889-933d-036054ecb78d"
+  },
+  {
+   "task_id": "T20",
+   "status": "CONTAMINATED_TOOL_USE",
+   "sealed_clause": false,
+   "answer_chars": 3633,
+   "answer_sha256": "f458c78cdf1742fe495d08dfd66a60aad1117b0d6e860e490419366d244e75a5",
+   "tool_calls": 4,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 4,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const src = String.raw`\\nSHANTEN_WEIGHT = 3.0\\nSUPPORT_WEIGHT = 0.5\\nUNKNOWN_FIELD = \\\"combined_shanten\\\"\\n\\n\\ndef branch_number(branch, key):\\n    value = branch.get(key)\\n    if value is None:\\n        return None\\n    if value is True or value is False:\\n        return None\\n    if value < 0:\\n        return None\\n    return value\\n\\n\\ndef best_branch(branches):\\n    best_shanten = No"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'python3 - <<\\'PYEOF\\'\\n\\nSHANTEN_WEIGHT = 3.0\\nSUPPORT_WEIGHT = 0.5\\nUNKNOWN_FIELD = \"combined_shanten\"\\n\\n\\ndef branch_number(branch, key):\\n    value = branch.get(key)\\n    if value is None:\\n        return None\\n    if value is True or value is False:\\n        return None\\n    if value < 0:\\n        return None\\n    return value\\n\\n\\ndef best_branch(branches):\\n    best_shanten = N"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'python3 - <<\\'PYEOF\\'\\n\\nSHANTEN_WEIGHT = 3.0\\nSUPPORT_WEIGHT = 0.5\\nUNKNOWN_FIELD = \"combined_shanten\"\\n\\n\\ndef branch_number(branch, key):\\n    value = branch.get(key)\\n    if value is None:\\n        return None\\n    if value is True or value is False:\\n        return None\\n    if value < 0:\\n        return None\\n    return value\\n\\n\\ndef best_branch(branches):\\n    best_shanten = N"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": []
+   },
+   "kind": "r1-repair",
+   "run_id": "a95dccad-be4a-4d6c-bf25-5640515b3e10"
+  },
+  {
+   "task_id": "T22",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 380,
+   "answer_sha256": "79b8343b5523e77e1b626ff9ab9f7569bf8aef73415934354b12382d2ea55c2d",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1-repair",
+   "run_id": "40d57478-a3ba-4df4-931d-129552b97e73"
+  },
+  {
+   "task_id": "T24",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 266,
+   "answer_sha256": "bcdea1503a34497166505ebad0bdf7df8a335acc3a735c65dbdebb363014c4fd",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r1-repair",
+   "run_id": "2923e667-22c1-4421-b183-30ab5ea3b964"
+  },
+  {
+   "task_id": "T06",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 22971,
+   "answer_sha256": "a1cb410a9e6ff390de03d267a2d27d6db94b3a1c4f5891235bc1a76c330f243a",
+   "tool_calls": 26,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 26,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst pwd = await tools.bash({ command: \\\"pwd && python3 -V && ls /tmp | head -5\\\", description: \\\"Check cwd and python version\\\" });\\nconsole.log(JSON.stringify(pwd, null, 1).slice(0, 1200));\\n\", \"description\": \"Check working directory and Python availability\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'pwd && python3 -V && ls /tmp | head -5', 'description': 'Check cwd and python version'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'pwd && python3 -V && ls /tmp | head -5', 'description': 'Check cwd and python version'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst code = String.raw`\\\"\\\"\\\"候选机制说明：以「三账户门线势差 × 向听-支撑结构 × 条件路线潜力」三轴重排动作：先用 competition.current_stage_scores（缺账时按同座位、同单位、互不重叠的 stage_scores + table_scores 逐座位相加，阶段账缺失则显式降级为仅本桌基准且不称阶段门线）算出 inside_gap/outside_gap 与名次识别区间，再用墙余量、庄闲与名次压力缩放分支结构值、条件路线潜力并扣减代价侧，立即结算动作在四座增量齐全时按 recompute 重算门线势差、否则显式按 frozen_line 近似，胡值再与本窗口最优继续值的机会成本真实比较，墙后段对路线潜力额外衰减；未生产任何事实的动作不按 0 评分而取「已知最低分 − 1」，窗口内没有任何已知事实时整批 "
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/candchk/cand.py', 'content': '\"\"\"候选机制说明：以「三账户门线势差 × 向听-支撑结构 × 条件路线潜力」三轴重排动作：先用 competition.current_stage_scores（缺账时按同座位、同单位、互不重叠的 stage_scores + table_scores 逐座位相加，阶段账缺失则显式降级为仅本桌基准且不称阶段门线）算出 inside_gap/outside_gap 与名次识别区间，再用墙余量、庄闲与名次压力缩放分支结构值、条件路线潜力并扣减代价侧，立即结算动作在四座增量齐全时按 recompute 重算门线势差、否则显式按 frozen_line 近似，胡值再与本窗口最优继续值的机会成本真实比较，墙后段对路线潜力额外衰减；未生产任何事实的动作不按 0 评分而取「已知最低分 − 1」，窗口内没"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/candchk/cand.py', 'content': '\"\"\"候选机制说明：以「三账户门线势差 × 向听-支撑结构 × 条件路线潜力」三轴重排动作：先用 competition.current_stage_scores（缺账时按同座位、同单位、互不重叠的 stage_scores + table_scores 逐座位相加，阶段账缺失则显式降级为仅本桌基准且不称阶段门线）算出 inside_gap/outside_gap 与名次识别区间，再用墙余量、庄闲与名次压力缩放分支结构值、条件路线潜力并扣减代价侧，立即结算动作在四座增量齐全时按 recompute 重算门线势差、否则显式按 frozen_line 近似，胡值再与本窗口最优继续值的机会成本真实比较，墙后段对路线潜力额外衰减；未生产任何事实的动作不按 0 评分而取「已知最低分 − 1」，窗口内没"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst pwd = await tools.bash({ command: \\\"pwd && python3 -V && ls /tmp | head -5\\\", description: \\\"Check cwd and python version\\\" });\\nconsole.log(JSON.stringify(pwd, null, 1).slice(0, 1200));\\n\", \"description\": \"Check working directory and Python availability\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'pwd && python3 -V && ls /tmp | head -5', 'description': 'Check cwd and python version'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'pwd && python3 -V && ls /tmp | head -5', 'description': 'Check cwd and python version'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/candchk/cand.py', 'content': '\"\"\"候选机制说明：以「三账户门线势差 × 向听-支撑结构 × 条件路线潜力」三轴重排动作：先用 competition.current_stage_scores（缺账时按同座位、同单位、互不重叠的 stage_scores + table_scores 逐座位相加，阶段账缺失则显式降级为仅本桌基准且不称阶段门线）算出 inside_gap/outside_gap 与名次识别区间，再用墙余量、庄闲与名次压力缩放分支结构值、条件路线潜力并扣减代价侧，立即结算动作在四座增量齐全时按 recompute 重算门线势差、否则显式按 frozen_line 近似，胡值再与本窗口最优继续值的机会成本真实比较，墙后段对路线潜力额外衰减；未生产任何事实的动作不按 0 评分而取「已知最低分 − 1」，窗口内没"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/candchk/cand.py', 'content': '\"\"\"候选机制说明：以「三账户门线势差 × 向听-支撑结构 × 条件路线潜力」三轴重排动作：先用 competition.current_stage_scores（缺账时按同座位、同单位、互不重叠的 stage_scores + table_scores 逐座位相加，阶段账缺失则显式降级为仅本桌基准且不称阶段门线）算出 inside_gap/outside_gap 与名次识别区间，再用墙余量、庄闲与名次压力缩放分支结构值、条件路线潜力并扣减代价侧，立即结算动作在四座增量齐全时按 recompute 重算门线势差、否则显式按 frozen_line 近似，胡值再与本窗口最优继续值的机会成本真实比较，墙后段对路线潜力额外衰减；未生产任何事实的动作不按 0 评分而取「已知最低分 − 1」，窗口内没"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst test = String.raw`\\nimport ast, json, sys, importlib.util, math\\n\\nSRC = open('/tmp/candchk/cand.py').read()\\ntree = ast.parse(SRC)\\n\\nbad = []\\nfor node in ast.walk(tree):\\n    if isinstance(node, ast.Assign):\\n        for t in node.targets:\\n            bad.append(('Assign', type(t).__name__, getattr(node, 'lineno', 0)))\\n    elif isinstance(node, (ast.AugAssign, ast.AnnAssign)"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/candchk/check.py', 'content': \"\\nimport ast, json, sys, importlib.util, math\\n\\nSRC = open('/tmp/candchk/cand.py').read()\\ntree = ast.parse(SRC)\\n\\nbad = []\\nfor node in ast.walk(tree):\\n    if isinstance(node, ast.Assign):\\n        for t in node.targets:\\n            bad.append(('Assign', type(t).__name__, getattr(node, 'lineno', 0)))\\n    elif isinstance(node, (ast.AugAssign,"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/candchk/check.py', 'content': \"\\nimport ast, json, sys, importlib.util, math\\n\\nSRC = open('/tmp/candchk/cand.py').read()\\ntree = ast.parse(SRC)\\n\\nbad = []\\nfor node in ast.walk(tree):\\n    if isinstance(node, ast.Assign):\\n        for t in node.targets:\\n            bad.append(('Assign', type(t).__name__, getattr(node, 'lineno', 0)))\\n    elif isinstance(node, (ast.AugAssign,"
+     }
+    ]
+   },
+   "kind": "r1-repair",
+   "run_id": "0e4c48bc-243f-40b3-8df7-5f4620f12d91"
+  },
+  {
+   "task_id": "T07",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 22095,
+   "answer_sha256": "26afd394c90c16f3571e27ed01810d2b55747fd9a09e5d3ed4e371cab98dc730",
+   "tool_calls": 268,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 268,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst g1 = await tools.grep({ pattern: \\\"sitin-scoring-view\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\nconst seen = new Set<string>();\\nconst out: string[] = [];\\nfor (const m of g1.matches) {\\n  if (!seen.has(m.path)) { seen.add(m.path); out.push(m.path); }\\n}\\nconsole.log(\\\"files:\\\", out.length);\\nconsole.log(out.slice(0, 80).join(\\\"\\\\n\\\"));\\n\", \"description\": \"Find files referencing"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-scoring-view', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-scoring-view', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst g = await tools.glob({ pattern: \\\"**/batch7/**\\\" });\\nconsole.log(\\\"batch7 files:\\\", g.paths.length);\\nconsole.log(g.paths.slice(0, 60).join(\\\"\\\\n\\\"));\\nconst g2 = await tools.glob({ pattern: \\\"**/feedback-i1.md\\\" });\\nconsole.log(\\\"\\\\nfeedback-i1:\\\", g2.paths.join(\\\"\\\\n\\\"));\\n\", \"description\": \"Locate batch7 materials and feedback files\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/batch7/**'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/batch7/**'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/feedback-i1.md'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst g1 = await tools.grep({ pattern: \\\"sitin-scoring-view\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\nconst seen = new Set<string>();\\nconst out: string[] = [];\\nfor (const m of g1.matches) {\\n  if (!seen.has(m.path)) { seen.add(m.path); out.push(m.path); }\\n}\\nconsole.log(\\\"files:\\\", out.length);\\nconsole.log(out.slice(0, 80).join(\\\"\\\\n\\\"));\\n\", \"description\": \"Find files referencing"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-scoring-view', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-scoring-view', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst g = await tools.glob({ pattern: \\\"**/batch7/**\\\" });\\nconsole.log(\\\"batch7 files:\\\", g.paths.length);\\nconsole.log(g.paths.slice(0, 60).join(\\\"\\\\n\\\"));\\nconst g2 = await tools.glob({ pattern: \\\"**/feedback-i1.md\\\" });\\nconsole.log(\\\"\\\\nfeedback-i1:\\\", g2.paths.join(\\\"\\\\n\\\"));\\n\", \"description\": \"Locate batch7 materials and feedback files\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/batch7/**'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/batch7/**'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/feedback-i1.md'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/feedback-i1.md'}"
+     }
+    ]
+   },
+   "kind": "r1-repair",
+   "run_id": "710af30f-9d4d-48e2-9510-75a900ee3589"
+  },
+  {
+   "task_id": "T08",
+   "status": "CONTAMINATED_TOOL_USE",
+   "sealed_clause": false,
+   "answer_chars": 25649,
+   "answer_sha256": "77ea62a96d0f9986f3bed9a60a524e29bd41decab76e67f72448fd68d054feda",
+   "tool_calls": 4,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 4,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst msg = `【交付】triax-v1 的 M1 修复轮（任务合同 action_value_v1，输出格式=一句话{机制}+唯一 json 四字段+唯一 python 代码围栏），完整回复正文即本子代理的最后一条助手消息，可直接粘贴提交。\\n\\n修复要点（本轮唯一硬性改动，针对校验程序判定）：上一版静态预检因 try/except 未通过（bare except 与 except BaseException 一并静态拒绝、WorkloadExceeded 不可被候选捕获）。修复后候选内**没有任何异常捕获**：所有字段读取改为对 B2 冻结视图类型的直接只读访问（.get 与只读下标），数值读取 num2 采用提示词参考实现的原文口径（None/布尔先排除，再 float() 后以 value − value ≠ 0 拒非有限数），与 gate_lin"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "send_message",
+      "args": "{'agent_id': '4439125d-a5df-406b-b452-186f9cc42e5b', 'message': '【交付】triax-v1 的 M1 修复轮（任务合同 action_value_v1，输出格式=一句话{机制}+唯一 json 四字段+唯一 python 代码围栏），完整回复正文即本子代理的最后一条助手消息，可直接粘贴提交。\\n\\n修复要点（本轮唯一硬性改动，针对校验程序判定）：上一版静态预检因 try/except 未通过（bare except 与 except BaseException 一并静态拒绝、WorkloadExceeded 不可被候选捕获）。修复后候选内**没有任何异常捕获**：所有字段读取改为对 B2 冻结视图类型的直接只读访问（.get 与只读下标），数值读取 num2 采用提示词参考实现的原文口径（None/布尔先排除，再 float("
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "send_message",
+      "args": "{'agent_id': '4439125d-a5df-406b-b452-186f9cc42e5b', 'message': '【交付】triax-v1 的 M1 修复轮（任务合同 action_value_v1，输出格式=一句话{机制}+唯一 json 四字段+唯一 python 代码围栏），完整回复正文即本子代理的最后一条助手消息，可直接粘贴提交。\\n\\n修复要点（本轮唯一硬性改动，针对校验程序判定）：上一版静态预检因 try/except 未通过（bare except 与 except BaseException 一并静态拒绝、WorkloadExceeded 不可被候选捕获）。修复后候选内**没有任何异常捕获**：所有字段读取改为对 B2 冻结视图类型的直接只读访问（.get 与只读下标），数值读取 num2 采用提示词参考实现的原文口径（None/布尔先排除，再 float("
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": []
+   },
+   "kind": "r1-repair",
+   "run_id": "db366473-b432-4173-8d96-13857988f209"
+  },
+  {
+   "task_id": "T09",
+   "status": "CONTAMINATED_TOOL_USE",
+   "sealed_clause": false,
+   "answer_chars": 28152,
+   "answer_sha256": "c3de5cc68155eccbbd166a9898158f057a3ec0aa4ffc0a7c39fc68973b9ba6f5",
+   "tool_calls": 4,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 4,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const body = `{本机制以「五通道缺失感知证据分层（frozen_line 门线势差增量 δ／动作后牌效进展／条件路线证据／后续分支覆盖／代理特征）＋缺失通道与缺失份额整档降档（不取 0、不做猜测，只施加 0.5 × 通道权重）＋零事实动作守卫值（本窗口已评分最低分 − 1.0，严格低于全部已评分动作）」为骨架，并把整批 SCORED 的未知取值口径固定为守卫值写法、把无任何已生产事实的窗口整批 ABSTAIN，从而在 competition 投影恒为 None、大量路线 UNANALYZED、reference_features 为空的开发面板上也能对全部合法动作给出完整且不越位的评分。}\\n\\n\\\\`\\\\`\\\\`json\\n{\\n  \\\"trigger\\\": \\\"触发条件：窗口内只要至少一个合法动作带 1 个可读通道事实（immediate_settle"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "send_message",
+      "args": "{'agent_id': '4439125d-a5df-406b-b452-186f9cc42e5b', 'message': '{本机制以「五通道缺失感知证据分层（frozen_line 门线势差增量 δ／动作后牌效进展／条件路线证据／后续分支覆盖／代理特征）＋缺失通道与缺失份额整档降档（不取 0、不做猜测，只施加 0.5 × 通道权重）＋零事实动作守卫值（本窗口已评分最低分 − 1.0，严格低于全部已评分动作）」为骨架，并把整批 SCORED 的未知取值口径固定为守卫值写法、把无任何已生产事实的窗口整批 ABSTAIN，从而在 competition 投影恒为 None、大量路线 UNANALYZED、reference_features 为空的开发面板上也能对全部合法动作给出完整且不越位的评分。}\\n\\n```json\\n{\\n  \"trigger\": \"触发条件：窗口内只要至少一个"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "send_message",
+      "args": "{'agent_id': '4439125d-a5df-406b-b452-186f9cc42e5b', 'message': '{本机制以「五通道缺失感知证据分层（frozen_line 门线势差增量 δ／动作后牌效进展／条件路线证据／后续分支覆盖／代理特征）＋缺失通道与缺失份额整档降档（不取 0、不做猜测，只施加 0.5 × 通道权重）＋零事实动作守卫值（本窗口已评分最低分 − 1.0，严格低于全部已评分动作）」为骨架，并把整批 SCORED 的未知取值口径固定为守卫值写法、把无任何已生产事实的窗口整批 ABSTAIN，从而在 competition 投影恒为 None、大量路线 UNANALYZED、reference_features 为空的开发面板上也能对全部合法动作给出完整且不越位的评分。}\\n\\n```json\\n{\\n  \"trigger\": \"触发条件：窗口内只要至少一个"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": []
+   },
+   "kind": "r1-repair",
+   "run_id": "4d825b00-1321-4f57-9943-67c72c6ee10b"
+  },
+  {
+   "task_id": "T10",
+   "status": "CONTAMINATED_TOOL_USE",
+   "sealed_clause": false,
+   "answer_chars": 29217,
+   "answer_sha256": "8a1ede965c4a548f93e690290918dd05dc14043f9c5e54bac58d8257f4a9ce32",
+   "tool_calls": 4,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 4,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const mech = `{以「当前阶段合计账 current_stage_scores = stage_scores + table_scores 逐座位相加」重建的 inside_line（升序下标 2 = 第 2 名分数）与 outside_line（升序下标 1 = 第 3 名分数）两条门线势差为主通道、牌效与条件路线结构为副通道、有界番项为上界项，按可见位次档 chase/defend/flat 加权合成，四座 score_delta 齐全才算 recompute、否则只按本人增量走 frozen_line 近似写法；本轮修复把「已生产事实」的判据从「fact_kind 有值或列表非空」改成「至少一个量化通道给出可读读数」，整表不可读的动作不给 0.0 而取「已知最低分 − 1.0」锚点，全程只用合同冻结白名单的有界 for 迭代、局部纯函数与一次 sort"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "send_message",
+      "args": "{'agent_id': '4439125d-a5df-406b-b452-186f9cc42e5b', 'message': '【score_actions 修复轮交付（完整回复正文，逐字可复制）】\\n\\n{以「当前阶段合计账 current_stage_scores = stage_scores + table_scores 逐座位相加」重建的 inside_line（升序下标 2 = 第 2 名分数）与 outside_line（升序下标 1 = 第 3 名分数）两条门线势差为主通道、牌效与条件路线结构为副通道、有界番项为上界项，按可见位次档 chase/defend/flat 加权合成，四座 score_delta 齐全才算 recompute、否则只按本人增量走 frozen_line 近似写法；本轮修复把「已生产事实」的判据从「fact_kind 有值或列表非空」改成「至少一个"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "send_message",
+      "args": "{'agent_id': '4439125d-a5df-406b-b452-186f9cc42e5b', 'message': '【score_actions 修复轮交付（完整回复正文，逐字可复制）】\\n\\n{以「当前阶段合计账 current_stage_scores = stage_scores + table_scores 逐座位相加」重建的 inside_line（升序下标 2 = 第 2 名分数）与 outside_line（升序下标 1 = 第 3 名分数）两条门线势差为主通道、牌效与条件路线结构为副通道、有界番项为上界项，按可见位次档 chase/defend/flat 加权合成，四座 score_delta 齐全才算 recompute、否则只按本人增量走 frozen_line 近似写法；本轮修复把「已生产事实」的判据从「fact_kind 有值或列表非空」改成「至少一个"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": []
+   },
+   "kind": "r1-repair",
+   "run_id": "ac593150-1a3e-4e7a-ac29-3edb31d5a747"
+  },
+  {
+   "task_id": "T01",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 210,
+   "answer_sha256": "fdb0531382c4981ce572de468a57c1f2cfa132f3fe42db57be8aa2ff5f2fe4d7",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r2",
+   "run_id": "9eb58847-105a-45ce-a4c6-d4b04ab09d88"
+  },
+  {
+   "task_id": "T02",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 245,
+   "answer_sha256": "87708e650910f40d3acf1440a954904d7b379da293dc33006be623c2271bc458",
+   "tool_calls": 10,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 10,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const r = await tools.glob({ pattern: \\\"**/action-value-v1.json\\\" });\\nlet out: any = { paths: r.paths };\\nif (r.paths.length) {\\n  const g = await tools.grep({ pattern: \\\"route_states|progress_states|ABSTAIN|UNANALYZED\\\", path: r.paths[0] });\\n  out.matches = g.matches.slice(0, 40);\\n}\\nconsole.log(JSON.stringify(out, null, 1));\", \"description\": \"Locate and inspect the action-value cont"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'route_states|progress_states|ABSTAIN|UNANALYZED', 'path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'route_states|progress_states|ABSTAIN|UNANALYZED', 'path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const r = await tools.read({ file_path: \\\"review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json\\\", offset: 30, limit: 60 });\\nconsole.log(r.lines.map((l: any) => l.number + \\\": \\\" + l.text).join(\\\"\\\\n\\\"));\", \"description\": \"Read ScoringView section of the contract\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json', 'offset': 30, 'limit': 60}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const r = await tools.glob({ pattern: \\\"**/action-value-v1.json\\\" });\\nlet out: any = { paths: r.paths };\\nif (r.paths.length) {\\n  const g = await tools.grep({ pattern: \\\"route_states|progress_states|ABSTAIN|UNANALYZED\\\", path: r.paths[0] });\\n  out.matches = g.matches.slice(0, 40);\\n}\\nconsole.log(JSON.stringify(out, null, 1));\", \"description\": \"Locate and inspect the action-value cont"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'route_states|progress_states|ABSTAIN|UNANALYZED', 'path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'route_states|progress_states|ABSTAIN|UNANALYZED', 'path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const r = await tools.read({ file_path: \\\"review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json\\\", offset: 30, limit: 60 });\\nconsole.log(r.lines.map((l: any) => l.number + \\\": \\\" + l.text).join(\\\"\\\\n\\\"));\", \"description\": \"Read ScoringView section of the contract\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json', 'offset': 30, 'limit': 60}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json', 'offset': 30, 'limit': 60}"
+     }
+    ]
+   },
+   "kind": "r2",
+   "run_id": "d4052700-3e63-4168-946f-397d4db06e12"
+  },
+  {
+   "task_id": "T03",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 320,
+   "answer_sha256": "c09dd2d7a6b764beb70b19192a52dc443116575fb74aa26e07de364955126571",
+   "tool_calls": 8,
+   "file_access_hits": 6,
+   "evidence": {
+    "tool_calls": 8,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const g = await tools.glob({ pattern: \\\"**/action-value-v1.json\\\" });\\nconsole.log(JSON.stringify(g));\\n\", \"description\": \"Locate action-value contract file\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const r = await tools.read({ file_path: \\\"review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json\\\" });\\nconsole.log(\\\"totalLines\\\", r.totalLines);\\nconsole.log(r.lines.map(l => l.number + \\\": \\\" + l.text).join(\\\"\\\\n\\\"));\\n\", \"description\": \"Read action-value contract JSON\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const g = await tools.glob({ pattern: \\\"**/action-value-v1.json\\\" });\\nconsole.log(JSON.stringify(g));\\n\", \"description\": \"Locate action-value contract file\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const r = await tools.read({ file_path: \\\"review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json\\\" });\\nconsole.log(\\\"totalLines\\\", r.totalLines);\\nconsole.log(r.lines.map(l => l.number + \\\": \\\" + l.text).join(\\\"\\\\n\\\"));\\n\", \"description\": \"Read action-value contract JSON\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json'}"
+     }
+    ]
+   },
+   "kind": "r2",
+   "run_id": "b690e365-246e-452f-8a14-5a180ed286dd"
+  },
+  {
+   "task_id": "T04",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 402,
+   "answer_sha256": "f46460bd563247ac703f568d044ef06b1804c6273fcd6f433e0c9959bff1ad5a",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r2",
+   "run_id": "38ef0d20-fddc-46ab-aff9-7185571bbecc"
+  },
+  {
+   "task_id": "T11",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 245,
+   "answer_sha256": "6b00da8463d8f529ff65ec2d7ba687725b0668e98f6f0a690b73fda490ea9c40",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r2",
+   "run_id": "ca7aee0e-6ef3-4383-98a0-e94fc8aaacd8"
+  },
+  {
+   "task_id": "T12",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 254,
+   "answer_sha256": "eba281fb9dc88b85ef76b840533e23f11f2974d01a3a3ac648b67622b853f3e6",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r2",
+   "run_id": "acc52e76-e666-4191-a4ec-b96a0f48f90f"
+  },
+  {
+   "task_id": "T13",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 500,
+   "answer_sha256": "f9442ad2d38625d58a1ce6a8fcd72bf3d5277ea06a693367bd26a04df8e6de83",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r2",
+   "run_id": "d02f7a04-6425-435f-ae30-2177b4f89c23"
+  },
+  {
+   "task_id": "T14",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 275,
+   "answer_sha256": "b448dad4a912c75afad38a82783fe071f91732fa22c0afae13b48f0a6fff7098",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r2",
+   "run_id": "9f05e964-e6e1-45a1-8ef9-04f9a6d14896"
+  },
+  {
+   "task_id": "T15",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 319,
+   "answer_sha256": "93ab203ae7de468b92ab29b7fc9c9b57a4c2763a889246ac14e23f63f5e6e312",
+   "tool_calls": 10,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 10,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Locate the model-evolution research doc and its §4/§7 rules\", \"code\": \"const g = await tools.glob({ pattern: \\\"**/*MODEL-EVOLUTION*\\\" });\\nconsole.log(JSON.stringify(g, null, 1));\\ntry {\\n  const r = await tools.grep({ pattern: \\\"关联结果|确认隔离|sitin-confirm-roots\\\", path: \\\"/Users/liyang/hangma-bot\\\", include: \\\"*.md\\\" });\\n  console.log(r.matches.slice(0, 40).map(m => `${m.path}:${m."
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/*MODEL-EVOLUTION*'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/*MODEL-EVOLUTION*'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': '关联结果|确认隔离|sitin-confirm-roots', 'path': '/Users/liyang/hangma-bot', 'include': '*.md'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': '关联结果|确认隔离|sitin-confirm-roots', 'path': '/Users/liyang/hangma-bot', 'include': '*.md'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const p = \\\"/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md\\\";\\nconst r = await tools.read({ file_path: p, offset: 60, limit: 80 });\\nconsole.log(r.lines.map(l => `${l.number}: ${l.text}`).join(\\\"\\\\n\\\"));\", \"description\": \"Read §4 and §7 of the research doc\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md', 'offset': 60, 'limit': 80}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Locate the model-evolution research doc and its §4/§7 rules\", \"code\": \"const g = await tools.glob({ pattern: \\\"**/*MODEL-EVOLUTION*\\\" });\\nconsole.log(JSON.stringify(g, null, 1));\\ntry {\\n  const r = await tools.grep({ pattern: \\\"关联结果|确认隔离|sitin-confirm-roots\\\", path: \\\"/Users/liyang/hangma-bot\\\", include: \\\"*.md\\\" });\\n  console.log(r.matches.slice(0, 40).map(m => `${m.path}:${m."
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/*MODEL-EVOLUTION*'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/*MODEL-EVOLUTION*'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': '关联结果|确认隔离|sitin-confirm-roots', 'path': '/Users/liyang/hangma-bot', 'include': '*.md'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': '关联结果|确认隔离|sitin-confirm-roots', 'path': '/Users/liyang/hangma-bot', 'include': '*.md'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const p = \\\"/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md\\\";\\nconst r = await tools.read({ file_path: p, offset: 60, limit: 80 });\\nconsole.log(r.lines.map(l => `${l.number}: ${l.text}`).join(\\\"\\\\n\\\"));\", \"description\": \"Read §4 and §7 of the research doc\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md', 'offset': 60, 'limit': 80}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "read",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/MODEL-EVOLUTION-RESEARCH-2026-09-17.md', 'offset': 60, 'limit': 80}"
+     }
+    ]
+   },
+   "kind": "r2",
+   "run_id": "54e6ac28-8bb2-4a31-97da-88454ad2ad6f"
+  },
+  {
+   "task_id": "T16",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 363,
+   "answer_sha256": "7bb79dc5ab7683e3abde825ed8a61f4b4294cfbf88f2653576d1f5f070178630",
+   "tool_calls": 20,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 20,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const pats = [\\\"CONTINUOUS-EVOLUTION-PLAN\\\", \\\"sitin-archive\\\", \\\"four_white\\\", \\\"9.2\\\"];\\nconst out: Record<string, unknown> = {};\\nfor (const p of pats) {\\n  try {\\n    const g = await tools.grep({ pattern: p });\\n    out[p] = g.matches.slice(0, 12).map(m => `${m.path}:${m.lineNumber}: ${m.line.trim().slice(0, 160)}`);\\n  } catch (e) { out[p] = String((e as Error).message).slice(0, 200"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'CONTINUOUS-EVOLUTION-PLAN'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'CONTINUOUS-EVOLUTION-PLAN'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-archive'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-archive'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'four_white'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'four_white'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': '9.2'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const pats = [\\\"CONTINUOUS-EVOLUTION-PLAN\\\", \\\"sitin-archive\\\", \\\"four_white\\\", \\\"9.2\\\"];\\nconst out: Record<string, unknown> = {};\\nfor (const p of pats) {\\n  try {\\n    const g = await tools.grep({ pattern: p });\\n    out[p] = g.matches.slice(0, 12).map(m => `${m.path}:${m.lineNumber}: ${m.line.trim().slice(0, 160)}`);\\n  } catch (e) { out[p] = String((e as Error).message).slice(0, 200"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'CONTINUOUS-EVOLUTION-PLAN'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'CONTINUOUS-EVOLUTION-PLAN'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-archive'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'sitin-archive'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'four_white'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'four_white'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': '9.2'}"
+     }
+    ]
+   },
+   "kind": "r2",
+   "run_id": "6c9a4c3c-d485-4836-a949-467242c85755"
+  },
+  {
+   "task_id": "T21",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 660,
+   "answer_sha256": "029fa946e3917b998d3380b9e7b5b64bc48b20ac1cfa145b6cdc3ebbbd5cb363",
+   "tool_calls": 26,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 26,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Locate sitin_search.py and ledger/state logic\", \"code\": \"const g = await tools.glob({ pattern: \\\"**/sitin_search.py\\\" });\\nconsole.log(JSON.stringify(g.paths, null, 1));\\nconst g2 = await tools.glob({ pattern: \\\"**/sitin*.py\\\" });\\nconsole.log(JSON.stringify(g2.paths, null, 1));\\n\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin_search.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin_search.py'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin*.py'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const p = \\\"review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py\\\";\\nconst r = await tools.read({ file_path: p, limit: 1 });\\nconsole.log(\\\"totalLines\\\", r.totalLines);\\nconst g = await tools.grep({ pattern: \\\"reserved|reservation|RunState|stop_reason|completed|resume|settle|refund|release\\\", path: p });\\nconsole.log(g.matches.map(m => m.lineNumber + \\\": \\\" + m.line).join(\\"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py', 'limit': 1}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Locate sitin_search.py and ledger/state logic\", \"code\": \"const g = await tools.glob({ pattern: \\\"**/sitin_search.py\\\" });\\nconsole.log(JSON.stringify(g.paths, null, 1));\\nconst g2 = await tools.glob({ pattern: \\\"**/sitin*.py\\\" });\\nconsole.log(JSON.stringify(g2.paths, null, 1));\\n\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin_search.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin_search.py'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin*.py'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/sitin*.py'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const p = \\\"review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py\\\";\\nconst r = await tools.read({ file_path: p, limit: 1 });\\nconsole.log(\\\"totalLines\\\", r.totalLines);\\nconst g = await tools.grep({ pattern: \\\"reserved|reservation|RunState|stop_reason|completed|resume|settle|refund|release\\\", path: p });\\nconsole.log(g.matches.map(m => m.lineNumber + \\\": \\\" + m.line).join(\\"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py', 'limit': 1}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "read",
+      "args": "{'file_path': 'review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py', 'limit': 1}"
+     }
+    ]
+   },
+   "kind": "r2",
+   "run_id": "5d0b99e5-0a8e-42a4-be19-3571c76502ad"
+  },
+  {
+   "task_id": "T22",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 375,
+   "answer_sha256": "69c1dd8b4a22832c5e0fb1a2edf3c3375d147dc0d8fc1709b094274b5b363065",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r2",
+   "run_id": "c00d9b75-503b-4fc6-8047-d77a5c832328"
+  },
+  {
+   "task_id": "T23",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 323,
+   "answer_sha256": "ddd81542baa3ad2ba997cac79038dc1cc595c8cae4ec8a71e995442c0c27329d",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r2",
+   "run_id": "d2811165-b418-45c6-9256-884255ea8c5b"
+  },
+  {
+   "task_id": "T24",
+   "status": "MISSING_SEAL",
+   "sealed_clause": false,
+   "answer_chars": 246,
+   "answer_sha256": "953469bbf1268a1ee23435b646cb394c4677643ba9a34053c7c7e0e4b89bad9d",
+   "tool_calls": 0,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 0,
+    "calls": [],
+    "file_access": []
+   },
+   "kind": "r2",
+   "run_id": "73483c1e-b0ed-451d-aef9-1c2c6ceeec8b"
+  },
+  {
+   "task_id": "T05",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 24904,
+   "answer_sha256": "bb655fb0aba8793af27993470973a9c399ca9b39d3a938fcd5523a8c2ba7230e",
+   "tool_calls": 212,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 212,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Locate contracts and scoring view skeleton\", \"code\": \"const r = await tools.bash({ command: \\\"pwd && ls && glob() { :; } ; ls contracts 2>/dev/null | head -50\\\", description: \\\"List workspace root and contracts\\\" });\\nconsole.log(r.kind === 'foreground' ? r.stdout.text + r.stderr.text : JSON.stringify(r));\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls && glob() { :; } ; ls contracts 2>/dev/null | head -50', 'description': 'List workspace root and contracts'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls && glob() { :; } ; ls contracts 2>/dev/null | head -50', 'description': 'List workspace root and contracts'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const [g1, g2, g3] = await Promise.all([\\n  tools.glob({ pattern: \\\"**/action-value-v1.json\\\" }),\\n  tools.glob({ pattern: \\\"**/*scoring*\\\" }),\\n  tools.glob({ pattern: \\\"**/*action_value*\\\" }),\\n]);\\nconsole.log(JSON.stringify(g1.paths.slice(0,20), null, 1));\\nconsole.log(JSON.stringify(g2.paths.slice(0,40), null, 1));\\nconsole.log(JSON.stringify(g3.paths.slice(0,40), null, 1));\", \"desc"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/*scoring*'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Locate contracts and scoring view skeleton\", \"code\": \"const r = await tools.bash({ command: \\\"pwd && ls && glob() { :; } ; ls contracts 2>/dev/null | head -50\\\", description: \\\"List workspace root and contracts\\\" });\\nconsole.log(r.kind === 'foreground' ? r.stdout.text + r.stderr.text : JSON.stringify(r));\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls && glob() { :; } ; ls contracts 2>/dev/null | head -50', 'description': 'List workspace root and contracts'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls && glob() { :; } ; ls contracts 2>/dev/null | head -50', 'description': 'List workspace root and contracts'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const [g1, g2, g3] = await Promise.all([\\n  tools.glob({ pattern: \\\"**/action-value-v1.json\\\" }),\\n  tools.glob({ pattern: \\\"**/*scoring*\\\" }),\\n  tools.glob({ pattern: \\\"**/*action_value*\\\" }),\\n]);\\nconsole.log(JSON.stringify(g1.paths.slice(0,20), null, 1));\\nconsole.log(JSON.stringify(g2.paths.slice(0,40), null, 1));\\nconsole.log(JSON.stringify(g3.paths.slice(0,40), null, 1));\", \"desc"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/*scoring*'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "glob",
+      "args": "{'pattern': '**/action-value-v1.json'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "glob",
+      "args": "{'pattern': '**/*action_value*'}"
+     }
+    ]
+   },
+   "kind": "r2",
+   "run_id": "334b8d93-6574-4a2e-8db5-b2ba00c571a7"
+  },
+  {
+   "task_id": "T06",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 25634,
+   "answer_sha256": "358928742223e22439299a9bb107a86c705c3aabd18c79c8d321a424c27c0071",
+   "tool_calls": 242,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 242,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst r = await tools.bash({ command: \\\"pwd && ls -la && git log --oneline -5 2>/dev/null | head -20\\\", description: \\\"Show workspace root and recent commits\\\" });\\nconsole.log(r.kind === \\\"foreground\\\" ? r.stdout.text + \\\"\\\\n---STDERR---\\\\n\\\" + r.stderr.text : JSON.stringify(r));\\n\", \"description\": \"Inspect workspace root layout\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls -la && git log --oneline -5 2>/dev/null | head -20', 'description': 'Show workspace root and recent commits'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls -la && git log --oneline -5 2>/dev/null | head -20', 'description': 'Show workspace root and recent commits'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst cmds = [\\n  \\\"grep -rl 'sitin-scoring-view' --include='*.py' --include='*.json' --include='*.md' . 2>/dev/null | head -40\\\",\\n  \\\"ls src/ && ls src/*/ | head -40\\\",\\n  \\\"grep -rl 'action-value-v1' . 2>/dev/null | head -20\\\",\\n  \\\"grep -rl 'guarded_unknown_score' . 2>/dev/null | head -20\\\",\\n];\\nfor (const c of cmds) {\\n  const r = await tools.bash({ command: c, description: \\\"rec"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': \"grep -rl 'sitin-scoring-view' --include='*.py' --include='*.json' --include='*.md' . 2>/dev/null | head -40\", 'description': 'recon'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': \"grep -rl 'sitin-scoring-view' --include='*.py' --include='*.json' --include='*.md' . 2>/dev/null | head -40\", 'description': 'recon'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'ls src/ && ls src/*/ | head -40', 'description': 'recon'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst r = await tools.bash({ command: \\\"pwd && ls -la && git log --oneline -5 2>/dev/null | head -20\\\", description: \\\"Show workspace root and recent commits\\\" });\\nconsole.log(r.kind === \\\"foreground\\\" ? r.stdout.text + \\\"\\\\n---STDERR---\\\\n\\\" + r.stderr.text : JSON.stringify(r));\\n\", \"description\": \"Inspect workspace root layout\"}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls -la && git log --oneline -5 2>/dev/null | head -20', 'description': 'Show workspace root and recent commits'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls -la && git log --oneline -5 2>/dev/null | head -20', 'description': 'Show workspace root and recent commits'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst cmds = [\\n  \\\"grep -rl 'sitin-scoring-view' --include='*.py' --include='*.json' --include='*.md' . 2>/dev/null | head -40\\\",\\n  \\\"ls src/ && ls src/*/ | head -40\\\",\\n  \\\"grep -rl 'action-value-v1' . 2>/dev/null | head -20\\\",\\n  \\\"grep -rl 'guarded_unknown_score' . 2>/dev/null | head -20\\\",\\n];\\nfor (const c of cmds) {\\n  const r = await tools.bash({ command: c, description: \\\"rec"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': \"grep -rl 'sitin-scoring-view' --include='*.py' --include='*.json' --include='*.md' . 2>/dev/null | head -40\", 'description': 'recon'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': \"grep -rl 'sitin-scoring-view' --include='*.py' --include='*.json' --include='*.md' . 2>/dev/null | head -40\", 'description': 'recon'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'ls src/ && ls src/*/ | head -40', 'description': 'recon'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'ls src/ && ls src/*/ | head -40', 'description': 'recon'}"
+     }
+    ]
+   },
+   "kind": "r2",
+   "run_id": "15b6b980-49cf-426f-bddf-c8a4dc5fd159"
+  },
+  {
+   "task_id": "T07",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 16749,
+   "answer_sha256": "18dae3acd088c5d0ab0d3a50681ad5e4169aaee64b0ede1c81b43a5118c7c581",
+   "tool_calls": 68,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 68,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Write parent/child scorer modules and comparison harness\", \"code\": \"\\nconst parent = `# 用途：任务合同原文父代（triax-v1）\\n\\\"\\\"\\\"候选机制说明：以「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分：先从墙余量与赛事名次压力推导机会缩放，再对每个合法动作聚合后续分支结构值（-14×向听 + 路线证据状态加权的支撑凹曲线）与路线潜力（压力×墙机会×封顶番/自得分），胡/杠等立即结算按自得分与番直接入分并与继续值真实比较，未知事实显式降档带旗标，未知动作沉底 -40、已知动作保底 -39，结构事实不完整或胡缺结算时整批 ABSTAIN。\\\"\\\"\\\"\\n\\nMECH = \\\"triax-v1\\\"\\nKNOWN_TYPES = (\\\"discard\\\""
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'mkdir -p /tmp/m1rev', 'description': 'Create scratch dir for M1 test'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'mkdir -p /tmp/m1rev', 'description': 'Create scratch dir for M1 test'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/parent_mod.py', 'content': '# 用途：任务合同原文父代（triax-v1）\\n\"\"\"候选机制说明：以「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分：先从墙余量与赛事名次压力推导机会缩放，再对每个合法动作聚合后续分支结构值（-14×向听 + 路线证据状态加权的支撑凹曲线）与路线潜力（压力×墙机会×封顶番/自得分），胡/杠等立即结算按自得分与番直接入分并与继续值真实比较，未知事实显式降档带旗标，未知动作沉底 -40、已知动作保底 -39，结构事实不完整或胡缺结算时整批 ABSTAIN。\"\"\"\\n\\nMECH = \"triax-v1\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\\nWALL_MID = 22.0\\nSH"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/parent_mod.py', 'content': '# 用途：任务合同原文父代（triax-v1）\\n\"\"\"候选机制说明：以「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分：先从墙余量与赛事名次压力推导机会缩放，再对每个合法动作聚合后续分支结构值（-14×向听 + 路线证据状态加权的支撑凹曲线）与路线潜力（压力×墙机会×封顶番/自得分），胡/杠等立即结算按自得分与番直接入分并与继续值真实比较，未知事实显式降档带旗标，未知动作沉底 -40、已知动作保底 -39，结构事实不完整或胡缺结算时整批 ABSTAIN。\"\"\"\\n\\nMECH = \"triax-v1\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\\nWALL_MID = 22.0\\nSH"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/child_mod.py', 'content': '# 用途：M1 修订候选（反馈方向①）；改动只限墙后段路线潜力轴与结算偏置\\n\"\"\"候选机制说明：延续父代 triax-v1「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分骨架，只按反馈方向①在墙后段（剩余墙量已知且 < WALL_MID=22 张）对路线潜力轴加更强衰减——路线结构项系数 0.8 → 0.8×0.45 = 0.36、路线潜力乘子额外 ×0.40——并对带已生产结算的动作（含 hu）加 +6.0 结算偏置；名次压力启发式、牌效结构项、沉底 −40 / 保底 −39 与全部 ABSTAIN 口径逐字沿用父代。\"\"\"\\n\\nMECH = \"triax-v1-walllate\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", "
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/child_mod.py', 'content': '# 用途：M1 修订候选（反馈方向①）；改动只限墙后段路线潜力轴与结算偏置\\n\"\"\"候选机制说明：延续父代 triax-v1「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分骨架，只按反馈方向①在墙后段（剩余墙量已知且 < WALL_MID=22 张）对路线潜力轴加更强衰减——路线结构项系数 0.8 → 0.8×0.45 = 0.36、路线潜力乘子额外 ×0.40——并对带已生产结算的动作（含 hu）加 +6.0 结算偏置；名次压力启发式、牌效结构项、沉底 −40 / 保底 −39 与全部 ABSTAIN 口径逐字沿用父代。\"\"\"\\n\\nMECH = \"triax-v1-walllate\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", "
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/harness.py', 'content': 'import sys\\nsys.path.insert(0, \"/tmp/m1rev\")\\nimport parent_mod\\nimport child_mod\\n\\n\\ndef window(wc, seat, stage, table, actions):\\n    return {\\n        \"schema_version\": \"sitin-scoring-view/3\",\\n        \"visible_state\": {\"seat\": seat, \"remaining_tile_count\": wc,\\n                          \"table_scores\": list(table), \"dealer_seat\": 0,\\n        "
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Write parent/child scorer modules and comparison harness\", \"code\": \"\\nconst parent = `# 用途：任务合同原文父代（triax-v1）\\n\\\"\\\"\\\"候选机制说明：以「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分：先从墙余量与赛事名次压力推导机会缩放，再对每个合法动作聚合后续分支结构值（-14×向听 + 路线证据状态加权的支撑凹曲线）与路线潜力（压力×墙机会×封顶番/自得分），胡/杠等立即结算按自得分与番直接入分并与继续值真实比较，未知事实显式降档带旗标，未知动作沉底 -40、已知动作保底 -39，结构事实不完整或胡缺结算时整批 ABSTAIN。\\\"\\\"\\\"\\n\\nMECH = \\\"triax-v1\\\"\\nKNOWN_TYPES = (\\\"discard\\\""
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/parent_mod.py', 'content': '# 用途：任务合同原文父代（triax-v1）\\n\"\"\"候选机制说明：以「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分：先从墙余量与赛事名次压力推导机会缩放，再对每个合法动作聚合后续分支结构值（-14×向听 + 路线证据状态加权的支撑凹曲线）与路线潜力（压力×墙机会×封顶番/自得分），胡/杠等立即结算按自得分与番直接入分并与继续值真实比较，未知事实显式降档带旗标，未知动作沉底 -40、已知动作保底 -39，结构事实不完整或胡缺结算时整批 ABSTAIN。\"\"\"\\n\\nMECH = \"triax-v1\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\\nWALL_MID = 22.0\\nSH"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/parent_mod.py', 'content': '# 用途：任务合同原文父代（triax-v1）\\n\"\"\"候选机制说明：以「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分：先从墙余量与赛事名次压力推导机会缩放，再对每个合法动作聚合后续分支结构值（-14×向听 + 路线证据状态加权的支撑凹曲线）与路线潜力（压力×墙机会×封顶番/自得分），胡/杠等立即结算按自得分与番直接入分并与继续值真实比较，未知事实显式降档带旗标，未知动作沉底 -40、已知动作保底 -39，结构事实不完整或胡缺结算时整批 ABSTAIN。\"\"\"\\n\\nMECH = \"triax-v1\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\\nWALL_MID = 22.0\\nSH"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/child_mod.py', 'content': '# 用途：M1 修订候选（反馈方向①）；改动只限墙后段路线潜力轴与结算偏置\\n\"\"\"候选机制说明：延续父代 triax-v1「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分骨架，只按反馈方向①在墙后段（剩余墙量已知且 < WALL_MID=22 张）对路线潜力轴加更强衰减——路线结构项系数 0.8 → 0.8×0.45 = 0.36、路线潜力乘子额外 ×0.40——并对带已生产结算的动作（含 hu）加 +6.0 结算偏置；名次压力启发式、牌效结构项、沉底 −40 / 保底 −39 与全部 ABSTAIN 口径逐字沿用父代。\"\"\"\\n\\nMECH = \"triax-v1-walllate\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", "
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/child_mod.py', 'content': '# 用途：M1 修订候选（反馈方向①）；改动只限墙后段路线潜力轴与结算偏置\\n\"\"\"候选机制说明：延续父代 triax-v1「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分骨架，只按反馈方向①在墙后段（剩余墙量已知且 < WALL_MID=22 张）对路线潜力轴加更强衰减——路线结构项系数 0.8 → 0.8×0.45 = 0.36、路线潜力乘子额外 ×0.40——并对带已生产结算的动作（含 hu）加 +6.0 结算偏置；名次压力启发式、牌效结构项、沉底 −40 / 保底 −39 与全部 ABSTAIN 口径逐字沿用父代。\"\"\"\\n\\nMECH = \"triax-v1-walllate\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", "
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/harness.py', 'content': 'import sys\\nsys.path.insert(0, \"/tmp/m1rev\")\\nimport parent_mod\\nimport child_mod\\n\\n\\ndef window(wc, seat, stage, table, actions):\\n    return {\\n        \"schema_version\": \"sitin-scoring-view/3\",\\n        \"visible_state\": {\"seat\": seat, \"remaining_tile_count\": wc,\\n                          \"table_scores\": list(table), \"dealer_seat\": 0,\\n        "
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/tmp/m1rev/harness.py', 'content': 'import sys\\nsys.path.insert(0, \"/tmp/m1rev\")\\nimport parent_mod\\nimport child_mod\\n\\n\\ndef window(wc, seat, stage, table, actions):\\n    return {\\n        \"schema_version\": \"sitin-scoring-view/3\",\\n        \"visible_state\": {\"seat\": seat, \"remaining_tile_count\": wc,\\n                          \"table_scores\": list(table), \"dealer_seat\": 0,\\n        "
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst dir = \\\"/tmp/m1rev\\\";\\nconst harness = `import sys\\nsys.path.insert(0, \\\"/tmp/m1rev\\\")\\nimport parent_mod\\nimport child_mod\\n\\n\\ndef window(wc, seat, stage, table, actions):\\n    return {\\n        \\\"schema_version\\\": \\\"sitin-scoring-view/3\\\",\\n        \\\"visible_state\\\": {\\\"seat\\\": seat, \\\"remaining_tile_count\\\": wc,\\n                          \\\"table_scores\\\": list(table), \\\"deal"
+     }
+    ]
+   },
+   "kind": "r2",
+   "run_id": "f9ebac8a-7388-44b8-93b0-010579ad296a"
+  },
+  {
+   "task_id": "T08",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 20470,
+   "answer_sha256": "5ddb77ee0422fad1e6c4085a5e7eefb620fa41e37f89fa219ed0946ad9691509",
+   "tool_calls": 30,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 30,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"description\": \"Build parent/child scorers and diff signatures\", \"code\": \"\\nconst child = `\\\"\\\"\\\"候选机制说明：以「门线基准重建 × 条件路线潜力 × 立即结算」三轴对照评分——先用 competition 的当前阶段合计（已完成账 stage_scores 与当前桌账 table_scores 逐座位相加，两项互不重叠）重建名次识别区间与两条门线（inside_line = 升序下标 2 的第 2 名分数、outside_line = 升序下标 1 的第 3 名分数），按区间给出路线压力 press 与结算权重 kd；再对每个合法动作聚合后续分支结构值（-14×向听 + 证据状态加权的支撑凹曲线）与按墙余量衰减的路线潜力，带可读立即结算的动作按 frozen_line 近似启发式把本座位增量"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/parent.py', 'content': '\"\"\"父代 triax-v1（逐字复制，用于差异取证）\"\"\"\\nMECH = \"triax-v1\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\\nWALL_MID = 22.0\\nSH_PEN = 14.0\\nSETTLE_BASE = 32.0\\nHU_BASE = 34.0\\n\\n\\ndef num2(x):\\n    if x is None:\\n        return 0.0, False\\n    if x is True or x is False:\\n        return 0.0, False\\n    return x, Tru"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/parent.py', 'content': '\"\"\"父代 triax-v1（逐字复制，用于差异取证）\"\"\"\\nMECH = \"triax-v1\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\\nWALL_MID = 22.0\\nSH_PEN = 14.0\\nSETTLE_BASE = 32.0\\nHU_BASE = 34.0\\n\\n\\ndef num2(x):\\n    if x is None:\\n        return 0.0, False\\n    if x is True or x is False:\\n        return 0.0, False\\n    return x, Tru"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/child.py', 'content': '\"\"\"候选机制说明：以「门线基准重建 × 条件路线潜力 × 立即结算」三轴对照评分——先用 competition 的当前阶段合计（已完成账 stage_scores 与当前桌账 table_scores 逐座位相加，两项互不重叠）重建名次识别区间与两条门线（inside_line = 升序下标 2 的第 2 名分数、outside_line = 升序下标 1 的第 3 名分数），按区间给出路线压力 press 与结算权重 kd；再对每个合法动作聚合后续分支结构值（-14×向听 + 证据状态加权的支撑凹曲线）与按墙余量衰减的路线潜力，带可读立即结算的动作按 frozen_line 近似启发式把本座位增量 δ（逐动作取值，ΔΦ = δ）与番直接"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/child.py', 'content': '\"\"\"候选机制说明：以「门线基准重建 × 条件路线潜力 × 立即结算」三轴对照评分——先用 competition 的当前阶段合计（已完成账 stage_scores 与当前桌账 table_scores 逐座位相加，两项互不重叠）重建名次识别区间与两条门线（inside_line = 升序下标 2 的第 2 名分数、outside_line = 升序下标 1 的第 3 名分数），按区间给出路线压力 press 与结算权重 kd；再对每个合法动作聚合后续分支结构值（-14×向听 + 证据状态加权的支撑凹曲线）与按墙余量衰减的路线潜力，带可读立即结算的动作按 frozen_line 近似启发式把本座位增量 δ（逐动作取值，ΔΦ = δ）与番直接"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/run.py', 'content': 'import importlib.util, json\\n\\n\\ndef load(path, name):\\n    spec = importlib.util.spec_from_file_location(name, path)\\n    mod = importlib.util.module_from_spec(spec)\\n    spec.loader.exec_module(mod)\\n    return mod\\n\\n\\nP = load(\"/Users/liyang/hangma-bot/.m1-scratch/parent.py\", \"pm\")\\nC = load(\"/Users/liyang/hangma-bot/.m1-"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/run.py', 'content': 'import importlib.util, json\\n\\n\\ndef load(path, name):\\n    spec = importlib.util.spec_from_file_location(name, path)\\n    mod = importlib.util.module_from_spec(spec)\\n    spec.loader.exec_module(mod)\\n    return mod\\n\\n\\nP = load(\"/Users/liyang/hangma-bot/.m1-scratch/parent.py\", \"pm\")\\nC = load(\"/Users/liyang/hangma-bot/.m1-"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'python3 /Users/liyang/hangma-bot/.m1-scratch/run.py', 'description': 'Run parent/child diff harness'}"
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/parent.py', 'content': '\"\"\"父代 triax-v1（逐字复制，用于差异取证）\"\"\"\\nMECH = \"triax-v1\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\\nWALL_MID = 22.0\\nSH_PEN = 14.0\\nSETTLE_BASE = 32.0\\nHU_BASE = 34.0\\n\\n\\ndef num2(x):\\n    if x is None:\\n        return 0.0, False\\n    if x is True or x is False:\\n        return 0.0, False\\n    return x, Tru"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/parent.py', 'content': '\"\"\"父代 triax-v1（逐字复制，用于差异取证）\"\"\"\\nMECH = \"triax-v1\"\\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\\nWALL_MID = 22.0\\nSH_PEN = 14.0\\nSETTLE_BASE = 32.0\\nHU_BASE = 34.0\\n\\n\\ndef num2(x):\\n    if x is None:\\n        return 0.0, False\\n    if x is True or x is False:\\n        return 0.0, False\\n    return x, Tru"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/child.py', 'content': '\"\"\"候选机制说明：以「门线基准重建 × 条件路线潜力 × 立即结算」三轴对照评分——先用 competition 的当前阶段合计（已完成账 stage_scores 与当前桌账 table_scores 逐座位相加，两项互不重叠）重建名次识别区间与两条门线（inside_line = 升序下标 2 的第 2 名分数、outside_line = 升序下标 1 的第 3 名分数），按区间给出路线压力 press 与结算权重 kd；再对每个合法动作聚合后续分支结构值（-14×向听 + 证据状态加权的支撑凹曲线）与按墙余量衰减的路线潜力，带可读立即结算的动作按 frozen_line 近似启发式把本座位增量 δ（逐动作取值，ΔΦ = δ）与番直接"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/child.py', 'content': '\"\"\"候选机制说明：以「门线基准重建 × 条件路线潜力 × 立即结算」三轴对照评分——先用 competition 的当前阶段合计（已完成账 stage_scores 与当前桌账 table_scores 逐座位相加，两项互不重叠）重建名次识别区间与两条门线（inside_line = 升序下标 2 的第 2 名分数、outside_line = 升序下标 1 的第 3 名分数），按区间给出路线压力 press 与结算权重 kd；再对每个合法动作聚合后续分支结构值（-14×向听 + 证据状态加权的支撑凹曲线）与按墙余量衰减的路线潜力，带可读立即结算的动作按 frozen_line 近似启发式把本座位增量 δ（逐动作取值，ΔΦ = δ）与番直接"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/run.py', 'content': 'import importlib.util, json\\n\\n\\ndef load(path, name):\\n    spec = importlib.util.spec_from_file_location(name, path)\\n    mod = importlib.util.module_from_spec(spec)\\n    spec.loader.exec_module(mod)\\n    return mod\\n\\n\\nP = load(\"/Users/liyang/hangma-bot/.m1-scratch/parent.py\", \"pm\")\\nC = load(\"/Users/liyang/hangma-bot/.m1-"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "write",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/run.py', 'content': 'import importlib.util, json\\n\\n\\ndef load(path, name):\\n    spec = importlib.util.spec_from_file_location(name, path)\\n    mod = importlib.util.module_from_spec(spec)\\n    spec.loader.exec_module(mod)\\n    return mod\\n\\n\\nP = load(\"/Users/liyang/hangma-bot/.m1-scratch/parent.py\", \"pm\")\\nC = load(\"/Users/liyang/hangma-bot/.m1-"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nawait tools.edit({\\n  file_path: \\\"/Users/liyang/hangma-bot/.m1-scratch/child.py\\\",\\n  old_string: `        trace = {\\n            \\\"mech\\\": MECH,\\n            \\\"mode\\\": MODE,\\n            \\\"type\\\": row[\\\"atype\\\"],\\n            \\\"known\\\": known,`,\\n  new_string: `        state = \\\"known\\\"\\n        if not known:\\n            state = \\\"unknown\\\"\\n        trace = {\\n            \\\"mech\\\": "
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "edit",
+      "args": "{'file_path': '/Users/liyang/hangma-bot/.m1-scratch/child.py', 'old_string': '        trace = {\\n            \"mech\": MECH,\\n            \"mode\": MODE,\\n            \"type\": row[\"atype\"],\\n            \"known\": known,', 'new_string': '        state = \"known\"\\n        if not known:\\n            state = \"unknown\"\\n        trace = {\\n            \"mech\": MECH,\\n            \"mode\": MODE,\\n            \"type"
+     }
+    ]
+   },
+   "kind": "r2",
+   "run_id": "5a7eeb35-a6fd-457d-b218-575c46d79d6e"
+  },
+  {
+   "task_id": "T09",
+   "status": "CONTAMINATED_TOOL_USE",
+   "sealed_clause": false,
+   "answer_chars": 22911,
+   "answer_sha256": "120c1a4cc301ba73005a3299d6671e4758ae7c658da556ea277b7a7f5d6b7753",
+   "tool_calls": 8,
+   "file_access_hits": 0,
+   "evidence": {
+    "tool_calls": 8,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const msg = `【I1 交付：score_actions 完整评分器设计（action_value_v1）】\\n\\n角色：I1 初始化，全新完整评分器；无伪造成绩、不预测提分数值、不判定优胜或发布。\\n\\n一、机制一句话\\n以「三账显式重建 + 未知不越位」为核心：先用 competition.competition_bases 的 stage_scores 与 table_scores 逐座位相加重建当前阶段合计（stage 账 absent/unmappable 即降级为阶段未知，绝不补零、不用 table_scores 顶替），据升序下标 2=第 2 名、下标 1=第 3 名算门线势差（inside_gap/outside_gap）与名次识别区间；再对每个合法动作聚合已生产事实（immediate_settlement.score_delta、effic"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "send_message",
+      "args": "{'agent_id': '4439125d-a5df-406b-b452-186f9cc42e5b', 'message': '【I1 交付：score_actions 完整评分器设计（action_value_v1）】\\n\\n角色：I1 初始化，全新完整评分器；无伪造成绩、不预测提分数值、不判定优胜或发布。\\n\\n一、机制一句话\\n以「三账显式重建 + 未知不越位」为核心：先用 competition.competition_bases 的 stage_scores 与 table_scores 逐座位相加重建当前阶段合计（stage 账 absent/unmappable 即降级为阶段未知，绝不补零、不用 table_scores 顶替），据升序下标 2=第 2 名、下标 1=第 3 名算门线势差（inside_gap/outside_gap）与名次识别区间；再对每个合法动作聚合已生"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "send_message",
+      "args": "{'agent_id': '4439125d-a5df-406b-b452-186f9cc42e5b', 'message': '【I1 交付：score_actions 完整评分器设计（action_value_v1）】\\n\\n角色：I1 初始化，全新完整评分器；无伪造成绩、不预测提分数值、不判定优胜或发布。\\n\\n一、机制一句话\\n以「三账显式重建 + 未知不越位」为核心：先用 competition.competition_bases 的 stage_scores 与 table_scores 逐座位相加重建当前阶段合计（stage 账 absent/unmappable 即降级为阶段未知，绝不补零、不用 table_scores 顶替），据升序下标 2=第 2 名、下标 1=第 3 名算门线势差（inside_gap/outside_gap）与名次识别区间；再对每个合法动作聚合已生"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"const msg = `【I1 交付：score_actions 完整动作评分器（action_value_v1）】\\n\\n交付正文已按格式输出：花括号一句话 + 唯一 json 围栏（trigger/changed_branches/expected_direction/counterexample）+ 唯一 python 围栏（完整 score_actions(view)）。未写文件、未改规则/接口/评估器/运行配置、未判定优胜或发布、未附任何伪造成绩。\\n\\n机制一句话：用 competition.competition_bases 的 stage_scores 与 table_scores 逐座位相加重建当前阶段合计（stage 账 absent/unmappable 即降级为阶段未知，绝不补零、不用 table_scores 顶替），据升序下标 2=第 2 "
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "send_message",
+      "args": "{'agent_id': '4439125d-a5df-406b-b452-186f9cc42e5b', 'message': '【I1 交付：score_actions 完整动作评分器（action_value_v1）】\\n\\n交付正文已按格式输出：花括号一句话 + 唯一 json 围栏（trigger/changed_branches/expected_direction/counterexample）+ 唯一 python 围栏（完整 score_actions(view)）。未写文件、未改规则/接口/评估器/运行配置、未判定优胜或发布、未附任何伪造成绩。\\n\\n机制一句话：用 competition.competition_bases 的 stage_scores 与 table_scores 逐座位相加重建当前阶段合计（stage 账 absent/unmappable 即降级为"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "send_message",
+      "args": "{'agent_id': '4439125d-a5df-406b-b452-186f9cc42e5b', 'message': '【I1 交付：score_actions 完整动作评分器（action_value_v1）】\\n\\n交付正文已按格式输出：花括号一句话 + 唯一 json 围栏（trigger/changed_branches/expected_direction/counterexample）+ 唯一 python 围栏（完整 score_actions(view)）。未写文件、未改规则/接口/评估器/运行配置、未判定优胜或发布、未附任何伪造成绩。\\n\\n机制一句话：用 competition.competition_bases 的 stage_scores 与 table_scores 逐座位相加重建当前阶段合计（stage 账 absent/unmappable 即降级为"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": []
+   },
+   "kind": "r2",
+   "run_id": "58045a0f-7b03-457c-9016-18e31fd79f3c"
+  },
+  {
+   "task_id": "T10",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "sealed_clause": false,
+   "answer_chars": 34755,
+   "answer_sha256": "82631adf90d2024be2fb78c1499a80ffc8da875ae9b22fec87252357a6a9f96f",
+   "tool_calls": 290,
+   "file_access_hits": 8,
+   "evidence": {
+    "tool_calls": 290,
+    "calls": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst out: string[] = [];\\ntry {\\n  const g1 = await tools.grep({ pattern: \\\"ScoringView\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\n  out.push(\\\"ScoringView matches: \\\" + g1.matches.length);\\n  out.push(g1.matches.slice(0, 25).map(m => m.path + \\\":\\\" + m.lineNumber + \\\": \\\" + m.line.trim()).join(\\\"\\\\n\\\"));\\n} catch (e) { out.push(\\\"grep1 failed: \\\" + String(e)); }\\ntry {\\n  const g2 = "
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'score_actions|action_value_v1|sitin-scoring-view', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'score_actions|action_value_v1|sitin-scoring-view', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls -a | head -30 && (python3 -V || true)', 'description': 'Show workspace root and python version'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls -a | head -30 && (python3 -V || true)', 'description': 'Show workspace root and python version'}"
+     },
+     {
+      "record": "tool/result",
+      "tool": "tool/result",
+      "args": ""
+     }
+    ],
+    "file_access": [
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst out: string[] = [];\\ntry {\\n  const g1 = await tools.grep({ pattern: \\\"ScoringView\\\", path: \\\"/Users/liyang/hangma-bot\\\" });\\n  out.push(\\\"ScoringView matches: \\\" + g1.matches.length);\\n  out.push(g1.matches.slice(0, 25).map(m => m.path + \\\":\\\" + m.lineNumber + \\\": \\\" + m.line.trim()).join(\\\"\\\\n\\\"));\\n} catch (e) { out.push(\\\"grep1 failed: \\\" + String(e)); }\\ntry {\\n  const g2 = "
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'ScoringView', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "grep",
+      "args": "{'pattern': 'score_actions|action_value_v1|sitin-scoring-view', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "grep",
+      "args": "{'pattern': 'score_actions|action_value_v1|sitin-scoring-view', 'path': '/Users/liyang/hangma-bot'}"
+     },
+     {
+      "record": "tool/code-dispatch-start",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls -a | head -30 && (python3 -V || true)', 'description': 'Show workspace root and python version'}"
+     },
+     {
+      "record": "tool/code-dispatch",
+      "tool": "bash",
+      "args": "{'command': 'pwd && ls -a | head -30 && (python3 -V || true)', 'description': 'Show workspace root and python version'}"
+     },
+     {
+      "record": "tool/call",
+      "tool": "run_code",
+      "args": "{\"code\": \"\\nconst out: string[] = [];\\nconst r = await tools.read({ file_path: \\\"/Users/liyang/hangma-bot/src/hangma_bot/policy/action_value.py\\\", offset: 600, limit: 300 });\\nout.push(\\\"=== action_value.py 600-900 (total \\\" + r.totalLines + \\\") ===\\\");\\nout.push(r.lines.map(l => l.number + \\\"\\\\t\\\" + l.text).join(\\\"\\\\n\\\"));\\nreturn out.join(\\\"\\\\n\\\");\\n\", \"description\": \"Read ScoringView definition"
+     }
+    ]
+   },
+   "kind": "r2",
+   "run_id": "2245a651-5201-41e3-a4ae-125c6bf63269"
+  }
+ ],
+ "rejected": [
+  {
+   "task_id": "T01",
+   "kind": "r1",
+   "run_id": "669ea158-ab14-481d-b0a9-84a38062b790",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T11",
+   "kind": "r1",
+   "run_id": "8663e571-7b6e-4eff-8e6b-17c08a604602",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T12",
+   "kind": "r1",
+   "run_id": "7f62a2c5-864d-4b47-9e90-0679f7b352d1",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T22",
+   "kind": "r1",
+   "run_id": "de0dbda9-c184-4441-8518-db845daf27bd",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T14",
+   "kind": "r1",
+   "run_id": "02e51df7-2c3f-4619-9f46-7b2de6f429a9",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T16",
+   "kind": "r1",
+   "run_id": "6b0113b3-2c67-4c46-aeff-475d27121178",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T15",
+   "kind": "r1",
+   "run_id": "0dcd96a0-f28e-40b3-bc27-b7a74ef65708",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 14,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T13",
+   "kind": "r1",
+   "run_id": "da3f2253-54c4-4c9b-b1d6-1c51954b55ca",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 38,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T21",
+   "kind": "r1",
+   "run_id": "4eb68473-b384-4ab6-b7ce-c05d39951e50",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 64,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T01",
+   "kind": "r1",
+   "run_id": "20ea3a91-1c90-4b92-ba6b-184974c3dbb1",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T23",
+   "kind": "r1",
+   "run_id": "19c7c969-333f-4b33-ae0d-d78318f43eb6",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T04",
+   "kind": "r1",
+   "run_id": "0ac933c7-50c0-49a4-aa10-62b280a3c13c",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T24",
+   "kind": "r1",
+   "run_id": "e53ebf88-542a-4a6a-9254-71152f33ee1a",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T18",
+   "kind": "r1",
+   "run_id": "6b232061-9de8-499e-b437-fdac9713eb34",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T02",
+   "kind": "r1",
+   "run_id": "5abf396c-70ed-4de9-b7f2-b92d7366584a",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 4,
+   "file_access_hits": 3
+  },
+  {
+   "task_id": "T20",
+   "kind": "r1",
+   "run_id": "02c56d35-602d-42e6-99f3-4487f47ffc24",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T19",
+   "kind": "r1",
+   "run_id": "7484ffb1-b3e6-47c0-9949-0b4b7f10a09e",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T03",
+   "kind": "r1",
+   "run_id": "3e956dac-890d-473c-8822-81376ff5f0eb",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 26,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T17",
+   "kind": "r1",
+   "run_id": "4d61fb58-c642-4dae-86a8-f7429f8b04c2",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 80,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T09",
+   "kind": "r1",
+   "run_id": "c23afa68-fe55-4f02-8323-399342546d1b",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T10",
+   "kind": "r1",
+   "run_id": "7ab7bc0b-500c-4c3e-8326-11b6191470b1",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 274,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T05",
+   "kind": "r1",
+   "run_id": "7747097b-ed17-4dee-bd70-823533f05cb7",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 218,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T06",
+   "kind": "r1",
+   "run_id": "0477123f-d28c-432f-ad04-2ba9acd7fc96",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T08",
+   "kind": "r1",
+   "run_id": "4ae15667-c168-4893-8329-4eed3ee3e358",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T07",
+   "kind": "r1",
+   "run_id": "9d5b9b70-71cb-4c7d-bbcd-8d310c36af7d",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 276,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T09",
+   "kind": "r1-dup",
+   "run_id": "138f97d8-9943-45f4-8095-ae3b97e94422",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 166,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T13",
+   "kind": "r1-repair",
+   "run_id": "2c4a0fcf-187d-4c08-acea-339340ca8005",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T15",
+   "kind": "r1-repair",
+   "run_id": "35ed6de2-5613-4b74-934a-49137f4a6107",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T18",
+   "kind": "r1-repair",
+   "run_id": "79550ef2-d39d-4889-933d-036054ecb78d",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T20",
+   "kind": "r1-repair",
+   "run_id": "a95dccad-be4a-4d6c-bf25-5640515b3e10",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T22",
+   "kind": "r1-repair",
+   "run_id": "40d57478-a3ba-4df4-931d-129552b97e73",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T24",
+   "kind": "r1-repair",
+   "run_id": "2923e667-22c1-4421-b183-30ab5ea3b964",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T06",
+   "kind": "r1-repair",
+   "run_id": "0e4c48bc-243f-40b3-8df7-5f4620f12d91",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 26,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T07",
+   "kind": "r1-repair",
+   "run_id": "710af30f-9d4d-48e2-9510-75a900ee3589",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 268,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T08",
+   "kind": "r1-repair",
+   "run_id": "db366473-b432-4173-8d96-13857988f209",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T09",
+   "kind": "r1-repair",
+   "run_id": "4d825b00-1321-4f57-9943-67c72c6ee10b",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T10",
+   "kind": "r1-repair",
+   "run_id": "ac593150-1a3e-4e7a-ac29-3edb31d5a747",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T01",
+   "kind": "r2",
+   "run_id": "9eb58847-105a-45ce-a4c6-d4b04ab09d88",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T02",
+   "kind": "r2",
+   "run_id": "d4052700-3e63-4168-946f-397d4db06e12",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 10,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T03",
+   "kind": "r2",
+   "run_id": "b690e365-246e-452f-8a14-5a180ed286dd",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 8,
+   "file_access_hits": 6
+  },
+  {
+   "task_id": "T04",
+   "kind": "r2",
+   "run_id": "38ef0d20-fddc-46ab-aff9-7185571bbecc",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T11",
+   "kind": "r2",
+   "run_id": "ca7aee0e-6ef3-4383-98a0-e94fc8aaacd8",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T12",
+   "kind": "r2",
+   "run_id": "acc52e76-e666-4191-a4ec-b96a0f48f90f",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T13",
+   "kind": "r2",
+   "run_id": "d02f7a04-6425-435f-ae30-2177b4f89c23",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T14",
+   "kind": "r2",
+   "run_id": "9f05e964-e6e1-45a1-8ef9-04f9a6d14896",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T15",
+   "kind": "r2",
+   "run_id": "54e6ac28-8bb2-4a31-97da-88454ad2ad6f",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 10,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T16",
+   "kind": "r2",
+   "run_id": "6c9a4c3c-d485-4836-a949-467242c85755",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 20,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T21",
+   "kind": "r2",
+   "run_id": "5d0b99e5-0a8e-42a4-be19-3571c76502ad",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 26,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T22",
+   "kind": "r2",
+   "run_id": "c00d9b75-503b-4fc6-8047-d77a5c832328",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T23",
+   "kind": "r2",
+   "run_id": "d2811165-b418-45c6-9256-884255ea8c5b",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T24",
+   "kind": "r2",
+   "run_id": "73483c1e-b0ed-451d-aef9-1c2c6ceeec8b",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T05",
+   "kind": "r2",
+   "run_id": "334b8d93-6574-4a2e-8db5-b2ba00c571a7",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 212,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T06",
+   "kind": "r2",
+   "run_id": "15b6b980-49cf-426f-bddf-c8a4dc5fd159",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 242,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T07",
+   "kind": "r2",
+   "run_id": "f9ebac8a-7388-44b8-93b0-010579ad296a",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 68,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T08",
+   "kind": "r2",
+   "run_id": "5a7eeb35-a6fd-457d-b218-575c46d79d6e",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 30,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T09",
+   "kind": "r2",
+   "run_id": "58045a0f-7b03-457c-9016-18e31fd79f3c",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 8,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T10",
+   "kind": "r2",
+   "run_id": "2245a651-5201-41e3-a4ae-125c6bf63269",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 290,
+   "file_access_hits": 8
+  }
+ ],
+ "accepted": [],
+ "clean": false
+}

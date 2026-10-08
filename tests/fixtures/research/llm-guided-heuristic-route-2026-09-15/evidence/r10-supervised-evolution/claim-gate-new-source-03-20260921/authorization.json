@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-claim-gate-new-source-cf3c3-20260921",
+  "batch_label": "r10-claim-gate-new-source-cf3c3",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 64.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 64.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T03:01:40Z",
+  "issuance_basis": "CF3-C2在首个机会截取前因兼容层覆盖float类型失败；改为float子类后，门控器与判据保持不变",
+  "scope": "全新panel_seed；H/M各按root_index升序最多检查32根并取前8个行为命中；每机会双臂两桌；门控器冻结不调参",
+  "max_model_calls": 0,
+  "confirmation_roots": 0
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-claim-gate-calibration-cf3a-20260921",
+  "batch_label": "r10-claim-gate-calibration-cf3a",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 0.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 0.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T02:50:13Z",
+  "issuance_basis": "CF2合并32样本的机械、动作族覆盖和辅助标签丰富度通过",
+  "scope": "24训练根做留一法选择低自由度ridge门控器，8个根级隔离验证；不运行新桌、不调用模型、不确认、不发布",
+  "max_model_calls": 0,
+  "confirmation_roots": 0
+}

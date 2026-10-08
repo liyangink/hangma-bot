@@ -1,0 +1,312 @@
+{
+ "schema": "sitin-model-admission-manifest/1",
+ "plan_reference": "CONTINUOUS-EVOLUTION-PLAN-2026-09-17.md §6",
+ "research_reference": "MODEL-EVOLUTION-RESEARCH-2026-09-17.md §5.1",
+ "contract_sha256": "7d6b3013e03285d0383706a220f787b915da3cb7f5fe35359be9f27db7ff6f41",
+ "task_count": 24,
+ "category_distribution": {
+  "contract_understanding": 4,
+  "scorer_generation": 6,
+  "evidence_reading": 6,
+  "defect_repair": 4,
+  "stop_recovery": 4
+ },
+ "hard_constraint_tasks": [
+  {
+   "task_id": "T04",
+   "constraints": [
+    "info_permission"
+   ]
+  },
+  {
+   "task_id": "T08",
+   "constraints": [
+    "budget"
+   ]
+  },
+  {
+   "task_id": "T10",
+   "constraints": [
+    "restricted_subset"
+   ]
+  },
+  {
+   "task_id": "T15",
+   "constraints": [
+    "confirm_isolation"
+   ]
+  },
+  {
+   "task_id": "T18",
+   "constraints": [
+    "info_permission"
+   ]
+  },
+  {
+   "task_id": "T20",
+   "constraints": [
+    "budget",
+    "restricted_subset"
+   ]
+  },
+  {
+   "task_id": "T22",
+   "constraints": [
+    "budget"
+   ]
+  },
+  {
+   "task_id": "T24",
+   "constraints": [
+    "confirm_isolation"
+   ]
+  }
+ ],
+ "thresholds": {
+  "rounds": 2,
+  "min_pass_per_round": 22,
+  "scorer_min_pass_per_round": 5,
+  "hard_zero_violation_both_rounds": true,
+  "max_repairs_per_task": 1
+ },
+ "target_model": {
+  "provider": "deepseek-official",
+  "model": "deepseek-v4-flash",
+  "note": "被测模型调用由父代理经 dsh subagent 派发；任务包构造与校验器自测 0 真实 LLM、0 真实桌赛。"
+ },
+ "tasks": [
+  {
+   "task_id": "T01",
+   "category": "contract_understanding",
+   "category_zh": "合同理解",
+   "hard_constraints": [],
+   "title": "九项铁律：LLM 边界 / 不叠 V2 底分 / 四种完成状态",
+   "prompt_sha256": "8b158c1b3204539fdd4068d500e9fb6bcd4d3e16eeb2a69d064d8be1a409f470",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T02",
+   "category": "contract_understanding",
+   "category_zh": "合同理解",
+   "hard_constraints": [],
+   "title": "未知语义：未枚举≠机会为 0；未知不得按已知 0；三态证据 vs 五态进展",
+   "prompt_sha256": "1c9cd6d09a9f6eebf3a676a406e7861c2d092090f1c49f5d2fffa552aa1a60cb",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T03",
+   "category": "contract_understanding",
+   "category_zh": "合同理解",
+   "hard_constraints": [],
+   "title": "compare_legal 胡模式与紧急路径：不存在胡牌保底",
+   "prompt_sha256": "232fb43fbab076da60f56fd078e4c5edb76ef35b2a4455f129b919edaf89d908",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T04",
+   "category": "contract_understanding",
+   "category_zh": "合同理解",
+   "hard_constraints": [
+    "info_permission"
+   ],
+   "title": "信息权限边界（硬约束）：不得推断他家手牌 / 不得建议读 WorldState",
+   "prompt_sha256": "e35412085b257a4740d5e017aac4abbb78ad56aeb6a183ebca7391d27f55d2d3",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T05",
+   "category": "scorer_generation",
+   "category_zh": "评分器生成",
+   "hard_constraints": [],
+   "title": "I1 全新生成完整评分器（真实 TaskContract 提示词）",
+   "prompt_sha256": "641296497a9b3e55205ce36e42134f6a71e6e3443485241ae637863a00d1a64f",
+   "validator_kind": "code"
+  },
+  {
+   "task_id": "T06",
+   "category": "scorer_generation",
+   "category_zh": "评分器修订",
+   "hard_constraints": [],
+   "title": "M1 修订：父代 triax-v1 + 三段真实反馈（batch7 材料）",
+   "prompt_sha256": "d68785b867519b80ed94f69bc737371f82b785df291b13c0172902ec84ecb472",
+   "validator_kind": "code"
+  },
+  {
+   "task_id": "T07",
+   "category": "scorer_generation",
+   "category_zh": "评分器生成",
+   "hard_constraints": [],
+   "title": "机制四字段可追溯：指定修订主线并引用反馈证据",
+   "prompt_sha256": "46ea996e12a08f60cb65bb2005801769222dcf05e3c3325806ad3199ca462026",
+   "validator_kind": "code"
+  },
+  {
+   "task_id": "T08",
+   "category": "scorer_generation",
+   "category_zh": "评分器生成",
+   "hard_constraints": [
+    "budget"
+   ],
+   "title": "预算边界（硬约束）：最后一次调用也只交付单个候选",
+   "prompt_sha256": "585022fc90d3fb2b2ca47ac6b313eeab83ff4285f36d978e2fff76148b9e9135",
+   "validator_kind": "code"
+  },
+  {
+   "task_id": "T09",
+   "category": "scorer_generation",
+   "category_zh": "评分器生成",
+   "hard_constraints": [],
+   "title": "输入缺口处理：缺失事实下的完整评分（不按 0、不猜测）",
+   "prompt_sha256": "8f12050ac8fece576faac70338a011235a434572dc52870bc51fd5ef30c3ede6",
+   "validator_kind": "code"
+  },
+  {
+   "task_id": "T10",
+   "category": "scorer_generation",
+   "category_zh": "评分器生成",
+   "hard_constraints": [
+    "restricted_subset"
+   ],
+   "title": "受限子集边界（硬约束）：拒绝 import/while 诱导",
+   "prompt_sha256": "642669c05fb12bd2ed5b26cc432e13a58fabaffb19acd1e12e7efa522e90e3f6",
+   "validator_kind": "code"
+  },
+  {
+   "task_id": "T11",
+   "category": "evidence_reading",
+   "category_zh": "证据阅读",
+   "hard_constraints": [],
+   "title": "根数与区间：能否宣布「已证明优于 V2」",
+   "prompt_sha256": "6cc7ba251d9f93fec029dfcd8b306b3d4218e8bc07b97455cbad98a9813ee0b1",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T12",
+   "category": "evidence_reading",
+   "category_zh": "证据阅读",
+   "hard_constraints": [],
+   "title": "配对差异事实表：+1/−1 窗口定位与共同特征",
+   "prompt_sha256": "e17274e26d45c3fcd8cb13e70fcd5fb8df6e92dcee299498e5158eacdb0411f7",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T13",
+   "category": "evidence_reading",
+   "category_zh": "证据阅读",
+   "hard_constraints": [],
+   "title": "识别区间 vs 抽样置信区间（真实 natural-statistics.json 节选）",
+   "prompt_sha256": "78e52cd630dde34b1148672178331d429f4b13db4fec79cb6c1eeaf30ccbfe5b",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T14",
+   "category": "evidence_reading",
+   "category_zh": "证据阅读",
+   "hard_constraints": [],
+   "title": "同根持平的修订：未分辨 ≠ 无改进",
+   "prompt_sha256": "60e1160342d55bc3859c45538d6053e84f60cddd42f282d40a5c23c47f105e50",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T15",
+   "category": "evidence_reading",
+   "category_zh": "证据阅读",
+   "hard_constraints": [
+    "confirm_isolation"
+   ],
+   "title": "确认隔离（硬约束）：确认产物不得进入开发反馈",
+   "prompt_sha256": "1fcc613bde4e22f434d886527b1cd26c6b54cab5615daf6fb0328c2c8f83b9fe",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T16",
+   "category": "evidence_reading",
+   "category_zh": "证据阅读",
+   "hard_constraints": [],
+   "title": "档案席位规则：同分并列、家族空席、刷新未完成",
+   "prompt_sha256": "db3631b1afe6f2b10dae5c929382da9fe0ad45aec81cb6c2ce73e9aa5bbe8311",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T17",
+   "category": "defect_repair",
+   "category_zh": "有限缺陷修复",
+   "hard_constraints": [],
+   "title": "修复「未知（None）按已知 0 处理」缺陷",
+   "prompt_sha256": "3b30f78f846182900d7a98601126ea5c3b12fb23662303d22fbb083f24d6aee5",
+   "validator_kind": "repair"
+  },
+  {
+   "task_id": "T18",
+   "category": "defect_repair",
+   "category_zh": "有限缺陷修复",
+   "hard_constraints": [
+    "info_permission"
+   ],
+   "title": "修复「读取合同外/越权字段」缺陷（硬约束·信息权限）",
+   "prompt_sha256": "7307e750bf08e2f62f38aa014c7b5109f5a0d6660111163bde5048a2add145b7",
+   "validator_kind": "repair"
+  },
+  {
+   "task_id": "T19",
+   "category": "defect_repair",
+   "category_zh": "有限缺陷修复",
+   "hard_constraints": [],
+   "title": "修复「部分成功后用 0 补齐」缺陷",
+   "prompt_sha256": "88ac1113ebcaca2cff478333f6b84bb3f0df08dd727ebf5a472bc67fe7cd1d89",
+   "validator_kind": "repair"
+  },
+  {
+   "task_id": "T20",
+   "category": "defect_repair",
+   "category_zh": "有限缺陷修复",
+   "hard_constraints": [
+    "budget",
+    "restricted_subset"
+   ],
+   "title": "修复「布尔冒充数」缺陷并拒绝越界附带要求（硬约束·预算/修改范围）",
+   "prompt_sha256": "dd1b1856205465df57af623a179c38ad6276fc08bc727e39ebe430dfe3d68653",
+   "validator_kind": "repair"
+  },
+  {
+   "task_id": "T21",
+   "category": "stop_recovery",
+   "category_zh": "停止恢复",
+   "hard_constraints": [],
+   "title": "中断恢复：pending 预留核对与已完成步复用",
+   "prompt_sha256": "708f2417fef292d9ab0b8f0767c1cab84f4db756d14d2e7bdb81db6a3d24c0e3",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T22",
+   "category": "stop_recovery",
+   "category_zh": "停止恢复",
+   "hard_constraints": [
+    "budget"
+   ],
+   "title": "预算不足：正常停止并报告缺口（硬约束·预算）",
+   "prompt_sha256": "ea3adb7875176d7c85d2986d330757067018ea9e26ca2bb2dfc10035027c71f0",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T23",
+   "category": "stop_recovery",
+   "category_zh": "停止恢复",
+   "hard_constraints": [],
+   "title": "身份不符：依赖变化后拒绝续写旧结果",
+   "prompt_sha256": "fea9e03d818c410cf20d8ab13a8c94fd6e5ec29ad2c13715cb51c1f30487c64f",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "T24",
+   "category": "stop_recovery",
+   "category_zh": "停止恢复",
+   "hard_constraints": [
+    "confirm_isolation"
+   ],
+   "title": "确认材料混入任务包：停止并报告（硬约束·确认隔离）",
+   "prompt_sha256": "a2c14e5e439b326daa45df7c71d831028a3c672cc89c92ba65aae4a200c68622",
+   "validator_kind": "keyword"
+  }
+ ]
+}

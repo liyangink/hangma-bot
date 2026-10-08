@@ -1,0 +1,57 @@
+{
+  "schema": "sitin-action-value-ledger/1",
+  "accounts": [
+    "tokens_input",
+    "tokens_output",
+    "tables_full",
+    "tables_partial",
+    "prefix_generation",
+    "confirm_reserved"
+  ],
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 832.0,
+    "tables_partial": 0,
+    "prefix_generation": 13.0,
+    "confirm_reserved": 0
+  },
+  "confirm_authorized_budget": 0.0,
+  "authorized_budgets": {
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "tables_full": 832.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 13.0,
+    "confirm_reserved": 0.0
+  },
+  "confirm_policy": "confirm 硬禁继承现状：默认 0，无显式授权任何 confirm 记账拒绝",
+  "limit_policy": "Q3：正数记账须在授权总额内（扣已结算+在途预留）；未声明额度 fail-closed 拒绝；amount=0 纯登记不限额",
+  "reservations": [
+    {
+      "reservation_id": "r18:p14-pareto-confirm:capture#1",
+      "step_id": "r18:p14-pareto-confirm:capture",
+      "account": "prefix_generation",
+      "amount": 13.0,
+      "note": "未标注开发窗口的P5精确合法前缀捕获；按成功捕获计",
+      "at_utc": "2026-09-22T04:09:22Z",
+      "status": "settled",
+      "charged": 13.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "r18:p14-pareto-confirm:run#2",
+      "step_id": "r18:p14-pareto-confirm:run",
+      "account": "tables_full",
+      "amount": 832.0,
+      "note": "跨来源开发确认状态×32共同隐藏世界×两臂；按成功两臂桌数结算",
+      "at_utc": "2026-09-22T04:09:52Z",
+      "status": "settled",
+      "charged": 832.0,
+      "usage_unknown": false
+    }
+  ],
+  "workers_active": 0,
+  "worker_lease": "ledger.json.workers.json",
+  "worker_cap": 12
+}

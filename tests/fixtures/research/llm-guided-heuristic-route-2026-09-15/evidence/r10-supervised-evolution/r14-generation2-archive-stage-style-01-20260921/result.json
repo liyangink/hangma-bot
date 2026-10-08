@@ -1,0 +1,84 @@
+{
+  "schema": "r14-generation2-archive-stage-style-result/1",
+  "status": "PASS_R14_G2_DEVELOPMENT_GATE",
+  "manifest_sha256": "3c570abd72a4de5adf3b87b61db7bd5b6ca5331bffbbb13c84038a333e05fed0",
+  "candidate_id": "archive-stage-style-terra-max",
+  "candidate_sha256": "51e0da11ca6ca58106ece2bf70cc80b8e883b1fd253626324e827e015b01a48c",
+  "overall": {
+    "sources": 64,
+    "first_table_delta_mean": 2.34375,
+    "stage_score_delta_mean": 10.25,
+    "u_delta_low_mean": 0.0625,
+    "u_delta_high_mean": 0.0625
+  },
+  "by_mix": {
+    "H": {
+      "sources": 32,
+      "first_table_delta_mean": 0.8125,
+      "stage_score_delta_mean": 11.71875,
+      "u_delta_low_mean": 0.09375,
+      "u_delta_high_mean": 0.09375
+    },
+    "M": {
+      "sources": 32,
+      "first_table_delta_mean": 3.875,
+      "stage_score_delta_mean": 8.78125,
+      "u_delta_low_mean": 0.03125,
+      "u_delta_high_mean": 0.03125
+    }
+  },
+  "positive_u_units": 5,
+  "positive_u_distinct_roots": [
+    3,
+    4,
+    5,
+    8
+  ],
+  "positive_u_distinct_seats": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "gate_checks": {
+    "execution_failures": true,
+    "overall_u_delta_low_mean": true,
+    "each_mix_u_delta_low_mean": true,
+    "overall_stage_score_delta_mean": true,
+    "at_least_one_mix_u_delta_low_mean": true,
+    "positive_u_units_distinct_roots": true,
+    "positive_u_units_distinct_seats": true
+  },
+  "execution_audit": {
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 256,
+    "recorded_tables": 256,
+    "missing_tables": 0,
+    "recorded_counts": {
+      "decision_count": 339409,
+      "action_value_scored": 42379,
+      "action_value_failed": 0,
+      "other_policy_decisions": 297030,
+      "ambiguous_diagnostics": 0,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "abstain": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "zero_internal_failures_verified": true
+  },
+  "prior_development": {
+    "source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/stage-style-20260920/stage-style-terra-max/batch-closure.json",
+    "H_u_delta_mean": 0.03125,
+    "M_u_delta_mean": 0.0,
+    "selection_affected_by_result": true
+  },
+  "strength_claim": false,
+  "confirmation_eligible": true,
+  "next": "冻结候选并进入不参与选择的全新来源独立确认"
+}

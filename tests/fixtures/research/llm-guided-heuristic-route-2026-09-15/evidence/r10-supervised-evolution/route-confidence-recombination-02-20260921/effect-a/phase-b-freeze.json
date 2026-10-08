@@ -1,0 +1,34 @@
+{
+  "schema": "r10-route-confidence-phase-b-freeze/1",
+  "created_after_complete_phase_a": true,
+  "phase_a_manifest_sha256": "087a2c85ee9a70cc5fabaa3ddb8d08299861ddf7ffb7716c669d2deaa625d391",
+  "phase_a_ranking_sha256": "6d95058940af356c81256e9fb878321d1ecfd4e8f9317819463025a1016423a9",
+  "selected_configuration_ids": [
+    "c-cfg-01",
+    "c-cfg-05",
+    "fixed-parent-exact",
+    "c-cfg-00"
+  ],
+  "new_root_indices": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+  ],
+  "cumulative_roots_per_mix": 16,
+  "planned_candidate_tables": 512,
+  "baseline_new_tables": 128,
+  "selection_keep": 3,
+  "fitness": "H/M 等权的根级保守差 d_low 均值",
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "release_eligible": false,
+  "forced_controls": [
+    "fixed-parent-exact",
+    "c-cfg-00"
+  ]
+}

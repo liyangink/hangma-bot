@@ -1,0 +1,100 @@
+{
+  "schema": "r10-route-microfunction-contrastive/1",
+  "created_at_utc": "2026-09-20T22:25:48.094980+00:00",
+  "parents": [
+    {
+      "task": "R1",
+      "parent": "M1",
+      "mode": "midrange",
+      "hypothesis": "把同窗有效路线原值按(min+max)/2居中并以跨度归一，可同时奖励相对强路线、惩罚相对弱路线，避免T3和M1对所有路线动作同向加分。",
+      "candidate_sha256": "6012f94ae718c44c9a19e03ddc235fb8ef0e819d969646f4aacecaf586ffa99a",
+      "proposal_sha256": "d3403d620af458db72a1fe2bc59b145df8f167647b52fcf26ea5c1ae55bc70e3",
+      "configs": [
+        {
+          "RMF_SCALE": 0.0,
+          "RMF_SHAPE": 24.0,
+          "RMF_CAP": 8.0
+        },
+        {
+          "RMF_SCALE": 4.0,
+          "RMF_SHAPE": 24.0,
+          "RMF_CAP": 4.0
+        },
+        {
+          "RMF_SCALE": 8.0,
+          "RMF_SHAPE": 24.0,
+          "RMF_CAP": 8.0
+        },
+        {
+          "RMF_SCALE": 12.0,
+          "RMF_SHAPE": 24.0,
+          "RMF_CAP": 12.0
+        },
+        {
+          "RMF_SCALE": 8.0,
+          "RMF_SHAPE": 12.0,
+          "RMF_CAP": 8.0
+        },
+        {
+          "RMF_SCALE": 8.0,
+          "RMF_SHAPE": 48.0,
+          "RMF_CAP": 8.0
+        }
+      ],
+      "default_index": 2,
+      "effect_tables": 0
+    },
+    {
+      "task": "R2",
+      "parent": "M2",
+      "mode": "best_only",
+      "hypothesis": "只奖励同窗原值最高的路线动作，弱路线精确保持V2，避免在条件价值代理尚未校准时对较弱路线施加负分；它与R1形成保守/对称两种结构档案。",
+      "candidate_sha256": "24afea4464b766433f2b80568fcf0c32af66c4c6fe3f098189439857073b7b50",
+      "proposal_sha256": "d8b72d1cace1d41ce33a0147eac9bf20e4963d12cc188de3088f56fdf6e91dbf",
+      "configs": [
+        {
+          "RMF_SCALE": 0.0,
+          "RMF_SHAPE": 64.0,
+          "RMF_CAP": 8.0
+        },
+        {
+          "RMF_SCALE": 4.0,
+          "RMF_SHAPE": 64.0,
+          "RMF_CAP": 4.0
+        },
+        {
+          "RMF_SCALE": 8.0,
+          "RMF_SHAPE": 64.0,
+          "RMF_CAP": 8.0
+        },
+        {
+          "RMF_SCALE": 12.0,
+          "RMF_SHAPE": 64.0,
+          "RMF_CAP": 12.0
+        },
+        {
+          "RMF_SCALE": 8.0,
+          "RMF_SHAPE": 32.0,
+          "RMF_CAP": 8.0
+        },
+        {
+          "RMF_SCALE": 8.0,
+          "RMF_SHAPE": 96.0,
+          "RMF_CAP": 8.0
+        }
+      ],
+      "default_index": 2,
+      "effect_tables": 0
+    }
+  ],
+  "v2_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+  "derivation": "第一批10个非零配置在226冻结真实视图上只形成一个新首选签名、均只改2窗；无终局标签近似重放提示窗内相对映射可能扩大覆盖，最终覆盖必须以装配后的候选行为预检和完整阶段效果为准。",
+  "literature_basis": [
+    "EoH: 复用高层启发式并变异关键函数",
+    "ReEvo: 根据比较反馈反思并重组父代",
+    "MEoH/Lexicase: 以行为差异保持结构档案而不是只保留文本不同"
+  ],
+  "effect_evaluation_started": false,
+  "confirmation_reserved": 0,
+  "model_calls": 0
+}

@@ -1,0 +1,470 @@
+请设计一个全新的完整动作评分器 score_actions。本通道不附带任何实验成绩：
+不存在「已知有效」的伪造成绩参考，也不要求你预测提分数值。
+你是离线研发流程里的完整动作评分器设计者。你负责候选内部的动作取舍，不修改规则、接口、评估器或运行配置，不自行判定实验优胜或发布。
+
+【本次目标与修改点（先读这一节）】
+  - 本次目标：设计一个全新的完整动作评分器 score_actions（I1 初始化，不附实验成绩）
+  - 本次修改点：从零写出一套对全部合法动作的评分机制：先定未知/缺证据的锚定口径，再定已知事实（立即结算、分支向听与推进牌、条件路线、家族进展）之间的比较尺度。
+  - 角色：I1 初始化：全新完整评分器；不附伪造成绩
+  - 本批目标：group_advance_v1：四人中间阶段(group-dev-v1,每阶段2桌完整桌赛,Rounds=8,H/M对手等权混合)结束后本座位排名前二U=1;缺god_count用识别区间
+  - 终端 U：U = 1{本阶段完整排名 <= 2}
+  - 工程面板边界：开发面板=legal-prefix-v1条件机会(八谓词)+正常开局面板;确认数据不可见
+  - 所有研究数值必须标明单位、根数、终点和不确定性；不要求也不接受自报「预计提分 N」
+
+【score_actions 完整签名（不得改动）】
+  - score_actions(view: ScoringView) -> ScoreBatch
+  - 根据同一动作窗口的只读可见事实，返回所有合法动作的完整评分。view 不含隐藏世界、实验种子或赛后结果；返回 SCORED 加完整动作评分，或 ABSTAIN 加明确原因；评分点越大越优先。错误：抛错、非有限数、遗漏/重复/越界动作、超工作量均使本窗口整批失效。副作用：无；不读时间、随机源、网络、文件，不修改输入。
+  - hu_mode=compare_legal：新入口明确允许比较合法 Hu 与其他合法动作；立即胡永远支配继续不是规则定理。首批种子必须包含立即胡优先对照实现，骨架不强制它。紧急动作保持 HangmaRules.emergency_action 的 Pass/Discard 路径；不存在胡牌保底，不得误称。
+  - 排序合同：按分数降序、action_key 升序稳定排列；rank 从 1 开始（policy/interface.py 受控语义）。适配 RankedCandidate 时新总分放单个 ScorePart，保持 total_score == sum(score_parts) 不变量；非线性机制明细放有版本 trace，不拆成虚假可加贡献。
+
+【输入合同（公开接口附录的本题相关字段组；schema=sitin-action-value-public-interface/1）】
+  - 完整附录（全部 119 条路径 + 示例）：review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-public-interface-v1.json；本卡只渲染下表列出的字段组。
+  - 本题字段组（共 16 组）：schema_version、competition、actions、visible_state.rule_state、actions[]、actions[].immediate_settlement、actions[].followup_branches、actions[].routes、actions[].routes[].useful_tiles、actions[].routes[].conditional_settlement、actions[].routes[].conditions、actions[].useful_tiles、actions[].standard_useful_tiles、actions[].seven_pairs_useful_tiles、actions[].family_progress_entries、actions[].value_issues
+  - 本题未列出（机制不读；需要时按完整附录回查）：visible_state（27 条）、analysis_profile（6 条）、reference_features（6 条）。
+  - 来源：src/hangma_bot/policy/action_value.py 的 ScoringView.candidate_view()（schema=sitin-scoring-view/3）；与 contracts/action-value-v1.json 分开存放，不进合同字节身份。
+  - 投影函数：_observation_mapping、_action_mapping、_branch_mapping、_route_mapping、_settlement_mapping、_useful_tiles_mapping、_family_entries_mapping、_rule_issues_mapping
+  - 记法 1：`actions[]` 表示动作表逐项（元组），`[].` 表示对每一项的字段；`*` 表示该层键名由数据决定（透传）。
+  - 记法 2：所有元组都是只读 tuple（候选只能读、不能改）；所有映射都是 dict。
+  - 记法 3：`None` 与 Python 的 None 同义（JSON 里写 null）；「缺证据」一律是 None，**不是** 0、不是 ()、不是空字符串。
+  - 记法 4：动作键 action_key 的稳定格式：`discard:<牌码>`、`chi:<牌码>,<牌码>,<牌码>`、`peng:<牌码>`、`gang:<concealed|added|exposed>:<牌码>`、`hu`、`pass`。
+  - 记法 5：跳过分支的两个陷阱（复审 C5 的根因就是作者在猜字段）：① 没有 normal_progress / seven_pairs_progress 这种字段——动作相对进展只有 `actions[].family_progress`（全家族显著性摘要）与 `actions[].family_progress_entries[]`（逐家族明细）；普通型/七对只有**向听**与**推进牌**四件套（shanten/useful 各两套），没有「进展」字段。② `actions[].useful_tiles` 的元素是映射 {code, remaining_estimate}，而 `actions[].followup_branches[].useful_tiles` 的元素是**牌码字符串**——两处形状不同。
+  - 字段组 schema_version（1 条）：
+  - schema_version：标量；结构版本字符串；固定 sitin-scoring-view/3；结构面不兼容变更才升版本
+  - 字段组 competition（5 条）：
+  - competition：映射 | None；可见赛事上下文（阶段账/本桌账/合计与掩码）；None=无权获知赛事上下文（面板上恒为 None 的窗口很常见：competition=None）；None 表示未知，不得用 visible_state.table_scores 顶替阶段账
+  - competition.stage_scores：元组[整数]（长度 4）| None；本阶段【已完成各桌】积分和，按座位 0—3；单位：积分点（允许负分）；None=无阶段账（ranking 为空）或不可映射
+  - competition.table_scores：元组[整数]（长度 4）；本桌进行中积分，按座位 0—3；单位：积分点；对本人恒可见，故非 None；与 visible_state.table_scores 是同一事实
+  - competition.current_stage_scores：元组[整数]（长度 4）| None；当前阶段合计 = 已完成账 + 本桌账（逐座位相加）；单位：积分点；None=与 stage_scores 同掩码（stage_scores 为 None 时它也为 None）；算阶段名次与门线必须用它或两账相加；不得只加已完成账
+  - competition.freshness_masks：元组[字符串] | None；位置序固定 [stage_scores, table_scores] 的可用/陈旧说明；None=未提供掩码
+  - 字段组 actions（1 条）：
+  - actions：元组[映射]；按 action_key 严格升序的合法动作表（逐项字段见下）；本视图不重新判定合法性
+  - 字段组 visible_state.rule_state（6 条）：
+  - visible_state.rule_state：映射；公开规则状态白名单
+  - visible_state.rule_state.wealth_god：标量；财神牌码（当前规则为「白」）
+  - visible_state.rule_state.baotou：标量；本人是否处于爆头状态
+  - visible_state.rule_state.chain_count：标量；本人飘/杠动作链次数（断链清零，非负）
+  - visible_state.rule_state.catch_play：标量；官方抓打圈活跃标记
+  - visible_state.rule_state.catch_play_owner_seat：整数 | None；公开圈主座位，0—3；None=旧报文未提供或无圈
+  - 字段组 actions[]（12 条）：
+  - actions[].action_key：标量；稳定动作键（格式见 conventions）
+  - actions[].action_type：标量；规则动作类型；枚举 discard/chi/peng/gang/hu/pass
+  - actions[].is_legal：标量；合法身份（来自 RuleAnalysis 的事实透传）
+  - actions[].family_progress：标量；本动作相对进展的**全家族**显著性摘要（大写五态）；枚举 ADVANCE/SAME/RETREAT/CLOSE/UNKNOWN；这是家族进展 summary，**不是**普通型/七对进展；空家族明细时固定 UNKNOWN（未分析，不是中性）
+  - actions[].fact_kind：字符串 | None；动作后牌效事实的类别；枚举 hand_progress/win/not_applicable/analysis_failed；None=未生产 facts；analysis_failed 且无其他事实 = 缺证（不产生可用读数）
+  - actions[].shanten_after：整数 | None；动作后综合向听；-1 表示该动作即成胡；None=未分析（不等于 0）
+  - actions[].replacement_draw_unknown：布尔 | None；杠上补牌未知标记；None=未携带该标记（≠ False）
+  - actions[].best_followup_discard：字符串 | None；吃/碰后的最佳后续弃牌牌码（旧语义保留）；None=不适用或未分析
+  - actions[].standard_shanten_after：整数 | None；动作后**普通型**向听（-1 = 已成胡）；None=未分析
+  - actions[].seven_pairs_shanten_after：整数 | None；动作后**七对**向听（-1 = 已成胡）；None=有副露或未分析
+  - actions[].pattern_progress_note：字符串 | None；分牌型计数的局部缺证据原因（人可读一句话）；None=无局部缺证据
+  - actions[].value_coverage：字符串 | None；分值分析覆盖状态（只描述一次未来摸牌直接胡的范围）；枚举 complete/partial/unavailable；None=未跑分值分析
+  - 字段组 actions[].immediate_settlement（5 条）：
+  - actions[].immediate_settlement：映射 | None；立即结算的四家净变分（座位 0—3）；None=非立即结算动作，或未做分值分析
+  - actions[].immediate_settlement.fan：标量；番数（正整数）
+  - actions[].immediate_settlement.score_delta：元组[整数]（长度 4）；四家积分净变分，固定座位序 0—3
+  - actions[].immediate_settlement.self_delta：标量；本人座位那一项（= score_delta[seat]），积分点
+  - actions[].immediate_settlement.details：元组[字符串]；计番明细（顺序不变）
+  - 字段组 actions[].followup_branches（14 条）：
+      * 本组公共 note（逐字，适用于组内多条路径）：**别名键只由分支载体携带的属性产生**：分支**对象**带 progress/family_progress/pattern_progress 之一 ⇒ 规范键 progress；带 route_state/route_status/evidence_state 之一 ⇒ 规范键 route_state。生产 FollowupBranchFacts 不带这些键；**字典分支原样透传、不重命名**（例如准入夹具写 route_status 就得到 route_status）；缺失即未知
+  - actions[].followup_branches：元组[映射] | None；吃/碰后**全部**已分析合法后续弃牌分支；None=未分析或不适用（None ≠ 已知空集合；已知空集合是空元组 ()）
+  - actions[].followup_branches[].followup_key：标量；分支键，形如 `<action_key>#<后续弃牌牌码>`
+  - actions[].followup_branches[].followup_discard：标量；该分支先弃的牌码（分支对象字段；字典分支可有可无）
+  - actions[].followup_branches[].combined_shanten：整数 | 布尔 | None；该分支等待态的综合向听（-1 表示已成胡）；None=两分牌型都未知（未分析）；布尔只可能出现在**字典分支**：生产 FollowupBranchFacts 在构造期就拒绝 bool；读到 True/False 一律按未知处理，不得当 1/0
+  - actions[].followup_branches[].standard_shanten_after：整数 | None；同一等待手牌的普通型向听（-1 = 已成胡）；None=未分析；对象分支在值为 None 时**整个键不出现**（不是 null）
+  - actions[].followup_branches[].seven_pairs_shanten_after：整数 | None；同一等待手牌的七对向听（-1 = 已成胡）；None=有副露或未分析；对象分支在值为 None 时整个键不出现
+  - actions[].followup_branches[].support_remaining：整数 | None；一步推进有效牌的未见枚数总和（去重后求和，非负整数；不是概率）；None=计数未知（不得写 0 冒充已知空缺）
+  - actions[].followup_branches[].useful_tiles：元组[字符串]；该分支等待态的一步推进有效牌**牌码**（注意：这里的元素是字符串，不是映射）；all-or-nothing：计数未知时为空元组且 support_remaining 为 None
+  - actions[].followup_branches[].progress：标量；分支对象/字典显式携带的进展事实（规范别名键）
+  - actions[].followup_branches[].route_state：标量；分支载体显式携带的路线证据状态（规范别名键；取值随载体而定）
+  - actions[].followup_branches[].fan：标量；分支对象/字典显式携带的番数（规范别名键）
+  - actions[].followup_branches[].draw_kind：标量；分支对象/字典显式携带的摸牌来源（normal/replacement）
+  - actions[].followup_branches[].hand_codes：元组[字符串]；分支对象/字典显式携带的机械转移后可见手牌牌码
+  - actions[].followup_branches[].*：透传（键名由数据决定）；分支对象除规范别名外的其余字段（原始值化）或字典分支的全部键（浅拷贝原样）；字典分支原样透传（可能带 null）；对象分支的 None 字段被省略。读到未知键按未知处理，不得猜语义
+  - 字段组 actions[].routes（4 条）：
+  - actions[].routes：元组[映射]；条件见证路线摘要（空元组 = 无路线分析，不是「没有机会」）
+  - actions[].routes[].followup_discard：字符串 | None；该路线先弃的牌码；None=路线不属于吃碰后分支
+  - actions[].routes[].shanten：标量；路线向听（首版只提供直接成胡见证，固定 0）
+  - actions[].routes[].support：标量；路线的支持类型（首版固定 conditional_witness，不含未来生存概率）
+  - 字段组 actions[].routes[].useful_tiles（3 条）：
+  - actions[].routes[].useful_tiles：元组[映射]；互斥的下一摸牌有效牌（元素 {code, remaining_estimate}）；remaining_estimate 是未见张数估计，不是概率；同一后续弃牌内不重复计数
+  - actions[].routes[].useful_tiles[].code：标量；牌码
+  - actions[].routes[].useful_tiles[].remaining_estimate：标量；未见枚数估计，取值 0—4
+  - 字段组 actions[].routes[].conditional_settlement（5 条）：
+  - actions[].routes[].conditional_settlement：映射；条件满足时的四家净变分（形状同 immediate_settlement）；生产 ValueRoute 必须携带条件结算，故恒非 None；字典路线原样透传时可出现 null，读到 null 按未知处理
+  - actions[].routes[].conditional_settlement.fan：标量；条件成胡番数（正数）
+  - actions[].routes[].conditional_settlement.score_delta：元组[整数]（长度 4）；四家条件净变分，固定座位序 0—3
+  - actions[].routes[].conditional_settlement.self_delta：标量；本人座位那一项，积分点
+  - actions[].routes[].conditional_settlement.details：元组[字符串]；计番明细
+  - 字段组 actions[].routes[].conditions（7 条）：
+  - actions[].routes[].conditions：映射；条件见证的前置事实（不是已发生的胡牌观察）
+  - actions[].routes[].conditions.draw_kind：标量；摸牌来源；枚举 normal/replacement
+  - actions[].routes[].conditions.pre_draw_hand：元组[字符串]；假定摸前暗牌牌码（规范牌序，不含未来摸牌）
+  - actions[].routes[].conditions.meld_count：标量；副露组数，0—4
+  - actions[].routes[].conditions.chain_count：标量；条件成立时连续飘/杠动作数（非未来预估）
+  - actions[].routes[].conditions.chain_piao：标量；同一链中已飘出的白板张数
+  - actions[].routes[].conditions.baotou：标量；条件摸牌后的爆头
+  - 字段组 actions[].useful_tiles（3 条）：
+  - actions[].useful_tiles：元组[映射]；动作后等待态的一步推进有效牌（元素 {code, remaining_estimate}）；恒为元组（不会 None）；空元组 = 已知空集合或未生产，需结合 fact_kind 判断
+  - actions[].useful_tiles[].code：标量；牌码
+  - actions[].useful_tiles[].remaining_estimate：标量；未见枚数估计，取值 0—4（不是概率）
+  - 字段组 actions[].standard_useful_tiles（3 条）：
+  - actions[].standard_useful_tiles：元组[映射] | None；普通型推进牌（元素 {code, remaining_estimate}）；None=未分析；() = 已知空集合（与 None 不同）
+  - actions[].standard_useful_tiles[].code：标量；牌码
+  - actions[].standard_useful_tiles[].remaining_estimate：标量；未见枚数估计，0—4
+  - 字段组 actions[].seven_pairs_useful_tiles（3 条）：
+  - actions[].seven_pairs_useful_tiles：元组[映射] | None；七对推进牌（元素 {code, remaining_estimate}）；None=未分析或不适用；() = 已知空集合
+  - actions[].seven_pairs_useful_tiles[].code：标量；牌码
+  - actions[].seven_pairs_useful_tiles[].remaining_estimate：标量；未见枚数估计，0—4
+  - 字段组 actions[].family_progress_entries（5 条）：
+  - actions[].family_progress_entries：元组[映射]；逐家族进展明细（空元组 = 未分析，不冒充「无进展」）；这是**家族**（branch/chain/four_white/baotou）进度，不是普通型/七对进度
+  - actions[].family_progress_entries[].family：标量；家族标识（小写枚举值）；枚举 branch/chain/four_white/baotou
+  - actions[].family_progress_entries[].progress：标量；该家族的动作相对进展（小写枚举值）；枚举 advance/same/retreat/close/unknown；小写；与 actions[].family_progress 的大写五态是同一概念的两个口径
+  - actions[].family_progress_entries[].route_status：标量；该家族路线的证据状态（小写枚举值）；枚举 witnessed/open_uncertain/closed_proven/unanalyzed；小写；合同 route_states 给的是大写同名枚举，取值语义一一对应
+  - actions[].family_progress_entries[].basis：标量；该家族进展的确定性依据一句话
+  - 字段组 actions[].value_issues（3 条）：
+  - actions[].value_issues：元组[映射]；缺证据/截断/失败的稳定分类（元素 {area, reason}）
+  - actions[].value_issues[].area：标量；问题区域标识
+  - actions[].value_issues[].reason：标量；可审计原因（人可读）
+  - ScoringView 只读访问器实际形状：
+  - hand_codes() → tuple[str]：本人手牌牌码，保留官方顺序
+  - drawn_tile_code() → str | None：刚摸到的牌码；非摸牌窗口为 None
+  - discards_codes() → tuple[tuple[str]]：四家牌河牌码，外层按座位 0—3
+  - hand_counts() → tuple[int]：四家剩余手牌张数，按座位 0—3
+  - table_scores() → tuple[int]：当前桌内积分，按座位 0—3
+  - wall_remaining() → int | None：官方墙余量；官方未提供时为 None（不得补零）
+  - phase() → str：官方阶段字符串原样透传
+  - seat_index() → int：本人座位 0—3
+  - expected_action_keys() → tuple[str]：输入动作表全部键，升序；完整性验证以此为基准
+  - candidate_view() → dict：受限候选可见的纯原始值映射（本附录 paths 的全部字段）
+  - 输出：status 只能是 SCORED/ABSTAIN
+  - SCORED：SCORED 必须对输入全部动作恰好各一项（无遗漏/重复/越界键），全部 score 为有限数（布尔冒充数整批失败）；entries 元素必须恰好含 action_key/score/trace 三键。
+  - ABSTAIN：ABSTAIN 时 entries 必须为空（省略、None、() 或 [] 都接受），且必须给出**非空** reason 字符串；ABSTAIN 不得携带评分条目。
+  - reason 的三种合法形态：SCORED 时 reason 可以**省略**（键不存在）；SCORED 时 reason 可以是 None；SCORED 时 reason 可以是**非空字符串**（用于说明降级/未知锚定）。
+  - reason 空字符串：SCORED 的 reason = ""（空字符串）**不接受**：run_scoring_skeleton 抛 ValueError（整个窗口失效，降级到已备紧急计划）。这就是复审 C5 指出的输出侧细则：不是「ABSTAIN/降级原因字符串」一句话能覆盖的。
+  - 未知 ≠ 0：缺证据动作不得用 0.0 或任何不受下界约束的有限数参与评分；未知必须锚定在全部已知评分之下，或整批 ABSTAIN。
+  - 整批失败：抛异常、非有限数、布尔冒充数、漏键/重复键/越界键、超工作量限额、缺必需字段任一项即整窗口失效。
+  - 最小合法输入（真实投影的 candidate_view；按本题字段组截取，被截去的顶层键不属于本题字段组）：
+    {
+     "actions": [
+      {
+       "action_key": "discard:1w",
+       "action_type": "discard",
+       "best_followup_discard": null,
+       "fact_kind": "hand_progress",
+       "family_progress": "ADVANCE",
+       "family_progress_entries": [],
+       "followup_branches": null,
+       "immediate_settlement": null,
+       "is_legal": true,
+       "pattern_progress_note": null,
+       "replacement_draw_unknown": null,
+       "routes": [],
+       "seven_pairs_shanten_after": null,
+       "seven_pairs_useful_tiles": null,
+       "shanten_after": 1,
+       "standard_shanten_after": null,
+       "standard_useful_tiles": null,
+       "useful_tiles": [
+        {
+         "code": "3w",
+         "remaining_estimate": 4
+        }
+       ],
+       "value_coverage": null,
+       "value_issues": []
+      },
+      {
+       "action_key": "pass",
+       "action_type": "pass",
+       "best_followup_discard": null,
+       "fact_kind": null,
+       "family_progress": "UNKNOWN",
+       "family_progress_entries": [],
+       "followup_branches": null,
+       "immediate_settlement": null,
+       "is_legal": true,
+       "pattern_progress_note": null,
+       "replacement_draw_unknown": null,
+       "routes": [],
+       "seven_pairs_shanten_after": null,
+       "seven_pairs_useful_tiles": null,
+       "shanten_after": null,
+       "standard_shanten_after": null,
+       "standard_useful_tiles": null,
+       "useful_tiles": [],
+       "value_coverage": null,
+       "value_issues": []
+      }
+     ],
+     "competition": null,
+     "schema_version": "sitin-scoring-view/3",
+     "visible_state": {
+      "chain_piao": null,
+      "dealer_seat": 0,
+      "discards": [
+       [],
+       [],
+       [],
+       []
+      ],
+      "drawn_tile": "9b",
+      "gang_draw": null,
+      "hand_counts": [
+       14,
+       13,
+       13,
+       13
+      ],
+      "last_discard": null,
+      "melds": [
+       [],
+       [],
+       [],
+       []
+      ],
+      "my_hand": [
+       "1w",
+       "2w",
+       "3w",
+       "4w",
+       "5w",
+       "6w",
+       "7w",
+       "8w",
+       "9w",
+       "1b",
+       "2b",
+       "3b",
+       "4b"
+      ],
+      "phase": "draw",
+      "remaining_tile_count": 60,
+      "responding_seats": [],
+      "round_no": 1,
+      "rule_state": {
+       "baotou": false,
+       "catch_play": false,
+       "catch_play_owner_seat": null,
+       "chain_count": 0,
+       "wealth_god": "白"
+      },
+      "seat": 0,
+      "snapshot_seq": 10,
+      "table_scores": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "turn_seat": 0
+     }
+    }
+  - 合法/不合法输出范例（前两条合法；第三条必须整批失败）：
+    1) 合法输出①：SCORED 带非空 reason（说明缺证据动作的锚定方式）
+       {"entries": [{"action_key": "discard:1w", "score": -2, "trace": {"basis": "combined_shanten", "shanten_after": 1}}, {"action_key": "pass", "score": -3, "trace": {"basis": "unknown_below_known_floor", "unknown": true}}], "reason": "缺分支事实的动作按已知最低分之下锚定（未知≠0）", "status": "SCORED"}
+    2) 合法输出②：SCORED 省略 reason（等价写法：reason 键存在且为 None 也合法）
+       {"entries": [{"action_key": "discard:1w", "score": -2, "trace": {"basis": "combined_shanten", "shanten_after": 1}}, {"action_key": "pass", "score": -3, "trace": {"basis": "unknown_below_known_floor", "unknown": true}}], "status": "SCORED"}
+    3) 不合法输出（对照，必须整批失败）：SCORED 的 reason 是空字符串
+       {"entries": [{"action_key": "discard:1w", "score": -2, "trace": {}}, {"action_key": "pass", "score": -3, "trace": {}}], "reason": "", "status": "SCORED"}
+  - 路线状态：WITNESSED/OPEN_UNCERTAIN/CLOSED_PROVEN/UNANALYZED；进展：ADVANCE/SAME/RETREAT/CLOSE/UNKNOWN
+  - 路线状态回答证据状态，进展回答动作相对变化，不得混成三态；未枚举不等于机会为 0。
+  - 赛事上下文（competition）字段：可见赛事上下文与可用/陈旧掩码。三份账按「已完成 / 当前桌 / 当前阶段合计」分别命名（座位序、单位、可空与未知语义逐条见 competition_bases）：stage_scores = 本阶段【已完成各桌】的积分和，按物理座位 0—3（下标 i 是坐在 i 号位的身份，不是名次序；不含当前桌进行中积分与未来桌赛结果）；table_scores = 本桌进行中积分，同座位序，与 visible_state.table_scores 是同一事实；current_stage_scores = 前两份账逐座位相加 = 当前阶段合计（两项互不重叠，相加合法；stage_scores 为空时它同为空）。身份→座位只承认「桌内座位序账」，我方身份的唯一锚点为我方名次：ranking[我方座位].rank 必须等于可见赛事上下文发布的我方名次；不满足即视为不可映射。无阶段账（ranking 为空）或不可映射时 stage_scores 与 current_stage_scores 均为 null —— 未知不得当 0、不得用另一基准顶替。唯一禁止的重复累计是 table_scores 与同一份 visible_state.table_scores 相加（同一事实的两个基准名）。可用/陈旧原因见 freshness_masks（位置序 [stage_scores, table_scores]，闭集取值见 competition_bases.freshness_masks.values；current_stage_scores 的可用性与 stage_scores 同掩码，不单列第三个掩码位）；不得投影其他进行中桌赛的未来结果；剩余赛程当前未投影，见 competition_bases.residual_gaps（显式登记的剩余缺口，不得默认已可见）
+  - 可用积分基准（competition_bases；这些字段存在且可判读，用上阶段账就看这里）：
+  - current_stage_scores：当前阶段合计（三概念之三）= 已完成账 + 当前桌账，逐座位相加：current_stage_scores[i] = stage_scores[i] + table_scores[i]；座位序与单位同 stage_scores（物理座位 0—3、积分点、整数、允许负分）。两项互不重叠（一项只含已完成桌、一项只含本桌进行中），因此相加是【重建完整当前阶段分数】，不是重复累计 —— 算当前阶段名次与门线必须用它（或经核验同座位、同单位、互不重叠的 stage_scores + table_scores 两账相加并显式命名来源）。只加已完成账会把当前领先者当落后者（已完成账里落后、加上本桌进行中积分后领先），只看本桌积分也不是阶段门线。stage_scores 为 null（absent/unmappable）时本字段同时为 null：未知，不得补零、不得用 table_scores 顶替当阶段账。唯一禁止的重复累计：table_scores 与同一份 visible_state.table_scores 相加（同一事实的两个基准名，相加等于把本桌积分算两次）。一致性是机器不变量：CompetitionView 在同时给出两账与合计时校验 current_stage_scores == stage_scores + table_scores，不符即构造期失败
+  - identity_mapping：只承认「桌内座位序账」：ranking[i] 是坐在物理座位 i 的参赛者在本阶段已完成各桌的账（offline StageSituationProjection.competition_context 逐位置构造，位置 i 与 participant_ids_by_seat[i] 一一对应；面板侧由 plan.seats() 生成，换座后身份随座位搬移）。策略侧没有 participant_id，唯一锚点是我方名次 participant_rank（由驱动/适配器按请求座位发布）
+  - residual_risk：平台级 4 人榜单恰好在请求座位携带我方名次、且四条 games_played 一致时与座位序账结构上不可区分；当前该通道的唯一生产者是离线驱动的桌内投影，在线路径若要用该字段须先给 CompetitionContext 增加显式座位序声明（kernel 契约变更）
+  - seat_order：物理座位 0—3（与本桌可见观察同序）；freshness_masks 的位置序固定为 [stage_scores, table_scores]
+  - stage_scores：本阶段已完成各完整桌赛的积分和，按座位 0—3；不含当前桌进行中积分、不含名次分、不含未来桌赛结果；无账或不可映射时为 null
+  - staleness：策略不读时钟，投影不判陈旧；上游判定排名陈旧时应注入空 ranking / 空名次（→ stage_account:absent），不得注入陈旧数值冒充可用
+  - table_scores：本桌进行中积分，按座位 0—3；与 visible_state.table_scores 是同一事实的另一个基准名（本桌积分对本人恒可见，故恒非 null）。与 stage_scores 互不重叠：一项只含已完成桌、一项只含本桌进行中
+  - units：积分点（整数，允许负分），与 PlayerObservation.scores / RankingEntry.total_score 同源；名次分不进本字段
+  - unknown_is_not_zero：ranking 为空 ⇒ stage_account:absent；有排名事实但不满足任一准入条件 ⇒ stage_account:unmappable；两种情形 stage_scores 与 current_stage_scores 均为 null（未知），不得补零、不得当成「四家同分」、不得用 table_scores 顶替当阶段账。反之，驱动在尚无已完成桌时注入的四座全 0 账是已知的零，按 stage_account:complete 投影（此时 current_stage_scores 就等于本桌进行中积分）
+  - admission_conditions[1]：ranking 恰 4 条（一桌四座；阶段级榜单无法映射到本桌座位）
+  - admission_conditions[2]：四个 participant_id 互不相同（一席一身份）
+  - admission_conditions[3]：我方名次非空且 ranking[我方座位].rank == participant_rank（我方身份必须位于我方物理座位）
+  - admission_conditions[4]：四条 games_played 相同（四个座位覆盖同一批已完成桌）
+  - admission_conditions[5]：名次与已知键 (total_score, place_points) 降序不矛盾（名次是该键的单调函数）
+  - freshness_masks.order：stage_scores、table_scores
+  - freshness_masks.values（闭集；不在表内不得臆造）：stage_account:complete、stage_account:absent、stage_account:unmappable、table_account:live
+  - residual_gaps[1]（未投影的可见事实，显式登记为剩余缺口）：剩余赛程（本阶段还剩多少桌）当前【未投影】：CompetitionContext.stage_no（当前桌序，从 1 起）与 stage_total（阶段总桌数）在请求里可见，但候选视图不携带它们的任何推导值 —— 把剩余桌数从 0 改为 6，candidate_view() 逐字不变（E3 用例 test_remaining_schedule_is_not_visible_and_is_registered_as_a_gap 固定；合同与提示词都登记本条）。补齐时必须遵守的单位与未知语义：剩余桌数 = stage_total − stage_no，整数、非负，单位「桌」，不含当前桌；stage_no/stage_total 任一为 null、或二者不可比（stage_no > stage_total）时一律为 null（未知，不得当 0），不得由积分、已完成局数或名次反推。补齐它需要单独升结构版本并附「最后机会追分 / 仍有多桌可保守」策略的验收；在此之前任何机制说明都不得把剩余赛程当可见事实
+
+【工具目录（冻结白名单；不在表内一律禁止）】
+  - 内建：len、min、max、abs、sum、sorted、reversed、enumerate、zip、range、round、int、float、bool、all、any、tuple、list、dict、set、frozenset、map、filter
+  - sum/sorted/all/any/map/filter/enumerate/reversed/zip 按输入长度保守计费；int()/float() 转换非有限结果即整批失败
+  - 只读方法：.get、.items、.keys、.values、.count、.index、.append(仅局部构造期)、.add(仅局部集合构造期)
+  - 运算符：算术 + - * /；整除 // 与取模 %（除零即失败）；比较与布尔；下标与切片（只读）；字符串拼接与格式化（计入操作数）
+  - import：全部禁止（首版不开放任何 import：math/第三方库默认关闭；需要新增推导工具时进入工具目录版本与耗时门禁，不能临时绕过接缝）
+  - 视图 API：ScoringView 只读访问器与不可变集合类型由 B2 冻结并进入候选身份（第一方传递依赖摘要）
+
+【受限子集静态规则（AV-SUB；60 条全部保留；违反即拒绝装载）】
+  - 与执行器静态检查同源；预检失败给出命中的编号，按编号回查本节；这里逐条只删了不引入新字面量的解释从句，原文见 review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-restricted-rules-v1.json。
+  - AV-SUB-001：整数常量（含带负号的字面量）绝对值不得超过 2^63−1（9223372036854775807）。
+  - AV-SUB-002：浮点常量必须有限：不得写 1e400、inf、nan 之类的字面量。
+  - AV-SUB-003：常量只允许 None／字符串／布尔／整数／浮点数；复数、bytes、省略号一律拒绝。
+  - AV-SUB-004：模块级赋值右侧若带 +/- 号，只能作用于数值常量（如 X = -2.0）；不得写成 -"a"。
+  - AV-SUB-005：模块级不得出现 list／set／dict 字面量（跨调用可变状态）。
+  - AV-SUB-006：模块级赋值右侧只能是不可变常量（常量、数值一元、元组常量）。
+  - AV-SUB-007：标识符不得以下划线开头：函数名、参数名、局部变量名、模块常量名、推导式目标名、lambda 参数名都适用（_x 与 __x__ 都不行）。
+  - AV-SUB-008：赋值目标、for 目标、推导式目标只能是简单名字或名字元组；不得写 a[0] = ...、a.b = ...、a, *rest = ...。
+  - AV-SUB-009：只能调用 23 项内置白名单里的名字：len、min、max、abs、sum、sorted、reversed、enumerate、zip、range、round、int、float、bool、all、any、tuple、list、dict、set、frozenset、map、filter；不在表内的名字（含 isinstance、str、getattr、eval 等）一律拒绝。
+  - AV-SUB-010：不得写入或删除对象属性（view.x = 1、del view.x）：受限子集没有可变属性通道。
+  - AV-SUB-011：属性读取只允许白名单只读方法 .get／.items／.keys／.values／.count／.index／.append／.add；其它属性名（含 view.visible_state 这类字段名）一律拒绝——字段请用下标读，例如 view["visible_state"]。
+  - AV-SUB-012：调用实参不得用 * 解包（f(*xs)）。
+  - AV-SUB-013：调用关键字不得用 ** 解包（f(**d)）。
+  - AV-SUB-014：不得写入或删除下标（a[0] = 1、del a[0]）：输入与局部集合都不得经下标变更。
+  - AV-SUB-015：字典字面量不得用 ** 解包（{**d}）。
+  - AV-SUB-016：二元运算只允许 + - * / // % ** << >> & | ^；矩阵乘 @ 等其它运算符一律拒绝。
+  - AV-SUB-017：幂运算 ** 的指数必须是 0—4 的整数常量：2 ** 4 可以，2 ** n、2 ** 5、2 ** True 都不行。
+  - AV-SUB-018：一元运算只允许 -、+、not、~。
+  - AV-SUB-019：lambda 不得有默认参数、*args 或 **kwargs。
+  - AV-SUB-020：lambda 参数不得写注解。
+  - AV-SUB-021：不得使用生成器表达式（sum(x for x in xs)）。
+  - AV-SUB-022：表达式里不得用 * 解包（[*a]、(*a,)）。
+  - AV-SUB-023：不得使用海象表达式 :=。
+  - AV-SUB-024：不得使用 await／yield／yield from（异步与生成器不在受限子集内）。
+  - AV-SUB-025：只允许本清单列举的表达式形态，不得发明其它表达式。
+  - AV-SUB-026：不得使用异步推导式（[x async for x in y]）。
+  - AV-SUB-027：不得定义 async 函数。
+  - AV-SUB-028：增量赋值 += 等的左值只能是简单名字；不得写 a[0] += 1、a.b += 1。
+  - AV-SUB-029：增量赋值只允许 + - * / // % ** << >> & | ^；@= 等一律拒绝。
+  - AV-SUB-030：不得使用 while 循环；只能对有长度上限的输入或局部集合做 for 迭代。
+  - AV-SUB-031：不得 import 任何模块（math 与第三方库默认关闭）。
+  - AV-SUB-032：不得使用 global／nonlocal。
+  - AV-SUB-033：不得使用 try／except／finally（bare except 与 except BaseException 同样拒绝）：工作量耗尽异常必须整批上抛，候选不得捕获后继续执行。
+  - AV-SUB-034：不得使用 with 语句。
+  - AV-SUB-035：候选不得主动 raise 异常；无法评分时返回 ABSTAIN 并给出明确 reason。
+  - AV-SUB-036：不得使用 assert。
+  - AV-SUB-037：不得使用 del。
+  - AV-SUB-038：不得写带注解的赋值（x: int = 1）：注解在装载期不插桩求值。
+  - AV-SUB-039：不得定义类。
+  - AV-SUB-040：只允许受限子集列举的语句（赋值、for、if、return、表达式语句、函数定义等）；match 等其它语句一律拒绝。
+  - AV-SUB-041：函数不得使用 *args 或 **kwargs。
+  - AV-SUB-042：函数不得有默认参数（默认值在装载期不插桩求值）。
+  - AV-SUB-043：函数参数不得写注解。
+  - AV-SUB-044：函数不得写返回注解（合同签名里的 -> ScoreBatch 是合同写法，候选代码不要照抄）。
+  - AV-SUB-045：函数不得使用装饰器。
+  - AV-SUB-046：必须导出 score_actions(view)：恰好一个名为 view 的位置参数，不得改名、不得增删参数。
+  - AV-SUB-047：score_actions 不得有关键字专属参数（局部辅助函数可以有）。
+  - AV-SUB-048：不得递归（含自递归与互递归）：辅助函数调用图必须无环。
+  - AV-SUB-049：候选源码必须是合法 Python（语法错误即拒绝装载）。
+  - AV-SUB-050：候选必须是模块级源码。
+  - AV-SUB-051：不得重复定义同名顶层函数。
+  - AV-SUB-052：模块级赋值目标必须是简单名字；不得写 X, Y = 1, 2 这类解包。
+  - AV-SUB-053：模块常量不得重复绑定，也不得与已定义函数重名。
+  - AV-SUB-054：模块级只允许 docstring、函数定义与常量赋值；if／for／while／import／class／async def／表达式语句等一律拒绝。
+  - AV-SUB-055：模块里必须存在顶层函数 score_actions。
+  - AV-SUB-056：不得用 ** 解包构造字典字面量。
+  - AV-SUB-057：候选源码必须是字符串（装载接口冗余复核）。
+  - AV-SUB-058：候选源码 UTF-8 字节数不得超过 65536。
+  - AV-SUB-059：模块顶层必须存在可调用的 score_actions 函数（装载接口冗余复核）。
+  - AV-SUB-060：模块级绑定只能是函数或不可变常量（str／int／float／bool／None／元组／冻结集合）。
+
+【输出合同（判分器逐条核对）】
+  - status 只能是 SCORED/ABSTAIN
+  - SCORED 时对输入全部动作恰好一项；ABSTAIN 时为空；不能部分成功后用 0 补齐
+  - 条目字段：{"action_key": "动作键", "score": "有限浮点评分点；不跨候选比较绝对量级，不当实际积分", "trace": "有界结构化解释：分支选择、所用事实键、代理/分项、组合方式；非线性项不强求相加等于总分"}
+  - reason：ABSTAIN/降级原因字符串；不得用特殊数值表示未知
+  - 整批失败条件：抛出异常；非有限数（NaN/Inf）；布尔冒充数；遗漏/重复/越界动作键；超工作量限额；缺必需字段（候选清单声明）
+  - 失败处置：整窗口失效，降级到已备合法紧急计划；不悄悄拼 V2 分数；未知不得自动排在已知负分之前
+
+【结构化四字段（必须逐字段写清）】
+  - trigger：触发条件：什么局面下本机制改变排序
+  - changed_branches：改变的动作/分支：哪些动作或分支相对移动；M1 修订必须写出至少一处与父代的差异（窗口类 + 动作键 + 分值变化或次序反转），写不出即视为无实质变更
+  - expected_direction：预期方向：预期哪类面板上变好/变差（不要求自报提分数值）
+  - counterexample：反例：什么局面下本机制不该生效或会变差
+
+【门线/位次势差口径】
+  - 本题机制不涉及门线/位次势差计算；完整口径见 contracts/action-value-v1.json（引用请按合同原文，不要自造名次说法）。
+
+【作者守卫条款（未知 / 批次失败 / 修订行为差异；唯一口径，必须自查）】
+  1) 【未知 ≠ 0】一个动作在本窗口没有任何已生产事实（动作后牌效事实、后续分支、条件路线、立即结算、家族进展全缺，含 fact_kind=analysis_failed 且无其他事实）时，它的读数是**未知**，不是 0；0.0 表示「已知中性（已算出相等）」。禁止用 0.0（或任何不受下式约束的有限数）给未分析动作评分。
+  2) 【未知不得越位】（合同 output_contract.batch_failure_policy 原文）未分析动作的分数必须 ≤ 本窗口已知负分动作的最低分（容差 1e-12），否则视为「未知自动排在已知负分之前」，整批判挂。
+  3) 【未知的唯一合法取值】二选一，并在机制说明里写明用了哪一种：① 整批 ABSTAIN 加非空 reason（窗口内没有任何动作带已生产事实时**只能**这样）；② SCORED 时取「已知最低分 − margin」（margin > 0，例如 1）——本窗口示例：已知最低分 −17.8941 ⇒ 未分析动作取 -18.8941。
+  4) 【为什么必须严格更低】判据用容差，是「不高于」；但分数相等时次序由 action_key 决定，未分析动作仍可能排在已知负分之前，故推荐写法取严格更低。该取值只能记成「未知取值」，不得记成「已知为 0」。
+  5) 【批次失败与部分失败】（合同 output_contract 原文）SCORED 必须对输入**全部**动作恰好一项、全部有限数、无遗漏/重复/越界键；抛异常、非有限数（NaN/Inf）、布尔冒充数、漏键或重复键、越界键、超工作量限额、缺必需字段——任一项即**整窗口失效**，由骨架降级到已备合法紧急计划：候选不得吞掉失败、不得悄悄拼 V2 分数、不得把失败伪装成 SCORED。
+  6) 【缺证不得冒充已评分】ABSTAIN 时 entries 必须为空（不得部分成功后用 0 补齐）；SCORED 时缺证动作的分数只能按上一条写法给出，且 trace 必须列出缺项（unknown_facts/unknown_policy），不得把它的数值写进「已评分分项」，也不得把缺证批次的结论当成已评分结论。
+  7) 【M1 修订必须产生行为差异——唯一判定口径】判据只有一条，且与准入判分器**同一枚举同一实现来源**：在冻结可见窗口上两侧都有可比评分（SCORED 且有条目），且**生产排序的首选动作不同**（生产排序 = 分数降序、同分按 action_key 升序、原始分数不先舍入，即 batch_to_ranked_candidates）。首选动作相同 ⇒ 无行为差异，本次修订不该提交。
+  8) 【什么不算行为差异（准入不发放修订信用）】① 保序平移：所有动作分数 +c；② 正比例缩放：所有动作分数 ×c（c > 0）；③ 只改非首选次序：首选动作未变，只是其余动作的相对次序变了；④ 只改说明/注释/命名/trace 标签/不影响输出的常量。**任一分值改变都不是行为变化**——评分签名与行为签名是两回事，「只改分值不改次序」必须记为**没有**行为差异。
+  9) 【平分破除按生产排序】同分不是「并列都算第一」：生产排序在同分时取 action_key 升序的第一个。父代并列、子代分出胜负（或反向）时，若**首选动作因此改变**即算行为差异；若首选未变（例如并列只出现在非首选位置）不算。
+  10) 【一侧弃权不算选择差异】父代或子代在该窗没有可比评分（ABSTAIN/执行失败）时：既不算行为差异，也不得把「与父代不同」当修订能力（准入分别判 PARENT_MATERIAL_INCOMPATIBLE / CHILD_NO_BEHAVIOR_EVIDENCE，不发放信用）。
+  11) 【M1 自查指令（必须写进回复）】在 changed_branches 里逐条写出「窗口类 + 动作键 + 差异级别」，并**分别报告四项读数**：① 分值变化项数；② 排序是否变化；③ 最终首选动作（父代 → 子代；次序反转是它的典型形态）；④ 弃权/未知掩码（该窗两侧是否都取得可比评分）。四项里**只有 ③ 能证明行为差异**；写不出 ③ 就说明本次修订无实质变更，必须重新设计而不是改措辞。
+  12) 【不得夸大差异】首选动作未变时，changed_branches 不得写「改变了动作排序」或「改变了首选」；expected_direction 必须与所列差异一致；把「未知越位」修好本身就是一个合法的差异来源（未分析动作由 0.0 改为低于已知最低分），但它只有在**首选动作随之改变**时才构成行为差异，应在 changed_branches 里点名二者。
+  - 实测金例（值由同一参考实现算出；回复的机制说明必须与这些数字一致）：
+  - R6 r1/T07 实测：未分析 discard:2b=0 vs 已知负分 discard:1w=-17.8941 ⇒ 违规 1 对
+  - R6 r2/T05 实测：未分析 discard:2b=0 vs 已知负分 discard:1w=-1.3883 ⇒ 违规 1 对
+  - 内置种子（对照，满足）：未分析 discard:2b=-5.5 vs 已知负分 discard:1w=-4.5 ⇒ 违规 0 对
+  - 合规写法（推荐）：已知最低分 −17.8941 − margin 1 ⇒ 未分析动作取 -18.8941（严格低于全部已知评分，违规 0 对）
+  - 无已知评分：known_scores 为空 ⇒ 无合法取值（guarded_unknown_score → None），只能整批 ABSTAIN，不得给 0.0
+  - 修订自查（只改说明（R6 T07 实测形态））：有行为差异=False；判定=EQUIVALENT；①分值差异 0 项；②排序变化=False；③首选 discard:1w→discard:1w；④弃权掩码 父=False/子=False
+  - 修订自查（保序平移（全体 +100，只改分值不改次序））：有行为差异=False；判定=EQUIVALENT；①分值差异 2 项；②排序变化=False；③首选 discard:1w→discard:1w；④弃权掩码 父=False/子=False
+  - 修订自查（正比例缩放（全体 ×3））：有行为差异=False；判定=EQUIVALENT；①分值差异 2 项；②排序变化=False；③首选 discard:1w→discard:1w；④弃权掩码 父=False/子=False
+  - 修订自查（只改非首选次序）：有行为差异=False；判定=EQUIVALENT；①分值差异 2 项；②排序变化=True；③首选 discard:9b→discard:9b；④弃权掩码 父=False/子=False
+  - 修订自查（平分破除（并列 → 真首选改选））：有行为差异=True；判定=REVISION_OBSERVED；①分值差异 1 项；②排序变化=True；③首选 discard:1w→discard:2b；④弃权掩码 父=False/子=False
+  - 修订自查（真实首选改变（次序反转））：有行为差异=True；判定=REVISION_OBSERVED；①分值差异 2 项；②排序变化=True；③首选 discard:1w→discard:2b；④弃权掩码 父=False/子=False
+  - 判定依据：未知越位：contracts/action-value-v1.json output_contract.batch_failure_conditions / batch_failure_policy（原文）；修订行为差异：生产排序 batch_to_ranked_candidates + 准入 preference_signature / revision_behavior_delta（同一枚举）
+  - 自查参考实现（未知下限/已知最低分的取法）见 contracts/action-value-v1.json 的守卫条款段；本题不给可复制实现，请按上面的条款与金例自查。
+
+【数值与工作量限制（违反即拒绝装载）】
+  - max_counted_operations：100000
+  - max_data_cells：131072
+  - max_data_depth：12
+  - max_local_collection_size：4096
+  - max_output_branches_total：全部分支与路线内存上限：B 包机器合同冻结具体数值
+  - max_source_bytes：65536
+  - max_string_chars：65536
+  - max_trace_bytes：32768
+  - numeric_range：候选声明有限数值范围用于异常检查；越界整批失败并审计
+  - structure_limits_note：结构遍历上限（R6/S1 引入，R9/S1 补齐单元口径，R9/S1b 补齐分派与返回值口径）：单次结构遍历的**单元数**上限，容器节点与标量叶同口径各计 1 个单元（字符串按 64 字符一段、至少 1 段）；集合式字典视图 dict_keys/dict_items/dict_values 按底层键、或键+值逐项展开并计入同一上限；嵌套深度超过 max_data_depth 或单元数超过 max_data_cells 即在进入原生哈希/比较之前整批拒绝（WorkloadExceeded）。共享引用按出现次数累积，不做去重。分派之外的未知类型保守兜底：有 len() 按 max(1,len) 计、可调用对象计 1、其余按 max_data_cells+1 计费（默认计数预算下必然整批拒绝）。候选返回值（含 trace）在骨架递归校验与序列化之前按同一口径逐节点计费；字符串拼接/重复/格式化结果按 64 字符一段计费。
+  - 规则分析上限：{"max_expansions": 2048, "max_routes_per_candidate": 128, "source": "hangma.interface.ValueAnalysisLimits"}
+  - 计费：每循环迭代计费 1
+  - 计费：每个允许调用按其规范计费（len/min/max/abs 计 1；sum/sorted/all/any/enumerate 按输入长度保守计费）
+  - 计费：禁止不计费的批量计算
+  - 计费：结构遍历按展开节点计费：容器节点与标量叶同口径各计 1 个单元（字符串按 64 字符一段、至少 1 段），共享引用按出现次数累积而不去重——原生哈希与比较在 C 层逐项访问这些节点，不去重也不缓存子对象哈希
+  - 计费：结构单元超过 max_data_cells 或深度超过 max_data_depth 即在原生哈希/比较之前拒绝；顶层标量与短字符串走常数快路径，普通标量比较与短键查询的计费量级不变
+  - 计费：集合式字典视图按底层键/键值对展开（dict_items 的相等比较是集合式语义：逐项哈希键并逐值比较，视图本身不是容器实例）；分派之外的未知类型保守兜底，禁止「未知 ⇒ 0 单元」
+  - 计费：候选返回值与 trace 在序列化之前计费并做体积预判：返回值按结构单元逐节点计费（共享引用按出现次数），trace 的序列化字节下界超过 max_trace_bytes 即在递归校验与 json.dumps 之前拒绝
+  - 计费：字符串产出（拼接、重复、f-string 与 % 格式化结果）按 64 字符一段计费，与字符串哈希/比较同口径；单次结果的字符数上限仍为 max_string_chars
+  - 计费：算术使用有界整数/有限浮点；拒绝大整数膨胀和不受限幂运算（** 仅允许指数 <= 4 的整数常量）
+  - 限额不是毫秒保证：B 包基准不通过就缩小有版本的分析配置并重评；不得删除合法候选凑限额
+  - 候选内部对全部合法动作的完整取舍（含胡与继续的比较）
+  - 禁止：while 循环
+  - 禁止：递归
+  - 禁止：动态执行(eval/exec/compile)
+  - 禁止：import
+  - 禁止：反射(getattr/setattr/hasattr 于白名单外对象)
+  - 禁止：文件/网络/进程操作
+  - 禁止：全局可变状态
+  - 禁止：读取时钟或随机数
+  - 禁止：lambda 之外的可调用构造
+  - 禁止：生成器与 yield
+  - 禁止：不修改规则、接口、评估器或运行配置
+  - 禁止：不自行判定实验优胜或发布
+  - 允许：一个导出函数 score_actions
+  - 允许：可有无递归的局部纯辅助函数
+  - 允许：仅允许对有长度上限的输入/局部集合迭代
+  - 允许：调用对象只来自冻结白名单
+
+【预算说明】
+  - 预算以最新授权与台账为准；失败与重试同样计费
+
+（本卡按本次机制相关性过滤；附录 sha256=128f62629162，规则目录 sha256=56091e8305e6）
+
+【输出格式（必须严格遵守，不得添加额外解释）】
+1. 先用**一句话**说明你的新机制与主要步骤，这句话必须放在一个花括号 {…} 里面。
+2. 然后给出结构化四字段说明，放在**唯一一个** ```json 围栏里，
+   必须恰好包含 trigger/changed_branches/expected_direction/counterexample 四个键（每个键一段中文说明）。
+3. 最后给出完整的 Python 代码，放在**唯一一个** ```python 围栏里，
+   并且必须包含 score_actions(view) 的完整实现（函数名与签名逐字不得改动），
+   不得 import 任何模块、不得定义 score_actions 之外的模块级可变状态：
+
+```python
+"""候选机制说明：<一句话>"""
+
+def score_actions(view):
+    """按同一动作窗口的只读可见事实，为全部合法动作评分。"""
+    # <在这里实现你的机制：只允许任务合同里的受限子集与白名单>
+    # 未知字段不得按已知 0 处理；无法评分时返回 ABSTAIN 并给出明确原因。
+    return {"status": "ABSTAIN", "reason": "template: not implemented"}
+```
+
+不要输出解释、不要输出多个代码块、不要在代码块之外写代码。

@@ -1,0 +1,28 @@
+{
+  "budgets": {
+    "model_calls": 0,
+    "network_calls": 0,
+    "tables_full": 0
+  },
+  "created_at_utc": "2026-09-22T21:55:59Z",
+  "expected_development_states": 16,
+  "expected_regression_requests": 377,
+  "gate": {
+    "all_development_targets_trigger": true,
+    "all_regression_scores_exactly_parent": true,
+    "all_regression_triggers_false": true,
+    "candidate_trace_minus_new_mapping_equals_parent_trace": true,
+    "mechanical_failures": 0,
+    "only_target_score_changes": true,
+    "target_score_equals_parent_hu_plus_one": true
+  },
+  "prerequisite_checks": {
+    "candidate_parent_rebase_accepted": true,
+    "development_count": true,
+    "p47_active_parent": true,
+    "p64_opened_author": true,
+    "replication_kept_blind": true
+  },
+  "purpose": "在打开16个复验根前证明P65只实现冻结覆盖且P47回归逐点不变",
+  "schema": "r18-p66b-nonwhite-baotou-preflight-authorization/1"
+}

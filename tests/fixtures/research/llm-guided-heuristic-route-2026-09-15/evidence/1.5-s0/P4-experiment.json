@@ -1,0 +1,141 @@
+{
+  "experiment_schema_version": 1,
+  "kind": "matches",
+  "clock_mode": "logical",
+  "baseline_policy": {
+    "policy_id": "p4_baseline_v2",
+    "name": "weighted_heuristic_v2",
+    "weights": {}
+  },
+  "challenger_policy": {
+    "policy_id": "p4_control_shanten_neg",
+    "name": "weighted_heuristic_v2",
+    "weights": {
+      "shanten_step": -100
+    }
+  },
+  "opponent_pool": [
+    {
+      "policy_id": "opp-0",
+      "name": "weighted_heuristic_v2",
+      "weights": {}
+    },
+    {
+      "policy_id": "opp-1",
+      "name": "weighted_heuristic_v2",
+      "weights": {}
+    },
+    {
+      "policy_id": "opp-2",
+      "name": "weighted_heuristic_v2",
+      "weights": {}
+    }
+  ],
+  "tournament_config": {
+    "schema_version": 1,
+    "max_games": 1,
+    "rounds_per_game": 8,
+    "rules": {
+      "ruleset_version": "hangma-mvp-v10-public-counts",
+      "base_score": 1,
+      "you_cai_bi_kao": false
+    },
+    "timing": {
+      "peng_timeout_sec": 1,
+      "chi_timeout_sec": 1,
+      "discard_timeout_sec": 3
+    }
+  },
+  "seeds": [
+    {
+      "seed": 2026092000,
+      "scenario_id": "scale-0"
+    },
+    {
+      "seed": 2026092001,
+      "scenario_id": "scale-1"
+    },
+    {
+      "seed": 2026092002,
+      "scenario_id": "scale-2"
+    },
+    {
+      "seed": 2026092003,
+      "scenario_id": "scale-3"
+    },
+    {
+      "seed": 2026092004,
+      "scenario_id": "scale-4"
+    },
+    {
+      "seed": 2026092005,
+      "scenario_id": "scale-5"
+    },
+    {
+      "seed": 2026092006,
+      "scenario_id": "scale-6"
+    },
+    {
+      "seed": 2026092007,
+      "scenario_id": "scale-7"
+    },
+    {
+      "seed": 2026092008,
+      "scenario_id": "scale-8"
+    },
+    {
+      "seed": 2026092009,
+      "scenario_id": "scale-9"
+    },
+    {
+      "seed": 2026092010,
+      "scenario_id": "scale-10"
+    },
+    {
+      "seed": 2026092011,
+      "scenario_id": "scale-11"
+    },
+    {
+      "seed": 2026092012,
+      "scenario_id": "scale-12"
+    },
+    {
+      "seed": 2026092013,
+      "scenario_id": "scale-13"
+    },
+    {
+      "seed": 2026092014,
+      "scenario_id": "scale-14"
+    },
+    {
+      "seed": 2026092015,
+      "scenario_id": "scale-15"
+    }
+  ],
+  "seat_permutations": [
+    [
+      0,
+      1,
+      2,
+      3
+    ],
+    [
+      1,
+      2,
+      3,
+      0
+    ]
+  ],
+  "initial_dealer": 0,
+  "initial_scores": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "match_id_prefix": "sitin-P4",
+  "primary_metric": "table_score_delta",
+  "tie_method": "strict",
+  "n_resamples": 10000,
+  "resample_seed": 2029
+}

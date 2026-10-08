@@ -1,0 +1,487 @@
+{
+  "archive": {
+    "active_objective_ids": [
+      "multi_wealth_baotou/four_wealth_piao",
+      "multi_wealth_baotou/four_wealth_take_hu",
+      "multi_wealth_baotou/four_wealth_keep_wealth",
+      "multi_wealth_baotou/three_wealth_piao",
+      "multi_wealth_baotou/three_wealth_keep_wealth",
+      "gang_chain/added_gang_strict_dominance"
+    ],
+    "baseline_candidate_id": "stable-v2",
+    "decisions": [
+      {
+        "candidate_id": "r18-k3-zero-change-control",
+        "dominated_by": [],
+        "eligible": false,
+        "exclusion_reasons": [
+          "MISSING_ACTIVE_OBJECTIVES:multi_wealth_baotou/four_wealth_piao,multi_wealth_baotou/four_wealth_take_hu,multi_wealth_baotou/four_wealth_keep_wealth,multi_wealth_baotou/three_wealth_piao,multi_wealth_baotou/three_wealth_keep_wealth",
+          "TABLE_SAFETY:NOT_EVALUATED",
+          "NO_HIDDEN_SPECIALIST_PASS"
+        ],
+        "lexicase_parent": false,
+        "pareto_elite": false
+      },
+      {
+        "candidate_id": "r18-p3-three-and-four-wealth-piao",
+        "dominated_by": [
+          "r18-p5-added-gang-strict-dominance"
+        ],
+        "eligible": true,
+        "exclusion_reasons": [],
+        "lexicase_parent": false,
+        "pareto_elite": false
+      },
+      {
+        "candidate_id": "r18-p4-four-wealth-piao",
+        "dominated_by": [
+          "r18-p3-three-and-four-wealth-piao",
+          "r18-p5-added-gang-strict-dominance"
+        ],
+        "eligible": true,
+        "exclusion_reasons": [],
+        "lexicase_parent": false,
+        "pareto_elite": false
+      },
+      {
+        "candidate_id": "r18-p5-added-gang-strict-dominance",
+        "dominated_by": [],
+        "eligible": true,
+        "exclusion_reasons": [],
+        "lexicase_parent": true,
+        "pareto_elite": true
+      },
+      {
+        "candidate_id": "stable-v2",
+        "dominated_by": [
+          "r18-p3-three-and-four-wealth-piao",
+          "r18-p4-four-wealth-piao",
+          "r18-p5-added-gang-strict-dominance"
+        ],
+        "eligible": true,
+        "exclusion_reasons": [],
+        "lexicase_parent": false,
+        "pareto_elite": false
+      }
+    ],
+    "lexicase_parent_ids": [
+      "r18-p5-added-gang-strict-dominance"
+    ],
+    "pareto_elite_ids": [
+      "r18-p5-added-gang-strict-dominance"
+    ]
+  },
+  "candidate_inputs": [
+    {
+      "author_cost_note": "",
+      "candidate_id": "stable-v2",
+      "objectives": [
+        {
+          "admission_status": "BASELINE_ANCHOR",
+          "candidate_regret": 180.0,
+          "conservative_gain": 0.0,
+          "evidence": "第一版档案稳定V2四财神隐藏锚点",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_piao",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "BASELINE_ANCHOR",
+          "candidate_regret": 0.0,
+          "conservative_gain": 0.0,
+          "evidence": "第一版档案稳定V2四财神立即胡锚点",
+          "expected_base_scenarios": 4,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_take_hu",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 4
+        },
+        {
+          "admission_status": "BASELINE_ANCHOR",
+          "candidate_regret": 4.131147540983612,
+          "conservative_gain": 0.0,
+          "evidence": "P3新隐藏集中的稳定V2/P4四财神保财锚点",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_keep_wealth",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "BASELINE_ANCHOR",
+          "candidate_regret": 79.27868852459018,
+          "conservative_gain": 0.0,
+          "evidence": "P3新隐藏集中的稳定V2/P4三财神飘锚点",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/three_wealth_piao",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "BASELINE_ANCHOR",
+          "candidate_regret": 0.8360655737704947,
+          "conservative_gain": 0.0,
+          "evidence": "P3新隐藏集中的稳定V2/P4三财神保财锚点",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/three_wealth_keep_wealth",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "BASELINE_ANCHOR",
+          "candidate_regret": 28.0,
+          "conservative_gain": 0.0,
+          "evidence": "P5新来源隐藏集中的稳定V2/P3立即胡锚点",
+          "expected_base_scenarios": 7,
+          "family": "gang_chain",
+          "mean_gain": 0.0,
+          "objective_id": "gang_chain/added_gang_strict_dominance",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 7
+        }
+      ],
+      "source_sha256": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af",
+      "table_safety": {
+        "complete_tables": 64,
+        "evidence": "P3完整桌同墙配对稳定V2锚点",
+        "execution_failure_count": 0,
+        "paired_score_delta_mean": 0.0,
+        "source_units": 16,
+        "status": "BASELINE_ANCHOR"
+      }
+    },
+    {
+      "author_cost_note": "",
+      "candidate_id": "r18-p4-four-wealth-piao",
+      "objectives": [
+        {
+          "admission_status": "SPECIALIST_PASS",
+          "candidate_regret": 0.0,
+          "conservative_gain": 180.0,
+          "evidence": "P4跨手牌隐藏与768对反事实",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 180.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_piao",
+          "paired_counterfactual_supported": true,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 0.0,
+          "conservative_gain": 0.0,
+          "evidence": "P4四财神立即胡控制",
+          "expected_base_scenarios": 4,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_take_hu",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 4
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 4.131147540983612,
+          "conservative_gain": 0.0,
+          "evidence": "P3新隐藏集以P4作父代的四财神保财分层",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_keep_wealth",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 79.27868852459018,
+          "conservative_gain": 0.0,
+          "evidence": "P3新隐藏集以P4作父代的三财神飘分层",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/three_wealth_piao",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 0.8360655737704947,
+          "conservative_gain": 0.0,
+          "evidence": "P3新隐藏集以P4作父代的三财神保财分层",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/three_wealth_keep_wealth",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 28.0,
+          "conservative_gain": 0.0,
+          "evidence": "P5新来源隐藏集中的P3立即胡锚点；尚无补杠严格支配覆盖",
+          "expected_base_scenarios": 7,
+          "family": "gang_chain",
+          "mean_gain": 0.0,
+          "objective_id": "gang_chain/added_gang_strict_dominance",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 7
+        }
+      ],
+      "source_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+      "table_safety": {
+        "complete_tables": 64,
+        "evidence": "P4 64张完整桌安全预检",
+        "execution_failure_count": 0,
+        "paired_score_delta_mean": 0.0,
+        "source_units": 16,
+        "status": "PASS_NONINFERIOR"
+      }
+    },
+    {
+      "author_cost_note": "GLM 5.3单次低推理交付；成本只作诊断",
+      "candidate_id": "r18-p3-three-and-four-wealth-piao",
+      "objectives": [
+        {
+          "admission_status": "SPECIALIST_PASS",
+          "candidate_regret": 0.0,
+          "conservative_gain": 180.0,
+          "evidence": "P4父代隐藏/反事实资格；P3源码差分限定wealth_count==3且P4开发48题逐点保持",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 180.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_piao",
+          "paired_counterfactual_supported": true,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 0.0,
+          "conservative_gain": 0.0,
+          "evidence": "P3对P4四财神立即胡开发控制逐点保持",
+          "expected_base_scenarios": 4,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_take_hu",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 4
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 4.131147540983612,
+          "conservative_gain": 0.0,
+          "evidence": "P3新隐藏四财神保财分层与P4首选相同",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_keep_wealth",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "SPECIALIST_PASS",
+          "candidate_regret": 0.0,
+          "conservative_gain": 79.27868852459018,
+          "evidence": "P3三财神飘隐藏8/8改善与6形状×32世界反事实",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 79.27868852459018,
+          "objective_id": "multi_wealth_baotou/three_wealth_piao",
+          "paired_counterfactual_supported": true,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 0.8360655737704947,
+          "conservative_gain": 0.0,
+          "evidence": "P3新隐藏三财神保财分层与P4首选相同",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/three_wealth_keep_wealth",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 28.0,
+          "conservative_gain": 0.0,
+          "evidence": "P5新来源隐藏集中的P3立即胡锚点；尚无补杠严格支配覆盖",
+          "expected_base_scenarios": 7,
+          "family": "gang_chain",
+          "mean_gain": 0.0,
+          "objective_id": "gang_chain/added_gang_strict_dominance",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 7
+        }
+      ],
+      "source_sha256": "68f31d5138918b03837078e4e29cd5b011cce5d795cd7754b2e6884e03a38363",
+      "table_safety": {
+        "complete_tables": 64,
+        "evidence": "P3 64张全新完整桌安全预检",
+        "execution_failure_count": 0,
+        "paired_score_delta_mean": 0.0,
+        "source_units": 16,
+        "status": "PASS_NONINFERIOR"
+      }
+    },
+    {
+      "author_cost_note": "规则证明后机械实现；零模型作者调用",
+      "candidate_id": "r18-p5-added-gang-strict-dominance",
+      "objectives": [
+        {
+          "admission_status": "SPECIALIST_PASS",
+          "candidate_regret": 0.0,
+          "conservative_gain": 180.0,
+          "evidence": "P4父代隐藏/反事实资格；P3源码差分限定wealth_count==3且P4开发48题逐点保持；P5在2,646个非目标自然杠窗口逐点评分保持P3",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 180.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_piao",
+          "paired_counterfactual_supported": true,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 0.0,
+          "conservative_gain": 0.0,
+          "evidence": "P3对P4四财神立即胡开发控制逐点保持；P5在2,646个非目标自然杠窗口逐点评分保持P3",
+          "expected_base_scenarios": 4,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_take_hu",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 4
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 4.131147540983612,
+          "conservative_gain": 0.0,
+          "evidence": "P3新隐藏四财神保财分层与P4首选相同；P5在2,646个非目标自然杠窗口逐点评分保持P3",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_keep_wealth",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "SPECIALIST_PASS",
+          "candidate_regret": 0.0,
+          "conservative_gain": 79.27868852459018,
+          "evidence": "P3三财神飘隐藏8/8改善与6形状×32世界反事实；P5在2,646个非目标自然杠窗口逐点评分保持P3",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 79.27868852459018,
+          "objective_id": "multi_wealth_baotou/three_wealth_piao",
+          "paired_counterfactual_supported": true,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 0.8360655737704947,
+          "conservative_gain": 0.0,
+          "evidence": "P3新隐藏三财神保财分层与P4首选相同；P5在2,646个非目标自然杠窗口逐点评分保持P3",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/three_wealth_keep_wealth",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "SPECIALIST_PASS",
+          "candidate_regret": 0.0,
+          "conservative_gain": 20.0,
+          "evidence": "7个新自然来源根全部命中；规则支配证明与4状态×32未来墙复核支持",
+          "expected_base_scenarios": 7,
+          "family": "gang_chain",
+          "mean_gain": 28.0,
+          "objective_id": "gang_chain/added_gang_strict_dominance",
+          "paired_counterfactual_supported": true,
+          "regression_count": 0,
+          "scored_base_scenarios": 7
+        }
+      ],
+      "source_sha256": "02a0c09b790a5cb264b1a4a9f9e2e87a827263a9f04273aae83371f702ddf9cb",
+      "table_safety": {
+        "complete_tables": 128,
+        "evidence": "P5相对P3的128张全新同墙换座完整桌安全门；32/32阶段轨迹相同",
+        "execution_failure_count": 0,
+        "paired_score_delta_mean": 0.0,
+        "source_units": 32,
+        "status": "PASS_NONINFERIOR"
+      }
+    },
+    {
+      "author_cost_note": "",
+      "candidate_id": "r18-k3-zero-change-control",
+      "objectives": [
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 28.0,
+          "conservative_gain": 0.0,
+          "evidence": "P5新来源隐藏集中的P3立即胡锚点；尚无补杠严格支配覆盖",
+          "expected_base_scenarios": 7,
+          "family": "gang_chain",
+          "mean_gain": 0.0,
+          "objective_id": "gang_chain/added_gang_strict_dominance",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 7
+        }
+      ],
+      "source_sha256": "28dcac8e78e2f88f2d5800334e3e428103aa8e6c63efa8015dafb730aaf01bbe",
+      "table_safety": {
+        "complete_tables": 0,
+        "evidence": "K3仍只有开发零变化结果",
+        "execution_failure_count": 0,
+        "paired_score_delta_mean": null,
+        "source_units": 0,
+        "status": "NOT_EVALUATED"
+      }
+    }
+  ],
+  "findings": {
+    "added_gang_hidden_conservative_gain": 20.0,
+    "added_gang_hidden_mean_gain": 28.0,
+    "added_gang_hidden_states": 7,
+    "nonstrict_natural_windows_exact_p3": 2646,
+    "p5_dominates_p3_on_active_vector": true
+  },
+  "next": "冻结P5为当前机会父代；转向抓打圈或七对门清家族，同时保留完整桌发布门",
+  "release_eligible": false,
+  "schema": "r18-opportunity-archive-result/3",
+  "status": "PASS_ARCHIVE_P5_SUCCESSOR"
+}

@@ -1,0 +1,118 @@
+{
+  "schema": "r16-generation1-effect-result/1",
+  "status": "FAIL_ALL_R16_GENERATION1_DEVELOPMENT_GATE",
+  "manifest_sha256": "c9c1bbdb744fa995e8fd77386d40e1842f7a855fd29d94a8ae84aca46846933c",
+  "candidates": [
+    {
+      "candidate_id": "B",
+      "candidate_sha256": "b584988208b2540af63131646871b1ab94d684300018d94c4daf4951405dc03b",
+      "status": "FAIL_R16_GENERATION1_DEVELOPMENT_GATE",
+      "overall": {
+        "sources": 64,
+        "first_table_delta_mean": 6.1875,
+        "stage_score_delta_mean": 2.015625,
+        "stage_score_delta_quantiles": {
+          "min": -110.0,
+          "p10": -78.0,
+          "median": 4.0,
+          "p90": 75.0,
+          "max": 143.0
+        },
+        "u_delta_low_mean": 0.0,
+        "u_delta_high_mean": 0.015625,
+        "candidate_fourth_rate": 0.296875,
+        "baseline_fourth_rate": 0.171875,
+        "candidate_unresolved_rate": 0.0,
+        "baseline_unresolved_rate": 0.015625
+      },
+      "by_mix": {
+        "H": {
+          "sources": 32,
+          "first_table_delta_mean": 8.75,
+          "stage_score_delta_mean": 3.84375,
+          "stage_score_delta_quantiles": {
+            "min": -100.0,
+            "p10": -48.0,
+            "median": 7.0,
+            "p90": 60.0,
+            "max": 143.0
+          },
+          "u_delta_low_mean": 0.0,
+          "u_delta_high_mean": 0.0,
+          "candidate_fourth_rate": 0.25,
+          "baseline_fourth_rate": 0.1875,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        },
+        "M": {
+          "sources": 32,
+          "first_table_delta_mean": 3.625,
+          "stage_score_delta_mean": 0.1875,
+          "stage_score_delta_quantiles": {
+            "min": -110.0,
+            "p10": -78.0,
+            "median": 1.0,
+            "p90": 84.0,
+            "max": 99.0
+          },
+          "u_delta_low_mean": 0.0,
+          "u_delta_high_mean": 0.03125,
+          "candidate_fourth_rate": 0.34375,
+          "baseline_fourth_rate": 0.15625,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.03125
+        }
+      },
+      "positive_u_units": 12,
+      "positive_u_distinct_roots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "positive_u_distinct_seats": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "gate_checks": {
+        "execution_failures": true,
+        "overall_u_delta_low_mean": false,
+        "each_mix_u_delta_low_mean": true,
+        "at_least_one_mix_u_delta_low_mean": false,
+        "positive_u_units_distinct_roots": true,
+        "positive_u_units_distinct_seats": true
+      }
+    }
+  ],
+  "passed_candidate_ids": [],
+  "execution_audit": {
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 256,
+    "recorded_tables": 256,
+    "missing_tables": 0,
+    "recorded_counts": {
+      "decision_count": 344696,
+      "action_value_scored": 43153,
+      "action_value_failed": 0,
+      "other_policy_decisions": 301543,
+      "ambiguous_diagnostics": 0,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "abstain": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "zero_internal_failures_verified": true
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "next": "进入R16代际2；若仍失败则回到文献与杭麻规则复盘"
+}

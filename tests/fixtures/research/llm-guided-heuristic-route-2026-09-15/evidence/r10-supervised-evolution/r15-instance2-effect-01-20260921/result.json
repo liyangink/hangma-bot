@@ -1,0 +1,81 @@
+{
+  "schema": "r15-instance2-effect-result/1",
+  "status": "FAIL_R15_INSTANCE2_DEVELOPMENT_GATE",
+  "manifest_sha256": "c469e715e90ec6ae91efdeb2682d2adc787318482b330ce90aa6aab6b890245f",
+  "candidate_id": "public-state-route-terra-parent-router",
+  "candidate_sha256": "bd1559c0fc5666b6cff9386c98570a7aa20f02d95c9d2f2224649047ba71cd1e",
+  "overall": {
+    "sources": 64,
+    "first_table_delta_mean": 3.78125,
+    "stage_score_delta_mean": -1.8125,
+    "u_delta_low_mean": 0.015625,
+    "u_delta_high_mean": 0.046875
+  },
+  "by_mix": {
+    "H": {
+      "sources": 32,
+      "first_table_delta_mean": 5.25,
+      "stage_score_delta_mean": 2.15625,
+      "u_delta_low_mean": 0.03125,
+      "u_delta_high_mean": 0.09375
+    },
+    "M": {
+      "sources": 32,
+      "first_table_delta_mean": 2.3125,
+      "stage_score_delta_mean": -5.78125,
+      "u_delta_low_mean": 0.0,
+      "u_delta_high_mean": 0.0
+    }
+  },
+  "positive_u_units": 13,
+  "positive_u_distinct_roots": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    7,
+    8
+  ],
+  "positive_u_distinct_seats": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "gate_checks": {
+    "execution_failures": true,
+    "overall_u_delta_low_mean": true,
+    "each_mix_u_delta_low_mean": true,
+    "overall_stage_score_delta_mean": false,
+    "at_least_one_mix_u_delta_low_mean": true,
+    "positive_u_units_distinct_roots": true,
+    "positive_u_units_distinct_seats": true
+  },
+  "execution_audit": {
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 256,
+    "recorded_tables": 256,
+    "missing_tables": 0,
+    "recorded_counts": {
+      "decision_count": 344971,
+      "action_value_scored": 43125,
+      "action_value_failed": 0,
+      "other_policy_decisions": 301846,
+      "ambiguous_diagnostics": 0,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "abstain": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "zero_internal_failures_verified": true
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "next": "关闭当前公开规则态父代路由结构族并回到文献复盘"
+}

@@ -1,0 +1,44 @@
+{
+  "schema": "r10-cross-specialist-checks/1",
+  "status": "PASS_OFFLINE_BEHAVIOR_ONLY",
+  "requests": 62,
+  "modes": {
+    "v2": {
+      "NOT_APPLICABLE": 62,
+      "changed": 0
+    },
+    "followup_discard": {
+      "NOT_APPLICABLE": 47,
+      "changed": 2,
+      "EVALUATED": 15
+    },
+    "route_all": {
+      "EVALUATED": 62,
+      "changed": 6
+    },
+    "route_draw_only": {
+      "EVALUATED": 33,
+      "changed": 1,
+      "NOT_APPLICABLE": 29
+    },
+    "route_claim_only": {
+      "NOT_APPLICABLE": 33,
+      "changed": 5,
+      "EVALUATED": 29
+    },
+    "cross_followup_claim": {
+      "NOT_APPLICABLE": 18,
+      "changed": 7,
+      "EVALUATED": 44
+    }
+  },
+  "dispatch_inheritance": {
+    "draw": "cross == followup_discard; route_claim_only == V2",
+    "response_chi/peng": "cross == route_claim_only; followup_discard == V2",
+    "other": "cross == V2"
+  },
+  "effect_tables": 0,
+  "selection_eligible": false,
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

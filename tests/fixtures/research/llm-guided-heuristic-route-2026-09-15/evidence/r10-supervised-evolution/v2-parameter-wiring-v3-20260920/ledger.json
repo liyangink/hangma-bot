@@ -1,0 +1,283 @@
+{
+  "schema": "sitin-action-value-ledger/1",
+  "accounts": [
+    "tokens_input",
+    "tokens_output",
+    "tables_full",
+    "tables_partial",
+    "prefix_generation",
+    "confirm_reserved"
+  ],
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 46.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "confirm_authorized_budget": 0.0,
+  "authorized_budgets": {
+    "tables_full": 46.0
+  },
+  "confirm_policy": "confirm 硬禁继承现状：默认 0，无显式授权任何 confirm 记账拒绝",
+  "limit_policy": "Q3：正数记账须在授权总额内（扣已结算+在途预留）；未声明额度 fail-closed 拒绝；amount=0 纯登记不限额",
+  "reservations": [
+    {
+      "reservation_id": "H-root1-seat0-research_default#1",
+      "step_id": "H-root1-seat0-research_default",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:02:24Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "H-root1-seat0-research_probe#2",
+      "step_id": "H-root1-seat0-research_probe",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:02:28Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "H-root1-seat1-stable_v2#3",
+      "step_id": "H-root1-seat1-stable_v2",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:02:33Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "H-root1-seat1-research_default#4",
+      "step_id": "H-root1-seat1-research_default",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:02:38Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "H-root1-seat1-research_probe#5",
+      "step_id": "H-root1-seat1-research_probe",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:02:44Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "H-root1-seat2-stable_v2#6",
+      "step_id": "H-root1-seat2-stable_v2",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:02:48Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "H-root1-seat2-research_default#7",
+      "step_id": "H-root1-seat2-research_default",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:02:53Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "H-root1-seat2-research_probe#8",
+      "step_id": "H-root1-seat2-research_probe",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:02:58Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "H-root1-seat3-stable_v2#9",
+      "step_id": "H-root1-seat3-stable_v2",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:03Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "H-root1-seat3-research_default#10",
+      "step_id": "H-root1-seat3-research_default",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:07Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "H-root1-seat3-research_probe#11",
+      "step_id": "H-root1-seat3-research_probe",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:12Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat0-stable_v2#12",
+      "step_id": "M-root1-seat0-stable_v2",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:17Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat0-research_default#13",
+      "step_id": "M-root1-seat0-research_default",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:22Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat0-research_probe#14",
+      "step_id": "M-root1-seat0-research_probe",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:27Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat1-stable_v2#15",
+      "step_id": "M-root1-seat1-stable_v2",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:33Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat1-research_default#16",
+      "step_id": "M-root1-seat1-research_default",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:38Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat1-research_probe#17",
+      "step_id": "M-root1-seat1-research_probe",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:43Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat2-stable_v2#18",
+      "step_id": "M-root1-seat2-stable_v2",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:49Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat2-research_default#19",
+      "step_id": "M-root1-seat2-research_default",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:54Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat2-research_probe#20",
+      "step_id": "M-root1-seat2-research_probe",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:03:59Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat3-stable_v2#21",
+      "step_id": "M-root1-seat3-stable_v2",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:04:05Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat3-research_default#22",
+      "step_id": "M-root1-seat3-research_default",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:04:10Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "M-root1-seat3-research_probe#23",
+      "step_id": "M-root1-seat3-research_probe",
+      "account": "tables_full",
+      "amount": 2.0,
+      "note": "确认执行接线开发检查；完整MatchResult及阶段账核验通过",
+      "at_utc": "2026-09-20T15:04:15Z",
+      "status": "settled",
+      "charged": 2.0,
+      "usage_unknown": false
+    }
+  ],
+  "workers_active": 0,
+  "worker_lease": "ledger.json.workers.json",
+  "worker_cap": 12
+}

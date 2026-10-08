@@ -1,0 +1,70 @@
+{
+ "schema": "sitin-model-admission-synthetic-material-check/1",
+ "purpose": "复证 R9 P4 材料门：不兼容材料 ⇒ 整包 INCOMPLETE/BLOCKED、不兑换信用、分母不缩",
+ "replies_kind": "synth_standard_fixture（手工标准答案 + 尾随空行变体）——**不是**模型成绩",
+ "incompatible_material": "review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r6-model-admission/materials/T06-parent-triax-v1.py",
+ "compatible_material": "review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/package/materials/T06-parent-triax-v1-view3.py",
+ "incompatible_case": {
+  "status": "INCOMPLETE",
+  "admission_pass": false,
+  "unique_rounds": 2,
+  "summary_status": "INCOMPLETE",
+  "tasks_denominator": 24,
+  "pass": 21,
+  "scorer_pass": 3,
+  "uncredited_task_ids": [
+   "T06",
+   "T07",
+   "T08"
+  ],
+  "credit_blocked_rows": [
+   "T06",
+   "T07",
+   "T08"
+  ],
+  "decidable_but_uncredited": [
+   "T06",
+   "T07",
+   "T08"
+  ],
+  "material_incomplete_task_ids": [
+   "T06",
+   "T07",
+   "T08"
+  ],
+  "warning_task_ids": [
+   "T06",
+   "T07",
+   "T08"
+  ],
+  "blocking_reasons": [
+   "评价材料不兼容/不一致：任务 T06、T07、T08 在当前视图结构版本下无偏好证据（整包 INCOMPLETE；不判候选挂，可修材料后重判）",
+   "轮次 r1 未通过（通过数不足；评分器通过数不足）",
+   "轮次 r2 未通过（通过数不足；评分器通过数不足）"
+  ],
+  "round_ok": [
+   false,
+   false
+  ]
+ },
+ "control_case": {
+  "status": "ADMISSION_PASS",
+  "admission_pass": true,
+  "unique_rounds": 2,
+  "summary_status": "COMPLETE",
+  "tasks_denominator": 24,
+  "pass": 24,
+  "scorer_pass": 6,
+  "uncredited_task_ids": [],
+  "credit_blocked_rows": [],
+  "decidable_but_uncredited": [],
+  "material_incomplete_task_ids": [],
+  "warning_task_ids": [],
+  "blocking_reasons": [],
+  "round_ok": [
+   true,
+   true
+  ]
+ },
+ "ok": true
+}

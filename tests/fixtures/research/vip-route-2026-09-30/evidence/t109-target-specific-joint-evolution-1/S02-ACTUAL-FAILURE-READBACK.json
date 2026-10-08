@@ -1,0 +1,62 @@
+{
+  "complete": true,
+  "actual_session_id": 40929,
+  "actual_terminal_chunk": "71feae",
+  "exit_code": 1,
+  "error": {
+    "category": "http_rejected",
+    "http_status": 500,
+    "phase": "model_call",
+    "provider_error_code": null,
+    "reason": "模型HTTP明确拒绝；按状态审核，保留费用",
+    "type": "TransportError"
+  },
+  "attempt_id": "c6be522b30984ae1986693bb9585e887",
+  "actual_model_calls": 1,
+  "actual_wall_clock_seconds": 347.4208442501258,
+  "actual_input_tokens": null,
+  "actual_output_tokens": null,
+  "usage_unknown": true,
+  "reserved_upper_bound_is_not_actual_token_usage": true,
+  "candidate_delivered": false,
+  "frozen_inputs_stable": true,
+  "frozen_inputs_checked": 19,
+  "automatic_retry": false,
+  "third_author_started": false,
+  "new_scores_rules_worlds_tables": 0,
+  "no_quota_or_model_capability_or_input_length_cause_inferred": true,
+  "closed_files": {
+    "S02-ACTUAL-AUTHOR-TERMINAL.json": {
+      "bytes": 200,
+      "sha256": "13ab01c1453bb71f811db72b4fe6de08e5b3085c584efa16a420baf6958f536e"
+    },
+    "S02-ACTUAL-AUTHOR.log": {
+      "bytes": 122,
+      "sha256": "c0d742321eed97011ab956dc6836e0716878d2327f4349025b8c6f254eb9fc5a"
+    },
+    "S02-API-BATCH.vip-eoh-ledger.json": {
+      "bytes": 2379,
+      "sha256": "9eba378bd814b11afb36a6ee7818a6afa89465618deac60a1a7b6f126430388c"
+    },
+    "S02-model-output/batch.json": {
+      "bytes": 1051,
+      "sha256": "ab9b4eb9a7d42c891633a7e92401d7603f75e2af80715cc0f5ca4ba39e23efb1"
+    },
+    "S02-model-output/contract.md": {
+      "bytes": 16364,
+      "sha256": "f782bb9e68948aa1b73f1593006b599874a4455cae8bd4f15c853559e7db8adf"
+    },
+    "S02-model-output/generation.json": {
+      "bytes": 67954,
+      "sha256": "dd2669648f777ab7a6253e00f1adef5465315cccfd9d4dcfb1eb3fab6757682e"
+    },
+    "S02-model-output/prompt.txt": {
+      "bytes": 1155596,
+      "sha256": "b1a3849ced7f776375038be943ca3bc14def57437bd4bdf5fae918363d97c6eb"
+    },
+    "S02-model-output/readonly-appendix.json": {
+      "bytes": 32322,
+      "sha256": "8423165110fcf029760bb7ebab6c9952c1b2637ad394e6d74f3d597d4346a842"
+    }
+  }
+}

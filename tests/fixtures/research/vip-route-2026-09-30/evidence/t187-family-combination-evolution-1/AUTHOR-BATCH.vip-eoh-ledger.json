@@ -1,0 +1,118 @@
+{
+  "batch_id": "t187-two-author-family-combination-20261005",
+  "batch_sha256": "fe590687268982250b2d71ba837e356bb3e872120c205c97ccaefea03b4fafc3",
+  "budgets": {
+    "input_tokens": 2097152,
+    "model_calls": 2,
+    "output_tokens": 131072,
+    "table_instances": 0,
+    "wall_clock_seconds": 1800
+  },
+  "reservations": [
+    {
+      "actual": {
+        "input_tokens": 54005,
+        "model_calls": 1,
+        "output_tokens": 40897,
+        "table_instances": 0,
+        "wall_clock_seconds": 403.4186565000564
+      },
+      "attempt_id": "cc084c3e58d84f5e9f6dff7af336d9e3",
+      "attempt_no": 1,
+      "backend": "api",
+      "budget_exceeded": false,
+      "call_started": true,
+      "charged": {
+        "input_tokens": 54005,
+        "model_calls": 1,
+        "output_tokens": 40897,
+        "table_instances": 0,
+        "wall_clock_seconds": 403.4186565000564
+      },
+      "outcome": "failed",
+      "reserved": {
+        "input_tokens": 1048576,
+        "model_calls": 1,
+        "output_tokens": 65536,
+        "table_instances": 0,
+        "wall_clock_seconds": 900
+      },
+      "reserved_at_utc": "2026-10-05T07:58:34.260317Z",
+      "reviewed_recovery": null,
+      "settled_at_utc": "2026-10-05T08:05:17.200993Z",
+      "started_at_utc": "2026-10-05T07:58:34.265794Z",
+      "status": "settled",
+      "usage_unknown": false
+    },
+    {
+      "actual": {
+        "input_tokens": 0,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "table_instances": 0,
+        "wall_clock_seconds": 0.799913041992113
+      },
+      "attempt_id": "94da3fc0bc1a41b388c81d0b54cb21d3",
+      "attempt_no": 2,
+      "backend": "replay",
+      "budget_exceeded": false,
+      "call_started": false,
+      "charged": {
+        "input_tokens": 0,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "table_instances": 0,
+        "wall_clock_seconds": 0.799913041992113
+      },
+      "outcome": "loaded_not_admitted",
+      "reserved": {
+        "input_tokens": 0,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "table_instances": 0,
+        "wall_clock_seconds": 900
+      },
+      "reserved_at_utc": "2026-10-05T08:10:07.734894Z",
+      "reviewed_recovery": null,
+      "settled_at_utc": "2026-10-05T08:10:08.017501Z",
+      "status": "settled",
+      "usage_unknown": false
+    },
+    {
+      "actual": {
+        "input_tokens": 61641,
+        "model_calls": 1,
+        "output_tokens": 39632,
+        "table_instances": 0,
+        "wall_clock_seconds": 431.6068615000695
+      },
+      "attempt_id": "8c32181fffe14753afdc52835c31b6d1",
+      "attempt_no": 3,
+      "backend": "api",
+      "budget_exceeded": false,
+      "call_started": true,
+      "charged": {
+        "input_tokens": 61641,
+        "model_calls": 1,
+        "output_tokens": 39632,
+        "table_instances": 0,
+        "wall_clock_seconds": 431.6068615000695
+      },
+      "outcome": "loaded_not_admitted",
+      "reserved": {
+        "input_tokens": 1048576,
+        "model_calls": 1,
+        "output_tokens": 65536,
+        "table_instances": 0,
+        "wall_clock_seconds": 900
+      },
+      "reserved_at_utc": "2026-10-05T08:28:41.630088Z",
+      "reviewed_recovery": null,
+      "settled_at_utc": "2026-10-05T08:35:52.744105Z",
+      "started_at_utc": "2026-10-05T08:28:41.635760Z",
+      "status": "settled",
+      "usage_unknown": false
+    }
+  ],
+  "schema": "vip-route-eoh-budget-ledger/1"
+}

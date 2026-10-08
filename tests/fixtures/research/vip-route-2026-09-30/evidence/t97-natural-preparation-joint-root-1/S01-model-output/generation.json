@@ -1,0 +1,775 @@
+{
+  "admission": {
+    "eligible": false,
+    "gates_run": []
+  },
+  "artifact_role": "candidate_proposal",
+  "attempt_id": "0740b7dab85e4a5495daf7bfed4894e5",
+  "attempt_no": 2,
+  "backend": "replay",
+  "batch_id": "vip-t97-natural-preparation-joint-root-20261003",
+  "batch_sha256": "44cc9144106cce299d3f5f8b03621f14f0eacbebe0e78972a7f620033f8fc5cd",
+  "behavior_change_credit": false,
+  "billing": {
+    "actual": {
+      "input_tokens": 0,
+      "model_calls": 0,
+      "output_tokens": 0,
+      "table_instances": 0,
+      "wall_clock_seconds": 0.5617106249555945
+    },
+    "attempt_id": "0740b7dab85e4a5495daf7bfed4894e5",
+    "attempt_no": 2,
+    "backend": "replay",
+    "budget_exceeded": false,
+    "call_started": false,
+    "charged": {
+      "input_tokens": 0,
+      "model_calls": 0,
+      "output_tokens": 0,
+      "table_instances": 0,
+      "wall_clock_seconds": 0.5617106249555945
+    },
+    "outcome": "loaded_not_admitted",
+    "reserved": {
+      "input_tokens": 0,
+      "model_calls": 0,
+      "output_tokens": 0,
+      "table_instances": 0,
+      "wall_clock_seconds": 900
+    },
+    "reserved_at_utc": "2026-10-03T03:29:26.360323Z",
+    "reviewed_recovery": null,
+    "settled_at_utc": "2026-10-03T03:29:26.623908Z",
+    "status": "settled",
+    "usage_unknown": false
+  },
+  "candidate_kind": "vip_route_heuristic_v1",
+  "elapsed_monotonic_seconds": 0.5617106249555945,
+  "ended_at_utc": "2026-10-03T03:29:26.623751Z",
+  "error": null,
+  "feedback_sha256": "db0eff95e71a5be44653cc183b00efa7694b77e0fea730ccf200387e12a45174",
+  "framework": {
+    "generation_source_manifest": {
+      "review/llm-guided-heuristic-route-2026-09-15/tools/sitin_generate.py": {
+        "bytes": 339988,
+        "sha256": "476a57f0637304adcb33a3363564cfbf4fd6bad654b1a55af6d0e1cadc9e907a"
+      },
+      "review/llm-guided-heuristic-route-2026-09-15/tools/sitin_process.py": {
+        "bytes": 7289,
+        "sha256": "483de9b9b4099c3c4efa05358bdf76b0f695ca669142381389fa6454300bc5a5"
+      },
+      "scripts/vip_route_eoh_generate.py": {
+        "bytes": 3220,
+        "sha256": "1b1d078362670406e75412a37a0549b43097fe4ad4f55d4c5c862876ec6445b4"
+      },
+      "src/hangma_bot/application/contracts.py": {
+        "bytes": 16212,
+        "sha256": "cbece50eda81a376b5be923f5c894a96f67ea65f82b3e021fdbf592e242e53fa"
+      },
+      "src/hangma_bot/application/deadline.py": {
+        "bytes": 7527,
+        "sha256": "4d280f95ed8dd29a31fb485c6267ff553fd74fe2b2d8d60b3ca596bf0c9d8496"
+      },
+      "src/hangma_bot/hangma/__init__.py": {
+        "bytes": 145,
+        "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+      },
+      "src/hangma_bot/hangma/_standard.py": {
+        "bytes": 1542,
+        "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+      },
+      "src/hangma_bot/hangma/_standard_python.py": {
+        "bytes": 14730,
+        "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+      },
+      "src/hangma_bot/hangma/action_families.py": {
+        "bytes": 20884,
+        "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+      },
+      "src/hangma_bot/hangma/candidate_facts.py": {
+        "bytes": 19139,
+        "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+      },
+      "src/hangma_bot/hangma/catch_play.py": {
+        "bytes": 10173,
+        "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+      },
+      "src/hangma_bot/hangma/emergency.py": {
+        "bytes": 4153,
+        "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+      },
+      "src/hangma_bot/hangma/engine.py": {
+        "bytes": 32121,
+        "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+      },
+      "src/hangma_bot/hangma/hand_analysis.py": {
+        "bytes": 20852,
+        "sha256": "5fda1016122df9aaa894c62fccd8cbfa2f8600122d08cfb0ea208173f32bb763"
+      },
+      "src/hangma_bot/hangma/interface.py": {
+        "bytes": 37378,
+        "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+      },
+      "src/hangma_bot/hangma/internal_types.py": {
+        "bytes": 8611,
+        "sha256": "0404ace8a801c81d0c812a5b209e45e29a888b11f1bac341f5a13f3700568051"
+      },
+      "src/hangma_bot/hangma/natural_preparation.py": {
+        "bytes": 5636,
+        "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+      },
+      "src/hangma_bot/hangma/observation_rules.py": {
+        "bytes": 21637,
+        "sha256": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486"
+      },
+      "src/hangma_bot/hangma/progression.py": {
+        "bytes": 44196,
+        "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+      },
+      "src/hangma_bot/hangma/progression_payload.py": {
+        "bytes": 15798,
+        "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+      },
+      "src/hangma_bot/hangma/public_successor.py": {
+        "bytes": 21173,
+        "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+      },
+      "src/hangma_bot/hangma/public_tile_counts.py": {
+        "bytes": 36925,
+        "sha256": "f3095119f4bac03bb7769b74d10926e339f67801e979a4afc70b24c31f3856fd"
+      },
+      "src/hangma_bot/hangma/route_frontier.py": {
+        "bytes": 11581,
+        "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+      },
+      "src/hangma_bot/hangma/route_hu_witness.py": {
+        "bytes": 8183,
+        "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+      },
+      "src/hangma_bot/hangma/route_structure.py": {
+        "bytes": 10649,
+        "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+      },
+      "src/hangma_bot/hangma/route_transition.py": {
+        "bytes": 72490,
+        "sha256": "42a3e6acd01bdadc138388e3b11d0f79d7f442f63c56f3de60d2d173a672fc17"
+      },
+      "src/hangma_bot/hangma/settlement.py": {
+        "bytes": 10643,
+        "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+      },
+      "src/hangma_bot/hangma/special_rules.py": {
+        "bytes": 11609,
+        "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+      },
+      "src/hangma_bot/hangma/value_analysis.py": {
+        "bytes": 18251,
+        "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+      },
+      "src/hangma_bot/kernel/actions.py": {
+        "bytes": 10754,
+        "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+      },
+      "src/hangma_bot/kernel/config.py": {
+        "bytes": 3236,
+        "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+      },
+      "src/hangma_bot/kernel/identity.py": {
+        "bytes": 3520,
+        "sha256": "1e8a12c2394b9bd2370027d1d7e04c1b29e9bcad0764302f3047ac84aca06640"
+      },
+      "src/hangma_bot/kernel/observation.py": {
+        "bytes": 17784,
+        "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+      },
+      "src/hangma_bot/kernel/outcomes.py": {
+        "bytes": 8643,
+        "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+      },
+      "src/hangma_bot/kernel/serialization.py": {
+        "bytes": 27049,
+        "sha256": "85d4a98d9c735090670110376f7bba6066710909fd7f8dcf95fcd45dac3ce56e"
+      },
+      "src/hangma_bot/offline/evaluate.py": {
+        "bytes": 88427,
+        "sha256": "ba49be2eb653aac1edfc43e00d30f0eff24798b9b120d6d2b7aa39f9ff49a376"
+      },
+      "src/hangma_bot/offline/evaluation_results.py": {
+        "bytes": 32657,
+        "sha256": "2ea2d68f158f054f283f98a319143d52d61b57cfdf79bc532235645069c54da7"
+      },
+      "src/hangma_bot/offline/scoring_sources.py": {
+        "bytes": 9453,
+        "sha256": "da75c44b1919ccd9338ee0469391882be8aaaaeb079775223b5b43be5036d1e0"
+      },
+      "src/hangma_bot/offline/vip_eoh_generate.py": {
+        "bytes": 64915,
+        "sha256": "b0285471a99b9074a40acdc2ac90e8f12416f3aa906d60eae4ee9111d260fef9"
+      },
+      "src/hangma_bot/offline/vip_eoh_rebind.py": {
+        "bytes": 10083,
+        "sha256": "9745d98408420a910022dd2a234cda9f2f55a53e96bab3273e793bc622696d6b"
+      },
+      "src/hangma_bot/offline/vip_eoh_trace_repair.py": {
+        "bytes": 17236,
+        "sha256": "46c355392b8585b2845c018363dac791f356c6c5b4af56d9a62e963c91d7473c"
+      },
+      "src/hangma_bot/offline/vip_heuristic_smoke.py": {
+        "bytes": 11065,
+        "sha256": "db07eca11efffba9e93129c24c07a66c9b849ef0675dbde4f55d020977bbc5a6"
+      },
+      "src/hangma_bot/policy/action_value.py": {
+        "bytes": 45125,
+        "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+      },
+      "src/hangma_bot/policy/action_value_executor.py": {
+        "bytes": 105899,
+        "sha256": "d48720b07f84b466ce8d390dd3685fd5a68d6393296536fc826de0ad23a60f58"
+      },
+      "src/hangma_bot/policy/action_value_policy.py": {
+        "bytes": 26047,
+        "sha256": "8bbcdeb3fc968736f45f831a4c516e5375ef8e5dfe879aa4f696cf2b48d8982b"
+      },
+      "src/hangma_bot/policy/action_value_seeds.py": {
+        "bytes": 26114,
+        "sha256": "dc50f4e2127936368aed0282cce505d68dabf628904daae537928c78e387578a"
+      },
+      "src/hangma_bot/policy/errors.py": {
+        "bytes": 372,
+        "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+      },
+      "src/hangma_bot/policy/interface.py": {
+        "bytes": 3546,
+        "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+      },
+      "src/hangma_bot/policy/route_heuristic_view.py": {
+        "bytes": 27957,
+        "sha256": "82555e304073755ff9f2758de0c470e3595e96ceeb2497897a7b846d75f121d1"
+      },
+      "src/hangma_bot/policy/route_vip_heuristic.py": {
+        "bytes": 34849,
+        "sha256": "1948b15d063bbd7194b83077d2f6284406e2bd8387aa95d6231767387f3cfdce"
+      },
+      "src/hangma_bot/policy/safe_fallback.py": {
+        "bytes": 2352,
+        "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+      },
+      "src/hangma_bot/simulation/__init__.py": {
+        "bytes": 1236,
+        "sha256": "9940e70b041e4729b56d825b8f85abec12594cf25a84b8672a927ce20b29e844"
+      },
+      "src/hangma_bot/simulation/artifacts.py": {
+        "bytes": 3264,
+        "sha256": "0176f939b276e9ee22c9e72e42939d1e04b2c35aa5c6273d43dab731324e4a32"
+      },
+      "src/hangma_bot/simulation/engine.py": {
+        "bytes": 44570,
+        "sha256": "c32e7d589765c7a973a72be534fdaadf21f8c4bd91c404d471189d49cbbf6b27"
+      },
+      "src/hangma_bot/simulation/identity.py": {
+        "bytes": 1371,
+        "sha256": "8087385814bdb604ea92fcd757e111f430c3d0a53a1bd08ddedfee35efe0e58e"
+      },
+      "src/hangma_bot/simulation/interface.py": {
+        "bytes": 5426,
+        "sha256": "7f1262c0cd75249627eaf8031a410fbff2262940ef7a9923f1b8c18721b76d6f"
+      },
+      "src/hangma_bot/simulation/projection.py": {
+        "bytes": 6026,
+        "sha256": "1d729c3e0be45ff8f137c85b906b4d7e2454dd6627cde5db9f5bf1915cf58490"
+      },
+      "src/hangma_bot/simulation/shuffle.py": {
+        "bytes": 7411,
+        "sha256": "5e8597e06dc7d94e8aa2825f066df5faef47c2298b1c1919bccbf2a7756f91f5"
+      },
+      "src/hangma_bot/simulation/state.py": {
+        "bytes": 3309,
+        "sha256": "c57f0a3f5ff42736d3b1514c44527c77382e79b1fe8feeef6c571fea4d154556"
+      }
+    },
+    "seed_identity": {
+      "candidate_id": "4885495e17d13355046fb66d9a4f50822ed2465de504ebfbbde2b658e27030b1",
+      "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+      "contract_sha256": "f782bb9e68948aa1b73f1593006b599874a4455cae8bd4f15c853559e7db8adf",
+      "deps_digest": "3a6a1d3e53e3733b8998fe152ec61352c10b115b0bb95c33e098af5b4b9a741e",
+      "graph_schema_version": "vip-route-action-graph/3",
+      "math_backend": {
+        "fallback_reason": null,
+        "implementation": "c_grouped",
+        "native_binary": {
+          "bytes": 52552,
+          "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+        },
+        "semantics_version": "hangma-standard-grouped-v1"
+      },
+      "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+      "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+      "params": {
+        "max_local_collection_size": 8192,
+        "max_operations": 4800000,
+        "projection_limits": {
+          "max_branches": 16384,
+          "max_nodes": 8192,
+          "max_waiting_draw_witnesses": 65536
+        },
+        "route_limits": {
+          "max_expansions": 8192,
+          "max_routes_per_candidate": 128
+        },
+        "rule_config": {
+          "base_score": 1,
+          "ruleset_version": "hangma-mvp-v10-public-counts",
+          "you_cai_bi_kao": false
+        }
+      },
+      "source_manifest": {
+        "src/hangma_bot/hangma/__init__.py": {
+          "bytes": 145,
+          "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+        },
+        "src/hangma_bot/hangma/_grouped_native.c": {
+          "bytes": 19322,
+          "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+        },
+        "src/hangma_bot/hangma/_standard.py": {
+          "bytes": 1542,
+          "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+        },
+        "src/hangma_bot/hangma/_standard_python.py": {
+          "bytes": 14730,
+          "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+        },
+        "src/hangma_bot/hangma/action_families.py": {
+          "bytes": 20884,
+          "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+        },
+        "src/hangma_bot/hangma/candidate_facts.py": {
+          "bytes": 19139,
+          "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+        },
+        "src/hangma_bot/hangma/catch_play.py": {
+          "bytes": 10173,
+          "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+        },
+        "src/hangma_bot/hangma/emergency.py": {
+          "bytes": 4153,
+          "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+        },
+        "src/hangma_bot/hangma/engine.py": {
+          "bytes": 32121,
+          "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+        },
+        "src/hangma_bot/hangma/hand_analysis.py": {
+          "bytes": 20852,
+          "sha256": "5fda1016122df9aaa894c62fccd8cbfa2f8600122d08cfb0ea208173f32bb763"
+        },
+        "src/hangma_bot/hangma/interface.py": {
+          "bytes": 37378,
+          "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+        },
+        "src/hangma_bot/hangma/internal_types.py": {
+          "bytes": 8611,
+          "sha256": "0404ace8a801c81d0c812a5b209e45e29a888b11f1bac341f5a13f3700568051"
+        },
+        "src/hangma_bot/hangma/natural_preparation.py": {
+          "bytes": 5636,
+          "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+        },
+        "src/hangma_bot/hangma/observation_rules.py": {
+          "bytes": 21637,
+          "sha256": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486"
+        },
+        "src/hangma_bot/hangma/progression.py": {
+          "bytes": 44196,
+          "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+        },
+        "src/hangma_bot/hangma/progression_payload.py": {
+          "bytes": 15798,
+          "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+        },
+        "src/hangma_bot/hangma/public_successor.py": {
+          "bytes": 21173,
+          "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+        },
+        "src/hangma_bot/hangma/public_tile_counts.py": {
+          "bytes": 36925,
+          "sha256": "f3095119f4bac03bb7769b74d10926e339f67801e979a4afc70b24c31f3856fd"
+        },
+        "src/hangma_bot/hangma/route_frontier.py": {
+          "bytes": 11581,
+          "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+        },
+        "src/hangma_bot/hangma/route_hu_witness.py": {
+          "bytes": 8183,
+          "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+        },
+        "src/hangma_bot/hangma/route_structure.py": {
+          "bytes": 10649,
+          "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+        },
+        "src/hangma_bot/hangma/route_transition.py": {
+          "bytes": 72490,
+          "sha256": "42a3e6acd01bdadc138388e3b11d0f79d7f442f63c56f3de60d2d173a672fc17"
+        },
+        "src/hangma_bot/hangma/settlement.py": {
+          "bytes": 10643,
+          "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+        },
+        "src/hangma_bot/hangma/special_rules.py": {
+          "bytes": 11609,
+          "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+        },
+        "src/hangma_bot/hangma/value_analysis.py": {
+          "bytes": 18251,
+          "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+        },
+        "src/hangma_bot/kernel/actions.py": {
+          "bytes": 10754,
+          "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+        },
+        "src/hangma_bot/kernel/config.py": {
+          "bytes": 3236,
+          "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+        },
+        "src/hangma_bot/kernel/observation.py": {
+          "bytes": 17784,
+          "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+        },
+        "src/hangma_bot/kernel/outcomes.py": {
+          "bytes": 8643,
+          "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+        },
+        "src/hangma_bot/policy/action_value.py": {
+          "bytes": 45125,
+          "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+        },
+        "src/hangma_bot/policy/action_value_executor.py": {
+          "bytes": 105899,
+          "sha256": "d48720b07f84b466ce8d390dd3685fd5a68d6393296536fc826de0ad23a60f58"
+        },
+        "src/hangma_bot/policy/errors.py": {
+          "bytes": 372,
+          "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+        },
+        "src/hangma_bot/policy/interface.py": {
+          "bytes": 3546,
+          "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+        },
+        "src/hangma_bot/policy/route_heuristic_view.py": {
+          "bytes": 27957,
+          "sha256": "82555e304073755ff9f2758de0c470e3595e96ceeb2497897a7b846d75f121d1"
+        },
+        "src/hangma_bot/policy/route_vip_heuristic.py": {
+          "bytes": 34849,
+          "sha256": "1948b15d063bbd7194b83077d2f6284406e2bd8387aa95d6231767387f3cfdce"
+        },
+        "src/hangma_bot/policy/safe_fallback.py": {
+          "bytes": 2352,
+          "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+        }
+      },
+      "source_sha256": "961ce1445cebde624dba80c6748bb524d16616662605a2f1b53ec9931c7962c5",
+      "view_schema_version": "vip-route-scoring-view/3"
+    }
+  },
+  "identity": {
+    "candidate_id": "cf11888a2abb632e2ce08dc3e7b5a228f28e23238d02fdc93895e401128cddbd",
+    "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+    "contract_sha256": "f782bb9e68948aa1b73f1593006b599874a4455cae8bd4f15c853559e7db8adf",
+    "deps_digest": "3a6a1d3e53e3733b8998fe152ec61352c10b115b0bb95c33e098af5b4b9a741e",
+    "graph_schema_version": "vip-route-action-graph/3",
+    "math_backend": {
+      "fallback_reason": null,
+      "implementation": "c_grouped",
+      "native_binary": {
+        "bytes": 52552,
+        "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+      },
+      "semantics_version": "hangma-standard-grouped-v1"
+    },
+    "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+    "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+    "params": {
+      "max_local_collection_size": 8192,
+      "max_operations": 4800000,
+      "projection_limits": {
+        "max_branches": 16384,
+        "max_nodes": 8192,
+        "max_waiting_draw_witnesses": 65536
+      },
+      "route_limits": {
+        "max_expansions": 8192,
+        "max_routes_per_candidate": 128
+      },
+      "rule_config": {
+        "base_score": 1,
+        "ruleset_version": "hangma-mvp-v10-public-counts",
+        "you_cai_bi_kao": false
+      }
+    },
+    "source_manifest": {
+      "src/hangma_bot/hangma/__init__.py": {
+        "bytes": 145,
+        "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+      },
+      "src/hangma_bot/hangma/_grouped_native.c": {
+        "bytes": 19322,
+        "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+      },
+      "src/hangma_bot/hangma/_standard.py": {
+        "bytes": 1542,
+        "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+      },
+      "src/hangma_bot/hangma/_standard_python.py": {
+        "bytes": 14730,
+        "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+      },
+      "src/hangma_bot/hangma/action_families.py": {
+        "bytes": 20884,
+        "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+      },
+      "src/hangma_bot/hangma/candidate_facts.py": {
+        "bytes": 19139,
+        "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+      },
+      "src/hangma_bot/hangma/catch_play.py": {
+        "bytes": 10173,
+        "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+      },
+      "src/hangma_bot/hangma/emergency.py": {
+        "bytes": 4153,
+        "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+      },
+      "src/hangma_bot/hangma/engine.py": {
+        "bytes": 32121,
+        "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+      },
+      "src/hangma_bot/hangma/hand_analysis.py": {
+        "bytes": 20852,
+        "sha256": "5fda1016122df9aaa894c62fccd8cbfa2f8600122d08cfb0ea208173f32bb763"
+      },
+      "src/hangma_bot/hangma/interface.py": {
+        "bytes": 37378,
+        "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+      },
+      "src/hangma_bot/hangma/internal_types.py": {
+        "bytes": 8611,
+        "sha256": "0404ace8a801c81d0c812a5b209e45e29a888b11f1bac341f5a13f3700568051"
+      },
+      "src/hangma_bot/hangma/natural_preparation.py": {
+        "bytes": 5636,
+        "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+      },
+      "src/hangma_bot/hangma/observation_rules.py": {
+        "bytes": 21637,
+        "sha256": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486"
+      },
+      "src/hangma_bot/hangma/progression.py": {
+        "bytes": 44196,
+        "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+      },
+      "src/hangma_bot/hangma/progression_payload.py": {
+        "bytes": 15798,
+        "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+      },
+      "src/hangma_bot/hangma/public_successor.py": {
+        "bytes": 21173,
+        "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+      },
+      "src/hangma_bot/hangma/public_tile_counts.py": {
+        "bytes": 36925,
+        "sha256": "f3095119f4bac03bb7769b74d10926e339f67801e979a4afc70b24c31f3856fd"
+      },
+      "src/hangma_bot/hangma/route_frontier.py": {
+        "bytes": 11581,
+        "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+      },
+      "src/hangma_bot/hangma/route_hu_witness.py": {
+        "bytes": 8183,
+        "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+      },
+      "src/hangma_bot/hangma/route_structure.py": {
+        "bytes": 10649,
+        "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+      },
+      "src/hangma_bot/hangma/route_transition.py": {
+        "bytes": 72490,
+        "sha256": "42a3e6acd01bdadc138388e3b11d0f79d7f442f63c56f3de60d2d173a672fc17"
+      },
+      "src/hangma_bot/hangma/settlement.py": {
+        "bytes": 10643,
+        "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+      },
+      "src/hangma_bot/hangma/special_rules.py": {
+        "bytes": 11609,
+        "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+      },
+      "src/hangma_bot/hangma/value_analysis.py": {
+        "bytes": 18251,
+        "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+      },
+      "src/hangma_bot/kernel/actions.py": {
+        "bytes": 10754,
+        "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+      },
+      "src/hangma_bot/kernel/config.py": {
+        "bytes": 3236,
+        "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+      },
+      "src/hangma_bot/kernel/observation.py": {
+        "bytes": 17784,
+        "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+      },
+      "src/hangma_bot/kernel/outcomes.py": {
+        "bytes": 8643,
+        "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+      },
+      "src/hangma_bot/policy/action_value.py": {
+        "bytes": 45125,
+        "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+      },
+      "src/hangma_bot/policy/action_value_executor.py": {
+        "bytes": 105899,
+        "sha256": "d48720b07f84b466ce8d390dd3685fd5a68d6393296536fc826de0ad23a60f58"
+      },
+      "src/hangma_bot/policy/errors.py": {
+        "bytes": 372,
+        "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+      },
+      "src/hangma_bot/policy/interface.py": {
+        "bytes": 3546,
+        "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+      },
+      "src/hangma_bot/policy/route_heuristic_view.py": {
+        "bytes": 27957,
+        "sha256": "82555e304073755ff9f2758de0c470e3595e96ceeb2497897a7b846d75f121d1"
+      },
+      "src/hangma_bot/policy/route_vip_heuristic.py": {
+        "bytes": 34849,
+        "sha256": "1948b15d063bbd7194b83077d2f6284406e2bd8387aa95d6231767387f3cfdce"
+      },
+      "src/hangma_bot/policy/safe_fallback.py": {
+        "bytes": 2352,
+        "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+      }
+    },
+    "source_sha256": "9aaddd03545f08d0737dcf30a356c78dfde9c9e9204bc51422df809d57478423",
+    "view_schema_version": "vip-route-scoring-view/3"
+  },
+  "identity_stable": true,
+  "input_reservation_evidence": {
+    "basis": "已核模型整输入上限的工程预留；UTF-8字节仅记规模，不作为token上界或精准token数",
+    "input_bound": null,
+    "minimum_reserved_tokens": null,
+    "prompt_utf8_bytes": 59409
+  },
+  "is_model_output": true,
+  "load": {
+    "full_return_or_behavior_verified": false,
+    "gates_run": [],
+    "method": "ActionValueExecutor_constructor",
+    "ok": true
+  },
+  "m2_scope": null,
+  "mechanism": {
+    "changed_branches": "联合完成成本取代独立自然准备加分和脱离普通出口的用途奖励：普通出口保留真实向听与去重进张；每个目标的条件信用等于折减后的已有支付信用加同目标成熟度折减后的用途先验，再扣延后兑现代价；它与直接支付信用择大。组合只消费基线未覆盖的新码，每条路线先分摊固定预算，同码取最大。全部合法根、跟打、互斥条件及杠补仍沿完整后序图评价，当前胡沿逐码净升级与风险成本比较。",
+    "counterexample": "墙余少、他家公开副露多、目标的精确改善容量耗尽或杠补未知时，目标成熟度与可回收价值下降；已有无需白的普通快速出口或自然对子足够的七对可以压过普通型保白目标；当前高番胡的确定支付会提高机会成本。自然准备D=0仍不等于有白、爆头或可胡，未见证用途先验可能判断错误，尤其可能在弱对手前提不成立或普通出口途中丢失时造成盲等和流局。",
+    "expected_direction": "预期在普通出口接近时重视少一次自然补张或弃牌所节约的完成成本，而不会把更大缺口带来的更多改善码直接变成额外奖励；能用白保持普通快速出口时仍保留该出口，逐渐释放白的用途只在现有目标与公开相容推进支持下获得信用。此为机制假设，五个同源开发目标没有成为动作金标，未声称增强或通过发布门。",
+    "operator": "i1",
+    "parameter_changes": [],
+    "parent_differences": [],
+    "trigger": "所有真实等待态均比较普通型、七对和全部已有用途目标；当真实白库存可用于等待前驱时，用该目标的补弃下界及其释放白比例所对应的自然面子准备共同形成完成负担，当前可胡仍另付弃胡机会成本。"
+  },
+  "mechanism_sha256": "f46dac6d466a92b9a95b7fb9f883e00a275152a65b1c6c0252acf8b74a561d33",
+  "model_identity": {
+    "observed_exact_response_model": false,
+    "requested": null,
+    "returned": "unknown",
+    "source": "historical_envelope_self_declared"
+  },
+  "numeric_literal_changes": [],
+  "operator_actual": "i1",
+  "operator_requested": "i1",
+  "parents": [],
+  "parents_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "profile": "vip-route-eoh/1",
+  "prompt_sha256": "3b004e9c059bd7e3b48cab8f9a6328afc47165b44c4562479d2f1d2c4c6e4d0c",
+  "publication": {
+    "published": false
+  },
+  "readonly_appendix_sha256": "8423165110fcf029760bb7ebab6c9952c1b2637ad394e6d74f3d597d4346a842",
+  "reply": {
+    "backend": "replay",
+    "captured_at_utc": "2026-10-03T03:29:26.061758+00:00",
+    "chars": 27561,
+    "delegator": "/root via /root/t97_sol_max_natural_joint_author",
+    "elapsed_sec": null,
+    "endpoint_host": null,
+    "evidence_kind": "delegated_model_reply",
+    "finish_reason": "stop",
+    "http_status": null,
+    "info_boundary": null,
+    "is_model_output": true,
+    "model": "unknown",
+    "model_requested": null,
+    "note": "actual agent delivery; replay is zero new model calls; underlying usage unknown",
+    "observed_config": null,
+    "origin": "delegated_model_reply",
+    "provenance_attestation": "envelope-self-declared",
+    "provider": "codex-collaboration",
+    "reasoning_chars": null,
+    "reasoning_present": null,
+    "session_file": null,
+    "usage": {},
+    "usage_available": false,
+    "usage_source": null
+  },
+  "reply_format_version": "vip-eoh-reply-format/2",
+  "reply_redacted": false,
+  "reply_sha256": "91d9f8117c210ff87f023403d1a50f911138b6b889e36889372b900ca781ea20",
+  "reservation": {
+    "actual": null,
+    "attempt_id": "0740b7dab85e4a5495daf7bfed4894e5",
+    "attempt_no": 2,
+    "backend": "replay",
+    "call_started": false,
+    "charged": {
+      "input_tokens": 0,
+      "model_calls": 0,
+      "output_tokens": 0,
+      "table_instances": 0,
+      "wall_clock_seconds": 900
+    },
+    "reserved": {
+      "input_tokens": 0,
+      "model_calls": 0,
+      "output_tokens": 0,
+      "table_instances": 0,
+      "wall_clock_seconds": 900
+    },
+    "reserved_at_utc": "2026-10-03T03:29:26.360323Z",
+    "status": "reserved"
+  },
+  "sampling": null,
+  "schema": "vip-route-eoh-generation/1",
+  "source_raw_sha256": "9aaddd03545f08d0737dcf30a356c78dfde9c9e9204bc51422df809d57478423",
+  "source_sha256": "9aaddd03545f08d0737dcf30a356c78dfde9c9e9204bc51422df809d57478423",
+  "started_at_utc": "2026-10-03T03:29:26.350335Z",
+  "status": "loaded_not_admitted",
+  "tables_run": 0,
+  "thought": "把普通出口当作可回收的价值底座，按目标补弃负担与自然准备融资保白用途，并让直接条件支付和融资后的目标总价值在同一槽内竞争。",
+  "thought_envelope": "plain_single_line",
+  "thought_sha256": "08bcb22a39c1a5ed37255d45bcaa9deca44f87ea4b2ed278fd206dec5562c5ac",
+  "usage": {
+    "billing_scope": "historical_not_rebilled",
+    "raw": {},
+    "raw_types": {},
+    "reported": {
+      "input_tokens": null,
+      "output_tokens": null
+    },
+    "source": "historical_envelope_self_declared",
+    "usage_unknown": true
+  }
+}

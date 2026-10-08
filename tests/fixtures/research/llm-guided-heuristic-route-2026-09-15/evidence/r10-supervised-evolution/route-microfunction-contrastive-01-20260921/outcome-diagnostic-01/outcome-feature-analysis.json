@@ -1,0 +1,897 @@
+{
+  "schema": "r10-route-microfunction-outcome-feature-analysis/1",
+  "source_records": 369,
+  "deduplicated_observations": 309,
+  "duplicate_trajectory_records": 60,
+  "deduplication_key": "root_id + view_sha256；重复时优先保留 child 活动轨迹",
+  "all_changed_bonuses_equal": true,
+  "changed_bonus_values": [
+    8.0
+  ],
+  "mathematical_finding": "best_only 对同窗 route_high 使用 (route_raw-route_low)/(route_high-route_low)，其值恒为1；因此所有被改变的首选动作均获完整 RMF_SCALE，原始优势幅度被丢弃。",
+  "overall": {
+    "observations": 309,
+    "transitions": {
+      "discard->discard": 171,
+      "pass->chi": 93,
+      "pass->peng": 43,
+      "chi->chi": 1,
+      "peng->pass": 1
+    },
+    "child_families": {
+      "discard": 171,
+      "chi": 94,
+      "peng": 43,
+      "pass": 1
+    },
+    "phases": {
+      "draw": 171,
+      "response_chi": 94,
+      "response_peng": 44
+    },
+    "mixes": {
+      "M": 182,
+      "H": 127
+    },
+    "metrics": {
+      "route_delta": {
+        "count": 309,
+        "min": 8.0,
+        "q25": 8.0,
+        "median": 8.0,
+        "q75": 8.0,
+        "max": 8.0,
+        "mean": 8.0
+      },
+      "route_raw": {
+        "count": 309,
+        "min": -0.281079234973,
+        "q25": -0.145833333333,
+        "median": -0.072303921569,
+        "q75": 0.019841269841,
+        "max": 1.0,
+        "mean": -0.03276427899178317
+      },
+      "route_span": {
+        "count": 309,
+        "min": 0.014705882353,
+        "q25": 0.048387096773999994,
+        "median": 0.07407407407399999,
+        "q75": 0.125,
+        "max": 1.003623188406,
+        "mean": 0.10666901809848867
+      },
+      "base_score_gap": {
+        "count": 309,
+        "min": 0.0,
+        "q25": 2.0,
+        "median": 3.0,
+        "q75": 5.0,
+        "max": 8.0,
+        "mean": 3.4174757281553396
+      },
+      "wall_remaining": {
+        "count": 309,
+        "min": 27.0,
+        "q25": 49.0,
+        "median": 56.0,
+        "q75": 62.0,
+        "max": 77.0,
+        "mean": 54.68608414239482
+      },
+      "own_stage_score": {
+        "count": 309,
+        "min": -78.0,
+        "q25": -17.0,
+        "median": -3.0,
+        "q75": 14.0,
+        "max": 154.0,
+        "mean": 1.3883495145631068
+      },
+      "stage_rank": {
+        "count": 309,
+        "min": 1.0,
+        "q25": 1.0,
+        "median": 2.0,
+        "q75": 3.0,
+        "max": 4.0,
+        "mean": 2.294498381877023
+      }
+    }
+  },
+  "by_outcome_class": {
+    "positive_extreme": {
+      "observations": 91,
+      "transitions": {
+        "discard->discard": 54,
+        "pass->chi": 23,
+        "pass->peng": 14
+      },
+      "child_families": {
+        "discard": 54,
+        "chi": 23,
+        "peng": 14
+      },
+      "phases": {
+        "draw": 54,
+        "response_chi": 23,
+        "response_peng": 14
+      },
+      "mixes": {
+        "M": 61,
+        "H": 30
+      },
+      "metrics": {
+        "route_delta": {
+          "count": 91,
+          "min": 8.0,
+          "q25": 8.0,
+          "median": 8.0,
+          "q75": 8.0,
+          "max": 8.0,
+          "mean": 8.0
+        },
+        "route_raw": {
+          "count": 91,
+          "min": -0.268849206349,
+          "q25": -0.145833333333,
+          "median": -0.053571428571,
+          "q75": 0.0611281826165,
+          "max": 0.833333333333,
+          "mean": -0.008283361390109888
+        },
+        "route_span": {
+          "count": 91,
+          "min": 0.014705882353,
+          "q25": 0.046536796537000005,
+          "median": 0.06779661016899999,
+          "q75": 0.1170785417175,
+          "max": 0.6749999999999999,
+          "mean": 0.10260994619814287
+        },
+        "base_score_gap": {
+          "count": 91,
+          "min": 0.0,
+          "q25": 2.0,
+          "median": 3.0,
+          "q75": 6.0,
+          "max": 8.0,
+          "mean": 3.6263736263736264
+        },
+        "wall_remaining": {
+          "count": 91,
+          "min": 30.0,
+          "q25": 45.0,
+          "median": 55.0,
+          "q75": 59.0,
+          "max": 72.0,
+          "mean": 52.65934065934066
+        },
+        "own_stage_score": {
+          "count": 91,
+          "min": -47.0,
+          "q25": -8.0,
+          "median": 2.0,
+          "q75": 15.5,
+          "max": 108.0,
+          "mean": 5.450549450549451
+        },
+        "stage_rank": {
+          "count": 91,
+          "min": 1.0,
+          "q25": 1.0,
+          "median": 2.0,
+          "q75": 3.0,
+          "max": 4.0,
+          "mean": 2.10989010989011
+        }
+      }
+    },
+    "zero": {
+      "observations": 105,
+      "transitions": {
+        "discard->discard": 56,
+        "pass->chi": 32,
+        "pass->peng": 16,
+        "chi->chi": 1
+      },
+      "child_families": {
+        "discard": 56,
+        "chi": 33,
+        "peng": 16
+      },
+      "phases": {
+        "draw": 56,
+        "response_chi": 33,
+        "response_peng": 16
+      },
+      "mixes": {
+        "M": 69,
+        "H": 36
+      },
+      "metrics": {
+        "route_delta": {
+          "count": 105,
+          "min": 8.0,
+          "q25": 8.0,
+          "median": 8.0,
+          "q75": 8.0,
+          "max": 8.0,
+          "mean": 8.0
+        },
+        "route_raw": {
+          "count": 105,
+          "min": -0.281079234973,
+          "q25": -0.134963768116,
+          "median": -0.091485507246,
+          "q75": 0.004166666667,
+          "max": 0.765258215962,
+          "mean": -0.06242782704679047
+        },
+        "route_span": {
+          "count": 105,
+          "min": 0.017857142857999997,
+          "q25": 0.048780487804999995,
+          "median": 0.08928571428499998,
+          "q75": 0.135593220339,
+          "max": 0.680164319248,
+          "mean": 0.10180276199996191
+        },
+        "base_score_gap": {
+          "count": 105,
+          "min": 0.0,
+          "q25": 1.0,
+          "median": 3.0,
+          "q75": 5.0,
+          "max": 8.0,
+          "mean": 3.238095238095238
+        },
+        "wall_remaining": {
+          "count": 105,
+          "min": 27.0,
+          "q25": 50.0,
+          "median": 56.0,
+          "q75": 63.0,
+          "max": 77.0,
+          "mean": 55.43809523809524
+        },
+        "own_stage_score": {
+          "count": 105,
+          "min": -56.0,
+          "q25": -15.0,
+          "median": -3.0,
+          "q75": 10.0,
+          "max": 154.0,
+          "mean": 3.066666666666667
+        },
+        "stage_rank": {
+          "count": 105,
+          "min": 1.0,
+          "q25": 2.0,
+          "median": 2.0,
+          "q75": 3.0,
+          "max": 4.0,
+          "mean": 2.3904761904761904
+        }
+      }
+    },
+    "negative_extreme": {
+      "observations": 113,
+      "transitions": {
+        "discard->discard": 61,
+        "pass->chi": 38,
+        "pass->peng": 13,
+        "peng->pass": 1
+      },
+      "child_families": {
+        "discard": 61,
+        "chi": 38,
+        "peng": 13,
+        "pass": 1
+      },
+      "phases": {
+        "draw": 61,
+        "response_chi": 38,
+        "response_peng": 14
+      },
+      "mixes": {
+        "H": 61,
+        "M": 52
+      },
+      "metrics": {
+        "route_delta": {
+          "count": 113,
+          "min": 8.0,
+          "q25": 8.0,
+          "median": 8.0,
+          "q75": 8.0,
+          "max": 8.0,
+          "mean": 8.0
+        },
+        "route_raw": {
+          "count": 113,
+          "min": -0.261504975124,
+          "q25": -0.156702898551,
+          "median": -0.084722222222,
+          "q75": -0.02358490566,
+          "max": 1.0,
+          "mean": -0.02491552638980531
+        },
+        "route_span": {
+          "count": 113,
+          "min": 0.016666666667000007,
+          "q25": 0.042857142857000013,
+          "median": 0.072727272727,
+          "q75": 0.111111111111,
+          "max": 1.003623188406,
+          "mean": 0.11445957060536284
+        },
+        "base_score_gap": {
+          "count": 113,
+          "min": 0.0,
+          "q25": 2.0,
+          "median": 3.0,
+          "q75": 5.0,
+          "max": 8.0,
+          "mean": 3.415929203539823
+        },
+        "wall_remaining": {
+          "count": 113,
+          "min": 27.0,
+          "q25": 51.0,
+          "median": 57.0,
+          "q75": 63.0,
+          "max": 73.0,
+          "mean": 55.61946902654867
+        },
+        "own_stage_score": {
+          "count": 113,
+          "min": -78.0,
+          "q25": -23.0,
+          "median": -8.0,
+          "q75": 17.0,
+          "max": 110.0,
+          "mean": -3.4424778761061945
+        },
+        "stage_rank": {
+          "count": 113,
+          "min": 1.0,
+          "q25": 2.0,
+          "median": 2.0,
+          "q75": 3.0,
+          "max": 4.0,
+          "mean": 2.353982300884956
+        }
+      }
+    }
+  },
+  "by_transition": {
+    "chi->chi": {
+      "observations": 1,
+      "transitions": {
+        "chi->chi": 1
+      },
+      "child_families": {
+        "chi": 1
+      },
+      "phases": {
+        "response_chi": 1
+      },
+      "mixes": {
+        "M": 1
+      },
+      "metrics": {
+        "route_delta": {
+          "count": 1,
+          "min": 8.0,
+          "q25": 8.0,
+          "median": 8.0,
+          "q75": 8.0,
+          "max": 8.0,
+          "mean": 8.0
+        },
+        "route_raw": {
+          "count": 1,
+          "min": -0.117647058824,
+          "q25": -0.117647058824,
+          "median": -0.117647058824,
+          "q75": -0.117647058824,
+          "max": -0.117647058824,
+          "mean": -0.117647058824
+        },
+        "route_span": {
+          "count": 1,
+          "min": 0.029411764704999982,
+          "q25": 0.029411764704999982,
+          "median": 0.029411764704999982,
+          "q75": 0.029411764704999982,
+          "max": 0.029411764704999982,
+          "mean": 0.029411764704999982
+        },
+        "base_score_gap": {
+          "count": 1,
+          "min": 3.0,
+          "q25": 3.0,
+          "median": 3.0,
+          "q75": 3.0,
+          "max": 3.0,
+          "mean": 3.0
+        },
+        "wall_remaining": {
+          "count": 1,
+          "min": 68.0,
+          "q25": 68.0,
+          "median": 68.0,
+          "q75": 68.0,
+          "max": 68.0,
+          "mean": 68.0
+        },
+        "own_stage_score": {
+          "count": 1,
+          "min": 8.0,
+          "q25": 8.0,
+          "median": 8.0,
+          "q75": 8.0,
+          "max": 8.0,
+          "mean": 8.0
+        },
+        "stage_rank": {
+          "count": 1,
+          "min": 2.0,
+          "q25": 2.0,
+          "median": 2.0,
+          "q75": 2.0,
+          "max": 2.0,
+          "mean": 2.0
+        }
+      }
+    },
+    "discard->discard": {
+      "observations": 171,
+      "transitions": {
+        "discard->discard": 171
+      },
+      "child_families": {
+        "discard": 171
+      },
+      "phases": {
+        "draw": 171
+      },
+      "mixes": {
+        "M": 92,
+        "H": 79
+      },
+      "metrics": {
+        "route_delta": {
+          "count": 171,
+          "min": 8.0,
+          "q25": 8.0,
+          "median": 8.0,
+          "q75": 8.0,
+          "max": 8.0,
+          "mean": 8.0
+        },
+        "route_raw": {
+          "count": 171,
+          "min": -0.26468579235,
+          "q25": -0.145833333333,
+          "median": -0.070895522388,
+          "q75": 0.023482433108000002,
+          "max": 1.0,
+          "mean": -0.0077169807108713444
+        },
+        "route_span": {
+          "count": 171,
+          "min": 0.014705882353,
+          "q25": 0.0449494949495,
+          "median": 0.071428571429,
+          "q75": 0.125,
+          "max": 0.68201754386,
+          "mean": 0.11760878921022808
+        },
+        "base_score_gap": {
+          "count": 171,
+          "min": 0.0,
+          "q25": 1.0,
+          "median": 2.0,
+          "q75": 5.0,
+          "max": 8.0,
+          "mean": 2.871345029239766
+        },
+        "wall_remaining": {
+          "count": 171,
+          "min": 27.0,
+          "q25": 47.5,
+          "median": 55.0,
+          "q75": 61.0,
+          "max": 73.0,
+          "mean": 54.05263157894737
+        },
+        "own_stage_score": {
+          "count": 171,
+          "min": -78.0,
+          "q25": -19.0,
+          "median": -3.0,
+          "q75": 12.5,
+          "max": 154.0,
+          "mean": 0.8421052631578947
+        },
+        "stage_rank": {
+          "count": 171,
+          "min": 1.0,
+          "q25": 1.0,
+          "median": 2.0,
+          "q75": 3.0,
+          "max": 4.0,
+          "mean": 2.3684210526315788
+        }
+      }
+    },
+    "pass->chi": {
+      "observations": 93,
+      "transitions": {
+        "pass->chi": 93
+      },
+      "child_families": {
+        "chi": 93
+      },
+      "phases": {
+        "response_chi": 93
+      },
+      "mixes": {
+        "M": 57,
+        "H": 36
+      },
+      "metrics": {
+        "route_delta": {
+          "count": 93,
+          "min": 8.0,
+          "q25": 8.0,
+          "median": 8.0,
+          "q75": 8.0,
+          "max": 8.0,
+          "mean": 8.0
+        },
+        "route_raw": {
+          "count": 93,
+          "min": -0.261504975124,
+          "q25": -0.119971264368,
+          "median": -0.05,
+          "q75": 0.035714285714,
+          "max": 0.25,
+          "mean": -0.04224065940149462
+        },
+        "route_span": {
+          "count": 93,
+          "min": 0.02985074626800001,
+          "q25": 0.05970149253699997,
+          "median": 0.096153846154,
+          "q75": 0.135593220339,
+          "max": 0.19565217391300002,
+          "mean": 0.09811065000364516
+        },
+        "base_score_gap": {
+          "count": 93,
+          "min": 1.0,
+          "q25": 3.0,
+          "median": 5.0,
+          "q75": 7.0,
+          "max": 8.0,
+          "mean": 4.698924731182796
+        },
+        "wall_remaining": {
+          "count": 93,
+          "min": 31.0,
+          "q25": 52.0,
+          "median": 57.0,
+          "q75": 63.0,
+          "max": 77.0,
+          "mean": 56.40860215053763
+        },
+        "own_stage_score": {
+          "count": 93,
+          "min": -62.0,
+          "q25": -13.0,
+          "median": -3.0,
+          "q75": 14.0,
+          "max": 121.0,
+          "mean": 0.3870967741935484
+        },
+        "stage_rank": {
+          "count": 93,
+          "min": 1.0,
+          "q25": 1.0,
+          "median": 2.0,
+          "q75": 3.0,
+          "max": 4.0,
+          "mean": 2.182795698924731
+        }
+      }
+    },
+    "pass->peng": {
+      "observations": 43,
+      "transitions": {
+        "pass->peng": 43
+      },
+      "child_families": {
+        "peng": 43
+      },
+      "phases": {
+        "response_peng": 43
+      },
+      "mixes": {
+        "M": 31,
+        "H": 12
+      },
+      "metrics": {
+        "route_delta": {
+          "count": 43,
+          "min": 8.0,
+          "q25": 8.0,
+          "median": 8.0,
+          "q75": 8.0,
+          "max": 8.0,
+          "mean": 8.0
+        },
+        "route_raw": {
+          "count": 43,
+          "min": -0.281079234973,
+          "q25": -0.217261904762,
+          "median": -0.104838709677,
+          "q75": -0.0708644278605,
+          "max": 0.054347826087,
+          "mean": -0.13391930520323256
+        },
+        "route_span": {
+          "count": 43,
+          "min": 0.015873015872999996,
+          "q25": 0.03425058548,
+          "median": 0.057692307693,
+          "q75": 0.08928571428499998,
+          "max": 0.157894736842,
+          "mean": 0.062611586838
+        },
+        "base_score_gap": {
+          "count": 43,
+          "min": 0.0,
+          "q25": 2.0,
+          "median": 3.0,
+          "q75": 4.0,
+          "max": 5.0,
+          "mean": 2.86046511627907
+        },
+        "wall_remaining": {
+          "count": 43,
+          "min": 27.0,
+          "q25": 47.0,
+          "median": 56.0,
+          "q75": 59.5,
+          "max": 67.0,
+          "mean": 52.83720930232558
+        },
+        "own_stage_score": {
+          "count": 43,
+          "min": -34.0,
+          "q25": -8.0,
+          "median": 0.0,
+          "q75": 20.5,
+          "max": 76.0,
+          "mean": 6.046511627906977
+        },
+        "stage_rank": {
+          "count": 43,
+          "min": 1.0,
+          "q25": 1.5,
+          "median": 2.0,
+          "q75": 3.0,
+          "max": 4.0,
+          "mean": 2.255813953488372
+        }
+      }
+    },
+    "peng->pass": {
+      "observations": 1,
+      "transitions": {
+        "peng->pass": 1
+      },
+      "child_families": {
+        "pass": 1
+      },
+      "phases": {
+        "response_peng": 1
+      },
+      "mixes": {
+        "M": 1
+      },
+      "metrics": {
+        "route_delta": {
+          "count": 1,
+          "min": 8.0,
+          "q25": 8.0,
+          "median": 8.0,
+          "q75": 8.0,
+          "max": 8.0,
+          "mean": 8.0
+        },
+        "route_raw": {
+          "count": 1,
+          "min": 1.0,
+          "q25": 1.0,
+          "median": 1.0,
+          "q75": 1.0,
+          "max": 1.0,
+          "mean": 1.0
+        },
+        "route_span": {
+          "count": 1,
+          "min": 1.003623188406,
+          "q25": 1.003623188406,
+          "median": 1.003623188406,
+          "q75": 1.003623188406,
+          "max": 1.003623188406,
+          "mean": 1.003623188406
+        },
+        "base_score_gap": {
+          "count": 1,
+          "min": 2.0,
+          "q25": 2.0,
+          "median": 2.0,
+          "q75": 2.0,
+          "max": 2.0,
+          "mean": 2.0
+        },
+        "wall_remaining": {
+          "count": 1,
+          "min": 69.0,
+          "q25": 69.0,
+          "median": 69.0,
+          "q75": 69.0,
+          "max": 69.0,
+          "mean": 69.0
+        },
+        "own_stage_score": {
+          "count": 1,
+          "min": -19.0,
+          "q25": -19.0,
+          "median": -19.0,
+          "q75": -19.0,
+          "max": -19.0,
+          "mean": -19.0
+        },
+        "stage_rank": {
+          "count": 1,
+          "min": 2.0,
+          "q25": 2.0,
+          "median": 2.0,
+          "q75": 2.0,
+          "max": 2.0,
+          "mean": 2.0
+        }
+      }
+    }
+  },
+  "root_rows": [
+    {
+      "root_id": "r10snd-H-2026092198-root01",
+      "outcome_class": "zero",
+      "mix": "H",
+      "d_low": 0.0,
+      "changed_observations": 18,
+      "claim_changes": 6,
+      "discard_changes": 12
+    },
+    {
+      "root_id": "r10snd-H-2026092198-root04",
+      "outcome_class": "positive_extreme",
+      "mix": "H",
+      "d_low": 0.5,
+      "changed_observations": 8,
+      "claim_changes": 3,
+      "discard_changes": 5
+    },
+    {
+      "root_id": "r10snd-H-2026092198-root21",
+      "outcome_class": "negative_extreme",
+      "mix": "H",
+      "d_low": -0.5,
+      "changed_observations": 21,
+      "claim_changes": 7,
+      "discard_changes": 14
+    },
+    {
+      "root_id": "r10snd-H-2026092199-root02",
+      "outcome_class": "zero",
+      "mix": "H",
+      "d_low": 0.0,
+      "changed_observations": 18,
+      "claim_changes": 4,
+      "discard_changes": 14
+    },
+    {
+      "root_id": "r10snd-H-2026092199-root09",
+      "outcome_class": "negative_extreme",
+      "mix": "H",
+      "d_low": -0.5,
+      "changed_observations": 40,
+      "claim_changes": 19,
+      "discard_changes": 21
+    },
+    {
+      "root_id": "r10snd-H-2026092199-root32",
+      "outcome_class": "positive_extreme",
+      "mix": "H",
+      "d_low": 0.5,
+      "changed_observations": 22,
+      "claim_changes": 9,
+      "discard_changes": 13
+    },
+    {
+      "root_id": "r10snd-M-2026092198-root01",
+      "outcome_class": "zero",
+      "mix": "M",
+      "d_low": 0.0,
+      "changed_observations": 24,
+      "claim_changes": 15,
+      "discard_changes": 9
+    },
+    {
+      "root_id": "r10snd-M-2026092198-root16",
+      "outcome_class": "positive_extreme",
+      "mix": "M",
+      "d_low": 0.5,
+      "changed_observations": 30,
+      "claim_changes": 10,
+      "discard_changes": 20
+    },
+    {
+      "root_id": "r10snd-M-2026092198-root34",
+      "outcome_class": "negative_extreme",
+      "mix": "M",
+      "d_low": -0.5,
+      "changed_observations": 6,
+      "claim_changes": 5,
+      "discard_changes": 1
+    },
+    {
+      "root_id": "r10snd-M-2026092199-root01",
+      "outcome_class": "zero",
+      "mix": "M",
+      "d_low": 0.0,
+      "changed_observations": 45,
+      "claim_changes": 24,
+      "discard_changes": 21
+    },
+    {
+      "root_id": "r10snd-M-2026092199-root02",
+      "outcome_class": "negative_extreme",
+      "mix": "M",
+      "d_low": -0.5,
+      "changed_observations": 46,
+      "claim_changes": 20,
+      "discard_changes": 25
+    },
+    {
+      "root_id": "r10snd-M-2026092199-root09",
+      "outcome_class": "positive_extreme",
+      "mix": "M",
+      "d_low": 0.5,
+      "changed_observations": 31,
+      "claim_changes": 15,
+      "discard_changes": 16
+    }
+  ],
+  "posthoc_root_correlations": {
+    "changed_observations_vs_d_low": -0.17871419093912197,
+    "claim_changes_vs_d_low": -0.21321719946022788,
+    "discard_changes_vs_d_low": -0.10667460103637753
+  },
+  "interpretation_boundary": "本分析从按效果极值抽取的12个已消费根产生，只能提出下一批结构假设；不得作为新候选效果、显著性、因果或发布证据。",
+  "selection_eligible": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next_search_axes": [
+    "保留 route_raw 或相对第二名的幅度，禁止同窗第一名无条件映射为固定满额奖励",
+    "把 discard 与 chi/peng 的加分门分开，避免一次结构同时改变留牌和副露承诺",
+    "零效应稳定V2与当前固定+8冠军必须作为显式控制父代"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "checks": {
+    "action_value_failures_zero": true,
+    "all_response_plans_exact": true,
+    "all_special_plans_exact": true,
+    "candidate_key_sets_preserved": true,
+    "ordinary_path_nonempty": true,
+    "request_count_exact": true,
+    "special_plan_count_exact": true
+  },
+  "model_calls": 0,
+  "next": "冻结组合身份，并在全新来源运行1024桌独立确认",
+  "p47_candidate_sha256": "0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d",
+  "r17_candidate_identity": "73c2833da12f2844f69559d4ad6202c44fc4a1adc1b60e0b8b140c82590b4c37",
+  "r17_source_sha256": "fb9764faa2a01ded3f8cea94eeee27d59929f014f1dcc0ffbd56380e5b1384a2",
+  "release_eligible": false,
+  "schema": "r18-p52-guarded-successor-composition-result/1",
+  "status": "PASS_P52_GUARDED_COMPOSITION_FEASIBILITY",
+  "strength_claim": false,
+  "summary": {
+    "action_value_failures": 0,
+    "candidate_key_set_failures": 0,
+    "latency_ms": {
+      "max": 252.662625,
+      "mean": 84.83888629442966
+    },
+    "ordinary_changed_plans": 203,
+    "ordinary_draw_plans": 242,
+    "requests": 377,
+    "response_exact_plans": 48,
+    "response_plans": 48,
+    "special_counts": {
+      "r18_gang_dominance_overlay": 4,
+      "r18_opportunity_overlay": 0,
+      "r18_seven_pairs_value_overlay": 64,
+      "two_wealth_piao_keeps_baotou_cf": 19
+    },
+    "special_exact_plans": 87,
+    "special_plans": 87
+  },
+  "tables_run": 0
+}

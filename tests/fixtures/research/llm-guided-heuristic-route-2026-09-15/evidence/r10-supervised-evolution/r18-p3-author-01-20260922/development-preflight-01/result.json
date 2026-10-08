@@ -1,0 +1,93 @@
+{
+  "candidate_sha256": "68f31d5138918b03837078e4e29cd5b011cce5d795cd7754b2e6884e03a38363",
+  "checks": {
+    "gap_all_scored": true,
+    "keep_strata_unchanged": true,
+    "p4_bank_exactly_preserved": true,
+    "real_windows_pass": true,
+    "three_piao_all_improved": true
+  },
+  "hidden_evaluation_started": false,
+  "p4_preservation_strata": {
+    "keep_wealth": {
+      "candidate_optimal": 0,
+      "cases": 12,
+      "changed_from_parent": 0,
+      "improved_over_parent": 0,
+      "mean_gain_over_parent": 0.0,
+      "parent_optimal": 0,
+      "regressed_from_parent": 0,
+      "scored": 12
+    },
+    "piao": {
+      "candidate_optimal": 24,
+      "cases": 24,
+      "changed_from_parent": 0,
+      "improved_over_parent": 0,
+      "mean_gain_over_parent": 0.0,
+      "parent_optimal": 24,
+      "regressed_from_parent": 0,
+      "scored": 24
+    },
+    "take_hu": {
+      "candidate_optimal": 12,
+      "cases": 12,
+      "changed_from_parent": 0,
+      "improved_over_parent": 0,
+      "mean_gain_over_parent": 0.0,
+      "parent_optimal": 12,
+      "regressed_from_parent": 0,
+      "scored": 12
+    }
+  },
+  "parent_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+  "real_windows": {
+    "counts": {
+      "changed_choices": 0,
+      "nontrigger_score_mismatches": 0,
+      "p3_triggered_windows": 0,
+      "windows": 226
+    },
+    "elapsed_seconds": 0.7771778339520097,
+    "mean_evaluate_ms": 3.4388399732389807,
+    "problems": [],
+    "scope": "真实公开观察执行与父代回退；不提供机会效果或完整桌强度结论",
+    "status": "PASS"
+  },
+  "release_eligible": false,
+  "schema": "r18-p3-development-preflight-result/1",
+  "source_diff_line_count": 42,
+  "status": "PASS_P3_DEVELOPMENT",
+  "wealth_gap_strata": {
+    "four_wealth_keep": {
+      "candidate_optimal": 0,
+      "cases": 24,
+      "changed_from_parent": 0,
+      "improved_over_parent": 0,
+      "mean_gain_over_parent": 0.0,
+      "parent_optimal": 0,
+      "regressed_from_parent": 0,
+      "scored": 24
+    },
+    "three_wealth_keep": {
+      "candidate_optimal": 0,
+      "cases": 24,
+      "changed_from_parent": 0,
+      "improved_over_parent": 0,
+      "mean_gain_over_parent": 0.0,
+      "parent_optimal": 0,
+      "regressed_from_parent": 0,
+      "scored": 24
+    },
+    "three_wealth_piao": {
+      "candidate_optimal": 24,
+      "cases": 24,
+      "changed_from_parent": 24,
+      "improved_over_parent": 24,
+      "mean_gain_over_parent": 95.67213114754101,
+      "parent_optimal": 0,
+      "regressed_from_parent": 0,
+      "scored": 24
+    }
+  }
+}

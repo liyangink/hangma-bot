@@ -1,0 +1,58 @@
+{
+ "schema": "sitin-p25-dev-cards-build/1",
+ "package": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/package",
+ "contract_identity": "54e4f215ac187a43ffbc80dc643241166ec967b04b7df0af5a60c8655896034f",
+ "renderer": "tools/sitin_generate.py#render_action_value_task_contract+build_action_value_prompt",
+ "cards": [
+  {
+   "task_id": "TD01",
+   "capability_face": "① 完整输入评分",
+   "prompt_chars": 44112,
+   "prompt_sha256": "3f918a4a165e7c63982fb7d8eab4266fc1754c2b2d1bf63eed46a0e885b28ab8",
+   "sealed_prompt_sha256": "b0fd8e4144d0a7b8cd7e16f23757c837d3244dac00c03aea605be721b8d6f9cf",
+   "validator_kind": "code"
+  },
+  {
+   "task_id": "TD02",
+   "capability_face": "② 未知越位修订",
+   "prompt_chars": 46634,
+   "prompt_sha256": "ae7c0491f39429d7ebe700c95f16e704f406baedde02ad86cc4cbdd3f011c2cc",
+   "sealed_prompt_sha256": "9fd3533512b2124555fef3e6f57667ae5902d2b258155b815abd17d40c489d06",
+   "validator_kind": "code"
+  },
+  {
+   "task_id": "TD03",
+   "capability_face": "③ 可解窗错误弃权",
+   "prompt_chars": 43912,
+   "prompt_sha256": "b42e33f4b2e1b24c39c27700bfa075aa27bc80e4ed2fecb4d4a9101ef7593ad2",
+   "sealed_prompt_sha256": "c69de24c3380be5adc98d183b9e654efdc39da8ee7f9814418dc3aa260e9aec8",
+   "validator_kind": "code"
+  },
+  {
+   "task_id": "TD04",
+   "capability_face": "④ 行为等价修订",
+   "prompt_chars": 48366,
+   "prompt_sha256": "c2690ea91f5024967cc67a4910d66d40d91d23577b5a725c9aad4aa3d6550c0d",
+   "sealed_prompt_sha256": "8c08386605292d6058826e128a3298b0e19e6fd661153584f97f2e8a89ed157b",
+   "validator_kind": "code"
+  },
+  {
+   "task_id": "TD05",
+   "capability_face": "⑤ 恢复计费",
+   "prompt_chars": 22226,
+   "prompt_sha256": "490ed1cc5aac00d55208b3d959902b44610cf2e06793c775824d11dfdb42c58e",
+   "sealed_prompt_sha256": "b0dd0c020252c301f8db2fa2f286cb7354139c06459054c91e75ba91c7f9a1f3",
+   "validator_kind": "keyword"
+  },
+  {
+   "task_id": "TD06",
+   "capability_face": "⑥ 停止隔离",
+   "prompt_chars": 21415,
+   "prompt_sha256": "ad64eb3495fa17b6599d0600387efe42c025206eb9c2f10f0395bb3de72ea349",
+   "sealed_prompt_sha256": "6f173506ff57e2a6be6cdb5496d6c1a857ed3d1853e40573c38a95f66439dd9c",
+   "validator_kind": "keyword"
+  }
+ ],
+ "criterion_module": "criterion.py（复用冻结判分器 + 本卡确定性断言）",
+ "note": "零模型、零网络；只读仓库内真实资产并渲染卡面。"
+}

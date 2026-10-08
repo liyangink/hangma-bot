@@ -1,0 +1,22 @@
+{
+  "cards": {
+    "a01_disjoint_blocks": "A族：互不重叠自然牌块的可行完成路线。不要把共用同一张手牌的数条搭子累加。",
+    "a02_completion_diversity": "A族：同样有效进张下，几条不同自然面子路线的第三次本人摸牌弹性。不要等同于路线条数。",
+    "a03_bottleneck_overlap": "A族：路线需求牌码的重叠和公开上界瓶颈。每码四张，公开未知数不是牌墙概率。",
+    "a04_pair_head_exchange": "A族：将牌候选与顺刻面子的可交换性。不能把白板预先绑定到将牌。",
+    "a05_natural_dwell": "A族：自然搭子在下一次本人摸打后能否继续保持两条以上改良路径，要求在线可限时。",
+    "b01_one_white_reserve": "B族：一白的自然成面速度与后巡白板利用共同定价；本波 G26 下一摸打爆头全零，不得声称已有爆头收益。",
+    "b02_multi_white_option": "B族：多白的真实机会值，财飘必须已有爆头状态后弃白形成合法链，不得由白数直接发奖。",
+    "b03_standard_pairs_fork": "B族：普通型与七对的路线分叉及退出条件；白板可补对子，不能以白板当作固定将。",
+    "b04_fast_hu_cost": "B族：为自然牌形牺牲快速普通胡的机会成本；保持相同当前逐牌有效向量时仍须有动作特异信号。",
+    "c01_opponent_race": "C族：自然路线兑现前可能先被他家胡；只用可见观察，不能推断确知他家暗手。",
+    "c02_catch_play": "C族：抓打圈、末20张留墩造成的后继摸牌可达性；不把理想三摸容量当实际桌赛概率。",
+    "c03_public_response": "C族：弃牌影响他家吃碰的动作特异时机；必须逐一排除合法吃碰杠，不能把避开叫牌假设成单调增益。"
+  },
+  "concurrency": 3,
+  "example_block_sha256": "ddf44f32a2fcee9ec16a3cdc105aa881eeac1f4d83f7bd4fef5bc1a5dd6c0fe9",
+  "g23_rows_sha256": "0788054ab7903b14f3ff3244ead0be6d82943e995ca7c52812e9f7ecb4bcdb05",
+  "model": "zai-coding-cn/glm-5.3 max",
+  "schema": "g27-glm-manifest/1",
+  "script_sha256": "234aff0ce5d877323de6cce5232c77245c62ee06c616ed4849da48073f5afc0f"
+}

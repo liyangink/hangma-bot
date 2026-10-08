@@ -1,0 +1,141 @@
+{
+  "schema": "sitin-generation-prompt/1",
+  "operator": "m1",
+  "backend": "delegate",
+  "prompt_sha256": "d68785b867519b80ed94f69bc737371f82b785df291b13c0172902ec84ecb472",
+  "prompt_path": "prompt.txt",
+  "prompt_chars": 17767,
+  "contract_identity": "2e9f087a02129723215ebf7922677d5e9aee8f548fe795a12e80be1de8b84734",
+  "parent_identity": "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce:641296497a9b3e55205ce36e42134f6a71e6e3443485241ae637863a00d1a64f",
+  "feedback_sha256": "74807ccd079724ba526096f6b5c47c7e58994f383ad424f1f3651fe526e5f37d",
+  "allowed_surface": {
+    "scoring_view": {
+      "schema_version": "sitin-scoring-view/1",
+      "fields": {
+        "visible_state": "白名单只读观察（自己牌、公开副露与牌河、当前窗口、庄闲、公开规则状态、墙余量）；不含 WorldState、研究标签、种子、结果、token、评估分组身份；不直接给完整 DecisionRequest",
+        "competition": "可见赛事上下文与可用/陈旧掩码；积分基准为本阶段/本桌分别命名；无权获知或陈旧则为空；不投影其他进行中桌赛的未来结果",
+        "actions": "按 action_key 升序的不可变动作表（稳定 action_key、规则动作类型、合法身份、立即结算），附不可变后续分支 (action_key, followup_key)、机械转移后的可见手牌、普通/七对进展、关键规则状态；吃碰后不同弃牌不得预合并成一个牌效最佳分支",
+        "analysis_profile": "语义版本、固定工作量上限、截断范围；不含计时器或可变缓存句柄",
+        "reference_features": "代理值、版本、单位、缺失原因；与规则事实分开存储；可不用；无校准证据不得标真实概率或严格下界"
+      },
+      "route_states": [
+        "WITNESSED",
+        "OPEN_UNCERTAIN",
+        "CLOSED_PROVEN",
+        "UNANALYZED"
+      ],
+      "progress_states": [
+        "ADVANCE",
+        "SAME",
+        "RETREAT",
+        "CLOSE",
+        "UNKNOWN"
+      ],
+      "route_progress_note": "路线状态回答证据状态，进展回答动作相对变化，不得混成三态；未枚举不等于机会为 0。"
+    },
+    "whitelist": {
+      "builtins": [
+        "len",
+        "min",
+        "max",
+        "abs",
+        "sum",
+        "sorted",
+        "reversed",
+        "enumerate",
+        "zip",
+        "range",
+        "round",
+        "int",
+        "float",
+        "bool",
+        "all",
+        "any",
+        "tuple",
+        "list",
+        "dict",
+        "set",
+        "frozenset",
+        "map",
+        "filter"
+      ],
+      "builtin_notes": "sum/sorted/all/any/map/filter/enumerate/reversed/zip 按输入长度保守计费；int()/float() 转换非有限结果即整批失败",
+      "methods_readonly": [
+        ".get",
+        ".items",
+        ".keys",
+        ".values",
+        ".count",
+        ".index",
+        ".append(仅局部构造期)",
+        ".add(仅局部集合构造期)"
+      ],
+      "operators": [
+        "算术 + - * /",
+        "整除 // 与取模 %（除零即失败）",
+        "比较与布尔",
+        "下标与切片（只读）",
+        "字符串拼接与格式化（计入操作数）"
+      ],
+      "modules": [],
+      "modules_note": "首版不开放任何 import：math/第三方库默认关闭；需要新增推导工具时进入工具目录版本与耗时门禁，不能临时绕过接缝",
+      "view_api": "ScoringView 只读访问器与不可变集合类型由 B2 冻结并进入候选身份（第一方传递依赖摘要）"
+    },
+    "predicates_binding": {
+      "predicate_ids": [
+        "branch_open",
+        "branch_cost",
+        "chain_open",
+        "chain_cost",
+        "four_white_open",
+        "four_white_cost",
+        "baotou_open",
+        "baotou_cost"
+      ],
+      "module": "tools/sitin_predicates_v4.py",
+      "note": "A 包冻结的八谓词纯函数与阈值（wall 16/8、gap 1/2、support 0/1）；阈值只定义采样条件，不传入策略作强制偏好；C1 只执行不解释"
+    },
+    "entry_point": {
+      "signature": "score_actions(view: ScoringView) -> ScoreBatch",
+      "docstring": "根据同一动作窗口的只读可见事实，返回所有合法动作的完整评分。view 不含隐藏世界、实验种子或赛后结果；返回 SCORED 加完整动作评分，或 ABSTAIN 加明确原因；评分点越大越优先。错误：抛错、非有限数、遗漏/重复/越界动作、超工作量均使本窗口整批失效。副作用：无；不读时间、随机源、网络、文件，不修改输入。",
+      "hu_mode": "compare_legal",
+      "hu_mode_note": "新入口明确允许比较合法 Hu 与其他合法动作；立即胡永远支配继续不是规则定理。首批种子必须包含立即胡优先对照实现，骨架不强制它。紧急动作保持 HangmaRules.emergency_action 的 Pass/Discard 路径；不存在胡牌保底，不得误称。",
+      "rank_contract": "按分数降序、action_key 升序稳定排列；rank 从 1 开始（policy/interface.py 受控语义）。适配 RankedCandidate 时新总分放单个 ScorePart，保持 total_score == sum(score_parts) 不变量；非线性机制明细放有版本 trace，不拆成虚假可加贡献。"
+    }
+  },
+  "limits": {
+    "rule_analysis": {
+      "max_expansions": 2048,
+      "max_routes_per_candidate": 128,
+      "source": "hangma.interface.ValueAnalysisLimits"
+    },
+    "candidate": {
+      "max_counted_operations": 100000,
+      "max_local_collection_size": 4096,
+      "max_source_bytes": 65536,
+      "max_trace_bytes": 32768,
+      "max_output_branches_total": "全部分支与路线内存上限：B 包机器合同冻结具体数值",
+      "numeric_range": "候选声明有限数值范围用于异常检查；越界整批失败并审计"
+    }
+  },
+  "counterexamples": [
+    "抛出异常",
+    "非有限数（NaN/Inf）",
+    "布尔冒充数",
+    "遗漏/重复/越界动作键",
+    "超工作量限额",
+    "缺必需字段（候选清单声明）"
+  ],
+  "forbidden": [
+    "while 循环",
+    "递归",
+    "动态执行(eval/exec/compile)",
+    "import",
+    "反射(getattr/setattr/hasattr 于白名单外对象)",
+    "文件/网络/进程操作",
+    "全局可变状态",
+    "读取时钟或随机数",
+    "lambda 之外的可调用构造",
+    "生成器与 yield"
+  ]
+}

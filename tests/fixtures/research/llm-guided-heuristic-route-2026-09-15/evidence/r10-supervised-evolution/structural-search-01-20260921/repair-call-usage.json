@@ -1,0 +1,78 @@
+{
+  "schema": "r10-structural-call-usage/1",
+  "calls": [
+    {
+      "task": "S1",
+      "run_id": "session-b03d8e1c-0943-4f5a-b999-e696794f6831",
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "high",
+        "maxTokens": 32768
+      },
+      "protocol_ok": true,
+      "exit_code": 0,
+      "usage": {
+        "usage": {
+          "inputTokens": 5913,
+          "outputTokens": 26285,
+          "totalTokens": 32198
+        },
+        "session_bytes": 667603,
+        "session_sha256": "85b1c4aaa9adedc5b9ae4c4bed23cd26842fafa98c5225c73f90a4ec633e0de9",
+        "source_status": "OK"
+      },
+      "ingestable_channel": true
+    },
+    {
+      "task": "S2",
+      "run_id": "session-1056a335-581e-4165-b3a0-6d3e69a41fc4",
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "high",
+        "maxTokens": 32768
+      },
+      "protocol_ok": true,
+      "exit_code": 0,
+      "usage": {
+        "usage": {
+          "inputTokens": 8647,
+          "outputTokens": 19856,
+          "totalTokens": 28503
+        },
+        "session_bytes": 581775,
+        "session_sha256": "0b8fc0eb7aa6bfbd042316a37a0f5b929b853f9d5be64c7227845c2d8f64694f",
+        "source_status": "OK"
+      },
+      "ingestable_channel": true
+    },
+    {
+      "task": "S3",
+      "run_id": "session-e1d9ff97-6349-4e56-8496-0e96a7f9d637",
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "high",
+        "maxTokens": 32768
+      },
+      "protocol_ok": true,
+      "exit_code": 0,
+      "usage": {
+        "usage": {
+          "inputTokens": 4004,
+          "outputTokens": 11422,
+          "totalTokens": 15490,
+          "cacheReadTokens": 64
+        },
+        "session_bytes": 290938,
+        "session_sha256": "1b0bef66c562c19c76ecf63125b06ab4ddf675592d95a7a47557059bad2c40ef",
+        "source_status": "OK"
+      },
+      "ingestable_channel": true
+    }
+  ],
+  "problems": [],
+  "total_input_tokens": 18564,
+  "total_output_tokens": 57563
+}

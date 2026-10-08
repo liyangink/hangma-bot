@@ -1,0 +1,15 @@
+{
+  "schema": "r10-claim-gate-new-source-failure/1",
+  "status": "CLOSED_COMPATIBILITY_DEFECT_NO_VALIDATION_RESULT",
+  "failed_operation": "run",
+  "error_type": "TypeError",
+  "error": "isinstance() arg 2 must be a type, a tuple of types, or a union",
+  "cause": "首版可空兼容层用函数覆盖模块级float，影响玩家可见事实规范化中的isinstance类型检查；尚未完成首个机会截取",
+  "evidence_written_before_failure": false,
+  "partial_tables_spent": 0,
+  "reuse_policy": "不续跑、不复用该panel_seed；兼容值改为float子类并使用全新来源",
+  "effect_claim": false,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

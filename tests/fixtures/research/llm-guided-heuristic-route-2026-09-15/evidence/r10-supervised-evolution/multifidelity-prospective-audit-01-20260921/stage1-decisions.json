@@ -1,0 +1,127 @@
+{
+  "schema": "r13-mf1-stage1-decisions/1",
+  "retain_threshold": -3.140625,
+  "summaries": [
+    {
+      "candidate_id": "hard-sol-high",
+      "family": "structure",
+      "first_table_delta_mean": -2.46875,
+      "by_mix": {
+        "H": 0.875,
+        "M": -5.8125
+      }
+    },
+    {
+      "candidate_id": "hard-terra-max",
+      "family": "structure",
+      "first_table_delta_mean": 6.875,
+      "by_mix": {
+        "H": 0.875,
+        "M": 12.875
+      }
+    },
+    {
+      "candidate_id": "hard-sol-max",
+      "family": "structure",
+      "first_table_delta_mean": 4.875,
+      "by_mix": {
+        "H": 11.0,
+        "M": -1.25
+      }
+    },
+    {
+      "candidate_id": "hard-astra-high",
+      "family": "structure",
+      "first_table_delta_mean": -3.71875,
+      "by_mix": {
+        "H": 3.1875,
+        "M": -10.625
+      }
+    },
+    {
+      "candidate_id": "river-sol-high",
+      "family": "structure",
+      "first_table_delta_mean": 8.71875,
+      "by_mix": {
+        "H": 13.375,
+        "M": 4.0625
+      }
+    },
+    {
+      "candidate_id": "route-terra-max",
+      "family": "structure",
+      "first_table_delta_mean": 4.65625,
+      "by_mix": {
+        "H": 9.6875,
+        "M": -0.375
+      }
+    },
+    {
+      "candidate_id": "v2_joint_02",
+      "family": "parameter",
+      "first_table_delta_mean": -4.28125,
+      "by_mix": {
+        "H": -1.6875,
+        "M": -6.875
+      }
+    },
+    {
+      "candidate_id": "v2_joint_07",
+      "family": "parameter",
+      "first_table_delta_mean": 3.09375,
+      "by_mix": {
+        "H": 3.3125,
+        "M": 2.875
+      }
+    },
+    {
+      "candidate_id": "v2_joint_14",
+      "family": "parameter",
+      "first_table_delta_mean": 7.15625,
+      "by_mix": {
+        "H": 13.9375,
+        "M": 0.375
+      }
+    },
+    {
+      "candidate_id": "v2_joint_24",
+      "family": "parameter",
+      "first_table_delta_mean": -3.25,
+      "by_mix": {
+        "H": -3.875,
+        "M": -2.625
+      }
+    }
+  ],
+  "retained": [
+    "hard-sol-high",
+    "hard-sol-max",
+    "hard-terra-max",
+    "river-sol-high",
+    "route-terra-max",
+    "v2_joint_07",
+    "v2_joint_14"
+  ],
+  "culled": [
+    "hard-astra-high",
+    "v2_joint_02",
+    "v2_joint_24"
+  ],
+  "audited_culled": [
+    "v2_joint_24",
+    "v2_joint_02"
+  ],
+  "second_table_candidates": [
+    "hard-sol-high",
+    "hard-sol-max",
+    "hard-terra-max",
+    "river-sol-high",
+    "route-terra-max",
+    "v2_joint_02",
+    "v2_joint_07",
+    "v2_joint_14",
+    "v2_joint_24"
+  ],
+  "projected_candidate_table_savings": 0.15,
+  "qualification_actual_savings": 0.05
+}

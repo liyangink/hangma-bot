@@ -1,0 +1,28 @@
+{
+  "schema": "r18-opportunity-delivery-repair/1",
+  "reason": "K3/P4 初答均耗尽 20000 输出 token，只有推理块且没有最终答复",
+  "expected_request_config": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3",
+    "reasoningEffort": "low",
+    "maxTokens": 16000
+  },
+  "tasks": [
+    {
+      "task": "K3",
+      "prompt_sha256": "dd7bb4e8c320cd3fcd439029e3bc1556851c58d6ac90af145850b6139400d169",
+      "prompt_chars": 11114,
+      "fixed_design_sha256": "fdbe9ff611ea4bb1eb95e6794e48f1dfe65abf444300a352d2c20d324c22c11e"
+    },
+    {
+      "task": "P4",
+      "prompt_sha256": "6eb3c3f39a897b11971f6466629cd428c03616ddd2ac1d64b0e68cd78428abe6",
+      "prompt_chars": 11068,
+      "fixed_design_sha256": "8a4014ad2ee4c81f78a346e24b474cc8b9384249065cfbec7f480a4a0c6f7106"
+    }
+  ],
+  "parent_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+  "max_repairs": 2,
+  "effect_feedback_used": false,
+  "hidden_input_used": false
+}

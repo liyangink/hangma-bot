@@ -1,0 +1,52 @@
+{
+  "checks": {
+    "all_evidence_hashes_match": true,
+    "all_four_modes_approved": true,
+    "not_default": true,
+    "p69_passed": true,
+    "p71_passed": true,
+    "rules_hash_matches": true,
+    "strategy_registered": true
+  },
+  "exact_plan_replay_requests": 409,
+  "modes": [
+    {
+      "config_sha256": "ef0bcab113dce30341100e7f40769b0b557f9c934cc4dbfbb5abe7c48f2b65e7",
+      "identities": 4,
+      "mode": "test_room",
+      "network_calls": 0,
+      "package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+      "rule_scope_rejected": true
+    },
+    {
+      "config_sha256": "ac791ca369da99728ce45529432d8e2026b03333a96daece13a90b3fe32a2d3f",
+      "identities": 1,
+      "mode": "test_tournament",
+      "network_calls": 0,
+      "package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+      "rule_scope_rejected": true
+    },
+    {
+      "config_sha256": "19af436445ae35fd67d7359dd8663979db7b0cfeea0e595f645b8f434227bdc1",
+      "identities": 1,
+      "mode": "auto_match",
+      "network_calls": 0,
+      "package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+      "rule_scope_rejected": true
+    },
+    {
+      "config_sha256": "1b2515b209c619ebd1320eb9561d8ceaf9ed3d1debba69ee104806c9d13143f8",
+      "identities": 1,
+      "mode": "official_tournament",
+      "network_calls": 0,
+      "package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+      "rule_scope_rejected": true
+    }
+  ],
+  "network_calls": 0,
+  "next": "使用各模式有效身份启动；正式赛事运行结果仍需单独审核",
+  "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+  "schema": "r18-p73-v2-network-release-wiring-result/1",
+  "status": "PASS_P73_V2_FOUR_MODE_RELEASE_WIRING",
+  "strategy": "r18_integrated_positive_v2"
+}

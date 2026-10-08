@@ -1,0 +1,660 @@
+{
+  "boundary": "同一已看开发根的事后归因，非新候选、新根或独立确认。",
+  "complete_hands": 3072,
+  "complete_tables": 384,
+  "input_sha256": {
+    "new_manifest": "cefe18deada6028125589fcdee7dfaced4ba492c7e4fb02f18decd382707a6e9",
+    "new_result": "a832eb27a8046d7240fddb0fb37ad8d31108fc32d6ca78eb8dcb9f654589f71f",
+    "old_manifest": "c754b9ffca75c82de6860c28ea9916f4229aa106c075f14b6554278b81c07db3",
+    "old_result": "e5547c9d108abb41c1b9fc86e873a2a33064fb8c2899f972f65eef7bf0437003",
+    "script": "48af7e1d575a7734585683b6e70e2ff98850a00a9e2262554dfb32ac00aa7cd5"
+  },
+  "mean_by_mix": {
+    "H": {
+      "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py": {
+        "component_delta_per_table": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.859375,
+          "plain_self_win_delta": -0.375,
+          "special_self_win_delta": -1.5625
+        },
+        "net_delta_per_table": -1.078125,
+        "outcome_count_delta_per_table": {
+          "draws": 0.015625,
+          "other_wins": 0.015625,
+          "plain_self_wins": -0.015625,
+          "special_self_wins": -0.015625
+        }
+      },
+      "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py": {
+        "component_delta_per_table": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.3125,
+          "plain_self_win_delta": -2.4375,
+          "special_self_win_delta": -3.25
+        },
+        "net_delta_per_table": -5.375,
+        "outcome_count_delta_per_table": {
+          "draws": 0.0,
+          "other_wins": 0.21875,
+          "plain_self_wins": -0.15625,
+          "special_self_wins": -0.0625
+        }
+      }
+    },
+    "M": {
+      "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py": {
+        "component_delta_per_table": {
+          "draw_delta": 0.0,
+          "other_win_delta": 1.609375,
+          "plain_self_win_delta": 0.3125,
+          "special_self_win_delta": 4.0625
+        },
+        "net_delta_per_table": 5.984375,
+        "outcome_count_delta_per_table": {
+          "draws": 0.0,
+          "other_wins": -0.078125,
+          "plain_self_wins": 0.03125,
+          "special_self_wins": 0.046875
+        }
+      },
+      "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py": {
+        "component_delta_per_table": {
+          "draw_delta": 0.0,
+          "other_win_delta": 1.09375,
+          "plain_self_win_delta": 0.53125,
+          "special_self_win_delta": 3.75
+        },
+        "net_delta_per_table": 5.375,
+        "outcome_count_delta_per_table": {
+          "draws": -0.015625,
+          "other_wins": -0.0625,
+          "plain_self_wins": 0.03125,
+          "special_self_wins": 0.046875
+        }
+      }
+    }
+  },
+  "root_rows": [
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": -1.75,
+        "plain_self_win_delta": -11.5,
+        "special_self_win_delta": -2.5
+      },
+      "mix": "H",
+      "net_delta_per_table": -15.75,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.75,
+        "plain_self_wins": -0.625,
+        "special_self_wins": -0.125
+      },
+      "root_index": 1
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": -1.125,
+        "plain_self_win_delta": -3.0,
+        "special_self_win_delta": -2.5
+      },
+      "mix": "H",
+      "net_delta_per_table": -6.625,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.25,
+        "plain_self_wins": -0.125,
+        "special_self_wins": -0.125
+      },
+      "root_index": 1
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 2.0,
+        "plain_self_win_delta": 0.0,
+        "special_self_win_delta": -12.5
+      },
+      "mix": "H",
+      "net_delta_per_table": -10.5,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.375,
+        "plain_self_wins": 0.0,
+        "special_self_wins": -0.375
+      },
+      "root_index": 2
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 1.25,
+        "plain_self_win_delta": 1.25,
+        "special_self_win_delta": -12.5
+      },
+      "mix": "H",
+      "net_delta_per_table": -10.0,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.25,
+        "plain_self_wins": 0.125,
+        "special_self_wins": -0.375
+      },
+      "root_index": 2
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.625,
+        "plain_self_win_delta": -1.25,
+        "special_self_win_delta": -14.5
+      },
+      "mix": "H",
+      "net_delta_per_table": -15.125,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.25,
+        "plain_self_wins": -0.125,
+        "special_self_wins": -0.125
+      },
+      "root_index": 3
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 3.875,
+        "plain_self_win_delta": 3.0,
+        "special_self_win_delta": -3.5
+      },
+      "mix": "H",
+      "net_delta_per_table": 3.375,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": -0.375,
+        "plain_self_wins": 0.125,
+        "special_self_wins": 0.25
+      },
+      "root_index": 3
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": -0.125,
+        "plain_self_win_delta": 1.75,
+        "special_self_win_delta": 0.0
+      },
+      "mix": "H",
+      "net_delta_per_table": 1.625,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.0,
+        "plain_self_wins": 0.0,
+        "special_self_wins": 0.0
+      },
+      "root_index": 4
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.75,
+        "plain_self_win_delta": 1.75,
+        "special_self_win_delta": 0.0
+      },
+      "mix": "H",
+      "net_delta_per_table": 2.5,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.0,
+        "plain_self_wins": 0.0,
+        "special_self_wins": 0.0
+      },
+      "root_index": 4
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 1.875,
+        "plain_self_win_delta": -3.0,
+        "special_self_win_delta": 3.5
+      },
+      "mix": "H",
+      "net_delta_per_table": 2.375,
+      "outcome_count_delta_per_table": {
+        "draws": 0.125,
+        "other_wins": 0.0,
+        "plain_self_wins": -0.125,
+        "special_self_wins": 0.0
+      },
+      "root_index": 5
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 3.125,
+        "plain_self_win_delta": -0.5,
+        "special_self_win_delta": 1.0
+      },
+      "mix": "H",
+      "net_delta_per_table": 3.625,
+      "outcome_count_delta_per_table": {
+        "draws": 0.25,
+        "other_wins": -0.25,
+        "plain_self_wins": 0.125,
+        "special_self_wins": -0.125
+      },
+      "root_index": 5
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.0,
+        "plain_self_win_delta": 0.0,
+        "special_self_win_delta": 0.0
+      },
+      "mix": "H",
+      "net_delta_per_table": 0.0,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.0,
+        "plain_self_wins": 0.0,
+        "special_self_wins": 0.0
+      },
+      "root_index": 6
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 1.125,
+        "plain_self_win_delta": 0.0,
+        "special_self_win_delta": 11.0
+      },
+      "mix": "H",
+      "net_delta_per_table": 12.125,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": -0.25,
+        "plain_self_wins": 0.0,
+        "special_self_wins": 0.25
+      },
+      "root_index": 6
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 2.125,
+        "plain_self_win_delta": 0.0,
+        "special_self_win_delta": 11.0
+      },
+      "mix": "H",
+      "net_delta_per_table": 13.125,
+      "outcome_count_delta_per_table": {
+        "draws": -0.125,
+        "other_wins": -0.25,
+        "plain_self_wins": 0.0,
+        "special_self_wins": 0.375
+      },
+      "root_index": 7
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.125,
+        "plain_self_win_delta": 0.0,
+        "special_self_win_delta": 5.0
+      },
+      "mix": "H",
+      "net_delta_per_table": 5.125,
+      "outcome_count_delta_per_table": {
+        "draws": -0.125,
+        "other_wins": -0.125,
+        "plain_self_wins": 0.0,
+        "special_self_wins": 0.25
+      },
+      "root_index": 7
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": -2.25,
+        "plain_self_win_delta": -5.5,
+        "special_self_win_delta": -11.0
+      },
+      "mix": "H",
+      "net_delta_per_table": -18.75,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.625,
+        "plain_self_wins": -0.375,
+        "special_self_wins": -0.25
+      },
+      "root_index": 8
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": -2.25,
+        "plain_self_win_delta": -5.5,
+        "special_self_win_delta": -11.0
+      },
+      "mix": "H",
+      "net_delta_per_table": -18.75,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.625,
+        "plain_self_wins": -0.375,
+        "special_self_wins": -0.25
+      },
+      "root_index": 8
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.25,
+        "plain_self_win_delta": 4.25,
+        "special_self_win_delta": 0.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 4.5,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": -0.25,
+        "plain_self_wins": 0.25,
+        "special_self_wins": 0.0
+      },
+      "root_index": 1
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.25,
+        "plain_self_win_delta": 4.25,
+        "special_self_win_delta": 0.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 4.5,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": -0.25,
+        "plain_self_wins": 0.25,
+        "special_self_wins": 0.0
+      },
+      "root_index": 1
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 3.0,
+        "plain_self_win_delta": 2.5,
+        "special_self_win_delta": 6.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 11.5,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": -0.375,
+        "plain_self_wins": 0.25,
+        "special_self_wins": 0.125
+      },
+      "root_index": 2
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 3.875,
+        "plain_self_win_delta": 4.25,
+        "special_self_win_delta": 6.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 14.125,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": -0.375,
+        "plain_self_wins": 0.25,
+        "special_self_wins": 0.125
+      },
+      "root_index": 2
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.125,
+        "plain_self_win_delta": 0.0,
+        "special_self_win_delta": 12.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 12.125,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": -0.125,
+        "plain_self_wins": 0.0,
+        "special_self_wins": 0.125
+      },
+      "root_index": 3
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.875,
+        "plain_self_win_delta": -1.25,
+        "special_self_win_delta": 12.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 11.625,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.0,
+        "plain_self_wins": -0.125,
+        "special_self_wins": 0.125
+      },
+      "root_index": 3
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.875,
+        "plain_self_win_delta": -1.25,
+        "special_self_win_delta": 6.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 5.625,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.0,
+        "plain_self_wins": -0.125,
+        "special_self_wins": 0.125
+      },
+      "root_index": 4
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.875,
+        "plain_self_win_delta": -1.25,
+        "special_self_win_delta": 0.0
+      },
+      "mix": "M",
+      "net_delta_per_table": -0.375,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.125,
+        "plain_self_wins": -0.125,
+        "special_self_wins": 0.0
+      },
+      "root_index": 4
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.375,
+        "plain_self_win_delta": -1.25,
+        "special_self_win_delta": -2.5
+      },
+      "mix": "M",
+      "net_delta_per_table": -3.375,
+      "outcome_count_delta_per_table": {
+        "draws": -0.125,
+        "other_wins": 0.375,
+        "plain_self_wins": -0.125,
+        "special_self_wins": -0.125
+      },
+      "root_index": 5
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 2.375,
+        "plain_self_win_delta": 0.0,
+        "special_self_win_delta": -2.5
+      },
+      "mix": "M",
+      "net_delta_per_table": -0.125,
+      "outcome_count_delta_per_table": {
+        "draws": -0.125,
+        "other_wins": 0.25,
+        "plain_self_wins": 0.0,
+        "special_self_wins": -0.125
+      },
+      "root_index": 5
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 2.875,
+        "plain_self_win_delta": 0.0,
+        "special_self_win_delta": 0.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 2.875,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.0,
+        "plain_self_wins": 0.0,
+        "special_self_wins": 0.0
+      },
+      "root_index": 6
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 3.0,
+        "plain_self_win_delta": 1.25,
+        "special_self_win_delta": 0.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 4.25,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": -0.125,
+        "plain_self_wins": 0.125,
+        "special_self_wins": 0.0
+      },
+      "root_index": 6
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 0.0,
+        "plain_self_win_delta": 0.0,
+        "special_self_win_delta": 0.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 0.0,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": 0.0,
+        "plain_self_wins": 0.0,
+        "special_self_wins": 0.0
+      },
+      "root_index": 7
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": -0.875,
+        "plain_self_win_delta": -8.5,
+        "special_self_win_delta": 0.0
+      },
+      "mix": "M",
+      "net_delta_per_table": -9.375,
+      "outcome_count_delta_per_table": {
+        "draws": 0.125,
+        "other_wins": 0.375,
+        "plain_self_wins": -0.5,
+        "special_self_wins": 0.0
+      },
+      "root_index": 7
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 1.25,
+        "plain_self_win_delta": 0.0,
+        "special_self_win_delta": 8.5
+      },
+      "mix": "M",
+      "net_delta_per_table": 9.75,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": -0.125,
+        "plain_self_wins": 0.0,
+        "special_self_wins": 0.125
+      },
+      "root_index": 8
+    },
+    {
+      "arm": "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py",
+      "component_delta_per_table": {
+        "draw_delta": 0.0,
+        "other_win_delta": 2.5,
+        "plain_self_win_delta": 3.75,
+        "special_self_win_delta": 17.0
+      },
+      "mix": "M",
+      "net_delta_per_table": 23.25,
+      "outcome_count_delta_per_table": {
+        "draws": 0.0,
+        "other_wins": -0.625,
+        "plain_self_wins": 0.375,
+        "special_self_wins": 0.25
+      },
+      "root_index": 8
+    }
+  ],
+  "roots": 16,
+  "same_stage_table_score_execution": true,
+  "schema": "g134-g133-hand-accounting-verification/1",
+  "stages": 192
+}

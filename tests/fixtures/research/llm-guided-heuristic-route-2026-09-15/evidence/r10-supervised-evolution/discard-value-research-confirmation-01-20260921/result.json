@@ -1,0 +1,191 @@
+{
+  "schema": "r11-dv1-research-confirmation-result/1",
+  "status": "CLOSE_DV1_2R_INDEPENDENT_CONFIRMATION_FAILED",
+  "manifest_sha256": "669f4f54d66ebbe4b2fdbfc7c84bf8d3a58a5cfaf3e7cfc5335071f6fe25e85b",
+  "dataset_sha256": "139841b27856ee940be2ce5d1014781bc4f645c79cbc564f79cd92eae52611f1",
+  "candidate_sha256": "f02c7ee0c30c9979f923d70cca00ee065a640c924bc63422fa2fe6b9dc8fafe5",
+  "shards": [
+    {
+      "panel_seed": 2026092350,
+      "mix": "H",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "changed_snapshots": 3,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092350,
+      "mix": "M",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "changed_snapshots": 4,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092351,
+      "mix": "H",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "changed_snapshots": 4,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092351,
+      "mix": "M",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "changed_snapshots": 2,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092352,
+      "mix": "H",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "changed_snapshots": 2,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092352,
+      "mix": "M",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "changed_snapshots": 5,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092353,
+      "mix": "H",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "changed_snapshots": 3,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092353,
+      "mix": "M",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "changed_snapshots": 2,
+      "complete": true,
+      "mechanical_failure": null
+    }
+  ],
+  "summary": {
+    "overall": {
+      "snapshots": 128,
+      "auxiliary_mean": 0.14990234375,
+      "auxiliary_standard_error": 0.28065244016549634,
+      "auxiliary_ci95": [
+        -0.40017643897437283,
+        0.6999811264743728
+      ],
+      "u_low_mean": 0.0078125,
+      "changed_rate": 0.1953125
+    },
+    "by_panel_seed": {
+      "2026092350": {
+        "snapshots": 32,
+        "auxiliary_mean": -0.162109375,
+        "auxiliary_standard_error": 0.674377953271051,
+        "auxiliary_ci95": [
+          -1.48389016341126,
+          1.15967141341126
+        ],
+        "u_low_mean": -0.001953125,
+        "changed_rate": 0.21875
+      },
+      "2026092351": {
+        "snapshots": 32,
+        "auxiliary_mean": -0.271484375,
+        "auxiliary_standard_error": 0.4693343918929183,
+        "auxiliary_ci95": [
+          -1.1913797831101198,
+          0.6484110331101198
+        ],
+        "u_low_mean": 0.00390625,
+        "changed_rate": 0.1875
+      },
+      "2026092352": {
+        "snapshots": 32,
+        "auxiliary_mean": 1.09765625,
+        "auxiliary_standard_error": 0.6939189976656646,
+        "auxiliary_ci95": [
+          -0.2624249854247025,
+          2.4577374854247025
+        ],
+        "u_low_mean": 0.021484375,
+        "changed_rate": 0.21875
+      },
+      "2026092353": {
+        "snapshots": 32,
+        "auxiliary_mean": -0.064453125,
+        "auxiliary_standard_error": 0.3079492795083063,
+        "auxiliary_ci95": [
+          -0.6680337128362803,
+          0.5391274628362803
+        ],
+        "u_low_mean": 0.0078125,
+        "changed_rate": 0.15625
+      }
+    },
+    "by_mix": {
+      "H": {
+        "snapshots": 64,
+        "auxiliary_mean": 0.056640625,
+        "auxiliary_standard_error": 0.4886954468433996,
+        "auxiliary_ci95": [
+          -0.9012024508130632,
+          1.0144837008130632
+        ],
+        "u_low_mean": 0.0087890625,
+        "changed_rate": 0.1875
+      },
+      "M": {
+        "snapshots": 64,
+        "auxiliary_mean": 0.2431640625,
+        "auxiliary_standard_error": 0.28011481800629956,
+        "auxiliary_ci95": [
+          -0.30586098079234714,
+          0.7921891057923471
+        ],
+        "u_low_mean": 0.0068359375,
+        "changed_rate": 0.203125
+      }
+    },
+    "changed_action_counts": {
+      "discard:2b": 1,
+      "discard:3b": 1,
+      "discard:3t": 2,
+      "discard:3w": 2,
+      "discard:4w": 2,
+      "discard:5t": 1,
+      "discard:5w": 2,
+      "discard:6b": 2,
+      "discard:6w": 4,
+      "discard:7w": 5,
+      "discard:8w": 2,
+      "discard:9w": 1
+    },
+    "max_changed_action_fraction": 0.2,
+    "paired_action_rollouts": 800,
+    "full_or_partial_tables": 1600,
+    "all_mechanical": true,
+    "complete": true,
+    "behavior_ok": true,
+    "effect_ok": false,
+    "original_grouped_gate_passed": false,
+    "multiple_models_screened_before_confirmation": 11,
+    "strength_claim": false
+  },
+  "next": "关闭当前价值蒸馏候选；复盘阶段价值连接或隐藏状态平均，不再调本同族参数",
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "sitin-posthoc-mechanism-probe/1",
+  "source": "synthetic_contract_fixture",
+  "real_world_reachability_verified": false,
+  "usable_for_selection": false,
+  "purpose": "冻结面板等行为不等于全域等价；只证明分支刻度有数学区分能力",
+  "inputs": {
+    "discard:1w": {
+      "shanten": 0,
+      "support": 0
+    },
+    "discard:2b": {
+      "shanten": 1,
+      "support": 12
+    }
+  },
+  "results": {
+    "parent": {
+      "status": "SCORED",
+      "scores": {
+        "discard:1w": 40.0,
+        "discard:2b": 38.0
+      },
+      "preferred": "discard:1w"
+    },
+    "child": {
+      "status": "SCORED",
+      "scores": {
+        "discard:1w": 40.0,
+        "discard:2b": 47.0
+      },
+      "preferred": "discard:2b"
+    }
+  },
+  "preference_changed": true
+}

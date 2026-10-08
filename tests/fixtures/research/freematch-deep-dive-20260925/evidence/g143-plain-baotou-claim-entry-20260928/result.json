@@ -1,0 +1,1533 @@
+{
+  "boundary": "只按实际首次机会倒选已发生吃碰，父代对照是强手相同可见观察的动作；不能由此推出如果父代过牌，后续机会或整桌积分会怎样。",
+  "counts": {
+    "tengshe_0638/peer/claim_events": 13,
+    "tengshe_0638/peer/entries": 13,
+    "tengshe_0638/peer/entries_with_parent_pass": 2,
+    "tengshe_0638/peer/parent_exact_claim": 11,
+    "tengshe_0638/peer/parent_pass": 2,
+    "tengshe_0638/peer/parent_pass_r6_exact": 2,
+    "tengshe_0638/peer/parent_pass_r6_pass": 0,
+    "tengshe_0638/us/claim_events": 11,
+    "tengshe_0638/us/entries": 11,
+    "tengshe_0638/us/entries_with_parent_pass": 0,
+    "tengshe_0638/us/parent_exact_claim": 11,
+    "xuanwu_2346/peer/claim_events": 34,
+    "xuanwu_2346/peer/entries": 27,
+    "xuanwu_2346/peer/entries_with_parent_pass": 6,
+    "xuanwu_2346/peer/parent_exact_claim": 27,
+    "xuanwu_2346/peer/parent_other_action": 1,
+    "xuanwu_2346/peer/parent_pass": 6,
+    "xuanwu_2346/peer/parent_pass_r6_exact": 4,
+    "xuanwu_2346/peer/parent_pass_r6_pass": 2,
+    "xuanwu_2346/us/claim_events": 3,
+    "xuanwu_2346/us/entries": 3,
+    "xuanwu_2346/us/entries_with_parent_pass": 0,
+    "xuanwu_2346/us/parent_exact_claim": 3
+  },
+  "inputs_sha256": {
+    "g138": "92d41868bc68de10531a41ee352eb2e1b7f900fcd4788bdcf45b3580530a95aa",
+    "g76_result": "01439c97e0b2922ce7969df7b4bef96bfa97ba20e7da5e9f62844b5e0265a223",
+    "g76_rows": "2a26d239e79ce863311b4be2681a86a9d7d94b50648ab4f4a5355f6d3cd08fc6",
+    "script": "ce5103f91dfcd7457e356c289c9f3d46a1e5bd3e0c9949b8f0a5f9f2f1aabbe3"
+  },
+  "rooms_by_group": {
+    "tengshe_0638/peer": 10,
+    "tengshe_0638/peer/parent_pass": 2,
+    "tengshe_0638/us": 7,
+    "xuanwu_2346/peer": 13,
+    "xuanwu_2346/peer/parent_pass": 6,
+    "xuanwu_2346/us": 2
+  },
+  "rows": [
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:5w,6w,7w",
+          "claim_shanten": 0,
+          "claim_width": 7.0,
+          "discard_seq": 966,
+          "parent_key": "chi:5w,6w,7w",
+          "parent_margin": 69.0,
+          "pass_shanten": 1,
+          "pass_width": 28.0,
+          "phase": "response_chi",
+          "r6_key": "chi:5w,6w,7w"
+        }
+      ],
+      "first_entry_draw_seq": 993,
+      "game_id": "a_3c9b8c294df1_r1_b2_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 948,
+      "room": "a_3c9b8c294df1",
+      "round_no": 5,
+      "white_at_entry": 1,
+      "white_before": 0
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "chi:4w,5w,6w",
+          "claim_shanten": 0,
+          "claim_width": 17.0,
+          "discard_seq": 1417,
+          "parent_key": "chi:4w,5w,6w",
+          "parent_margin": 62.0,
+          "pass_shanten": 1,
+          "pass_width": 45.0,
+          "phase": "response_chi",
+          "r6_key": "chi:4w,5w,6w"
+        }
+      ],
+      "first_entry_draw_seq": 1435,
+      "game_id": "a_3c9b8c294df1_r1_b3_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 1410,
+      "room": "a_3c9b8c294df1",
+      "round_no": 8,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "peng:1w",
+          "claim_shanten": 0,
+          "claim_width": 22.0,
+          "discard_seq": 974,
+          "parent_key": "peng:1w",
+          "parent_margin": 3.0,
+          "pass_shanten": 0,
+          "pass_width": 13.0,
+          "phase": "response_peng",
+          "r6_key": "peng:1w"
+        }
+      ],
+      "first_entry_draw_seq": 1000,
+      "game_id": "a_3c9b8c294df1_r1_b4_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 961,
+      "room": "a_3c9b8c294df1",
+      "round_no": 6,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:3t,4t,5t",
+          "claim_shanten": 0,
+          "claim_width": 12.0,
+          "discard_seq": 558,
+          "parent_key": "chi:3t,4t,5t",
+          "parent_margin": 68.0,
+          "pass_shanten": 1,
+          "pass_width": 34.0,
+          "phase": "response_chi",
+          "r6_key": "chi:3t,4t,5t"
+        }
+      ],
+      "first_entry_draw_seq": 583,
+      "game_id": "a_3c9b8c294df1_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 541,
+      "room": "a_3c9b8c294df1",
+      "round_no": 3,
+      "white_at_entry": 1,
+      "white_before": 0
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "peng:8b",
+          "claim_shanten": 0,
+          "claim_width": 26.0,
+          "discard_seq": 1101,
+          "parent_key": "peng:8b",
+          "parent_margin": 7.0,
+          "pass_shanten": 0,
+          "pass_width": 13.0,
+          "phase": "response_peng",
+          "r6_key": "peng:8b"
+        }
+      ],
+      "first_entry_draw_seq": 1126,
+      "game_id": "a_3c9b8c294df1_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 1094,
+      "room": "a_3c9b8c294df1",
+      "round_no": 6,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:5w",
+          "claim_shanten": 0,
+          "claim_width": 9.0,
+          "discard_seq": 775,
+          "parent_key": "peng:5w",
+          "parent_margin": 64.0,
+          "pass_shanten": 1,
+          "pass_width": 39.0,
+          "phase": "response_peng",
+          "r6_key": "peng:5w"
+        }
+      ],
+      "first_entry_draw_seq": 784,
+      "game_id": "a_53f4861835b9_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 762,
+      "room": "a_53f4861835b9",
+      "round_no": 4,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:1w",
+          "claim_shanten": 0,
+          "claim_width": 23.0,
+          "discard_seq": 1496,
+          "parent_key": "peng:1w",
+          "parent_margin": 2.0,
+          "pass_shanten": 0,
+          "pass_width": 15.0,
+          "phase": "response_peng",
+          "r6_key": "peng:1w"
+        }
+      ],
+      "first_entry_draw_seq": 1547,
+      "game_id": "a_5e16dfc1305b_r1_b2_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 1489,
+      "room": "a_5e16dfc1305b",
+      "round_no": 8,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "peng:3b",
+          "claim_shanten": 0,
+          "claim_width": 23.0,
+          "discard_seq": 1302,
+          "parent_key": "peng:3b",
+          "parent_margin": 90.0,
+          "pass_shanten": 1,
+          "pass_width": 27.0,
+          "phase": "response_peng",
+          "r6_key": "peng:3b"
+        }
+      ],
+      "first_entry_draw_seq": 1327,
+      "game_id": "a_6b37c9d49bcb_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 1295,
+      "room": "a_6b37c9d49bcb",
+      "round_no": 7,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:5b",
+          "claim_shanten": 0,
+          "claim_width": 22.0,
+          "discard_seq": 815,
+          "parent_key": "peng:5b",
+          "parent_margin": 81.0,
+          "pass_shanten": 1,
+          "pass_width": 35.0,
+          "phase": "response_peng",
+          "r6_key": "peng:5b"
+        }
+      ],
+      "first_entry_draw_seq": 841,
+      "game_id": "a_6b37c9d49bcb_r1_b9_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 797,
+      "room": "a_6b37c9d49bcb",
+      "round_no": 4,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "chi:7t,8t,9t",
+          "claim_shanten": 0,
+          "claim_width": 99.0,
+          "discard_seq": 1101,
+          "parent_key": "chi:7t,8t,9t",
+          "parent_margin": 74.0,
+          "pass_shanten": 0,
+          "pass_width": 15.0,
+          "phase": "response_chi",
+          "r6_key": "chi:7t,8t,9t"
+        }
+      ],
+      "first_entry_draw_seq": 1128,
+      "game_id": "a_7fae66b4d5cd_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 1082,
+      "room": "a_7fae66b4d5cd",
+      "round_no": 7,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:7t,8t,9t",
+          "claim_shanten": 0,
+          "claim_width": 22.0,
+          "discard_seq": 1038,
+          "parent_key": "pass",
+          "parent_margin": -1.0,
+          "pass_shanten": 0,
+          "pass_width": 13.0,
+          "phase": "response_chi",
+          "r6_key": "chi:7t,8t,9t"
+        }
+      ],
+      "first_entry_draw_seq": 1066,
+      "game_id": "a_8e8aec99969b_r1_b0_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 1019,
+      "room": "a_8e8aec99969b",
+      "round_no": 4,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:中",
+          "claim_shanten": 0,
+          "claim_width": 19.0,
+          "discard_seq": 343,
+          "parent_key": "peng:中",
+          "parent_margin": 1.0,
+          "pass_shanten": 0,
+          "pass_width": 12.0,
+          "phase": "response_peng",
+          "r6_key": "peng:中"
+        }
+      ],
+      "first_entry_draw_seq": 368,
+      "game_id": "a_8e8aec99969b_r1_b7_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 336,
+      "room": "a_8e8aec99969b",
+      "round_no": 2,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:9t",
+          "claim_shanten": 0,
+          "claim_width": 117.0,
+          "discard_seq": 504,
+          "parent_key": "peng:9t",
+          "parent_margin": 97.0,
+          "pass_shanten": 0,
+          "pass_width": 14.0,
+          "phase": "response_peng",
+          "r6_key": "peng:9t"
+        }
+      ],
+      "first_entry_draw_seq": 529,
+      "game_id": "a_8e8aec99969b_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 491,
+      "room": "a_8e8aec99969b",
+      "round_no": 4,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "peng:3t",
+          "claim_shanten": 0,
+          "claim_width": 66.0,
+          "discard_seq": 866,
+          "parent_key": "peng:3t",
+          "parent_margin": 37.0,
+          "pass_shanten": 0,
+          "pass_width": 23.0,
+          "phase": "response_peng",
+          "r6_key": "peng:3t"
+        }
+      ],
+      "first_entry_draw_seq": 890,
+      "game_id": "a_a84b3a170f9e_r1_b0_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 847,
+      "room": "a_a84b3a170f9e",
+      "round_no": 5,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:5b,6b,7b",
+          "claim_shanten": 0,
+          "claim_width": 14.0,
+          "discard_seq": 500,
+          "parent_key": "chi:5b,6b,7b",
+          "parent_margin": 67.0,
+          "pass_shanten": 1,
+          "pass_width": 37.0,
+          "phase": "response_chi",
+          "r6_key": "chi:5b,6b,7b"
+        }
+      ],
+      "first_entry_draw_seq": 527,
+      "game_id": "a_a8ce23a921ce_r1_b2_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 497,
+      "room": "a_a8ce23a921ce",
+      "round_no": 3,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "peng:7b",
+          "claim_shanten": 0,
+          "claim_width": 14.0,
+          "discard_seq": 1270,
+          "parent_key": "peng:7b",
+          "parent_margin": 1.0,
+          "pass_shanten": 0,
+          "pass_width": 7.0,
+          "phase": "response_peng",
+          "r6_key": "peng:7b"
+        }
+      ],
+      "first_entry_draw_seq": 1295,
+      "game_id": "a_a8ce23a921ce_r1_b6_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 1257,
+      "room": "a_a8ce23a921ce",
+      "round_no": 6,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "chi:2w,3w,4w",
+          "claim_shanten": 0,
+          "claim_width": 37.0,
+          "discard_seq": 95,
+          "parent_key": "chi:2w,3w,4w",
+          "parent_margin": 76.0,
+          "pass_shanten": 1,
+          "pass_width": 51.0,
+          "phase": "response_chi",
+          "r6_key": "chi:2w,3w,4w"
+        }
+      ],
+      "first_entry_draw_seq": 122,
+      "game_id": "a_d539acd906b5_r1_b0_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 76,
+      "room": "a_d539acd906b5",
+      "round_no": 1,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "chi:3b,4b,5b",
+          "claim_shanten": 0,
+          "claim_width": 21.0,
+          "discard_seq": 929,
+          "parent_key": "chi:3b,4b,5b",
+          "parent_margin": 1.0,
+          "pass_shanten": 0,
+          "pass_width": 10.0,
+          "phase": "response_chi",
+          "r6_key": "chi:3b,4b,5b"
+        }
+      ],
+      "first_entry_draw_seq": 957,
+      "game_id": "a_d539acd906b5_r1_b0_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 910,
+      "room": "a_d539acd906b5",
+      "round_no": 5,
+      "white_at_entry": 3,
+      "white_before": 3
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:6b,7b,8b",
+          "claim_shanten": 0,
+          "claim_width": 30.0,
+          "discard_seq": 726,
+          "parent_key": "chi:6b,7b,8b",
+          "parent_margin": 68.0,
+          "pass_shanten": 1,
+          "pass_width": 52.0,
+          "phase": "response_chi",
+          "r6_key": "chi:6b,7b,8b"
+        }
+      ],
+      "first_entry_draw_seq": 753,
+      "game_id": "a_d539acd906b5_r1_b1_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 707,
+      "room": "a_d539acd906b5",
+      "round_no": 4,
+      "white_at_entry": 3,
+      "white_before": 3
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:7b,8b,9b",
+          "claim_shanten": 0,
+          "claim_width": 25.0,
+          "discard_seq": 315,
+          "parent_key": "chi:7b,8b,9b",
+          "parent_margin": 0.0,
+          "pass_shanten": 0,
+          "pass_width": 15.0,
+          "phase": "response_chi",
+          "r6_key": "chi:7b,8b,9b"
+        }
+      ],
+      "first_entry_draw_seq": 343,
+      "game_id": "a_d773a8e428a0_r1_b4_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 296,
+      "room": "a_d773a8e428a0",
+      "round_no": 2,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:中",
+          "claim_shanten": 0,
+          "claim_width": 19.0,
+          "discard_seq": 453,
+          "parent_key": "pass",
+          "parent_margin": 0.0,
+          "pass_shanten": 0,
+          "pass_width": 13.0,
+          "phase": "response_peng",
+          "r6_key": "peng:中"
+        }
+      ],
+      "first_entry_draw_seq": 479,
+      "game_id": "a_e4d46909f494_r1_b2_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 434,
+      "room": "a_e4d46909f494",
+      "round_no": 2,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "peng:6t",
+          "claim_shanten": 0,
+          "claim_width": 89.0,
+          "discard_seq": 1584,
+          "parent_key": "peng:6t",
+          "parent_margin": 57.0,
+          "pass_shanten": 0,
+          "pass_width": 26.0,
+          "phase": "response_peng",
+          "r6_key": "peng:6t"
+        }
+      ],
+      "first_entry_draw_seq": 1599,
+      "game_id": "a_e4d46909f494_r1_b7_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 1565,
+      "room": "a_e4d46909f494",
+      "round_no": 8,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "chi:5w,6w,7w",
+          "claim_shanten": 0,
+          "claim_width": 7.0,
+          "discard_seq": 1902,
+          "parent_key": "chi:5w,6w,7w",
+          "parent_margin": 68.0,
+          "pass_shanten": 1,
+          "pass_width": 29.0,
+          "phase": "response_chi",
+          "r6_key": "chi:5w,6w,7w"
+        }
+      ],
+      "first_entry_draw_seq": 1930,
+      "game_id": "a_e4d46909f494_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 1884,
+      "room": "a_e4d46909f494",
+      "round_no": 8,
+      "white_at_entry": 1,
+      "white_before": 0
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:3b,4b,5b",
+          "claim_shanten": 0,
+          "claim_width": 21.0,
+          "discard_seq": 390,
+          "parent_key": "chi:3b,4b,5b",
+          "parent_margin": 69.0,
+          "pass_shanten": 1,
+          "pass_width": 42.0,
+          "phase": "response_chi",
+          "r6_key": "chi:3b,4b,5b"
+        }
+      ],
+      "first_entry_draw_seq": 417,
+      "game_id": "a_f6d96a23fe1f_r1_b0_t0",
+      "meld_increase": 1,
+      "peer": "tengshe_0638",
+      "previous_draw_seq": 371,
+      "room": "a_f6d96a23fe1f",
+      "round_no": 2,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:2b",
+          "claim_shanten": 0,
+          "claim_width": 14.0,
+          "discard_seq": 1494,
+          "parent_key": "peng:2b",
+          "parent_margin": 75.0,
+          "pass_shanten": 1,
+          "pass_width": 33.0,
+          "phase": "response_peng",
+          "r6_key": "peng:2b"
+        }
+      ],
+      "first_entry_draw_seq": 1519,
+      "game_id": "a_11f7d00fe232_r1_b7_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1481,
+      "room": "a_11f7d00fe232",
+      "round_no": 7,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:1w",
+          "claim_shanten": 0,
+          "claim_width": 23.0,
+          "discard_seq": 664,
+          "parent_key": "peng:1w",
+          "parent_margin": 7.0,
+          "pass_shanten": 0,
+          "pass_width": 10.0,
+          "phase": "response_peng",
+          "r6_key": "peng:1w"
+        }
+      ],
+      "first_entry_draw_seq": 688,
+      "game_id": "a_1e9a18f1951a_r1_b7_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 655,
+      "room": "a_1e9a18f1951a",
+      "round_no": 4,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "chi:6b,7b,8b",
+          "claim_shanten": 0,
+          "claim_width": 20.0,
+          "discard_seq": 453,
+          "parent_key": "chi:6b,7b,8b",
+          "parent_margin": 84.0,
+          "pass_shanten": 1,
+          "pass_width": 26.0,
+          "phase": "response_chi",
+          "r6_key": "chi:6b,7b,8b"
+        }
+      ],
+      "first_entry_draw_seq": 481,
+      "game_id": "a_2a8aa14dc8a1_r1_b7_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 434,
+      "room": "a_2a8aa14dc8a1",
+      "round_no": 3,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:9b",
+          "claim_shanten": 0,
+          "claim_width": 92.0,
+          "discard_seq": 1459,
+          "parent_key": "peng:9b",
+          "parent_margin": 53.0,
+          "pass_shanten": 0,
+          "pass_width": 33.0,
+          "phase": "response_peng",
+          "r6_key": "peng:9b"
+        }
+      ],
+      "first_entry_draw_seq": 1484,
+      "game_id": "a_3cc4c40be504_r1_b5_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1452,
+      "room": "a_3cc4c40be504",
+      "round_no": 8,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "peng:1t",
+          "claim_shanten": 0,
+          "claim_width": 31.0,
+          "discard_seq": 716,
+          "parent_key": "peng:1t",
+          "parent_margin": 5.0,
+          "pass_shanten": 0,
+          "pass_width": 20.0,
+          "phase": "response_peng",
+          "r6_key": "peng:1t"
+        }
+      ],
+      "first_entry_draw_seq": 741,
+      "game_id": "a_409502856d42_r1_b2_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 703,
+      "room": "a_409502856d42",
+      "round_no": 5,
+      "white_at_entry": 3,
+      "white_before": 2
+    },
+    {
+      "actor": "us",
+      "claims": [
+        {
+          "accepted_key": "chi:3b,4b,5b",
+          "claim_shanten": 0,
+          "claim_width": 13.0,
+          "discard_seq": 420,
+          "parent_key": "chi:3b,4b,5b",
+          "parent_margin": 79.0,
+          "pass_shanten": 1,
+          "pass_width": 24.0,
+          "phase": "response_chi",
+          "r6_key": "chi:3b,4b,5b"
+        }
+      ],
+      "first_entry_draw_seq": 440,
+      "game_id": "a_409502856d42_r1_b4_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 402,
+      "room": "a_409502856d42",
+      "round_no": 3,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:9t",
+          "claim_shanten": 0,
+          "claim_width": 13.0,
+          "discard_seq": 354,
+          "parent_key": "pass",
+          "parent_margin": -6.0,
+          "pass_shanten": 0,
+          "pass_width": 13.0,
+          "phase": "response_peng",
+          "r6_key": "pass"
+        }
+      ],
+      "first_entry_draw_seq": 363,
+      "game_id": "a_409502856d42_r1_b6_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 347,
+      "room": "a_409502856d42",
+      "round_no": 2,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:3w,4w,5w",
+          "claim_shanten": 0,
+          "claim_width": 102.0,
+          "discard_seq": 96,
+          "parent_key": "chi:3w,4w,5w",
+          "parent_margin": 64.0,
+          "pass_shanten": 0,
+          "pass_width": 28.0,
+          "phase": "response_chi",
+          "r6_key": "chi:3w,4w,5w"
+        }
+      ],
+      "first_entry_draw_seq": 124,
+      "game_id": "a_5b409450150a_r1_b0_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 77,
+      "room": "a_5b409450150a",
+      "round_no": 1,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:8b",
+          "claim_shanten": 0,
+          "claim_width": 27.0,
+          "discard_seq": 1266,
+          "parent_key": "peng:8b",
+          "parent_margin": 75.0,
+          "pass_shanten": 1,
+          "pass_width": 46.0,
+          "phase": "response_peng",
+          "r6_key": "peng:8b"
+        },
+        {
+          "accepted_key": "chi:3t,4t,5t",
+          "claim_shanten": 0,
+          "claim_width": 102.0,
+          "discard_seq": 1286,
+          "parent_key": "chi:3t,4t,5t",
+          "parent_margin": 66.0,
+          "pass_shanten": 0,
+          "pass_width": 26.0,
+          "phase": "response_chi",
+          "r6_key": "chi:3t,4t,5t"
+        }
+      ],
+      "first_entry_draw_seq": 1314,
+      "game_id": "a_5b409450150a_r1_b3_t0",
+      "meld_increase": 2,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1257,
+      "room": "a_5b409450150a",
+      "round_no": 7,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:4w,5w,6w",
+          "claim_shanten": 0,
+          "claim_width": 21.0,
+          "discard_seq": 736,
+          "parent_key": "chi:4w,5w,6w",
+          "parent_margin": 51.0,
+          "pass_shanten": 1,
+          "pass_width": 60.0,
+          "phase": "response_chi",
+          "r6_key": "chi:4w,5w,6w"
+        },
+        {
+          "accepted_key": "chi:3t,4t,5t",
+          "claim_shanten": 0,
+          "claim_width": 24.0,
+          "discard_seq": 758,
+          "parent_key": "pass",
+          "parent_margin": -5.0,
+          "pass_shanten": 0,
+          "pass_width": 19.0,
+          "phase": "response_chi",
+          "r6_key": "chi:3t,4t,5t"
+        }
+      ],
+      "first_entry_draw_seq": 786,
+      "game_id": "a_5b409450150a_r1_b5_t0",
+      "meld_increase": 2,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 717,
+      "room": "a_5b409450150a",
+      "round_no": 5,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:2t",
+          "claim_shanten": 0,
+          "claim_width": 32.0,
+          "discard_seq": 1026,
+          "parent_key": "peng:2t",
+          "parent_margin": 76.0,
+          "pass_shanten": 1,
+          "pass_width": 50.0,
+          "phase": "response_peng",
+          "r6_key": "peng:2t"
+        }
+      ],
+      "first_entry_draw_seq": 1052,
+      "game_id": "a_5b409450150a_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1019,
+      "room": "a_5b409450150a",
+      "round_no": 6,
+      "white_at_entry": 3,
+      "white_before": 3
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:5w,6w,7w",
+          "claim_shanten": 0,
+          "claim_width": 10.0,
+          "discard_seq": 588,
+          "parent_key": "chi:5w,6w,7w",
+          "parent_margin": 78.0,
+          "pass_shanten": 1,
+          "pass_width": 22.0,
+          "phase": "response_chi",
+          "r6_key": "chi:5w,6w,7w"
+        }
+      ],
+      "first_entry_draw_seq": 616,
+      "game_id": "a_5e29192a7f88_r1_b4_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 571,
+      "room": "a_5e29192a7f88",
+      "round_no": 4,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:7w,8w,9w",
+          "claim_shanten": 0,
+          "claim_width": 23.0,
+          "discard_seq": 1290,
+          "parent_key": "chi:7w,8w,9w",
+          "parent_margin": 0.0,
+          "pass_shanten": 0,
+          "pass_width": 13.0,
+          "phase": "response_chi",
+          "r6_key": "chi:7w,8w,9w"
+        }
+      ],
+      "first_entry_draw_seq": 1318,
+      "game_id": "a_6d8995365f4a_r1_b9_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1274,
+      "room": "a_6d8995365f4a",
+      "round_no": 7,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:7t,8t,9t",
+          "claim_shanten": 0,
+          "claim_width": 11.0,
+          "discard_seq": 477,
+          "parent_key": "chi:7t,8t,9t",
+          "parent_margin": 79.0,
+          "pass_shanten": 1,
+          "pass_width": 22.0,
+          "phase": "response_chi",
+          "r6_key": "chi:7t,8t,9t"
+        },
+        {
+          "accepted_key": "chi:4b,5b,6b",
+          "claim_shanten": 0,
+          "claim_width": 23.0,
+          "discard_seq": 500,
+          "parent_key": "chi:4b,5b,6b",
+          "parent_margin": 3.0,
+          "pass_shanten": 0,
+          "pass_width": 10.0,
+          "phase": "response_chi",
+          "r6_key": "chi:4b,5b,6b"
+        }
+      ],
+      "first_entry_draw_seq": 528,
+      "game_id": "a_852fb97c102e_r1_b6_t0",
+      "meld_increase": 2,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 458,
+      "room": "a_852fb97c102e",
+      "round_no": 3,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:3w,4w,5w",
+          "claim_shanten": 0,
+          "claim_width": 56.0,
+          "discard_seq": 698,
+          "parent_key": "chi:3w,4w,5w",
+          "parent_margin": 39.0,
+          "pass_shanten": 0,
+          "pass_width": 7.0,
+          "phase": "response_chi",
+          "r6_key": "chi:3w,4w,5w"
+        }
+      ],
+      "first_entry_draw_seq": 726,
+      "game_id": "a_852fb97c102e_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 679,
+      "room": "a_852fb97c102e",
+      "round_no": 3,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:1w",
+          "claim_shanten": 0,
+          "claim_width": 24.0,
+          "discard_seq": 390,
+          "parent_key": "peng:1w",
+          "parent_margin": 79.0,
+          "pass_shanten": 1,
+          "pass_width": 39.0,
+          "phase": "response_peng",
+          "r6_key": "peng:1w"
+        },
+        {
+          "accepted_key": "peng:2w",
+          "claim_shanten": 0,
+          "claim_width": 110.0,
+          "discard_seq": 410,
+          "parent_key": "peng:2w",
+          "parent_margin": 86.0,
+          "pass_shanten": 0,
+          "pass_width": 18.0,
+          "phase": "response_peng",
+          "r6_key": "peng:2w"
+        }
+      ],
+      "first_entry_draw_seq": 435,
+      "game_id": "a_852fb97c102e_r1_b9_t0",
+      "meld_increase": 2,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 383,
+      "room": "a_852fb97c102e",
+      "round_no": 3,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:4w",
+          "claim_shanten": 1,
+          "claim_width": 19.0,
+          "discard_seq": 255,
+          "parent_key": "gang:exposed:4w",
+          "parent_margin": 40.0,
+          "pass_shanten": 1,
+          "pass_width": 19.0,
+          "phase": "response_peng",
+          "r6_key": "gang:exposed:4w"
+        },
+        {
+          "accepted_key": "peng:9w",
+          "claim_shanten": 0,
+          "claim_width": 19.0,
+          "discard_seq": 316,
+          "parent_key": "peng:9w",
+          "parent_margin": 3.0,
+          "pass_shanten": 0,
+          "pass_width": 10.0,
+          "phase": "response_peng",
+          "r6_key": "peng:9w"
+        }
+      ],
+      "first_entry_draw_seq": 341,
+      "game_id": "a_a2dd84116fa9_r1_b3_t0",
+      "meld_increase": 2,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 248,
+      "room": "a_a2dd84116fa9",
+      "round_no": 2,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:2b,3b,4b",
+          "claim_shanten": 0,
+          "claim_width": 20.0,
+          "discard_seq": 927,
+          "parent_key": "pass",
+          "parent_margin": -3.0,
+          "pass_shanten": 0,
+          "pass_width": 13.0,
+          "phase": "response_chi",
+          "r6_key": "chi:2b,3b,4b"
+        }
+      ],
+      "first_entry_draw_seq": 954,
+      "game_id": "a_a2dd84116fa9_r1_b3_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 908,
+      "room": "a_a2dd84116fa9",
+      "round_no": 5,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:2b,3b,4b",
+          "claim_shanten": 0,
+          "claim_width": 99.0,
+          "discard_seq": 1840,
+          "parent_key": "chi:2b,3b,4b",
+          "parent_margin": 69.0,
+          "pass_shanten": 0,
+          "pass_width": 20.0,
+          "phase": "response_chi",
+          "r6_key": "chi:2b,3b,4b"
+        }
+      ],
+      "first_entry_draw_seq": 1866,
+      "game_id": "a_a2dd84116fa9_r1_b7_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1821,
+      "room": "a_a2dd84116fa9",
+      "round_no": 8,
+      "white_at_entry": 3,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:1w,2w,3w",
+          "claim_shanten": 0,
+          "claim_width": 37.0,
+          "discard_seq": 1246,
+          "parent_key": "chi:1w,2w,3w",
+          "parent_margin": 76.0,
+          "pass_shanten": 1,
+          "pass_width": 51.0,
+          "phase": "response_chi",
+          "r6_key": "chi:1w,2w,3w"
+        }
+      ],
+      "first_entry_draw_seq": 1274,
+      "game_id": "a_c5f3c6cb10d1_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1227,
+      "room": "a_c5f3c6cb10d1",
+      "round_no": 8,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:北",
+          "claim_shanten": 0,
+          "claim_width": 17.0,
+          "discard_seq": 693,
+          "parent_key": "peng:北",
+          "parent_margin": 67.0,
+          "pass_shanten": 1,
+          "pass_width": 44.0,
+          "phase": "response_peng",
+          "r6_key": "peng:北"
+        }
+      ],
+      "first_entry_draw_seq": 717,
+      "game_id": "a_c5f3c6cb10d1_r1_b9_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 686,
+      "room": "a_c5f3c6cb10d1",
+      "round_no": 5,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:3t,4t,5t",
+          "claim_shanten": 0,
+          "claim_width": 18.0,
+          "discard_seq": 932,
+          "parent_key": "pass",
+          "parent_margin": -6.0,
+          "pass_shanten": 0,
+          "pass_width": 14.0,
+          "phase": "response_chi",
+          "r6_key": "chi:3t,4t,5t"
+        }
+      ],
+      "first_entry_draw_seq": 960,
+      "game_id": "a_d773a8e428a0_r1_b0_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 914,
+      "room": "a_d773a8e428a0",
+      "round_no": 4,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:6t",
+          "claim_shanten": 0,
+          "claim_width": 40.0,
+          "discard_seq": 1393,
+          "parent_key": "peng:6t",
+          "parent_margin": 78.0,
+          "pass_shanten": 1,
+          "pass_width": 56.0,
+          "phase": "response_peng",
+          "r6_key": "peng:6t"
+        },
+        {
+          "accepted_key": "chi:3b,4b,5b",
+          "claim_shanten": 0,
+          "claim_width": 100.0,
+          "discard_seq": 1413,
+          "parent_key": "chi:3b,4b,5b",
+          "parent_margin": 52.0,
+          "pass_shanten": 0,
+          "pass_width": 38.0,
+          "phase": "response_chi",
+          "r6_key": "chi:3b,4b,5b"
+        }
+      ],
+      "first_entry_draw_seq": 1441,
+      "game_id": "a_d773a8e428a0_r1_b0_t0",
+      "meld_increase": 2,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1375,
+      "room": "a_d773a8e428a0",
+      "round_no": 7,
+      "white_at_entry": 3,
+      "white_before": 3
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:4b,5b,6b",
+          "claim_shanten": 0,
+          "claim_width": 14.0,
+          "discard_seq": 748,
+          "parent_key": "chi:4b,5b,6b",
+          "parent_margin": 66.0,
+          "pass_shanten": 1,
+          "pass_width": 38.0,
+          "phase": "response_chi",
+          "r6_key": "chi:4b,5b,6b"
+        }
+      ],
+      "first_entry_draw_seq": 784,
+      "game_id": "a_d773a8e428a0_r1_b5_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 745,
+      "room": "a_d773a8e428a0",
+      "round_no": 4,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:4t",
+          "claim_shanten": 0,
+          "claim_width": 112.0,
+          "discard_seq": 1112,
+          "parent_key": "peng:4t",
+          "parent_margin": 89.0,
+          "pass_shanten": 0,
+          "pass_width": 17.0,
+          "phase": "response_peng",
+          "r6_key": "peng:4t"
+        }
+      ],
+      "first_entry_draw_seq": 1139,
+      "game_id": "a_d773a8e428a0_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1105,
+      "room": "a_d773a8e428a0",
+      "round_no": 5,
+      "white_at_entry": 1,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:5b",
+          "claim_shanten": 0,
+          "claim_width": 17.0,
+          "discard_seq": 451,
+          "parent_key": "pass",
+          "parent_margin": 0.0,
+          "pass_shanten": 0,
+          "pass_width": 11.0,
+          "phase": "response_peng",
+          "r6_key": "peng:5b"
+        }
+      ],
+      "first_entry_draw_seq": 472,
+      "game_id": "a_f8ddc4c3bd9b_r1_b0_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 429,
+      "room": "a_f8ddc4c3bd9b",
+      "round_no": 2,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "peng:西",
+          "claim_shanten": 0,
+          "claim_width": 70.0,
+          "discard_seq": 1107,
+          "parent_key": "peng:西",
+          "parent_margin": 39.0,
+          "pass_shanten": 0,
+          "pass_width": 25.0,
+          "phase": "response_peng",
+          "r6_key": "peng:西"
+        }
+      ],
+      "first_entry_draw_seq": 1132,
+      "game_id": "a_f8ddc4c3bd9b_r1_b7_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1100,
+      "room": "a_f8ddc4c3bd9b",
+      "round_no": 5,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:4t,5t,6t",
+          "claim_shanten": 0,
+          "claim_width": 102.0,
+          "discard_seq": 1583,
+          "parent_key": "chi:4t,5t,6t",
+          "parent_margin": 64.0,
+          "pass_shanten": 0,
+          "pass_width": 28.0,
+          "phase": "response_chi",
+          "r6_key": "chi:4t,5t,6t"
+        }
+      ],
+      "first_entry_draw_seq": 1611,
+      "game_id": "a_fc8e52516b6c_r1_b0_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1564,
+      "room": "a_fc8e52516b6c",
+      "round_no": 7,
+      "white_at_entry": 2,
+      "white_before": 2
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:7t,8t,9t",
+          "claim_shanten": 0,
+          "claim_width": 10.0,
+          "discard_seq": 1446,
+          "parent_key": "chi:7t,8t,9t",
+          "parent_margin": 87.0,
+          "pass_shanten": 1,
+          "pass_width": 13.0,
+          "phase": "response_chi",
+          "r6_key": "chi:7t,8t,9t"
+        },
+        {
+          "accepted_key": "peng:2t",
+          "claim_shanten": 0,
+          "claim_width": 10.0,
+          "discard_seq": 1457,
+          "parent_key": "pass",
+          "parent_margin": -6.0,
+          "pass_shanten": 0,
+          "pass_width": 10.0,
+          "phase": "response_peng",
+          "r6_key": "pass"
+        }
+      ],
+      "first_entry_draw_seq": 1480,
+      "game_id": "a_fc8e52516b6c_r1_b7_t0",
+      "meld_increase": 2,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 1427,
+      "room": "a_fc8e52516b6c",
+      "round_no": 8,
+      "white_at_entry": 2,
+      "white_before": 1
+    },
+    {
+      "actor": "peer",
+      "claims": [
+        {
+          "accepted_key": "chi:2b,3b,4b",
+          "claim_shanten": 0,
+          "claim_width": 96.0,
+          "discard_seq": 258,
+          "parent_key": "chi:2b,3b,4b",
+          "parent_margin": 50.0,
+          "pass_shanten": 0,
+          "pass_width": 36.0,
+          "phase": "response_chi",
+          "r6_key": "chi:2b,3b,4b"
+        }
+      ],
+      "first_entry_draw_seq": 286,
+      "game_id": "a_fc8e52516b6c_r1_b8_t0",
+      "meld_increase": 1,
+      "peer": "xuanwu_2346",
+      "previous_draw_seq": 239,
+      "room": "a_fc8e52516b6c",
+      "round_no": 2,
+      "white_at_entry": 2,
+      "white_before": 2
+    }
+  ],
+  "schema": "g143-plain-baotou-claim-entry-join/1"
+}

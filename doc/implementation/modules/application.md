@@ -7,7 +7,7 @@
 
 `AutoMatchRuntime.route_limits`复用原`RuntimeServices`和唯一`HangmaRules`；正常清单增加`route_analysis_limits`（工作量次数，不是毫秒）。默认None保持旧调用，额度冲突在任何会话操作前拒绝；原截止、409、规则复核及动作门不变。自由赛组合根拥有独立计算服务，预热先于包含匹配的initialize，正常/异常/启动取消关闭计算资源。脚本终态显示计算计数；LLM不在线。
 
-源码漂移、模式错配及非法URL端口在HTTP/审计线程创建前拒绝。自由赛策略不能从测试房或普通参赛入口启动。真实完整Fake链和131项集中回归通过，旧R18绑定一项显式排除；本地证据不替代完整联网门禁。[当前报告](../../../review/vip-route-2026-09-30/T138-FREE-WIRING-AND-ENGINEERING-STATUS.md)。
+源码漂移、模式错配及非法URL端口在HTTP/审计线程创建前拒绝。自由赛策略不能从测试房或普通参赛入口启动。真实完整Fake链和131项集中回归通过，旧R18绑定一项显式排除；本地证据不替代完整联网门禁。[当前报告](../../research/materials/vip-route-2026-09-30/T138-FREE-WIRING-AND-ENGINEERING-STATUS.md)。
 
 
 ## 2026-10-04 T133—T136 测试房专用候选接线
@@ -30,7 +30,7 @@ HTTP 提交端口签名不变；默认策略及 R18 仍保持原调用方式。
 
 正式自由赛、测试赛事和正式赛事仍需独立绑定包与相应门禁。限深版不得
 继承原完整展开 S02 的统计强度；T131 只对已有来源补齐保持性对照，不能
-计作新的独立样本。实现、实际工具终态和官方验证见[T133记录](../../../review/vip-route-2026-09-30/T133-TESTROOM-WIRING-AND-ACCEPTANCE.md)。
+计作新的独立样本。实现、实际工具终态和官方验证见[T133记录](../../research/materials/vip-route-2026-09-30/T133-TESTROOM-WIRING-AND-ACCEPTANCE.md)。
 
 
 ## 2026-10-04 T132主线计算服务接线准备

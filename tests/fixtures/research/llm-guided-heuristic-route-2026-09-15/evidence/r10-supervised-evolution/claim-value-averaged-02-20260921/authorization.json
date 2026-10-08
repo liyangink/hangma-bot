@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-av2-averaged-action-value-dataset-v2-20260921",
+  "batch_label": "r10-av2-averaged-action-value-dataset-v2",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 2048.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 384.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T04:03:03Z",
+  "issuance_basis": "AV1-TV1证明单轨迹标签受未来摸牌顺序显著污染；按Suphx奖励预测和rollout期望条件转入八顺序平均教师",
+  "scope": "两个全新panel_seed；每个seed×H/M按root_index升序取前16个自然机会；每快照8个未来可摸区重排；过牌/具体吃碰使用同一重排配对",
+  "max_model_calls": 0,
+  "confirmation_roots": 0
+}

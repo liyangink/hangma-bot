@@ -1,0 +1,80 @@
+{
+  "schema": "r17-public-successor-batch-performance-result/1",
+  "status": "FAIL_PERFORMANCE_AFTER_BATCH_EQUIVALENT_OPTIMIZATION",
+  "windows": 226,
+  "tables": 0,
+  "model_calls": 0,
+  "strength_claim": false,
+  "selection_eligible": false,
+  "semantic_equivalence": {
+    "passed": true,
+    "raw_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+    "cold_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+    "warm_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12"
+  },
+  "determinism": {
+    "passed": true
+  },
+  "counts": {
+    "all_capacity_edges": 60597,
+    "discard_roots": 1825,
+    "discard_roots_covered": 1825,
+    "draw_windows": 179,
+    "drawn_only_discard": 60597,
+    "drawn_only_discard_pareto": 60597,
+    "drawn_only_gang": 532,
+    "drawn_only_hu": 777,
+    "non_useful_edges": 42084,
+    "response_fallback_windows": 47,
+    "unrestricted_discard": 642562,
+    "unrestricted_discard_pareto": 208464,
+    "unrestricted_gang": 1071,
+    "unrestricted_hu": 777,
+    "useful_edges": 18513,
+    "value_route_edges": 777,
+    "value_route_groups": 151
+  },
+  "performance_counts": {
+    "hand_summary_cache_hits": 60384,
+    "hand_summary_cache_misses": 349185,
+    "leaf_scalar_cache_hits": 354187,
+    "leaf_scalar_cache_misses": 348972,
+    "logical_discard_leaf_requests": 703159
+  },
+  "latency": {
+    "cold": {
+      "mean_ms": 81.11299142662915,
+      "p50_ms": 79.09433299209923,
+      "p90_ms": 127.62262497562915,
+      "p95_ms": 136.82416605297476,
+      "p99_ms": 185.33387500792742,
+      "max_ms": 187.83466692548245
+    },
+    "warm": {
+      "mean_ms": 81.574459049679,
+      "p50_ms": 78.86979193426669,
+      "p90_ms": 127.17491597868502,
+      "p95_ms": 135.49087510909885,
+      "p99_ms": 220.97458294592798,
+      "max_ms": 257.16854201164097
+    }
+  },
+  "gate": {
+    "passed": false,
+    "p99_ms_max": 200.0,
+    "window_max_ms": 500.0,
+    "observed_warm_p99_ms": 220.97458294592798,
+    "observed_warm_max_ms": 257.16854201164097
+  },
+  "issues": {
+    "route": 0,
+    "projection": 0
+  },
+  "equivalence_proof": {
+    "hand_summary_key": "analyse_hand 只读取最终暗牌计数与 meld_count；公开计数不参与向听/有效牌集合",
+    "support_formula": "对 summary.useful_tiles 逐牌求 max(0,4-最终暗牌计数-最终公开计数)，与 _waiting_facts(public_after_root,newly_hidden=次弃牌) 代数相同",
+    "discard_legality": "you_cai_bi_kao=false 的本人 draw 窗口：不受限时每个暗牌值可弃，受限时仅摸切；顺序均按 TILE_ORDER",
+    "no_pruning": "所有合法弃牌叶都计算标量；只在随后执行原冻结 Pareto reducer 时不物化被支配叶的 CandidateFacts 对象"
+  },
+  "stop_if_failed": "若冻结性能门仍失败，停止P0、不生成候选；下一步必须复盘搜索深度或把批量规则接口下沉到hangma生产边界"
+}

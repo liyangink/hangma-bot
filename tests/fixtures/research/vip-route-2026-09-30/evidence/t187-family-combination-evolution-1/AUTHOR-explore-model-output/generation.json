@@ -1,0 +1,1352 @@
+{
+  "admission": {
+    "eligible": false,
+    "gates_run": []
+  },
+  "artifact_role": "candidate_proposal",
+  "attempt_id": "8c32181fffe14753afdc52835c31b6d1",
+  "attempt_no": 3,
+  "backend": "api",
+  "batch_id": "t187-two-author-family-combination-20261005",
+  "batch_sha256": "fe590687268982250b2d71ba837e356bb3e872120c205c97ccaefea03b4fafc3",
+  "behavior_change_credit": false,
+  "billing": {
+    "actual": {
+      "input_tokens": 61641,
+      "model_calls": 1,
+      "output_tokens": 39632,
+      "table_instances": 0,
+      "wall_clock_seconds": 431.6068615000695
+    },
+    "attempt_id": "8c32181fffe14753afdc52835c31b6d1",
+    "attempt_no": 3,
+    "backend": "api",
+    "budget_exceeded": false,
+    "call_started": true,
+    "charged": {
+      "input_tokens": 61641,
+      "model_calls": 1,
+      "output_tokens": 39632,
+      "table_instances": 0,
+      "wall_clock_seconds": 431.6068615000695
+    },
+    "outcome": "loaded_not_admitted",
+    "reserved": {
+      "input_tokens": 1048576,
+      "model_calls": 1,
+      "output_tokens": 65536,
+      "table_instances": 0,
+      "wall_clock_seconds": 900
+    },
+    "reserved_at_utc": "2026-10-05T08:28:41.630088Z",
+    "reviewed_recovery": null,
+    "settled_at_utc": "2026-10-05T08:35:52.744105Z",
+    "started_at_utc": "2026-10-05T08:28:41.635760Z",
+    "status": "settled",
+    "usage_unknown": false
+  },
+  "candidate_kind": "vip_route_heuristic_v1",
+  "elapsed_monotonic_seconds": 431.6068615000695,
+  "ended_at_utc": "2026-10-05T08:35:52.743784Z",
+  "error": null,
+  "feedback_sha256": "76fa864a854208d4d2b58470509a2815ce1e1d8edf0fec5112043dac1ace9efa",
+  "framework": {
+    "generation_source_manifest": {
+      "review/llm-guided-heuristic-route-2026-09-15/tools/sitin_generate.py": {
+        "bytes": 339988,
+        "sha256": "476a57f0637304adcb33a3363564cfbf4fd6bad654b1a55af6d0e1cadc9e907a"
+      },
+      "review/llm-guided-heuristic-route-2026-09-15/tools/sitin_process.py": {
+        "bytes": 7289,
+        "sha256": "483de9b9b4099c3c4efa05358bdf76b0f695ca669142381389fa6454300bc5a5"
+      },
+      "scripts/vip_route_eoh_generate.py": {
+        "bytes": 3220,
+        "sha256": "1b1d078362670406e75412a37a0549b43097fe4ad4f55d4c5c862876ec6445b4"
+      },
+      "src/hangma_bot/application/contracts.py": {
+        "bytes": 16212,
+        "sha256": "cbece50eda81a376b5be923f5c894a96f67ea65f82b3e021fdbf592e242e53fa"
+      },
+      "src/hangma_bot/application/deadline.py": {
+        "bytes": 7527,
+        "sha256": "4d280f95ed8dd29a31fb485c6267ff553fd74fe2b2d8d60b3ca596bf0c9d8496"
+      },
+      "src/hangma_bot/hangma/__init__.py": {
+        "bytes": 145,
+        "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+      },
+      "src/hangma_bot/hangma/_public_tile_reuse.py": {
+        "bytes": 10595,
+        "sha256": "e22c0f3d7a4d38ef5f78fd7532ad963ae198b8e2914623c717af488139d8f934"
+      },
+      "src/hangma_bot/hangma/_standard.py": {
+        "bytes": 1542,
+        "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+      },
+      "src/hangma_bot/hangma/_standard_python.py": {
+        "bytes": 14730,
+        "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+      },
+      "src/hangma_bot/hangma/action_families.py": {
+        "bytes": 20884,
+        "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+      },
+      "src/hangma_bot/hangma/candidate_facts.py": {
+        "bytes": 19139,
+        "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+      },
+      "src/hangma_bot/hangma/catch_play.py": {
+        "bytes": 10173,
+        "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+      },
+      "src/hangma_bot/hangma/emergency.py": {
+        "bytes": 4153,
+        "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+      },
+      "src/hangma_bot/hangma/engine.py": {
+        "bytes": 32121,
+        "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+      },
+      "src/hangma_bot/hangma/hand_analysis.py": {
+        "bytes": 25772,
+        "sha256": "c11d0abbb6eebb9f724e230b42884b8dd1b0fa0a4560eda86104df1f6826f0fe"
+      },
+      "src/hangma_bot/hangma/interface.py": {
+        "bytes": 37378,
+        "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+      },
+      "src/hangma_bot/hangma/internal_types.py": {
+        "bytes": 9019,
+        "sha256": "3b959871ac740d27c43f6dec18df5e30bfef6a93080628d4b3e6f67cc45af5ea"
+      },
+      "src/hangma_bot/hangma/natural_preparation.py": {
+        "bytes": 5636,
+        "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+      },
+      "src/hangma_bot/hangma/observation_rules.py": {
+        "bytes": 24098,
+        "sha256": "25f4fa8bb66c881e8b7583f92aae110f099192c62cbcb8b6b5520cc33c7d0b03"
+      },
+      "src/hangma_bot/hangma/progression.py": {
+        "bytes": 44196,
+        "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+      },
+      "src/hangma_bot/hangma/progression_payload.py": {
+        "bytes": 15798,
+        "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+      },
+      "src/hangma_bot/hangma/public_successor.py": {
+        "bytes": 21173,
+        "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+      },
+      "src/hangma_bot/hangma/public_tile_counts.py": {
+        "bytes": 35715,
+        "sha256": "b86866d7aa43a985292ec99fd39e7378b7c259e2799c21741d5fea0dbc78eb27"
+      },
+      "src/hangma_bot/hangma/route_frontier.py": {
+        "bytes": 11581,
+        "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+      },
+      "src/hangma_bot/hangma/route_hu_witness.py": {
+        "bytes": 8183,
+        "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+      },
+      "src/hangma_bot/hangma/route_structure.py": {
+        "bytes": 10649,
+        "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+      },
+      "src/hangma_bot/hangma/route_transition.py": {
+        "bytes": 72647,
+        "sha256": "800b595e33381ed355d9182e31ae977904fc7969ac5592f4a692faf5b62eac4f"
+      },
+      "src/hangma_bot/hangma/settlement.py": {
+        "bytes": 10643,
+        "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+      },
+      "src/hangma_bot/hangma/special_rules.py": {
+        "bytes": 11609,
+        "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+      },
+      "src/hangma_bot/hangma/value_analysis.py": {
+        "bytes": 18251,
+        "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+      },
+      "src/hangma_bot/kernel/actions.py": {
+        "bytes": 10754,
+        "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+      },
+      "src/hangma_bot/kernel/config.py": {
+        "bytes": 3236,
+        "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+      },
+      "src/hangma_bot/kernel/identity.py": {
+        "bytes": 3520,
+        "sha256": "1e8a12c2394b9bd2370027d1d7e04c1b29e9bcad0764302f3047ac84aca06640"
+      },
+      "src/hangma_bot/kernel/observation.py": {
+        "bytes": 17784,
+        "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+      },
+      "src/hangma_bot/kernel/outcomes.py": {
+        "bytes": 8643,
+        "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+      },
+      "src/hangma_bot/kernel/serialization.py": {
+        "bytes": 27049,
+        "sha256": "85d4a98d9c735090670110376f7bba6066710909fd7f8dcf95fcd45dac3ce56e"
+      },
+      "src/hangma_bot/offline/evaluate.py": {
+        "bytes": 88427,
+        "sha256": "ba49be2eb653aac1edfc43e00d30f0eff24798b9b120d6d2b7aa39f9ff49a376"
+      },
+      "src/hangma_bot/offline/evaluation_results.py": {
+        "bytes": 32657,
+        "sha256": "2ea2d68f158f054f283f98a319143d52d61b57cfdf79bc532235645069c54da7"
+      },
+      "src/hangma_bot/offline/scoring_sources.py": {
+        "bytes": 9453,
+        "sha256": "da75c44b1919ccd9338ee0469391882be8aaaaeb079775223b5b43be5036d1e0"
+      },
+      "src/hangma_bot/offline/vip_eoh_generate.py": {
+        "bytes": 64915,
+        "sha256": "b0285471a99b9074a40acdc2ac90e8f12416f3aa906d60eae4ee9111d260fef9"
+      },
+      "src/hangma_bot/offline/vip_eoh_rebind.py": {
+        "bytes": 10083,
+        "sha256": "9745d98408420a910022dd2a234cda9f2f55a53e96bab3273e793bc622696d6b"
+      },
+      "src/hangma_bot/offline/vip_eoh_trace_repair.py": {
+        "bytes": 17236,
+        "sha256": "46c355392b8585b2845c018363dac791f356c6c5b4af56d9a62e963c91d7473c"
+      },
+      "src/hangma_bot/offline/vip_heuristic_smoke.py": {
+        "bytes": 11065,
+        "sha256": "db07eca11efffba9e93129c24c07a66c9b849ef0675dbde4f55d020977bbc5a6"
+      },
+      "src/hangma_bot/policy/action_value.py": {
+        "bytes": 45125,
+        "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+      },
+      "src/hangma_bot/policy/action_value_executor.py": {
+        "bytes": 106868,
+        "sha256": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb"
+      },
+      "src/hangma_bot/policy/action_value_policy.py": {
+        "bytes": 26047,
+        "sha256": "8bbcdeb3fc968736f45f831a4c516e5375ef8e5dfe879aa4f696cf2b48d8982b"
+      },
+      "src/hangma_bot/policy/action_value_seeds.py": {
+        "bytes": 26114,
+        "sha256": "dc50f4e2127936368aed0282cce505d68dabf628904daae537928c78e387578a"
+      },
+      "src/hangma_bot/policy/errors.py": {
+        "bytes": 372,
+        "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+      },
+      "src/hangma_bot/policy/interface.py": {
+        "bytes": 3546,
+        "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+      },
+      "src/hangma_bot/policy/route_heuristic_view.py": {
+        "bytes": 28880,
+        "sha256": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1"
+      },
+      "src/hangma_bot/policy/route_vip_heuristic.py": {
+        "bytes": 37065,
+        "sha256": "ec92ece74a2c44fa3cff31824bc51bca1abb4db63e98552a634cd9b739a26da0"
+      },
+      "src/hangma_bot/policy/safe_fallback.py": {
+        "bytes": 2352,
+        "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+      },
+      "src/hangma_bot/simulation/__init__.py": {
+        "bytes": 1236,
+        "sha256": "9940e70b041e4729b56d825b8f85abec12594cf25a84b8672a927ce20b29e844"
+      },
+      "src/hangma_bot/simulation/artifacts.py": {
+        "bytes": 3264,
+        "sha256": "0176f939b276e9ee22c9e72e42939d1e04b2c35aa5c6273d43dab731324e4a32"
+      },
+      "src/hangma_bot/simulation/engine.py": {
+        "bytes": 44570,
+        "sha256": "c32e7d589765c7a973a72be534fdaadf21f8c4bd91c404d471189d49cbbf6b27"
+      },
+      "src/hangma_bot/simulation/identity.py": {
+        "bytes": 1371,
+        "sha256": "8087385814bdb604ea92fcd757e111f430c3d0a53a1bd08ddedfee35efe0e58e"
+      },
+      "src/hangma_bot/simulation/interface.py": {
+        "bytes": 5426,
+        "sha256": "7f1262c0cd75249627eaf8031a410fbff2262940ef7a9923f1b8c18721b76d6f"
+      },
+      "src/hangma_bot/simulation/projection.py": {
+        "bytes": 6026,
+        "sha256": "1d729c3e0be45ff8f137c85b906b4d7e2454dd6627cde5db9f5bf1915cf58490"
+      },
+      "src/hangma_bot/simulation/shuffle.py": {
+        "bytes": 7411,
+        "sha256": "5e8597e06dc7d94e8aa2825f066df5faef47c2298b1c1919bccbf2a7756f91f5"
+      },
+      "src/hangma_bot/simulation/state.py": {
+        "bytes": 3309,
+        "sha256": "c57f0a3f5ff42736d3b1514c44527c77382e79b1fe8feeef6c571fea4d154556"
+      }
+    },
+    "seed_identity": {
+      "candidate_id": "4824e0c9667e23c3d7f76049f4fad5b5ffc2ef337dead0e3cb08b32130bb461c",
+      "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+      "contract_sha256": "4ee18be7935430f53b84cd096767a88b88252260ecc4afd63130ccb26791efca",
+      "deps_digest": "085a7935c483e1ad79820fcc73abd673b4d068505e788a4fbd2abfca86bc24c8",
+      "graph_schema_version": "vip-route-action-graph/3",
+      "math_backend": {
+        "fallback_reason": null,
+        "implementation": "c_grouped",
+        "native_binary": {
+          "bytes": 52552,
+          "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+        },
+        "semantics_version": "hangma-standard-grouped-v1"
+      },
+      "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+      "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+      "params": {
+        "max_local_collection_size": 8192,
+        "max_operations": 4800000,
+        "projection_limits": {
+          "max_branches": 16384,
+          "max_nodes": 8192,
+          "max_replacement_depth": 1,
+          "max_waiting_draw_witnesses": 65536
+        },
+        "route_limits": {
+          "max_expansions": 8192,
+          "max_routes_per_candidate": 128
+        },
+        "rule_config": {
+          "base_score": 1,
+          "ruleset_version": "hangma-mvp-v10-public-counts",
+          "you_cai_bi_kao": false
+        }
+      },
+      "source_manifest": {
+        "src/hangma_bot/hangma/__init__.py": {
+          "bytes": 145,
+          "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+        },
+        "src/hangma_bot/hangma/_grouped_native.c": {
+          "bytes": 19322,
+          "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+        },
+        "src/hangma_bot/hangma/_public_tile_reuse.py": {
+          "bytes": 10595,
+          "sha256": "e22c0f3d7a4d38ef5f78fd7532ad963ae198b8e2914623c717af488139d8f934"
+        },
+        "src/hangma_bot/hangma/_standard.py": {
+          "bytes": 1542,
+          "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+        },
+        "src/hangma_bot/hangma/_standard_python.py": {
+          "bytes": 14730,
+          "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+        },
+        "src/hangma_bot/hangma/action_families.py": {
+          "bytes": 20884,
+          "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+        },
+        "src/hangma_bot/hangma/candidate_facts.py": {
+          "bytes": 19139,
+          "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+        },
+        "src/hangma_bot/hangma/catch_play.py": {
+          "bytes": 10173,
+          "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+        },
+        "src/hangma_bot/hangma/emergency.py": {
+          "bytes": 4153,
+          "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+        },
+        "src/hangma_bot/hangma/engine.py": {
+          "bytes": 32121,
+          "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+        },
+        "src/hangma_bot/hangma/hand_analysis.py": {
+          "bytes": 25772,
+          "sha256": "c11d0abbb6eebb9f724e230b42884b8dd1b0fa0a4560eda86104df1f6826f0fe"
+        },
+        "src/hangma_bot/hangma/interface.py": {
+          "bytes": 37378,
+          "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+        },
+        "src/hangma_bot/hangma/internal_types.py": {
+          "bytes": 9019,
+          "sha256": "3b959871ac740d27c43f6dec18df5e30bfef6a93080628d4b3e6f67cc45af5ea"
+        },
+        "src/hangma_bot/hangma/natural_preparation.py": {
+          "bytes": 5636,
+          "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+        },
+        "src/hangma_bot/hangma/observation_rules.py": {
+          "bytes": 24098,
+          "sha256": "25f4fa8bb66c881e8b7583f92aae110f099192c62cbcb8b6b5520cc33c7d0b03"
+        },
+        "src/hangma_bot/hangma/progression.py": {
+          "bytes": 44196,
+          "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+        },
+        "src/hangma_bot/hangma/progression_payload.py": {
+          "bytes": 15798,
+          "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+        },
+        "src/hangma_bot/hangma/public_successor.py": {
+          "bytes": 21173,
+          "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+        },
+        "src/hangma_bot/hangma/public_tile_counts.py": {
+          "bytes": 35715,
+          "sha256": "b86866d7aa43a985292ec99fd39e7378b7c259e2799c21741d5fea0dbc78eb27"
+        },
+        "src/hangma_bot/hangma/route_frontier.py": {
+          "bytes": 11581,
+          "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+        },
+        "src/hangma_bot/hangma/route_hu_witness.py": {
+          "bytes": 8183,
+          "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+        },
+        "src/hangma_bot/hangma/route_structure.py": {
+          "bytes": 10649,
+          "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+        },
+        "src/hangma_bot/hangma/route_transition.py": {
+          "bytes": 72647,
+          "sha256": "800b595e33381ed355d9182e31ae977904fc7969ac5592f4a692faf5b62eac4f"
+        },
+        "src/hangma_bot/hangma/settlement.py": {
+          "bytes": 10643,
+          "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+        },
+        "src/hangma_bot/hangma/special_rules.py": {
+          "bytes": 11609,
+          "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+        },
+        "src/hangma_bot/hangma/value_analysis.py": {
+          "bytes": 18251,
+          "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+        },
+        "src/hangma_bot/kernel/actions.py": {
+          "bytes": 10754,
+          "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+        },
+        "src/hangma_bot/kernel/config.py": {
+          "bytes": 3236,
+          "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+        },
+        "src/hangma_bot/kernel/observation.py": {
+          "bytes": 17784,
+          "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+        },
+        "src/hangma_bot/kernel/outcomes.py": {
+          "bytes": 8643,
+          "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+        },
+        "src/hangma_bot/policy/action_value.py": {
+          "bytes": 45125,
+          "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+        },
+        "src/hangma_bot/policy/action_value_executor.py": {
+          "bytes": 106868,
+          "sha256": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb"
+        },
+        "src/hangma_bot/policy/errors.py": {
+          "bytes": 372,
+          "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+        },
+        "src/hangma_bot/policy/interface.py": {
+          "bytes": 3546,
+          "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+        },
+        "src/hangma_bot/policy/route_heuristic_view.py": {
+          "bytes": 28880,
+          "sha256": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1"
+        },
+        "src/hangma_bot/policy/route_vip_heuristic.py": {
+          "bytes": 37065,
+          "sha256": "ec92ece74a2c44fa3cff31824bc51bca1abb4db63e98552a634cd9b739a26da0"
+        },
+        "src/hangma_bot/policy/safe_fallback.py": {
+          "bytes": 2352,
+          "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+        }
+      },
+      "source_sha256": "961ce1445cebde624dba80c6748bb524d16616662605a2f1b53ec9931c7962c5",
+      "view_schema_version": "vip-route-scoring-view/3"
+    }
+  },
+  "identity": {
+    "candidate_id": "76d9d496cd47259250f7d352ff3dc0ddd6c52ae4a2b556c9e28a18b233b401a7",
+    "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+    "contract_sha256": "4ee18be7935430f53b84cd096767a88b88252260ecc4afd63130ccb26791efca",
+    "deps_digest": "085a7935c483e1ad79820fcc73abd673b4d068505e788a4fbd2abfca86bc24c8",
+    "graph_schema_version": "vip-route-action-graph/3",
+    "math_backend": {
+      "fallback_reason": null,
+      "implementation": "c_grouped",
+      "native_binary": {
+        "bytes": 52552,
+        "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+      },
+      "semantics_version": "hangma-standard-grouped-v1"
+    },
+    "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+    "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+    "params": {
+      "max_local_collection_size": 8192,
+      "max_operations": 4800000,
+      "projection_limits": {
+        "max_branches": 16384,
+        "max_nodes": 8192,
+        "max_replacement_depth": 1,
+        "max_waiting_draw_witnesses": 65536
+      },
+      "route_limits": {
+        "max_expansions": 8192,
+        "max_routes_per_candidate": 128
+      },
+      "rule_config": {
+        "base_score": 1,
+        "ruleset_version": "hangma-mvp-v10-public-counts",
+        "you_cai_bi_kao": false
+      }
+    },
+    "source_manifest": {
+      "src/hangma_bot/hangma/__init__.py": {
+        "bytes": 145,
+        "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+      },
+      "src/hangma_bot/hangma/_grouped_native.c": {
+        "bytes": 19322,
+        "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+      },
+      "src/hangma_bot/hangma/_public_tile_reuse.py": {
+        "bytes": 10595,
+        "sha256": "e22c0f3d7a4d38ef5f78fd7532ad963ae198b8e2914623c717af488139d8f934"
+      },
+      "src/hangma_bot/hangma/_standard.py": {
+        "bytes": 1542,
+        "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+      },
+      "src/hangma_bot/hangma/_standard_python.py": {
+        "bytes": 14730,
+        "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+      },
+      "src/hangma_bot/hangma/action_families.py": {
+        "bytes": 20884,
+        "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+      },
+      "src/hangma_bot/hangma/candidate_facts.py": {
+        "bytes": 19139,
+        "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+      },
+      "src/hangma_bot/hangma/catch_play.py": {
+        "bytes": 10173,
+        "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+      },
+      "src/hangma_bot/hangma/emergency.py": {
+        "bytes": 4153,
+        "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+      },
+      "src/hangma_bot/hangma/engine.py": {
+        "bytes": 32121,
+        "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+      },
+      "src/hangma_bot/hangma/hand_analysis.py": {
+        "bytes": 25772,
+        "sha256": "c11d0abbb6eebb9f724e230b42884b8dd1b0fa0a4560eda86104df1f6826f0fe"
+      },
+      "src/hangma_bot/hangma/interface.py": {
+        "bytes": 37378,
+        "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+      },
+      "src/hangma_bot/hangma/internal_types.py": {
+        "bytes": 9019,
+        "sha256": "3b959871ac740d27c43f6dec18df5e30bfef6a93080628d4b3e6f67cc45af5ea"
+      },
+      "src/hangma_bot/hangma/natural_preparation.py": {
+        "bytes": 5636,
+        "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+      },
+      "src/hangma_bot/hangma/observation_rules.py": {
+        "bytes": 24098,
+        "sha256": "25f4fa8bb66c881e8b7583f92aae110f099192c62cbcb8b6b5520cc33c7d0b03"
+      },
+      "src/hangma_bot/hangma/progression.py": {
+        "bytes": 44196,
+        "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+      },
+      "src/hangma_bot/hangma/progression_payload.py": {
+        "bytes": 15798,
+        "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+      },
+      "src/hangma_bot/hangma/public_successor.py": {
+        "bytes": 21173,
+        "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+      },
+      "src/hangma_bot/hangma/public_tile_counts.py": {
+        "bytes": 35715,
+        "sha256": "b86866d7aa43a985292ec99fd39e7378b7c259e2799c21741d5fea0dbc78eb27"
+      },
+      "src/hangma_bot/hangma/route_frontier.py": {
+        "bytes": 11581,
+        "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+      },
+      "src/hangma_bot/hangma/route_hu_witness.py": {
+        "bytes": 8183,
+        "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+      },
+      "src/hangma_bot/hangma/route_structure.py": {
+        "bytes": 10649,
+        "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+      },
+      "src/hangma_bot/hangma/route_transition.py": {
+        "bytes": 72647,
+        "sha256": "800b595e33381ed355d9182e31ae977904fc7969ac5592f4a692faf5b62eac4f"
+      },
+      "src/hangma_bot/hangma/settlement.py": {
+        "bytes": 10643,
+        "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+      },
+      "src/hangma_bot/hangma/special_rules.py": {
+        "bytes": 11609,
+        "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+      },
+      "src/hangma_bot/hangma/value_analysis.py": {
+        "bytes": 18251,
+        "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+      },
+      "src/hangma_bot/kernel/actions.py": {
+        "bytes": 10754,
+        "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+      },
+      "src/hangma_bot/kernel/config.py": {
+        "bytes": 3236,
+        "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+      },
+      "src/hangma_bot/kernel/observation.py": {
+        "bytes": 17784,
+        "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+      },
+      "src/hangma_bot/kernel/outcomes.py": {
+        "bytes": 8643,
+        "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+      },
+      "src/hangma_bot/policy/action_value.py": {
+        "bytes": 45125,
+        "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+      },
+      "src/hangma_bot/policy/action_value_executor.py": {
+        "bytes": 106868,
+        "sha256": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb"
+      },
+      "src/hangma_bot/policy/errors.py": {
+        "bytes": 372,
+        "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+      },
+      "src/hangma_bot/policy/interface.py": {
+        "bytes": 3546,
+        "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+      },
+      "src/hangma_bot/policy/route_heuristic_view.py": {
+        "bytes": 28880,
+        "sha256": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1"
+      },
+      "src/hangma_bot/policy/route_vip_heuristic.py": {
+        "bytes": 37065,
+        "sha256": "ec92ece74a2c44fa3cff31824bc51bca1abb4db63e98552a634cd9b739a26da0"
+      },
+      "src/hangma_bot/policy/safe_fallback.py": {
+        "bytes": 2352,
+        "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+      }
+    },
+    "source_sha256": "c64bc010b0657f32f5216699562d109c592b5169a40fe3444d9ae2ce0f8d0d1c",
+    "view_schema_version": "vip-route-scoring-view/3"
+  },
+  "identity_stable": true,
+  "input_reservation_evidence": {
+    "basis": "已核模型整输入上限的工程预留；UTF-8字节仅记规模，不作为token上界或精准token数",
+    "input_bound": {
+      "evidence": {
+        "interpretation": "官方1M上下文、128K输出；整上下文按二进制上取整预留输入，实际输出上限65536，不把UTF8字节当精确token数",
+        "sources": [
+          "https://docs.z.ai/guides/llm/glm-5.3",
+          "https://docs.bigmodel.cn/cn/guide/models/text/glm-5.3"
+        ],
+        "verified_on": "2026-10-04"
+      },
+      "kind": "verified_model_input_limit",
+      "max_input_tokens": 1048576,
+      "model": "glm-5.3"
+    },
+    "minimum_reserved_tokens": 1048576,
+    "prompt_utf8_bytes": 204381
+  },
+  "is_model_output": true,
+  "load": {
+    "full_return_or_behavior_verified": false,
+    "gates_run": [],
+    "method": "ActionValueExecutor_constructor",
+    "ok": true
+  },
+  "m2_scope": null,
+  "mechanism": {
+    "changed_branches": "相对6876与e8共骨架：删除speedfront同速并集包络、FRONTSHARE边际、SATEANCHOR=12硬置空与room+REMOTEROOMSLACK=3硬门，改为routepair独占聚合——共享码只计主路线一次，跟随路线独占码经EXCLUSIVECAP饱和乘1/(1+GAPSCALE·价值差+STEPGROWTH·步差平方)计入，主目标同值并列由独占出口而非并集包络裁决，速度/准备/用途差异保留在各自路线值内；jointwait逐目标保留凸k先验、targetgate、maturity、rescue、exitfactor，但墙余折减purposescale改reachscale平方衰减表达负担过大，新增chainladder公开链数阶梯乘白用途先验与两远端通道；anchorwhite结算明细基线、释放与新白凸差双通道、通道联合增益已被totalcredit覆盖则删除的互斥去重、paysummary/paycredit、直接升档/下侧/维持/exposure/carry、备用组合压缩为自然准备独占单道、choices/replacement/condition全边消费、chi/peng/gang固定调整、hu根即时结算、ABSTAIN缺口路径全部继承；无白到多白k=0..w、七对副露None、未知补牌节点与未知资格码均按原语义处理。",
+    "counterexample": "反例一：独占出口以路线价值差与步差平方折价，若跟随路线独占码实际容量接近耗尽或关键张在他家暗牌，EXCLUSIVECAP饱和仍高估备用价值；主目标同值时并列裁决仍可能选中事后更慢的路线，038与040单例历史结局不构成规定答案。反例二：平滑锚点饱和在高锚点只衰减不归零，32番以上确定胡仍可能被残余远端通道拖入等待，重现已胡等待失胡损失；SATETHRESH与SATESOFT只是排序常数而非正确经验。反例三：reachscale平方项以room=(墙余-20)/4冒充可行动作数，边界晚墙局与他家先胡、抓打限制不匹配，可能过早或过晚折减；他家胡率与摸牌概率保持未知，容量不可除墙。反例四：链数阶梯奖励已公开链证据，但追加链需未来合法动作，可能为不可兑现的链可能性多付排序点。反例五：凸PURPOSES先验仍是种子级猜测，k=2两白待弃若实耗两个摸打循环则高估，一码同时服务主出口与白用途目标时只计一次又低估真实期权性，逐目标只取最优会漏计多目标并行价值。全部是排序点取舍，不是期望积分、概率或强度证明。",
+    "expected_direction": "主目标值并列的无白窗口（038类seven_pairs并列）预期改由跟随路线独占出口与逐目标改善宽度差异裁决，不再被同速并集包络整体主导，不断言新公式选普通型也不规定弃牌答案；已可胡窗口锚点升高时释放与新白通道按1/(1+SATESOFT·max(0,anchor-SATETHRESH))平滑衰减而非阈值翻转，035双白与015三白2升4正例在中等锚点仍计增量，很高锚点趋近直接胡表达当前胡已够好；002类失胡避免经直接升档、下侧与锚价维持；040类成熟单白立即胡窗口因释放需retained>=2、新白需retained>=2或need>0而维持hu；晚墙重负担经平方可达折减与drawscale=0硬零趋近速胡或普通出口；已公开链的等待态白用途与远端通道小幅上调表达追加链可能性。以上均为预期声明，生成/装载不等于准入、性能改进或发布，现有烟测不证明1秒在线可用。",
+    "operator": "e1",
+    "parameter_changes": [],
+    "parent_differences": [
+      {
+        "action_keys": [
+          "discard:7w",
+          "discard:2t",
+          "discard:1t",
+          "discard:6t",
+          "hu"
+        ],
+        "candidate_id": "6876373ea66c9b0a0bd25743517bb1ddacd0742e61822a6a0efd0abc5c157c28",
+        "expected_change": "继承其同速进张一次计满思想与凸k保白用途先验，但把speedfront同速并集包络替换为主路线-跟随路线独占聚合：共享码归主路线全额、跟随路线只计独占出口并按价值差与步差平方折价，主目标同值窗口的并列裁决从并集边际改为独占出口；其单一completion_gain远端通道拆为已持白释放与新白凸差两条互斥通道，加链数阶梯与平方可达折减；其慢路线备用组合压缩为自然准备独占单道。预期其并集探索窗口部分保留、部分改由独占出口与锚点平滑饱和重裁；closed开发净+6.7421875/桌与区间[-8.45,+22.72]不迁移、不当作强度证据。",
+        "status": "expected",
+        "window_classes": [
+          "same_speed_union_backup",
+          "exclusive_follower_exits",
+          "completion_gain_wait",
+          "convex_white_purpose",
+          "single_white_mature_wait",
+          "chain_ladder_wait"
+        ]
+      },
+      {
+        "action_keys": [
+          "hu",
+          "discard:9b",
+          "discard:6t",
+          "discard:北",
+          "discard:2t",
+          "discard:7w"
+        ],
+        "candidate_id": "e8dbd753e96d410bc2f7c7a60bbe856c4b25cc87744a07262ecdcb2fcb8b211b",
+        "expected_change": "几乎全量继承其anchorwhite结算明细白基线、释放与新白双远端增量通道、获记路线基线差价思想与carry的exitneed折价；联合改动三处：FRONTSHARE并集边际删除改独占出口聚合，SATEANCHOR=12硬置空改SATETHRESH起的平滑饱和因子，room+REMOTEROOMSLACK=3硬门改reachscale平方可达折减（墙余不高于保留区drawscale=0仍硬零），并新增公开链数阶梯乘白用途与远端通道。019类纯平胡多白释放翻转、002/015类爆头财飘基线窗口逐点维持；其355状态机械通过与4窗口改选记录不迁移、不当作强度证据。",
+        "status": "expected",
+        "window_classes": [
+          "current_hu",
+          "plain_settlement_release",
+          "white_cash_keep",
+          "sated_anchor_satiation",
+          "late_wall_burden",
+          "same_speed_union_backup"
+        ]
+      }
+    ],
+    "trigger": "共骨架在全部wait/unknown_draw节点一次后序共享计算：普通与七对各自独立支持度经routepair主路线-跟随路线聚合，主路线全额计共享进张码，跟随路线只把不在主路线码集的独占出口按价值差与向听步差平方折价一次；jointwait逐目标按价值-额外代价选最优，k保白凸用途先验乘公开baotou/chain_count链数阶梯；自然面子准备只作不与已计码重叠的独占备用道；已可胡窗口以当前合法胡根最大实际结算为锚点机会成本，条件支付表产出直接升档/下侧/维持三量，已持k>=2白的释放通道带锚点结算明细anchorwhite基线、未来追加白通道带凸用途差，两通道互斥并各乘锚点平滑饱和因子与平方可达折减后在huoffer取大；墙余不高于保留区时drawscale=0硬性关闭全部未来通道，精确零容量码关闭；chi/peng根只加跳座收益减固定费用，gang减固定费用；choices仅在合法续行中择优，replacement/condition消费全部相容边下端加有界均值价差不挑最好补牌；机械缺口或空条件节点显式ABSTAIN；不读他家暗牌、未来墙、房号或诊断标签，未裁决鸣牌仅条件评价，公开容量只作张数不作概率。"
+  },
+  "mechanism_sha256": "41479aa142a748880bdd2ac52ba390d569cde8268aba91c3427fd3ed6c47a701",
+  "model_identity": {
+    "observed_exact_response_model": false,
+    "requested": "glm-5.3",
+    "returned": "glm-5.3",
+    "source": "response_or_request_fallback"
+  },
+  "numeric_literal_changes": [],
+  "operator_actual": "e1",
+  "operator_requested": "e1",
+  "parents": [
+    {
+      "admission": {
+        "eligible": false,
+        "gates_run": []
+      },
+      "artifact_role": "candidate_proposal",
+      "identity": {
+        "candidate_id": "6876373ea66c9b0a0bd25743517bb1ddacd0742e61822a6a0efd0abc5c157c28",
+        "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+        "contract_sha256": "4ee18be7935430f53b84cd096767a88b88252260ecc4afd63130ccb26791efca",
+        "deps_digest": "085a7935c483e1ad79820fcc73abd673b4d068505e788a4fbd2abfca86bc24c8",
+        "graph_schema_version": "vip-route-action-graph/3",
+        "math_backend": {
+          "fallback_reason": null,
+          "implementation": "c_grouped",
+          "native_binary": {
+            "bytes": 52552,
+            "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+          },
+          "semantics_version": "hangma-standard-grouped-v1"
+        },
+        "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+        "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+        "params": {
+          "max_local_collection_size": 8192,
+          "max_operations": 4800000,
+          "projection_limits": {
+            "max_branches": 16384,
+            "max_nodes": 8192,
+            "max_replacement_depth": 1,
+            "max_waiting_draw_witnesses": 65536
+          },
+          "route_limits": {
+            "max_expansions": 8192,
+            "max_routes_per_candidate": 128
+          },
+          "rule_config": {
+            "base_score": 1,
+            "ruleset_version": "hangma-mvp-v10-public-counts",
+            "you_cai_bi_kao": false
+          }
+        },
+        "source_manifest": {
+          "src/hangma_bot/hangma/__init__.py": {
+            "bytes": 145,
+            "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+          },
+          "src/hangma_bot/hangma/_grouped_native.c": {
+            "bytes": 19322,
+            "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+          },
+          "src/hangma_bot/hangma/_public_tile_reuse.py": {
+            "bytes": 10595,
+            "sha256": "e22c0f3d7a4d38ef5f78fd7532ad963ae198b8e2914623c717af488139d8f934"
+          },
+          "src/hangma_bot/hangma/_standard.py": {
+            "bytes": 1542,
+            "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+          },
+          "src/hangma_bot/hangma/_standard_python.py": {
+            "bytes": 14730,
+            "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+          },
+          "src/hangma_bot/hangma/action_families.py": {
+            "bytes": 20884,
+            "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+          },
+          "src/hangma_bot/hangma/candidate_facts.py": {
+            "bytes": 19139,
+            "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+          },
+          "src/hangma_bot/hangma/catch_play.py": {
+            "bytes": 10173,
+            "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+          },
+          "src/hangma_bot/hangma/emergency.py": {
+            "bytes": 4153,
+            "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+          },
+          "src/hangma_bot/hangma/engine.py": {
+            "bytes": 32121,
+            "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+          },
+          "src/hangma_bot/hangma/hand_analysis.py": {
+            "bytes": 25772,
+            "sha256": "c11d0abbb6eebb9f724e230b42884b8dd1b0fa0a4560eda86104df1f6826f0fe"
+          },
+          "src/hangma_bot/hangma/interface.py": {
+            "bytes": 37378,
+            "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+          },
+          "src/hangma_bot/hangma/internal_types.py": {
+            "bytes": 9019,
+            "sha256": "3b959871ac740d27c43f6dec18df5e30bfef6a93080628d4b3e6f67cc45af5ea"
+          },
+          "src/hangma_bot/hangma/natural_preparation.py": {
+            "bytes": 5636,
+            "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+          },
+          "src/hangma_bot/hangma/observation_rules.py": {
+            "bytes": 24098,
+            "sha256": "25f4fa8bb66c881e8b7583f92aae110f099192c62cbcb8b6b5520cc33c7d0b03"
+          },
+          "src/hangma_bot/hangma/progression.py": {
+            "bytes": 44196,
+            "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+          },
+          "src/hangma_bot/hangma/progression_payload.py": {
+            "bytes": 15798,
+            "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+          },
+          "src/hangma_bot/hangma/public_successor.py": {
+            "bytes": 21173,
+            "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+          },
+          "src/hangma_bot/hangma/public_tile_counts.py": {
+            "bytes": 35715,
+            "sha256": "b86866d7aa43a985292ec99fd39e7378b7c259e2799c21741d5fea0dbc78eb27"
+          },
+          "src/hangma_bot/hangma/route_frontier.py": {
+            "bytes": 11581,
+            "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+          },
+          "src/hangma_bot/hangma/route_hu_witness.py": {
+            "bytes": 8183,
+            "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+          },
+          "src/hangma_bot/hangma/route_structure.py": {
+            "bytes": 10649,
+            "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+          },
+          "src/hangma_bot/hangma/route_transition.py": {
+            "bytes": 72647,
+            "sha256": "800b595e33381ed355d9182e31ae977904fc7969ac5592f4a692faf5b62eac4f"
+          },
+          "src/hangma_bot/hangma/settlement.py": {
+            "bytes": 10643,
+            "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+          },
+          "src/hangma_bot/hangma/special_rules.py": {
+            "bytes": 11609,
+            "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+          },
+          "src/hangma_bot/hangma/value_analysis.py": {
+            "bytes": 18251,
+            "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+          },
+          "src/hangma_bot/kernel/actions.py": {
+            "bytes": 10754,
+            "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+          },
+          "src/hangma_bot/kernel/config.py": {
+            "bytes": 3236,
+            "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+          },
+          "src/hangma_bot/kernel/observation.py": {
+            "bytes": 17784,
+            "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+          },
+          "src/hangma_bot/kernel/outcomes.py": {
+            "bytes": 8643,
+            "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+          },
+          "src/hangma_bot/policy/action_value.py": {
+            "bytes": 45125,
+            "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+          },
+          "src/hangma_bot/policy/action_value_executor.py": {
+            "bytes": 106868,
+            "sha256": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb"
+          },
+          "src/hangma_bot/policy/errors.py": {
+            "bytes": 372,
+            "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+          },
+          "src/hangma_bot/policy/interface.py": {
+            "bytes": 3546,
+            "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+          },
+          "src/hangma_bot/policy/route_heuristic_view.py": {
+            "bytes": 28880,
+            "sha256": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1"
+          },
+          "src/hangma_bot/policy/route_vip_heuristic.py": {
+            "bytes": 37065,
+            "sha256": "ec92ece74a2c44fa3cff31824bc51bca1abb4db63e98552a634cd9b739a26da0"
+          },
+          "src/hangma_bot/policy/safe_fallback.py": {
+            "bytes": 2352,
+            "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+          }
+        },
+        "source_sha256": "c099735f7da705bf8dd6aa5b01a15a8b4bafa8c21d4eb9a76fa8d7674635685f",
+        "view_schema_version": "vip-route-scoring-view/3"
+      },
+      "load": {
+        "full_return_or_behavior_verified": false,
+        "gates_run": [],
+        "method": "ActionValueExecutor_constructor",
+        "ok": true
+      },
+      "mechanism": {
+        "changed_branches": "wait/unknown_draw改为同速前沿并集支持加凸k保白用途定价加条件支付双通道；备用组合剔除前沿码后对慢路线与自然准备码折价计入；choices仍取最优合法续行，replacement/condition仍消费全部相容边下端加有界均值价差；hu根仍用即时结算点，chi/peng/gang根仍用跳座收益与固定费用。",
+        "counterexample": "反例一：两白在手且k=2与k=1前驱总负担相近时，凸先验给k=2近两倍排序点，但两白待弃的额外暴露只经一次性负担门近似，若实际多耗两次摸打循环则高估k=2。反例二：同速前沿按并集全额计入frontextra，当两家进张大量重叠且部分码精确容量接近耗尽时会高估重叠码的增量机会。反例三：等待锚点比较的远期通道折扣未建模他家先胡，弱Bot主场景外的强对手局可能系统性偏向继续等待；这些只是排序点取舍，不是概率或积分证明。",
+        "expected_direction": "同速普通与七对共有进张不再按家族重复计入宽度；k>=2前驱目标获得凸先验以缓解种子中同常数奖励加随k加重惩罚造成的k1偏置；成熟可胡局面按锚点升级与远期完成净价比较，预期改变early_one_white、route_speed_opportunity与mature_same_pay_continuation窗口的首选，方向仅为预期声明未验证。",
+        "operator": "i1",
+        "parameter_changes": [],
+        "parent_differences": [],
+        "trigger": "无父代新机制：按机制任务重建同速进张前沿、自然面子准备备用与保白用途联合定价；人工种子和S02字节参考只作结构参考，不继承任何成绩。"
+      },
+      "path": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/AUTHOR-speed-model-output",
+      "record_sha256": "963af1175cb9dfad448f78f9586d84c3966fc1ae1c21eb85f92d81bc6a3504fb",
+      "source": "\"\"\"i1均衡联合机制：同速进张前沿一次计满、前沿外折价备用组合与凸保白用途的条件双通道定价。\"\"\"\n\nPAYCAP = 50.0\nPAYREF = 192.0\nHUBASE = 10.0\nWAITBASE = 12.0\nFORMCOST = 3.4\nSPEEDCAP = 4.8\nSPEEDREF = 12.0\nVARREF = 4.0\nUNSEENSOFT = 0.75\nPURPOSES = (0.0, 3.0, 7.0, 14.0, 28.0)\nDEALERBOOST = 1.15\nHORIZONCOST = 0.30\nRETENTION = 20\nWALLSOFT = 8.0\nUNKNOWNWALLSCALE = 0.70\nOPPDECAY = 0.05\nRISKBASE = 1.8\nOPPRISK = 0.12\nLATERISK = 3.4\nUNKNOWNWALLRISK = 0.7\nMATURELINEAR = 0.32\nRESCUEDECAY = 0.30\nEXITFLOOR = 0.40\nEXITMASSREF = 6.0\nEXITWIDTHREF = 3.0\nEXITSTEPDECAY = 0.25\nTARGETGATEBASE = 0.50\nTARGETMASSREF = 2.0\nPORTCAP = 2.4\nPORTREF = 12.0\nENVELOPEBLEND = 0.25\nSINGLESCOPE = 0.75\nCOVREF = 3.0\nLOCALCAP = 6.0\nLOCALREF = 8.0\nKNOWNPAYLINEAR = 0.45\nPAYMASSREF = 8.0\nQUALUNKNOWN = 0.7\nQUALUNANALYSED = 1.0\nUNKNOWNDRAW = 2.5\nUNANCHOREXPOSURE = 0.15\nCONDITIONBLEND = 0.20\nCONDITIONCAP = 1.0\nREPLACEMENTBLEND = 0.40\nREPLACEMENTCAP = 2.3\nCLAIMCOST = 0.25\nSKIPVALUE = 0.10\nGANGCOST = 0.12\nANCHOROPTIONBASE = 0.14\nANCHOROPTIONSTEP = 0.10\nANCHORFALLBACKCOST = 0.45\nANCHORUNKNOWNCOST = 0.35\nNETUPGRADEWEIGHT = 1.40\nNETUPWIDTHREF = 4.0\nNETEXITWIDTHREF = 4.0\nNETCARRY = 0.20\nNETANCHORPRICE = 0.30\nNETRISKFEE = 0.45\nBRANCHGAP = 0.15\nPREPBUDGET = 0.60\nPAIRPRIORWEIGHT = 0.30\nSLOWBACKUPSHARE = 0.30\n\n\ndef paypoints(amount):\n    \"\"\"本家净积分除基础分后的有界排序点；不是未来积分或摸牌概率。\"\"\"\n    return PAYCAP * amount / (PAYREF + abs(amount))\n\n\ndef stockof(slot, waiting):\n    \"\"\"返回排序库存、精确张数与未知标记；公开容量含他家暗牌，不除以墙余。\"\"\"\n    capacity = waiting[\"unseen_capacities\"][slot]\n    evidence = waiting[\"unseen_evidence\"][slot]\n    if evidence == \"exact\" and capacity is not None:\n        return float(capacity), capacity, 0\n    if evidence == \"conservative\" and capacity is not None and capacity > 0:\n        return float(capacity), 0, 1\n    return UNSEENSOFT, 0, 1\n\n\ndef routesupport(codes, codeindex, drawscale, stock):\n    \"\"\"按规范牌码去重的一步推进支持；同码只计一次，不跨路线相加。\"\"\"\n    mass = 0.0\n    exact = 0\n    width = 0\n    uncertain = 0\n    seen = set()\n    for code in codes:\n        if code not in seen:\n            seen.add(code)\n            cell = stock[codeindex[code]]\n            if cell[0] > 0.0:\n                mass += cell[0]\n                exact += cell[1]\n                width += 1\n                uncertain += cell[2]\n    credit = (drawscale * SPEEDCAP * mass / (SPEEDREF + mass)\n              * float(width) / (VARREF + float(width)))\n    return credit, mass, width, exact, uncertain\n\n\ndef purposescale(burden, room, drawscale, pressure):\n    \"\"\"墙余可行性与公开副露压力的条件折减；burden不是保证摸牌次数。\"\"\"\n    excess = 0.0 if room is None else max(0.0, float(burden) - room)\n    return drawscale * pressure / (1.0 + HORIZONCOST * excess)\n\n\ndef prepvalue(waiting):\n    \"\"\"不借白、不含将的自然面子准备事实与单一负担成熟度系数。\"\"\"\n    prep = waiting[\"natural_preparation\"]\n    need = prep[\"natural_draw_lower_bound\"]\n    discard = prep[\"natural_discard_lower_bound\"]\n    width = waiting[\"natural_preparation_code_width\"]\n    burden = float(max(need, discard))\n    readiness = 1.0 / (1.0 + MATURELINEAR * burden)\n    if need > 0 and width == 0:\n        readiness = 0.0\n    return need, discard, width, readiness\n\n\ndef actualroute(shanten, support, structural):\n    \"\"\"真实向听加出口支持的路线上限；L不是保证还需摸几次。\"\"\"\n    length = max(0, shanten) + 1\n    value = support[0] - FORMCOST * float(length - 1) + structural\n    return shanten, length, support[0], support[1], support[2], support[4], value\n\n\ndef paysummary(waiting, seat, base):\n    \"\"\"条件胡支付的逐码包络摘要；同码两抓打假设互斥，只取下端加有界价差。\n\n    返回状态、容量加权平均点、码数、总容量与逐码(容量,包络点)。\n    状态0未分析、1已知空、2有支付、3部分未知；未知码不当零支付。\n    \"\"\"\n    payments = waiting[\"normal_draw_hu_payments\"]\n    if payments is None:\n        return 0, None, 0, 0.0, ()\n    partial = len(waiting[\"qualification_unknown_codes\"]) > 0\n    if not payments:\n        if partial:\n            return 3, 0.0, 0, 0.0, ()\n        return 1, 0.0, 0, 0.0, ()\n    groups = []\n    currentcode = None\n    lower = 0.0\n    upper = 0.0\n    capacity = 0.0\n    rows = 0\n    for payment in payments:\n        amount = float(payment[\"settlement\"][\"score_delta\"][seat]) / base\n        point = paypoints(amount)\n        code = payment[\"draw_code\"]\n        if code != currentcode:\n            if currentcode is not None:\n                groups.append((capacity, lower, upper, rows))\n            currentcode = code\n            lower = point\n            upper = point\n            capacity = float(payment[\"draw_capacity_before\"])\n            rows = 1\n        else:\n            if point < lower:\n                lower = point\n            if point > upper:\n                upper = point\n            rows += 1\n    groups.append((capacity, lower, upper, rows))\n    total = 0.0\n    mass = 0.0\n    offers = []\n    for group in groups:\n        if group[3] == 1:\n            envelope = SINGLESCOPE * group[1]\n        else:\n            envelope = group[1] + ENVELOPEBLEND * (group[2] - group[1])\n        total += group[0] * envelope\n        mass += group[0]\n        offers.append((group[0], envelope))\n    state = 3 if partial else 2\n    return state, total / mass, len(offers), mass, tuple(offers)\n\n\ndef paycredit(payment, coverage, drawscale, pressure):\n    \"\"\"近条件支付转有限信用；两种变换择大，不重复计同码机会。\"\"\"\n    point = payment[1]\n    if point is None or point <= 0.0:\n        return 0.0, 0.0, 0.0\n    scale = coverage * drawscale * pressure\n    saturated = LOCALCAP * point / (LOCALREF + point) * scale\n    linear = KNOWNPAYLINEAR * point * (payment[3] / (PAYMASSREF + payment[3])) * scale\n    if linear > saturated:\n        return saturated, linear, linear\n    return saturated, linear, saturated\n\n\ndef speedfront(waiting, standard, seven, codeindex, drawscale, pressure, stock):\n    \"\"\"最低向听家族推进码并集的单次同速前沿支持；同码不重复计数。\"\"\"\n    minshanten = standard[0]\n    if seven is not None and seven[0] < minshanten:\n        minshanten = seven[0]\n    frontlist = []\n    seenfront = set()\n    if standard[0] == minshanten:\n        for code in waiting[\"standard_useful_codes\"]:\n            if code not in seenfront:\n                seenfront.add(code)\n                frontlist.append(code)\n    structural = 0.0\n    if seven is not None and seven[0] == minshanten:\n        for code in waiting[\"seven_pairs_useful_codes\"]:\n            if code not in seenfront:\n                seenfront.add(code)\n                frontlist.append(code)\n        sevenlength = float(max(0, seven[0]) + 1)\n        structural = (PAIRPRIORWEIGHT\n                      * float(min(2, max(0, waiting[\"structure\"][\"natural_pair_count\"] - 4)))\n                      / sevenlength * drawscale * pressure)\n    support = routesupport(frontlist, codeindex, drawscale, stock)\n    value = support[0] - FORMCOST * float(max(0, minshanten)) + structural\n    slots = set()\n    for code in frontlist:\n        slots.add(codeindex[code])\n    return minshanten, value, support, slots\n\n\ndef jointwait(waiting, standard, seven, front, prep, local, codeindex, room, drawscale,\n              pressure, stock, dealerboost):\n    \"\"\"同速前沿全额、前沿外慢路线与自然准备折价备用、凸k用途逐目标选择。\n\n    每个目标只为超过其家族普通路线已付摸牌数的不同物理动作付一次\n    线性成熟度；凸k先验替代常数奖励以缓解k1偏置，墙余只在可行性门\n    按总负担计一次。主出口、已见证胡码与已选保白目标占用的码先删除，\n    前沿码由frontextra全额承担，备用中同码多来源取最大后统一饱和。\n    \"\"\"\n    main = standard\n    maincodes = waiting[\"standard_useful_codes\"]\n    if seven is not None and seven[6] > main[6]:\n        main = seven\n        maincodes = waiting[\"seven_pairs_useful_codes\"]\n    whites = waiting[\"structure\"][\"whites_held\"]\n    ordinary = main[6] + local\n    best = None\n    option = None\n    for index, target in enumerate(waiting[\"structure\"][\"targets\"]):\n        route = standard if target[\"family\"] == \"standard\" else seven\n        if route is not None:\n            terminal = 1 if target[\"requires_terminal_draw\"] else 0\n            need = target[\"natural_need\"]\n            naturaldrop = target[\"target_natural_discard_lower_bound\"]\n            whitedrop = target[\"target_white_discard_lower_bound\"]\n            retained = target[\"retained_whites\"]\n            width = waiting[\"target_improvement_code_widths\"][index]\n            predecessor = target[\"target_stage\"] == \"waiting_predecessor\"\n            targetmass = 0.0\n            for code in target[\"conditional_need_improvement_codes\"]:\n                targetmass += stock[codeindex[code]][0]\n            targetgate = 1.0\n            if need > 0:\n                targetgate = 0.0\n                if width > 0 and targetmass > 0.0:\n                    targetgate = (TARGETGATEBASE + (1.0 - TARGETGATEBASE)\n                                  * targetmass / (TARGETMASSREF + targetmass))\n            burden = max(need + terminal, naturaldrop + whitedrop)\n            extra = max(0, burden - route[1])\n            maturity = 1.0 / (1.0 + MATURELINEAR * float(extra))\n            rescue = 1.0 / (1.0 + RESCUEDECAY * float(extra))\n            exitmass = max(0.0, route[3])\n            exitwidth = float(route[4])\n            exitgate = exitmass / (EXITMASSREF + exitmass) * exitwidth / (EXITWIDTHREF + exitwidth)\n            exitgate = exitgate / (1.0 + EXITSTEPDECAY * float(route[1] - 1))\n            prior = 0.0\n            if predecessor and retained > 0:\n                prior = PURPOSES[retained] * dealerboost\n            exitfactor = EXITFLOOR + (1.0 - EXITFLOOR) * exitgate\n            purposecredit = (prior * purposescale(burden, room, drawscale, pressure)\n                             * targetgate * maturity * exitfactor)\n            rescued = local * rescue\n            prospective = rescued + purposecredit\n            value = route[6] + prospective\n            if best is None or value > best[10]:\n                best = (index, target[\"family\"], retained, need, terminal, burden,\n                        naturaldrop, whitedrop, width, prospective, value)\n            gain = max(0.0, value - ordinary)\n            if predecessor and retained > 0 and retained <= whites and gain > 0.0:\n                if option is None or gain > option[8]:\n                    option = (index, target[\"family\"], retained, need, width, prior,\n                              exitgate, targetgate, gain, targetmass, maturity, extra,\n                              rescue, prospective)\n    baseline = set(maincodes)\n    knownhu = waiting[\"legal_hu_draw_codes\"]\n    if knownhu is not None:\n        for code in knownhu:\n            baseline.add(code)\n    primaryvalue = ordinary\n    preparationoccupied = 0\n    if best is not None and best[10] > ordinary:\n        primaryvalue = best[10]\n        selected = waiting[\"structure\"][\"targets\"][best[0]]\n        if selected[\"family\"] == \"standard\":\n            selectedcodes = waiting[\"standard_useful_codes\"]\n        else:\n            selectedcodes = waiting[\"seven_pairs_useful_codes\"]\n        for code in selectedcodes:\n            baseline.add(code)\n        for code in selected[\"conditional_need_improvement_codes\"]:\n            baseline.add(code)\n        if (selected[\"family\"] == \"standard\" and selected[\"target_stage\"] == \"waiting_predecessor\"\n                and selected[\"retained_whites\"] > 0):\n            preparationoccupied = 1\n            for code in waiting[\"natural_preparation\"][\"natural_need_improvement_codes\"]:\n                baseline.add(code)\n    plans = []\n    branches = [(standard, waiting[\"standard_useful_codes\"])]\n    if seven is not None:\n        branches.append((seven, waiting[\"seven_pairs_useful_codes\"]))\n    for route, codes in branches:\n        steps = float(route[1] - 1)\n        gap = max(0.0, primaryvalue - (route[6] + local))\n        excess = 0.0 if room is None else max(0.0, float(route[1]) - room)\n        weight = 1.0 / ((1.0 + steps * steps + BRANCHGAP * gap) * (1.0 + HORIZONCOST * excess))\n        for code in codes:\n            slot = codeindex[code]\n            if code not in baseline and stock[slot][0] > 0.0:\n                plans.append((slot, weight))\n    if preparationoccupied == 0 and prep[0] > 0 and prep[2] > 0:\n        preplength = max(standard[1], prep[0] + 1, prep[1])\n        excess = 0.0 if room is None else max(0.0, float(preplength) - room)\n        gap = max(0.0, primaryvalue - (standard[6] + local))\n        prepweight = PREPBUDGET * prep[3] / ((1.0 + BRANCHGAP * gap) * (1.0 + HORIZONCOST * excess))\n        for code in waiting[\"natural_preparation\"][\"natural_need_improvement_codes\"]:\n            slot = codeindex[code]\n            if code not in baseline and stock[slot][0] > 0.0:\n                plans.append((slot, prepweight))\n    combined = []\n    currentslot = None\n    peak = 0.0\n    for plan in sorted(plans):\n        if plan[0] != currentslot:\n            if currentslot is not None:\n                combined.append((currentslot, peak))\n            currentslot = plan[0]\n            peak = plan[1]\n        elif plan[1] > peak:\n            peak = plan[1]\n    if currentslot is not None:\n        combined.append((currentslot, peak))\n    slowcombined = []\n    for entry in combined:\n        if entry[0] not in front[3]:\n            slowcombined.append(entry)\n    mass = 0.0\n    diversity = 0.0\n    exact = 0\n    codecount = 0\n    uncertain = 0\n    for entry in slowcombined:\n        cell = stock[entry[0]]\n        if cell[0] > 0.0:\n            mass += entry[1] * cell[0]\n            diversity += entry[1]\n            exact += cell[1]\n            codecount += 1\n            uncertain += cell[2]\n    backup = (drawscale * pressure * PORTCAP * mass / (PORTREF + mass)\n              * diversity / (VARREF + diversity))\n    frontextra = max(0.0, front[1] - main[6])\n    totalcredit = frontextra + SLOWBACKUPSHARE * backup\n    if option is not None:\n        incremental = max(0.0, option[8] - totalcredit)\n        if incremental <= 0.0:\n            option = None\n        else:\n            option = option[:8] + (incremental,) + option[9:]\n    portfolio = (mass, diversity, exact, codecount, uncertain, totalcredit,\n                 float(len(baseline)), frontextra, front[0], front[2][2])\n    return best, portfolio, option\n\n\ndef huoffer(anchor, discount, risk, payment, main, portfolio, option):\n    \"\"\"当前胡与继续等待的净比较；等待暴露只按一个合并费计一次。\n\n    直接升级按同码包络差计算；远目标只消费超过备用信用的增量；\n    确定胡的机会成本合并为锚价加风险费的单一exposure。全部是排序点，\n    不是期望积分或存活率；未分析支付按未知成本处理，不当零。\n    \"\"\"\n    mass = payment[3]\n    width = float(payment[2])\n    exitgate = mass / (PAYMASSREF + mass) * width / (NETEXITWIDTHREF + width)\n    preserved = 0.0\n    upgradeamount = 0.0\n    upgrademass = 0.0\n    upgradewidth = 0\n    downsideamount = 0.0\n    for offer in payment[4]:\n        capacity = offer[0]\n        point = offer[1]\n        preserved += capacity * min(anchor, max(0.0, point))\n        difference = point - anchor\n        if difference > 0.0:\n            upgradeamount += capacity * difference\n            upgrademass += capacity\n            upgradewidth += 1\n        else:\n            downsideamount += capacity * max(0.0, -difference)\n    floorfraction = 0.0\n    if mass > 0.0 and anchor > 0.0:\n        floorfraction = preserved / (mass * anchor)\n    maintained = exitgate * floorfraction\n    upgradesupport = (upgrademass / (PAYMASSREF + upgrademass)\n                      * float(upgradewidth) / (NETUPWIDTHREF + float(upgradewidth)))\n    upgrade = 0.0\n    if upgrademass > 0.0:\n        upgrade = (NETUPGRADEWEIGHT * discount * upgradeamount / upgrademass\n                   * upgradesupport)\n    downside = discount * downsideamount / (PAYMASSREF + mass)\n    direct = upgrade - downside\n    remote = 0.0\n    remoteprice = 0.0\n    fallback = 0.0\n    offervalue = direct\n    channel = \"direct_upgrade\"\n    if option is not None:\n        remoteprice = anchor * (ANCHOROPTIONBASE + ANCHOROPTIONSTEP * option[11])\n        if payment[1] is None:\n            fallback = ANCHORUNKNOWNCOST * anchor\n        else:\n            fallback = ANCHORFALLBACKCOST * max(0.0, anchor - max(0.0, payment[1]))\n        remote = discount * option[8] - remoteprice - fallback\n        if remote > offervalue:\n            offervalue = remote\n            channel = \"completion_gain\"\n    ordinarycore = max(0.0, main[6] + portfolio[5])\n    carry = NETCARRY * discount * maintained * ordinarycore\n    exposure = (NETANCHORPRICE * anchor + NETRISKFEE * risk) * (1.0 - discount * maintained)\n    net = offervalue + carry - exposure\n    return (net, channel, upgrade, downside, maintained, carry, exposure,\n            remote, remoteprice, fallback, offervalue)\n\n\ndef waitvalue(waiting, codeindex, seat, base, room, drawscale, pressure, discount,\n              risk, anchor, unknowncost, dealerboost):\n    \"\"\"同速前沿、凸用途先验与单次负担成本下评价普通出口、七对、逐目标用途与当前胡。\"\"\"\n    structure = waiting[\"structure\"]\n    stock = []\n    for slot in range(len(waiting[\"unseen_capacities\"])):\n        stock.append(stockof(slot, waiting))\n    prep = prepvalue(waiting)\n    standard = actualroute(structure[\"standard_shanten\"],\n                           routesupport(waiting[\"standard_useful_codes\"], codeindex, drawscale, stock),\n                           0.0)\n    seven = None\n    main = standard\n    family = \"standard\"\n    if structure[\"seven_pairs_shanten\"] is not None:\n        sevenlength = max(0, structure[\"seven_pairs_shanten\"]) + 1\n        pairprior = (PAIRPRIORWEIGHT\n                     * float(min(2, max(0, structure[\"natural_pair_count\"] - 4)))\n                     / float(sevenlength))\n        seven = actualroute(structure[\"seven_pairs_shanten\"],\n                            routesupport(waiting[\"seven_pairs_useful_codes\"], codeindex, drawscale, stock),\n                            pairprior * drawscale * pressure)\n        if seven[6] > main[6]:\n            main = seven\n            family = \"seven_pairs\"\n    front = speedfront(waiting, standard, seven, codeindex, drawscale, pressure, stock)\n    payment = paysummary(waiting, seat, base)\n    known = payment[2]\n    unknown = len(waiting[\"qualification_unknown_codes\"])\n    coverage = float(known) / (COVREF + float(known))\n    if payment[0] == 0:\n        qualcost = QUALUNANALYSED\n    else:\n        qualcost = QUALUNKNOWN * float(unknown) / float(1 + known + unknown)\n    credit = paycredit(payment, coverage, drawscale, pressure)\n    local = credit[2]\n    ordinary = main[6] + local\n    best, portfolio, option = jointwait(waiting, standard, seven, front, prep, local, codeindex,\n                                        room, drawscale, pressure, stock, dealerboost)\n    joint = ordinary\n    chosen = family\n    if best is not None and best[10] > joint:\n        joint = best[10]\n        chosen = \"completion_budget\"\n    joint += portfolio[5]\n    if anchor is not None:\n        ready = huoffer(anchor, discount, risk, payment, main, portfolio, option)\n        value = HUBASE + anchor + ready[0] - qualcost - unknowncost\n    else:\n        ready = None\n        value = WAITBASE + joint - qualcost - unknowncost - UNANCHOREXPOSURE * risk\n    facts = (standard, seven, best, prep, portfolio, payment, ordinary, joint, chosen,\n             local, qualcost, ready, option)\n    return value, facts\n\n\ndef score_actions(view):\n    \"\"\"对全部冻结后序节点一次共享计算，并给每个合法根恰一条有限评分。\n\n    choices才在合法续行中择优；replacement与condition消费全部相容边\n    的下端加有界价差，不挑最好补牌；机械缺口显式弃权。庄家身份只作\n    公开先验乘子。无文件、网络、时钟、随机或跨调用缓存。\n    \"\"\"\n    context = view[\"visible_state\"]\n    seat = context[\"seat\"]\n    base = float(view[\"binding\"][\"base_score\"])\n    wall = context[\"remaining_tile_count\"]\n    dealerboost = DEALERBOOST if seat == context[\"dealer_seat\"] else 1.0\n    opponents = 0\n    for otherseat, melds in enumerate(context[\"melds\"]):\n        if otherseat != seat:\n            opponents += len(melds)\n    pressure = 1.0 / (1.0 + OPPDECAY * float(opponents))\n    if wall is None:\n        room = None\n        drawscale = UNKNOWNWALLSCALE\n        discount = drawscale * pressure\n        risk = RISKBASE + OPPRISK * float(opponents) + UNKNOWNWALLRISK\n    else:\n        margin = max(0.0, float(wall) - float(RETENTION))\n        room = max(1.0, margin / 4.0)\n        drawscale = 1.0 if margin > 0.0 else 0.0\n        discount = drawscale * pressure * (0.30 + 0.70 * margin / (WALLSOFT + margin))\n        risk = RISKBASE + OPPRISK * float(opponents) + LATERISK * WALLSOFT / (WALLSOFT + margin)\n    codeindex = {code: index for index, code in enumerate(view[\"tile_order\"])}\n    nodes = view[\"nodes\"]\n    indexes = {node[\"node_key\"]: index for index, node in enumerate(nodes)}\n    anchor = None\n    for action in view[\"actions\"]:\n        node = nodes[indexes[action[\"node_key\"]]]\n        if node[\"kind\"] == \"hu\":\n            amount = float(node[\"settlement\"][\"score_delta\"][seat]) / base\n            point = paypoints(amount)\n            if anchor is None or point > anchor:\n                anchor = point\n    values = []\n    factslist = []\n    for node in nodes:\n        if node[\"gap_kind\"] is not None:\n            return {\"status\": \"ABSTAIN\", \"reason\": \"graph_gap\"}\n        kind = node[\"kind\"]\n        children = node[\"children\"]\n        if kind == \"wait\" or kind == \"unknown_draw\":\n            unknowncost = UNKNOWNDRAW if kind == \"unknown_draw\" else 0.0\n            value, facts = waitvalue(node[\"waiting\"], codeindex, seat, base, room, drawscale,\n                                     pressure, discount, risk, anchor, unknowncost, dealerboost)\n        elif kind == \"hu\":\n            amount = float(node[\"settlement\"][\"score_delta\"][seat]) / base\n            value = HUBASE + paypoints(amount)\n            facts = None\n        elif kind == \"choices\":\n            if not children:\n                return {\"status\": \"ABSTAIN\", \"reason\": \"empty_choices\"}\n            bestindex = indexes[children[0]]\n            value = values[bestindex]\n            for child in children:\n                childindex = indexes[child]\n                if values[childindex] > value:\n                    bestindex = childindex\n                    value = values[childindex]\n            facts = factslist[bestindex]\n        else:\n            if not children:\n                return {\"status\": \"ABSTAIN\", \"reason\": \"empty_condition\"}\n            value = values[indexes[children[0]]]\n            total = 0.0\n            for child in children:\n                childvalue = values[indexes[child]]\n                total += childvalue\n                if childvalue < value:\n                    value = childvalue\n            lower = value\n            mean = total / float(len(children))\n            blend = REPLACEMENTBLEND if kind == \"replacement\" else CONDITIONBLEND\n            cap = REPLACEMENTCAP if kind == \"replacement\" else CONDITIONCAP\n            value = lower + min(cap, blend * max(0.0, mean - lower))\n            facts = None\n        values.append(value)\n        factslist.append(facts)\n    entries = []\n    actioncount = len(view[\"actions\"])\n    for action in view[\"actions\"]:\n        index = indexes[action[\"node_key\"]]\n        kind = action[\"action_type\"]\n        adjustment = 0.0\n        if kind == \"chi\" or kind == \"peng\":\n            adjustment = SKIPVALUE * float(action[\"skipped_seats\"]) * drawscale - CLAIMCOST\n        elif kind == \"gang\":\n            adjustment = -GANGCOST\n        value = values[index] + adjustment\n        pairs = [(\"condition\", action[\"pending_condition\"]), (\"adjust\", round(adjustment, 3))]\n        facts = factslist[index]\n        if facts is not None and actioncount <= 24:\n            payment = facts[5]\n            if payment[1] is None:\n                avgpoint = None\n            else:\n                avgpoint = round(payment[1], 3)\n            pairs.append((\"pay\", (payment[0], avgpoint, payment[2], round(payment[3], 3))))\n            pairs.append((\"joint\", (round(facts[6], 3), round(facts[7], 3), facts[8],\n                                   round(facts[9], 3), round(facts[10], 3))))\n            pairs.append((\"portfolio\", tuple([round(part, 3) for part in facts[4]])))\n            best = facts[2]\n            if best is None:\n                pairs.append((\"target\", None))\n            else:\n                pairs.append((\"target\", (best[0], best[1], best[2], best[3], best[5],\n                                         round(best[9], 3), round(best[10], 3))))\n            ready = facts[11]\n            if ready is None:\n                pairs.append((\"offer\", None))\n            else:\n                pairs.append((\"offer\", (round(ready[0], 3), ready[1], round(ready[2], 3),\n                                        round(ready[3], 3), round(ready[4], 3))))\n            pairs.append((\"prep\", (facts[3][0], facts[3][1], facts[3][2], round(facts[3][3], 3))))\n        if not entries:\n            pairs.append((\"unit\", \"heuristic_rank_points\"))\n            pairs.append((\"formula\", \"vip_frontier_convex_purpose_i1/1\"))\n            if anchor is None:\n                anchorvalue = None\n            else:\n                anchorvalue = round(anchor, 3)\n            pairs.append((\"context\", (wall, opponents, round(dealerboost, 3),\n                                      round(discount, 3), round(risk, 3), anchorvalue)))\n            pairs.append((\"unknown\", \"opponent_hu_and_future_draw_reachability\"))\n            pairs.append((\"scope\", \"conditional_facts_not_probability_or_guaranteed_highfan\"))\n        entries.append({\"action_key\": action[\"action_key\"], \"score\": value, \"trace\": dict(pairs)})\n    return {\"status\": \"SCORED\", \"entries\": entries}",
+      "source_sha256": "c099735f7da705bf8dd6aa5b01a15a8b4bafa8c21d4eb9a76fa8d7674635685f",
+      "thought": "同速普通与七对的最低向听进张并集作为一次性计满的前沿、前沿外慢路线与自然面子准备只取折价备用，保白k用凸先验联合墙余可行性与条件胡升级/完成双通道定价，使成熟可胡局面按锚点净值比较而非强制止胡。",
+      "thought_sha256": "0b11f79828323b8974d99706d1c4f57a51f5e7ec638aa0a6ba371cf1db174ef7"
+    },
+    {
+      "admission": {
+        "eligible": false,
+        "gates_run": []
+      },
+      "artifact_role": "candidate_proposal",
+      "identity": {
+        "candidate_id": "e8dbd753e96d410bc2f7c7a60bbe856c4b25cc87744a07262ecdcb2fcb8b211b",
+        "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+        "contract_sha256": "4ee18be7935430f53b84cd096767a88b88252260ecc4afd63130ccb26791efca",
+        "deps_digest": "085a7935c483e1ad79820fcc73abd673b4d068505e788a4fbd2abfca86bc24c8",
+        "graph_schema_version": "vip-route-action-graph/3",
+        "math_backend": {
+          "fallback_reason": null,
+          "implementation": "c_grouped",
+          "native_binary": {
+            "bytes": 52552,
+            "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+          },
+          "semantics_version": "hangma-standard-grouped-v1"
+        },
+        "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+        "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+        "params": {
+          "max_local_collection_size": 8192,
+          "max_operations": 4800000,
+          "projection_limits": {
+            "max_branches": 16384,
+            "max_nodes": 8192,
+            "max_replacement_depth": 1,
+            "max_waiting_draw_witnesses": 65536
+          },
+          "route_limits": {
+            "max_expansions": 8192,
+            "max_routes_per_candidate": 128
+          },
+          "rule_config": {
+            "base_score": 1,
+            "ruleset_version": "hangma-mvp-v10-public-counts",
+            "you_cai_bi_kao": false
+          }
+        },
+        "source_manifest": {
+          "src/hangma_bot/hangma/__init__.py": {
+            "bytes": 145,
+            "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+          },
+          "src/hangma_bot/hangma/_grouped_native.c": {
+            "bytes": 19322,
+            "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+          },
+          "src/hangma_bot/hangma/_public_tile_reuse.py": {
+            "bytes": 10595,
+            "sha256": "e22c0f3d7a4d38ef5f78fd7532ad963ae198b8e2914623c717af488139d8f934"
+          },
+          "src/hangma_bot/hangma/_standard.py": {
+            "bytes": 1542,
+            "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+          },
+          "src/hangma_bot/hangma/_standard_python.py": {
+            "bytes": 14730,
+            "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+          },
+          "src/hangma_bot/hangma/action_families.py": {
+            "bytes": 20884,
+            "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+          },
+          "src/hangma_bot/hangma/candidate_facts.py": {
+            "bytes": 19139,
+            "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+          },
+          "src/hangma_bot/hangma/catch_play.py": {
+            "bytes": 10173,
+            "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+          },
+          "src/hangma_bot/hangma/emergency.py": {
+            "bytes": 4153,
+            "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+          },
+          "src/hangma_bot/hangma/engine.py": {
+            "bytes": 32121,
+            "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+          },
+          "src/hangma_bot/hangma/hand_analysis.py": {
+            "bytes": 25772,
+            "sha256": "c11d0abbb6eebb9f724e230b42884b8dd1b0fa0a4560eda86104df1f6826f0fe"
+          },
+          "src/hangma_bot/hangma/interface.py": {
+            "bytes": 37378,
+            "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+          },
+          "src/hangma_bot/hangma/internal_types.py": {
+            "bytes": 9019,
+            "sha256": "3b959871ac740d27c43f6dec18df5e30bfef6a93080628d4b3e6f67cc45af5ea"
+          },
+          "src/hangma_bot/hangma/natural_preparation.py": {
+            "bytes": 5636,
+            "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+          },
+          "src/hangma_bot/hangma/observation_rules.py": {
+            "bytes": 24098,
+            "sha256": "25f4fa8bb66c881e8b7583f92aae110f099192c62cbcb8b6b5520cc33c7d0b03"
+          },
+          "src/hangma_bot/hangma/progression.py": {
+            "bytes": 44196,
+            "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+          },
+          "src/hangma_bot/hangma/progression_payload.py": {
+            "bytes": 15798,
+            "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+          },
+          "src/hangma_bot/hangma/public_successor.py": {
+            "bytes": 21173,
+            "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+          },
+          "src/hangma_bot/hangma/public_tile_counts.py": {
+            "bytes": 35715,
+            "sha256": "b86866d7aa43a985292ec99fd39e7378b7c259e2799c21741d5fea0dbc78eb27"
+          },
+          "src/hangma_bot/hangma/route_frontier.py": {
+            "bytes": 11581,
+            "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+          },
+          "src/hangma_bot/hangma/route_hu_witness.py": {
+            "bytes": 8183,
+            "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+          },
+          "src/hangma_bot/hangma/route_structure.py": {
+            "bytes": 10649,
+            "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+          },
+          "src/hangma_bot/hangma/route_transition.py": {
+            "bytes": 72647,
+            "sha256": "800b595e33381ed355d9182e31ae977904fc7969ac5592f4a692faf5b62eac4f"
+          },
+          "src/hangma_bot/hangma/settlement.py": {
+            "bytes": 10643,
+            "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+          },
+          "src/hangma_bot/hangma/special_rules.py": {
+            "bytes": 11609,
+            "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+          },
+          "src/hangma_bot/hangma/value_analysis.py": {
+            "bytes": 18251,
+            "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+          },
+          "src/hangma_bot/kernel/actions.py": {
+            "bytes": 10754,
+            "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+          },
+          "src/hangma_bot/kernel/config.py": {
+            "bytes": 3236,
+            "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+          },
+          "src/hangma_bot/kernel/observation.py": {
+            "bytes": 17784,
+            "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+          },
+          "src/hangma_bot/kernel/outcomes.py": {
+            "bytes": 8643,
+            "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+          },
+          "src/hangma_bot/policy/action_value.py": {
+            "bytes": 45125,
+            "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+          },
+          "src/hangma_bot/policy/action_value_executor.py": {
+            "bytes": 106868,
+            "sha256": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb"
+          },
+          "src/hangma_bot/policy/errors.py": {
+            "bytes": 372,
+            "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+          },
+          "src/hangma_bot/policy/interface.py": {
+            "bytes": 3546,
+            "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+          },
+          "src/hangma_bot/policy/route_heuristic_view.py": {
+            "bytes": 28880,
+            "sha256": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1"
+          },
+          "src/hangma_bot/policy/route_vip_heuristic.py": {
+            "bytes": 37065,
+            "sha256": "ec92ece74a2c44fa3cff31824bc51bca1abb4db63e98552a634cd9b739a26da0"
+          },
+          "src/hangma_bot/policy/safe_fallback.py": {
+            "bytes": 2352,
+            "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+          }
+        },
+        "source_sha256": "110ec9f2c75f233d95f094e708102cf454e9105c3f6feed95fd6e7729cc4db94",
+        "view_schema_version": "vip-route-scoring-view/3"
+      },
+      "load": {
+        "full_return_or_behavior_verified": false,
+        "gates_run": [],
+        "method": "ActionValueExecutor_constructor",
+        "ok": true
+      },
+      "mechanism": {
+        "changed_branches": "相对两父共同骨架仅改jointwait远端通道门与并集边际、waitvalue饱和抑制和score_actions的trace：jointwait中release与option候选在原REMOTEACTDECAY平滑折减与purposescale墙余折价外新增硬门（pending>room+3整条不设候选），frontextra保持获记路线基线取差但FRONTSHARE由0.50上调至0.65；waitvalue在anchor>=SATEANCHOR时把jointwait返回的release与option置空后再进huoffer，使饱和锚点只剩direct upgrade减downside减锚价风险费；新增常量SATEANCHOR与REMOTEROOMSLACK，trace的context追加sateflag、formula改为vip_frontier_release_joint_e2/1。anchorwhite结算明细基线、release与新白双增量通道及其组合信用覆盖删除、direct同码包络升档、downside、maintained、exposure、carry的exitneed折价、凸k purposecredit与targetgate/exitfactor/maturity/rescue、paysummary/paycredit/speedfront/prepvalue、备用组合与自然准备折价、choices/replacement/condition全边消费、chi/peng/gang固定调整与跳座收益、hu根即时结算、ABSTAIN缺口路径全部继承不变；6876的整体completion_gain远端通道不恢复，由释放与新白两条增量通道替代。",
+        "counterexample": "反例一：anchorwhite以结算明细字符串映射PURPOSES[1]只是粗代理，爆头/财飘实际兑现的白价值可能多于或少于PURPOSES[1]，规则身份同名异义时基线错置，释放差误价可重现stop_lower_fan等待失胡或过度保白。反例二：SATEANCHOR=12是硬阈值，锚点恰低且条件支付表确有真实逐码升档的窗口仍会等待，恰高时双白2升4正例结构也被关闭远端通道，并列局断续翻转。反例三：room+3硬门以(墙余-20)/4冒充可行摸打数，边界晚墙局与他家先胡、抓打限制不匹配，可能过早关闭仍可行的转白路线；他家胡率与摸牌概率保持未知。反例四：FRONTSHARE=0.65与凸k先验仍是种子级猜测而非正确经验，k=2两白待弃若实耗两个摸打循环则凸先验高估，两家进张大量重叠且容量近耗尽时并集期权被高估，普通效率损失可能不被大牌兑现覆盖。反例五：6876区间[-8.45,+22.72]与a0区间[-33.59,+5.88]来源不同不可当父代直接排名，closed开发净+6.7421875与64桌净-10.34375均不迁移，冻结窗翻转与整桌净变化不证明长批次净改进、大牌收入转正或官方时限可部署。",
+        "expected_direction": "同速并集边际为正且获记族等于主族的无白窗口（003:2、020:0类）联合备用信用较a0回升0.15倍并集差但仍低于6876全额，贴近并列首选可能回摆向主路线自然形；纯平胡结算且持>=2白、有活前驱目标的已可胡窗口（019类）维持释放翻转hu到保白弃牌，锚点明细含爆头/财飘的窗口（002、015、024类）基线与逐点选择不变；锚点排序点>=12的窗口预期翻回hu表达当前胡已够好；040类成熟单白need=0窗口仍被排除新白通道而维持hu；035类双白2升4正例仍经释放通道计增量；晚墙重负担远端窗口被硬门关闭翻向速胡或普通出口；038类无白三对起点不改家族比较，两父记录均以seven_pairs为信用家族，不断言新公式选普通型，弃1条/2条之差不构成规定弃牌答案。以上全为预期声明，生成/装载不等于准入、性能改进或发布，现有烟测不证明1秒在线可用。",
+        "operator": "e2",
+        "parameter_changes": [],
+        "parent_differences": [
+          {
+            "action_keys": [
+              "discard:7w",
+              "discard:2t",
+              "discard:1t",
+              "discard:6t",
+              "hu"
+            ],
+            "candidate_id": "6876373ea66c9b0a0bd25743517bb1ddacd0742e61822a6a0efd0abc5c157c28",
+            "expected_change": "继承其同速并集全额探索与凸k保白用途思想但修复重复计价：并集边际改对实际获记路线基线取差再按0.65折价，选择族不等于主族时不再把该族结构先验经并集二次计入；整体completion_gain远端通道拆为已持白释放（基线读锚点结算明细anchorwhite）与新白凸差两条增量通道，成熟单白need=0目标排除以保留040失胡反例；新增锚点>=SATEANCHOR饱和门与room+REMOTEROOMSLACK墙余硬门表达当前胡已够好与负担过大。预期其并集与保白探索窗口部分保留、部分被两道门收回；closed开发净+6.7421875/桌与区间[-8.45,+22.72]不迁移、不当作强度证据。",
+            "status": "expected",
+            "window_classes": [
+              "same_speed_union_backup",
+              "completion_gain_wait",
+              "single_white_mature_wait",
+              "plain_settlement_release",
+              "sated_anchor_stop",
+              "late_wall_burden"
+            ]
+          },
+          {
+            "action_keys": [
+              "hu",
+              "discard:9b",
+              "discard:6t",
+              "discard:北",
+              "discard:2t",
+              "discard:7w"
+            ],
+            "candidate_id": "a0c7218a27983bf515ad9c1f5270188fffaec1a99137725036c7e56cc2eda42f",
+            "expected_change": "几乎全量继承：anchorwhite结算明细白基线、release与新白双远端增量通道、获记路线基线的frontextra、carry的exitneed折价与全部共骨架；联合改动仅三处，FRONTSHARE由0.50上调至0.65收回部分同速并集期权，锚点排序点>=SATEANCHOR=12时关闭释放与新白通道只留直接升级比较，room非空且pending>room+3时硬关对应远端通道。纯平胡多白释放翻转（019类）与爆头/财飘基线窗口（002、015类）逐点维持，并集边际为正窗口联合信用回升可能使贴近并列首选回摆；64桌净-10.34375与区间[-33.59,+5.88]不迁移、不当作强度证据。",
+            "status": "expected",
+            "window_classes": [
+              "current_hu",
+              "plain_settlement_release",
+              "white_cash_keep",
+              "same_speed_union_backup",
+              "sated_anchor_stop",
+              "late_wall_burden"
+            ]
+          }
+        ],
+        "trigger": "共骨架在全部wait/unknown_draw节点一次共享计算：同速最低向听家族推进码并集、凸k保白用途先验、前沿外慢路线与自然准备折价备用、逐码条件支付包络与当前胡锚点，全部合法根仍各得恰一条有限评分。锚扫描读取当前合法胡根最大支付节点的公开结算明细得已兑现白粗基线anchorwhite（含爆头或财飘记PURPOSES[1]、纯平胡记0，只是粗代理不宣称精确）。联合改动三处触发：其一，同速并集边际frontextra恒对实际获记路线基线（选中目标取其族路线值，否则主路线值）取差并按FRONTSHARE=0.65折价；其二，锚点排序点不低于SATEANCHOR=12的已可胡窗口整条关闭释放与新白远端投机通道，只留按逐码真实条件支付差计的直接升级比较，表达当前胡已够好；其三，room=(墙余-20)/4非空且releasepending或whitepending超过room+REMOTEROOMSLACK=3时硬关对应远端通道，表达路线负担对剩余牌墙过大。release仅对retained>=2活前驱目标、新白通道仅对retained>=2或need>0目标开启，成熟单白need=0排除以保留已胡等待失胡反例。未裁决鸣牌仅条件评价，replacement消费全部相容补牌边下端加有界价差不挑最好牌，choices仅在合法续行中择优，公开容量不除墙余冒充概率，无牌码/房号/诊断标签查表。"
+      },
+      "path": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t187-family-combination-evolution-1/AUTHOR-family-metadata-repaired",
+      "record_sha256": "44c2853e9101fb665647e025ad9352f94fb188c944507265dc8e983b15783213",
+      "source": "\"\"\"e2多父联合机制：继承同速前沿、凸保白用途与结算明细白基线共骨架，同速并集按获记路线基线折价，锚点饱和门与墙余负担硬门联合裁定立即胡与远端大牌。\"\"\"\n\nPAYCAP = 50.0\nPAYREF = 192.0\nHUBASE = 10.0\nWAITBASE = 12.0\nFORMCOST = 3.4\nSPEEDCAP = 4.8\nSPEEDREF = 12.0\nVARREF = 4.0\nUNSEENSOFT = 0.75\nPURPOSES = (0.0, 3.0, 7.0, 14.0, 28.0)\nDEALERBOOST = 1.15\nHORIZONCOST = 0.30\nRETENTION = 20\nWALLSOFT = 8.0\nUNKNOWNWALLSCALE = 0.70\nOPPDECAY = 0.05\nRISKBASE = 1.8\nOPPRISK = 0.12\nLATERISK = 3.4\nUNKNOWNWALLRISK = 0.7\nMATURELINEAR = 0.32\nRESCUEDECAY = 0.30\nEXITFLOOR = 0.40\nEXITMASSREF = 6.0\nEXITWIDTHREF = 3.0\nEXITSTEPDECAY = 0.25\nTARGETGATEBASE = 0.50\nTARGETMASSREF = 2.0\nPORTCAP = 2.4\nPORTREF = 12.0\nENVELOPEBLEND = 0.25\nSINGLESCOPE = 0.75\nCOVREF = 3.0\nLOCALCAP = 6.0\nLOCALREF = 8.0\nKNOWNPAYLINEAR = 0.45\nPAYMASSREF = 8.0\nQUALUNKNOWN = 0.7\nQUALUNANALYSED = 1.0\nUNKNOWNDRAW = 2.5\nUNANCHOREXPOSURE = 0.15\nCONDITIONBLEND = 0.20\nCONDITIONCAP = 1.0\nREPLACEMENTBLEND = 0.40\nREPLACEMENTCAP = 2.3\nCLAIMCOST = 0.25\nSKIPVALUE = 0.10\nGANGCOST = 0.12\nANCHOROPTIONBASE = 0.14\nANCHOROPTIONSTEP = 0.10\nANCHORFALLBACKCOST = 0.45\nANCHORUNKNOWNCOST = 0.35\nNETUPGRADEWEIGHT = 1.40\nNETUPWIDTHREF = 4.0\nNETEXITWIDTHREF = 4.0\nNETCARRY = 0.20\nNETANCHORPRICE = 0.30\nNETRISKFEE = 0.45\nBRANCHGAP = 0.15\nPREPBUDGET = 0.60\nPAIRPRIORWEIGHT = 0.30\nSLOWBACKUPSHARE = 0.30\nREMOTEACTDECAY = 0.30\nRELEASEBASEWHITE = 1\nFRONTSHARE = 0.65\nSATEANCHOR = 12.0\nREMOTEROOMSLACK = 3.0\nWHITECASHMARKERS = (\"爆头\", \"财飘\")\n\n\ndef paypoints(amount):\n    \"\"\"本家净积分除基础分后的有界排序点；不是未来积分或摸牌概率。\"\"\"\n    return PAYCAP * amount / (PAYREF + abs(amount))\n\n\ndef stockof(slot, waiting):\n    \"\"\"返回排序库存、精确张数与未知标记；公开容量含他家暗牌，不除以墙余。\"\"\"\n    capacity = waiting[\"unseen_capacities\"][slot]\n    evidence = waiting[\"unseen_evidence\"][slot]\n    if evidence == \"exact\" and capacity is not None:\n        return float(capacity), capacity, 0\n    if evidence == \"conservative\" and capacity is not None and capacity > 0:\n        return float(capacity), 0, 1\n    return UNSEENSOFT, 0, 1\n\n\ndef routesupport(codes, codeindex, drawscale, stock):\n    \"\"\"按规范牌码去重的一步推进支持；同码只计一次，不跨路线相加。\"\"\"\n    mass = 0.0\n    exact = 0\n    width = 0\n    uncertain = 0\n    seen = set()\n    for code in codes:\n        if code not in seen:\n            seen.add(code)\n            cell = stock[codeindex[code]]\n            if cell[0] > 0.0:\n                mass += cell[0]\n                exact += cell[1]\n                width += 1\n                uncertain += cell[2]\n    credit = (drawscale * SPEEDCAP * mass / (SPEEDREF + mass)\n              * float(width) / (VARREF + float(width)))\n    return credit, mass, width, exact, uncertain\n\n\ndef purposescale(burden, room, drawscale, pressure):\n    \"\"\"墙余可行性与公开副露压力的条件折减；burden不是保证摸牌次数。\"\"\"\n    excess = 0.0 if room is None else max(0.0, float(burden) - room)\n    return drawscale * pressure / (1.0 + HORIZONCOST * excess)\n\n\ndef prepvalue(waiting):\n    \"\"\"不借白、不含将的自然面子准备事实与单一负担成熟度系数。\"\"\"\n    prep = waiting[\"natural_preparation\"]\n    need = prep[\"natural_draw_lower_bound\"]\n    discard = prep[\"natural_discard_lower_bound\"]\n    width = waiting[\"natural_preparation_code_width\"]\n    burden = float(max(need, discard))\n    readiness = 1.0 / (1.0 + MATURELINEAR * burden)\n    if need > 0 and width == 0:\n        readiness = 0.0\n    return need, discard, width, readiness\n\n\ndef actualroute(shanten, support, structural):\n    \"\"\"真实向听加出口支持的路线上限；L不是保证还需摸几次。\"\"\"\n    length = max(0, shanten) + 1\n    value = support[0] - FORMCOST * float(length - 1) + structural\n    return shanten, length, support[0], support[1], support[2], support[4], value\n\n\ndef paysummary(waiting, seat, base):\n    \"\"\"条件胡支付的逐码包络摘要；同码两抓打假设互斥，只取下端加有界价差。\n\n    返回状态、容量加权平均点、码数、总容量与逐码(容量,包络点)。\n    状态0未分析、1已知空、2有支付、3部分未知；未知码不当零支付。\n    \"\"\"\n    payments = waiting[\"normal_draw_hu_payments\"]\n    if payments is None:\n        return 0, None, 0, 0.0, ()\n    partial = len(waiting[\"qualification_unknown_codes\"]) > 0\n    if not payments:\n        if partial:\n            return 3, 0.0, 0, 0.0, ()\n        return 1, 0.0, 0, 0.0, ()\n    groups = []\n    currentcode = None\n    lower = 0.0\n    upper = 0.0\n    capacity = 0.0\n    rows = 0\n    for payment in payments:\n        amount = float(payment[\"settlement\"][\"score_delta\"][seat]) / base\n        point = paypoints(amount)\n        code = payment[\"draw_code\"]\n        if code != currentcode:\n            if currentcode is not None:\n                groups.append((capacity, lower, upper, rows))\n            currentcode = code\n            lower = point\n            upper = point\n            capacity = float(payment[\"draw_capacity_before\"])\n            rows = 1\n        else:\n            if point < lower:\n                lower = point\n            if point > upper:\n                upper = point\n            rows += 1\n    groups.append((capacity, lower, upper, rows))\n    total = 0.0\n    mass = 0.0\n    offers = []\n    for group in groups:\n        if group[3] == 1:\n            envelope = SINGLESCOPE * group[1]\n        else:\n            envelope = group[1] + ENVELOPEBLEND * (group[2] - group[1])\n        total += group[0] * envelope\n        mass += group[0]\n        offers.append((group[0], envelope))\n    state = 3 if partial else 2\n    return state, total / mass, len(offers), mass, tuple(offers)\n\n\ndef paycredit(payment, coverage, drawscale, pressure):\n    \"\"\"近条件支付转有限信用；两种变换择大，不重复计同码机会。\"\"\"\n    point = payment[1]\n    if point is None or point <= 0.0:\n        return 0.0, 0.0, 0.0\n    scale = coverage * drawscale * pressure\n    saturated = LOCALCAP * point / (LOCALREF + point) * scale\n    linear = KNOWNPAYLINEAR * point * (payment[3] / (PAYMASSREF + payment[3])) * scale\n    if linear > saturated:\n        return saturated, linear, linear\n    return saturated, linear, saturated\n\n\ndef speedfront(waiting, standard, seven, codeindex, drawscale, pressure, stock):\n    \"\"\"最低向听家族推进码并集的单次同速前沿支持；同码不重复计数。\"\"\"\n    minshanten = standard[0]\n    if seven is not None and seven[0] < minshanten:\n        minshanten = seven[0]\n    frontlist = []\n    seenfront = set()\n    if standard[0] == minshanten:\n        for code in waiting[\"standard_useful_codes\"]:\n            if code not in seenfront:\n                seenfront.add(code)\n                frontlist.append(code)\n    structural = 0.0\n    if seven is not None and seven[0] == minshanten:\n        for code in waiting[\"seven_pairs_useful_codes\"]:\n            if code not in seenfront:\n                seenfront.add(code)\n                frontlist.append(code)\n        sevenlength = float(max(0, seven[0]) + 1)\n        structural = (PAIRPRIORWEIGHT\n                      * float(min(2, max(0, waiting[\"structure\"][\"natural_pair_count\"] - 4)))\n                      / sevenlength * drawscale * pressure)\n    support = routesupport(frontlist, codeindex, drawscale, stock)\n    value = support[0] - FORMCOST * float(max(0, minshanten)) + structural\n    slots = set()\n    for code in frontlist:\n        slots.add(codeindex[code])\n    return minshanten, value, support, slots\n\n\ndef jointwait(waiting, standard, seven, front, prep, local, codeindex, room, drawscale,\n              pressure, stock, dealerboost, anchorwhite):\n    \"\"\"获记路线基线的同速并集折价、前沿外慢路线备用、凸k用途与双远端增量通道。\n\n    每个目标只为超过其家族普通路线已付摸牌数的不同物理动作付一次\n    线性成熟度；凸k先验替代常数奖励以缓解k1偏置，墙余除平滑可行性\n    折减外新增硬门：releasepending或whitepending超过room+REMOTEROOMSLACK\n    时对应远端通道整条不设候选，表达路线负担对剩余牌墙过大。已可胡\n    远端比较携带两个互斥增量通道：release是已持k>=2白从百搭转番值的\n    释放增量，基线anchorwhite由锚点胡节点公开结算明细判定（含爆头或\n    财飘记PURPOSES[1]，纯平胡记0，只是粗代理不宣称精确）；option是\n    未来追加一白的凸用途差PURPOSES[min(4,k+1)]-PURPOSES[k]，仅对\n    retained>=2或need>0的活目标计分，成熟单白need=0目标排除以保留\n    已胡等待失胡反例；白码公开容量仅精确零关闭。同速并集边际\n    frontextra对实际获记路线基线取差并按FRONTSHARE折价：不重复计价\n    也不让并集包络抹掉主路线自然形差异。两通道候选若联合增益已被\n    组合信用覆盖则整条删除；同一等待机会不跨通道相加，最终在huoffer\n    取大。\n    \"\"\"\n    main = standard\n    maincodes = waiting[\"standard_useful_codes\"]\n    if seven is not None and seven[6] > main[6]:\n        main = seven\n        maincodes = waiting[\"seven_pairs_useful_codes\"]\n    whites = waiting[\"structure\"][\"whites_held\"]\n    ordinary = main[6] + local\n    best = None\n    option = None\n    release = None\n    whitemass = stock[codeindex[\"白\"]][0]\n    for index, target in enumerate(waiting[\"structure\"][\"targets\"]):\n        route = standard if target[\"family\"] == \"standard\" else seven\n        if route is not None:\n            terminal = 1 if target[\"requires_terminal_draw\"] else 0\n            need = target[\"natural_need\"]\n            naturaldrop = target[\"target_natural_discard_lower_bound\"]\n            whitedrop = target[\"target_white_discard_lower_bound\"]\n            retained = target[\"retained_whites\"]\n            width = waiting[\"target_improvement_code_widths\"][index]\n            predecessor = target[\"target_stage\"] == \"waiting_predecessor\"\n            targetmass = 0.0\n            for code in target[\"conditional_need_improvement_codes\"]:\n                targetmass += stock[codeindex[code]][0]\n            targetgate = 1.0\n            if need > 0:\n                targetgate = 0.0\n                if width > 0 and targetmass > 0.0:\n                    targetgate = (TARGETGATEBASE + (1.0 - TARGETGATEBASE)\n                                  * targetmass / (TARGETMASSREF + targetmass))\n            burden = max(need + terminal, naturaldrop + whitedrop)\n            extra = max(0, burden - route[1])\n            maturity = 1.0 / (1.0 + MATURELINEAR * float(extra))\n            rescue = 1.0 / (1.0 + RESCUEDECAY * float(extra))\n            exitmass = max(0.0, route[3])\n            exitwidth = float(route[4])\n            exitgate = exitmass / (EXITMASSREF + exitmass) * exitwidth / (EXITWIDTHREF + exitwidth)\n            exitgate = exitgate / (1.0 + EXITSTEPDECAY * float(route[1] - 1))\n            prior = 0.0\n            if predecessor and retained > 0:\n                prior = PURPOSES[retained] * dealerboost\n            exitfactor = EXITFLOOR + (1.0 - EXITFLOOR) * exitgate\n            purposecredit = (prior * purposescale(burden, room, drawscale, pressure)\n                             * targetgate * maturity * exitfactor)\n            rescued = local * rescue\n            prospective = rescued + purposecredit\n            value = route[6] + prospective\n            if best is None or value > best[10]:\n                best = (index, target[\"family\"], retained, need, terminal, burden,\n                        naturaldrop, whitedrop, width, prospective, value)\n            gain = max(0.0, value - ordinary)\n            if predecessor and retained > 0 and retained <= whites and gain > 0.0:\n                if retained > 1:\n                    releasegap = PURPOSES[retained] - anchorwhite\n                    releasepending = float(burden)\n                    releasefactor = (1.0 / (1.0 + REMOTEACTDECAY * releasepending)\n                                     * purposescale(releasepending, room, drawscale, pressure))\n                    releasecredit = (releasegap * dealerboost * targetgate * exitfactor\n                                     * releasefactor)\n                    releaseopen = room is None or releasepending <= room + REMOTEROOMSLACK\n                    if releaseopen and (release is None or releasecredit > release[0]):\n                        release = (releasecredit, float(extra), releasegap,\n                                   releasepending, float(gain), float(retained))\n                if retained > 1 or need > 0:\n                    upperk = retained + 1\n                    if upperk > 4:\n                        upperk = 4\n                    purposegap = float(PURPOSES[upperk] - PURPOSES[retained])\n                    whitepending = float(need + terminal + whitedrop + 1)\n                    whitegate = 0.0\n                    if whitemass > 0.0:\n                        whitegate = (TARGETGATEBASE + (1.0 - TARGETGATEBASE)\n                                     * whitemass / (TARGETMASSREF + whitemass))\n                    whitefactor = (1.0 / (1.0 + REMOTEACTDECAY * whitepending)\n                                   * purposescale(whitepending, room, drawscale, pressure))\n                    whitecredit = (purposegap * dealerboost * whitegate * targetgate\n                                   * exitfactor * whitefactor)\n                    whiteopen = room is None or whitepending <= room + REMOTEROOMSLACK\n                    if whiteopen and (option is None or whitecredit > option[0]):\n                        option = (whitecredit, float(extra), purposegap,\n                                  whitepending, float(gain), float(retained), whitemass)\n    baseline = set(maincodes)\n    knownhu = waiting[\"legal_hu_draw_codes\"]\n    if knownhu is not None:\n        for code in knownhu:\n            baseline.add(code)\n    primaryvalue = ordinary\n    frontprimary = main[6]\n    preparationoccupied = 0\n    if best is not None and best[10] > ordinary:\n        primaryvalue = best[10]\n        selected = waiting[\"structure\"][\"targets\"][best[0]]\n        if selected[\"family\"] == \"standard\":\n            selectedcodes = waiting[\"standard_useful_codes\"]\n            frontprimary = standard[6]\n        else:\n            selectedcodes = waiting[\"seven_pairs_useful_codes\"]\n            frontprimary = seven[6]\n        for code in selectedcodes:\n            baseline.add(code)\n        for code in selected[\"conditional_need_improvement_codes\"]:\n            baseline.add(code)\n        if (selected[\"family\"] == \"standard\" and selected[\"target_stage\"] == \"waiting_predecessor\"\n                and selected[\"retained_whites\"] > 0):\n            preparationoccupied = 1\n            for code in waiting[\"natural_preparation\"][\"natural_need_improvement_codes\"]:\n                baseline.add(code)\n    plans = []\n    branches = [(standard, waiting[\"standard_useful_codes\"])]\n    if seven is not None:\n        branches.append((seven, waiting[\"seven_pairs_useful_codes\"]))\n    for route, codes in branches:\n        steps = float(route[1] - 1)\n        gap = max(0.0, primaryvalue - (route[6] + local))\n        excess = 0.0 if room is None else max(0.0, float(route[1]) - room)\n        weight = 1.0 / ((1.0 + steps * steps + BRANCHGAP * gap) * (1.0 + HORIZONCOST * excess))\n        for code in codes:\n            slot = codeindex[code]\n            if code not in baseline and stock[slot][0] > 0.0:\n                plans.append((slot, weight))\n    if preparationoccupied == 0 and prep[0] > 0 and prep[2] > 0:\n        preplength = max(standard[1], prep[0] + 1, prep[1])\n        excess = 0.0 if room is None else max(0.0, float(preplength) - room)\n        gap = max(0.0, primaryvalue - (standard[6] + local))\n        prepweight = PREPBUDGET * prep[3] / ((1.0 + BRANCHGAP * gap) * (1.0 + HORIZONCOST * excess))\n        for code in waiting[\"natural_preparation\"][\"natural_need_improvement_codes\"]:\n            slot = codeindex[code]\n            if code not in baseline and stock[slot][0] > 0.0:\n                plans.append((slot, prepweight))\n    combined = []\n    currentslot = None\n    peak = 0.0\n    for plan in sorted(plans):\n        if plan[0] != currentslot:\n            if currentslot is not None:\n                combined.append((currentslot, peak))\n            currentslot = plan[0]\n            peak = plan[1]\n        elif plan[1] > peak:\n            peak = plan[1]\n    if currentslot is not None:\n        combined.append((currentslot, peak))\n    slowcombined = []\n    for entry in combined:\n        if entry[0] not in front[3]:\n            slowcombined.append(entry)\n    mass = 0.0\n    diversity = 0.0\n    exact = 0\n    codecount = 0\n    uncertain = 0\n    for entry in slowcombined:\n        cell = stock[entry[0]]\n        if cell[0] > 0.0:\n            mass += entry[1] * cell[0]\n            diversity += entry[1]\n            exact += cell[1]\n            codecount += 1\n            uncertain += cell[2]\n    backup = (drawscale * pressure * PORTCAP * mass / (PORTREF + mass)\n              * diversity / (VARREF + diversity))\n    frontextra = FRONTSHARE * max(0.0, front[1] - frontprimary)\n    totalcredit = frontextra + SLOWBACKUPSHARE * backup\n    if option is not None and option[4] <= totalcredit:\n        option = None\n    if release is not None and release[4] <= totalcredit:\n        release = None\n    portfolio = (mass, diversity, exact, codecount, uncertain, totalcredit,\n                 float(len(baseline)), frontextra, front[0], front[2][2])\n    return best, portfolio, release, option\n\n\ndef huoffer(anchor, discount, risk, payment, main, portfolio, release, option):\n    \"\"\"当前胡与继续等待的净比较；等待暴露只按一个合并费计一次。\n\n    直接升级按同码包络差计算，保留便宜真实升档反例；远端拆成两个\n    互斥代理通道并取大，锚价与fallback只对胜出通道计一次：已持多白\n    释放通道只对retained>=2的目标记PURPOSES[k]-anchorwhite，其中\n    anchorwhite是锚点胡结算明细判定的已兑现白粗代理基线（含爆头或\n    财飘为PURPOSES[1]，纯平胡为0），已兑现价值不重复计分也不宣称\n    精确；未来追加白通道只记PURPOSES[min(4,k+1)]-PURPOSES[k]的凸\n    用途差，成熟单白need=0目标排除，白码公开容量仅精确零关闭。e2\n    中两通道还受锚点饱和门与墙余硬门约束。carry只按普通路线剩余向\n    听步数折价。全部是排序点，不是期望积分或存活率；未分析支付按\n    未知成本处理不当零，他家先胡、未来资格与抓打仍显式未知。\n    \"\"\"\n    mass = payment[3]\n    width = float(payment[2])\n    exitgate = mass / (PAYMASSREF + mass) * width / (NETEXITWIDTHREF + width)\n    preserved = 0.0\n    upgradeamount = 0.0\n    upgrademass = 0.0\n    upgradewidth = 0\n    downsideamount = 0.0\n    for offer in payment[4]:\n        capacity = offer[0]\n        point = offer[1]\n        preserved += capacity * min(anchor, max(0.0, point))\n        difference = point - anchor\n        if difference > 0.0:\n            upgradeamount += capacity * difference\n            upgrademass += capacity\n            upgradewidth += 1\n        else:\n            downsideamount += capacity * max(0.0, -difference)\n    floorfraction = 0.0\n    if mass > 0.0 and anchor > 0.0:\n        floorfraction = preserved / (mass * anchor)\n    maintained = exitgate * floorfraction\n    upgradesupport = (upgrademass / (PAYMASSREF + upgrademass)\n                      * float(upgradewidth) / (NETUPWIDTHREF + float(upgradewidth)))\n    upgrade = 0.0\n    if upgrademass > 0.0:\n        upgrade = (NETUPGRADEWEIGHT * discount * upgradeamount / upgrademass\n                   * upgradesupport)\n    downside = discount * downsideamount / (PAYMASSREF + mass)\n    direct = upgrade - downside\n    remote = 0.0\n    remoteprice = 0.0\n    fallback = 0.0\n    offervalue = direct\n    channel = \"direct_upgrade\"\n    releasecredit = 0.0\n    whitecredit = 0.0\n    if release is not None or option is not None:\n        if payment[1] is None:\n            fallback = ANCHORUNKNOWNCOST * anchor\n        else:\n            fallback = ANCHORFALLBACKCOST * max(0.0, anchor - max(0.0, payment[1]))\n        winnervalue = None\n        winnerprice = 0.0\n        winnerchannel = \"\"\n        if release is not None and release[0] > 0.0:\n            releasecredit = release[0]\n            winnerprice = anchor * (ANCHOROPTIONBASE + ANCHOROPTIONSTEP * release[1])\n            winnervalue = releasecredit - winnerprice - fallback\n            winnerchannel = \"held_white_release\"\n        if option is not None and option[0] > 0.0:\n            whitecredit = option[0]\n            whiteprice = anchor * (ANCHOROPTIONBASE + ANCHOROPTIONSTEP * option[1])\n            whitevalue = whitecredit - whiteprice - fallback\n            if winnervalue is None or whitevalue > winnervalue:\n                winnervalue = whitevalue\n                winnerprice = whiteprice\n                winnerchannel = \"new_white_gap\"\n        if winnervalue is not None:\n            remote = winnervalue\n            remoteprice = winnerprice\n            if remote > offervalue:\n                offervalue = remote\n                channel = winnerchannel\n    ordinarycore = max(0.0, main[6] + portfolio[5])\n    remaining = float(max(0, main[1] - 1))\n    exitneed = remaining / (1.0 + remaining)\n    carry = NETCARRY * discount * maintained * ordinarycore * exitneed\n    exposure = (NETANCHORPRICE * anchor + NETRISKFEE * risk) * (1.0 - discount * maintained)\n    net = offervalue + carry - exposure\n    return (net, channel, upgrade, downside, maintained, carry, exposure,\n            remote, remoteprice, fallback, offervalue, releasecredit, whitecredit)\n\n\ndef waitvalue(waiting, codeindex, seat, base, room, drawscale, pressure, discount,\n              risk, anchor, anchorwhite, unknowncost, dealerboost):\n    \"\"\"获记路线折价前沿、凸用途先验、单次负担成本与锚点饱和门下评价普通出口、七对、逐目标用途与当前胡。\n\n    anchorwhite是锚点胡结算明细判定的已兑现白粗代理基线，只进release\n    通道；锚点排序点不低于SATEANCHOR时当前胡视为已够好，释放与新白\n    两条远端投机通道整条关闭，只保留按逐码真实条件支付差计的直接\n    升级比较。\n    \"\"\"\n    structure = waiting[\"structure\"]\n    stock = []\n    for slot in range(len(waiting[\"unseen_capacities\"])):\n        stock.append(stockof(slot, waiting))\n    prep = prepvalue(waiting)\n    standard = actualroute(structure[\"standard_shanten\"],\n                           routesupport(waiting[\"standard_useful_codes\"], codeindex, drawscale, stock),\n                           0.0)\n    seven = None\n    main = standard\n    family = \"standard\"\n    if structure[\"seven_pairs_shanten\"] is not None:\n        sevenlength = max(0, structure[\"seven_pairs_shanten\"]) + 1\n        pairprior = (PAIRPRIORWEIGHT\n                     * float(min(2, max(0, structure[\"natural_pair_count\"] - 4)))\n                     / float(sevenlength))\n        seven = actualroute(structure[\"seven_pairs_shanten\"],\n                            routesupport(waiting[\"seven_pairs_useful_codes\"], codeindex, drawscale, stock),\n                            pairprior * drawscale * pressure)\n        if seven[6] > main[6]:\n            main = seven\n            family = \"seven_pairs\"\n    front = speedfront(waiting, standard, seven, codeindex, drawscale, pressure, stock)\n    payment = paysummary(waiting, seat, base)\n    known = payment[2]\n    unknown = len(waiting[\"qualification_unknown_codes\"])\n    coverage = float(known) / (COVREF + float(known))\n    if payment[0] == 0:\n        qualcost = QUALUNANALYSED\n    else:\n        qualcost = QUALUNKNOWN * float(unknown) / float(1 + known + unknown)\n    credit = paycredit(payment, coverage, drawscale, pressure)\n    local = credit[2]\n    ordinary = main[6] + local\n    best, portfolio, release, option = jointwait(waiting, standard, seven, front, prep, local,\n                                                 codeindex, room, drawscale, pressure, stock,\n                                                 dealerboost, anchorwhite)\n    if anchor is not None and anchor >= SATEANCHOR:\n        release = None\n        option = None\n    joint = ordinary\n    chosen = family\n    if best is not None and best[10] > joint:\n        joint = best[10]\n        chosen = \"completion_budget\"\n    joint += portfolio[5]\n    if anchor is not None:\n        ready = huoffer(anchor, discount, risk, payment, main, portfolio, release, option)\n        value = HUBASE + anchor + ready[0] - qualcost - unknowncost\n    else:\n        ready = None\n        value = WAITBASE + joint - qualcost - unknowncost - UNANCHOREXPOSURE * risk\n    facts = (standard, seven, best, prep, portfolio, payment, ordinary, joint, chosen,\n             local, qualcost, ready, release, option)\n    return value, facts\n\n\ndef score_actions(view):\n    \"\"\"对全部冻结后序节点一次共享计算，并给每个合法根恰一条有限评分。\n\n    锚点胡的已兑现白基线从其公开结算明细读出，不按持白数猜测；锚点\n    排序点达到SATEANCHOR时视为当前胡已够好，关闭释放与新白投机通道\n    只留直接升级比较；choices才在合法续行中择优；replacement与\n    condition消费全部相容边的下端加有界价差，不挑最好补牌；机械缺口\n    显式弃权。庄家身份只作公开先验乘子。无文件、网络、时钟、随机或\n    跨调用缓存。\n    \"\"\"\n    context = view[\"visible_state\"]\n    seat = context[\"seat\"]\n    base = float(view[\"binding\"][\"base_score\"])\n    wall = context[\"remaining_tile_count\"]\n    dealerboost = DEALERBOOST if seat == context[\"dealer_seat\"] else 1.0\n    opponents = 0\n    for otherseat, melds in enumerate(context[\"melds\"]):\n        if otherseat != seat:\n            opponents += len(melds)\n    pressure = 1.0 / (1.0 + OPPDECAY * float(opponents))\n    if wall is None:\n        room = None\n        drawscale = UNKNOWNWALLSCALE\n        discount = drawscale * pressure\n        risk = RISKBASE + OPPRISK * float(opponents) + UNKNOWNWALLRISK\n    else:\n        margin = max(0.0, float(wall) - float(RETENTION))\n        room = max(1.0, margin / 4.0)\n        drawscale = 1.0 if margin > 0.0 else 0.0\n        discount = drawscale * pressure * (0.30 + 0.70 * margin / (WALLSOFT + margin))\n        risk = RISKBASE + OPPRISK * float(opponents) + LATERISK * WALLSOFT / (WALLSOFT + margin)\n    codeindex = {code: index for index, code in enumerate(view[\"tile_order\"])}\n    nodes = view[\"nodes\"]\n    indexes = {node[\"node_key\"]: index for index, node in enumerate(nodes)}\n    anchor = None\n    anchorwhite = 0.0\n    for action in view[\"actions\"]:\n        node = nodes[indexes[action[\"node_key\"]]]\n        if node[\"kind\"] == \"hu\":\n            amount = float(node[\"settlement\"][\"score_delta\"][seat]) / base\n            point = paypoints(amount)\n            if anchor is None or point > anchor:\n                anchor = point\n                anchorwhite = 0.0\n                for detail in node[\"settlement\"][\"details\"]:\n                    for marker in WHITECASHMARKERS:\n                        if detail == marker:\n                            anchorwhite = PURPOSES[RELEASEBASEWHITE]\n    sateflag = 1 if anchor is not None and anchor >= SATEANCHOR else 0\n    values = []\n    factslist = []\n    for node in nodes:\n        if node[\"gap_kind\"] is not None:\n            return {\"status\": \"ABSTAIN\", \"reason\": \"graph_gap\"}\n        kind = node[\"kind\"]\n        children = node[\"children\"]\n        if kind == \"wait\" or kind == \"unknown_draw\":\n            unknowncost = UNKNOWNDRAW if kind == \"unknown_draw\" else 0.0\n            value, facts = waitvalue(node[\"waiting\"], codeindex, seat, base, room, drawscale,\n                                     pressure, discount, risk, anchor, anchorwhite, unknowncost,\n                                     dealerboost)\n        elif kind == \"hu\":\n            amount = float(node[\"settlement\"][\"score_delta\"][seat]) / base\n            value = HUBASE + paypoints(amount)\n            facts = None\n        elif kind == \"choices\":\n            if not children:\n                return {\"status\": \"ABSTAIN\", \"reason\": \"empty_choices\"}\n            bestindex = indexes[children[0]]\n            value = values[bestindex]\n            for child in children:\n                childindex = indexes[child]\n                if values[childindex] > value:\n                    bestindex = childindex\n                    value = values[childindex]\n            facts = factslist[bestindex]\n        else:\n            if not children:\n                return {\"status\": \"ABSTAIN\", \"reason\": \"empty_condition\"}\n            value = values[indexes[children[0]]]\n            total = 0.0\n            for child in children:\n                childvalue = values[indexes[child]]\n                total += childvalue\n                if childvalue < value:\n                    value = childvalue\n            lower = value\n            mean = total / float(len(children))\n            blend = REPLACEMENTBLEND if kind == \"replacement\" else CONDITIONBLEND\n            cap = REPLACEMENTCAP if kind == \"replacement\" else CONDITIONCAP\n            value = lower + min(cap, blend * max(0.0, mean - lower))\n            facts = None\n        values.append(value)\n        factslist.append(facts)\n    entries = []\n    actioncount = len(view[\"actions\"])\n    for action in view[\"actions\"]:\n        index = indexes[action[\"node_key\"]]\n        kind = action[\"action_type\"]\n        adjustment = 0.0\n        if kind == \"chi\" or kind == \"peng\":\n            adjustment = SKIPVALUE * float(action[\"skipped_seats\"]) * drawscale - CLAIMCOST\n        elif kind == \"gang\":\n            adjustment = -GANGCOST\n        value = values[index] + adjustment\n        pairs = [(\"condition\", action[\"pending_condition\"]), (\"adjust\", round(adjustment, 3))]\n        facts = factslist[index]\n        if facts is not None and actioncount <= 24:\n            payment = facts[5]\n            if payment[1] is None:\n                avgpoint = None\n            else:\n                avgpoint = round(payment[1], 3)\n            pairs.append((\"pay\", (payment[0], avgpoint, payment[2], round(payment[3], 3))))\n            pairs.append((\"joint\", (round(facts[6], 3), round(facts[7], 3), facts[8],\n                                   round(facts[9], 3), round(facts[10], 3))))\n            pairs.append((\"portfolio\", tuple([round(part, 3) for part in facts[4]])))\n            best = facts[2]\n            if best is None:\n                pairs.append((\"target\", None))\n            else:\n                pairs.append((\"target\", (best[0], best[1], best[2], best[3], best[5],\n                                         round(best[9], 3), round(best[10], 3))))\n            ready = facts[11]\n            if ready is None:\n                pairs.append((\"offer\", None))\n            else:\n                pairs.append((\"offer\", (round(ready[0], 3), ready[1], round(ready[2], 3),\n                                        round(ready[3], 3), round(ready[4], 3),\n                                        round(ready[11], 3), round(ready[12], 3))))\n            pairs.append((\"prep\", (facts[3][0], facts[3][1], facts[3][2], round(facts[3][3], 3))))\n        if not entries:\n            pairs.append((\"unit\", \"heuristic_rank_points\"))\n            pairs.append((\"formula\", \"vip_frontier_release_joint_e2/1\"))\n            if anchor is None:\n                anchorvalue = None\n                anchorwhitevalue = None\n            else:\n                anchorvalue = round(anchor, 3)\n                anchorwhitevalue = round(anchorwhite, 3)\n            pairs.append((\"context\", (wall, opponents, round(dealerboost, 3),\n                                      round(discount, 3), round(risk, 3), anchorvalue,\n                                      anchorwhitevalue, sateflag)))\n            pairs.append((\"unknown\", \"opponent_hu_and_future_draw_reachability\"))\n            pairs.append((\"scope\", \"conditional_facts_not_probability_or_guaranteed_highfan\"))\n        entries.append({\"action_key\": action[\"action_key\"], \"score\": value, \"trace\": dict(pairs)})\n    return {\"status\": \"SCORED\", \"entries\": entries}",
+      "source_sha256": "110ec9f2c75f233d95f094e708102cf454e9105c3f6feed95fd6e7729cc4db94",
+      "thought": "以两父共同的同速前沿—凸保白用途—条件支付骨架为基，继承结算明细白基线与获记路线基线的并集折价，联合新增锚点饱和门与墙余负担硬门，用当前胡的真实结算作机会成本裁定何时远端大牌路线负担过大、何时当前胡已够好。",
+      "thought_sha256": "06b26bb7db5f2a4aa3d9debd4b020e59cf96aef85bf8634d9e26f986873bbf84"
+    }
+  ],
+  "parents_sha256": "64f0e8d2dc879c3290edb3fe52102e655979c43a462cf62ac9b2e7e80f682848",
+  "profile": "vip-route-eoh/1",
+  "prompt_sha256": "29c699adc2872688f87e16631a70b248c893856b391daa376a39382481e93e57",
+  "publication": {
+    "published": false
+  },
+  "readonly_appendix_sha256": "979377e978369c546d7cfc018e47a91f5195f10ef9f2aee44e1e322773b8492f",
+  "reply": {
+    "backend": "api",
+    "captured_at_utc": "2026-10-05T08:35:52Z",
+    "chars": 32301,
+    "delegator": null,
+    "elapsed_sec": null,
+    "endpoint_host": "open.bigmodel.cn",
+    "evidence_kind": "captured_model_reply",
+    "finish_reason": "stop",
+    "http_status": 200,
+    "info_boundary": "strong",
+    "is_model_output": true,
+    "model": "glm-5.3",
+    "model_requested": "glm-5.3",
+    "note": null,
+    "observed_config": null,
+    "origin": "model_capture",
+    "provenance_attestation": "tool-observed-http",
+    "provider": "zai-coding-cn",
+    "reasoning_chars": 108459,
+    "reasoning_present": true,
+    "session_file": null,
+    "usage": {
+      "completion_tokens": 39632,
+      "completion_tokens_details": {
+        "reasoning_tokens": 29528
+      },
+      "prompt_tokens": 61641,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 101273
+    },
+    "usage_available": true,
+    "usage_source": "response_body"
+  },
+  "reply_format_version": "vip-eoh-reply-format/2",
+  "reply_redacted": false,
+  "reply_sha256": "b1d55031cb82647693cc71b5cae12274b4afc031e139681532bc1996fa1e1b63",
+  "reservation": {
+    "actual": null,
+    "attempt_id": "8c32181fffe14753afdc52835c31b6d1",
+    "attempt_no": 3,
+    "backend": "api",
+    "call_started": false,
+    "charged": {
+      "input_tokens": 1048576,
+      "model_calls": 1,
+      "output_tokens": 65536,
+      "table_instances": 0,
+      "wall_clock_seconds": 900
+    },
+    "reserved": {
+      "input_tokens": 1048576,
+      "model_calls": 1,
+      "output_tokens": 65536,
+      "table_instances": 0,
+      "wall_clock_seconds": 900
+    },
+    "reserved_at_utc": "2026-10-05T08:28:41.630088Z",
+    "status": "reserved"
+  },
+  "sampling": {
+    "actual_request_fields": {
+      "max_tokens": 65536
+    },
+    "source": "request_body"
+  },
+  "schema": "vip-route-eoh-generation/1",
+  "source_raw_sha256": "c64bc010b0657f32f5216699562d109c592b5169a40fe3444d9ae2ce0f8d0d1c",
+  "source_sha256": "c64bc010b0657f32f5216699562d109c592b5169a40fe3444d9ae2ce0f8d0d1c",
+  "started_at_utc": "2026-10-05T08:28:41.618165Z",
+  "status": "loaded_not_admitted",
+  "tables_run": 0,
+  "thought": "以主路线全额计共享进张、跟随路线只计独占出口的逐路线价值—额外代价—独特出口聚合取代同速并集包络，联合公开链数阶梯、平方可达折减与锚点平滑饱和下的已持白释放和追加白双远端通道，用当前实际胡支付作机会成本裁定何时路线负担过大、何时当前胡已够好。",
+  "thought_envelope": "plain_single_line",
+  "thought_sha256": "61995104a8aa07add8303ca0d81e941071dc781e0464f5f12fa646136c41444b",
+  "usage": {
+    "billing_scope": "current_call",
+    "raw": {
+      "completion_tokens": 39632,
+      "completion_tokens_details": {
+        "reasoning_tokens": 29528
+      },
+      "prompt_tokens": 61641,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "total_tokens": 101273
+    },
+    "raw_types": {
+      "completion_tokens": "int",
+      "completion_tokens_details": "dict",
+      "prompt_tokens": "int",
+      "prompt_tokens_details": "dict",
+      "total_tokens": "int"
+    },
+    "reported": {
+      "input_tokens": 61641,
+      "output_tokens": 39632
+    },
+    "source": "response_body",
+    "usage_unknown": false
+  }
+}

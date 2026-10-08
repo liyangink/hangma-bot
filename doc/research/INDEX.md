@@ -1,0 +1,23 @@
+# 当前研究与共享工具索引
+
+共享源码、必要合同和回归夹具随 Git 分发；完整历史研究与后续大运行数据只在本机保存。原目录中的记录、父代代码和来源摘要保持原字节。
+
+## 当前算法与参赛
+
+正式赛事默认 P0，测试房、测试赛事和自由赛默认 G37-RF1。本次存储迁移采用 P0 approved-v5 和 RF1 v2 包装，仅重新绑定源码；算法、规则、编译体、原批准和强度结论保持。[参赛入口](../participate-quickstart.md)、[架构](../architecture.md)。
+
+- [RF1 修复与批准范围](materials/vip-route-2026-09-30/evidence/t226-minimal-scoring-repair-1/REPORT.md)
+- [RF1 压力测试与自由赛操作](materials/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)
+- [正式／测试赛事现行验收口径](materials/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)
+- [问题修复验收口径](materials/vip-route-2026-09-30/evidence/t224-G38-four-source-effect-1/REPAIR-ACCEPTANCE.md)
+- [白板与支付复核](materials/white-count-audit-2026-10-09/REPORT.md)
+
+## 进化、迭代与历史原件
+
+公共工具由 [tools](../../tools/README.md) 维护。程序和合同的旧逻辑路径由 `storage-map.json` 定位到共享位置；历史记录本身不改写。
+
+本机历史索引仍为 `review/INDEX.md`，完整数据目录 `review/`、`datasets/`、`game-records/`、`datamart/` 已列入忽略规则。迁移 Git 不删除这些原件，也不改变正在使用的私有冻结运行根。新机器参赛无需复制本机历史；需要研究完整旧批次时，显式配置本机数据根。
+
+精选夹具只验证代码行为，不替代完整批次或赛事效果统计。新候选重新冻结工具版本、来源与预算，旧父代和旧账本保留原绑定。
+
+存储迁移、备份和 Git 历史切换记录见 [维护报告](../maintenance/git-storage-migration-20261009.md)。

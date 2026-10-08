@@ -1,0 +1,42 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-supervised-2-author-attempts",
+  "batch_label": "r10-mechanism-batch-01",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 160.0,
+    "tables_partial": 8.0,
+    "prefix_generation": 8.0,
+    "tokens_input": 262144.0,
+    "tokens_output": 65536.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-19T12:27:10.038460+00:00",
+  "generation_call_limits": {
+    "tokens_input": 131072,
+    "tokens_output": 32768
+  },
+  "max_model_calls": 2,
+  "max_proposals": 2,
+  "repair_calls_count_in_total": true,
+  "wall_clock_limit_seconds": 3600,
+  "route": "supervised_candidate_development",
+  "autonomous_admission": false,
+  "issuance_basis": "用户授权root监督持续进化；预算偏好未补充，按保守两次传输尝试实施",
+  "scope": "离线开发；先一份M1；历史父代仅提供机制与反馈，不继承旧效果成绩参与新选留；不确认、不发布",
+  "development_behavior_panel": {
+    "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/real-behavior-panel-v1/panel.json",
+    "panel_digest": "1d81b66850078ea231e453e1851a64d4917d4d28045a00fc6e487800ac235437"
+  },
+  "supervisor_feedback": "# 下一份受监督机制提案的补充输入\n\n**用途：作为正式 M1 任务包的反馈附件；本文件本身不是独立作者合同或调用授权。** 生成端仍提供当前机器合同、完整可见字段、保留父代源码、输出格式和剩余预算；附件不能覆盖这些内容。\n\n## 已知事实\n\n保留父代是 pilot 的 I1（`iter-02/generation/candidate.py`），不是已被拒绝替换的 M1。I1 在旧开发自然面板相对 V2 的 H/M 差值均为 0；M1 的 H 为 −0.75、M 为 −0.25。各情景只有一个来源根，不能据此宣称普遍强弱或显著性。\n\nM1 保持直接动作牌效 `40 − 8s + 0.5u`，只把吃碰分支改成 `40 − 5s + u`，取直接读数与分支读数的较大者；`s` 是非负向听，`u` 是截到 16 的有效牌支持枚数。这引入了不同动作之间的刻度差。真实同观察比较发现 28 次改选：24 次过→碰、2 次过→吃、2 次杠→碰。\n\n第一版可重放开发面板在 `real-behavior-panel-v1/panel.json`，含 7 个上述差异窗口和 12 个按预定配额采集的对照。它来自已消费的 H/root1、一个锚座位、父代轨迹，是有偏诊断样本；不能把在这些窗口照抄父代当成效果优化，也不能根据窗口摘要键、来源根或运行关联键写条件。\n\n## 本次任务\n\n**提出一个可解释的机制变体，解释哪些真实状态应改变决策，以及哪些情况应保持父代。** 首选研究“同类牌效在直接动作与后续分支之间使用可比较的刻度”。如果采用新的副露代价或七对路线损失，说明它所代表的假设、所用合法事实和何时不适用；一次只改一个机制，保持未知处理、完整评分和运行约束。\n\n候选可以保留、撤销或改造此前分支调整，但需要指出具体决策依据。不要把“多碰”或“少碰”本身当目标；副露的潜在收益和路线损失都应可被公开事实反驳。不得把条件路线收益或未见枚数当成已经校准的获胜概率。分支与路线若依赖互斥弃牌，不应相加成一个无法实现的动作价值。\n\n除正式格式要求外，机制说明须覆盖四项：触发条件、预期改选、至少一个反例、如何移除本次机制进行消融。验证顺序为合法性 → 同观察行为差异与对照 → 冻结开发面板的完整阶段比较。允许结论为无效或未分辨；不得为满足“有改选”而改坏动作。\n\n## 监督者后续裁定\n\n先检查代码是否真的实现所述机制，再用真实面板查差异。面板同首选只说明面板内相同；失败或弃权是不可判定，不能充当等行为。正式效果仍由同牌山换座的完整阶段评价给出，窗口改选率不参与适应度排序。\n\n开始新调用前必须冻结新批次身份与账本。旧 pilot 已关闭，既有调用和模拟费用不复用为新批余额。父代源码用于提出假设，不自动继承旧实现下的准入身份。\n",
+  "natural_panel_note": "H/M各2个开发来源根，每根4座位2臂2桌；每候选64桌，另计条件续打；固定样本非显著性确认"
+}

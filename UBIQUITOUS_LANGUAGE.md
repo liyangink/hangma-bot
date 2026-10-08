@@ -1,5 +1,16 @@
 # 杭麻 AI Bot 统一术语表
 
+## 2026-10-09 无白单白攻守评估口径
+
+本节为最新五项目标的评估用语，不新增线上代码类型或官方规则。[工作计划](doc/research/materials/white-count-audit-2026-10-09/SINGLEWHITE-160-WORKPLAN.md)规定任务与验收；庄权推进采用[现有唯一规则源](src/hangma_bot/hangma/progression.py:486)。
+
+| 统一术语 | 定义 | 已标记歧义 |
+| --- | --- | --- |
+| 防守（`SelfDrawDefense`，在自摸规则下控制支付与竞争代价） | 通过可兑现牌效、及时胡牌及公开竞争事实下的取舍，检验少付和收入之间的综合净分效果 | 不是放铳防守；少付、紧迫度代理或先胡次数单独提高不等于整体增强 |
+| 庄上防守（`DealerDefense`，本人坐庄时的防守） | 本人坐庄时检验阻止闲家先胡、庄付闲、胡牌保庄及实际后续效果 | 流局保庄与胡牌保庄分别记录；庄家倍率已计入结算，不能重复加奖 |
+| 抢庄（`DealerTakeover`，本人闲家胡牌后取得庄权） | 非流局赢家接庄；评估后续机会时仅计本桌尚有后续单局的闲家胡牌，并保留后续实际积分 | 末手胡牌仍有当局收入，但无下一单局庄权机会；抢庄频率不是额外积分或晋级结果 |
+| 听牌形状（`WaitingShape`，真实等待手牌的出口与支持结构） | 联合描述推进／胡牌码、公开未见支持、抓打条件下的合法出口及换形成本 | 结构听牌、条件胡见证与当窗实际合法胡不同；公开容量不是墙内概率，码宽更大不必然更好 |
+
 ## 2026-10-05 明确拒绝后合法备用增补
 
 - **明确拒绝后合法备用（`rejected_emergency_backup`）**：同一权威窗口中原规则紧急候选被明确拒绝、确认未执行后，从同次 `RuleAnalysis.legal_candidates` 按动作键选取的未拒动作。它在主评分前准备与审计；不是新的规则紧急候选。
@@ -33,7 +44,7 @@
 - **准备改善码宽度（`NaturalPreparationCodeWidth`）**：补一张能减少同一自然目标缺张、且仍与公开容量相容的不同牌码数量。不是胡牌宽度、剩余有效张数或概率。
 - **共享条件图（`SharedConditionalGraph`）**：完整冻结事实相同的节点可被多个父节点引用；条件边顺序和重复引用保持，节点计数只表示存储工作量。
 
-已标记的歧义：当前手牌的真实向听、指定自然目标缺张与胡牌资格分别表示；自然准备不是给零白手牌虚构新增白库存。当前合同为[v3](review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md)，下方v2为历史支付增补。
+已标记的歧义：当前手牌的真实向听、指定自然目标缺张与胡牌资格分别表示；自然准备不是给零白手牌虚构新增白库存。当前合同为[v3](doc/research/materials/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md)，下方v2为历史支付增补。
 
 
 ## 2026-10-01 评测输入证据增补
@@ -46,7 +57,7 @@
 
 ## 2026-09-30 VIP 固定框架增补
 
-本节记录[联合启发式合同 v2](review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)，不重解释历史积分估值实验。
+本节记录[联合启发式合同 v2](doc/research/materials/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)，不重解释历史积分估值实验。
 
 | 统一术语 | 定义 | 已标记歧义 |
 | --- | --- | --- |
@@ -406,7 +417,7 @@
 
 ## 坐隐完整评分与进化框架术语（2026-09-16，拟实施）
 
-**本节区分“生成算法”“算法给动作评分”“离线评价算法”。** 具体合同见[框架 v4](review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)。
+**本节区分“生成算法”“算法给动作评分”“离线评价算法”。** 具体合同见[框架 v4](doc/research/materials/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)。
 
 | 统一术语 | 定义 | 避免混淆 |
 | --- | --- | --- |

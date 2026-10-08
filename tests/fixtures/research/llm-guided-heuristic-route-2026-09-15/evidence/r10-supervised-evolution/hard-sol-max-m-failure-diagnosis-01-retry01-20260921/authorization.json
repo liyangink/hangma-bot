@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r14-hard-sol-max-m-diagnosis-01",
+  "batch_label": "hard-sol-max-m-failure-diagnosis-01-retry01-20260921",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 4.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 0.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T08:22:59Z",
+  "issuance_basis": "R14 先定位 MF1 已消费最差 M 来源；4桌、0模型、0确认",
+  "scope": "只重放 M/root03/焦点座位2 的稳定V2与hard-sol-max；不得作为新增效果样本",
+  "max_model_calls": 0,
+  "confirmation_roots": 0
+}

@@ -1,0 +1,120 @@
+{
+  "development_gates": {
+    "A": {
+      "development_gate_passed": false,
+      "rooms_nonnegative": 1,
+      "total_gain_windows": -7
+    },
+    "B": {
+      "development_gate_passed": false,
+      "rooms_nonnegative": 1,
+      "total_gain_windows": -3
+    }
+  },
+  "folds": {
+    "a_2a8aa14dc8a1": {
+      "A_params": [
+        -3
+      ],
+      "B_params": [
+        "baotou",
+        -3,
+        -9
+      ],
+      "counts": {
+        "A_correct": 116,
+        "A_corrected": 1,
+        "A_new_errors": 2,
+        "B_correct": 116,
+        "B_corrected": 1,
+        "B_new_errors": 2,
+        "parent_correct": 117,
+        "windows": 130
+      }
+    },
+    "a_852fb97c102e": {
+      "A_params": [
+        -6
+      ],
+      "B_params": [
+        "meld",
+        0,
+        -6
+      ],
+      "counts": {
+        "A_correct": 152,
+        "A_corrected": 3,
+        "A_new_errors": 6,
+        "B_correct": 152,
+        "B_corrected": 3,
+        "B_new_errors": 6,
+        "parent_correct": 155,
+        "windows": 167
+      }
+    },
+    "a_d773a8e428a0": {
+      "A_params": [
+        -3
+      ],
+      "B_params": [
+        "baotou",
+        -3,
+        -9
+      ],
+      "counts": {
+        "A_correct": 152,
+        "A_corrected": 1,
+        "A_new_errors": 4,
+        "B_correct": 152,
+        "B_corrected": 1,
+        "B_new_errors": 4,
+        "parent_correct": 155,
+        "windows": 179
+      }
+    },
+    "a_f8ddc4c3bd9b": {
+      "A_params": [
+        0
+      ],
+      "B_params": [
+        "meld",
+        0,
+        -6
+      ],
+      "counts": {
+        "A_correct": 148,
+        "A_corrected": 0,
+        "A_new_errors": 0,
+        "B_correct": 152,
+        "B_corrected": 4,
+        "B_new_errors": 0,
+        "parent_correct": 148,
+        "windows": 166
+      }
+    }
+  },
+  "full_dev_fit": {
+    "A": [
+      -3
+    ],
+    "B": [
+      "meld",
+      0,
+      -6
+    ]
+  },
+  "no_outcome_value_used_as_action_quality_label": true,
+  "schema": "g05-response-proxy-dev/1",
+  "script_sha256": "620483f543122ad9108fda2e2f52bfd97df403940c4141e3c576a59679e2d1bc",
+  "source_sha256": "f21476330ce3ff0324624dd5b46ae0ede6bc24fb62933f804b88137bd67b2da4",
+  "total_counts": {
+    "A_correct": 568,
+    "A_corrected": 5,
+    "A_new_errors": 12,
+    "B_correct": 572,
+    "B_corrected": 9,
+    "B_new_errors": 12,
+    "parent_correct": 575,
+    "windows": 642
+  }
+}

@@ -1,0 +1,246 @@
+{
+  "audits": {
+    "action_value_scored": 126294,
+    "complete_hands": 3072,
+    "complete_stages": 192,
+    "complete_tables": 384
+  },
+  "boundary": "开发根配对 t 区间；H/M 若共用根索引可能相关，故另报 12 个配对根区间；无独立确认或官方接线证据。",
+  "candidate_source_sha256": "bdfaf823e5b52718f3eefef5ac9972ee455dc9742dfda560c1b53f4e238ae7b2",
+  "component_delta_by_mix": {
+    "H": {
+      "draw_delta": 0.0,
+      "other_win_delta": -0.6354166666666666,
+      "plain_self_win_delta": -0.20833333333333334,
+      "special_self_win_delta": -1.0
+    },
+    "M": {
+      "draw_delta": 0.0,
+      "other_win_delta": 0.2916666666666667,
+      "plain_self_win_delta": 0.7083333333333334,
+      "special_self_win_delta": 0.4166666666666667
+    }
+  },
+  "manifest_sha256": "4ddad7796aac3961ec2ae4489dcafe7f2ce8d59e555cd902591b046d1ae60794",
+  "result_sha256": "4bde261a16753f69e857a0941c3d499690504a9b94ec4dcee0ad278fc9910a2e",
+  "root_u_bounds": {
+    "H-r01": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "H-r02": {
+      "conservative_high": 0.25,
+      "conservative_low": 0.25
+    },
+    "H-r03": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "H-r04": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "H-r05": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "H-r06": {
+      "conservative_high": 0.25,
+      "conservative_low": -0.25
+    },
+    "H-r07": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "H-r08": {
+      "conservative_high": -0.25,
+      "conservative_low": -0.25
+    },
+    "H-r09": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "H-r10": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "H-r11": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "H-r12": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "M-r01": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "M-r02": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "M-r03": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "M-r04": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "M-r05": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "M-r06": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "M-r07": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "M-r08": {
+      "conservative_high": 0.25,
+      "conservative_low": 0.25
+    },
+    "M-r09": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "M-r10": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    },
+    "M-r11": {
+      "conservative_high": 0.25,
+      "conservative_low": 0.25
+    },
+    "M-r12": {
+      "conservative_high": 0.0,
+      "conservative_low": 0.0
+    }
+  },
+  "schema": "g32-edge-expansion-analysis/1",
+  "score_by_mix": {
+    "H": {
+      "lower_95": -6.672274853540997,
+      "mean": -1.84375,
+      "n": 12,
+      "negative": 6,
+      "positive": 3,
+      "upper_95": 2.984774853540997,
+      "values": [
+        0.0,
+        6.25,
+        -0.625,
+        -1.875,
+        0.0,
+        -3.0,
+        0.0,
+        -24.25,
+        -3.625,
+        4.5,
+        -0.875,
+        1.375
+      ],
+      "zero": 3
+    },
+    "M": {
+      "lower_95": -0.7880494808737841,
+      "mean": 1.4166666666666667,
+      "n": 12,
+      "negative": 2,
+      "positive": 4,
+      "upper_95": 3.6213828142071174,
+      "values": [
+        0.0,
+        0.0,
+        7.5,
+        0.5,
+        0.0,
+        -1.375,
+        -0.25,
+        0.75,
+        0.0,
+        0.0,
+        9.875,
+        0.0
+      ],
+      "zero": 6
+    }
+  },
+  "score_combined_12_paired_roots": {
+    "lower_95": -2.8779726310657505,
+    "mean": -0.21354166666666666,
+    "n": 12,
+    "negative": 5,
+    "positive": 5,
+    "upper_95": 2.4508892977324175,
+    "values": [
+      0.0,
+      3.125,
+      3.4375,
+      -0.6875,
+      0.0,
+      -2.1875,
+      -0.125,
+      -11.75,
+      -1.8125,
+      2.25,
+      4.5,
+      0.6875
+    ],
+    "zero": 2
+  },
+  "score_combined_24_mix_root_clusters": {
+    "lower_95": -2.752491941889221,
+    "mean": -0.21354166666666666,
+    "n": 24,
+    "negative": 8,
+    "positive": 7,
+    "upper_95": 2.325408608555888,
+    "values": [
+      0.0,
+      6.25,
+      -0.625,
+      -1.875,
+      0.0,
+      -3.0,
+      0.0,
+      -24.25,
+      -3.625,
+      4.5,
+      -0.875,
+      1.375,
+      0.0,
+      0.0,
+      7.5,
+      0.5,
+      0.0,
+      -1.375,
+      -0.25,
+      0.75,
+      0.0,
+      0.0,
+      9.875,
+      0.0
+    ],
+    "zero": 9
+  },
+  "script_sha256": "cd71e5ca36ce06371320eca863b363a0a133ce0bd9e2322cc790666aa0f66a47",
+  "u_conservative_delta_by_mix": {
+    "H": {
+      "conservative_high": 0.020833333333333332,
+      "conservative_low": -0.020833333333333332
+    },
+    "M": {
+      "conservative_high": 0.041666666666666664,
+      "conservative_low": 0.041666666666666664
+    }
+  },
+  "u_conservative_delta_combined": {
+    "conservative_high": 0.03125,
+    "conservative_low": 0.010416666666666666
+  }
+}

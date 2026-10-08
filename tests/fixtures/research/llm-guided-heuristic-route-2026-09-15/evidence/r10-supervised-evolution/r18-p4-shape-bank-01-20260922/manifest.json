@@ -1,0 +1,65 @@
+{
+  "candidate_evaluated_during_generation": false,
+  "cases": 64,
+  "counts": [
+    {
+      "count": 12,
+      "decision_type": "keep_wealth",
+      "split": "development"
+    },
+    {
+      "count": 24,
+      "decision_type": "piao",
+      "split": "development"
+    },
+    {
+      "count": 12,
+      "decision_type": "take_hu",
+      "split": "development"
+    },
+    {
+      "count": 4,
+      "decision_type": "keep_wealth",
+      "split": "hidden"
+    },
+    {
+      "count": 8,
+      "decision_type": "piao",
+      "split": "hidden"
+    },
+    {
+      "count": 4,
+      "decision_type": "take_hu",
+      "split": "hidden"
+    }
+  ],
+  "generation_work": {
+    "analyzed_hand_draw_states": 291,
+    "hand_attempts": 3857,
+    "valid_baotou_hands": 64
+  },
+  "generator_seed": 202609220402,
+  "generator_sha256": "23499a87c5e4e2a52501df70505ec11c86fc26d4c77627b28704b34c87f7a759",
+  "hidden_quotas": {
+    "keep_wealth": 4,
+    "piao": 8,
+    "take_hu": 4
+  },
+  "limitations": [
+    "仍是下一次本人摸牌立即胡的条件代理；配对反事实另行校准",
+    "本批不覆盖杠、鸣牌、赛事处境或三财神",
+    "hidden 文件只允许冻结候选后的一次性准入程序读取"
+  ],
+  "old_bank_overlap": 0,
+  "oracle_version": "hangma-one-self-draw-score-delta/1",
+  "quotas": {
+    "keep_wealth": 16,
+    "piao": 32,
+    "take_hu": 16
+  },
+  "rules_hash": "3d28709994ce32d75594af53822e82a2b76f3b5b54b6ecc4e7006827c998a0af",
+  "schema": "r18-p4-shape-bank-manifest/1",
+  "scope": "四财神、庄家起手后首次摸牌、无副露无牌河；跨64个唯一13张手牌",
+  "split_rule": "每题型按(seed, reachability_witness_sha256)哈希排序取预登记hidden配额；候选评分前冻结",
+  "unique_hand13": 64
+}

@@ -1,0 +1,730 @@
+{
+  "boundary": "后窗只有到达时才作为当前可见状态；旧动作仅做去重。路线反转和备选入口均不是收益或正确动作标签。",
+  "complete_ids_source_sha256": "9acfa00cb6b4dec4887a483af53f913570003d42c01e72f6be80b70383b66f99",
+  "complete_official_tables": 909,
+  "counts": {
+    "consecutive_normal_draw_pairs": 47905,
+    "matched_no_meld": 25831,
+    "matched_pairs": 41980,
+    "matched_with_meld": 16149,
+    "strict_route_switch": 13,
+    "unmatched_or_meld_changed": 5925
+  },
+  "exploratory_transitions": {
+    "with_white/ordinary_to_ordinary": {
+      "tables": 816,
+      "windows": 7252
+    },
+    "with_white/ordinary_to_seven": {
+      "tables": 1,
+      "windows": 1
+    },
+    "with_white/ordinary_to_tie": {
+      "tables": 222,
+      "windows": 257
+    },
+    "with_white/seven_to_ordinary": {
+      "tables": 7,
+      "windows": 7
+    },
+    "with_white/seven_to_seven": {
+      "tables": 318,
+      "windows": 1606
+    },
+    "with_white/seven_to_tie": {
+      "tables": 234,
+      "windows": 281
+    },
+    "with_white/tie_to_ordinary": {
+      "tables": 467,
+      "windows": 633
+    },
+    "with_white/tie_to_seven": {
+      "tables": 108,
+      "windows": 119
+    },
+    "with_white/tie_to_tie": {
+      "tables": 443,
+      "windows": 1055
+    },
+    "without_continuous_white/ordinary_to_ordinary": {
+      "tables": 889,
+      "windows": 10054
+    },
+    "without_continuous_white/ordinary_to_tie": {
+      "tables": 304,
+      "windows": 368
+    },
+    "without_continuous_white/seven_to_ordinary": {
+      "tables": 5,
+      "windows": 5
+    },
+    "without_continuous_white/seven_to_seven": {
+      "tables": 366,
+      "windows": 1752
+    },
+    "without_continuous_white/seven_to_tie": {
+      "tables": 249,
+      "windows": 286
+    },
+    "without_continuous_white/tie_to_ordinary": {
+      "tables": 491,
+      "windows": 668
+    },
+    "without_continuous_white/tie_to_seven": {
+      "tables": 172,
+      "windows": 196
+    },
+    "without_continuous_white/tie_to_tie": {
+      "tables": 514,
+      "windows": 1291
+    }
+  },
+  "frozen_rooms_sha256": "3869f77156945329065db36ba67e3c68d60b3e5776cac19e3ca49a38a25cecfd",
+  "groups": {
+    "ordinary_to_seven": {
+      "capacity_safe": 1,
+      "combined_safe": 1,
+      "near_score": 1,
+      "novel_near_score": 1,
+      "old_route_legal": 1,
+      "switch": 1
+    },
+    "seven_to_ordinary": {
+      "capacity_safe": 1,
+      "combined_safe": 12,
+      "near_score": 1,
+      "novel_near_score": 1,
+      "old_route_legal": 12,
+      "switch": 12
+    },
+    "with_white": {
+      "capacity_safe": 1,
+      "combined_safe": 8,
+      "near_score": 1,
+      "novel_near_score": 1,
+      "old_route_legal": 8,
+      "switch": 8
+    },
+    "without_continuous_white": {
+      "capacity_safe": 1,
+      "combined_safe": 5,
+      "near_score": 1,
+      "novel_near_score": 1,
+      "old_route_legal": 5,
+      "switch": 5
+    }
+  },
+  "layers": {
+    "capacity_safe": {
+      "rooms": 2,
+      "tables": 2,
+      "windows": 2
+    },
+    "combined_safe": {
+      "rooms": 13,
+      "tables": 13,
+      "windows": 13
+    },
+    "near_score": {
+      "rooms": 2,
+      "tables": 2,
+      "windows": 2
+    },
+    "novel_near_score": {
+      "rooms": 2,
+      "tables": 2,
+      "windows": 2
+    },
+    "old_route_legal": {
+      "rooms": 13,
+      "tables": 13,
+      "windows": 13
+    },
+    "switch": {
+      "rooms": 13,
+      "tables": 13,
+      "windows": 13
+    }
+  },
+  "official_rooms": 91,
+  "old_behavior_sha256": {
+    "g10": "1cd0579e6b9f139ce36e2426f5ce30510170e544a8a5e67105fdcff3c9d6bfb2",
+    "g11": "106df115276c62775a62156982e33e57ad06b2e3e3a28754eea5a81cbfb6c971",
+    "g49": "2d30a1a651510ddc9831b1b12eabaf020df5b43afec3d27e715770bf57d4a4ed"
+  },
+  "outcome_blind": true,
+  "parent_source_sha256": "a2d9b8af93beabdba75716fccae56b0668a6fd84f0bdce558d2ff3e569443618",
+  "schema": "g56-route-switch-reach/1",
+  "script_sha256": "2e795ffefb4af3d5122232aa8dfd7a453f285a5247c870e4c9a84c8a7e19d718",
+  "source_counts": {
+    "accepted_normal_draw_discards": 55170,
+    "draw_not_accepted_parent_discard": 2195,
+    "draw_not_normal_with_visible_tile": 7805
+  },
+  "source_script_sha256": "55d1f5a815f866c6ac07544608e067d7ae47d20b63a46ab19e92911f7f86a04b",
+  "with_white_rows": [
+    {
+      "game_id": "a_5ff3fe3a5c59_r1_b8_t0",
+      "layers": {
+        "capacity_safe": false,
+        "combined_safe": true,
+        "near_score": false,
+        "novel_near_score": false,
+        "old_route_legal": true,
+        "switch": true
+      },
+      "old_actions": {
+        "g10": null,
+        "g11": null,
+        "g49": null
+      },
+      "options": [
+        {
+          "action": "discard:4t",
+          "capacity_safe": false,
+          "combined": 2,
+          "combined_capacity": 21,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 37.0,
+          "seven": 2,
+          "standard": 3
+        },
+        {
+          "action": "discard:7b",
+          "capacity_safe": false,
+          "combined": 2,
+          "combined_capacity": 20,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 45.0,
+          "seven": 2,
+          "standard": 3
+        },
+        {
+          "action": "discard:9b",
+          "capacity_safe": false,
+          "combined": 2,
+          "combined_capacity": 20,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 45.0,
+          "seven": 2,
+          "standard": 3
+        }
+      ],
+      "parent_action": "discard:8b",
+      "parent_lead": "ordinary",
+      "parent_route": {
+        "combined": 2,
+        "combined_capacity": 65,
+        "seven": 3,
+        "standard": 2
+      },
+      "previous_lead": "seven",
+      "prior_parent_action": "discard:发",
+      "prior_route": {
+        "combined": 2,
+        "seven": 2,
+        "standard": 3
+      },
+      "prior_seq": 728,
+      "room_id": "a_5ff3fe3a5c59",
+      "round_no": 5,
+      "seat": 2,
+      "trigger_seq": 760,
+      "wall_remaining": 64,
+      "white_count": 1
+    },
+    {
+      "game_id": "a_dc1579d00cf1_r1_b0_t0",
+      "layers": {
+        "capacity_safe": false,
+        "combined_safe": true,
+        "near_score": false,
+        "novel_near_score": false,
+        "old_route_legal": true,
+        "switch": true
+      },
+      "old_actions": {
+        "g10": "discard:7t",
+        "g11": null,
+        "g49": null
+      },
+      "options": [
+        {
+          "action": "discard:5b",
+          "capacity_safe": false,
+          "combined": 0,
+          "combined_capacity": 13,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 20.0,
+          "seven": 0,
+          "standard": 1
+        },
+        {
+          "action": "discard:6b",
+          "capacity_safe": false,
+          "combined": 0,
+          "combined_capacity": 13,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 20.0,
+          "seven": 0,
+          "standard": 1
+        },
+        {
+          "action": "discard:7b",
+          "capacity_safe": false,
+          "combined": 0,
+          "combined_capacity": 13,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 20.0,
+          "seven": 0,
+          "standard": 1
+        }
+      ],
+      "parent_action": "discard:6w",
+      "parent_lead": "ordinary",
+      "parent_route": {
+        "combined": 0,
+        "combined_capacity": 30,
+        "seven": 1,
+        "standard": 0
+      },
+      "previous_lead": "seven",
+      "prior_parent_action": "discard:2t",
+      "prior_route": {
+        "combined": 0,
+        "seven": 0,
+        "standard": 1
+      },
+      "prior_seq": 732,
+      "room_id": "a_dc1579d00cf1",
+      "round_no": 4,
+      "seat": 3,
+      "trigger_seq": 756,
+      "wall_remaining": 61,
+      "white_count": 3
+    },
+    {
+      "game_id": "a_15b16f8c772b_r1_b1_t0",
+      "layers": {
+        "capacity_safe": true,
+        "combined_safe": true,
+        "near_score": true,
+        "novel_near_score": true,
+        "old_route_legal": true,
+        "switch": true
+      },
+      "old_actions": {
+        "g10": "discard:6w",
+        "g11": null,
+        "g49": null
+      },
+      "options": [
+        {
+          "action": "discard:4w",
+          "capacity_safe": true,
+          "combined": 0,
+          "combined_capacity": 9,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 3.0,
+          "seven": 1,
+          "standard": 0
+        }
+      ],
+      "parent_action": "discard:1t",
+      "parent_lead": "seven",
+      "parent_route": {
+        "combined": 0,
+        "combined_capacity": 6,
+        "seven": 0,
+        "standard": 1
+      },
+      "previous_lead": "ordinary",
+      "prior_parent_action": "discard:7b",
+      "prior_route": {
+        "combined": 0,
+        "seven": 1,
+        "standard": 0
+      },
+      "prior_seq": 1728,
+      "room_id": "a_15b16f8c772b",
+      "round_no": 8,
+      "seat": 3,
+      "trigger_seq": 1749,
+      "wall_remaining": 45,
+      "white_count": 1
+    },
+    {
+      "game_id": "a_1e9a18f1951a_r1_b7_t0",
+      "layers": {
+        "capacity_safe": false,
+        "combined_safe": true,
+        "near_score": false,
+        "novel_near_score": false,
+        "old_route_legal": true,
+        "switch": true
+      },
+      "old_actions": {
+        "g10": "discard:7t",
+        "g11": null,
+        "g49": null
+      },
+      "options": [
+        {
+          "action": "discard:7w",
+          "capacity_safe": false,
+          "combined": 1,
+          "combined_capacity": 12,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 21.0,
+          "seven": 1,
+          "standard": 2
+        },
+        {
+          "action": "discard:9w",
+          "capacity_safe": false,
+          "combined": 1,
+          "combined_capacity": 12,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 21.0,
+          "seven": 1,
+          "standard": 2
+        },
+        {
+          "action": "discard:2b",
+          "capacity_safe": false,
+          "combined": 1,
+          "combined_capacity": 15,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 27.0,
+          "seven": 1,
+          "standard": 2
+        },
+        {
+          "action": "discard:3b",
+          "capacity_safe": false,
+          "combined": 1,
+          "combined_capacity": 12,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 30.0,
+          "seven": 1,
+          "standard": 2
+        }
+      ],
+      "parent_action": "discard:8w",
+      "parent_lead": "ordinary",
+      "parent_route": {
+        "combined": 1,
+        "combined_capacity": 33,
+        "seven": 2,
+        "standard": 1
+      },
+      "previous_lead": "seven",
+      "prior_parent_action": "discard:中",
+      "prior_route": {
+        "combined": 1,
+        "seven": 1,
+        "standard": 2
+      },
+      "prior_seq": 1140,
+      "room_id": "a_1e9a18f1951a",
+      "round_no": 6,
+      "seat": 0,
+      "trigger_seq": 1172,
+      "wall_remaining": 58,
+      "white_count": 1
+    },
+    {
+      "game_id": "a_9f5d90ba56ec_r1_b9_t0",
+      "layers": {
+        "capacity_safe": false,
+        "combined_safe": true,
+        "near_score": false,
+        "novel_near_score": false,
+        "old_route_legal": true,
+        "switch": true
+      },
+      "old_actions": {
+        "g10": "discard:8t",
+        "g11": null,
+        "g49": null
+      },
+      "options": [
+        {
+          "action": "discard:7b",
+          "capacity_safe": false,
+          "combined": 0,
+          "combined_capacity": 6,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 10.0,
+          "seven": 0,
+          "standard": 1
+        },
+        {
+          "action": "discard:8b",
+          "capacity_safe": false,
+          "combined": 0,
+          "combined_capacity": 6,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 10.0,
+          "seven": 0,
+          "standard": 1
+        },
+        {
+          "action": "discard:7t",
+          "capacity_safe": false,
+          "combined": 0,
+          "combined_capacity": 8,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 14.0,
+          "seven": 0,
+          "standard": 1
+        }
+      ],
+      "parent_action": "discard:9b",
+      "parent_lead": "ordinary",
+      "parent_route": {
+        "combined": 0,
+        "combined_capacity": 9,
+        "seven": 1,
+        "standard": 0
+      },
+      "previous_lead": "seven",
+      "prior_parent_action": "discard:4b",
+      "prior_route": {
+        "combined": 0,
+        "seven": 0,
+        "standard": 1
+      },
+      "prior_seq": 957,
+      "room_id": "a_9f5d90ba56ec",
+      "round_no": 4,
+      "seat": 2,
+      "trigger_seq": 972,
+      "wall_remaining": 29,
+      "white_count": 2
+    },
+    {
+      "game_id": "a_8448cc0c89fd_r1_b2_t0",
+      "layers": {
+        "capacity_safe": false,
+        "combined_safe": true,
+        "near_score": false,
+        "novel_near_score": false,
+        "old_route_legal": true,
+        "switch": true
+      },
+      "old_actions": {
+        "g10": null,
+        "g11": null,
+        "g49": null
+      },
+      "options": [
+        {
+          "action": "discard:6w",
+          "capacity_safe": false,
+          "combined": 2,
+          "combined_capacity": 21,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 48.0,
+          "seven": 2,
+          "standard": 3
+        },
+        {
+          "action": "discard:7w",
+          "capacity_safe": false,
+          "combined": 2,
+          "combined_capacity": 21,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 48.0,
+          "seven": 2,
+          "standard": 3
+        }
+      ],
+      "parent_action": "discard:1b",
+      "parent_lead": "ordinary",
+      "parent_route": {
+        "combined": 2,
+        "combined_capacity": 69,
+        "seven": 3,
+        "standard": 2
+      },
+      "previous_lead": "seven",
+      "prior_parent_action": "discard:2t",
+      "prior_route": {
+        "combined": 2,
+        "seven": 2,
+        "standard": 3
+      },
+      "prior_seq": 18,
+      "room_id": "a_8448cc0c89fd",
+      "round_no": 1,
+      "seat": 3,
+      "trigger_seq": 42,
+      "wall_remaining": 76,
+      "white_count": 1
+    },
+    {
+      "game_id": "a_10735c68e0fe_r1_b4_t0",
+      "layers": {
+        "capacity_safe": false,
+        "combined_safe": true,
+        "near_score": false,
+        "novel_near_score": false,
+        "old_route_legal": true,
+        "switch": true
+      },
+      "old_actions": {
+        "g10": null,
+        "g11": null,
+        "g49": null
+      },
+      "options": [
+        {
+          "action": "discard:5t",
+          "capacity_safe": false,
+          "combined": 1,
+          "combined_capacity": 15,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 30.0,
+          "seven": 1,
+          "standard": 2
+        },
+        {
+          "action": "discard:8t",
+          "capacity_safe": false,
+          "combined": 1,
+          "combined_capacity": 13,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 32.0,
+          "seven": 1,
+          "standard": 2
+        },
+        {
+          "action": "discard:9t",
+          "capacity_safe": false,
+          "combined": 1,
+          "combined_capacity": 13,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 32.0,
+          "seven": 1,
+          "standard": 2
+        }
+      ],
+      "parent_action": "discard:6w",
+      "parent_lead": "ordinary",
+      "parent_route": {
+        "combined": 1,
+        "combined_capacity": 45,
+        "seven": 2,
+        "standard": 1
+      },
+      "previous_lead": "seven",
+      "prior_parent_action": "discard:3w",
+      "prior_route": {
+        "combined": 1,
+        "seven": 1,
+        "standard": 2
+      },
+      "prior_seq": 725,
+      "room_id": "a_10735c68e0fe",
+      "round_no": 4,
+      "seat": 3,
+      "trigger_seq": 749,
+      "wall_remaining": 72,
+      "white_count": 1
+    },
+    {
+      "game_id": "a_c95868e9e4da_r1_b7_t0",
+      "layers": {
+        "capacity_safe": false,
+        "combined_safe": true,
+        "near_score": false,
+        "novel_near_score": false,
+        "old_route_legal": true,
+        "switch": true
+      },
+      "old_actions": {
+        "g10": "discard:4w",
+        "g11": null,
+        "g49": null
+      },
+      "options": [
+        {
+          "action": "discard:9b",
+          "capacity_safe": false,
+          "combined": 1,
+          "combined_capacity": 9,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 13.0,
+          "seven": 1,
+          "standard": 2
+        },
+        {
+          "action": "discard:6w",
+          "capacity_safe": false,
+          "combined": 1,
+          "combined_capacity": 9,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 19.0,
+          "seven": 1,
+          "standard": 2
+        },
+        {
+          "action": "discard:8b",
+          "capacity_safe": false,
+          "combined": 1,
+          "combined_capacity": 8,
+          "combined_safe": true,
+          "same_old": [],
+          "score_gap": 20.0,
+          "seven": 1,
+          "standard": 2
+        }
+      ],
+      "parent_action": "discard:7b",
+      "parent_lead": "ordinary",
+      "parent_route": {
+        "combined": 1,
+        "combined_capacity": 28,
+        "seven": 2,
+        "standard": 1
+      },
+      "previous_lead": "seven",
+      "prior_parent_action": "discard:西",
+      "prior_route": {
+        "combined": 1,
+        "seven": 1,
+        "standard": 2
+      },
+      "prior_seq": 562,
+      "room_id": "a_c95868e9e4da",
+      "round_no": 2,
+      "seat": 3,
+      "trigger_seq": 587,
+      "wall_remaining": 42,
+      "white_count": 1
+    }
+  ]
+}

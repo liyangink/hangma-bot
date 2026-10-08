@@ -1,0 +1,134 @@
+{
+ "schema": "sitin-sealed-dispatch-selftest/3",
+ "purpose": "零模型自检：干净完整的会话才收；污染族 ⇒ INVALID；证据不完整族（缺会话/无正文/未结束/坏行/题面不符/重复）+ 单请求协议与未登记上下文（双请求/结束后工作/双终止/配置不符/额外块/额外消息）⇒ 具名阻断",
+ "fixture_sessions_root": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/sealed-dispatch/fixtures/sessions",
+ "checks": [
+  {
+   "case": "clean_complete",
+   "task_id": "T90",
+   "expect": "CLEAN",
+   "observed": "CLEAN",
+   "ok": true
+  },
+  {
+   "case": "contamination",
+   "task_id": "T91",
+   "expect": "CONTAMINATED_TOOL_USE",
+   "observed": "CONTAMINATED_TOOL_USE",
+   "ok": true
+  },
+  {
+   "case": "contamination",
+   "task_id": "T92",
+   "expect": "CONTAMINATED_FILE_ACCESS",
+   "observed": "CONTAMINATED_FILE_ACCESS",
+   "ok": true
+  },
+  {
+   "case": "incomplete_evidence",
+   "task_id": "T99",
+   "expect": "MISSING_SESSION",
+   "observed": "MISSING_SESSION",
+   "ok": true
+  },
+  {
+   "case": "incomplete_evidence",
+   "task_id": "T93",
+   "expect": "NO_REPLY",
+   "observed": "NO_REPLY",
+   "ok": true
+  },
+  {
+   "case": "incomplete_evidence",
+   "task_id": "T94",
+   "expect": "INCOMPLETE_SESSION",
+   "observed": "INCOMPLETE_SESSION",
+   "ok": true
+  },
+  {
+   "case": "incomplete_evidence",
+   "task_id": "T95",
+   "expect": "UNREADABLE_LOG",
+   "observed": "UNREADABLE_LOG",
+   "ok": true
+  },
+  {
+   "case": "incomplete_evidence",
+   "task_id": "T96",
+   "expect": "PROMPT_MISMATCH",
+   "observed": "PROMPT_MISMATCH",
+   "ok": true
+  },
+  {
+   "case": "incomplete_evidence",
+   "task_id": "T98",
+   "expect": "DUPLICATE_SESSION",
+   "observed": "DUPLICATE_SESSION",
+   "ok": true
+  },
+  {
+   "case": "prompt_underivable_blocks",
+   "task_id": "T88",
+   "expect": "PROMPT_UNDERIVABLE",
+   "observed": "PROMPT_UNDERIVABLE",
+   "ok": true
+  },
+  {
+   "case": "plan_prompt_selfdeclared",
+   "task_id": "T90",
+   "expect": "plan_problems",
+   "observed": "INVALID",
+   "ok": true
+  },
+  {
+   "case": "protocol_protocol_multi_request",
+   "task_id": "T80",
+   "expect": "PROTOCOL_MULTI_REQUEST",
+   "observed": "PROTOCOL_MULTI_REQUEST",
+   "ok": true
+  },
+  {
+   "case": "protocol_protocol_work_after_termination",
+   "task_id": "T81",
+   "expect": "PROTOCOL_WORK_AFTER_TERMINATION",
+   "observed": "PROTOCOL_WORK_AFTER_TERMINATION",
+   "ok": true
+  },
+  {
+   "case": "protocol_unregistered_context_block",
+   "task_id": "T82",
+   "expect": "UNREGISTERED_CONTEXT_BLOCK",
+   "observed": "UNREGISTERED_CONTEXT_BLOCK",
+   "ok": true
+  },
+  {
+   "case": "protocol_unregistered_user_message",
+   "task_id": "T83",
+   "expect": "UNREGISTERED_USER_MESSAGE",
+   "observed": "UNREGISTERED_USER_MESSAGE",
+   "ok": true
+  },
+  {
+   "case": "protocol_protocol_multi_termination",
+   "task_id": "T84",
+   "expect": "PROTOCOL_MULTI_TERMINATION",
+   "observed": "PROTOCOL_MULTI_TERMINATION",
+   "ok": true
+  },
+  {
+   "case": "protocol_protocol_request_config_mismatch",
+   "task_id": "T85",
+   "expect": "PROTOCOL_REQUEST_CONFIG_MISMATCH",
+   "observed": "PROTOCOL_REQUEST_CONFIG_MISMATCH",
+   "ok": true
+  },
+  {
+   "case": "host_message_registered",
+   "task_id": "T87",
+   "expect": "CLEAN",
+   "observed": "CLEAN",
+   "ok": true
+  }
+ ],
+ "ok": true
+}

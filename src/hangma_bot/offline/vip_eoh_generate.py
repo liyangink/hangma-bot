@@ -51,6 +51,7 @@ from hangma_bot.policy.route_vip_heuristic import (
 
 from .scoring_sources import REPO_ROOT, digest_of_file, source_manifest, write_code_snapshot
 from .vip_heuristic_smoke import freeze_vip_identity
+from hangma_bot.adapters.recording.project_storage import project_file
 
 VIP_EOH_PROFILE = "vip-route-eoh/1"
 VIP_EOH_GENERATION_SCHEMA = "vip-route-eoh-generation/1"
@@ -58,7 +59,7 @@ VIP_EOH_BATCH_SCHEMA = "vip-route-eoh-batch/1"
 VIP_EOH_LEDGER_SCHEMA = "vip-route-eoh-budget-ledger/1"
 OPERATORS = ("i1", "e1", "e2", "m1", "m2")
 ACCOUNTS = ("model_calls", "input_tokens", "output_tokens", "table_instances", "wall_clock_seconds")
-_TOOLS = REPO_ROOT / "review/llm-guided-heuristic-route-2026-09-15/tools"
+_TOOLS = REPO_ROOT / "tools/offline/sitin"
 _MECHANISM_FIELDS = {
     "operator", "trigger", "changed_branches", "expected_direction", "counterexample",
     "parent_differences", "parameter_changes",
@@ -336,8 +337,8 @@ def _framework(batch: VipEohBatch) -> dict[str, Any]:
 
     manifest = source_manifest(("hangma_bot.offline.vip_eoh_generate",))
     for relative in ("scripts/vip_route_eoh_generate.py",
-                     "review/llm-guided-heuristic-route-2026-09-15/tools/sitin_generate.py",
-                     "review/llm-guided-heuristic-route-2026-09-15/tools/sitin_process.py"):
+                     "tools/offline/sitin/sitin_generate.py",
+                     "tools/offline/sitin/sitin_process.py"):
         manifest[relative] = digest_of_file(REPO_ROOT / relative)
     return {"seed_identity": batch.identity(VIP_ROUTE_HEURISTIC_SEED_SOURCE),
             "generation_source_manifest": dict(sorted(manifest.items()))}
@@ -615,7 +616,7 @@ def build_vip_eoh_prompt(batch: VipEohBatch, operator: str, parents: Sequence[Ma
     _validate_operator(operator, parents)
     tools = legacy_generation_tools()
     appendix = vip_readonly_appendix(batch)
-    contract_path = REPO_ROOT / batch.identity(VIP_ROUTE_HEURISTIC_SEED_SOURCE)["contract_path"]
+    contract_path = project_file(REPO_ROOT, batch.identity(VIP_ROUTE_HEURISTIC_SEED_SOURCE)["contract_path"])
     prompt_parents = [{name: parent[name] for name in ("identity", "source", "thought", "mechanism")}
                       for parent in parents]
     payload = {"profile": VIP_EOH_PROFILE, "operator": operator,
@@ -955,7 +956,7 @@ def run_vip_eoh_generate(
     _atomic(out_dir / "prompt.txt", packet.text.encode("utf-8"))
     _atomic(out_dir / "batch.json", batch.raw)
     _atomic(out_dir / "readonly-appendix.json", _json_bytes(appendix))
-    contract = REPO_ROOT / framework["seed_identity"]["contract_path"]
+    contract = project_file(REPO_ROOT, framework["seed_identity"]["contract_path"])
     _atomic(out_dir / "contract.md", contract.read_bytes())
     write_code_snapshot(out_dir, framework["generation_source_manifest"])
     _atomic(out_dir / "generation.json", _json_bytes(record))

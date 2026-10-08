@@ -1,0 +1,40 @@
+{
+  "candidate_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+  "on_fail": "隐藏集视为消耗；不得围绕失败题修补后复用",
+  "on_pass": "P4获得跨手牌四财神飘机会精英资格；仍不覆盖keep_wealth或其他家族",
+  "one_shot": true,
+  "pass_rule": {
+    "all_scored": "16/16候选与基线均SCORED",
+    "control_stability": "4个take_hu和4个keep_wealth题均不改变首选",
+    "no_regression": "全隐藏集capability_gain<0为0",
+    "piao_generalization": "8/8隐藏piao题改善且候选最优"
+  },
+  "pre_run_hidden_content_inspected": false,
+  "public_hidden_counts": [
+    {
+      "count": 4,
+      "decision_type": "keep_wealth",
+      "split": "hidden"
+    },
+    {
+      "count": 8,
+      "decision_type": "piao",
+      "split": "hidden"
+    },
+    {
+      "count": 4,
+      "decision_type": "take_hu",
+      "split": "hidden"
+    }
+  ],
+  "release_eligible": false,
+  "schema": "r18-p4-shape-hidden-admission-manifest/1",
+  "source_hashes": {
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-opportunity-author-01-20260922/generations/P4/normalized-v2/candidate.py": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p4-multishape-counterfactual-01-20260922/result.json": "a7e56fd18a78ff995addfd33d252e7b02c66cdfa5bc7f851223b7b02f8c73e9f",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p4-shape-bank-01-20260922/development-score.json": "265847713dca48fbfc16c62aaafb208a5095720baa6b32d69d5c49c261b92ffe",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p4-shape-bank-01-20260922/hidden.json": "bd175f75d7f876bdbfafe89cc3c839e0834d2be80d84fa8323cd5dd597f3f073",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p4-shape-bank-01-20260922/manifest.json": "5dbc7345a8e1083d79eb9fd9c47f6af1a75d677bf0bf426e62bbf7b6bcfbd58c",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p4_shape_hidden_admission.py": "d5ac42a6646c264e4ba99d773f341430b5168b6a1957e55f91bee1f38ee81a10"
+  }
+}

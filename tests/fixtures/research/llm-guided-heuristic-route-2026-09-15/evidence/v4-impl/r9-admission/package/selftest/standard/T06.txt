@@ -1,0 +1,107 @@
+{在父代基础上按三段反馈做有界修订：下调支撑边际分以回应非庄家负差异假设，主轴与未知处理不变。}
+
+```json
+{
+ "trigger": "由三段反馈驱动的修订：针对负差异假设（非庄家锚位、墙后段路线潜力过度追逐）收紧已知分支的支撑权重",
+ "changed_branches": "支撑剩余的边际加分下调，未知分支维持显式降档，不进入已知评分",
+ "expected_direction": "M/seat3 型非庄家深负局面预期收窄；牌效清晰窗口基本不变",
+ "counterexample": "支撑丰富且已见证的七对/结构窗口可能小幅后移"
+}
+```
+
+```python
+"""efficiency_seed：牌效优先——followup 分支 combined_shanten 最小 + support_remaining 加权。"""
+
+SHANTEN_WEIGHT = 3.0
+SUPPORT_WEIGHT = 0.5
+UNKNOWN_FIELD = "combined_shanten"
+
+
+def branch_number(branch, key):
+    value = branch.get(key)
+    if value is None:
+        return None
+    if value is True or value is False:
+        return None
+    if value < 0:
+        return None
+    return value
+
+
+def best_branch(branches):
+    best_shanten = None
+    best_support = 0.0
+    best_key = None
+    for branch in branches:
+        shanten = branch_number(branch, "combined_shanten")
+        if shanten is None:
+            continue
+        support = branch_number(branch, "support_remaining")
+        if support is None:
+            support = 0.0
+        if best_shanten is None or shanten < best_shanten:
+            best_shanten = shanten
+            best_support = support
+            best_key = branch.get("followup_key")
+    if best_shanten is None:
+        return None
+    return (best_shanten, best_support, best_key)
+
+
+def make_trace(shanten, support, key):
+    if key is None:
+        return {"basis": "efficiency", "combined_shanten": shanten, "support_remaining": support}
+    return {"basis": "efficiency", "combined_shanten": shanten, "support_remaining": support, "followup_key": key}
+
+
+def known_entries(actions):
+    entries = []
+    for action in actions:
+        branches = action.get("followup_branches")
+        if branches is None:
+            continue
+        best = best_branch(branches)
+        if best is None:
+            continue
+        shanten = best[0]
+        support = best[1]
+        key = best[2]
+        score = 0.0 - SHANTEN_WEIGHT * shanten + SUPPORT_WEIGHT * support
+        entries.append({"action_key": action["action_key"], "score": score, "trace": make_trace(shanten, support, key)})
+    return entries
+
+
+def has_entry(entries, key):
+    for entry in entries:
+        if entry["action_key"] == key:
+            return True
+    return False
+
+
+def min_score(entries):
+    lowest = None
+    for entry in entries:
+        value = entry["score"]
+        if lowest is None or value < lowest:
+            lowest = value
+    return lowest
+
+
+def score_actions(view):
+    actions = view["actions"]
+    entries = known_entries(actions)
+    if len(entries) == 0:
+        results = []
+        for action in actions:
+            trace = {"basis": "unknown_field_basis", "field": UNKNOWN_FIELD}
+            results.append({"action_key": action["action_key"], "score": 0.0, "trace": trace})
+        return {"status": "SCORED", "entries": results, "reason": None}
+    anchor = min_score(entries) - 1.0
+    for action in actions:
+        key = action["action_key"]
+        if has_entry(entries, key):
+            continue
+        trace = {"basis": "unknown_field_basis", "field": UNKNOWN_FIELD, "anchor": anchor}
+        entries.append({"action_key": key, "score": anchor, "trace": trace})
+    return {"status": "SCORED", "entries": entries, "reason": None}
+```

@@ -1,0 +1,59 @@
+{
+  "candidate_id": "56d2c91f349f6f19f202b468593e5438520d385a1f39cf6121ef9a72959ff886",
+  "candidate_sha256": "38cc7e9705ed5902b2a221b45605323471840bf7ef5acc61caf05f9d5762d3f7",
+  "development_and_hidden_roots_forbidden": true,
+  "directed_natural_confirmation": {
+    "arms": [
+      "P5 immediate hu",
+      "candidate discard wealth then P5"
+    ],
+    "hidden_worlds_per_root": 32,
+    "minimum_independent_roots": 8,
+    "minimum_roots_by_mix": {
+      "H": 4,
+      "M": 4
+    },
+    "pass": {
+      "bootstrap_95_lower": "> 0",
+      "candidate_action_matches_frozen_intervention": "全部",
+      "mechanical_success": "全部",
+      "minimum_leave_one_root_out_mean": "> 0",
+      "positive_roots": ">= 7/8"
+    },
+    "primary_metric": "当前局焦点结算差（候选减 P5）",
+    "source": "全新 P5 自然轨迹；行动前公开谓词首次命中；每来源根最多一个状态"
+  },
+  "failure_policy": "任一确认门失败即保持活动研究父代但关闭发布推进；不得打开逐例结果后修改同一候选再复用本确认集",
+  "family": "two_wealth.piao_keeps_baotou",
+  "fresh_full_table_confirmation": {
+    "arms": [
+      "candidate",
+      "P5"
+    ],
+    "expected_source_units": 512,
+    "expected_tables": 2048,
+    "focal_seats": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "mixes": [
+      "H",
+      "M"
+    ],
+    "pass": {
+      "action_value_failures": 0,
+      "all_candidate_requests_scored": true,
+      "all_tables_complete": true,
+      "material_degradation": false,
+      "natural_target_triggers": ">= 2",
+      "paired_stage_score_delta_mean": ">= 0",
+      "source_unit_bootstrap_95_lower": "> -1.0"
+    },
+    "roots_per_mix": 64,
+    "tables_per_stage": 2
+  },
+  "one_shot": true,
+  "schema": "r18-p39-two-wealth-confirmation-contract/1"
+}

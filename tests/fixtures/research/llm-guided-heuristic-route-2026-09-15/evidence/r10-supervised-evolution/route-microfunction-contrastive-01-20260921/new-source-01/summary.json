@@ -1,0 +1,83 @@
+{
+  "status": "COMPLETE_ROUTE_MICROFUNCTION_NEW_SOURCE_DEVELOPMENT",
+  "disposition": "INCONCLUSIVE_DEVELOPMENT",
+  "config_id": "r2-cfg-02",
+  "candidate_id": "action_value_v1:offline-route-microfunction:b753f5bb83860428ca101836bca3365b477827eef58c2d2a8f06a812a40d841f",
+  "source_sha256": "b753f5bb83860428ca101836bca3365b477827eef58c2d2a8f06a812a40d841f",
+  "full_tables_verified": 4096,
+  "roots_per_mix": 128,
+  "panels": {
+    "H": {
+      "n_roots": 128,
+      "mean_delta": 0.0244140625,
+      "standard_error": 0.020474097590940488,
+      "interval_95": [
+        -0.015714431394201638,
+        0.06454255639420164
+      ],
+      "mean_delta_low": 0.017578125,
+      "standard_error_low": 0.02022260045263235,
+      "interval_95_low": [
+        -0.0220574435609028,
+        0.0572136935609028
+      ],
+      "mean_delta_high": 0.03125,
+      "unresolved_roots": 6
+    },
+    "M": {
+      "n_roots": 128,
+      "mean_delta": 0.025390625,
+      "standard_error": 0.01962560256101073,
+      "interval_95": [
+        -0.013074849194478079,
+        0.06385609919447807
+      ],
+      "mean_delta_low": 0.01953125,
+      "standard_error_low": 0.01992106080434408,
+      "interval_95_low": [
+        -0.01951331171034691,
+        0.05857581171034691
+      ],
+      "mean_delta_high": 0.03125,
+      "unresolved_roots": 4
+    }
+  },
+  "declared_equal_mix": {
+    "weights": {
+      "H": 0.5,
+      "M": 0.5
+    },
+    "mean_delta": 0.02490234375,
+    "mean_delta_low": 0.0185546875,
+    "mean_delta_high": 0.03125,
+    "status": "ok",
+    "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例"
+  },
+  "conservative_equal_mix_sampling": {
+    "mean": 0.0185546875,
+    "standard_error": 0.014193327945175332,
+    "interval_95": [
+      -0.009263724093309542,
+      0.04637309909330954
+    ],
+    "formula": "sqrt(SE_H_low^2 + SE_M_low^2) / 2",
+    "kind": "sampling_uncertainty_normal_approx_on_conservative_root_delta"
+  },
+  "family_regressions": [],
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 4096.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "continue_confirmation_preparation": false,
+  "retain_as_structural_parent": true,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "按文献与新来源分解重组多父代搜索空间，不追加本批根"
+}

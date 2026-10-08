@@ -1,0 +1,138 @@
+{
+  "active_research_parent": false,
+  "by_mix": {
+    "H": {
+      "candidate_fourth_rate": 0.15625,
+      "candidate_unresolved_rate": 0.0,
+      "parent_fourth_rate": 0.1875,
+      "parent_unresolved_rate": 0.0,
+      "source_units": 32,
+      "stage_score_delta_mean": -3.53125,
+      "u_delta_high_mean": -0.0625,
+      "u_delta_low_mean": -0.0625
+    },
+    "M": {
+      "candidate_fourth_rate": 0.21875,
+      "candidate_unresolved_rate": 0.0,
+      "parent_fourth_rate": 0.21875,
+      "parent_unresolved_rate": 0.03125,
+      "source_units": 32,
+      "stage_score_delta_mean": -1.96875,
+      "u_delta_high_mean": -0.09375,
+      "u_delta_low_mean": -0.125
+    }
+  },
+  "candidate_execution_review": {
+    "missing_tables": 0,
+    "recorded_counts": {
+      "action_value_failed": 0,
+      "action_value_scored": 43248,
+      "ambiguous_diagnostics": 0,
+      "decision_count": 173072,
+      "other_policy_decisions": 129824,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "abstain": 0,
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "recorded_tables": 128,
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 128,
+    "zero_internal_failures_verified": true
+  },
+  "combination_identity": "aca2ab82e8ab41fd14b997de0d8d8290399a3d0a7692854ccb581989ec4df467",
+  "confirmation_eligible": false,
+  "execution_review": {
+    "missing_tables": 0,
+    "recorded_counts": {
+      "action_value_failed": 0,
+      "action_value_scored": 86618,
+      "ambiguous_diagnostics": 0,
+      "decision_count": 346643,
+      "other_policy_decisions": 260025,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "abstain": 0,
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "recorded_tables": 256,
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 256,
+    "zero_internal_failures_verified": true
+  },
+  "gate_checks": {
+    "action_value_failures_zero": true,
+    "all_ordinary_eligible_reductions_complete": true,
+    "all_tables_complete": true,
+    "candidate_fourth_rate_not_higher": true,
+    "candidate_key_set_failures_zero": true,
+    "candidate_zero_internal_failures": true,
+    "each_mix_u_delta_low_mean_not_strongly_negative": false,
+    "ordinary_changed_draw_rate_bounded": true,
+    "ordinary_changed_draws_positive": true,
+    "ordinary_order_mismatches_zero": true,
+    "overall_stage_score_delta_mean_nonnegative": false,
+    "overall_u_delta_low_mean_nonnegative": false,
+    "positive_u_units_distinct_roots": false,
+    "positive_u_units_distinct_seats": false,
+    "protected_plan_mismatches_zero": true,
+    "request_audit_failures_zero": true,
+    "response_plan_mismatches_zero": true,
+    "zero_internal_failures": true
+  },
+  "next": "保留P47；关闭当前严格接管定义并按失败分面复盘",
+  "overall": {
+    "candidate_fourth_rate": 0.1875,
+    "candidate_unresolved_rate": 0.0,
+    "negative_u_units": 7,
+    "parent_fourth_rate": 0.203125,
+    "parent_unresolved_rate": 0.015625,
+    "positive_u_units": 1,
+    "source_units": 64,
+    "stage_score_bootstrap_two_sided_95_interval": [
+      -10.40625,
+      4.5
+    ],
+    "stage_score_delta_mean": -2.75,
+    "u_delta_high_mean": -0.078125,
+    "u_delta_low_bootstrap_one_sided_95_lower": -0.171875,
+    "u_delta_low_bootstrap_two_sided_95_interval": [
+      -0.1875,
+      -0.015625
+    ],
+    "u_delta_low_mean": -0.09375
+  },
+  "positive_u_distinct_roots": [
+    2
+  ],
+  "positive_u_distinct_seats": [
+    3
+  ],
+  "release_eligible": false,
+  "request_audit_counts": {
+    "changed_ordinary_draws": 187,
+    "complete_ordinary_draws": 8990,
+    "eligible_ordinary_draws": 8990,
+    "protected:r18_opportunity_overlay": 2,
+    "protected_plans": 2,
+    "requests": 43248,
+    "response_exact_plans": 34256
+  },
+  "request_audit_failure_sources": [],
+  "schema": "r18-p61-confirmed-hu-takeover-screen-result/1",
+  "selection_eligible": false,
+  "source_units": 64,
+  "status": "FAIL_P61_CONFIRMED_HU_TAKEOVER_SCREEN",
+  "strength_claim": false,
+  "tables": 256
+}

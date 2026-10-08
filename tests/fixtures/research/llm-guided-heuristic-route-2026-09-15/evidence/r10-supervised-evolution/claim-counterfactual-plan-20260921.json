@@ -1,0 +1,83 @@
+{
+  "schema": "r10-claim-counterfactual-plan/1",
+  "created_date": "2026-09-21",
+  "status": "CF0_IN_PROGRESS",
+  "new_goal": "用同一自然牌局快照下过牌与具体吃碰的完整剩余阶段配对效用，校准只消费PlayerObservation和HangmaRules事实的轻量鸣牌门控器；冻结后再做未见完整阶段和独立确认。",
+  "closed_parent": {
+    "candidate_id": "offline-cross-specialist-v1:route_claim_only:b753f5bb83860428",
+    "disposition": "CLOSE_ROUTE_CLAIM_AND_REVIEW_LITERATURE",
+    "new_source_mean_delta": -0.01171875,
+    "new_source_fitness_mean_delta_low": -0.015625,
+    "full_tables": 2048,
+    "execution_failures": 0
+  },
+  "invariants": {
+    "rules_source": "HangmaRules",
+    "online_inputs": [
+      "PlayerObservation",
+      "CompetitionContext",
+      "RuleAnalysis"
+    ],
+    "forbidden_student_inputs": [
+      "WorldState私有字段",
+      "未来牌墙",
+      "他家暗手",
+      "终局标签派生特征",
+      "来源根或对手池身份捷径"
+    ],
+    "llm_role": "仅离线提出特征变换、交叉、变异和简化；不生成教师标签，不进入动作闭环",
+    "release_evidence": "未见完整阶段、独立确认、运行可靠性和官方测试赛事"
+  },
+  "phases": [
+    {
+      "id": "CF0",
+      "purpose": "强制首动作和自定义公开条件截取的接缝验收",
+      "budget": {"conditional_arms": 0, "full_tables": 0},
+      "pass": "精确WindowKey只干预一次；动作属于规则候选和委托计划；旧采样回归全绿"
+    },
+    {
+      "id": "CF1",
+      "purpose": "机械与成本试点，不训练不选优",
+      "source": {"panel_seed": 2026092301, "mixes": ["H", "M"], "max_roots_per_mix": 16},
+      "budget": {"max_samples": 8, "conditional_arms": 16, "tables_per_arm": 2, "max_full_or_partial_tables": 32},
+      "selection": "每层按预登记根顺序取前4个V2首选pass且路线父代首选具体chi/peng的窗口；不看标签选择",
+      "pass": "H/M均命中；每个样本两臂都到阶段终点；首动作身份、合法性、费用和公开特征齐全"
+    },
+    {
+      "id": "CF2",
+      "purpose": "估计动作标签分布、方差、重复结构和执行成本",
+      "budget": {"minimum_samples": 32, "arms_per_sample": 2},
+      "freeze_before_run": ["来源根", "分层配额", "标签定义", "特征schema", "退出条件"],
+      "pass": "标签不是常数；训练根隔离后，公开特征存在可复现的条件结构；成本不超过预留预算"
+    },
+    {
+      "id": "CF3",
+      "purpose": "小型可解释门控器的校准与有界演化",
+      "parents": ["stable_v2", "route_claim_specialist", "pass_always", "claim_always", "calibrated_observable_gate"],
+      "methods": ["ridge_or_logistic", "shallow_tree_or_stumps", "EoH_ReEvo_bounded_mutation", "lexicase_specialist_retention"],
+      "pass": "未见动作级留出优于总过、总鸣、V2和固定+8；复杂度与延迟受控"
+    },
+    {
+      "id": "CF4",
+      "purpose": "冻结候选的未见完整阶段级联",
+      "cascade": [24, 8, 3],
+      "pass": "主指标正向、H/M无明确负向、规则和运行审计全绿"
+    },
+    {
+      "id": "CF5",
+      "purpose": "独立确认与赛事发布门禁",
+      "pass": "沿用项目现行独立统计、实际时限、规则和官方测试赛事门禁"
+    }
+  ],
+  "failure_review_sources": [
+    "LITERATURE-REAUDIT-2026-09-20.md",
+    "SEARCH-METHOD-REVIEW-2026-09-20.md",
+    "refs/REF-EoH-FunSearch-ReEvo.md",
+    "refs/REF-MEoH-AlphaEvolve.md",
+    "refs/REF-DECOMP-mahjong-systems.md",
+    "src/hangma_bot/hangma/RULES_EVIDENCE.md"
+  ],
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

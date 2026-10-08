@@ -1,0 +1,75 @@
+{
+ "schema": "sitin-headless-repair-prompts/2",
+ "generated_from": "冻结诊断渲染 + 卡面入口（逐卡 focus）",
+ "diagnostics_available_tasks": [
+  "TD01",
+  "TD03",
+  "TD05"
+ ],
+ "source_report": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/slim/reports/criterion-first.grade.json",
+ "replies": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/slim/replies/first",
+ "out": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/slim/repair-prompts",
+ "tasks": [
+  {
+   "task_id": "TD01",
+   "chars": 29356,
+   "materials_chars": 13800,
+   "identity": "build_action_value_repair_card_prompt",
+   "diagnostics_available": true,
+   "diagnostic_source": "structured",
+   "diagnostic_stats": {
+    "entries": 2,
+    "codes": [
+     "PARSE_FAILED",
+     "CODE_NOT_EXTRACTED"
+    ],
+    "dropped_private_fields": [],
+    "package_skipped": 0,
+    "redactions": [],
+    "source": "structured",
+    "diagnostics_available": true
+   },
+   "leak_tokens": []
+  },
+  {
+   "task_id": "TD03",
+   "chars": 24488,
+   "materials_chars": 9573,
+   "identity": "build_action_value_repair_card_prompt",
+   "diagnostics_available": true,
+   "diagnostic_source": "structured",
+   "diagnostic_stats": {
+    "entries": 1,
+    "codes": [
+     "UNKNOWN_ABOVE_KNOWN_NEGATIVE"
+    ],
+    "dropped_private_fields": [],
+    "package_skipped": 0,
+    "redactions": [],
+    "source": "structured",
+    "diagnostics_available": true
+   },
+   "leak_tokens": []
+  },
+  {
+   "task_id": "TD05",
+   "chars": 1290,
+   "materials_chars": 1128,
+   "identity": "keyword_head",
+   "diagnostics_available": true,
+   "diagnostic_source": "structured",
+   "diagnostic_stats": {
+    "entries": 1,
+    "codes": [
+     "STOP_VERIFY_BEFORE_ACTION"
+    ],
+    "dropped_private_fields": [],
+    "package_skipped": 0,
+    "redactions": [],
+    "source": "structured",
+    "diagnostics_available": true
+   },
+   "leak_tokens": []
+  }
+ ]
+}

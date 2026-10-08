@@ -1,0 +1,180 @@
+{
+  "by_mix": {
+    "H": {
+      "capacity_gain_range": [
+        1,
+        7
+      ],
+      "lost_self_win": 8,
+      "new_self_win": 8,
+      "same_full_score_delta_vector": 72,
+      "tables": 110,
+      "terminal_transitions": {
+        "other_win->other_win": 80,
+        "other_win->plain_self": 6,
+        "other_win->special_self": 2,
+        "plain_self->other_win": 6,
+        "plain_self->plain_self": 9,
+        "plain_self->special_self": 2,
+        "special_self->other_win": 2,
+        "special_self->plain_self": 1,
+        "special_self->special_self": 2
+      },
+      "type_gain_groups": {
+        "1": {
+          "first_hand_focal_delta_sum": 21,
+          "first_hand_positive_zero_negative": [
+            8,
+            57,
+            12
+          ],
+          "tables": 77
+        },
+        "2": {
+          "first_hand_focal_delta_sum": 14,
+          "first_hand_positive_zero_negative": [
+            4,
+            14,
+            5
+          ],
+          "tables": 23
+        },
+        "3": {
+          "first_hand_focal_delta_sum": -30,
+          "first_hand_positive_zero_negative": [
+            1,
+            8,
+            1
+          ],
+          "tables": 10
+        }
+      }
+    },
+    "M": {
+      "capacity_gain_range": [
+        1,
+        7
+      ],
+      "lost_self_win": 8,
+      "new_self_win": 10,
+      "same_full_score_delta_vector": 79,
+      "tables": 118,
+      "terminal_transitions": {
+        "draw->draw": 2,
+        "other_win->draw": 1,
+        "other_win->other_win": 78,
+        "other_win->plain_self": 6,
+        "other_win->special_self": 4,
+        "plain_self->other_win": 7,
+        "plain_self->plain_self": 9,
+        "plain_self->special_self": 1,
+        "special_self->other_win": 1,
+        "special_self->plain_self": 2,
+        "special_self->special_self": 7
+      },
+      "type_gain_groups": {
+        "1": {
+          "first_hand_focal_delta_sum": 58,
+          "first_hand_positive_zero_negative": [
+            17,
+            57,
+            8
+          ],
+          "tables": 82
+        },
+        "2": {
+          "first_hand_focal_delta_sum": 86,
+          "first_hand_positive_zero_negative": [
+            7,
+            20,
+            2
+          ],
+          "tables": 29
+        },
+        "3": {
+          "first_hand_focal_delta_sum": -10,
+          "first_hand_positive_zero_negative": [
+            0,
+            5,
+            1
+          ],
+          "tables": 6
+        },
+        "4": {
+          "first_hand_focal_delta_sum": 0,
+          "first_hand_positive_zero_negative": [
+            0,
+            1,
+            0
+          ],
+          "tables": 1
+        }
+      }
+    }
+  },
+  "combined": {
+    "capacity_gain_range": [
+      1,
+      7
+    ],
+    "lost_self_win": 16,
+    "new_self_win": 18,
+    "same_full_score_delta_vector": 151,
+    "tables": 228,
+    "terminal_transitions": {
+      "draw->draw": 2,
+      "other_win->draw": 1,
+      "other_win->other_win": 158,
+      "other_win->plain_self": 12,
+      "other_win->special_self": 6,
+      "plain_self->other_win": 13,
+      "plain_self->plain_self": 18,
+      "plain_self->special_self": 3,
+      "special_self->other_win": 3,
+      "special_self->plain_self": 3,
+      "special_self->special_self": 9
+    },
+    "type_gain_groups": {
+      "1": {
+        "first_hand_focal_delta_sum": 79,
+        "first_hand_positive_zero_negative": [
+          25,
+          114,
+          20
+        ],
+        "tables": 159
+      },
+      "2": {
+        "first_hand_focal_delta_sum": 100,
+        "first_hand_positive_zero_negative": [
+          11,
+          34,
+          7
+        ],
+        "tables": 52
+      },
+      "3": {
+        "first_hand_focal_delta_sum": -40,
+        "first_hand_positive_zero_negative": [
+          1,
+          13,
+          2
+        ],
+        "tables": 16
+      },
+      "4": {
+        "first_hand_focal_delta_sum": 0,
+        "first_hand_positive_zero_negative": [
+          0,
+          1,
+          0
+        ],
+        "tables": 1
+      }
+    }
+  },
+  "interpretation_boundary": "普通型一步进张码数及公开容量是行动前事实，不是抽牌概率或因果收益。首次改弃后的合法行动、他家行动和同局后续改弃均可能不同；同根四座与两桌相关，不能用本样本作独立显著性检验或新阈值验证。",
+  "population": "G211 候选完整桌中首次 G210 改弃所在单局；已看开发根；事后选择样本",
+  "schema": "g214-width-outcome-audit/1",
+  "source_sha256": "314bec6b8481a78ec32f9570c5a0853822b353485c0b205f1fbfbb84e844d7c1"
+}

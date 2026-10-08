@@ -1,0 +1,95 @@
+{
+  "status": "COMPLETE_STRUCTURAL_PHASE_2B_DEVELOPMENT_RANKING",
+  "configurations": 3,
+  "new_roots_per_configuration": 16,
+  "cumulative_roots_per_configuration": 32,
+  "candidate_tables": 384,
+  "baseline_tables": 128,
+  "full_tables": 512,
+  "selected_for_c": [
+    "t2-cfg-04",
+    "t2-cfg-01"
+  ],
+  "leader": {
+    "config_id": "t2-cfg-04",
+    "candidate_id": "action_value_v1:offline-structural-t2:1886ffa23cfd7f3d41cad807a372ae80e17f381cb13b1c9e4a97fec2527eee41",
+    "family": "T2_SELECTIVE_FOLLOWUP",
+    "is_zero_effect": false,
+    "is_author_default": false,
+    "values": {
+      "FBV_GAIN": 2.0,
+      "FBV_SUPPORT": 0.25,
+      "FBV_SUPPORT_CAP": 6.0,
+      "FBV_CAP": 8.0
+    },
+    "fitness_mean_delta_low": 0.0,
+    "mean_delta": 0.0078125,
+    "mean_delta_high": 0.015625,
+    "H": {
+      "n_roots": 16,
+      "mean_delta": 0.0,
+      "standard_error": 0.0,
+      "interval_95": [
+        0.0,
+        0.0
+      ]
+    },
+    "M": {
+      "n_roots": 16,
+      "mean_delta": 0.015625,
+      "standard_error": 0.04250459533979826,
+      "interval_95": [
+        -0.06768247604345361,
+        0.09893247604345361
+      ]
+    }
+  },
+  "parent_control": {
+    "config_id": "t2-cfg-01",
+    "candidate_id": "action_value_v1:offline-structural-t2:74c182b6967aeb7298fe6a55b4545e32f7e284ab9fee89f757082af2d6fe551c",
+    "family": "T2_SELECTIVE_FOLLOWUP",
+    "is_zero_effect": true,
+    "is_author_default": false,
+    "values": {
+      "FBV_GAIN": 0.0,
+      "FBV_SUPPORT": 0.0,
+      "FBV_SUPPORT_CAP": 0.0,
+      "FBV_CAP": 0.0
+    },
+    "fitness_mean_delta_low": -0.015625,
+    "mean_delta": -0.0078125,
+    "mean_delta_high": 0.0,
+    "H": {
+      "n_roots": 16,
+      "mean_delta": -0.015625,
+      "standard_error": 0.027658162598649488,
+      "interval_95": [
+        -0.06983400257190575,
+        0.038584002571905744
+      ]
+    },
+    "M": {
+      "n_roots": 16,
+      "mean_delta": 0.0,
+      "standard_error": 0.04564354645876384,
+      "interval_95": [
+        -0.08945970718585784,
+        0.08945970718585784
+      ]
+    }
+  },
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 512.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "按phase-c-freeze补H/M各16根并冻结第二结构批次开发冠军"
+}

@@ -1,0 +1,69 @@
+{
+  "bootstrap_draws": 20000,
+  "bootstrap_seed": 2026092701,
+  "boundary": "仅开发根描述性区间；两类路线并行检验且未校正多重比较，不能替代全程候选独立确认",
+  "independence_unit": "route_kind × source_root_id",
+  "routes": {
+    "seven_pairs": {
+      "by_mix": {
+        "H": {
+          "mean": 0.7291666666666666,
+          "root_bootstrap_95": [
+            -2.171875,
+            3.9739583333333335
+          ],
+          "roots": 24
+        },
+        "M": {
+          "mean": 0.18229166666666666,
+          "root_bootstrap_95": [
+            -3.3541666666666665,
+            3.7552083333333335
+          ],
+          "roots": 24
+        }
+      },
+      "equal_pool_mean": 0.45572916666666663,
+      "equal_pool_root_bootstrap_95": [
+        -1.8438151041666666,
+        2.843880208333322
+      ],
+      "pooled_target_mean": 0.4557291666666667,
+      "pooled_target_root_bootstrap_95": [
+        -1.8438151041666666,
+        2.843880208333322
+      ]
+    },
+    "standard": {
+      "by_mix": {
+        "H": {
+          "mean": 0.8478260869565217,
+          "root_bootstrap_95": [
+            -1.9620923913043475,
+            3.597826086956522
+          ],
+          "roots": 23
+        },
+        "M": {
+          "mean": 1.4322916666666667,
+          "root_bootstrap_95": [
+            -0.9792968749999998,
+            4.067838541666655
+          ],
+          "roots": 24
+        }
+      },
+      "equal_pool_mean": 1.1400588768115942,
+      "equal_pool_root_bootstrap_95": [
+        -0.7405004528985507,
+        3.030913156702898
+      ],
+      "pooled_target_mean": 1.1462765957446808,
+      "pooled_target_root_bootstrap_95": [
+        -0.7313829787234043,
+        3.0452127659574466
+      ]
+    }
+  },
+  "schema": "g10-route-option-root-audit/1"
+}

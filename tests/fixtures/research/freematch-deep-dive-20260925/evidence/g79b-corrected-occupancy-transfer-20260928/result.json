@@ -1,0 +1,128 @@
+{
+  "boundary": "首版 G79A 不合预登记；七房仅验证修正的牌码占用预测，非动作收益。",
+  "coverage": {
+    "dev_rooms": 90,
+    "dev_rounds": 7200,
+    "dev_windows": 19558,
+    "external_rooms": 7,
+    "external_rounds": 560,
+    "external_windows": 1515
+  },
+  "external": {
+    "by_position": {
+      "1": {
+        "baseline_sse": 14504.453115038865,
+        "model_sse": 14508.287503137619,
+        "windows": 559
+      },
+      "4": {
+        "baseline_sse": 14164.634688880686,
+        "model_sse": 12956.550599802318,
+        "windows": 538
+      },
+      "7": {
+        "baseline_sse": 10310.348380411106,
+        "model_sse": 9115.759982734342,
+        "windows": 418
+      }
+    },
+    "by_room": {
+      "a_112a602838b1": {
+        "baseline_sse": 5307.648523307895,
+        "model_sse": 4888.626329892084,
+        "sse_difference": -419.0221934158175,
+        "windows": 212
+      },
+      "a_64993750d40a": {
+        "baseline_sse": 5539.267101648155,
+        "model_sse": 5175.101743574027,
+        "sse_difference": -364.1653580741263,
+        "windows": 209
+      },
+      "a_764132e12b21": {
+        "baseline_sse": 5851.985689412096,
+        "model_sse": 5566.698062854527,
+        "sse_difference": -285.28762655757134,
+        "windows": 221
+      },
+      "a_80441463352e": {
+        "baseline_sse": 5540.353191053952,
+        "model_sse": 5202.593346111502,
+        "sse_difference": -337.75984494245273,
+        "windows": 220
+      },
+      "a_897095284b36": {
+        "baseline_sse": 5529.912248929622,
+        "model_sse": 5123.87357870914,
+        "sse_difference": -406.03867022048826,
+        "windows": 223
+      },
+      "a_ab5bc16598d0": {
+        "baseline_sse": 5620.415672220682,
+        "model_sse": 5322.114702338893,
+        "sse_difference": -298.30096988179156,
+        "windows": 211
+      },
+      "a_dc9f82d2b9ae": {
+        "baseline_sse": 5589.85375775823,
+        "model_sse": 5301.590322194092,
+        "sse_difference": -288.2634355641358,
+        "windows": 219
+      }
+    },
+    "overall": {
+      "baseline_sse": 38979.43618433063,
+      "mean_sse_difference_per_window": -1.5833914842616392,
+      "model_sse": 36580.59808567426,
+      "sse_difference": -2398.8380986563834,
+      "windows": 1515
+    },
+    "pass": true,
+    "room_bootstrap_95": [
+      -1.770774703904966,
+      -1.406788634852466
+    ],
+    "rooms_model_better": 7,
+    "rooms_model_worse": 0
+  },
+  "model": {
+    "coefficients": {
+      "edge": -0.014252653505989277,
+      "honor": -0.39314279657013323,
+      "opponent_neighbor_river": -0.11862114699473385,
+      "opponent_same_river": -0.5931214339095022,
+      "opponent_same_suit_melds": 0.07150313370488913,
+      "own_same_river": -0.26845990045669443,
+      "terminal": -0.11559617088927696,
+      "unknown_minus_two": 0.1146038257135079
+    },
+    "features": [
+      "honor",
+      "terminal",
+      "edge",
+      "unknown_minus_two",
+      "opponent_same_river",
+      "own_same_river",
+      "opponent_neighbor_river",
+      "opponent_same_suit_melds"
+    ],
+    "fit": {
+      "base_penalized_binomial_loss": 1334314.3354784101,
+      "feature_rows": 657824,
+      "fitted_penalized_binomial_loss": 1307388.148339545,
+      "newton_iterations": 5,
+      "windows": 19558
+    },
+    "ridge": 100.0
+  },
+  "negative_control_passed": true,
+  "preregistered": true,
+  "schema": "g79b-corrected-occupancy-transfer/1",
+  "source_sha256": {
+    "corrected_core": "ec39ec6fcbac6da317805fa5d10ce497f2ed97de36fceee76dd6d2bf802d8299",
+    "manifest": "e58b6b3aa7cd834ff30823f59d7aad2386437b22e1dc77e70bddd94d6e7eb9a9",
+    "official_docs_fingerprint": "5f8f38eb4eb9132b839676f7e58115518237ff47bbadd808ff0b0a999e10d8c5",
+    "prereg": "b1a43a3ea8b61c4164023ffa1aeeec8ebfbb161fc7ad9e324bd01c6c1206861d",
+    "script": "2fe88d232faf4bfd1292d0867dfd777008347138b6361d47f1e4d96764341d06"
+  }
+}

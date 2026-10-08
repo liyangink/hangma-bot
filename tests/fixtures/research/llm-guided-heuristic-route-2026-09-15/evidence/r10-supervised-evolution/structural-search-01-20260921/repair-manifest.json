@@ -1,0 +1,31 @@
+{
+  "schema": "r10-structural-repair/1",
+  "reason": "首答输出达到 32768 token 上限，S1/S3 源码截断，S2 结构化说明截断",
+  "expected_request_config": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3",
+    "reasoningEffort": "high",
+    "maxTokens": 32768
+  },
+  "tasks": [
+    {
+      "task": "S1",
+      "prompt_sha256": "8559cf625354c82bcccc23bc93c1d2b1dbf019ed77b2db256d706df1d3bbcff3",
+      "prompt_chars": 21282,
+      "source_initial_reply": "2d59a816d33fbaad9aff11457a86fbd3ffdfb6a80ed23f056df30910a281be96"
+    },
+    {
+      "task": "S2",
+      "prompt_sha256": "966bd0f9f897eb409a23d8ff471cf696858938530143fb3ef735a340aebb81f9",
+      "prompt_chars": 36799,
+      "source_initial_reply": "9f61c48d1e373d335232e939985dbfc5a6ca9f052f1c1b4af1cd10f35b42001b"
+    },
+    {
+      "task": "S3",
+      "prompt_sha256": "43b2a48010dc3aeaa938bf8068b477aee618737d3fcb10eeb0069a7065ddda79",
+      "prompt_chars": 12165,
+      "source_initial_reply": "c4a7c9ccd8795f42ba558dbaa3a2ffd1228bed2f9929ece1a6a08d9570946a93"
+    }
+  ],
+  "max_repairs_per_task": 1
+}

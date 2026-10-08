@@ -1,0 +1,57 @@
+{
+  "schema": "r10-structural-repair-normalization-summary/1",
+  "policy": "只纠正可机械确认的输出格式；不进行第二次算法修复或效果调参",
+  "tasks": [
+    {
+      "schema": "r10-structural-repair-normalization/1",
+      "task": "T1",
+      "source": "generations/T1/repair/candidate.py",
+      "source_sha256": "e5fa4c19d6e3ad340ea6ca658e068d09b18b7aa7d9c6cbd34a882ce2061c0dfd",
+      "candidate_sha256": "b416d7a458eec6b785a8959ee0e80ab02140c5ade2505101701b8a184db0bb87",
+      "executable_changed": true,
+      "executable_change": "仅删除源码末尾一个孤立的`}`行",
+      "mechanism_normalization": "把修复回复thought、源码docstring与trace中已有的机制说明映射为标准四字段；不据此改写任何可执行表达式或参数。",
+      "static_precheck": false,
+      "structure_space": true,
+      "accepted_for_behavior_preflight": false,
+      "problems": [
+        "禁止生成器表达式（生成器与 yield 一并禁止）"
+      ]
+    },
+    {
+      "schema": "r10-structural-repair-normalization/1",
+      "task": "T2",
+      "source": "generations/T2/repair/candidate.py",
+      "source_sha256": "77c51ae7d973ee10cf845af7dbbbf194b112786bba51bccf5421acd1ff9c16da",
+      "candidate_sha256": "77c51ae7d973ee10cf845af7dbbbf194b112786bba51bccf5421acd1ff9c16da",
+      "executable_changed": false,
+      "executable_change": "可执行源码逐字节保持不变",
+      "mechanism_normalization": "把修复回复thought、源码docstring与trace中已有的机制说明映射为标准四字段；不据此改写任何可执行表达式或参数。",
+      "static_precheck": true,
+      "structure_space": true,
+      "accepted_for_behavior_preflight": true,
+      "problems": []
+    },
+    {
+      "schema": "r10-structural-repair-normalization/1",
+      "task": "T4",
+      "source": "generations/T4/repair/candidate.py",
+      "source_sha256": "9737e640afcfc27dff80da26dc4d48bf48f36fa149ff5d3f66c052197952be6f",
+      "candidate_sha256": "9737e640afcfc27dff80da26dc4d48bf48f36fa149ff5d3f66c052197952be6f",
+      "executable_changed": false,
+      "executable_change": "可执行源码逐字节保持不变",
+      "mechanism_normalization": "把修复回复thought、源码docstring与trace中已有的机制说明映射为标准四字段；不据此改写任何可执行表达式或参数。",
+      "static_precheck": true,
+      "structure_space": true,
+      "accepted_for_behavior_preflight": true,
+      "problems": []
+    }
+  ],
+  "accepted": [
+    "T2",
+    "T4"
+  ],
+  "closed": [
+    "T1"
+  ]
+}

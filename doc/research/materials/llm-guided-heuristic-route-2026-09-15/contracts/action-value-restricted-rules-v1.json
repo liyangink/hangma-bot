@@ -1,0 +1,666 @@
+{
+  "$comment": "本文件是候选可见的受限子集规则目录（AV-SUB-001…060），与执行器 src/hangma_bot/policy/action_value_executor.py 的静态检查同一来源；由 tools/sitin_generate.py 渲染进生成题与修复题的题面，并用于把预检失败消息绑回规则编号。评分语义合同仍以 contracts/action-value-v1.json 为准，本文件不进合同身份：不参与 contract_sha256 / candidate_id / 面板身份的派生，因此补充或修订规则目录不会使已签收的关口二链身份失效。字段口径：id=稳定编号（只增、不改、不复用）；statement=候选可读的一句话约束（题面逐字渲染它）；applies_to=适用题类闭集 {generation, repair}（执行器对两类题跑同一份静态检查，故 60 条两类同适用）；message_pattern=可编译正则，re.fullmatch 匹配执行器 static_check 抛出的拒绝消息；reachable=该分支能否由 ast.parse 产出的源码触发（false=执行器侧冗余/防御分支）；forbidden_item=本条若实现 action-value-v1.json restricted_subset.forbidden 的某一条则写该条原文，否则 null。",
+  "rules_note": "执行器静态拒绝规则的机器可读清单（唯一来源）。每条 = {id: 稳定编号 AV-SUB-nnn；statement: 候选可读的一句话约束（由同一份定义渲染进题面，生成题与修复题同一份）；applies_to: 适用题类，取值 generation（生成题 T05—T10）与 repair（修复题 T17—T20），两条都列即两类同适用；message_pattern: 可编译正则，用 re.fullmatch 匹配执行器 static_check 抛出的拒绝消息（预检据此把失败绑回编号）；reachable: 该分支能否由 ast.parse 产出的源码触发（false = 执行器侧冗余/防御分支）；forbidden_item: 本条若实现 restricted_subset.forbidden 的某一条则写该条原文，否则 null。原 forbidden 的 10 条**原样保留不动**，本数组是其下位展开（10 条禁项覆盖 16 条规则，其余 44 条无对应禁项条目）。改 statement/message_pattern 必须改同一份定义并重跑同源测试；编号一经发布不得复用、改序或删除（只允许新增）。",
+  "rules": [
+    {
+      "id": "AV-SUB-001",
+      "statement": "整数常量（含带负号的字面量）绝对值不得超过 2^63−1（9223372036854775807）；超限拒绝装载。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "整数常量\\ .+?\\ 超过\\ 63\\ 位界限（拒绝大整数膨胀）",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-002",
+      "statement": "浮点常量必须有限：不得写 1e400、inf、nan 之类的字面量。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "浮点常量必须有限（1e400\\ 等字面量直接拒绝）",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-003",
+      "statement": "常量只允许 None／字符串／布尔／整数／浮点数；复数、bytes、省略号一律拒绝。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "不允许的常量类型\\ .+?",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-004",
+      "statement": "模块级赋值右侧若带 +/- 号，只能作用于数值常量（如 X = -2.0）；不得写成 -\"a\"。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "模块级一元符号只允许作用于数值常量",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-005",
+      "statement": "模块级不得出现 list／set／dict 字面量（跨调用可变状态）；需要常量容器请用元组。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "模块级\\ .+?\\ 字面量被拒绝：跨调用可变状态；可变容器请在函数内局部构造（受限包装随调用丢弃）",
+      "reachable": true,
+      "forbidden_item": "全局可变状态"
+    },
+    {
+      "id": "AV-SUB-006",
+      "statement": "模块级赋值右侧只能是不可变常量（常量、数值一元、元组常量）；不得写算术或调用表达式。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "模块级只允许不可变常量赋值，得到\\ .+?",
+      "reachable": true,
+      "forbidden_item": "全局可变状态"
+    },
+    {
+      "id": "AV-SUB-007",
+      "statement": "标识符不得以下划线开头：函数名、参数名、局部变量名、模块常量名、推导式目标名、lambda 参数名都适用（_x 与 __x__ 都不行）；下划线前缀由执行器保留。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": ".+?\\ .+?\\ 以下划线开头：禁止触达执行器内部或双下划线名字",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-008",
+      "statement": "赋值目标、for 目标、推导式目标只能是简单名字或名字元组；不得写 a[0] = ...、a.b = ...、a, *rest = ...。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "赋值/循环目标必须是简单名字或名字元组，得到\\ .+?",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-009",
+      "statement": "只能调用 23 项内置白名单里的名字：len、min、max、abs、sum、sorted、reversed、enumerate、zip、range、round、int、float、bool、all、any、tuple、list、dict、set、frozenset、map、filter；不在表内的名字（含 isinstance、str、getattr、eval 等）一律拒绝。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "名字\\ .+?\\ 不在白名单\\ builtins、模块常量/函数或任何局部作用域内",
+      "reachable": true,
+      "forbidden_item": "动态执行(eval/exec/compile)"
+    },
+    {
+      "id": "AV-SUB-010",
+      "statement": "不得写入或删除对象属性（view.x = 1、del view.x）：受限子集没有可变属性通道。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止属性写入/删除（只读方法白名单之外没有可变通道）",
+      "reachable": false,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-011",
+      "statement": "属性读取只允许白名单只读方法 .get／.items／.keys／.values／.count／.index／.append／.add；其它属性名（含 view.visible_state 这类字段名）一律拒绝——字段请用下标读，例如 view[\"visible_state\"]。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "属性\\ \\..+?\\ 不在只读方法白名单\\ .+?",
+      "reachable": true,
+      "forbidden_item": "反射(getattr/setattr/hasattr 于白名单外对象)"
+    },
+    {
+      "id": "AV-SUB-012",
+      "statement": "调用实参不得用 * 解包（f(*xs)）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ \\*args\\ 解包",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-013",
+      "statement": "调用关键字不得用 ** 解包（f(**d)）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ \\*\\*kwargs\\ 解包",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-014",
+      "statement": "不得写入或删除下标（a[0] = 1、del a[0]）：输入与局部集合都不得经下标变更。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止下标写入/删除（输入与局部集合不得经下标变更）",
+      "reachable": false,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-015",
+      "statement": "字典字面量不得用 ** 解包（{**d}）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ \\*\\*\\ 字典解包",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-016",
+      "statement": "二元运算只允许 + - * / // % ** << >> & | ^；矩阵乘 @ 等其它运算符一律拒绝。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "不允许的二元运算\\ .+?",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-017",
+      "statement": "幂运算 ** 的指数必须是 0—4 的整数常量：2 ** 4 可以，2 ** n、2 ** 5、2 ** True 都不行。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "\\*\\*\\ 仅允许指数为\\ 0—4\\ 的整数常量",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-018",
+      "statement": "一元运算只允许 -、+、not、~。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "不允许的一元运算\\ .+?",
+      "reachable": false,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-019",
+      "statement": "lambda 不得有默认参数、*args 或 **kwargs。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "lambda\\ 不允许默认参数、\\*args\\ 或\\ \\*\\*kwargs",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-020",
+      "statement": "lambda 参数不得写注解。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "不允许\\ lambda\\ 参数注解",
+      "reachable": false,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-021",
+      "statement": "不得使用生成器表达式（sum(x for x in xs)）；请改用列表推导式。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止生成器表达式（生成器与\\ yield\\ 一并禁止）",
+      "reachable": true,
+      "forbidden_item": "生成器与 yield"
+    },
+    {
+      "id": "AV-SUB-022",
+      "statement": "表达式里不得用 * 解包（[*a]、(*a,)）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止星号解包",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-023",
+      "statement": "不得使用海象表达式 :=。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止海象表达式",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-024",
+      "statement": "不得使用 await／yield／yield from（异步与生成器不在受限子集内）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ await/yield（异步与生成器不在受限子集内）",
+      "reachable": true,
+      "forbidden_item": "生成器与 yield"
+    },
+    {
+      "id": "AV-SUB-025",
+      "statement": "只允许本清单列举的表达式形态，不得发明其它表达式。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "不允许的表达式\\ .+?",
+      "reachable": false,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-026",
+      "statement": "不得使用异步推导式（[x async for x in y]）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止异步推导式",
+      "reachable": true,
+      "forbidden_item": "生成器与 yield"
+    },
+    {
+      "id": "AV-SUB-027",
+      "statement": "不得定义 async 函数。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ async\\ 函数",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-028",
+      "statement": "增量赋值 += 等的左值只能是简单名字；不得写 a[0] += 1、a.b += 1。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "增量赋值目标必须是简单名字",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-029",
+      "statement": "增量赋值只允许 + - * / // % ** << >> & | ^；@= 等一律拒绝。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "不允许的增量运算",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-030",
+      "statement": "不得使用 while 循环；只能对有长度上限的输入或局部集合做 for 迭代。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ while\\ 循环；只允许对有长度上限的输入做\\ for\\ 迭代",
+      "reachable": true,
+      "forbidden_item": "while 循环"
+    },
+    {
+      "id": "AV-SUB-031",
+      "statement": "不得 import 任何模块（math 与第三方库默认关闭）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ import；首版不开放任何模块（math/第三方库默认关闭）",
+      "reachable": true,
+      "forbidden_item": "import"
+    },
+    {
+      "id": "AV-SUB-032",
+      "statement": "不得使用 global／nonlocal。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ global/nonlocal（全局可变状态不在受限子集内）",
+      "reachable": true,
+      "forbidden_item": "全局可变状态"
+    },
+    {
+      "id": "AV-SUB-033",
+      "statement": "不得使用 try／except／finally（bare except 与 except BaseException 同样拒绝）：工作量耗尽异常必须整批上抛，候选不得捕获后继续执行。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ try/except：bare\\ except\\ 与\\ except\\ BaseException\\ 一并静态拒绝，工作量耗尽异常（WorkloadExceeded）不可被候选捕获",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-034",
+      "statement": "不得使用 with 语句。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ with\\ 语句",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-035",
+      "statement": "候选不得主动 raise 异常；无法评分时返回 ABSTAIN 并给出明确 reason。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "候选不得主动抛异常；无法评分时返回\\ ABSTAIN",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-036",
+      "statement": "不得使用 assert。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ assert（优化模式下行为不一致）",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-037",
+      "statement": "不得使用 del。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止\\ del",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-038",
+      "statement": "不得写带注解的赋值（x: int = 1）：注解在装载期不插桩求值。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "暂不支持带注解赋值",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-039",
+      "statement": "不得定义类；受限子集只有纯函数。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "禁止定义类；受限子集只有纯函数",
+      "reachable": true,
+      "forbidden_item": "lambda 之外的可调用构造"
+    },
+    {
+      "id": "AV-SUB-040",
+      "statement": "只允许受限子集列举的语句（赋值、for、if、return、表达式语句、函数定义等）；match 等其它语句一律拒绝。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "不允许的语句\\ .+?",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-041",
+      "statement": "函数不得使用 *args 或 **kwargs。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "函数\\ .+?\\ 不允许\\ \\*args/\\*\\*kwargs",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-042",
+      "statement": "函数不得有默认参数（默认值在装载期不插桩求值）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "函数\\ .+?\\ 不允许默认参数（默认值在模块装载期未插桩求值）",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-043",
+      "statement": "函数参数不得写注解。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "函数\\ .+?\\ 不允许参数注解（注解在装载期未插桩求值）",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-044",
+      "statement": "函数不得写返回注解（合同签名里的 -> ScoreBatch 是合同写法，候选代码不要照抄）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "函数\\ .+?\\ 不允许返回注解",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-045",
+      "statement": "函数不得使用装饰器。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "函数\\ .+?\\ 不允许装饰器",
+      "reachable": true,
+      "forbidden_item": "lambda 之外的可调用构造"
+    },
+    {
+      "id": "AV-SUB-046",
+      "statement": "必须导出 score_actions(view)：恰好一个名为 view 的位置参数，不得改名、不得增删参数。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "score_actions\\ 必须恰好接受一个名为\\ view\\ 的位置参数",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-047",
+      "statement": "score_actions 不得有关键字专属参数（局部辅助函数可以有）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "score_actions\\ 不允许关键字专属参数",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-048",
+      "statement": "不得递归（含自递归与互递归）：辅助函数调用图必须无环。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "检测到递归调用：.+?",
+      "reachable": true,
+      "forbidden_item": "递归"
+    },
+    {
+      "id": "AV-SUB-049",
+      "statement": "候选源码必须是合法 Python（语法错误即拒绝装载）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "候选源码语法错误：.+?",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-050",
+      "statement": "候选必须是模块级源码。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "候选必须是模块级源码",
+      "reachable": false,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-051",
+      "statement": "不得重复定义同名顶层函数。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "重复定义\\ .+?",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-052",
+      "statement": "模块级赋值目标必须是简单名字；不得写 X, Y = 1, 2 这类解包。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "模块级赋值目标必须是简单名字",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-053",
+      "statement": "模块常量不得重复绑定，也不得与已定义函数重名。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "重复绑定\\ .+?",
+      "reachable": true,
+      "forbidden_item": "全局可变状态"
+    },
+    {
+      "id": "AV-SUB-054",
+      "statement": "模块级只允许 docstring、函数定义与常量赋值；if／for／while／import／class／async def／表达式语句等一律拒绝。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "模块级只允许\\ docstring、函数定义与常量赋值，得到\\ .+?",
+      "reachable": true,
+      "forbidden_item": "import"
+    },
+    {
+      "id": "AV-SUB-055",
+      "statement": "模块里必须存在顶层函数 score_actions。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "缺少模块级导出函数\\ score_actions\\(view\\)",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-056",
+      "statement": "不得用 ** 解包构造字典字面量。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "字典字面量不允许\\ \\*\\*\\ 解包",
+      "reachable": false,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-057",
+      "statement": "候选源码必须是字符串（装载接口冗余复核）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "候选源码必须是字符串",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-058",
+      "statement": "候选源码 UTF-8 字节数不得超过 65536。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "候选源码\\ .+?\\ 字节超过\\ .+?\\ 字节上限",
+      "reachable": true,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-059",
+      "statement": "模块顶层必须存在可调用的 score_actions 函数（装载接口冗余复核）。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "score_actions\\ 未定义或不可调用",
+      "reachable": false,
+      "forbidden_item": null
+    },
+    {
+      "id": "AV-SUB-060",
+      "statement": "模块级绑定只能是函数或不可变常量（str／int／float／bool／None／元组／冻结集合）；不得是跨调用可变状态。",
+      "applies_to": [
+        "generation",
+        "repair"
+      ],
+      "message_pattern": "模块级绑定\\ .+?\\ 是可变类型\\ .+?：跨调用状态被拒绝",
+      "reachable": false,
+      "forbidden_item": "全局可变状态"
+    }
+  ]
+}

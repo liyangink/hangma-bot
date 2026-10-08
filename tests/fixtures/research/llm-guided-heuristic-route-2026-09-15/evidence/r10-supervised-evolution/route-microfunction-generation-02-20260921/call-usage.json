@@ -1,0 +1,55 @@
+{
+  "schema": "r10-route-confidence-call-usage/1",
+  "calls": [
+    {
+      "task": "C1",
+      "run_id": "session-c3f2a032-7467-42e5-8b2d-84686b4d954c",
+      "exit_code": 0,
+      "protocol_ok": true,
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "high",
+        "maxTokens": 4096
+      },
+      "usage": {
+        "usage": {
+          "inputTokens": 1193,
+          "outputTokens": 3007,
+          "totalTokens": 4200
+        },
+        "session_bytes": 81102,
+        "session_sha256": "46208e107d7548098a0bcf3254ee5725bfaf5c2ba0205c654c1a9274fd0805b2",
+        "source_status": "OK"
+      },
+      "ingestable_channel": true
+    },
+    {
+      "task": "C2",
+      "run_id": "session-4222824e-9873-420d-822d-0fe6a4c86079",
+      "exit_code": 0,
+      "protocol_ok": true,
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "high",
+        "maxTokens": 4096
+      },
+      "usage": {
+        "usage": {
+          "inputTokens": 1137,
+          "outputTokens": 847,
+          "totalTokens": 2048,
+          "cacheReadTokens": 64
+        },
+        "session_bytes": 34436,
+        "session_sha256": "af0ac9f06007897381441f95f32b597961f1b172be89b7698316a2161f5499df",
+        "source_status": "OK"
+      },
+      "ingestable_channel": true
+    }
+  ],
+  "total_input_tokens": 2330,
+  "total_output_tokens": 3854,
+  "problems": []
+}

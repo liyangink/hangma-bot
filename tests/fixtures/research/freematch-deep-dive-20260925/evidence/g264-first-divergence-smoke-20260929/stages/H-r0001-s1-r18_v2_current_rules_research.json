@@ -1,0 +1,944 @@
+{
+  "arm": "r18_v2_current_rules_research",
+  "focal_seat": 1,
+  "mix": "H",
+  "root_index": 1,
+  "stage": {
+    "arm": "candidate",
+    "elapsed_ms": 3949.756,
+    "error": null,
+    "execution_review": {
+      "missing_tables": 0,
+      "recorded_counts": {
+        "action_value_failed": 0,
+        "action_value_scored": 616,
+        "ambiguous_diagnostics": 0,
+        "decision_count": 2457,
+        "other_policy_decisions": 1841,
+        "unclassified_action_value": 0
+      },
+      "recorded_failure_kinds": {
+        "abstain": 0,
+        "operation_limit": 0,
+        "resource_or_numeric_limit": 0,
+        "scoring_error": 0,
+        "unclassified_failure": 0
+      },
+      "recorded_tables": 2,
+      "schema": "sitin-policy-execution-review/1",
+      "status": "complete",
+      "tables": 2,
+      "zero_internal_failures_verified": true
+    },
+    "focal_stage_score": 56,
+    "route_tables": [
+      {
+        "changed_count": 0,
+        "events": [],
+        "first_divergence": null,
+        "table_id": "np-H-2026122964-r01-s1-t1"
+      },
+      {
+        "changed_count": 0,
+        "events": [],
+        "first_divergence": null,
+        "table_id": "np-H-2026122964-r01-s1-t2"
+      }
+    ],
+    "stage_place_points_by_participant": {
+      "focal": 2,
+      "opp-0": -2,
+      "opp-2": 2,
+      "opp-3": -2
+    },
+    "stage_totals_by_participant": {
+      "focal": 56,
+      "opp-0": -27,
+      "opp-2": -6,
+      "opp-3": -23
+    },
+    "status": "complete",
+    "tables": [
+      {
+        "hand_account": {
+          "complete_hands": 8,
+          "draw_delta": 0,
+          "draws": 0,
+          "focal_seat": 1,
+          "focal_table_delta": 3,
+          "other_win_delta": -27,
+          "other_wins": 6,
+          "plain_self_win_delta": 10,
+          "plain_self_wins": 1,
+          "schema": "g13-hand-accounting/1",
+          "special_self_win_delta": 20,
+          "special_self_wins": 1
+        },
+        "hand_records": [
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-fe06d52f080b767c7814d5098927e6bb78ddf6e896d33ead536b69321b6474eb",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 1,
+            "score_delta": [
+              -8,
+              -1,
+              -1,
+              10
+            ],
+            "scores_after": [
+              -8,
+              -1,
+              -1,
+              10
+            ],
+            "scores_before": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "winner_seat": 3
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-174fa568988985ac306e2454414dba71cb03c57879c918301c50f153b9ad9122",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 2,
+            "score_delta": [
+              -8,
+              -8,
+              -8,
+              24
+            ],
+            "scores_after": [
+              -16,
+              -9,
+              -9,
+              34
+            ],
+            "scores_before": [
+              -8,
+              -1,
+              -1,
+              10
+            ],
+            "winner_seat": 3
+          },
+          {
+            "details": [
+              "平胡",
+              "爆头"
+            ],
+            "fan": 2,
+            "hand_id": "hand-5c897fa8836fd401abf563bb71832f0d20ae1c9cae48238e8a5fe84ad6879476",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 3,
+            "score_delta": [
+              -2,
+              20,
+              -2,
+              -16
+            ],
+            "scores_after": [
+              -18,
+              11,
+              -11,
+              18
+            ],
+            "scores_before": [
+              -16,
+              -9,
+              -9,
+              34
+            ],
+            "winner_seat": 1
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-dc8a43474bcb146993b9e04fd605ac697ca81d655ad2b1890f52a150eb398eb6",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 4,
+            "score_delta": [
+              -1,
+              -8,
+              10,
+              -1
+            ],
+            "scores_after": [
+              -19,
+              3,
+              -1,
+              17
+            ],
+            "scores_before": [
+              -18,
+              11,
+              -11,
+              18
+            ],
+            "winner_seat": 2
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-951ffd6831f25f66fe7742cb96dfd6ca8df9d87cc6c545e7532a7a88ee660b66",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 5,
+            "score_delta": [
+              -8,
+              -8,
+              24,
+              -8
+            ],
+            "scores_after": [
+              -27,
+              -5,
+              23,
+              9
+            ],
+            "scores_before": [
+              -19,
+              3,
+              -1,
+              17
+            ],
+            "winner_seat": 2
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-b10ca34f590dadd9168031fc36973b5ab2083de9eed5c3f2329cd799e1f33657",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 6,
+            "score_delta": [
+              10,
+              -1,
+              -8,
+              -1
+            ],
+            "scores_after": [
+              -17,
+              -6,
+              15,
+              8
+            ],
+            "scores_before": [
+              -27,
+              -5,
+              23,
+              9
+            ],
+            "winner_seat": 0
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-38b7edc9ed8f2b7cb5c631f2384650f3c343060abce97eaa32f08c0e64d95a11",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 7,
+            "score_delta": [
+              -8,
+              -1,
+              -1,
+              10
+            ],
+            "scores_after": [
+              -25,
+              -7,
+              14,
+              18
+            ],
+            "scores_before": [
+              -17,
+              -6,
+              15,
+              8
+            ],
+            "winner_seat": 3
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-8e4be9d69f7cb6ddfde9bac522b77796cb1db07c749891031aed6b611e01f17e",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 8,
+            "score_delta": [
+              -1,
+              10,
+              -1,
+              -8
+            ],
+            "scores_after": [
+              -26,
+              3,
+              13,
+              10
+            ],
+            "scores_before": [
+              -25,
+              -7,
+              14,
+              18
+            ],
+            "winner_seat": 1
+          }
+        ],
+        "match_status": "complete",
+        "policy_execution": {
+          "action_value_failed": 0,
+          "action_value_scored": 272,
+          "ambiguous_diagnostics": 0,
+          "by_seat": [
+            {
+              "action_value_failed": 0,
+              "action_value_scored": 0,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 271,
+              "other_policy_decisions": 271,
+              "unclassified_action_value": 0
+            },
+            {
+              "action_value_failed": 0,
+              "action_value_scored": 272,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 272,
+              "other_policy_decisions": 0,
+              "unclassified_action_value": 0
+            },
+            {
+              "action_value_failed": 0,
+              "action_value_scored": 0,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 270,
+              "other_policy_decisions": 270,
+              "unclassified_action_value": 0
+            },
+            {
+              "action_value_failed": 0,
+              "action_value_scored": 0,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 276,
+              "other_policy_decisions": 276,
+              "unclassified_action_value": 0
+            }
+          ],
+          "decision_count": 1089,
+          "failure_kinds": {
+            "abstain": 0,
+            "operation_limit": 0,
+            "resource_or_numeric_limit": 0,
+            "scoring_error": 0,
+            "unclassified_failure": 0
+          },
+          "failure_reason_counts": {},
+          "other_policy_decisions": 817,
+          "policy_ids_by_seat": [
+            "ComparableHeuristicPolicyV2",
+            "action_value_v1:r18_integrated_positive_v2",
+            "ComparableHeuristicPolicyV2",
+            "ComparableHeuristicPolicyV2"
+          ],
+          "schema": "sitin-policy-execution/1",
+          "unclassified_action_value": 0
+        },
+        "result": {
+          "completed_hands": 8,
+          "config": {
+            "max_games": 1,
+            "rounds_per_game": 8,
+            "rules": {
+              "base_score": 1,
+              "ruleset_version": "hangma-mvp-v10-public-counts",
+              "you_cai_bi_kao": false
+            },
+            "schema_version": 1,
+            "timing": {
+              "chi_timeout_sec": 1.0,
+              "discard_timeout_sec": 3.0,
+              "peng_timeout_sec": 1.0
+            }
+          },
+          "evaluation_schema_version": 1,
+          "expected_hands": 8,
+          "game_key": {
+            "game_id": "sitin-stage:np-H-2026122964-r01-s1-t1",
+            "source_namespace": "hangma-simulation",
+            "tournament_id": "s1tt1-254020250396259"
+          },
+          "invalid_reasons": [],
+          "official_ranks": null,
+          "pair_id": "s1tt1-254020250396259:0123",
+          "policy_ids_by_seat": [
+            "opp-0",
+            "focal",
+            "opp-2",
+            "opp-3"
+          ],
+          "result_id": "r-sitin-stage:np-H-2026122964-r01-s1-t1",
+          "runtime_counts": {
+            "audit_missing": 0,
+            "auto_actions": 0,
+            "fallbacks": 0,
+            "illegal_choices": 0,
+            "timeouts": 0
+          },
+          "scenario_id": "s1tt1-254020250396259",
+          "scores_after": [
+            -26,
+            3,
+            13,
+            10
+          ],
+          "scores_before": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "seat_permutation": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "source_kind": "simulation",
+          "source_refs": [
+            {
+              "note": "natural panel table with postgame hand accounting",
+              "producer": "g13_accounted_panel.py"
+            }
+          ],
+          "status": "complete",
+          "versions": {
+            "clock_mode": "logical",
+            "driver": "g13_accounted_panel.py (offline.evaluate drive_match)",
+            "hand_accounting_schema": "g13-hand-accounting/1",
+            "hand_accounting_source_sha256": "a8251d9ef5adf93ea887a6d12a72be9399b6a0ff01791a33fec79b383dde6cdc",
+            "natural_seat_max_operations:1": "100000",
+            "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+            "natural_seat_policy:1": "action_value_v1:r18_integrated_positive_v2",
+            "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+            "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+            "panel_policy_names": [
+              "focal-arm",
+              "weighted_heuristic_v2"
+            ],
+            "policy_execution_schema": "sitin-policy-execution/1",
+            "policy_execution_sha256": "1546e3bcd12f48dbff52c62afba525b01c4d80d13c53f66ce2f8a9a16447e720",
+            "rules_hash": "14e670edd631cb91a2c4c31d8131e360e9ebfb2d82d7c9ac9425f01d099e678d",
+            "ruleset_version": "hangma-mvp-v10-public-counts",
+            "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+          }
+        },
+        "scores_by_seat": [
+          -26,
+          3,
+          13,
+          10
+        ],
+        "seed": 254020250396259,
+        "stage_situation": {
+          "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+          "participant_ids_by_seat": [
+            "opp-0",
+            "focal",
+            "opp-2",
+            "opp-3"
+          ],
+          "place_points_by_seat": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "rounds_per_game": 8,
+          "stage_role": "qualify",
+          "stage_scores_by_seat": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "stage_table_no": 1,
+          "tables_completed": 0,
+          "tables_in_stage": 2,
+          "tables_remaining_after_current": 1
+        },
+        "table_id": "np-H-2026122964-r01-s1-t1",
+        "wall_ms": 1625.38
+      },
+      {
+        "hand_account": {
+          "complete_hands": 8,
+          "draw_delta": 0,
+          "draws": 0,
+          "focal_seat": 2,
+          "focal_table_delta": 53,
+          "other_win_delta": -25,
+          "other_wins": 4,
+          "plain_self_win_delta": 58,
+          "plain_self_wins": 3,
+          "schema": "g13-hand-accounting/1",
+          "special_self_win_delta": 20,
+          "special_self_wins": 1
+        },
+        "hand_records": [
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-30efcaa9b77a47a765c9d9c86e9d57c95c280fa662f837001f930041efb2ebee",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 1,
+            "score_delta": [
+              -8,
+              10,
+              -1,
+              -1
+            ],
+            "scores_after": [
+              -8,
+              10,
+              -1,
+              -1
+            ],
+            "scores_before": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "winner_seat": 1
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-eb297a82031819fe2a6aa60382ad708fd26dca11f0e512f907caf5935210207e",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 2,
+            "score_delta": [
+              -8,
+              24,
+              -8,
+              -8
+            ],
+            "scores_after": [
+              -16,
+              34,
+              -9,
+              -9
+            ],
+            "scores_before": [
+              -8,
+              10,
+              -1,
+              -1
+            ],
+            "winner_seat": 1
+          },
+          {
+            "details": [
+              "平胡",
+              "爆头"
+            ],
+            "fan": 2,
+            "hand_id": "hand-0d0e311c5b4977e71d438934a17c4755843ef57c9aa7efea2ef71bf49f5c8f96",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 3,
+            "score_delta": [
+              -2,
+              -16,
+              20,
+              -2
+            ],
+            "scores_after": [
+              -18,
+              18,
+              11,
+              -11
+            ],
+            "scores_before": [
+              -16,
+              34,
+              -9,
+              -9
+            ],
+            "winner_seat": 2
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-f53636047ff1df4272569c521051c2ff3543ca8dcf6fed028d34133c7326a403",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 4,
+            "score_delta": [
+              -8,
+              -8,
+              24,
+              -8
+            ],
+            "scores_after": [
+              -26,
+              10,
+              35,
+              -19
+            ],
+            "scores_before": [
+              -18,
+              18,
+              11,
+              -11
+            ],
+            "winner_seat": 2
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-10739814f7c57b79aad07bd793a638b0c517f9c56676ebf7a07591dea6795591",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 5,
+            "score_delta": [
+              10,
+              -1,
+              -8,
+              -1
+            ],
+            "scores_after": [
+              -16,
+              9,
+              27,
+              -20
+            ],
+            "scores_before": [
+              -26,
+              10,
+              35,
+              -19
+            ],
+            "winner_seat": 0
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-b2ce972083062c42113860df0e78e9811128fe8dac7c7f4de6106fbc3f9a8672",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 6,
+            "score_delta": [
+              -8,
+              -1,
+              10,
+              -1
+            ],
+            "scores_after": [
+              -24,
+              8,
+              37,
+              -21
+            ],
+            "scores_before": [
+              -16,
+              9,
+              27,
+              -20
+            ],
+            "winner_seat": 2
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-b6f05aa4837405fcb013b311aa375ac6473c65827cd1bfd85a0b7546f0b4d9d1",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 7,
+            "score_delta": [
+              -8,
+              -8,
+              24,
+              -8
+            ],
+            "scores_after": [
+              -32,
+              0,
+              61,
+              -29
+            ],
+            "scores_before": [
+              -24,
+              8,
+              37,
+              -21
+            ],
+            "winner_seat": 2
+          },
+          {
+            "details": [
+              "平胡"
+            ],
+            "fan": 1,
+            "hand_id": "hand-785e6c63f7ebbf70bb4a99e6b2459f788d610d4b760fc8577fe0054b5853e305",
+            "is_draw": false,
+            "result_confirmed": true,
+            "round_no": 8,
+            "score_delta": [
+              -1,
+              -1,
+              -8,
+              10
+            ],
+            "scores_after": [
+              -33,
+              -1,
+              53,
+              -19
+            ],
+            "scores_before": [
+              -32,
+              0,
+              61,
+              -29
+            ],
+            "winner_seat": 3
+          }
+        ],
+        "match_status": "complete",
+        "policy_execution": {
+          "action_value_failed": 0,
+          "action_value_scored": 344,
+          "ambiguous_diagnostics": 0,
+          "by_seat": [
+            {
+              "action_value_failed": 0,
+              "action_value_scored": 0,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 338,
+              "other_policy_decisions": 338,
+              "unclassified_action_value": 0
+            },
+            {
+              "action_value_failed": 0,
+              "action_value_scored": 0,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 340,
+              "other_policy_decisions": 340,
+              "unclassified_action_value": 0
+            },
+            {
+              "action_value_failed": 0,
+              "action_value_scored": 344,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 344,
+              "other_policy_decisions": 0,
+              "unclassified_action_value": 0
+            },
+            {
+              "action_value_failed": 0,
+              "action_value_scored": 0,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 346,
+              "other_policy_decisions": 346,
+              "unclassified_action_value": 0
+            }
+          ],
+          "decision_count": 1368,
+          "failure_kinds": {
+            "abstain": 0,
+            "operation_limit": 0,
+            "resource_or_numeric_limit": 0,
+            "scoring_error": 0,
+            "unclassified_failure": 0
+          },
+          "failure_reason_counts": {},
+          "other_policy_decisions": 1024,
+          "policy_ids_by_seat": [
+            "ComparableHeuristicPolicyV2",
+            "ComparableHeuristicPolicyV2",
+            "action_value_v1:r18_integrated_positive_v2",
+            "ComparableHeuristicPolicyV2"
+          ],
+          "schema": "sitin-policy-execution/1",
+          "unclassified_action_value": 0
+        },
+        "result": {
+          "completed_hands": 8,
+          "config": {
+            "max_games": 1,
+            "rounds_per_game": 8,
+            "rules": {
+              "base_score": 1,
+              "ruleset_version": "hangma-mvp-v10-public-counts",
+              "you_cai_bi_kao": false
+            },
+            "schema_version": 1,
+            "timing": {
+              "chi_timeout_sec": 1.0,
+              "discard_timeout_sec": 3.0,
+              "peng_timeout_sec": 1.0
+            }
+          },
+          "evaluation_schema_version": 1,
+          "expected_hands": 8,
+          "game_key": {
+            "game_id": "sitin-stage:np-H-2026122964-r01-s1-t2",
+            "source_namespace": "hangma-simulation",
+            "tournament_id": "s1tt2-18539944959697"
+          },
+          "invalid_reasons": [],
+          "official_ranks": null,
+          "pair_id": "s1tt2-18539944959697:1230",
+          "policy_ids_by_seat": [
+            "opp-3",
+            "opp-0",
+            "focal",
+            "opp-2"
+          ],
+          "result_id": "r-sitin-stage:np-H-2026122964-r01-s1-t2",
+          "runtime_counts": {
+            "audit_missing": 0,
+            "auto_actions": 0,
+            "fallbacks": 0,
+            "illegal_choices": 0,
+            "timeouts": 0
+          },
+          "scenario_id": "s1tt2-18539944959697",
+          "scores_after": [
+            -33,
+            -1,
+            53,
+            -19
+          ],
+          "scores_before": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "seat_permutation": [
+            1,
+            2,
+            3,
+            0
+          ],
+          "source_kind": "simulation",
+          "source_refs": [
+            {
+              "note": "natural panel table with postgame hand accounting",
+              "producer": "g13_accounted_panel.py"
+            }
+          ],
+          "status": "complete",
+          "versions": {
+            "clock_mode": "logical",
+            "driver": "g13_accounted_panel.py (offline.evaluate drive_match)",
+            "hand_accounting_schema": "g13-hand-accounting/1",
+            "hand_accounting_source_sha256": "a8251d9ef5adf93ea887a6d12a72be9399b6a0ff01791a33fec79b383dde6cdc",
+            "natural_seat_max_operations:2": "100000",
+            "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+            "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+            "natural_seat_policy:2": "action_value_v1:r18_integrated_positive_v2",
+            "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+            "panel_policy_names": [
+              "focal-arm",
+              "weighted_heuristic_v2"
+            ],
+            "policy_execution_schema": "sitin-policy-execution/1",
+            "policy_execution_sha256": "a9f47409a8b7cb3d1deff41ecfd184c2ce4bb8d0bcf631d04f1ff4cbdb1e8d63",
+            "rules_hash": "14e670edd631cb91a2c4c31d8131e360e9ebfb2d82d7c9ac9425f01d099e678d",
+            "ruleset_version": "hangma-mvp-v10-public-counts",
+            "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+          }
+        },
+        "scores_by_seat": [
+          -33,
+          -1,
+          53,
+          -19
+        ],
+        "seed": 18539944959697,
+        "stage_situation": {
+          "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+          "participant_ids_by_seat": [
+            "opp-3",
+            "opp-0",
+            "focal",
+            "opp-2"
+          ],
+          "place_points_by_seat": [
+            1,
+            -3,
+            -1,
+            3
+          ],
+          "rounds_per_game": 8,
+          "stage_role": "qualify",
+          "stage_scores_by_seat": [
+            10,
+            -26,
+            3,
+            13
+          ],
+          "stage_table_no": 2,
+          "tables_completed": 1,
+          "tables_in_stage": 2,
+          "tables_remaining_after_current": 0
+        },
+        "table_id": "np-H-2026122964-r01-s1-t2",
+        "wall_ms": 2279.78
+      }
+    ],
+    "u": 1.0,
+    "u_high": 1.0,
+    "u_interval": {
+      "a": 1,
+      "b": 1,
+      "tie_block": [
+        "focal"
+      ]
+    },
+    "u_low": 1.0,
+    "unresolved": false,
+    "usable": true
+  }
+}

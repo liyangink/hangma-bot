@@ -1,0 +1,1726 @@
+{
+  "candidates": [],
+  "capture_limits": {
+    "max_total_json_bytes": 536870912,
+    "max_unique_views": 4096,
+    "max_view_json_bytes": 67108864
+  },
+  "cpu_worker_count": 4,
+  "dispatch_directory": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/runtime-preflight-dispatch",
+  "files": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/CONFIRMATION-PLAN.json": {
+      "bytes": 1118601,
+      "sha256": "ccd0ff95e52b5b46fded91156a945fa96cf1bc33dfc2c16f80ffb7ce49003f3e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/confirmation-dispatch/CLOSED.json": {
+      "bytes": 617,
+      "sha256": "bb621ee7483316db5e9621913ec369f18ec5804e2e6842dd08848b54cd15bb4e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/evaluation_sharding.py": {
+      "bytes": 2921,
+      "sha256": "987ef70de7a696040deab8cb138233de158092d349abc22af32d657d21c3682d"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/parent-source.py": {
+      "bytes": 24794,
+      "sha256": "2a59cbb18aefa3d24aadf0b3df70f5a4359c204b96a3f0dc208f77d53c196f30"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/t185_close_development.py": {
+      "bytes": 41487,
+      "sha256": "5f50172d9ba5e123121a3c5d3dd2916b4fca22efdfade3a1d33549f799d13ae9"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/t185_run_development.py": {
+      "bytes": 10277,
+      "sha256": "a8ea596c51a3726ae1236a45ee13da7fa669d231eb677ef1a98050d8a7d5695e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/AUTHOR-BATCH.json": {
+      "bytes": 1334,
+      "sha256": "6d7360f9b545ccba9fa71c135ba80270aa7c410e780288389147b957b6a28ab0"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/four_worker_campaign.py": {
+      "bytes": 11889,
+      "sha256": "e9e5ba35ef3436e0fbec6988dfe2c27a4be9cd9984dcb56ab7e8d9fb5cae08f5"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/full_table_runtime.py": {
+      "bytes": 7694,
+      "sha256": "8d9bfa73345c39589bddec5fcfbb11cb5c1da9131fccc97b0a2a860a5ec177da"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/prepare_runtime_preflight.py": {
+      "bytes": 2475,
+      "sha256": "aa00d4a63e34b7932e7aff7d8a374b93d131a011bf04c2b4d6ed64da88811db8"
+    }
+  },
+  "independent_confirmation_auto_dispatch": false,
+  "initial_dealer_physical": 0,
+  "initial_scores_0_1_2_3": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "minimum_free_bytes": 8589934592,
+  "not_candidate_strength_or_actual_speedup_evidence": true,
+  "output_directory": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/runtime-preflight-tables",
+  "parent": {
+    "identity": {
+      "candidate_id": "c4c96251bfc1741aaddcdda4d86e35698266c13bb732d78771bfa123d0344f69",
+      "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+      "contract_sha256": "4ee18be7935430f53b84cd096767a88b88252260ecc4afd63130ccb26791efca",
+      "deps_digest": "085a7935c483e1ad79820fcc73abd673b4d068505e788a4fbd2abfca86bc24c8",
+      "graph_schema_version": "vip-route-action-graph/3",
+      "math_backend": {
+        "fallback_reason": null,
+        "implementation": "c_grouped",
+        "native_binary": {
+          "bytes": 52552,
+          "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+        },
+        "semantics_version": "hangma-standard-grouped-v1"
+      },
+      "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+      "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+      "params": {
+        "max_local_collection_size": 8192,
+        "max_operations": 4800000,
+        "projection_limits": {
+          "max_branches": 16384,
+          "max_nodes": 8192,
+          "max_replacement_depth": 1,
+          "max_waiting_draw_witnesses": 65536
+        },
+        "route_limits": {
+          "max_expansions": 8192,
+          "max_routes_per_candidate": 128
+        },
+        "rule_config": {
+          "base_score": 1,
+          "ruleset_version": "hangma-mvp-v10-public-counts",
+          "you_cai_bi_kao": false
+        }
+      },
+      "source_manifest": {
+        "src/hangma_bot/hangma/__init__.py": {
+          "bytes": 145,
+          "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+        },
+        "src/hangma_bot/hangma/_grouped_native.c": {
+          "bytes": 19322,
+          "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+        },
+        "src/hangma_bot/hangma/_public_tile_reuse.py": {
+          "bytes": 10595,
+          "sha256": "e22c0f3d7a4d38ef5f78fd7532ad963ae198b8e2914623c717af488139d8f934"
+        },
+        "src/hangma_bot/hangma/_standard.py": {
+          "bytes": 1542,
+          "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+        },
+        "src/hangma_bot/hangma/_standard_python.py": {
+          "bytes": 14730,
+          "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+        },
+        "src/hangma_bot/hangma/action_families.py": {
+          "bytes": 20884,
+          "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+        },
+        "src/hangma_bot/hangma/candidate_facts.py": {
+          "bytes": 19139,
+          "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+        },
+        "src/hangma_bot/hangma/catch_play.py": {
+          "bytes": 10173,
+          "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+        },
+        "src/hangma_bot/hangma/emergency.py": {
+          "bytes": 4153,
+          "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+        },
+        "src/hangma_bot/hangma/engine.py": {
+          "bytes": 32121,
+          "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+        },
+        "src/hangma_bot/hangma/hand_analysis.py": {
+          "bytes": 25772,
+          "sha256": "c11d0abbb6eebb9f724e230b42884b8dd1b0fa0a4560eda86104df1f6826f0fe"
+        },
+        "src/hangma_bot/hangma/interface.py": {
+          "bytes": 37378,
+          "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+        },
+        "src/hangma_bot/hangma/internal_types.py": {
+          "bytes": 9019,
+          "sha256": "3b959871ac740d27c43f6dec18df5e30bfef6a93080628d4b3e6f67cc45af5ea"
+        },
+        "src/hangma_bot/hangma/natural_preparation.py": {
+          "bytes": 5636,
+          "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+        },
+        "src/hangma_bot/hangma/observation_rules.py": {
+          "bytes": 24098,
+          "sha256": "25f4fa8bb66c881e8b7583f92aae110f099192c62cbcb8b6b5520cc33c7d0b03"
+        },
+        "src/hangma_bot/hangma/progression.py": {
+          "bytes": 44196,
+          "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+        },
+        "src/hangma_bot/hangma/progression_payload.py": {
+          "bytes": 15798,
+          "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+        },
+        "src/hangma_bot/hangma/public_successor.py": {
+          "bytes": 21173,
+          "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+        },
+        "src/hangma_bot/hangma/public_tile_counts.py": {
+          "bytes": 35715,
+          "sha256": "b86866d7aa43a985292ec99fd39e7378b7c259e2799c21741d5fea0dbc78eb27"
+        },
+        "src/hangma_bot/hangma/route_frontier.py": {
+          "bytes": 11581,
+          "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+        },
+        "src/hangma_bot/hangma/route_hu_witness.py": {
+          "bytes": 8183,
+          "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+        },
+        "src/hangma_bot/hangma/route_structure.py": {
+          "bytes": 10649,
+          "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+        },
+        "src/hangma_bot/hangma/route_transition.py": {
+          "bytes": 72647,
+          "sha256": "800b595e33381ed355d9182e31ae977904fc7969ac5592f4a692faf5b62eac4f"
+        },
+        "src/hangma_bot/hangma/settlement.py": {
+          "bytes": 10643,
+          "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+        },
+        "src/hangma_bot/hangma/special_rules.py": {
+          "bytes": 11609,
+          "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+        },
+        "src/hangma_bot/hangma/value_analysis.py": {
+          "bytes": 18251,
+          "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+        },
+        "src/hangma_bot/kernel/actions.py": {
+          "bytes": 10754,
+          "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+        },
+        "src/hangma_bot/kernel/config.py": {
+          "bytes": 3236,
+          "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+        },
+        "src/hangma_bot/kernel/observation.py": {
+          "bytes": 17784,
+          "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+        },
+        "src/hangma_bot/kernel/outcomes.py": {
+          "bytes": 8643,
+          "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+        },
+        "src/hangma_bot/policy/action_value.py": {
+          "bytes": 45125,
+          "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+        },
+        "src/hangma_bot/policy/action_value_executor.py": {
+          "bytes": 106868,
+          "sha256": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb"
+        },
+        "src/hangma_bot/policy/errors.py": {
+          "bytes": 372,
+          "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+        },
+        "src/hangma_bot/policy/interface.py": {
+          "bytes": 3546,
+          "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+        },
+        "src/hangma_bot/policy/route_heuristic_view.py": {
+          "bytes": 28880,
+          "sha256": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1"
+        },
+        "src/hangma_bot/policy/route_vip_heuristic.py": {
+          "bytes": 37065,
+          "sha256": "ec92ece74a2c44fa3cff31824bc51bca1abb4db63e98552a634cd9b739a26da0"
+        },
+        "src/hangma_bot/policy/safe_fallback.py": {
+          "bytes": 2352,
+          "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+        }
+      },
+      "source_sha256": "2a59cbb18aefa3d24aadf0b3df70f5a4359c204b96a3f0dc208f77d53c196f30",
+      "view_schema_version": "vip-route-scoring-view/3"
+    },
+    "label": "current-S02-parent",
+    "source_file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/parent-source.py"
+  },
+  "plan_path": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/RUNTIME-PREFLIGHT-PLAN.json",
+  "planned_table_instances": 4,
+  "prior_closed_pin": {
+    "bytes": 617,
+    "sha256": "bb621ee7483316db5e9621913ec369f18ec5804e2e6842dd08848b54cd15bb4e"
+  },
+  "purpose": "runtime_preflight",
+  "root_indices": [
+    1
+  ],
+  "roots": [
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.6487640081342638,
+        0.393889671364812,
+        0.8058007814318041
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "normal_v0",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-001",
+      "seed": 9039165474919993375,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 3,
+      "draw_uniforms": [
+        0.11833539687124217,
+        0.08564456265497578,
+        0.4976399621994828
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "automatic_like",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-002",
+      "seed": 8506904066694446096,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.8795909888038747,
+        0.5348247425651126,
+        0.8643727627263412
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "normal_v0",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-003",
+      "seed": 6070988946607527098,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.2463659078692083,
+        0.2162156733792513,
+        0.797052622438665
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-004",
+      "seed": 5659606093044751373,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.46688931272746004,
+        0.644695568771341,
+        0.2929601582678122
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "r18",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-005",
+      "seed": 960705186773053743,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.5894751468118431,
+        0.27982698946421636,
+        0.7035635589408631
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-006",
+      "seed": 4132553399181142480,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.41261170950364134,
+        0.9113881745035248,
+        0.5520076023992836
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "r18",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-007",
+      "seed": 5201693537629272603,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.16573817128421542,
+        0.46096645756186183,
+        0.6038580600790934
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "normal_v0",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-008",
+      "seed": 702210521516350337,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.4161942913785931,
+        0.9862078255067297,
+        0.2350315316501359
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "r18",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-009",
+      "seed": 8154055163250414203,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 3,
+      "draw_uniforms": [
+        0.2547879948882523,
+        0.09049794108943998,
+        0.19801840928064585
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "automatic_like",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-010",
+      "seed": 3298962001747585867,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.8692353792290644,
+        0.09905354893019191,
+        0.37350329238219415
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-011",
+      "seed": 4155240151614790890,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.7001968233947262,
+        0.33016940347376833,
+        0.3337147358383822
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "normal_v0",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-012",
+      "seed": 6469928165932371774,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.5002822397912345,
+        0.08329731790790562,
+        0.9702736304117575
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-013",
+      "seed": 7012955838750823021,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.8581799606557423,
+        0.03230151663283887,
+        0.6043120954949868
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-014",
+      "seed": 6585064440701377092,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.8999949579179026,
+        0.11820744273904393,
+        0.4280761180426774
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-015",
+      "seed": 7854534581338131381,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 3,
+      "draw_uniforms": [
+        0.37355113770485815,
+        0.47218910140461423,
+        0.14006752345395457
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "normal_v0",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-016",
+      "seed": 4788700912268833364,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 3,
+      "draw_uniforms": [
+        0.4888225807768134,
+        0.0008464899269275961,
+        0.21957930425006422
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "automatic_like",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-017",
+      "seed": 7429872729040211690,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.8699247550187753,
+        0.8249516980619502,
+        0.43068682037876527
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "r18",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-018",
+      "seed": 4851481797983584411,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.9174802694061308,
+        0.2951976113808167,
+        0.39774879924458395
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-019",
+      "seed": 8943613836962012239,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.2857858460566983,
+        0.6597739242088962,
+        0.45569257797392204
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "r18",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-020",
+      "seed": 8584263451551535305,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 3,
+      "draw_uniforms": [
+        0.2289277139882745,
+        0.1937163849660547,
+        0.23253220294325472
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "automatic_like",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-021",
+      "seed": 1415112539670486588,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 3,
+      "draw_uniforms": [
+        0.37658194960112634,
+        0.5104205355837569,
+        0.37209453632567446
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "normal_v0",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-022",
+      "seed": 4876030105904260308,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.36753562840103293,
+        0.7395410154858766,
+        0.26506124704750544
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "r18",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-023",
+      "seed": 7690928852831766348,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.8353671930729127,
+        0.9146323848158631,
+        0.5232565909636443
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "r18",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-024",
+      "seed": 5623656535290992975,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.8897296086935526,
+        0.2550157307969869,
+        0.6013605899278
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-025",
+      "seed": 7968125815903013116,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.49106646442535606,
+        0.9311336833942473,
+        0.9330684760840837
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "r18",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-026",
+      "seed": 1303464038029723463,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.7761508036413413,
+        0.4530279370608937,
+        0.34547362025371997
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "normal_v0",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-027",
+      "seed": 3234591829134343635,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.6394513827866937,
+        0.865549526907121,
+        0.4624470113966751
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "r18",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-028",
+      "seed": 1393436894107040891,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.7655806873044145,
+        0.8367080808116939,
+        0.32029851182431535
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "r18",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-029",
+      "seed": 6940723895646966947,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.04426613766478604,
+        0.6756257244128958,
+        0.04412707864275223
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "r18",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-030",
+      "seed": 5156803167250016001,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.12307942132555905,
+        0.5610899694568425,
+        0.9618567413906686
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "normal_v0",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-031",
+      "seed": 1639654191349923378,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.2606802643936016,
+        0.9280745068430383,
+        0.012100246980474072
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "r18",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-032",
+      "seed": 416936707602423221,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.08648362989712055,
+        0.854234048064635,
+        0.21032505923372347
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "r18",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-033",
+      "seed": 6341503776824072169,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.7618757434206347,
+        0.5441640070002279,
+        0.5742606507192554
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "normal_v0",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-034",
+      "seed": 5043728223948323770,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 3,
+      "draw_uniforms": [
+        0.4044087829290255,
+        0.450616176943077,
+        0.23893951104456246
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "normal_v0",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-035",
+      "seed": 773761507434492328,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 3,
+      "draw_uniforms": [
+        0.3635986258028774,
+        0.551895123908358,
+        0.44168207890776356
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "normal_v0",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-036",
+      "seed": 4976095028021535864,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.276283883368326,
+        0.2820147007314737,
+        0.8503176636683706
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-037",
+      "seed": 6940934555476158546,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.6172974496920288,
+        0.4179109081232464,
+        0.03445679093158205
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "normal_v0",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-038",
+      "seed": 2186616912724065504,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.9100644940174059,
+        0.2848718936797664,
+        0.7632148462560935
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-039",
+      "seed": 8724461510121278254,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.26102363546524376,
+        0.09545196597625594,
+        0.7007354223812367
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-040",
+      "seed": 5053173399660497784,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.6908457112377925,
+        0.04902265012260565,
+        0.6594154391250683
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-041",
+      "seed": 2306820491167145672,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.5452744943678174,
+        0.9948740726232423,
+        0.1588008468953398
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "r18",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-042",
+      "seed": 1372846304938282479,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.8740203202564747,
+        0.6932846896274241,
+        0.06827976424841731
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "r18",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-043",
+      "seed": 1970319409421383489,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 0,
+      "draw_uniforms": [
+        0.8832822885566317,
+        0.947865496300489,
+        0.6794458777989939
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "r18",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-044",
+      "seed": 5737135739335469389,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.21874158624338913,
+        0.9081481422005172,
+        0.09151722038670917
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "r18",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-045",
+      "seed": 940608309823348164,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 3,
+      "draw_uniforms": [
+        0.08160301100027223,
+        0.1239278490542639,
+        0.15482975427512247
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "automatic_like",
+        "automatic_like"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-046",
+      "seed": 2279407648454745142,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.5935347049620355,
+        0.9627037773121064,
+        0.9302525475910451
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "r18",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-047",
+      "seed": 4693841382175867824,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.990623836413369,
+        0.9463412123083987,
+        0.5248074531287154
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "r18",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-048",
+      "seed": 7879145690901279923,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.4452398439963914,
+        0.9676582802437076,
+        0.4063968849398012
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "r18",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-049",
+      "seed": 6086315241763800508,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 0,
+      "draw_uniforms": [
+        0.6060513240899748,
+        0.9885884358290636,
+        0.9240712127608667
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "r18",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-050",
+      "seed": 6662579059106042197,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.8600384817084805,
+        0.09250644171278843,
+        0.7851511261255816
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-051",
+      "seed": 6921731652854530869,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.9354881900116475,
+        0.34026237646530033,
+        0.8545517873907412
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "normal_v0",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-052",
+      "seed": 6097384323488961076,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.8710518401454646,
+        4.9705148763790064e-05,
+        0.855709414670353
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-053",
+      "seed": 2590056145183351959,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.3790625718227635,
+        0.6571558918590136,
+        0.8818984854531104
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "r18",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-054",
+      "seed": 5505870399786782776,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 0,
+      "draw_uniforms": [
+        0.9909701868492633,
+        0.9522531516259505,
+        0.7487646663207446
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "r18",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-055",
+      "seed": 8070821377212743094,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.820031172964893,
+        0.18206907465850586,
+        0.7582425908888798
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-056",
+      "seed": 2051513356584150645,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 0,
+      "draw_uniforms": [
+        0.78795133561227,
+        0.6026997702515245,
+        0.9637946514074144
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "r18",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-057",
+      "seed": 995478115099824353,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.8755763167321707,
+        0.011025399189266039,
+        0.6968145296384131
+      ],
+      "opponent_types_logical_1_2_3": [
+        "r18",
+        "automatic_like",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-058",
+      "seed": 3351450150163376894,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.5313278706161465,
+        0.8377504278254764,
+        0.5913318354712614
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "r18",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-059",
+      "seed": 5632888924466168655,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.5313965876022615,
+        0.364916973062942,
+        0.8473393323413652
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "normal_v0",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-060",
+      "seed": 70776746433310151,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.006395390060667916,
+        0.6010490535718863,
+        0.7168904376465596
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "r18",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-061",
+      "seed": 8646992237677533692,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 1,
+      "draw_uniforms": [
+        0.12969264999490326,
+        0.7814193428979118,
+        0.7050092743242309
+      ],
+      "opponent_types_logical_1_2_3": [
+        "automatic_like",
+        "r18",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-062",
+      "seed": 5652025771528931120,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 3,
+      "draw_uniforms": [
+        0.3206575911309383,
+        0.5461866611093585,
+        0.45346716065737624
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "normal_v0",
+        "normal_v0"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-063",
+      "seed": 4374025422666348207,
+      "weak_fraction_setting": 0.6
+    },
+    {
+      "actual_weak_count": 2,
+      "draw_uniforms": [
+        0.427498341854762,
+        0.5930171705940268,
+        0.6511435307903536
+      ],
+      "opponent_types_logical_1_2_3": [
+        "normal_v0",
+        "normal_v0",
+        "r18"
+      ],
+      "paired_A_C_same_composition": true,
+      "root_id": "t185-confirmation-064",
+      "seed": 8824459200670707969,
+      "weak_fraction_setting": 0.6
+    }
+  ],
+  "rotations": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "rounds": 8,
+  "schema": "t186-staged-development/1",
+  "source_manifest": {
+    "src/hangma_bot/application/contracts.py": {
+      "bytes": 16212,
+      "sha256": "cbece50eda81a376b5be923f5c894a96f67ea65f82b3e021fdbf592e242e53fa"
+    },
+    "src/hangma_bot/application/deadline.py": {
+      "bytes": 7527,
+      "sha256": "4d280f95ed8dd29a31fb485c6267ff553fd74fe2b2d8d60b3ca596bf0c9d8496"
+    },
+    "src/hangma_bot/hangma/__init__.py": {
+      "bytes": 145,
+      "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+    },
+    "src/hangma_bot/hangma/_grouped_native.c": {
+      "bytes": 19322,
+      "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+    },
+    "src/hangma_bot/hangma/_public_tile_reuse.py": {
+      "bytes": 10595,
+      "sha256": "e22c0f3d7a4d38ef5f78fd7532ad963ae198b8e2914623c717af488139d8f934"
+    },
+    "src/hangma_bot/hangma/_standard.py": {
+      "bytes": 1542,
+      "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+    },
+    "src/hangma_bot/hangma/_standard_python.py": {
+      "bytes": 14730,
+      "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+    },
+    "src/hangma_bot/hangma/action_families.py": {
+      "bytes": 20884,
+      "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+    },
+    "src/hangma_bot/hangma/candidate_facts.py": {
+      "bytes": 19139,
+      "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+    },
+    "src/hangma_bot/hangma/catch_play.py": {
+      "bytes": 10173,
+      "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+    },
+    "src/hangma_bot/hangma/emergency.py": {
+      "bytes": 4153,
+      "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+    },
+    "src/hangma_bot/hangma/engine.py": {
+      "bytes": 32121,
+      "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+    },
+    "src/hangma_bot/hangma/hand_analysis.py": {
+      "bytes": 25772,
+      "sha256": "c11d0abbb6eebb9f724e230b42884b8dd1b0fa0a4560eda86104df1f6826f0fe"
+    },
+    "src/hangma_bot/hangma/interface.py": {
+      "bytes": 37378,
+      "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+    },
+    "src/hangma_bot/hangma/internal_types.py": {
+      "bytes": 9019,
+      "sha256": "3b959871ac740d27c43f6dec18df5e30bfef6a93080628d4b3e6f67cc45af5ea"
+    },
+    "src/hangma_bot/hangma/natural_preparation.py": {
+      "bytes": 5636,
+      "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+    },
+    "src/hangma_bot/hangma/observation_rules.py": {
+      "bytes": 24098,
+      "sha256": "25f4fa8bb66c881e8b7583f92aae110f099192c62cbcb8b6b5520cc33c7d0b03"
+    },
+    "src/hangma_bot/hangma/progression.py": {
+      "bytes": 44196,
+      "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+    },
+    "src/hangma_bot/hangma/progression_payload.py": {
+      "bytes": 15798,
+      "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+    },
+    "src/hangma_bot/hangma/public_successor.py": {
+      "bytes": 21173,
+      "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+    },
+    "src/hangma_bot/hangma/public_tile_counts.py": {
+      "bytes": 35715,
+      "sha256": "b86866d7aa43a985292ec99fd39e7378b7c259e2799c21741d5fea0dbc78eb27"
+    },
+    "src/hangma_bot/hangma/route_frontier.py": {
+      "bytes": 11581,
+      "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+    },
+    "src/hangma_bot/hangma/route_hu_witness.py": {
+      "bytes": 8183,
+      "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+    },
+    "src/hangma_bot/hangma/route_structure.py": {
+      "bytes": 10649,
+      "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+    },
+    "src/hangma_bot/hangma/route_transition.py": {
+      "bytes": 72647,
+      "sha256": "800b595e33381ed355d9182e31ae977904fc7969ac5592f4a692faf5b62eac4f"
+    },
+    "src/hangma_bot/hangma/settlement.py": {
+      "bytes": 10643,
+      "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+    },
+    "src/hangma_bot/hangma/special_rules.py": {
+      "bytes": 11609,
+      "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+    },
+    "src/hangma_bot/hangma/value_analysis.py": {
+      "bytes": 18251,
+      "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+    },
+    "src/hangma_bot/kernel/actions.py": {
+      "bytes": 10754,
+      "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+    },
+    "src/hangma_bot/kernel/config.py": {
+      "bytes": 3236,
+      "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+    },
+    "src/hangma_bot/kernel/identity.py": {
+      "bytes": 3520,
+      "sha256": "1e8a12c2394b9bd2370027d1d7e04c1b29e9bcad0764302f3047ac84aca06640"
+    },
+    "src/hangma_bot/kernel/observation.py": {
+      "bytes": 17784,
+      "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+    },
+    "src/hangma_bot/kernel/outcomes.py": {
+      "bytes": 8643,
+      "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+    },
+    "src/hangma_bot/kernel/serialization.py": {
+      "bytes": 27049,
+      "sha256": "85d4a98d9c735090670110376f7bba6066710909fd7f8dcf95fcd45dac3ce56e"
+    },
+    "src/hangma_bot/offline/evaluate.py": {
+      "bytes": 88427,
+      "sha256": "ba49be2eb653aac1edfc43e00d30f0eff24798b9b120d6d2b7aa39f9ff49a376"
+    },
+    "src/hangma_bot/offline/evaluation_results.py": {
+      "bytes": 32657,
+      "sha256": "2ea2d68f158f054f283f98a319143d52d61b57cfdf79bc532235645069c54da7"
+    },
+    "src/hangma_bot/offline/evaluation_statistics.py": {
+      "bytes": 22675,
+      "sha256": "8f357bac85774cff75eb3d9f8f669aee58398dae7fbb1e49c87be2b598ea4491"
+    },
+    "src/hangma_bot/offline/qualifier_opponents.py": {
+      "bytes": 8124,
+      "sha256": "4ba661c94bbb20fe03b110acf049724c36c958980233268278e5900cb6776d7d"
+    },
+    "src/hangma_bot/offline/scoring_input_capture.py": {
+      "bytes": 16172,
+      "sha256": "858c75e621ecf23913b8df0af58af197301e780b1f48c9d4304fe13ad0712e85"
+    },
+    "src/hangma_bot/offline/scoring_sources.py": {
+      "bytes": 9453,
+      "sha256": "da75c44b1919ccd9338ee0469391882be8aaaaeb079775223b5b43be5036d1e0"
+    },
+    "src/hangma_bot/offline/vip_eoh_generate.py": {
+      "bytes": 64915,
+      "sha256": "b0285471a99b9074a40acdc2ac90e8f12416f3aa906d60eae4ee9111d260fef9"
+    },
+    "src/hangma_bot/offline/vip_eoh_input_sources.py": {
+      "bytes": 32957,
+      "sha256": "4b85778bef99cd12f0b93bb53fe7c50513d653880b66725560e6c2dded5109c7"
+    },
+    "src/hangma_bot/offline/vip_eoh_probe.py": {
+      "bytes": 21103,
+      "sha256": "03c34f87aadac5a7a70f31d62206e633d7a9578404d0a033e3fcb1e63aac5488"
+    },
+    "src/hangma_bot/offline/vip_eoh_probe_v2.py": {
+      "bytes": 35624,
+      "sha256": "a7f506b487668bd34e3b2ed4979443a5486bcad2ac6a0d476bce5f6929f53033"
+    },
+    "src/hangma_bot/offline/vip_eoh_rebind.py": {
+      "bytes": 10083,
+      "sha256": "9745d98408420a910022dd2a234cda9f2f55a53e96bab3273e793bc622696d6b"
+    },
+    "src/hangma_bot/offline/vip_eoh_trace_repair.py": {
+      "bytes": 17236,
+      "sha256": "46c355392b8585b2845c018363dac791f356c6c5b4af56d9a62e963c91d7473c"
+    },
+    "src/hangma_bot/offline/vip_evaluation.py": {
+      "bytes": 14069,
+      "sha256": "4172d6f6aec859c6c71f04f42c0b4a3823510f04f136d85285cb93f40f99ae82"
+    },
+    "src/hangma_bot/offline/vip_heuristic_smoke.py": {
+      "bytes": 11065,
+      "sha256": "db07eca11efffba9e93129c24c07a66c9b849ef0675dbde4f55d020977bbc5a6"
+    },
+    "src/hangma_bot/offline/vip_route_development.py": {
+      "bytes": 56814,
+      "sha256": "43214d2051cf66194e27eb5c2ae60c9c0c7b8c5214a8812e72c07709fbeea4c9"
+    },
+    "src/hangma_bot/policy/action_value.py": {
+      "bytes": 45125,
+      "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+    },
+    "src/hangma_bot/policy/action_value_executor.py": {
+      "bytes": 106868,
+      "sha256": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb"
+    },
+    "src/hangma_bot/policy/action_value_policy.py": {
+      "bytes": 26047,
+      "sha256": "8bbcdeb3fc968736f45f831a4c516e5375ef8e5dfe879aa4f696cf2b48d8982b"
+    },
+    "src/hangma_bot/policy/action_value_seeds.py": {
+      "bytes": 26114,
+      "sha256": "dc50f4e2127936368aed0282cce505d68dabf628904daae537928c78e387578a"
+    },
+    "src/hangma_bot/policy/claim_if_legal.py": {
+      "bytes": 4405,
+      "sha256": "acd4c887d59cd5f84e9ea2a6ab6c698278110623af0e2bb26a2f1b992d6a8f43"
+    },
+    "src/hangma_bot/policy/errors.py": {
+      "bytes": 372,
+      "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+    },
+    "src/hangma_bot/policy/evaluation.py": {
+      "bytes": 16532,
+      "sha256": "92f68d0f0eb384cff1444bdc84937fb93d90f398c9ac7b803e00f23d800d86e1"
+    },
+    "src/hangma_bot/policy/evaluation_v1.py": {
+      "bytes": 24085,
+      "sha256": "b3198fcfc030a235873f67051bdf859f04a97b3290c4bd6783e870b7d7330fe0"
+    },
+    "src/hangma_bot/policy/evaluation_v2.py": {
+      "bytes": 4586,
+      "sha256": "8df42443369cc6fa1702934660301f65991df509fa3e8d48823a206c5f4da830"
+    },
+    "src/hangma_bot/policy/heuristic_adapter.py": {
+      "bytes": 9462,
+      "sha256": "f033610a9581842b9ee56e5008bb5feade95d31e7f1f80a0d4bc0f2a2501db45"
+    },
+    "src/hangma_bot/policy/heuristic_v2.py": {
+      "bytes": 8660,
+      "sha256": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af"
+    },
+    "src/hangma_bot/policy/hu_upgrade.py": {
+      "bytes": 15927,
+      "sha256": "52e65eb5aa6b74880059bccea4b11be05516df4dc9e7bb3ead6c0df526322290"
+    },
+    "src/hangma_bot/policy/hu_upgrade_calibration.py": {
+      "bytes": 2481,
+      "sha256": "20fc79df1050144bcae69236a5d34656fa1afbbb11d8c86d80d3a5319733a8a4"
+    },
+    "src/hangma_bot/policy/interface.py": {
+      "bytes": 3546,
+      "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+    },
+    "src/hangma_bot/policy/legacy_pass.py": {
+      "bytes": 3137,
+      "sha256": "0345d91ebc567b1d00b93fe91735f2bb3b7fed1dd99fa3470a182e76344657ba"
+    },
+    "src/hangma_bot/policy/r18_integrated_positive_v1.py": {
+      "bytes": 45369,
+      "sha256": "df6ab003754ecc275cb61ed1ffabc629c2270f1320d203486de4e86d196e4245"
+    },
+    "src/hangma_bot/policy/r18_integrated_positive_v2.py": {
+      "bytes": 55990,
+      "sha256": "e18eaecb63ced3501b71e23aafd336491c7b1fd08dc4bcc2ac4396650a86a8d0"
+    },
+    "src/hangma_bot/policy/research_candidates.py": {
+      "bytes": 33795,
+      "sha256": "a3002d22c027e2e96d92f24cce3a0581e2c81ca61f340919b9f28542e6f243eb"
+    },
+    "src/hangma_bot/policy/route_heuristic_view.py": {
+      "bytes": 28880,
+      "sha256": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1"
+    },
+    "src/hangma_bot/policy/route_vip_heuristic.py": {
+      "bytes": 37065,
+      "sha256": "ec92ece74a2c44fa3cff31824bc51bca1abb4db63e98552a634cd9b739a26da0"
+    },
+    "src/hangma_bot/policy/safe_fallback.py": {
+      "bytes": 2352,
+      "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+    },
+    "src/hangma_bot/policy/v2_hu_upgrade.py": {
+      "bytes": 1490,
+      "sha256": "5eb8bea746ea00e153f1191d2c7b5340621b6ee827e0769a8cda24dd830502f7"
+    },
+    "src/hangma_bot/policy/value_one_draw.py": {
+      "bytes": 11147,
+      "sha256": "dd22ec5dc27c8b16fdf539bff833a42c7fc9e08973337387011da4939126c612"
+    },
+    "src/hangma_bot/policy/weighted_heuristic.py": {
+      "bytes": 6432,
+      "sha256": "3228a68f544466d16bf5ab926fbb3a3ec7960509aed70bf56571f33d1af08bc5"
+    },
+    "src/hangma_bot/policy/weights.py": {
+      "bytes": 1648,
+      "sha256": "385ecefe548eea7c4490e4efa2aa54d0c7a49911a729edcd06d1a5438c804b3f"
+    },
+    "src/hangma_bot/policy/weights_v1.py": {
+      "bytes": 2987,
+      "sha256": "6dc4f4bf263ce055d0c450e914b556ab5323ecf3290cf104c06d9547aeed0f77"
+    },
+    "src/hangma_bot/simulation/__init__.py": {
+      "bytes": 1236,
+      "sha256": "9940e70b041e4729b56d825b8f85abec12594cf25a84b8672a927ce20b29e844"
+    },
+    "src/hangma_bot/simulation/artifacts.py": {
+      "bytes": 3264,
+      "sha256": "0176f939b276e9ee22c9e72e42939d1e04b2c35aa5c6273d43dab731324e4a32"
+    },
+    "src/hangma_bot/simulation/engine.py": {
+      "bytes": 44570,
+      "sha256": "c32e7d589765c7a973a72be534fdaadf21f8c4bd91c404d471189d49cbbf6b27"
+    },
+    "src/hangma_bot/simulation/identity.py": {
+      "bytes": 1371,
+      "sha256": "8087385814bdb604ea92fcd757e111f430c3d0a53a1bd08ddedfee35efe0e58e"
+    },
+    "src/hangma_bot/simulation/interface.py": {
+      "bytes": 5426,
+      "sha256": "7f1262c0cd75249627eaf8031a410fbff2262940ef7a9923f1b8c18721b76d6f"
+    },
+    "src/hangma_bot/simulation/projection.py": {
+      "bytes": 6026,
+      "sha256": "1d729c3e0be45ff8f137c85b906b4d7e2454dd6627cde5db9f5bf1915cf58490"
+    },
+    "src/hangma_bot/simulation/shuffle.py": {
+      "bytes": 7411,
+      "sha256": "5e8597e06dc7d94e8aa2825f066df5faef47c2298b1c1919bccbf2a7756f91f5"
+    },
+    "src/hangma_bot/simulation/state.py": {
+      "bytes": 3309,
+      "sha256": "c57f0a3f5ff42736d3b1514c44527c77382e79b1fe8feeef6c571fea4d154556"
+    }
+  },
+  "step_limit": 50000,
+  "tasks": [
+    {
+      "arm": 0,
+      "ordinal": 0,
+      "root": 1,
+      "rotation": 0
+    },
+    {
+      "arm": 0,
+      "ordinal": 1,
+      "root": 1,
+      "rotation": 1
+    },
+    {
+      "arm": 0,
+      "ordinal": 2,
+      "root": 1,
+      "rotation": 2
+    },
+    {
+      "arm": 0,
+      "ordinal": 3,
+      "root": 1,
+      "rotation": 3
+    }
+  ],
+  "wall_seconds_per_table": 600
+}

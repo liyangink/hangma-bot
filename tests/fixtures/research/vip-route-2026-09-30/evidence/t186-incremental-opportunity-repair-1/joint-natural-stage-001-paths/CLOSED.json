@@ -1,0 +1,1276 @@
+{
+  "actual_paired_tables_read": 32,
+  "by_first_switch": {
+    "all_focal_choices_same": {
+      "associated_table_large_hu_income": 0,
+      "associated_table_net": 0,
+      "associated_table_ordinary_hu_income": 0,
+      "associated_table_payments": 0,
+      "paired_tables": 10
+    },
+    "discard->discard": {
+      "associated_table_large_hu_income": -328,
+      "associated_table_net": -321,
+      "associated_table_ordinary_hu_income": 34,
+      "associated_table_payments": -27,
+      "first_hand_large_income": -96,
+      "first_hand_net": -174,
+      "first_hand_ordinary_income": -48,
+      "first_hand_payments": -30,
+      "paired_tables": 12
+    },
+    "discard->hu": {
+      "associated_table_large_hu_income": -120,
+      "associated_table_net": 4,
+      "associated_table_ordinary_hu_income": 128,
+      "associated_table_payments": -4,
+      "first_hand_large_income": -120,
+      "first_hand_net": -38,
+      "first_hand_ordinary_income": 80,
+      "first_hand_payments": 2,
+      "paired_tables": 8
+    },
+    "pass->chi": {
+      "associated_table_large_hu_income": 0,
+      "associated_table_net": -14,
+      "associated_table_ordinary_hu_income": 0,
+      "associated_table_payments": -14,
+      "first_hand_large_income": 0,
+      "first_hand_net": 0,
+      "first_hand_ordinary_income": 0,
+      "first_hand_payments": 0,
+      "paired_tables": 2
+    }
+  },
+  "complete": true,
+  "elapsed_monotonic_seconds": 10.721814125077799,
+  "failure": null,
+  "files": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/analyze_prior_diverging_hands.py": {
+      "bytes": 7904,
+      "sha256": "75809336fd842171bc9647f48d44522929a4b26a9f4595e532b4738d0f67e3f9"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/diagnose_prior_first_divergences.py": {
+      "bytes": 11451,
+      "sha256": "42619e09111e639cf6e8f26d757a5f5029e4d2f514d57c1031c8271b3e6496bb"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/diagnose_joint_natural_stage1.py": {
+      "bytes": 8650,
+      "sha256": "3a1332800ffb31fa580d95f6de5276eb48d82e6b1de8768f89d5dbd1cc430b40"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/joint-natural-stage-001-dispatch/CLOSED.json": {
+      "bytes": 1091,
+      "sha256": "21af097253e1ab916df8b99b027e70049852d9aa09e068b4b00620c86a2bf45d"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/joint-natural-stage-001-dispatch/READOUT-CLOSED.json": {
+      "bytes": 325629,
+      "sha256": "cf5cf74d3e649476a87bb86cd6bd3377b1c1938b97589abd158af60a44e6f41f"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/joint-natural-stage-001-dispatch/SUMMARY.json": {
+      "bytes": 196035,
+      "sha256": "a2cb70b3ff47ee8c16b513d19f52c0dd5ae725178cf02752703dc5f5bdfe514a"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-0-arm-0/CLOSURE.json": {
+      "bytes": 1560270,
+      "sha256": "9493b5c5220a0dea4aef8092205b1f39a1673938471b24ab72dce7eba46ffad6"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-0-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 1241719,
+      "sha256": "3d5e60b100299d289fcd4d6e199ae26bc7e9d0dc35a147185cd6701cba56cce5"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-0-arm-1/CLOSURE.json": {
+      "bytes": 1560640,
+      "sha256": "fc20e8ef514ceda345003198ba6768409a1e506955d029b50cf187f90da353f5"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-0-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 1243416,
+      "sha256": "8fd4c5014418fef10cfdd01e21a592826fc97472aa5dceec3415c611a5ba1f87"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-1-arm-0/CLOSURE.json": {
+      "bytes": 1362929,
+      "sha256": "7801af2752ca41ea54335d64a22b9cd2bba882bb2fc6e8035f517311ecc66f33"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-1-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 1004623,
+      "sha256": "976edade6080c081c162ef0e1a661620594b259c13c9676243fdeb2422f237f0"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-1-arm-1/CLOSURE.json": {
+      "bytes": 1265580,
+      "sha256": "add25c80b56f593138fdae97fe6119786b22c9ccbc08ad0fa46696f4ce9c60e4"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-1-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 872666,
+      "sha256": "456eb31ac1a57cc8903def8c8fece6f9967e7b393a5b97fa4ada5ca58bd074e7"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-2-arm-0/CLOSURE.json": {
+      "bytes": 1437529,
+      "sha256": "9110f3cd966591ce7831d9f2ccd8b38bb228c4ee414568519b9c8332c9aa1990"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-2-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 1089683,
+      "sha256": "1923a476c64d841d2d260c224ba435ff09d95dd933a733c22fd60d7a26f027a7"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-2-arm-1/CLOSURE.json": {
+      "bytes": 1325780,
+      "sha256": "6ad1fc4f5f60ad551494d5f966232e7fc78ca115dec5b413b79114715c16f22a"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-2-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 939203,
+      "sha256": "f1cae3c36c8250ba7758fcb7a05cd4a8994486e245038ec8c47d1fa85fcfe650"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-3-arm-0/CLOSURE.json": {
+      "bytes": 1304678,
+      "sha256": "900a49a6f05ac5de87280e922ff17f1c4fc3f49dbdfea92dd851c9f3ce6f8936"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-3-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 921611,
+      "sha256": "4783797586c2cd9addc1af432656ac39f67fd6169e194436422e97d5aab0e943"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-3-arm-1/CLOSURE.json": {
+      "bytes": 1257215,
+      "sha256": "5d9f32f98b65f310befb0e2509982959cc1e885361ecd541f6573c1b6b8d45af"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-033/seat-3-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 870940,
+      "sha256": "2582b5fec1bef6f8380a98becbe8a3ac47abb724de65933f78b470f7b0faee43"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-0-arm-0/CLOSURE.json": {
+      "bytes": 1035517,
+      "sha256": "348627d5225d1de063f003cf21bd95ee8e79c106310ec467f6e254f731c53140"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-0-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 615056,
+      "sha256": "38608218410a630995952b7e65db7984f7746db8e264f9ed53ac75c2dbb0b336"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-0-arm-1/CLOSURE.json": {
+      "bytes": 968344,
+      "sha256": "402e94cdce1054a25a09aad265fad87a399d80c67c351d72aa0f02945f69303a"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-0-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 541617,
+      "sha256": "0f8bcc0bf8314b3296833689c283b7b11279af0293107581981f67448e71e86c"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-1-arm-0/CLOSURE.json": {
+      "bytes": 1271887,
+      "sha256": "ad16cef80586adc58822502b14d4a87287a7c3b994d5b3ddeaa126322ccc06f5"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-1-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 859633,
+      "sha256": "d379cc5d01edf94a164f6cc079901da7cc02a11679bc385aaa086ced812aaa1d"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-1-arm-1/CLOSURE.json": {
+      "bytes": 1211806,
+      "sha256": "c5a2c37bdd6be8c8b5252411820ff4ddf3af8312963ebc33173834e8a9b7a040"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-1-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 785421,
+      "sha256": "7746d6f0c7791d9ca77b397570ffe2a9fd1b0f394e38bc3559045ee24b3f830e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-2-arm-0/CLOSURE.json": {
+      "bytes": 1193190,
+      "sha256": "298711d297d2361e5cf7962fc1d63a00b9b7d34396aa55aa7ed4a26a66ffb51e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-2-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 785398,
+      "sha256": "caa96701fd8987bad609301188eff00a138dc1e7ba34a7f9b1294121e5ae2c26"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-2-arm-1/CLOSURE.json": {
+      "bytes": 1133103,
+      "sha256": "2fe855c09c4168975b597fc2fa93dc44e9ca43d4677b172d0bce88835d837b37"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-2-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 710030,
+      "sha256": "a46579791fe5cb6a871f597950af97050cf78e983a92e36bd002ca2ae1a4f333"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-3-arm-0/CLOSURE.json": {
+      "bytes": 1189240,
+      "sha256": "9d998f3f29c460342ce22941c218d4ecbd3545f0a0fd6c21e3bc5bd9e785b815"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-3-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 757390,
+      "sha256": "620dee9f7f17b826ba751f7bebd5036d03caa2548a66128ea9c0ff7edd97b5c9"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-3-arm-1/CLOSURE.json": {
+      "bytes": 1107690,
+      "sha256": "9c2cb796dbbf80f80c9c86b986a0e3c563c5e274dd84ce46b804f7abe553134a"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-034/seat-3-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 670864,
+      "sha256": "7a2f58b8921ed05b773e8d300fe09418102fa2af03cbe0ff033ff26f97d43770"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-0-arm-0/CLOSURE.json": {
+      "bytes": 1148737,
+      "sha256": "918cb836ac0ad6533830abbdb3e7cd70376a80a92801ef69fa510796f7a83b47"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-0-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 661247,
+      "sha256": "0b3d547a4cf9c257b414c0818e16b5d321c142a8b58420168bc6b31d6081da3f"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-0-arm-1/CLOSURE.json": {
+      "bytes": 1149110,
+      "sha256": "ffda88533f9ed5e09cdad0d4bd9065faad8bb0b550a9847754998fcf1503e93f"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-0-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 662215,
+      "sha256": "8f35e5570b2c116be4f462e02e2efe1d60dfb1ffdaf057efa5724dbe0dbe2820"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-1-arm-0/CLOSURE.json": {
+      "bytes": 1146387,
+      "sha256": "f631dffcee640dd369cc4e4fab2b2f09bcc735266b9693c86298e57d1cab3100"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-1-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 665784,
+      "sha256": "57aaf79a43472e58900bd0a9d6085e7606679446bd30ae4fabf3bbd5f1fe6465"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-1-arm-1/CLOSURE.json": {
+      "bytes": 1146759,
+      "sha256": "561a2e8a87b9c15e7045f9fbddef0bf5088317b8da32c122024dd32292c5a8c0"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-1-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 667146,
+      "sha256": "0bb22d6d64627f3531d356e27dac93d866b6f5c6c50454776ef3ad5d35399af0"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-2-arm-0/CLOSURE.json": {
+      "bytes": 1057849,
+      "sha256": "8cce8c8935237b7d17ed798ff349cd6876baace873793c933b19a0a13251b766"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-2-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 555271,
+      "sha256": "9b303f6dc78cb4052a43f4ae2b1ce36ab93cd1a9d6be933af2c1a581c5688e88"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-2-arm-1/CLOSURE.json": {
+      "bytes": 1058219,
+      "sha256": "f57bc1576c4258e86df485e2c5891e9ddd71fee3b4ace1a0328d9c61c358ab4e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-2-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 556198,
+      "sha256": "fa08028260587d65e58537261bb27c1ea6570ae10e61980d427cd6b02f883bc8"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-3-arm-0/CLOSURE.json": {
+      "bytes": 1096819,
+      "sha256": "10931830593c4fb1f65064b8d21fca56f26e24d7f77655b0295fdffd5ddbd5b2"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-3-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 612248,
+      "sha256": "0e0bc08a36d958f35d4f0c1aff8f3d6217ef795a121ddd88e89589c4b7294c2c"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-3-arm-1/CLOSURE.json": {
+      "bytes": 1106872,
+      "sha256": "da4c6320b7b43addd4f700c532de09d3ab9a2e1b926ad08c59e5b6ae4998d781"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-035/seat-3-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 628142,
+      "sha256": "b644a1f243c0f41d1dc4af5a8214c92d2600d2502632b4194e5694e55ee5f37a"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-0-arm-0/CLOSURE.json": {
+      "bytes": 1228484,
+      "sha256": "0d671dc7507f9aa4a9ce809634403056439ebc654241e6de7fe980c75cfbbb71"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-0-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 792467,
+      "sha256": "2fa025cd90e1f467ef23e5871a92ef1ea2816fc73dc9b200a4896448dbdc86fa"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-0-arm-1/CLOSURE.json": {
+      "bytes": 1228853,
+      "sha256": "95fb9736cc62b0b593255ac4ae382159a94c7ccc625a117218a9e6083888e960"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-0-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 793968,
+      "sha256": "a918e9ea1235a6e12823da13fc4dc7e2b1eba3d42ec0103bb6c624acb775b756"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-1-arm-0/CLOSURE.json": {
+      "bytes": 1112921,
+      "sha256": "1d02612d6ce4f15d5c77ddd4a65325dab9d696dfbc45a8b159134bb41aed4109"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-1-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 654140,
+      "sha256": "3eaf5307c5f3f989db05d40dd2a162a3aecda674076b3363012fd0d7b224b254"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-1-arm-1/CLOSURE.json": {
+      "bytes": 1113293,
+      "sha256": "81db77f87576766839fda634f86c70162c8d5bb930357417bbeeab04a756ce6d"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-1-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 655548,
+      "sha256": "b5de9a1773176ea14c9c55ce6166b06d6715eb0aa307c74d7da698f44ba479e5"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-2-arm-0/CLOSURE.json": {
+      "bytes": 1185183,
+      "sha256": "c279c33e96d19013a0eed5899b9bea1c0673686ebb0598c799d02b5da7cecc57"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-2-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 747961,
+      "sha256": "88c15f5837ef6e61b661599fa79119a67e9ae170010fbd34907022fc956c210c"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-2-arm-1/CLOSURE.json": {
+      "bytes": 1185556,
+      "sha256": "4d7dfd624cc10b779abf5470a0421f6a8d6c9583482a59c307adb8caf36a9c61"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-2-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 749342,
+      "sha256": "e4344bc10b74c169250b18e3539fd4eb272ca276a148257be264d266d1651e11"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-3-arm-0/CLOSURE.json": {
+      "bytes": 1165953,
+      "sha256": "88a2953eea16c9b82cb23da925a5735974a4c0edf6adf363f5320d63dbf2e78e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-3-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 728479,
+      "sha256": "a8ccd7194d6fe3d71b880724f4cc00f5c921393475bdf7ddd5ab85c02ce5aeca"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-3-arm-1/CLOSURE.json": {
+      "bytes": 1166326,
+      "sha256": "45e9cd2f14b3853613bc7546697df1e1f05b9db47ee49222e98b5f5d6eb99b31"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-036/seat-3-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 729932,
+      "sha256": "1c06ceadeb72a75cf62318811986fec3942d3c0c7059beee40b81af226ea1e27"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-0-arm-0/CLOSURE.json": {
+      "bytes": 1301362,
+      "sha256": "7731a5c7a0a30e4e2bda52fb839c5b33d385df87b441a9653bc66eb550739244"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-0-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 909832,
+      "sha256": "f23ba0a66cfcac6c7abedc4e833707c96525cfb2c11e6469c7815ee76a51af80"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-0-arm-1/CLOSURE.json": {
+      "bytes": 1301737,
+      "sha256": "7267323bce2b8e1683ff97164c25d78219b24da861a289a2bfe6aded02c8bbd7"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-0-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 911094,
+      "sha256": "13c873e5ffe1bd037a35e3dfa446a19512743be560da45e229046c2ad4875e79"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-1-arm-0/CLOSURE.json": {
+      "bytes": 1270744,
+      "sha256": "c74995b5ce9ff63c95556fb3d802a49416f7acd8d987b1468836a640fcecb9fb"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-1-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 873057,
+      "sha256": "004a6d0b94c4d539bdc235c90c3ff2e263186ffa32fa2e35fe19b7b4763ae04a"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-1-arm-1/CLOSURE.json": {
+      "bytes": 1271113,
+      "sha256": "d5b20b7d1ff9e14e750e0bb04f79ced33f7fe5efd08fa5fe651da2e01bd44c64"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-1-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 874426,
+      "sha256": "7ac8ad6ef5937fc4c2c82d1125a7eb894b12865cbc5ebd719535ba1a8d491dbb"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-2-arm-0/CLOSURE.json": {
+      "bytes": 1366469,
+      "sha256": "9df4088fd552ae5106a75cf65e53b6743f80cac472212f41c0976b3ac3bd1dbb"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-2-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 976719,
+      "sha256": "eae4f853e64fb63521080bf41f20ac12f22d00809d3a126782e88dd338b38106"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-2-arm-1/CLOSURE.json": {
+      "bytes": 1299572,
+      "sha256": "734cc02c89254f5ee0406adef13a7d5827cbf689c1c1ca54de71870a116bb416"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-2-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 900344,
+      "sha256": "fcb7a13ac525f5f8c4405b3395bb14de3b98c52f48e6125e31af44fb10e9c566"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-3-arm-0/CLOSURE.json": {
+      "bytes": 1153493,
+      "sha256": "ad738ecaba7d06ed62d6d6442f3db21dc04aa5c1b60f285735e63efdb8938c1d"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-3-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 730385,
+      "sha256": "900ac7e92e92d6d9c056e2f6fc1925d25a9bcf2b1ae9a12bbda8dd340461c500"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-3-arm-1/CLOSURE.json": {
+      "bytes": 1066539,
+      "sha256": "dc3abb70c50c5b984f6cc46eb7af1ed9d8764ec584c9c1d8e784c4ee7325f143"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-037/seat-3-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 632589,
+      "sha256": "742e8a876371fe0bd91befd07273c17146993684ca7c9d2de888bb585fd03764"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-0-arm-0/CLOSURE.json": {
+      "bytes": 1276352,
+      "sha256": "eca5f517905084cd38a108c70398fdd3a78cded8589d1906582f9af00933645b"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-0-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 892907,
+      "sha256": "38b6c1c9416d774ac26dd22bb96d2a600d5af19c2857a4a4a2048dfe5d267130"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-0-arm-1/CLOSURE.json": {
+      "bytes": 1176413,
+      "sha256": "f62c965496f0d9e133d961ffa996679a6788493b9dfb1707f4ca42d8f587c8ab"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-0-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 772381,
+      "sha256": "4a89ed8f0cd23da6d56b119f7694f056df5c0c8b6c932ba7d9570a03b03aba20"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-1-arm-0/CLOSURE.json": {
+      "bytes": 1165160,
+      "sha256": "554e7d696e74ddf0c26351b68a15eb5b4ab069364cf76fed1b97246702ce1316"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-1-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 773137,
+      "sha256": "4b0ef777bfcc071bc566051fb1c4cc4712086f8e362f0c06ec78124c47d18c09"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-1-arm-1/CLOSURE.json": {
+      "bytes": 1065201,
+      "sha256": "0c37dd8004405382d5ec59bb7e7c74c000e6fcf170fddc975517a503c4ac32c8"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-1-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 652535,
+      "sha256": "05125aa68bfac671c8eeeccf624ae3bd9b4dd9944b8436bdb211aa41feb913fb"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-2-arm-0/CLOSURE.json": {
+      "bytes": 1139331,
+      "sha256": "53b8e37b2afa528ffc0ebbc5e7f8f2d4a466c40f6b4c3cf8278a1848486cfe97"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-2-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 735028,
+      "sha256": "079314845f3b313e3dcccc22d24b364ead2f03bc054ca7f2aad67e9da4d00327"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-2-arm-1/CLOSURE.json": {
+      "bytes": 977302,
+      "sha256": "219c162f07d385b799847b7cb426d3fd4cd3f09472eea057c7330ef68a1fdb43"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-2-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 585317,
+      "sha256": "a2c07b42fb12f24530cc8e408a345fcbab8059ba48b301774e13b5e77b9e9998"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-3-arm-0/CLOSURE.json": {
+      "bytes": 1119825,
+      "sha256": "f5ec7d2f0a5f8e6a2a31949f04ef21b1bc9d7eab564ddc146620d82dcf22a353"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-3-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 705067,
+      "sha256": "d181b60de74d6b8b64d97f720c179dd85ef25af4bda80b5d44430375f0c56625"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-3-arm-1/CLOSURE.json": {
+      "bytes": 957814,
+      "sha256": "bc73632d4bd1be774eb751694e885365a4416fe366c3ca02e8cc03927d591376"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-038/seat-3-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 555023,
+      "sha256": "10bbf2fc635e47483311a61432e5c54d02395b488d6ba534f418857fc5584c42"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-0-arm-0/CLOSURE.json": {
+      "bytes": 1012927,
+      "sha256": "3ac708089e5e484ac9f86051df9ed36c0acaab1b6f319ceeea8b9384a82e571e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-0-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 540463,
+      "sha256": "1a3cb0d2ca4b7600659a6a779ac7a0b8903b4879c1f46adda12ebd41c3dddfb9"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-0-arm-1/CLOSURE.json": {
+      "bytes": 921395,
+      "sha256": "4a58c645f5622fbd80e7de393d5824a5f247d0c101a38d042e212dc9b30f3689"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-0-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 460718,
+      "sha256": "1e813835a4ca9676b185c84007d3aefdf057880a6d1d7126140156897e74f433"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-1-arm-0/CLOSURE.json": {
+      "bytes": 1041608,
+      "sha256": "749138dadb53ba1c25d967616f22a9a845419aa5502e11c4d7e2126d447a784e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-1-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 556035,
+      "sha256": "ba14d28224698d7f6439157573b996886e54f755b5fe93c0c9c8d70f02e8a3c0"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-1-arm-1/CLOSURE.json": {
+      "bytes": 1034625,
+      "sha256": "d6d39844843b8080ba0136212ac910c93e757ea8e1afca4052f44a8d70d47ba1"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-1-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 561244,
+      "sha256": "fc145c6068a101296edcb7f329706d005d6ba0adb8595e321984e81b41cd0a7f"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-2-arm-0/CLOSURE.json": {
+      "bytes": 1075824,
+      "sha256": "7765ea24feb6aa80bc66d38e0e5907fa670b9ff5ef3027ac7448c353e5f6aa38"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-2-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 597692,
+      "sha256": "88c7de27354f849f9e5085004733a673b7a9ae7ae8698c9b91725fef2b9cdf1f"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-2-arm-1/CLOSURE.json": {
+      "bytes": 1068834,
+      "sha256": "5429f7c90b7f6f9bba8cbd73205413b98e5d3e2a47a738ee259dc4151c64e8fe"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-2-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 603378,
+      "sha256": "ec6f794ed2a52e58d2dcc7ddc0cf9d40c4edd1a2fb6437f60b3950c309d8245c"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-3-arm-0/CLOSURE.json": {
+      "bytes": 1169827,
+      "sha256": "38d5664b90baf4c02a6ff0f036c7586da882b70c513bf4695727eef6162c724c"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-3-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 709049,
+      "sha256": "76a91921a52f4fc09195b3e38a0e19a32785aa6b1692f388ad4791801a5fec41"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-3-arm-1/CLOSURE.json": {
+      "bytes": 1048500,
+      "sha256": "aceb17d825407eadd0b29b55d054ebd3fecfa9e61145cb34853ffa0182db98bc"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-039/seat-3-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 574827,
+      "sha256": "c54dd4425747fdd3121db2b3622a554f8995c43fea6e36d4905ee321e37f8284"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-0-arm-0/CLOSURE.json": {
+      "bytes": 909671,
+      "sha256": "0721e14ebb635acc6ccb134e181a89c3119adb389b0706a80ff31daed454a5f0"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-0-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 447196,
+      "sha256": "4b3ef40032663faa714f3f8da29604ee837ca4e2c018dde849ea6d9eb4e9c423"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-0-arm-1/CLOSURE.json": {
+      "bytes": 895091,
+      "sha256": "84f4544b1d5e57a90f727145cd40a4d9920094fd0b01ff1aecd0f8a7c5aa481a"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-0-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 429418,
+      "sha256": "1ecb43c68edab3cd905835352ba7b1b728f091978c987b9e2fdd446e9822aeea"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-1-arm-0/CLOSURE.json": {
+      "bytes": 966996,
+      "sha256": "8448c6edaef5d2cc7a3a8ff23c461abbb39947eeb285d8236882a473142f751f"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-1-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 486631,
+      "sha256": "b25a57b9a98559b83b001bb85a990f6bda54121a442e217a2d4dc2f2c322c6c2"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-1-arm-1/CLOSURE.json": {
+      "bytes": 952421,
+      "sha256": "023bb795b0cb3844254403a63fcdf135fb9167cb509175dc6ae79fe0cd303325"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-1-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 469088,
+      "sha256": "2c04f8e28c6929b84e3b8b574bc62b229541e372a9c62781d4946abd110b248a"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-2-arm-0/CLOSURE.json": {
+      "bytes": 1093297,
+      "sha256": "7f84f40a1cac47988b77ca1ead6960f24a1d2857b00eb76a4d647cb7553fa877"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-2-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 601535,
+      "sha256": "a8143c9fa5f627aa07fb4b38a9deda3150af3cc4ed179165e1dede1929435adc"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-2-arm-1/CLOSURE.json": {
+      "bytes": 1000254,
+      "sha256": "eae79b5ba43e1dc94f59c22d18acbc68d1311536175437f610710b9c4f41a3bc"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-2-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 505381,
+      "sha256": "47866d223613fdade39cea67e3f643a8d346b370d746b2b9017fdea9f7ad4adb"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-3-arm-0/CLOSURE.json": {
+      "bytes": 976754,
+      "sha256": "1b58aa05f66aced1cb2552595649ae368716f9679b3780560508f90a9cfecd84"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-3-arm-0/focal-decisions.jsonl.gz": {
+      "bytes": 494962,
+      "sha256": "ce84c26e099f158621ec1307ac2dcffe8d93287c8d000ae99d127f3af934af4f"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-3-arm-1/CLOSURE.json": {
+      "bytes": 883713,
+      "sha256": "323ca37784a8d1b67ae216b28847980e994afcda69da243a4e5f21d29d5caf9b"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-development/root-040/seat-3-arm-1/focal-decisions.jsonl.gz": {
+      "bytes": 398153,
+      "sha256": "2a36d5987d29ce79fd05ea0ca8c84fa3a9a8574cf13f56955eb7fb312abb7036"
+    }
+  },
+  "joint_stage1_data_read": true,
+  "large_loss_pairs": [
+    {
+      "aligned_round_large_loss_observations": [
+        {
+          "child_hand": {
+            "fan_if_own_hu": 2,
+            "is_dealer": false,
+            "is_draw": false,
+            "large_income": 0,
+            "net": 20,
+            "ordinary_income": 20,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "parent_hand": {
+            "fan_if_own_hu": 4,
+            "is_dealer": false,
+            "is_draw": false,
+            "large_income": 40,
+            "net": 40,
+            "ordinary_income": 0,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "post_first_divergence_paths_not_isolated_action_effect": true,
+          "round_no": 3,
+          "same_actual_initial_state": true,
+          "same_physical_wall": true
+        }
+      ],
+      "first_round_no": 3,
+      "first_switch": "discard->hu",
+      "root": 33,
+      "rotation": 1,
+      "table_delta": {
+        "dealer_draws": 0,
+        "dealer_hands": 2,
+        "dealer_large_hu": 0,
+        "dealer_large_hu_income": 0,
+        "dealer_net": 48,
+        "dealer_ordinary_hu": 2,
+        "dealer_ordinary_hu_income": 48,
+        "dealer_other_first_hu": 0,
+        "dealer_own_hu": 2,
+        "dealer_own_hu_ge16": 0,
+        "dealer_own_hu_ge16_income": 0,
+        "dealer_own_hu_ge32": 0,
+        "dealer_own_hu_ge32_income": 0,
+        "dealer_own_hu_ge8": 0,
+        "dealer_own_hu_ge8_income": 0,
+        "dealer_payments": 0,
+        "draws": -1,
+        "hands": 0,
+        "large_hu": -1,
+        "large_hu_income": -40,
+        "net": 36,
+        "non_dealer_draws": -1,
+        "non_dealer_hands": -2,
+        "non_dealer_large_hu": -1,
+        "non_dealer_large_hu_income": -40,
+        "non_dealer_net": -12,
+        "non_dealer_ordinary_hu": 1,
+        "non_dealer_ordinary_hu_income": 20,
+        "non_dealer_other_first_hu": -1,
+        "non_dealer_own_hu": 0,
+        "non_dealer_own_hu_ge16": 0,
+        "non_dealer_own_hu_ge16_income": 0,
+        "non_dealer_own_hu_ge32": 0,
+        "non_dealer_own_hu_ge32_income": 0,
+        "non_dealer_own_hu_ge8": 0,
+        "non_dealer_own_hu_ge8_income": 0,
+        "non_dealer_payments": 8,
+        "ordinary_hu": 3,
+        "ordinary_hu_income": 68,
+        "other_first_hu": -1,
+        "own_hu": 2,
+        "own_hu_ge16": 0,
+        "own_hu_ge16_income": 0,
+        "own_hu_ge32": 0,
+        "own_hu_ge32_income": 0,
+        "own_hu_ge8": 0,
+        "own_hu_ge8_income": 0,
+        "payments": 8
+      }
+    },
+    {
+      "aligned_round_large_loss_observations": [
+        {
+          "child_hand": {
+            "fan_if_own_hu": 2,
+            "is_dealer": false,
+            "is_draw": false,
+            "large_income": 0,
+            "net": 20,
+            "ordinary_income": 20,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "parent_hand": {
+            "fan_if_own_hu": 4,
+            "is_dealer": false,
+            "is_draw": false,
+            "large_income": 40,
+            "net": 40,
+            "ordinary_income": 0,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "post_first_divergence_paths_not_isolated_action_effect": true,
+          "round_no": 3,
+          "same_actual_initial_state": true,
+          "same_physical_wall": true
+        }
+      ],
+      "first_round_no": 1,
+      "first_switch": "discard->discard",
+      "root": 33,
+      "rotation": 2,
+      "table_delta": {
+        "dealer_draws": 0,
+        "dealer_hands": 2,
+        "dealer_large_hu": 0,
+        "dealer_large_hu_income": 0,
+        "dealer_net": 48,
+        "dealer_ordinary_hu": 2,
+        "dealer_ordinary_hu_income": 48,
+        "dealer_other_first_hu": 0,
+        "dealer_own_hu": 2,
+        "dealer_own_hu_ge16": 0,
+        "dealer_own_hu_ge16_income": 0,
+        "dealer_own_hu_ge32": 0,
+        "dealer_own_hu_ge32_income": 0,
+        "dealer_own_hu_ge8": 0,
+        "dealer_own_hu_ge8_income": 0,
+        "dealer_payments": 0,
+        "draws": -1,
+        "hands": 0,
+        "large_hu": -1,
+        "large_hu_income": -40,
+        "net": 36,
+        "non_dealer_draws": -1,
+        "non_dealer_hands": -2,
+        "non_dealer_large_hu": -1,
+        "non_dealer_large_hu_income": -40,
+        "non_dealer_net": -12,
+        "non_dealer_ordinary_hu": 1,
+        "non_dealer_ordinary_hu_income": 20,
+        "non_dealer_other_first_hu": -1,
+        "non_dealer_own_hu": 0,
+        "non_dealer_own_hu_ge16": 0,
+        "non_dealer_own_hu_ge16_income": 0,
+        "non_dealer_own_hu_ge32": 0,
+        "non_dealer_own_hu_ge32_income": 0,
+        "non_dealer_own_hu_ge8": 0,
+        "non_dealer_own_hu_ge8_income": 0,
+        "non_dealer_payments": 8,
+        "ordinary_hu": 3,
+        "ordinary_hu_income": 68,
+        "other_first_hu": -1,
+        "own_hu": 2,
+        "own_hu_ge16": 0,
+        "own_hu_ge16_income": 0,
+        "own_hu_ge32": 0,
+        "own_hu_ge32_income": 0,
+        "own_hu_ge8": 0,
+        "own_hu_ge8_income": 0,
+        "payments": 8
+      }
+    },
+    {
+      "aligned_round_large_loss_observations": [
+        {
+          "child_hand": {
+            "fan_if_own_hu": 1,
+            "is_dealer": true,
+            "is_draw": false,
+            "large_income": 0,
+            "net": 24,
+            "ordinary_income": 24,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "parent_hand": {
+            "fan_if_own_hu": 4,
+            "is_dealer": true,
+            "is_draw": false,
+            "large_income": 96,
+            "net": 96,
+            "ordinary_income": 0,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "post_first_divergence_paths_not_isolated_action_effect": true,
+          "round_no": 4,
+          "same_actual_initial_state": true,
+          "same_physical_wall": true
+        }
+      ],
+      "first_round_no": 4,
+      "first_switch": "discard->discard",
+      "root": 38,
+      "rotation": 0,
+      "table_delta": {
+        "dealer_draws": 0,
+        "dealer_hands": 0,
+        "dealer_large_hu": -1,
+        "dealer_large_hu_income": -96,
+        "dealer_net": -72,
+        "dealer_ordinary_hu": 1,
+        "dealer_ordinary_hu_income": 24,
+        "dealer_other_first_hu": 0,
+        "dealer_own_hu": 0,
+        "dealer_own_hu_ge16": 0,
+        "dealer_own_hu_ge16_income": 0,
+        "dealer_own_hu_ge32": 0,
+        "dealer_own_hu_ge32_income": 0,
+        "dealer_own_hu_ge8": 0,
+        "dealer_own_hu_ge8_income": 0,
+        "dealer_payments": 0,
+        "draws": 0,
+        "hands": 0,
+        "large_hu": -1,
+        "large_hu_income": -96,
+        "net": -72,
+        "non_dealer_draws": 0,
+        "non_dealer_hands": 0,
+        "non_dealer_large_hu": 0,
+        "non_dealer_large_hu_income": 0,
+        "non_dealer_net": 0,
+        "non_dealer_ordinary_hu": 0,
+        "non_dealer_ordinary_hu_income": 0,
+        "non_dealer_other_first_hu": 0,
+        "non_dealer_own_hu": 0,
+        "non_dealer_own_hu_ge16": 0,
+        "non_dealer_own_hu_ge16_income": 0,
+        "non_dealer_own_hu_ge32": 0,
+        "non_dealer_own_hu_ge32_income": 0,
+        "non_dealer_own_hu_ge8": 0,
+        "non_dealer_own_hu_ge8_income": 0,
+        "non_dealer_payments": 0,
+        "ordinary_hu": 1,
+        "ordinary_hu_income": 24,
+        "other_first_hu": 0,
+        "own_hu": 0,
+        "own_hu_ge16": 0,
+        "own_hu_ge16_income": 0,
+        "own_hu_ge32": 0,
+        "own_hu_ge32_income": 0,
+        "own_hu_ge8": 0,
+        "own_hu_ge8_income": 0,
+        "payments": 0
+      }
+    },
+    {
+      "aligned_round_large_loss_observations": [
+        {
+          "child_hand": {
+            "fan_if_own_hu": 1,
+            "is_dealer": true,
+            "is_draw": false,
+            "large_income": 0,
+            "net": 24,
+            "ordinary_income": 24,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "parent_hand": {
+            "fan_if_own_hu": 4,
+            "is_dealer": true,
+            "is_draw": false,
+            "large_income": 96,
+            "net": 96,
+            "ordinary_income": 0,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "post_first_divergence_paths_not_isolated_action_effect": true,
+          "round_no": 4,
+          "same_actual_initial_state": true,
+          "same_physical_wall": true
+        }
+      ],
+      "first_round_no": 4,
+      "first_switch": "discard->discard",
+      "root": 38,
+      "rotation": 1,
+      "table_delta": {
+        "dealer_draws": 0,
+        "dealer_hands": 0,
+        "dealer_large_hu": -1,
+        "dealer_large_hu_income": -96,
+        "dealer_net": -72,
+        "dealer_ordinary_hu": 1,
+        "dealer_ordinary_hu_income": 24,
+        "dealer_other_first_hu": 0,
+        "dealer_own_hu": 0,
+        "dealer_own_hu_ge16": 0,
+        "dealer_own_hu_ge16_income": 0,
+        "dealer_own_hu_ge32": 0,
+        "dealer_own_hu_ge32_income": 0,
+        "dealer_own_hu_ge8": 0,
+        "dealer_own_hu_ge8_income": 0,
+        "dealer_payments": 0,
+        "draws": 0,
+        "hands": 0,
+        "large_hu": -1,
+        "large_hu_income": -96,
+        "net": -72,
+        "non_dealer_draws": 0,
+        "non_dealer_hands": 0,
+        "non_dealer_large_hu": 0,
+        "non_dealer_large_hu_income": 0,
+        "non_dealer_net": 0,
+        "non_dealer_ordinary_hu": 0,
+        "non_dealer_ordinary_hu_income": 0,
+        "non_dealer_other_first_hu": 0,
+        "non_dealer_own_hu": 0,
+        "non_dealer_own_hu_ge16": 0,
+        "non_dealer_own_hu_ge16_income": 0,
+        "non_dealer_own_hu_ge32": 0,
+        "non_dealer_own_hu_ge32_income": 0,
+        "non_dealer_own_hu_ge8": 0,
+        "non_dealer_own_hu_ge8_income": 0,
+        "non_dealer_payments": 0,
+        "ordinary_hu": 1,
+        "ordinary_hu_income": 24,
+        "other_first_hu": 0,
+        "own_hu": 0,
+        "own_hu_ge16": 0,
+        "own_hu_ge16_income": 0,
+        "own_hu_ge32": 0,
+        "own_hu_ge32_income": 0,
+        "own_hu_ge8": 0,
+        "own_hu_ge8_income": 0,
+        "payments": 0
+      }
+    },
+    {
+      "aligned_round_large_loss_observations": [
+        {
+          "child_hand": {
+            "fan_if_own_hu": 1,
+            "is_dealer": true,
+            "is_draw": false,
+            "large_income": 0,
+            "net": 24,
+            "ordinary_income": 24,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "parent_hand": {
+            "fan_if_own_hu": 4,
+            "is_dealer": true,
+            "is_draw": false,
+            "large_income": 96,
+            "net": 96,
+            "ordinary_income": 0,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "post_first_divergence_paths_not_isolated_action_effect": true,
+          "round_no": 4,
+          "same_actual_initial_state": true,
+          "same_physical_wall": true
+        }
+      ],
+      "first_round_no": 3,
+      "first_switch": "discard->discard",
+      "root": 38,
+      "rotation": 2,
+      "table_delta": {
+        "dealer_draws": 0,
+        "dealer_hands": 0,
+        "dealer_large_hu": -1,
+        "dealer_large_hu_income": -96,
+        "dealer_net": -96,
+        "dealer_ordinary_hu": 1,
+        "dealer_ordinary_hu_income": 0,
+        "dealer_other_first_hu": 0,
+        "dealer_own_hu": 0,
+        "dealer_own_hu_ge16": 0,
+        "dealer_own_hu_ge16_income": 0,
+        "dealer_own_hu_ge32": 0,
+        "dealer_own_hu_ge32_income": 0,
+        "dealer_own_hu_ge8": 0,
+        "dealer_own_hu_ge8_income": 0,
+        "dealer_payments": 0,
+        "draws": 0,
+        "hands": 0,
+        "large_hu": -1,
+        "large_hu_income": -96,
+        "net": -96,
+        "non_dealer_draws": 0,
+        "non_dealer_hands": 0,
+        "non_dealer_large_hu": 0,
+        "non_dealer_large_hu_income": 0,
+        "non_dealer_net": 0,
+        "non_dealer_ordinary_hu": 0,
+        "non_dealer_ordinary_hu_income": 0,
+        "non_dealer_other_first_hu": 0,
+        "non_dealer_own_hu": 0,
+        "non_dealer_own_hu_ge16": 0,
+        "non_dealer_own_hu_ge16_income": 0,
+        "non_dealer_own_hu_ge32": 0,
+        "non_dealer_own_hu_ge32_income": 0,
+        "non_dealer_own_hu_ge8": 0,
+        "non_dealer_own_hu_ge8_income": 0,
+        "non_dealer_payments": 0,
+        "ordinary_hu": 1,
+        "ordinary_hu_income": 0,
+        "other_first_hu": 0,
+        "own_hu": 0,
+        "own_hu_ge16": 0,
+        "own_hu_ge16_income": 0,
+        "own_hu_ge32": 0,
+        "own_hu_ge32_income": 0,
+        "own_hu_ge8": 0,
+        "own_hu_ge8_income": 0,
+        "payments": 0
+      }
+    },
+    {
+      "aligned_round_large_loss_observations": [
+        {
+          "child_hand": {
+            "fan_if_own_hu": 1,
+            "is_dealer": true,
+            "is_draw": false,
+            "large_income": 0,
+            "net": 24,
+            "ordinary_income": 24,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "parent_hand": {
+            "fan_if_own_hu": 4,
+            "is_dealer": true,
+            "is_draw": false,
+            "large_income": 96,
+            "net": 96,
+            "ordinary_income": 0,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "post_first_divergence_paths_not_isolated_action_effect": true,
+          "round_no": 4,
+          "same_actual_initial_state": true,
+          "same_physical_wall": true
+        }
+      ],
+      "first_round_no": 3,
+      "first_switch": "discard->discard",
+      "root": 38,
+      "rotation": 3,
+      "table_delta": {
+        "dealer_draws": 0,
+        "dealer_hands": 0,
+        "dealer_large_hu": -1,
+        "dealer_large_hu_income": -96,
+        "dealer_net": -96,
+        "dealer_ordinary_hu": 1,
+        "dealer_ordinary_hu_income": 0,
+        "dealer_other_first_hu": 0,
+        "dealer_own_hu": 0,
+        "dealer_own_hu_ge16": 0,
+        "dealer_own_hu_ge16_income": 0,
+        "dealer_own_hu_ge32": 0,
+        "dealer_own_hu_ge32_income": 0,
+        "dealer_own_hu_ge8": 0,
+        "dealer_own_hu_ge8_income": 0,
+        "dealer_payments": 0,
+        "draws": 0,
+        "hands": 0,
+        "large_hu": -1,
+        "large_hu_income": -96,
+        "net": -96,
+        "non_dealer_draws": 0,
+        "non_dealer_hands": 0,
+        "non_dealer_large_hu": 0,
+        "non_dealer_large_hu_income": 0,
+        "non_dealer_net": 0,
+        "non_dealer_ordinary_hu": 0,
+        "non_dealer_ordinary_hu_income": 0,
+        "non_dealer_other_first_hu": 0,
+        "non_dealer_own_hu": 0,
+        "non_dealer_own_hu_ge16": 0,
+        "non_dealer_own_hu_ge16_income": 0,
+        "non_dealer_own_hu_ge32": 0,
+        "non_dealer_own_hu_ge32_income": 0,
+        "non_dealer_own_hu_ge8": 0,
+        "non_dealer_own_hu_ge8_income": 0,
+        "non_dealer_payments": 0,
+        "ordinary_hu": 1,
+        "ordinary_hu_income": 0,
+        "other_first_hu": 0,
+        "own_hu": 0,
+        "own_hu_ge16": 0,
+        "own_hu_ge16_income": 0,
+        "own_hu_ge32": 0,
+        "own_hu_ge32_income": 0,
+        "own_hu_ge8": 0,
+        "own_hu_ge8_income": 0,
+        "payments": 0
+      }
+    },
+    {
+      "aligned_round_large_loss_observations": [
+        {
+          "child_hand": {
+            "fan_if_own_hu": 2,
+            "is_dealer": false,
+            "is_draw": false,
+            "large_income": 0,
+            "net": 20,
+            "ordinary_income": 20,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "parent_hand": {
+            "fan_if_own_hu": 4,
+            "is_dealer": false,
+            "is_draw": false,
+            "large_income": 40,
+            "net": 40,
+            "ordinary_income": 0,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "post_first_divergence_paths_not_isolated_action_effect": true,
+          "round_no": 6,
+          "same_actual_initial_state": true,
+          "same_physical_wall": true
+        }
+      ],
+      "first_round_no": 6,
+      "first_switch": "discard->hu",
+      "root": 40,
+      "rotation": 0,
+      "table_delta": {
+        "dealer_draws": 0,
+        "dealer_hands": 0,
+        "dealer_large_hu": 0,
+        "dealer_large_hu_income": 0,
+        "dealer_net": 0,
+        "dealer_ordinary_hu": 0,
+        "dealer_ordinary_hu_income": 0,
+        "dealer_other_first_hu": 0,
+        "dealer_own_hu": 0,
+        "dealer_own_hu_ge16": 0,
+        "dealer_own_hu_ge16_income": 0,
+        "dealer_own_hu_ge32": 0,
+        "dealer_own_hu_ge32_income": 0,
+        "dealer_own_hu_ge8": 0,
+        "dealer_own_hu_ge8_income": 0,
+        "dealer_payments": 0,
+        "draws": 0,
+        "hands": 0,
+        "large_hu": -1,
+        "large_hu_income": -40,
+        "net": -20,
+        "non_dealer_draws": 0,
+        "non_dealer_hands": 0,
+        "non_dealer_large_hu": -1,
+        "non_dealer_large_hu_income": -40,
+        "non_dealer_net": -20,
+        "non_dealer_ordinary_hu": 1,
+        "non_dealer_ordinary_hu_income": 20,
+        "non_dealer_other_first_hu": 0,
+        "non_dealer_own_hu": 0,
+        "non_dealer_own_hu_ge16": 0,
+        "non_dealer_own_hu_ge16_income": 0,
+        "non_dealer_own_hu_ge32": 0,
+        "non_dealer_own_hu_ge32_income": 0,
+        "non_dealer_own_hu_ge8": 0,
+        "non_dealer_own_hu_ge8_income": 0,
+        "non_dealer_payments": 0,
+        "ordinary_hu": 1,
+        "ordinary_hu_income": 20,
+        "other_first_hu": 0,
+        "own_hu": 0,
+        "own_hu_ge16": 0,
+        "own_hu_ge16_income": 0,
+        "own_hu_ge32": 0,
+        "own_hu_ge32_income": 0,
+        "own_hu_ge8": 0,
+        "own_hu_ge8_income": 0,
+        "payments": 0
+      }
+    },
+    {
+      "aligned_round_large_loss_observations": [
+        {
+          "child_hand": {
+            "fan_if_own_hu": 2,
+            "is_dealer": false,
+            "is_draw": false,
+            "large_income": 0,
+            "net": 20,
+            "ordinary_income": 20,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "parent_hand": {
+            "fan_if_own_hu": 4,
+            "is_dealer": false,
+            "is_draw": false,
+            "large_income": 40,
+            "net": 40,
+            "ordinary_income": 0,
+            "own_hu": 1,
+            "payments": 0
+          },
+          "post_first_divergence_paths_not_isolated_action_effect": true,
+          "round_no": 6,
+          "same_actual_initial_state": true,
+          "same_physical_wall": true
+        }
+      ],
+      "first_round_no": 6,
+      "first_switch": "discard->hu",
+      "root": 40,
+      "rotation": 1,
+      "table_delta": {
+        "dealer_draws": 0,
+        "dealer_hands": 0,
+        "dealer_large_hu": 0,
+        "dealer_large_hu_income": 0,
+        "dealer_net": 0,
+        "dealer_ordinary_hu": 0,
+        "dealer_ordinary_hu_income": 0,
+        "dealer_other_first_hu": 0,
+        "dealer_own_hu": 0,
+        "dealer_own_hu_ge16": 0,
+        "dealer_own_hu_ge16_income": 0,
+        "dealer_own_hu_ge32": 0,
+        "dealer_own_hu_ge32_income": 0,
+        "dealer_own_hu_ge8": 0,
+        "dealer_own_hu_ge8_income": 0,
+        "dealer_payments": 0,
+        "draws": 0,
+        "hands": 0,
+        "large_hu": -1,
+        "large_hu_income": -40,
+        "net": -20,
+        "non_dealer_draws": 0,
+        "non_dealer_hands": 0,
+        "non_dealer_large_hu": -1,
+        "non_dealer_large_hu_income": -40,
+        "non_dealer_net": -20,
+        "non_dealer_ordinary_hu": 1,
+        "non_dealer_ordinary_hu_income": 20,
+        "non_dealer_other_first_hu": 0,
+        "non_dealer_own_hu": 0,
+        "non_dealer_own_hu_ge16": 0,
+        "non_dealer_own_hu_ge16_income": 0,
+        "non_dealer_own_hu_ge32": 0,
+        "non_dealer_own_hu_ge32_income": 0,
+        "non_dealer_own_hu_ge8": 0,
+        "non_dealer_own_hu_ge8_income": 0,
+        "non_dealer_payments": 0,
+        "ordinary_hu": 1,
+        "ordinary_hu_income": 20,
+        "other_first_hu": 0,
+        "own_hu": 0,
+        "own_hu_ge16": 0,
+        "own_hu_ge16_income": 0,
+        "own_hu_ge32": 0,
+        "own_hu_ge32_income": 0,
+        "own_hu_ge8": 0,
+        "own_hu_ge8_income": 0,
+        "payments": 0
+      }
+    }
+  ],
+  "natural_strength_or_single_action_causal_admission": false,
+  "new_scores_worlds_tables_models_HTTP": 0,
+  "public_rows_pin": {
+    "bytes": 81621,
+    "sha256": "70c6307141c12ecf70620591aabd6862dfc5d45ae915f9d7e55698c43d4f0bc7"
+  },
+  "rows_pin": {
+    "bytes": 122752,
+    "sha256": "8a8b6de6880a412343cda826165b404e4cd9d9ace28cf310b2ab36d14a0edcf0"
+  },
+  "source_stable": true,
+  "status_counts": {
+    "all_focal_choices_same": 10,
+    "first_divergence": 22
+  }
+}

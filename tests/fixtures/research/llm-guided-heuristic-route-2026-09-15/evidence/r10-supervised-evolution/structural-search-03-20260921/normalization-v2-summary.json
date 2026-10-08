@@ -1,0 +1,31 @@
+{
+  "schema": "r10-structural-normalization-summary/3-v2",
+  "supersedes": "normalization-summary.json（v1误用非白名单dict.update）",
+  "tasks": [
+    {
+      "task": "C1",
+      "source_sha256": "fd3b2b60ad8bc876787e503a4901fdf6dd4104a56adecf8c016a887edf4ba5d4",
+      "normalized_sha256": "d9ec26d6e7ff30255bef107a851b5fc65c1afc47cf26db181ee6c8cbc3d080f7",
+      "static_precheck": true,
+      "structure_space": true,
+      "accepted": true,
+      "problems": []
+    },
+    {
+      "task": "C2",
+      "source_sha256": "cd515411619ffa63c5f58cd92c3e0f647d94dffbbef4c825f26f0c2188a86505",
+      "normalized_sha256": "96735a9f0e921970f74e6bf829d5059712054759ba3af76da059fe29d0daa89a",
+      "static_precheck": true,
+      "structure_space": true,
+      "accepted": true,
+      "problems": []
+    }
+  ],
+  "accepted": [
+    "C1",
+    "C2"
+  ],
+  "closed": [],
+  "model_calls": 0,
+  "effect_evaluation_started": false
+}

@@ -1,0 +1,54 @@
+{
+  "schema": "r15-public-state-parent-router-preflight-result/1",
+  "status": "PASS_R15_ZERO_TABLE_GATE",
+  "deduplicated_windows": 226,
+  "counts": {
+    "changed_choices": 19,
+    "non_tie_changed_choices": 17,
+    "record_inconsistent": 0,
+    "selected:specialist": 39,
+    "selected:stable_v2": 187,
+    "selected_parent_mismatch": 0,
+    "unknown_fallback_windows": 0,
+    "windows": 226
+  },
+  "rule_states": {
+    "no_projected_chi_peng_response": 187,
+    "response_route_chain_projected": 39
+  },
+  "changed_origins": [
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/real-behavior-panel-v1/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route-decision-diagnostic-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+  ],
+  "changed_seats": [
+    0,
+    1
+  ],
+  "changed_transition_families": [
+    "pass->chi",
+    "pass->peng"
+  ],
+  "elapsed_seconds": 0.4818514590151608,
+  "mean_evaluate_ms": 2.1320861018369945,
+  "gate_checks": {
+    "stable_branch_hit": true,
+    "specialist_branch_hit": true,
+    "selected_parent_exact": true,
+    "trace_consistent": true,
+    "unknown_fallback_exact_v2": true,
+    "non_tie_behavior_change": true,
+    "changed_origins": true,
+    "changed_seats": true,
+    "changed_transition_families": true,
+    "mean_evaluate_ms": true,
+    "no_contract_problems": true
+  },
+  "problems": [],
+  "effect_tables": 0,
+  "model_calls": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "next": "冻结候选并进入全新H/M完整阶段开发门"
+}

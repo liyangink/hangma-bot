@@ -1,0 +1,53 @@
+{
+  "allowed_modes": [
+    "test_room",
+    "test_tournament",
+    "auto_match"
+  ],
+  "candidate_id": "1c44c5a56ebd88f5a2d5a9cbf3ae37ad66e105d678b6478dc85ac76ef2855416",
+  "checks": {
+    "evidence_sha256": {
+      "p45_capability_merge": true,
+      "p46_fresh_table_safety": true,
+      "p47_package_registration": true,
+      "p48_full_chain_preflight": true,
+      "p55_white_value_route_repair": true
+    },
+    "identity": {
+      "allowed_modes_exact": true,
+      "candidate_id_exact": true,
+      "manifest_redaction_preserves_candidate_id": true,
+      "manifest_redaction_preserves_package_id": true,
+      "not_default": true,
+      "official_tournament_rejected": true,
+      "package_id_exact": true,
+      "production_default_false": true,
+      "rules_source_hash_exact": true,
+      "strategy_registered": true
+    },
+    "mode_config": {
+      "auto_match": true,
+      "test_room": true,
+      "test_tournament": true
+    }
+  },
+  "choose_replay": {
+    "action_value_failures": 0,
+    "all_exact_plan_equal": true,
+    "latency_ms": {
+      "max": 6.576083,
+      "p50": 0.936166,
+      "p95": 2.159917,
+      "p99": 6.472958
+    },
+    "requests": 377
+  },
+  "next": "收集测试房、官方测试赛事和自由赛证据后再审正式赛事准入",
+  "official_tournament_allowed": false,
+  "production_default": false,
+  "release_eligible": false,
+  "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+  "release_scope": "test_room + test_tournament + auto_match",
+  "schema": "r18-p57-network-release-wiring-result/1",
+  "status": "PASS_P57_NETWORK_RELEASE_WIRING"
+}

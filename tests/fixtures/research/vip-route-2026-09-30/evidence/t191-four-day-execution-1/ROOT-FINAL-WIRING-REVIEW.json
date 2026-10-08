@@ -1,0 +1,70 @@
+{
+  "schema": "t191-root-critical-wiring-review/1",
+  "at_utc": "2026-10-05T12:59:40.400571+00:00",
+  "complete": true,
+  "evidence_members_verified": 367,
+  "patch_changed_files_verified": 22,
+  "old_live_source_files_exact": 181,
+  "new_isolated_source_files_exact": 182,
+  "patch_dry_run_passed": true,
+  "package_scopes": [
+    {
+      "strategy": "vip_s02_bounded_d1_free_v7",
+      "allowed_modes": [
+        "auto_match"
+      ],
+      "release_package_id": "3bc912f5e52a71c6978dff9dc06fdf26c9cac9f7bdd4f06b3c95e749382f267a",
+      "admission": "experimental_free_match_only"
+    },
+    {
+      "strategy": "vip_s02_bounded_d1_official_tournament_v1",
+      "allowed_modes": [
+        "official_tournament"
+      ],
+      "release_package_id": "fbf3fdfbd3bef7f9020b1593b6948a74accd10a0986505c793795764a9ccfd35",
+      "admission": "official_tournament_runtime_candidate_only"
+    },
+    {
+      "strategy": "vip_s02_bounded_d1_test_tournament_v1",
+      "allowed_modes": [
+        "test_tournament"
+      ],
+      "release_package_id": "197d2f63dc7e2b0bcdff15703812768ea467a7f37a08626b89aeb3ffa8183f99",
+      "admission": "test_tournament_runtime_candidate_only"
+    },
+    {
+      "strategy": "vip_s02_bounded_d1_testroom_v9",
+      "allowed_modes": [
+        "test_room"
+      ],
+      "release_package_id": "b828932754801388e362023b6e7b0dcdd7c463736691d949196ad478b8a0ae76",
+      "admission": "engineering_test_room_only"
+    }
+  ],
+  "critical_actionable_findings": [],
+  "isolated_engineering_freeze_approved": true,
+  "mainline_application_approved_after_active_research_releases_and_natural_free_handoff": true,
+  "mainline_applied": false,
+  "official_test_tournament_passed": false,
+  "formal_release": false,
+  "remaining_limitations": [
+    "3秒十桌同时到达压力5/10完整评分，5/10增强超预算；10/10及时合法intent是假会话，不含官方网络",
+    "大厅暂无赛事，实际测试赛事、正式赛日期及配置尚待核",
+    "最早一次压力临时原件部分缺失，最终durable审计完整；不能宣称所有红轮原件完整恢复"
+  ],
+  "pins": {
+    "CLOSED.json": {
+      "bytes": 85732,
+      "sha256": "aec9d71b3f2868ed905cb605690f7803a25a06cdfa4ea4e33bcef34290a6cb36"
+    },
+    "P0-WIRING.patch": {
+      "bytes": 184030,
+      "sha256": "9ce446f0065fd151861d28f945d253aec997188c78d48d928bef623c1a4fc89b"
+    },
+    "CHANGESET.json": {
+      "bytes": 7091,
+      "sha256": "5208137ff6ffd0ab5b433cd33dd4d0e526e9171781011b55d8f0843051f94195"
+    }
+  },
+  "new_scores_worlds_tables_models_HTTP": 0
+}

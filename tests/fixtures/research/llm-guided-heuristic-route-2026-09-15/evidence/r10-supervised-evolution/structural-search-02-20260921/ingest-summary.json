@@ -1,0 +1,50 @@
+{
+  "schema": "r10-structural-ingest/2",
+  "tasks": [
+    {
+      "task": "T1",
+      "parse_status": "ok",
+      "static_precheck": true,
+      "structure_space": true,
+      "accepted_for_behavior_preflight": true,
+      "code_sha256": "370ad444391b4e0972eba630bb2f3e89efe1d365c8064e0b713b36c7984a23e4",
+      "problems": []
+    },
+    {
+      "task": "T2",
+      "parse_status": "ok",
+      "static_precheck": true,
+      "structure_space": true,
+      "accepted_for_behavior_preflight": true,
+      "code_sha256": "bdf53b4183a3c0b66b57b153f6643a12fbb459ffb2bad4ad8ab5a0679b0bbaf8",
+      "problems": []
+    },
+    {
+      "task": "T3",
+      "parse_status": "ok",
+      "static_precheck": true,
+      "structure_space": true,
+      "accepted_for_behavior_preflight": true,
+      "code_sha256": "73b8ee2239b94c8324f929aa68d254c952e85d6e4dfe6138ab6d2c59f540525b",
+      "problems": []
+    },
+    {
+      "task": "T4",
+      "parse_status": "ok",
+      "static_precheck": true,
+      "structure_space": true,
+      "accepted_for_behavior_preflight": true,
+      "code_sha256": "a67ffebfaedbc2bf5e31c0ed5af1427fff345a10a66f6e56cc69fd694c0f2797",
+      "problems": []
+    }
+  ],
+  "accepted": [
+    "T1",
+    "T2",
+    "T3",
+    "T4"
+  ],
+  "repair_eligible": [],
+  "effect_evaluation_started": false,
+  "note": "只有语法/合同失败可修复；效果未知，尚未运行行为或效果评测。"
+}

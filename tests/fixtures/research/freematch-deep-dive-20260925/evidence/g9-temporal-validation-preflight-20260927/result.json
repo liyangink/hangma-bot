@@ -1,0 +1,42 @@
+{
+  "boundary": "仅用已开放的训练房核工程接缝；不构成独立预测或动作收益验证",
+  "coverage": {
+    "prior_available": 1913,
+    "source_rows": 2153
+  },
+  "label_counts": {
+    "next_draw_before_self_draw": 1,
+    "next_other_hu_before_self_draw": 192,
+    "next_self_draw_reached": 1961,
+    "official_claim": 330,
+    "official_games": 30,
+    "official_none": 1824,
+    "official_rooms": 3
+  },
+  "label_rate": 0.08917789131444497,
+  "model_sha256": "9327417cbfe98ea65e4a82929e59342c34f12de6d2fcf516aee6d733121785ec",
+  "predictions": {
+    "state": {
+      "brier": 0.07238265032593152,
+      "mean": 0.10463934884359413
+    },
+    "state_plus_temporal": {
+      "brier": 0.0720435585796605,
+      "mean": 0.10470087464297934
+    }
+  },
+  "rows": 2153,
+  "schema": "g9-temporal-validation-training-preflight/1",
+  "script_sha256": "66247d2b366d6308af94dda31f1c3c2a367d48ab8cee41c63ed0e518d47f53c7",
+  "source_frozen_rooms_sha256": "3869f77156945329065db36ba67e3c68d60b3e5776cac19e3ca49a38a25cecfd",
+  "source_rooms": [
+    "a_28fb92468b60",
+    "a_5ff3fe3a5c59",
+    "a_bd6546c30b89"
+  ],
+  "state_features": 15,
+  "static_features": 55,
+  "temporal_features": 9,
+  "unique_keys": 2153,
+  "validator_script_sha256": "a07f43cbf4d800ce86f5c9820a6be87f99f11b4e0f884d204184e28ede0d00a5"
+}

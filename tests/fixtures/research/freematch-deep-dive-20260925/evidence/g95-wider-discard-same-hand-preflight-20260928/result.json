@@ -1,0 +1,5047 @@
+{
+  "boundary": "各配对样本仅比较同一单局；公开一致重采样不是历史后验，重复窗口/世界不是独立完整桌赛；本结果不签发候选准入。",
+  "input_sha256": {
+    "contract": "1012c5d996f0bb913c4a29d36b493ebc5b81e959af496051ba9568ba7bcd08e4",
+    "g93_script": "09b1f70bd07cd419d19507448ab1a1842e566e666ef84b4efc112d4d806ea81a",
+    "prereg": "4b0e1f8bb2973d441bd0ff33af4f41f5cbe22cd1bf9021c0136a2aa89e9a6cfc",
+    "script": "dd7b62080939e58d8c95524f2dd1a3b7aa1adc0cf35d037cb468eda091ea704d"
+  },
+  "panel_seed": 2026110901,
+  "rows": [
+    {
+      "alternate_action": "discard:8b",
+      "focal_seat": 0,
+      "full_parent_final_scores": [
+        -30,
+        71,
+        -15,
+        -26
+      ],
+      "mix": "H",
+      "parent_action": "discard:4w",
+      "root_index": 1,
+      "seed": 266653707386475,
+      "status": "paired",
+      "table_id": "np-H-2026110901-r01-s0-t1",
+      "target_window": {
+        "game_id": "sitin-stage:np-H-2026110901-r01-s0-t1",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1088
+      },
+      "visible_action_facts": {
+        "discard:4w": {
+          "ordinary_codes": 4,
+          "public_unseen_capacity": 13,
+          "standard_shanten_after": 0
+        },
+        "discard:8b": {
+          "ordinary_codes": 7,
+          "public_unseen_capacity": 18,
+          "standard_shanten_after": 0
+        }
+      },
+      "white_before": 1,
+      "world_pairs": [
+        {
+          "alternate": {
+            "decision_count": 31,
+            "first_decision_action": "discard:8b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -29,
+                61,
+                -7,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 31,
+            "first_decision_action": "discard:4w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -29,
+                61,
+                -7,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "historical"
+        },
+        {
+          "alternate": {
+            "decision_count": 70,
+            "first_decision_action": "discard:8b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                20,
+                -16,
+                -2,
+                -2
+              ],
+              "scores_after": [
+                -8,
+                53,
+                -19,
+                -26
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "special_self_win",
+          "focal_delta_alt_minus_parent": 10,
+          "parent": {
+            "decision_count": 81,
+            "first_decision_action": "discard:4w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -18,
+                61,
+                -18,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-01"
+        },
+        {
+          "alternate": {
+            "decision_count": 66,
+            "first_decision_action": "discard:8b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                24,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                -36,
+                93,
+                -25,
+                -32
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 1
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": -18,
+          "parent": {
+            "decision_count": 30,
+            "first_decision_action": "discard:4w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -18,
+                61,
+                -18,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-02"
+        },
+        {
+          "alternate": {
+            "decision_count": 24,
+            "first_decision_action": "discard:8b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -18,
+                61,
+                -18,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 70,
+            "first_decision_action": "discard:4w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -18,
+                61,
+                -18,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-03"
+        },
+        {
+          "alternate": {
+            "decision_count": 60,
+            "first_decision_action": "discard:8b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                20,
+                -16,
+                -2,
+                -2
+              ],
+              "scores_after": [
+                -8,
+                53,
+                -19,
+                -26
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "special_self_win",
+          "focal_delta_alt_minus_parent": 10,
+          "parent": {
+            "decision_count": 41,
+            "first_decision_action": "discard:4w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -18,
+                61,
+                -18,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-04"
+        },
+        {
+          "alternate": {
+            "decision_count": 35,
+            "first_decision_action": "discard:8b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                20,
+                -16,
+                -2,
+                -2
+              ],
+              "scores_after": [
+                -8,
+                53,
+                -19,
+                -26
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "special_self_win",
+          "focal_delta_alt_minus_parent": 10,
+          "parent": {
+            "decision_count": 21,
+            "first_decision_action": "discard:4w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -18,
+                61,
+                -18,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-05"
+        },
+        {
+          "alternate": {
+            "decision_count": 21,
+            "first_decision_action": "discard:8b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -18,
+                61,
+                -18,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 11,
+          "parent": {
+            "decision_count": 100,
+            "first_decision_action": "discard:4w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -29,
+                61,
+                -7,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-06"
+        },
+        {
+          "alternate": {
+            "decision_count": 159,
+            "first_decision_action": "discard:8b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [],
+              "fan": 0,
+              "is_draw": true,
+              "round_no": 7,
+              "score_delta": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "scores_after": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": null
+            }
+          },
+          "alternate_class": "draw",
+          "focal_delta_alt_minus_parent": -10,
+          "parent": {
+            "decision_count": 41,
+            "first_decision_action": "discard:4w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -18,
+                61,
+                -18,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-07"
+        },
+        {
+          "alternate": {
+            "decision_count": 150,
+            "first_decision_action": "discard:8b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -18,
+                61,
+                -18,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 130,
+            "first_decision_action": "discard:4w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -18,
+                61,
+                -18,
+                -25
+              ],
+              "scores_before": [
+                -28,
+                69,
+                -17,
+                -24
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-08"
+        }
+      ]
+    },
+    {
+      "alternate_action": "discard:南",
+      "focal_seat": 1,
+      "full_parent_final_scores": [
+        36,
+        8,
+        -22,
+        -22
+      ],
+      "mix": "H",
+      "parent_action": "discard:2w",
+      "root_index": 1,
+      "seed": 39450474623849,
+      "status": "paired",
+      "table_id": "np-H-2026110901-r01-s1-t1",
+      "target_window": {
+        "game_id": "sitin-stage:np-H-2026110901-r01-s1-t1",
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 213
+      },
+      "visible_action_facts": {
+        "discard:2w": {
+          "ordinary_codes": 17,
+          "public_unseen_capacity": 60,
+          "standard_shanten_after": 3
+        },
+        "discard:南": {
+          "ordinary_codes": 19,
+          "public_unseen_capacity": 67,
+          "standard_shanten_after": 3
+        }
+      },
+      "white_before": 0,
+      "world_pairs": [
+        {
+          "alternate": {
+            "decision_count": 249,
+            "first_decision_action": "discard:南",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -9,
+                2,
+                -2,
+                9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 211,
+            "first_decision_action": "discard:2w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -9,
+                2,
+                -2,
+                9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "historical"
+        },
+        {
+          "alternate": {
+            "decision_count": 193,
+            "first_decision_action": "discard:南",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -9,
+                2,
+                9,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 193,
+            "first_decision_action": "discard:2w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -9,
+                2,
+                9,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-01"
+        },
+        {
+          "alternate": {
+            "decision_count": 221,
+            "first_decision_action": "discard:南",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -8,
+                24,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                -16,
+                34,
+                -9,
+                -9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 1
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 221,
+            "first_decision_action": "discard:2w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -8,
+                24,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                -16,
+                34,
+                -9,
+                -9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-02"
+        },
+        {
+          "alternate": {
+            "decision_count": 185,
+            "first_decision_action": "discard:南",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -9,
+                2,
+                -2,
+                9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 8,
+          "parent": {
+            "decision_count": 170,
+            "first_decision_action": "discard:2w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                20,
+                -16,
+                -2,
+                -2
+              ],
+              "scores_after": [
+                12,
+                -6,
+                -3,
+                -3
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-03"
+        },
+        {
+          "alternate": {
+            "decision_count": 104,
+            "first_decision_action": "discard:南",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -9,
+                2,
+                9,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 104,
+            "first_decision_action": "discard:2w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -9,
+                2,
+                9,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-04"
+        },
+        {
+          "alternate": {
+            "decision_count": 285,
+            "first_decision_action": "discard:南",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -9,
+                2,
+                9,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 191,
+            "first_decision_action": "discard:2w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -9,
+                2,
+                -2,
+                9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-05"
+        },
+        {
+          "alternate": {
+            "decision_count": 89,
+            "first_decision_action": "discard:南",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": -32,
+          "parent": {
+            "decision_count": 197,
+            "first_decision_action": "discard:2w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -8,
+                24,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                -16,
+                34,
+                -9,
+                -9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-06"
+        },
+        {
+          "alternate": {
+            "decision_count": 95,
+            "first_decision_action": "discard:南",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 94,
+            "first_decision_action": "discard:2w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-07"
+        },
+        {
+          "alternate": {
+            "decision_count": 129,
+            "first_decision_action": "discard:南",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 143,
+            "first_decision_action": "discard:2w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-08"
+        }
+      ]
+    },
+    {
+      "focal_seat": 2,
+      "full_parent_final_scores": [
+        48,
+        34,
+        -41,
+        -41
+      ],
+      "mix": "H",
+      "root_index": 1,
+      "seed": 12257099289520,
+      "status": "no_window",
+      "table_id": "np-H-2026110901-r01-s2-t1"
+    },
+    {
+      "alternate_action": "discard:1t",
+      "focal_seat": 3,
+      "full_parent_final_scores": [
+        -23,
+        21,
+        -12,
+        14
+      ],
+      "mix": "H",
+      "parent_action": "discard:5w",
+      "root_index": 1,
+      "seed": 184902926324438,
+      "status": "paired",
+      "table_id": "np-H-2026110901-r01-s3-t1",
+      "target_window": {
+        "game_id": "sitin-stage:np-H-2026110901-r01-s3-t1",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 106
+      },
+      "visible_action_facts": {
+        "discard:1t": {
+          "ordinary_codes": 9,
+          "public_unseen_capacity": 29,
+          "standard_shanten_after": 1
+        },
+        "discard:5w": {
+          "ordinary_codes": 8,
+          "public_unseen_capacity": 28,
+          "standard_shanten_after": 1
+        }
+      },
+      "white_before": 1,
+      "world_pairs": [
+        {
+          "alternate": {
+            "decision_count": 11,
+            "first_decision_action": "discard:1t",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 1
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 11,
+            "first_decision_action": "discard:5w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "historical"
+        },
+        {
+          "alternate": {
+            "decision_count": 126,
+            "first_decision_action": "discard:1t",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                24,
+                -8,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                24,
+                -8,
+                -8,
+                -8
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": -28,
+          "parent": {
+            "decision_count": 101,
+            "first_decision_action": "discard:5w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -16,
+                -2,
+                -2,
+                20
+              ],
+              "scores_after": [
+                -16,
+                -2,
+                -2,
+                20
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "special_self_win",
+          "sample_key": "g95-01"
+        },
+        {
+          "alternate": {
+            "decision_count": 55,
+            "first_decision_action": "discard:1t",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -16,
+                -2,
+                20,
+                -2
+              ],
+              "scores_after": [
+                -16,
+                -2,
+                20,
+                -2
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 55,
+            "first_decision_action": "discard:5w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -16,
+                -2,
+                20,
+                -2
+              ],
+              "scores_after": [
+                -16,
+                -2,
+                20,
+                -2
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-02"
+        },
+        {
+          "alternate": {
+            "decision_count": 101,
+            "first_decision_action": "discard:1t",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 12,
+          "parent": {
+            "decision_count": 169,
+            "first_decision_action": "discard:5w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -16,
+                -2,
+                20,
+                -2
+              ],
+              "scores_after": [
+                -16,
+                -2,
+                20,
+                -2
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-03"
+        },
+        {
+          "alternate": {
+            "decision_count": 120,
+            "first_decision_action": "discard:1t",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -16,
+                20,
+                -2,
+                -2
+              ],
+              "scores_after": [
+                -16,
+                20,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 1
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 80,
+            "first_decision_action": "discard:5w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -16,
+                20,
+                -2,
+                -2
+              ],
+              "scores_after": [
+                -16,
+                20,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-04"
+        },
+        {
+          "alternate": {
+            "decision_count": 102,
+            "first_decision_action": "discard:1t",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 102,
+            "first_decision_action": "discard:5w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-05"
+        },
+        {
+          "alternate": {
+            "decision_count": 101,
+            "first_decision_action": "discard:1t",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -16,
+                -2,
+                -2,
+                20
+              ],
+              "scores_after": [
+                -16,
+                -2,
+                -2,
+                20
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "special_self_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 161,
+            "first_decision_action": "discard:5w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -16,
+                -2,
+                -2,
+                20
+              ],
+              "scores_after": [
+                -16,
+                -2,
+                -2,
+                20
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "special_self_win",
+          "sample_key": "g95-06"
+        },
+        {
+          "alternate": {
+            "decision_count": 41,
+            "first_decision_action": "discard:1t",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 11,
+          "parent": {
+            "decision_count": 100,
+            "first_decision_action": "discard:5w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-07"
+        },
+        {
+          "alternate": {
+            "decision_count": 67,
+            "first_decision_action": "discard:1t",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                24,
+                -8,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                24,
+                -8,
+                -8,
+                -8
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 67,
+            "first_decision_action": "discard:5w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 1,
+              "score_delta": [
+                24,
+                -8,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                24,
+                -8,
+                -8,
+                -8
+              ],
+              "scores_before": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-08"
+        }
+      ]
+    },
+    {
+      "alternate_action": "discard:3b",
+      "focal_seat": 0,
+      "full_parent_final_scores": [
+        -15,
+        -1,
+        2,
+        14
+      ],
+      "mix": "M",
+      "parent_action": "discard:5b",
+      "root_index": 1,
+      "seed": 42311291965666,
+      "status": "paired",
+      "table_id": "np-M-2026110901-r01-s0-t1",
+      "target_window": {
+        "game_id": "sitin-stage:np-M-2026110901-r01-s0-t1",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1278
+      },
+      "visible_action_facts": {
+        "discard:3b": {
+          "ordinary_codes": 16,
+          "public_unseen_capacity": 52,
+          "standard_shanten_after": 3
+        },
+        "discard:5b": {
+          "ordinary_codes": 15,
+          "public_unseen_capacity": 50,
+          "standard_shanten_after": 3
+        }
+      },
+      "white_before": 0,
+      "world_pairs": [
+        {
+          "alternate": {
+            "decision_count": 85,
+            "first_decision_action": "discard:3b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -14,
+                0,
+                -8,
+                22
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 85,
+            "first_decision_action": "discard:5b",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -14,
+                0,
+                -8,
+                22
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "historical"
+        },
+        {
+          "alternate": {
+            "decision_count": 159,
+            "first_decision_action": "discard:3b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                24,
+                -8,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                18,
+                -7,
+                -15,
+                4
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 32,
+          "parent": {
+            "decision_count": 153,
+            "first_decision_action": "discard:5b",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                -1,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -14,
+                0,
+                3,
+                11
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-01"
+        },
+        {
+          "alternate": {
+            "decision_count": 190,
+            "first_decision_action": "discard:3b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -14,
+                0,
+                -8,
+                22
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 254,
+            "first_decision_action": "discard:5b",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -14,
+                0,
+                -8,
+                22
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-02"
+        },
+        {
+          "alternate": {
+            "decision_count": 136,
+            "first_decision_action": "discard:3b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -14,
+                0,
+                -8,
+                22
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 174,
+            "first_decision_action": "discard:5b",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                -1,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -14,
+                0,
+                -8,
+                22
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-03"
+        },
+        {
+          "alternate": {
+            "decision_count": 128,
+            "first_decision_action": "discard:3b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                -1,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -14,
+                0,
+                3,
+                11
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 8,
+          "parent": {
+            "decision_count": 167,
+            "first_decision_action": "discard:5b",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -16,
+                20,
+                -2,
+                -2
+              ],
+              "scores_after": [
+                -22,
+                21,
+                -9,
+                10
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-04"
+        },
+        {
+          "alternate": {
+            "decision_count": 165,
+            "first_decision_action": "discard:3b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -14,
+                11,
+                -8,
+                11
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 1
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 170,
+            "first_decision_action": "discard:5b",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                -1,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -14,
+                0,
+                3,
+                11
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-05"
+        },
+        {
+          "alternate": {
+            "decision_count": 155,
+            "first_decision_action": "discard:3b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "七对"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -16,
+                -2,
+                -2,
+                20
+              ],
+              "scores_after": [
+                -22,
+                -1,
+                -9,
+                32
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 155,
+            "first_decision_action": "discard:5b",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "七对"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -16,
+                -2,
+                -2,
+                20
+              ],
+              "scores_after": [
+                -22,
+                -1,
+                -9,
+                32
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-06"
+        },
+        {
+          "alternate": {
+            "decision_count": 218,
+            "first_decision_action": "discard:3b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -14,
+                11,
+                -8,
+                11
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 1
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 151,
+            "first_decision_action": "discard:5b",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                -1,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -14,
+                0,
+                3,
+                11
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-07"
+        },
+        {
+          "alternate": {
+            "decision_count": 160,
+            "first_decision_action": "discard:3b",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -14,
+                11,
+                -8,
+                11
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 1
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 160,
+            "first_decision_action": "discard:5b",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 0,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 7,
+              "score_delta": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -14,
+                11,
+                -8,
+                11
+              ],
+              "scores_before": [
+                -6,
+                1,
+                -7,
+                12
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-08"
+        }
+      ]
+    },
+    {
+      "focal_seat": 1,
+      "full_parent_final_scores": [
+        32,
+        18,
+        -29,
+        -21
+      ],
+      "mix": "M",
+      "root_index": 1,
+      "seed": 236014662949804,
+      "status": "no_window",
+      "table_id": "np-M-2026110901-r01-s1-t1"
+    },
+    {
+      "alternate_action": "discard:8w",
+      "focal_seat": 2,
+      "full_parent_final_scores": [
+        -32,
+        82,
+        -21,
+        -29
+      ],
+      "mix": "M",
+      "parent_action": "discard:3t",
+      "root_index": 1,
+      "seed": 219520325997916,
+      "status": "paired",
+      "table_id": "np-M-2026110901-r01-s2-t1",
+      "target_window": {
+        "game_id": "sitin-stage:np-M-2026110901-r01-s2-t1",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 916
+      },
+      "visible_action_facts": {
+        "discard:3t": {
+          "ordinary_codes": 4,
+          "public_unseen_capacity": 15,
+          "standard_shanten_after": 1
+        },
+        "discard:8w": {
+          "ordinary_codes": 5,
+          "public_unseen_capacity": 18,
+          "standard_shanten_after": 1
+        }
+      },
+      "white_before": 0,
+      "world_pairs": [
+        {
+          "alternate": {
+            "decision_count": 90,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -8,
+                24,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                -33,
+                81,
+                -22,
+                -26
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 1
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": -18,
+          "parent": {
+            "decision_count": 89,
+            "first_decision_action": "discard:3t",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -26,
+                49,
+                -4,
+                -19
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "historical"
+        },
+        {
+          "alternate": {
+            "decision_count": 121,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -26,
+                49,
+                -4,
+                -19
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 141,
+            "first_decision_action": "discard:3t",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -26,
+                49,
+                -4,
+                -19
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-01"
+        },
+        {
+          "alternate": {
+            "decision_count": 199,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -1,
+                -8,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -26,
+                49,
+                -15,
+                -8
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": -11,
+          "parent": {
+            "decision_count": 154,
+            "first_decision_action": "discard:3t",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -26,
+                49,
+                -4,
+                -19
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-02"
+        },
+        {
+          "alternate": {
+            "decision_count": 205,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -1,
+                -8,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -26,
+                49,
+                -15,
+                -8
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 195,
+            "first_decision_action": "discard:3t",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -1,
+                -8,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -26,
+                49,
+                -15,
+                -8
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-03"
+        },
+        {
+          "alternate": {
+            "decision_count": 71,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -15,
+                49,
+                -15,
+                -19
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 111,
+            "first_decision_action": "discard:3t",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -15,
+                49,
+                -15,
+                -19
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-04"
+        },
+        {
+          "alternate": {
+            "decision_count": 149,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -26,
+                49,
+                -4,
+                -19
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 18,
+          "parent": {
+            "decision_count": 158,
+            "first_decision_action": "discard:3t",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -8,
+                24,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                -33,
+                81,
+                -22,
+                -26
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-05"
+        },
+        {
+          "alternate": {
+            "decision_count": 165,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                20,
+                -16,
+                -2,
+                -2
+              ],
+              "scores_after": [
+                -5,
+                41,
+                -16,
+                -20
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 171,
+            "first_decision_action": "discard:3t",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                20,
+                -16,
+                -2,
+                -2
+              ],
+              "scores_after": [
+                -5,
+                41,
+                -16,
+                -20
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-06"
+        },
+        {
+          "alternate": {
+            "decision_count": 61,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -26,
+                49,
+                -4,
+                -19
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 11,
+          "parent": {
+            "decision_count": 220,
+            "first_decision_action": "discard:3t",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                -15,
+                49,
+                -15,
+                -19
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-07"
+        },
+        {
+          "alternate": {
+            "decision_count": 115,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -1,
+                -8,
+                10,
+                -1
+              ],
+              "scores_after": [
+                -26,
+                49,
+                -4,
+                -19
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 18,
+          "parent": {
+            "decision_count": 119,
+            "first_decision_action": "discard:3t",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 5,
+              "score_delta": [
+                -8,
+                24,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                -33,
+                81,
+                -22,
+                -26
+              ],
+              "scores_before": [
+                -25,
+                57,
+                -14,
+                -18
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-08"
+        }
+      ]
+    },
+    {
+      "alternate_action": "discard:8w",
+      "focal_seat": 3,
+      "full_parent_final_scores": [
+        -26,
+        46,
+        -19,
+        -1
+      ],
+      "mix": "M",
+      "parent_action": "discard:3w",
+      "root_index": 1,
+      "seed": 238487745527728,
+      "status": "paired",
+      "table_id": "np-M-2026110901-r01-s3-t1",
+      "target_window": {
+        "game_id": "sitin-stage:np-M-2026110901-r01-s3-t1",
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 252
+      },
+      "visible_action_facts": {
+        "discard:3w": {
+          "ordinary_codes": 4,
+          "public_unseen_capacity": 11,
+          "standard_shanten_after": 1
+        },
+        "discard:8w": {
+          "ordinary_codes": 6,
+          "public_unseen_capacity": 14,
+          "standard_shanten_after": 1
+        }
+      },
+      "white_before": 0,
+      "world_pairs": [
+        {
+          "alternate": {
+            "decision_count": 6,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 65,
+            "first_decision_action": "discard:3w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "historical"
+        },
+        {
+          "alternate": {
+            "decision_count": 89,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -9,
+                2,
+                -2,
+                9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 3
+            }
+          },
+          "alternate_class": "plain_self_win",
+          "focal_delta_alt_minus_parent": 18,
+          "parent": {
+            "decision_count": 64,
+            "first_decision_action": "discard:3w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -8,
+                24,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                -16,
+                34,
+                -9,
+                -9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-01"
+        },
+        {
+          "alternate": {
+            "decision_count": 125,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 125,
+            "first_decision_action": "discard:3w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-02"
+        },
+        {
+          "alternate": {
+            "decision_count": 234,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [],
+              "fan": 0,
+              "is_draw": true,
+              "round_no": 2,
+              "score_delta": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "scores_after": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": null
+            }
+          },
+          "alternate_class": "draw",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 234,
+            "first_decision_action": "discard:3w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [],
+              "fan": 0,
+              "is_draw": true,
+              "round_no": 2,
+              "score_delta": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "scores_after": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": null
+            }
+          },
+          "parent_class": "draw",
+          "sample_key": "g95-03"
+        },
+        {
+          "alternate": {
+            "decision_count": 185,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -8,
+                24,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                -16,
+                34,
+                -9,
+                -9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 1
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": -7,
+          "parent": {
+            "decision_count": 186,
+            "first_decision_action": "discard:3w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-04"
+        },
+        {
+          "alternate": {
+            "decision_count": 219,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 7,
+          "parent": {
+            "decision_count": 145,
+            "first_decision_action": "discard:3w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -8,
+                24,
+                -8,
+                -8
+              ],
+              "scores_after": [
+                -16,
+                34,
+                -9,
+                -9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-05"
+        },
+        {
+          "alternate": {
+            "decision_count": 56,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "七对"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -2,
+                -16,
+                20,
+                -2
+              ],
+              "scores_after": [
+                -10,
+                -6,
+                19,
+                -3
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 2
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 0,
+          "parent": {
+            "decision_count": 56,
+            "first_decision_action": "discard:3w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "七对"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -2,
+                -16,
+                20,
+                -2
+              ],
+              "scores_after": [
+                -10,
+                -6,
+                19,
+                -3
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 2
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-06"
+        },
+        {
+          "alternate": {
+            "decision_count": 86,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": 15,
+          "parent": {
+            "decision_count": 151,
+            "first_decision_action": "discard:3w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡",
+                "爆头"
+              ],
+              "fan": 2,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -16,
+                48,
+                -16,
+                -16
+              ],
+              "scores_after": [
+                -24,
+                58,
+                -17,
+                -17
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 1
+            }
+          },
+          "parent_class": "other_win",
+          "sample_key": "g95-07"
+        },
+        {
+          "alternate": {
+            "decision_count": 146,
+            "first_decision_action": "discard:8w",
+            "forced_once": 1,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                10,
+                -8,
+                -1,
+                -1
+              ],
+              "scores_after": [
+                2,
+                2,
+                -2,
+                -2
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 0
+            }
+          },
+          "alternate_class": "other_win",
+          "focal_delta_alt_minus_parent": -11,
+          "parent": {
+            "decision_count": 215,
+            "first_decision_action": "discard:3w",
+            "forced_once": 0,
+            "runtime_counts": {
+              "audit_missing": 0,
+              "auto_actions": 0,
+              "fallbacks": 0,
+              "illegal_choices": 0,
+              "timeouts": 0
+            },
+            "settlement": {
+              "coverage": "settlement_only",
+              "dealer_seat": 1,
+              "details": [
+                "平胡"
+              ],
+              "fan": 1,
+              "is_draw": false,
+              "round_no": 2,
+              "score_delta": [
+                -1,
+                -8,
+                -1,
+                10
+              ],
+              "scores_after": [
+                -9,
+                2,
+                -2,
+                9
+              ],
+              "scores_before": [
+                -8,
+                10,
+                -1,
+                -1
+              ],
+              "winner_seat": 3
+            }
+          },
+          "parent_class": "plain_self_win",
+          "sample_key": "g95-08"
+        }
+      ]
+    }
+  ],
+  "sample_keys": [
+    "g95-01",
+    "g95-02",
+    "g95-03",
+    "g95-04",
+    "g95-05",
+    "g95-06",
+    "g95-07",
+    "g95-08"
+  ],
+  "schema": "g95-wider-discard-same-hand-preflight/1"
+}

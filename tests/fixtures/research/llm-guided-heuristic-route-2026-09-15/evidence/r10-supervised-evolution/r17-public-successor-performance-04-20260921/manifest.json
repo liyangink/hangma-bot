@@ -1,0 +1,28 @@
+{
+  "schema": "r17-public-successor-gc-diagnostic-manifest/1",
+  "protocol_frozen_before_run": {
+    "passes": 6,
+    "collect_before_each_pass": true,
+    "disable_cyclic_gc_only_during_evaluate_once": true,
+    "restore_in_finally": true,
+    "delete_large_objects_then_collect": true,
+    "tracemalloc": false
+  },
+  "runner": {
+    "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r17_public_successor_gc_diagnostic.py",
+    "sha256": "2d028c3ab177ed605d65c8610e50f12fa71d9100ca041be4b72e9c2c55a0bdd0"
+  },
+  "batch_runner": {
+    "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r17_public_successor_batch_performance_probe.py",
+    "sha256": "327c651a013af39045faf20cd2393ffea632d20f3bda4913e24d7a3538582e1d"
+  },
+  "raw_result": {
+    "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r17-public-successor-pilot-01-20260921/result.json",
+    "sha256": "fc93624bafcdfa11a2be019b7b75a5b910b7b404d4691fc0a612abbc07977c5e"
+  },
+  "peak_rss": "resource.RUSAGE_SELF.ru_maxrss进程生命周期累计高水位；macOS字节、Linux KiB；不冒充单遍独占或当前RSS",
+  "outputs": [
+    "result.json",
+    "per-window.json"
+  ]
+}

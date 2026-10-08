@@ -1,0 +1,90 @@
+{
+  "accepted_deferral_windows": 326,
+  "binary_label_rows": 324,
+  "boundary": "冻结模型在其自身训练房上的描述性检查；不能证明独立预测、动作价值或净积分",
+  "changed_tertile_with_temporal": 22,
+  "excluded_nonbinary_labels": 2,
+  "other_hu_events": 36,
+  "overall": {
+    "state": {
+      "brier": 0.09775986606948839,
+      "log_loss": 0.334146069345993
+    },
+    "state_plus_temporal": {
+      "brier": 0.09770576198139372,
+      "log_loss": 0.3343165888114049
+    }
+  },
+  "prior_available": 324,
+  "schema": "g9-hu-deferral-risk-training-probe/1",
+  "script_sha256": "64cc89876ae1988a69cdc9ec4bdc9ba22ee3bea7381149a027bfdaaa58f747a0",
+  "source_label_counts": {
+    "draw_before_self_draw": 65,
+    "other_hu_before_self_draw": 5892,
+    "self_draw_reached": 57018
+  },
+  "source_model_sha256": "9327417cbfe98ea65e4a82929e59342c34f12de6d2fcf516aee6d733121785ec",
+  "source_scope_sha256": "208e3502cc5732c9f2a0d2278a395b5a5ce553fd921de71697b7c4725320d5fd",
+  "source_temporal_features_sha256": "b66eb4e9f206fd3442c4e88181f4bffb9770a1642fe2f5523b3a0764ab80bae5",
+  "training_rooms": 91,
+  "training_tertiles": {
+    "state": {
+      "by_group": {
+        "high": {
+          "observed_rate": 0.18518518518518517,
+          "other_hu_events": 20,
+          "predicted_mean": 0.27744382761465164,
+          "rooms": 64,
+          "rows": 108
+        },
+        "low": {
+          "observed_rate": 0.046296296296296294,
+          "other_hu_events": 5,
+          "predicted_mean": 0.06594889943754928,
+          "rooms": 63,
+          "rows": 108
+        },
+        "middle": {
+          "observed_rate": 0.10185185185185185,
+          "other_hu_events": 11,
+          "predicted_mean": 0.12682337657121967,
+          "rooms": 60,
+          "rows": 108
+        }
+      },
+      "cutoffs": [
+        0.09601567790638288,
+        0.16874441601231813
+      ]
+    },
+    "state_plus_temporal": {
+      "by_group": {
+        "high": {
+          "observed_rate": 0.17592592592592593,
+          "other_hu_events": 19,
+          "predicted_mean": 0.2717516450408473,
+          "rooms": 65,
+          "rows": 108
+        },
+        "low": {
+          "observed_rate": 0.027777777777777776,
+          "other_hu_events": 3,
+          "predicted_mean": 0.0667851015501144,
+          "rooms": 62,
+          "rows": 108
+        },
+        "middle": {
+          "observed_rate": 0.12962962962962962,
+          "other_hu_events": 14,
+          "predicted_mean": 0.12807288816511733,
+          "rooms": 59,
+          "rows": 108
+        }
+      },
+      "cutoffs": [
+        0.09603519046794966,
+        0.1694289387613586
+      ]
+    }
+  }
+}

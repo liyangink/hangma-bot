@@ -1,0 +1,736 @@
+{
+  "checks": {
+    "actions_ok": 512,
+    "diverge_actions_ok": 512,
+    "divergence_index_is_target": 512,
+    "force_ok": 512,
+    "hu_arm_settlement_ok": 512,
+    "mechanical_ok": 512,
+    "prefix_identical": 512,
+    "rollouts": 512
+  },
+  "schema": "r18-p24-deferral-complement-evidence/1",
+  "states": [
+    {
+      "fit_deferral_arm": {
+        "hu_n": 5,
+        "hu_rate": 0.3125,
+        "mean_fan": 2.0
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -5.3125,
+      "fit_table_mean": -19.75,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:5w",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 9,
+      "mix": "H",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 10,
+      "recheck_arm_b_next_draw_width_mean": 10.4,
+      "recheck_deferral_arm": {
+        "hu_n": 7,
+        "hu_rate": 0.4375,
+        "mean_fan": 1.4285714285714286
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -4.3125,
+      "recheck_table_mean": -18.75,
+      "root": "np-H-2026102607-root06",
+      "round_no": 2,
+      "seat": 3,
+      "selected": false,
+      "target_id": "r18-p24-development-01",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 12,
+        "focal_hu->opponent_hu": 20
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 2,
+        "hu_rate": 0.125,
+        "mean_fan": 1.0
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -12.6875,
+      "fit_table_mean": -30.1875,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:7t",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 4,
+      "mix": "H",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 13,
+      "recheck_arm_b_next_draw_width_mean": 4.0,
+      "recheck_deferral_arm": {
+        "hu_n": 3,
+        "hu_rate": 0.1875,
+        "mean_fan": 1.0
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -11.25,
+      "recheck_table_mean": -21.8125,
+      "root": "np-H-2026102607-root07",
+      "round_no": 3,
+      "seat": 3,
+      "selected": false,
+      "target_id": "r18-p24-development-02",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 5,
+        "focal_hu->opponent_hu": 27
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 6,
+        "hu_rate": 0.375,
+        "mean_fan": 1.1666666666666667
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -6.25,
+      "fit_table_mean": -21.4375,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:6w",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 7,
+      "mix": "H",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 14,
+      "recheck_arm_b_next_draw_width_mean": 6.928571428571429,
+      "recheck_deferral_arm": {
+        "hu_n": 9,
+        "hu_rate": 0.5625,
+        "mean_fan": 1.3333333333333333
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -3.375,
+      "recheck_table_mean": -13.875,
+      "root": "np-H-2026102607-root12",
+      "round_no": 6,
+      "seat": 0,
+      "selected": false,
+      "target_id": "r18-p24-development-03",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 15,
+        "focal_hu->opponent_hu": 17
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 10,
+        "hu_rate": 0.625,
+        "mean_fan": 1.0
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -4.5625,
+      "fit_table_mean": -21.25,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:3b",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 5,
+      "mix": "H",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 16,
+      "recheck_arm_b_next_draw_width_mean": 3.875,
+      "recheck_deferral_arm": {
+        "hu_n": 8,
+        "hu_rate": 0.5,
+        "mean_fan": 1.0
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -6.0,
+      "recheck_table_mean": -31.875,
+      "root": "np-H-2026102607-root11",
+      "round_no": 1,
+      "seat": 2,
+      "selected": false,
+      "target_id": "r18-p24-development-04",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 18,
+        "focal_hu->opponent_hu": 14
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 8,
+        "hu_rate": 0.5,
+        "mean_fan": 1.375
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -3.5625,
+      "fit_table_mean": 1.25,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:2w",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 8,
+      "mix": "H",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 13,
+      "recheck_arm_b_next_draw_width_mean": 11.0,
+      "recheck_deferral_arm": {
+        "hu_n": 8,
+        "hu_rate": 0.5,
+        "mean_fan": 1.5
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -3.0,
+      "recheck_table_mean": 2.5,
+      "root": "np-H-2026102607-root03",
+      "round_no": 1,
+      "seat": 2,
+      "selected": false,
+      "target_id": "r18-p24-development-05",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 16,
+        "focal_hu->opponent_hu": 15,
+        "focal_hu->wall_draw_or_non_hu_end": 1
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 3,
+        "hu_rate": 0.1875,
+        "mean_fan": 1.3333333333333333
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -8.9375,
+      "fit_table_mean": 1.6875,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:3t",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 8,
+      "mix": "H",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 13,
+      "recheck_arm_b_next_draw_width_mean": 8.692307692307692,
+      "recheck_deferral_arm": {
+        "hu_n": 6,
+        "hu_rate": 0.375,
+        "mean_fan": 1.1666666666666667
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -7.1875,
+      "recheck_table_mean": 2.125,
+      "root": "np-H-2026102607-root01",
+      "round_no": 2,
+      "seat": 0,
+      "selected": false,
+      "target_id": "r18-p24-development-06",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 9,
+        "focal_hu->opponent_hu": 23
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 6,
+        "hu_rate": 0.375,
+        "mean_fan": 2.0
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -4.4375,
+      "fit_table_mean": -36.4375,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:9b",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 6,
+      "mix": "H",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 13,
+      "recheck_arm_b_next_draw_width_mean": 16.53846153846154,
+      "recheck_deferral_arm": {
+        "hu_n": 5,
+        "hu_rate": 0.3125,
+        "mean_fan": 2.2
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -5.25,
+      "recheck_table_mean": -42.0,
+      "root": "np-H-2026102607-root09",
+      "round_no": 2,
+      "seat": 3,
+      "selected": false,
+      "target_id": "r18-p24-development-07",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 11,
+        "focal_hu->opponent_hu": 21
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 2,
+        "hu_rate": 0.125,
+        "mean_fan": 1.0
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -30.5,
+      "fit_table_mean": -78.1875,
+      "hu_fan": 1,
+      "hu_self_delta": 24,
+      "intervention_action": "discard:5w",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 5,
+      "mix": "H",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 12,
+      "recheck_arm_b_next_draw_width_mean": 3.25,
+      "recheck_deferral_arm": {
+        "hu_n": 6,
+        "hu_rate": 0.375,
+        "mean_fan": 1.0
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -20.5,
+      "recheck_table_mean": -53.375,
+      "root": "np-H-2026102607-root04",
+      "round_no": 1,
+      "seat": 0,
+      "selected": false,
+      "target_id": "r18-p24-development-08",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 8,
+        "focal_hu->opponent_hu": 24
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 6,
+        "hu_rate": 0.375,
+        "mean_fan": 1.3333333333333333
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -5.625,
+      "fit_table_mean": 17.5,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:8t",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 6,
+      "mix": "M",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 11,
+      "recheck_arm_b_next_draw_width_mean": 8.636363636363637,
+      "recheck_deferral_arm": {
+        "hu_n": 2,
+        "hu_rate": 0.125,
+        "mean_fan": 1.5
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -11.5625,
+      "recheck_table_mean": 19.1875,
+      "root": "np-M-2026102607-root09",
+      "round_no": 2,
+      "seat": 1,
+      "selected": false,
+      "target_id": "r18-p24-development-09",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 8,
+        "focal_hu->opponent_hu": 23,
+        "focal_hu->wall_draw_or_non_hu_end": 1
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 4,
+        "hu_rate": 0.25,
+        "mean_fan": 1.0
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -11.375,
+      "fit_table_mean": 40.0,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:4w",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 3,
+      "mix": "M",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 16,
+      "recheck_arm_b_next_draw_width_mean": 2.625,
+      "recheck_deferral_arm": {
+        "hu_n": 8,
+        "hu_rate": 0.5,
+        "mean_fan": 1.0
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -7.3125,
+      "recheck_table_mean": 15.0,
+      "root": "np-M-2026102607-root11",
+      "round_no": 1,
+      "seat": 1,
+      "selected": false,
+      "target_id": "r18-p24-development-10",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 12,
+        "focal_hu->opponent_hu": 20
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 11,
+        "hu_rate": 0.6875,
+        "mean_fan": 1.3636363636363635
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -1.875,
+      "fit_table_mean": -4.6875,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:5t",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 8,
+      "mix": "M",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 16,
+      "recheck_arm_b_next_draw_width_mean": 7.125,
+      "recheck_deferral_arm": {
+        "hu_n": 12,
+        "hu_rate": 0.75,
+        "mean_fan": 1.25
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -2.1875,
+      "recheck_table_mean": -4.6875,
+      "root": "np-M-2026102607-root01",
+      "round_no": 2,
+      "seat": 2,
+      "selected": false,
+      "target_id": "r18-p24-development-11",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 23,
+        "focal_hu->opponent_hu": 9
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 13,
+        "hu_rate": 0.8125,
+        "mean_fan": 1.6923076923076923
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": 2.6875,
+      "fit_table_mean": 13.875,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:1b",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 9,
+      "mix": "M",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 15,
+      "recheck_arm_b_next_draw_width_mean": 13.733333333333333,
+      "recheck_deferral_arm": {
+        "hu_n": 12,
+        "hu_rate": 0.75,
+        "mean_fan": 1.5
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -0.75,
+      "recheck_table_mean": 8.5,
+      "root": "np-M-2026102607-root07",
+      "round_no": 1,
+      "seat": 3,
+      "selected": true,
+      "target_id": "r18-p24-development-12",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 25,
+        "focal_hu->opponent_hu": 7
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 3,
+        "hu_rate": 0.1875,
+        "mean_fan": 1.0
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -9.8125,
+      "fit_table_mean": -41.625,
+      "hu_fan": 1,
+      "hu_self_delta": 10,
+      "intervention_action": "discard:2w",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 2,
+      "mix": "M",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 15,
+      "recheck_arm_b_next_draw_width_mean": 1.8666666666666667,
+      "recheck_deferral_arm": {
+        "hu_n": 1,
+        "hu_rate": 0.0625,
+        "mean_fan": 1.0
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -10.8125,
+      "recheck_table_mean": -51.6875,
+      "root": "np-M-2026102607-root02",
+      "round_no": 1,
+      "seat": 2,
+      "selected": false,
+      "target_id": "r18-p24-development-13",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 4,
+        "focal_hu->opponent_hu": 28
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 4,
+        "hu_rate": 0.25,
+        "mean_fan": 2.75
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": -13.5,
+      "fit_table_mean": -7.4375,
+      "hu_fan": 1,
+      "hu_self_delta": 24,
+      "intervention_action": "discard:1t",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 7,
+      "mix": "M",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 15,
+      "recheck_arm_b_next_draw_width_mean": 10.133333333333333,
+      "recheck_deferral_arm": {
+        "hu_n": 8,
+        "hu_rate": 0.5,
+        "mean_fan": 1.625
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -8.5,
+      "recheck_table_mean": -5.1875,
+      "root": "np-M-2026102607-root12",
+      "round_no": 2,
+      "seat": 3,
+      "selected": false,
+      "target_id": "r18-p24-development-14",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 12,
+        "focal_hu->opponent_hu": 20
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 13,
+        "hu_rate": 0.8125,
+        "mean_fan": 1.5384615384615385
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": 4.5,
+      "fit_table_mean": 5.875,
+      "hu_fan": 1,
+      "hu_self_delta": 24,
+      "intervention_action": "discard:5t",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 7,
+      "mix": "M",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 16,
+      "recheck_arm_b_next_draw_width_mean": 9.0625,
+      "recheck_deferral_arm": {
+        "hu_n": 11,
+        "hu_rate": 0.6875,
+        "mean_fan": 1.3636363636363635
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": -4.0,
+      "recheck_table_mean": -1.5625,
+      "root": "np-M-2026102607-root04",
+      "round_no": 3,
+      "seat": 3,
+      "selected": true,
+      "target_id": "r18-p24-development-15",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 24,
+        "focal_hu->opponent_hu": 8
+      }
+    },
+    {
+      "fit_deferral_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.875
+      },
+      "fit_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "fit_round_mean": 21.0,
+      "fit_table_mean": 21.0,
+      "hu_fan": 1,
+      "hu_self_delta": 24,
+      "intervention_action": "discard:8t",
+      "intervention_shanten_after": 0,
+      "intervention_useful_kinds": 7,
+      "mix": "M",
+      "recheck_arm_a_draw_windows_after_cut": 0,
+      "recheck_arm_a_next_draw_width_mean": null,
+      "recheck_arm_b_draw_windows_after_cut": 16,
+      "recheck_arm_b_next_draw_width_mean": 27.0,
+      "recheck_deferral_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 2.0
+      },
+      "recheck_hu_arm": {
+        "hu_n": 16,
+        "hu_rate": 1.0,
+        "mean_fan": 1.0
+      },
+      "recheck_round_mean": 24.0,
+      "recheck_table_mean": 24.0,
+      "root": "np-M-2026102607-root03",
+      "round_no": 1,
+      "seat": 0,
+      "selected": true,
+      "target_id": "r18-p24-development-16",
+      "terminal_transitions": {
+        "focal_hu->focal_hu": 32
+      }
+    }
+  ]
+}

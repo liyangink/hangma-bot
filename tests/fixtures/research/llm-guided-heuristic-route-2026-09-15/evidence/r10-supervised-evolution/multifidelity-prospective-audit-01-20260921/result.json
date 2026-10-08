@@ -1,0 +1,211 @@
+{
+  "schema": "r13-multifidelity-prospective-audit-result/1",
+  "status": "CLOSE_R13_MF1_FIRST_TABLE_FUNNEL_FAILED",
+  "manifest_sha256": "093a5860d2b303e4661448c3272de5fa97b2084f9807fe7ee2837cee3d99611c",
+  "decisions_sha256": "2d2ba425f846fc6e4355d97fcbcff150eb829b9e30ce3a119e4d36943d14f0c4",
+  "counts": {
+    "candidates": 10,
+    "retained": 7,
+    "culled": 3,
+    "audited_culled": 2,
+    "completed_full_candidates": 9,
+    "tables_spent": 672.0
+  },
+  "historical_thresholds": {
+    "retain_first_delta_mean": -3.140625,
+    "competitive_u_delta_low_mean": 0.046875
+  },
+  "projected_candidate_table_savings": 0.15,
+  "qualification_actual_savings": 0.05,
+  "audited_false_negatives": [],
+  "audited_false_negative_rate": 0.0,
+  "correlations": {
+    "overall": 0.8067511745433772,
+    "H": 0.7881638960804283,
+    "M": 0.5797509043642028
+  },
+  "candidate_summaries": [
+    {
+      "candidate_id": "hard-sol-high",
+      "family": "structure",
+      "retained": true,
+      "audited_culled": false,
+      "first_table_delta_mean": -2.46875,
+      "full_stage_score_delta_mean": 0.25,
+      "u_delta_low_mean": -0.1875,
+      "by_mix": {
+        "H": {
+          "first_table_delta_mean": 0.875,
+          "u_delta_low_mean": -0.1875
+        },
+        "M": {
+          "first_table_delta_mean": -5.8125,
+          "u_delta_low_mean": -0.1875
+        }
+      }
+    },
+    {
+      "candidate_id": "hard-sol-max",
+      "family": "structure",
+      "retained": true,
+      "audited_culled": false,
+      "first_table_delta_mean": 4.875,
+      "full_stage_score_delta_mean": 13.40625,
+      "u_delta_low_mean": 0.0625,
+      "by_mix": {
+        "H": {
+          "first_table_delta_mean": 11.0,
+          "u_delta_low_mean": 0.1875
+        },
+        "M": {
+          "first_table_delta_mean": -1.25,
+          "u_delta_low_mean": -0.0625
+        }
+      }
+    },
+    {
+      "candidate_id": "hard-terra-max",
+      "family": "structure",
+      "retained": true,
+      "audited_culled": false,
+      "first_table_delta_mean": 6.875,
+      "full_stage_score_delta_mean": 10.15625,
+      "u_delta_low_mean": -0.0625,
+      "by_mix": {
+        "H": {
+          "first_table_delta_mean": 0.875,
+          "u_delta_low_mean": 0.0
+        },
+        "M": {
+          "first_table_delta_mean": 12.875,
+          "u_delta_low_mean": -0.125
+        }
+      }
+    },
+    {
+      "candidate_id": "river-sol-high",
+      "family": "structure",
+      "retained": true,
+      "audited_culled": false,
+      "first_table_delta_mean": 8.71875,
+      "full_stage_score_delta_mean": 6.71875,
+      "u_delta_low_mean": 0.03125,
+      "by_mix": {
+        "H": {
+          "first_table_delta_mean": 13.375,
+          "u_delta_low_mean": 0.125
+        },
+        "M": {
+          "first_table_delta_mean": 4.0625,
+          "u_delta_low_mean": -0.0625
+        }
+      }
+    },
+    {
+      "candidate_id": "route-terra-max",
+      "family": "structure",
+      "retained": true,
+      "audited_culled": false,
+      "first_table_delta_mean": 4.65625,
+      "full_stage_score_delta_mean": 15.90625,
+      "u_delta_low_mean": -0.03125,
+      "by_mix": {
+        "H": {
+          "first_table_delta_mean": 9.6875,
+          "u_delta_low_mean": 0.125
+        },
+        "M": {
+          "first_table_delta_mean": -0.375,
+          "u_delta_low_mean": -0.1875
+        }
+      }
+    },
+    {
+      "candidate_id": "v2_joint_02",
+      "family": "parameter",
+      "retained": false,
+      "audited_culled": true,
+      "first_table_delta_mean": -4.28125,
+      "full_stage_score_delta_mean": -9.4375,
+      "u_delta_low_mean": -0.21875,
+      "by_mix": {
+        "H": {
+          "first_table_delta_mean": -1.6875,
+          "u_delta_low_mean": -0.1875
+        },
+        "M": {
+          "first_table_delta_mean": -6.875,
+          "u_delta_low_mean": -0.25
+        }
+      }
+    },
+    {
+      "candidate_id": "v2_joint_07",
+      "family": "parameter",
+      "retained": true,
+      "audited_culled": false,
+      "first_table_delta_mean": 3.09375,
+      "full_stage_score_delta_mean": 5.03125,
+      "u_delta_low_mean": -0.0625,
+      "by_mix": {
+        "H": {
+          "first_table_delta_mean": 3.3125,
+          "u_delta_low_mean": 0.0
+        },
+        "M": {
+          "first_table_delta_mean": 2.875,
+          "u_delta_low_mean": -0.125
+        }
+      }
+    },
+    {
+      "candidate_id": "v2_joint_14",
+      "family": "parameter",
+      "retained": true,
+      "audited_culled": false,
+      "first_table_delta_mean": 7.15625,
+      "full_stage_score_delta_mean": 12.625,
+      "u_delta_low_mean": -0.03125,
+      "by_mix": {
+        "H": {
+          "first_table_delta_mean": 13.9375,
+          "u_delta_low_mean": 0.0625
+        },
+        "M": {
+          "first_table_delta_mean": 0.375,
+          "u_delta_low_mean": -0.125
+        }
+      }
+    },
+    {
+      "candidate_id": "v2_joint_24",
+      "family": "parameter",
+      "retained": false,
+      "audited_culled": true,
+      "first_table_delta_mean": -3.25,
+      "full_stage_score_delta_mean": -6.5,
+      "u_delta_low_mean": -0.125,
+      "by_mix": {
+        "H": {
+          "first_table_delta_mean": -3.875,
+          "u_delta_low_mean": -0.125
+        },
+        "M": {
+          "first_table_delta_mean": -2.625,
+          "u_delta_low_mean": -0.125
+        }
+      }
+    }
+  ],
+  "gate_checks": {
+    "audited_false_negative_rate": true,
+    "projected_candidate_table_savings": false,
+    "completed_candidate_overall_spearman": true,
+    "mix_spearman": true,
+    "execution_failures": true
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "关闭第一桌漏斗，下一批全部执行完整两桌"
+}

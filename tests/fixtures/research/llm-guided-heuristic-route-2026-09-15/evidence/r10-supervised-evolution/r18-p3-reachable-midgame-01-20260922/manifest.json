@@ -1,0 +1,85 @@
+{
+  "bank_sha256": "2d933ffe9fad92f4030d70cb71fa84fb6a2e572852b8d8de1bea6a9d9b1ac1a0",
+  "candidate_adaptation_after_generation_allowed": false,
+  "candidate_evaluated_during_generation": false,
+  "candidate_sha256": "68f31d5138918b03837078e4e29cd5b011cce5d795cd7754b2e6884e03a38363",
+  "cases": 32,
+  "counts": [
+    {
+      "count": 4,
+      "focal_seat": 0,
+      "role": "dealer_after_rotation"
+    },
+    {
+      "count": 4,
+      "focal_seat": 1,
+      "role": "dealer_after_rotation"
+    },
+    {
+      "count": 4,
+      "focal_seat": 2,
+      "role": "dealer_after_rotation"
+    },
+    {
+      "count": 4,
+      "focal_seat": 3,
+      "role": "dealer_after_rotation"
+    },
+    {
+      "count": 4,
+      "focal_seat": 0,
+      "role": "nondealer_after_dealer_discard"
+    },
+    {
+      "count": 4,
+      "focal_seat": 1,
+      "role": "nondealer_after_dealer_discard"
+    },
+    {
+      "count": 4,
+      "focal_seat": 2,
+      "role": "nondealer_after_dealer_discard"
+    },
+    {
+      "count": 4,
+      "focal_seat": 3,
+      "role": "nondealer_after_dealer_discard"
+    }
+  ],
+  "gate_frozen_before_candidate_evaluation": {
+    "all_cases_scored": true,
+    "all_counterfactual_arms_complete": true,
+    "all_forced_actions_exactly_once": true,
+    "candidate_optimal_cases": 32,
+    "candidate_piao_choices": 32,
+    "each_role_bootstrap_95_lower_greater_than": 0.0,
+    "each_role_mean_piao_minus_hu_greater_than": 32.0,
+    "overall_positive_pair_fraction_at_least": 0.75,
+    "zero_candidate_regressions": true
+  },
+  "generation_work": {
+    "analyzed_hand_draw_states": 371,
+    "excluded_prior_hands": 192,
+    "hand_attempts": 14716
+  },
+  "generator_seed": 202609220701,
+  "generator_sha256": "5f43401f85dd89a31af8a6522e925b34a61af258d52d4d5a7e76d01c8e05d91c",
+  "parent_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+  "phase": "PREPARED_CANDIDATE_UNREAD_FOR_SCORING",
+  "required_public_state": {
+    "baotou": true,
+    "legal_actions_include": [
+      "hu",
+      "discard:白"
+    ],
+    "nonempty_river": true,
+    "remaining_tile_count_less_than": 83,
+    "wealth_count": 3
+  },
+  "roles": [
+    "dealer_after_rotation",
+    "nondealer_after_dealer_discard"
+  ],
+  "schema": "r18-p3-reachable-midgame-manifest/1",
+  "scope": "新形状、完整物理世界、正式规则与策略接缝执行后的可达中局；不替代完整桌赛非劣门"
+}

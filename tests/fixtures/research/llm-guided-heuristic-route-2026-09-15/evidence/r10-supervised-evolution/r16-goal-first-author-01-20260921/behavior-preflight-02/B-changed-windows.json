@@ -1,0 +1,681 @@
+{
+  "schema": "r16-goal-first-changes/2",
+  "rows": [
+    {
+      "window_id": "1b84bb101667199fcc69ac6eccc21b533d5c5752d285bb75a1d5759889f5bded",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "baseline_action": "pass",
+      "candidate_action": "chi:6b,7b,8b",
+      "non_tie_change": true,
+      "action_related_target_change": true,
+      "v2_before_score": 19.0,
+      "v2_after_score": 9.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          10,
+          -1,
+          -1,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": -7,
+        "boundary_margin_after": 4,
+        "target_priority": "cross_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线从前二外跨入条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": "chi:6b,7b,8b#7b",
+        "selected_route_followup_discard": "7b",
+        "conditional_score_delta": [
+          10,
+          -1,
+          -1,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": -7,
+        "boundary_margin_after": 4,
+        "target_priority": "cross_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线从前二外跨入条件前二"
+      }
+    },
+    {
+      "window_id": "270c9135f53fd3c01abc0f92f7238f729fe91a9c30788b45284a88b38ce885da",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "baseline_action": "pass",
+      "candidate_action": "chi:3w,4w,5w",
+      "non_tie_change": true,
+      "action_related_target_change": true,
+      "v2_before_score": 14.0,
+      "v2_after_score": 8.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": "chi:3w,4w,5w#8b",
+        "selected_route_followup_discard": "8b",
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      }
+    },
+    {
+      "window_id": "3c03837483456dc7cff9bd0e3d5a0a2ec99643305a682c03c717714a724c0ae5",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 1,
+      "phase": "response_peng",
+      "baseline_action": "gang:exposed:1w",
+      "candidate_action": "peng:1w",
+      "non_tie_change": true,
+      "action_related_target_change": true,
+      "v2_before_score": 50.0,
+      "v2_after_score": 4.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          -2,
+          20,
+          -16,
+          -2
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "preserve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线保持条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": "peng:1w#1w",
+        "selected_route_followup_discard": "1w",
+        "conditional_score_delta": [
+          -1,
+          10,
+          -8,
+          -1
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 14,
+        "target_priority": "preserve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线保持条件前二"
+      }
+    },
+    {
+      "window_id": "425698bf6900e23d29b5557f75c296964ac3be40ca5ba6dc24b824e6c12ccd22",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "draw",
+      "baseline_action": "gang:added:东",
+      "candidate_action": "discard:东",
+      "non_tie_change": true,
+      "action_related_target_change": true,
+      "v2_before_score": 47.0,
+      "v2_after_score": 14.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          48,
+          -16,
+          -16,
+          -16
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 64,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      }
+    },
+    {
+      "window_id": "5361a2b19beaf8b25272dc629e5f8e22775d119b2a8f3365e2890b35f7fc2fb2",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "baseline_action": "pass",
+      "candidate_action": "chi:2w,3w,4w",
+      "non_tie_change": true,
+      "action_related_target_change": true,
+      "v2_before_score": 16.0,
+      "v2_after_score": 11.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": "chi:2w,3w,4w#2t",
+        "selected_route_followup_discard": "2t",
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      }
+    },
+    {
+      "window_id": "5c31280e8ad69c8670364370e11fb7b438c578b03f6c1a31d3b89fde2f3f249b",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "baseline_action": "pass",
+      "candidate_action": "chi:7t,8t,9t",
+      "non_tie_change": true,
+      "action_related_target_change": true,
+      "v2_before_score": 6.0,
+      "v2_after_score": -4.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": "chi:7t,8t,9t#9t",
+        "selected_route_followup_discard": "9t",
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      }
+    },
+    {
+      "window_id": "6115c4cc631d59209e8d3eef1b6b8aeaa6fcd5163e63da94f58ef91282f57bcc",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "draw",
+      "baseline_action": "gang:added:1w",
+      "candidate_action": "discard:1w",
+      "non_tie_change": true,
+      "action_related_target_change": true,
+      "v2_before_score": 56.0,
+      "v2_after_score": 23.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          48,
+          -16,
+          -16,
+          -16
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 64,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      }
+    },
+    {
+      "window_id": "808e069669257eac14c4f2c9e78b4c3619d7d54b5e11dac597dadb1865918a0b",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "baseline_action": "pass",
+      "candidate_action": "chi:7t,8t,9t",
+      "non_tie_change": true,
+      "action_related_target_change": true,
+      "v2_before_score": 6.0,
+      "v2_after_score": -4.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": "chi:7t,8t,9t#9t",
+        "selected_route_followup_discard": "9t",
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      }
+    },
+    {
+      "window_id": "a0cd868a8621ce0b9c6b27325e65b99b6626495a84aa591826e95d64782bc322",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_peng",
+      "baseline_action": "pass",
+      "candidate_action": "peng:3t",
+      "non_tie_change": false,
+      "action_related_target_change": true,
+      "v2_before_score": 25.0,
+      "v2_after_score": 25.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          10,
+          -1,
+          -8,
+          -1
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 2,
+        "boundary_margin_before": -7,
+        "boundary_margin_after": 0,
+        "target_priority": "cross_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线从前二外跨入条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": "peng:3t#5w",
+        "selected_route_followup_discard": "5w",
+        "conditional_score_delta": [
+          10,
+          -1,
+          -8,
+          -1
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 2,
+        "boundary_margin_before": -7,
+        "boundary_margin_after": 0,
+        "target_priority": "cross_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线从前二外跨入条件前二"
+      }
+    },
+    {
+      "window_id": "c11c534020080eef7176eb45a529934c0f1e85a620144a743300cb0b6ce12acc",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "draw",
+      "baseline_action": "discard:7w",
+      "candidate_action": "discard:5w",
+      "non_tie_change": true,
+      "action_related_target_change": false,
+      "v2_before_score": 30.0,
+      "v2_after_score": 28.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 32,
+        "boundary_margin_after": 64,
+        "target_priority": "preserve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线保持条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 32,
+        "boundary_margin_after": 64,
+        "target_priority": "preserve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线保持条件前二"
+      }
+    },
+    {
+      "window_id": "ca5aa75c35ec39d2d4cdc1023e424adf734a970da4f95445bf81d43ab012914f",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "baseline_action": "pass",
+      "candidate_action": "chi:2w,3w,4w",
+      "non_tie_change": true,
+      "action_related_target_change": true,
+      "v2_before_score": 18.0,
+      "v2_after_score": 11.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": "chi:2w,3w,4w#2t",
+        "selected_route_followup_discard": "2t",
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      }
+    },
+    {
+      "window_id": "eb4b84448f8cb947d8efee921eee786811d9b9a1d6ab000d6f10021673c9f827",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_peng",
+      "baseline_action": "pass",
+      "candidate_action": "peng:东",
+      "non_tie_change": false,
+      "action_related_target_change": true,
+      "v2_before_score": 26.0,
+      "v2_after_score": 26.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          10,
+          -1,
+          -8,
+          -1
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 2,
+        "boundary_margin_before": -7,
+        "boundary_margin_after": 0,
+        "target_priority": "cross_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线从前二外跨入条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": "peng:东#5w",
+        "selected_route_followup_discard": "5w",
+        "conditional_score_delta": [
+          10,
+          -1,
+          -8,
+          -1
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 2,
+        "boundary_margin_before": -7,
+        "boundary_margin_after": 0,
+        "target_priority": "cross_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线从前二外跨入条件前二"
+      }
+    },
+    {
+      "window_id": "f1afb1be1fc6856e19f156b547820219167306256992483814040a472ba088d4",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "draw",
+      "baseline_action": "discard:7t",
+      "candidate_action": "discard:5b",
+      "non_tie_change": true,
+      "action_related_target_change": false,
+      "v2_before_score": 6.0,
+      "v2_after_score": 0.0,
+      "baseline_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      },
+      "candidate_action_goal_trace": {
+        "mechanism_active": true,
+        "stage_account_ready": true,
+        "selected_followup_key": null,
+        "selected_route_followup_discard": null,
+        "conditional_score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ],
+        "conditional_rank_low": 1,
+        "conditional_rank_high": 1,
+        "boundary_margin_before": 0,
+        "boundary_margin_after": 32,
+        "target_priority": "resolve_top_two",
+        "fallback_exact_v2": false,
+        "reason": "条件路线把同分边界解析为条件前二"
+      }
+    }
+  ]
+}

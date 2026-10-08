@@ -1,0 +1,3113 @@
+{
+  "schema": "r18-p7-natural-trigger-counterfactual-targets/1",
+  "targets": [
+    {
+      "candidate_action": "discard:3t",
+      "focal_physical_seat": 1,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:3t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "5w",
+            "6b",
+            "7t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "4w",
+            "5w",
+            "6w",
+            "7w",
+            "3b",
+            "4b",
+            "5b",
+            "6b",
+            "7b",
+            "8b",
+            "1t",
+            "2t",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 41,
+          "useful_tiles": [
+            "5w",
+            "6b",
+            "7t",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 3.3333333333333335,
+        "dealer": false,
+        "expected_value_gain": 0.7407407407407409,
+        "expected_value_ratio": 1.2857142857142858,
+        "focal_score": -9,
+        "leader_gap": 32,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:5w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "6b",
+            "3t",
+            "7t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 7,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "3w",
+            "3b",
+            "4b",
+            "5b",
+            "6b",
+            "7b",
+            "8b",
+            "2t",
+            "5t",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 26,
+          "useful_tiles": [
+            "6b",
+            "3t",
+            "7t",
+            "白"
+          ],
+          "useful_total": 7
+        },
+        "parent_expected_value": 2.5925925925925926,
+        "remaining_tile_count": 30,
+        "river_length": 14,
+        "round_no": 7,
+        "seat": 1,
+        "single_kinds": 3,
+        "triplet_kinds": 1,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:5w",
+      "request_sha256": "aaa94aad62f70c0cc7717c101d23a764c29cce4257f37b85d307d3a8f2682737",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 1,
+        "source_id": "H:r01:s0",
+        "table_id": "np-H-2026101209-r01-s0-t2"
+      },
+      "target_id": "p7-natural-01",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r01-s0-t2",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 1587
+      }
+    },
+    {
+      "candidate_action": "discard:7t",
+      "focal_physical_seat": 2,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:7t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "西",
+            "中",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "9b",
+            "4t",
+            "5t",
+            "6t",
+            "东",
+            "发",
+            "白"
+          ],
+          "standard_useful_total": 15,
+          "useful_tiles": [
+            "西",
+            "中",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 2.0930232558139537,
+        "dealer": false,
+        "expected_value_gain": 0.2325581395348839,
+        "expected_value_ratio": 1.125,
+        "focal_score": 1,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:中",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "7t",
+            "西",
+            "白"
+          ],
+          "seven_pairs_useful_total": 8,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "9b",
+            "4t",
+            "5t",
+            "6t",
+            "8t",
+            "东",
+            "发",
+            "白"
+          ],
+          "standard_useful_total": 16,
+          "useful_tiles": [
+            "7t",
+            "西",
+            "白"
+          ],
+          "useful_total": 8
+        },
+        "parent_expected_value": 1.8604651162790697,
+        "remaining_tile_count": 56,
+        "river_length": 7,
+        "round_no": 4,
+        "seat": 2,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:中",
+      "request_sha256": "5d648b9f771b0f9f27d5cbd25981fe7e96d82193f5436faf8de4885fec05ceea",
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "root_index": 3,
+        "source_id": "H:r03:s2",
+        "table_id": "np-H-2026101209-r03-s2-t1"
+      },
+      "target_id": "p7-natural-02",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r03-s2-t1",
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 731
+      }
+    },
+    {
+      "candidate_action": "discard:1b",
+      "focal_physical_seat": 1,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:1b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "东",
+            "白"
+          ],
+          "seven_pairs_useful_total": 7,
+          "shanten_after": 0,
+          "standard_shanten_after": 3,
+          "standard_useful_tiles": [
+            "2w",
+            "8w",
+            "1b",
+            "4t",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 21,
+          "useful_tiles": [
+            "东",
+            "白"
+          ],
+          "useful_total": 7
+        },
+        "candidate_expected_value": 3.574468085106383,
+        "dealer": true,
+        "expected_value_gain": 0.5106382978723403,
+        "expected_value_ratio": 1.1666666666666665,
+        "focal_score": -1,
+        "leader_gap": 11,
+        "meld_count": 0,
+        "pair_kinds": 6,
+        "parent": {
+          "action_key": "discard:东",
+          "route_count": 2,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "1b",
+            "白"
+          ],
+          "seven_pairs_useful_total": 5,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "2w",
+            "8w",
+            "4t",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 20,
+          "useful_tiles": [
+            "1b",
+            "白"
+          ],
+          "useful_total": 5
+        },
+        "parent_expected_value": 3.0638297872340425,
+        "remaining_tile_count": 67,
+        "river_length": 4,
+        "round_no": 5,
+        "seat": 1,
+        "single_kinds": 1,
+        "triplet_kinds": 1,
+        "wealth_count": 0
+      },
+      "parent_action": "discard:东",
+      "request_sha256": "cd1d6531a50ce81a4f4d952623c689ad252d9b245beef0c6c9c79b2af942a1d3",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 4,
+        "source_id": "H:r04:s0",
+        "table_id": "np-H-2026101209-r04-s0-t2"
+      },
+      "target_id": "p7-natural-03",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r04-s0-t2",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 975
+      }
+    },
+    {
+      "candidate_action": "discard:1w",
+      "focal_physical_seat": 3,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:1w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "8b",
+            "8t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "1w",
+            "5w",
+            "6w",
+            "7w",
+            "4b",
+            "6b",
+            "7b",
+            "9b",
+            "白"
+          ],
+          "standard_useful_total": 18,
+          "useful_tiles": [
+            "8b",
+            "8t",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 2.727272727272727,
+        "dealer": false,
+        "expected_value_gain": 0.909090909090909,
+        "expected_value_ratio": 1.5,
+        "focal_score": 24,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:8b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "1w",
+            "8t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 6,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "5w",
+            "6w",
+            "7w",
+            "4b",
+            "7b",
+            "白"
+          ],
+          "standard_useful_total": 13,
+          "useful_tiles": [
+            "1w",
+            "8t",
+            "白"
+          ],
+          "useful_total": 6
+        },
+        "parent_expected_value": 1.8181818181818181,
+        "remaining_tile_count": 42,
+        "river_length": 11,
+        "round_no": 6,
+        "seat": 3,
+        "single_kinds": 3,
+        "triplet_kinds": 1,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:8b",
+      "request_sha256": "c4e3b0df08ed3e59785be935ea9fc632eed874f49c2dd5ea4294f8efec438c39",
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "root_index": 5,
+        "source_id": "H:r05:s2",
+        "table_id": "np-H-2026101209-r05-s2-t2"
+      },
+      "target_id": "p7-natural-04",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r05-s2-t2",
+        "phase": "draw",
+        "round_no": 6,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 1338
+      }
+    },
+    {
+      "candidate_action": "discard:5b",
+      "focal_physical_seat": 3,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:5b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "2b",
+            "4t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "6w",
+            "1b",
+            "3b",
+            "5b",
+            "6b",
+            "7b",
+            "7t",
+            "白"
+          ],
+          "standard_useful_total": 12,
+          "useful_tiles": [
+            "2b",
+            "4t",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 5.08235294117647,
+        "dealer": true,
+        "expected_value_gain": 0.564705882352941,
+        "expected_value_ratio": 1.125,
+        "focal_score": 7,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:2b",
+          "route_count": 2,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "5b",
+            "4t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 7,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "6w",
+            "1b",
+            "7b",
+            "7t",
+            "白"
+          ],
+          "standard_useful_total": 8,
+          "useful_tiles": [
+            "5b",
+            "4t",
+            "白"
+          ],
+          "useful_total": 7
+        },
+        "parent_expected_value": 4.517647058823529,
+        "remaining_tile_count": 55,
+        "river_length": 7,
+        "round_no": 5,
+        "seat": 3,
+        "single_kinds": 3,
+        "triplet_kinds": 1,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:2b",
+      "request_sha256": "3591dd26f5a6b065e99c0ec43fb135c879ae7228e3c910a83098e31a540b2414",
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "root_index": 9,
+        "source_id": "H:r09:s3",
+        "table_id": "np-H-2026101209-r09-s3-t1"
+      },
+      "target_id": "p7-natural-05",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r09-s3-t1",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 732
+      }
+    },
+    {
+      "candidate_action": "discard:8t",
+      "focal_physical_seat": 3,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:8t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "2w",
+            "4t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "6w",
+            "1b",
+            "5b",
+            "6b",
+            "7b",
+            "7t",
+            "白"
+          ],
+          "standard_useful_total": 10,
+          "useful_tiles": [
+            "2w",
+            "4t",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 5.6103896103896105,
+        "dealer": true,
+        "expected_value_gain": 1.2467532467532472,
+        "expected_value_ratio": 1.2857142857142858,
+        "focal_score": 7,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:2w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "4t",
+            "8t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 7,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "6w",
+            "1b",
+            "5b",
+            "6b",
+            "7b",
+            "6t",
+            "7t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 15,
+          "useful_tiles": [
+            "4t",
+            "8t",
+            "白"
+          ],
+          "useful_total": 7
+        },
+        "parent_expected_value": 4.363636363636363,
+        "remaining_tile_count": 47,
+        "river_length": 9,
+        "round_no": 5,
+        "seat": 3,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:2w",
+      "request_sha256": "196be9c4c7a14e6812f961a18649794d0ee89cade2537d5a385f9e27dbb0911b",
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "root_index": 9,
+        "source_id": "H:r09:s3",
+        "table_id": "np-H-2026101209-r09-s3-t1"
+      },
+      "target_id": "p7-natural-06",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r09-s3-t1",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 780
+      }
+    },
+    {
+      "candidate_action": "discard:6t",
+      "focal_physical_seat": 3,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:6t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "2w",
+            "4t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "6w",
+            "1b",
+            "5b",
+            "6b",
+            "7b",
+            "7t",
+            "白"
+          ],
+          "standard_useful_total": 9,
+          "useful_tiles": [
+            "2w",
+            "4t",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 5.917808219178082,
+        "dealer": true,
+        "expected_value_gain": 0.6575342465753424,
+        "expected_value_ratio": 1.125,
+        "focal_score": 7,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:2w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "4t",
+            "6t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 8,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "6w",
+            "1b",
+            "5b",
+            "6b",
+            "7b",
+            "5t",
+            "7t",
+            "8t",
+            "白"
+          ],
+          "standard_useful_total": 13,
+          "useful_tiles": [
+            "4t",
+            "6t",
+            "白"
+          ],
+          "useful_total": 8
+        },
+        "parent_expected_value": 5.260273972602739,
+        "remaining_tile_count": 43,
+        "river_length": 10,
+        "round_no": 5,
+        "seat": 3,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:2w",
+      "request_sha256": "c11753fe8093c29b7e80b059fb389fd7c062c36b2e58627563f1274885cec9cb",
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "root_index": 9,
+        "source_id": "H:r09:s3",
+        "table_id": "np-H-2026101209-r09-s3-t1"
+      },
+      "target_id": "p7-natural-07",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r09-s3-t1",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 804
+      }
+    },
+    {
+      "candidate_action": "discard:5b",
+      "focal_physical_seat": 3,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:5b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "4t",
+            "9t",
+            "北",
+            "白"
+          ],
+          "seven_pairs_useful_total": 11,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "3w",
+            "7w",
+            "7b",
+            "2t",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "北",
+            "白"
+          ],
+          "standard_useful_total": 28,
+          "useful_tiles": [
+            "4t",
+            "9t",
+            "北",
+            "白"
+          ],
+          "useful_total": 11
+        },
+        "candidate_expected_value": 2.933333333333333,
+        "dealer": false,
+        "expected_value_gain": 0.2666666666666666,
+        "expected_value_ratio": 1.1,
+        "focal_score": 0,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:4t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "5b",
+            "9t",
+            "北",
+            "白"
+          ],
+          "seven_pairs_useful_total": 10,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "3w",
+            "7w",
+            "3b",
+            "4b",
+            "5b",
+            "6b",
+            "7b",
+            "8b",
+            "9b",
+            "5t",
+            "7t",
+            "8t",
+            "9t",
+            "北",
+            "白"
+          ],
+          "standard_useful_total": 35,
+          "useful_tiles": [
+            "5b",
+            "9t",
+            "北",
+            "白"
+          ],
+          "useful_total": 10
+        },
+        "parent_expected_value": 2.6666666666666665,
+        "remaining_tile_count": 48,
+        "river_length": 9,
+        "round_no": 1,
+        "seat": 3,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:4t",
+      "request_sha256": "3e668478b130ff5887a0da5678d036eae0aae9a36ce61fef819cd171ac4c1a70",
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "root_index": 15,
+        "source_id": "H:r15:s2",
+        "table_id": "np-H-2026101209-r15-s2-t2"
+      },
+      "target_id": "p7-natural-08",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r15-s2-t2",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 229
+      }
+    },
+    {
+      "candidate_action": "discard:8b",
+      "focal_physical_seat": 3,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:8b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "4t",
+            "9t",
+            "北",
+            "白"
+          ],
+          "seven_pairs_useful_total": 11,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "3w",
+            "7w",
+            "7b",
+            "2t",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "北",
+            "白"
+          ],
+          "standard_useful_total": 27,
+          "useful_tiles": [
+            "4t",
+            "9t",
+            "北",
+            "白"
+          ],
+          "useful_total": 11
+        },
+        "candidate_expected_value": 3.0985915492957745,
+        "dealer": false,
+        "expected_value_gain": 0.2816901408450705,
+        "expected_value_ratio": 1.1,
+        "focal_score": 0,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:4t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "8b",
+            "9t",
+            "北",
+            "白"
+          ],
+          "seven_pairs_useful_total": 10,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "3w",
+            "7w",
+            "5b",
+            "6b",
+            "7b",
+            "8b",
+            "9b",
+            "5t",
+            "7t",
+            "8t",
+            "9t",
+            "北",
+            "白"
+          ],
+          "standard_useful_total": 28,
+          "useful_tiles": [
+            "8b",
+            "9t",
+            "北",
+            "白"
+          ],
+          "useful_total": 10
+        },
+        "parent_expected_value": 2.816901408450704,
+        "remaining_tile_count": 44,
+        "river_length": 10,
+        "round_no": 1,
+        "seat": 3,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:4t",
+      "request_sha256": "6e6c21c1e62dc41110731d7d8cd2bda4b312a4fdc7b19f3d7726b108759f8c41",
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "root_index": 15,
+        "source_id": "H:r15:s2",
+        "table_id": "np-H-2026101209-r15-s2-t2"
+      },
+      "target_id": "p7-natural-09",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r15-s2-t2",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 253
+      }
+    },
+    {
+      "candidate_action": "discard:2w",
+      "focal_physical_seat": 2,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:2w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "4w",
+            "7w",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "4b",
+            "9b",
+            "7t",
+            "东",
+            "北",
+            "白"
+          ],
+          "standard_useful_total": 11,
+          "useful_tiles": [
+            "4w",
+            "7w",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 1.935483870967742,
+        "dealer": false,
+        "expected_value_gain": 0.21505376344086025,
+        "expected_value_ratio": 1.125,
+        "focal_score": -23,
+        "leader_gap": 75,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:7w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "2w",
+            "4w",
+            "白"
+          ],
+          "seven_pairs_useful_total": 8,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "3w",
+            "4b",
+            "9b",
+            "7t",
+            "东",
+            "北",
+            "白"
+          ],
+          "standard_useful_total": 14,
+          "useful_tiles": [
+            "2w",
+            "4w",
+            "白"
+          ],
+          "useful_total": 8
+        },
+        "parent_expected_value": 1.7204301075268817,
+        "remaining_tile_count": 66,
+        "river_length": 5,
+        "round_no": 6,
+        "seat": 2,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:7w",
+      "request_sha256": "36eb8d5df9c40da200863ed37d5bf6a45e7e89cd8630b21f983108345b1f9ed9",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 23,
+        "source_id": "H:r23:s1",
+        "table_id": "np-H-2026101209-r23-s1-t2"
+      },
+      "target_id": "p7-natural-10",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r23-s1-t2",
+        "phase": "draw",
+        "round_no": 6,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 1091
+      }
+    },
+    {
+      "candidate_action": "discard:2w",
+      "focal_physical_seat": 2,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:2w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "5w",
+            "6t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "4w",
+            "5w",
+            "7w",
+            "8w",
+            "9w",
+            "7t",
+            "8t",
+            "白"
+          ],
+          "standard_useful_total": 20,
+          "useful_tiles": [
+            "5w",
+            "6t",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 2.1686746987951806,
+        "dealer": false,
+        "expected_value_gain": 0.24096385542168663,
+        "expected_value_ratio": 1.125,
+        "focal_score": -18,
+        "leader_gap": 68,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:6t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "2w",
+            "5w",
+            "白"
+          ],
+          "seven_pairs_useful_total": 8,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "3w",
+            "4w",
+            "5w",
+            "7w",
+            "8w",
+            "9w",
+            "8t",
+            "白"
+          ],
+          "standard_useful_total": 19,
+          "useful_tiles": [
+            "2w",
+            "5w",
+            "白"
+          ],
+          "useful_total": 8
+        },
+        "parent_expected_value": 1.927710843373494,
+        "remaining_tile_count": 53,
+        "river_length": 8,
+        "round_no": 5,
+        "seat": 2,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:6t",
+      "request_sha256": "d226bac1171a3ebd9070a8ee8fc4ebe982b0a0057f87de640add128b5a55914d",
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "root_index": 24,
+        "source_id": "H:r24:s2",
+        "table_id": "np-H-2026101209-r24-s2-t1"
+      },
+      "target_id": "p7-natural-11",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r24-s2-t1",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 1012
+      }
+    },
+    {
+      "candidate_action": "discard:8t",
+      "focal_physical_seat": 0,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:8t",
+          "route_count": 2,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "1w",
+            "2w",
+            "2b",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 0,
+          "standard_useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "4w",
+            "5w",
+            "2b",
+            "3t",
+            "白"
+          ],
+          "standard_useful_total": 20,
+          "useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "4w",
+            "5w",
+            "2b",
+            "3t",
+            "白"
+          ],
+          "useful_total": 20
+        },
+        "candidate_expected_value": 3.118279569892473,
+        "dealer": false,
+        "expected_value_gain": 0.8602150537634405,
+        "expected_value_ratio": 1.3809523809523807,
+        "focal_score": -28,
+        "leader_gap": 47,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:3w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 1,
+          "seven_pairs_useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "2b",
+            "8t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 13,
+          "shanten_after": 0,
+          "standard_shanten_after": 0,
+          "standard_useful_tiles": [
+            "2b",
+            "3t",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 21,
+          "useful_tiles": [
+            "2b",
+            "3t",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "白"
+          ],
+          "useful_total": 21
+        },
+        "parent_expected_value": 2.2580645161290325,
+        "remaining_tile_count": 69,
+        "river_length": 3,
+        "round_no": 8,
+        "seat": 0,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:3w",
+      "request_sha256": "4ad0e40836ba14b7bd64190ae3023ae46b391336ccf5928b288b2faaead89e42",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 28,
+        "source_id": "H:r28:s0",
+        "table_id": "np-H-2026101209-r28-s0-t1"
+      },
+      "target_id": "p7-natural-12",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r28-s0-t1",
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1168
+      }
+    },
+    {
+      "candidate_action": "discard:6w",
+      "focal_physical_seat": 0,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:6w",
+          "route_count": 2,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "1w",
+            "2w",
+            "2b",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 0,
+          "standard_useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "4w",
+            "5w",
+            "2b",
+            "3t",
+            "白"
+          ],
+          "standard_useful_total": 20,
+          "useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "4w",
+            "5w",
+            "2b",
+            "3t",
+            "白"
+          ],
+          "useful_total": 20
+        },
+        "candidate_expected_value": 3.258426966292135,
+        "dealer": false,
+        "expected_value_gain": 0.6741573033707864,
+        "expected_value_ratio": 1.2608695652173914,
+        "focal_score": -28,
+        "leader_gap": 47,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:3w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 1,
+          "seven_pairs_useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "6w",
+            "2b",
+            "白"
+          ],
+          "seven_pairs_useful_total": 13,
+          "shanten_after": 0,
+          "standard_shanten_after": 0,
+          "standard_useful_tiles": [
+            "4w",
+            "5w",
+            "6w",
+            "7w",
+            "8w",
+            "2b",
+            "3t",
+            "白"
+          ],
+          "standard_useful_total": 23,
+          "useful_tiles": [
+            "4w",
+            "5w",
+            "6w",
+            "7w",
+            "8w",
+            "2b",
+            "3t",
+            "白"
+          ],
+          "useful_total": 23
+        },
+        "parent_expected_value": 2.5842696629213484,
+        "remaining_tile_count": 65,
+        "river_length": 4,
+        "round_no": 8,
+        "seat": 0,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:3w",
+      "request_sha256": "b88689734c1736268942c4be2f99c7c5517a7ed244fe02507571d3d9f3b1dfe2",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 28,
+        "source_id": "H:r28:s0",
+        "table_id": "np-H-2026101209-r28-s0-t1"
+      },
+      "target_id": "p7-natural-13",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026101209-r28-s0-t1",
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1192
+      }
+    },
+    {
+      "candidate_action": "discard:6t",
+      "focal_physical_seat": 2,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:6t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "9w",
+            "5t",
+            "中",
+            "白"
+          ],
+          "seven_pairs_useful_total": 11,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "5w",
+            "6w",
+            "7w",
+            "8w",
+            "9w",
+            "6b",
+            "1t",
+            "2t",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "南",
+            "中",
+            "白"
+          ],
+          "standard_useful_total": 33,
+          "useful_tiles": [
+            "9w",
+            "5t",
+            "中",
+            "白"
+          ],
+          "useful_total": 11
+        },
+        "candidate_expected_value": 2.8947368421052633,
+        "dealer": false,
+        "expected_value_gain": 0.26315789473684204,
+        "expected_value_ratio": 1.0999999999999999,
+        "focal_score": 2,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:9w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "5t",
+            "6t",
+            "中",
+            "白"
+          ],
+          "seven_pairs_useful_total": 10,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "7w",
+            "6b",
+            "3t",
+            "4t",
+            "7t",
+            "南",
+            "白"
+          ],
+          "standard_useful_total": 10,
+          "useful_tiles": [
+            "5t",
+            "6t",
+            "中",
+            "白"
+          ],
+          "useful_total": 10
+        },
+        "parent_expected_value": 2.6315789473684212,
+        "remaining_tile_count": 43,
+        "river_length": 10,
+        "round_no": 7,
+        "seat": 2,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:9w",
+      "request_sha256": "1cc9950280573e076989e2a7ebd7a623c92c3891cca22eb482f6f3c53a847b51",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 3,
+        "source_id": "M:r03:s2",
+        "table_id": "np-M-2026101209-r03-s2-t1"
+      },
+      "target_id": "p7-natural-14",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r03-s2-t1",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 1523
+      }
+    },
+    {
+      "candidate_action": "discard:1t",
+      "focal_physical_seat": 1,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:1t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "8b",
+            "6t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 8,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "2w",
+            "1b",
+            "2b",
+            "3b",
+            "4b",
+            "1t",
+            "白"
+          ],
+          "standard_useful_total": 13,
+          "useful_tiles": [
+            "8b",
+            "6t",
+            "白"
+          ],
+          "useful_total": 8
+        },
+        "candidate_expected_value": 2.191780821917808,
+        "dealer": false,
+        "expected_value_gain": 0.547945205479452,
+        "expected_value_ratio": 1.3333333333333333,
+        "focal_score": 26,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:8b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "1t",
+            "6t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 6,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "2w",
+            "1b",
+            "2b",
+            "3b",
+            "4b",
+            "白"
+          ],
+          "standard_useful_total": 13,
+          "useful_tiles": [
+            "1t",
+            "6t",
+            "白"
+          ],
+          "useful_total": 6
+        },
+        "parent_expected_value": 1.643835616438356,
+        "remaining_tile_count": 43,
+        "river_length": 11,
+        "round_no": 4,
+        "seat": 1,
+        "single_kinds": 3,
+        "triplet_kinds": 1,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:8b",
+      "request_sha256": "4782c288965fd7bddf2b5081f17c19ebb8d224b6afb85a6e6ce1cdffb7cfd900",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 5,
+        "source_id": "M:r05:s0",
+        "table_id": "np-M-2026101209-r05-s0-t2"
+      },
+      "target_id": "p7-natural-15",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r05-s0-t2",
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 824
+      }
+    },
+    {
+      "candidate_action": "discard:9t",
+      "focal_physical_seat": 1,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:9t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "5b",
+            "南",
+            "西",
+            "白"
+          ],
+          "seven_pairs_useful_total": 11,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "8w",
+            "3b",
+            "4b",
+            "5b",
+            "6b",
+            "7b",
+            "6t",
+            "南",
+            "西",
+            "白"
+          ],
+          "standard_useful_total": 36,
+          "useful_tiles": [
+            "5b",
+            "南",
+            "西",
+            "白"
+          ],
+          "useful_total": 11
+        },
+        "candidate_expected_value": 2.0754716981132075,
+        "dealer": false,
+        "expected_value_gain": 0.18867924528301883,
+        "expected_value_ratio": 1.0999999999999999,
+        "focal_score": 18,
+        "leader_gap": 7,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:5b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "9t",
+            "南",
+            "西",
+            "白"
+          ],
+          "seven_pairs_useful_total": 10,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "8w",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "南",
+            "西",
+            "白"
+          ],
+          "standard_useful_total": 27,
+          "useful_tiles": [
+            "9t",
+            "南",
+            "西",
+            "白"
+          ],
+          "useful_total": 10
+        },
+        "parent_expected_value": 1.8867924528301887,
+        "remaining_tile_count": 70,
+        "river_length": 3,
+        "round_no": 6,
+        "seat": 1,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:5b",
+      "request_sha256": "d52393abd8a06569b350635606f6953e9791e62151305da20ccfe807b4ffd679",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 5,
+        "source_id": "M:r05:s0",
+        "table_id": "np-M-2026101209-r05-s0-t2"
+      },
+      "target_id": "p7-natural-16",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r05-s0-t2",
+        "phase": "draw",
+        "round_no": 6,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 1210
+      }
+    },
+    {
+      "candidate_action": "discard:西",
+      "focal_physical_seat": 1,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:西",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "8w",
+            "8t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 8,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "7w",
+            "9w",
+            "2b",
+            "6t",
+            "7t",
+            "西",
+            "中",
+            "白"
+          ],
+          "standard_useful_total": 16,
+          "useful_tiles": [
+            "8w",
+            "8t",
+            "白"
+          ],
+          "useful_total": 8
+        },
+        "candidate_expected_value": 4.682926829268292,
+        "dealer": true,
+        "expected_value_gain": 1.1707317073170729,
+        "expected_value_ratio": 1.3333333333333333,
+        "focal_score": 17,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:8w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "8t",
+            "西",
+            "白"
+          ],
+          "seven_pairs_useful_total": 6,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "9w",
+            "2b",
+            "6t",
+            "7t",
+            "中",
+            "白"
+          ],
+          "standard_useful_total": 13,
+          "useful_tiles": [
+            "8t",
+            "西",
+            "白"
+          ],
+          "useful_total": 6
+        },
+        "parent_expected_value": 3.5121951219512195,
+        "remaining_tile_count": 49,
+        "river_length": 9,
+        "round_no": 5,
+        "seat": 1,
+        "single_kinds": 3,
+        "triplet_kinds": 1,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:8w",
+      "request_sha256": "bdf0876fc73432942f56ebfbb03aa7dcac38df9a24a17a725f45e829cb929a59",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 11,
+        "source_id": "M:r11:s1",
+        "table_id": "np-M-2026101209-r11-s1-t1"
+      },
+      "target_id": "p7-natural-17",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r11-s1-t1",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 920
+      }
+    },
+    {
+      "candidate_action": "discard:3w",
+      "focal_physical_seat": 0,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:3w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "4b",
+            "东",
+            "北",
+            "白"
+          ],
+          "seven_pairs_useful_total": 11,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "5w",
+            "6w",
+            "7w",
+            "8w",
+            "9w",
+            "2b",
+            "3b",
+            "4b",
+            "5b",
+            "6b",
+            "9b",
+            "东",
+            "北",
+            "白"
+          ],
+          "standard_useful_total": 38,
+          "useful_tiles": [
+            "4b",
+            "东",
+            "北",
+            "白"
+          ],
+          "useful_total": 11
+        },
+        "candidate_expected_value": 2.682926829268293,
+        "dealer": false,
+        "expected_value_gain": 0.24390243902439046,
+        "expected_value_ratio": 1.1,
+        "focal_score": -9,
+        "leader_gap": 18,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:东",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "3w",
+            "4b",
+            "北",
+            "白"
+          ],
+          "seven_pairs_useful_total": 10,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "4w",
+            "5w",
+            "6w",
+            "7w",
+            "8w",
+            "9w",
+            "2b",
+            "3b",
+            "4b",
+            "5b",
+            "6b",
+            "9b",
+            "北",
+            "白"
+          ],
+          "standard_useful_total": 41,
+          "useful_tiles": [
+            "3w",
+            "4b",
+            "北",
+            "白"
+          ],
+          "useful_total": 10
+        },
+        "parent_expected_value": 2.4390243902439024,
+        "remaining_tile_count": 52,
+        "river_length": 8,
+        "round_no": 3,
+        "seat": 0,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:东",
+      "request_sha256": "db2eaad2c82bd582d0e6507674f99ea920ac499b50c05dfd684a9c8578c91411",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "root_index": 11,
+        "source_id": "M:r11:s3",
+        "table_id": "np-M-2026101209-r11-s3-t2"
+      },
+      "target_id": "p7-natural-18",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r11-s3-t2",
+        "phase": "draw",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 482
+      }
+    },
+    {
+      "candidate_action": "discard:2b",
+      "focal_physical_seat": 0,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:2b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "4b",
+            "东",
+            "北",
+            "白"
+          ],
+          "seven_pairs_useful_total": 11,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "5w",
+            "6w",
+            "7w",
+            "8w",
+            "9w",
+            "2b",
+            "3b",
+            "4b",
+            "5b",
+            "6b",
+            "9b",
+            "东",
+            "北",
+            "白"
+          ],
+          "standard_useful_total": 37,
+          "useful_tiles": [
+            "4b",
+            "东",
+            "北",
+            "白"
+          ],
+          "useful_total": 11
+        },
+        "candidate_expected_value": 2.8205128205128207,
+        "dealer": false,
+        "expected_value_gain": 0.2564102564102564,
+        "expected_value_ratio": 1.1,
+        "focal_score": -9,
+        "leader_gap": 18,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:东",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "2b",
+            "4b",
+            "北",
+            "白"
+          ],
+          "seven_pairs_useful_total": 10,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "5w",
+            "6w",
+            "7w",
+            "8w",
+            "9w",
+            "3b",
+            "9b",
+            "白"
+          ],
+          "standard_useful_total": 18,
+          "useful_tiles": [
+            "2b",
+            "4b",
+            "北",
+            "白"
+          ],
+          "useful_total": 10
+        },
+        "parent_expected_value": 2.5641025641025643,
+        "remaining_tile_count": 48,
+        "river_length": 9,
+        "round_no": 3,
+        "seat": 0,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:东",
+      "request_sha256": "d84b1e86d12d3b6b15b9e8086060c5e661e517d7e6188cb94cf5663dd5ce6816",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "root_index": 11,
+        "source_id": "M:r11:s3",
+        "table_id": "np-M-2026101209-r11-s3-t2"
+      },
+      "target_id": "p7-natural-19",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r11-s3-t2",
+        "phase": "draw",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 506
+      }
+    },
+    {
+      "candidate_action": "discard:2b",
+      "focal_physical_seat": 0,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:2b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "9b",
+            "西",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "6b",
+            "1t",
+            "2t",
+            "3t",
+            "5t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 12,
+          "useful_tiles": [
+            "9b",
+            "西",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 5.142857142857143,
+        "dealer": true,
+        "expected_value_gain": 0.5714285714285721,
+        "expected_value_ratio": 1.1250000000000002,
+        "focal_score": 35,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:9b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "2b",
+            "西",
+            "白"
+          ],
+          "seven_pairs_useful_total": 8,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "6b",
+            "1t",
+            "2t",
+            "3t",
+            "5t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 12,
+          "useful_tiles": [
+            "2b",
+            "西",
+            "白"
+          ],
+          "useful_total": 8
+        },
+        "parent_expected_value": 4.571428571428571,
+        "remaining_tile_count": 54,
+        "river_length": 8,
+        "round_no": 5,
+        "seat": 0,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:9b",
+      "request_sha256": "2c23b1e744471c94f275ea27161ff125847326cbcb094340a3aead95346eb2ee",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "root_index": 11,
+        "source_id": "M:r11:s3",
+        "table_id": "np-M-2026101209-r11-s3-t2"
+      },
+      "target_id": "p7-natural-20",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r11-s3-t2",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 915
+      }
+    },
+    {
+      "candidate_action": "discard:3w",
+      "focal_physical_seat": 0,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:3w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "发",
+            "白"
+          ],
+          "seven_pairs_useful_total": 7,
+          "shanten_after": 0,
+          "standard_shanten_after": 3,
+          "standard_useful_tiles": [
+            "8w",
+            "4b",
+            "5b",
+            "6b",
+            "7b",
+            "7t",
+            "8t",
+            "9t",
+            "东",
+            "白"
+          ],
+          "standard_useful_total": 24,
+          "useful_tiles": [
+            "发",
+            "白"
+          ],
+          "useful_total": 7
+        },
+        "candidate_expected_value": 3.169811320754717,
+        "dealer": true,
+        "expected_value_gain": 0.4528301886792456,
+        "expected_value_ratio": 1.1666666666666667,
+        "focal_score": 0,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 6,
+        "parent": {
+          "action_key": "discard:发",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "3w",
+            "白"
+          ],
+          "seven_pairs_useful_total": 6,
+          "shanten_after": 0,
+          "standard_shanten_after": 3,
+          "standard_useful_tiles": [
+            "8w",
+            "4b",
+            "5b",
+            "6b",
+            "7b",
+            "7t",
+            "8t",
+            "9t",
+            "东",
+            "白"
+          ],
+          "standard_useful_total": 24,
+          "useful_tiles": [
+            "3w",
+            "白"
+          ],
+          "useful_total": 6
+        },
+        "parent_expected_value": 2.7169811320754715,
+        "remaining_tile_count": 73,
+        "river_length": 3,
+        "round_no": 1,
+        "seat": 0,
+        "single_kinds": 2,
+        "triplet_kinds": 0,
+        "wealth_count": 0
+      },
+      "parent_action": "discard:发",
+      "request_sha256": "4f4b7db4b59de318d40b092b3cc8a2009aa57c8b6fe3b6a1aa492777387ee5cb",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "root_index": 12,
+        "source_id": "M:r12:s3",
+        "table_id": "np-M-2026101209-r12-s3-t2"
+      },
+      "target_id": "p7-natural-21",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r12-s3-t2",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 70
+      }
+    },
+    {
+      "candidate_action": "discard:9w",
+      "focal_physical_seat": 3,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:9w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "3w",
+            "9b",
+            "9t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 11,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "4w",
+            "5w",
+            "7w",
+            "4b",
+            "7b",
+            "8b",
+            "9b",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 46,
+          "useful_tiles": [
+            "3w",
+            "9b",
+            "9t",
+            "白"
+          ],
+          "useful_total": 11
+        },
+        "candidate_expected_value": 2.6506024096385543,
+        "dealer": false,
+        "expected_value_gain": 0.24096385542168663,
+        "expected_value_ratio": 1.0999999999999999,
+        "focal_score": -16,
+        "leader_gap": 57,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:3w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "9w",
+            "9b",
+            "9t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 10,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "5w",
+            "6w",
+            "7w",
+            "8w",
+            "9w",
+            "4b",
+            "7b",
+            "8b",
+            "9b",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 40,
+          "useful_tiles": [
+            "9w",
+            "9b",
+            "9t",
+            "白"
+          ],
+          "useful_total": 10
+        },
+        "parent_expected_value": 2.4096385542168677,
+        "remaining_tile_count": 59,
+        "river_length": 7,
+        "round_no": 7,
+        "seat": 3,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:3w",
+      "request_sha256": "3957e72ae2758e52cc5ca9bad4f63a6897be8a1cd09617a3c4ddebfec212d2ff",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "root_index": 13,
+        "source_id": "M:r13:s3",
+        "table_id": "np-M-2026101209-r13-s3-t1"
+      },
+      "target_id": "p7-natural-22",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r13-s3-t1",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 1258
+      }
+    },
+    {
+      "candidate_action": "discard:5b",
+      "focal_physical_seat": 0,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:5b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "3w",
+            "白"
+          ],
+          "seven_pairs_useful_total": 7,
+          "shanten_after": 0,
+          "standard_shanten_after": 3,
+          "standard_useful_tiles": [
+            "7w",
+            "5b",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "东",
+            "南",
+            "白"
+          ],
+          "standard_useful_total": 16,
+          "useful_tiles": [
+            "3w",
+            "白"
+          ],
+          "useful_total": 7
+        },
+        "candidate_expected_value": 1.7073170731707317,
+        "dealer": false,
+        "expected_value_gain": 0.24390243902439024,
+        "expected_value_ratio": 1.1666666666666667,
+        "focal_score": 9,
+        "leader_gap": 11,
+        "meld_count": 0,
+        "pair_kinds": 6,
+        "parent": {
+          "action_key": "discard:3w",
+          "route_count": 2,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "5b",
+            "白"
+          ],
+          "seven_pairs_useful_total": 5,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "7w",
+            "6t",
+            "7t",
+            "8t",
+            "9t",
+            "东",
+            "南",
+            "白"
+          ],
+          "standard_useful_total": 15,
+          "useful_tiles": [
+            "5b",
+            "白"
+          ],
+          "useful_total": 5
+        },
+        "parent_expected_value": 1.4634146341463414,
+        "remaining_tile_count": 46,
+        "river_length": 9,
+        "round_no": 7,
+        "seat": 0,
+        "single_kinds": 1,
+        "triplet_kinds": 1,
+        "wealth_count": 0
+      },
+      "parent_action": "discard:3w",
+      "request_sha256": "f414e89c03ec6e656a71e41b402f1d1cb8ca106883f761f3f887a413d7ad3b62",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "root_index": 14,
+        "source_id": "M:r14:s3",
+        "table_id": "np-M-2026101209-r14-s3-t2"
+      },
+      "target_id": "p7-natural-23",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r14-s3-t2",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1488
+      }
+    },
+    {
+      "candidate_action": "discard:东",
+      "focal_physical_seat": 3,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:东",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "7b",
+            "8b",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "2t",
+            "7t",
+            "8t",
+            "9t",
+            "东",
+            "白"
+          ],
+          "standard_useful_total": 14,
+          "useful_tiles": [
+            "7b",
+            "8b",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 3.857142857142857,
+        "dealer": true,
+        "expected_value_gain": 1.0714285714285716,
+        "expected_value_ratio": 1.3846153846153848,
+        "focal_score": 10,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:6b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 1,
+          "seven_pairs_useful_tiles": [
+            "6b",
+            "7b",
+            "8b",
+            "东",
+            "白"
+          ],
+          "seven_pairs_useful_total": 12,
+          "shanten_after": 0,
+          "standard_shanten_after": 0,
+          "standard_useful_tiles": [
+            "2t",
+            "7t",
+            "8t",
+            "9t",
+            "白"
+          ],
+          "standard_useful_total": 13,
+          "useful_tiles": [
+            "2t",
+            "7t",
+            "8t",
+            "9t",
+            "白"
+          ],
+          "useful_total": 13
+        },
+        "parent_expected_value": 2.7857142857142856,
+        "remaining_tile_count": 76,
+        "river_length": 2,
+        "round_no": 2,
+        "seat": 3,
+        "single_kinds": 3,
+        "triplet_kinds": 1,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:6b",
+      "request_sha256": "52ada52ebed9c36bef28cbc03bff67da33c24814c0fd950b6fbff7520ee31736",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "root_index": 17,
+        "source_id": "M:r17:s3",
+        "table_id": "np-M-2026101209-r17-s3-t1"
+      },
+      "target_id": "p7-natural-24",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r17-s3-t1",
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 239
+      }
+    },
+    {
+      "candidate_action": "discard:7b",
+      "focal_physical_seat": 2,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:7b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "西",
+            "发",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "4b",
+            "1t",
+            "8t",
+            "北",
+            "中",
+            "白"
+          ],
+          "standard_useful_total": 10,
+          "useful_tiles": [
+            "西",
+            "发",
+            "白"
+          ],
+          "useful_total": 9
+        },
+        "candidate_expected_value": 1.8,
+        "dealer": false,
+        "expected_value_gain": 0.19999999999999996,
+        "expected_value_ratio": 1.125,
+        "focal_score": -16,
+        "leader_gap": 64,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:发",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "7b",
+            "西",
+            "白"
+          ],
+          "seven_pairs_useful_total": 8,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "4b",
+            "1t",
+            "8t",
+            "北",
+            "中",
+            "白"
+          ],
+          "standard_useful_total": 10,
+          "useful_tiles": [
+            "7b",
+            "西",
+            "白"
+          ],
+          "useful_total": 8
+        },
+        "parent_expected_value": 1.6,
+        "remaining_tile_count": 67,
+        "river_length": 4,
+        "round_no": 2,
+        "seat": 2,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 1
+      },
+      "parent_action": "discard:发",
+      "request_sha256": "8fe1097cb4df628a588f3e59326e8a48acc3003048e546edc556a1db52856d6a",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 19,
+        "source_id": "M:r19:s1",
+        "table_id": "np-M-2026101209-r19-s1-t2"
+      },
+      "target_id": "p7-natural-25",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r19-s1-t2",
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 389
+      }
+    },
+    {
+      "candidate_action": "discard:3b",
+      "focal_physical_seat": 0,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:3b",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "4w",
+            "5w",
+            "5b",
+            "白"
+          ],
+          "seven_pairs_useful_total": 11,
+          "shanten_after": 0,
+          "standard_shanten_after": 1,
+          "standard_useful_tiles": [
+            "1w",
+            "2w",
+            "3w",
+            "4w",
+            "5w",
+            "6w",
+            "7w",
+            "2b",
+            "3b",
+            "4b",
+            "5b",
+            "6b",
+            "7b",
+            "发",
+            "白"
+          ],
+          "standard_useful_total": 42,
+          "useful_tiles": [
+            "4w",
+            "5w",
+            "5b",
+            "白"
+          ],
+          "useful_total": 11
+        },
+        "candidate_expected_value": 2.3157894736842106,
+        "dealer": false,
+        "expected_value_gain": 1.0526315789473686,
+        "expected_value_ratio": 1.8333333333333335,
+        "focal_score": 4,
+        "leader_gap": 17,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:3w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 1,
+          "seven_pairs_useful_tiles": [
+            "3w",
+            "4w",
+            "5w",
+            "3b",
+            "5b",
+            "白"
+          ],
+          "seven_pairs_useful_total": 15,
+          "shanten_after": 0,
+          "standard_shanten_after": 0,
+          "standard_useful_tiles": [
+            "7w",
+            "2b",
+            "4b",
+            "发",
+            "白"
+          ],
+          "standard_useful_total": 12,
+          "useful_tiles": [
+            "7w",
+            "2b",
+            "4b",
+            "发",
+            "白"
+          ],
+          "useful_total": 12
+        },
+        "parent_expected_value": 1.263157894736842,
+        "remaining_tile_count": 62,
+        "river_length": 5,
+        "round_no": 8,
+        "seat": 0,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:3w",
+      "request_sha256": "432e25490b4c21e51b910359ef5c5a782a04c5c1065e2f5b00e53600123ecb2f",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "root_index": 21,
+        "source_id": "M:r21:s3",
+        "table_id": "np-M-2026101209-r21-s3-t2"
+      },
+      "target_id": "p7-natural-26",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r21-s3-t2",
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1210
+      }
+    },
+    {
+      "candidate_action": "discard:9w",
+      "focal_physical_seat": 2,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:9w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "6w",
+            "8b",
+            "4t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 11,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "4w",
+            "5w",
+            "6w",
+            "7w",
+            "8w",
+            "6b",
+            "7b",
+            "8b",
+            "9b",
+            "2t",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "8t",
+            "南",
+            "北",
+            "发",
+            "白"
+          ],
+          "standard_useful_total": 48,
+          "useful_tiles": [
+            "6w",
+            "8b",
+            "4t",
+            "白"
+          ],
+          "useful_total": 11
+        },
+        "candidate_expected_value": 3.0555555555555554,
+        "dealer": false,
+        "expected_value_gain": 0.2777777777777777,
+        "expected_value_ratio": 1.0999999999999999,
+        "focal_score": -8,
+        "leader_gap": 32,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:4t",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "6w",
+            "9w",
+            "8b",
+            "白"
+          ],
+          "seven_pairs_useful_total": 10,
+          "shanten_after": 0,
+          "standard_shanten_after": 2,
+          "standard_useful_tiles": [
+            "4w",
+            "5w",
+            "6w",
+            "7w",
+            "8w",
+            "9w",
+            "6b",
+            "7b",
+            "8b",
+            "9b",
+            "6t",
+            "南",
+            "北",
+            "发",
+            "白"
+          ],
+          "standard_useful_total": 35,
+          "useful_tiles": [
+            "6w",
+            "9w",
+            "8b",
+            "白"
+          ],
+          "useful_total": 10
+        },
+        "parent_expected_value": 2.7777777777777777,
+        "remaining_tile_count": 39,
+        "river_length": 11,
+        "round_no": 6,
+        "seat": 2,
+        "single_kinds": 4,
+        "triplet_kinds": 0,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:4t",
+      "request_sha256": "d32b6fe29babe700b35d36178d09ba5c8a9cd21e7eb55ef4fd5a0e8dde7395b6",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 23,
+        "source_id": "M:r23:s2",
+        "table_id": "np-M-2026101209-r23-s2-t1"
+      },
+      "target_id": "p7-natural-27",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r23-s2-t1",
+        "phase": "draw",
+        "round_no": 6,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 1437
+      }
+    },
+    {
+      "candidate_action": "discard:6b",
+      "focal_physical_seat": 2,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:6b",
+          "route_count": 3,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "6w",
+            "8w",
+            "4t",
+            "5t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 9,
+          "shanten_after": 0,
+          "standard_shanten_after": 0,
+          "standard_useful_tiles": [
+            "7w",
+            "4b",
+            "8b",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "8t",
+            "白"
+          ],
+          "standard_useful_total": 16,
+          "useful_tiles": [
+            "6w",
+            "7w",
+            "8w",
+            "4b",
+            "8b",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "8t",
+            "白"
+          ],
+          "useful_total": 22
+        },
+        "candidate_expected_value": 4.45945945945946,
+        "dealer": false,
+        "expected_value_gain": 1.0810810810810811,
+        "expected_value_ratio": 1.32,
+        "focal_score": 0,
+        "leader_gap": 0,
+        "meld_count": 0,
+        "pair_kinds": 4,
+        "parent": {
+          "action_key": "discard:6t",
+          "route_count": 2,
+          "seven_pairs_shanten_after": 1,
+          "seven_pairs_useful_tiles": [
+            "6w",
+            "8w",
+            "6b",
+            "4t",
+            "5t",
+            "6t",
+            "白"
+          ],
+          "seven_pairs_useful_total": 12,
+          "shanten_after": 0,
+          "standard_shanten_after": 0,
+          "standard_useful_tiles": [
+            "7w",
+            "2b",
+            "3b",
+            "4b",
+            "5b",
+            "6b",
+            "7b",
+            "8b",
+            "9b",
+            "白"
+          ],
+          "standard_useful_total": 24,
+          "useful_tiles": [
+            "7w",
+            "2b",
+            "3b",
+            "4b",
+            "5b",
+            "6b",
+            "7b",
+            "8b",
+            "9b",
+            "白"
+          ],
+          "useful_total": 24
+        },
+        "parent_expected_value": 3.3783783783783785,
+        "remaining_tile_count": 47,
+        "river_length": 9,
+        "round_no": 1,
+        "seat": 2,
+        "single_kinds": 5,
+        "triplet_kinds": 1,
+        "wealth_count": 3
+      },
+      "parent_action": "discard:6t",
+      "request_sha256": "62af2a9874b8c7c5efe3fa4790f6617189d3499245975fe1e668466f2440d6fb",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 27,
+        "source_id": "M:r27:s2",
+        "table_id": "np-M-2026101209-r27-s2-t1"
+      },
+      "target_id": "p7-natural-28",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r27-s2-t1",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 233
+      }
+    },
+    {
+      "candidate_action": "discard:4w",
+      "focal_physical_seat": 2,
+      "observable_features": {
+        "candidate": {
+          "action_key": "discard:4w",
+          "route_count": 3,
+          "seven_pairs_shanten_after": 0,
+          "seven_pairs_useful_tiles": [
+            "7b",
+            "5t",
+            "中",
+            "白"
+          ],
+          "seven_pairs_useful_total": 7,
+          "shanten_after": 0,
+          "standard_shanten_after": 0,
+          "standard_useful_tiles": [
+            "3w",
+            "9w",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "白"
+          ],
+          "standard_useful_total": 25,
+          "useful_tiles": [
+            "3w",
+            "9w",
+            "7b",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "中",
+            "白"
+          ],
+          "useful_total": 27
+        },
+        "candidate_expected_value": 9.5,
+        "dealer": true,
+        "expected_value_gain": 2.0,
+        "expected_value_ratio": 1.2666666666666666,
+        "focal_score": 6,
+        "leader_gap": 72,
+        "meld_count": 0,
+        "pair_kinds": 5,
+        "parent": {
+          "action_key": "discard:3w",
+          "route_count": 1,
+          "seven_pairs_shanten_after": 1,
+          "seven_pairs_useful_tiles": [
+            "3w",
+            "4w",
+            "7b",
+            "5t",
+            "中",
+            "白"
+          ],
+          "seven_pairs_useful_total": 12,
+          "shanten_after": 0,
+          "standard_shanten_after": 0,
+          "standard_useful_tiles": [
+            "2w",
+            "5w",
+            "9w",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "白"
+          ],
+          "standard_useful_total": 30,
+          "useful_tiles": [
+            "2w",
+            "5w",
+            "9w",
+            "3t",
+            "4t",
+            "5t",
+            "6t",
+            "7t",
+            "白"
+          ],
+          "useful_total": 30
+        },
+        "parent_expected_value": 7.5,
+        "remaining_tile_count": 63,
+        "river_length": 6,
+        "round_no": 8,
+        "seat": 2,
+        "single_kinds": 2,
+        "triplet_kinds": 2,
+        "wealth_count": 2
+      },
+      "parent_action": "discard:3w",
+      "request_sha256": "af3135b0011d32805ccedf8691c0d52025fe91b6e4ff8e5c3f1fe9c551836694",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 30,
+        "source_id": "M:r30:s1",
+        "table_id": "np-M-2026101209-r30-s1-t2"
+      },
+      "target_id": "p7-natural-29",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026101209-r30-s1-t2",
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 1700
+      }
+    }
+  ]
+}

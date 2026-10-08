@@ -1,0 +1,154 @@
+{
+  "status": "COMPLETE_DEVELOPMENT_ONLY",
+  "candidate_source_sha256": "51e0da11ca6ca58106ece2bf70cc80b8e883b1fd253626324e827e015b01a48c",
+  "full_natural_results_verified": 256,
+  "versus_v2": {
+    "H": {
+      "mean_delta": 0.03125,
+      "standard_error": 0.05664543544843535,
+      "n_roots": 8
+    },
+    "M": {
+      "mean_delta": 0.0,
+      "standard_error": 0.0472455591261534,
+      "n_roots": 8
+    }
+  },
+  "equal_mix_vs_v2": 0.015625,
+  "versus_parents": {
+    "v2-like-parent": {
+      "equal_mix_low": 0.015625,
+      "equal_mix_high": 0.015625
+    }
+  },
+  "root_rows": [
+    {
+      "parent": "v2-like-parent",
+      "opponent": "H",
+      "root": 1,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "H",
+      "root": 2,
+      "delta_low": 0.25,
+      "delta_high": 0.25
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "H",
+      "root": 3,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "H",
+      "root": 4,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "H",
+      "root": 5,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "H",
+      "root": 6,
+      "delta_low": 0.25,
+      "delta_high": 0.25
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "H",
+      "root": 7,
+      "delta_low": -0.25,
+      "delta_high": -0.25
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "H",
+      "root": 8,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "M",
+      "root": 1,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "M",
+      "root": 2,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "M",
+      "root": 3,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "M",
+      "root": 4,
+      "delta_low": 0.25,
+      "delta_high": 0.25
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "M",
+      "root": 5,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "M",
+      "root": 6,
+      "delta_low": -0.25,
+      "delta_high": -0.25
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "M",
+      "root": 7,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    },
+    {
+      "parent": "v2-like-parent",
+      "opponent": "M",
+      "root": 8,
+      "delta_low": 0.0,
+      "delta_high": 0.0
+    }
+  ],
+  "common_v2_arms_reproduced": true,
+  "spent": {
+    "tokens_input": 196608.0,
+    "tokens_output": 65536.0,
+    "tables_full": 260.0,
+    "tables_partial": 1.0,
+    "prefix_generation": 1.0,
+    "confirm_reserved": 0
+  },
+  "usage_note": "native token charges are conservative reservation amounts, not actual usage",
+  "release_eligible": false,
+  "limitations": [
+    "16根开发评价，不是独立确认",
+    "不按改选数或模型名称选优",
+    "完整终端结果不是逐动作结算重算"
+  ]
+}

@@ -1,0 +1,877 @@
+Analysis of sampling python (pid 90983) every 1 millisecond
+Process:         python3.11 [90983]
+Path:            /Users/USER/*/python3.11
+Load Address:    0x100f30000
+Identifier:      python3.11
+Version:         ???
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  codex [94831]
+Target Type:     live task
+
+Date/Time:       2026-10-04 01:07:41.288 +0800
+Launch Time:     2026-10-04 01:07:40.854 +0800
+OS Version:      macOS 26.4.1 (25E253)
+Report Version:  7
+Analysis Tool:   /usr/bin/sample
+
+Physical footprint:         169.5M
+Physical footprint (peak):  169.5M
+Idle exit:                  untracked
+----
+
+Call graph:
+    2354 Thread_31416459   DispatchQueue_1: com.apple.main-thread  (serial)
+      2354 start  (in dyld) + 6992  [0x188403da4]
+        2354 Py_BytesMain  (in libpython3.11.dylib) + 44  [0x1025f8eb4]
+          2354 Py_RunMain  (in libpython3.11.dylib) + 1444  [0x1024ff3e8]
+            2354 pymain_run_file  (in libpython3.11.dylib) + 72  [0x102500520]
+              2354 pymain_run_file_obj  (in libpython3.11.dylib) + 220  [0x1025f8df8]
+                2354 _PyRun_AnyFileObject  (in libpython3.11.dylib) + 224  [0x102af99a8]
+                  2354 _PyRun_SimpleFileObject  (in libpython3.11.dylib) + 268  [0x1025f7db0]
+                    2354 pyrun_file  (in libpython3.11.dylib) + 140  [0x102528534]
+                      2354 run_mod  (in libpython3.11.dylib) + 224  [0x1023c1a90]
+                        2354 _PyEval_Vector  (in libpython3.11.dylib) + 404  [0x10241ad30]
+                          2354 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 215624  [0x10238f004]
+                            2354 cfunction_vectorcall_FASTCALL_KEYWORDS  (in libpython3.11.dylib) + 76  [0x1025d52fc]
+                              2354 context_run  (in libpython3.11.dylib) + 144  [0x102af0c44]
+                                2354 _PyObject_VectorcallTstate.4598  (in libpython3.11.dylib) + 68  [0x102af0d3c]
+                                  2354 cfunction_vectorcall_O  (in libpython3.11.dylib) + 92  [0x10249aa74]
+                                    2354 task_wakeup  (in libpython3.11.dylib) + 132  [0x102b05690]
+                                      2354 task_step  (in libpython3.11.dylib) + 52  [0x102b04acc]
+                                        2354 task_step_impl  (in libpython3.11.dylib) + 484  [0x102b04d3c]
+                                          2354 gen_send_ex2  (in libpython3.11.dylib) + 196  [0x1023b7c00]
+                                            2099 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 211320  [0x10238df34]
+                                            + 2097 time_sleep  (in libpython3.11.dylib) + 172  [0x102642b94]
+                                            + ! 2097 nanosleep  (in libsystem_c.dylib) + 220  [0x18865bcc0]
+                                            + !   2095 __semwait_signal  (in libsystem_kernel.dylib) + 8  [0x18877f308]
+                                            + !   2 __semwait_signal  (in libsystem_kernel.dylib) + 28  [0x18877f31c]
+                                            + !     2 cerror  (in libsystem_kernel.dylib) + 44  [0x18877d600]
+                                            + !       2 _pthread_exit_if_canceled  (in libsystem_pthread.dylib) + 0  [0x1887b9908]
+                                            + 1 time_sleep  (in libpython3.11.dylib) + 180  [0x102642b9c]
+                                            + ! 1 __error  (in libsystem_kernel.dylib) + 0  [0x18877c618]
+                                            + 1 time_sleep  (in libpython3.11.dylib) + 192  [0x102642ba8]
+                                            +   1 take_gil  (in libpython3.11.dylib) + 92  [0x1023a06dc]
+                                            137 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 74576  [0x10236c90c]
+                                            + 137 gen_send_ex2  (in libpython3.11.dylib) + 196  [0x1023b7c00]
+                                            +   134 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 196976  [0x10238a72c]
+                                            +   ! 134 __pyx_pw_15_t118_candidate_14make_candidate_23score_actions  (in _t118_candidate.cpython-311-darwin.so) + 468  [0x107f163dc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:25713
+                                            +   !   127 __pyx_pf_15_t118_candidate_14make_candidate_22score_actions  (in _t118_candidate.cpython-311-darwin.so) + 58136  [0x107f24874]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:28951
+                                            +   !   : 46 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 22680  [0x107f12b3c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:24831
+                                            +   !   : | 15 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 83892  [0x107ef4e44]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:16532
+                                            +   !   : | + 12 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 2852  [0x107cfb550]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 6 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 1068  [0x107cecc40]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8329
+                                            +   !   : | + ! : 5 __pyx_pw_13_t88_executor_7structure_cost  (in _t88_executor.cpython-311-darwin.so) + 592  [0x107c137ec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:6579
+                                            +   !   : | + ! : | 2 __pyx_pw_13_t88_executor_5_walk_structure  (in _t88_executor.cpython-311-darwin.so) + 388  [0x107c107a8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:5462
+                                            +   !   : | + ! : | + 1 DYLD-STUB$$PyObject_Size  (in _t88_executor.cpython-311-darwin.so) + 4  [0x107c438a8]
+                                            +   !   : | + ! : | + 1 PyObject_Size  (in libpython3.11.dylib) + 28  [0x102317a18]
+                                            +   !   : | + ! : | 1 __Pyx_PyObject_FastCallDict  (in _t88_executor.cpython-311-darwin.so) + 32  [0x107c36958]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:30318
+                                            +   !   : | + ! : | 1 __pyx_pw_13_t88_executor_5_walk_structure  (in _t88_executor.cpython-311-darwin.so) + 28  [0x107c10640]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:5386
+                                            +   !   : | + ! : | 1 __pyx_pw_13_t88_executor_5_walk_structure  (in _t88_executor.cpython-311-darwin.so) + 400  [0x107c107b4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:5462
+                                            +   !   : | + ! : |   1 PyLong_FromSsize_t  (in libpython3.11.dylib) + 36  [0x1022e4878]
+                                            +   !   : | + ! : 1 __Pyx_PyObject_FastCallDict  (in _t88_executor.cpython-311-darwin.so) + 360  [0x107c36aa0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:30337
+                                            +   !   : | + ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 848  [0x107cecb64]  /Users/liyang/hangma-bot/.uv-python/cpython-3.11.15-macos-aarch64-none/include/python3.11/object.h:0
+                                            +   !   : | + ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 1248  [0x107ceccf4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:0
+                                            +   !   : | + ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 76  [0x107cec860]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8030
+                                            +   !   : | + ! : 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_seq_len  (in _t89_runtime.cpython-311-darwin.so) + 128  [0x107ceafcc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:7151
+                                            +   !   : | + ! :   1 slot_sq_length  (in libpython3.11.dylib) + 56  [0x1025deb18]
+                                            +   !   : | + ! :     1 vectorcall_method  (in libpython3.11.dylib) + 172  [0x1022de7c4]
+                                            +   !   : | + ! :       1 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 268  [0x1024ef3e4]
+                                            +   !   : | + ! :         1 _platform_memset  (in libsystem_platform.dylib) + 180  [0x1887c91a4]
+                                            +   !   : | + ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 3116  [0x107ced440]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8258
+                                            +   !   : | + ! : 1 PyObject_GetIter  (in libpython3.11.dylib) + 32  [0x1022dc1f0]
+                                            +   !   : | + ! :   1 slot_tp_iter  (in libpython3.11.dylib) + 80  [0x1025dc744]
+                                            +   !   : | + ! :     1 PyObject_CallOneArg  (in libpython3.11.dylib) + 108  [0x10231128c]
+                                            +   !   : | + ! :       1 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   : | + ! :         1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 210872  [0x10238dd74]
+                                            +   !   : | + ! :           1 list_vectorcall  (in libpython3.11.dylib) + 280  [0x10253fea0]
+                                            +   !   : | + ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 1364  [0x107cecd68]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8291
+                                            +   !   : | + ! : 1 listiter_next  (in libpython3.11.dylib) + 108  [0x102ace0c4]
+                                            +   !   : | + ! :   1 list_dealloc  (in libpython3.11.dylib) + 144  [0x102acd77c]
+                                            +   !   : | + ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 1248  [0x107ceccf4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8350
+                                            +   !   : | + !   1 __Pyx_PyObject_CompareBoolGt_object_object  (in _t89_runtime.cpython-311-darwin.so) + 448  [0x107d09ba8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:0
+                                            +   !   : | + !     1 OUTLINED_FUNCTION_48  (in _t89_runtime.cpython-311-darwin.so) + 0  [0x107d06b28]
+                                            +   !   : | + 2 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 4268  [0x107cfbad8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 2 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   : | + !   2 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 30212,142268  [0x102361bc0,0x10237d178]
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 4352  [0x107cfbb2c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | 5 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 116608  [0x107efce10]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:17682
+                                            +   !   : | + 2 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 2852  [0x107cfb550]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 1364  [0x107cecd68]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8291
+                                            +   !   : | + ! : 1 listiter_next  (in libpython3.11.dylib) + 108  [0x102ace0c4]
+                                            +   !   : | + ! :   1 list_dealloc  (in libpython3.11.dylib) + 280  [0x102acd804]
+                                            +   !   : | + ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 1068  [0x107cecc40]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8329
+                                            +   !   : | + !   1 __pyx_pw_13_t88_executor_7structure_cost  (in _t88_executor.cpython-311-darwin.so) + 592  [0x107c137ec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:6579
+                                            +   !   : | + !     1 __pyx_pw_13_t88_executor_5_walk_structure  (in _t88_executor.cpython-311-darwin.so) + 7640  [0x107c123fc]  /Users/liyang/hangma-bot/.uv-python/cpython-3.11.15-macos-aarch64-none/include/python3.11/object.h:0
+                                            +   !   : | + 1 PyUnicode_Compare  (in libpython3.11.dylib) + 72  [0x102336d98]
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 2976  [0x107cfb5cc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 1 __pyx_pw_13_t88_executor_7structure_cost  (in _t88_executor.cpython-311-darwin.so) + 592  [0x107c137ec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:6579
+                                            +   !   : | + !   1 __pyx_pw_13_t88_executor_5_walk_structure  (in _t88_executor.cpython-311-darwin.so) + 388  [0x107c107a8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:5462
+                                            +   !   : | + !     1 DYLD-STUB$$PyObject_Size  (in _t88_executor.cpython-311-darwin.so) + 8  [0x107c438ac]
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 4028  [0x107cfb9e8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | +   1 __pyx_f_12_t89_runtime_6_Meter_charge  (in _t89_runtime.cpython-311-darwin.so) + 452  [0x107ce16b0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:6081
+                                            +   !   : | 2 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 14280  [0x107ee3e58]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:11767
+                                            +   !   : | + 2 __pyx_pw_12_t89_runtime_20_make_native_runtime_42av_sub  (in _t89_runtime.cpython-311-darwin.so) + 1532  [0x107cfd894]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16349
+                                            +   !   : | +   1 slot_mp_subscript  (in libpython3.11.dylib) + 212  [0x1025decd4]
+                                            +   !   : | +   ! 1 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   : | +   !   1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 28596  [0x102361570]
+                                            +   !   : | +   1 slot_mp_subscript  (in libpython3.11.dylib) + 64  [0x1025dec40]
+                                            +   !   : | 2 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 17308  [0x107ee4a2c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:12190
+                                            +   !   : | + 1 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : | + ! 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_58b_max  (in _t89_runtime.cpython-311-darwin.so) + 568  [0x107d0d974]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:19748
+                                            +   !   : | + !   1 cfunction_call  (in libpython3.11.dylib) + 60  [0x1025341d0]
+                                            +   !   : | + !     1 builtin_max  (in libpython3.11.dylib) + 820  [0x1022fcf00]
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_58b_max  (in _t89_runtime.cpython-311-darwin.so) + 8  [0x107d0d744]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:19720
+                                            +   !   : | +   1 OUTLINED_FUNCTION_132  (in _t89_runtime.cpython-311-darwin.so) + 20  [0x107d06fd8]
+                                            +   !   : | 2 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 18412  [0x107ee4e7c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:12282
+                                            +   !   : | + 2 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : | +   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_58b_max  (in _t89_runtime.cpython-311-darwin.so) + 284  [0x107d0d858]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:19748
+                                            +   !   : | +   ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_6items_structure_cost  (in _t89_runtime.cpython-311-darwin.so) + 364  [0x107cebd98]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:7752
+                                            +   !   : | +   !   1 __pyx_pw_13_t88_executor_7structure_cost  (in _t88_executor.cpython-311-darwin.so) + 592  [0x107c137ec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:6579
+                                            +   !   : | +   !     1 __pyx_pw_13_t88_executor_5_walk_structure  (in _t88_executor.cpython-311-darwin.so) + 292  [0x107c10748]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:5462
+                                            +   !   : | +   !       1 set_contains  (in libpython3.11.dylib) + 76  [0x1023fdac8]
+                                            +   !   : | +   !         1 _Py_HashPointer  (in libpython3.11.dylib) + 0  [0x102af7240]
+                                            +   !   : | +   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_58b_max  (in _t89_runtime.cpython-311-darwin.so) + 568  [0x107d0d974]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:19748
+                                            +   !   : | +     1 cfunction_call  (in libpython3.11.dylib) + 60  [0x1025341d0]
+                                            +   !   : | +       1 builtin_max  (in libpython3.11.dylib) + 976  [0x1022fcf9c]
+                                            +   !   : | 2 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 46064  [0x107eeba80]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:14028
+                                            +   !   : | + 2 __pyx_pw_12_t89_runtime_20_make_native_runtime_96b_set  (in _t89_runtime.cpython-311-darwin.so) + 424  [0x107d04bec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:24350
+                                            +   !   : | +   2 __pyx_pf_12_t89_runtime_20_make_native_runtime_47wrap_set  (in _t89_runtime.cpython-311-darwin.so) + 428  [0x107cff57c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:18548
+                                            +   !   : | +     2 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : | +       2 type_call  (in libpython3.11.dylib) + 136  [0x1025dfc54]
+                                            +   !   : | +         2 slot_tp_init  (in libpython3.11.dylib) + 276  [0x1024194a4]
+                                            +   !   : | +           2 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   : | +             1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 196976  [0x10238a72c]
+                                            +   !   : | +             ! 1 __pyx_pw_13_t88_executor_7structure_cost  (in _t88_executor.cpython-311-darwin.so) + 592  [0x107c137ec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:6579
+                                            +   !   : | +             !   1 __pyx_pw_13_t88_executor_5_walk_structure  (in _t88_executor.cpython-311-darwin.so) + 7432  [0x107c1232c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:5462
+                                            +   !   : | +             1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 211320  [0x10238df34]
+                                            +   !   : | +               1 set_add  (in libpython3.11.dylib) + 768  [0x1025d806c]
+                                            +   !   : | +                 1 _PyObject_Malloc  (in libpython3.11.dylib) + 24  [0x102ad2efc]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 9608  [0x107ee2c18]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:11051
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_80b_enumerate  (in _t89_runtime.cpython-311-darwin.so) + 456  [0x107d0ff28]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:22216
+                                            +   !   : | +   1 DYLD-STUB$$PyTuple_New  (in _t89_runtime.cpython-311-darwin.so) + 0  [0x107d16fb8]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 14632  [0x107ee3fb8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:11809
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1892  [0x107cf3a74]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11670
+                                            +   !   : | +     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_18num_guard  (in _t89_runtime.cpython-311-darwin.so) + 500  [0x107cf0e88]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:10093
+                                            +   !   : | +       1 module_getattro  (in libpython3.11.dylib) + 44  [0x10243564c]
+                                            +   !   : | +         1 PyObject_GenericGetAttr  (in libpython3.11.dylib) + 1656  [0x1022caccc]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 18104  [0x107ee4d48]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:11998
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1792  [0x107cf3a10]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11663
+                                            +   !   : | +     1 cfunction_vectorcall_FASTCALL  (in libpython3.11.dylib) + 80  [0x1025d5204]
+                                            +   !   : | +       1 PyNumber_Subtract  (in libpython3.11.dylib) + 92  [0x102327be0]
+                                            +   !   : | +         1 float_sub  (in libpython3.11.dylib) + 412  [0x1025c6320]
+                                            +   !   : | +           1 _PyObject_Malloc  (in libpython3.11.dylib) + 108  [0x102ad2f50]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 19744  [0x107ee53b0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:12044
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1892  [0x107cf3a74]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11670
+                                            +   !   : | +     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_18num_guard  (in _t89_runtime.cpython-311-darwin.so) + 500  [0x107cf0e88]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:10093
+                                            +   !   : | +       1 module_getattro  (in libpython3.11.dylib) + 44  [0x10243564c]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 17904  [0x107ee4c80]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:12261
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 16  [0x107cf3320]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11446
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 19524  [0x107ee52d4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:12403
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1792  [0x107cf3a10]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11663
+                                            +   !   : | +     1 cfunction_vectorcall_FASTCALL  (in libpython3.11.dylib) + 80  [0x1025d5204]
+                                            +   !   : | +       1 PyNumber_TrueDivide  (in libpython3.11.dylib) + 36  [0x10239faa0]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 22280  [0x107ee5d98]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:12499
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1792  [0x107cf3a10]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11663
+                                            +   !   : | +     1 cfunction_vectorcall_FASTCALL  (in libpython3.11.dylib) + 80  [0x1025d5204]
+                                            +   !   : | +       1 PyNumber_Add  (in libpython3.11.dylib) + 92  [0x1022fca04]
+                                            +   !   : | +         1 float_add  (in libpython3.11.dylib) + 108  [0x1025c5f40]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 27068  [0x107ee704c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:12955
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1892  [0x107cf3a74]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11670
+                                            +   !   : | +     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_18num_guard  (in _t89_runtime.cpython-311-darwin.so) + 52  [0x107cf0cc8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:10079
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 28888  [0x107ee7768]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:13169
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 112  [0x107cf2f78]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11409
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 29868  [0x107ee7b3c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:13268
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1792  [0x107cf3a10]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11663
+                                            +   !   : | +     1 __Pyx_PyObject_FastCallDict  (in _t89_runtime.cpython-311-darwin.so) + 304  [0x107d08dcc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:30170
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 30104  [0x107ee7c28]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:13289
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 cfunction_vectorcall_FASTCALL  (in libpython3.11.dylib) + 96  [0x1025d5214]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 33108  [0x107ee87e4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:13655
+                                            +   !   : | + 1 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : | +   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_58b_max  (in _t89_runtime.cpython-311-darwin.so) + 252  [0x107d0d838]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:19748
+                                            +   !   : | +     1 PySequence_List  (in libpython3.11.dylib) + 144  [0x102412d6c]
+                                            +   !   : | +       1 list_extend  (in libpython3.11.dylib) + 4  [0x1022c12b8]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 102924  [0x107ef989c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:15063
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 3184  [0x107cfb69c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | +   1 set_contains  (in libpython3.11.dylib) + 40  [0x1023fdaa4]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 48844  [0x107eec55c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:15457
+                                            +   !   : | + 1 __Pyx_CyFunction_Vectorcall_FASTCALL_KEYWORDS  (in _t89_runtime.cpython-311-darwin.so) + 44  [0x107ce6148]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:33955
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 101508  [0x107ef9314]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:16968
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1704  [0x107cf39b8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11646
+                                            +   !   : | +     1 dict_subscript  (in libpython3.11.dylib) + 24  [0x1025cfc40]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 102612  [0x107ef9764]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:17013
+                                            +   !   : | + 1 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : | +   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_58b_max  (in _t89_runtime.cpython-311-darwin.so) + 284  [0x107d0d858]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:19748
+                                            +   !   : | +     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_6items_structure_cost  (in _t89_runtime.cpython-311-darwin.so) + 192  [0x107cebcec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:0
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 112252  [0x107efbd0c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:17365
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1892  [0x107cf3a74]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11670
+                                            +   !   : | +     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_18num_guard  (in _t89_runtime.cpython-311-darwin.so) + 784  [0x107cf0fa4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:10116
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_16jointwait  (in _t118_candidate.cpython-311-darwin.so) + 119712  [0x107efda30]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:17906
+                                            +   !   : |   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_46wrap_list  (in _t89_runtime.cpython-311-darwin.so) + 412  [0x107cfead8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:18016
+                                            +   !   : |     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_45wrap_list  (in _t89_runtime.cpython-311-darwin.so) + 424  [0x107cfede8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:18219
+                                            +   !   : |       1 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : |         1 type_call  (in libpython3.11.dylib) + 136  [0x1025dfc54]
+                                            +   !   : |           1 slot_tp_init  (in libpython3.11.dylib) + 276  [0x1024194a4]
+                                            +   !   : |             1 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 132  [0x1024ef35c]
+                                            +   !   : 27 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 7716  [0x107f0f0c8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:23510
+                                            +   !   : | 13 __pyx_pf_15_t118_candidate_14make_candidate_4routesupport  (in _t118_candidate.cpython-311-darwin.so) + 708  [0x107ed2bb4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:5041
+                                            +   !   : | + 11 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 2852  [0x107cfb550]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 4 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 76  [0x107cec860]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8030
+                                            +   !   : | + ! : 4 __pyx_pf_12_t89_runtime_20_make_native_runtime_seq_len  (in _t89_runtime.cpython-311-darwin.so) + 128  [0x107ceafcc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:7151
+                                            +   !   : | + ! :   3 slot_sq_length  (in libpython3.11.dylib) + 56  [0x1025deb18]
+                                            +   !   : | + ! :   | 2 vectorcall_method  (in libpython3.11.dylib) + 172  [0x1022de7c4]
+                                            +   !   : | + ! :   | + 2 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   : | + ! :   | +   2 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 256,142236  [0x10235a6bc,0x10237d158]
+                                            +   !   : | + ! :   | 1 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 1144  [0x1024ef750]
+                                            +   !   : | + ! :   1 slot_sq_length  (in libpython3.11.dylib) + 116  [0x1025deb54]
+                                            +   !   : | + ! :     1 PyNumber_AsSsize_t  (in libpython3.11.dylib) + 112  [0x10230052c]
+                                            +   !   : | + ! 2 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 3116  [0x107ced440]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8258
+                                            +   !   : | + ! : 2 PyObject_GetIter  (in libpython3.11.dylib) + 32  [0x1022dc1f0]
+                                            +   !   : | + ! :   2 slot_tp_iter  (in libpython3.11.dylib) + 80  [0x1025dc744]
+                                            +   !   : | + ! :     2 PyObject_CallOneArg  (in libpython3.11.dylib) + 108  [0x10231128c]
+                                            +   !   : | + ! :       2 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   : | + ! :         2 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 210872  [0x10238dd74]
+                                            +   !   : | + ! :           1 list_vectorcall  (in libpython3.11.dylib) + 300  [0x10253feb4]
+                                            +   !   : | + ! :           | 1 list_extend  (in libpython3.11.dylib) + 472  [0x1022c148c]
+                                            +   !   : | + ! :           1 list_vectorcall  (in libpython3.11.dylib) + 280  [0x10253fea0]
+                                            +   !   : | + ! 2 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 1248  [0x107ceccf4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8350
+                                            +   !   : | + ! : 1 __Pyx_PyObject_CompareBoolGt_object_object  (in _t89_runtime.cpython-311-darwin.so) + 520  [0x107d09bf0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:31878
+                                            +   !   : | + ! : | 1 OUTLINED_FUNCTION_116  (in _t89_runtime.cpython-311-darwin.so) + 0  [0x107d06ee4]
+                                            +   !   : | + ! : 1 __Pyx_PyObject_CompareBoolGt_object_object  (in _t89_runtime.cpython-311-darwin.so) + 504  [0x107d09be0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:31878
+                                            +   !   : | + ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 1068  [0x107cecc40]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8329
+                                            +   !   : | + ! : 1 __pyx_pw_13_t88_executor_7structure_cost  (in _t88_executor.cpython-311-darwin.so) + 592  [0x107c137ec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:6579
+                                            +   !   : | + ! :   1 __pyx_pw_13_t88_executor_5_walk_structure  (in _t88_executor.cpython-311-darwin.so) + 472  [0x107c107fc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:5462
+                                            +   !   : | + ! :     1 long_div  (in libpython3.11.dylib) + 156  [0x1023b6e78]
+                                            +   !   : | + ! 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_8scan_cost  (in _t89_runtime.cpython-311-darwin.so) + 1136  [0x107cecc84]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:8335
+                                            +   !   : | + ! 1 __pyx_pw_13_t88_executor_7structure_cost  (in _t88_executor.cpython-311-darwin.so) + 988  [0x107c13978]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:6587
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 340  [0x107cfab80]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 1 PyUnicode_Compare  (in libpython3.11.dylib) + 160  [0x102336df0]
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 4180  [0x107cfba80]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | +   1 dict_subscript  (in libpython3.11.dylib) + 1180  [0x1025d00c4]
+                                            +   !   : | 4 __pyx_pf_15_t118_candidate_14make_candidate_4routesupport  (in _t118_candidate.cpython-311-darwin.so) + 1216  [0x107ed2db0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:5101
+                                            +   !   : | + 4 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : | +   3 __pyx_pw_12_t89_runtime_20_make_native_runtime_9av_method_3grow  (in _t89_runtime.cpython-311-darwin.so) + 832  [0x107d0c3cc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:17172
+                                            +   !   : | +   ! 3 method_vectorcall  (in libpython3.11.dylib) + 156  [0x1025bdbb4]
+                                            +   !   : | +   !   3 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   : | +   !     3 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 29192,109068,...  [0x1023617c4,0x102374fc8,...]
+                                            +   !   : | +   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_9av_method_3grow  (in _t89_runtime.cpython-311-darwin.so) + 128  [0x107d0c10c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:17172
+                                            +   !   : | +     1 slot_sq_length  (in libpython3.11.dylib) + 56  [0x1025deb18]
+                                            +   !   : | +       1 vectorcall_method  (in libpython3.11.dylib) + 148  [0x1022de7ac]
+                                            +   !   : | 2 __pyx_pf_15_t118_candidate_14make_candidate_4routesupport  (in _t118_candidate.cpython-311-darwin.so) + 1996  [0x107ed30bc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:5221
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 2368  [0x107cfb36c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 1 PyUnicode_Compare  (in libpython3.11.dylib) + 192  [0x102336e10]
+                                            +   !   : | + !   1 _platform_memcmp  (in libsystem_platform.dylib) + 272  [0x1887c7040]
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 980  [0x107cfae00]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | 1 __Pyx_PyObject_FastCallDict  (in _t118_candidate.cpython-311-darwin.so) + 296  [0x107f38544]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:39801
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_4routesupport  (in _t118_candidate.cpython-311-darwin.so) + 196  [0x107ed29b4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:4919
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_96b_set  (in _t89_runtime.cpython-311-darwin.so) + 424  [0x107d04bec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:24350
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_47wrap_set  (in _t89_runtime.cpython-311-darwin.so) + 428  [0x107cff57c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:18548
+                                            +   !   : | +     1 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : | +       1 type_call  (in libpython3.11.dylib) + 136  [0x1025dfc54]
+                                            +   !   : | +         1 slot_tp_init  (in libpython3.11.dylib) + 276  [0x1024194a4]
+                                            +   !   : | +           1 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 376  [0x1024ef450]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_4routesupport  (in _t118_candidate.cpython-311-darwin.so) + 904  [0x107ed2c78]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:5002
+                                            +   !   : | + 1 __Pyx_Generator_Next  (in _t88_counts.cpython-311-darwin.so) + 308  [0x107a6e63c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_counts.c:37509
+                                            +   !   : | +   1 __Pyx_Coroutine_SendEx  (in _t88_counts.cpython-311-darwin.so) + 120  [0x107a6ee78]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_counts.c:37245
+                                            +   !   : | +     1 __pyx_gb_12_t89_runtime_20_make_native_runtime_36generator  (in _t89_runtime.cpython-311-darwin.so) + 292  [0x107cfa574]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:14972
+                                            +   !   : | +       1 __pyx_f_12_t89_runtime_6_Meter__charge_one  (in _t89_runtime.cpython-311-darwin.so) + 132  [0x107ce13f8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:5706
+                                            +   !   : | +         1 __pyx_f_12_t89_runtime_6_Meter__check_fast  (in _t89_runtime.cpython-311-darwin.so) + 80  [0x107ce0acc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:0
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_4routesupport  (in _t118_candidate.cpython-311-darwin.so) + 1112  [0x107ed2d48]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:5081
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_44av_method  (in _t89_runtime.cpython-311-darwin.so) + 924  [0x107cfe278]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16827
+                                            +   !   : | +   1 PyUnicode_Compare  (in libpython3.11.dylib) + 192  [0x102336e10]
+                                            +   !   : | +     1 DYLD-STUB$$memcmp  (in libpython3.11.dylib) + 4  [0x102b816c0]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_4routesupport  (in _t118_candidate.cpython-311-darwin.so) + 1616  [0x107ed2f40]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:5162
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_42av_sub  (in _t89_runtime.cpython-311-darwin.so) + 1532  [0x107cfd894]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16349
+                                            +   !   : | +   1 slot_mp_subscript  (in libpython3.11.dylib) + 212  [0x1025decd4]
+                                            +   !   : | +     1 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   : | +       1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 210940  [0x10238ddb8]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_4routesupport  (in _t118_candidate.cpython-311-darwin.so) + 2960  [0x107ed3480]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:5282
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1892  [0x107cf3a74]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11670
+                                            +   !   : | +     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_18num_guard  (in _t89_runtime.cpython-311-darwin.so) + 784  [0x107cf0fa4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:10116
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_4routesupport  (in _t118_candidate.cpython-311-darwin.so) + 3576  [0x107ed36e8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:5376
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 100  [0x107cf3374]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11486
+                                            +   !   : | +     1 __pyx_f_12_t89_runtime_6_Meter__charge_one  (in _t89_runtime.cpython-311-darwin.so) + 44  [0x107ce13a0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:5656
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_4routesupport  (in _t118_candidate.cpython-311-darwin.so) + 8072  [0x107ed4878]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:5636
+                                            +   !   : |   1 DYLD-STUB$$_Py_Dealloc  (in _t118_candidate.cpython-311-darwin.so) + 4  [0x107f42284]
+                                            +   !   : 19 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 2536  [0x107f0dc8c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:23385
+                                            +   !   : | 5 __pyx_pf_15_t118_candidate_14make_candidate_2stockof  (in _t118_candidate.cpython-311-darwin.so) + 936  [0x107ed18b8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:4308
+                                            +   !   : | + 2 __pyx_pw_12_t89_runtime_20_make_native_runtime_42av_sub  (in _t89_runtime.cpython-311-darwin.so) + 1592  [0x107cfd8d0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16349
+                                            +   !   : | + ! 1 DYLD-STUB$$PyType_IsSubtype  (in _t89_runtime.cpython-311-darwin.so) + 4  [0x107d16fe0]
+                                            +   !   : | + ! 1 PyType_IsSubtype  (in libpython3.11.dylib) + 44  [0x1022c6b04]
+                                            +   !   : | + 2 __pyx_pw_12_t89_runtime_20_make_native_runtime_42av_sub  (in _t89_runtime.cpython-311-darwin.so) + 1492,1520  [0x107cfd86c,0x107cfd888]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16349
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_42av_sub  (in _t89_runtime.cpython-311-darwin.so) + 1532  [0x107cfd894]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16349
+                                            +   !   : | +   1 tuplesubscript  (in libpython3.11.dylib) + 72  [0x1025db2d0]
+                                            +   !   : | +     1 PyNumber_AsSsize_t  (in libpython3.11.dylib) + 8  [0x1023004c4]
+                                            +   !   : | 5 __pyx_pf_15_t118_candidate_14make_candidate_2stockof  (in _t118_candidate.cpython-311-darwin.so) + 1232  [0x107ed19e0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:4343
+                                            +   !   : | + 2 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 3676  [0x107cfb888]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 2 __pyx_pw_13_t88_executor_7structure_cost  (in _t88_executor.cpython-311-darwin.so) + 592  [0x107c137ec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:6579
+                                            +   !   : | + !   1 __Pyx_PyObject_FastCallDict  (in _t88_executor.cpython-311-darwin.so) + 24  [0x107c36950]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:30318
+                                            +   !   : | + !   1 __Pyx_PyObject_FastCallDict  (in _t88_executor.cpython-311-darwin.so) + 304  [0x107c36a68]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:30335
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 340  [0x107cfab80]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 1 PyUnicode_Compare  (in libpython3.11.dylib) + 32  [0x102336d70]
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 3848  [0x107cfb934]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 1 __Pyx_PyObject_FastCallDict  (in _t88_executor.cpython-311-darwin.so) + 360  [0x107c36aa0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:30337
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 340  [0x107cfab80]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | 3 __pyx_pf_15_t118_candidate_14make_candidate_2stockof  (in _t118_candidate.cpython-311-darwin.so) + 1448  [0x107ed1ab8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:4377
+                                            +   !   : | + 1 PyUnicode_Compare  (in libpython3.11.dylib) + 72  [0x102336d98]
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 340  [0x107cfab80]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | + ! 1 PyUnicode_Compare  (in libpython3.11.dylib) + 192  [0x102336e10]
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 1652  [0x107cfb0a0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15147
+                                            +   !   : | 2 __pyx_pf_15_t118_candidate_14make_candidate_2stockof  (in _t118_candidate.cpython-311-darwin.so) + 156  [0x107ed15ac]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:4229
+                                            +   !   : | + 2 __pyx_pw_12_t89_runtime_20_make_native_runtime_42av_sub  (in _t89_runtime.cpython-311-darwin.so) + 1532  [0x107cfd894]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16349
+                                            +   !   : | +   2 dict_subscript  (in libpython3.11.dylib) + 1236,1264  [0x1025d00fc,0x1025d0118]
+                                            +   !   : | 2 __pyx_pf_15_t118_candidate_14make_candidate_2stockof  (in _t118_candidate.cpython-311-darwin.so) + 700  [0x107ed17cc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:4288
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_42av_sub  (in _t89_runtime.cpython-311-darwin.so) + 1880  [0x107cfd9f0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16349
+                                            +   !   : | + ! 1 PyType_IsSubtype  (in libpython3.11.dylib) + 36  [0x1022c6afc]
+                                            +   !   : | + 1 set_contains  (in libpython3.11.dylib) + 352  [0x1023fdbdc]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_2stockof  (in _t118_candidate.cpython-311-darwin.so) + 464  [0x107ed16e0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:4249
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_42av_sub  (in _t89_runtime.cpython-311-darwin.so) + 1492  [0x107cfd86c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16349
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_2stockof  (in _t118_candidate.cpython-311-darwin.so) + 2076  [0x107ed1d2c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:4420
+                                            +   !   : |   1 __Pyx_PyObject_FastCallDict  (in _t118_candidate.cpython-311-darwin.so) + 28  [0x107f38438]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:39782
+                                            +   !   : 11 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 2648  [0x107f0dcfc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:23405
+                                            +   !   : | 10 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : | + 6 __pyx_pw_12_t89_runtime_20_make_native_runtime_9av_method_3grow  (in _t89_runtime.cpython-311-darwin.so) + 832  [0x107d0c3cc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:17172
+                                            +   !   : | + ! 6 method_vectorcall  (in libpython3.11.dylib) + 156  [0x1025bdbb4]
+                                            +   !   : | + !   6 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   : | + !     3 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 68,4088,...  [0x10235a600,0x10235b5b4,...]
+                                            +   !   : | + !     1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 191364  [0x102389140]
+                                            +   !   : | + !     : 1 PyObject_GC_Del  (in libpython3.11.dylib) + 8  [0x1024bb0cc]
+                                            +   !   : | + !     1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 210872  [0x10238dd74]
+                                            +   !   : | + !     : 1 super_vectorcall  (in libpython3.11.dylib) + 52  [0x1022fe8d4]
+                                            +   !   : | + !     :   1 PyType_GenericAlloc  (in libpython3.11.dylib) + 168  [0x10234373c]
+                                            +   !   : | + !     :     1 _platform_memset  (in libsystem_platform.dylib) + 180  [0x1887c91a4]
+                                            +   !   : | + !     1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 211320  [0x10238df34]
+                                            +   !   : | + !       1 list_append  (in libpython3.11.dylib) + 212  [0x102acdb48]
+                                            +   !   : | + !         1 _PyObject_Realloc  (in libpython3.11.dylib) + 100  [0x102ad3b34]
+                                            +   !   : | + 1 __Pyx_CyFunction_CallMethod  (in _t88_counts.cpython-311-darwin.so) + 12  [0x107a74a00]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_counts.c:35423
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_9av_method_3grow  (in _t89_runtime.cpython-311-darwin.so) + 928  [0x107d0c42c]  /Users/liyang/hangma-bot/.uv-python/cpython-3.11.15-macos-aarch64-none/include/python3.11/object.h:0
+                                            +   !   : | + ! 1 dict_dealloc  (in libpython3.11.dylib) + 32  [0x1025cee50]
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_9av_method_3grow  (in _t89_runtime.cpython-311-darwin.so) + 128  [0x107d0c10c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:17172
+                                            +   !   : | + ! 1 list_length  (in libpython3.11.dylib) + 0  [0x102ace274]
+                                            +   !   : | + 1 dict_dealloc  (in libpython3.11.dylib) + 248  [0x1025cef28]
+                                            +   !   : | 1 tupledealloc  (in libpython3.11.dylib) + 376  [0x102523c54]
+                                            +   !   : 5 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 2424  [0x107f0dc1c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:23375
+                                            +   !   : | 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_44av_method  (in _t89_runtime.cpython-311-darwin.so) + 836  [0x107cfe220]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16827
+                                            +   !   : | + 1 PyUnicode_Compare  (in libpython3.11.dylib) + 56  [0x102336d88]
+                                            +   !   : | 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_44av_method  (in _t89_runtime.cpython-311-darwin.so) + 2256  [0x107cfe7ac]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16827
+                                            +   !   : | + 1 DYLD-STUB$$PyDict_New  (in _t89_runtime.cpython-311-darwin.so) + 4  [0x107d16a94]
+                                            +   !   : | 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_44av_method  (in _t89_runtime.cpython-311-darwin.so) + 2324  [0x107cfe7f0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16827
+                                            +   !   : | + 1 DYLD-STUB$$PyDict_SetItem  (in _t89_runtime.cpython-311-darwin.so) + 4  [0x107d16ab8]
+                                            +   !   : | 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_44av_method  (in _t89_runtime.cpython-311-darwin.so) + 1608  [0x107cfe524]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16827
+                                            +   !   : | 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_44av_method  (in _t89_runtime.cpython-311-darwin.so) + 1456  [0x107cfe48c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:16831
+                                            +   !   : 4 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 284  [0x107f0d3c0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:23163
+                                            +   !   : | 4 __pyx_pw_12_t89_runtime_20_make_native_runtime_46wrap_list  (in _t89_runtime.cpython-311-darwin.so) + 412  [0x107cfead8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:18016
+                                            +   !   : |   2 __pyx_pf_12_t89_runtime_20_make_native_runtime_45wrap_list  (in _t89_runtime.cpython-311-darwin.so) + 128  [0x107cfecc0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:18071
+                                            +   !   : |   + 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_seq_len  (in _t89_runtime.cpython-311-darwin.so) + 128  [0x107ceafcc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:7151
+                                            +   !   : |   + ! 1 DYLD-STUB$$PyObject_Size  (in _t89_runtime.cpython-311-darwin.so) + 4  [0x107d16f08]
+                                            +   !   : |   + 1 __pyx_pf_12_t89_runtime_20_make_native_runtime_seq_len  (in _t89_runtime.cpython-311-darwin.so) + 140  [0x107ceafd8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:7152
+                                            +   !   : |   +   1 PyLong_FromSsize_t  (in libpython3.11.dylib) + 36  [0x1022e4878]
+                                            +   !   : |   1 _PyObject_FastCallDictTstate  (in libpython3.11.dylib) + 604  [0x10241a828]
+                                            +   !   : |   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_45wrap_list  (in _t89_runtime.cpython-311-darwin.so) + 424  [0x107cfede8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:18219
+                                            +   !   : |     1 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : |       1 type_call  (in libpython3.11.dylib) + 136  [0x1025dfc54]
+                                            +   !   : |         1 slot_tp_init  (in libpython3.11.dylib) + 276  [0x1024194a4]
+                                            +   !   : |           1 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   : |             1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 198348  [0x10238ac88]
+                                            +   !   : |               1 wrap_init  (in libpython3.11.dylib) + 20  [0x102ad8194]
+                                            +   !   : |                 1 list___init__  (in libpython3.11.dylib) + 112  [0x1025c9648]
+                                            +   !   : 4 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 7840  [0x107f0f144]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:23518
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_10actualroute  (in _t118_candidate.cpython-311-darwin.so) + 1004  [0x107ed7b70]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:7078
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1892  [0x107cf3a74]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11670
+                                            +   !   : | +     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_18num_guard  (in _t89_runtime.cpython-311-darwin.so) + 1144  [0x107cf110c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:10264
+                                            +   !   : | +       1 PyNumber_Negative  (in libpython3.11.dylib) + 36  [0x1024bac88]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_10actualroute  (in _t118_candidate.cpython-311-darwin.so) + 1700  [0x107ed7e28]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:7123
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 52  [0x107cf3344]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11481
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_10actualroute  (in _t118_candidate.cpython-311-darwin.so) + 2028  [0x107ed7f70]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:7144
+                                            +   !   : | + 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : | +   1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 772  [0x107cf3614]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11561
+                                            +   !   : | +     1 object_richcompare  (in libpython3.11.dylib) + 68  [0x102ada45c]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_10actualroute  (in _t118_candidate.cpython-311-darwin.so) + 2496  [0x107ed8144]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:7166
+                                            +   !   : |   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : |     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1892  [0x107cf3a74]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11670
+                                            +   !   : |       1 __pyx_pf_12_t89_runtime_20_make_native_runtime_18num_guard  (in _t89_runtime.cpython-311-darwin.so) + 612  [0x107cf0ef8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:10112
+                                            +   !   : 2 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 2888  [0x107f0ddec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:23408
+                                            +   !   : | 1 __Pyx_CyFunction_dealloc  (in _t88_counts.cpython-311-darwin.so) + 20  [0x107a74698]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_counts.c:35367
+                                            +   !   : | + 1 PyObject_GC_UnTrack  (in libpython3.11.dylib) + 0  [0x102b01008]
+                                            +   !   : | 1 __Pyx_CyFunction_dealloc  (in _t88_counts.cpython-311-darwin.so) + 44  [0x107a746b0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_counts.c:35368
+                                            +   !   : |   1 __Pyx__CyFunction_clear  (in _t88_counts.cpython-311-darwin.so) + 440  [0x107a749dc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_counts.c:35345
+                                            +   !   : |     1 DYLD-STUB$$_Py_Dealloc  (in _t88_counts.cpython-311-darwin.so) + 4  [0x107a9e624]
+                                            +   !   : 2 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 7260  [0x107f0ef00]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:23439
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_8prepvalue  (in _t118_candidate.cpython-311-darwin.so) + 700  [0x107ed655c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:6520
+                                            +   !   : | + 1 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   : | +   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_58b_max  (in _t89_runtime.cpython-311-darwin.so) + 628  [0x107d0d9b0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:19748
+                                            +   !   : | +     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_18num_guard  (in _t89_runtime.cpython-311-darwin.so) + 2168  [0x107cf150c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:0
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_8prepvalue  (in _t118_candidate.cpython-311-darwin.so) + 1072  [0x107ed66d0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:6592
+                                            +   !   : |   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : |     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 100  [0x107cf3374]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11486
+                                            +   !   : |       1 __pyx_f_12_t89_runtime_6_Meter__check_fast  (in _t89_runtime.cpython-311-darwin.so) + 104  [0x107ce0ae4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:5432
+                                            +   !   : 2 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 9616  [0x107f0f834]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:24215
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_12paysummary  (in _t118_candidate.cpython-311-darwin.so) + 6120  [0x107eda44c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:8123
+                                            +   !   : | + 1 __pyx_pf_15_t118_candidate_14make_candidate_paypoints  (in _t118_candidate.cpython-311-darwin.so) + 596  [0x107ed058c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:3982
+                                            +   !   : | +   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_60b_abs  (in _t89_runtime.cpython-311-darwin.so) + 848  [0x107d00d3c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:20152
+                                            +   !   : | +     1 DYLD-STUB$$PyNumber_Absolute  (in _t89_runtime.cpython-311-darwin.so) + 4  [0x107d16d1c]
+                                            +   !   : | 1 __pyx_pf_15_t118_candidate_14make_candidate_12paysummary  (in _t118_candidate.cpython-311-darwin.so) + 7452  [0x107eda980]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:8575
+                                            +   !   : |   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : |     1 __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1876  [0x107cf3a64]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11669
+                                            +   !   : 1 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 3032  [0x107f0de7c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:23332
+                                            +   !   : | 1 __Pyx_Generator_Next  (in _t88_counts.cpython-311-darwin.so) + 312  [0x107a6e640]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_counts.c:37512
+                                            +   !   : 1 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 9164  [0x107f0f670]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:23615
+                                            +   !   : 1 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 33876  [0x107f156f8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:25384
+                                            +   !   : | 1 __Pyx_PyObject_FastCallDict  (in _t118_candidate.cpython-311-darwin.so) + 28  [0x107f38438]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:39782
+                                            +   !   : 1 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 34916  [0x107f15b08]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:25425
+                                            +   !   : | 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+                                            +   !   : |   1 PyObject_RichCompare  (in libpython3.11.dylib) + 160  [0x1022fd4a8]
+                                            +   !   : 1 __pyx_pf_15_t118_candidate_14make_candidate_20waitvalue  (in _t118_candidate.cpython-311-darwin.so) + 36608  [0x107f161a4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:25542
+                                            +   !   :   1 PyTuple_New  (in libpython3.11.dylib) + 156  [0x1022c921c]
+                                            +   !   2 __pyx_pf_15_t118_candidate_14make_candidate_22score_actions  (in _t118_candidate.cpython-311-darwin.so) + 56664  [0x107f242b4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:28896
+                                            +   !   : 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 980  [0x107cfae00]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   : | 1 PyUnicode_Compare  (in libpython3.11.dylib) + 160  [0x102336df0]
+                                            +   !   : 1 cfunction_vectorcall_FASTCALL  (in libpython3.11.dylib) + 96  [0x1025d5214]
+                                            +   !   1 __pyx_pf_15_t118_candidate_14make_candidate_22score_actions  (in _t118_candidate.cpython-311-darwin.so) + 54760  [0x107f23b44]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:28665
+                                            +   !   : 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 980  [0x107cfae00]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15143
+                                            +   !   :   1 PyUnicode_Compare  (in libpython3.11.dylib) + 192  [0x102336e10]
+                                            +   !   :     1 _platform_memcmp  (in libsystem_platform.dylib) + 180  [0x1887c6fe4]
+                                            +   !   1 __pyx_pf_15_t118_candidate_14make_candidate_22score_actions  (in _t118_candidate.cpython-311-darwin.so) + 63176  [0x107f25c24]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:29553
+                                            +   !   : 1 __Pyx_Generator_Next  (in _t88_counts.cpython-311-darwin.so) + 308  [0x107a6e63c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_counts.c:37509
+                                            +   !   :   1 __Pyx_Coroutine_SendEx  (in _t88_counts.cpython-311-darwin.so) + 120  [0x107a6ee78]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_counts.c:37245
+                                            +   !   :     1 __pyx_gb_12_t89_runtime_20_make_native_runtime_36generator  (in _t89_runtime.cpython-311-darwin.so) + 296  [0x107cfa578]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:14972
+                                            +   !   1 __pyx_pf_15_t118_candidate_14make_candidate_22score_actions  (in _t118_candidate.cpython-311-darwin.so) + 63888  [0x107f25eec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:29650
+                                            +   !   : 1 __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so) + 112  [0x107cfaa9c]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:15116
+                                            +   !   1 __pyx_pf_15_t118_candidate_14make_candidate_22score_actions  (in _t118_candidate.cpython-311-darwin.so) + 71000  [0x107f27ab4]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:30664
+                                            +   !   : 1 _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+                                            +   !   :   1 __pyx_pw_12_t89_runtime_20_make_native_runtime_9av_method_3grow  (in _t89_runtime.cpython-311-darwin.so) + 832  [0x107d0c3cc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:17172
+                                            +   !   :     1 method_vectorcall  (in libpython3.11.dylib) + 156  [0x1025bdbb4]
+                                            +   !   :       1 _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+                                            +   !   :         1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 211320  [0x10238df34]
+                                            +   !   :           1 list_append  (in libpython3.11.dylib) + 36  [0x102acda98]
+                                            +   !   1 __pyx_pf_15_t118_candidate_14make_candidate_22score_actions  (in _t118_candidate.cpython-311-darwin.so) + 71072  [0x107f27afc]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:30670
+                                            +   !     1 __pyx_f_15_t118_candidate__direct_pass  (in _t118_candidate.cpython-311-darwin.so) + 68  [0x107ed0980]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t118-s02-native-slice-lowering-1/_t118_candidate.c:3500
+                                            +   !       1 __pyx_f_12_t89_runtime_6_Meter__charge_one  (in _t89_runtime.cpython-311-darwin.so) + 132  [0x107ce13f8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:5706
+                                            +   !         1 __pyx_f_12_t89_runtime_6_Meter__check_fast  (in _t89_runtime.cpython-311-darwin.so) + 44  [0x107ce0aa8]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:5328
+                                            +   3 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 71648  [0x10236bd9c]
+                                            +     3 _PyFrame_Clear  (in libpython3.11.dylib) + 524  [0x1022f682c]
+                                            +       3 dict_dealloc  (in libpython3.11.dylib) + 620  [0x1025cf09c]
+                                            +         3 tupledealloc  (in libpython3.11.dylib) + 436  [0x102523c90]
+                                            +           3 dict_dealloc  (in libpython3.11.dylib) + 620  [0x1025cf09c]
+                                            +             2 dict_dealloc  (in libpython3.11.dylib) + 620  [0x1025cf09c]
+                                            +             : 1 tupledealloc  (in libpython3.11.dylib) + 436  [0x102523c90]
+                                            +             : | 1 dict_dealloc  (in libpython3.11.dylib) + 620  [0x1025cf09c]
+                                            +             : |   1 dict_dealloc  (in libpython3.11.dylib) + 1124  [0x1025cf294]
+                                            +             : |     1 tupledealloc  (in libpython3.11.dylib) + 108  [0x102523b48]
+                                            +             : 1 tupledealloc  (in libpython3.11.dylib) + 148  [0x102523b70]
+                                            +             1 dict_dealloc  (in libpython3.11.dylib) + 1028  [0x1025cf234]
+                                            +               1 dict_dealloc  (in libpython3.11.dylib) + 620  [0x1025cf09c]
+                                            +                 1 tupledealloc  (in libpython3.11.dylib) + 404  [0x102523c70]
+                                            +                   1 dict_dealloc  (in libpython3.11.dylib) + 620  [0x1025cf09c]
+                                            +                     1 tupledealloc  (in libpython3.11.dylib) + 492  [0x102523cc8]
+                                            +                       1 _PyObject_Free  (in libpython3.11.dylib) + 0  [0x102ad497c]
+                                            111 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 196976  [0x10238a72c]
+                                            + 110 cfunction_vectorcall_O  (in libpython3.11.dylib) + 92  [0x10249aa74]
+                                            + ! 110 time_sleep  (in libpython3.11.dylib) + 172  [0x102642b94]
+                                            + !   110 nanosleep  (in libsystem_c.dylib) + 220  [0x18865bcc0]
+                                            + !     110 __semwait_signal  (in libsystem_kernel.dylib) + 8  [0x18877f308]
+                                            + 1 method_vectorcall_VARARGS_KEYWORDS  (in libpython3.11.dylib) + 0  [0x1025bfd30]
+                                            5 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 28620,28688,...  [0x102361588,0x1023615cc,...]
+                                            1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 84408  [0x10236ef74]
+                                            + 1 tupleiter_dealloc  (in libpython3.11.dylib) + 0  [0x102ad6fb0]
+                                            1 _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 211724  [0x10238e0c8]
+                                              1 os_waitpid  (in libpython3.11.dylib) + 56  [0x10248c394]
+                                                1 _PyArg_ParseStack_SizeT  (in libpython3.11.dylib) + 32  [0x10248c464]
+                                                  1 vgetargs1_impl  (in libpython3.11.dylib) + 0  [0x1024f3470]
+
+Total number in stack (recursive counted multiple, when >=5):
+        20       __pyx_pw_12_t89_runtime_20_make_native_runtime_27av_bin  (in _t89_runtime.cpython-311-darwin.so) + 200  [0x107cf2fd0]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11436
+        12       _PyObject_MakeTpCall  (in libpython3.11.dylib) + 320  [0x1023549a4]
+        11       _PyFunction_Vectorcall  (in libpython3.11.dylib) + 420  [0x1024ef47c]
+        7       PyUnicode_Compare  (in libpython3.11.dylib) + 0  [0x102336d50]
+        7       _PyEval_EvalFrameDefault  (in libpython3.11.dylib) + 0  [0x10235a5bc]
+        7       __pyx_pf_12_t89_runtime_20_make_native_runtime_26av_bin  (in _t89_runtime.cpython-311-darwin.so) + 1892  [0x107cf3a74]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t89-fast-meter-prototype-1/_t89_runtime.c:11670
+        7       __pyx_pw_13_t88_executor_7structure_cost  (in _t88_executor.cpython-311-darwin.so) + 592  [0x107c137ec]  /Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t88-native-execution-prototype-1/_t88_executor.c:6579
+        6       dict_dealloc  (in libpython3.11.dylib) + 620  [0x1025cf09c]
+
+Sort by top of stack, same collapsed (when >= 5):
+        __semwait_signal  (in libsystem_kernel.dylib)        2205
+        _PyEval_EvalFrameDefault  (in libpython3.11.dylib)        17
+        PyUnicode_Compare  (in libpython3.11.dylib)        7
+        __Pyx_PyObject_FastCallDict  (in _t88_executor.cpython-311-darwin.so)        5
+        __pyx_pf_12_t89_runtime_20_make_native_runtime_18num_guard  (in _t89_runtime.cpython-311-darwin.so)        5
+        __pyx_pw_12_t89_runtime_20_make_native_runtime_38av_cmp  (in _t89_runtime.cpython-311-darwin.so)        5
+
+Binary Images:
+       0x100f30000 -        0x100f3167b +python3.11 (???) <4C4C4452-5555-3144-A13A-2C7F8B9A01A0> /Users/*/python3.11
+       0x101168000 -        0x10116b4d7 +_grouped_native.cpython-311-darwin.so (0) <3DEF483F-73F3-3F2C-8270-A6E04ECCD450> /Users/*/_grouped_native.cpython-311-darwin.so
+       0x101194000 -        0x10119e3ef +_t88_plain.cpython-311-darwin.so (0) <DD053D3D-947F-3EAD-8B04-751184C3878C> /Users/*/_t88_plain.cpython-311-darwin.so
+       0x1011b0000 -        0x1011b919f +_t120_codec.cpython-311-darwin.so (0) <1F10A88C-E0A5-3EFF-9101-65212ABEB59E> /Users/*/_t120_codec.cpython-311-darwin.so
+       0x1022b8000 -        0x102f29527 +libpython3.11.dylib (3.11) <4C4C449E-5555-3144-A1DE-AA833007A00F> /Users/*/libpython3.11.dylib
+       0x107a6c000 -        0x107aa2b6f +_t88_counts.cpython-311-darwin.so (0) <570B6CCB-671F-3DD0-AAC6-7084B9684DD4> /Users/*/_t88_counts.cpython-311-darwin.so
+       0x107b10000 -        0x107b373c3 +_t88_projection.cpython-311-darwin.so (0) <5B5C73F9-9707-3960-820C-BA886404E62F> /Users/*/_t88_projection.cpython-311-darwin.so
+       0x107b68000 -        0x107bd5acb +_t88_transition.cpython-311-darwin.so (0) <73D69871-9D9A-32E7-9FE2-1B74B504AE95> /Users/*/_t88_transition.cpython-311-darwin.so
+       0x107c08000 -        0x107c4add7 +_t88_executor.cpython-311-darwin.so (0) <643CFE50-68B0-3113-9FB0-7435711629C7> /Users/*/_t88_executor.cpython-311-darwin.so
+       0x107cdc000 -        0x107d1d93f +_t89_runtime.cpython-311-darwin.so (0) <8A5D9261-EEA9-35A7-8671-583258ADB766> /Users/*/_t89_runtime.cpython-311-darwin.so
+       0x107d48000 -        0x107decd9b +_t88_candidate.cpython-311-darwin.so (0) <D8A82CDE-55E4-3BB1-9A26-40B47C34317B> /Users/*/_t88_candidate.cpython-311-darwin.so
+       0x107ec8000 -        0x107f4784f +_t118_candidate.cpython-311-darwin.so (0) <B1561BF2-DADE-3246-8938-26C5BFE88EC1> /Users/*/_t118_candidate.cpython-311-darwin.so
+       0x18835c000 -        0x1883aeb4b  libobjc.A.dylib (951.7) <2E858E25-1FF6-3DA6-84F6-911630620512> /usr/lib/libobjc.A.dylib
+       0x1883af000 -        0x1883e3b34  libdyld.dylib (1376.6) <2C3C5F75-3686-39A1-9202-BD4D2133379D> /usr/lib/system/libdyld.dylib
+       0x1883e4000 -        0x188489ec7  dyld (1.0.0 - 1376.6) <9F682DCF-340C-3BFA-BCDD-DD702F30313E> /usr/lib/dyld
+       0x18848a000 -        0x18848d228  libsystem_blocks.dylib (96) <2EA73169-CF76-3DD1-9869-F23C8B338022> /usr/lib/system/libsystem_blocks.dylib
+       0x18848e000 -        0x1884e251f  libxpc.dylib (3102.100.102) <618039C8-9965-3782-A7D2-90FD4C3DD66F> /usr/lib/system/libxpc.dylib
+       0x1884e3000 -        0x1885039bf  libsystem_trace.dylib (1861.100.19) <08629650-54FC-3AA6-910E-EACA563804D0> /usr/lib/system/libsystem_trace.dylib
+       0x188504000 -        0x1885b1daf  libcorecrypto.dylib (1922.101.2) <D1EC203E-9B2E-391B-8DE3-7C58F0589437> /usr/lib/system/libcorecrypto.dylib
+       0x1885b2000 -        0x1886021d7  libsystem_malloc.dylib (812.100.31) <2AD21BE3-FFDB-31D5-A3D7-2F7F672D6E92> /usr/lib/system/libsystem_malloc.dylib
+       0x188603000 -        0x18864a23f  libdispatch.dylib (1542.100.32) <E17AA23F-DB2A-3302-B14C-F6B08C540FCF> /usr/lib/system/libdispatch.dylib
+       0x18864b000 -        0x18864dffb  libsystem_featureflags.dylib (103) <0DE01F76-4B36-35A2-98F9-43DD147EDD95> /usr/lib/system/libsystem_featureflags.dylib
+       0x18864e000 -        0x1886ceef7  libsystem_c.dylib (1752.100.10) <66EBD321-6899-3863-BA24-5CFC3076A0CB> /usr/lib/system/libsystem_c.dylib
+       0x1886cf000 -        0x18875fae7  libc++.1.dylib (2100.43) <1E9541EC-C564-38CB-BED6-46F708E8D863> /usr/lib/libc++.1.dylib
+       0x188760000 -        0x18877a75f  libc++abi.dylib (2100.43) <E8D325ED-3B97-325E-B494-B1B0FF93D133> /usr/lib/libc++abi.dylib
+       0x18877b000 -        0x1887b828f  libsystem_kernel.dylib (12377.101.15) <51565B39-F595-3E96-A217-FEF29815057A> /usr/lib/system/libsystem_kernel.dylib
+       0x1887b9000 -        0x1887c5b3b  libsystem_pthread.dylib (539.100.4) <E7A73008-0C09-31E3-9DD9-0C61652F0E85> /usr/lib/system/libsystem_pthread.dylib
+       0x1887c6000 -        0x1887ce8f3  libsystem_platform.dylib (375.100.10) <D93EC420-F465-3A3A-916D-A04AF9B023EB> /usr/lib/system/libsystem_platform.dylib
+       0x1887cf000 -        0x1887fe6eb  libsystem_info.dylib (600) <201FD67C-3DF6-3788-B132-A69CAA2AA3D7> /usr/lib/system/libsystem_info.dylib
+       0x1887ff000 -        0x188d5cc5f  com.apple.CoreFoundation (6.9 - 4424.1.402) <04941709-2330-3BF8-9213-6D33964DB448> /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation
+       0x188d5d000 -        0x189077bdf  com.apple.LaunchServices (1141.1 - 1141.1) <7E01ED2D-7B3A-34D5-87F0-AA2785A5605F> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/LaunchServices
+       0x189078000 -        0x1892609bf  com.apple.gpusw.MetalTools (1.0 - 1) <287AFB31-4869-3E39-BBD1-3BB410FEA798> /System/Library/PrivateFrameworks/MetalTools.framework/Versions/A/MetalTools
+       0x189261000 -        0x189a5b4bf  libBLAS.dylib (1551.100.26) <4FC8C9A8-58C3-35DD-A4D8-F02D57F085ED> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+       0x189a5c000 -        0x189b6b35f  com.apple.Lexicon-framework (1.0 - 195.12) <AE8E0828-1A0B-373D-8A02-1531D08590D7> /System/Library/PrivateFrameworks/Lexicon.framework/Versions/A/Lexicon
+       0x189b6c000 -        0x189cd9417  libSparse.dylib (184.80.2) <C7D1864B-A800-3452-B01F-CDBBC9EB70CD> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libSparse.dylib
+       0x189cda000 -        0x189d6d1df  com.apple.SystemConfiguration (1.21 - 1.21) <E192312E-A963-3625-9E4E-5BAE21807384> /System/Library/Frameworks/SystemConfiguration.framework/Versions/A/SystemConfiguration
+       0x189d6e000 -        0x189da257b  libCRFSuite.dylib (55) <33BBBA2B-3BC6-31BB-81A5-03565AF927B3> /usr/lib/libCRFSuite.dylib
+       0x18a06b000 -        0x18b04d1df  com.apple.Foundation (6.9 - 4424.1.402) <8E9A5C62-7E95-3047-81E7-735AE1AEE5F8> /System/Library/Frameworks/Foundation.framework/Versions/C/Foundation
+       0x18b1fd000 -        0x18b31dcbf  com.apple.CoreDisplay (291.3 - 291.3) <193E4CF1-2F3E-3023-BC85-B995752B5290> /System/Library/Frameworks/CoreDisplay.framework/Versions/A/CoreDisplay
+       0x18b31e000 -        0x18b6e073f  com.apple.audio.AudioToolboxCore (1.0 - 1556.528) <E04892F4-3ED8-3993-8683-B8D7A40C3A2D> /System/Library/PrivateFrameworks/AudioToolboxCore.framework/Versions/A/AudioToolboxCore
+       0x18b6e1000 -        0x18b909f1f  com.apple.CoreText (877.4.0.7 - 877.4.0.7) <A372F0BF-AC92-39F6-A41C-580158486082> /System/Library/Frameworks/CoreText.framework/Versions/A/CoreText
+       0x18b90a000 -        0x18c09fe9f  com.apple.audio.CoreAudio (5.0 - 5.0) <72080A9B-8C5B-3E6D-8DE7-0F86C3E698EC> /System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio
+       0x18c0a0000 -        0x18c4bdd1f  com.apple.security (7.0 - 61901.101.4) <4CBBF5DD-B67C-3BE4-9B97-5F113FD01950> /System/Library/Frameworks/Security.framework/Versions/A/Security
+       0x18c4be000 -        0x18c793d33  libicucore.A.dylib (76142.4.7) <BD826EC4-73D6-3F95-ABED-001F02B4A429> /usr/lib/libicucore.A.dylib
+       0x18c794000 -        0x18c79de5f  libsystem_darwin.dylib (1752.100.10) <D5BA0CAB-F283-3620-AAA9-1EEB718E1BA8> /usr/lib/system/libsystem_darwin.dylib
+       0x18c79e000 -        0x18ca95cbf  com.apple.CoreServices.CarbonCore (1333 - 1333) <9BDEEDD0-75AB-38E6-B9D8-E639A234893A> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/CarbonCore.framework/Versions/A/CarbonCore
+       0x18ca96000 -        0x18cad5a5b  com.apple.CoreServicesInternal (505 - 505) <A460D760-9940-3977-A0D7-900705491053> /System/Library/PrivateFrameworks/CoreServicesInternal.framework/Versions/A/CoreServicesInternal
+       0x18cad6000 -        0x18cb151bf  com.apple.CSStore (1141.1 - 1141.1) <D703C5EE-2AC4-3EB8-9258-08501E1BD733> /System/Library/PrivateFrameworks/CoreServicesStore.framework/Versions/A/CoreServicesStore
+       0x18cb16000 -        0x18cbfe23f  com.apple.framework.IOKit (2.0.2 - 100231.100.18.0.1) <E4D05845-A890-377F-BB68-5972BF638119> /System/Library/Frameworks/IOKit.framework/Versions/A/IOKit
+       0x18cbff000 -        0x18cc10f5b  libsystem_notify.dylib (348.100.7) <9F46F30B-B7C0-3DD7-AC38-57B78C7971FF> /usr/lib/system/libsystem_notify.dylib
+       0x18e54a000 -        0x18e5603ff  com.apple.UniformTypeIdentifiers (709 - 709) <31BBE997-B323-3535-9ADB-FD7EF7382BAC> /System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers
+       0x18ea3b000 -        0x18eb1329f  libboringssl.dylib (532.101.3) <042D12D8-A8A0-3F41-ABA8-4F0C1BC7B777> /usr/lib/libboringssl.dylib
+       0x18eb14000 -        0x18eec8f1f  com.apple.CFNetwork (1.0 - 3860.500.112) <3D8050B5-4263-3729-AD04-DF521A24CAC9> /System/Library/Frameworks/CFNetwork.framework/Versions/A/CFNetwork
+       0x18eec9000 -        0x18eee3f5b  libsystem_networkextension.dylib (2226.101.1) <85169C7B-48DD-3542-AD38-F1B88EA2A95A> /usr/lib/system/libsystem_networkextension.dylib
+       0x18eee4000 -        0x18eee5067  libenergytrace.dylib (23) <62B33A35-EA5F-3FCA-9FD4-79C4DFB82FC9> /usr/lib/libenergytrace.dylib
+       0x18eee6000 -        0x18ef65c7f  libMobileGestalt.dylib (1484.100.29.0.1) <018D1CC6-9A6F-309C-92CF-A30594FB12A7> /usr/lib/libMobileGestalt.dylib
+       0x18ef66000 -        0x18ef7dfdf  libsystem_asl.dylib (406) <6427D987-7938-3278-8C14-10FB9C06BBD5> /usr/lib/system/libsystem_asl.dylib
+       0x18ef7e000 -        0x18efa1827  com.apple.TCC (1.0 - 1) <BC682334-20A5-3374-9FC6-627EA7921E04> /System/Library/PrivateFrameworks/TCC.framework/Versions/A/TCC
+       0x18efa2000 -        0x18f556b5f  com.apple.SkyLight (1.600.0 - 921.13.1) <EF82BE18-450B-33FE-9C68-A2C88144F367> /System/Library/PrivateFrameworks/SkyLight.framework/Versions/A/SkyLight
+       0x18f557000 -        0x18fcabfff  com.apple.CoreGraphics (2.0 - 1965.4.5) <B00B63EB-CE38-3544-9C9E-D5309957CE58> /System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics
+       0x18fcac000 -        0x18fe53b8b  com.apple.ColorSync (4.13.0 - 3813.3.3) <5467E64B-022C-3ABE-9D08-A7A433F9FC07> /System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync
+       0x1902a8000 -        0x190695f5f  com.apple.CoreData (120 - 1526) <FC7B6078-A83A-39E4-B4CD-46E46FC71151> /System/Library/Frameworks/CoreData.framework/Versions/A/CoreData
+       0x190696000 -        0x1906b1d5f  com.apple.ProtocolBuffer (1 - 310.24.7.28.9) <66E64E0E-00B6-38DA-8A84-A90DA509B284> /System/Library/PrivateFrameworks/ProtocolBuffer.framework/Versions/A/ProtocolBuffer
+       0x1906b2000 -        0x19089a9ff  libsqlite3.dylib (381) <53ABC511-4939-38EE-9170-BE252A25B254> /usr/lib/libsqlite3.dylib
+       0x19093d000 -        0x190a2e49f  com.apple.BaseBoard (732.1.1 - 732.1.1) <F3D9ECDD-A111-3EFA-913E-7E15E7BB5318> /System/Library/PrivateFrameworks/BaseBoard.framework/Versions/A/BaseBoard
+       0x190a2f000 -        0x190a9a93f  com.apple.RunningBoardServices (1.0 - 1015.100.16) <4937DF6A-027A-3661-A7CC-CCE0F1674A40> /System/Library/PrivateFrameworks/RunningBoardServices.framework/Versions/A/RunningBoardServices
+       0x190a9b000 -        0x190b0ec37  com.apple.AE (944 - 944) <5376E565-7730-3F73-B948-B9D10D08A772> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/AE.framework/Versions/A/AE
+       0x190b0f000 -        0x190b20d87  libdns_services.dylib (2881.100.56.0.1) <8169DB95-C8DE-322C-99BF-D592F610013E> /usr/lib/libdns_services.dylib
+       0x190b21000 -        0x190b29387  libsystem_symptoms.dylib (2169.100.30) <28B6E34E-9C7D-3437-A3F1-A3C979DE579A> /usr/lib/system/libsystem_symptoms.dylib
+       0x190b2a000 -        0x192342cff  com.apple.Network (1.0 - 5812.101.2) <66B895AF-CEE8-378F-ABD8-D4F9738476CA> /System/Library/Frameworks/Network.framework/Versions/A/Network
+       0x192343000 -        0x192372ddf  com.apple.analyticsd (1.0 - 1) <ED4098AC-ECE3-3A22-92F1-A2292DFC13F2> /System/Library/PrivateFrameworks/CoreAnalytics.framework/Versions/A/CoreAnalytics
+       0x192373000 -        0x1923748bb  libDiagnosticMessagesClient.dylib (113) <D5EBC67A-F9F1-3105-A4D0-F1AE518EA2A6> /usr/lib/libDiagnosticMessagesClient.dylib
+       0x192375000 -        0x1923e101f  com.apple.spotlight.metadata.utilities (1.0 - 2418.4.13.404) <0DFEA3CB-1A37-390A-956D-D956B8688AC6> /System/Library/PrivateFrameworks/MetadataUtilities.framework/Versions/A/MetadataUtilities
+       0x1923e2000 -        0x19246db5f  com.apple.Metadata (26.4 - 2418.4.13.404) <9A860898-453E-36F4-9830-6D754A8C7CDC> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/Metadata.framework/Versions/A/Metadata
+       0x19246e000 -        0x1924771eb  com.apple.DiskArbitration (2.7 - 2.7) <CB2C8249-4DCA-34C5-97C0-368485718E68> /System/Library/Frameworks/DiskArbitration.framework/Versions/A/DiskArbitration
+       0x192478000 -        0x19289c023  com.apple.vImage (8.1 - 632.100.6) <E718351A-2443-3919-8135-67ADB9312327> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vImage.framework/Versions/A/vImage
+       0x19289d000 -        0x192cb259f  com.apple.QuartzCore (1195.9 - 1195.9) <B1C40645-C68A-3850-BBC4-29F74E486DF9> /System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore
+       0x192cb3000 -        0x192d044ff  libFontRegistry.dylib (408.4.0.1) <16C4640D-B9D6-35E1-9813-DD8480382152> /System/Library/Frameworks/ApplicationServices.framework/Versions/A/Frameworks/ATS.framework/Versions/A/Resources/libFontRegistry.dylib
+       0x192fcb000 -        0x192fd8aff  com.apple.OpenDirectory (26.4 - 666.100.1) <C0B8EA4A-22A3-3801-A66E-C42358AC0468> /System/Library/Frameworks/OpenDirectory.framework/Versions/A/OpenDirectory
+       0x192fd9000 -        0x19300227f  com.apple.CFOpenDirectory (26.4 - 666.100.1) <3C2B9FAA-A99C-34B6-AA54-601FF113111D> /System/Library/Frameworks/OpenDirectory.framework/Versions/A/Frameworks/CFOpenDirectory.framework/Versions/A/CFOpenDirectory
+       0x193003000 -        0x19300f91b  com.apple.CoreServices.FSEvents (1413.100.6 - 1413.100.6) <EB26C31A-4C42-31CD-B48B-9BFCCFAA7A4B> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/FSEvents.framework/Versions/A/FSEvents
+       0x193010000 -        0x1930390df  com.apple.coreservices.SharedFileList (225 - 225) <5BCA48BA-0BDB-355B-9F0A-75E649EC3359> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/SharedFileList.framework/Versions/A/SharedFileList
+       0x19303a000 -        0x19303d08f  libapp_launch_measurement.dylib (17) <DBB6338E-E92E-364B-8714-9578C3E53B7E> /usr/lib/libapp_launch_measurement.dylib
+       0x19303e000 -        0x1930869bf  com.apple.CoreAutoLayout (1.0 - 34) <EF256F92-D3A3-3C65-97B9-DBAED3A57A8D> /System/Library/PrivateFrameworks/CoreAutoLayout.framework/Versions/A/CoreAutoLayout
+       0x193087000 -        0x19316d13b  libxml2.2.dylib (39.10) <B627FBCA-2F68-3C56-B092-73F62A6FCC92> /usr/lib/libxml2.2.dylib
+       0x19316e000 -        0x1931ee85f  com.apple.CoreVideo (1.8 - 734.4) <27CE0BA7-202B-34AC-BA6C-56891CCEC5F1> /System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo
+       0x1931ef000 -        0x1931f1f5f  com.apple.loginsupport (3.0 - 264.4.1) <D27E83AC-E64D-3180-ACB3-9FDAC47541DD> /System/Library/PrivateFrameworks/login.framework/Versions/A/Frameworks/loginsupport.framework/Versions/A/loginsupport
+       0x193230000 -        0x19325c65f  com.apple.UserManagement (1.0 - 1) <0C8B7C6C-CCCD-3EAF-B5E5-D4B6F776123A> /System/Library/PrivateFrameworks/UserManagement.framework/Versions/A/UserManagement
+       0x194dbc000 -        0x194df425f  libsystem_containermanager.dylib (725.100.37) <14750F95-BB3A-3654-8610-A05A454643A8> /usr/lib/system/libsystem_containermanager.dylib
+       0x194df5000 -        0x194e1125f  com.apple.IOSurface (393.5.7 - 393.5.7) <6A59B8B3-E55E-315B-87BF-260C95008770> /System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface
+       0x194e12000 -        0x194e1c05f  com.apple.IOAccelerator (487.4.3 - 487.4.3) <D7DC2BD8-513C-3354-ACC0-C3140D9A0A86> /System/Library/PrivateFrameworks/IOAccelerator.framework/Versions/A/IOAccelerator
+       0x194e1d000 -        0x1950f6cdf  com.apple.Metal (372.16 - 372.16) <4E1D8F53-729B-3232-A184-2E9CD18AAD43> /System/Library/Frameworks/Metal.framework/Versions/A/Metal
+       0x1950f7000 -        0x19512003f  com.apple.audio.caulk (1.0 - 214.501) <2BDD6811-CE34-3098-9833-10D9F74B7FFC> /System/Library/PrivateFrameworks/caulk.framework/Versions/A/caulk
+       0x195121000 -        0x1952c201f  com.apple.CoreMedia (1.0 - 3305.24.5.2) <09574F0D-9398-3C09-9DE8-F3834E693B68> /System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia
+       0x1952c3000 -        0x19559225f  libFontParser.dylib (435.4.0.2) <8B98C347-62C7-38F2-92C8-244B6DFD3639> /System/Library/PrivateFrameworks/FontServices.framework/libFontParser.dylib
+       0x1958e8000 -        0x195c26cff  com.apple.ImageIO (3.3.0 - 2784.4.14) <7FA508AE-1EC7-36B6-AE29-EDD453A34CAD> /System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO
+       0x195c27000 -        0x196111eff  com.apple.CoreImage (19.0.0 - 1592.80.2) <8ED0F6C5-AFF1-3217-B13C-DC2FB7090F2D> /System/Library/Frameworks/CoreImage.framework/Versions/A/CoreImage
+       0x196112000 -        0x1961cbddf  com.apple.MetalPerformanceShaders.MPSCore (1.0 - 1) <8E8DEA53-FF92-3DA6-A47E-BA27226D8029> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSCore.framework/Versions/A/MPSCore
+       0x1961cc000 -        0x1961d05d7  libsystem_configuration.dylib (1405.100.8) <634F597D-F8BD-3C00-B967-86047FC15D14> /usr/lib/system/libsystem_configuration.dylib
+       0x1961d1000 -        0x1961d78cf  libsystem_sandbox.dylib (2680.100.174) <AF76231D-EADC-3399-9414-6AD90FB4EA89> /usr/lib/system/libsystem_sandbox.dylib
+       0x1961d8000 -        0x1961d917f  com.apple.AggregateDictionary (1.0 - 1) <1178C8EA-95DB-3BBA-A00F-E6D3A647940E> /System/Library/PrivateFrameworks/AggregateDictionary.framework/Versions/A/AggregateDictionary
+       0x1961da000 -        0x1961de4d3  com.apple.AppleSystemInfo (3.1.5 - 3.1.5) <450E68B1-E42E-3448-8003-6E070946E9E7> /System/Library/PrivateFrameworks/AppleSystemInfo.framework/Versions/A/AppleSystemInfo
+       0x1961df000 -        0x1961e046b  liblangid.dylib (140) <A5624740-6148-34D2-B600-FB6FD4FB8451> /usr/lib/liblangid.dylib
+       0x1961e1000 -        0x19630045f  com.apple.CoreNLP (1.0 - 313) <1B118152-B1A9-315A-8B44-BDAC6FB589B5> /System/Library/PrivateFrameworks/CoreNLP.framework/Versions/A/CoreNLP
+       0x196301000 -        0x19630791f  com.apple.LinguisticData (1.0 - 483.10) <3273A361-CE08-3AED-91E9-55AB460015F3> /System/Library/PrivateFrameworks/LinguisticData.framework/Versions/A/LinguisticData
+       0x196308000 -        0x19737c7ef  libBNNS.dylib (1961.100.57) <BEA265F4-3EBD-39BD-89B3-39F251359D46> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBNNS.dylib
+       0x19737d000 -        0x1974ba46f  libvDSP.dylib (1126.100.7) <7F1C88BC-7C8D-3D5C-B38C-43082CD9C468> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libvDSP.dylib
+       0x1974ef000 -        0x197528267  com.apple.IOMobileFramebuffer (343.0.0 - 343.0.0) <4E324CA4-23BF-3216-8749-717D5AD761B3> /System/Library/PrivateFrameworks/IOMobileFramebuffer.framework/Versions/A/IOMobileFramebuffer
+       0x197720000 -        0x1977376df  com.apple.MobileKeyBag (2.0 - 1.0) <F8D5F6A0-E9FC-3CD4-ABDB-C1AE9347AB2B> /System/Library/PrivateFrameworks/MobileKeyBag.framework/Versions/A/MobileKeyBag
+       0x197738000 -        0x1977460ff  com.apple.AssertionServices (1.0 - 1015.100.16) <8BDF4215-2AE2-38A1-92D9-8D503B064790> /System/Library/PrivateFrameworks/AssertionServices.framework/Versions/A/AssertionServices
+       0x197747000 -        0x1977d9a9f  com.apple.securityfoundation (6.0 - 55293) <46DCD2FA-35AA-3CE1-AF5A-CB7D207E4B95> /System/Library/Frameworks/SecurityFoundation.framework/Versions/A/SecurityFoundation
+       0x1977da000 -        0x19780b2ff  com.apple.coreservices.BackgroundTaskManagement (1.0 - 104) <92EFE219-3F5F-31DE-BF8F-A48374CC3A11> /System/Library/PrivateFrameworks/BackgroundTaskManagement.framework/Versions/A/BackgroundTaskManagement
+       0x197817000 -        0x19781a1fb  libquarantine.dylib (196.100.8) <268FEB6E-A237-3050-BFFF-AE3A66B7EAD4> /usr/lib/system/libquarantine.dylib
+       0x19781b000 -        0x1978262bf  libCheckFix.dylib (33) <01812E54-6AFA-31D0-9ED8-9780885AA285> /usr/lib/libCheckFix.dylib
+       0x197827000 -        0x19783e7ab  libcoretls.dylib (187.100.3) <2CB72424-441F-392D-8F30-40B6DEE19795> /usr/lib/libcoretls.dylib
+       0x19783f000 -        0x197850273  libbsm.0.dylib (90) <B2A2B623-537B-3853-A317-53DC4943A4D8> /usr/lib/libbsm.0.dylib
+       0x197851000 -        0x1978afc6b  libmecab.dylib (1121.4.4) <AFC99DD8-D62A-3790-B5AA-537CAF849CDA> /usr/lib/libmecab.dylib
+       0x1978b0000 -        0x1978b241b  libgermantok.dylib (31) <F04FD03E-0352-3625-8E4C-BA96210FD966> /usr/lib/libgermantok.dylib
+       0x1978b3000 -        0x1978c6e3f  libLinearAlgebra.dylib (1551.100.26) <CD0AE837-ED86-307A-BAB6-69E9B55E809F> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libLinearAlgebra.dylib
+       0x1978c7000 -        0x197b1d17f  com.apple.MetalPerformanceShaders.MPSNeuralNetwork (1.0 - 1) <891172A3-75F1-325A-A3A9-7CF2E3F31D79> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSNeuralNetwork.framework/Versions/A/MPSNeuralNetwork
+       0x197b1e000 -        0x197b7219f  com.apple.MetalPerformanceShaders.MPSRayIntersector (1.0 - 1) <F10D9EF3-65A3-3DA6-8336-465E4A4C5076> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSRayIntersector.framework/Versions/A/MPSRayIntersector
+       0x197d06000 -        0x197d3757f  com.apple.MetalPerformanceShaders.MPSMatrix (1.0 - 1) <3CAC578C-742A-360E-B6FE-703AB65552A3> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSMatrix.framework/Versions/A/MPSMatrix
+       0x197d38000 -        0x197f07e7f  com.apple.MetalPerformanceShaders.MPSNDArray (1.0 - 1) <93BA8B8F-DD36-370F-B6FF-F47614F314A7> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSNDArray.framework/Versions/A/MPSNDArray
+       0x197f08000 -        0x197f9c1df  com.apple.MetalPerformanceShaders.MPSImage (1.0 - 1) <CB3CEFB0-2E32-3E00-A252-81B8CE6E3DFE> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSImage.framework/Versions/A/MPSImage
+       0x197f9d000 -        0x197fa84b3  com.apple.AppleFSCompression (174.100.2 - 1.0) <5E4BD0FD-F038-33D2-AF7E-5DEC574FF457> /System/Library/PrivateFrameworks/AppleFSCompression.framework/Versions/A/AppleFSCompression
+       0x197fa9000 -        0x197fb50a3  libbz2.1.0.dylib (47) <95721BB3-328F-34A5-9567-4BB14DD45268> /usr/lib/libbz2.1.0.dylib
+       0x197fb6000 -        0x197fbcd03  libsystem_coreservices.dylib (191.4.5) <7129349D-04F9-3C3C-BF37-3082C1468654> /usr/lib/system/libsystem_coreservices.dylib
+       0x197fbd000 -        0x197feeadf  com.apple.CoreServices.OSServices (1141.1 - 1141.1) <AE3050F3-46C3-3A20-B1F2-DF7F9400A9F0> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/OSServices.framework/Versions/A/OSServices
+       0x19852c000 -        0x19853ad87  libz.1.dylib (100) <25DC8186-B2D8-3839-9F10-D89BC289ECFF> /usr/lib/libz.1.dylib
+       0x19853b000 -        0x198578a77  libsystem_m.dylib (3312.100.1) <83B173CD-7F32-3901-8E67-C0B2676BE015> /usr/lib/system/libsystem_m.dylib
+       0x198579000 -        0x198579c9b  libcharset.1.dylib (115.100.1) <994633BA-AA7A-31BF-94C5-E31A08CA6243> /usr/lib/libcharset.1.dylib
+       0x19857a000 -        0x19857d527  libmacho.dylib (1376.6) <9729ECEA-0A08-32E3-8BDB-B42FC15FF258> /usr/lib/system/libmacho.dylib
+       0x19857e000 -        0x198596dc3  libkxld.dylib (12377.101.15) <6808ADDF-053F-3215-916D-A375A3531661> /usr/lib/system/libkxld.dylib
+       0x198597000 -        0x1985a43a7  libcommonCrypto.dylib (600035) <710EC5FA-F77C-3646-A9E3-C037C42E1539> /usr/lib/system/libcommonCrypto.dylib
+       0x1985a5000 -        0x1985aeca3  libunwind.dylib (2100.2) <FB0518B9-DF0F-3A03-A74B-AF1B21C26F8B> /usr/lib/system/libunwind.dylib
+       0x1985af000 -        0x1985b6349  liboah.dylib (367.5) <2FC1EF06-04C4-35FC-8DC3-BEA1E9FBD63F> /usr/lib/liboah.dylib
+       0x1985b7000 -        0x1985c17ff  libcopyfile.dylib (240) <0B7FF027-5579-3CBF-A12B-68A4FD36641C> /usr/lib/system/libcopyfile.dylib
+       0x1985c2000 -        0x1985c5987  libcompiler_rt.dylib (103.3) <65E29E6E-7042-3F73-A1D2-F2C4EBCD7524> /usr/lib/system/libcompiler_rt.dylib
+       0x1985c6000 -        0x1985ca78b  libsystem_collections.dylib (1752.100.10) <B81193DE-3BEC-3340-86D0-DB7F3683D135> /usr/lib/system/libsystem_collections.dylib
+       0x1985cb000 -        0x1985ce4cf  libsystem_secinit.dylib (168.100.7) <A6B77B36-195D-33F8-8058-FE0B5BFA9D37> /usr/lib/system/libsystem_secinit.dylib
+       0x1985cf000 -        0x1985d1bf7  libremovefile.dylib (85.100.6) <BD89B1A3-0D06-3881-B5E1-EFC6CFBDFCC1> /usr/lib/system/libremovefile.dylib
+       0x1985d2000 -        0x1985d2f27  libkeymgr.dylib (31) <DE8F8219-0072-35C2-8932-C065491ED15D> /usr/lib/system/libkeymgr.dylib
+       0x1985d3000 -        0x1985dbe3f  libsystem_dnssd.dylib (2881.100.56.0.1) <DEC8BDD2-366C-3BF9-A123-35744DB06354> /usr/lib/system/libsystem_dnssd.dylib
+       0x1985dc000 -        0x1985e109b  libcache.dylib (95) <4D6833A3-C910-3A76-AA8A-303F698B36BF> /usr/lib/system/libcache.dylib
+       0x1985e2000 -        0x1985e3ce3  libSystem.B.dylib (1356) <E05F5341-06B7-365E-8014-E9CD64C352FE> /usr/lib/libSystem.B.dylib
+       0x1985e4000 -        0x1985e5fcf  libfakelink.dylib (5) <0DECB33A-FC26-3C73-8762-E9C8F15343AD> /usr/lib/libfakelink.dylib
+       0x1985e6000 -        0x1985e6a33  com.apple.SoftLinking (1.0 - 71) <FACACD62-537D-3FF8-B1D4-B1685938C303> /System/Library/PrivateFrameworks/SoftLinking.framework/Versions/A/SoftLinking
+       0x19861c000 -        0x1986231cb  libiconv.2.dylib (115.100.1) <E384E5FE-DFF5-36ED-88C8-0EEF2FBF89CE> /usr/lib/libiconv.2.dylib
+       0x198637000 -        0x19872eaaf  libarchive.2.dylib (167) <9F7CC46A-CC71-3EF8-BFE9-ABE40819EA73> /usr/lib/libarchive.2.dylib
+       0x19872f000 -        0x19879485b  com.apple.SearchKit (1.4.2 - 1.4.2) <3E8F0ABC-A863-3A3E-8B0C-D01A44A98468> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/SearchKit.framework/Versions/A/SearchKit
+       0x198795000 -        0x19879d18f  libThaiTokenizer.dylib (28) <C2DE957F-29A8-324D-AB0F-1EADC7BB4E89> /usr/lib/libThaiTokenizer.dylib
+       0x19879e000 -        0x1987c1f37  com.apple.applesauce (1.0 - 17.7) <8468AF10-88F2-3DD8-9DD4-0BBFCA10B055> /System/Library/PrivateFrameworks/AppleSauce.framework/Versions/A/AppleSauce
+       0x1987c2000 -        0x1987da23b  libapple_nghttp2.dylib (37) <33B20CAF-51C2-32E9-B20B-7F3B137BFFB9> /usr/lib/libapple_nghttp2.dylib
+       0x1987db000 -        0x198801ac3  libSparseBLAS.dylib (1551.100.26) <1BC4EAAD-4363-31DF-8C91-022B24AD87CD> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libSparseBLAS.dylib
+       0x198802000 -        0x19880363f  com.apple.MetalPerformanceShaders.MetalPerformanceShaders (1.0 - 1) <59D13EAF-0DF5-3A93-9E12-7A1D22B52520> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/MetalPerformanceShaders
+       0x198804000 -        0x198809ff7  libpam.2.dylib (35) <CF7680E1-7AB2-39A5-B30C-E3AB30A5B0BB> /usr/lib/libpam.2.dylib
+       0x19880a000 -        0x1988d9417  libcompression.dylib (193.100.5) <0C99FEA2-9041-3226-9995-046879C3B9B1> /usr/lib/libcompression.dylib
+       0x1988da000 -        0x1988de267  libQuadrature.dylib (8) <B6674817-731D-3178-A928-7963E5EED61C> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libQuadrature.dylib
+       0x1988df000 -        0x199aaf94f  libLAPACK.dylib (1551.100.26) <9170F5E5-6D1E-3667-BDCF-E74CC880EB06> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libLAPACK.dylib
+       0x199ab0000 -        0x199b0641f  com.apple.DictionaryServices (1.2 - 373) <EFE68757-B99A-3768-8494-2E54E23C2172> /System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/DictionaryServices.framework/Versions/A/DictionaryServices
+       0x199b07000 -        0x199b254f7  liblzma.5.dylib (21) <7BC382B4-38A9-3054-8D3F-ED10CFBFF192> /usr/lib/liblzma.5.dylib
+       0x199b26000 -        0x199b2785f  libcoretls_cfhelpers.dylib (187.100.3) <67086CB0-340C-3DFD-B1E0-2B4C7C77026A> /usr/lib/libcoretls_cfhelpers.dylib
+       0x199b28000 -        0x199b9b6cb  com.apple.APFS (2811.101.1 - 2811.101.1) <86DD0616-A944-3596-8742-36F86E537A74> /System/Library/PrivateFrameworks/APFS.framework/Versions/A/APFS
+       0x199b9c000 -        0x199baa693  libxar.1.dylib (503) <A3F96FD4-FBE8-3867-93EE-7FF4F9B3E867> /usr/lib/libxar.1.dylib
+       0x199bab000 -        0x199bae79b  libutil.dylib (73) <4FE4BA84-8B65-343C-9A7C-A174849301F1> /usr/lib/libutil.dylib
+       0x199baf000 -        0x199bd9cdf  libxslt.1.dylib (21.13) <D88D4FE7-8B33-3553-9CC8-8C5888B8BAA9> /usr/lib/libxslt.1.dylib
+       0x199be2000 -        0x199c5b587  libvMisc.dylib (1126.100.7) <4E031DEB-7FC6-343A-8CCA-61617B5C6DF1> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libvMisc.dylib
+       0x199c5c000 -        0x199ceb45f  libate.dylib (3.0.9) <18973DAC-3297-3904-B329-A46242C87ABA> /usr/lib/libate.dylib
+       0x199cf5000 -        0x199d081bf  com.apple.CrashReporterSupport (10.13 - 15140) <1238D09C-0D64-377F-913D-2DD04FEE8AF2> /System/Library/PrivateFrameworks/CrashReporterSupport.framework/Versions/A/CrashReporterSupport
+       0x199e4c000 -        0x199e8cf9f  com.apple.pluginkit.framework (1.0 - 1) <FB09CB89-BB7F-3085-B035-2D99017521B0> /System/Library/PrivateFrameworks/PlugInKit.framework/Versions/A/PlugInKit
+       0x199f03000 -        0x199f4b9ff  com.apple.AppleVAFramework (6.2.10 - 6.2.10) <860D72AD-8149-3F4E-ACF4-EAED5CB1A85E> /System/Library/PrivateFrameworks/AppleVA.framework/Versions/A/AppleVA
+       0x199f4c000 -        0x199f66cbf  libexpat.1.dylib (45) <703912FD-D1AE-310C-BC05-7388D6CED6F5> /usr/lib/libexpat.1.dylib
+       0x199f67000 -        0x199f70bd3  libheimdal-asn1.dylib (710.100.4) <9DA69DFC-DDCE-3986-8997-B944EE0A9965> /usr/lib/libheimdal-asn1.dylib
+       0x19a091000 -        0x19a15267f  com.apple.MediaExperience (1.0 - 1) <A9DA4BC3-09C2-3E8B-8345-5A53F0D33056> /System/Library/PrivateFrameworks/MediaExperience.framework/Versions/A/MediaExperience
+       0x19a180000 -        0x19a18f7ff  com.apple.GraphVisualizer (1.0 - 307) <967136C2-27D1-363D-BB62-7029C00A0FA2> /System/Library/PrivateFrameworks/GraphVisualizer.framework/Versions/A/GraphVisualizer
+       0x19a190000 -        0x19a1cf51f  com.apple.OTSVG (1.0 - 877.4.0.7) <F032D306-361F-36D7-AB5C-10B81D4326E4> /System/Library/PrivateFrameworks/OTSVG.framework/Versions/A/OTSVG
+       0x19a1d0000 -        0x19a1dcc7f  com.apple.xpc.AppServerSupport (1.0 - 3102.100.102) <A88EE161-4724-302C-A026-D1B87AD54106> /System/Library/PrivateFrameworks/AppServerSupport.framework/Versions/A/AppServerSupport
+       0x19a1dd000 -        0x19a1e3abf  libspindump.dylib (419.2.4) <7FD26E92-31BB-390A-A80B-29D8AAE9FAD8> /usr/lib/libspindump.dylib
+       0x19a1e4000 -        0x19a2a4dff  com.apple.Heimdal (4.0 - 2.0) <26F4315D-6DD3-34D6-B479-B1032834C093> /System/Library/PrivateFrameworks/Heimdal.framework/Versions/A/Heimdal
+       0x19a573000 -        0x19a5b76ef  com.apple.AppleJPEG (1.0 - 1) <A67D4167-3070-3F74-AAA3-D026E9B24C20> /System/Library/PrivateFrameworks/AppleJPEG.framework/Versions/A/AppleJPEG
+       0x19a5b8000 -        0x19a77892f  libJP2.dylib (2784.4.14) <04679436-B3A9-3394-ACB5-74AE06684A27> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libJP2.dylib
+       0x19a779000 -        0x19a77ae1f  com.apple.WatchdogClient.framework (1.0 - 333) <62C8465E-0729-3B6F-A298-6BB40D0BD3ED> /System/Library/PrivateFrameworks/WatchdogClient.framework/Versions/A/WatchdogClient
+       0x19a77b000 -        0x19a7c0c1f  com.apple.MultitouchSupport.framework (9440.9 - 9440.9) <DBBEDD3D-E0C4-3520-9548-5DD8A346A941> /System/Library/PrivateFrameworks/MultitouchSupport.framework/Versions/A/MultitouchSupport
+       0x19a7c1000 -        0x19ad1729f  com.apple.VideoToolbox (1.0 - 3305.24.5.2) <C266DA23-A7F3-3D85-81F6-8A9DCD783FD9> /System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox
+       0x19ad18000 -        0x19ad3d20f  libAudioToolboxUtility.dylib (1556.528) <C2B4CF76-E4A5-32C0-A5F3-8127BDCA92EB> /usr/lib/libAudioToolboxUtility.dylib
+       0x19ad3e000 -        0x19ad6801f  libPng.dylib (2784.4.14) <77ADBD9D-5B48-3588-AB0F-721187BED8EC> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libPng.dylib
+       0x19ad69000 -        0x19adc9a77  libTIFF.dylib (2784.4.14) <88FF9BDE-4C76-3616-A764-9E8C89F7237B> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libTIFF.dylib
+       0x19adca000 -        0x19ade9257  com.apple.IOPresentment (67 - 67) <964E964E-0852-3F03-8B48-331B3102CFE9> /System/Library/PrivateFrameworks/IOPresentment.framework/Versions/A/IOPresentment
+       0x19adea000 -        0x19adee7d3  com.apple.GPUWrangler (8.1.12 - 8.1.12) <87A30363-DC91-34AA-9E7F-34CE76339267> /System/Library/PrivateFrameworks/GPUWrangler.framework/Versions/A/GPUWrangler
+       0x19adef000 -        0x19adf1913  libRadiance.dylib (2784.4.14) <9A06F7A0-3845-30D5-95F6-FD16510B8BA9> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libRadiance.dylib
+       0x19adf2000 -        0x19adf72f3  com.apple.DSExternalDisplay (3.1 - 380) <B9FC4FDF-0C94-3E77-AE41-B204D287F253> /System/Library/PrivateFrameworks/DSExternalDisplay.framework/Versions/A/DSExternalDisplay
+       0x19adf8000 -        0x19ae22baf  libJPEG.dylib (2784.4.14) <77A9D581-5B49-3D6D-AF13-3CF5F6B3301E> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libJPEG.dylib
+       0x19ae51000 -        0x19ae569fb  libGIF.dylib (2784.4.14) <2C78C162-3F2C-3159-84F4-8E3AE1DDB990> /System/Library/Frameworks/ImageIO.framework/Versions/A/Resources/libGIF.dylib
+       0x19ae57000 -        0x19ae6719f  com.apple.CMCaptureCore (1.0 - 665.101.3) <2DE5381F-785A-3983-BBC7-0753BB151F14> /System/Library/PrivateFrameworks/CMCaptureCore.framework/Versions/A/CMCaptureCore
+       0x19bddc000 -        0x19be4a86f  libusrtcp.dylib (5812.101.2) <923F2A55-C3F5-3D6A-A5FE-F508E9A61204> /usr/lib/libusrtcp.dylib
+       0x19be4b000 -        0x19c3ec93f  libswiftCore.dylib (6.3.0 - 6.3.0.123.11) <FB6AD37D-0F92-3774-AB61-0323DB22C111> /usr/lib/swift/libswiftCore.dylib
+       0x19c4a0000 -        0x19c4f517f  libSessionUtility.dylib (398.516) <5904C1CD-1487-3433-93DE-92DCCAA7CB84> /System/Library/PrivateFrameworks/AudioSession.framework/libSessionUtility.dylib
+       0x19c4f6000 -        0x19c6cab9f  com.apple.audio.toolbox.AudioToolbox (1.14 - 1.14) <0D8B0DA8-C582-3CCA-B648-5EE242E876D8> /System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox
+       0x19c6cb000 -        0x19c74b7df  com.apple.audio.AudioSession (1.0 - 398.516) <2EB71B02-7180-3007-B6A9-BF5DD3A4F79D> /System/Library/PrivateFrameworks/AudioSession.framework/Versions/A/AudioSession
+       0x19c74c000 -        0x19c76539f  libAudioStatistics.dylib (262.514) <F2A3C791-1F5B-35C2-972B-69785C913B0C> /usr/lib/libAudioStatistics.dylib
+       0x19c7dc000 -        0x19c7f819b  libresolv.9.dylib (96) <1F96EC72-E8BA-32DD-84AA-13C44654C1FA> /usr/lib/libresolv.9.dylib
+       0x19c7f9000 -        0x19c80b7e7  libsasl2.2.dylib (215) <A12DC471-B201-359D-9F0D-C8F48BDF5870> /usr/lib/libsasl2.2.dylib
+       0x19c9f4000 -        0x19cad4337  libSMC.dylib (38) <22C15CB5-9AD6-3866-837A-8CBE8AF5BFC4> /usr/lib/libSMC.dylib
+       0x19cb34000 -        0x19cb40747  com.apple.NetAuth (6.2 - 6.2) <C9B294F3-C37B-3729-9493-10DCBE2362A6> /System/Library/PrivateFrameworks/NetAuth.framework/Versions/A/NetAuth
+       0x19cb4f000 -        0x19cb5cb1f  com.apple.perfdata (1.0 - 130) <AED99EAC-C348-3326-98F1-97D0AE3CEBAD> /System/Library/PrivateFrameworks/perfdata.framework/Versions/A/perfdata
+       0x19cb5d000 -        0x19cb6ac9f  libperfcheck.dylib (46) <90EEF798-81FA-38B6-99AF-117D4AB01DE6> /usr/lib/libperfcheck.dylib
+       0x19cb6b000 -        0x19cb7c187  com.apple.Kerberos (3.0 - 1) <E44B7A34-FE5B-3390-AC49-00907B159390> /System/Library/Frameworks/Kerberos.framework/Versions/A/Kerberos
+       0x19cb7d000 -        0x19cbceaaf  com.apple.GSS (4.0 - 2.0) <6DD8C0F7-306B-3FCF-AE30-A174E455F142> /System/Library/Frameworks/GSS.framework/Versions/A/GSS
+       0x19cbcf000 -        0x19cbdfd6f  com.apple.CommonAuth (4.0 - 2.0) <A5F22FD9-D680-3B7C-B7F9-8BE2C58F7DFF> /System/Library/PrivateFrameworks/CommonAuth.framework/Versions/A/CommonAuth
+       0x19cbe0000 -        0x19ccc3c7f  com.apple.MobileAssets (1.0 - 1837.101.1) <BDDD31D4-3841-302F-A4B8-697F85E50F8F> /System/Library/PrivateFrameworks/MobileAsset.framework/Versions/A/MobileAsset
+       0x19cd56000 -        0x19cd65160  com.apple.CorePhoneNumbers (1.0 - 1) <8E1BEC85-B822-3578-A145-720317FA3F1F> /System/Library/PrivateFrameworks/CorePhoneNumbers.framework/Versions/A/CorePhoneNumbers
+       0x19e92f000 -        0x19ea22a36  com.apple.combine (1.0 - 3023) <04059A33-C97D-3F63-A2C4-E56496D251DD> /System/Library/Frameworks/Combine.framework/Versions/A/Combine
+       0x1a0c17000 -        0x1a0c1889f  libpanel.5.4.dylib (79) <613B06CC-8188-3447-B6C0-E712464C136E> /usr/lib/libpanel.5.4.dylib
+       0x1a0c51000 -        0x1a0c5186f  com.apple.Accelerate.vecLib (3.11 - vecLib 3.11) <273012BA-11EF-3A4E-A050-A3A488943FA3> /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/vecLib
+       0x1a0c76000 -        0x1a0c7698f  com.apple.CoreServices (1226 - 1226) <95340769-0B35-37EA-9EAF-9A7E1D530910> /System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices
+       0x1a0ef5000 -        0x1a0ef5417  com.apple.Accelerate (1.11 - Accelerate 1.11) <0A9F7A80-1DC3-369D-AE67-2D21EE9D7C50> /System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate
+       0x1a1dea000 -        0x1a1df953f  com.apple.SymptomDiagnosticReporter (1.0 - 411.100.14) <A1B05E3E-3DF9-33B6-BDB3-E4644931BB69> /System/Library/PrivateFrameworks/SymptomDiagnosticReporter.framework/Versions/A/SymptomDiagnosticReporter
+       0x1a1dfa000 -        0x1a1e282ff  com.apple.PowerLog (1.0 - 1) <36E48134-17FF-3841-B765-79589A4CFCBA> /System/Library/PrivateFrameworks/PowerLog.framework/Versions/A/PowerLog
+       0x1a1e36000 -        0x1a1ee76df  com.apple.DiscRecording (9.0.3 - 9030.4.5) <79D5F6E9-7FA2-336E-9793-225B4A412D1C> /System/Library/Frameworks/DiscRecording.framework/Versions/A/DiscRecording
+       0x1a1ee8000 -        0x1a1f19137  com.apple.MediaKit (16 - 938) <784D6F29-2E0E-3AB2-8E3E-83009F82812F> /System/Library/PrivateFrameworks/MediaKit.framework/Versions/A/MediaKit
+       0x1a29d6000 -        0x1a29ec950  libswiftDispatch.dylib (1542.100.32) <CFCF86C6-4B2C-3D79-A3B2-93B725BCEF2C> /usr/lib/swift/libswiftDispatch.dylib
+       0x1a2d37000 -        0x1a2dc3c3f  com.apple.BoardServices (1.0 - 732.1.1) <00CE20DD-828E-3ECD-92A3-FF88B0DA61CE> /System/Library/PrivateFrameworks/BoardServices.framework/Versions/A/BoardServices
+       0x1a2e04000 -        0x1a2e1153f  com.apple.GraphicsServices (1.0 - 1.0) <C1833E07-4E3E-3604-9C04-CEF7FA7B55D9> /System/Library/PrivateFrameworks/GraphicsServices.framework/Versions/A/GraphicsServices
+       0x1a312d000 -        0x1a314ee9f  com.apple.DebugSymbols (216 - 217) <28F7AD5A-D1F0-36D5-9658-BDE3910BEA55> /System/Library/PrivateFrameworks/DebugSymbols.framework/Versions/A/DebugSymbols
+       0x1a314f000 -        0x1a32aa5ff  com.apple.CoreSymbolication (16.0 - 64575.51.1) <FDAEC762-CC55-34D9-9951-85382E50F9F5> /System/Library/PrivateFrameworks/CoreSymbolication.framework/Versions/A/CoreSymbolication
+       0x1a32ab000 -        0x1a32b509f  com.apple.CoreTime (334.0.16.3 - 334.0.16.3) <6B69F2AE-681C-34FE-AF72-5932E6396B76> /System/Library/PrivateFrameworks/CoreTime.framework/Versions/A/CoreTime
+       0x1a4c03000 -        0x1a4c7559f  com.apple.BackBoardServices (1.0 - 1.0) <1BFBA7A9-B789-3FCB-9C5D-987DE4D1DEE8> /System/Library/PrivateFrameworks/BackBoardServices.framework/Versions/A/BackBoardServices
+       0x1a4c76000 -        0x1a4cb14ef  com.apple.LDAPFramework (2.4.28 - 194.5) <2FEFD34B-DFD5-36E0-9CEE-7EFE6FDA7FD9> /System/Library/Frameworks/LDAP.framework/Versions/A/LDAP
+       0x1a4cb2000 -        0x1a4cb37b7  com.apple.TrustEvaluationAgent (2.0 - 38) <16ED4F40-C1B7-3F95-8FDD-CDE8DD7FA1A7> /System/Library/PrivateFrameworks/TrustEvaluationAgent.framework/Versions/A/TrustEvaluationAgent
+       0x1a4de1000 -        0x1a4e9a57f  com.apple.DiskImagesFramework (683.100.3 - 683.100.3) <B870832E-8BB7-3E88-9B9D-A25AEB6FD2B0> /System/Library/PrivateFrameworks/DiskImages.framework/Versions/A/DiskImages
+       0x1a4edb000 -        0x1a4ef15bf  com.apple.RemoteServiceDiscovery (1.0 - 219.100.6) <F4BB09A4-E464-35B8-968E-8936A4298C48> /System/Library/PrivateFrameworks/RemoteServiceDiscovery.framework/Versions/A/RemoteServiceDiscovery
+       0x1a4ef2000 -        0x1a4f07c3f  com.apple.xpc.RemoteXPC (1.0 - 3102.100.102) <ED290C70-5627-3D78-98CF-FDDCC7E6176B> /System/Library/PrivateFrameworks/RemoteXPC.framework/Versions/A/RemoteXPC
+       0x1a4f9c000 -        0x1a501cf43  libcurl.4.dylib (164) <E0A4E7B3-7592-39E5-B8B9-D1DB72C95041> /usr/lib/libcurl.4.dylib
+       0x1a5023000 -        0x1a506625f  com.apple.AppSupport (1.0.0 - 29) <3DE9E998-0707-3635-B57B-1954D8712DFB> /System/Library/PrivateFrameworks/AppSupport.framework/Versions/A/AppSupport
+       0x1a5337000 -        0x1a5339f3f  com.apple.InternationalTextSearch (1.0 - 1) <33E50974-2591-31C3-9853-2096E37742F3> /System/Library/PrivateFrameworks/InternationalTextSearch.framework/Versions/A/InternationalTextSearch
+       0x1a5906000 -        0x1a59063f7  libHeimdalProxy.dylib (88) <4E34BA0D-4F2D-3A97-8A03-0F961CF5A58A> /System/Library/Frameworks/Kerberos.framework/Versions/A/Libraries/libHeimdalProxy.dylib
+       0x1a5931000 -        0x1a594fb9f  com.apple.StreamingZip (1.0 - 1) <4D3F2AFC-034D-30C7-88D1-B7B2DC521310> /System/Library/PrivateFrameworks/StreamingZip.framework/Versions/A/StreamingZip
+       0x1a59a9000 -        0x1a59ac6bf  libswiftObjectiveC.dylib (951.7) <1BF42593-32DC-301E-B8EC-BFDA5DE18F37> /usr/lib/swift/libswiftObjectiveC.dylib
+       0x1a59ad000 -        0x1a59ca6ff  libswiftos.dylib (1082) <B8E3586E-8FD3-37F9-A004-C0E369A4F650> /usr/lib/swift/libswiftos.dylib
+       0x1a6914000 -        0x1a69a285f  com.apple.proactive.support.ProactiveSupport (1.0 - 418.1) <F035491A-8388-3A51-B36A-C3B20C8A0FE8> /System/Library/PrivateFrameworks/ProactiveSupport.framework/Versions/A/ProactiveSupport
+       0x1a6a9f000 -        0x1a6ac329f  com.apple.ASEProcessing (1.55.0 - 1.55.0) <830CFC7B-FEDE-3187-A209-B49966597433> /System/Library/PrivateFrameworks/ASEProcessing.framework/Versions/A/ASEProcessing
+       0x1a7d1a000 -        0x1a7de8c1f  com.apple.audio.midi.CoreMIDI (2.0 - 88) <03707B1E-A19F-32D7-98A9-E3A7248B1209> /System/Library/Frameworks/CoreMIDI.framework/Versions/A/CoreMIDI
+       0x1a8a22000 -        0x1a8a2675f  com.apple.IOSurfaceAccelerator (1.0.0 - 1.0.0) <ED79EC5A-409D-39A9-9521-3043C39FE108> /System/Library/PrivateFrameworks/IOSurfaceAccelerator.framework/Versions/A/IOSurfaceAccelerator
+       0x1ad87e000 -        0x1ad8919ff  com.apple.HID (1.0 - 1) <F7402197-24C0-392F-9137-8681EF9C6670> /System/Library/PrivateFrameworks/HID.framework/Versions/A/HID
+       0x1b2324000 -        0x1b23331ff  com.apple.NetFS (6.0 - 4.0) <96DF6DA3-4780-3138-8318-2D9292EA4775> /System/Library/Frameworks/NetFS.framework/Versions/A/NetFS
+       0x1b287e000 -        0x1b2880707  libswiftDarwin.dylib (377.100.15) <319E1D29-E697-3ABC-BE2D-B897CD71F3F2> /usr/lib/swift/libswiftDarwin.dylib
+       0x1b48d1000 -        0x1b49ba4bf  libquic.dylib (5812.101.2) <4D5CD3CB-3FDD-38B3-BB26-EBB2582A5AA1> /usr/lib/libquic.dylib
+       0x1b49c6000 -        0x1b49eeeff  com.apple.private.SystemPolicy (1.0 - 1) <8618CC84-FA89-362C-AD11-E70A0B62EFF8> /System/Library/PrivateFrameworks/SystemPolicy.framework/Versions/A/SystemPolicy
+       0x1b5896000 -        0x1b5924bff  com.apple.LoggingSupport (1.0 - 1861.100.19) <F1F1C407-6F51-3081-B00F-EA13A5B3DED8> /System/Library/PrivateFrameworks/LoggingSupport.framework/Versions/A/LoggingSupport
+       0x1b5925000 -        0x1b5931acb  com.apple.MallocStackLogging (1.0 - 65000) <0A1A0710-C15E-3C5D-A67A-B582F40B23F4> /System/Library/PrivateFrameworks/MallocStackLogging.framework/Versions/A/MallocStackLogging
+       0x1b5957000 -        0x1b59afaff  libmis.dylib (463.100.17) <6709C629-CDF4-3590-94C3-720428D172F5> /usr/lib/libmis.dylib
+       0x1b59b0000 -        0x1b59b3c5f  com.apple.gpusw.GPURawCounter (34 - 34) <5EB9C19F-7B49-31FC-A0F4-F8DDBD5B2859> /System/Library/PrivateFrameworks/GPURawCounter.framework/Versions/A/GPURawCounter
+       0x1b59b4000 -        0x1b59d387f  libswiftCoreAudio.dylib (411.520) <E048689E-9E66-3941-AA17-48B0A441ED26> /usr/lib/swift/libswiftCoreAudio.dylib
+       0x1b59d4000 -        0x1b59da327  libswiftCoreFoundation.dylib (2411) <8160F4BC-FCFC-3847-8912-7D784E814692> /usr/lib/swift/libswiftCoreFoundation.dylib
+       0x1b59e7000 -        0x1b5a336d3  libswiftXPC.dylib (128.100.15) <60C33839-9A05-3397-A1FB-CC203B10AB2D> /usr/lib/swift/libswiftXPC.dylib
+       0x1b5a35000 -        0x1b5a358a3  libswiftIOKit.dylib (1) <3609AE97-C1C9-3D5C-995D-1351BE19C532> /usr/lib/swift/libswiftIOKit.dylib
+       0x1b7a61000 -        0x1b7a9a2c7  libbootpolicy.dylib (289.100.5) <906CDC5E-FCE3-3DB4-AC97-46C9373D6C26> /usr/lib/libbootpolicy.dylib
+       0x1b950f000 -        0x1b952688b  libswiftsimd.dylib (23) <BF085F71-EE8E-3791-B258-816A98B1E84B> /usr/lib/swift/libswiftsimd.dylib
+       0x1babe8000 -        0x1bac242af  libncurses.5.4.dylib (79) <071B3987-EFA6-3936-B470-B7ECDCD000FB> /usr/lib/libncurses.5.4.dylib
+       0x1bac25000 -        0x1bac2e37f  com.apple.IOAccelMemoryInfo (1.0 - 1) <AEE0B693-229A-32BD-8CF6-B534B4FB73E1> /System/Library/PrivateFrameworks/IOAccelMemoryInfo.framework/Versions/A/IOAccelMemoryInfo
+       0x1bc2e0000 -        0x1bc2e90be  libswiftCoreMIDI.dylib (6) <5E94EF55-3133-3ABB-9C73-E75138953F3D> /usr/lib/swift/libswiftCoreMIDI.dylib
+       0x1bcabc000 -        0x1bcac2bbf  com.apple.MSUDataAccessor (1.0 - 1) <CBF1231F-9088-3855-83B8-9B5196641BBC> /System/Library/PrivateFrameworks/MSUDataAccessor.framework/Versions/A/MSUDataAccessor
+       0x1bcee6000 -        0x1bcf48a3f  com.apple.SoftwareUpdateCoreSupport (1.0 - 1) <820532AC-6CC2-352E-95F0-CD31377DA3B4> /System/Library/PrivateFrameworks/SoftwareUpdateCoreSupport.framework/Versions/A/SoftwareUpdateCoreSupport
+       0x1c0a01000 -        0x1c0a5839f  com.apple.biome.BiomeFoundation (1.0 - 209.15.0.2) <87FC78C7-6A65-3209-9537-DEE615D84725> /System/Library/PrivateFrameworks/BiomeFoundation.framework/Versions/A/BiomeFoundation
+       0x1c3921000 -        0x1c392ea1f  libswiftMetal.dylib (372.16) <D96EF332-F72B-3B75-82E3-5FBDD6882BC4> /usr/lib/swift/libswiftMetal.dylib
+       0x1c392f000 -        0x1c3935e05  libswiftCompression.dylib (11) <E0C174A8-CE74-3FF0-81C3-E71693751F76> /usr/lib/swift/libswiftCompression.dylib
+       0x1c4853000 -        0x1c48fdd5f  libFDR.dylib (1499.100.48) <142B6C05-3B93-3A74-89BB-FC0719EDAFD0> /usr/lib/libFDR.dylib
+       0x1c497f000 -        0x1c4f49f5f  com.apple.biome.BiomeStreams (1.0 - 209.15.0.2) <89BE0C47-C549-3DB1-AEEE-8A5DEBEE4688> /System/Library/PrivateFrameworks/BiomeStreams.framework/Versions/A/BiomeStreams
+       0x1c541d000 -        0x1c54318ff  com.apple.SoftwareUpdateCoreConnect (1.0 - 1) <1C3E0445-FC4C-3BA1-A555-7CBB653840F2> /System/Library/PrivateFrameworks/SoftwareUpdateCoreConnect.framework/Versions/A/SoftwareUpdateCoreConnect
+       0x1c786c000 -        0x1c78d6c1f  com.apple.osanalytics.OSAnalytics (1.0 - 1) <69F29612-5092-3F2F-BA61-5510D4857FA2> /System/Library/PrivateFrameworks/OSAnalytics.framework/Versions/A/OSAnalytics
+       0x1c8d02000 -        0x1c8d03f9f  libswiftQuartzCore.dylib (5) <CCB3028F-09BA-3887-947D-6F8FD47E2B09> /usr/lib/swift/libswiftQuartzCore.dylib
+       0x1c90f5000 -        0x1c90fa8e7  com.apple.kperf (1.0 - 1) <56910FEC-A3D1-3DF4-9CD3-31C65D4B7B88> /System/Library/PrivateFrameworks/kperf.framework/Versions/A/kperf
+       0x1c920c000 -        0x1c921163f  com.apple.MobileSystemServices (1.0 - 1) <61161103-8CB4-34CC-8AD6-43F587D2D25B> /System/Library/PrivateFrameworks/MobileSystemServices.framework/Versions/A/MobileSystemServices
+       0x1ca7f6000 -        0x1ca81829f  libamsupport.dylib (434.100.4) <0D37C527-DC1F-363A-B4D8-A0E95104DA36> /usr/lib/libamsupport.dylib
+       0x1cabf4000 -        0x1cac540bf  com.apple.biome.BiomePubSub (1.0 - 209.15.0.2) <1056981B-EFD4-37A2-8CA3-2691A18A34EF> /System/Library/PrivateFrameworks/BiomePubSub.framework/Versions/A/BiomePubSub
+       0x1cac55000 -        0x1cac9801f  com.apple.biome.BiomeStorage (1.0 - 209.15.0.2) <31E41201-08D1-338B-BDED-CC6A677D7487> /System/Library/PrivateFrameworks/BiomeStorage.framework/Versions/A/BiomeStorage
+       0x1cd78a000 -        0x1cd79913f  libswiftUniformTypeIdentifiers.dylib (877.4.9.400) <B08C16EF-8677-3331-B9A6-16294A1A6AA0> /usr/lib/swift/libswiftUniformTypeIdentifiers.dylib
+       0x1cd79a000 -        0x1cd85fa9b  libswiftAccelerate.dylib (77.100.2) <ADC97387-1D6A-3155-B732-3F5066BD6360> /usr/lib/swift/libswiftAccelerate.dylib
+       0x1cd9b2000 -        0x1cd9c311f  libpartition2_dynamic.dylib (3476.100.145) <21D8FFBE-3A8A-3D01-B608-085D50238EE5> /usr/lib/libpartition2_dynamic.dylib
+       0x1cdf1f000 -        0x1cdf29fdf  com.apple.AFKUser (1.0 - 1) <C25CEB23-5EF8-3E11-A260-EDA76C3A7105> /System/Library/PrivateFrameworks/AFKUser.framework/Versions/A/AFKUser
+       0x1d1903000 -        0x1d196475f  libswiftCoreMedia.dylib (3305.24.5.2) <450AA35C-B2E6-3327-827B-ACEB171F87D4> /usr/lib/swift/libswiftCoreMedia.dylib
+       0x1d30b1000 -        0x1d30b2bbf  libswiftOSLog.dylib (10) <2B310D36-BAAA-346C-860E-2B9FA9EBFE2F> /usr/lib/swift/libswiftOSLog.dylib
+       0x1d7177000 -        0x1d7283aff  com.apple.Symbolication (16.0 - 64575.69.1) <D18DE969-073E-38CF-BA4F-466045A5818D> /System/Library/PrivateFrameworks/Symbolication.framework/Versions/A/Symbolication
+       0x1db77e000 -        0x1db78e3df  com.apple.OSLog (1.0 - 1861.100.19) <D1D8B4E1-367E-3ED0-AD02-37D720B6F1E7> /System/Library/Frameworks/OSLog.framework/Versions/A/OSLog
+       0x1dba8c000 -        0x1dbb9d75f  com.apple.InternalSwiftProtobuf (1.0 - 1.26.0) <A510588F-6A70-3706-8E8F-AD186EE908A9> /System/Library/PrivateFrameworks/InternalSwiftProtobuf.framework/Versions/A/InternalSwiftProtobuf
+       0x1dbc63000 -        0x1dbc6e0bf  com.apple.HIDDisplay (1.0 - 1) <B2053120-9D29-3678-8566-7388E0B5DC33> /System/Library/PrivateFrameworks/HIDDisplay.framework/Versions/A/HIDDisplay
+       0x1e1a8e000 -        0x1e1aabd9f  libedit.3.dylib (65) <B52B7A66-3106-3250-829C-A68EC8D0925B> /usr/lib/libedit.3.dylib
+       0x1e3bc2000 -        0x1e3bc2af3  com.apple.FeatureFlags (1.0 - 103) <320F2910-E9AD-3A26-A9E5-80709DE442C6> /System/Library/PrivateFrameworks/FeatureFlags.framework/Versions/A/FeatureFlags
+       0x1ed1ea000 -        0x1ed1ec5bf  com.apple.ConfigProfileHelper (18.0 - 1800) <CC0C5D1A-B8D4-31A2-89E1-0EFAC52DCB20> /System/Library/PrivateFrameworks/ConfigProfileHelper.framework/Versions/A/ConfigProfileHelper
+       0x22d822000 -        0x22d8292a3  libCoreFSCache.dylib (352) <4AC2B004-453D-3053-8CE3-DB02BF78634B> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCoreFSCache.dylib
+       0x22d82a000 -        0x22d82f947  libCoreVMClient.dylib (352) <F3F2109F-8C42-3EF3-8E23-69CE9D6D21AC> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCoreVMClient.dylib
+       0x22d830000 -        0x22d8402b7  com.apple.opengl (23.1.1 - 23.1.1) <46037BEA-D5A5-3E3F-BB30-1CAC01B5068F> /System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL
+       0x22d841000 -        0x22d8437bf  libCVMSPluginSupport.dylib (23.1.1) <484EB0B7-ED7C-312E-B3A6-B64CC93FAA93> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libCVMSPluginSupport.dylib
+       0x22d844000 -        0x22d84c4ff  libGFXShared.dylib (23.1.1) <7288278F-C62B-38D0-A3B9-5745AA80CE86> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGFXShared.dylib
+       0x22d84d000 -        0x22d88054b  libGLImage.dylib (23.1.1) <D1122A05-2EBB-3AD2-8892-C24FF521D310> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGLImage.dylib
+       0x22d881000 -        0x22d8ba5bf  libGLU.dylib (23.1.1) <535E6602-2A32-3E9B-9556-AD1D11D2C842> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGLU.dylib
+       0x22da11000 -        0x22da1abc7  libGL.dylib (23.1.1) <C7B73037-CD52-3D9D-A485-91245CEFAD48> /System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib
+       0x22f8a6000 -        0x22fa1881f  com.apple.ExtensionFoundation (97 - 97) <8414CA2A-21EF-3B0B-A60B-789666C62990> /System/Library/Frameworks/ExtensionFoundation.framework/Versions/A/ExtensionFoundation
+       0x230c91000 -        0x230cd3a1f  com.apple.LightweightCodeRequirements (1.0 - 1) <BC31094B-0028-31CE-A0A4-AAAD41DD9AA3> /System/Library/Frameworks/LightweightCodeRequirements.framework/Versions/A/LightweightCodeRequirements
+       0x231af3000 -        0x231b111ff  com.apple.MPSBenchmarkLoop (1.0 - 1) <FE426DDE-CE08-3740-8439-2EF901E3576F> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSBenchmarkLoop.framework/Versions/A/MPSBenchmarkLoop
+       0x231b12000 -        0x231b25e7f  com.apple.MPSFunctions (1.0 - 1) <E72A458C-E7CA-3070-983D-DCF1A13856FB> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSFunctions.framework/Versions/A/MPSFunctions
+       0x231b26000 -        0x231b2b53f  com.apple.MPSHost (1.0 - 1) <EB2488F5-7C40-3E41-AF79-232149835176> /System/Library/Frameworks/MetalPerformanceShaders.framework/Versions/A/Frameworks/MPSHost.framework/Versions/A/MPSHost
+       0x234dd3000 -        0x234f3f4bf  com.apple.SwiftData (1.0 - 135) <35B80273-CE4A-3CF8-BD6C-7DC17BA20BFB> /System/Library/Frameworks/SwiftData.framework/Versions/A/SwiftData
+       0x23b983000 -        0x23b997abf  com.apple.AppleDeviceQuerySupport (1.0 - 408.100.18) <280507E6-93B0-3DEE-842C-42912C1A394B> /System/Library/PrivateFrameworks/AppleDeviceQuerySupport.framework/Versions/A/AppleDeviceQuerySupport
+       0x23c10e000 -        0x23c188cc6  com.apple.AppleKeyStore (1.0 - 1.0) <67B6D752-B0D2-34AC-9F6B-4368F0CCF674> /System/Library/PrivateFrameworks/AppleKeyStore.framework/Versions/A/AppleKeyStore
+       0x23cab1000 -        0x23cac99df  com.apple.private.AppleMobileFileIntegrity-fmk (1.0 - 1) <8EB88354-07F6-3225-A92E-F7CE8595573B> /System/Library/PrivateFrameworks/AppleMobileFileIntegrity.framework/Versions/A/AppleMobileFileIntegrity
+       0x23cfc2000 -        0x23cfd4799  com.apple.AtomicsInternal (1.1.0 - 154) <407FE060-8C88-3194-A21B-8688FD8EC4E5> /System/Library/PrivateFrameworks/AtomicsInternal.framework/Versions/A/AtomicsInternal
+       0x23d091000 -        0x23d0b3dff  com.apple.imgaudio.AudioAnalytics (1.0 - 1) <836137A2-2EFE-35FF-B641-6042C5D72771> /System/Library/PrivateFrameworks/AudioAnalytics.framework/Versions/A/AudioAnalytics
+       0x23d683000 -        0x23d6cb7df  com.apple.BackBoardHIDEventFoundation (1.0 - 1) <BDDBB7D2-5979-3E4D-A110-D6484BE6B63D> /System/Library/PrivateFrameworks/BackBoardHIDEventFoundation.framework/Versions/A/BackBoardHIDEventFoundation
+       0x23d764000 -        0x23d77d8df  com.apple.biome.BiomeDSL (1.0 - 209.15.0.2) <B81F347F-E6B4-3E12-84CA-F9B1B70FF675> /System/Library/PrivateFrameworks/BiomeDSL.framework/Versions/A/BiomeDSL
+       0x23d77e000 -        0x23e02b15f  com.apple.BiomeLibrary (274.52) <E7A86C30-C81B-3E2E-8C9D-AB0301998890> /System/Library/PrivateFrameworks/BiomeLibrary.framework/Versions/A/BiomeLibrary
+       0x23e02c000 -        0x23e031b5f  com.apple.biome.BiomeSync (1.0 - 209.15.0.2) <102054CD-90EC-3295-9F9B-F98336CD69B3> /System/Library/PrivateFrameworks/BiomeSync.framework/Versions/A/BiomeSync
+       0x23f65a000 -        0x23f6f2dbf  com.apple.biome.CascadeSets (1.0 - 209.15.0.2) <6CED7B79-85C6-3ABA-A1D4-691B2031239D> /System/Library/PrivateFrameworks/CascadeSets.framework/Versions/A/CascadeSets
+       0x240aa7000 -        0x240be62ae  com.apple.CollectionsInternal (1.2.0 - 154) <1A480C96-2A0B-3BDC-BE26-7779B2F282DB> /System/Library/PrivateFrameworks/CollectionsInternal.framework/Versions/A/CollectionsInternal
+       0x247da3000 -        0x247db649f  com.apple.DeviceRecovery (1.0 - 1) <4B0612CE-7637-3581-B9A1-7EBC923047FC> /System/Library/PrivateFrameworks/DeviceRecovery.framework/Versions/A/DeviceRecovery
+       0x24a03c000 -        0x24a03f2ff  com.apple.FontServices (1.0 - 1) <2D16E478-3384-3947-8A97-472C8265DEA3> /System/Library/PrivateFrameworks/FontServices.framework/Versions/A/FontServices
+       0x24a040000 -        0x24a12fe2f  libXTFontStaticRegistryData.dylib (335.4.0.6) <D3CA2DB8-9982-3978-BABC-92B5D3E4528C> /System/Library/PrivateFrameworks/FontServices.framework/libXTFontStaticRegistryData.dylib
+       0x24a131000 -        0x24a13dc9f  com.apple.FramePacing (1.0 - 1) <94C088E1-45CE-32F2-94E2-D92BE086B6F4> /System/Library/PrivateFrameworks/FramePacing.framework/Versions/A/FramePacing
+       0x24b25e000 -        0x24b263f07  libGPUCompilerUtils.dylib (32023.883.1) <CB93CEE8-91B3-31B0-9EF4-9A2261EE0DC1> /System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/libGPUCompilerUtils.dylib
+       0x24f6d1000 -        0x24f710797  libllvm-flatbuffers.dylib (32023.883.1) <5C724D09-588C-3E79-8D58-209B6147A7AD> /System/Library/PrivateFrameworks/GPUCompiler.framework/Versions/32023/Libraries/libllvm-flatbuffers.dylib
+       0x256f4b000 -        0x25705429f  com.apple.InstalledContentLibrary (1.0 - 1.0) <B509C80B-393D-34B8-969F-F6C7F3332041> /System/Library/PrivateFrameworks/InstalledContentLibrary.framework/Versions/A/InstalledContentLibrary
+       0x259988000 -        0x25a15635f  com.apple.IntelligencePlatformLibrary (274.52) <FB23F4B0-47DB-3BB7-86EB-6B155DA406CF> /System/Library/PrivateFrameworks/IntelligencePlatformLibrary.framework/Versions/A/IntelligencePlatformLibrary
+       0x25ba31000 -        0x25c0c7923  com.apple.MIL (3520.4 - 3520.4.1) <AE9BCA7C-3F03-3EEE-9687-F02E8CD6110C> /System/Library/PrivateFrameworks/MIL.framework/Versions/A/MIL
+       0x260c37000 -        0x260c98a5f  com.apple.MessageSecurity (1.0 - 195.100.77) <A209D53C-DAD5-3A1F-A8C2-14B0C20A547A> /System/Library/PrivateFrameworks/MessageSecurity.framework/Versions/A/MessageSecurity
+       0x265b31000 -        0x265b5ab1f  com.apple.OSEligibility (319.101.1) <9D45879B-E72F-3EC2-B8BA-F17AF6993AB1> /System/Library/PrivateFrameworks/OSEligibility.framework/Versions/A/OSEligibility
+       0x2667b1000 -        0x2668c985f  com.apple.ParsingInternal (0.0.1 - 154) <AA740584-BC9B-3F37-9A1A-EF0414380CE6> /System/Library/PrivateFrameworks/ParsingInternal.framework/Versions/A/ParsingInternal
+       0x269c5c000 -        0x269c7de1f  com.apple.accessibility.PhotosensitivityProcessing (1.0 - 1) <3931DECB-C3BB-39E7-BCBF-54CCE20032C7> /System/Library/PrivateFrameworks/PhotosensitivityProcessing.framework/Versions/A/PhotosensitivityProcessing
+       0x26a070000 -        0x26a0aca3c  com.apple.PoirotSQLite (1.0 - 1) <B3D3E21E-698D-3C9E-B4DF-7DB6B7A31822> /System/Library/PrivateFrameworks/PoirotSQLite.framework/Versions/A/PoirotSQLite
+       0x26a0ad000 -        0x26a11a25f  com.apple.PoirotSchematizer (1.0 - 1) <4992FDC0-2A39-37DD-926E-0E9F9CC9B381> /System/Library/PrivateFrameworks/PoirotSchematizer.framework/Versions/A/PoirotSchematizer
+       0x26a11b000 -        0x26a150bff  com.apple.PoirotUDFs (1.0 - 1) <A70FE2AE-430C-30E5-B105-B3DCC294DF37> /System/Library/PrivateFrameworks/PoirotUDFs.framework/Versions/A/PoirotUDFs
+       0x26b2e5000 -        0x26b42111f  com.apple.ProDisplayLibrary (10.4.28 - 10.4.28) <085F6583-4A26-3006-8C7A-853A09AD40E0> /System/Library/PrivateFrameworks/ProDisplayLibrary.framework/Versions/A/ProDisplayLibrary
+       0x26c3b9000 -        0x26c3c14cf  com.apple.ReflectionInternal (1.0.0 - 154) <FBAA34DB-DCB6-36C6-94C7-DFB542C0A55B> /System/Library/PrivateFrameworks/ReflectionInternal.framework/Versions/A/ReflectionInternal
+       0x26d301000 -        0x26d3149c7  com.apple.RuntimeInternal (1.0.0 - 154) <0A0F41D4-3475-30F6-8682-3227EC3FE8A8> /System/Library/PrivateFrameworks/RuntimeInternal.framework/Versions/A/RuntimeInternal
+       0x26d553000 -        0x26d5c0abf  com.apple.SILManager (53.19 - 53.19) <A1A3D3E5-BB48-318C-A1A2-949DAE63B749> /System/Library/PrivateFrameworks/SILManager.framework/Versions/A/SILManager
+       0x278a14000 -        0x278a404a1  com.apple.security.SwiftASN1Internal (1.0 - 1) <EDAC3CA1-D139-3B18-941A-86FC1B7E2143> /System/Library/PrivateFrameworks/SwiftASN1Internal.framework/Versions/A/SwiftASN1Internal
+       0x27c127000 -        0x27c1631df  com.apple.tightbeam (1.0 - 483.100.88) <AFDCDFFD-BD5E-3527-B924-8860400C0AD3> /System/Library/PrivateFrameworks/Tightbeam.framework/Versions/A/Tightbeam
+       0x280830000 -        0x2808312cf  com.apple.VideoToolboxParavirtualizationSupport (64.4.7 - 64.4.7) <C020E1A9-FA32-3DDE-A814-761CC904519C> /System/Library/PrivateFrameworks/VideoToolboxParavirtualizationSupport.framework/Versions/A/VideoToolboxParavirtualizationSupport
+       0x28aa72000 -        0x28ab0c35f  libAppleArchive.dylib (450.100.4) <F7C3CEC7-1F55-3617-B917-F221A2BCE7B6> /usr/lib/libAppleArchive.dylib
+       0x28abc7000 -        0x28abd145f  libCoreEntitlements.dylib (80.100.6) <40E810FC-0D99-3C00-92D7-F0C66D6152FB> /usr/lib/libCoreEntitlements.dylib
+       0x28aebd000 -        0x28aec487f  libReverseProxyDevice.dylib (104.40.3) <1EE2E566-2280-3B41-B13B-BF71517DC956> /usr/lib/libReverseProxyDevice.dylib
+       0x28aec5000 -        0x28aecc349  libRosetta.dylib (367.5) <2FC1EF06-04C4-35FC-8DC3-BEA1E9FBD63F> /usr/lib/libRosetta.dylib
+       0x28af34000 -        0x28af3d3ff  libTLE.dylib (80.100.6) <876EA47E-51E0-39FB-9D49-E6654AD58464> /usr/lib/libTLE.dylib
+       0x28b801000 -        0x28b912b17  libcrypto.46.dylib (109.100.2) <DAA12A78-F0F0-30B8-92F4-C9257843E858> /usr/lib/libcrypto.46.dylib
+       0x28ba4d000 -        0x28ba69762  libhvf.dylib (11) <FA8F5DCD-0A2B-30A9-8BD5-065DF59ED592> /usr/lib/libhvf.dylib
+       0x28c39a000 -        0x28c3d2527  libssl.48.dylib (109.100.2) <7BD6E551-5BBF-3AEB-B1A7-BD698770A40E> /usr/lib/libssl.48.dylib
+       0x28c40d000 -        0x28c43ae37  libswiftPrespecialized.dylib (0) <A7F970BC-D107-3D9B-A49E-ACA772E588E6> /usr/lib/libswiftPrespecialized.dylib
+       0x28c6d6000 -        0x28c6e8043  libswiftDistributed.dylib (6.3.0 - 6.3.0.123.11) <B39D029A-D50B-3A5F-8ED3-CDB591E7D429> /usr/lib/swift/libswiftDistributed.dylib
+       0x28c6ff000 -        0x28c70eebc  libswiftObservation.dylib (6.3.0 - 6.3.0.123.11) <8A5C9C34-6237-3DAF-B402-7CCBDA47E028> /usr/lib/swift/libswiftObservation.dylib
+       0x28c83b000 -        0x28c84e8ef  libswiftSynchronization.dylib (6.3.0 - 6.3.0.123.11) <8D3DB366-76F8-3D99-8CC3-326AA513F7B4> /usr/lib/swift/libswiftSynchronization.dylib
+       0x28c84f000 -        0x28c867e60  libswiftSystem.dylib (75) <9808DC7D-BE41-300B-A7E2-BA827446EE0A> /usr/lib/swift/libswiftSystem.dylib
+       0x28c869000 -        0x28c87f79f  libswiftVideoToolbox.dylib (3305.24.5.2) <3E76FAE6-CDCE-31A2-BC50-3907797972CF> /usr/lib/swift/libswiftVideoToolbox.dylib
+       0x28c881000 -        0x28c881669  libswift_Builtin_float.dylib (6.3.0.123.11) <86B92BEF-06E8-3E10-A155-E1AB40B3F854> /usr/lib/swift/libswift_Builtin_float.dylib
+       0x28c882000 -        0x28c90d095  libswift_Concurrency.dylib (6.3.0 - 6.3.0.123.11) <02634765-CB69-3C2B-9CCE-10103CBEA22A> /usr/lib/swift/libswift_Concurrency.dylib
+       0x28c90e000 -        0x28c910f83  libswift_DarwinFoundation1.dylib (377.100.15) <251F0C0D-17E0-37BB-A903-BB04A6C99999> /usr/lib/swift/libswift_DarwinFoundation1.dylib
+       0x28c911000 -        0x28c911eeb  libswift_DarwinFoundation2.dylib (377.100.15) <D22D6BC3-62DD-314C-8A8E-56CD69ABAB3C> /usr/lib/swift/libswift_DarwinFoundation2.dylib
+       0x28c912000 -        0x28c9127a7  libswift_DarwinFoundation3.dylib (377.100.15) <02812A8B-CF65-3C0F-A795-C4A03E71D00E> /usr/lib/swift/libswift_DarwinFoundation3.dylib
+       0x28c913000 -        0x28c9b149f  libswift_RegexParser.dylib (6.3 - 6.3.0.123.11) <4AFB7E54-4E3C-351E-A353-9B1C99CBDA36> /usr/lib/swift/libswift_RegexParser.dylib
+       0x28c9b2000 -        0x28ca3e0bd  libswift_StringProcessing.dylib (6.3 - 6.3.0.123.11) <DC0CDBD3-5AAF-3A71-880F-8E40074817E4> /usr/lib/swift/libswift_StringProcessing.dylib
+       0x28cba2000 -        0x28cba5a4b  libsystem_darwindirectory.dylib (122) <CCAA2170-32DD-34BD-A927-32DF30893969> /usr/lib/system/libsystem_darwindirectory.dylib
+       0x28cba6000 -        0x28cbaf5a7  libsystem_eligibility.dylib (319.101.1) <2D19994A-87BB-34B8-A343-CB8DD47FF110> /usr/lib/system/libsystem_eligibility.dylib
+       0x28cbb0000 -        0x28cbb78db  libsystem_sanitizers.dylib (26) <FCB93D2F-4437-3089-A43F-A19BC23DD65B> /usr/lib/system/libsystem_sanitizers.dylib
+       0x28cbb8000 -        0x28cbb8bb7  libsystem_trial.dylib (474.2.18) <5BB81430-4E33-3160-94D2-1FFB2B614DB2> /usr/lib/system/libsystem_trial.dylib

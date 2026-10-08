@@ -1,0 +1,134 @@
+{
+  "candidate_max_operations": 100000,
+  "checks": {
+    "existing_real_windows_exact_p3_when_untriggered": true,
+    "four_discovery_positives_trigger": true,
+    "no_problems": true,
+    "six_fail_closed_mutations_exact_p3": true,
+    "three_nontarget_states_exact_p3": true
+  },
+  "discovery_rows": [
+    {
+      "candidate_action": "gang:concealed:2w",
+      "candidate_operations": 3269,
+      "parent_action": "gang:concealed:2w",
+      "positive": false,
+      "target_id": "gang-cf-01",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "gang:added:6t",
+      "candidate_operations": 11684,
+      "parent_action": "hu",
+      "positive": true,
+      "target_id": "gang-cf-02",
+      "trigger_keys": [
+        "gang:added:6t"
+      ]
+    },
+    {
+      "candidate_action": "gang:added:3t",
+      "candidate_operations": 18095,
+      "parent_action": "hu",
+      "positive": true,
+      "target_id": "gang-cf-03",
+      "trigger_keys": [
+        "gang:added:3t"
+      ]
+    },
+    {
+      "candidate_action": "gang:added:3b",
+      "candidate_operations": 12480,
+      "parent_action": "hu",
+      "positive": true,
+      "target_id": "gang-cf-04",
+      "trigger_keys": [
+        "gang:added:3b"
+      ]
+    },
+    {
+      "candidate_action": "gang:added:5t",
+      "candidate_operations": 17811,
+      "parent_action": "hu",
+      "positive": true,
+      "target_id": "gang-cf-05",
+      "trigger_keys": [
+        "gang:added:5t"
+      ]
+    },
+    {
+      "candidate_action": "gang:exposed:2t",
+      "candidate_operations": 776,
+      "parent_action": "gang:exposed:2t",
+      "positive": false,
+      "target_id": "gang-cf-06",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "gang:concealed:5w",
+      "candidate_operations": 2054,
+      "parent_action": "gang:concealed:5w",
+      "positive": false,
+      "target_id": "gang-cf-07",
+      "trigger_keys": []
+    }
+  ],
+  "fail_closed_mutations": [
+    {
+      "candidate_operations": 11574,
+      "mutation": "coverage_unavailable",
+      "same_scores_as_p3": true,
+      "same_top_as_p3": true,
+      "triggers": []
+    },
+    {
+      "candidate_operations": 11574,
+      "mutation": "value_issue_present",
+      "same_scores_as_p3": true,
+      "same_top_as_p3": true,
+      "triggers": []
+    },
+    {
+      "candidate_operations": 11574,
+      "mutation": "replacement_known_false",
+      "same_scores_as_p3": true,
+      "same_top_as_p3": true,
+      "triggers": []
+    },
+    {
+      "candidate_operations": 11574,
+      "mutation": "standard_shanten_one",
+      "same_scores_as_p3": true,
+      "same_top_as_p3": true,
+      "triggers": []
+    },
+    {
+      "candidate_operations": 9230,
+      "mutation": "missing_standard_code",
+      "same_scores_as_p3": true,
+      "same_top_as_p3": true,
+      "triggers": []
+    },
+    {
+      "candidate_operations": 9838,
+      "mutation": "route_missing",
+      "same_scores_as_p3": true,
+      "same_top_as_p3": true,
+      "triggers": []
+    }
+  ],
+  "max_candidate_operations": 18095,
+  "next": "冻结P5源码；建立新来源隐藏机会验收与完整桌安全门",
+  "problems": [],
+  "real_windows": {
+    "changed_windows": 0,
+    "mean_candidate_evaluate_ms": 3.6919286507552704,
+    "triggered": [],
+    "triggered_windows": 0,
+    "windows": 226
+  },
+  "release_eligible": false,
+  "schema": "r18-p5-development-preflight-result/1",
+  "selection_eligible": false,
+  "status": "PASS_P5_DEVELOPMENT"
+}

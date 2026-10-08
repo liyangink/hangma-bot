@@ -1,0 +1,43 @@
+{
+  "candidate_sha256": "68f31d5138918b03837078e4e29cd5b011cce5d795cd7754b2e6884e03a38363",
+  "on_fail": "隐藏集视为消耗；不得围绕失败题修补后复用",
+  "on_pass": "P3获得三财神飘机会专长资格；仍不覆盖保财或牌局中段",
+  "one_shot": true,
+  "parent_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+  "pass_rule": {
+    "all_scored": "三分层各8题，候选与P4父代全部SCORED",
+    "keep_controls": "三财保财和四财保财各8题首选与父代相同",
+    "no_regression": "全隐藏集 capability_gain<0 为0",
+    "three_piao": "8/8相对父代改善且候选最优"
+  },
+  "pre_run_hidden_content_inspected": false,
+  "public_hidden_counts": [
+    {
+      "count": 8,
+      "opportunity_stratum": "four_wealth_keep",
+      "split": "hidden"
+    },
+    {
+      "count": 8,
+      "opportunity_stratum": "three_wealth_keep",
+      "split": "hidden"
+    },
+    {
+      "count": 8,
+      "opportunity_stratum": "three_wealth_piao",
+      "split": "hidden"
+    }
+  ],
+  "release_eligible": false,
+  "schema": "r18-p3-hidden-admission-manifest/1",
+  "source_hashes": {
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-opportunity-author-01-20260922/generations/P4/normalized-v2/candidate.py": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p3-author-01-20260922/development-preflight-01/result.json": "e5d787089ba08795a1abe9e2b3b832644f890988919ac460e5e2b77c70a26bcb",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p3-author-01-20260922/generation/candidate.py": "68f31d5138918b03837078e4e29cd5b011cce5d795cd7754b2e6884e03a38363",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-wealth-gap-bank-01-20260922/development-parent-score.json": "f9d3b49cf630bbe080c82de39533cf2efbc33b6dc37ea12ee94e3bd3596e27b7",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-wealth-gap-bank-01-20260922/hidden.json": "522125a36f606b6e97312b17370f4d7302ebdd0a8b4f8214439943be546beb4f",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-wealth-gap-bank-01-20260922/manifest.json": "56769ab8e14984298eb86eadf5e02bd4fd865a41de52db5e68f2b490d97cce49",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-wealth-gap-counterfactual-01-20260922/result.json": "f05b446c73a92bf66bf3460f0229d2e8ca5e3aec715d3fbbe8d6626569a91182",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p3_hidden_admission.py": "f577b417b444281315365320b88621a438fe9c5fa40dba9cfe473580c0bf944a"
+  }
+}

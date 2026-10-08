@@ -1,0 +1,18 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r18-opportunity-author-01-delivery-repair01",
+  "trusted": true,
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T17:24:36.921622+00:00",
+  "issuance_basis": "两题首答均达到输出上限且没有最终答复；使用原授权中的每题一次修复额度，只交付监督器冻结的同方向保守机制",
+  "max_initial_calls": 0,
+  "max_repair_calls": 2,
+  "max_total_calls": 2,
+  "per_call_limits": {
+    "tokens_input": 65536,
+    "tokens_output": 16000
+  },
+  "effect_tables": 0,
+  "confirmation_reserved": 0,
+  "scope": "只交付冻结 K3/P4 短源码；不得读隐藏题、改机制、确认或发布"
+}

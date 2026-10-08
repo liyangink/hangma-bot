@@ -1,0 +1,124 @@
+{
+  "bootstrap_replicates": 20000,
+  "bootstrap_seed": 2026123102,
+  "boundary": "开发桌赛，非独立确认；无逐局普通胡、高番与收入拆账。",
+  "candidates": {
+    "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py": {
+      "means_delta_per_complete_table": {
+        "H": -1.078125,
+        "M": 5.984375,
+        "combined": 2.453125
+      },
+      "numeric_development_gate": false,
+      "root_bootstrap_95_percentile": {
+        "H": [
+          -7.734375,
+          4.9375
+        ],
+        "M": [
+          -0.453125,
+          12.71875
+        ],
+        "combined": [
+          -2.2421875,
+          7.0625
+        ]
+      },
+      "root_signs": {
+        "H": {
+          "negative": 3,
+          "positive": 5
+        },
+        "M": {
+          "negative": 3,
+          "positive": 5
+        }
+      }
+    },
+    "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py": {
+      "means_delta_per_complete_table": {
+        "H": -5.375,
+        "M": 5.375,
+        "combined": 0.0
+      },
+      "numeric_development_gate": false,
+      "root_bootstrap_95_percentile": {
+        "H": [
+          -12.453125,
+          2.171875
+        ],
+        "M": [
+          1.75,
+          8.890625
+        ],
+        "combined": [
+          -3.984375,
+          4.0859375
+        ]
+      },
+      "root_signs": {
+        "H": {
+          "negative": 4,
+          "positive": 3,
+          "zero": 1
+        },
+        "M": {
+          "negative": 1,
+          "positive": 6,
+          "zero": 1
+        }
+      }
+    }
+  },
+  "complete_tables": 384,
+  "execution_ok": true,
+  "independent_roots": 16,
+  "manifest_sha256": "c754b9ffca75c82de6860c28ea9916f4229aa106c075f14b6554278b81c07db3",
+  "result_sha256": "e5547c9d108abb41c1b9fc86e873a2a33064fb8c2899f972f65eef7bf0437003",
+  "runtime_counts": {
+    "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-HIGH-V1.py": {
+      "action_value_abstain": 0,
+      "action_value_failed": 0,
+      "action_value_operation_limit": 0,
+      "action_value_resource_or_numeric_limit": 0,
+      "action_value_scored": 43343,
+      "action_value_scoring_error": 0,
+      "action_value_unclassified_failure": 0,
+      "audit_missing": 0,
+      "auto_actions": 0,
+      "fallbacks": 0,
+      "illegal_choices": 0,
+      "timeouts": 0
+    },
+    "candidate@review/freematch-deep-dive-20260925/candidates/G131-STANDARD-SHADOW-LOW-V1.py": {
+      "action_value_abstain": 0,
+      "action_value_failed": 0,
+      "action_value_operation_limit": 0,
+      "action_value_resource_or_numeric_limit": 0,
+      "action_value_scored": 43344,
+      "action_value_scoring_error": 0,
+      "action_value_unclassified_failure": 0,
+      "audit_missing": 0,
+      "auto_actions": 0,
+      "fallbacks": 0,
+      "illegal_choices": 0,
+      "timeouts": 0
+    },
+    "r18_v2": {
+      "action_value_abstain": 0,
+      "action_value_failed": 0,
+      "action_value_operation_limit": 0,
+      "action_value_resource_or_numeric_limit": 0,
+      "action_value_scored": 43317,
+      "action_value_scoring_error": 0,
+      "action_value_unclassified_failure": 0,
+      "audit_missing": 0,
+      "auto_actions": 0,
+      "fallbacks": 0,
+      "illegal_choices": 0,
+      "timeouts": 0
+    }
+  },
+  "schema": "g132-g131-pilot-summary/1",
+  "script_sha256": "d34f4f093a0a6a29a4978c73ab9d43153b78d263ce9184d96a600c3f25598ffb"
+}

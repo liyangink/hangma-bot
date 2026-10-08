@@ -1,0 +1,269 @@
+{
+  "schema": "r17-generation1-reproduction-result/1",
+  "status": "SELECTED_R17_INDEPENDENT_CONFIRMATION_CANDIDATE",
+  "manifest_sha256": "1f26e8a04a957ad5ef4978166cdb4e5795f9af55f846a8f7f8675cda73dd1f83",
+  "candidates": [
+    {
+      "candidate_id": "A",
+      "candidate_identity": "a7e6f529e42b6ac81985877925bca878d01f592a2328459968feb97ef19ba1a8",
+      "candidate_sha256": "b0ae33525f46c66c7b462e4db9825df13d8608d5748b803e759b49c2a16eb76d",
+      "status": "PASS_R17_GENERATION1_DEVELOPMENT_GATE",
+      "overall": {
+        "sources": 64,
+        "first_table_delta_mean": 7.921875,
+        "stage_score_delta_mean": 10.25,
+        "stage_score_delta_quantiles": {
+          "min": -116.0,
+          "p10": -75.0,
+          "median": 7.0,
+          "p90": 94.0,
+          "max": 152.0
+        },
+        "u_delta_low_mean": 0.078125,
+        "u_delta_high_mean": 0.078125,
+        "candidate_fourth_rate": 0.28125,
+        "baseline_fourth_rate": 0.28125,
+        "candidate_unresolved_rate": 0.0,
+        "baseline_unresolved_rate": 0.0
+      },
+      "by_mix": {
+        "H": {
+          "sources": 32,
+          "first_table_delta_mean": 11.5625,
+          "stage_score_delta_mean": 8.40625,
+          "stage_score_delta_quantiles": {
+            "min": -116.0,
+            "p10": -75.0,
+            "median": 8.0,
+            "p90": 94.0,
+            "max": 129.0
+          },
+          "u_delta_low_mean": 0.03125,
+          "u_delta_high_mean": 0.03125,
+          "candidate_fourth_rate": 0.375,
+          "baseline_fourth_rate": 0.3125,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        },
+        "M": {
+          "sources": 32,
+          "first_table_delta_mean": 4.28125,
+          "stage_score_delta_mean": 12.09375,
+          "stage_score_delta_quantiles": {
+            "min": -89.0,
+            "p10": -60.0,
+            "median": 7.0,
+            "p90": 86.0,
+            "max": 152.0
+          },
+          "u_delta_low_mean": 0.125,
+          "u_delta_high_mean": 0.125,
+          "candidate_fourth_rate": 0.1875,
+          "baseline_fourth_rate": 0.25,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        }
+      },
+      "positive_u_units": 14,
+      "positive_u_distinct_roots": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "positive_u_distinct_seats": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "request_audit_counts": {
+        "requests": 42887,
+        "response_exact_fallbacks": 33915,
+        "draw_not_applicable": 0,
+        "eligible_draws": 8972,
+        "complete_eligible_draws": 8972,
+        "changed_eligible_draws": 7670
+      },
+      "request_audit_failure_sources": [],
+      "gate_checks": {
+        "simulation_execution_failures": true,
+        "r17_request_audit_failures": true,
+        "all_eligible_draws_complete": true,
+        "overall_u_delta_low_mean": true,
+        "each_mix_u_delta_low_mean": true,
+        "at_least_one_mix_u_delta_low_mean": true,
+        "positive_u_units_distinct_roots": true,
+        "positive_u_units_distinct_seats": true
+      }
+    },
+    {
+      "candidate_id": "B",
+      "candidate_identity": "73c2833da12f2844f69559d4ad6202c44fc4a1adc1b60e0b8b140c82590b4c37",
+      "candidate_sha256": "fb9764faa2a01ded3f8cea94eeee27d59929f014f1dcc0ffbd56380e5b1384a2",
+      "status": "PASS_R17_GENERATION1_DEVELOPMENT_GATE",
+      "overall": {
+        "sources": 64,
+        "first_table_delta_mean": 0.640625,
+        "stage_score_delta_mean": 2.375,
+        "stage_score_delta_quantiles": {
+          "min": -209.0,
+          "p10": -66.0,
+          "median": 1.0,
+          "p90": 73.0,
+          "max": 104.0
+        },
+        "u_delta_low_mean": 0.09375,
+        "u_delta_high_mean": 0.09375,
+        "candidate_fourth_rate": 0.25,
+        "baseline_fourth_rate": 0.28125,
+        "candidate_unresolved_rate": 0.0,
+        "baseline_unresolved_rate": 0.0
+      },
+      "by_mix": {
+        "H": {
+          "sources": 32,
+          "first_table_delta_mean": 6.5625,
+          "stage_score_delta_mean": 3.75,
+          "stage_score_delta_quantiles": {
+            "min": -209.0,
+            "p10": -66.0,
+            "median": 6.0,
+            "p90": 73.0,
+            "max": 104.0
+          },
+          "u_delta_low_mean": 0.15625,
+          "u_delta_high_mean": 0.15625,
+          "candidate_fourth_rate": 0.25,
+          "baseline_fourth_rate": 0.3125,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        },
+        "M": {
+          "sources": 32,
+          "first_table_delta_mean": -5.28125,
+          "stage_score_delta_mean": 1.0,
+          "stage_score_delta_quantiles": {
+            "min": -145.0,
+            "p10": -59.0,
+            "median": 1.0,
+            "p90": 66.0,
+            "max": 92.0
+          },
+          "u_delta_low_mean": 0.03125,
+          "u_delta_high_mean": 0.03125,
+          "candidate_fourth_rate": 0.25,
+          "baseline_fourth_rate": 0.25,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        }
+      },
+      "positive_u_units": 15,
+      "positive_u_distinct_roots": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "positive_u_distinct_seats": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "request_audit_counts": {
+        "requests": 42456,
+        "response_exact_fallbacks": 33602,
+        "draw_not_applicable": 0,
+        "eligible_draws": 8854,
+        "complete_eligible_draws": 8854,
+        "changed_eligible_draws": 5997
+      },
+      "request_audit_failure_sources": [],
+      "gate_checks": {
+        "simulation_execution_failures": true,
+        "r17_request_audit_failures": true,
+        "all_eligible_draws_complete": true,
+        "overall_u_delta_low_mean": true,
+        "each_mix_u_delta_low_mean": true,
+        "at_least_one_mix_u_delta_low_mean": true,
+        "positive_u_units_distinct_roots": true,
+        "positive_u_units_distinct_seats": true
+      }
+    }
+  ],
+  "passed_candidate_ids": [
+    "A",
+    "B"
+  ],
+  "combined_two_source_results": [
+    {
+      "candidate_id": "A",
+      "candidate_identity": "a7e6f529e42b6ac81985877925bca878d01f592a2328459968feb97ef19ba1a8",
+      "passed_both_sources": true,
+      "by_mix_u_delta_low_mean": {
+        "H": 0.015625,
+        "M": 0.125
+      },
+      "robust_min_mix_u_delta_low_mean": 0.015625,
+      "overall_u_delta_low_mean": 0.0703125,
+      "fourth_rate_delta_mean": -0.046875
+    },
+    {
+      "candidate_id": "B",
+      "candidate_identity": "73c2833da12f2844f69559d4ad6202c44fc4a1adc1b60e0b8b140c82590b4c37",
+      "passed_both_sources": true,
+      "by_mix_u_delta_low_mean": {
+        "H": 0.125,
+        "M": 0.15625
+      },
+      "robust_min_mix_u_delta_low_mean": 0.125,
+      "overall_u_delta_low_mean": 0.140625,
+      "fourth_rate_delta_mean": -0.0625
+    }
+  ],
+  "selected_candidate": {
+    "candidate_id": "B",
+    "candidate_identity": "73c2833da12f2844f69559d4ad6202c44fc4a1adc1b60e0b8b140c82590b4c37",
+    "passed_both_sources": true,
+    "by_mix_u_delta_low_mean": {
+      "H": 0.125,
+      "M": 0.15625
+    },
+    "robust_min_mix_u_delta_low_mean": 0.125,
+    "overall_u_delta_low_mean": 0.140625,
+    "fourth_rate_delta_mean": -0.0625
+  },
+  "simulation_execution_audit": {
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 384,
+    "recorded_tables": 384,
+    "missing_tables": 0,
+    "recorded_counts": {
+      "decision_count": 512125,
+      "action_value_scored": 0,
+      "action_value_failed": 0,
+      "other_policy_decisions": 512125,
+      "ambiguous_diagnostics": 0,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "abstain": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "zero_internal_failures_verified": true
+  },
+  "strength_claim": false,
+  "confirmation_eligible": true,
+  "next": "唯一原源码进入1024桌独立确认；不得接收第二来源效果反馈后改写"
+}

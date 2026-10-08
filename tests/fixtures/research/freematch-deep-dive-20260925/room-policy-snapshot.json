@@ -1,0 +1,1248 @@
+{
+ "schema": "freematch-room-policy-snapshot/1",
+ "as_of": "2026-09-26T00:10:00+0800",
+ "scoring": "每房 my_total 为该房 10 场的我方累加分；场均 = my_total / 10",
+ "dedup": "按 game_id 去重，保 mtime 最新一份（由 extract_room_scores.load_rooms 完成）",
+ "rooms": [
+  {
+   "room_id": "a_00a841afe1a6",
+   "games": 10,
+   "my_total": -75,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_00a841afe1a6_r1_b0_t0",
+    "a_00a841afe1a6_r1_b1_t0",
+    "a_00a841afe1a6_r1_b2_t0",
+    "a_00a841afe1a6_r1_b3_t0",
+    "a_00a841afe1a6_r1_b4_t0",
+    "a_00a841afe1a6_r1_b5_t0",
+    "a_00a841afe1a6_r1_b6_t0",
+    "a_00a841afe1a6_r1_b7_t0",
+    "a_00a841afe1a6_r1_b8_t0",
+    "a_00a841afe1a6_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_0215da55fbf1",
+   "games": 10,
+   "my_total": 35,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_0215da55fbf1_r1_b0_t0",
+    "a_0215da55fbf1_r1_b1_t0",
+    "a_0215da55fbf1_r1_b2_t0",
+    "a_0215da55fbf1_r1_b3_t0",
+    "a_0215da55fbf1_r1_b4_t0",
+    "a_0215da55fbf1_r1_b5_t0",
+    "a_0215da55fbf1_r1_b6_t0",
+    "a_0215da55fbf1_r1_b7_t0",
+    "a_0215da55fbf1_r1_b8_t0",
+    "a_0215da55fbf1_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_0c0b08606314",
+   "games": 10,
+   "my_total": 254,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_0c0b08606314_r1_b0_t0",
+    "a_0c0b08606314_r1_b1_t0",
+    "a_0c0b08606314_r1_b2_t0",
+    "a_0c0b08606314_r1_b3_t0",
+    "a_0c0b08606314_r1_b4_t0",
+    "a_0c0b08606314_r1_b5_t0",
+    "a_0c0b08606314_r1_b6_t0",
+    "a_0c0b08606314_r1_b7_t0",
+    "a_0c0b08606314_r1_b8_t0",
+    "a_0c0b08606314_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_17cc763735b9",
+   "games": 10,
+   "my_total": -44,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_17cc763735b9_r1_b0_t0",
+    "a_17cc763735b9_r1_b1_t0",
+    "a_17cc763735b9_r1_b2_t0",
+    "a_17cc763735b9_r1_b3_t0",
+    "a_17cc763735b9_r1_b4_t0",
+    "a_17cc763735b9_r1_b5_t0",
+    "a_17cc763735b9_r1_b6_t0",
+    "a_17cc763735b9_r1_b7_t0",
+    "a_17cc763735b9_r1_b8_t0",
+    "a_17cc763735b9_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_2721870d7344",
+   "games": 10,
+   "my_total": 61,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_2721870d7344_r1_b0_t0",
+    "a_2721870d7344_r1_b1_t0",
+    "a_2721870d7344_r1_b2_t0",
+    "a_2721870d7344_r1_b3_t0",
+    "a_2721870d7344_r1_b4_t0",
+    "a_2721870d7344_r1_b5_t0",
+    "a_2721870d7344_r1_b6_t0",
+    "a_2721870d7344_r1_b7_t0",
+    "a_2721870d7344_r1_b8_t0",
+    "a_2721870d7344_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_28fb92468b60",
+   "games": 10,
+   "my_total": 127,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_28fb92468b60_r1_b0_t0",
+    "a_28fb92468b60_r1_b1_t0",
+    "a_28fb92468b60_r1_b2_t0",
+    "a_28fb92468b60_r1_b3_t0",
+    "a_28fb92468b60_r1_b4_t0",
+    "a_28fb92468b60_r1_b5_t0",
+    "a_28fb92468b60_r1_b6_t0",
+    "a_28fb92468b60_r1_b7_t0",
+    "a_28fb92468b60_r1_b8_t0",
+    "a_28fb92468b60_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_2ba9afa9697d",
+   "games": 10,
+   "my_total": -29,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_2ba9afa9697d_r1_b0_t0",
+    "a_2ba9afa9697d_r1_b1_t0",
+    "a_2ba9afa9697d_r1_b2_t0",
+    "a_2ba9afa9697d_r1_b3_t0",
+    "a_2ba9afa9697d_r1_b4_t0",
+    "a_2ba9afa9697d_r1_b5_t0",
+    "a_2ba9afa9697d_r1_b6_t0",
+    "a_2ba9afa9697d_r1_b7_t0",
+    "a_2ba9afa9697d_r1_b8_t0",
+    "a_2ba9afa9697d_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_31ae2c3bc474",
+   "games": 10,
+   "my_total": 150,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_31ae2c3bc474_r1_b0_t0",
+    "a_31ae2c3bc474_r1_b1_t0",
+    "a_31ae2c3bc474_r1_b2_t0",
+    "a_31ae2c3bc474_r1_b3_t0",
+    "a_31ae2c3bc474_r1_b4_t0",
+    "a_31ae2c3bc474_r1_b5_t0",
+    "a_31ae2c3bc474_r1_b6_t0",
+    "a_31ae2c3bc474_r1_b7_t0",
+    "a_31ae2c3bc474_r1_b8_t0",
+    "a_31ae2c3bc474_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_3f98b2ec352f",
+   "games": 10,
+   "my_total": 57,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_3f98b2ec352f_r1_b0_t0",
+    "a_3f98b2ec352f_r1_b1_t0",
+    "a_3f98b2ec352f_r1_b2_t0",
+    "a_3f98b2ec352f_r1_b3_t0",
+    "a_3f98b2ec352f_r1_b4_t0",
+    "a_3f98b2ec352f_r1_b5_t0",
+    "a_3f98b2ec352f_r1_b6_t0",
+    "a_3f98b2ec352f_r1_b7_t0",
+    "a_3f98b2ec352f_r1_b8_t0",
+    "a_3f98b2ec352f_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_40330d461e2d",
+   "games": 10,
+   "my_total": 11,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_40330d461e2d_r1_b0_t0",
+    "a_40330d461e2d_r1_b1_t0",
+    "a_40330d461e2d_r1_b2_t0",
+    "a_40330d461e2d_r1_b3_t0",
+    "a_40330d461e2d_r1_b4_t0",
+    "a_40330d461e2d_r1_b5_t0",
+    "a_40330d461e2d_r1_b6_t0",
+    "a_40330d461e2d_r1_b7_t0",
+    "a_40330d461e2d_r1_b8_t0",
+    "a_40330d461e2d_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_4111a0e3f482",
+   "games": 10,
+   "my_total": 42,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_4111a0e3f482_r1_b0_t0",
+    "a_4111a0e3f482_r1_b1_t0",
+    "a_4111a0e3f482_r1_b2_t0",
+    "a_4111a0e3f482_r1_b3_t0",
+    "a_4111a0e3f482_r1_b4_t0",
+    "a_4111a0e3f482_r1_b5_t0",
+    "a_4111a0e3f482_r1_b6_t0",
+    "a_4111a0e3f482_r1_b7_t0",
+    "a_4111a0e3f482_r1_b8_t0",
+    "a_4111a0e3f482_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_462e51e9df5a",
+   "games": 10,
+   "my_total": 32,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_462e51e9df5a_r1_b0_t0",
+    "a_462e51e9df5a_r1_b1_t0",
+    "a_462e51e9df5a_r1_b2_t0",
+    "a_462e51e9df5a_r1_b3_t0",
+    "a_462e51e9df5a_r1_b4_t0",
+    "a_462e51e9df5a_r1_b5_t0",
+    "a_462e51e9df5a_r1_b6_t0",
+    "a_462e51e9df5a_r1_b7_t0",
+    "a_462e51e9df5a_r1_b8_t0",
+    "a_462e51e9df5a_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_4b5984a7ae27",
+   "games": 10,
+   "my_total": -275,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_4b5984a7ae27_r1_b0_t0",
+    "a_4b5984a7ae27_r1_b1_t0",
+    "a_4b5984a7ae27_r1_b2_t0",
+    "a_4b5984a7ae27_r1_b3_t0",
+    "a_4b5984a7ae27_r1_b4_t0",
+    "a_4b5984a7ae27_r1_b5_t0",
+    "a_4b5984a7ae27_r1_b6_t0",
+    "a_4b5984a7ae27_r1_b7_t0",
+    "a_4b5984a7ae27_r1_b8_t0",
+    "a_4b5984a7ae27_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_52b58fff9d51",
+   "games": 10,
+   "my_total": 164,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_52b58fff9d51_r1_b0_t0",
+    "a_52b58fff9d51_r1_b1_t0",
+    "a_52b58fff9d51_r1_b2_t0",
+    "a_52b58fff9d51_r1_b3_t0",
+    "a_52b58fff9d51_r1_b4_t0",
+    "a_52b58fff9d51_r1_b5_t0",
+    "a_52b58fff9d51_r1_b6_t0",
+    "a_52b58fff9d51_r1_b7_t0",
+    "a_52b58fff9d51_r1_b8_t0",
+    "a_52b58fff9d51_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_54d3497fb5f0",
+   "games": 10,
+   "my_total": -63,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_54d3497fb5f0_r1_b0_t0",
+    "a_54d3497fb5f0_r1_b1_t0",
+    "a_54d3497fb5f0_r1_b2_t0",
+    "a_54d3497fb5f0_r1_b3_t0",
+    "a_54d3497fb5f0_r1_b4_t0",
+    "a_54d3497fb5f0_r1_b5_t0",
+    "a_54d3497fb5f0_r1_b6_t0",
+    "a_54d3497fb5f0_r1_b7_t0",
+    "a_54d3497fb5f0_r1_b8_t0",
+    "a_54d3497fb5f0_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_55f18ee75775",
+   "games": 10,
+   "my_total": -60,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "[REDACTED]",
+   "game_ids": [
+    "a_55f18ee75775_r1_b0_t0",
+    "a_55f18ee75775_r1_b1_t0",
+    "a_55f18ee75775_r1_b2_t0",
+    "a_55f18ee75775_r1_b3_t0",
+    "a_55f18ee75775_r1_b4_t0",
+    "a_55f18ee75775_r1_b5_t0",
+    "a_55f18ee75775_r1_b6_t0",
+    "a_55f18ee75775_r1_b7_t0",
+    "a_55f18ee75775_r1_b8_t0",
+    "a_55f18ee75775_r1_b9_t0"
+   ],
+   "session_tag": "r18-integrated-positive-v1-auto-match"
+  },
+  {
+   "room_id": "a_5a2d078cfa69",
+   "games": 10,
+   "my_total": 71,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_5a2d078cfa69_r1_b0_t0",
+    "a_5a2d078cfa69_r1_b1_t0",
+    "a_5a2d078cfa69_r1_b2_t0",
+    "a_5a2d078cfa69_r1_b3_t0",
+    "a_5a2d078cfa69_r1_b4_t0",
+    "a_5a2d078cfa69_r1_b5_t0",
+    "a_5a2d078cfa69_r1_b6_t0",
+    "a_5a2d078cfa69_r1_b7_t0",
+    "a_5a2d078cfa69_r1_b8_t0",
+    "a_5a2d078cfa69_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_5ab07d501de1",
+   "games": 10,
+   "my_total": 22,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_5ab07d501de1_r1_b0_t0",
+    "a_5ab07d501de1_r1_b1_t0",
+    "a_5ab07d501de1_r1_b2_t0",
+    "a_5ab07d501de1_r1_b3_t0",
+    "a_5ab07d501de1_r1_b4_t0",
+    "a_5ab07d501de1_r1_b5_t0",
+    "a_5ab07d501de1_r1_b6_t0",
+    "a_5ab07d501de1_r1_b7_t0",
+    "a_5ab07d501de1_r1_b8_t0",
+    "a_5ab07d501de1_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_5b9dda845c67",
+   "games": 10,
+   "my_total": -234,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_5b9dda845c67_r1_b0_t0",
+    "a_5b9dda845c67_r1_b1_t0",
+    "a_5b9dda845c67_r1_b2_t0",
+    "a_5b9dda845c67_r1_b3_t0",
+    "a_5b9dda845c67_r1_b4_t0",
+    "a_5b9dda845c67_r1_b5_t0",
+    "a_5b9dda845c67_r1_b6_t0",
+    "a_5b9dda845c67_r1_b7_t0",
+    "a_5b9dda845c67_r1_b8_t0",
+    "a_5b9dda845c67_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_5e16dfc1305b",
+   "games": 10,
+   "my_total": 35,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_5e16dfc1305b_r1_b0_t0",
+    "a_5e16dfc1305b_r1_b1_t0",
+    "a_5e16dfc1305b_r1_b2_t0",
+    "a_5e16dfc1305b_r1_b3_t0",
+    "a_5e16dfc1305b_r1_b4_t0",
+    "a_5e16dfc1305b_r1_b5_t0",
+    "a_5e16dfc1305b_r1_b6_t0",
+    "a_5e16dfc1305b_r1_b7_t0",
+    "a_5e16dfc1305b_r1_b8_t0",
+    "a_5e16dfc1305b_r1_b9_t0"
+   ],
+   "session_tag": "r18-v2-sse-freematch-20260925-pm2"
+  },
+  {
+   "room_id": "a_5ff3fe3a5c59",
+   "games": 10,
+   "my_total": 65,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_5ff3fe3a5c59_r1_b0_t0",
+    "a_5ff3fe3a5c59_r1_b1_t0",
+    "a_5ff3fe3a5c59_r1_b2_t0",
+    "a_5ff3fe3a5c59_r1_b3_t0",
+    "a_5ff3fe3a5c59_r1_b4_t0",
+    "a_5ff3fe3a5c59_r1_b5_t0",
+    "a_5ff3fe3a5c59_r1_b6_t0",
+    "a_5ff3fe3a5c59_r1_b7_t0",
+    "a_5ff3fe3a5c59_r1_b8_t0",
+    "a_5ff3fe3a5c59_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_6823b3e78f89",
+   "games": 10,
+   "my_total": -41,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_6823b3e78f89_r1_b0_t0",
+    "a_6823b3e78f89_r1_b1_t0",
+    "a_6823b3e78f89_r1_b2_t0",
+    "a_6823b3e78f89_r1_b3_t0",
+    "a_6823b3e78f89_r1_b4_t0",
+    "a_6823b3e78f89_r1_b5_t0",
+    "a_6823b3e78f89_r1_b6_t0",
+    "a_6823b3e78f89_r1_b7_t0",
+    "a_6823b3e78f89_r1_b8_t0",
+    "a_6823b3e78f89_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_6865b26c49db",
+   "games": 10,
+   "my_total": -89,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_6865b26c49db_r1_b0_t0",
+    "a_6865b26c49db_r1_b1_t0",
+    "a_6865b26c49db_r1_b2_t0",
+    "a_6865b26c49db_r1_b3_t0",
+    "a_6865b26c49db_r1_b4_t0",
+    "a_6865b26c49db_r1_b5_t0",
+    "a_6865b26c49db_r1_b6_t0",
+    "a_6865b26c49db_r1_b7_t0",
+    "a_6865b26c49db_r1_b8_t0",
+    "a_6865b26c49db_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_6e5ff0f85173",
+   "games": 10,
+   "my_total": -13,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_6e5ff0f85173_r1_b0_t0",
+    "a_6e5ff0f85173_r1_b1_t0",
+    "a_6e5ff0f85173_r1_b2_t0",
+    "a_6e5ff0f85173_r1_b3_t0",
+    "a_6e5ff0f85173_r1_b4_t0",
+    "a_6e5ff0f85173_r1_b5_t0",
+    "a_6e5ff0f85173_r1_b6_t0",
+    "a_6e5ff0f85173_r1_b7_t0",
+    "a_6e5ff0f85173_r1_b8_t0",
+    "a_6e5ff0f85173_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_70b2ae92fe29",
+   "games": 10,
+   "my_total": -159,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_70b2ae92fe29_r1_b0_t0",
+    "a_70b2ae92fe29_r1_b1_t0",
+    "a_70b2ae92fe29_r1_b2_t0",
+    "a_70b2ae92fe29_r1_b3_t0",
+    "a_70b2ae92fe29_r1_b4_t0",
+    "a_70b2ae92fe29_r1_b5_t0",
+    "a_70b2ae92fe29_r1_b6_t0",
+    "a_70b2ae92fe29_r1_b7_t0",
+    "a_70b2ae92fe29_r1_b8_t0",
+    "a_70b2ae92fe29_r1_b9_t0"
+   ],
+   "session_tag": "r18-v2-sse-freematch-20260925-pm3"
+  },
+  {
+   "room_id": "a_84e6008176e0",
+   "games": 10,
+   "my_total": -63,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_84e6008176e0_r1_b0_t0",
+    "a_84e6008176e0_r1_b1_t0",
+    "a_84e6008176e0_r1_b2_t0",
+    "a_84e6008176e0_r1_b3_t0",
+    "a_84e6008176e0_r1_b4_t0",
+    "a_84e6008176e0_r1_b5_t0",
+    "a_84e6008176e0_r1_b6_t0",
+    "a_84e6008176e0_r1_b7_t0",
+    "a_84e6008176e0_r1_b8_t0",
+    "a_84e6008176e0_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_852fb97c102e",
+   "games": 10,
+   "my_total": -146,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_852fb97c102e_r1_b0_t0",
+    "a_852fb97c102e_r1_b1_t0",
+    "a_852fb97c102e_r1_b2_t0",
+    "a_852fb97c102e_r1_b3_t0",
+    "a_852fb97c102e_r1_b4_t0",
+    "a_852fb97c102e_r1_b5_t0",
+    "a_852fb97c102e_r1_b6_t0",
+    "a_852fb97c102e_r1_b7_t0",
+    "a_852fb97c102e_r1_b8_t0",
+    "a_852fb97c102e_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_8cb4422c6d71",
+   "games": 10,
+   "my_total": 21,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_8cb4422c6d71_r1_b0_t0",
+    "a_8cb4422c6d71_r1_b1_t0",
+    "a_8cb4422c6d71_r1_b2_t0",
+    "a_8cb4422c6d71_r1_b3_t0",
+    "a_8cb4422c6d71_r1_b4_t0",
+    "a_8cb4422c6d71_r1_b5_t0",
+    "a_8cb4422c6d71_r1_b6_t0",
+    "a_8cb4422c6d71_r1_b7_t0",
+    "a_8cb4422c6d71_r1_b8_t0",
+    "a_8cb4422c6d71_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_8e0d5c225ffa",
+   "games": 10,
+   "my_total": 237,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_8e0d5c225ffa_r1_b0_t0",
+    "a_8e0d5c225ffa_r1_b1_t0",
+    "a_8e0d5c225ffa_r1_b2_t0",
+    "a_8e0d5c225ffa_r1_b3_t0",
+    "a_8e0d5c225ffa_r1_b4_t0",
+    "a_8e0d5c225ffa_r1_b5_t0",
+    "a_8e0d5c225ffa_r1_b6_t0",
+    "a_8e0d5c225ffa_r1_b7_t0",
+    "a_8e0d5c225ffa_r1_b8_t0",
+    "a_8e0d5c225ffa_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_8f44d0828905",
+   "games": 10,
+   "my_total": 36,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_8f44d0828905_r1_b0_t0",
+    "a_8f44d0828905_r1_b1_t0",
+    "a_8f44d0828905_r1_b2_t0",
+    "a_8f44d0828905_r1_b3_t0",
+    "a_8f44d0828905_r1_b4_t0",
+    "a_8f44d0828905_r1_b5_t0",
+    "a_8f44d0828905_r1_b6_t0",
+    "a_8f44d0828905_r1_b7_t0",
+    "a_8f44d0828905_r1_b8_t0",
+    "a_8f44d0828905_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_8f73d9fe25c5",
+   "games": 10,
+   "my_total": 57,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_8f73d9fe25c5_r1_b0_t0",
+    "a_8f73d9fe25c5_r1_b1_t0",
+    "a_8f73d9fe25c5_r1_b2_t0",
+    "a_8f73d9fe25c5_r1_b3_t0",
+    "a_8f73d9fe25c5_r1_b4_t0",
+    "a_8f73d9fe25c5_r1_b5_t0",
+    "a_8f73d9fe25c5_r1_b6_t0",
+    "a_8f73d9fe25c5_r1_b7_t0",
+    "a_8f73d9fe25c5_r1_b8_t0",
+    "a_8f73d9fe25c5_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_961fde8d2ce5",
+   "games": 10,
+   "my_total": 148,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_961fde8d2ce5_r1_b0_t0",
+    "a_961fde8d2ce5_r1_b1_t0",
+    "a_961fde8d2ce5_r1_b2_t0",
+    "a_961fde8d2ce5_r1_b3_t0",
+    "a_961fde8d2ce5_r1_b4_t0",
+    "a_961fde8d2ce5_r1_b5_t0",
+    "a_961fde8d2ce5_r1_b6_t0",
+    "a_961fde8d2ce5_r1_b7_t0",
+    "a_961fde8d2ce5_r1_b8_t0",
+    "a_961fde8d2ce5_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_9a166cd5d04d",
+   "games": 10,
+   "my_total": -118,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_9a166cd5d04d_r1_b0_t0",
+    "a_9a166cd5d04d_r1_b1_t0",
+    "a_9a166cd5d04d_r1_b2_t0",
+    "a_9a166cd5d04d_r1_b3_t0",
+    "a_9a166cd5d04d_r1_b4_t0",
+    "a_9a166cd5d04d_r1_b5_t0",
+    "a_9a166cd5d04d_r1_b6_t0",
+    "a_9a166cd5d04d_r1_b7_t0",
+    "a_9a166cd5d04d_r1_b8_t0",
+    "a_9a166cd5d04d_r1_b9_t0"
+   ],
+   "session_tag": "r18-v2-sse-freematch-20260925-pm4"
+  },
+  {
+   "room_id": "a_acad66efe76c",
+   "games": 10,
+   "my_total": -82,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_acad66efe76c_r1_b0_t0",
+    "a_acad66efe76c_r1_b1_t0",
+    "a_acad66efe76c_r1_b2_t0",
+    "a_acad66efe76c_r1_b3_t0",
+    "a_acad66efe76c_r1_b4_t0",
+    "a_acad66efe76c_r1_b5_t0",
+    "a_acad66efe76c_r1_b6_t0",
+    "a_acad66efe76c_r1_b7_t0",
+    "a_acad66efe76c_r1_b8_t0",
+    "a_acad66efe76c_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_acc191732472",
+   "games": 10,
+   "my_total": -37,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_acc191732472_r1_b0_t0",
+    "a_acc191732472_r1_b1_t0",
+    "a_acc191732472_r1_b2_t0",
+    "a_acc191732472_r1_b3_t0",
+    "a_acc191732472_r1_b4_t0",
+    "a_acc191732472_r1_b5_t0",
+    "a_acc191732472_r1_b6_t0",
+    "a_acc191732472_r1_b7_t0",
+    "a_acc191732472_r1_b8_t0",
+    "a_acc191732472_r1_b9_t0"
+   ],
+   "session_tag": "r18-v2-sse-free-validated-20260925"
+  },
+  {
+   "room_id": "a_adbfad182e64",
+   "games": 10,
+   "my_total": -87,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_adbfad182e64_r1_b0_t0",
+    "a_adbfad182e64_r1_b1_t0",
+    "a_adbfad182e64_r1_b2_t0",
+    "a_adbfad182e64_r1_b3_t0",
+    "a_adbfad182e64_r1_b4_t0",
+    "a_adbfad182e64_r1_b5_t0",
+    "a_adbfad182e64_r1_b6_t0",
+    "a_adbfad182e64_r1_b7_t0",
+    "a_adbfad182e64_r1_b8_t0",
+    "a_adbfad182e64_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_aebf384d5515",
+   "games": 10,
+   "my_total": 65,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_aebf384d5515_r1_b0_t0",
+    "a_aebf384d5515_r1_b1_t0",
+    "a_aebf384d5515_r1_b2_t0",
+    "a_aebf384d5515_r1_b3_t0",
+    "a_aebf384d5515_r1_b4_t0",
+    "a_aebf384d5515_r1_b5_t0",
+    "a_aebf384d5515_r1_b6_t0",
+    "a_aebf384d5515_r1_b7_t0",
+    "a_aebf384d5515_r1_b8_t0",
+    "a_aebf384d5515_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_b4e1fe83f979",
+   "games": 10,
+   "my_total": 118,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_b4e1fe83f979_r1_b0_t0",
+    "a_b4e1fe83f979_r1_b1_t0",
+    "a_b4e1fe83f979_r1_b2_t0",
+    "a_b4e1fe83f979_r1_b3_t0",
+    "a_b4e1fe83f979_r1_b4_t0",
+    "a_b4e1fe83f979_r1_b5_t0",
+    "a_b4e1fe83f979_r1_b6_t0",
+    "a_b4e1fe83f979_r1_b7_t0",
+    "a_b4e1fe83f979_r1_b8_t0",
+    "a_b4e1fe83f979_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_bd6546c30b89",
+   "games": 10,
+   "my_total": 89,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_bd6546c30b89_r1_b0_t0",
+    "a_bd6546c30b89_r1_b1_t0",
+    "a_bd6546c30b89_r1_b2_t0",
+    "a_bd6546c30b89_r1_b3_t0",
+    "a_bd6546c30b89_r1_b4_t0",
+    "a_bd6546c30b89_r1_b5_t0",
+    "a_bd6546c30b89_r1_b6_t0",
+    "a_bd6546c30b89_r1_b7_t0",
+    "a_bd6546c30b89_r1_b8_t0",
+    "a_bd6546c30b89_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_c0739f8cabc3",
+   "games": 10,
+   "my_total": -74,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_c0739f8cabc3_r1_b0_t0",
+    "a_c0739f8cabc3_r1_b1_t0",
+    "a_c0739f8cabc3_r1_b2_t0",
+    "a_c0739f8cabc3_r1_b3_t0",
+    "a_c0739f8cabc3_r1_b4_t0",
+    "a_c0739f8cabc3_r1_b5_t0",
+    "a_c0739f8cabc3_r1_b6_t0",
+    "a_c0739f8cabc3_r1_b7_t0",
+    "a_c0739f8cabc3_r1_b8_t0",
+    "a_c0739f8cabc3_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_c452c9659140",
+   "games": 10,
+   "my_total": -35,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_c452c9659140_r1_b0_t0",
+    "a_c452c9659140_r1_b1_t0",
+    "a_c452c9659140_r1_b2_t0",
+    "a_c452c9659140_r1_b3_t0",
+    "a_c452c9659140_r1_b4_t0",
+    "a_c452c9659140_r1_b5_t0",
+    "a_c452c9659140_r1_b6_t0",
+    "a_c452c9659140_r1_b7_t0",
+    "a_c452c9659140_r1_b8_t0",
+    "a_c452c9659140_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_d1abef06c8d1",
+   "games": 10,
+   "my_total": -147,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "[REDACTED]",
+   "game_ids": [
+    "a_d1abef06c8d1_r1_b0_t0",
+    "a_d1abef06c8d1_r1_b1_t0",
+    "a_d1abef06c8d1_r1_b2_t0",
+    "a_d1abef06c8d1_r1_b3_t0",
+    "a_d1abef06c8d1_r1_b4_t0",
+    "a_d1abef06c8d1_r1_b5_t0",
+    "a_d1abef06c8d1_r1_b6_t0",
+    "a_d1abef06c8d1_r1_b7_t0",
+    "a_d1abef06c8d1_r1_b8_t0",
+    "a_d1abef06c8d1_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_d3c8d2223657",
+   "games": 10,
+   "my_total": -21,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_d3c8d2223657_r1_b0_t0",
+    "a_d3c8d2223657_r1_b1_t0",
+    "a_d3c8d2223657_r1_b2_t0",
+    "a_d3c8d2223657_r1_b3_t0",
+    "a_d3c8d2223657_r1_b4_t0",
+    "a_d3c8d2223657_r1_b5_t0",
+    "a_d3c8d2223657_r1_b6_t0",
+    "a_d3c8d2223657_r1_b7_t0",
+    "a_d3c8d2223657_r1_b8_t0",
+    "a_d3c8d2223657_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_d71ee9ea6643",
+   "games": 10,
+   "my_total": 86,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_d71ee9ea6643_r1_b0_t0",
+    "a_d71ee9ea6643_r1_b1_t0",
+    "a_d71ee9ea6643_r1_b2_t0",
+    "a_d71ee9ea6643_r1_b3_t0",
+    "a_d71ee9ea6643_r1_b4_t0",
+    "a_d71ee9ea6643_r1_b5_t0",
+    "a_d71ee9ea6643_r1_b6_t0",
+    "a_d71ee9ea6643_r1_b7_t0",
+    "a_d71ee9ea6643_r1_b8_t0",
+    "a_d71ee9ea6643_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_d773a8e428a0",
+   "games": 10,
+   "my_total": -3,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_d773a8e428a0_r1_b0_t0",
+    "a_d773a8e428a0_r1_b1_t0",
+    "a_d773a8e428a0_r1_b2_t0",
+    "a_d773a8e428a0_r1_b3_t0",
+    "a_d773a8e428a0_r1_b4_t0",
+    "a_d773a8e428a0_r1_b5_t0",
+    "a_d773a8e428a0_r1_b6_t0",
+    "a_d773a8e428a0_r1_b7_t0",
+    "a_d773a8e428a0_r1_b8_t0",
+    "a_d773a8e428a0_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_d7c3190a1422",
+   "games": 10,
+   "my_total": -9,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_d7c3190a1422_r1_b0_t0",
+    "a_d7c3190a1422_r1_b1_t0",
+    "a_d7c3190a1422_r1_b2_t0",
+    "a_d7c3190a1422_r1_b3_t0",
+    "a_d7c3190a1422_r1_b4_t0",
+    "a_d7c3190a1422_r1_b5_t0",
+    "a_d7c3190a1422_r1_b6_t0",
+    "a_d7c3190a1422_r1_b7_t0",
+    "a_d7c3190a1422_r1_b8_t0",
+    "a_d7c3190a1422_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_d8e15fe8bc96",
+   "games": 10,
+   "my_total": -83,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_d8e15fe8bc96_r1_b0_t0",
+    "a_d8e15fe8bc96_r1_b1_t0",
+    "a_d8e15fe8bc96_r1_b2_t0",
+    "a_d8e15fe8bc96_r1_b3_t0",
+    "a_d8e15fe8bc96_r1_b4_t0",
+    "a_d8e15fe8bc96_r1_b5_t0",
+    "a_d8e15fe8bc96_r1_b6_t0",
+    "a_d8e15fe8bc96_r1_b7_t0",
+    "a_d8e15fe8bc96_r1_b8_t0",
+    "a_d8e15fe8bc96_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_da9bfc607719",
+   "games": 10,
+   "my_total": -82,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_da9bfc607719_r1_b0_t0",
+    "a_da9bfc607719_r1_b1_t0",
+    "a_da9bfc607719_r1_b2_t0",
+    "a_da9bfc607719_r1_b3_t0",
+    "a_da9bfc607719_r1_b4_t0",
+    "a_da9bfc607719_r1_b5_t0",
+    "a_da9bfc607719_r1_b6_t0",
+    "a_da9bfc607719_r1_b7_t0",
+    "a_da9bfc607719_r1_b8_t0",
+    "a_da9bfc607719_r1_b9_t0"
+   ],
+   "session_tag": "r18-v2-sse-freematch-20260925-pm"
+  },
+  {
+   "room_id": "a_dc1579d00cf1",
+   "games": 10,
+   "my_total": -79,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_dc1579d00cf1_r1_b0_t0",
+    "a_dc1579d00cf1_r1_b1_t0",
+    "a_dc1579d00cf1_r1_b2_t0",
+    "a_dc1579d00cf1_r1_b3_t0",
+    "a_dc1579d00cf1_r1_b4_t0",
+    "a_dc1579d00cf1_r1_b5_t0",
+    "a_dc1579d00cf1_r1_b6_t0",
+    "a_dc1579d00cf1_r1_b7_t0",
+    "a_dc1579d00cf1_r1_b8_t0",
+    "a_dc1579d00cf1_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_de5aed954f2f",
+   "games": 10,
+   "my_total": -27,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_de5aed954f2f_r1_b0_t0",
+    "a_de5aed954f2f_r1_b1_t0",
+    "a_de5aed954f2f_r1_b2_t0",
+    "a_de5aed954f2f_r1_b3_t0",
+    "a_de5aed954f2f_r1_b4_t0",
+    "a_de5aed954f2f_r1_b5_t0",
+    "a_de5aed954f2f_r1_b6_t0",
+    "a_de5aed954f2f_r1_b7_t0",
+    "a_de5aed954f2f_r1_b8_t0",
+    "a_de5aed954f2f_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_e2b2d94b31c1",
+   "games": 10,
+   "my_total": 46,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "[REDACTED]",
+   "game_ids": [
+    "a_e2b2d94b31c1_r1_b0_t0",
+    "a_e2b2d94b31c1_r1_b1_t0",
+    "a_e2b2d94b31c1_r1_b2_t0",
+    "a_e2b2d94b31c1_r1_b3_t0",
+    "a_e2b2d94b31c1_r1_b4_t0",
+    "a_e2b2d94b31c1_r1_b5_t0",
+    "a_e2b2d94b31c1_r1_b6_t0",
+    "a_e2b2d94b31c1_r1_b7_t0",
+    "a_e2b2d94b31c1_r1_b8_t0",
+    "a_e2b2d94b31c1_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_e6fb425647e4",
+   "games": 10,
+   "my_total": -198,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_e6fb425647e4_r1_b0_t0",
+    "a_e6fb425647e4_r1_b1_t0",
+    "a_e6fb425647e4_r1_b2_t0",
+    "a_e6fb425647e4_r1_b3_t0",
+    "a_e6fb425647e4_r1_b4_t0",
+    "a_e6fb425647e4_r1_b5_t0",
+    "a_e6fb425647e4_r1_b6_t0",
+    "a_e6fb425647e4_r1_b7_t0",
+    "a_e6fb425647e4_r1_b8_t0",
+    "a_e6fb425647e4_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_e9cc6d10eb21",
+   "games": 10,
+   "my_total": 91,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_e9cc6d10eb21_r1_b0_t0",
+    "a_e9cc6d10eb21_r1_b1_t0",
+    "a_e9cc6d10eb21_r1_b2_t0",
+    "a_e9cc6d10eb21_r1_b3_t0",
+    "a_e9cc6d10eb21_r1_b4_t0",
+    "a_e9cc6d10eb21_r1_b5_t0",
+    "a_e9cc6d10eb21_r1_b6_t0",
+    "a_e9cc6d10eb21_r1_b7_t0",
+    "a_e9cc6d10eb21_r1_b8_t0",
+    "a_e9cc6d10eb21_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_eba7d262d71c",
+   "games": 10,
+   "my_total": -34,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "[REDACTED]",
+   "game_ids": [
+    "a_eba7d262d71c_r1_b0_t0",
+    "a_eba7d262d71c_r1_b1_t0",
+    "a_eba7d262d71c_r1_b2_t0",
+    "a_eba7d262d71c_r1_b3_t0",
+    "a_eba7d262d71c_r1_b4_t0",
+    "a_eba7d262d71c_r1_b5_t0",
+    "a_eba7d262d71c_r1_b6_t0",
+    "a_eba7d262d71c_r1_b7_t0",
+    "a_eba7d262d71c_r1_b8_t0",
+    "a_eba7d262d71c_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_ee0fd34a23e2",
+   "games": 10,
+   "my_total": 10,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_ee0fd34a23e2_r1_b0_t0",
+    "a_ee0fd34a23e2_r1_b1_t0",
+    "a_ee0fd34a23e2_r1_b2_t0",
+    "a_ee0fd34a23e2_r1_b3_t0",
+    "a_ee0fd34a23e2_r1_b4_t0",
+    "a_ee0fd34a23e2_r1_b5_t0",
+    "a_ee0fd34a23e2_r1_b6_t0",
+    "a_ee0fd34a23e2_r1_b7_t0",
+    "a_ee0fd34a23e2_r1_b8_t0",
+    "a_ee0fd34a23e2_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_efe83d7888e7",
+   "games": 10,
+   "my_total": -68,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_efe83d7888e7_r1_b0_t0",
+    "a_efe83d7888e7_r1_b1_t0",
+    "a_efe83d7888e7_r1_b2_t0",
+    "a_efe83d7888e7_r1_b3_t0",
+    "a_efe83d7888e7_r1_b4_t0",
+    "a_efe83d7888e7_r1_b5_t0",
+    "a_efe83d7888e7_r1_b6_t0",
+    "a_efe83d7888e7_r1_b7_t0",
+    "a_efe83d7888e7_r1_b8_t0",
+    "a_efe83d7888e7_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_f029a21dbe6a",
+   "games": 10,
+   "my_total": 261,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_f029a21dbe6a_r1_b0_t0",
+    "a_f029a21dbe6a_r1_b1_t0",
+    "a_f029a21dbe6a_r1_b2_t0",
+    "a_f029a21dbe6a_r1_b3_t0",
+    "a_f029a21dbe6a_r1_b4_t0",
+    "a_f029a21dbe6a_r1_b5_t0",
+    "a_f029a21dbe6a_r1_b6_t0",
+    "a_f029a21dbe6a_r1_b7_t0",
+    "a_f029a21dbe6a_r1_b8_t0",
+    "a_f029a21dbe6a_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_f341e9fce089",
+   "games": 10,
+   "my_total": -87,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_f341e9fce089_r1_b0_t0",
+    "a_f341e9fce089_r1_b1_t0",
+    "a_f341e9fce089_r1_b2_t0",
+    "a_f341e9fce089_r1_b3_t0",
+    "a_f341e9fce089_r1_b4_t0",
+    "a_f341e9fce089_r1_b5_t0",
+    "a_f341e9fce089_r1_b6_t0",
+    "a_f341e9fce089_r1_b7_t0",
+    "a_f341e9fce089_r1_b8_t0",
+    "a_f341e9fce089_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_f5e6c201dec1",
+   "games": 10,
+   "my_total": -116,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_f5e6c201dec1_r1_b0_t0",
+    "a_f5e6c201dec1_r1_b1_t0",
+    "a_f5e6c201dec1_r1_b2_t0",
+    "a_f5e6c201dec1_r1_b3_t0",
+    "a_f5e6c201dec1_r1_b4_t0",
+    "a_f5e6c201dec1_r1_b5_t0",
+    "a_f5e6c201dec1_r1_b6_t0",
+    "a_f5e6c201dec1_r1_b7_t0",
+    "a_f5e6c201dec1_r1_b8_t0",
+    "a_f5e6c201dec1_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_f8ddc4c3bd9b",
+   "games": 10,
+   "my_total": -205,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_f8ddc4c3bd9b_r1_b0_t0",
+    "a_f8ddc4c3bd9b_r1_b1_t0",
+    "a_f8ddc4c3bd9b_r1_b2_t0",
+    "a_f8ddc4c3bd9b_r1_b3_t0",
+    "a_f8ddc4c3bd9b_r1_b4_t0",
+    "a_f8ddc4c3bd9b_r1_b5_t0",
+    "a_f8ddc4c3bd9b_r1_b6_t0",
+    "a_f8ddc4c3bd9b_r1_b7_t0",
+    "a_f8ddc4c3bd9b_r1_b8_t0",
+    "a_f8ddc4c3bd9b_r1_b9_t0"
+   ],
+   "session_tag": "r18-sse-freematch-campaign-20260925b"
+  },
+  {
+   "room_id": "a_f9115ac8608d",
+   "games": 10,
+   "my_total": 47,
+   "policy_version": "r18_integrated_positive_v1",
+   "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+   "game_ids": [
+    "a_f9115ac8608d_r1_b0_t0",
+    "a_f9115ac8608d_r1_b1_t0",
+    "a_f9115ac8608d_r1_b2_t0",
+    "a_f9115ac8608d_r1_b3_t0",
+    "a_f9115ac8608d_r1_b4_t0",
+    "a_f9115ac8608d_r1_b5_t0",
+    "a_f9115ac8608d_r1_b6_t0",
+    "a_f9115ac8608d_r1_b7_t0",
+    "a_f9115ac8608d_r1_b8_t0",
+    "a_f9115ac8608d_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  },
+  {
+   "room_id": "a_fee6daf19b6f",
+   "games": 10,
+   "my_total": 43,
+   "policy_version": "r18_integrated_positive_v2",
+   "release_package_id": "e82f904c2c1fb70beea3f195110c8b2db0648971ed3eaa9bfcbed1b6543de486",
+   "game_ids": [
+    "a_fee6daf19b6f_r1_b0_t0",
+    "a_fee6daf19b6f_r1_b1_t0",
+    "a_fee6daf19b6f_r1_b2_t0",
+    "a_fee6daf19b6f_r1_b3_t0",
+    "a_fee6daf19b6f_r1_b4_t0",
+    "a_fee6daf19b6f_r1_b5_t0",
+    "a_fee6daf19b6f_r1_b6_t0",
+    "a_fee6daf19b6f_r1_b7_t0",
+    "a_fee6daf19b6f_r1_b8_t0",
+    "a_fee6daf19b6f_r1_b9_t0"
+   ],
+   "session_tag": "r18-auto-match-campaign-20260923"
+  }
+ ]
+}

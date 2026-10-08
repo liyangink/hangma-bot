@@ -1,0 +1,184 @@
+{
+  "archive": {
+    "active_objective_ids": [
+      "multi_wealth_baotou/four_wealth_piao",
+      "multi_wealth_baotou/four_wealth_take_hu",
+      "multi_wealth_baotou/four_wealth_keep_wealth"
+    ],
+    "baseline_candidate_id": "stable-v2",
+    "decisions": [
+      {
+        "candidate_id": "r18-k3-zero-change-control",
+        "dominated_by": [],
+        "eligible": false,
+        "exclusion_reasons": [
+          "MISSING_ACTIVE_OBJECTIVES:multi_wealth_baotou/four_wealth_piao,multi_wealth_baotou/four_wealth_take_hu,multi_wealth_baotou/four_wealth_keep_wealth",
+          "TABLE_SAFETY:NOT_EVALUATED",
+          "NO_HIDDEN_SPECIALIST_PASS"
+        ],
+        "lexicase_parent": false,
+        "pareto_elite": false
+      },
+      {
+        "candidate_id": "r18-p4-four-wealth-piao",
+        "dominated_by": [],
+        "eligible": true,
+        "exclusion_reasons": [],
+        "lexicase_parent": true,
+        "pareto_elite": true
+      },
+      {
+        "candidate_id": "stable-v2",
+        "dominated_by": [
+          "r18-p4-four-wealth-piao"
+        ],
+        "eligible": true,
+        "exclusion_reasons": [],
+        "lexicase_parent": false,
+        "pareto_elite": false
+      }
+    ],
+    "lexicase_parent_ids": [
+      "r18-p4-four-wealth-piao"
+    ],
+    "pareto_elite_ids": [
+      "r18-p4-four-wealth-piao"
+    ]
+  },
+  "candidate_inputs": [
+    {
+      "author_cost_note": "",
+      "candidate_id": "stable-v2",
+      "objectives": [
+        {
+          "admission_status": "BASELINE_ANCHOR",
+          "candidate_regret": 180.0,
+          "conservative_gain": 0.0,
+          "evidence": "稳定 V2 隐藏集锚点",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_piao",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "BASELINE_ANCHOR",
+          "candidate_regret": 0.0,
+          "conservative_gain": 0.0,
+          "evidence": "稳定 V2 隐藏集锚点",
+          "expected_base_scenarios": 4,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_take_hu",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 4
+        },
+        {
+          "admission_status": "BASELINE_ANCHOR",
+          "candidate_regret": 4.131147540983612,
+          "conservative_gain": 0.0,
+          "evidence": "稳定 V2 隐藏集锚点",
+          "expected_base_scenarios": 4,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_keep_wealth",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 4
+        }
+      ],
+      "source_sha256": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af",
+      "table_safety": {
+        "complete_tables": 64,
+        "evidence": "P4 完整桌同墙配对的稳定 V2 锚点",
+        "execution_failure_count": 0,
+        "paired_score_delta_mean": 0.0,
+        "source_units": 16,
+        "status": "BASELINE_ANCHOR"
+      }
+    },
+    {
+      "author_cost_note": "作者成本只作诊断，不进入能力排序",
+      "candidate_id": "r18-p4-four-wealth-piao",
+      "objectives": [
+        {
+          "admission_status": "SPECIALIST_PASS",
+          "candidate_regret": 0.0,
+          "conservative_gain": 180.0,
+          "evidence": "P4 跨手牌隐藏准入与 12 形状 × 64 世界配对反事实",
+          "expected_base_scenarios": 8,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 180.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_piao",
+          "paired_counterfactual_supported": true,
+          "regression_count": 0,
+          "scored_base_scenarios": 8
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 0.0,
+          "conservative_gain": 0.0,
+          "evidence": "P4 跨手牌隐藏 take_hu 分层",
+          "expected_base_scenarios": 4,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_take_hu",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 4
+        },
+        {
+          "admission_status": "MEASURED",
+          "candidate_regret": 4.131147540983612,
+          "conservative_gain": 0.0,
+          "evidence": "P4 跨手牌隐藏 keep_wealth 分层；仍有绝对 regret",
+          "expected_base_scenarios": 4,
+          "family": "multi_wealth_baotou",
+          "mean_gain": 0.0,
+          "objective_id": "multi_wealth_baotou/four_wealth_keep_wealth",
+          "paired_counterfactual_supported": false,
+          "regression_count": 0,
+          "scored_base_scenarios": 4
+        }
+      ],
+      "source_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+      "table_safety": {
+        "complete_tables": 64,
+        "evidence": "R18 P4 64 张完整桌安全预检 result-v2",
+        "execution_failure_count": 0,
+        "paired_score_delta_mean": 0.0,
+        "source_units": 16,
+        "status": "PASS_NONINFERIOR"
+      }
+    },
+    {
+      "author_cost_note": "保留为高风险阈值的零变化控制",
+      "candidate_id": "r18-k3-zero-change-control",
+      "objectives": [],
+      "source_sha256": "28dcac8e78e2f88f2d5800334e3e428103aa8e6c63efa8015dafb730aaf01bbe",
+      "table_safety": {
+        "complete_tables": 0,
+        "evidence": "K3 仅有开发零变化结果，未消费隐藏准入和完整桌安全门",
+        "execution_failure_count": 0,
+        "paired_score_delta_mean": null,
+        "source_units": 0,
+        "status": "NOT_EVALUATED"
+      }
+    }
+  ],
+  "findings": {
+    "k3_not_misreported_as_improvement": true,
+    "p4_keep_wealth_gap_remains": 4.131147540983612,
+    "p4_piao_hidden_mean_gain": 180.0,
+    "p4_preserved_as_specialist": true,
+    "stable_v2_dominated_on_active_vector": true
+  },
+  "manifest_sha256": "3080ed427b6430c5c4fb989b2296cb8858cc3fc13f2fcc9985bf2129d94abd4d",
+  "next": "冻结四财神保财与三财神新开发/隐藏来源，并让新候选在全部活跃目标上复算",
+  "release_eligible": false,
+  "schema": "r18-opportunity-archive-result/1",
+  "status": "PASS_ARCHIVE_BOOTSTRAP"
+}

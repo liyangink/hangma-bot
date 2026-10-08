@@ -1,0 +1,26 @@
+{
+  "schema": "t48-author-root-seal/1",
+  "captured_at_utc": "2026-10-02T06:35:49.028934+00:00",
+  "reference_identity_matches_current": true,
+  "full_reference_scores": 20,
+  "input_files": {
+    "S01-generation.batch.json": "96ee7ebd6a86b7a1f147f60c3e3a029c4732da73fd3e5409f2eb897d56a83c90",
+    "S01-prompt-emission/prompt.txt": "4c7ba622d7f3cfb81ff6ee30c5a25ab5844ba3d9bd13dd6c8835ef1c41090cf6",
+    "FROZEN-FEEDBACK.txt": "7b1218760b02b6cd9115043ec22f22d08a484338193cd12a4368c39041d0b873",
+    "PUBLIC-CASES.json": "7bf00aa56b4a803e287474e60aff1ff243217d6bc23d9dbee5c22f6475a84f15",
+    "AUTHOR-INPUT-SUMMARY.json": "385f5f68ab9609b1b9860419abfcd8a8bdc84294820760c6cf2091c79a30678d",
+    "ACTUAL-V3-REFERENCE-INPUTS.jsonl.gz": "71087dc59194a371012c757fec757567958b1654c71caa597ee9c3598aaa4cf3",
+    "FRESH-ROOTS-BEFORE-AUTHOR.json": "91c1701130a86a00bef595f966ee2cc2f2464ef51a5d18ed46b12071b8991b50"
+  },
+  "measurement_corrections": [
+    "prepare.py source_manifest_stable compares current identity to itself; not a before/after proof. This seal independently matches prepared identity to current identity; it does not retroactively establish continuous stability.",
+    "FRESH-ROOTS opponent_composition_frozen_before_execution is a requirement, not an already frozen composition. Actual composition is pending, and no table has started."
+  ],
+  "author_requested_model": "gpt-6.1-sol",
+  "author_requested_reasoning": "max",
+  "author_output_limit_bytes": 65536,
+  "new_author_budget": 1,
+  "normal_R18_fallback_allowed": false,
+  "confirmation_roots_disclosed_to_author": false,
+  "author_scope": "one i1 V3 joint formula; static checks only; no scoring/simulation/HTTP/framework edits"
+}

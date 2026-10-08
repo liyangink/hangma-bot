@@ -1,0 +1,296 @@
+{
+  "schema": "sitin-action-value-generation/1",
+  "operator": "m1",
+  "backend": "delegate",
+  "created_at_utc": "2026-09-16T17:22:35Z",
+  "contract": {
+    "identity": "2e9f087a02129723215ebf7922677d5e9aee8f548fe795a12e80be1de8b84734",
+    "payload": {
+      "schema": "sitin-action-value-task-contract/1",
+      "candidate_kind": "action_value_v1",
+      "contract_id": "action-value-v1",
+      "contract_sha256": "7d6b3013e03285d0383706a220f787b915da3cb7f5fe35359be9f27db7ff6f41",
+      "objective": {
+        "summary": "group_advance_v1：四人中间阶段(group-dev-v1,每阶段2桌完整桌赛,Rounds=8,H/M对手等权混合)结束后本座位排名前二U=1;缺god_count用识别区间",
+        "terminal_utility": "U = 1{本阶段完整排名 <= 2}",
+        "note": "终端 U 的精确定义见目标合同 group-dev-v1.json；大牌次数、改选率、评分器自报价值都不是替代目标"
+      },
+      "panel_boundary": "开发面板=legal-prefix-v1条件机会(八谓词)+正常开局面板;确认数据不可见",
+      "prompt_role": "M1 修订：在父代与三段反馈基础上做有界改动",
+      "entry_point": {
+        "signature": "score_actions(view: ScoringView) -> ScoreBatch",
+        "docstring": "根据同一动作窗口的只读可见事实，返回所有合法动作的完整评分。view 不含隐藏世界、实验种子或赛后结果；返回 SCORED 加完整动作评分，或 ABSTAIN 加明确原因；评分点越大越优先。错误：抛错、非有限数、遗漏/重复/越界动作、超工作量均使本窗口整批失效。副作用：无；不读时间、随机源、网络、文件，不修改输入。",
+        "hu_mode": "compare_legal",
+        "hu_mode_note": "新入口明确允许比较合法 Hu 与其他合法动作；立即胡永远支配继续不是规则定理。首批种子必须包含立即胡优先对照实现，骨架不强制它。紧急动作保持 HangmaRules.emergency_action 的 Pass/Discard 路径；不存在胡牌保底，不得误称。",
+        "rank_contract": "按分数降序、action_key 升序稳定排列；rank 从 1 开始（policy/interface.py 受控语义）。适配 RankedCandidate 时新总分放单个 ScorePart，保持 total_score == sum(score_parts) 不变量；非线性机制明细放有版本 trace，不拆成虚假可加贡献。"
+      },
+      "scoring_view": {
+        "schema_version": "sitin-scoring-view/1",
+        "fields": {
+          "visible_state": "白名单只读观察（自己牌、公开副露与牌河、当前窗口、庄闲、公开规则状态、墙余量）；不含 WorldState、研究标签、种子、结果、token、评估分组身份；不直接给完整 DecisionRequest",
+          "competition": "可见赛事上下文与可用/陈旧掩码；积分基准为本阶段/本桌分别命名；无权获知或陈旧则为空；不投影其他进行中桌赛的未来结果",
+          "actions": "按 action_key 升序的不可变动作表（稳定 action_key、规则动作类型、合法身份、立即结算），附不可变后续分支 (action_key, followup_key)、机械转移后的可见手牌、普通/七对进展、关键规则状态；吃碰后不同弃牌不得预合并成一个牌效最佳分支",
+          "analysis_profile": "语义版本、固定工作量上限、截断范围；不含计时器或可变缓存句柄",
+          "reference_features": "代理值、版本、单位、缺失原因；与规则事实分开存储；可不用；无校准证据不得标真实概率或严格下界"
+        },
+        "route_states": [
+          "WITNESSED",
+          "OPEN_UNCERTAIN",
+          "CLOSED_PROVEN",
+          "UNANALYZED"
+        ],
+        "progress_states": [
+          "ADVANCE",
+          "SAME",
+          "RETREAT",
+          "CLOSE",
+          "UNKNOWN"
+        ],
+        "route_progress_note": "路线状态回答证据状态，进展回答动作相对变化，不得混成三态；未枚举不等于机会为 0。"
+      },
+      "tool_catalog": {
+        "builtins": [
+          "len",
+          "min",
+          "max",
+          "abs",
+          "sum",
+          "sorted",
+          "reversed",
+          "enumerate",
+          "zip",
+          "range",
+          "round",
+          "int",
+          "float",
+          "bool",
+          "all",
+          "any",
+          "tuple",
+          "list",
+          "dict",
+          "set",
+          "frozenset",
+          "map",
+          "filter"
+        ],
+        "builtin_notes": "sum/sorted/all/any/map/filter/enumerate/reversed/zip 按输入长度保守计费；int()/float() 转换非有限结果即整批失败",
+        "methods_readonly": [
+          ".get",
+          ".items",
+          ".keys",
+          ".values",
+          ".count",
+          ".index",
+          ".append(仅局部构造期)",
+          ".add(仅局部集合构造期)"
+        ],
+        "operators": [
+          "算术 + - * /",
+          "整除 // 与取模 %（除零即失败）",
+          "比较与布尔",
+          "下标与切片（只读）",
+          "字符串拼接与格式化（计入操作数）"
+        ],
+        "modules": [],
+        "modules_note": "首版不开放任何 import：math/第三方库默认关闭；需要新增推导工具时进入工具目录版本与耗时门禁，不能临时绕过接缝",
+        "view_api": "ScoringView 只读访问器与不可变集合类型由 B2 冻结并进入候选身份（第一方传递依赖摘要）"
+      },
+      "limits": {
+        "rule_analysis": {
+          "max_expansions": 2048,
+          "max_routes_per_candidate": 128,
+          "source": "hangma.interface.ValueAnalysisLimits"
+        },
+        "candidate": {
+          "max_counted_operations": 100000,
+          "max_local_collection_size": 4096,
+          "max_source_bytes": 65536,
+          "max_trace_bytes": 32768,
+          "max_output_branches_total": "全部分支与路线内存上限：B 包机器合同冻结具体数值",
+          "numeric_range": "候选声明有限数值范围用于异常检查；越界整批失败并审计"
+        }
+      },
+      "metering_rules": [
+        "每循环迭代计费 1",
+        "每个允许调用按其规范计费（len/min/max/abs 计 1；sum/sorted/all/any/enumerate 按输入长度保守计费）",
+        "禁止不计费的批量计算",
+        "算术使用有界整数/有限浮点；拒绝大整数膨胀和不受限幂运算（** 仅允许指数 <= 4 的整数常量）"
+      ],
+      "limits_escalation": "限额不是毫秒保证：B 包基准不通过就缩小有版本的分析配置并重评；不得删除合法候选凑限额",
+      "responsibility": {
+        "candidate_owns": "候选内部对全部合法动作的完整取舍（含胡与继续的比较）",
+        "candidate_must_not": [
+          "while 循环",
+          "递归",
+          "动态执行(eval/exec/compile)",
+          "import",
+          "反射(getattr/setattr/hasattr 于白名单外对象)",
+          "文件/网络/进程操作",
+          "全局可变状态",
+          "读取时钟或随机数",
+          "lambda 之外的可调用构造",
+          "生成器与 yield",
+          "不修改规则、接口、评估器或运行配置",
+          "不自行判定实验优胜或发布"
+        ],
+        "subset_allowed": [
+          "一个导出函数 score_actions",
+          "可有无递归的局部纯辅助函数",
+          "仅允许对有长度上限的输入/局部集合迭代",
+          "调用对象只来自冻结白名单"
+        ],
+        "enforcement": [
+          "静态子集检查（AST 层，禁用节点与名字白名单）",
+          "循环/运算计数限额插桩（固定执行器进行；候选不能捕获工作量耗尽异常继续执行）",
+          "实际整链计时（紧急路径、规则分析、事实构建、评分、计划输出各段 + 全链 p50/p95/p99/最大值，按实际 DecisionBudget 剩余额度检查，保留固定网络余量）"
+        ],
+        "subset_note": "静态检查通过不免除隔离装载；离线所有装载复用 sitin_process.run_supervised，到期终止整个进程组。受监管子进程是故障隔离不是操作系统安全沙箱。异步 timeout 无法打断堵塞事件循环的同步代码：新评分器与规则分析在固定工作量下完成，所有允许计算路径需通过最大输入/故障/满载门禁。"
+      },
+      "output_contract": {
+        "status_values": [
+          "SCORED",
+          "ABSTAIN"
+        ],
+        "scored_entries": "SCORED 时对输入全部动作恰好一项；ABSTAIN 时为空；不能部分成功后用 0 补齐",
+        "action_score": {
+          "action_key": "动作键",
+          "score": "有限浮点评分点；不跨候选比较绝对量级，不当实际积分",
+          "trace": "有界结构化解释：分支选择、所用事实键、代理/分项、组合方式；非线性项不强求相加等于总分"
+        },
+        "reason": "ABSTAIN/降级原因字符串；不得用特殊数值表示未知",
+        "batch_failure_conditions": [
+          "抛出异常",
+          "非有限数（NaN/Inf）",
+          "布尔冒充数",
+          "遗漏/重复/越界动作键",
+          "超工作量限额",
+          "缺必需字段（候选清单声明）"
+        ],
+        "batch_failure_policy": "整窗口失效，降级到已备合法紧急计划；不悄悄拼 V2 分数；未知不得自动排在已知负分之前"
+      },
+      "mechanism_four_fields": {
+        "trigger": "触发条件：什么局面下本机制改变排序",
+        "changed_branches": "改变的动作/分支：哪些动作或分支相对移动",
+        "expected_direction": "预期方向：预期哪类面板上变好/变差（不要求自报提分数值）",
+        "counterexample": "反例：什么局面下本机制不该生效或会变差"
+      },
+      "numeric_reporting_rule": "所有研究数值必须标明单位、根数、终点和不确定性；不要求也不接受自报「预计提分 N」",
+      "budget_note": "预算以最新授权与台账为准；失败与重试同样计费",
+      "identity_contract": {
+        "candidate_id_inputs": [
+          "候选种类 action_value_v1",
+          "原始/执行源码",
+          "有效参数",
+          "输入输出合同（本合同 sha256）",
+          "骨架",
+          "规则/特征/代理版本",
+          "分析上限",
+          "执行器版本",
+          "第一方传递依赖摘要"
+        ],
+        "candidate_id_excluded_provenance": [
+          "生成模型",
+          "提示词",
+          "算子",
+          "父代",
+          "调用账单（作为出处另存）"
+        ],
+        "note": "生成模型、提示词、算子、父代、调用账单作为出处另存，不进 candidate_id"
+      },
+      "compatibility": {
+        "legacy_delta": "旧 delta 候选继续走 heuristic_adapter.py 旧入口；新候选不得叠加 V2 底分；旧 admitted 不重解释为新准入",
+        "emergency": "策略收到任何模型或搜索结果之前必须已有合法保底动作；紧急动作路径独立可用"
+      },
+      "parent": {
+        "identity": "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce:641296497a9b3e55205ce36e42134f6a71e6e3443485241ae637863a00d1a64f",
+        "candidate_id": "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce",
+        "thought": "机制：以「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分——先从墙余量与赛事名次压力推导机会缩放，再对每个合法动作聚合后续分支结构值（-14×向听 + 路线证据状态加权的支撑凹曲线）与路线潜力（压力×墙机会×封顶番/自得分），胡/杠等立即结算按自得分与番直接入分并与继续值真实比较，未知事实显式降档带旗标，未知动作沉底 -40、已知动作保底 -39，结构事实不完整或胡缺结算时整批 ABSTAIN。",
+        "code": "\"\"\"候选机制说明：以「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分：先从墙余量与赛事名次压力推导机会缩放，再对每个合法动作聚合后续分支结构值（-14×向听 + 路线证据状态加权的支撑凹曲线）与路线潜力（压力×墙机会×封顶番/自得分），胡/杠等立即结算按自得分与番直接入分并与继续值真实比较，未知事实显式降档带旗标，未知动作沉底 -40、已知动作保底 -39，结构事实不完整或胡缺结算时整批 ABSTAIN。\"\"\"\n\nMECH = \"triax-v1\"\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\nWALL_MID = 22.0\nSH_PEN = 14.0\nSETTLE_BASE = 32.0\nHU_BASE = 34.0\n\n\ndef num2(x):\n    \"\"\"数值读取兜底：None/布尔视为未知，返回 (占位值, 是否已知)。\"\"\"\n    if x is None:\n        return 0.0, False\n    if x is True or x is False:\n        return 0.0, False\n    return x, True\n\n\ndef supcurve(s):\n    \"\"\"支撑张数到评分点的凹曲线：前 10 张每张 0.55，其后每张 0.12。\"\"\"\n    if s <= 10.0:\n        return 0.55 * s\n    return 5.5 + 0.12 * (s - 10.0)\n\n\ndef evweight(rs):\n    \"\"\"路线证据状态到支撑项权重：已见证 1.0，开放不确定 0.75，已证封闭 0.1，未枚举 0.5（不按 0）。\"\"\"\n    if rs == \"WITNESSED\":\n        return 1.0\n    if rs == \"OPEN_UNCERTAIN\":\n        return 0.75\n    if rs == \"CLOSED_PROVEN\":\n        return 0.1\n    return 0.5\n\n\ndef progadj(p):\n    \"\"\"动作相对进展到基线调整：ADVANCE +6，RETREAT -10，SAME/CLOSE/UNKNOWN 记 0 并由旗标区分。\"\"\"\n    if p == \"ADVANCE\":\n        return 6.0\n    if p == \"RETREAT\":\n        return -10.0\n    return 0.0\n\n\ndef blend(vals):\n    \"\"\"非空结构值列表的 0.7 最优 + 0.3 均值混合；调用方保证非空。\"\"\"\n    total = sum(vals)\n    return 0.7 * max(vals) + 0.3 * (total / len(vals))\n\n\ndef branch_score(br):\n    \"\"\"单个后续分支的结构值：-14×向听 + 证据权重×支撑曲线；向听未知则整体弃用该分支。\"\"\"\n    sh, shok = num2(br.get(\"combined_shanten\"))\n    sup, supok = num2(br.get(\"support_remaining\"))\n    if not shok:\n        return 0.0, False, supok\n    val = 0.0 - SH_PEN * sh\n    if supok:\n        val = val + evweight(br.get(\"route_state\")) * supcurve(sup)\n    return val, True, supok\n\n\ndef branch_fan(br):\n    \"\"\"分支自带潜在番，封顶 26；未知返回 (0.0, False)，不按已知 0 处理。\"\"\"\n    f, fok = num2(br.get(\"fan\"))\n    if fok:\n        return min(f, 26.0), True\n    return 0.0, False\n\n\ndef route_score(rt):\n    \"\"\"条件路线：结构值（向听+有效牌未见枚数）与条件结算潜力；返回 (值, 任一已知, 潜力, 潜力已知)。\"\"\"\n    sh, shok = num2(rt.get(\"shanten\"))\n    useful = rt.get(\"useful_tiles\") or ()\n    u = 0.0\n    uok = False\n    for tile in useful[:8]:\n        rem, rok = num2(tile.get(\"remaining_estimate\"))\n        if rok:\n            u = u + min(rem, 4.0)\n            uok = True\n    val = 0.0\n    if shok:\n        val = val - SH_PEN * sh\n    if uok:\n        val = val + 0.6 * supcurve(u)\n    pot = 0.0\n    potok = False\n    cs = rt.get(\"conditional_settlement\")\n    if cs is not None:\n        f, fok = num2(cs.get(\"fan\"))\n        d, dok = num2(cs.get(\"self_delta\"))\n        if fok:\n            pot = 1.4 * min(f, 26.0)\n            potok = True\n        if dok and d > 0.0:\n            pot = pot + 0.3 * min(d, 90.0)\n            potok = True\n    return val, shok or uok, pot, potok\n\n\ndef pressure_of(view, vs):\n    \"\"\"赛事名次压力：阶段基准优先，其次 competition 桌基准，再退 live 桌分；返回 (压力, 基准名, 名次)。\"\"\"\n    comp = view.get(\"competition\")\n    scores = None\n    basis = \"none\"\n    if comp is not None:\n        stg = comp.get(\"stage_scores\")\n        if stg is not None:\n            scores = stg\n            basis = \"stage\"\n        else:\n            tbl = comp.get(\"table_scores\")\n            if tbl is not None:\n                scores = tbl\n                basis = \"table\"\n    if scores is None:\n        live = vs.get(\"table_scores\")\n        if live is not None:\n            scores = live\n            basis = \"table_live\"\n    if scores is None or len(scores) != 4:\n        return 0.5, basis, -1\n    for s in scores:\n        if s is None or s is True or s is False:\n            return 0.5, \"bad_scores\", -1\n    seat, seok = num2(vs.get(\"seat\"))\n    if not seok:\n        return 0.5, \"bad_seat\", -1\n    si = round(seat)\n    if si != seat or si < 0 or si > 3:\n        return 0.5, \"bad_seat\", -1\n    my = scores[si]\n    higher = 0\n    for s in scores:\n        if s > my:\n            higher = higher + 1\n    if higher == 0:\n        return 0.2, basis, 1\n    if higher == 1:\n        return 0.5, basis, 2\n    return 0.85, basis, higher + 1\n\n\ndef score_actions(view):\n    \"\"\"按同一动作窗口的只读可见事实，为全部合法动作评分。\"\"\"\n    schema = view.get(\"schema_version\")\n    if schema != \"sitin-scoring-view/1\":\n        return {\"status\": \"ABSTAIN\", \"reason\": f\"schema_version={schema!r} 不兼容 sitin-scoring-view/1，拒绝评分\"}\n    vs = view.get(\"visible_state\")\n    if vs is None:\n        return {\"status\": \"ABSTAIN\", \"reason\": \"visible_state 缺失，无法评分\"}\n    actions = view.get(\"actions\")\n    if not actions:\n        return {\"status\": \"ABSTAIN\", \"reason\": \"动作表缺失或为空，窗口必须先备合法紧急计划\"}\n    press, basis, rank = pressure_of(view, vs)\n    wraw = vs.get(\"remaining_tile_count\")\n    wallok = False\n    wallf = 0.6\n    if wraw is not None and wraw is not True and wraw is not False:\n        wc = min(max(wraw, 0), 160)\n        wallf = wc / (wc + WALL_MID)\n        wallok = True\n    fut = 0.55 + 0.45 * wallf\n    profile = view.get(\"analysis_profile\")\n    trunc = \"\"\n    if profile is not None:\n        raw = profile.get(\"truncation_note\")\n        if raw is not None and raw != \"\":\n            trunc = raw\n    entries = []\n    for act in actions:\n        key = act.get(\"action_key\")\n        atype = act.get(\"action_type\")\n        if key is None or atype is None:\n            return {\"status\": \"ABSTAIN\", \"reason\": \"动作条目缺 action_key/action_type，事实不完整\"}\n        prog = act.get(\"family_progress\")\n        flags = []\n        known = atype in KNOWN_TYPES\n        settle = act.get(\"immediate_settlement\")\n        branches = act.get(\"followup_branches\")\n        routes = act.get(\"routes\") or ()\n        brvals = []\n        rtvals = []\n        potmax = 0.0\n        potok = False\n        score = 0.0\n        if atype == \"hu\":\n            if settle is None:\n                return {\"status\": \"ABSTAIN\", \"reason\": f\"hu 动作 {key} 缺 immediate_settlement，compare_legal 无法比较\"}\n            f, fok = num2(settle.get(\"fan\"))\n            d, dok = num2(settle.get(\"self_delta\"))\n            if not fok or not dok:\n                return {\"status\": \"ABSTAIN\", \"reason\": f\"hu 动作 {key} 结算 fan/self_delta 非数值，无法比较\"}\n            score = HU_BASE + 0.45 * d + 1.7 * min(f, 26.0)\n            if press >= 0.8:\n                score = score * 1.1\n            if wallf < 0.15:\n                score = score + 4.0\n            flags.append(\"hu\")\n        else:\n            base = 0.0\n            if atype == \"pass\":\n                base = 1.0\n            if atype == \"chi\" or atype == \"peng\":\n                base = -1.5\n            if atype == \"gang\":\n                base = 2.0\n            if not known:\n                base = 0.0\n                flags.append(\"type?\")\n            if settle is not None:\n                f, fok = num2(settle.get(\"fan\"))\n                d, dok = num2(settle.get(\"self_delta\"))\n                if fok and dok:\n                    base = base + SETTLE_BASE + 0.45 * d + 1.4 * min(f, 26.0)\n                    flags.append(\"settle\")\n                    if atype == \"gang\" and wallf < 0.2:\n                        base = base - 3.0\n                else:\n                    flags.append(\"settle?\")\n            bmiss = 0\n            if branches is None:\n                flags.append(\"brna\")\n            else:\n                if len(branches) > 12:\n                    flags.append(\"brtrunc\")\n                for br in branches[:12]:\n                    val, shok, supok = branch_score(br)\n                    if shok:\n                        brvals.append(val)\n                    else:\n                        bmiss = bmiss + 1\n                    if not supok and flags.count(\"brsup\") == 0:\n                        flags.append(\"brsup\")\n                    bf, bfok = branch_fan(br)\n                    if bfok and bf > potmax:\n                        potmax = bf\n                        potok = True\n                if bmiss > 0 and flags.count(\"brsh?\") == 0:\n                    flags.append(\"brsh?\")\n            if len(routes) > 0:\n                if len(routes) > 10:\n                    flags.append(\"rttrunc\")\n                for rt in routes[:10]:\n                    val, anyok, pot, pok = route_score(rt)\n                    if anyok:\n                        rtvals.append(val)\n                    if pok and pot > potmax:\n                        potmax = pot\n                        potok = True\n            score = base + progadj(prog)\n            if len(brvals) > 0:\n                score = score + fut * blend(brvals)\n            if len(rtvals) > 0:\n                score = score + 0.8 * fut * blend(rtvals)\n            if potok:\n                score = score + (0.6 + 0.8 * press) * (0.3 + 0.7 * wallf) * potmax\n            if branches is None and len(routes) == 0 and settle is None:\n                flags.append(\"noan\")\n        if known:\n            score = max(score, -39.0)\n        else:\n            score = -40.0\n        if score != score:\n            score = -39.0\n            flags.append(\"nan\")\n        flagstr = \"\"\n        for fl in flags:\n            flagstr = flagstr + fl + \",\"\n        if not wallok:\n            flagstr = \"wallna,\" + flagstr\n        trace = {\n            \"mech\": MECH,\n            \"type\": atype,\n            \"prog\": prog,\n            \"press\": round(press, 2),\n            \"basis\": basis,\n            \"rank\": rank,\n            \"wall\": round(wallf, 2),\n            \"fut\": round(fut, 2),\n            \"brs\": len(brvals),\n            \"rts\": len(rtvals),\n            \"pot\": round(potmax, 1),\n            \"flags\": flagstr,\n            \"trunc\": trunc[:12],\n        }\n        entries.append({\"action_key\": key, \"score\": round(score, 4), \"trace\": trace})\n    return {\"status\": \"SCORED\", \"entries\": entries}\n",
+        "code_sha256": "bd780ea519788fdb0d1b60b6e52123734012470a6f48bdbac269c466f4f36f81"
+      },
+      "feedback": {
+        "facts": "# I1 候选（766712b6…）首轮真实评估三段反馈（§8.2）\n\n- 生成：批次 7 I1 尝试 `i1-641296497a9b`（机制代号 `triax-v1`：向听-支撑结构 × 条件路线潜力 × 立即结算三轴对照评分）。\n- 评估身份：candidate_id `766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce`（与 `evidence/v4-impl/batch7/admission/admission.json` 准入记录逐字一致）。\n- 规模声明：**minimal-closure**——条件面板 1 次（v2_behavior 授权路由，attempts 上限 16）＋自然面板 H/M 各 1 根（每根 4 座位 × 2 臂 × 2 桌）。v4 §11 首批口径为 H/M 各 2 根，本轮是最小闭环子集，**不构成确认性证据**。\n- 费用：token 0（无 LLM 调用）；桌赛实例 tables_partial 3（条件面板前缀尝试 3/16，第 3 次命中）＋ tables_full 32（自然面板 I1 部分；对照 efficiency_seed 另 32 桌，管线验证另 8 桌见 `eval/smoke-costs.json`）；I1 部分墙钟 ≈ 92.5 s（真实计时 1.63＋28.83＋32.00）。\n\n## 一、事实（同观察双方选择差异样本）\n\n同一 source_root、同牌山（table_id/seed 不含臂标识）、同座位映射下，两臂唯一差别是焦点座位策略（候选臂 ActionValuePolicy(766712b6…) vs 基线臂 weighted_heuristic_v2）。观察到的配对差异样本（阶段总积分按焦点参赛者计，U=1{组内前二}）：\n\n| 根 | 焦点锚位 | 基线积分 | 候选积分 | 基线 U | 候选 U | ΔU |\n|---|---|---|---|---|---|---|\n| np-H-root01 | seat0 | −52 | **+29** | 0 | **1** | +1 |\n| np-H-root01 | seat1 | −23 | −38 | 0 | 0 | 0 |\n| np-H-root01 | seat2 | +50 | +37 | 1 | 1 | 0 |\n| np-H-root01 | seat3 | +32 | +51 | 1 | 1 | 0 |\n| np-M-root01 | seat0 | −65 | **−27** | 0 | **1** | +1 |\n| np-M-root01 | seat1 | −20 | −26 | 0 | 0 | 0 |\n| np-M-root01 | seat2 | −1 | +13 | 1 | 1 | 0 |\n| np-M-root01 | seat3 | −1 | **−29** | 1 | **0** | −1 |\n\n- 差异集中在两端：两处 +1 都出现在**锚位 seat0**（焦点兼首桌庄家），且都是基线深负崩溃（−52/−65）而候选把损失收窄甚至转正（+29/−27）；唯一 −1 出现在 M/seat3（−1→−29，候选把接近持平的局势打崩）。\n- 交叉核对：两个候选（I1 与 efficiency_seed）的自然面板共用同一 panel_seed 派生，基线臂轨迹逐分一致（如 H/seat0 基线同为 −52）——配对机制自证有效。\n- 条件面板（branch_open/H，v2_behavior 授权路由）事实：前缀尝试 3 次命中（miss 1、unknown 1、hit 1，cap 16 未耗尽）；截取窗口处两臂可见选择相同（终局积分同为 [2,0,−1,−1]，双臂 U=[1,1]）——该夹具截取窗口未制造分支分歧。诚实标注：v2_behavior 路由的前缀推进当前为 V2 行为站立策略 + 规则引擎对构造局面的真实分析（生成器 `v2-behavior-prefix-v1`，eval 记录 `panel.table_instance_basis`），不是完整 V2 策略自对弈前缀。\n\n## 二、关联结果（面板根级差与区间）\n\n`sitin_archive.paired_stage_statistics`（I1 vs V2 基线 `v2-baseline-frozen`，min_roots=1，样本见 `eval/i1-766712b6/natural-*/samples.jsonl`，汇总 `eval/i1-766712b6/natural-statistics.json`）：\n\n| 对手情景 | n_roots | 窗口数 | mean_delta（ΔU） | 抽样 95% 区间 | 识别区间上下界 | 未分辨根 |\n|---|---|---|---|---|---|---|\n| H | 1 | 4 | **+0.25** | None（根数<2 无标准误） | [+0.25, +0.25] | 0 |\n| M | 1 | 4 | **0.00** | None（同上） | [0.00, 0.00] | 0 |\n| 声明混合（0.5/0.5） | 2 | 8 | **+0.125** | None（每层<2 根） | [+0.125, +0.125] | 0 |\n\n- 所有 8 个窗口的 U 均已分辨（缺 god_count 未造成边界并列），识别区间退化为点值；**区间为 None 是因为每情景只有 1 根，不存在根间标准误**——这是最小闭环规模的如实结果，不是零误差证明。\n- 对照组（efficiency_seed，同规模）：H −0.5、M −0.5、声明混合 −0.5（8 窗口中 4 个 ΔU=−1、4 个 0；候选焦点积分全面低于基线，最差 H/seat3 为 −94）。同面板同口径下，I1 方向为正、种子对照方向为负。\n- 结论限定：n_roots=1/情景，任何\"已证明优于 V2\"的表述都不成立；只能说最小闭环内方向一致为正且无未分辨区间。\n\n## 三、机制假设（结合 I1 机制说明的差异来源推断与下版方向）\n\n- **正差异来源假设**：I1 的三轴对照里\"立即结算 vs 继续值真实比较\"（SETTLE_BASE/HU_BASE 与路线潜力封顶项）在基线深负崩溃的 seat0 局面（两情景同型）改变了弃胡/结算时机，把 −50 级别的崩溃线收敛为小幅正/负——这与 triax 设计中\"胡/杠立即入分并与继续值比较\"的意图一致；对照组 efficiency_seed 只有向听-支撑结构轴、没有结算比较轴，在同类局面全面恶化（−94 最差），间接支持\"结算时机轴在起作用\"。\n- **负差异来源假设**：M/seat3（−1→−29）与 seat1 的小幅负差集中在**非庄家锚位**；triax 的路线潜力项按\"压力 × 墙机会 × 封顶番\"缩放，而当前 ScoringView 的 competition 投影恒为 None（B3 首版无权获知名次压力），压力轴退化为墙余量单轴——假设在无庄位、墙后段时该轴过度追逐路线潜力导致收支恶化。此假设未经单动作反事实验证。\n- **下版方向**（按可检验优先级）：① 给路线潜力项加墙后段（wall_left<WALL_MID 以下）更强的衰减或结算偏置，针对 M/seat3 型崩局；② 在 competition 视图可得后重接名次压力缩放，替换当前占位；③ 用机会面板的 branch_cost 谓词补\"代价侧\"样本（本轮 branch_open 截取窗口零分歧，未提供分支信息量）。\n- 边界：未做单动作反事实实验；本反馈只含开发结果，不含确认集数据；最小闭环规模不外推正式赛事。\n",
+        "associated_results": "",
+        "mechanism_hypothesis": "",
+        "note": "三段反馈（事实/关联结果/机制假设）只含开发结果；不含确认集数据、未来牌墙真值"
+      }
+    },
+    "contract_sha256": "7d6b3013e03285d0383706a220f787b915da3cb7f5fe35359be9f27db7ff6f41"
+  },
+  "prompt": {
+    "operator": "m1",
+    "sha256": "d68785b867519b80ed94f69bc737371f82b785df291b13c0172902ec84ecb472",
+    "chars": 17767,
+    "contract_identity": "2e9f087a02129723215ebf7922677d5e9aee8f548fe795a12e80be1de8b84734",
+    "parent_identity": "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce:641296497a9b3e55205ce36e42134f6a71e6e3443485241ae637863a00d1a64f",
+    "feedback_sha256": "74807ccd079724ba526096f6b5c47c7e58994f383ad424f1f3651fe526e5f37d",
+    "path": "prompt.txt"
+  },
+  "reply": {
+    "path": "reply_raw.txt",
+    "raw_sha256": "cc8d4202cc1570d047822f71030a3b990eed69cc7981d7092bd3c6208ee275f0",
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3",
+    "usage": {},
+    "evidence_kind": "delegated_model_reply"
+  },
+  "parse": {
+    "status": "ok",
+    "thought": "保留父代 triax-v1 三轴对照、未知沉底与 ABSTAIN 纪律，依据反馈机制假设段做三处有界修订——①路线潜力项在墙后段（wallf<0.5，即 wall_left<WALL_MID）于父代墙因子上乘线性趋零门控 wallf/0.5，墙前段逐点保持父代（针对 M/seat3 型\"墙后段过度追逐路线潜力\"崩局）；②非庄家且墙后段再乘 0.55—1.0 线性额外衰减（依据负差异集中于非庄家锚位、正差异集中于庄家 seat0 的配对差异事实）；③立即结算动作统一加随墙后段深度线性增强的结算偏置（wallf=0.15 处与父代 hu 固定 +4 等值、趋零墙时 +7，扩展到 gang 等一切 immediate_settlement，保留正差异来源的结算时机轴），competition 名次压力缩放保持原样待视图可得后自然重接。",
+    "mechanism": {
+      "trigger": "墙后段触发：wallf=墙余量/(墙余量+22)<0.5（即 wall_left<WALL_MID，约墙余量<22 张）时路线潜力项开始被线性趋零门控衰减；wallf<0.35 的深后段，一切带 immediate_settlement 的动作（hu、结算杠等）额外获得随深度线性增强的结算偏置；非庄家座位（seat≠dealer_seat 且二者均为已知整数）在墙后段对潜力项叠加第二重线性衰减。墙前段（wallf>=0.5）与庄位信息未知时全部新因子取中性值，评分与父代逐点一致。",
+      "changed_branches": "相对父代 triax-v1 的三处改动及反馈依据：(1) 潜力项系数由 (0.6+0.8×press)×(0.3+0.7×wallf)×potmax 改为 (0.6+0.8×press)×wgate×potmax，其中 wgate 在墙前段等于父代因子、墙后段乘 wallf/0.5 趋零——依据反馈三-负差异假设'M/seat3（−1→−29）型崩局来自无庄位、墙后段时过度追逐路线潜力'与下版方向①'给路线潜力项加墙后段（wall_left<WALL_MID 以下）更强的衰减'；(2) wgate 在非庄家且墙后段时再乘 0.55+0.45×(wallf/0.5)——依据配对差异表事实'两处 +1 均在庄家 seat0（基线深负崩溃被收敛），唯一 −1 与小幅负差集中在非庄家锚位 seat1/seat3'，庄家保持父代强度以免破坏正差异来源；(3) 父代 hu 仅在 wallf<0.15 固定 +4、其余结算动作无偏置，改为统一结算偏置 +7×(0.35−wallf)/0.35（wallf<0.35 时生效，wallf=0.15 处与父代 +4 等值、趋零墙时 +7，同时作用于 hu 与 gang 等一切 immediate_settlement）——依据正差异假设'结算时机轴（SETTLE_BASE/HU_BASE 与潜力封顶的真实比较）是 seat0 深负崩溃收敛的正差异来源，应保留并加强'及方向①'更强的衰减或结算偏置'。未改动：结构轴（−14×向听+支撑凹曲线+blend）、SETTLE_BASE/HU_BASE 系数、pressure_of 名次压力缩放（competition 视图可得后自动重接，对应方向②）、未知沉底 −40/已知保底 −39、hu 缺结算与结构事实不完整时的 ABSTAIN 纪律、compare_legal 胡比较入口。",
+      "expected_direction": "预期变好的面板：M/seat3 型（非庄家、墙后段、局面接近持平）——潜力双重衰减减少为追高番路线而放弃小结算或稳健弃牌的次数，结算偏置使可锁定的分更早锁定；H/seat0、M/seat0 型（庄家、深负崩溃、结算时机主导）预期不变或近似不变——庄家位潜力衰减只有趋零门控一重，且结算轴只增强不减弱。墙前段（wallf>=0.5）所有系数与父代逐点一致，面板行为完全不变，可用于对照隔离改动效应。预期变差方向（诚实声明）：若 M/seat3 的负差实际来自结构轴而非潜力追逐，非庄家额外衰减不解决问题且可能因排序噪声轻微变差；已通过真实执行器静态检查与受限运行时冒烟（早墙与父代公式逐点相等、wallf=0.15 处偏置恰为 4.0、hu 缺结算仍 ABSTAIN、未知类型仍沉底 −40），工作量远小于 10 万操作上限。",
+      "counterexample": "不该生效或会变差的局面：①墙前段（wall_left>=WALL_MID）新机制整体不触发，与父代同分——若评估差异出现在墙前段，与本次修订无关；②墙后段仍有真实高番近听路线（如已见 26 番条件结算且有效牌未见存量充足）时，趋零门控会把该潜力压到父代一半以下，若此类局面的实际赢分收益大于收支风险，本机制在该窗口变差——非庄家位更甚；③庄家的正差异若部分依赖庄家位的潜力追逐（而非仅结算时机），保留庄家强度的设计不破坏它，但若 M/seat3 崩局真因在结构轴，潜力衰减无效；④competition 视图将来可得使 press≠0.5 时，(0.6+0.8×press) 与新墙门控的乘积行为未在真实面板验证，深压力下潜力追逐可能重新抬头；⑤墙余量未知（wallna）时 wallf 取中性 0.6，新机制整体不触发，回到父代行为——此时 M/seat3 型风险未被修复。"
+    },
+    "code": "\"\"\"候选机制说明：保留父代 triax-v1 的三轴对照（向听-支撑结构×条件路线潜力×立即结算真实比较）、未知沉底与 ABSTAIN 纪律，依据反馈机制假设段做三处有界修订——①路线潜力项在墙后段（wall_left<WALL_MID 即 wallf<0.5）在父代墙因子 (0.3+0.7×wallf) 上乘线性趋零门控 wallf/0.5，墙前段逐点保持父代（针对 M/seat3 型\"墙后段过度追逐路线潜力\"崩局）；②非庄家且墙后段再乘 0.55—1.0 线性额外衰减（依据负差异集中于非庄家锚位、正差异集中于庄家 seat0 的配对差异事实）；③立即结算动作统一加随墙后段深度线性增强的结算偏置（wallf=0.15 处与父代 hu 固定 +4 等值、趋零墙时 +7，扩展到 gang 等一切 immediate_settlement，保留正差异来源的结算时机轴）；competition 名次压力缩放保持原样，待视图可得后自然重接。\"\"\"\n\nMECH = \"triax-v2\"\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\nWALL_MID = 22.0\nPOT_W = 0.5\nLATE_W = 0.35\nLATE_BIAS = 7.0\nND_LATE_FLOOR = 0.55\nSH_PEN = 14.0\nSETTLE_BASE = 32.0\nHU_BASE = 34.0\n\n\ndef num2(x):\n    \"\"\"数值读取兜底：None/布尔视为未知，返回 (占位值, 是否已知)。\"\"\"\n    if x is None:\n        return 0.0, False\n    if x is True or x is False:\n        return 0.0, False\n    return x, True\n\n\ndef supcurve(s):\n    \"\"\"支撑张数到评分点的凹曲线：前 10 张每张 0.55，其后每张 0.12。\"\"\"\n    if s <= 10.0:\n        return 0.55 * s\n    return 5.5 + 0.12 * (s - 10.0)\n\n\ndef evweight(rs):\n    \"\"\"路线证据状态到支撑项权重：已见证 1.0，开放不确定 0.75，已证封闭 0.1，未枚举 0.5（不按 0）。\"\"\"\n    if rs == \"WITNESSED\":\n        return 1.0\n    if rs == \"OPEN_UNCERTAIN\":\n        return 0.75\n    if rs == \"CLOSED_PROVEN\":\n        return 0.1\n    return 0.5\n\n\ndef progadj(p):\n    \"\"\"动作相对进展到基线调整：ADVANCE +6，RETREAT -10，SAME/CLOSE/UNKNOWN 记 0 并由旗标区分。\"\"\"\n    if p == \"ADVANCE\":\n        return 6.0\n    if p == \"RETREAT\":\n        return -10.0\n    return 0.0\n\n\ndef blend(vals):\n    \"\"\"非空结构值列表的 0.7 最优 + 0.3 均值混合；调用方保证非空。\"\"\"\n    total = sum(vals)\n    return 0.7 * max(vals) + 0.3 * (total / len(vals))\n\n\ndef branch_score(br):\n    \"\"\"单个后续分支的结构值：-14×向听 + 证据权重×支撑曲线；向听未知则整体弃用该分支。\"\"\"\n    sh, shok = num2(br.get(\"combined_shanten\"))\n    sup, supok = num2(br.get(\"support_remaining\"))\n    if not shok:\n        return 0.0, False, supok\n    val = 0.0 - SH_PEN * sh\n    if supok:\n        val = val + evweight(br.get(\"route_state\")) * supcurve(sup)\n    return val, True, supok\n\n\ndef branch_fan(br):\n    \"\"\"分支自带潜在番，封顶 26；未知返回 (0.0, False)，不按已知 0 处理。\"\"\"\n    f, fok = num2(br.get(\"fan\"))\n    if fok:\n        return min(f, 26.0), True\n    return 0.0, False\n\n\ndef route_score(rt):\n    \"\"\"条件路线：结构值（向听+有效牌未见枚数）与条件结算潜力；返回 (值, 任一已知, 潜力, 潜力已知)。\"\"\"\n    sh, shok = num2(rt.get(\"shanten\"))\n    useful = rt.get(\"useful_tiles\") or ()\n    u = 0.0\n    uok = False\n    for tile in useful[:8]:\n        rem, rok = num2(tile.get(\"remaining_estimate\"))\n        if rok:\n            u = u + min(rem, 4.0)\n            uok = True\n    val = 0.0\n    if shok:\n        val = val - SH_PEN * sh\n    if uok:\n        val = val + 0.6 * supcurve(u)\n    pot = 0.0\n    potok = False\n    cs = rt.get(\"conditional_settlement\")\n    if cs is not None:\n        f, fok = num2(cs.get(\"fan\"))\n        d, dok = num2(cs.get(\"self_delta\"))\n        if fok:\n            pot = 1.4 * min(f, 26.0)\n            potok = True\n        if dok and d > 0.0:\n            pot = pot + 0.3 * min(d, 90.0)\n            potok = True\n    return val, shok or uok, pot, potok\n\n\ndef pressure_of(view, vs):\n    \"\"\"赛事名次压力：阶段基准优先，其次 competition 桌基准，再退 live 桌分；返回 (压力, 基准名, 名次)。\"\"\"\n    comp = view.get(\"competition\")\n    scores = None\n    basis = \"none\"\n    if comp is not None:\n        stg = comp.get(\"stage_scores\")\n        if stg is not None:\n            scores = stg\n            basis = \"stage\"\n        else:\n            tbl = comp.get(\"table_scores\")\n            if tbl is not None:\n                scores = tbl\n                basis = \"table\"\n    if scores is None:\n        live = vs.get(\"table_scores\")\n        if live is not None:\n            scores = live\n            basis = \"table_live\"\n    if scores is None or len(scores) != 4:\n        return 0.5, basis, -1\n    for s in scores:\n        if s is None or s is True or s is False:\n            return 0.5, \"bad_scores\", -1\n    seat, seok = num2(vs.get(\"seat\"))\n    if not seok:\n        return 0.5, \"bad_seat\", -1\n    si = round(seat)\n    if si != seat or si < 0 or si > 3:\n        return 0.5, \"bad_seat\", -1\n    my = scores[si]\n    higher = 0\n    for s in scores:\n        if s > my:\n            higher = higher + 1\n    if higher == 0:\n        return 0.2, basis, 1\n    if higher == 1:\n        return 0.5, basis, 2\n    return 0.85, basis, higher + 1\n\n\ndef dealer_flag(vs):\n    \"\"\"庄家身份读取（修订②）：seat 与 dealer_seat 均为已知 0—3 整数时返回 (是否庄家, 已知)；未知返回 (False, False) 中性处理。\"\"\"\n    seat, seok = num2(vs.get(\"seat\"))\n    dl, dlok = num2(vs.get(\"dealer_seat\"))\n    if not seok or not dlok:\n        return False, False\n    si = round(seat)\n    di = round(dl)\n    if si != seat or di != dl or si < 0 or si > 3 or di < 0 or di > 3:\n        return False, False\n    return si == di, True\n\n\ndef late_gate(wallf):\n    \"\"\"墙后段深度（修订③）：wallf>=LATE_W 记 0，wallf=0 记 1，线性过渡；父代无此量。\"\"\"\n    if wallf >= LATE_W:\n        return 0.0\n    return (LATE_W - wallf) / LATE_W\n\n\ndef wall_gate(wallf, isdealer, dlerok):\n    \"\"\"路线潜力的墙门控（修订①②）：墙前段（wallf>=POT_W，即墙余量不低于 WALL_MID）保持父代因子 (0.3+0.7×wallf) 逐点不变；墙后段（wallf<POT_W）乘线性趋零门控 wallf/POT_W，非庄家再乘 0.55—1.0 额外线性衰减。\"\"\"\n    g = 0.3 + 0.7 * wallf\n    if wallf < POT_W:\n        g = g * (wallf / POT_W)\n        if dlerok and not isdealer:\n            g = g * (ND_LATE_FLOOR + (1.0 - ND_LATE_FLOOR) * (wallf / POT_W))\n    return g\n\n\ndef score_actions(view):\n    \"\"\"按同一动作窗口的只读可见事实，为全部合法动作评分。\"\"\"\n    schema = view.get(\"schema_version\")\n    if schema != \"sitin-scoring-view/1\":\n        return {\"status\": \"ABSTAIN\", \"reason\": f\"schema_version={schema!r} 不兼容 sitin-scoring-view/1，拒绝评分\"}\n    vs = view.get(\"visible_state\")\n    if vs is None:\n        return {\"status\": \"ABSTAIN\", \"reason\": \"visible_state 缺失，无法评分\"}\n    actions = view.get(\"actions\")\n    if not actions:\n        return {\"status\": \"ABSTAIN\", \"reason\": \"动作表缺失或为空，窗口必须先备合法紧急计划\"}\n    press, basis, rank = pressure_of(view, vs)\n    isdealer, dlerok = dealer_flag(vs)\n    dlercode = -1\n    if dlerok:\n        dlercode = 0\n        if isdealer:\n            dlercode = 1\n    wraw = vs.get(\"remaining_tile_count\")\n    wallok = False\n    wallf = 0.6\n    if wraw is not None and wraw is not True and wraw is not False:\n        wc = min(max(wraw, 0), 160)\n        wallf = wc / (wc + WALL_MID)\n        wallok = True\n    fut = 0.55 + 0.45 * wallf\n    wgate = wall_gate(wallf, isdealer, dlerok)\n    latebias = LATE_BIAS * late_gate(wallf)\n    profile = view.get(\"analysis_profile\")\n    trunc = \"\"\n    if profile is not None:\n        raw = profile.get(\"truncation_note\")\n        if raw is not None and raw != \"\":\n            trunc = raw\n    entries = []\n    for act in actions:\n        key = act.get(\"action_key\")\n        atype = act.get(\"action_type\")\n        if key is None or atype is None:\n            return {\"status\": \"ABSTAIN\", \"reason\": \"动作条目缺 action_key/action_type，事实不完整\"}\n        prog = act.get(\"family_progress\")\n        flags = []\n        known = atype in KNOWN_TYPES\n        settle = act.get(\"immediate_settlement\")\n        branches = act.get(\"followup_branches\")\n        routes = act.get(\"routes\") or ()\n        brvals = []\n        rtvals = []\n        potmax = 0.0\n        potok = False\n        score = 0.0\n        if atype == \"hu\":\n            if settle is None:\n                return {\"status\": \"ABSTAIN\", \"reason\": f\"hu 动作 {key} 缺 immediate_settlement，compare_legal 无法比较\"}\n            f, fok = num2(settle.get(\"fan\"))\n            d, dok = num2(settle.get(\"self_delta\"))\n            if not fok or not dok:\n                return {\"status\": \"ABSTAIN\", \"reason\": f\"hu 动作 {key} 结算 fan/self_delta 非数值，无法比较\"}\n            score = HU_BASE + 0.45 * d + 1.7 * min(f, 26.0)\n            if press >= 0.8:\n                score = score * 1.1\n            score = score + latebias\n            flags.append(\"hu\")\n        else:\n            base = 0.0\n            if atype == \"pass\":\n                base = 1.0\n            if atype == \"chi\" or atype == \"peng\":\n                base = -1.5\n            if atype == \"gang\":\n                base = 2.0\n            if not known:\n                base = 0.0\n                flags.append(\"type?\")\n            if settle is not None:\n                f, fok = num2(settle.get(\"fan\"))\n                d, dok = num2(settle.get(\"self_delta\"))\n                if fok and dok:\n                    base = base + SETTLE_BASE + 0.45 * d + 1.4 * min(f, 26.0) + latebias\n                    flags.append(\"settle\")\n                    if atype == \"gang\" and wallf < 0.2:\n                        base = base - 3.0\n                else:\n                    flags.append(\"settle?\")\n            bmiss = 0\n            if branches is None:\n                flags.append(\"brna\")\n            else:\n                if len(branches) > 12:\n                    flags.append(\"brtrunc\")\n                for br in branches[:12]:\n                    val, shok, supok = branch_score(br)\n                    if shok:\n                        brvals.append(val)\n                    else:\n                        bmiss = bmiss + 1\n                    if not supok and flags.count(\"brsup\") == 0:\n                        flags.append(\"brsup\")\n                    bf, bfok = branch_fan(br)\n                    if bfok and bf > potmax:\n                        potmax = bf\n                        potok = True\n                if bmiss > 0 and flags.count(\"brsh?\") == 0:\n                    flags.append(\"brsh?\")\n            if len(routes) > 0:\n                if len(routes) > 10:\n                    flags.append(\"rttrunc\")\n                for rt in routes[:10]:\n                    val, anyok, pot, pok = route_score(rt)\n                    if anyok:\n                        rtvals.append(val)\n                    if pok and pot > potmax:\n                        potmax = pot\n                        potok = True\n            score = base + progadj(prog)\n            if len(brvals) > 0:\n                score = score + fut * blend(brvals)\n            if len(rtvals) > 0:\n                score = score + 0.8 * fut * blend(rtvals)\n            if potok:\n                score = score + (0.6 + 0.8 * press) * wgate * potmax\n            if branches is None and len(routes) == 0 and settle is None:\n                flags.append(\"noan\")\n        if known:\n            score = max(score, -39.0)\n        else:\n            score = -40.0\n        if score != score:\n            score = -39.0\n            flags.append(\"nan\")\n        flagstr = \"\"\n        for fl in flags:\n            flagstr = flagstr + fl + \",\"\n        if not wallok:\n            flagstr = \"wallna,\" + flagstr\n        trace = {\n            \"mech\": MECH,\n            \"type\": atype,\n            \"prog\": prog,\n            \"press\": round(press, 2),\n            \"basis\": basis,\n            \"rank\": rank,\n            \"wall\": round(wallf, 2),\n            \"wgate\": round(wgate, 2),\n            \"late\": round(latebias, 2),\n            \"dler\": dlercode,\n            \"fut\": round(fut, 2),\n            \"brs\": len(brvals),\n            \"rts\": len(rtvals),\n            \"pot\": round(potmax, 1),\n            \"flags\": flagstr,\n            \"trunc\": trunc[:12],\n        }\n        entries.append({\"action_key\": key, \"score\": round(score, 4), \"trace\": trace})\n    return {\"status\": \"SCORED\", \"entries\": entries}",
+    "problems": []
+  },
+  "precheck": {
+    "ok": true,
+    "problems": []
+  },
+  "load": {
+    "ok": true,
+    "reason": null,
+    "supervised": true
+  },
+  "identity": {
+    "candidate_kind": "action_value_v1",
+    "candidate_source_sha256": "13bd89d5d566e62d33c25939ce727503dc14068e1fb56c8676424413e541d655",
+    "candidate_id": "ab9b409e26e66158fdf3bb3b5f229b3930500a85ee14ed294c644c2e00a1c0af",
+    "contract_sha256": "7d6b3013e03285d0383706a220f787b915da3cb7f5fe35359be9f27db7ff6f41",
+    "executor_version": "action-value-executor/1",
+    "deps_digest": "1a5b0cc10ae1a564798c54524845dbcfeb245a7c5290fb0ec110e7156b79186c",
+    "params": {},
+    "candidate_id_inputs": [
+      "候选种类 action_value_v1",
+      "原始/执行源码",
+      "有效参数",
+      "输入输出合同（本合同 sha256）",
+      "骨架",
+      "规则/特征/代理版本",
+      "分析上限",
+      "执行器版本",
+      "第一方传递依赖摘要"
+    ]
+  },
+  "parent": {
+    "identity": "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce:641296497a9b3e55205ce36e42134f6a71e6e3443485241ae637863a00d1a64f",
+    "candidate_id": "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce",
+    "prompt_sha256": "641296497a9b3e55205ce36e42134f6a71e6e3443485241ae637863a00d1a64f",
+    "attempt_dir": "review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/batch7/gen/i1/attempts/i1-641296497a9b",
+    "code_sha256": "bd780ea519788fdb0d1b60b6e52123734012470a6f48bdbac269c466f4f36f81",
+    "thought": "机制：以「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分——先从墙余量与赛事名次压力推导机会缩放，再对每个合法动作聚合后续分支结构值（-14×向听 + 路线证据状态加权的支撑凹曲线）与路线潜力（压力×墙机会×封顶番/自得分），胡/杠等立即结算按自得分与番直接入分并与继续值真实比较，未知事实显式降档带旗标，未知动作沉底 -40、已知动作保底 -39，结构事实不完整或胡缺结算时整批 ABSTAIN。",
+    "code": "\"\"\"候选机制说明：以「向听-支撑结构 × 条件路线潜力 × 立即结算」三轴对照评分：先从墙余量与赛事名次压力推导机会缩放，再对每个合法动作聚合后续分支结构值（-14×向听 + 路线证据状态加权的支撑凹曲线）与路线潜力（压力×墙机会×封顶番/自得分），胡/杠等立即结算按自得分与番直接入分并与继续值真实比较，未知事实显式降档带旗标，未知动作沉底 -40、已知动作保底 -39，结构事实不完整或胡缺结算时整批 ABSTAIN。\"\"\"\n\nMECH = \"triax-v1\"\nKNOWN_TYPES = (\"discard\", \"chi\", \"peng\", \"gang\", \"hu\", \"pass\")\nWALL_MID = 22.0\nSH_PEN = 14.0\nSETTLE_BASE = 32.0\nHU_BASE = 34.0\n\n\ndef num2(x):\n    \"\"\"数值读取兜底：None/布尔视为未知，返回 (占位值, 是否已知)。\"\"\"\n    if x is None:\n        return 0.0, False\n    if x is True or x is False:\n        return 0.0, False\n    return x, True\n\n\ndef supcurve(s):\n    \"\"\"支撑张数到评分点的凹曲线：前 10 张每张 0.55，其后每张 0.12。\"\"\"\n    if s <= 10.0:\n        return 0.55 * s\n    return 5.5 + 0.12 * (s - 10.0)\n\n\ndef evweight(rs):\n    \"\"\"路线证据状态到支撑项权重：已见证 1.0，开放不确定 0.75，已证封闭 0.1，未枚举 0.5（不按 0）。\"\"\"\n    if rs == \"WITNESSED\":\n        return 1.0\n    if rs == \"OPEN_UNCERTAIN\":\n        return 0.75\n    if rs == \"CLOSED_PROVEN\":\n        return 0.1\n    return 0.5\n\n\ndef progadj(p):\n    \"\"\"动作相对进展到基线调整：ADVANCE +6，RETREAT -10，SAME/CLOSE/UNKNOWN 记 0 并由旗标区分。\"\"\"\n    if p == \"ADVANCE\":\n        return 6.0\n    if p == \"RETREAT\":\n        return -10.0\n    return 0.0\n\n\ndef blend(vals):\n    \"\"\"非空结构值列表的 0.7 最优 + 0.3 均值混合；调用方保证非空。\"\"\"\n    total = sum(vals)\n    return 0.7 * max(vals) + 0.3 * (total / len(vals))\n\n\ndef branch_score(br):\n    \"\"\"单个后续分支的结构值：-14×向听 + 证据权重×支撑曲线；向听未知则整体弃用该分支。\"\"\"\n    sh, shok = num2(br.get(\"combined_shanten\"))\n    sup, supok = num2(br.get(\"support_remaining\"))\n    if not shok:\n        return 0.0, False, supok\n    val = 0.0 - SH_PEN * sh\n    if supok:\n        val = val + evweight(br.get(\"route_state\")) * supcurve(sup)\n    return val, True, supok\n\n\ndef branch_fan(br):\n    \"\"\"分支自带潜在番，封顶 26；未知返回 (0.0, False)，不按已知 0 处理。\"\"\"\n    f, fok = num2(br.get(\"fan\"))\n    if fok:\n        return min(f, 26.0), True\n    return 0.0, False\n\n\ndef route_score(rt):\n    \"\"\"条件路线：结构值（向听+有效牌未见枚数）与条件结算潜力；返回 (值, 任一已知, 潜力, 潜力已知)。\"\"\"\n    sh, shok = num2(rt.get(\"shanten\"))\n    useful = rt.get(\"useful_tiles\") or ()\n    u = 0.0\n    uok = False\n    for tile in useful[:8]:\n        rem, rok = num2(tile.get(\"remaining_estimate\"))\n        if rok:\n            u = u + min(rem, 4.0)\n            uok = True\n    val = 0.0\n    if shok:\n        val = val - SH_PEN * sh\n    if uok:\n        val = val + 0.6 * supcurve(u)\n    pot = 0.0\n    potok = False\n    cs = rt.get(\"conditional_settlement\")\n    if cs is not None:\n        f, fok = num2(cs.get(\"fan\"))\n        d, dok = num2(cs.get(\"self_delta\"))\n        if fok:\n            pot = 1.4 * min(f, 26.0)\n            potok = True\n        if dok and d > 0.0:\n            pot = pot + 0.3 * min(d, 90.0)\n            potok = True\n    return val, shok or uok, pot, potok\n\n\ndef pressure_of(view, vs):\n    \"\"\"赛事名次压力：阶段基准优先，其次 competition 桌基准，再退 live 桌分；返回 (压力, 基准名, 名次)。\"\"\"\n    comp = view.get(\"competition\")\n    scores = None\n    basis = \"none\"\n    if comp is not None:\n        stg = comp.get(\"stage_scores\")\n        if stg is not None:\n            scores = stg\n            basis = \"stage\"\n        else:\n            tbl = comp.get(\"table_scores\")\n            if tbl is not None:\n                scores = tbl\n                basis = \"table\"\n    if scores is None:\n        live = vs.get(\"table_scores\")\n        if live is not None:\n            scores = live\n            basis = \"table_live\"\n    if scores is None or len(scores) != 4:\n        return 0.5, basis, -1\n    for s in scores:\n        if s is None or s is True or s is False:\n            return 0.5, \"bad_scores\", -1\n    seat, seok = num2(vs.get(\"seat\"))\n    if not seok:\n        return 0.5, \"bad_seat\", -1\n    si = round(seat)\n    if si != seat or si < 0 or si > 3:\n        return 0.5, \"bad_seat\", -1\n    my = scores[si]\n    higher = 0\n    for s in scores:\n        if s > my:\n            higher = higher + 1\n    if higher == 0:\n        return 0.2, basis, 1\n    if higher == 1:\n        return 0.5, basis, 2\n    return 0.85, basis, higher + 1\n\n\ndef score_actions(view):\n    \"\"\"按同一动作窗口的只读可见事实，为全部合法动作评分。\"\"\"\n    schema = view.get(\"schema_version\")\n    if schema != \"sitin-scoring-view/1\":\n        return {\"status\": \"ABSTAIN\", \"reason\": f\"schema_version={schema!r} 不兼容 sitin-scoring-view/1，拒绝评分\"}\n    vs = view.get(\"visible_state\")\n    if vs is None:\n        return {\"status\": \"ABSTAIN\", \"reason\": \"visible_state 缺失，无法评分\"}\n    actions = view.get(\"actions\")\n    if not actions:\n        return {\"status\": \"ABSTAIN\", \"reason\": \"动作表缺失或为空，窗口必须先备合法紧急计划\"}\n    press, basis, rank = pressure_of(view, vs)\n    wraw = vs.get(\"remaining_tile_count\")\n    wallok = False\n    wallf = 0.6\n    if wraw is not None and wraw is not True and wraw is not False:\n        wc = min(max(wraw, 0), 160)\n        wallf = wc / (wc + WALL_MID)\n        wallok = True\n    fut = 0.55 + 0.45 * wallf\n    profile = view.get(\"analysis_profile\")\n    trunc = \"\"\n    if profile is not None:\n        raw = profile.get(\"truncation_note\")\n        if raw is not None and raw != \"\":\n            trunc = raw\n    entries = []\n    for act in actions:\n        key = act.get(\"action_key\")\n        atype = act.get(\"action_type\")\n        if key is None or atype is None:\n            return {\"status\": \"ABSTAIN\", \"reason\": \"动作条目缺 action_key/action_type，事实不完整\"}\n        prog = act.get(\"family_progress\")\n        flags = []\n        known = atype in KNOWN_TYPES\n        settle = act.get(\"immediate_settlement\")\n        branches = act.get(\"followup_branches\")\n        routes = act.get(\"routes\") or ()\n        brvals = []\n        rtvals = []\n        potmax = 0.0\n        potok = False\n        score = 0.0\n        if atype == \"hu\":\n            if settle is None:\n                return {\"status\": \"ABSTAIN\", \"reason\": f\"hu 动作 {key} 缺 immediate_settlement，compare_legal 无法比较\"}\n            f, fok = num2(settle.get(\"fan\"))\n            d, dok = num2(settle.get(\"self_delta\"))\n            if not fok or not dok:\n                return {\"status\": \"ABSTAIN\", \"reason\": f\"hu 动作 {key} 结算 fan/self_delta 非数值，无法比较\"}\n            score = HU_BASE + 0.45 * d + 1.7 * min(f, 26.0)\n            if press >= 0.8:\n                score = score * 1.1\n            if wallf < 0.15:\n                score = score + 4.0\n            flags.append(\"hu\")\n        else:\n            base = 0.0\n            if atype == \"pass\":\n                base = 1.0\n            if atype == \"chi\" or atype == \"peng\":\n                base = -1.5\n            if atype == \"gang\":\n                base = 2.0\n            if not known:\n                base = 0.0\n                flags.append(\"type?\")\n            if settle is not None:\n                f, fok = num2(settle.get(\"fan\"))\n                d, dok = num2(settle.get(\"self_delta\"))\n                if fok and dok:\n                    base = base + SETTLE_BASE + 0.45 * d + 1.4 * min(f, 26.0)\n                    flags.append(\"settle\")\n                    if atype == \"gang\" and wallf < 0.2:\n                        base = base - 3.0\n                else:\n                    flags.append(\"settle?\")\n            bmiss = 0\n            if branches is None:\n                flags.append(\"brna\")\n            else:\n                if len(branches) > 12:\n                    flags.append(\"brtrunc\")\n                for br in branches[:12]:\n                    val, shok, supok = branch_score(br)\n                    if shok:\n                        brvals.append(val)\n                    else:\n                        bmiss = bmiss + 1\n                    if not supok and flags.count(\"brsup\") == 0:\n                        flags.append(\"brsup\")\n                    bf, bfok = branch_fan(br)\n                    if bfok and bf > potmax:\n                        potmax = bf\n                        potok = True\n                if bmiss > 0 and flags.count(\"brsh?\") == 0:\n                    flags.append(\"brsh?\")\n            if len(routes) > 0:\n                if len(routes) > 10:\n                    flags.append(\"rttrunc\")\n                for rt in routes[:10]:\n                    val, anyok, pot, pok = route_score(rt)\n                    if anyok:\n                        rtvals.append(val)\n                    if pok and pot > potmax:\n                        potmax = pot\n                        potok = True\n            score = base + progadj(prog)\n            if len(brvals) > 0:\n                score = score + fut * blend(brvals)\n            if len(rtvals) > 0:\n                score = score + 0.8 * fut * blend(rtvals)\n            if potok:\n                score = score + (0.6 + 0.8 * press) * (0.3 + 0.7 * wallf) * potmax\n            if branches is None and len(routes) == 0 and settle is None:\n                flags.append(\"noan\")\n        if known:\n            score = max(score, -39.0)\n        else:\n            score = -40.0\n        if score != score:\n            score = -39.0\n            flags.append(\"nan\")\n        flagstr = \"\"\n        for fl in flags:\n            flagstr = flagstr + fl + \",\"\n        if not wallok:\n            flagstr = \"wallna,\" + flagstr\n        trace = {\n            \"mech\": MECH,\n            \"type\": atype,\n            \"prog\": prog,\n            \"press\": round(press, 2),\n            \"basis\": basis,\n            \"rank\": rank,\n            \"wall\": round(wallf, 2),\n            \"fut\": round(fut, 2),\n            \"brs\": len(brvals),\n            \"rts\": len(rtvals),\n            \"pot\": round(potmax, 1),\n            \"flags\": flagstr,\n            \"trunc\": trunc[:12],\n        }\n        entries.append({\"action_key\": key, \"score\": round(score, 4), \"trace\": trace})\n    return {\"status\": \"SCORED\", \"entries\": entries}\n",
+    "load_ok": true
+  },
+  "budget": {
+    "spent_calls": 2,
+    "remaining_calls": 6,
+    "call_tokens": 0
+  },
+  "admission_eligible": false,
+  "note": "生成记录不等于准入；门禁走 sitin_gates.admit_action_value 独立记录"
+}

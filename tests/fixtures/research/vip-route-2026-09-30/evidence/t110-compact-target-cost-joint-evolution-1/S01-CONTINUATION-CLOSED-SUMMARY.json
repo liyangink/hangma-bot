@@ -1,0 +1,891 @@
+{
+  "complete": true,
+  "independent_exposed_sources": 4,
+  "current_hand_continuations": 18,
+  "targets": 6,
+  "no_forced_first": true,
+  "all_six_C_minus_P_zero": true,
+  "actual_vip_scores_by_arm": {
+    "P": 56,
+    "C": 56
+  },
+  "finite_legal_outputs_by_arm": {
+    "P": 231,
+    "C": 231
+  },
+  "results": [
+    {
+      "source": "continuation-root033",
+      "targets": 2,
+      "actual_vip_scores_parent_and_child": 94,
+      "results": [
+        {
+          "A_minus_P": -72,
+          "C_minus_P": 0,
+          "results": {
+            "A": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 81,
+              "actual_vip_scores": 0,
+              "arm": "A",
+              "complete": true,
+              "executed_first": "discard:2w",
+              "focal_net_score": 24,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 0,
+                "details": [
+                  "平胡"
+                ],
+                "fan": 1,
+                "is_draw": false,
+                "round_no": 4,
+                "score_delta": [
+                  24,
+                  -8,
+                  -8,
+                  -8
+                ],
+                "scores_after": [
+                  50,
+                  -18,
+                  -18,
+                  -14
+                ],
+                "scores_before": [
+                  26,
+                  -10,
+                  -10,
+                  -6
+                ],
+                "winner_seat": 0
+              },
+              "target": "early_width_choice"
+            },
+            "C": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 129,
+              "actual_vip_scores": 36,
+              "arm": "C",
+              "complete": true,
+              "executed_first": "discard:1w",
+              "focal_net_score": 96,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 0,
+                "details": [
+                  "平胡",
+                  "财飘",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 4,
+                "score_delta": [
+                  96,
+                  -32,
+                  -32,
+                  -32
+                ],
+                "scores_after": [
+                  122,
+                  -42,
+                  -42,
+                  -38
+                ],
+                "scores_before": [
+                  26,
+                  -10,
+                  -10,
+                  -6
+                ],
+                "winner_seat": 0
+              },
+              "target": "early_width_choice"
+            },
+            "P": {
+              "P_original_whole_tail_exact": true,
+              "actual_decisions": 129,
+              "actual_vip_scores": 36,
+              "arm": "P",
+              "complete": true,
+              "executed_first": "discard:1w",
+              "focal_net_score": 96,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 0,
+                "details": [
+                  "平胡",
+                  "财飘",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 4,
+                "score_delta": [
+                  96,
+                  -32,
+                  -32,
+                  -32
+                ],
+                "scores_after": [
+                  122,
+                  -42,
+                  -42,
+                  -38
+                ],
+                "scores_before": [
+                  26,
+                  -10,
+                  -10,
+                  -6
+                ],
+                "winner_seat": 0
+              },
+              "target": "early_width_choice"
+            }
+          },
+          "source_window": {
+            "game_id": "t103-fixed-t101-fresh-confirmation:t97-natural-preparation:reserved_confirmation:033:0123:vip:10cba94704291038653f586127be1809ef518dcaf68fa1fe38d1fc9ab92ca18f",
+            "phase": "draw",
+            "round_no": 4,
+            "schema_version": 1,
+            "seat": 0,
+            "trigger_seq": 954
+          },
+          "target": "early_width_choice"
+        },
+        {
+          "A_minus_P": 0,
+          "C_minus_P": 0,
+          "results": {
+            "A": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 29,
+              "actual_vip_scores": 0,
+              "arm": "A",
+              "complete": true,
+              "executed_first": "discard:5t",
+              "focal_net_score": 96,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 0,
+                "details": [
+                  "平胡",
+                  "财飘",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 4,
+                "score_delta": [
+                  96,
+                  -32,
+                  -32,
+                  -32
+                ],
+                "scores_after": [
+                  122,
+                  -42,
+                  -42,
+                  -38
+                ],
+                "scores_before": [
+                  26,
+                  -10,
+                  -10,
+                  -6
+                ],
+                "winner_seat": 0
+              },
+              "target": "current_hu_or_wait"
+            },
+            "C": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 29,
+              "actual_vip_scores": 11,
+              "arm": "C",
+              "complete": true,
+              "executed_first": "discard:5t",
+              "focal_net_score": 96,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 0,
+                "details": [
+                  "平胡",
+                  "财飘",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 4,
+                "score_delta": [
+                  96,
+                  -32,
+                  -32,
+                  -32
+                ],
+                "scores_after": [
+                  122,
+                  -42,
+                  -42,
+                  -38
+                ],
+                "scores_before": [
+                  26,
+                  -10,
+                  -10,
+                  -6
+                ],
+                "winner_seat": 0
+              },
+              "target": "current_hu_or_wait"
+            },
+            "P": {
+              "P_original_whole_tail_exact": true,
+              "actual_decisions": 29,
+              "actual_vip_scores": 11,
+              "arm": "P",
+              "complete": true,
+              "executed_first": "discard:5t",
+              "focal_net_score": 96,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 0,
+                "details": [
+                  "平胡",
+                  "财飘",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 4,
+                "score_delta": [
+                  96,
+                  -32,
+                  -32,
+                  -32
+                ],
+                "scores_after": [
+                  122,
+                  -42,
+                  -42,
+                  -38
+                ],
+                "scores_before": [
+                  26,
+                  -10,
+                  -10,
+                  -6
+                ],
+                "winner_seat": 0
+              },
+              "target": "current_hu_or_wait"
+            }
+          },
+          "source_window": {
+            "game_id": "t103-fixed-t101-fresh-confirmation:t97-natural-preparation:reserved_confirmation:033:0123:vip:10cba94704291038653f586127be1809ef518dcaf68fa1fe38d1fc9ab92ca18f",
+            "phase": "draw",
+            "round_no": 4,
+            "schema_version": 1,
+            "seat": 0,
+            "trigger_seq": 1074
+          },
+          "target": "current_hu_or_wait"
+        }
+      ],
+      "actual_readback_terminal": "a88c20"
+    },
+    {
+      "source": "continuation-root009",
+      "targets": 2,
+      "actual_vip_scores_parent_and_child": 14,
+      "results": [
+        {
+          "A_minus_P": 0,
+          "C_minus_P": 0,
+          "results": {
+            "A": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 21,
+              "actual_vip_scores": 0,
+              "arm": "A",
+              "complete": true,
+              "executed_first": "discard:6w",
+              "focal_net_score": 40,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 2,
+                "details": [
+                  "平胡",
+                  "4个白板",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 3,
+                "score_delta": [
+                  40,
+                  -4,
+                  -32,
+                  -4
+                ],
+                "scores_after": [
+                  72,
+                  -22,
+                  -28,
+                  -22
+                ],
+                "scores_before": [
+                  32,
+                  -18,
+                  4,
+                  -18
+                ],
+                "winner_seat": 0
+              },
+              "target": "early_four_white_current_hu"
+            },
+            "C": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 21,
+              "actual_vip_scores": 6,
+              "arm": "C",
+              "complete": true,
+              "executed_first": "discard:6w",
+              "focal_net_score": 40,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 2,
+                "details": [
+                  "平胡",
+                  "4个白板",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 3,
+                "score_delta": [
+                  40,
+                  -4,
+                  -32,
+                  -4
+                ],
+                "scores_after": [
+                  72,
+                  -22,
+                  -28,
+                  -22
+                ],
+                "scores_before": [
+                  32,
+                  -18,
+                  4,
+                  -18
+                ],
+                "winner_seat": 0
+              },
+              "target": "early_four_white_current_hu"
+            },
+            "P": {
+              "P_original_whole_tail_exact": true,
+              "actual_decisions": 21,
+              "actual_vip_scores": 6,
+              "arm": "P",
+              "complete": true,
+              "executed_first": "discard:6w",
+              "focal_net_score": 40,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 2,
+                "details": [
+                  "平胡",
+                  "4个白板",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 3,
+                "score_delta": [
+                  40,
+                  -4,
+                  -32,
+                  -4
+                ],
+                "scores_after": [
+                  72,
+                  -22,
+                  -28,
+                  -22
+                ],
+                "scores_before": [
+                  32,
+                  -18,
+                  4,
+                  -18
+                ],
+                "winner_seat": 0
+              },
+              "target": "early_four_white_current_hu"
+            }
+          },
+          "source_window": {
+            "game_id": "t103-fixed-t101-fresh-confirmation:t97-natural-preparation:reserved_confirmation:009:0123:vip:10cba94704291038653f586127be1809ef518dcaf68fa1fe38d1fc9ab92ca18f",
+            "phase": "draw",
+            "round_no": 3,
+            "schema_version": 1,
+            "seat": 0,
+            "trigger_seq": 761
+          },
+          "target": "early_four_white_current_hu"
+        },
+        {
+          "A_minus_P": 0,
+          "C_minus_P": 0,
+          "results": {
+            "A": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 1,
+              "actual_vip_scores": 0,
+              "arm": "A",
+              "complete": true,
+              "executed_first": "hu",
+              "focal_net_score": 40,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 2,
+                "details": [
+                  "平胡",
+                  "4个白板",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 3,
+                "score_delta": [
+                  40,
+                  -4,
+                  -32,
+                  -4
+                ],
+                "scores_after": [
+                  72,
+                  -22,
+                  -28,
+                  -22
+                ],
+                "scores_before": [
+                  32,
+                  -18,
+                  4,
+                  -18
+                ],
+                "winner_seat": 0
+              },
+              "target": "later_four_white_continue"
+            },
+            "C": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 1,
+              "actual_vip_scores": 1,
+              "arm": "C",
+              "complete": true,
+              "executed_first": "hu",
+              "focal_net_score": 40,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 2,
+                "details": [
+                  "平胡",
+                  "4个白板",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 3,
+                "score_delta": [
+                  40,
+                  -4,
+                  -32,
+                  -4
+                ],
+                "scores_after": [
+                  72,
+                  -22,
+                  -28,
+                  -22
+                ],
+                "scores_before": [
+                  32,
+                  -18,
+                  4,
+                  -18
+                ],
+                "winner_seat": 0
+              },
+              "target": "later_four_white_continue"
+            },
+            "P": {
+              "P_original_whole_tail_exact": true,
+              "actual_decisions": 1,
+              "actual_vip_scores": 1,
+              "arm": "P",
+              "complete": true,
+              "executed_first": "hu",
+              "focal_net_score": 40,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 2,
+                "details": [
+                  "平胡",
+                  "4个白板",
+                  "爆头"
+                ],
+                "fan": 4,
+                "is_draw": false,
+                "round_no": 3,
+                "score_delta": [
+                  40,
+                  -4,
+                  -32,
+                  -4
+                ],
+                "scores_after": [
+                  72,
+                  -22,
+                  -28,
+                  -22
+                ],
+                "scores_before": [
+                  32,
+                  -18,
+                  4,
+                  -18
+                ],
+                "winner_seat": 0
+              },
+              "target": "later_four_white_continue"
+            }
+          },
+          "source_window": {
+            "game_id": "t103-fixed-t101-fresh-confirmation:t97-natural-preparation:reserved_confirmation:009:0123:vip:10cba94704291038653f586127be1809ef518dcaf68fa1fe38d1fc9ab92ca18f",
+            "phase": "draw",
+            "round_no": 3,
+            "schema_version": 1,
+            "seat": 0,
+            "trigger_seq": 785
+          },
+          "target": "later_four_white_continue"
+        }
+      ],
+      "actual_readback_terminal": "d8ff70"
+    },
+    {
+      "source": "fresh-root003-loss",
+      "targets": 1,
+      "actual_vip_scores_parent_and_child": 2,
+      "results": [
+        {
+          "A_minus_P": 0,
+          "C_minus_P": 0,
+          "results": {
+            "A": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 1,
+              "actual_vip_scores": 0,
+              "arm": "A",
+              "complete": true,
+              "executed_first": "hu",
+              "focal_net_score": 20,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 1,
+                "details": [
+                  "平胡",
+                  "爆头"
+                ],
+                "fan": 2,
+                "is_draw": false,
+                "round_no": 7,
+                "score_delta": [
+                  20,
+                  -16,
+                  -2,
+                  -2
+                ],
+                "scores_after": [
+                  -4,
+                  17,
+                  -16,
+                  3
+                ],
+                "scores_before": [
+                  -24,
+                  33,
+                  -14,
+                  5
+                ],
+                "winner_seat": 0
+              },
+              "target": "first_difference"
+            },
+            "C": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 1,
+              "actual_vip_scores": 1,
+              "arm": "C",
+              "complete": true,
+              "executed_first": "hu",
+              "focal_net_score": 20,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 1,
+                "details": [
+                  "平胡",
+                  "爆头"
+                ],
+                "fan": 2,
+                "is_draw": false,
+                "round_no": 7,
+                "score_delta": [
+                  20,
+                  -16,
+                  -2,
+                  -2
+                ],
+                "scores_after": [
+                  -4,
+                  17,
+                  -16,
+                  3
+                ],
+                "scores_before": [
+                  -24,
+                  33,
+                  -14,
+                  5
+                ],
+                "winner_seat": 0
+              },
+              "target": "first_difference"
+            },
+            "P": {
+              "P_original_whole_tail_exact": true,
+              "actual_decisions": 1,
+              "actual_vip_scores": 1,
+              "arm": "P",
+              "complete": true,
+              "executed_first": "hu",
+              "focal_net_score": 20,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 1,
+                "details": [
+                  "平胡",
+                  "爆头"
+                ],
+                "fan": 2,
+                "is_draw": false,
+                "round_no": 7,
+                "score_delta": [
+                  20,
+                  -16,
+                  -2,
+                  -2
+                ],
+                "scores_after": [
+                  -4,
+                  17,
+                  -16,
+                  3
+                ],
+                "scores_before": [
+                  -24,
+                  33,
+                  -14,
+                  5
+                ],
+                "winner_seat": 0
+              },
+              "target": "first_difference"
+            }
+          },
+          "source_window": {
+            "game_id": "t108-target-cost-shared-fresh-pilot:t108-target-cost-joint:fresh_development:003:0123:vip:10cba94704291038653f586127be1809ef518dcaf68fa1fe38d1fc9ab92ca18f",
+            "phase": "draw",
+            "round_no": 7,
+            "schema_version": 1,
+            "seat": 0,
+            "trigger_seq": 1184
+          },
+          "target": "first_difference"
+        }
+      ],
+      "actual_readback_terminal": "4a28a7"
+    },
+    {
+      "source": "fresh-root030-gain",
+      "targets": 1,
+      "actual_vip_scores_parent_and_child": 2,
+      "results": [
+        {
+          "A_minus_P": 0,
+          "C_minus_P": 0,
+          "results": {
+            "A": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 1,
+              "actual_vip_scores": 0,
+              "arm": "A",
+              "complete": true,
+              "executed_first": "hu",
+              "focal_net_score": 20,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 0,
+                "details": [
+                  "平胡",
+                  "爆头"
+                ],
+                "fan": 2,
+                "is_draw": false,
+                "round_no": 1,
+                "score_delta": [
+                  -16,
+                  -2,
+                  -2,
+                  20
+                ],
+                "scores_after": [
+                  -16,
+                  -2,
+                  -2,
+                  20
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "winner_seat": 3
+              },
+              "target": "first_difference"
+            },
+            "C": {
+              "P_original_whole_tail_exact": false,
+              "actual_decisions": 1,
+              "actual_vip_scores": 1,
+              "arm": "C",
+              "complete": true,
+              "executed_first": "hu",
+              "focal_net_score": 20,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 0,
+                "details": [
+                  "平胡",
+                  "爆头"
+                ],
+                "fan": 2,
+                "is_draw": false,
+                "round_no": 1,
+                "score_delta": [
+                  -16,
+                  -2,
+                  -2,
+                  20
+                ],
+                "scores_after": [
+                  -16,
+                  -2,
+                  -2,
+                  20
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "winner_seat": 3
+              },
+              "target": "first_difference"
+            },
+            "P": {
+              "P_original_whole_tail_exact": true,
+              "actual_decisions": 1,
+              "actual_vip_scores": 1,
+              "arm": "P",
+              "complete": true,
+              "executed_first": "hu",
+              "focal_net_score": 20,
+              "forced_first_count": 0,
+              "settlement": {
+                "coverage": "settlement_only",
+                "dealer_seat": 0,
+                "details": [
+                  "平胡",
+                  "爆头"
+                ],
+                "fan": 2,
+                "is_draw": false,
+                "round_no": 1,
+                "score_delta": [
+                  -16,
+                  -2,
+                  -2,
+                  20
+                ],
+                "scores_after": [
+                  -16,
+                  -2,
+                  -2,
+                  20
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "winner_seat": 3
+              },
+              "target": "first_difference"
+            }
+          },
+          "source_window": {
+            "game_id": "t108-target-cost-shared-fresh-pilot:t108-target-cost-joint:fresh_development:030:3012:vip:10cba94704291038653f586127be1809ef518dcaf68fa1fe38d1fc9ab92ca18f",
+            "phase": "draw",
+            "round_no": 1,
+            "schema_version": 1,
+            "seat": 3,
+            "trigger_seq": 248
+          },
+          "target": "first_difference"
+        }
+      ],
+      "actual_readback_terminal": "6a68f9"
+    }
+  ],
+  "scope": "known-source conditional development; no natural frequency, fresh strength or deadline claim",
+  "new_rules_scores_models_worlds_tables_in_readback": 0,
+  "normal_R18_fallbacks": 0
+}

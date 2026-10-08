@@ -1,0 +1,136 @@
+{
+  "followup_discard": {
+    "decisions": 21495,
+    "statuses": {
+      "EVALUATED": 965,
+      "NOT_APPLICABLE": 20530
+    },
+    "components": {
+      "followup_discard": 4445,
+      "v2": 17050
+    },
+    "changes_by_component": {
+      "followup_discard": 405,
+      "v2": 0
+    },
+    "first_changes": 405,
+    "rule_calls": 67094,
+    "max_decision_seconds": 0.5044393750140443,
+    "total_decision_seconds": 99.77128557348624,
+    "runtime_counts": {
+      "timeouts": 0,
+      "illegal_choices": 0,
+      "fallbacks": 0,
+      "auto_actions": 0,
+      "audit_missing": 0
+    },
+    "has_fallback": false
+  },
+  "route_all": {
+    "decisions": 21399,
+    "statuses": {
+      "EVALUATED": 21399
+    },
+    "components": {
+      "route_draw": 4444,
+      "route_claim": 16955
+    },
+    "changes_by_component": {
+      "route_draw": 73,
+      "route_claim": 43
+    },
+    "first_changes": 116,
+    "rule_calls": 0,
+    "max_decision_seconds": 0.16748575004749,
+    "total_decision_seconds": 18.42632852133829,
+    "runtime_counts": {
+      "timeouts": 0,
+      "illegal_choices": 0,
+      "fallbacks": 0,
+      "auto_actions": 0,
+      "audit_missing": 0
+    },
+    "has_fallback": false
+  },
+  "route_draw_only": {
+    "decisions": 21600,
+    "statuses": {
+      "EVALUATED": 4475,
+      "NOT_APPLICABLE": 17125
+    },
+    "components": {
+      "route_draw": 4475,
+      "v2": 17125
+    },
+    "changes_by_component": {
+      "route_draw": 71,
+      "v2": 0
+    },
+    "first_changes": 71,
+    "rule_calls": 0,
+    "max_decision_seconds": 0.17375037499004975,
+    "total_decision_seconds": 13.392286272486672,
+    "runtime_counts": {
+      "timeouts": 0,
+      "illegal_choices": 0,
+      "fallbacks": 0,
+      "auto_actions": 0,
+      "audit_missing": 0
+    },
+    "has_fallback": false
+  },
+  "route_claim_only": {
+    "decisions": 21409,
+    "statuses": {
+      "NOT_APPLICABLE": 4468,
+      "EVALUATED": 16941
+    },
+    "components": {
+      "v2": 4468,
+      "route_claim": 16941
+    },
+    "changes_by_component": {
+      "v2": 0,
+      "route_claim": 49
+    },
+    "first_changes": 49,
+    "rule_calls": 0,
+    "max_decision_seconds": 0.02335845900233835,
+    "total_decision_seconds": 8.884197701525409,
+    "runtime_counts": {
+      "timeouts": 0,
+      "illegal_choices": 0,
+      "fallbacks": 0,
+      "auto_actions": 0,
+      "audit_missing": 0
+    },
+    "has_fallback": false
+  },
+  "cross_followup_claim": {
+    "decisions": 21797,
+    "statuses": {
+      "EVALUATED": 18265,
+      "NOT_APPLICABLE": 3532
+    },
+    "components": {
+      "followup_discard": 4519,
+      "route_claim": 17278
+    },
+    "changes_by_component": {
+      "followup_discard": 423,
+      "route_claim": 38
+    },
+    "first_changes": 461,
+    "rule_calls": 69907,
+    "max_decision_seconds": 0.585520250024274,
+    "total_decision_seconds": 106.23806076293113,
+    "runtime_counts": {
+      "timeouts": 0,
+      "illegal_choices": 0,
+      "fallbacks": 0,
+      "auto_actions": 0,
+      "audit_missing": 0
+    },
+    "has_fallback": false
+  }
+}

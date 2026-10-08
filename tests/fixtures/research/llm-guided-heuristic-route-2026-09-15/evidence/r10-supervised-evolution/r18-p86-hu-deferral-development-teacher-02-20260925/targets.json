@@ -1,0 +1,2454 @@
+{
+  "replication_labels_opened": false,
+  "schema": "r18-p86-hu-deferral-development-targets/1",
+  "targets": [
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 3,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": -1,
+            "rank": 3,
+            "total_score": 5
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-0",
+            "place_points": 3,
+            "rank": 1,
+            "total_score": 20
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": -3,
+            "rank": 4,
+            "total_score": -34
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 1,
+            "rank": 2,
+            "total_score": 9
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-263001969317973"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "七对"
+        ],
+        "fan": 2,
+        "score_delta": [
+          20,
+          -2,
+          -16,
+          -2
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 2,
+        "hu_score": 90.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 2.0,
+            "min_route_fan": 4.0,
+            "parent_top_action": "hu",
+            "score_capacity": 3360.0,
+            "score_delta": 0.0,
+            "support_remaining": 84.0,
+            "target_action": "discard:发",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          2,
+          3,
+          1
+        ],
+        "own_meld_count": 0,
+        "phase": "draw",
+        "reference_score": 91.0,
+        "reference_trace": {
+          "base_score": 84.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 2.0,
+            "min_route_fan": 4.0,
+            "parent_top_action": "hu",
+            "score_capacity": 3360.0,
+            "score_delta": 2.0,
+            "support_remaining": 84.0,
+            "target_action": "discard:发",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 63,
+        "round_no": 4,
+        "wealth_count_in_hand": 0
+      },
+      "focal_physical_seat": 0,
+      "intervention_action": "hu",
+      "reference_action": "discard:发",
+      "request_sha256": "6f4cf6dd8bac5089db1346778830456ed43e580033fc5fa40b82bb5f2372c1ae",
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "panel_seed": 2026102503,
+        "root_index": 1,
+        "source_id": "H:p85:2026102503:r001:s3",
+        "source_root_id": "H:p85:2026102503:r001",
+        "table_id": "np-H-2026102503-r01-s3-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "5e6ec9ad6d38e1f119b18ac9b0549567e89547e15add990efc83ac3cf6b8601b",
+      "target_id": "r18-p86-development-01",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026102503-r01-s3-t2",
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 680
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 2,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-3",
+            "place_points": -3,
+            "rank": 4,
+            "total_score": -38
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-0",
+            "place_points": -1,
+            "rank": 3,
+            "total_score": -16
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": 1,
+            "rank": 2,
+            "total_score": 13
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 3,
+            "rank": 1,
+            "total_score": 41
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-90375337587146"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "七对"
+        ],
+        "fan": 2,
+        "score_delta": [
+          -16,
+          -2,
+          20,
+          -2
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 0,
+        "hu_score": 66.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 2.0,
+            "min_route_fan": 4.0,
+            "parent_top_action": "hu",
+            "score_capacity": 2120.0,
+            "score_delta": 0.0,
+            "support_remaining": 53.0,
+            "target_action": "discard:6b",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          1,
+          1,
+          2
+        ],
+        "own_meld_count": 0,
+        "phase": "draw",
+        "reference_score": 67.0,
+        "reference_trace": {
+          "base_score": 53.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 2.0,
+            "min_route_fan": 4.0,
+            "parent_top_action": "hu",
+            "score_capacity": 2120.0,
+            "score_delta": 2.0,
+            "support_remaining": 53.0,
+            "target_action": "discard:6b",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 3.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 4.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 26,
+        "round_no": 1,
+        "wealth_count_in_hand": 1
+      },
+      "focal_physical_seat": 2,
+      "intervention_action": "hu",
+      "reference_action": "discard:6b",
+      "request_sha256": "704382f324fa83fc40b28791db2ba33e074a416a64bafb218ff1b9ed24b01108",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "panel_seed": 2026102503,
+        "root_index": 5,
+        "source_id": "H:p85:2026102503:r005:s1",
+        "source_root_id": "H:p85:2026102503:r005",
+        "table_id": "np-H-2026102503-r05-s1-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "facff0927181bc0078dd76e635be2bb6fc3e5706645a570d85e2b40879ca45dc",
+      "target_id": "r18-p86-development-02",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026102503-r05-s1-t2",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 346
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 4,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-3",
+            "place_points": -1,
+            "rank": 3,
+            "total_score": -9
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": -3,
+            "rank": 4,
+            "total_score": -34
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 3,
+            "rank": 1,
+            "total_score": 38
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 1,
+            "rank": 2,
+            "total_score": 5
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-37681586024646"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          -8,
+          10,
+          -1,
+          -1
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 0,
+        "hu_score": 97.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1700.0,
+            "score_delta": 0.0,
+            "support_remaining": 84.0,
+            "target_action": "discard:9w",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 15.0
+        },
+        "other_meld_counts": [
+          2,
+          1,
+          1
+        ],
+        "own_meld_count": 0,
+        "phase": "draw",
+        "reference_score": 98.0,
+        "reference_trace": {
+          "base_score": 84.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1700.0,
+            "score_delta": 2.0,
+            "support_remaining": 84.0,
+            "target_action": "discard:9w",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.5,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 15.0
+        },
+        "remaining_tile_count": 57,
+        "round_no": 6,
+        "wealth_count_in_hand": 3
+      },
+      "focal_physical_seat": 1,
+      "intervention_action": "hu",
+      "reference_action": "discard:9w",
+      "request_sha256": "55a208cc96ff139e00f4e95069765eda28420c9991afbde60be0be316db2726b",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "panel_seed": 2026102503,
+        "root_index": 6,
+        "source_id": "H:p85:2026102503:r006:s0",
+        "source_root_id": "H:p85:2026102503:r006",
+        "table_id": "np-H-2026102503-r06-s0-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "0973f9263293ec0a05e8e5c7d1f5363d985217105d8b5ea6e0a02ccf64d65e5e",
+      "target_id": "r18-p86-development-03",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026102503-r06-s0-t2",
+        "phase": "draw",
+        "round_no": 6,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 1168
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 4,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": -2,
+            "rank": 4,
+            "total_score": -18
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-0",
+            "place_points": 3,
+            "rank": 1,
+            "total_score": 50
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": -2,
+            "rank": 4,
+            "total_score": -18
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 1,
+            "rank": 2,
+            "total_score": -14
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-46514201604937"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          10,
+          -8,
+          -1,
+          -1
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 1,
+        "hu_score": 108.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1980.0,
+            "score_delta": 0.0,
+            "support_remaining": 99.0,
+            "target_action": "discard:6w",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          0,
+          0,
+          0
+        ],
+        "own_meld_count": 0,
+        "phase": "draw",
+        "reference_score": 109.0,
+        "reference_trace": {
+          "base_score": 99.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1980.0,
+            "score_delta": 5.0,
+            "support_remaining": 99.0,
+            "target_action": "discard:6w",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 60,
+        "round_no": 4,
+        "wealth_count_in_hand": 1
+      },
+      "focal_physical_seat": 0,
+      "intervention_action": "hu",
+      "reference_action": "discard:6w",
+      "request_sha256": "bf5fc062167acbebe1c909caa93e5e0872200ad8189ecf944624d527efc87bb2",
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "panel_seed": 2026102503,
+        "root_index": 15,
+        "source_id": "H:p85:2026102503:r015:s3",
+        "source_root_id": "H:p85:2026102503:r015",
+        "table_id": "np-H-2026102503-r15-s3-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "a2f2059c595efaad1dd84145001f5c802c4ebd89ab6a58098d529c9f34252d37",
+      "target_id": "r18-p86-development-04",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026102503-r15-s3-t2",
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 797
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 1,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-3",
+            "place_points": -3,
+            "rank": 4,
+            "total_score": -25
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": 3,
+            "rank": 1,
+            "total_score": 60
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 1,
+            "rank": 2,
+            "total_score": -14
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": -1,
+            "rank": 3,
+            "total_score": -21
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-182452461878988"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          -8,
+          10,
+          -1,
+          -1
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 0,
+        "hu_score": 103.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1840.0,
+            "score_delta": 0.0,
+            "support_remaining": 92.0,
+            "target_action": "discard:西",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 10.0
+        },
+        "other_meld_counts": [
+          1,
+          1,
+          0
+        ],
+        "own_meld_count": 3,
+        "phase": "draw",
+        "reference_score": 104.0,
+        "reference_trace": {
+          "base_score": 92.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1840.0,
+            "score_delta": 2.0,
+            "support_remaining": 92.0,
+            "target_action": "discard:西",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 10.0
+        },
+        "remaining_tile_count": 59,
+        "round_no": 5,
+        "wealth_count_in_hand": 1
+      },
+      "focal_physical_seat": 1,
+      "intervention_action": "hu",
+      "reference_action": "discard:西",
+      "request_sha256": "835e1f2de1a49ed287fa05673f52dd44c6ce6b12f4a716c1f523a8cc458f3a6c",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "panel_seed": 2026102503,
+        "root_index": 20,
+        "source_id": "H:p85:2026102503:r020:s0",
+        "source_root_id": "H:p85:2026102503:r020",
+        "table_id": "np-H-2026102503-r20-s0-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "4cd21cab941c04709ec6a2e091a660a80fbf887d92c75e50feb594ce504e23c0",
+      "target_id": "r18-p86-development-05",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026102503-r20-s0-t2",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 1136
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 2,
+        "ranking": [
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-0",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 1,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt1-39533566317459"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          -1,
+          -8,
+          -1,
+          10
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 1,
+        "hu_score": 107.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1860.0,
+            "score_delta": 0.0,
+            "support_remaining": 93.0,
+            "target_action": "discard:2t",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 10.0
+        },
+        "other_meld_counts": [
+          2,
+          0,
+          1
+        ],
+        "own_meld_count": 0,
+        "phase": "draw",
+        "reference_score": 108.0,
+        "reference_trace": {
+          "base_score": 93.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1860.0,
+            "score_delta": 5.0,
+            "support_remaining": 93.0,
+            "target_action": "discard:2t",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 10.0
+        },
+        "remaining_tile_count": 63,
+        "round_no": 4,
+        "wealth_count_in_hand": 1
+      },
+      "focal_physical_seat": 3,
+      "intervention_action": "hu",
+      "reference_action": "discard:2t",
+      "request_sha256": "b01c092d6d4c0275f4d898b8c274d944d31617e69a0f45dad86e96ae77eee9d1",
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "panel_seed": 2026102503,
+        "root_index": 26,
+        "source_id": "H:p85:2026102503:r026:s3",
+        "source_root_id": "H:p85:2026102503:r026",
+        "table_id": "np-H-2026102503-r26-s3-t1",
+        "table_no": 1
+      },
+      "split": "development",
+      "state_projection_sha256": "11a0737652eacb46d79755962f11c7dbe2017f6b6aa0147c8b16525b4d280952",
+      "target_id": "r18-p86-development-06",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026102503-r26-s3-t1",
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 738
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 2,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": 1,
+            "rank": 2,
+            "total_score": -7
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-0",
+            "place_points": 3,
+            "rank": 1,
+            "total_score": 29
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": -2,
+            "rank": 4,
+            "total_score": -11
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": -2,
+            "rank": 4,
+            "total_score": -11
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-123347456108721"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          24,
+          -8,
+          -8,
+          -8
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 0,
+        "hu_score": 86.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 3840.0,
+            "score_delta": 0.0,
+            "support_remaining": 80.0,
+            "target_action": "discard:8b",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          0,
+          2,
+          1
+        ],
+        "own_meld_count": 2,
+        "phase": "draw",
+        "reference_score": 87.0,
+        "reference_trace": {
+          "base_score": 80.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 3840.0,
+            "score_delta": 2.0,
+            "support_remaining": 80.0,
+            "target_action": "discard:8b",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 50,
+        "round_no": 7,
+        "wealth_count_in_hand": 1
+      },
+      "focal_physical_seat": 0,
+      "intervention_action": "hu",
+      "reference_action": "discard:8b",
+      "request_sha256": "a74759530eb9ce97e1f3ba6003e575da42003ba860866b30a89ec1cd40a31be0",
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "panel_seed": 2026102503,
+        "root_index": 27,
+        "source_id": "H:p85:2026102503:r027:s3",
+        "source_root_id": "H:p85:2026102503:r027",
+        "table_id": "np-H-2026102503-r27-s3-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "166f2c70946e70cf4b55038033fa470db73f109280b51978f8ef12ac1f6fab9f",
+      "target_id": "r18-p86-development-07",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026102503-r27-s3-t2",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1072
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 2,
+        "ranking": [
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-0",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 1,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt1-8158390499926"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          -1,
+          -8,
+          -1,
+          10
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 1,
+        "hu_score": 92.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1720.0,
+            "score_delta": 0.0,
+            "support_remaining": 86.0,
+            "target_action": "discard:9w",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          2,
+          0,
+          1
+        ],
+        "own_meld_count": 3,
+        "phase": "draw",
+        "reference_score": 93.0,
+        "reference_trace": {
+          "base_score": 86.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1720.0,
+            "score_delta": 2.0,
+            "support_remaining": 86.0,
+            "target_action": "discard:9w",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 56,
+        "round_no": 8,
+        "wealth_count_in_hand": 1
+      },
+      "focal_physical_seat": 3,
+      "intervention_action": "hu",
+      "reference_action": "discard:9w",
+      "request_sha256": "24e783c08a4b76b71a090c4c74eefecd72eadbffcbf6cd307fa26424e84ccf88",
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "panel_seed": 2026102503,
+        "root_index": 30,
+        "source_id": "H:p85:2026102503:r030:s3",
+        "source_root_id": "H:p85:2026102503:r030",
+        "table_id": "np-H-2026102503-r30-s3-t1",
+        "table_no": 1
+      },
+      "split": "development",
+      "state_projection_sha256": "434e876da9c3b5f0fba822c6291e8bb40ae64d9c6200abcc56aff046f01abb90",
+      "target_id": "r18-p86-development-08",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026102503-r30-s3-t1",
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 1839
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 4,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-3",
+            "place_points": -1,
+            "rank": 3,
+            "total_score": -18
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": -3,
+            "rank": 4,
+            "total_score": -25
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 1,
+            "rank": 2,
+            "total_score": 21
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 3,
+            "rank": 1,
+            "total_score": 22
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-185292999500673"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "七对"
+        ],
+        "fan": 2,
+        "score_delta": [
+          -16,
+          48,
+          -16,
+          -16
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 1,
+        "hu_score": 84.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 2.0,
+            "min_route_fan": 4.0,
+            "parent_top_action": "hu",
+            "score_capacity": 7488.0,
+            "score_delta": 0.0,
+            "support_remaining": 78.0,
+            "target_action": "discard:南",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          1,
+          2,
+          1
+        ],
+        "own_meld_count": 0,
+        "phase": "draw",
+        "reference_score": 85.0,
+        "reference_trace": {
+          "base_score": 78.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 2.0,
+            "min_route_fan": 4.0,
+            "parent_top_action": "hu",
+            "score_capacity": 7488.0,
+            "score_delta": 2.0,
+            "support_remaining": 78.0,
+            "target_action": "discard:南",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 51,
+        "round_no": 2,
+        "wealth_count_in_hand": 1
+      },
+      "focal_physical_seat": 1,
+      "intervention_action": "hu",
+      "reference_action": "discard:南",
+      "request_sha256": "517037f42fa7bc310c01ba8e14a141eafae6159abb2b74fc528031b34c7e7ed1",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "panel_seed": 2026102503,
+        "root_index": 1,
+        "source_id": "M:p85:2026102503:r001:s0",
+        "source_root_id": "M:p85:2026102503:r001",
+        "table_id": "np-M-2026102503-r01-s0-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "ab30bfc9f2c3081d84a2843ea509b2869eeac706969c40dd2733a3b8ed1f9f92",
+      "target_id": "r18-p86-development-09",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026102503-r01-s0-t2",
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 310
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 2,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-3",
+            "place_points": 2,
+            "rank": 2,
+            "total_score": 32
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": 2,
+            "rank": 2,
+            "total_score": 32
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": -2,
+            "rank": 4,
+            "total_score": -32
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": -2,
+            "rank": 4,
+            "total_score": -32
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-64184097528668"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          -8,
+          10,
+          -1,
+          -1
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 0,
+        "hu_score": 99.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1920.0,
+            "score_delta": 0.0,
+            "support_remaining": 96.0,
+            "target_action": "discard:3w",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          1,
+          0,
+          0
+        ],
+        "own_meld_count": 1,
+        "phase": "draw",
+        "reference_score": 100.0,
+        "reference_trace": {
+          "base_score": 96.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1920.0,
+            "score_delta": 2.0,
+            "support_remaining": 96.0,
+            "target_action": "discard:3w",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.5,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 60,
+        "round_no": 1,
+        "wealth_count_in_hand": 1
+      },
+      "focal_physical_seat": 1,
+      "intervention_action": "hu",
+      "reference_action": "discard:3w",
+      "request_sha256": "40a5e79edbf82d65c4793663f61412415b6579032167e3bafd526e84a0ff9a3b",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "panel_seed": 2026102503,
+        "root_index": 4,
+        "source_id": "M:p85:2026102503:r004:s0",
+        "source_root_id": "M:p85:2026102503:r004",
+        "table_id": "np-M-2026102503-r04-s0-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "e9271636c8bc5c9451776f12a0d4992aa8d354d7d9a02d552a350b179107f803",
+      "target_id": "r18-p86-development-10",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026102503-r04-s0-t2",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 148
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 2,
+        "ranking": [
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-0",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 1,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt1-182235914201773"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          -1,
+          -8,
+          -1,
+          10
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 1,
+        "hu_score": 76.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1400.0,
+            "score_delta": 0.0,
+            "support_remaining": 70.0,
+            "target_action": "discard:发",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          0,
+          1,
+          1
+        ],
+        "own_meld_count": 1,
+        "phase": "draw",
+        "reference_score": 77.0,
+        "reference_trace": {
+          "base_score": 70.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1400.0,
+            "score_delta": 2.0,
+            "support_remaining": 70.0,
+            "target_action": "discard:发",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 37,
+        "round_no": 7,
+        "wealth_count_in_hand": 0
+      },
+      "focal_physical_seat": 3,
+      "intervention_action": "hu",
+      "reference_action": "discard:发",
+      "request_sha256": "2b7c2c3dbb8185a150dad3233e850d98cd3cb538e82d4718dce42eea0275e8f5",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "panel_seed": 2026102503,
+        "root_index": 5,
+        "source_id": "M:p85:2026102503:r005:s3",
+        "source_root_id": "M:p85:2026102503:r005",
+        "table_id": "np-M-2026102503-r05-s3-t1",
+        "table_no": 1
+      },
+      "split": "development",
+      "state_projection_sha256": "5344b5f4e54bf9d4bd89d654973cb40711b04dd8f97c5f703a9a72917e1dfccc",
+      "target_id": "r18-p86-development-11",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026102503-r05-s3-t1",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 1607
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 2,
+        "ranking": [
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-3",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 1,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt1-223108919267556"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          10,
+          -8,
+          -1,
+          -1
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 1,
+        "hu_score": 110.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 2020.0,
+            "score_delta": 0.0,
+            "support_remaining": 101.0,
+            "target_action": "discard:3b",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          0,
+          1,
+          0
+        ],
+        "own_meld_count": 0,
+        "phase": "draw",
+        "reference_score": 111.0,
+        "reference_trace": {
+          "base_score": 101.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 2020.0,
+            "score_delta": 5.0,
+            "support_remaining": 101.0,
+            "target_action": "discard:3b",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 65,
+        "round_no": 2,
+        "wealth_count_in_hand": 0
+      },
+      "focal_physical_seat": 0,
+      "intervention_action": "hu",
+      "reference_action": "discard:3b",
+      "request_sha256": "4edfcfa82e90a4c99780a510984dbb76e2ffffe5d8cb9e3b99f0d6af052916d4",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "panel_seed": 2026102503,
+        "root_index": 6,
+        "source_id": "M:p85:2026102503:r006:s0",
+        "source_root_id": "M:p85:2026102503:r006",
+        "table_id": "np-M-2026102503-r06-s0-t1",
+        "table_no": 1
+      },
+      "split": "development",
+      "state_projection_sha256": "bc4ebf979e791b255b84dbb6a741c73130605400cb9e42dbdd8b6734206408cd",
+      "target_id": "r18-p86-development-12",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026102503-r06-s0-t1",
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 256
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 4,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-3",
+            "place_points": -1,
+            "rank": 3,
+            "total_score": -67
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": -3,
+            "rank": 4,
+            "total_score": -74
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 1,
+            "rank": 2,
+            "total_score": 12
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 3,
+            "rank": 1,
+            "total_score": 129
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-228770018695115"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "七对"
+        ],
+        "fan": 2,
+        "score_delta": [
+          -2,
+          20,
+          -2,
+          -16
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 3,
+        "hu_score": 108.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 2.0,
+            "min_route_fan": 4.0,
+            "parent_top_action": "hu",
+            "score_capacity": 3760.0,
+            "score_delta": 0.0,
+            "support_remaining": 94.0,
+            "target_action": "discard:5t",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 10.0
+        },
+        "other_meld_counts": [
+          1,
+          1,
+          0
+        ],
+        "own_meld_count": 0,
+        "phase": "draw",
+        "reference_score": 109.0,
+        "reference_trace": {
+          "base_score": 94.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 2.0,
+            "min_route_fan": 4.0,
+            "parent_top_action": "hu",
+            "score_capacity": 3760.0,
+            "score_delta": 2.0,
+            "support_remaining": 94.0,
+            "target_action": "discard:5t",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 3.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 10.0
+        },
+        "remaining_tile_count": 61,
+        "round_no": 6,
+        "wealth_count_in_hand": 2
+      },
+      "focal_physical_seat": 1,
+      "intervention_action": "hu",
+      "reference_action": "discard:5t",
+      "request_sha256": "024527d4b19a734ffddaa6897755e6c38ffee9309064881f5482c7b9f2e4abfc",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "panel_seed": 2026102503,
+        "root_index": 14,
+        "source_id": "M:p85:2026102503:r014:s0",
+        "source_root_id": "M:p85:2026102503:r014",
+        "table_id": "np-M-2026102503-r14-s0-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "90068ccc9e50f1b290b3b795211e3f886652f9738be1083e4b4d0e4b54a7ab23",
+      "target_id": "r18-p86-development-13",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026102503-r14-s0-t2",
+        "phase": "draw",
+        "round_no": 6,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 1185
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 4,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": -2,
+            "rank": 4,
+            "total_score": -27
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-0",
+            "place_points": 3,
+            "rank": 1,
+            "total_score": 52
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 1,
+            "rank": 2,
+            "total_score": 2
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": -2,
+            "rank": 4,
+            "total_score": -27
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-197215612495707"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          10,
+          -1,
+          -8,
+          -1
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 2,
+        "hu_score": 81.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1500.0,
+            "score_delta": 0.0,
+            "support_remaining": 75.0,
+            "target_action": "discard:6b",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          2,
+          1,
+          1
+        ],
+        "own_meld_count": 1,
+        "phase": "draw",
+        "reference_score": 82.0,
+        "reference_trace": {
+          "base_score": 75.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1500.0,
+            "score_delta": 2.0,
+            "support_remaining": 75.0,
+            "target_action": "discard:6b",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 48,
+        "round_no": 3,
+        "wealth_count_in_hand": 1
+      },
+      "focal_physical_seat": 0,
+      "intervention_action": "hu",
+      "reference_action": "discard:6b",
+      "request_sha256": "0e215c4d6e0d73c18641e077470fe6db5dc4c2d122b671d6845e220682f5fe1e",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "panel_seed": 2026102503,
+        "root_index": 24,
+        "source_id": "M:p85:2026102503:r024:s3",
+        "source_root_id": "M:p85:2026102503:r024",
+        "table_id": "np-M-2026102503-r24-s3-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "40eebc8a62212ace23fca9e72b30100b4890979c26cfab671f5b1869be3180d1",
+      "target_id": "r18-p86-development-14",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026102503-r24-s3-t2",
+        "phase": "draw",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 610
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 2,
+        "ranking": [
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          },
+          {
+            "games_played": 0,
+            "god_count": 0,
+            "participant_id": "opp-3",
+            "place_points": 0,
+            "rank": 2,
+            "total_score": 0
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 1,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt1-267821889403683"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          10,
+          -1,
+          -8,
+          -1
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 2,
+        "hu_score": 91.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1820.0,
+            "score_delta": 0.0,
+            "support_remaining": 91.0,
+            "target_action": "discard:3b",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "other_meld_counts": [
+          1,
+          0,
+          2
+        ],
+        "own_meld_count": 1,
+        "phase": "draw",
+        "reference_score": 92.0,
+        "reference_trace": {
+          "base_score": 91.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 1.0,
+            "min_route_fan": 2.0,
+            "parent_top_action": "hu",
+            "score_capacity": 1820.0,
+            "score_delta": 2.0,
+            "support_remaining": 91.0,
+            "target_action": "discard:3b",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 1.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 5.0
+        },
+        "remaining_tile_count": 61,
+        "round_no": 7,
+        "wealth_count_in_hand": 1
+      },
+      "focal_physical_seat": 0,
+      "intervention_action": "hu",
+      "reference_action": "discard:3b",
+      "request_sha256": "bbeb3cb3fa4b075f91029b9df587e6c60a5df4afb8a62287de5ffae8b2248b56",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "panel_seed": 2026102503,
+        "root_index": 25,
+        "source_id": "M:p85:2026102503:r025:s0",
+        "source_root_id": "M:p85:2026102503:r025",
+        "table_id": "np-M-2026102503-r25-s0-t1",
+        "table_no": 1
+      },
+      "split": "development",
+      "state_projection_sha256": "f933fefbd4584666bcea26071f41d1351bd2900e6e5b3fe8736c964ae94882fc",
+      "target_id": "r18-p86-development-15",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026102503-r25-s0-t1",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1453
+      }
+    },
+    {
+      "competition": {
+        "observed_at_unix_ms": 0,
+        "participant_rank": 1,
+        "ranking": [
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "focal",
+            "place_points": 3,
+            "rank": 1,
+            "total_score": 76
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-0",
+            "place_points": -3,
+            "rank": 4,
+            "total_score": -46
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-1",
+            "place_points": 1,
+            "rank": 2,
+            "total_score": -13
+          },
+          {
+            "games_played": 8,
+            "god_count": 0,
+            "participant_id": "opp-2",
+            "place_points": -1,
+            "rank": 3,
+            "total_score": -17
+          }
+        ],
+        "schema_version": 1,
+        "stage_no": 2,
+        "stage_role": "qualify",
+        "stage_total": 2,
+        "tournament_id": "s1tt2-40311951470494"
+      },
+      "expected_hu_settlement": {
+        "details": [
+          "七对"
+        ],
+        "fan": 2,
+        "score_delta": [
+          48,
+          -16,
+          -16,
+          -16
+        ]
+      },
+      "features": {
+        "baotou": false,
+        "chain_count": 0,
+        "dealer_seat": 0,
+        "hu_score": 112.0,
+        "hu_trace": {
+          "base_score": 1000.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": true,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 2.0,
+            "min_route_fan": 4.0,
+            "parent_top_action": "hu",
+            "score_capacity": 9696.0,
+            "score_delta": 0.0,
+            "support_remaining": 101.0,
+            "target_action": "discard:8t",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": -1,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 10.0
+        },
+        "other_meld_counts": [
+          0,
+          1,
+          0
+        ],
+        "own_meld_count": 0,
+        "phase": "draw",
+        "reference_score": 113.0,
+        "reference_trace": {
+          "base_score": 101.0,
+          "basis": "direct_v2",
+          "best_shanten_non_pass": -1,
+          "hu_sorting_layer": false,
+          "hu_vs_nonwealth_baotou_cf": {
+            "degrade_reason": "触发",
+            "hu_fan": 2.0,
+            "min_route_fan": 4.0,
+            "parent_top_action": "hu",
+            "score_capacity": 9696.0,
+            "score_delta": 2.0,
+            "support_remaining": 101.0,
+            "target_action": "discard:8t",
+            "triggered": true,
+            "version": "hu_vs_nonwealth_baotou_cf/v1"
+          },
+          "risk_units": 0.0,
+          "river_part": 0.0,
+          "scope": "direct_v2_or_produced_outside_v2",
+          "shanten_after": 0,
+          "style_part": 0.0,
+          "unknown": false,
+          "unknown_policy": null,
+          "wealth_discard_part": 0.0,
+          "wealth_part": 10.0
+        },
+        "remaining_tile_count": 65,
+        "round_no": 1,
+        "wealth_count_in_hand": 2
+      },
+      "focal_physical_seat": 0,
+      "intervention_action": "hu",
+      "reference_action": "discard:8t",
+      "request_sha256": "8e4b130d1fc9212b77d6674c9780c8de9df67808ee7e8b5aaa101363b0b7a68b",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "panel_seed": 2026102503,
+        "root_index": 31,
+        "source_id": "M:p85:2026102503:r031:s3",
+        "source_root_id": "M:p85:2026102503:r031",
+        "table_id": "np-M-2026102503-r31-s3-t2",
+        "table_no": 2
+      },
+      "split": "development",
+      "state_projection_sha256": "958059cd352c62df5e4e1ca757c7d5b64d7def26293a7522e139c7709468ba28",
+      "target_id": "r18-p86-development-16",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026102503-r31-s3-t2",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 112
+      }
+    }
+  ]
+}

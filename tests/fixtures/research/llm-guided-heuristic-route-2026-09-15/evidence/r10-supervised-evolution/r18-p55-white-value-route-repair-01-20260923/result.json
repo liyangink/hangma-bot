@@ -1,0 +1,75 @@
+{
+  "checks": {
+    "all_failed_sources_replayed": true,
+    "all_request_audits_pass": true,
+    "all_six_tables_complete": true,
+    "all_stages_complete": true,
+    "counterexample_closed": true,
+    "p47_current_rule_plan_drift_zero": true
+  },
+  "counterexample": {
+    "decision_id": "sitin-stage:np-H-2026103107-r02-s3-t1:sitin-stage:np-H-2026103107-r02-s3-t1:8:1493:draw:seat3",
+    "pass": true,
+    "r18_current_top": "gang:concealed:中",
+    "r18_full_plan_equal": true,
+    "r18_old_top": "gang:concealed:中",
+    "reduction_complete": true,
+    "reduction_reason": null,
+    "roots": {
+      "discard:6w": {
+        "shanten_after": 1,
+        "white_successor_hu_capacity": 4,
+        "white_value_route_capacity": [
+          4
+        ]
+      },
+      "discard:9w": {
+        "shanten_after": 1,
+        "white_successor_hu_capacity": 4,
+        "white_value_route_capacity": [
+          4
+        ]
+      }
+    }
+  },
+  "fix": "仅 shanten_after>1 时跳过一次摸牌枚举；等于1时枚举白板路线。",
+  "next": "以新生产依赖身份预注册并重跑完整1024桌独立确认；P53保持失败封存。",
+  "parent_replay": {
+    "pass": true,
+    "plan_change_count": 0,
+    "plan_changes": [],
+    "requests": 377,
+    "rule_payload_changes": 351
+  },
+  "repair_identity": "58518be2c5a59f824535c4e2107fff4a560a68b2e58dc5841329e63a2198b627",
+  "root_cause": "shanten_after==1 在四张自然牌已耗尽时仍可能由万能白板一摸成胡；旧快速路径把它错误证明为不听。",
+  "schema": "r18-p55-white-value-route-repair-result/1",
+  "selection_eligible": false,
+  "status": "PASS_P55_WHITE_VALUE_ROUTE_REPAIR",
+  "strength_analyzed": false,
+  "strength_claim": false,
+  "tables": 6,
+  "targeted_stage_replay": [
+    {
+      "request_audit_pass": true,
+      "request_failures": [],
+      "source_id": "H:p53:r02:s3",
+      "status": "complete",
+      "tables": 2
+    },
+    {
+      "request_audit_pass": true,
+      "request_failures": [],
+      "source_id": "M:p53:r02:s3",
+      "status": "complete",
+      "tables": 2
+    },
+    {
+      "request_audit_pass": true,
+      "request_failures": [],
+      "source_id": "M:p53:r12:s3",
+      "status": "complete",
+      "tables": 2
+    }
+  ]
+}

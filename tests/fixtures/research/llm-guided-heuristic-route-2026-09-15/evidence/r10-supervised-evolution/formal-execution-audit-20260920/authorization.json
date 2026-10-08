@@ -1,0 +1,27 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-formal-execution-audit",
+  "batch_label": "formal-execution-audit-20260920",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 32.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 0.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-20T01:38:45Z",
+  "scope": "评分执行审计工程检查；32桌已曝光开发来源，不作强度或确认",
+  "max_model_calls": 0,
+  "issuance_basis": "用户持续监督进化及修复测量缺陷授权"
+}

@@ -1,0 +1,3937 @@
+{
+  "automatic_archive_profile_supported": false,
+  "config": {
+    "focal_policy": {
+      "baseline": "weighted_heuristic_v2",
+      "candidate": "ActionValuePolicy(av-candidate)"
+    },
+    "min_roots": 1,
+    "opponent_policies": [
+      "weighted_heuristic_v2",
+      "weighted_heuristic_v2",
+      "weighted_heuristic_v2"
+    ],
+    "roots": 1,
+    "seats_per_root": 4,
+    "step_limit": 100000,
+    "tables_per_group": 2,
+    "value_limits": {
+      "max_expansions": 2048,
+      "max_routes_per_candidate": 128
+    }
+  },
+  "cost": {
+    "cpu_sec": 38.704,
+    "note": "tables_full 按每臂每座位每阶段 2 桌计；无 LLM 调用",
+    "tables_full_executed": 16,
+    "tables_full_planned": 16,
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "wall_sec": 41.391
+  },
+  "execution_review": {
+    "missing_tables": 0,
+    "recorded_counts": {
+      "action_value_failed": 0,
+      "action_value_scored": 2852,
+      "ambiguous_diagnostics": 0,
+      "decision_count": 22626,
+      "other_policy_decisions": 19774,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "abstain": 0,
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "recorded_tables": 16,
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 16,
+    "zero_internal_failures_verified": true
+  },
+  "generator": "natural-opening-panel-v2",
+  "identity": {
+    "av_contract_sha256": "3c0b4d3a2fdd1f438e2e5d295e4269f578485032aeddad0eb558fdcce981d4a9",
+    "baseline_id": "v2-baseline-frozen",
+    "candidate_execution_profile": {
+      "max_operations": 200000,
+      "name": "research-200k-v1",
+      "research_only": true,
+      "schema": "sitin-candidate-execution-profile/1"
+    },
+    "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+    "candidate_source_sha256": "96ecd73f139e566be86623a0ed5cea678bb4c759cba30cd0e30b41dba8def1be",
+    "contract_id": "group-dev-v1",
+    "contract_sha256": "98c1e0a387550799b0985695a3846aeb1862ad85a4cfb71f22dbb433e63d7f6e",
+    "opponent_mix": "H",
+    "panel_epoch": "natural-opening-panel-v2@H",
+    "panel_seed": 2026092001,
+    "policy_execution_schema": "sitin-policy-execution/1",
+    "stage_projection": "per_table_completed_account_v1"
+  },
+  "red_lines": {
+    "candidate_failure_policy": "T16：候选臂任一座位失败 ⇒ 整根 invalid，费用照记",
+    "non_focal_policies_identical_across_arms": true,
+    "same_seed_both_arms": "table_id/seed 不含臂标识（同根同牌山）",
+    "stage_account_injection": "每桌开始前按「参赛者身份 → 物理座位」注入已完成桌阶段账（不含当前桌；口径 per_table_completed_account_v1）",
+    "world_state_access": "仅经 drive_match 公开 PlayerObservation"
+  },
+  "release_eligible": false,
+  "research_only": true,
+  "samples": [
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 4430.083,
+          "error": null,
+          "focal_stage_score": -6,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": -6,
+            "opp-1": -29,
+            "opp-2": 20,
+            "opp-3": 15
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+          "elapsed_ms": 6960.479,
+          "error": null,
+          "focal_stage_score": -84,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -84,
+            "opp-1": 82,
+            "opp-2": 18,
+            "opp-3": -16
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 11390.562
+      },
+      "focal_anchor_seat": 0,
+      "invalid_reasons": [],
+      "opponent_mix": "H",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 4430.083,
+          "error": null,
+          "execution_review": {
+            "missing_tables": 0,
+            "recorded_counts": {
+              "action_value_failed": 0,
+              "action_value_scored": 0,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 3036,
+              "other_policy_decisions": 3036,
+              "unclassified_action_value": 0
+            },
+            "recorded_failure_kinds": {
+              "abstain": 0,
+              "operation_limit": 0,
+              "resource_or_numeric_limit": 0,
+              "scoring_error": 0,
+              "unclassified_failure": 0
+            },
+            "recorded_tables": 2,
+            "schema": "sitin-policy-execution-review/1",
+            "status": "complete",
+            "tables": 2,
+            "zero_internal_failures_verified": true
+          },
+          "focal_stage_score": -6,
+          "stage_place_points_by_participant": {
+            "focal": 0,
+            "opp-1": -6,
+            "opp-2": 4,
+            "opp-3": 2
+          },
+          "stage_totals_by_participant": {
+            "focal": -6,
+            "opp-1": -29,
+            "opp-2": 20,
+            "opp-3": 15
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 0,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 353,
+                    "other_policy_decisions": 353,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 349,
+                    "other_policy_decisions": 349,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 356,
+                    "other_policy_decisions": 356,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 358,
+                    "other_policy_decisions": 358,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1416,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1416,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s0-t1",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt1-99027785465239"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt1-99027785465239:0123",
+                "policy_ids_by_seat": [
+                  "focal",
+                  "opp-1",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s0-t1",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt1-99027785465239",
+                "scores_after": [
+                  -14,
+                  -15,
+                  4,
+                  25
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "50b4340a070b3814ad87a07c4060bef52a10e7e9d3dc061508cf7042af90ae99",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                -14,
+                -15,
+                4,
+                25
+              ],
+              "seed": 99027785465239,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-1",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-H-2026092001-r01-s0-t1",
+              "wall_ms": 2018.064
+            },
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 0,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 403,
+                    "other_policy_decisions": 403,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 404,
+                    "other_policy_decisions": 404,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 402,
+                    "other_policy_decisions": 402,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 411,
+                    "other_policy_decisions": 411,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1620,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1620,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s0-t2",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt2-63366003309462"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt2-63366003309462:1230",
+                "policy_ids_by_seat": [
+                  "opp-3",
+                  "focal",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s0-t2",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt2-63366003309462",
+                "scores_after": [
+                  -10,
+                  8,
+                  -14,
+                  16
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  1,
+                  2,
+                  3,
+                  0
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "81420cf57b61f59146dca0bfd03c24da80e976a68ba4843612b10ca3ee625308",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                -10,
+                8,
+                -14,
+                16
+              ],
+              "seed": 63366003309462,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "focal",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  3,
+                  -1,
+                  -3,
+                  1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  25,
+                  -14,
+                  -15,
+                  4
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-H-2026092001-r01-s0-t2",
+              "wall_ms": 2404.943
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 3,
+            "b": 3,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 6960.479,
+          "error": null,
+          "execution_review": {
+            "missing_tables": 0,
+            "recorded_counts": {
+              "action_value_failed": 0,
+              "action_value_scored": 765,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 3076,
+              "other_policy_decisions": 2311,
+              "unclassified_action_value": 0
+            },
+            "recorded_failure_kinds": {
+              "abstain": 0,
+              "operation_limit": 0,
+              "resource_or_numeric_limit": 0,
+              "scoring_error": 0,
+              "unclassified_failure": 0
+            },
+            "recorded_tables": 2,
+            "schema": "sitin-policy-execution-review/1",
+            "status": "complete",
+            "tables": 2,
+            "zero_internal_failures_verified": true
+          },
+          "focal_stage_score": -84,
+          "stage_place_points_by_participant": {
+            "focal": -4,
+            "opp-1": 4,
+            "opp-2": 2,
+            "opp-3": -2
+          },
+          "stage_totals_by_participant": {
+            "focal": -84,
+            "opp-1": 82,
+            "opp-2": 18,
+            "opp-3": -16
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 412,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 412,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 412,
+                    "other_policy_decisions": 0,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 412,
+                    "other_policy_decisions": 412,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 409,
+                    "other_policy_decisions": 409,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 415,
+                    "other_policy_decisions": 415,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1648,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1236,
+                "policy_ids_by_seat": [
+                  "action_value_v1:av-candidate",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s0-t1",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt1-99027785465239"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt1-99027785465239:0123",
+                "policy_ids_by_seat": [
+                  "focal",
+                  "opp-1",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s0-t1",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt1-99027785465239",
+                "scores_after": [
+                  -44,
+                  46,
+                  -40,
+                  38
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_max_operations:0": "200000",
+                  "natural_seat_policy:0": "action_value_v1:av-candidate",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "61d4c64ddd9d59dfa8d01cfc5fa7d625ee099b5f2716212ab75b9a536f7fb7d3",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                -44,
+                46,
+                -40,
+                38
+              ],
+              "seed": 99027785465239,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-1",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-H-2026092001-r01-s0-t1",
+              "wall_ms": 3707.564
+            },
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 353,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 355,
+                    "other_policy_decisions": 355,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 353,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 353,
+                    "other_policy_decisions": 0,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 356,
+                    "other_policy_decisions": 356,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 364,
+                    "other_policy_decisions": 364,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1428,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1075,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "action_value_v1:av-candidate",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s0-t2",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt2-63366003309462"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt2-63366003309462:1230",
+                "policy_ids_by_seat": [
+                  "opp-3",
+                  "focal",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s0-t2",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt2-63366003309462",
+                "scores_after": [
+                  -54,
+                  -40,
+                  36,
+                  58
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  1,
+                  2,
+                  3,
+                  0
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_max_operations:1": "200000",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "action_value_v1:av-candidate",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "331653da1a05f48387e1458e38693b35e4a648c80b4d2b419542c48d646fe64a",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                -54,
+                -40,
+                36,
+                58
+              ],
+              "seed": 63366003309462,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "focal",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  1,
+                  -3,
+                  3,
+                  -1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  38,
+                  -44,
+                  46,
+                  -40
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-H-2026092001-r01-s0-t2",
+              "wall_ms": 3245.517
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "4fda1e6d2e4f88ae7cb3d73b8991dfb34acede9808faf37dabc095da2b41f2cc",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 200521748920923,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "focal",
+          "opp-1",
+          "opp-2",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "focal",
+          "opp-1",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-H-2026092001-root01",
+      "table_ids": [
+        "np-H-2026092001-r01-s0-t1",
+        "np-H-2026092001-r01-s0-t2"
+      ],
+      "table_seeds": [
+        99027785465239,
+        63366003309462
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 4358.51,
+          "error": null,
+          "focal_stage_score": -1,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": -1,
+            "opp-0": 46,
+            "opp-2": -40,
+            "opp-3": -5
+          },
+          "status": "complete",
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+          "elapsed_ms": 5666.212,
+          "error": null,
+          "focal_stage_score": -87,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -87,
+            "opp-0": 6,
+            "opp-2": -75,
+            "opp-3": 156
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 10024.722000000002
+      },
+      "focal_anchor_seat": 1,
+      "invalid_reasons": [],
+      "opponent_mix": "H",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 4358.51,
+          "error": null,
+          "execution_review": {
+            "missing_tables": 0,
+            "recorded_counts": {
+              "action_value_failed": 0,
+              "action_value_scored": 0,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 2997,
+              "other_policy_decisions": 2997,
+              "unclassified_action_value": 0
+            },
+            "recorded_failure_kinds": {
+              "abstain": 0,
+              "operation_limit": 0,
+              "resource_or_numeric_limit": 0,
+              "scoring_error": 0,
+              "unclassified_failure": 0
+            },
+            "recorded_tables": 2,
+            "schema": "sitin-policy-execution-review/1",
+            "status": "complete",
+            "tables": 2,
+            "zero_internal_failures_verified": true
+          },
+          "focal_stage_score": -1,
+          "stage_place_points_by_participant": {
+            "focal": 0,
+            "opp-0": 5,
+            "opp-2": -5,
+            "opp-3": 0
+          },
+          "stage_totals_by_participant": {
+            "focal": -1,
+            "opp-0": 46,
+            "opp-2": -40,
+            "opp-3": -5
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 0,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 390,
+                    "other_policy_decisions": 390,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 392,
+                    "other_policy_decisions": 392,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 387,
+                    "other_policy_decisions": 387,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 385,
+                    "other_policy_decisions": 385,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1554,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1554,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s1-t1",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt1-136074616568539"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt1-136074616568539:0123",
+                "policy_ids_by_seat": [
+                  "opp-0",
+                  "focal",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s1-t1",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt1-136074616568539",
+                "scores_after": [
+                  17,
+                  17,
+                  -22,
+                  -12
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "748732ad2cb99e673d568b3f5ae7ac70298bdca52f1a434820fde5d15c0c1db7",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                17,
+                17,
+                -22,
+                -12
+              ],
+              "seed": 136074616568539,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "focal",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-H-2026092001-r01-s1-t1",
+              "wall_ms": 2271.745
+            },
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 0,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 360,
+                    "other_policy_decisions": 360,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 363,
+                    "other_policy_decisions": 363,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 361,
+                    "other_policy_decisions": 361,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 359,
+                    "other_policy_decisions": 359,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1443,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1443,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s1-t2",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt2-229567289527557"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt2-229567289527557:1230",
+                "policy_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "focal",
+                  "opp-2"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s1-t2",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt2-229567289527557",
+                "scores_after": [
+                  7,
+                  29,
+                  -18,
+                  -18
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  1,
+                  2,
+                  3,
+                  0
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "97dfac5de9fd5ac6a0fba1be5d828ef22c9479fe3f0d5e9bd3570464acc34af6",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                7,
+                29,
+                -18,
+                -18
+              ],
+              "seed": 229567289527557,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "focal",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  -1,
+                  2,
+                  2,
+                  -3
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -12,
+                  17,
+                  17,
+                  -22
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-H-2026092001-r01-s1-t2",
+              "wall_ms": 2079.738
+            }
+          ],
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_interval": {
+            "a": 2,
+            "b": 2,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 5666.212,
+          "error": null,
+          "execution_review": {
+            "missing_tables": 0,
+            "recorded_counts": {
+              "action_value_failed": 0,
+              "action_value_scored": 672,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 2686,
+              "other_policy_decisions": 2014,
+              "unclassified_action_value": 0
+            },
+            "recorded_failure_kinds": {
+              "abstain": 0,
+              "operation_limit": 0,
+              "resource_or_numeric_limit": 0,
+              "scoring_error": 0,
+              "unclassified_failure": 0
+            },
+            "recorded_tables": 2,
+            "schema": "sitin-policy-execution-review/1",
+            "status": "complete",
+            "tables": 2,
+            "zero_internal_failures_verified": true
+          },
+          "focal_stage_score": -87,
+          "stage_place_points_by_participant": {
+            "focal": -6,
+            "opp-0": 0,
+            "opp-2": 0,
+            "opp-3": 6
+          },
+          "stage_totals_by_participant": {
+            "focal": -87,
+            "opp-0": 6,
+            "opp-2": -75,
+            "opp-3": 156
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 381,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 382,
+                    "other_policy_decisions": 382,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 381,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 381,
+                    "other_policy_decisions": 0,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 379,
+                    "other_policy_decisions": 379,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 381,
+                    "other_policy_decisions": 381,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1523,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1142,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "action_value_v1:av-candidate",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s1-t1",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt1-136074616568539"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt1-136074616568539:0123",
+                "policy_ids_by_seat": [
+                  "opp-0",
+                  "focal",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s1-t1",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt1-136074616568539",
+                "scores_after": [
+                  31,
+                  -58,
+                  -54,
+                  81
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_max_operations:1": "200000",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "action_value_v1:av-candidate",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "81dc91b4809f1033c414b76c9df9377a1e51709537d8815d0889d0a0327179d2",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                31,
+                -58,
+                -54,
+                81
+              ],
+              "seed": 136074616568539,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "focal",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-H-2026092001-r01-s1-t1",
+              "wall_ms": 3244.867
+            },
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 291,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 293,
+                    "other_policy_decisions": 293,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 290,
+                    "other_policy_decisions": 290,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 291,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 291,
+                    "other_policy_decisions": 0,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 289,
+                    "other_policy_decisions": 289,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1163,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 872,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "action_value_v1:av-candidate",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s1-t2",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt2-229567289527557"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt2-229567289527557:1230",
+                "policy_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "focal",
+                  "opp-2"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s1-t2",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt2-229567289527557",
+                "scores_after": [
+                  75,
+                  -25,
+                  -29,
+                  -21
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  1,
+                  2,
+                  3,
+                  0
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_max_operations:2": "200000",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "action_value_v1:av-candidate",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "1ad2d680ab1194f5f4fa9a278eab8e185cef6a288ca21fd3acb03ed8ecaa92c1",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                75,
+                -25,
+                -29,
+                -21
+              ],
+              "seed": 229567289527557,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "focal",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  3,
+                  1,
+                  -3,
+                  -1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  81,
+                  31,
+                  -58,
+                  -54
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-H-2026092001-r01-s1-t2",
+              "wall_ms": 2414.074
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "4fda1e6d2e4f88ae7cb3d73b8991dfb34acede9808faf37dabc095da2b41f2cc",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 200521748920923,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "focal",
+          "opp-2",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "opp-0",
+          "focal",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-H-2026092001-root01",
+      "table_ids": [
+        "np-H-2026092001-r01-s1-t1",
+        "np-H-2026092001-r01-s1-t2"
+      ],
+      "table_seeds": [
+        136074616568539,
+        229567289527557
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 4154.27,
+          "error": null,
+          "focal_stage_score": 6,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": 6,
+            "opp-0": -26,
+            "opp-1": 64,
+            "opp-3": -44
+          },
+          "status": "complete",
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+          "elapsed_ms": 6905.201,
+          "error": null,
+          "focal_stage_score": -49,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -49,
+            "opp-0": -48,
+            "opp-1": -30,
+            "opp-3": 127
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 11059.471000000001
+      },
+      "focal_anchor_seat": 2,
+      "invalid_reasons": [],
+      "opponent_mix": "H",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 4154.27,
+          "error": null,
+          "execution_review": {
+            "missing_tables": 0,
+            "recorded_counts": {
+              "action_value_failed": 0,
+              "action_value_scored": 0,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 2784,
+              "other_policy_decisions": 2784,
+              "unclassified_action_value": 0
+            },
+            "recorded_failure_kinds": {
+              "abstain": 0,
+              "operation_limit": 0,
+              "resource_or_numeric_limit": 0,
+              "scoring_error": 0,
+              "unclassified_failure": 0
+            },
+            "recorded_tables": 2,
+            "schema": "sitin-policy-execution-review/1",
+            "status": "complete",
+            "tables": 2,
+            "zero_internal_failures_verified": true
+          },
+          "focal_stage_score": 6,
+          "stage_place_points_by_participant": {
+            "focal": 3,
+            "opp-0": -1,
+            "opp-1": 4,
+            "opp-3": -6
+          },
+          "stage_totals_by_participant": {
+            "focal": 6,
+            "opp-0": -26,
+            "opp-1": 64,
+            "opp-3": -44
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 0,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 251,
+                    "other_policy_decisions": 251,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 252,
+                    "other_policy_decisions": 252,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 258,
+                    "other_policy_decisions": 258,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 255,
+                    "other_policy_decisions": 255,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1016,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1016,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s2-t1",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt1-221604129287447"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt1-221604129287447:0123",
+                "policy_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "focal",
+                  "opp-3"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s2-t1",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt1-221604129287447",
+                "scores_after": [
+                  -14,
+                  14,
+                  18,
+                  -18
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "e041ff8bc6a421430e7bd9a5e8172defaafdf04c019a552116173079995d2f4d",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                -14,
+                14,
+                18,
+                -18
+              ],
+              "seed": 221604129287447,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "focal",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-H-2026092001-r01-s2-t1",
+              "wall_ms": 1435.662
+            },
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 0,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 443,
+                    "other_policy_decisions": 443,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 438,
+                    "other_policy_decisions": 438,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 445,
+                    "other_policy_decisions": 445,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 442,
+                    "other_policy_decisions": 442,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1768,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1768,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s2-t2",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt2-23700358952739"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt2-23700358952739:1230",
+                "policy_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "opp-1",
+                  "focal"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s2-t2",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt2-23700358952739",
+                "scores_after": [
+                  -26,
+                  -12,
+                  50,
+                  -12
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  1,
+                  2,
+                  3,
+                  0
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "1219dc377cd307c237ce9fb72f06ca784aca01117a57f70192aaadd17d3e35f5",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                -26,
+                -12,
+                50,
+                -12
+              ],
+              "seed": 23700358952739,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "opp-1",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  -3,
+                  -1,
+                  1,
+                  3
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -18,
+                  -14,
+                  14,
+                  18
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-H-2026092001-r01-s2-t2",
+              "wall_ms": 2711.639
+            }
+          ],
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_interval": {
+            "a": 2,
+            "b": 2,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 6905.201,
+          "error": null,
+          "execution_review": {
+            "missing_tables": 0,
+            "recorded_counts": {
+              "action_value_failed": 0,
+              "action_value_scored": 801,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 3202,
+              "other_policy_decisions": 2401,
+              "unclassified_action_value": 0
+            },
+            "recorded_failure_kinds": {
+              "abstain": 0,
+              "operation_limit": 0,
+              "resource_or_numeric_limit": 0,
+              "scoring_error": 0,
+              "unclassified_failure": 0
+            },
+            "recorded_tables": 2,
+            "schema": "sitin-policy-execution-review/1",
+            "status": "complete",
+            "tables": 2,
+            "zero_internal_failures_verified": true
+          },
+          "focal_stage_score": -49,
+          "stage_place_points_by_participant": {
+            "focal": -4,
+            "opp-0": -2,
+            "opp-1": 0,
+            "opp-3": 6
+          },
+          "stage_totals_by_participant": {
+            "focal": -49,
+            "opp-0": -48,
+            "opp-1": -30,
+            "opp-3": 127
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 433,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 431,
+                    "other_policy_decisions": 431,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 435,
+                    "other_policy_decisions": 435,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 433,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 433,
+                    "other_policy_decisions": 0,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 434,
+                    "other_policy_decisions": 434,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1733,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1300,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "action_value_v1:av-candidate",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s2-t1",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt1-221604129287447"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt1-221604129287447:0123",
+                "policy_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "focal",
+                  "opp-3"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s2-t1",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt1-221604129287447",
+                "scores_after": [
+                  -35,
+                  -13,
+                  -28,
+                  76
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_max_operations:2": "200000",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "action_value_v1:av-candidate",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "be437cb99737f512ead2ecaa0b70b15a69bad54c54e86265d67e03163814deb6",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                -35,
+                -13,
+                -28,
+                76
+              ],
+              "seed": 221604129287447,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "focal",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-H-2026092001-r01-s2-t1",
+              "wall_ms": 3828.49
+            },
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 368,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 367,
+                    "other_policy_decisions": 367,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 366,
+                    "other_policy_decisions": 366,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 368,
+                    "other_policy_decisions": 368,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 368,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 368,
+                    "other_policy_decisions": 0,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1469,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1101,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "action_value_v1:av-candidate"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s2-t2",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt2-23700358952739"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt2-23700358952739:1230",
+                "policy_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "opp-1",
+                  "focal"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s2-t2",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt2-23700358952739",
+                "scores_after": [
+                  51,
+                  -13,
+                  -17,
+                  -21
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  1,
+                  2,
+                  3,
+                  0
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_max_operations:3": "200000",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "action_value_v1:av-candidate",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "f36e235d4bb46777fad4d2670cb7951285231faa68e1312cdb7d4f85e34c1c73",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                51,
+                -13,
+                -17,
+                -21
+              ],
+              "seed": 23700358952739,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "opp-1",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  3,
+                  -3,
+                  1,
+                  -1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  76,
+                  -35,
+                  -13,
+                  -28
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-H-2026092001-r01-s2-t2",
+              "wall_ms": 3068.936
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "4fda1e6d2e4f88ae7cb3d73b8991dfb34acede9808faf37dabc095da2b41f2cc",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 200521748920923,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "opp-1",
+          "focal",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "opp-0",
+          "opp-1",
+          "focal"
+        ]
+      ],
+      "source_root_id": "np-H-2026092001-root01",
+      "table_ids": [
+        "np-H-2026092001-r01-s2-t1",
+        "np-H-2026092001-r01-s2-t2"
+      ],
+      "table_seeds": [
+        221604129287447,
+        23700358952739
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 3495.638,
+          "error": null,
+          "focal_stage_score": -75,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": -75,
+            "opp-0": 37,
+            "opp-1": 69,
+            "opp-2": -31
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+          "elapsed_ms": 5420.134,
+          "error": null,
+          "focal_stage_score": -67,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -67,
+            "opp-0": 88,
+            "opp-1": -48,
+            "opp-2": 27
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 8915.772
+      },
+      "focal_anchor_seat": 3,
+      "invalid_reasons": [],
+      "opponent_mix": "H",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 3495.638,
+          "error": null,
+          "execution_review": {
+            "missing_tables": 0,
+            "recorded_counts": {
+              "action_value_failed": 0,
+              "action_value_scored": 0,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 2386,
+              "other_policy_decisions": 2386,
+              "unclassified_action_value": 0
+            },
+            "recorded_failure_kinds": {
+              "abstain": 0,
+              "operation_limit": 0,
+              "resource_or_numeric_limit": 0,
+              "scoring_error": 0,
+              "unclassified_failure": 0
+            },
+            "recorded_tables": 2,
+            "schema": "sitin-policy-execution-review/1",
+            "status": "complete",
+            "tables": 2,
+            "zero_internal_failures_verified": true
+          },
+          "focal_stage_score": -75,
+          "stage_place_points_by_participant": {
+            "focal": -6,
+            "opp-0": 4,
+            "opp-1": 4,
+            "opp-2": -2
+          },
+          "stage_totals_by_participant": {
+            "focal": -75,
+            "opp-0": 37,
+            "opp-1": 69,
+            "opp-2": -31
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 0,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 257,
+                    "other_policy_decisions": 257,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 258,
+                    "other_policy_decisions": 258,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 255,
+                    "other_policy_decisions": 255,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 250,
+                    "other_policy_decisions": 250,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1020,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1020,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s3-t1",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt1-130344463767040"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt1-130344463767040:0123",
+                "policy_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "opp-2",
+                  "focal"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s3-t1",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt1-130344463767040",
+                "scores_after": [
+                  7,
+                  42,
+                  -19,
+                  -30
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "51fe2efbd3a48ff5360ad925f8eb50a512b48c943797be0962d8d81e2bdd530a",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                7,
+                42,
+                -19,
+                -30
+              ],
+              "seed": 130344463767040,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "opp-2",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-H-2026092001-r01-s3-t1",
+              "wall_ms": 1502.123
+            },
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 0,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 337,
+                    "other_policy_decisions": 337,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 342,
+                    "other_policy_decisions": 342,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 344,
+                    "other_policy_decisions": 344,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 343,
+                    "other_policy_decisions": 343,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1366,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 1366,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s3-t2",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt2-203105186360925"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt2-203105186360925:1230",
+                "policy_ids_by_seat": [
+                  "focal",
+                  "opp-0",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s3-t2",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt2-203105186360925",
+                "scores_after": [
+                  -45,
+                  30,
+                  27,
+                  -12
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  1,
+                  2,
+                  3,
+                  0
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "e27a0fbe40a83733ed0444f2a37122a0b79380a5c7084d35b49245b2eb8a2b35",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                -45,
+                30,
+                27,
+                -12
+              ],
+              "seed": 203105186360925,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-0",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  -3,
+                  1,
+                  3,
+                  -1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -30,
+                  7,
+                  42,
+                  -19
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-H-2026092001-r01-s3-t2",
+              "wall_ms": 1986.875
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 5420.134,
+          "error": null,
+          "execution_review": {
+            "missing_tables": 0,
+            "recorded_counts": {
+              "action_value_failed": 0,
+              "action_value_scored": 614,
+              "ambiguous_diagnostics": 0,
+              "decision_count": 2459,
+              "other_policy_decisions": 1845,
+              "unclassified_action_value": 0
+            },
+            "recorded_failure_kinds": {
+              "abstain": 0,
+              "operation_limit": 0,
+              "resource_or_numeric_limit": 0,
+              "scoring_error": 0,
+              "unclassified_failure": 0
+            },
+            "recorded_tables": 2,
+            "schema": "sitin-policy-execution-review/1",
+            "status": "complete",
+            "tables": 2,
+            "zero_internal_failures_verified": true
+          },
+          "focal_stage_score": -67,
+          "stage_place_points_by_participant": {
+            "focal": -6,
+            "opp-0": 4,
+            "opp-1": -2,
+            "opp-2": 4
+          },
+          "stage_totals_by_participant": {
+            "focal": -67,
+            "opp-0": 88,
+            "opp-1": -48,
+            "opp-2": 27
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 333,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 329,
+                    "other_policy_decisions": 329,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 323,
+                    "other_policy_decisions": 323,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 330,
+                    "other_policy_decisions": 330,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 333,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 333,
+                    "other_policy_decisions": 0,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1315,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 982,
+                "policy_ids_by_seat": [
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "action_value_v1:av-candidate"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s3-t1",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt1-130344463767040"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt1-130344463767040:0123",
+                "policy_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "opp-2",
+                  "focal"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s3-t1",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt1-130344463767040",
+                "scores_after": [
+                  13,
+                  -27,
+                  45,
+                  -31
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  0,
+                  1,
+                  2,
+                  3
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_max_operations:3": "200000",
+                  "natural_seat_policy:0": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "action_value_v1:av-candidate",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "4a11f274b0a3c18ff4e6ba65c1673336813083b995dfbeff95210edc5e6def26",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                13,
+                -27,
+                45,
+                -31
+              ],
+              "seed": 130344463767040,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "opp-2",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-H-2026092001-r01-s3-t1",
+              "wall_ms": 2979.724
+            },
+            {
+              "match_status": "complete",
+              "policy_execution": {
+                "action_value_failed": 0,
+                "action_value_scored": 281,
+                "ambiguous_diagnostics": 0,
+                "by_seat": [
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 281,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 281,
+                    "other_policy_decisions": 0,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 287,
+                    "other_policy_decisions": 287,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 289,
+                    "other_policy_decisions": 289,
+                    "unclassified_action_value": 0
+                  },
+                  {
+                    "action_value_failed": 0,
+                    "action_value_scored": 0,
+                    "ambiguous_diagnostics": 0,
+                    "decision_count": 287,
+                    "other_policy_decisions": 287,
+                    "unclassified_action_value": 0
+                  }
+                ],
+                "decision_count": 1144,
+                "failure_kinds": {
+                  "abstain": 0,
+                  "operation_limit": 0,
+                  "resource_or_numeric_limit": 0,
+                  "scoring_error": 0,
+                  "unclassified_failure": 0
+                },
+                "failure_reason_counts": {},
+                "other_policy_decisions": 863,
+                "policy_ids_by_seat": [
+                  "action_value_v1:av-candidate",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2",
+                  "ComparableHeuristicPolicyV2"
+                ],
+                "schema": "sitin-policy-execution/1",
+                "unclassified_action_value": 0
+              },
+              "result": {
+                "completed_hands": 8,
+                "config": {
+                  "max_games": 1,
+                  "rounds_per_game": 8,
+                  "rules": {
+                    "base_score": 1,
+                    "ruleset_version": "hangma-mvp-v10-public-counts",
+                    "you_cai_bi_kao": false
+                  },
+                  "schema_version": 1,
+                  "timing": {
+                    "chi_timeout_sec": 1.0,
+                    "discard_timeout_sec": 3.0,
+                    "peng_timeout_sec": 1.0
+                  }
+                },
+                "evaluation_schema_version": 1,
+                "expected_hands": 8,
+                "game_key": {
+                  "game_id": "sitin-stage:np-H-2026092001-r01-s3-t2",
+                  "source_namespace": "hangma-simulation",
+                  "tournament_id": "s1tt2-203105186360925"
+                },
+                "invalid_reasons": [],
+                "official_ranks": null,
+                "pair_id": "s1tt2-203105186360925:1230",
+                "policy_ids_by_seat": [
+                  "focal",
+                  "opp-0",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "result_id": "r-sitin-stage:np-H-2026092001-r01-s3-t2",
+                "runtime_counts": {
+                  "audit_missing": 0,
+                  "auto_actions": 0,
+                  "fallbacks": 0,
+                  "illegal_choices": 0,
+                  "timeouts": 0
+                },
+                "scenario_id": "s1tt2-203105186360925",
+                "scores_after": [
+                  -36,
+                  75,
+                  -21,
+                  -18
+                ],
+                "scores_before": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "seat_permutation": [
+                  1,
+                  2,
+                  3,
+                  0
+                ],
+                "source_kind": "simulation",
+                "source_refs": [
+                  {
+                    "note": "natural panel table",
+                    "producer": "tools/sitin_natural_panel.py"
+                  }
+                ],
+                "status": "complete",
+                "versions": {
+                  "clock_mode": "logical",
+                  "driver": "tools/sitin_natural_panel.py (offline.evaluate drive_match)",
+                  "natural_seat_max_operations:0": "200000",
+                  "natural_seat_policy:0": "action_value_v1:av-candidate",
+                  "natural_seat_policy:1": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:2": "ComparableHeuristicPolicyV2",
+                  "natural_seat_policy:3": "ComparableHeuristicPolicyV2",
+                  "panel_policy_names": [
+                    "focal-arm",
+                    "weighted_heuristic_v2"
+                  ],
+                  "policy_execution_schema": "sitin-policy-execution/1",
+                  "policy_execution_sha256": "0e78e03b45e2619dd08553c225d6a398364a99e649f6267abdc2545b644ae122",
+                  "rules_hash": "b4c52836ffc1b8742ae3200e055a35f6bcf105210a8ba7fd048d240cff1a5225",
+                  "ruleset_version": "hangma-mvp-v10-public-counts",
+                  "value_limits": "{\"max_expansions\": 2048, \"max_routes_per_candidate\": 128}"
+                }
+              },
+              "scores_by_seat": [
+                -36,
+                75,
+                -21,
+                -18
+              ],
+              "seed": 203105186360925,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-0",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  -3,
+                  1,
+                  -1,
+                  3
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -31,
+                  13,
+                  -27,
+                  45
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-H-2026092001-r01-s3-t2",
+              "wall_ms": 2433.612
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "4fda1e6d2e4f88ae7cb3d73b8991dfb34acede9808faf37dabc095da2b41f2cc",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 200521748920923,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "opp-1",
+          "opp-2",
+          "focal"
+        ],
+        [
+          "focal",
+          "opp-0",
+          "opp-1",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-H-2026092001-root01",
+      "table_ids": [
+        "np-H-2026092001-r01-s3-t1",
+        "np-H-2026092001-r01-s3-t2"
+      ],
+      "table_seeds": [
+        130344463767040,
+        203105186360925
+      ]
+    }
+  ],
+  "schema": "sitin-natural-panel/1",
+  "statistics": {
+    "by_candidate": {
+      "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551": {
+        "family_development_values": {
+          "baotou": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          },
+          "branch": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          },
+          "chain": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          },
+          "four_white": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          }
+        },
+        "panels": {
+          "normal": {
+            "declared_mix": {
+              "mean_delta": null,
+              "mean_delta_high": null,
+              "mean_delta_low": null,
+              "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例",
+              "status": "missing_mix",
+              "weights": {
+                "H": 0.5,
+                "M": 0.5
+              }
+            },
+            "panels": {
+              "H": {
+                "delta_bounds": {
+                  "interval_95_high": null,
+                  "interval_95_low": null,
+                  "mean_delta_high": -0.5,
+                  "mean_delta_low": -0.5,
+                  "note": "识别区间（缺 god_count 等事实造成）：d_low=候选U下界−基线U上界、d_high=候选U上界−基线U下界（§2 保守配对）；与 interval_95 分开报告",
+                  "standard_error_high": null,
+                  "standard_error_low": null,
+                  "unresolved_roots": 0
+                },
+                "interval_95": null,
+                "interval_kind": "sampling_uncertainty_normal_approx",
+                "interval_note": "95% 正态近似抽样不确定性区间，非识别区间，不作为已证明提升的证据",
+                "invalid_records": [],
+                "invalid_roots": [],
+                "manifest_complete": true,
+                "mean_delta": -0.5,
+                "n_invalid_roots": 0,
+                "n_invalid_samples": 0,
+                "n_refresh_roots": 0,
+                "n_roots": 1,
+                "n_samples": 4,
+                "n_uncomputable_samples": 0,
+                "root_rows": [
+                  {
+                    "cost": 16.0,
+                    "d_high": -0.5,
+                    "d_low": -0.5,
+                    "d_point": -0.5,
+                    "n_windows": 4,
+                    "opponent_mix": "H",
+                    "recorded_cost": 41390.527,
+                    "role": "core",
+                    "root_content_digest": "4fda1e6d2e4f88ae7cb3d73b8991dfb34acede9808faf37dabc095da2b41f2cc",
+                    "root_id": "np-H-2026092001-root01",
+                    "self": false,
+                    "unresolved": false,
+                    "usage": "development_core"
+                  }
+                ],
+                "roots": [
+                  "np-H-2026092001-root01"
+                ],
+                "self_comparison": false,
+                "standard_error": null,
+                "status": "ok",
+                "uncomputable_records": []
+              }
+            }
+          }
+        }
+      }
+    },
+    "invalid_count": 0,
+    "invalid_records": [],
+    "min_roots": 1,
+    "n_samples": 4,
+    "notes": [
+      "抽样单位=来源根（source_root_id）：同根多窗口/换座先根内平均，不放大 n（T10）",
+      "interval_95 为抽样不确定性（正态近似），与 delta_bounds 识别区间分开",
+      "无效样本不补零：原始记录保留于 invalid_records/uncomputable_records"
+    ],
+    "schema": "sitin-stage-statistics/1",
+    "uncomputable_count": 0,
+    "uncomputable_records": []
+  }
+}

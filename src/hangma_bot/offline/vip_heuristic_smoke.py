@@ -30,6 +30,7 @@ from hangma_bot.simulation import MatchSpec, SimulationChoice, SimulationEngine
 
 from .evaluate import MatchDriverConfig, drive_match
 from .scoring_sources import REPO_ROOT, digest_of_file, source_manifest, write_code_snapshot
+from hangma_bot.adapters.recording.project_storage import project_file
 
 VIP_IDENTITY_ROOTS = (
     "hangma_bot.policy.route_vip_heuristic",
@@ -63,7 +64,8 @@ def freeze_vip_identity(
     都纳入身份，避免仅凭语义标签沿用另一份实现的成绩。无网络副作用。
     """
 
-    contract = REPO_ROOT / "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md"
+    contract_relative = "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md"
+    contract = project_file(REPO_ROOT, contract_relative)
     manifest = source_manifest(VIP_IDENTITY_ROOTS)
     native_source = "src/hangma_bot/hangma/_grouped_native.c"
     manifest[native_source] = digest_of_file(REPO_ROOT / native_source)
@@ -82,7 +84,7 @@ def freeze_vip_identity(
     return {
         "candidate_id": compute_vip_candidate_identity(source, contract_sha, deps, params),
         "source_sha256": hashlib.sha256(source.encode("utf-8")).hexdigest(),
-        "contract_path": str(contract.relative_to(REPO_ROOT)),
+        "contract_path": contract_relative,
         "contract_sha256": contract_sha, "deps_digest": deps,
         "source_manifest": manifest, "math_backend": backend, "params": params,
         "view_schema_version": VIP_ROUTE_SCORING_VIEW_SCHEMA_VERSION,
@@ -161,7 +163,7 @@ async def run_vip_smoke(
     manifest = source_manifest(VIP_SMOKE_ROOTS)
     manifest.update(identity["source_manifest"])
     write_code_snapshot(out_dir, manifest)
-    (out_dir / "contract.md").write_bytes((REPO_ROOT / identity["contract_path"]).read_bytes())
+    (out_dir / "contract.md").write_bytes(project_file(REPO_ROOT, identity["contract_path"]).read_bytes())
     native_path = backend_info()["native_path"]
     if native_path is not None:
         (out_dir / "math-native.bin").write_bytes(Path(native_path).read_bytes())

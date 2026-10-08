@@ -1,0 +1,26 @@
+{
+  "schema": "t13-coverage-expansion-prereg/1",
+  "status": "fixed_before_2400k_full_table_results",
+  "purpose": "source_coverage_and_actual_action_diagnostic_not_strength",
+  "source_dir": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t13-joint-route-quality-author-1/S01-natural-recording-2400k-16",
+  "source_kind": "frozen_natural_A_R18_action_before/1",
+  "source_arm": "A",
+  "require_complete_all_16_tables_and_verified_raw": true,
+  "selection_implementation": "hangma_bot.offline.vip_eoh_input_sources.select_public_inputs",
+  "selection_limits": {
+    "per_stratum": 1,
+    "max_windows": 64,
+    "max_windows_per_source_root": 64
+  },
+  "candidate_packages": [
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t13-joint-route-quality-author-1/PARENT-operation-research-2400k-package",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t13-joint-route-quality-author-1/S01-operation-research-2400k-package"
+  ],
+  "no_candidate_score_action_or_settlement_selection": true,
+  "missing_rare_groups": "unknown_not_passed",
+  "public_probe_max_score_calls": 128,
+  "new_model_calls": 0,
+  "new_table_calls_in_panel_or_probe": 0,
+  "actual_action_difference_required_before_remaining_7_roots": true,
+  "not_independent_confirmation": true
+}

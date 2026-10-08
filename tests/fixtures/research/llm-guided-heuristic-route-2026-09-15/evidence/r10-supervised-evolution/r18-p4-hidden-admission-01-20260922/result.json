@@ -1,0 +1,122 @@
+{
+  "candidate_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+  "case_count": 8,
+  "case_ids_emitted": false,
+  "changed_count": 1,
+  "hands_emitted": false,
+  "hidden_consumed": true,
+  "improved_count": 1,
+  "manifest_sha256": "0f46cc9d57f14a72385f0ea2087b68504f53e8888bf42c00fe6fa3a989c467ef",
+  "next_gate": "正式BotPolicy接缝与同牌墙换座完整桌赛非劣门",
+  "regressed_count": 0,
+  "release_eligible": false,
+  "schema": "r18-p4-hidden-admission-result/1",
+  "scored_count": 8,
+  "status": "PASS_HIDDEN_OPPORTUNITY",
+  "strata": [
+    {
+      "baseline_optimal": 2,
+      "baseline_regret_sum": 0.0,
+      "candidate_optimal": 2,
+      "candidate_regret_sum": 0.0,
+      "changed": 0,
+      "count": 2,
+      "decision_type": "take_hu",
+      "improved": 0,
+      "regressed": 0,
+      "scored": 2,
+      "wealth_count": 1
+    },
+    {
+      "baseline_optimal": 2,
+      "baseline_regret_sum": 0.0,
+      "candidate_optimal": 2,
+      "candidate_regret_sum": 0.0,
+      "changed": 0,
+      "count": 2,
+      "decision_type": "take_hu",
+      "improved": 0,
+      "regressed": 0,
+      "scored": 2,
+      "wealth_count": 2
+    },
+    {
+      "baseline_optimal": 0,
+      "baseline_regret_sum": 0.7868852459016438,
+      "candidate_optimal": 0,
+      "candidate_regret_sum": 0.7868852459016438,
+      "changed": 0,
+      "count": 1,
+      "decision_type": "keep_wealth",
+      "improved": 0,
+      "regressed": 0,
+      "scored": 1,
+      "wealth_count": 3
+    },
+    {
+      "baseline_optimal": 0,
+      "baseline_regret_sum": 48.786885245901644,
+      "candidate_optimal": 0,
+      "candidate_regret_sum": 48.786885245901644,
+      "changed": 0,
+      "count": 1,
+      "decision_type": "piao",
+      "improved": 0,
+      "regressed": 0,
+      "scored": 1,
+      "wealth_count": 3
+    },
+    {
+      "baseline_optimal": 0,
+      "baseline_regret_sum": 11.803278688524586,
+      "candidate_optimal": 0,
+      "candidate_regret_sum": 11.803278688524586,
+      "changed": 0,
+      "count": 1,
+      "decision_type": "keep_wealth",
+      "improved": 0,
+      "regressed": 0,
+      "scored": 1,
+      "wealth_count": 4
+    },
+    {
+      "baseline_optimal": 0,
+      "baseline_regret_sum": 192.0,
+      "candidate_optimal": 1,
+      "candidate_regret_sum": 0.0,
+      "changed": 1,
+      "count": 1,
+      "decision_type": "piao",
+      "improved": 1,
+      "regressed": 0,
+      "scored": 1,
+      "wealth_count": 4
+    }
+  ],
+  "summary": {
+    "base_scenario_count": 8,
+    "baseline_optimal_hit_rate": 0.5,
+    "candidate_optimal_hit_rate": 0.625,
+    "case_count": 8,
+    "conservative_capability_gain": 24.0,
+    "family": "multi_wealth_baotou",
+    "mean_baseline_regret": 31.672131147540984,
+    "mean_candidate_regret": 7.672131147540984,
+    "mean_capability_gain": 24.0,
+    "optimistic_capability_gain": 24.0,
+    "scored_base_scenario_count": 8,
+    "scored_case_count": 8,
+    "split": "hidden",
+    "status_counts": [
+      [
+        "baseline:SCORED",
+        8
+      ],
+      [
+        "candidate:SCORED",
+        8
+      ]
+    ]
+  },
+  "table_strength_claim": false
+}

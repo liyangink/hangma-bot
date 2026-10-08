@@ -1,0 +1,605 @@
+{
+  "status": "CONFIGURATION_DESIGN_COMPLETE_NOT_EFFECT_EXECUTION_READY",
+  "source_sha256": "5528aa9696341df97f74b5180cb2628714b83dc479c2768bc5f961a827d31361",
+  "behavior_input_audit": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/parameter-surface-audit-20260920.json",
+  "behavior_input_audit_sha256": "3ee7c3bf06a4bfc48585af435dd4cfb43a45184fc557e9d252fda78aba8c7170",
+  "policy_source_checks": {
+    "src/hangma_bot/policy/heuristic_v2.py": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af",
+    "src/hangma_bot/policy/heuristic_v1.py": "fb924e32375a033f84f6566160e761102308e3b145c7a5caa885db6f99affd4c",
+    "src/hangma_bot/policy/weights_v1.py": "6dc4f4bf263ce055d0c450e914b556ab5323ecf3290cf104c06d9547aeed0f77"
+  },
+  "generator_seed": 2026092011,
+  "space": {
+    "effective_tile": [
+      0.25,
+      4.0,
+      "log2"
+    ],
+    "claim_risk_peng": [
+      0.0,
+      12.0,
+      "linear"
+    ],
+    "claim_risk_chi": [
+      0.0,
+      20.0,
+      "linear"
+    ],
+    "feed_risk": [
+      0.0,
+      12.0,
+      "linear"
+    ],
+    "safe_tile_bonus": [
+      0.0,
+      6.0,
+      "linear"
+    ],
+    "style_adjust": [
+      0.0,
+      8.0,
+      "linear"
+    ]
+  },
+  "selection_rule": "7锚点后按固定64分层候选顺序，按91既有请求完整排序去重，留首24个非基线签名；不读取效果",
+  "baseline_weights": {
+    "win_now": 1000.0,
+    "gang_bonus": 40.0,
+    "wealth_god_keep": 60.0,
+    "shanten_step": 100.0,
+    "effective_tile": 1.0,
+    "win_potential": 5.0,
+    "flexibility": 2.0,
+    "claim_risk_peng": 6.0,
+    "claim_risk_chi": 10.0,
+    "feed_risk": 6.0,
+    "safe_tile_bonus": 3.0,
+    "style_adjust": 4.0
+  },
+  "baseline_behavior_sha256": "d2da1e6bec87de63cafa9806cb8d2e053f0ae6610b3b2ed45fc02d785d64604a",
+  "request_count": 91,
+  "selected_count": 24,
+  "selected": [
+    {
+      "config_id": "v2_joint_01",
+      "design_id": "anchor_effective_half",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.5,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 6.0,
+        "claim_risk_chi": 10.0,
+        "feed_risk": 6.0,
+        "safe_tile_bonus": 3.0,
+        "style_adjust": 4.0
+      },
+      "weights_sha256": "691436e04771a09eeba0676d85a91e6b4095aeb33c72be45fa0c1b911747ef0c",
+      "behavior_sha256": "62e8dc31b2e58281f7626f37f34411b1e9e74ec7c864704b66387e148af9c661",
+      "first_changes": 0,
+      "full_order_changes": 23
+    },
+    {
+      "config_id": "v2_joint_02",
+      "design_id": "anchor_effective_double",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 2.0,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 6.0,
+        "claim_risk_chi": 10.0,
+        "feed_risk": 6.0,
+        "safe_tile_bonus": 3.0,
+        "style_adjust": 4.0
+      },
+      "weights_sha256": "df824f66478de4b5479c582344506aef07bf95670b8b41a33ffe676486506ddf",
+      "behavior_sha256": "ba7e46249f902032d6e1eb109bbee35f831474b9d4a57938324607fe23994479",
+      "first_changes": 12,
+      "full_order_changes": 37
+    },
+    {
+      "config_id": "v2_joint_03",
+      "design_id": "anchor_zero_claim_risk_peng",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.0,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 0.0,
+        "claim_risk_chi": 10.0,
+        "feed_risk": 6.0,
+        "safe_tile_bonus": 3.0,
+        "style_adjust": 4.0
+      },
+      "weights_sha256": "32299311d63aecdc1747d91f5e3453d35112b0448500641c4864f1571e9f8e33",
+      "behavior_sha256": "1174b7fa8fd6aa2cc6c4a92fd993c781dbfc47ef1694e008397d4aa1a9d397c9",
+      "first_changes": 3,
+      "full_order_changes": 4
+    },
+    {
+      "config_id": "v2_joint_04",
+      "design_id": "anchor_zero_claim_risk_chi",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.0,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 6.0,
+        "claim_risk_chi": 0.0,
+        "feed_risk": 6.0,
+        "safe_tile_bonus": 3.0,
+        "style_adjust": 4.0
+      },
+      "weights_sha256": "35821ce376400f6fddbf006d433d1b1e873e4807f3024be2ab84f1484b3845ad",
+      "behavior_sha256": "b464ef7e52bee25fef53df42763e4dc61c81641288a0e4ddcba60e93ba630670",
+      "first_changes": 12,
+      "full_order_changes": 12
+    },
+    {
+      "config_id": "v2_joint_05",
+      "design_id": "anchor_zero_feed_risk",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.0,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 6.0,
+        "claim_risk_chi": 10.0,
+        "feed_risk": 0.0,
+        "safe_tile_bonus": 3.0,
+        "style_adjust": 4.0
+      },
+      "weights_sha256": "b4fbeac6d0eafdd84952432d2716d62e9823c1bd74d147399caa048384545868",
+      "behavior_sha256": "25b0992493eabdc397558b053b82431535ce2de7fda02dd9a9bcb62fb8a68bfc",
+      "first_changes": 9,
+      "full_order_changes": 20
+    },
+    {
+      "config_id": "v2_joint_06",
+      "design_id": "anchor_zero_safe_tile_bonus",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.0,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 6.0,
+        "claim_risk_chi": 10.0,
+        "feed_risk": 6.0,
+        "safe_tile_bonus": 0.0,
+        "style_adjust": 4.0
+      },
+      "weights_sha256": "7e680a0c66305a7675cf93105debb193d95196c5295b15a228634f53e034eff4",
+      "behavior_sha256": "d749b5d484b27adaf8afc425b44bf49fb38f614db14395aae3d8d1e55abcb7e6",
+      "first_changes": 5,
+      "full_order_changes": 26
+    },
+    {
+      "config_id": "v2_joint_07",
+      "design_id": "anchor_zero_style_adjust",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.0,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 6.0,
+        "claim_risk_chi": 10.0,
+        "feed_risk": 6.0,
+        "safe_tile_bonus": 3.0,
+        "style_adjust": 0.0
+      },
+      "weights_sha256": "55339c049b3347cac7fe041772f771009a9d1d26c1185ca06170e72f6fc75c9e",
+      "behavior_sha256": "a25be867bbd8ebd914ccf81451d0ef69a7c775fa55f3581415068a2a8622cd71",
+      "first_changes": 3,
+      "full_order_changes": 18
+    },
+    {
+      "config_id": "v2_joint_08",
+      "design_id": "stratified_00",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.156497,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 0.965034,
+        "claim_risk_chi": 13.439678,
+        "feed_risk": 8.681764,
+        "safe_tile_bonus": 5.350747,
+        "style_adjust": 0.058737
+      },
+      "weights_sha256": "e6efcbc9d7bf87152ae2eabb098e051701065954467e3eaec174f8a6fd898176",
+      "behavior_sha256": "03803d609838c8c20407b2dbe9a5b85b0aa728c74fd9f46c226ba3150d113251",
+      "first_changes": 6,
+      "full_order_changes": 18
+    },
+    {
+      "config_id": "v2_joint_09",
+      "design_id": "stratified_01",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.799665,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 7.93021,
+        "claim_risk_chi": 15.896391,
+        "feed_risk": 9.326272,
+        "safe_tile_bonus": 4.623529,
+        "style_adjust": 7.230476
+      },
+      "weights_sha256": "1439a1e34e9f915c65a10a58ebedc635fefd6e576091206f5799b756f09b5b26",
+      "behavior_sha256": "e1f8abb37d5bf6cd35aa0cde7bdf8a86e5808dd70473e0817f587aca88d4335c",
+      "first_changes": 0,
+      "full_order_changes": 22
+    },
+    {
+      "config_id": "v2_joint_10",
+      "design_id": "stratified_02",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.757817,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 2.530322,
+        "claim_risk_chi": 1.452233,
+        "feed_risk": 6.615804,
+        "safe_tile_bonus": 1.198999,
+        "style_adjust": 7.268166
+      },
+      "weights_sha256": "224d52cebfe75da2bba4e64b856a56a1b55c739ec24fce752c409f257699df61",
+      "behavior_sha256": "4446fd69ae501ff3c34338997483eaa839e24f41ecba37cf1f4070b1f00f4cc3",
+      "first_changes": 6,
+      "full_order_changes": 28
+    },
+    {
+      "config_id": "v2_joint_11",
+      "design_id": "stratified_03",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.443449,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 11.928664,
+        "claim_risk_chi": 11.281723,
+        "feed_risk": 9.942057,
+        "safe_tile_bonus": 4.756752,
+        "style_adjust": 4.869611
+      },
+      "weights_sha256": "ce30ef14c5b2db59a7c45c7b1ed975a528c5e24a00b66b6d19e88fc751db41e5",
+      "behavior_sha256": "37bb4a3a5a95f3ab1892f795769b5c323ac64048f1e7b030a0817abb07acc3a4",
+      "first_changes": 2,
+      "full_order_changes": 28
+    },
+    {
+      "config_id": "v2_joint_12",
+      "design_id": "stratified_04",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.585592,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 6.596297,
+        "claim_risk_chi": 12.010301,
+        "feed_risk": 5.611426,
+        "safe_tile_bonus": 0.732502,
+        "style_adjust": 0.140035
+      },
+      "weights_sha256": "23e45f81093eb5efd838fdb40407000068f1ebb175c2aadaada8fc8bf12cea4d",
+      "behavior_sha256": "337aaec022d0137a596b784eb42e70ccc0618c53eb7a7b23593bf1f68354f1d5",
+      "first_changes": 3,
+      "full_order_changes": 34
+    },
+    {
+      "config_id": "v2_joint_13",
+      "design_id": "stratified_05",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.270427,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 7.05029,
+        "claim_risk_chi": 8.125676,
+        "feed_risk": 10.437491,
+        "safe_tile_bonus": 3.423671,
+        "style_adjust": 3.676873
+      },
+      "weights_sha256": "2e7aa0132472739095b3b53545402aa4e6f2e813082fc0f91bdacf2a66d72027",
+      "behavior_sha256": "1b36aa9ae3276d626939581fdda80bca2973a1a3e00663f1a3e7f3f2799e402b",
+      "first_changes": 1,
+      "full_order_changes": 28
+    },
+    {
+      "config_id": "v2_joint_14",
+      "design_id": "stratified_06",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.356659,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 8.467749,
+        "claim_risk_chi": 11.207211,
+        "feed_risk": 7.807301,
+        "safe_tile_bonus": 2.863281,
+        "style_adjust": 0.565009
+      },
+      "weights_sha256": "7fc8c0eebc19af8f5f32bb15dd023a8c96fee6a480c3c5a35f446d512d2cf9b2",
+      "behavior_sha256": "4fb47fc13f9d3c5105874ca2cf9125cc94ef428d32c60f2261226285bb90c2ff",
+      "first_changes": 3,
+      "full_order_changes": 26
+    },
+    {
+      "config_id": "v2_joint_15",
+      "design_id": "stratified_07",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.001031,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 10.730795,
+        "claim_risk_chi": 8.110354,
+        "feed_risk": 7.287954,
+        "safe_tile_bonus": 4.354601,
+        "style_adjust": 1.475488
+      },
+      "weights_sha256": "164d258a3581df4b2f859f46498ef99f29663b615b0fa5b7ac2824e6765ae282",
+      "behavior_sha256": "01ee1850c3becdb1b650d7d0e6c8554985783a4ff5ff908c38778bd413747a0a",
+      "first_changes": 1,
+      "full_order_changes": 9
+    },
+    {
+      "config_id": "v2_joint_16",
+      "design_id": "stratified_08",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.978884,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 4.970867,
+        "claim_risk_chi": 6.731437,
+        "feed_risk": 1.115673,
+        "safe_tile_bonus": 5.216661,
+        "style_adjust": 2.389202
+      },
+      "weights_sha256": "c5d3681cbccbddee128c768122b4e927f112373b36573ab5b6afe3e0c9313e17",
+      "behavior_sha256": "5368fd7994d5c6ffb359ca141e344b62b063be899a33beb6bb3dea04319c8a4b",
+      "first_changes": 2,
+      "full_order_changes": 16
+    },
+    {
+      "config_id": "v2_joint_17",
+      "design_id": "stratified_09",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.455924,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 0.791055,
+        "claim_risk_chi": 7.335097,
+        "feed_risk": 7.349823,
+        "safe_tile_bonus": 4.087979,
+        "style_adjust": 1.533778
+      },
+      "weights_sha256": "0d7481d93270b3897d2fec97bb0cdfd1729940b5f4e31727846017aa7dd6ecaa",
+      "behavior_sha256": "0b36fcc613453cff2eddd51ac7b70a09849ec13d56a5d98053056feef1e0c952",
+      "first_changes": 6,
+      "full_order_changes": 26
+    },
+    {
+      "config_id": "v2_joint_18",
+      "design_id": "stratified_10",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 3.372204,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 5.140374,
+        "claim_risk_chi": 17.800517,
+        "feed_risk": 11.455676,
+        "safe_tile_bonus": 3.204057,
+        "style_adjust": 6.019632
+      },
+      "weights_sha256": "68ef328de318d9516f3c2f7750c1a345e0d1c251efa5f75ae7c4b35ef4676761",
+      "behavior_sha256": "5604cfd357ff5dd1ef70fff361f945b7c6ecd2414054204b4d79200f88e3f72f",
+      "first_changes": 37,
+      "full_order_changes": 60
+    },
+    {
+      "config_id": "v2_joint_19",
+      "design_id": "stratified_11",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.846751,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 2.055072,
+        "claim_risk_chi": 7.80402,
+        "feed_risk": 1.362998,
+        "safe_tile_bonus": 1.340091,
+        "style_adjust": 2.857338
+      },
+      "weights_sha256": "5ed4d4e3d5418e98ee5cb9334d8e4675393bbc3ca3c13c853e9973c83b68b884",
+      "behavior_sha256": "0fbf3b58c63ca8933525691d999e550ffbe23bf66a96d6bc34144763aec6b4e2",
+      "first_changes": 5,
+      "full_order_changes": 24
+    },
+    {
+      "config_id": "v2_joint_20",
+      "design_id": "stratified_12",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.666813,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 5.945755,
+        "claim_risk_chi": 11.845096,
+        "feed_risk": 0.243678,
+        "safe_tile_bonus": 2.92037,
+        "style_adjust": 7.535758
+      },
+      "weights_sha256": "a3671fdc73a5d0a5af6e509cb697a6da9e0c2e2cbb56d2c50b22078f4836963d",
+      "behavior_sha256": "38c189d1796ebf170cf423cda7f956f5f501ebb4c1e67a05711143815a0a8386",
+      "first_changes": 1,
+      "full_order_changes": 21
+    },
+    {
+      "config_id": "v2_joint_21",
+      "design_id": "stratified_13",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.325371,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 5.615031,
+        "claim_risk_chi": 10.613377,
+        "feed_risk": 5.134529,
+        "safe_tile_bonus": 2.281822,
+        "style_adjust": 3.4857
+      },
+      "weights_sha256": "0b92cb17136fbe74dd78083b7f104c42222db9abcf156beb9a8caeb7675da2e9",
+      "behavior_sha256": "6ff09140bf5a9eab51829bbe1b222a0db7384b2432d44232bf997a2826c951eb",
+      "first_changes": 0,
+      "full_order_changes": 26
+    },
+    {
+      "config_id": "v2_joint_22",
+      "design_id": "stratified_14",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.48269,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 10.38213,
+        "claim_risk_chi": 3.61954,
+        "feed_risk": 8.610608,
+        "safe_tile_bonus": 0.512082,
+        "style_adjust": 6.557342
+      },
+      "weights_sha256": "85b969398773d62d8c4e957c281b270d052319a1151631245ddbfb38dc0fa64f",
+      "behavior_sha256": "993362bbb457f37b7517344765f248a4770ab22b888c5b9f19728882387bdff3",
+      "first_changes": 1,
+      "full_order_changes": 26
+    },
+    {
+      "config_id": "v2_joint_23",
+      "design_id": "stratified_15",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 0.252266,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 9.183735,
+        "claim_risk_chi": 2.983477,
+        "feed_risk": 3.881554,
+        "safe_tile_bonus": 4.457615,
+        "style_adjust": 6.187087
+      },
+      "weights_sha256": "737602e50fb43bd2009dcc8242cec3b4ccada6e700920d669840c4ac04322483",
+      "behavior_sha256": "d175fb7aa1a3713934f36aaab81a02afc487ab7693f210e9a0488abf1ef5a2ce",
+      "first_changes": 4,
+      "full_order_changes": 31
+    },
+    {
+      "config_id": "v2_joint_24",
+      "design_id": "stratified_16",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 2.82961,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 10.927226,
+        "claim_risk_chi": 18.592131,
+        "feed_risk": 10.133219,
+        "safe_tile_bonus": 3.496054,
+        "style_adjust": 4.207175
+      },
+      "weights_sha256": "195bda8e13c223aa2af25921fc99956c13307763f2ab9639752277b4f95fada2",
+      "behavior_sha256": "a8c110815dfe9a0c1e6adbed0478d99817c11c3d533430e4a9c3a388f0ba1da2",
+      "first_changes": 28,
+      "full_order_changes": 53
+    }
+  ],
+  "skipped": [],
+  "limitations": "有限诊断请求去重不证明全域等价，也不证明自然改选频率或增强；未做在线时限验收。",
+  "remaining_execution_requirements": [
+    "独立研究策略身份及全生产依赖闭包",
+    "来源根和费用计划",
+    "结果平分口径及确定性选留规则",
+    "恢复与默认V2差分验收"
+  ],
+  "model_calls": 0,
+  "new_effect_tables": 0,
+  "confirmation_roots": 0,
+  "strength_evidence": false,
+  "release_eligible": false
+}

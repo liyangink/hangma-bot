@@ -1,0 +1,88 @@
+{
+  "blocks": [
+    {
+      "panel_seed": 2026122966,
+      "roots": [
+        3,
+        66
+      ]
+    },
+    {
+      "panel_seed": 2026122967,
+      "roots": [
+        3,
+        66
+      ]
+    }
+  ],
+  "boundary": "纯离线一次改弃机制诊断；非线上策略或发布准入。",
+  "focal_seats": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "guide_full_text_available": false,
+  "guide_version_metadata": 35,
+  "half_hash_parity_rule": "SHA256(ASCII panel_seed|mix|root_index) 最后一个字节 mod 2",
+  "input_identity": {
+    "doc/references/official-guide-version-v35.json": "a98e71a80eab7e073cc5403b27d56d4832f661c0395c081e0625d88a7cbba99a",
+    "review/freematch-deep-dive-20260925/G266-PLAIN-BAOTOU-ENTRY-BRANCH-PREREG-2026-09-29.md": "83432b7323d215b0690271f2edacab30b7ed4a49a3edcdfb8232b154f2fd9518",
+    "review/freematch-deep-dive-20260925/g138_official_plain_baotou_opportunity.py": "2f90594b6171ab1a91284a1111101681444b41f40dd21ef3b07b55fcfb8618da",
+    "review/freematch-deep-dive-20260925/g13_hand_accounting.py": "a8251d9ef5adf93ea887a6d12a72be9399b6a0ff01791a33fec79b383dde6cdc",
+    "review/freematch-deep-dive-20260925/g182_full_table_branch_preflight.py": "fed9bbfd9c23755dcd62b43f9d33315b969eb0ac5e08889d3682d38f6c9f1951",
+    "review/freematch-deep-dive-20260925/g193_early_shape_policy.py": "89c649a93f9c8ec79faf24695585f9298a4a9f6a2d9814dd34f3440e2f3e7060",
+    "review/freematch-deep-dive-20260925/g261_current_rules_panel.py": "5e3dc847d8671586ca3da9812d3bc7e8e26e4ccf0a0e42224160a0de3458c453",
+    "review/freematch-deep-dive-20260925/g266_plain_baotou_entry_branch.py": "7ed8552ad47b359b87ed6b64d15937f3935210d19e05e56dbb83a1b385dc4caa",
+    "review/freematch-deep-dive-20260925/g93_same_hand_branch_preflight.py": "09b1f70bd07cd419d19507448ab1a1842e566e666ef84b4efc112d4d806ea81a",
+    "review/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json": "1012c5d996f0bb913c4a29d36b493ebc5b81e959af496051ba9568ba7bcd08e4",
+    "review/llm-guided-heuristic-route-2026-09-15/tools/sitin_natural_panel.py": "629a758042d9d1b5aeb114a1643e55de4da75b23525d40b9885069486437ac71",
+    "review/llm-guided-heuristic-route-2026-09-15/tools/sitin_stage.py": "266041e546cc1eb230d9fe3251983ab975e35e3d889d48ab4eafbc05923e8013",
+    "review/r18-four-arm-evaluation-2026-09-23/paired_study.py": "5ee4edd881ff650ddcca3742847f04b6ecd4fc1977bafbcaef05eb0dff9ed0d6",
+    "src/hangma_bot/policy/action_value_policy.py": "8adef6cc36f4647ac6cd4d804179677bd1affcd69b774ceb5016c1f6919345d6",
+    "src/hangma_bot/policy/evaluation_v1.py": "b3198fcfc030a235873f67051bdf859f04a97b3290c4bd6783e870b7d7330fe0",
+    "src/hangma_bot/simulation/engine.py": "25cd5d97cdc016d270e74dbbdd7e59e474812ac46d2cd89ae6c187375b7725f5"
+  },
+  "layer_priority": [
+    "B_nonready",
+    "B_ready",
+    "C",
+    "A"
+  ],
+  "mixes": [
+    "H",
+    "M"
+  ],
+  "parent_algorithm_sha256": "a2d9b8af93beabdba75716fccae56b0668a6fd84f0bdce558d2ff3e569443618",
+  "parent_binding": "research_current_rules_not_release_package",
+  "quotas_per_mix": {
+    "A": 4,
+    "B_nonready": 32,
+    "B_ready": 4,
+    "C": 8
+  },
+  "rules_source_hash": "14e670edd631cb91a2c4c31d8131e360e9ebfb2d82d7c9ac9425f01d099e678d",
+  "samples": [
+    "historical",
+    "g266-01",
+    "g266-02",
+    "g266-03",
+    "g266-04",
+    "g266-05",
+    "g266-06",
+    "g266-07",
+    "g266-08"
+  ],
+  "schema": "g266-plain-baotou-entry-branch-manifest/1",
+  "smoke_roots": [
+    1,
+    2
+  ],
+  "versions": {
+    "base_score": 1,
+    "clock_mode": "logical",
+    "rounds_per_game": 8,
+    "ruleset_version": "hangma-mvp-v10-public-counts",
+    "you_cai_bi_kao": false
+  }
+}

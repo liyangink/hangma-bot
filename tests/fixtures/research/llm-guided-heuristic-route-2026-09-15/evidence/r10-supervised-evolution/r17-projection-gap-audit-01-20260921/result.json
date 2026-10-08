@@ -1,0 +1,94 @@
+{
+  "schema": "r17-projection-gap-audit/1",
+  "status": "PASS_PUBLIC_PROGRESS_PROJECTION_SCOPE_FOR_R17_DESIGN",
+  "deduplicated_windows": 226,
+  "tables_run": 0,
+  "model_calls": 0,
+  "counts": {
+    "actions": 1930,
+    "fact_projected_actions": 1930,
+    "progress_edges": 23188,
+    "progress_path_actions": 1918,
+    "shanten_projected_actions": 1930,
+    "terminal_route_actions": 175
+  },
+  "action_type_counts": {
+    "chi": 22,
+    "discard": 1825,
+    "gang": 5,
+    "hu": 12,
+    "pass": 47,
+    "peng": 19
+  },
+  "coverage": {
+    "terminal_route_action_fraction": 0.09067357512953368,
+    "public_progress_action_fraction": 0.9937823834196892,
+    "public_progress_non_hu_fraction": 1.0,
+    "fact_projection_fraction": 1.0,
+    "differentiated_multi_action_window_fraction": 0.9770642201834863
+  },
+  "windows": {
+    "multi_action": 218,
+    "differentiated_public_progress_signature": 213
+  },
+  "progress_edge_distribution": {
+    "per_action_min": 0,
+    "per_action_median": 8.0,
+    "per_action_max": 235,
+    "distinct_tile_per_action_min": 0,
+    "distinct_tile_per_action_median": 8.0,
+    "distinct_tile_per_action_max": 34
+  },
+  "interpretation": {
+    "proved": "现有规则投影已经为全部非胡动作提供至少一条公开一步推进边；其覆盖范围足以进入有界公开自摸路径投影的接口与性能试验",
+    "not_proved": "一步推进边不是摸牌概率、完整未来状态或增强证据；必须由HangmaRules扩展后继叶事实并经完整阶段评价"
+  },
+  "inputs": {
+    "loader": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r16_goal_first_preflight_02.py",
+    "loader_sha256": "2ddaf012fb049bf437735aed0f09d7f112ffe6dc9f6e1436f4c6c741591fd3b9",
+    "panels": [
+      {
+        "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json",
+        "sha256": "ee76e33f10f7468fdc92a815bc4db26c07eb14f8548fe0313b827e6f598fd5f1"
+      },
+      {
+        "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/comparable-shape-second-diagnostic-20260920/panel.json",
+        "sha256": "500a083ee357c143254743ce3c0f8c5f0cbf62542d8eccec149543021c1a8a14"
+      },
+      {
+        "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/discard-shape-mix-diagnostic-20260920/panel.json",
+        "sha256": "50bc3b216ef046e15bd3aca8e0baec6e132492a1768266f0b84e799925ad03da"
+      },
+      {
+        "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/followup-balance-diagnostic-20260920/panel.json",
+        "sha256": "c37456955d49af29f1a60e23cf5d88e006b9498c96275e25f130cf5c43593d03"
+      },
+      {
+        "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/followup-quality-diagnostic-20260920/panel.json",
+        "sha256": "b131000989b903baf9deadfb1d5c5340df9c7ab66ba1be64a22867dd6e35a65a"
+      },
+      {
+        "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/pattern-generalization-diagnostic-v2-20260920/panel.json",
+        "sha256": "6a4f51da6ea4de72517e35f03216713460e8087a6a899360190f6fa9092042a0"
+      },
+      {
+        "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/piao-opportunity-probe-20260920/panel.json",
+        "sha256": "a5780555bfae91f48ccb262ec6f453541a9efd9a7beb6aa4b671ec8a7f21b588"
+      },
+      {
+        "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/real-behavior-panel-v1/panel.json",
+        "sha256": "03fef817e453aca0180d80d77d463607603849877798bff32a563b7fe388d4ff"
+      },
+      {
+        "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route-decision-diagnostic-20260920/panel.json",
+        "sha256": "a2c6d0ac9886473971d2c07bbe830022e1b73c40bfd3331e9ed670428ab4a35f"
+      },
+      {
+        "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json",
+        "sha256": "3de5d32be3da30db882a621040c2a509c2fde3d1908763332d465614dcd198fc"
+      }
+    ]
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false
+}

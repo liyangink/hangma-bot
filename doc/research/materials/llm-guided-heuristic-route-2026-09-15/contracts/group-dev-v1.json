@@ -1,0 +1,172 @@
+{
+  "schema": "sitin-stage-contract/1",
+  "frozen_at": "2026-09-16",
+  "contract_id": "group-dev-v1",
+  "mode": "group_only",
+  "target": {
+    "goal": "group_advance_v1：声明的四人中间阶段完整结束后，本座位按该阶段排名规则进入前二时 U=1，否则 U=0",
+    "verification_ladder": "单组四人 group_round：每阶段 tables_per_group 桌完整桌赛，阶段结束即求值，不进决赛",
+    "why_this_ladder": "v4 合同 §2：现有 sitin_stage --participants 4 按 LADDER 档位直接进入决赛，不能作为 group_advance_v1 的实现；本合同是显式 group-only 阶段入口",
+    "actual_event_parameters": "工程开发场景（每阶段 2 桌与 H/M 对手配置），不声称与正式赛事场次数相同；正式参数到位后新建合同重评"
+  },
+  "objective": {
+    "target_id": "group_advance_v1",
+    "utility": "U = 1{本阶段完整排名 <= 2}",
+    "advance_count": 2,
+    "ranking_keys_declared": ["total_score", "place_points", "god_count", "user_id"],
+    "ranking_keys_offline": ["total_score", "place_points"],
+    "missing_key_policy": "recognition_interval",
+    "interval_algorithm": "按已知 (total_score, place_points) 排序，焦点所在并列块的可能名次区间 [a,b]：a = 严格更高者数 + 1，b = 严格更高者数 + 同块人数；b <= 2 => U=[1,1]；a > 2 => U=[0,0]；其余 [0,1]。识别区间（缺事实造成）与抽样置信区间分开，不得混同",
+    "self_comparison": "双方策略、输入与执行轨迹完全相同且可证明结果相同时，配对差恒为 0；不得用两个独立区间运算把自比较变成 [-1,1]",
+    "auxiliary_reports": [
+      {"id": "positive_net_score", "definition": "P(阶段净积分 > 0)：只报告，不与 U 相加，不作为晋级条件"},
+      {"id": "advance_and_positive", "definition": "P(前二 且 净积分 > 0)：联合事件单独报告，不冒充 U"}
+    ],
+    "not_goal": [
+      "stage_advance_score 旧开发代理分（10×晋级资格阶段数＋决赛名次分）：仅旧记录，新主指标不得读取此常量",
+      "自然桌赛积分作为进入新阶段评估的必须显著为正条件",
+      "E[log2(fan)] 或任何 log 目标冒充期望积分"
+    ],
+    "authority": "review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md §2"
+  },
+  "ladder": [
+    {
+      "min_participants": 4,
+      "stages": [
+        {"name": "开发组", "role": "qualify", "kind": "group_round", "groups": 1,
+         "group_size": 4, "group_advance": 2}
+      ]
+    }
+  ],
+  "void_below": 4,
+  "ladder_downgrade": {
+    "offline_modeled": false,
+    "note": "group-only 单阶段合同：无后续阶段可降档；本键仅为 schema 兼容保留"
+  },
+  "batch": {
+    "table_size": 4,
+    "bye_score": 0,
+    "tables_per_batch": 2,
+    "batches": 1,
+    "games_per_participant_per_batch": 1,
+    "tables_per_batch_rule": "group-only 单组固定 4 人：每批恰好一桌，无轮空",
+    "pairing": "固定四人小组，不重新配桌",
+    "bye_bookkeeping": "不适用：单组无轮空"
+  },
+  "group": {
+    "group_size": 4,
+    "group_advance": 2,
+    "seeding": "固定四人小组（工程开发场景；参赛者身份随合同冻结）",
+    "cross_group_comparison": false,
+    "next_stage_seed_order": "不适用：单组且无下一阶段",
+    "tables_per_group": 2
+  },
+  "final": {
+    "keys": ["total_score"],
+    "overtime_until_unique": true,
+    "overtime_rule": "不适用：group-only 合同无决赛阶段；本键仅为 schema 兼容保留",
+    "overtime_no_place_points": true,
+    "tables_in_final": 1,
+    "max_overtime": 3
+  },
+  "ranking": {
+    "qualify_keys": ["total_score", "place_points", "god_count"],
+    "final_keys": ["total_score"],
+    "place_points_values": [3, 1, -1, -3],
+    "place_points_tie_rule": "本场同分者共享并列名次区间的平均名次分",
+    "place_points_excluded_from_total": true,
+    "tie_fallback": "group_advance_v1 不使用任意排序兜底：缺 god_count 且影响前二边界时输出 U 识别区间，不删根、不补零、不任意排位",
+    "score_reset_per_stage": true,
+    "god_count_offline": "offline_unavailable"
+  },
+  "advance": {
+    "primary": "组内前 2（group_advance_v1 的 U=1 条件）",
+    "backup": "不适用：无候补机制",
+    "reconfirm_each_stage": "不适用：单阶段"
+  },
+  "panel": {
+    "policy_pool": ["weighted_heuristic_v2", "weighted_heuristic_v2_white_guard", "weighted_heuristic_v1"],
+    "opponent_scenarios": {
+      "H": {
+        "description": "三家冻结 V2（weighted_heuristic_v2）",
+        "opponent_policies": ["weighted_heuristic_v2", "weighted_heuristic_v2", "weighted_heuristic_v2"]
+      },
+      "M": {
+        "description": "固定 V2、V2_white_guard、V1 各一家",
+        "opponent_policies": ["weighted_heuristic_v2", "weighted_heuristic_v2_white_guard", "weighted_heuristic_v1"]
+      }
+    },
+    "development_mix": {
+      "H": 0.5,
+      "M": 0.5,
+      "note": "声明的工程混合目标：开发默认两情景等权、每小批均衡配额；H/M 分开报告，不猜官方对手比例；发布结论限定该混合与各分层结果"
+    },
+    "homogeneous": false,
+    "table_runner": "offline.evaluate.drive_match（生产模拟驱动）",
+    "supervision": "sitin_process.run_supervised（进程组终止 + 墙钟上限）",
+    "note": "对手名字只是现有对照身份，强弱未知；面板结论不外推官方对手分布"
+  },
+  "versions": {
+    "ruleset_version": "hangma-mvp-v10-public-counts",
+    "base_score": 1,
+    "you_cai_bi_kao": false,
+    "rounds_per_game": 8,
+    "clock_mode": "logical",
+    "config_fingerprint": "运行时由 sitin_config 计算并写入 run.json"
+  },
+  "seeds": {
+    "panel_seed": 20260916,
+    "derivation": "seed = sha256(panel_seed | 阶段标签 | 场次标签) 前 12 位十六进制",
+    "scenario_id": "s{阶段}t{序号}-{seed}"
+  },
+  "stop": {
+    "max_overtime": 3,
+    "table_timeout_sec": 300.0,
+    "step_limit": 100000,
+    "on_table_failure": "该阶段不可排序并停止：不补零、不静默删行、不继续推进",
+    "on_void": "到位人数少于 4 人时整场作废，不产生名次"
+  },
+  "rule_citations": [
+    {"key": "ranking_keys", "rule": "排名键链 total_score -> place_points -> god_count -> user_id；决赛纯总分并加赛",
+     "file": "doc/references/official-guide-v34-content.txt", "version": "v34", "line": 377,
+     "excerpt": "键序 total_score → place_points → god_count → user_id（字典序兜底），三键独立永不相加"},
+    {"key": "overtime_no_place_points", "rule": "加赛场不产生名次分/白板数",
+     "file": "doc/references/official-guide-v34-content.txt", "version": "v34", "line": 377,
+     "excerpt": "决赛轮纯总得分、任何同分加赛至 1-4 名两两不同，加赛场不产生名次分/白板数"}
+  ],
+  "provenance": {
+    "rule_citations": {"level": "官方已确认", "source": "官方指南 v34 快照行号引文；--check 逐条比对"},
+    "objective": {"level": "工程建议", "source": "SEARCH-SPACE-REDESIGN-2026-09-16.md §2 目标合同"},
+    "target": {"level": "工程建议", "source": "v4 §2 group_advance_v1：前二达标为唯一主目标；正积分另行报告"},
+    "ladder": {"level": "工程建议", "source": "v4 §2 group-only 显式入口（非官方档位）"},
+    "batch.tables_per_batch_rule": {"level": "工程建议", "source": "group-only 单组固定 4 人：每批恰好一桌，无轮空"},
+    "group.group_advance": {"level": "工程建议", "source": "v4 §2：U=1{组内前 2}；官方组内循环场次数未公布，每组 2 桌为工程声明"},
+    "final.overtime_rule": {"level": "工程建议", "source": "group-only 单阶段无决赛；本键仅为 schema 兼容保留"},
+    "ranking.qualify_keys": {"level": "官方已确认", "source": "官方指南 v34 快照第 377 行判定链；group_advance_v1 对缺 god_count 用识别区间，不任意排位"},
+    "advance.primary": {"level": "工程建议", "source": "v4 §2：组内前 2 即 U=1；无候补机制"},
+    "panel.opponent_scenarios": {"level": "工程建议", "source": "v4 §7.1 H/M 两独立情景，等权混合"},
+    "versions.ruleset_version": {"level": "工程建议", "source": "v4 §2：规则版本与冻结配置读取运行时 config"},
+    "seeds.panel_seed": {"level": "工程建议", "source": "v4 §2：种子派生规则可复跑"},
+    "stop.table_timeout_sec": {"level": "工程建议", "source": "v4 §2：工程保护上限；官方未规定离线编排停止条件"}
+  },
+  "unresolved": [
+    {"item": "离线 god_count 不可复现",
+     "status": "open",
+     "basis": "官方 §5.2 白板获取数为平台侧账，离线模拟无权威来源",
+     "impact": "同分并列且影响前二边界时 U 为识别区间 [0,1]；统计同时给目标上下界，留存保守使用差值下界并保留未分辨标记"},
+    {"item": "开发赛制与正式赛事场次数不同",
+     "status": "open",
+     "basis": "每阶段 2 桌与 H/M 对手混合是工程开发场景",
+     "impact": "结论限定声明的工程混合与各分层，不外推未知官方对手；正式参数到位后新建合同重评"},
+    {"item": "rounds_per_game 取 8 为冻结配置示例",
+     "status": "open",
+     "basis": "v4 §2：每桌 Rounds 读取冻结配置，示例沿用 8",
+     "impact": "变更即新实验身份，不拼旧结果"}
+  ],
+  "identity": {
+    "required_fields": ["objective_source_digest", "rounds_per_table", "base_score", "ruleset_version",
+                        "ranking_policy", "opponent_pool", "seating_plan", "stage_projection",
+                        "tables_per_group", "development_mix"],
+    "change_policy": "目标函数源码摘要、赛制、每桌单局数、底分、规则配置、排序与未知处理、对手池、座位方案、阶段信息投影方式——任一变化即新实验身份（evaluation_id），不能拼接旧结果"
+  }
+}

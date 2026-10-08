@@ -1,0 +1,51 @@
+{
+  "schema": "r14-hard-sol-max-m-failure-diagnosis-summary/1",
+  "stages": [
+    {
+      "arm": "baseline",
+      "requests": 623,
+      "tables_reproduced": [
+        true,
+        true
+      ],
+      "focal_stage_score": 89,
+      "u_low": 1.0,
+      "u_high": 1.0
+    },
+    {
+      "arm": "candidate",
+      "requests": 616,
+      "tables_reproduced": [
+        true,
+        true
+      ],
+      "focal_stage_score": -23,
+      "u_low": 0.0,
+      "u_high": 0.0
+    }
+  ],
+  "counts": {
+    "preferred_changed": 38,
+    "trajectory:baseline": 623,
+    "trajectory:candidate": 616,
+    "transition:chi->pass": 2,
+    "transition:discard->discard": 35,
+    "transition:peng->pass": 1,
+    "views": 1239
+  },
+  "changed_candidate_basis": {
+    "direct_common_efficiency": 38
+  },
+  "changed_decisions": 38,
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 4.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "selection_eligible": false,
+  "confirmation_eligible": false,
+  "interpretation": "同一公开请求上的行为差异用于作者反馈；单根结果不标注动作对错"
+}

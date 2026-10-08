@@ -1,0 +1,51 @@
+{
+  "schema": "r12-public-stage-value-pilot-manifest/1",
+  "created_at_utc": "2026-09-21T07:36:17Z",
+  "plan": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/R12-PUBLIC-STAGE-VALUE-EVOLUTION-PLAN-2026-09-21.md",
+  "plan_sha256": "1cc174ce2566af72cccab10c3b0188ba6525806761c1d245393b61e35de2573b",
+  "source_dataset": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/discard-value-scaled-teacher-01-20260921/dataset.json",
+  "source_dataset_sha256": "cf99b46564e8f2352b8f2c196ea675d36bf627eabb51c410e5f1de30aa06b345",
+  "source_result": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/discard-value-scaled-teacher-01-20260921/result.json",
+  "source_result_sha256": "8dfe5598fb4e2112038099b4ce3f38980c27e6625d138922d14ac6a62aca268a",
+  "source_raw": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/discard-value-scaled-teacher-01-20260921/raw",
+  "source_raw_note": "原始续局已在本地冻结；本批另存公开特征和绝对标签的紧凑数据集",
+  "panel_seeds": [
+    2026092340,
+    2026092341,
+    2026092342,
+    2026092343
+  ],
+  "mixes": [
+    "H",
+    "M"
+  ],
+  "rows": 128,
+  "rollouts_per_row": 16,
+  "label": "稳定V2首选动作在16个预登记未来顺序下的焦点剩余阶段积分均值",
+  "features": "PlayerObservation+赛事公开处境+HangmaRules事实+V2首选动作；不含seed/mix/来源/未来/隐藏世界",
+  "outer_split": "leave-one-panel-seed-out",
+  "selection": "每个外折在其三个训练seed上再做leave-one-seed-out；按合并RMSE比常数基线最低选择，完全同分按规格名",
+  "model_specs": [
+    "ridge-l0.001",
+    "ridge-l0.01",
+    "ridge-l0.1",
+    "tree-d1-l12",
+    "tree-d2-l12",
+    "tree-d3-l12",
+    "tree-d2-l24",
+    "gam-f8-p2-s0.25",
+    "gam-f12-p2-s0.20",
+    "gam-f16-p3-s0.15"
+  ],
+  "continue_gate": {
+    "pooled_rmse_reduction_min": 0.1,
+    "pooled_spearman_min": 0.2,
+    "spearman_by_mix_min": 0.0,
+    "seeds_nonworse_than_constant_min": 3
+  },
+  "tables_full_new": 0,
+  "llm_calls": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

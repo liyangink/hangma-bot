@@ -6,10 +6,10 @@
 
 | 任务 | 首要入口 |
 | --- | --- |
-| 了解当前候选、进化停线与接线证据 | [研究证据索引](review/INDEX.md) |
+| 了解当前候选、进化停线与接线证据 | [研究证据索引](doc/research/INDEX.md) |
 | 核对策略名称与可配置候选 | [算法路线与候选命名](doc/algorithm-lineage-names.md)、[策略目录](doc/implementation/strategy-catalog.md) |
 | 启动测试房、测试赛事或正式赛事 | [参赛说明](doc/participate-quickstart.md)、[运行与赛后操作](doc/operations.md#2-启动测试房间与赛事) |
-| 启动或暂停自由赛 watchdog | [当前 G37-RF1 独立根续赛](review/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)、[通用盯盘操作](doc/auto-match-watchdog.md) |
+| 启动或暂停自由赛 watchdog | [当前 G37-RF1 独立根续赛](doc/research/materials/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)、[通用盯盘操作](doc/auto-match-watchdog.md) |
 | 观测、审计与赛后处理 | [本地观测](doc/operations.md#3-持续观测与定位)、[完赛后下载与复核](doc/operations.md#4-完赛后下载封存与复核) |
 | 修改模块或接口 | [架构与运行流程](doc/architecture.md)、[冻结接口协议](doc/implementation/interface-contracts.md) |
 
@@ -109,7 +109,7 @@ cp configs/test-room.example.json .private/test-room.json
 
 ## 文档
 
-当前工作按上方任务表进入。[统一术语表](./UBIQUITOUS_LANGUAGE.md)、[架构与运行流程](./doc/architecture.md)、[接口协议](./doc/implementation/interface-contracts.md)及[官方平台 API（v34 全文基线）](./doc/official-platform-api-v2.md)用于核对实现。早期 MVP 计划、并行施工方案和按日期命名的交接报告保留为历史设计与证据，从[实施导航](./doc/implementation/README.md)或[研究证据索引](review/INDEX.md)按需查阅。
+当前工作按上方任务表进入。[统一术语表](./UBIQUITOUS_LANGUAGE.md)、[架构与运行流程](./doc/architecture.md)、[接口协议](./doc/implementation/interface-contracts.md)及[官方平台 API（v34 全文基线）](./doc/official-platform-api-v2.md)用于核对实现。早期 MVP 计划、并行施工方案和按日期命名的交接报告保留为历史设计与证据，从[实施导航](./doc/implementation/README.md)或[研究证据索引](doc/research/INDEX.md)按需查阅。
 
 ## 策略选用
 

@@ -1,0 +1,67 @@
+{
+  "schema": "r10-av1-action-value-dataset-result/1",
+  "status": "PASS_AV1_1_DATASET_FOR_GROUPED_MODELING",
+  "manifest_sha256": "f446d9f0827cf7facb8529dcd57b7d11799a1355bd2c4202b7e0a7a20566a42a",
+  "dataset_sha256": "35a9bffac10100c96acf6b2f16d609b3a1d12da30793b3fe35f86dc6fcad411b",
+  "raw_index_sha256": "5154521f7cb6936b54fd2207c71945aae71e2f2a59881b3a4ac31a0d3dac4826",
+  "summary": {
+    "shards": [
+      {
+        "panel_seed": 2026092310,
+        "mix": "H",
+        "attempts": 63,
+        "valid_hits": 32,
+        "invalid_hits": 0,
+        "complete": true
+      },
+      {
+        "panel_seed": 2026092310,
+        "mix": "M",
+        "attempts": 56,
+        "valid_hits": 32,
+        "invalid_hits": 0,
+        "complete": true
+      },
+      {
+        "panel_seed": 2026092311,
+        "mix": "H",
+        "attempts": 62,
+        "valid_hits": 32,
+        "invalid_hits": 0,
+        "complete": true
+      },
+      {
+        "panel_seed": 2026092311,
+        "mix": "M",
+        "attempts": 62,
+        "valid_hits": 32,
+        "invalid_hits": 0,
+        "complete": true
+      }
+    ],
+    "rows": 128,
+    "action_families": {
+      "chi": 82,
+      "peng": 46
+    },
+    "primary_u_low_delta_signs": {
+      "positive": 10,
+      "zero": 106,
+      "negative": 12
+    },
+    "auxiliary_stage_score_delta_signs": {
+      "positive": 50,
+      "zero": 40,
+      "negative": 38
+    },
+    "auxiliary_mean": 3.71875,
+    "auxiliary_median": 0.0,
+    "mechanics_ok": true,
+    "coverage_ok": true,
+    "full_or_partial_tables": 512,
+    "strength_claim": false
+  },
+  "next": "按SourceRoot和panel_seed分组交叉验证低容量动作条件价值模型；训练池不得兼作冻结动作验证",
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

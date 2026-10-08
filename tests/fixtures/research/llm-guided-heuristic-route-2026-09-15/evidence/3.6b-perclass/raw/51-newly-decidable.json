@@ -1,0 +1,351 @@
+{
+  "schema": "sitin-newly-decidable/1",
+  "panel_id": "panel-canonical-20260910",
+  "panel_fingerprint": "c1d3155b6e981b921cd9a1d50a3f4d90ba5b80e5df20fdf2f731f4485224c5db",
+  "manifest_sha256": "30332d18fb8db20c49cb718957c69bc52be44401c37f96f9c5e8051026abce11",
+  "panel_rows": 359262,
+  "record_layer_pair": [
+    "raw",
+    "filled"
+  ],
+  "counters": {
+    "rows": 359262,
+    "raw_degraded": 21253,
+    "filled_degraded": 21244,
+    "newly_scored": 14,
+    "reverse_excluded": 5,
+    "both_degraded": 21239,
+    "rows_changed_value": 26,
+    "still_unknown_rows": 5,
+    "newly_attributable": 21,
+    "downgraded_to_unknown": 5,
+    "raw_chain_usable": 547,
+    "filled_chain_usable": 563,
+    "raw_chain_piao_known": 359241,
+    "filled_chain_piao_known": 359257
+  },
+  "reconciliation": {
+    "newly_attributable": {
+      "value": 21,
+      "basis": "行侧：raw observation.chain_piao is None ∧ filled is not None（记录层把未知补成值）"
+    },
+    "newly_scored": {
+      "value": 14,
+      "basis": "分母侧（**本包唯一使用的口径**）：raw 被规则层降级排除 ∧ filled 进入计分；由引擎判据（RuleCompleteness + 合法候选）现算，不是行侧差值"
+    },
+    "still_unknown_rows": {
+      "value": 5,
+      "basis": "filled 视图下 attribution.status=unknown 且 chain_count>0（不可归因 ⇒ 记 unknown，逐行列明，不并入分母）"
+    },
+    "net_usable_window_delta": {
+      "value": 16,
+      "basis": "filled_chain_usable − raw_chain_usable（链族可用窗口差）"
+    },
+    "attributable_but_excluded": {
+      "value": 7,
+      "basis": "newly_attributable − newly_scored：已可归因但仍被**其他规则**排除，没有进入分母"
+    },
+    "reverse_excluded": {
+      "value": 5,
+      "basis": "记录层归一化把 live 值降级为未知、且在引擎判据下由可计分变为被排除的窗口数（反向变化，不隐藏）"
+    },
+    "net_scored_delta": {
+      "value": 9,
+      "basis": "newly_scored − reverse_excluded（引擎判据下排除窗口数的净变化）"
+    },
+    "identity_checks": {
+      "newly_attributable_minus_newly_scored_equals_attributable_but_excluded": true,
+      "degraded_drop_equals_net_newly_scored": true,
+      "net_usable_delta_equals_known_delta": true
+    },
+    "cross_package": {
+      "peer_package": "corpus（3.6d）",
+      "peer_field": "canonical_panel.net_usable_window_delta（对端 F13/F7 后的现行键名；旧名 newly_decidable_windows 已在对端删除）",
+      "peer_comparison": {
+        "peer_path": "review/llm-guided-heuristic-route-2026-09-15/evidence/3.6d-corpus/corpus-audit.json",
+        "peer_sha256": "b67bdeb6840c9bf8e62d01f0134e2fee4a12d593a1f2464372d8293996329945",
+        "available": true,
+        "peer_keys_present": [
+          "attributable_but_excluded",
+          "net_scored_delta",
+          "net_usable_window_delta",
+          "newly_attributable",
+          "newly_scored",
+          "reverse_excluded",
+          "still_unknown_rows"
+        ],
+        "peer_values": {
+          "newly_attributable": 21,
+          "newly_scored": 14,
+          "attributable_but_excluded": 7,
+          "reverse_excluded": 5,
+          "still_unknown_rows": 5,
+          "net_scored_delta": 9,
+          "net_usable_window_delta": 16
+        },
+        "our_values": {
+          "newly_attributable": 21,
+          "newly_scored": 14,
+          "attributable_but_excluded": 7,
+          "reverse_excluded": 5,
+          "still_unknown_rows": 5,
+          "net_scored_delta": 9,
+          "net_usable_window_delta": 16
+        },
+        "agreement": {
+          "newly_attributable": true,
+          "newly_scored": true,
+          "attributable_but_excluded": true,
+          "reverse_excluded": true,
+          "still_unknown_rows": true,
+          "net_scored_delta": true,
+          "net_usable_window_delta": true
+        },
+        "all_agree": true,
+        "note": "逐项相等 = 两包在同一键名同一判据下同值；不等时以各自 basis 为准，不得互相覆盖。旧名 newly_decidable_windows 在对端已删除。"
+      },
+      "relation": "**不是同一个量**：对端 net_usable_window_delta = 净已知差 / 链族可用窗口差；本包的 newly_scored 是**跨过分母边界**、由引擎判据现算的窗口数。引用时必须写明用哪一个；本包以分母口径 newly_scored 为准。",
+      "aligned_keys": {
+        "peer_path": "evidence/3.6d-corpus/corpus-audit.json → canonical_panel",
+        "newly_attributable": 21,
+        "newly_scored": 14,
+        "attributable_but_excluded": 7,
+        "reverse_excluded": 5,
+        "still_unknown_rows": 5,
+        "net_scored_delta": 9,
+        "net_usable_window_delta": 16,
+        "keys_identical_to_peer": true
+      }
+    },
+    "note": "四个量各自带判据；newly_attributable − newly_scored = 7 属「已可归因但仍被其他规则排除」，不得并入分母，也不得与 16 混用。"
+  },
+  "newly_scored_samples": [
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T084839Z-61255059/derived/3bbbccc485974983b1be91e86c0aa535/decisions.jsonl",
+      "line": 1054,
+      "decision_id": "dec-c4aec95d769a419082def897b641c056",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T084839Z-61255059/derived/3bbbccc485974983b1be91e86c0aa535/decisions.jsonl",
+      "line": 1375,
+      "decision_id": "dec-544e1c11759d4ffaaed7228633caa649",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T084839Z-61255059/derived/3bbbccc485974983b1be91e86c0aa535/decisions.jsonl",
+      "line": 3541,
+      "decision_id": "dec-c89e3ee0f0524954843f71aa943af959",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T084839Z-61255059/derived/3bbbccc485974983b1be91e86c0aa535/decisions.jsonl",
+      "line": 4285,
+      "decision_id": "dec-6188a04976a246cc8906156aa317e5be",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T084839Z-61255059/derived/3bbbccc485974983b1be91e86c0aa535/decisions.jsonl",
+      "line": 4678,
+      "decision_id": "dec-0a39d54a0d4548709cfd2ccf68cea8cf",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T084839Z-61255059/derived/3bbbccc485974983b1be91e86c0aa535/decisions.jsonl",
+      "line": 5208,
+      "decision_id": "dec-32cb3a22a74940e39a0fab637ba4ebc2",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T084839Z-61255059/derived/3bbbccc485974983b1be91e86c0aa535/decisions.jsonl",
+      "line": 5430,
+      "decision_id": "dec-064c9c9542de4d8898320456fc55a3e0",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T085616Z-1de58bc5/derived/ffa38ac0b3374e12b34ba8e8154f9081/decisions.jsonl",
+      "line": 1054,
+      "decision_id": "dec-c4aec95d769a419082def897b641c056",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T085616Z-1de58bc5/derived/ffa38ac0b3374e12b34ba8e8154f9081/decisions.jsonl",
+      "line": 1375,
+      "decision_id": "dec-544e1c11759d4ffaaed7228633caa649",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T085616Z-1de58bc5/derived/ffa38ac0b3374e12b34ba8e8154f9081/decisions.jsonl",
+      "line": 3541,
+      "decision_id": "dec-c89e3ee0f0524954843f71aa943af959",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T085616Z-1de58bc5/derived/ffa38ac0b3374e12b34ba8e8154f9081/decisions.jsonl",
+      "line": 4285,
+      "decision_id": "dec-6188a04976a246cc8906156aa317e5be",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T085616Z-1de58bc5/derived/ffa38ac0b3374e12b34ba8e8154f9081/decisions.jsonl",
+      "line": 4678,
+      "decision_id": "dec-0a39d54a0d4548709cfd2ccf68cea8cf",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T085616Z-1de58bc5/derived/ffa38ac0b3374e12b34ba8e8154f9081/decisions.jsonl",
+      "line": 5208,
+      "decision_id": "dec-32cb3a22a74940e39a0fab637ba4ebc2",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    },
+    {
+      "file": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T085616Z-1de58bc5/derived/ffa38ac0b3374e12b34ba8e8154f9081/decisions.jsonl",
+      "line": 5430,
+      "decision_id": "dec-064c9c9542de4d8898320456fc55a3e0",
+      "chain_count": 1,
+      "live_chain_piao": null,
+      "filled_chain_piao": 0,
+      "attribution_status": "attributed",
+      "rungs": [
+        "own_river_without_white"
+      ]
+    }
+  ],
+  "still_unknown_rows": [
+    {
+      "file": "artifacts/sessions/auto-match-a_632c4abe5dd0/postgame/20260910T020532Z-0209f3b5/derived/ed5239ee667e403ebb6917e1ac8c5635/decisions.jsonl",
+      "line": 1377,
+      "decision_id": "dec-0bee05c120ef436c98e207184f6806d6",
+      "chain_count": 1,
+      "live_value": 1,
+      "piao": null,
+      "reason": "历史后缀不连续（序号缺口），无法定位链动作",
+      "rungs": [],
+      "witness_seqs": []
+    },
+    {
+      "file": "artifacts/sessions/auto-match-a_632c4abe5dd0/postgame/20260910T020532Z-0209f3b5/derived/ed5239ee667e403ebb6917e1ac8c5635/decisions.jsonl",
+      "line": 1378,
+      "decision_id": "dec-280d5b23c30947b3ab4562dc4fc3fc6a",
+      "chain_count": 1,
+      "live_value": 1,
+      "piao": null,
+      "reason": "历史含非被动 timeout（无法排除自动动作），无法定位链动作",
+      "rungs": [],
+      "witness_seqs": []
+    },
+    {
+      "file": "artifacts/sessions/auto-match-a_632c4abe5dd0/postgame/20260910T020532Z-0209f3b5/derived/ed5239ee667e403ebb6917e1ac8c5635/decisions.jsonl",
+      "line": 1381,
+      "decision_id": "dec-3d51aa8ea78546d98cec582dc78d9c53",
+      "chain_count": 1,
+      "live_value": 1,
+      "piao": null,
+      "reason": "历史后缀不连续（序号缺口），无法定位链动作",
+      "rungs": [],
+      "witness_seqs": []
+    },
+    {
+      "file": "artifacts/sessions/auto-match-a_632c4abe5dd0/postgame/20260910T020532Z-0209f3b5/derived/ed5239ee667e403ebb6917e1ac8c5635/decisions.jsonl",
+      "line": 1390,
+      "decision_id": "dec-8fa508aaa9c84b37ba63b58003e6829f",
+      "chain_count": 1,
+      "live_value": 1,
+      "piao": null,
+      "reason": "历史含非被动 timeout（无法排除自动动作），无法定位链动作",
+      "rungs": [],
+      "witness_seqs": []
+    },
+    {
+      "file": "artifacts/sessions/auto-match-a_632c4abe5dd0/postgame/20260910T020532Z-0209f3b5/derived/ed5239ee667e403ebb6917e1ac8c5635/decisions.jsonl",
+      "line": 1405,
+      "decision_id": "dec-e9b697744cb548688e99d2eb30eacc8f",
+      "chain_count": 1,
+      "live_value": 1,
+      "piao": null,
+      "reason": "历史含非被动 timeout（无法排除自动动作），无法定位链动作",
+      "rungs": [],
+      "witness_seqs": []
+    }
+  ],
+  "elapsed_sec": 429.4,
+  "note": "newly_scored 的窗口在 canonical 口径下**计入分母**，但必须**单列计数**；raw 视图的数字只能作为前态对照，不得与 filled 视图混用分母。旧名 newly_decidable 已删除（它与净差 16 是两个量）。"
+}

@@ -1,0 +1,72 @@
+{
+  "candidate_evaluated_during_generation": false,
+  "cases": 96,
+  "counts": [
+    {
+      "count": 24,
+      "opportunity_stratum": "four_wealth_keep",
+      "split": "development"
+    },
+    {
+      "count": 24,
+      "opportunity_stratum": "three_wealth_keep",
+      "split": "development"
+    },
+    {
+      "count": 24,
+      "opportunity_stratum": "three_wealth_piao",
+      "split": "development"
+    },
+    {
+      "count": 8,
+      "opportunity_stratum": "four_wealth_keep",
+      "split": "hidden"
+    },
+    {
+      "count": 8,
+      "opportunity_stratum": "three_wealth_keep",
+      "split": "hidden"
+    },
+    {
+      "count": 8,
+      "opportunity_stratum": "three_wealth_piao",
+      "split": "hidden"
+    }
+  ],
+  "generation_work": {
+    "wealth_3": {
+      "analyzed_hand_draw_states": 329,
+      "hand_attempts": 38754,
+      "valid_baotou_hands": 64
+    },
+    "wealth_4": {
+      "analyzed_hand_draw_states": 435,
+      "hand_attempts": 1588,
+      "valid_baotou_hands": 39
+    }
+  },
+  "generator_seed": 202609220503,
+  "generator_sha256": "16093b32d327aec726e1d6b52bf7a532745ff792869f939c97cfcef0dadf2130",
+  "hidden_quotas": {
+    "four_wealth_keep": 8,
+    "three_wealth_keep": 8,
+    "three_wealth_piao": 8
+  },
+  "limitations": [
+    "真值是下一次本人摸牌立即胡的条件代理，配对反事实校准后才能开启隐藏准入",
+    "不覆盖牌局中段、杠链、鸣牌或赛事处境",
+    "hidden 只允许冻结候选与反事实方向后的一次性准入程序读取"
+  ],
+  "old_bank_overlap": 0,
+  "oracle_version": "hangma-one-self-draw-score-delta/1",
+  "quotas": {
+    "four_wealth_keep": 32,
+    "three_wealth_keep": 32,
+    "three_wealth_piao": 32
+  },
+  "rules_hash": "3d28709994ce32d75594af53822e82a2b76f3b5b54b6ecc4e7006827c998a0af",
+  "schema": "r18-wealth-gap-bank-manifest/1",
+  "scope": "三/四财神、庄家起手首次摸牌、无副露无牌河；96个唯一13张手牌",
+  "split_rule": "每分层按(seed, reachability_witness_sha256)哈希排序取8个hidden；候选评分前冻结",
+  "unique_hand13": 96
+}

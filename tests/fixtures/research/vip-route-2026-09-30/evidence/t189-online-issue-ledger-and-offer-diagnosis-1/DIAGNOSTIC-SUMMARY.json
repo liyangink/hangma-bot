@@ -1,0 +1,3476 @@
+{
+  "complete": true,
+  "files": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t189-online-issue-ledger-and-offer-diagnosis-1/diagnostic/CLOSED.json": {
+      "bytes": 2369,
+      "sha256": "3704ff20ceb445de054592f651f48246bba5eec0031eb4a1afcfae4e70be254e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t189-online-issue-ledger-and-offer-diagnosis-1/diagnostic/rows.jsonl": {
+      "bytes": 148813,
+      "sha256": "81cc4be58b39c848fa25b06957953090faa3a7ffbc8bb5e7f4e79986d5c7a97b"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t189-online-issue-ledger-and-offer-diagnosis-1/diagnostic/views.jsonl.gz": {
+      "bytes": 73700,
+      "sha256": "8b8f416dc63c9cb1e0874c5c176bac845f3fd7592c7ffc623d7dcb2b10aa8206"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t189-online-issue-ledger-and-offer-diagnosis-1/summarize_diagnostic-v2.py": {
+      "bytes": 5343,
+      "sha256": "d50c1d06ef69c3821da4f6cf844dd76f1e20522401f0da4f4cc8564224b50485"
+    }
+  },
+  "findings": [
+    {
+      "best_continue": "discard:7w",
+      "chosen": "discard:7w",
+      "continue_minus_hu": 0.09901264047221758,
+      "continue_root_kind": "wait",
+      "current_hu_settlement": {
+        "details": [
+          "平胡",
+          "爆头"
+        ],
+        "fan": 2,
+        "score_delta": [
+          20,
+          -16,
+          -2,
+          -2
+        ]
+      },
+      "full_trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "diagnostic_offer_full": [
+          0.09901264047221714,
+          "new_white_gap",
+          0.0,
+          0.0,
+          0.8170594837261507,
+          0.0,
+          0.9035903196876385,
+          1.0026029601598556,
+          0.6603773584905661,
+          0.0,
+          1.0026029601598556,
+          0.0,
+          1.6629803186504217
+        ],
+        "diagnostic_routes": [
+          [
+            0,
+            1,
+            3.76957928802589,
+            91.0,
+            32,
+            0,
+            3.76957928802589
+          ],
+          null
+        ],
+        "diagnostic_target_full": [
+          1,
+          "standard",
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          4.344252743188165,
+          8.113832031214056
+        ],
+        "joint": [
+          5.619,
+          8.114,
+          "completion_budget",
+          1.85,
+          0.0
+        ],
+        "offer": [
+          0.099,
+          "new_white_gap",
+          0.0,
+          0.0,
+          0.817,
+          0.0,
+          1.663
+        ],
+        "pay": [
+          2,
+          4.717,
+          32,
+          91.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          34.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          0,
+          0,
+          0,
+          1.0
+        ],
+        "target": [
+          1,
+          "standard",
+          1,
+          0,
+          1,
+          4.344,
+          8.114
+        ]
+      },
+      "hu_score": 14.716981132075471,
+      "label": "joint-development:040:0",
+      "natural_preparation": {
+        "meld_set_count": 2,
+        "natural_counts33": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 0,
+        "natural_draw_lower_bound": 0,
+        "natural_need_improvement_codes": [],
+        "sets_left": 2,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 6,
+        "whites_held": 1
+      },
+      "natural_strength_or_single_action_cause": false,
+      "next_draw_fan_values": [
+        2
+      ],
+      "next_draw_payment_rows": 64,
+      "next_draw_payments_above_current": 0,
+      "next_draw_payments_analyzed": true,
+      "public_visible_state": {
+        "dealer_seat": 1,
+        "discards": [
+          [
+            "南",
+            "7b",
+            "东",
+            "8w",
+            "3t",
+            "东",
+            "4b"
+          ],
+          [
+            "6w",
+            "中",
+            "北",
+            "4b",
+            "北",
+            "西",
+            "9t",
+            "2b"
+          ],
+          [
+            "东",
+            "北",
+            "南",
+            "9w",
+            "2b",
+            "5w",
+            "8t"
+          ],
+          [
+            "7w",
+            "北",
+            "南",
+            "西",
+            "1b",
+            "1b",
+            "5b"
+          ]
+        ],
+        "drawn_tile": "7w",
+        "hand_counts": [
+          8,
+          10,
+          10,
+          13
+        ],
+        "melds": [
+          [
+            {
+              "from_seat": 3,
+              "kind": "chi",
+              "tiles": [
+                "6w",
+                "7w",
+                "8w"
+              ]
+            },
+            {
+              "from_seat": 1,
+              "kind": "peng",
+              "tiles": [
+                "9t",
+                "9t",
+                "9t"
+              ]
+            }
+          ],
+          [
+            {
+              "from_seat": 0,
+              "kind": "chi",
+              "tiles": [
+                "6b",
+                "7b",
+                "8b"
+              ]
+            }
+          ],
+          [
+            {
+              "from_seat": 1,
+              "kind": "chi",
+              "tiles": [
+                "5w",
+                "6w",
+                "7w"
+              ]
+            }
+          ],
+          []
+        ],
+        "my_hand": [
+          "8b",
+          "8t",
+          "7t",
+          "7b",
+          "白",
+          "6b",
+          "9t"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 58,
+        "seat": 0
+      },
+      "qualification_unknown_codes": [],
+      "selected_target": {
+        "conditional_need_improvement_codes": [],
+        "family": "standard",
+        "natural_need": 0,
+        "requires_terminal_draw": true,
+        "retained_whites": 1,
+        "target_natural_discard_lower_bound": 0,
+        "target_natural_draw_lower_bound": 0,
+        "target_natural_size": 6,
+        "target_stage": "waiting_predecessor",
+        "target_white_discard_lower_bound": 0,
+        "white_used": 0,
+        "witness": null,
+        "witness_status": "distance_only"
+      },
+      "view_sha256": "0a744c45a48728314f7e321a8a427f8ace6fa0e2593a1f33493cf52cf3ac9ebf"
+    },
+    {
+      "best_continue": "discard:北",
+      "chosen": "discard:北",
+      "continue_minus_hu": 0.46552668118357055,
+      "continue_root_kind": "wait",
+      "current_hu_settlement": {
+        "details": [
+          "平胡",
+          "爆头"
+        ],
+        "fan": 2,
+        "score_delta": [
+          -2,
+          -16,
+          20,
+          -2
+        ]
+      },
+      "full_trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "diagnostic_offer_full": [
+          0.4655266811835699,
+          "held_white_release",
+          0.07350287120590647,
+          0.0,
+          0.7738579828132066,
+          0.0,
+          1.6094401747564724,
+          2.0749668559400423,
+          1.6037735849056607,
+          0.0,
+          2.0749668559400423,
+          3.678740440845703,
+          1.237986744301325
+        ],
+        "diagnostic_routes": [
+          [
+            0,
+            1,
+            3.505249679897567,
+            59.0,
+            29,
+            0,
+            3.505249679897567
+          ],
+          [
+            3,
+            4,
+            2.0098522167487682,
+            17.0,
+            10,
+            0,
+            -8.19014778325123
+          ]
+        ],
+        "diagnostic_target_full": [
+          3,
+          "standard",
+          3,
+          2,
+          1,
+          3,
+          0,
+          2,
+          3,
+          6.441597723211562,
+          9.94684740310913
+        ],
+        "joint": [
+          5.133,
+          9.947,
+          "completion_budget",
+          1.628,
+          0.0
+        ],
+        "offer": [
+          0.466,
+          "held_white_release",
+          0.074,
+          0.0,
+          0.774,
+          3.679,
+          1.238
+        ],
+        "pay": [
+          2,
+          4.783,
+          29,
+          59.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          34.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          2,
+          0,
+          3,
+          0.61
+        ],
+        "target": [
+          3,
+          "standard",
+          3,
+          2,
+          3,
+          6.442,
+          9.947
+        ]
+      },
+      "hu_score": 14.716981132075471,
+      "label": "development-stage2:015:2",
+      "natural_preparation": {
+        "meld_set_count": 0,
+        "natural_counts33": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 0,
+        "natural_draw_lower_bound": 2,
+        "natural_need_improvement_codes": [
+          "5w",
+          "8w",
+          "7t"
+        ],
+        "sets_left": 4,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 12,
+        "whites_held": 3
+      },
+      "natural_strength_or_single_action_cause": false,
+      "next_draw_fan_values": [
+        2,
+        4
+      ],
+      "next_draw_payment_rows": 58,
+      "next_draw_payments_above_current": 2,
+      "next_draw_payments_analyzed": true,
+      "public_visible_state": {
+        "dealer_seat": 1,
+        "discards": [
+          [
+            "2w",
+            "5b",
+            "7t",
+            "9w",
+            "6w",
+            "6t",
+            "北",
+            "2w",
+            "9b",
+            "中",
+            "3w",
+            "5w",
+            "9t"
+          ],
+          [
+            "9t",
+            "2t",
+            "发",
+            "3w",
+            "9t",
+            "9w",
+            "1t",
+            "北",
+            "中",
+            "北",
+            "6w",
+            "1b",
+            "2b",
+            "5b"
+          ],
+          [
+            "2t",
+            "发",
+            "9t",
+            "9w",
+            "2w",
+            "4w",
+            "9w",
+            "东",
+            "1b",
+            "5b",
+            "5b",
+            "中",
+            "东"
+          ],
+          [
+            "1t",
+            "南",
+            "4w",
+            "6b",
+            "3b",
+            "6t",
+            "8w",
+            "8t",
+            "5w",
+            "1t",
+            "8w",
+            "1w",
+            "3w"
+          ]
+        ],
+        "drawn_tile": "北",
+        "hand_counts": [
+          4,
+          7,
+          14,
+          13
+        ],
+        "melds": [
+          [
+            {
+              "from_seat": 3,
+              "kind": "chi",
+              "tiles": [
+                "1t",
+                "2t",
+                "3t"
+              ]
+            },
+            {
+              "from_seat": 3,
+              "kind": "peng",
+              "tiles": [
+                "南",
+                "南",
+                "南"
+              ]
+            },
+            {
+              "from_seat": 3,
+              "kind": "chi",
+              "tiles": [
+                "6b",
+                "7b",
+                "8b"
+              ]
+            }
+          ],
+          [
+            {
+              "from_seat": 0,
+              "kind": "chi",
+              "tiles": [
+                "4b",
+                "5b",
+                "6b"
+              ]
+            },
+            {
+              "from_seat": 0,
+              "kind": "chi",
+              "tiles": [
+                "5t",
+                "6t",
+                "7t"
+              ]
+            }
+          ],
+          [],
+          []
+        ],
+        "my_hand": [
+          "2b",
+          "3b",
+          "白",
+          "白",
+          "7w",
+          "白",
+          "6w",
+          "7b",
+          "8t",
+          "6t",
+          "6b",
+          "1b",
+          "8b"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 35,
+        "seat": 2
+      },
+      "qualification_unknown_codes": [],
+      "selected_target": {
+        "conditional_need_improvement_codes": [
+          "5w",
+          "8w",
+          "7t"
+        ],
+        "family": "standard",
+        "natural_need": 2,
+        "requires_terminal_draw": true,
+        "retained_whites": 3,
+        "target_natural_discard_lower_bound": 0,
+        "target_natural_draw_lower_bound": 2,
+        "target_natural_size": 12,
+        "target_stage": "waiting_predecessor",
+        "target_white_discard_lower_bound": 2,
+        "white_used": 0,
+        "witness": null,
+        "witness_status": "distance_only"
+      },
+      "view_sha256": "a3a41b4e649a8fe39465648186b62e07652e709ffcd197f75543abdad7365111"
+    },
+    {
+      "best_continue": "discard:5b",
+      "chosen": "hu",
+      "continue_minus_hu": -1.091381225722035,
+      "continue_root_kind": "wait",
+      "current_hu_settlement": {
+        "details": [
+          "平胡",
+          "爆头"
+        ],
+        "fan": 2,
+        "score_delta": [
+          48,
+          -16,
+          -16,
+          -16
+        ]
+      },
+      "full_trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "diagnostic_offer_full": [
+          -1.0913812257220363,
+          "new_white_gap",
+          0.0,
+          0.0,
+          0.8245614035087719,
+          0.0,
+          1.1580629074037176,
+          0.06668168168168132,
+          1.4000000000000001,
+          0.0,
+          0.06668168168168132,
+          0.0,
+          1.4666816816816814
+        ],
+        "diagnostic_routes": [
+          [
+            0,
+            1,
+            3.808540218470705,
+            94.0,
+            34,
+            0,
+            3.808540218470705
+          ],
+          null
+        ],
+        "diagnostic_target_full": [
+          1,
+          "standard",
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          6.978843243243242,
+          10.787383461713947
+        ],
+        "joint": [
+          7.619,
+          10.787,
+          "completion_budget",
+          3.811,
+          0.0
+        ],
+        "offer": [
+          -1.091,
+          "new_white_gap",
+          0.0,
+          0.0,
+          0.825,
+          0.0,
+          1.467
+        ],
+        "pay": [
+          2,
+          10.0,
+          34,
+          94.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          34.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          0,
+          0,
+          0,
+          1.0
+        ],
+        "target": [
+          1,
+          "standard",
+          1,
+          0,
+          1,
+          6.979,
+          10.787
+        ]
+      },
+      "hu_score": 20.0,
+      "label": "closed-confirmation:004",
+      "natural_preparation": {
+        "meld_set_count": 2,
+        "natural_counts33": [
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 0,
+        "natural_draw_lower_bound": 0,
+        "natural_need_improvement_codes": [],
+        "sets_left": 2,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 6,
+        "whites_held": 1
+      },
+      "natural_strength_or_single_action_cause": false,
+      "next_draw_fan_values": [
+        2
+      ],
+      "next_draw_payment_rows": 68,
+      "next_draw_payments_above_current": 0,
+      "next_draw_payments_analyzed": true,
+      "public_visible_state": {
+        "dealer_seat": 0,
+        "discards": [
+          [
+            "9t",
+            "南",
+            "东",
+            "4t",
+            "1w",
+            "北",
+            "4b",
+            "4w"
+          ],
+          [
+            "7t",
+            "1w",
+            "3b",
+            "东",
+            "9w",
+            "7t",
+            "2b",
+            "西"
+          ],
+          [
+            "发",
+            "5b",
+            "8w",
+            "西",
+            "4b",
+            "3w",
+            "3t"
+          ],
+          [
+            "9w",
+            "5b",
+            "2t",
+            "8t",
+            "7b",
+            "6w",
+            "2t"
+          ]
+        ],
+        "drawn_tile": "5b",
+        "hand_counts": [
+          8,
+          13,
+          13,
+          13
+        ],
+        "melds": [
+          [
+            {
+              "from_seat": 3,
+              "kind": "chi",
+              "tiles": [
+                "1t",
+                "2t",
+                "3t"
+              ]
+            },
+            {
+              "from_seat": 1,
+              "kind": "peng",
+              "tiles": [
+                "2b",
+                "2b",
+                "2b"
+              ]
+            }
+          ],
+          [],
+          [],
+          []
+        ],
+        "my_hand": [
+          "5w",
+          "9w",
+          "8w",
+          "4w",
+          "7w",
+          "6w",
+          "白"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 55,
+        "seat": 0
+      },
+      "qualification_unknown_codes": [],
+      "selected_target": {
+        "conditional_need_improvement_codes": [],
+        "family": "standard",
+        "natural_need": 0,
+        "requires_terminal_draw": true,
+        "retained_whites": 1,
+        "target_natural_discard_lower_bound": 0,
+        "target_natural_draw_lower_bound": 0,
+        "target_natural_size": 6,
+        "target_stage": "waiting_predecessor",
+        "target_white_discard_lower_bound": 0,
+        "white_used": 0,
+        "witness": null,
+        "witness_status": "distance_only"
+      },
+      "view_sha256": "850fd6ef49cd366944125c9bf6e79d35e524c25ac709620bae10db763346084f"
+    },
+    {
+      "best_continue": "discard:5t",
+      "chosen": "discard:5t",
+      "continue_minus_hu": 0.5845080012892847,
+      "continue_root_kind": "wait",
+      "current_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          -1,
+          10,
+          -8,
+          -1
+        ]
+      },
+      "full_trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "diagnostic_offer_full": [
+          0.5845080012892842,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.4946236559139785,
+          0.0,
+          0.9790390067690534,
+          1.5635470080583376,
+          0.8415841584158417,
+          0.0,
+          1.5635470080583376,
+          2.4051311664741792,
+          1.3709247648902823
+        ],
+        "diagnostic_routes": [
+          [
+            0,
+            1,
+            2.1028571428571428,
+            23.0,
+            8,
+            0,
+            2.1028571428571428
+          ],
+          null
+        ],
+        "diagnostic_target_full": [
+          2,
+          "standard",
+          2,
+          2,
+          1,
+          3,
+          1,
+          1,
+          2,
+          3.430873074501022,
+          5.533730217358165
+        ],
+        "joint": [
+          3.134,
+          5.534,
+          "completion_budget",
+          1.031,
+          0.0
+        ],
+        "offer": [
+          0.585,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.495,
+          2.405,
+          1.371
+        ],
+        "pay": [
+          2,
+          2.475,
+          8,
+          23.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          8.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          2,
+          1,
+          2,
+          0.61
+        ],
+        "target": [
+          2,
+          "standard",
+          2,
+          2,
+          3,
+          3.431,
+          5.534
+        ]
+      },
+      "hu_score": 12.475247524752476,
+      "label": "closed-confirmation:073",
+      "natural_preparation": {
+        "meld_set_count": 1,
+        "natural_counts33": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 1,
+        "natural_draw_lower_bound": 2,
+        "natural_need_improvement_codes": [
+          "2b",
+          "7t"
+        ],
+        "sets_left": 3,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 9,
+        "whites_held": 2
+      },
+      "natural_strength_or_single_action_cause": false,
+      "next_draw_fan_values": [
+        1
+      ],
+      "next_draw_payment_rows": 16,
+      "next_draw_payments_above_current": 0,
+      "next_draw_payments_analyzed": true,
+      "public_visible_state": {
+        "dealer_seat": 2,
+        "discards": [
+          [
+            "2w",
+            "2w",
+            "5w",
+            "4t"
+          ],
+          [
+            "发",
+            "6w",
+            "1t"
+          ],
+          [
+            "8b",
+            "1w",
+            "5b",
+            "6w"
+          ],
+          [
+            "1w",
+            "1t",
+            "8b",
+            "8w"
+          ]
+        ],
+        "drawn_tile": "5t",
+        "hand_counts": [
+          13,
+          11,
+          13,
+          13
+        ],
+        "melds": [
+          [],
+          [
+            {
+              "from_seat": 0,
+              "kind": "chi",
+              "tiles": [
+                "5w",
+                "6w",
+                "7w"
+              ]
+            }
+          ],
+          [],
+          []
+        ],
+        "my_hand": [
+          "9t",
+          "白",
+          "2b",
+          "5b",
+          "7b",
+          "3t",
+          "2b",
+          "白",
+          "8t",
+          "6b"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 69,
+        "seat": 1
+      },
+      "qualification_unknown_codes": [],
+      "selected_target": {
+        "conditional_need_improvement_codes": [
+          "2b",
+          "7t"
+        ],
+        "family": "standard",
+        "natural_need": 2,
+        "requires_terminal_draw": true,
+        "retained_whites": 2,
+        "target_natural_discard_lower_bound": 1,
+        "target_natural_draw_lower_bound": 2,
+        "target_natural_size": 9,
+        "target_stage": "waiting_predecessor",
+        "target_white_discard_lower_bound": 1,
+        "white_used": 0,
+        "witness": null,
+        "witness_status": "distance_only"
+      },
+      "view_sha256": "996c904ae1134d98b30a6cf63176ca3e070f1a370d46239959b598f51a9a5eb7"
+    },
+    {
+      "best_continue": "discard:6b",
+      "chosen": "discard:6b",
+      "continue_minus_hu": 0.35097324849653866,
+      "continue_root_kind": "wait",
+      "current_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          -1,
+          10,
+          -8,
+          -1
+        ]
+      },
+      "full_trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "diagnostic_offer_full": [
+          0.3509732484965382,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.5013262599469497,
+          0.0,
+          1.1758636457191989,
+          1.526836894215737,
+          0.8415841584158417,
+          0.0,
+          1.526836894215737,
+          2.3684210526315788,
+          1.2000000000000002
+        ],
+        "diagnostic_routes": [
+          [
+            0,
+            1,
+            2.114685314685315,
+            21.0,
+            9,
+            0,
+            2.114685314685315
+          ],
+          null
+        ],
+        "diagnostic_target_full": [
+          2,
+          "standard",
+          2,
+          2,
+          1,
+          3,
+          1,
+          1,
+          2,
+          3.4084818341094563,
+          5.523167148794771
+        ],
+        "joint": [
+          3.178,
+          5.523,
+          "completion_budget",
+          1.063,
+          0.0
+        ],
+        "offer": [
+          0.351,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.501,
+          2.368,
+          1.2
+        ],
+        "pay": [
+          2,
+          2.475,
+          9,
+          21.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          9.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          2,
+          1,
+          2,
+          0.61
+        ],
+        "target": [
+          2,
+          "standard",
+          2,
+          2,
+          3,
+          3.408,
+          5.523
+        ]
+      },
+      "hu_score": 12.475247524752476,
+      "label": "later:006:1:31",
+      "natural_preparation": {
+        "meld_set_count": 1,
+        "natural_counts33": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          1,
+          1,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 1,
+        "natural_draw_lower_bound": 2,
+        "natural_need_improvement_codes": [
+          "2b",
+          "7t"
+        ],
+        "sets_left": 3,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 9,
+        "whites_held": 2
+      },
+      "natural_strength_or_single_action_cause": false,
+      "next_draw_fan_values": [
+        1
+      ],
+      "next_draw_payment_rows": 18,
+      "next_draw_payments_above_current": 0,
+      "next_draw_payments_analyzed": true,
+      "public_visible_state": {
+        "dealer_seat": 2,
+        "discards": [
+          [
+            "2w",
+            "2w",
+            "5w",
+            "4t",
+            "2b",
+            "1t",
+            "7w",
+            "5t",
+            "4w",
+            "4b",
+            "8t"
+          ],
+          [
+            "发",
+            "6w",
+            "1t",
+            "5t",
+            "7w",
+            "发",
+            "1b",
+            "5w",
+            "3t",
+            "6w"
+          ],
+          [
+            "8b",
+            "1w",
+            "5b",
+            "6w",
+            "4t",
+            "北",
+            "3w",
+            "发",
+            "5t",
+            "3t",
+            "2w"
+          ],
+          [
+            "1w",
+            "1t",
+            "8b",
+            "8w",
+            "白",
+            "3w",
+            "1b",
+            "4w",
+            "中",
+            "4t",
+            "8t"
+          ]
+        ],
+        "drawn_tile": "6b",
+        "hand_counts": [
+          13,
+          11,
+          13,
+          13
+        ],
+        "melds": [
+          [],
+          [
+            {
+              "from_seat": 0,
+              "kind": "chi",
+              "tiles": [
+                "5w",
+                "6w",
+                "7w"
+              ]
+            }
+          ],
+          [],
+          []
+        ],
+        "my_hand": [
+          "9t",
+          "白",
+          "2b",
+          "5b",
+          "7b",
+          "2b",
+          "白",
+          "8t",
+          "6b",
+          "7b"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 41,
+        "seat": 1
+      },
+      "qualification_unknown_codes": [],
+      "selected_target": {
+        "conditional_need_improvement_codes": [
+          "2b",
+          "7t"
+        ],
+        "family": "standard",
+        "natural_need": 2,
+        "requires_terminal_draw": true,
+        "retained_whites": 2,
+        "target_natural_discard_lower_bound": 1,
+        "target_natural_draw_lower_bound": 2,
+        "target_natural_size": 9,
+        "target_stage": "waiting_predecessor",
+        "target_white_discard_lower_bound": 1,
+        "white_used": 0,
+        "witness": null,
+        "witness_status": "distance_only"
+      },
+      "view_sha256": "4f16ac36c66d0e5ac3b1b12863e1ba2e29b773ceed7b37814d6f944e10375e6b"
+    },
+    {
+      "best_continue": "discard:6t",
+      "chosen": "discard:6t",
+      "continue_minus_hu": 0.5002936612718472,
+      "continue_root_kind": "wait",
+      "current_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          -1,
+          10,
+          -8,
+          -1
+        ]
+      },
+      "full_trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "diagnostic_offer_full": [
+          0.5002936612718463,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.4827586206896552,
+          0.0,
+          1.079529233298312,
+          1.5798228945701582,
+          0.8415841584158417,
+          0.0,
+          1.5798228945701582,
+          2.421407052986,
+          1.2268462401795732
+        ],
+        "diagnostic_routes": [
+          [
+            0,
+            1,
+            2.0363636363636366,
+            21.0,
+            8,
+            0,
+            2.0363636363636366
+          ],
+          null
+        ],
+        "diagnostic_target_full": [
+          2,
+          "standard",
+          2,
+          2,
+          1,
+          3,
+          1,
+          1,
+          3,
+          3.4497292844842287,
+          5.486092920847865
+        ],
+        "joint": [
+          3.067,
+          5.486,
+          "completion_budget",
+          1.031,
+          0.0
+        ],
+        "offer": [
+          0.5,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.483,
+          2.421,
+          1.227
+        ],
+        "pay": [
+          2,
+          2.475,
+          8,
+          21.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          8.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          2,
+          1,
+          3,
+          0.61
+        ],
+        "target": [
+          2,
+          "standard",
+          2,
+          2,
+          3,
+          3.45,
+          5.486
+        ]
+      },
+      "hu_score": 12.475247524752476,
+      "label": "later:006:2:16",
+      "natural_preparation": {
+        "meld_set_count": 1,
+        "natural_counts33": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 1,
+        "natural_draw_lower_bound": 2,
+        "natural_need_improvement_codes": [
+          "2b",
+          "1t",
+          "4t"
+        ],
+        "sets_left": 3,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 9,
+        "whites_held": 2
+      },
+      "natural_strength_or_single_action_cause": false,
+      "next_draw_fan_values": [
+        1
+      ],
+      "next_draw_payment_rows": 16,
+      "next_draw_payments_above_current": 0,
+      "next_draw_payments_analyzed": true,
+      "public_visible_state": {
+        "dealer_seat": 2,
+        "discards": [
+          [
+            "2w",
+            "2w",
+            "5w",
+            "4t",
+            "5b",
+            "8b",
+            "北",
+            "1w"
+          ],
+          [
+            "发",
+            "6w",
+            "1t",
+            "5t",
+            "北",
+            "1b",
+            "9t"
+          ],
+          [
+            "8b",
+            "1w",
+            "5b",
+            "6w",
+            "发",
+            "西",
+            "1w",
+            "4b"
+          ],
+          [
+            "1w",
+            "1t",
+            "8b",
+            "8w",
+            "白",
+            "5b",
+            "南",
+            "1b"
+          ]
+        ],
+        "drawn_tile": "6t",
+        "hand_counts": [
+          13,
+          11,
+          13,
+          13
+        ],
+        "melds": [
+          [],
+          [
+            {
+              "from_seat": 0,
+              "kind": "chi",
+              "tiles": [
+                "5w",
+                "6w",
+                "7w"
+              ]
+            }
+          ],
+          [],
+          []
+        ],
+        "my_hand": [
+          "白",
+          "2b",
+          "5b",
+          "7b",
+          "3t",
+          "2b",
+          "白",
+          "8t",
+          "6b",
+          "2t"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 53,
+        "seat": 1
+      },
+      "qualification_unknown_codes": [],
+      "selected_target": {
+        "conditional_need_improvement_codes": [
+          "2b",
+          "1t",
+          "4t"
+        ],
+        "family": "standard",
+        "natural_need": 2,
+        "requires_terminal_draw": true,
+        "retained_whites": 2,
+        "target_natural_discard_lower_bound": 1,
+        "target_natural_draw_lower_bound": 2,
+        "target_natural_size": 9,
+        "target_stage": "waiting_predecessor",
+        "target_white_discard_lower_bound": 1,
+        "white_used": 0,
+        "witness": null,
+        "witness_status": "distance_only"
+      },
+      "view_sha256": "762642a3a0da5e870f9e43957d58de7839c53100a1c7adefef6eaf3b34c882de"
+    },
+    {
+      "best_continue": "discard:4b",
+      "chosen": "discard:4b",
+      "continue_minus_hu": 0.08453057956652188,
+      "continue_root_kind": "wait",
+      "current_hu_settlement": {
+        "details": [
+          "平胡"
+        ],
+        "fan": 1,
+        "score_delta": [
+          10,
+          -1,
+          -8,
+          -1
+        ]
+      },
+      "full_trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "context": [
+          50,
+          2,
+          1.0,
+          0.775,
+          2.756,
+          2.475,
+          0.0
+        ],
+        "diagnostic_offer_full": [
+          0.08453057956652232,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.4827586206896552,
+          0.0,
+          1.240769414547721,
+          1.3252999941142434,
+          0.8415841584158417,
+          0.0,
+          1.3252999941142434,
+          2.166884152530085,
+          1.2351239669421488
+        ],
+        "diagnostic_routes": [
+          [
+            0,
+            1,
+            2.0363636363636366,
+            21.0,
+            8,
+            0,
+            2.0363636363636366
+          ],
+          null
+        ],
+        "diagnostic_target_full": [
+          2,
+          "standard",
+          2,
+          2,
+          1,
+          3,
+          1,
+          1,
+          2,
+          3.096269681080163,
+          5.1326333174437995
+        ],
+        "formula": "vip_unified_code_budget_e2/1",
+        "joint": [
+          2.974,
+          5.133,
+          "completion_budget",
+          0.937,
+          0.0
+        ],
+        "offer": [
+          0.085,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.483,
+          2.167,
+          1.235
+        ],
+        "pay": [
+          2,
+          2.475,
+          8,
+          21.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          8.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          2,
+          1,
+          2,
+          0.61
+        ],
+        "scope": "conditional_facts_not_probability_or_guaranteed_highfan",
+        "target": [
+          2,
+          "standard",
+          2,
+          2,
+          3,
+          3.096,
+          5.133
+        ],
+        "unit": "heuristic_rank_points",
+        "unknown": "opponent_hu_and_future_draw_reachability"
+      },
+      "hu_score": 12.475247524752476,
+      "label": "later:012:0:33",
+      "natural_preparation": {
+        "meld_set_count": 2,
+        "natural_counts33": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 1,
+        "natural_draw_lower_bound": 2,
+        "natural_need_improvement_codes": [
+          "7w",
+          "7t"
+        ],
+        "sets_left": 2,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 6,
+        "whites_held": 2
+      },
+      "natural_strength_or_single_action_cause": false,
+      "next_draw_fan_values": [
+        1
+      ],
+      "next_draw_payment_rows": 16,
+      "next_draw_payments_above_current": 0,
+      "next_draw_payments_analyzed": true,
+      "public_visible_state": {
+        "dealer_seat": 2,
+        "discards": [
+          [
+            "东",
+            "南",
+            "9w",
+            "1w",
+            "5b",
+            "2t",
+            "9w",
+            "1t",
+            "1t"
+          ],
+          [
+            "南",
+            "东",
+            "9b",
+            "1w",
+            "东",
+            "1b",
+            "3t",
+            "8w",
+            "4t"
+          ],
+          [
+            "4t",
+            "7b",
+            "2t",
+            "中",
+            "南",
+            "北",
+            "3t",
+            "发",
+            "3b",
+            "9t"
+          ],
+          [
+            "2t",
+            "2b",
+            "5w",
+            "9t",
+            "5t",
+            "6t",
+            "3b",
+            "3b",
+            "9t"
+          ]
+        ],
+        "drawn_tile": "4b",
+        "hand_counts": [
+          8,
+          10,
+          13,
+          10
+        ],
+        "melds": [
+          [
+            {
+              "from_seat": 2,
+              "kind": "peng",
+              "tiles": [
+                "北",
+                "北",
+                "北"
+              ]
+            },
+            {
+              "from_seat": 3,
+              "kind": "chi",
+              "tiles": [
+                "3b",
+                "4b",
+                "5b"
+              ]
+            }
+          ],
+          [
+            {
+              "from_seat": 0,
+              "kind": "chi",
+              "tiles": [
+                "1t",
+                "2t",
+                "3t"
+              ]
+            }
+          ],
+          [],
+          [
+            {
+              "from_seat": 2,
+              "kind": "chi",
+              "tiles": [
+                "7b",
+                "8b",
+                "9b"
+              ]
+            }
+          ]
+        ],
+        "my_hand": [
+          "7w",
+          "白",
+          "白",
+          "6b",
+          "8t",
+          "6t",
+          "7w"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 50,
+        "seat": 0
+      },
+      "qualification_unknown_codes": [],
+      "selected_target": {
+        "conditional_need_improvement_codes": [
+          "7w",
+          "7t"
+        ],
+        "family": "standard",
+        "natural_need": 2,
+        "requires_terminal_draw": true,
+        "retained_whites": 2,
+        "target_natural_discard_lower_bound": 1,
+        "target_natural_draw_lower_bound": 2,
+        "target_natural_size": 6,
+        "target_stage": "waiting_predecessor",
+        "target_white_discard_lower_bound": 1,
+        "white_used": 0,
+        "witness": null,
+        "witness_status": "distance_only"
+      },
+      "view_sha256": "1f5e4f6d632452a52e042914fa4576a6fdf27f69dfd39b24391a0af517ce176d"
+    },
+    {
+      "best_continue": "discard:2b",
+      "chosen": "hu",
+      "continue_minus_hu": -0.40038628400801635,
+      "continue_root_kind": "wait",
+      "current_hu_settlement": {
+        "details": [
+          "平胡",
+          "爆头"
+        ],
+        "fan": 2,
+        "score_delta": [
+          20,
+          -2,
+          -16,
+          -2
+        ]
+      },
+      "full_trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "context": [
+          56,
+          3,
+          1.0,
+          0.759,
+          2.778,
+          4.717,
+          3.0
+        ],
+        "diagnostic_offer_full": [
+          -0.4003862840080169,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.8185890257558788,
+          0.0,
+          1.00954874211116,
+          0.6091624581031431,
+          1.1320754716981134,
+          7.993605777301127e-16,
+          0.6091624581031431,
+          1.7412379298012572,
+          1.6620907511739273
+        ],
+        "diagnostic_routes": [
+          [
+            0,
+            1,
+            3.768850698174006,
+            86.0,
+            34,
+            0,
+            3.768850698174006
+          ],
+          [
+            3,
+            4,
+            2.2857142857142856,
+            24.0,
+            10,
+            0,
+            -7.914285714285714
+          ]
+        ],
+        "diagnostic_target_full": [
+          2,
+          "standard",
+          2,
+          1,
+          1,
+          2,
+          0,
+          1,
+          2,
+          5.061475991243819,
+          8.830326689417825
+        ],
+        "formula": "vip_unified_code_budget_e2/1",
+        "joint": [
+          5.547,
+          8.83,
+          "completion_budget",
+          1.778,
+          0.0
+        ],
+        "offer": [
+          -0.4,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.819,
+          1.741,
+          1.662
+        ],
+        "pay": [
+          2,
+          4.717,
+          34,
+          86.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          34.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          1,
+          0,
+          2,
+          0.758
+        ],
+        "scope": "conditional_facts_not_probability_or_guaranteed_highfan",
+        "target": [
+          2,
+          "standard",
+          2,
+          1,
+          2,
+          5.061,
+          8.83
+        ],
+        "unit": "heuristic_rank_points",
+        "unknown": "opponent_hu_and_future_draw_reachability"
+      },
+      "hu_score": 14.716981132075471,
+      "label": "later:012:1:25",
+      "natural_preparation": {
+        "meld_set_count": 0,
+        "natural_counts33": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          3,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 0,
+        "natural_draw_lower_bound": 1,
+        "natural_need_improvement_codes": [
+          "6t",
+          "9t"
+        ],
+        "sets_left": 4,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 12,
+        "whites_held": 2
+      },
+      "natural_strength_or_single_action_cause": false,
+      "next_draw_fan_values": [
+        2
+      ],
+      "next_draw_payment_rows": 68,
+      "next_draw_payments_above_current": 0,
+      "next_draw_payments_analyzed": true,
+      "public_visible_state": {
+        "dealer_seat": 2,
+        "discards": [
+          [
+            "东",
+            "南",
+            "9w",
+            "5b",
+            "发",
+            "2t",
+            "1t"
+          ],
+          [
+            "南",
+            "东",
+            "9b",
+            "5w",
+            "发",
+            "3b",
+            "9t"
+          ],
+          [
+            "4t",
+            "7b",
+            "2t",
+            "1b",
+            "3t",
+            "9b",
+            "中",
+            "1t"
+          ],
+          [
+            "2t",
+            "2b",
+            "5w",
+            "南",
+            "8b",
+            "9w",
+            "1w",
+            "9t"
+          ]
+        ],
+        "drawn_tile": "2b",
+        "hand_counts": [
+          14,
+          10,
+          13,
+          7
+        ],
+        "melds": [
+          [],
+          [
+            {
+              "from_seat": 0,
+              "kind": "chi",
+              "tiles": [
+                "1t",
+                "2t",
+                "3t"
+              ]
+            }
+          ],
+          [],
+          [
+            {
+              "from_seat": 2,
+              "kind": "chi",
+              "tiles": [
+                "7b",
+                "8b",
+                "9b"
+              ]
+            },
+            {
+              "from_seat": 2,
+              "kind": "chi",
+              "tiles": [
+                "3t",
+                "4t",
+                "5t"
+              ]
+            }
+          ]
+        ],
+        "my_hand": [
+          "7w",
+          "4b",
+          "白",
+          "白",
+          "北",
+          "6b",
+          "9w",
+          "8t",
+          "北",
+          "5b",
+          "7t",
+          "北",
+          "8w"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 56,
+        "seat": 0
+      },
+      "qualification_unknown_codes": [],
+      "selected_target": {
+        "conditional_need_improvement_codes": [
+          "6t",
+          "9t"
+        ],
+        "family": "standard",
+        "natural_need": 1,
+        "requires_terminal_draw": true,
+        "retained_whites": 2,
+        "target_natural_discard_lower_bound": 0,
+        "target_natural_draw_lower_bound": 1,
+        "target_natural_size": 12,
+        "target_stage": "waiting_predecessor",
+        "target_white_discard_lower_bound": 1,
+        "white_used": 0,
+        "witness": null,
+        "witness_status": "distance_only"
+      },
+      "view_sha256": "644630f0e869f851328da35dbeb1b55c6fc839fe65a3b505dcc55f4f865d20b3"
+    },
+    {
+      "best_continue": "discard:1t",
+      "chosen": "hu",
+      "continue_minus_hu": -0.24634084274728707,
+      "continue_root_kind": "wait",
+      "current_hu_settlement": {
+        "details": [
+          "平胡",
+          "爆头"
+        ],
+        "fan": 2,
+        "score_delta": [
+          20,
+          -2,
+          -16,
+          -2
+        ]
+      },
+      "full_trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "context": [
+          65,
+          2,
+          1.0,
+          0.813,
+          2.553,
+          4.717,
+          3.0
+        ],
+        "diagnostic_offer_full": [
+          -0.24634084274728707,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.8218029350104821,
+          0.0,
+          0.8508621076459093,
+          0.6045212648986222,
+          1.1320754716981134,
+          3.9968028886505636e-16,
+          0.6045212648986222,
+          1.736596736596736,
+          1.6576605212968847
+        ],
+        "diagnostic_routes": [
+          [
+            0,
+            1,
+            3.8012121212121213,
+            98.0,
+            32,
+            0,
+            3.8012121212121213
+          ],
+          null
+        ],
+        "diagnostic_target_full": [
+          2,
+          "standard",
+          2,
+          1,
+          1,
+          2,
+          0,
+          1,
+          1,
+          5.10659948210528,
+          8.907811603317402
+        ],
+        "formula": "vip_unified_code_budget_e2/1",
+        "joint": [
+          5.651,
+          8.908,
+          "completion_budget",
+          1.85,
+          0.0
+        ],
+        "offer": [
+          -0.246,
+          "held_white_release",
+          0.0,
+          0.0,
+          0.822,
+          1.737,
+          1.658
+        ],
+        "pay": [
+          2,
+          4.717,
+          32,
+          98.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          34.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          1,
+          0,
+          1,
+          0.758
+        ],
+        "scope": "conditional_facts_not_probability_or_guaranteed_highfan",
+        "target": [
+          2,
+          "standard",
+          2,
+          1,
+          2,
+          5.107,
+          8.908
+        ],
+        "unit": "heuristic_rank_points",
+        "unknown": "opponent_hu_and_future_draw_reachability"
+      },
+      "hu_score": 14.716981132075471,
+      "label": "later:012:2:12",
+      "natural_preparation": {
+        "meld_set_count": 2,
+        "natural_counts33": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 0,
+        "natural_draw_lower_bound": 1,
+        "natural_need_improvement_codes": [
+          "8w"
+        ],
+        "sets_left": 2,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 6,
+        "whites_held": 2
+      },
+      "natural_strength_or_single_action_cause": false,
+      "next_draw_fan_values": [
+        2
+      ],
+      "next_draw_payment_rows": 64,
+      "next_draw_payments_above_current": 0,
+      "next_draw_payments_analyzed": true,
+      "public_visible_state": {
+        "dealer_seat": 2,
+        "discards": [
+          [
+            "东",
+            "南",
+            "9w",
+            "5b",
+            "8t"
+          ],
+          [
+            "南",
+            "东",
+            "北",
+            "西",
+            "8b"
+          ],
+          [
+            "4t",
+            "7b",
+            "2t",
+            "2b",
+            "2t"
+          ],
+          [
+            "2t",
+            "2b",
+            "5w",
+            "3t",
+            "西"
+          ]
+        ],
+        "drawn_tile": "1t",
+        "hand_counts": [
+          8,
+          13,
+          13,
+          7
+        ],
+        "melds": [
+          [
+            {
+              "from_seat": 1,
+              "kind": "peng",
+              "tiles": [
+                "北",
+                "北",
+                "北"
+              ]
+            },
+            {
+              "from_seat": 3,
+              "kind": "chi",
+              "tiles": [
+                "1t",
+                "2t",
+                "3t"
+              ]
+            }
+          ],
+          [],
+          [],
+          [
+            {
+              "from_seat": 2,
+              "kind": "chi",
+              "tiles": [
+                "7b",
+                "8b",
+                "9b"
+              ]
+            },
+            {
+              "from_seat": null,
+              "kind": "gang",
+              "tiles": [
+                "4w",
+                "4w",
+                "4w",
+                "4w"
+              ]
+            }
+          ]
+        ],
+        "my_hand": [
+          "7w",
+          "4b",
+          "白",
+          "白",
+          "6b",
+          "9w",
+          "5b"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 65,
+        "seat": 0
+      },
+      "qualification_unknown_codes": [],
+      "selected_target": {
+        "conditional_need_improvement_codes": [
+          "8w"
+        ],
+        "family": "standard",
+        "natural_need": 1,
+        "requires_terminal_draw": true,
+        "retained_whites": 2,
+        "target_natural_discard_lower_bound": 0,
+        "target_natural_draw_lower_bound": 1,
+        "target_natural_size": 6,
+        "target_stage": "waiting_predecessor",
+        "target_white_discard_lower_bound": 1,
+        "white_used": 0,
+        "witness": null,
+        "witness_status": "distance_only"
+      },
+      "view_sha256": "a337f8ca81e76207bee1afcfb95aa4c2764b2b53342ff518fe10ccea6db9d6bf"
+    },
+    {
+      "best_continue": "discard:4b",
+      "chosen": "hu",
+      "continue_minus_hu": -0.14604275264596112,
+      "continue_root_kind": "wait",
+      "current_hu_settlement": {
+        "details": [
+          "平胡",
+          "爆头"
+        ],
+        "fan": 2,
+        "score_delta": [
+          -16,
+          -2,
+          20,
+          -2
+        ]
+      },
+      "full_trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "context": [
+          52,
+          3,
+          1.0,
+          0.748,
+          2.84,
+          4.717,
+          3.0
+        ],
+        "diagnostic_offer_full": [
+          -0.14604275264596134,
+          "new_white_gap",
+          0.0,
+          0.0,
+          0.8069841269841269,
+          0.0,
+          1.067855582483691,
+          0.9218128298377297,
+          0.6603773584905661,
+          0.0,
+          0.9218128298377297,
+          0.0,
+          1.5821901883282958
+        ],
+        "diagnostic_routes": [
+          [
+            0,
+            1,
+            3.708693009118541,
+            82.0,
+            31,
+            0,
+            3.708693009118541
+          ],
+          null
+        ],
+        "diagnostic_target_full": [
+          1,
+          "standard",
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          4.137763490237933,
+          7.846456499356474
+        ],
+        "formula": "vip_unified_code_budget_e2/1",
+        "joint": [
+          5.473,
+          7.846,
+          "completion_budget",
+          1.764,
+          0.0
+        ],
+        "offer": [
+          -0.146,
+          "new_white_gap",
+          0.0,
+          0.0,
+          0.807,
+          0.0,
+          1.582
+        ],
+        "pay": [
+          2,
+          4.717,
+          31,
+          82.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          34.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          0,
+          0,
+          0,
+          1.0
+        ],
+        "scope": "conditional_facts_not_probability_or_guaranteed_highfan",
+        "target": [
+          1,
+          "standard",
+          1,
+          0,
+          1,
+          4.138,
+          7.846
+        ],
+        "unit": "heuristic_rank_points",
+        "unknown": "opponent_hu_and_future_draw_reachability"
+      },
+      "hu_score": 14.716981132075471,
+      "label": "anchor:mature-baotou-current-hu",
+      "natural_preparation": {
+        "meld_set_count": 3,
+        "natural_counts33": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 0,
+        "natural_draw_lower_bound": 0,
+        "natural_need_improvement_codes": [],
+        "sets_left": 1,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 3,
+        "whites_held": 1
+      },
+      "natural_strength_or_single_action_cause": false,
+      "next_draw_fan_values": [
+        2
+      ],
+      "next_draw_payment_rows": 62,
+      "next_draw_payments_above_current": 0,
+      "next_draw_payments_analyzed": true,
+      "public_visible_state": {
+        "dealer_seat": 0,
+        "discards": [
+          [
+            "西",
+            "中",
+            "东",
+            "9b",
+            "西",
+            "7t",
+            "5t"
+          ],
+          [
+            "东",
+            "1t",
+            "7t",
+            "8b",
+            "4w",
+            "2t",
+            "4t"
+          ],
+          [
+            "东",
+            "发",
+            "9b",
+            "6t",
+            "5b",
+            "7b",
+            "8b",
+            "4w"
+          ],
+          [
+            "西",
+            "5w",
+            "北",
+            "5w",
+            "3t",
+            "2w",
+            "中",
+            "7w",
+            "6t"
+          ]
+        ],
+        "drawn_tile": "4b",
+        "hand_counts": [
+          13,
+          10,
+          5,
+          7
+        ],
+        "melds": [
+          [],
+          [
+            {
+              "from_seat": null,
+              "kind": "peng",
+              "tiles": [
+                "发",
+                "发",
+                "发"
+              ]
+            }
+          ],
+          [
+            {
+              "from_seat": null,
+              "kind": "chi",
+              "tiles": [
+                "8t",
+                "9t",
+                "7t"
+              ]
+            },
+            {
+              "from_seat": null,
+              "kind": "peng",
+              "tiles": [
+                "2t",
+                "2t",
+                "2t"
+              ]
+            },
+            {
+              "from_seat": null,
+              "kind": "peng",
+              "tiles": [
+                "4t",
+                "4t",
+                "4t"
+              ]
+            }
+          ],
+          [
+            {
+              "from_seat": null,
+              "kind": "peng",
+              "tiles": [
+                "南",
+                "南",
+                "南"
+              ]
+            },
+            {
+              "from_seat": null,
+              "kind": "peng",
+              "tiles": [
+                "9w",
+                "9w",
+                "9w"
+              ]
+            }
+          ]
+        ],
+        "my_hand": [
+          "7w",
+          "6w",
+          "5w",
+          "白",
+          "4b"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 52,
+        "seat": 2
+      },
+      "qualification_unknown_codes": [],
+      "selected_target": {
+        "conditional_need_improvement_codes": [],
+        "family": "standard",
+        "natural_need": 0,
+        "requires_terminal_draw": true,
+        "retained_whites": 1,
+        "target_natural_discard_lower_bound": 0,
+        "target_natural_draw_lower_bound": 0,
+        "target_natural_size": 3,
+        "target_stage": "waiting_predecessor",
+        "target_white_discard_lower_bound": 0,
+        "white_used": 0,
+        "witness": null,
+        "witness_status": "distance_only"
+      },
+      "view_sha256": "0380ab4d8f3e441fbf6c0e7bc6621d7afc7e23ddd00b0d0b6290c678d6800841"
+    }
+  ],
+  "hu_states": 10,
+  "new_scores_worlds_tables_models_HTTP": 0,
+  "offer_tuple_fields": [
+    "net",
+    "channel",
+    "upgrade",
+    "downside",
+    "maintained",
+    "carry",
+    "exposure",
+    "remote",
+    "remote_anchor_price",
+    "fallback",
+    "offer_value",
+    "held_white_credit",
+    "new_white_credit"
+  ],
+  "online_fix_or_natural_strength_admission": false,
+  "opening_control": [
+    {
+      "action_key": "discard:1w",
+      "natural_preparation": {
+        "meld_set_count": 0,
+        "natural_counts33": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          2,
+          0,
+          1,
+          0
+        ],
+        "natural_discard_lower_bound": 4,
+        "natural_draw_lower_bound": 4,
+        "natural_need_improvement_codes": [
+          "5b",
+          "2t",
+          "4t",
+          "南",
+          "西"
+        ],
+        "sets_left": 4,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 12,
+        "whites_held": 1
+      },
+      "score": 9.148003749147476,
+      "seven_pairs_shanten": 2,
+      "seven_pairs_useful_codes": [
+        "2w",
+        "9b",
+        "1t",
+        "3t",
+        "5t",
+        "中",
+        "白"
+      ],
+      "standard_shanten": 3,
+      "standard_useful_codes": [
+        "1w",
+        "2w",
+        "3w",
+        "4w",
+        "5b",
+        "7b",
+        "8b",
+        "9b",
+        "1t",
+        "2t",
+        "3t",
+        "4t",
+        "5t",
+        "6t",
+        "7t",
+        "南",
+        "西",
+        "中",
+        "白"
+      ],
+      "trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "diagnostic_offer_full": null,
+        "diagnostic_routes": [
+          [
+            3,
+            4,
+            3.322209165687426,
+            62.0,
+            19,
+            0,
+            -6.877790834312574
+          ],
+          [
+            2,
+            3,
+            1.9438016528925621,
+            21.0,
+            7,
+            0,
+            -4.856198347107438
+          ]
+        ],
+        "diagnostic_target_full": [
+          3,
+          "seven_pairs",
+          1,
+          3,
+          1,
+          4,
+          3,
+          0,
+          6,
+          1.533914141414141,
+          -3.322284205693297
+        ],
+        "joint": [
+          -4.856,
+          -2.525,
+          "completion_budget",
+          0.0,
+          0.0
+        ],
+        "offer": null,
+        "pay": [
+          1,
+          0.0,
+          0,
+          0.0
+        ],
+        "portfolio": [
+          17.375,
+          5.132,
+          41.0,
+          12.0,
+          0.0,
+          0.798,
+          7.0,
+          12.0,
+          5.0,
+          5.0
+        ],
+        "prep": [
+          4,
+          4,
+          5,
+          0.439
+        ],
+        "target": [
+          3,
+          "seven_pairs",
+          1,
+          3,
+          4,
+          1.534,
+          -3.322
+        ]
+      }
+    },
+    {
+      "action_key": "discard:9b",
+      "natural_preparation": {
+        "meld_set_count": 0,
+        "natural_counts33": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          2,
+          0,
+          1,
+          0
+        ],
+        "natural_discard_lower_bound": 4,
+        "natural_draw_lower_bound": 4,
+        "natural_need_improvement_codes": [
+          "3w",
+          "5b",
+          "2t",
+          "4t",
+          "南",
+          "西"
+        ],
+        "sets_left": 4,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 12,
+        "whites_held": 1
+      },
+      "score": 8.350251005574309,
+      "seven_pairs_shanten": 2,
+      "seven_pairs_useful_codes": [
+        "1w",
+        "2w",
+        "1t",
+        "3t",
+        "5t",
+        "中",
+        "白"
+      ],
+      "standard_shanten": 2,
+      "standard_useful_codes": [
+        "3w",
+        "5b",
+        "2t",
+        "4t",
+        "南",
+        "西",
+        "白"
+      ],
+      "trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "diagnostic_offer_full": null,
+        "diagnostic_routes": [
+          [
+            2,
+            3,
+            1.9438016528925621,
+            21.0,
+            7,
+            0,
+            -4.856198347107438
+          ],
+          [
+            2,
+            3,
+            1.9438016528925621,
+            21.0,
+            7,
+            0,
+            -4.856198347107438
+          ]
+        ],
+        "diagnostic_target_full": [
+          3,
+          "seven_pairs",
+          1,
+          3,
+          1,
+          4,
+          3,
+          0,
+          6,
+          1.533914141414141,
+          -3.322284205693297
+        ],
+        "joint": [
+          -4.856,
+          -3.322,
+          "completion_budget",
+          0.0,
+          0.0
+        ],
+        "offer": null,
+        "pay": [
+          1,
+          0.0,
+          0,
+          0.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          13.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          4,
+          4,
+          6,
+          0.439
+        ],
+        "target": [
+          3,
+          "seven_pairs",
+          1,
+          3,
+          4,
+          1.534,
+          -3.322
+        ]
+      }
+    },
+    {
+      "action_key": "discard:中",
+      "natural_preparation": {
+        "meld_set_count": 0,
+        "natural_counts33": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          2,
+          0,
+          0,
+          0
+        ],
+        "natural_discard_lower_bound": 4,
+        "natural_draw_lower_bound": 4,
+        "natural_need_improvement_codes": [
+          "3w",
+          "5b",
+          "2t",
+          "4t",
+          "南",
+          "西"
+        ],
+        "sets_left": 4,
+        "target_distance_evaluation_count": 34,
+        "target_natural_size": 12,
+        "whites_held": 1
+      },
+      "score": 8.350251005574309,
+      "seven_pairs_shanten": 2,
+      "seven_pairs_useful_codes": [
+        "1w",
+        "2w",
+        "9b",
+        "1t",
+        "3t",
+        "5t",
+        "白"
+      ],
+      "standard_shanten": 2,
+      "standard_useful_codes": [
+        "3w",
+        "5b",
+        "2t",
+        "4t",
+        "南",
+        "西",
+        "白"
+      ],
+      "trace": {
+        "adjust": 0.0,
+        "condition": "response_resolution",
+        "diagnostic_offer_full": null,
+        "diagnostic_routes": [
+          [
+            2,
+            3,
+            1.9438016528925621,
+            21.0,
+            7,
+            0,
+            -4.856198347107438
+          ],
+          [
+            2,
+            3,
+            1.9438016528925621,
+            21.0,
+            7,
+            0,
+            -4.856198347107438
+          ]
+        ],
+        "diagnostic_target_full": [
+          3,
+          "seven_pairs",
+          1,
+          3,
+          1,
+          4,
+          3,
+          0,
+          6,
+          1.533914141414141,
+          -3.322284205693297
+        ],
+        "joint": [
+          -4.856,
+          -3.322,
+          "completion_budget",
+          0.0,
+          0.0
+        ],
+        "offer": null,
+        "pay": [
+          1,
+          0.0,
+          0,
+          0.0
+        ],
+        "portfolio": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          13.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "prep": [
+          4,
+          4,
+          6,
+          0.439
+        ],
+        "target": [
+          3,
+          "seven_pairs",
+          1,
+          3,
+          4,
+          1.534,
+          -3.322
+        ]
+      }
+    }
+  ],
+  "public_states": 24
+}

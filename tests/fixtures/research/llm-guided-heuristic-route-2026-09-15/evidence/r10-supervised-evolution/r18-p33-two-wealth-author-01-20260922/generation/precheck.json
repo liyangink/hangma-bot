@@ -1,0 +1,16 @@
+{
+  "ok": false,
+  "problems": [
+    "赋值/循环目标必须是简单名字或名字元组，得到 Subscript"
+  ],
+  "rule_hits": [
+    {
+      "id": "AV-SUB-008",
+      "statement": "赋值目标、for 目标、推导式目标只能是简单名字或名字元组；不得写 a[0] = ...、a.b = ...、a, *rest = ...。"
+    }
+  ],
+  "rule_ids": [
+    "AV-SUB-008"
+  ],
+  "unmapped": false
+}

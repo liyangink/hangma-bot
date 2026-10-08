@@ -1,0 +1,29 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r11-dv1-grouped-discard-model-v1-20260921",
+  "batch_label": "r11-dv1-grouped-discard-model-v1",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 0.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 0.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T06:59:43Z",
+  "issuance_basis": "DV1-2规模化教师机械完整后，按计划比较低容量成对排序器、受限树和广义加性模型",
+  "scope": "四个panel_seed逐一完整留出；H/M不作输入；留出评价统一使用每动作前4个共同未来顺序，避免分级采样选择偏差",
+  "max_model_calls": 0,
+  "max_model_fits_per_fold": 11,
+  "confirmation_roots": 0
+}

@@ -1,0 +1,67 @@
+{
+  "discard_divergence_windows": 680,
+  "inputs": {
+    "discard_windows_sha256": "bcbc6bcabf1e8b10d14898247512172706f48ae74eea40315292d6dac67681f5",
+    "response_windows_sha256": "47cb44c02765abeb6d8aee49b04f7dd9bd609f997b570a283c1b9551e992b2c4",
+    "script_sha256": "4c028dcf2f4bd59f6f4c9fb3c19fbd926242f8a825cf82b8b7b030d16bf97919"
+  },
+  "interpretation_boundary": "事件序号距离不是动作因果或时间间隔；同场/同局窗口相关，不能把窗口作为独立显著性样本。该筛查仅判断是否值得继续追相邻联动入口。",
+  "response_divergent": {
+    "by_room": {
+      "a_2a8aa14dc8a1": {
+        "same_round": 12,
+        "windows": 13,
+        "within_10_seq": 1
+      },
+      "a_852fb97c102e": {
+        "same_round": 12,
+        "windows": 12,
+        "within_10_seq": 1
+      },
+      "a_d773a8e428a0": {
+        "same_round": 23,
+        "windows": 24,
+        "within_10_seq": 2
+      },
+      "a_f8ddc4c3bd9b": {
+        "same_round": 16,
+        "windows": 18,
+        "within_10_seq": 3
+      }
+    },
+    "same_round_discard_divergence": 63,
+    "windows": 67,
+    "within_10_seq": 7,
+    "within_20_seq": 19
+  },
+  "response_same": {
+    "by_room": {
+      "a_2a8aa14dc8a1": {
+        "same_round": 108,
+        "windows": 117,
+        "within_10_seq": 18
+      },
+      "a_852fb97c102e": {
+        "same_round": 134,
+        "windows": 155,
+        "within_10_seq": 20
+      },
+      "a_d773a8e428a0": {
+        "same_round": 133,
+        "windows": 155,
+        "within_10_seq": 17
+      },
+      "a_f8ddc4c3bd9b": {
+        "same_round": 126,
+        "windows": 148,
+        "within_10_seq": 19
+      }
+    },
+    "same_round_discard_divergence": 501,
+    "windows": 575,
+    "within_10_seq": 74,
+    "within_20_seq": 182
+  },
+  "schema": "g8-joint-entry-preflight/1",
+  "scope": "四间既有官方强手开发房；同局事件序号距离，未读结局"
+}

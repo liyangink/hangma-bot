@@ -1,0 +1,99 @@
+{
+  "action_value_failure_windows": 0,
+  "by_mix": {
+    "H": {
+      "negative_units": 1,
+      "stage_score_delta_mean": -1.125,
+      "units": 16
+    },
+    "M": {
+      "negative_units": 0,
+      "stage_score_delta_mean": 0.0,
+      "units": 16
+    }
+  },
+  "candidate_execution_review": {
+    "missing_tables": 0,
+    "recorded_counts": {
+      "action_value_failed": 0,
+      "action_value_scored": 20846,
+      "ambiguous_diagnostics": 0,
+      "decision_count": 83500,
+      "other_policy_decisions": 62654,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "abstain": 0,
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "recorded_tables": 64,
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 64,
+    "zero_internal_failures_verified": true
+  },
+  "candidate_sha256": "e06414c448531fb0c02a6170511fb6fe0dac44213dd8a43184ac391cd99722df",
+  "confirmation_eligible": false,
+  "execution_review": {
+    "missing_tables": 0,
+    "recorded_counts": {
+      "action_value_failed": 0,
+      "action_value_scored": 41696,
+      "ambiguous_diagnostics": 0,
+      "decision_count": 167008,
+      "other_policy_decisions": 125312,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "abstain": 0,
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "recorded_tables": 128,
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 128,
+    "zero_internal_failures_verified": true
+  },
+  "gate_checks": {
+    "all_candidate_requests_action_value_scored": true,
+    "all_tables_complete": true,
+    "candidate_request_errors": true,
+    "paired_stage_score_delta_mean_nonnegative": false,
+    "seven_pairs_triggered_requests_positive": true,
+    "zero_action_value_failure_windows": true,
+    "zero_internal_failures": true
+  },
+  "manifest_sha256": "cd1c2c843ee3694b88512360e8619056d4ad7121fe3b635c5b9a412d3a046900",
+  "natural_trigger_interpretation": "本批必须出现P7七对价值触发才允许扩样；零触发只算回退安全证据，配对均值不是确认结论",
+  "next": "停止P7自然桌赛扩样；若零触发则保留为题库能力分支，扩大可达场景而不宣称桌赛增强；保留P5父代",
+  "overall": {
+    "negative_units": 1,
+    "positive_units": 0,
+    "score_trajectory_equal_units": 31,
+    "stage_score_delta_mean": -0.5625,
+    "u_delta_high_mean": 0.0,
+    "u_delta_low_mean": 0.0,
+    "zero_units": 31
+  },
+  "parent_sha256": "02a0c09b790a5cb264b1a4a9f9e2e87a827263a9f04273aae83371f702ddf9cb",
+  "release_eligible": false,
+  "request_audit_counts": {
+    "changed_top_actions": 3,
+    "opportunity_overlay_present": 1,
+    "requests": 20846,
+    "seven_pairs_triggered": 3,
+    "seven_pairs_value_overlay_present": 3
+  },
+  "request_audit_problems": [],
+  "schema": "r18-p7-table-effect-pilot-result/1",
+  "source_units": 32,
+  "status": "STOP_R18_P7_TABLE_EFFECT_PILOT",
+  "strength_claim": false,
+  "tables": 128
+}

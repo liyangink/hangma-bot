@@ -1,0 +1,67 @@
+{
+  "schema": "strong-seed-batch/1",
+  "created_at_utc": "2026-09-19T16:21:34Z",
+  "basis": "用户2026-09-20明确接受六份初答模型配置并要求继续推进",
+  "configs": {
+    "hard-sol-high": [
+      "gpt-5.6-sol",
+      "high",
+      "hard"
+    ],
+    "hard-terra-max": [
+      "gpt-5.6-terra",
+      "max",
+      "hard"
+    ],
+    "hard-sol-max": [
+      "gpt-5.6-sol",
+      "max",
+      "hard"
+    ],
+    "hard-astra-high": [
+      "gpt-6-astra",
+      "high",
+      "hard"
+    ],
+    "river-sol-high": [
+      "gpt-5.6-sol",
+      "high",
+      "river"
+    ],
+    "route-terra-max": [
+      "gpt-5.6-terra",
+      "max",
+      "route"
+    ]
+  },
+  "initial_proposals": 6,
+  "max_author_turns": 12,
+  "repair_policy": "每初答最多一次固定实际错误反馈修复；不更换机制，不隐式重试",
+  "max_native_turn_seconds": 1800,
+  "native_usage": "unknown; counts/wallclock enforced by supervisor; token reservations are accounting, not API-enforced caps",
+  "parent_source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-seed-terra-02/run/iterations/iter-01/generation/candidate.py",
+  "parent_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+  "panel_seed": 2026092001,
+  "root_indices": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "opponents": [
+    "H",
+    "M"
+  ],
+  "seats": 4,
+  "tables_per_arm": 2,
+  "natural_tables_per_candidate": 256,
+  "natural_tables_six_candidates_two_parents": 2048,
+  "hard_prompt_sha256": "f8ef7de8ed2fe065ea539087ea0d4d850b9dedfce0f55e6ccdc19526a36789be",
+  "confirmation_roots": 0,
+  "release_eligible": false,
+  "prompt_policy": "完整正式机器合同保留；短监督目标与可信源码取代上批修复历史；同题提示字节严格一致"
+}

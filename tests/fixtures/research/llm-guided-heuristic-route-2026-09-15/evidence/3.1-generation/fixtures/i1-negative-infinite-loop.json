@@ -1,0 +1,8 @@
+{
+  "schema": "sitin-generation-reply/1",
+  "origin": "format_fixture",
+  "prompt_sha256": "75ba5a5a9a0377cf8b31f7f70295f56b8b696cce0424e27b51c29751be34f205",
+  "reply": "{加载期死循环探针：用来验证隔离装载会被墙钟上限终止。}\n\n```python\nfrom __future__ import annotations\n\nfrom typing import Mapping\n\nfrom hangma_bot.policy.evaluation_v1 import EvaluationContext\nfrom hangma_bot.policy.heuristic_adapter import AdjustmentSpec, HeuristicAdjustment\nfrom hangma_bot.hangma.interface import RuleCandidate\n\nwhile True:\n    pass\n\n\ndef build_adjustment_from_params(\n    params: Mapping[str, float], source_fingerprint_value: str = \"\"\n) -> HeuristicAdjustment:\n    \"\"\"永远到不了这里；夹具只用于验证装载阶段的可终止性。\"\"\"\n\n    raise NotImplementedError\n```\n",
+  "author": "本会话 Agent（坐隐 3.1 包 genloop）",
+  "purpose": "反例：模块体死循环，隔离装载必须由墙钟上限终止（用 --load-timeout-sec 3）"
+}

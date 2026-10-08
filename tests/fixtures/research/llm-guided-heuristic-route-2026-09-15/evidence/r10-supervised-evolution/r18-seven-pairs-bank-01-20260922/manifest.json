@@ -1,0 +1,51 @@
+{
+  "candidate_evaluated_during_generation": false,
+  "cases": 96,
+  "counts": [
+    {
+      "count": 48,
+      "decision_type": "seven_pairs_tradeoff",
+      "split": "development"
+    },
+    {
+      "count": 24,
+      "decision_type": "standard_switch",
+      "split": "development"
+    },
+    {
+      "count": 16,
+      "decision_type": "seven_pairs_tradeoff",
+      "split": "hidden"
+    },
+    {
+      "count": 8,
+      "decision_type": "standard_switch",
+      "split": "hidden"
+    }
+  ],
+  "generation_work": {
+    "standard_switch_states": 33777,
+    "tradeoff_states": 64
+  },
+  "generator_seed": 202609220703,
+  "generator_sha256": "943fe3ae20d0a6a9162a96399bb49c747244ed974420dc2edf1d5b139c6ce6b8",
+  "hidden_quotas": {
+    "seven_pairs_tradeoff": 16,
+    "standard_switch": 8
+  },
+  "limitations": [
+    "oracle 是下一次本人摸牌立即胡的条件代理，不含他家先胡、鸣牌、轮转和更远续值",
+    "本批不含财神、爆头、杠、动作链或赛事处境，避免把多个特殊能力混成一题",
+    "隐藏题只允许候选冻结后的一次性准入程序读取"
+  ],
+  "oracle_version": "hangma-one-self-draw-score-delta/1",
+  "quotas": {
+    "seven_pairs_tradeoff": 64,
+    "standard_switch": 32
+  },
+  "rules_hash": "3d28709994ce32d75594af53822e82a2b76f3b5b54b6ecc4e7006827c998a0af",
+  "schema": "r18-seven-pairs-bank-manifest/1",
+  "scope": "庄家起手后首次摸牌；无副露无牌河；纯弃牌窗口；七对/平胡下一摸价值取舍",
+  "split_rule": "每题型按(seed, reachability_witness_sha256)哈希排序取预登记hidden配额",
+  "unique_base_scenarios": 96
+}

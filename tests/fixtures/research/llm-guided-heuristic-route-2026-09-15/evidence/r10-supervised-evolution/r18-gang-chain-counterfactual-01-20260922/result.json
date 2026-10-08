@@ -1,0 +1,41 @@
+{
+  "author_task_open": false,
+  "decision": "BUILD_GANG_POSITIVE_AND_NEGATIVE_CONTROLS",
+  "interpretation": "一次自然未来牌序的方向校准；下一步仍需跨状态与未来墙重复",
+  "mechanical_ok_pairs": 7,
+  "pairs": 7,
+  "proxy_all_direct_disagreements_supported": false,
+  "release_eligible": false,
+  "schema": "r18-gang-chain-counterfactual-result/1",
+  "selection_eligible": false,
+  "status": "COMPLETE_GANG_CHAIN_COUNTERFACTUAL",
+  "strata": {
+    "proxy_promotes_gang": {
+      "negative": 0,
+      "oracle_action_minus_v2_mean": 29.5,
+      "oracle_action_minus_v2_median": 25.0,
+      "pairs": 4,
+      "positive": 4,
+      "values": [
+        20.0,
+        20.0,
+        48.0,
+        30.0
+      ],
+      "zero": 0
+    },
+    "proxy_rejects_gang": {
+      "negative": 0,
+      "oracle_action_minus_v2_mean": 16.0,
+      "oracle_action_minus_v2_median": 0.0,
+      "pairs": 3,
+      "positive": 1,
+      "values": [
+        48.0,
+        0.0,
+        0.0
+      ],
+      "zero": 2
+    }
+  }
+}

@@ -1,0 +1,312 @@
+{
+ "schema": "sitin-archive/1",
+ "slots": {
+  "overall": [
+   "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce",
+   "ab9b409e26e66158fdf3bb3b5f229b3930500a85ee14ed294c644c2e00a1c0af"
+  ],
+  "branch": [],
+  "chain": [],
+  "four_white": [],
+  "baotou": [],
+  "exploration": []
+ },
+ "entries": {
+  "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce": {
+   "candidate_id": "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce",
+   "kind": "action_value_v1",
+   "safety": {
+    "status": "PASS"
+   },
+   "effect_failure_unresolved": false,
+   "normal_evaluations": {
+    "np-H-root01": {
+     "d_point": 0.25,
+     "d_low": 0.25,
+     "d_high": 0.25,
+     "unknown": false,
+     "opponent_mix": "H",
+     "cost": 28738.996,
+     "role": "core"
+    },
+    "np-H-root01-r2": {
+     "d_point": -0.25,
+     "d_low": -0.25,
+     "d_high": -0.25,
+     "unknown": false,
+     "opponent_mix": "H",
+     "cost": 30982.571000000004,
+     "role": "core"
+    },
+    "np-M-root01": {
+     "d_point": 0.0,
+     "d_low": 0.0,
+     "d_high": 0.0,
+     "unknown": false,
+     "opponent_mix": "M",
+     "cost": 31892.684999999998,
+     "role": "core"
+    },
+    "np-M-root01-r2": {
+     "d_point": -0.25,
+     "d_low": -0.25,
+     "d_high": -0.25,
+     "unknown": false,
+     "opponent_mix": "M",
+     "cost": 33427.26900000001,
+     "role": "core"
+    }
+   },
+   "overall": {
+    "sort_value": -0.0625,
+    "mean_delta": -0.0625,
+    "unknown_ratio": 0.0,
+    "total_cost": 125041.52100000001,
+    "n_roots": 4,
+    "unresolved": false,
+    "note": "目标有区间时用差值下界均值排序并标未分辨（§9.2 规则 1）"
+   },
+   "family": {},
+   "family_evaluations": {},
+   "source_ref": {
+    "evidence": "batch7/eval/i1-766712b6",
+    "assembled": "subprocess-isolated (build_archive_entry bug pending fix)"
+   }
+  },
+  "ab9b409e26e66158fdf3bb3b5f229b3930500a85ee14ed294c644c2e00a1c0af": {
+   "candidate_id": "ab9b409e26e66158fdf3bb3b5f229b3930500a85ee14ed294c644c2e00a1c0af",
+   "kind": "action_value_v1",
+   "safety": {
+    "status": "PASS"
+   },
+   "effect_failure_unresolved": false,
+   "normal_evaluations": {
+    "np-H-root01": {
+     "d_point": 0.25,
+     "d_low": 0.25,
+     "d_high": 0.25,
+     "unknown": false,
+     "opponent_mix": "H",
+     "cost": 30973.936999999998,
+     "role": "core"
+    },
+    "np-H-root01-r2": {
+     "d_point": -0.25,
+     "d_low": -0.25,
+     "d_high": -0.25,
+     "unknown": false,
+     "opponent_mix": "H",
+     "cost": 30979.93,
+     "role": "core"
+    },
+    "np-M-root01": {
+     "d_point": 0.0,
+     "d_low": 0.0,
+     "d_high": 0.0,
+     "unknown": false,
+     "opponent_mix": "M",
+     "cost": 37290.794,
+     "role": "core"
+    },
+    "np-M-root01-r2": {
+     "d_point": -0.25,
+     "d_low": -0.25,
+     "d_high": -0.25,
+     "unknown": false,
+     "opponent_mix": "M",
+     "cost": 33297.17,
+     "role": "core"
+    }
+   },
+   "overall": {
+    "sort_value": -0.0625,
+    "mean_delta": -0.0625,
+    "unknown_ratio": 0.0,
+    "total_cost": 132541.831,
+    "n_roots": 4,
+    "unresolved": false,
+    "note": "目标有区间时用差值下界均值排序并标未分辨（§9.2 规则 1）"
+   },
+   "family": {},
+   "family_evaluations": {},
+   "source_ref": {
+    "evidence": "batch7/eval/m1-ab9b409e",
+    "assembled": "subprocess-isolated (build_archive_entry bug pending fix)"
+   }
+  },
+  "6d9c1d5914509a966bf79a349142d41b2625c05eac55c28fb4b573b2ba56674e": {
+   "candidate_id": "6d9c1d5914509a966bf79a349142d41b2625c05eac55c28fb4b573b2ba56674e",
+   "kind": "action_value_v1",
+   "safety": {
+    "status": "PASS"
+   },
+   "effect_failure_unresolved": false,
+   "normal_evaluations": {
+    "np-H-root01": {
+     "d_point": -0.5,
+     "d_low": -0.5,
+     "d_high": -0.5,
+     "unknown": false,
+     "opponent_mix": "H",
+     "cost": 28817.002,
+     "role": "core"
+    },
+    "np-H-root01-r2": {
+     "d_point": -0.25,
+     "d_low": -0.25,
+     "d_high": -0.25,
+     "unknown": false,
+     "opponent_mix": "H",
+     "cost": 30023.110999999997,
+     "role": "core"
+    },
+    "np-M-root01": {
+     "d_point": -0.5,
+     "d_low": -0.5,
+     "d_high": -0.5,
+     "unknown": false,
+     "opponent_mix": "M",
+     "cost": 31836.889,
+     "role": "core"
+    },
+    "np-M-root01-r2": {
+     "d_point": -0.25,
+     "d_low": -0.25,
+     "d_high": -0.25,
+     "unknown": false,
+     "opponent_mix": "M",
+     "cost": 35190.55499999999,
+     "role": "core"
+    }
+   },
+   "overall": {
+    "sort_value": -0.375,
+    "mean_delta": -0.375,
+    "unknown_ratio": 0.0,
+    "total_cost": 125867.55699999999,
+    "n_roots": 4,
+    "unresolved": false,
+    "note": "目标有区间时用差值下界均值排序并标未分辨（§9.2 规则 1）"
+   },
+   "family": {},
+   "family_evaluations": {},
+   "source_ref": {
+    "evidence": "batch7/eval/efficiency_seed-6d9c1d59",
+    "assembled": "subprocess-isolated (build_archive_entry bug pending fix)"
+   }
+  },
+  "1108e4bef6ca6f9d3cce3d85c3d955e050028f2863f0e7f598f44e9667df6be2": {
+   "candidate_id": "1108e4bef6ca6f9d3cce3d85c3d955e050028f2863f0e7f598f44e9667df6be2",
+   "kind": "action_value_v1",
+   "safety": {
+    "status": "PASS"
+   },
+   "effect_failure_unresolved": false,
+   "normal_evaluations": {
+    "np-H-root01": {
+     "d_point": -0.25,
+     "d_low": -0.25,
+     "d_high": -0.25,
+     "unknown": false,
+     "opponent_mix": "H",
+     "cost": 26943.469,
+     "role": "core"
+    },
+    "np-H-root01-r2": {
+     "d_point": 0.0,
+     "d_low": 0.0,
+     "d_high": 0.0,
+     "unknown": false,
+     "opponent_mix": "H",
+     "cost": 30262.053,
+     "role": "core"
+    },
+    "np-M-root01": {
+     "d_point": -0.25,
+     "d_low": -0.25,
+     "d_high": -0.25,
+     "unknown": false,
+     "opponent_mix": "M",
+     "cost": 30751.061,
+     "role": "core"
+    },
+    "np-M-root01-r2": {
+     "d_point": 0.0,
+     "d_low": 0.0,
+     "d_high": 0.0,
+     "unknown": false,
+     "opponent_mix": "M",
+     "cost": 33324.795,
+     "role": "core"
+    }
+   },
+   "overall": {
+    "sort_value": -0.125,
+    "mean_delta": -0.125,
+    "unknown_ratio": 0.0,
+    "total_cost": 121281.378,
+    "n_roots": 4,
+    "unresolved": false,
+    "note": "目标有区间时用差值下界均值排序并标未分辨（§9.2 规则 1）"
+   },
+   "family": {},
+   "family_evaluations": {},
+   "source_ref": {
+    "evidence": "batch7/eval/route_value_seed-1108e4be",
+    "assembled": "subprocess-isolated (build_archive_entry bug pending fix)"
+   }
+  }
+ },
+ "distinct_candidates": [
+  "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce",
+  "ab9b409e26e66158fdf3bb3b5f229b3930500a85ee14ed294c644c2e00a1c0af"
+ ],
+ "selection_report": {
+  "overall": [
+   {
+    "candidate_id": "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce",
+    "sort_value": -0.0625,
+    "unknown_ratio": 0.0,
+    "total_cost": 125041.52100000001,
+    "unresolved": false
+   },
+   {
+    "candidate_id": "ab9b409e26e66158fdf3bb3b5f229b3930500a85ee14ed294c644c2e00a1c0af",
+    "sort_value": -0.0625,
+    "unknown_ratio": 0.0,
+    "total_cost": 132541.831,
+    "unresolved": false
+   },
+   {
+    "candidate_id": "1108e4bef6ca6f9d3cce3d85c3d955e050028f2863f0e7f598f44e9667df6be2",
+    "sort_value": -0.125,
+    "unknown_ratio": 0.0,
+    "total_cost": 121281.378,
+    "unresolved": false
+   },
+   {
+    "candidate_id": "6d9c1d5914509a966bf79a349142d41b2625c05eac55c28fb4b573b2ba56674e",
+    "sort_value": -0.375,
+    "unknown_ratio": 0.0,
+    "total_cost": 125867.55699999999,
+    "unresolved": false
+   }
+  ],
+  "family": {
+   "branch": [],
+   "chain": [],
+   "four_white": [],
+   "baotou": []
+  },
+  "exploration": {
+   "pool": [],
+   "steps": []
+  }
+ },
+ "ineligible": {},
+ "exploration_queue": [],
+ "notes": [
+  "席位容量 overall=2 / 四家族各 1 / exploration=2；同候选多席单存（entries 一份）",
+  "排序为开发启发式，不称统计证明（§9.2）"
+ ]
+}

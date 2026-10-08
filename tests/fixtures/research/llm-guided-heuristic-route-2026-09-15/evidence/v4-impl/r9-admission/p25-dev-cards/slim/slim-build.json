@@ -1,0 +1,726 @@
+{
+ "schema": "sitin-p25-dev-cards-slim-build/1",
+ "renderer_entry": [
+  "sitin_generate.build_action_value_card_prompt",
+  "sitin_generate.build_action_value_repair_card_prompt"
+ ],
+ "package": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/slim/package",
+ "cards": [
+  {
+   "task_id": "TD01",
+   "capability_face": "① 完整输入评分",
+   "before_chars": 44112,
+   "after_chars": 23479,
+   "reduction_ratio": 0.4677,
+   "validation_unchanged": true,
+   "slim": {
+    "renderer": "sitin_generate.build_action_value_card_prompt",
+    "operator": "i1",
+    "focus": {
+     "objective": "开发诊断卡 TD01（能力面①完整输入评分）：在终局保位面板 replay-hold-v1 上，对**给定窗口的全部动作**产出有效评分（不是弃权）。",
+     "change_point": "读**实际投影字段**并对全部动作评分：分支侧 actions[].followup_branches（combined_shanten 可为 int/bool/None——bool 与 None 一律按**未知**）；直投影侧 actions[].shanten_after / standard_shanten_after / seven_pairs_shanten_after / actions[].useful_tiles（元素 {code, remaining_estimate}）/ family_progress / immediate_settlement。无事实动作锚定在全部已知评分之下；只有窗口内**全部**动作都无可用事实时才允许有因 ABSTAIN。",
+     "input_groups": [
+      "actions[]",
+      "actions[].followup_branches",
+      "actions[].useful_tiles",
+      "actions[].immediate_settlement",
+      "visible_state",
+      "competition"
+     ],
+     "rules": "compact",
+     "examples": "full",
+     "gate": "none",
+     "guard": "fragment",
+     "input_overview": "none"
+    },
+    "focus_identity": "5f1c85df924381860b9c22bd23b0d4edd35a6907a1ed4aedfe4021c3ee771925",
+    "card_chars": 22715,
+    "legacy_chars": 42667,
+    "sections": [
+     {
+      "name": "(前言)",
+      "chars": 1
+     },
+     {
+      "name": "本次目标与修改点（先读这一节）",
+      "chars": 843
+     },
+     {
+      "name": "score_actions 完整签名（不得改动）",
+      "chars": 549
+     },
+     {
+      "name": "输入合同（公开接口附录的本题相关字段组；schema=sitin-action-value-public-interface/1）",
+      "chars": 10986
+     },
+     {
+      "name": "工具目录（冻结白名单；不在表内一律禁止）",
+      "chars": 519
+     },
+     {
+      "name": "受限子集静态规则（AV-SUB；60 条全部保留；违反即拒绝装载）",
+      "chars": 3389
+     },
+     {
+      "name": "输出合同（判分器逐条核对）",
+      "chars": 367
+     },
+     {
+      "name": "结构化四字段（必须逐字段写清）",
+      "chars": 219
+     },
+     {
+      "name": "门线/位次势差口径",
+      "chars": 79
+     },
+     {
+      "name": "作者守卫条款（未知 / 批次失败 / 修订行为差异；唯一口径，必须自查）",
+      "chars": 3415
+     },
+     {
+      "name": "数值与工作量限制（违反即拒绝装载）",
+      "chars": 1973
+     },
+     {
+      "name": "预算说明",
+      "chars": 92
+     }
+    ],
+    "appendix": {
+     "appendix_total_paths": 119,
+     "rendered_paths": 67,
+     "selected_groups": [
+      "schema_version",
+      "visible_state",
+      "competition",
+      "actions[]",
+      "actions[].immediate_settlement",
+      "actions[].followup_branches",
+      "actions[].useful_tiles"
+     ],
+     "excluded_groups": [
+      {
+       "group": "actions",
+       "entries": 1,
+       "chars": 63
+      },
+      {
+       "group": "analysis_profile",
+       "entries": 6,
+       "chars": 346
+      },
+      {
+       "group": "reference_features",
+       "entries": 6,
+       "chars": 374
+      },
+      {
+       "group": "visible_state.rule_state",
+       "entries": 6,
+       "chars": 354
+      },
+      {
+       "group": "actions[].routes",
+       "entries": 4,
+       "chars": 269
+      },
+      {
+       "group": "actions[].routes[].useful_tiles",
+       "entries": 3,
+       "chars": 253
+      },
+      {
+       "group": "actions[].routes[].conditional_settlement",
+       "entries": 5,
+       "chars": 443
+      },
+      {
+       "group": "actions[].routes[].conditions",
+       "entries": 7,
+       "chars": 452
+      },
+      {
+       "group": "actions[].standard_useful_tiles",
+       "entries": 3,
+       "chars": 239
+      },
+      {
+       "group": "actions[].seven_pairs_useful_tiles",
+       "entries": 3,
+       "chars": 240
+      },
+      {
+       "group": "actions[].family_progress_entries",
+       "entries": 5,
+       "chars": 607
+      },
+      {
+       "group": "actions[].value_issues",
+       "entries": 3,
+       "chars": 162
+      }
+     ]
+    },
+    "rules": {
+     "rules": 60,
+     "before_chars": 2347,
+     "after_chars": 2275
+    },
+    "contract_identity": "49929e4aeb2f4a4f1a67799d3d46bd6083604f2eb3fcd53d0728b7c7c46994cf"
+   }
+  },
+  {
+   "task_id": "TD02",
+   "capability_face": "② 未知越位修订",
+   "before_chars": 46634,
+   "after_chars": 27685,
+   "reduction_ratio": 0.4063,
+   "validation_unchanged": true,
+   "slim": {
+    "renderer": "sitin_generate.build_action_value_card_prompt",
+    "operator": "m1",
+    "focus": {
+     "objective": "开发诊断卡 TD02（能力面②未知越位修订）：在给定父代 route-pace 上做**一次有界修订**，使**没有任何可用事实的动作**不得排在已有已知评分的动作之前。",
+     "change_point": "从三段反馈的下版方向 ①②③ 中选**一条**作为唯一修订主线，并在机制说明的 trigger / changed_branches 里写明对应哪一条、由哪条反馈事实支撑；两种未知形态（followup_branches 为 None、分支 combined_shanten 为 None 或布尔冒充数）都必须沉到全部已知评分之下。",
+     "input_groups": [
+      "actions[]",
+      "actions[].followup_branches",
+      "actions[].useful_tiles",
+      "visible_state"
+     ],
+     "rules": "compact",
+     "examples": "output",
+     "gate": "none",
+     "guard": "full",
+     "input_overview": "none"
+    },
+    "focus_identity": "8e43a34d3816a6ef4dafcfccfa20f582f0792b750d7cb5e643dc03c1112e0caa",
+    "card_chars": 26853,
+    "legacy_chars": 45891,
+    "sections": [
+     {
+      "name": "(前言)",
+      "chars": 1
+     },
+     {
+      "name": "本次目标与修改点（先读这一节）",
+      "chars": 611
+     },
+     {
+      "name": "父代完整材料（逐字；本次修改的起点）",
+      "chars": 2570
+     },
+     {
+      "name": "三段开发反馈（程序诊断；不含确认集数据）",
+      "chars": 416
+     },
+     {
+      "name": "score_actions 完整签名（不得改动）",
+      "chars": 549
+     },
+     {
+      "name": "输入合同（公开接口附录的本题相关字段组；schema=sitin-action-value-public-interface/1）",
+      "chars": 8791
+     },
+     {
+      "name": "工具目录（冻结白名单；不在表内一律禁止）",
+      "chars": 519
+     },
+     {
+      "name": "受限子集静态规则（AV-SUB；60 条全部保留；违反即拒绝装载）",
+      "chars": 3389
+     },
+     {
+      "name": "输出合同（判分器逐条核对）",
+      "chars": 367
+     },
+     {
+      "name": "结构化四字段（必须逐字段写清）",
+      "chars": 219
+     },
+     {
+      "name": "门线/位次势差口径",
+      "chars": 79
+     },
+     {
+      "name": "作者守卫条款（未知 / 批次失败 / 修订行为差异；唯一口径，必须自查）",
+      "chars": 6950
+     },
+     {
+      "name": "数值与工作量限制（违反即拒绝装载）",
+      "chars": 1973
+     },
+     {
+      "name": "预算说明",
+      "chars": 92
+     }
+    ],
+    "appendix": {
+     "appendix_total_paths": 119,
+     "rendered_paths": 57,
+     "selected_groups": [
+      "schema_version",
+      "visible_state",
+      "actions[]",
+      "actions[].followup_branches",
+      "actions[].useful_tiles"
+     ],
+     "excluded_groups": [
+      {
+       "group": "competition",
+       "entries": 5,
+       "chars": 646
+      },
+      {
+       "group": "actions",
+       "entries": 1,
+       "chars": 63
+      },
+      {
+       "group": "analysis_profile",
+       "entries": 6,
+       "chars": 346
+      },
+      {
+       "group": "reference_features",
+       "entries": 6,
+       "chars": 374
+      },
+      {
+       "group": "visible_state.rule_state",
+       "entries": 6,
+       "chars": 354
+      },
+      {
+       "group": "actions[].immediate_settlement",
+       "entries": 5,
+       "chars": 357
+      },
+      {
+       "group": "actions[].routes",
+       "entries": 4,
+       "chars": 269
+      },
+      {
+       "group": "actions[].routes[].useful_tiles",
+       "entries": 3,
+       "chars": 253
+      },
+      {
+       "group": "actions[].routes[].conditional_settlement",
+       "entries": 5,
+       "chars": 443
+      },
+      {
+       "group": "actions[].routes[].conditions",
+       "entries": 7,
+       "chars": 452
+      },
+      {
+       "group": "actions[].standard_useful_tiles",
+       "entries": 3,
+       "chars": 239
+      },
+      {
+       "group": "actions[].seven_pairs_useful_tiles",
+       "entries": 3,
+       "chars": 240
+      },
+      {
+       "group": "actions[].family_progress_entries",
+       "entries": 5,
+       "chars": 607
+      },
+      {
+       "group": "actions[].value_issues",
+       "entries": 3,
+       "chars": 162
+      }
+     ]
+    },
+    "rules": {
+     "rules": 60,
+     "before_chars": 2347,
+     "after_chars": 2275
+    },
+    "contract_identity": "2bf6a1cde43650f97c012a3693fc698347064d9e7a538f43dccacf0cb392bc4b"
+   }
+  },
+  {
+   "task_id": "TD03",
+   "capability_face": "③ 可解窗错误弃权",
+   "before_chars": 43912,
+   "after_chars": 22839,
+   "reduction_ratio": 0.4799,
+   "validation_unchanged": true,
+   "slim": {
+    "renderer": "sitin_generate.build_action_value_card_prompt",
+    "operator": "i1",
+    "focus": {
+     "objective": "开发诊断卡 TD03（能力面③可解窗错误弃权）：在实时抢位面板 live-race-v1 上，只要窗口内有可用事实就必须**实际完成评分**。",
+     "change_point": "窗口内至少一个动作有可用事实时返回 SCORED 并覆盖**全部**动作；未知动作锚定在全部已知评分之下（不得排在已知负分之前）；只有窗口内**全部**动作都无可用事实时才允许有因 ABSTAIN。",
+     "input_groups": [
+      "actions[]",
+      "actions[].followup_branches",
+      "actions[].useful_tiles",
+      "visible_state",
+      "competition"
+     ],
+     "rules": "compact",
+     "examples": "full",
+     "gate": "none",
+     "guard": "fragment",
+     "input_overview": "none"
+    },
+    "focus_identity": "764f6e01962f14def131e22677e13c91bd10b528b863af04dd8cf2165538f605",
+    "card_chars": 22075,
+    "legacy_chars": 42668,
+    "sections": [
+     {
+      "name": "(前言)",
+      "chars": 1
+     },
+     {
+      "name": "本次目标与修改点（先读这一节）",
+      "chars": 600
+     },
+     {
+      "name": "score_actions 完整签名（不得改动）",
+      "chars": 549
+     },
+     {
+      "name": "输入合同（公开接口附录的本题相关字段组；schema=sitin-action-value-public-interface/1）",
+      "chars": 10589
+     },
+     {
+      "name": "工具目录（冻结白名单；不在表内一律禁止）",
+      "chars": 519
+     },
+     {
+      "name": "受限子集静态规则（AV-SUB；60 条全部保留；违反即拒绝装载）",
+      "chars": 3389
+     },
+     {
+      "name": "输出合同（判分器逐条核对）",
+      "chars": 367
+     },
+     {
+      "name": "结构化四字段（必须逐字段写清）",
+      "chars": 219
+     },
+     {
+      "name": "门线/位次势差口径",
+      "chars": 79
+     },
+     {
+      "name": "作者守卫条款（未知 / 批次失败 / 修订行为差异；唯一口径，必须自查）",
+      "chars": 3415
+     },
+     {
+      "name": "数值与工作量限制（违反即拒绝装载）",
+      "chars": 1973
+     },
+     {
+      "name": "预算说明",
+      "chars": 92
+     }
+    ],
+    "appendix": {
+     "appendix_total_paths": 119,
+     "rendered_paths": 62,
+     "selected_groups": [
+      "schema_version",
+      "visible_state",
+      "competition",
+      "actions[]",
+      "actions[].followup_branches",
+      "actions[].useful_tiles"
+     ],
+     "excluded_groups": [
+      {
+       "group": "actions",
+       "entries": 1,
+       "chars": 63
+      },
+      {
+       "group": "analysis_profile",
+       "entries": 6,
+       "chars": 346
+      },
+      {
+       "group": "reference_features",
+       "entries": 6,
+       "chars": 374
+      },
+      {
+       "group": "visible_state.rule_state",
+       "entries": 6,
+       "chars": 354
+      },
+      {
+       "group": "actions[].immediate_settlement",
+       "entries": 5,
+       "chars": 357
+      },
+      {
+       "group": "actions[].routes",
+       "entries": 4,
+       "chars": 269
+      },
+      {
+       "group": "actions[].routes[].useful_tiles",
+       "entries": 3,
+       "chars": 253
+      },
+      {
+       "group": "actions[].routes[].conditional_settlement",
+       "entries": 5,
+       "chars": 443
+      },
+      {
+       "group": "actions[].routes[].conditions",
+       "entries": 7,
+       "chars": 452
+      },
+      {
+       "group": "actions[].standard_useful_tiles",
+       "entries": 3,
+       "chars": 239
+      },
+      {
+       "group": "actions[].seven_pairs_useful_tiles",
+       "entries": 3,
+       "chars": 240
+      },
+      {
+       "group": "actions[].family_progress_entries",
+       "entries": 5,
+       "chars": 607
+      },
+      {
+       "group": "actions[].value_issues",
+       "entries": 3,
+       "chars": 162
+      }
+     ]
+    },
+    "rules": {
+     "rules": 60,
+     "before_chars": 2347,
+     "after_chars": 2275
+    },
+    "contract_identity": "fb412e8700bf8730668cdcd87e73330ed4784053317ab70c0eaf10d7d94bef6f"
+   }
+  },
+  {
+   "task_id": "TD04",
+   "capability_face": "④ 行为等价修订",
+   "before_chars": 48366,
+   "after_chars": 29741,
+   "reduction_ratio": 0.3851,
+   "validation_unchanged": true,
+   "slim": {
+    "renderer": "sitin_generate.build_action_value_card_prompt",
+    "operator": "m1",
+    "focus": {
+     "objective": "开发诊断卡 TD04（能力面④行为等价修订）：在给定父代 pace-mix 上做**一次有界修订**，把立即结算计入评分，使至少一个声明窗口上的**首选动作发生可观察变化**。",
+     "change_point": "读 actions[].immediate_settlement（fan 与 score_delta）做**有界**结算因子（只对确实携带该字段的动作生效，缺失仍按未知）。**等行为修订不算修订**：统一平移、正比例缩放、只改 docstring/注释/trace 标签都不改变任何窗口的首选动作，不发放修订信用。",
+     "input_groups": [
+      "actions[]",
+      "actions[].immediate_settlement",
+      "actions[].followup_branches",
+      "actions[].useful_tiles",
+      "visible_state"
+     ],
+     "rules": "compact",
+     "examples": "output",
+     "gate": "none",
+     "guard": "full",
+     "input_overview": "none"
+    },
+    "focus_identity": "f809fffdbae8a3501877e54f5a9d92eca608cbb0ec217df2805b29dbe3881cc1",
+    "card_chars": 28909,
+    "legacy_chars": 47580,
+    "sections": [
+     {
+      "name": "(前言)",
+      "chars": 1
+     },
+     {
+      "name": "本次目标与修改点（先读这一节）",
+      "chars": 648
+     },
+     {
+      "name": "父代完整材料（逐字；本次修改的起点）",
+      "chars": 4170
+     },
+     {
+      "name": "三段开发反馈（程序诊断；不含确认集数据）",
+      "chars": 438
+     },
+     {
+      "name": "score_actions 完整签名（不得改动）",
+      "chars": 549
+     },
+     {
+      "name": "输入合同（公开接口附录的本题相关字段组；schema=sitin-action-value-public-interface/1）",
+      "chars": 9188
+     },
+     {
+      "name": "工具目录（冻结白名单；不在表内一律禁止）",
+      "chars": 519
+     },
+     {
+      "name": "受限子集静态规则（AV-SUB；60 条全部保留；违反即拒绝装载）",
+      "chars": 3389
+     },
+     {
+      "name": "输出合同（判分器逐条核对）",
+      "chars": 367
+     },
+     {
+      "name": "结构化四字段（必须逐字段写清）",
+      "chars": 219
+     },
+     {
+      "name": "门线/位次势差口径",
+      "chars": 79
+     },
+     {
+      "name": "作者守卫条款（未知 / 批次失败 / 修订行为差异；唯一口径，必须自查）",
+      "chars": 6950
+     },
+     {
+      "name": "数值与工作量限制（违反即拒绝装载）",
+      "chars": 1973
+     },
+     {
+      "name": "预算说明",
+      "chars": 92
+     }
+    ],
+    "appendix": {
+     "appendix_total_paths": 119,
+     "rendered_paths": 62,
+     "selected_groups": [
+      "schema_version",
+      "visible_state",
+      "actions[]",
+      "actions[].immediate_settlement",
+      "actions[].followup_branches",
+      "actions[].useful_tiles"
+     ],
+     "excluded_groups": [
+      {
+       "group": "competition",
+       "entries": 5,
+       "chars": 646
+      },
+      {
+       "group": "actions",
+       "entries": 1,
+       "chars": 63
+      },
+      {
+       "group": "analysis_profile",
+       "entries": 6,
+       "chars": 346
+      },
+      {
+       "group": "reference_features",
+       "entries": 6,
+       "chars": 374
+      },
+      {
+       "group": "visible_state.rule_state",
+       "entries": 6,
+       "chars": 354
+      },
+      {
+       "group": "actions[].routes",
+       "entries": 4,
+       "chars": 269
+      },
+      {
+       "group": "actions[].routes[].useful_tiles",
+       "entries": 3,
+       "chars": 253
+      },
+      {
+       "group": "actions[].routes[].conditional_settlement",
+       "entries": 5,
+       "chars": 443
+      },
+      {
+       "group": "actions[].routes[].conditions",
+       "entries": 7,
+       "chars": 452
+      },
+      {
+       "group": "actions[].standard_useful_tiles",
+       "entries": 3,
+       "chars": 239
+      },
+      {
+       "group": "actions[].seven_pairs_useful_tiles",
+       "entries": 3,
+       "chars": 240
+      },
+      {
+       "group": "actions[].family_progress_entries",
+       "entries": 5,
+       "chars": 607
+      },
+      {
+       "group": "actions[].value_issues",
+       "entries": 3,
+       "chars": 162
+      }
+     ]
+    },
+    "rules": {
+     "rules": 60,
+     "before_chars": 2347,
+     "after_chars": 2275
+    },
+    "contract_identity": "f2ec54f31323c7fb316d7c84d8ebc31a787d22236534fe3695193ea1b4de1d41"
+   }
+  },
+  {
+   "task_id": "TD05",
+   "capability_face": "⑤ 恢复计费",
+   "before_chars": 22226,
+   "after_chars": 2055,
+   "reduction_ratio": 0.9075,
+   "validation_unchanged": true,
+   "slim": {
+    "renderer": "（keyword 卡无卡面入口：确定性去掉自加公开合同面）",
+    "removed_marker": "【附：本批公开合同面（与本题答案无关，仅供自包含；本卡不需要写代码）】",
+    "removed_chars": 20171,
+    "kept_head_is_old_prefix": true,
+    "kept_tail_is_old_substring": true,
+    "card_chars": 2055
+   }
+  },
+  {
+   "task_id": "TD06",
+   "capability_face": "⑥ 停止隔离",
+   "before_chars": 21415,
+   "after_chars": 1244,
+   "reduction_ratio": 0.9419,
+   "validation_unchanged": true,
+   "slim": {
+    "renderer": "（keyword 卡无卡面入口：确定性去掉自加公开合同面）",
+    "removed_marker": "【附：本批公开合同面（与本题答案无关，仅供自包含；本卡不需要写代码）】",
+    "removed_chars": 20171,
+    "kept_head_is_old_prefix": true,
+    "kept_tail_is_old_substring": true,
+    "card_chars": 1244
+   }
+  }
+ ],
+ "contract_sha256": "3c0b4d3a2fdd1f438e2e5d295e4269f578485032aeddad0eb558fdcce981d4a9",
+ "appendix_sha256": "128f62629162c08efa048aa65750d8562b0fe8a1f638370fbc427cddcfb5066e",
+ "rules_sha256": "56091e8305e61ecc6ead2668376fc133b56ededbb780da3eceb8466be45d575c",
+ "note": "零模型；只重渲染卡面并断言判据/材料/披露未变。"
+}

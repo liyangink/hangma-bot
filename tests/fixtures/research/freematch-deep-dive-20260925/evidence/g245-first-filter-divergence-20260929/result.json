@@ -1,0 +1,2830 @@
+{
+  "analysis_script_sha256": "8a8dd43c316492aebfd2e69454ca4bd8a077ebbfc5f9431574d8c998d47155b2",
+  "boundary": "已看 G243/G244 同墙牌山的事后首分歧归因；完整阶段净分是两策略续打差，不是单次弃牌因果效应或新候选收益。",
+  "correction": "v1 用阶段起始座位索引第二张换位桌的目标单局分；v2 从各桌 hand_account.focal_seat 读取并与决策座位对账。完整阶段净分、首次分歧和模型贡献未变。",
+  "first_divergence_rows": [
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r01-s1-t1:sitin-stage:np-H-20261229423-r01-s1-t1:3:686:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 1,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:2w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 1,
+      "predicted_ownwin_gain": -0.00739273,
+      "root_index": 1,
+      "round_no": 3,
+      "table_id": "np-H-20261229423-r01-s1-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 10,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 10,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:9w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r01-s3-t1:sitin-stage:np-H-20261229423-r01-s3-t1:2:240:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 3,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 24,
+      "mix": "H",
+      "parent_action": "discard:4b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 2,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.005555911,
+      "root_index": 1,
+      "round_no": 2,
+      "table_id": "np-H-20261229423-r01-s3-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -2,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -2,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:9w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 2,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r02-s1-t2:sitin-stage:np-H-20261229423-r02-s1-t2:4:664:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 54,
+      "focal_seat": 1,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 54,
+      "mix": "H",
+      "parent_action": "discard:4b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 1.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.004751057,
+      "root_index": 2,
+      "round_no": 4,
+      "table_id": "np-H-20261229423-r02-s1-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": -7,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:9w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 2,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r02-s3-t1:sitin-stage:np-H-20261229423-r02-s3-t1:1:16:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 3,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:2w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.004533172,
+      "root_index": 2,
+      "round_no": 1,
+      "table_id": "np-H-20261229423-r02-s3-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 2
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 2
+        }
+      },
+      "wider_action": "discard:1t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r03-s2-t2:sitin-stage:np-H-20261229423-r03-s2-t2:4:849:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 2,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:4b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.000112223,
+      "root_index": 3,
+      "round_no": 4,
+      "table_id": "np-H-20261229423-r03-s2-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": 48,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": 48,
+          "winner_seat": 3
+        }
+      },
+      "wider_action": "discard:3t",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r04-s1-t1:sitin-stage:np-H-20261229423-r04-s1-t1:4:777:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 1,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:4b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.000182332,
+      "root_index": 4,
+      "round_no": 4,
+      "table_id": "np-H-20261229423-r04-s1-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:2w",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r04-s2-t2:sitin-stage:np-H-20261229423-r04-s2-t2:3:645:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 65,
+      "focal_seat": 2,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 65,
+      "mix": "H",
+      "parent_action": "discard:5b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.002815587,
+      "root_index": 4,
+      "round_no": 3,
+      "table_id": "np-H-20261229423-r04-s2-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 32,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 24,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:1b",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r05-s2-t1:sitin-stage:np-H-20261229423-r05-s2-t1:1:131:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 2,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:4w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.004719479,
+      "root_index": 5,
+      "round_no": 1,
+      "table_id": "np-H-20261229423-r05-s2-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -2,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -2,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:9t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 7,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r05-s3-t1:sitin-stage:np-H-20261229423-r05-s3-t1:4:737:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 3,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:5t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 2,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.006683527,
+      "root_index": 5,
+      "round_no": 4,
+      "table_id": "np-H-20261229423-r05-s3-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:9t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 2,
+      "width_public_capacity_gain": 7,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r06-s0-t1:sitin-stage:np-H-20261229423-r06-s0-t1:1:71:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 29,
+      "focal_seat": 0,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 29,
+      "mix": "H",
+      "parent_action": "discard:8w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.000300302,
+      "root_index": 6,
+      "round_no": 1,
+      "table_id": "np-H-20261229423-r06-s0-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 32,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 24,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:5w",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r06-s1-t2:sitin-stage:np-H-20261229423-r06-s1-t2:3:377:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 8,
+      "focal_seat": 1,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 8,
+      "mix": "H",
+      "parent_action": "discard:6t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 5,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.002893617,
+      "root_index": 6,
+      "round_no": 3,
+      "table_id": "np-H-20261229423-r06-s1-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 8,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:1t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 5,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r06-s2-t1:sitin-stage:np-H-20261229423-r06-s2-t1:4:815:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 2,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:7b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 2.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.003486723,
+      "root_index": 6,
+      "round_no": 4,
+      "table_id": "np-H-20261229423-r06-s2-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:1t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 1,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r07-s0-t1:sitin-stage:np-H-20261229423-r07-s0-t1:5:796:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 0,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:6b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 1.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.004826451,
+      "root_index": 7,
+      "round_no": 5,
+      "table_id": "np-H-20261229423-r07-s0-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 24,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 24,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:9b",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 6,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r08-s3-t1:sitin-stage:np-H-20261229423-r08-s3-t1:1:80:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 3,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:4b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 2.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.003294151,
+      "root_index": 8,
+      "round_no": 1,
+      "table_id": "np-H-20261229423-r08-s3-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:1w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 5,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r09-s0-t1:sitin-stage:np-H-20261229423-r09-s0-t1:6:1336:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 5,
+      "focal_seat": 0,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 5,
+      "mix": "H",
+      "parent_action": "discard:9b",
+      "parent_discards_terminal": true,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 5,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.000130323,
+      "root_index": 9,
+      "round_no": 6,
+      "table_id": "np-H-20261229423-r09-s0-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 18,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 10,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:9t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 5,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r09-s1-t2:sitin-stage:np-H-20261229423-r09-s1-t2:1:83:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 1,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:4t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -2.9298e-05,
+      "root_index": 9,
+      "round_no": 1,
+      "table_id": "np-H-20261229423-r09-s1-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:8t",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r09-s2-t2:sitin-stage:np-H-20261229423-r09-s2-t2:4:523:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 2,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:2b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 5,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.000161855,
+      "root_index": 9,
+      "round_no": 4,
+      "table_id": "np-H-20261229423-r09-s2-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 2
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 2
+        }
+      },
+      "wider_action": "discard:2t",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 5,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r10-s0-t2:sitin-stage:np-H-20261229423-r10-s0-t2:1:89:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 4,
+      "focal_seat": 0,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 4,
+      "mix": "H",
+      "parent_action": "discard:1t",
+      "parent_discards_terminal": true,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.000123804,
+      "root_index": 10,
+      "round_no": 1,
+      "table_id": "np-H-20261229423-r10-s0-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 3
+        }
+      },
+      "wider_action": "discard:9b",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r10-s1-t1:sitin-stage:np-H-20261229423-r10-s1-t1:4:888:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 24,
+      "focal_seat": 1,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 24,
+      "mix": "H",
+      "parent_action": "discard:6t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 5,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.003322829,
+      "root_index": 10,
+      "round_no": 4,
+      "table_id": "np-H-20261229423-r10-s1-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 24,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": 48,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 24,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:1t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 5,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r11-s2-t2:sitin-stage:np-H-20261229423-r11-s2-t2:8:1362:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 32,
+      "focal_seat": 2,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 32,
+      "mix": "H",
+      "parent_action": "discard:5t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 6.0,
+      "parent_seven_pairs_shanten": 2,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.005996314,
+      "root_index": 11,
+      "round_no": 8,
+      "table_id": "np-H-20261229423-r11-s2-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 32,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 24,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 2
+        }
+      },
+      "wider_action": "discard:9b",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 2,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r11-s3-t2:sitin-stage:np-H-20261229423-r11-s3-t2:1:126:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 10,
+      "focal_seat": 3,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 10,
+      "mix": "H",
+      "parent_action": "discard:4w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 1,
+      "predicted_ownwin_gain": -0.007427,
+      "root_index": 11,
+      "round_no": 1,
+      "table_id": "np-H-20261229423-r11-s3-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": -8,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 2
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 2
+        }
+      },
+      "wider_action": "discard:9w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r13-s0-t2:sitin-stage:np-H-20261229423-r13-s0-t2:1:30:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 0,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:8w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 5,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.000146786,
+      "root_index": 13,
+      "round_no": 1,
+      "table_id": "np-H-20261229423-r13-s0-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 11,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 10,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 3
+        }
+      },
+      "wider_action": "discard:2b",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 5,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r14-s1-t2:sitin-stage:np-H-20261229423-r14-s1-t2:1:105:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 1,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:7t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.004275106,
+      "root_index": 14,
+      "round_no": 1,
+      "table_id": "np-H-20261229423-r14-s1-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 3
+        }
+      },
+      "wider_action": "discard:9t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 7,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r15-s1-t1:sitin-stage:np-H-20261229423-r15-s1-t1:2:99:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 10,
+      "focal_seat": 1,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 10,
+      "mix": "H",
+      "parent_action": "discard:2b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.000178272,
+      "root_index": 15,
+      "round_no": 2,
+      "table_id": "np-H-20261229423-r15-s1-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 7,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 2
+        }
+      },
+      "wider_action": "discard:6t",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r15-s2-t1:sitin-stage:np-H-20261229423-r15-s2-t1:1:59:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 2,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:3t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 5,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.002130221,
+      "root_index": 15,
+      "round_no": 1,
+      "table_id": "np-H-20261229423-r15-s2-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:9t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r16-s0-t2:sitin-stage:np-H-20261229423-r16-s0-t2:6:1118:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 8,
+      "focal_seat": 0,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 8,
+      "mix": "H",
+      "parent_action": "discard:2w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 1,
+      "predicted_ownwin_gain": -0.00409662,
+      "root_index": 16,
+      "round_no": 6,
+      "table_id": "np-H-20261229423-r16-s0-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 8,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 2
+        },
+        "g243_filtered": {
+          "details": [
+            "七对"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 3
+        }
+      },
+      "wider_action": "discard:9w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 2,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-H-20261229423-r16-s3-t1:sitin-stage:np-H-20261229423-r16-s3-t1:3:284:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 3,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "H",
+      "parent_action": "discard:6t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 2.0,
+      "parent_seven_pairs_shanten": 2,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.00053595,
+      "root_index": 16,
+      "round_no": 3,
+      "table_id": "np-H-20261229423-r16-s3-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:8w",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 2,
+      "width_public_capacity_gain": 7,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r01-s0-t2:sitin-stage:np-M-20261229423-r01-s0-t2:6:1295:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 0,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:6w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 1.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.004339331,
+      "root_index": 1,
+      "round_no": 6,
+      "table_id": "np-M-20261229423-r01-s0-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 2
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 2
+        }
+      },
+      "wider_action": "discard:9t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 2,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r01-s1-t2:sitin-stage:np-M-20261229423-r01-s1-t2:6:915:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 1,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:2w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.000163925,
+      "root_index": 1,
+      "round_no": 6,
+      "table_id": "np-M-20261229423-r01-s1-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:5w",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r02-s0-t1:sitin-stage:np-M-20261229423-r02-s0-t1:1:118:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 0,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:9b",
+      "parent_discards_terminal": true,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -6.4534e-05,
+      "root_index": 2,
+      "round_no": 1,
+      "table_id": "np-M-20261229423-r02-s0-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:9w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r02-s1-t1:sitin-stage:np-M-20261229423-r02-s1-t1:1:78:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 1,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:2w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 1,
+      "predicted_ownwin_gain": -0.00027506,
+      "root_index": 2,
+      "round_no": 1,
+      "table_id": "np-M-20261229423-r02-s1-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:8w",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r02-s3-t2:sitin-stage:np-M-20261229423-r02-s3-t2:6:807:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 3,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:5t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -5.7327e-05,
+      "root_index": 2,
+      "round_no": 6,
+      "table_id": "np-M-20261229423-r02-s3-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:5w",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r03-s2-t1:sitin-stage:np-M-20261229423-r03-s2-t1:3:401:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 2,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:3w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.004215646,
+      "root_index": 3,
+      "round_no": 3,
+      "table_id": "np-M-20261229423-r03-s2-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "七对"
+          ],
+          "fan": 2,
+          "focal_score_delta": -2,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "七对"
+          ],
+          "fan": 2,
+          "focal_score_delta": -2,
+          "winner_seat": 3
+        }
+      },
+      "wider_action": "discard:9w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r03-s3-t1:sitin-stage:np-M-20261229423-r03-s3-t1:7:1317:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 3,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:6b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 1,
+      "predicted_ownwin_gain": -0.0069717,
+      "root_index": 3,
+      "round_no": 7,
+      "table_id": "np-M-20261229423-r03-s3-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:1w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r05-s0-t1:sitin-stage:np-M-20261229423-r05-s0-t1:4:816:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 2,
+      "focal_seat": 0,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 2,
+      "mix": "M",
+      "parent_action": "discard:3b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -5.177e-05,
+      "root_index": 5,
+      "round_no": 4,
+      "table_id": "np-M-20261229423-r05-s0-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": -7,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 2
+        }
+      },
+      "wider_action": "discard:8b",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 7,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r05-s1-t1:sitin-stage:np-M-20261229423-r05-s1-t1:1:123:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 1,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:2b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 2,
+      "parent_standard_shanten": 1,
+      "predicted_ownwin_gain": -0.000205735,
+      "root_index": 5,
+      "round_no": 1,
+      "table_id": "np-M-20261229423-r05-s1-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:4t",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 2,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r05-s3-t1:sitin-stage:np-M-20261229423-r05-s3-t1:4:563:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 3,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 32,
+      "mix": "M",
+      "parent_action": "discard:5b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 2.0,
+      "parent_seven_pairs_shanten": 5,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.001856336,
+      "root_index": 5,
+      "round_no": 4,
+      "table_id": "np-M-20261229423-r05-s3-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:1b",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 1,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r06-s0-t2:sitin-stage:np-M-20261229423-r06-s0-t2:1:53:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": -45,
+      "focal_seat": 0,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": -45,
+      "mix": "M",
+      "parent_action": "discard:6w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 2.0,
+      "parent_seven_pairs_shanten": 2,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.000652613,
+      "root_index": 6,
+      "round_no": 1,
+      "table_id": "np-M-20261229423-r06-s0-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": -11,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 2
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 10,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:4b",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 2,
+      "width_public_capacity_gain": 6,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r06-s2-t2:sitin-stage:np-M-20261229423-r06-s2-t2:1:65:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 2,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:5t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.003098156,
+      "root_index": 6,
+      "round_no": 1,
+      "table_id": "np-M-20261229423-r06-s2-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:1t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r06-s3-t2:sitin-stage:np-M-20261229423-r06-s3-t2:2:316:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 1,
+      "focal_seat": 3,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 1,
+      "mix": "M",
+      "parent_action": "discard:5w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.000144044,
+      "root_index": 6,
+      "round_no": 2,
+      "table_id": "np-M-20261229423-r06-s3-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 1,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -2,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:6b",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r07-s1-t2:sitin-stage:np-M-20261229423-r07-s1-t2:7:1646:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 1,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:3b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 2.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.00443618,
+      "root_index": 7,
+      "round_no": 7,
+      "table_id": "np-M-20261229423-r07-s1-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:9t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 5,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r07-s2-t2:sitin-stage:np-M-20261229423-r07-s2-t2:2:295:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 11,
+      "focal_seat": 2,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 11,
+      "mix": "M",
+      "parent_action": "discard:4t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 2.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 1,
+      "predicted_ownwin_gain": -0.004428695,
+      "root_index": 7,
+      "round_no": 2,
+      "table_id": "np-M-20261229423-r07-s2-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 7,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:1b",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 1,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r07-s3-t1:sitin-stage:np-M-20261229423-r07-s3-t1:2:333:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 43,
+      "focal_seat": 3,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 43,
+      "mix": "M",
+      "parent_action": "discard:1t",
+      "parent_discards_terminal": true,
+      "parent_score_advantage": 2.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.000103548,
+      "root_index": 7,
+      "round_no": 2,
+      "table_id": "np-M-20261229423-r07-s3-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 56,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": 48,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:1b",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 5,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r08-s0-t1:sitin-stage:np-M-20261229423-r08-s0-t1:1:24:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 0,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:1w",
+      "parent_discards_terminal": true,
+      "parent_score_advantage": 1.0,
+      "parent_seven_pairs_shanten": 6,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.000162563,
+      "root_index": 8,
+      "round_no": 1,
+      "table_id": "np-M-20261229423-r08-s0-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:9b",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 6,
+      "width_public_capacity_gain": 6,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r09-s3-t2:sitin-stage:np-M-20261229423-r09-s3-t2:1:72:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 3,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:8w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.003975565,
+      "root_index": 9,
+      "round_no": 1,
+      "table_id": "np-M-20261229423-r09-s3-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 3
+        }
+      },
+      "wider_action": "discard:1w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r10-s1-t2:sitin-stage:np-M-20261229423-r10-s1-t2:1:58:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": -8,
+      "focal_seat": 1,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": -8,
+      "mix": "M",
+      "parent_action": "discard:2t",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 5,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.002919155,
+      "root_index": 10,
+      "round_no": 1,
+      "table_id": "np-M-20261229423-r10-s1-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": -8,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:9w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 5,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r10-s2-t2:sitin-stage:np-M-20261229423-r10-s2-t2:1:129:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 2,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:3w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 4.0,
+      "parent_seven_pairs_shanten": 2,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -3.8078e-05,
+      "root_index": 10,
+      "round_no": 1,
+      "table_id": "np-M-20261229423-r10-s2-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:5w",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 2,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r11-s0-t1:sitin-stage:np-M-20261229423-r11-s0-t1:1:24:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 56,
+      "focal_seat": 0,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 56,
+      "mix": "M",
+      "parent_action": "discard:1t",
+      "parent_discards_terminal": true,
+      "parent_score_advantage": 1.0,
+      "parent_seven_pairs_shanten": 5,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.000154568,
+      "root_index": 11,
+      "round_no": 1,
+      "table_id": "np-M-20261229423-r11-s0-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 56,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": 24,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "豪华七对×1"
+          ],
+          "fan": 4,
+          "focal_score_delta": -32,
+          "winner_seat": 3
+        }
+      },
+      "wider_action": "discard:9b",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 5,
+      "width_public_capacity_gain": 6,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r11-s1-t2:sitin-stage:np-M-20261229423-r11-s1-t2:7:1455:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 1,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:4w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 1,
+      "parent_standard_shanten": 1,
+      "predicted_ownwin_gain": -2.7759e-05,
+      "root_index": 11,
+      "round_no": 7,
+      "table_id": "np-M-20261229423-r11-s1-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "七对"
+          ],
+          "fan": 2,
+          "focal_score_delta": -2,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "七对"
+          ],
+          "fan": 2,
+          "focal_score_delta": -2,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:6b",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 1,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r11-s2-t2:sitin-stage:np-M-20261229423-r11-s2-t2:3:493:draw:seat3",
+      "first_divergence_table_delta_g239_minus_g243": 1,
+      "focal_seat": 2,
+      "focal_seat_in_table": 3,
+      "full_stage_delta_g239_minus_g243": 1,
+      "mix": "M",
+      "parent_action": "discard:3b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 1.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -8.406e-05,
+      "root_index": 11,
+      "round_no": 3,
+      "table_id": "np-M-20261229423-r11-s2-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": -6,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 2
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": -2,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:6b",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r12-s0-t2:sitin-stage:np-M-20261229423-r12-s0-t2:2:322:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 0,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:2w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 2,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.006164164,
+      "root_index": 12,
+      "round_no": 2,
+      "table_id": "np-M-20261229423-r12-s0-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:9w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 2,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r13-s1-t1:sitin-stage:np-M-20261229423-r13-s1-t1:2:208:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 1,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:6w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 3.0,
+      "parent_seven_pairs_shanten": 4,
+      "parent_standard_shanten": 2,
+      "predicted_ownwin_gain": -0.000161927,
+      "root_index": 13,
+      "round_no": 2,
+      "table_id": "np-M-20261229423-r13-s1-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 3
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 3
+        }
+      },
+      "wider_action": "discard:2t",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 4,
+      "width_public_capacity_gain": 4,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r14-s0-t1:sitin-stage:np-M-20261229423-r14-s0-t1:2:319:draw:seat0",
+      "first_divergence_table_delta_g239_minus_g243": 15,
+      "focal_seat": 0,
+      "focal_seat_in_table": 0,
+      "full_stage_delta_g239_minus_g243": 15,
+      "mix": "M",
+      "parent_action": "discard:8b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": 1.0,
+      "parent_seven_pairs_shanten": 5,
+      "parent_standard_shanten": 1,
+      "predicted_ownwin_gain": -0.006708866,
+      "root_index": 14,
+      "round_no": 2,
+      "table_id": "np-M-20261229423-r14-s0-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 21,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "爆头"
+          ],
+          "fan": 2,
+          "focal_score_delta": 20,
+          "winner_seat": 0
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -1,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:9t",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 5,
+      "width_public_capacity_gain": 2,
+      "width_type_gain": 1
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r15-s0-t2:sitin-stage:np-M-20261229423-r15-s0-t2:6:1332:draw:seat1",
+      "first_divergence_table_delta_g239_minus_g243": -18,
+      "focal_seat": 0,
+      "focal_seat_in_table": 1,
+      "full_stage_delta_g239_minus_g243": -18,
+      "mix": "M",
+      "parent_action": "discard:2w",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 3,
+      "predicted_ownwin_gain": -0.000328922,
+      "root_index": 15,
+      "round_no": 6,
+      "table_id": "np-M-20261229423-r15-s0-t2",
+      "table_index": 2,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 2
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡"
+          ],
+          "fan": 1,
+          "focal_score_delta": -8,
+          "winner_seat": 0
+        }
+      },
+      "wider_action": "discard:6b",
+      "wider_discards_terminal": false,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 8,
+      "width_type_gain": 2
+    },
+    {
+      "baotou_state_equal": true,
+      "decision_id": "sitin-stage:np-M-20261229423-r15-s2-t1:sitin-stage:np-M-20261229423-r15-s2-t1:4:843:draw:seat2",
+      "first_divergence_table_delta_g239_minus_g243": 0,
+      "focal_seat": 2,
+      "focal_seat_in_table": 2,
+      "full_stage_delta_g239_minus_g243": 0,
+      "mix": "M",
+      "parent_action": "discard:2b",
+      "parent_discards_terminal": false,
+      "parent_score_advantage": -0.0,
+      "parent_seven_pairs_shanten": 3,
+      "parent_standard_shanten": 1,
+      "predicted_ownwin_gain": -0.005808379,
+      "root_index": 15,
+      "round_no": 4,
+      "table_id": "np-M-20261229423-r15-s2-t1",
+      "table_index": 1,
+      "target_hand_delta_g239_minus_g243": 0,
+      "target_hand_outcomes": {
+        "g239_wider": {
+          "details": [
+            "平胡",
+            "杠开"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 1
+        },
+        "g243_filtered": {
+          "details": [
+            "平胡",
+            "杠开"
+          ],
+          "fan": 2,
+          "focal_score_delta": -16,
+          "winner_seat": 1
+        }
+      },
+      "wider_action": "discard:9w",
+      "wider_discards_terminal": true,
+      "wider_seven_pairs_shanten": 3,
+      "width_public_capacity_gain": 3,
+      "width_type_gain": 2
+    }
+  ],
+  "g242_model_sha256": "f3eb4e7eed1ed1ef388e7afeda0fbad8e3eb7df9899650bfc447922cded55ccf",
+  "g244_result_sha256": "575ff9277ac681e5c56e607aa69aeb7ecc64196354ac4dfc4b2c6117a1d87dd8",
+  "no_filter_identical_stage_ids": [
+    "H-r0001-s0",
+    "H-r0001-s2",
+    "H-r0002-s0",
+    "H-r0002-s2",
+    "H-r0003-s0",
+    "H-r0003-s1",
+    "H-r0003-s3",
+    "H-r0004-s0",
+    "H-r0004-s3",
+    "H-r0005-s0",
+    "H-r0005-s1",
+    "H-r0006-s3",
+    "H-r0007-s1",
+    "H-r0007-s2",
+    "H-r0007-s3",
+    "H-r0008-s0",
+    "H-r0008-s1",
+    "H-r0008-s2",
+    "H-r0009-s3",
+    "H-r0010-s2",
+    "H-r0010-s3",
+    "H-r0011-s0",
+    "H-r0011-s1",
+    "H-r0012-s0",
+    "H-r0012-s1",
+    "H-r0012-s2",
+    "H-r0012-s3",
+    "H-r0013-s1",
+    "H-r0013-s2",
+    "H-r0013-s3",
+    "H-r0014-s0",
+    "H-r0014-s2",
+    "H-r0014-s3",
+    "H-r0015-s0",
+    "H-r0015-s3",
+    "H-r0016-s1",
+    "H-r0016-s2",
+    "M-r0001-s2",
+    "M-r0001-s3",
+    "M-r0002-s2",
+    "M-r0003-s0",
+    "M-r0003-s1",
+    "M-r0004-s0",
+    "M-r0004-s1",
+    "M-r0004-s2",
+    "M-r0004-s3",
+    "M-r0005-s2",
+    "M-r0006-s1",
+    "M-r0007-s0",
+    "M-r0008-s1",
+    "M-r0008-s2",
+    "M-r0008-s3",
+    "M-r0009-s0",
+    "M-r0009-s1",
+    "M-r0009-s2",
+    "M-r0010-s0",
+    "M-r0010-s3",
+    "M-r0011-s3",
+    "M-r0012-s1",
+    "M-r0012-s2",
+    "M-r0012-s3",
+    "M-r0013-s0",
+    "M-r0013-s2",
+    "M-r0013-s3",
+    "M-r0014-s1",
+    "M-r0014-s2",
+    "M-r0014-s3",
+    "M-r0015-s1",
+    "M-r0015-s3",
+    "M-r0016-s0",
+    "M-r0016-s1",
+    "M-r0016-s2",
+    "M-r0016-s3"
+  ],
+  "schema": "g245-first-filter-divergence-audit/2",
+  "source_stage_sha256": {
+    "H-r0001-s0-g239_numeric_route.json": "e5e13ba7cfcde50ef184d77024359d8664058858826c21d1a235060b2d6dc178",
+    "H-r0001-s0-g243_competing_risk_filter.json": "39420ae86b399946796d34535d6ec7946bbcc1d79d6f3edaf29588fb7dcad23e",
+    "H-r0001-s1-g239_numeric_route.json": "a3e9e79993344ef38c4b7400b2bdc4e6a20be0e50342dfa15933fcc8b64a8a44",
+    "H-r0001-s1-g243_competing_risk_filter.json": "eb9ba5e166e50f25e4eed625bc033dbbe2e957a060e2d67e87efd119922f15dd",
+    "H-r0001-s2-g239_numeric_route.json": "fdc094ebb13db382b047e87b24544c4f6d5bf581b1e0899e10ae71a01a044002",
+    "H-r0001-s2-g243_competing_risk_filter.json": "223dae7dea010b4bfe4b3cf835e2ec52c9e76678c8fd47809dcae9bd541f2742",
+    "H-r0001-s3-g239_numeric_route.json": "e6c343695a916537fd72b8c7dd9589d4b4d427642e05a8c882c744e807279531",
+    "H-r0001-s3-g243_competing_risk_filter.json": "2ee5b427c122178cb457cb42180bb282751c4faf276af5a8a884900c6df2ace5",
+    "H-r0002-s0-g239_numeric_route.json": "b6dd9aaa446e7524202f6aafddc37433527a60b16774da07e3c31f174effcf56",
+    "H-r0002-s0-g243_competing_risk_filter.json": "0760f1102d43eca825a23db1574f0641fe3a88617f4bac072a4364cf184a4525",
+    "H-r0002-s1-g239_numeric_route.json": "b85cc9207916a1210c1b4855d537d49296edc2b2675b4096db502465410ef8e9",
+    "H-r0002-s1-g243_competing_risk_filter.json": "93c498b0ca391d9ecd6595bba97540f66944044cb5491f7f310ccf619b1a7680",
+    "H-r0002-s2-g239_numeric_route.json": "95cb76e96211645a320ccdf378679a6273fa33112ef326e5b8f5d67a744b5e3a",
+    "H-r0002-s2-g243_competing_risk_filter.json": "28ca87340e8a736651a2eab056ccc9ffbf7a6fe83026e5d83b69bc89acb3a6b6",
+    "H-r0002-s3-g239_numeric_route.json": "eed60be0ef44bab5337691f772f29240dba438764ac995735dbd32eb5f952c98",
+    "H-r0002-s3-g243_competing_risk_filter.json": "40f5778b92d6a3c3c0dd44602792c0091e49c3e58dd729bec4abf249461e9954",
+    "H-r0003-s0-g239_numeric_route.json": "460be7f29aea54ff6b290cdb283d0774179182dcfb42b4f9bde14ba1645ee9b5",
+    "H-r0003-s0-g243_competing_risk_filter.json": "3db33f2dacf17766bcc3ccdbdef3e69f496fd85c9abf04293b26c2c462f6c62f",
+    "H-r0003-s1-g239_numeric_route.json": "e60719838a342a60cae99625df526f1851a81f2e4ff235a7b347068c8f25693f",
+    "H-r0003-s1-g243_competing_risk_filter.json": "9affb814a9fa6ed5a2f714ab0135d635f013bfbd820be1f290ab4f4fca06d17e",
+    "H-r0003-s2-g239_numeric_route.json": "dde40ded3d178a69d8969d0da786625586a87362b08b470d77da7c79211fde25",
+    "H-r0003-s2-g243_competing_risk_filter.json": "3c62c36e4b360ab59d195d0c822a0a5a50ff3ce2327dac067b77abc71adac585",
+    "H-r0003-s3-g239_numeric_route.json": "94278f74d27f348aa3850962c8025a345bdf6a791c176c071ce1d948baf7a223",
+    "H-r0003-s3-g243_competing_risk_filter.json": "6c5a8599b095643ed36632f5935080876f1d477dd335f580dd9e1a20be52a60c",
+    "H-r0004-s0-g239_numeric_route.json": "c977959ce9e6c0e9c632ccda3b713df150cb33fee37ca49ea3d2314ee534d66c",
+    "H-r0004-s0-g243_competing_risk_filter.json": "f269f8d6107231f1d0a8f87ebb0ddbbdcdbdac49acc1f3836d5eaed68708b121",
+    "H-r0004-s1-g239_numeric_route.json": "b6edca3bf728bc43d87083bba6ad0a0dd7e62bd95b7e4a1829d92ea18f8d25f6",
+    "H-r0004-s1-g243_competing_risk_filter.json": "81bc0234c6ed7f1978ca462e6885cb5a8c01d04a6506580a934aca952b026c3c",
+    "H-r0004-s2-g239_numeric_route.json": "9516fa398d3bb78f9ef0f078b3667fbd97d4693343148d02a78e80687b81fc59",
+    "H-r0004-s2-g243_competing_risk_filter.json": "eecb21f8f4b18a38a9c37e582e820a9b6a9f190433f538b33a5374cf6489517a",
+    "H-r0004-s3-g239_numeric_route.json": "6221f10a67123bf7caf765aa19d249fc216eb97a9f8f057aa8d629fd14d96430",
+    "H-r0004-s3-g243_competing_risk_filter.json": "7d6d82dbf01dc7023023ddccc8ef980c97af648dbec8f027b70f932c7cb460e4",
+    "H-r0005-s0-g239_numeric_route.json": "0fa69a59abf59c0bbbfc397462f125e5eec19ee1c71d46e02c0e450c133d0dc4",
+    "H-r0005-s0-g243_competing_risk_filter.json": "b65742462f189ad26fad2f713cf96dc55f39d56be0ed381315e3e9a6e9c6dd1b",
+    "H-r0005-s1-g239_numeric_route.json": "5615c5d1712877966e68e02f363f048ee73becda88df9f3eb55b63597028c449",
+    "H-r0005-s1-g243_competing_risk_filter.json": "0b0e158cc3d127b245f5092bbdfb74ccb86177ba038e5d126ed32029ab27281d",
+    "H-r0005-s2-g239_numeric_route.json": "80ef0bda5049c91be2282fe7ace0bbff500f5b4c33c4f47c63d6f060b0ade424",
+    "H-r0005-s2-g243_competing_risk_filter.json": "30251988b794376b352456c0e72f29d0cbd09e0817faf902b8604e5cecdd7b44",
+    "H-r0005-s3-g239_numeric_route.json": "9b9291ee7a4d366d2b6ba79a525c4da3c74ceb84575c68940d17a03200be5cdb",
+    "H-r0005-s3-g243_competing_risk_filter.json": "7b75c13d3260fde1fa9a3b067d947a903ec838f50fbedadfb3451784317483af",
+    "H-r0006-s0-g239_numeric_route.json": "8f177fb1de59d805324ed6eba6d6e4d39f186e332f727709bf0a02ae3a1e445a",
+    "H-r0006-s0-g243_competing_risk_filter.json": "5546262b6aaa23db8f5bcb0248af9336cfedc21f3d80356117e6a208beaca1fa",
+    "H-r0006-s1-g239_numeric_route.json": "6e5a131160d9ff53eb926ab54e17440c4f1020a043dffa15e4f24567c52a615f",
+    "H-r0006-s1-g243_competing_risk_filter.json": "ae64619acaeca5910da33734a9cef83b940a0460cbc1196ba9dfe99a4cb9c174",
+    "H-r0006-s2-g239_numeric_route.json": "ec7e7ab2fd519ee0aa83552272df2bd8bf81617af55257984e5cfcb1afb1bf21",
+    "H-r0006-s2-g243_competing_risk_filter.json": "beaad0c92814ef026d9a0e3b5148ac579c2f704673921aa3f6b15954a17608c2",
+    "H-r0006-s3-g239_numeric_route.json": "fe770b827380095b819dbbe043bd8e717bf6e0962d23565028947be07caed5b7",
+    "H-r0006-s3-g243_competing_risk_filter.json": "376f2bf79030822dd497bc88b1d80ea2dd4d6e0a372e9f6d0638c1849ade5f48",
+    "H-r0007-s0-g239_numeric_route.json": "b0e8a01950c445acd75e64121ab0266d3dac7da16ba59211c7262a5dc63b0095",
+    "H-r0007-s0-g243_competing_risk_filter.json": "3e955083c68b71b7de9e4b13d82141076b95fdd1b1839cb5df90ac3876186ae8",
+    "H-r0007-s1-g239_numeric_route.json": "984fad80daa76f13d8ffa48381050cd898d0edd735ef8d799afe52bf588692df",
+    "H-r0007-s1-g243_competing_risk_filter.json": "8f009e14801d7d63366f23dcb0b6573f4b30bac77fbcd3645b14cd2d0b9330a7",
+    "H-r0007-s2-g239_numeric_route.json": "7124a3eee9b3925446247d2f63f41e0ec8183ea56096a51c3abe2d24f4a7b912",
+    "H-r0007-s2-g243_competing_risk_filter.json": "2dea43fcb4fd138f68e1dc32c6dee8bfd6d4a2211fa6b8f82c29bdd91e3c6ed8",
+    "H-r0007-s3-g239_numeric_route.json": "d3d41c8ff26da3ba32318e16f4ab13e7cda9f4d975edbd635f9f20c6ca470eb2",
+    "H-r0007-s3-g243_competing_risk_filter.json": "73f7f7131df4a2bf123a98854dec3b60e7b25a2d6db266ed343cec706d9e135d",
+    "H-r0008-s0-g239_numeric_route.json": "447461ff953c96a98430b3fa2ea40e3b725b261a4792cbdccf031e8303ef2dec",
+    "H-r0008-s0-g243_competing_risk_filter.json": "35136c585add97321cb9fd6bda44a93e917cfb47c4458a3ebbfb0773c37cef91",
+    "H-r0008-s1-g239_numeric_route.json": "35ef6633d872b7303a9ffb3dd9dae0bbf349d2ce43035899f6ed8be587f8f203",
+    "H-r0008-s1-g243_competing_risk_filter.json": "ba158a973ecdf9cf39882b9e7f780df32983a705ea878df55e6aa8f9cc5ce956",
+    "H-r0008-s2-g239_numeric_route.json": "211112a77f92e34c62933d5902b75400f5817f88e909024d099bbd437939c52a",
+    "H-r0008-s2-g243_competing_risk_filter.json": "ec7c337d256ee24da8a1729ae537388e7db5179de0a38776ea57e9561c79ec8f",
+    "H-r0008-s3-g239_numeric_route.json": "ce9e84fe7e9154e58112a6b15cec61413943f802f84bb05349d050f63aa07f63",
+    "H-r0008-s3-g243_competing_risk_filter.json": "3785e7c096594e2be5fa9fe7d0ae0460bf87e6891534c98d0c4846c7858d37cb",
+    "H-r0009-s0-g239_numeric_route.json": "fde984b0cc48ab9ac53f0950ab096fc30d8c43e0368dc0023bc86a8f8494163e",
+    "H-r0009-s0-g243_competing_risk_filter.json": "3aa218128efe58f585c1b4cef0f6a8a17309f82c8a502f8b0b799a2141e04c74",
+    "H-r0009-s1-g239_numeric_route.json": "6341294f5333c8070c596e3d1bb6a4367d2dda52db31ef43aa708cf13e855b0e",
+    "H-r0009-s1-g243_competing_risk_filter.json": "7b9bdab4633a45018633512f5c080a85fe65295b0e2929c1c84bcf8eaea32988",
+    "H-r0009-s2-g239_numeric_route.json": "12986ffc71d3a9d94911ba6d42cbf3be9494a4319d802aec7d3b07c0238bcd3c",
+    "H-r0009-s2-g243_competing_risk_filter.json": "327a552b9361a801960c7eee877e68401ccc398e0ff8e396fc8a1ea070caa443",
+    "H-r0009-s3-g239_numeric_route.json": "4a82d6920edfa50fbfe3c41a2456c7eaec640a353cd2a6ca7474c5b797bfd4e9",
+    "H-r0009-s3-g243_competing_risk_filter.json": "d5575645a05a20818232e7ec409d66e1c313b1007a1ec0459f4dec3feada81c5",
+    "H-r0010-s0-g239_numeric_route.json": "bddfc5570994c962c3fd02a1fc0ca1eca2462e2918dd0843d61e15a9d75ff5ba",
+    "H-r0010-s0-g243_competing_risk_filter.json": "be4235876dc6a7a6ac04e524ab1273c3e37eb0d8989759a139db8c7388dd98f0",
+    "H-r0010-s1-g239_numeric_route.json": "bd53718571efc95a65787abc096735aa012675b6767bcbcae0c468a5425c6967",
+    "H-r0010-s1-g243_competing_risk_filter.json": "611708c10c87d83b9671cbcc39e6e8299ee56e6a407965556b1a16ca5022a267",
+    "H-r0010-s2-g239_numeric_route.json": "d3243de872b8170d850f3ecfdb425a82ed8ab0d0f3789524876006aa68295795",
+    "H-r0010-s2-g243_competing_risk_filter.json": "29ec8a375fcbf2889e7740ee3555cec5e38d0dad883663ec3fb3f3c930e7c586",
+    "H-r0010-s3-g239_numeric_route.json": "aa790299421ac80eff4938a50f448e88d8c8233f6ddd1a4ae9a008401a5d195b",
+    "H-r0010-s3-g243_competing_risk_filter.json": "220d3f8d86ca6fcf551772ba72ad2360b6dc5de560975cbed2a710e5e41f0d59",
+    "H-r0011-s0-g239_numeric_route.json": "1419d80f1ece19f84f836f31fa3ff2229748f2b19b0fc7f087d59d874439aedb",
+    "H-r0011-s0-g243_competing_risk_filter.json": "6a09dfe04a055bc1a3d8cbaeff339e3c756f88a22d540f8d494815d92199d77c",
+    "H-r0011-s1-g239_numeric_route.json": "5d6c5f9c26b98a2d12f53b76cf0edf3a7f4323d11e688ac097a747fb8340fab4",
+    "H-r0011-s1-g243_competing_risk_filter.json": "7110ba31bc950db71d2f1f93626a293040e1e92f7999799f43773cd6e97552e3",
+    "H-r0011-s2-g239_numeric_route.json": "31d6623d2f809a064358a86dae71aff937bd6c1a1e7cae21be956296a934b20a",
+    "H-r0011-s2-g243_competing_risk_filter.json": "3076fb40f68a97fc9113b569d1248c29e7cc98e76d5f9515dba0c2907622cb56",
+    "H-r0011-s3-g239_numeric_route.json": "da8a5a2586ab51de263f723e0f29ff2cf9cb6502ea4c7deb8583ca6f6f9640ba",
+    "H-r0011-s3-g243_competing_risk_filter.json": "8456f3f99dca3d4356873fa7fa9ffec8416517988240c8f5ac20065ae5d5bfee",
+    "H-r0012-s0-g239_numeric_route.json": "ecf2c269b8c16e4f9ffbab3c060187bdd79ce0beed1741f6953e26a32e9685d8",
+    "H-r0012-s0-g243_competing_risk_filter.json": "7471609ef8fd2ab312bc6bd80bb91e33f95c30be9614469dbe45d4e235f849cc",
+    "H-r0012-s1-g239_numeric_route.json": "4e1b5d672e0d5dd8740a1af4489a8adbe040c722c399bd39003b8b90ce7193b9",
+    "H-r0012-s1-g243_competing_risk_filter.json": "5d9c046b57c131e6393a077fc5d31d5fb7d76252df32103c89b243b04ee46fde",
+    "H-r0012-s2-g239_numeric_route.json": "d1792e802d51e3f64f42d0b321be7082f4c1110cad463756d11f51606f7267e3",
+    "H-r0012-s2-g243_competing_risk_filter.json": "21963c00f83e0d8c9b17f23af7cccf16ee19ec3aa118ad25cba47b0453d8d3d6",
+    "H-r0012-s3-g239_numeric_route.json": "8971419301d7cc0612dd040599c864b90e283849e17bfd4681b56b6bd563408a",
+    "H-r0012-s3-g243_competing_risk_filter.json": "137c5b2caeaa834890bb6cb3a9521d2f0193e24a4b2b1b6bacdce4fc34c1bb05",
+    "H-r0013-s0-g239_numeric_route.json": "0cabc6714beea6b81c669d6248a5b3224ff55ae54cd551322afaf7e88b5e1183",
+    "H-r0013-s0-g243_competing_risk_filter.json": "c242ff756eea3141a174713fd68efa06e01e5bd2f1f14519f5ab0b93fa3fb1c3",
+    "H-r0013-s1-g239_numeric_route.json": "ac28fb01224d3d9592172f1309f1640aca04ca186f37380ba3fd721b3be64f4b",
+    "H-r0013-s1-g243_competing_risk_filter.json": "18c1b483f740cdad2f247da7b0b0bc29e1a9d56f2249f6f66a852b34b8352e78",
+    "H-r0013-s2-g239_numeric_route.json": "ade2a6b4bd69341875490c138bbe014e309dc1afef91b0807d58e876bfaaeb5f",
+    "H-r0013-s2-g243_competing_risk_filter.json": "e3acbd31a5020cfec1220c78663a4487d0bf8749504b14ad1cbeb27062039e50",
+    "H-r0013-s3-g239_numeric_route.json": "b020ab3c805fd8123181ef6b69b8bc5b3cc4c61dad16043f05987af97b4cc003",
+    "H-r0013-s3-g243_competing_risk_filter.json": "c2891600daa20ae3493f70164f9be42d5ec5be7c96c55866decfd340678d6cf6",
+    "H-r0014-s0-g239_numeric_route.json": "31d8dee97b1d199f3e9d24e3332c798f613040f5eb6838b2543ccd59e5b3a04c",
+    "H-r0014-s0-g243_competing_risk_filter.json": "3cc709d7b6517b16a3ef4d43a5a8d260eeae733288b61c21519d5b138628fc8c",
+    "H-r0014-s1-g239_numeric_route.json": "93d969b2dd3b5f8b278979b7274ef88b2af4960631816a71525c40af29abb724",
+    "H-r0014-s1-g243_competing_risk_filter.json": "96a7f7fa0bb743f76c67dafe2268e272a51efdf74c941aa3214a650512d2288a",
+    "H-r0014-s2-g239_numeric_route.json": "71c32511eb1078eeba90174417614ebcaafb37d9f2f3c75e64fffbc79177c2e2",
+    "H-r0014-s2-g243_competing_risk_filter.json": "6a6f67b2135488dac53c0f1873ba7a036a3a0e45ad9b4b16d373f8b872bc7e40",
+    "H-r0014-s3-g239_numeric_route.json": "f8111b569dc95c89a6867eabd9b379293a7707541d6cf6cca6717f4368f3813f",
+    "H-r0014-s3-g243_competing_risk_filter.json": "75fde87a9454ed06327fc8d00cc2d6f73df5ef40e3879c4ba5c7dbf6b6a5cf79",
+    "H-r0015-s0-g239_numeric_route.json": "5d81c3c79923e7c5ce07754d679e4714c1779b71fdd06fdd5364c52d7eb65708",
+    "H-r0015-s0-g243_competing_risk_filter.json": "ac445fe15bf110507b903d18a7b63727856b6f43d5c6a05b04357ca704a4b808",
+    "H-r0015-s1-g239_numeric_route.json": "5770459184fcad2917bb2b34e7170879cf9bf30ccfcfecf8d513f2222c165710",
+    "H-r0015-s1-g243_competing_risk_filter.json": "d7d247c49b38278f3119a73b6ee3eb75c85ec4e92ccabb278708ee5ab9980c49",
+    "H-r0015-s2-g239_numeric_route.json": "6145c75724b84e5404a9fac3e7c6e39f02f1c2cc976ee2a3666ed86cbedd7a1a",
+    "H-r0015-s2-g243_competing_risk_filter.json": "7e742e38013bef4f252e90bac18587547c26b5b650726b018705d3be5acdee27",
+    "H-r0015-s3-g239_numeric_route.json": "0e991b59599d798905a8ec0312fbf3875fd779b0d89ec3b8d80a2d0863ca3516",
+    "H-r0015-s3-g243_competing_risk_filter.json": "0e9408c138866565f42be00829a205bd53aa750ae73ed2d6e28b0ea360176c3e",
+    "H-r0016-s0-g239_numeric_route.json": "76d62ef3821a1d1e53d442ec2287ba058242a7a5ed4711004c2ae410e990d109",
+    "H-r0016-s0-g243_competing_risk_filter.json": "6a6c8889ee4ca3ce3fa6fb78f92b4cab0fb4b7534c46680f300f2b0a14a6d1ae",
+    "H-r0016-s1-g239_numeric_route.json": "994abeebde9b29b7170b3b90b31b9793123201382b33b6ca0576b68f356ae825",
+    "H-r0016-s1-g243_competing_risk_filter.json": "a54e0b14c6d1c95fb1dfc718a621346c71c452df5ad25e619ea454df25e851b1",
+    "H-r0016-s2-g239_numeric_route.json": "73a9d79d9c5b2faf151c9c1e979329b793dc9359ed482a97f5a0d0dde985416c",
+    "H-r0016-s2-g243_competing_risk_filter.json": "b73cef6180bd1c6abd5d1db0faf6ed9e24b3d5caf43cafa4a0a0574345a54276",
+    "H-r0016-s3-g239_numeric_route.json": "6a5216bc83eb96174f22c7538e53c6275e8398625aa8bbd39a7d6c428021305e",
+    "H-r0016-s3-g243_competing_risk_filter.json": "50156321eeb7769930be5defb971cfc8cc8e491cb26acfd3fa5c482c54024b31",
+    "M-r0001-s0-g239_numeric_route.json": "abfcb338fd2d9472b07a05068ce76b2edddf3b54a05bad036c055cc3c067d6bb",
+    "M-r0001-s0-g243_competing_risk_filter.json": "c795bbd14e4de1736f5901f42c0f3f92407987f7a71e99f66af13be3f992714b",
+    "M-r0001-s1-g239_numeric_route.json": "ca2df0ec87fcd2939b1f1e74314d1b29517f984a9a6f47d698e0977458cc4a01",
+    "M-r0001-s1-g243_competing_risk_filter.json": "3b9df336cc4de54c3717f6eda7d6333a810f6ddf5e674cb39f4fb7483ac35f25",
+    "M-r0001-s2-g239_numeric_route.json": "17bea87f212d32d16b99afba1c085f479e630b27b9dd911fe6e83229d7ab21ad",
+    "M-r0001-s2-g243_competing_risk_filter.json": "6d4eeaa3158bad761b55e8f11d6927f83613922982ae03ad6bf447a99a7e6cbc",
+    "M-r0001-s3-g239_numeric_route.json": "3c13bcaba0a8286c8f75df3705cf1a9314c0c0848f4ba2ff5df376e268c8774a",
+    "M-r0001-s3-g243_competing_risk_filter.json": "8d4c3a2a5d7262cc4b23f9b2129df92afdfbc5a527b75ffb5bf6e49fc532c18c",
+    "M-r0002-s0-g239_numeric_route.json": "d37cc4db2a6df9dbdbe457da1986923783df51ab0b4b925c74f178f902b174d1",
+    "M-r0002-s0-g243_competing_risk_filter.json": "e5203e85d4a48a5094280f9b103af71b1e250262476ddf00da280435b10f0b10",
+    "M-r0002-s1-g239_numeric_route.json": "cba4f69106afbf3115adc0052fc28d7368fcd71976ea48c2b0bf2ede7f359b6a",
+    "M-r0002-s1-g243_competing_risk_filter.json": "5d0bf5365fa66c12a81b961b261ec68a13b35fee5d1c6f6825398f82bde62af3",
+    "M-r0002-s2-g239_numeric_route.json": "5ea771e0cf82fcc7c7548c21ef48ccd0abc6c02723af5e6711d258e5f05c97bc",
+    "M-r0002-s2-g243_competing_risk_filter.json": "f77d580dc5fb9a7d3e461fbf30bfd5e6a4aea6d9341c71b344af86948be7ad6c",
+    "M-r0002-s3-g239_numeric_route.json": "d5fcc75f0e1217ad4d931c7e2fea7d06e360f851c24c7a2137e2b4e837216398",
+    "M-r0002-s3-g243_competing_risk_filter.json": "d5cebacd481c1dfc27ec1f945ef67c39c6b6c781d7e0303ee109c231917f016e",
+    "M-r0003-s0-g239_numeric_route.json": "b35f5c5ae74606213547478d3d504003ff5dd3437d944e770ab1aa0b2c9a393f",
+    "M-r0003-s0-g243_competing_risk_filter.json": "0fdf94d3340c6f78a9167ffc06113be3aaaeb7b9ef5263e32a6db3859b33925a",
+    "M-r0003-s1-g239_numeric_route.json": "ac011bc014917cc1ced992d86a55e19daa774e2e6cdbadce9035d4d55c67d7ba",
+    "M-r0003-s1-g243_competing_risk_filter.json": "fc5bc566ca2b70c91518ff3df6692eaf45e9e555e51491633ac7c4cef8f95157",
+    "M-r0003-s2-g239_numeric_route.json": "7657f0446c0b5dad3b5968a5f2fe67be63330b61b65008968ede5c87c3b658a3",
+    "M-r0003-s2-g243_competing_risk_filter.json": "73a2656a3d92bbf8ebe5431fed72889cbd3d48b771d62cbae60a00b03a18a2dc",
+    "M-r0003-s3-g239_numeric_route.json": "d43426ea576760899b8f057e0702942b019cb965d52a4ea1ca0a41881d70e353",
+    "M-r0003-s3-g243_competing_risk_filter.json": "d7f080ef5e9d34c3241a99190d3d0d6db5356c25cc56f570e6b52c76c218f79d",
+    "M-r0004-s0-g239_numeric_route.json": "43a4d4fa3c1e28fcfc8058c4a6c03858c90afde22a65ad33f3bbe77264650cc6",
+    "M-r0004-s0-g243_competing_risk_filter.json": "2dca963c18ccb34838acba705cd7f541528db2c9b545b559201e345d5c5e21b9",
+    "M-r0004-s1-g239_numeric_route.json": "b3fce9bb23ad01bdec936daeccc3ee079afa8c0d7051fd9388f604e81972ed27",
+    "M-r0004-s1-g243_competing_risk_filter.json": "ec0bf868d0fc4c959d3cbe18f9bea3c712d44abcc9a1b3693f23dfe2f85bc168",
+    "M-r0004-s2-g239_numeric_route.json": "f66a8567fcbba3b2fee605deec2b1a0e20e6b7126c834f2f4166a9efdb90f05c",
+    "M-r0004-s2-g243_competing_risk_filter.json": "1b874ea648c9f2ae2a2fa4bf193d4e30c1eade69e7165cf27ecc2d70d0243019",
+    "M-r0004-s3-g239_numeric_route.json": "1eb55033b21293611ddbc160994baf6819e62c72c670d69ba60575bf4312eddd",
+    "M-r0004-s3-g243_competing_risk_filter.json": "7e01ce260d69570398d0e966cae56dfd06ae59e0f52504b181a9a98ba8ee3900",
+    "M-r0005-s0-g239_numeric_route.json": "8c9713edf3ee65393c240686e4460be3e0e79f3aa90ede1a78458a35e57fb93e",
+    "M-r0005-s0-g243_competing_risk_filter.json": "fa7caa0798a82bf3398353e0b69273997fb712160b60853010e79058844562ef",
+    "M-r0005-s1-g239_numeric_route.json": "f727c9c432dbf234eb30ccfb6d23ed642a0620900a2e472ef0e8de268c2dfc1b",
+    "M-r0005-s1-g243_competing_risk_filter.json": "db681042026c32f4ad84d5167861a4ab37a270b049cb09e726d90609e04eacf0",
+    "M-r0005-s2-g239_numeric_route.json": "3c42cf312dd100f6d2fba5bd8098bdbb395b556b4b23680010c3aa3371490c87",
+    "M-r0005-s2-g243_competing_risk_filter.json": "a07480c755689274aef5faaca83adb19ae5933ff75a5c2a0ee49b6b9e71f82b5",
+    "M-r0005-s3-g239_numeric_route.json": "2840bfccf6aa1d294ac17dc6abf5f81195f3833d1e00ba90b55076ddc5e3ce73",
+    "M-r0005-s3-g243_competing_risk_filter.json": "e2fb0b8bcf00b4e09108ba0f402438fba0b70ca5ae003aa23feeef179b584eb5",
+    "M-r0006-s0-g239_numeric_route.json": "e845520ff90c05fa6e7d096ad02c2a325623936abf0eadf4e2c6adae719c6965",
+    "M-r0006-s0-g243_competing_risk_filter.json": "87e84497d753f9b5e5f767c4b046d624ee750a5415f880697561fa046b5531c1",
+    "M-r0006-s1-g239_numeric_route.json": "e9a2c42dbb125b51b3687e808f3908d02e105819156ea3396336a3e3d7135a38",
+    "M-r0006-s1-g243_competing_risk_filter.json": "010d872bf9dba56638bb8653cb9a1a5f6762ca4152a928d4acbafd2fb107f65a",
+    "M-r0006-s2-g239_numeric_route.json": "fc88b4665b072565409f9ae2229a5b3862a6e38624b629fee4507936c752b8ae",
+    "M-r0006-s2-g243_competing_risk_filter.json": "478764816028512dd9ed2d992edace052df034daf8226c12b837efcb903c097d",
+    "M-r0006-s3-g239_numeric_route.json": "8101228e21138e1b725026a417dfb38ecfd0b03ee9865303b5b58fc3141121d4",
+    "M-r0006-s3-g243_competing_risk_filter.json": "21ad553edf3872166b0395b2ad96b13071ec0cb7e8522d792cb9b712fc7f3dcf",
+    "M-r0007-s0-g239_numeric_route.json": "b98c1c0848a570ba2dd55bc319b292d5f8ccf987872dfe0d9439e7b667b9cfc7",
+    "M-r0007-s0-g243_competing_risk_filter.json": "605986174659989ed550417cb447d52e62cccde3ce290c90ad6f30f6bf03a987",
+    "M-r0007-s1-g239_numeric_route.json": "55dd296d84f138736a75cfd260c077a6a57abb210cb29e7a06dc7b1ef462c030",
+    "M-r0007-s1-g243_competing_risk_filter.json": "22d55952e9e3d2ed86c3d6f32de12a30b2d8c45286b7ebc4a9b1aa953c2d1008",
+    "M-r0007-s2-g239_numeric_route.json": "ee2b58f338d2ac4cda279d93f60d7b4d73b4a01ddb8fdc345eb5d4b1a880205c",
+    "M-r0007-s2-g243_competing_risk_filter.json": "6aae4b8a6ab8794e28c832e18516e8b573da0a75815027ffabd1f8420a4f6163",
+    "M-r0007-s3-g239_numeric_route.json": "f3f5689c396ca2efd7d4b1c366ccf59cf19046f9deb010f3e5322cfdce75734a",
+    "M-r0007-s3-g243_competing_risk_filter.json": "c121b0cfe321eaa6a93517e96056f3f2b002f5fe5f6f78eedb02ce853a5e783c",
+    "M-r0008-s0-g239_numeric_route.json": "b5e91a331d2ebfabbd7f3b8c92223fbca11e0f735b2380f654d8f5e0b7f25d66",
+    "M-r0008-s0-g243_competing_risk_filter.json": "7314d28185c5c4cd7307c3470acff596257b83821f8dbf023933f0d95040503a",
+    "M-r0008-s1-g239_numeric_route.json": "db70aa239f8605b0bd1560341a1f3fb2073d462e138ed0aa00818df3087097d6",
+    "M-r0008-s1-g243_competing_risk_filter.json": "60dcc5e6667826929816ba264ea40639ba4a20ddad60a5628691286734f2afb6",
+    "M-r0008-s2-g239_numeric_route.json": "cf200c62f2730fcd90a72c71ea454c6d9d28d50cf29f17499aac70f8299864b4",
+    "M-r0008-s2-g243_competing_risk_filter.json": "4eb14b52557b7ce11866fc2c1eaa81b66d894aa09920abeecde6e3f8a6eb35ca",
+    "M-r0008-s3-g239_numeric_route.json": "c92e811f83ca7be9a1d5ae12b0d92ebf28b634c056b9d598fc934e67ada916cd",
+    "M-r0008-s3-g243_competing_risk_filter.json": "8004ed6ccacccb1eb5dcf887f37f35006a15535ef699123104399f2b9892258c",
+    "M-r0009-s0-g239_numeric_route.json": "5d9a2b2e83b49b914c5af9863e63dbe7cf6b703df8731bbf794552e303d508b6",
+    "M-r0009-s0-g243_competing_risk_filter.json": "e91e49cfe31f65955bb0f8a09298c151cfe0be055d0e07929ae23c8514810874",
+    "M-r0009-s1-g239_numeric_route.json": "a8a69ad95432f09cbc69c666eb092283462a2c0c5fe4782de5f120dbd46c53fc",
+    "M-r0009-s1-g243_competing_risk_filter.json": "abd173b1f132a9385219c125c7b258c8cbc4dfff755004b4ce39283ad39dbf7d",
+    "M-r0009-s2-g239_numeric_route.json": "827d45c20d4679c6d36f754970635bc9765c02cffe0c9d9b152da35566618a57",
+    "M-r0009-s2-g243_competing_risk_filter.json": "1bfb50294e74582ed9a6c434ad051fb836ad8b892b75bda30eed4fad6619d0a4",
+    "M-r0009-s3-g239_numeric_route.json": "05f2073affef6cecd816badd48b57f37efe66ea70ead068dab676d9fe80e5f50",
+    "M-r0009-s3-g243_competing_risk_filter.json": "9d53c8a46995eede85f6c84220bbba7a2f8af73fd683fa2b6530d03c8b705100",
+    "M-r0010-s0-g239_numeric_route.json": "02055f19f045d2ce75458d3416c143f9cf236fc4d6cef7ace5fe5b0266b31c50",
+    "M-r0010-s0-g243_competing_risk_filter.json": "a90cb4d1d46a224ab5b1cf65985c31c4e573c68baf68e1d6121cbda8318037bc",
+    "M-r0010-s1-g239_numeric_route.json": "aa35708461febf70d278b22b4526a40937bff711eef825a9ce1397ac405b7ca6",
+    "M-r0010-s1-g243_competing_risk_filter.json": "ab82638e617a214c4b665f22bf6fe5b599d0d4970d473dfd6f55d6a36d940370",
+    "M-r0010-s2-g239_numeric_route.json": "102fb9b87b347be028b8909a165f8e7906d7a89f2944e511d8468f7e7ae0fce6",
+    "M-r0010-s2-g243_competing_risk_filter.json": "5612b027ca81cae18998107e48064c381839fbae0f57a184d7c9f9eb495358ec",
+    "M-r0010-s3-g239_numeric_route.json": "eea958dba8099e919f3cc602983bff8a05857e92b56586d29205e1f6f2b331a5",
+    "M-r0010-s3-g243_competing_risk_filter.json": "513c9f0cc30b71a7255ec1ea36170e4dbe1e816680fed297cf1bf54a67bc8276",
+    "M-r0011-s0-g239_numeric_route.json": "858ee9050638ce5ac94245b17d7e6aa453b1468398ab89d74bf98d81bf79218e",
+    "M-r0011-s0-g243_competing_risk_filter.json": "bd9f0a7197fc37400de58d0cb920f99645ffa097ac15364e1c3c47cb3971ae46",
+    "M-r0011-s1-g239_numeric_route.json": "899e043f5441db063686bd8f2847de069031ea1517113f91283dd9efbb0fde97",
+    "M-r0011-s1-g243_competing_risk_filter.json": "0378d8bf861cd66eb41e6b19aa07e93963e62e4786038611384ebeb900f044e9",
+    "M-r0011-s2-g239_numeric_route.json": "677b0f6337718a05cc3ddb59b027f3da94c92102c69747bea8ac9237fa8cb440",
+    "M-r0011-s2-g243_competing_risk_filter.json": "bc7d1047299e43c9f1a4d21d6d0dee3ce8577e90ef7070c530fe371dcf043963",
+    "M-r0011-s3-g239_numeric_route.json": "59b1cfddc303f1679d4440750ca2851dd8e91e1b8b9aad7c5342076a204ecd4e",
+    "M-r0011-s3-g243_competing_risk_filter.json": "b281dfef2f6eb157933104eadcc51b5638e0fe647448fcd6883afbc7e259da90",
+    "M-r0012-s0-g239_numeric_route.json": "f36a18de0ce173ad92cff44fd456a3bbf78115a8005a88f8d0bd1e6c707ae85e",
+    "M-r0012-s0-g243_competing_risk_filter.json": "d554f3f82f08a6ce3fb7cc280548929a6a142ee7877e7372e1246bfcf6479af6",
+    "M-r0012-s1-g239_numeric_route.json": "a63da955a19f2d462b76d5d9b88f9235cc1b4028b6a4cc21f3acef4475ecfda2",
+    "M-r0012-s1-g243_competing_risk_filter.json": "9c17d892a12b311a28ca743b6c70afb288b51a8924fc19acf428c7837ae1cbcd",
+    "M-r0012-s2-g239_numeric_route.json": "1b256167c7d9d5789fd7d05f6272dcef29edb2a66f5f9b13c0b93f7008642e39",
+    "M-r0012-s2-g243_competing_risk_filter.json": "a450168e26b657ec815d7ace9ddf7485cffd4f0bbc55e64047fcd095b614504d",
+    "M-r0012-s3-g239_numeric_route.json": "dbbee2048629f229548862b9f3772a7c2a1254b6833f6352b4b4264ff69eefcd",
+    "M-r0012-s3-g243_competing_risk_filter.json": "98dff77d3ec750f4d75af98b1147edd8540901932d934b95ec980291701b006f",
+    "M-r0013-s0-g239_numeric_route.json": "c907ce02ce0dad5c7767961a97b3f9b95daf12be601e400f9e0b454db90abc2e",
+    "M-r0013-s0-g243_competing_risk_filter.json": "0037e8894773be5c884c2f6496f12e0f488f6bef3006187a3bd944d48db7d16f",
+    "M-r0013-s1-g239_numeric_route.json": "21f1b81dea8ddfe7cfe29f710a49b4898676612d987a2a86c43e5103a745eed7",
+    "M-r0013-s1-g243_competing_risk_filter.json": "5eb59957bf685155c275fbf2362510069e36c0b1671de893457a6dacb2b4b508",
+    "M-r0013-s2-g239_numeric_route.json": "4c254581dda31ebab69b6217d239700da592eea00bb4373d02d0a25fc2ab8c67",
+    "M-r0013-s2-g243_competing_risk_filter.json": "3dc15a2d70cd9c8e2721b814a1e71d39d9f060960adee9b57fe6b90afd038955",
+    "M-r0013-s3-g239_numeric_route.json": "548231ce539bb6e89a314b470727e71c54cacb38533a6e162342635b0ff41cf0",
+    "M-r0013-s3-g243_competing_risk_filter.json": "e3a1ba52df495b99733b270e2692fb66b6b005d092e615d492baa0e6932d01fb",
+    "M-r0014-s0-g239_numeric_route.json": "288cc4a40ba1a86d73ae51072ebaf187993cc26521b0cf0d02617bf71215d87c",
+    "M-r0014-s0-g243_competing_risk_filter.json": "cfddb2635f2e0c899b4471a82d8f93c78a6aaa60387f7e451799534c39d8ee2f",
+    "M-r0014-s1-g239_numeric_route.json": "41d4c67bc5e03a8c7b783a16501a1e131b0c24e9f5c4ee04dc7ff82d4bdd2a09",
+    "M-r0014-s1-g243_competing_risk_filter.json": "c352072f88f976ec72c015d0f9f378ff18013a35d32d392805e190bdb4c2bbfe",
+    "M-r0014-s2-g239_numeric_route.json": "01483005275492b6b2812b2debe67067c983f90994da7879f7cc19ff2263c345",
+    "M-r0014-s2-g243_competing_risk_filter.json": "1d2b33d424a8985cf6194d610cdeacd1a111a91f6fdcbe4a4acf6996cf0a8bd9",
+    "M-r0014-s3-g239_numeric_route.json": "ef9b6875e3d2379e9b493848eba215c7ee051b19147e81e201b45f8ceb2a015d",
+    "M-r0014-s3-g243_competing_risk_filter.json": "3473868a3ea9de0a90112022017d7c04c600264537fd9fbdb5deaed9ffa2c313",
+    "M-r0015-s0-g239_numeric_route.json": "f99b79215e3cff2f874a08c9854f108a5c64b40f30f096aeab71a44d14eeb602",
+    "M-r0015-s0-g243_competing_risk_filter.json": "52f7a7921f5a2adc913cd5ed71942ba2f21accf82bcbfb92d0c6b94780d4103e",
+    "M-r0015-s1-g239_numeric_route.json": "dfcaff799d8c7758aaf6809b253c7b08034392ac920663e830652f80e4d47019",
+    "M-r0015-s1-g243_competing_risk_filter.json": "c23fa19f400ec1fd450adad360c1fdc9711e43dc5b1b76bb2c129c99d0b1d028",
+    "M-r0015-s2-g239_numeric_route.json": "8ef8e448a38a9f0a8b882988bd12c76636fa05dc3fb340a96abf6fb67f90df99",
+    "M-r0015-s2-g243_competing_risk_filter.json": "4917a7e7335232708117e46db1d29b62684c7483a4817ca03a771361c9c384c9",
+    "M-r0015-s3-g239_numeric_route.json": "aa624463d8dc4bac9098aa9fba0cf3e1514d8354e5eb2c764b1cac86fc0ddc30",
+    "M-r0015-s3-g243_competing_risk_filter.json": "f26598da3cc9bbcdcc63939e86d58c23cf53a3a617611e8252ceb2bd6df8ef6c",
+    "M-r0016-s0-g239_numeric_route.json": "646208eca7144433d39a18c7f89f584e47b72698d5c29af6904985affeb6b30f",
+    "M-r0016-s0-g243_competing_risk_filter.json": "e9f33f9d9222e4c7525e1ba64576f6cf8fa6379aa262164e9c39f04a25427dba",
+    "M-r0016-s1-g239_numeric_route.json": "b96f649498fa7beba9fef225b251e9ff9a7c6be98e3d4b8d4968f4652c8b140a",
+    "M-r0016-s1-g243_competing_risk_filter.json": "790c69480d8b42a2b01c62fc41f61f34b245104d4d9ef10faf46afc7a8a71a1d",
+    "M-r0016-s2-g239_numeric_route.json": "90c479dd6fd2caa53629236b52c08de7ff80a774729f5b81b4c9380dfd4769d7",
+    "M-r0016-s2-g243_competing_risk_filter.json": "78c9a610572555aafddab387c919721230658fa7ce4bd87471afaaa10aa75dd6",
+    "M-r0016-s3-g239_numeric_route.json": "75352b68cdb702a8bfef4a0f2444904a25fc65476978c2cb02dbb76342bb4fc5",
+    "M-r0016-s3-g243_competing_risk_filter.json": "29d43a8db8f7c3c003b32947aa769459741731821d2b3a75392a0d4fa85ff581"
+  },
+  "summary": {
+    "baotou_state_equal": 55,
+    "by_mix": {
+      "H": {
+        "first_divergence_stages": 27,
+        "first_in_table_1": 15,
+        "first_in_table_2": 12,
+        "stage_delta_positive_equal_negative": [
+          12,
+          15,
+          0
+        ],
+        "stage_delta_sum": 273,
+        "target_hand_delta_sum": 157,
+        "wider_discards_terminal": 19
+      },
+      "M": {
+        "first_divergence_stages": 28,
+        "first_in_table_1": 13,
+        "first_in_table_2": 15,
+        "stage_delta_positive_equal_negative": [
+          8,
+          17,
+          3
+        ],
+        "stage_delta_sum": 90,
+        "target_hand_delta_sum": 109,
+        "wider_discards_terminal": 16
+      }
+    },
+    "by_terminal_feature_change": {
+      "0": {
+        "stage_delta_positive_equal_negative": [
+          9,
+          15,
+          2
+        ],
+        "stage_delta_sum": 88,
+        "stages": 26
+      },
+      "1": {
+        "stage_delta_positive_equal_negative": [
+          11,
+          17,
+          1
+        ],
+        "stage_delta_sum": 275,
+        "stages": 29
+      }
+    },
+    "by_wider_discard_terminal": {
+      "false": {
+        "stage_delta_positive_equal_negative": [
+          5,
+          13,
+          2
+        ],
+        "stage_delta_sum": -20,
+        "stages": 20
+      },
+      "true": {
+        "stage_delta_positive_equal_negative": [
+          15,
+          19,
+          1
+        ],
+        "stage_delta_sum": 383,
+        "stages": 35
+      }
+    },
+    "filtered_predicted_ownwin_gain_range": [
+      -0.007427,
+      -2.7759e-05
+    ],
+    "first_filter_divergence_stages": 55,
+    "first_filter_in_rotated_table": 27,
+    "g242_capacity_ownwin_vs_third_coefficient": -0.21403436622186314,
+    "g242_discard_terminal_ownwin_vs_third_coefficient": -0.10203011373706351,
+    "g242_mean_ownwin_vs_third_logit_contribution": {
+      "discard_terminal_numeric": -0.053797696334088034,
+      "seven_pairs_shanten": 0.002187630285616974,
+      "width_public_capacity": -0.017836197185155275,
+      "width_types": 0.008225865088961632
+    },
+    "no_filter_identical_stages": 73,
+    "paired_stages": 128,
+    "seven_pairs_shanten_better_equal_worse": [
+      3,
+      52,
+      0
+    ],
+    "width_public_capacity_gain_range": [
+      1,
+      8
+    ],
+    "width_type_gain_distribution": {
+      "1": 39,
+      "2": 16
+    }
+  }
+}

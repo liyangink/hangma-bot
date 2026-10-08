@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-research-profile-check",
+  "batch_label": "research-execution-profile-20260920",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 20.0,
+    "tables_partial": 1.0,
+    "prefix_generation": 1.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-20T02:14:01Z",
+  "candidate_execution_profile": "research-200k-v1",
+  "scope": "有界研究配置工程验收；16自然桌+4条件续打桌实例+1前缀；非强度或确认",
+  "max_model_calls": 0,
+  "issuance_basis": "用户持续进化监督及放宽离线性能研究授权"
+}

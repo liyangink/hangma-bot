@@ -1,0 +1,80 @@
+{
+  "schema": "r10-av2-averaged-action-value-result/1",
+  "status": "PASS_AV2_1_FOR_GROUPED_MODELING",
+  "manifest_sha256": "30d6205d7c72924f60c2cf91889985844ea4eb780d5df3043df8ea099dfc0bfe",
+  "dataset_sha256": "cfeff9f566a6e019b59aa3a18a60546f51967811a464c46ff0b6859bfc8cf4c5",
+  "shards": [
+    {
+      "panel_seed": 2026092320,
+      "mix": "H",
+      "attempts": 30,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092320,
+      "mix": "M",
+      "attempts": 35,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092321,
+      "mix": "H",
+      "attempts": 33,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092321,
+      "mix": "M",
+      "attempts": 24,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    }
+  ],
+  "summary": {
+    "snapshots": 64,
+    "paired_rollouts": 512,
+    "full_or_partial_tables": 2048,
+    "action_types": {
+      "chi": 43,
+      "peng": 21
+    },
+    "auxiliary_mean_of_snapshot_means": -0.623046875,
+    "auxiliary_snapshot_mean_signs": {
+      "positive": 28,
+      "zero": 3,
+      "negative": 33
+    },
+    "primary_low_mean_of_snapshot_means": 0.009765625,
+    "primary_low_snapshot_mean_signs": {
+      "positive": 12,
+      "zero": 41,
+      "negative": 11
+    },
+    "median_within_snapshot_auxiliary_stdev": 20.605236712944713,
+    "by_mix": {
+      "H": {
+        "snapshots": 32,
+        "auxiliary_mean": -1.625,
+        "primary_low_mean": 0.00390625
+      },
+      "M": {
+        "snapshots": 32,
+        "auxiliary_mean": 0.37890625,
+        "primary_low_mean": 0.015625
+      }
+    },
+    "all_mechanical": true,
+    "complete": true,
+    "strength_claim": false
+  },
+  "next": "按完整panel_seed留出训练低容量模型；H/M只作分层读数，不进入学生输入",
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

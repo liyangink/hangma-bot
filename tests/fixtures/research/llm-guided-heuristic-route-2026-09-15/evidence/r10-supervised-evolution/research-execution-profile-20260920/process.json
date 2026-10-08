@@ -1,0 +1,10 @@
+{
+  "returncode": 1,
+  "timed_out": false,
+  "elapsed_sec": 45.991,
+  "signals_sent": [],
+  "group_still_alive": false,
+  "output_truncated": false,
+  "stdout_tail": "自然16桌已核验\n",
+  "stderr_tail": "Traceback (most recent call last):\n  File \"/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/check_research_execution_profile.py\", line 142, in <module>\n    {\"prepare\": prepare, \"run\": run, \"worker\": worker}[args.operation]()\n  File \"/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/check_research_execution_profile.py\", line 96, in worker\n    conditional = batch.search.run_av_evaluation(OUT / \"conditional\", source,\n                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/tools/sitin_search.py\", line 7769, in run_av_evaluation\n    raise opportunities.RuntimeAssemblyError(\nsitin_opportunities.RuntimeAssemblyError: run_av_evaluation：v2_behavior 真实路由必须在**组合处显式装配**运行时（sitin_opportunities.build_real_runtime(rules_config=..., rounds_per_game=...)，或组合根 bootstrap.build_evaluation_runtime('matches', ...)）；缺省不再注入替身（A1 fail-closed；测试替身只能经 test_runtime 参数显式传入）\n"
+}

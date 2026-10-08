@@ -1,0 +1,513 @@
+{
+  "completed_hands": 4096,
+  "events": {
+    "draw_wealth_0": 20728,
+    "draw_wealth_1": 12134,
+    "draw_wealth_2": 2485,
+    "draw_wealth_3": 269,
+    "draw_wealth_4": 5,
+    "focal_draw_windows": 35621,
+    "focal_requests": 171135,
+    "hu_white_baotou_hands": 11,
+    "hu_white_baotou_windows": 11,
+    "hu_white_windows": 57,
+    "initial_draw_windows": 1089,
+    "midgame_draw_windows": 34532,
+    "observed_hands": 4096,
+    "oracle_complete": 11,
+    "oracle_hu_windows": 0,
+    "oracle_piao_hands": 2,
+    "oracle_piao_windows": 2,
+    "p3_overlay_trigger_windows": 2,
+    "p3_piao_choices": 2,
+    "p3_trigger_hands": 2,
+    "response_windows": 135514,
+    "wealth_3_draw_windows": 269,
+    "wealth_3_or_4_baotou_draw_windows": 11,
+    "wealth_3_or_4_draw_hands": 68,
+    "wealth_3_or_4_draw_windows": 274,
+    "wealth_4_draw_windows": 5
+  },
+  "focal_draw_windows": 35621,
+  "focal_requests": 171135,
+  "interpretation": {
+    "interval_limit": "Wilson区间把窗口视作二项试验，未校正同桌/同手牌聚类；手牌级率同时报告",
+    "trajectory": "全部牌局由稳定V2焦点策略运行；P3只赛后读取正式请求",
+    "use": "估计稀有机会预算与桌赛漏检风险；不比较P3/V2赛事效果"
+  },
+  "opportunity_records": [
+    {
+      "candidate_action": "hu",
+      "dealer_seat": 0,
+      "game_id": "sitin-stage:np-H-2026100221-r03-s0-t1",
+      "meld_counts": [
+        2,
+        1,
+        1,
+        0
+      ],
+      "oracle_optimal": [
+        "discard:3w"
+      ],
+      "overlay_triggered": false,
+      "remaining_tile_count": 65,
+      "river_lengths": [
+        5,
+        6,
+        6,
+        5
+      ],
+      "round_no": 6,
+      "seat": 0,
+      "snapshot_seq": 997,
+      "wealth_count": 3,
+      "window_identity_sha256": "4e5d74bce6f58f284a1f904e60aa2e9cf97bf6e4643614c4ec6363cbe9dcb2e2",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026100221-r03-s0-t1",
+        "phase": "draw",
+        "round_no": 6,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 997
+      }
+    },
+    {
+      "candidate_action": "discard:白",
+      "dealer_seat": 2,
+      "game_id": "sitin-stage:np-H-2026100221-r07-s3-t2",
+      "meld_counts": [
+        2,
+        2,
+        1,
+        0
+      ],
+      "oracle_optimal": [
+        "discard:白"
+      ],
+      "overlay_triggered": true,
+      "remaining_tile_count": 63,
+      "river_lengths": [
+        5,
+        6,
+        7,
+        7
+      ],
+      "round_no": 7,
+      "seat": 0,
+      "snapshot_seq": 1460,
+      "wealth_count": 3,
+      "window_identity_sha256": "dfebd3391fcaddf91e600dbf7b0e7fed922075840fee077ca953dd4742076400",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026100221-r07-s3-t2",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1460
+      }
+    },
+    {
+      "candidate_action": "hu",
+      "dealer_seat": 0,
+      "game_id": "sitin-stage:np-H-2026100221-r15-s3-t2",
+      "meld_counts": [
+        1,
+        1,
+        1,
+        2
+      ],
+      "oracle_optimal": [
+        "discard:8w"
+      ],
+      "overlay_triggered": false,
+      "remaining_tile_count": 54,
+      "river_lengths": [
+        8,
+        8,
+        9,
+        9
+      ],
+      "round_no": 5,
+      "seat": 0,
+      "snapshot_seq": 1297,
+      "wealth_count": 3,
+      "window_identity_sha256": "67ee75e62dd4c0276283518f844d92e227ea2e54cf0beeab029ae29d75f27d05",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026100221-r15-s3-t2",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1297
+      }
+    },
+    {
+      "candidate_action": "discard:白",
+      "dealer_seat": 0,
+      "game_id": "sitin-stage:np-H-2026100221-r17-s2-t2",
+      "meld_counts": [
+        2,
+        1,
+        1,
+        2
+      ],
+      "oracle_optimal": [
+        "discard:白"
+      ],
+      "overlay_triggered": true,
+      "remaining_tile_count": 48,
+      "river_lengths": [
+        11,
+        10,
+        11,
+        9
+      ],
+      "round_no": 7,
+      "seat": 3,
+      "snapshot_seq": 1555,
+      "wealth_count": 3,
+      "window_identity_sha256": "9b594c8ff49bdc149f2f59c4c17ac2557a12ae30406a17b330e65bb8441cfd7e",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026100221-r17-s2-t2",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 1555
+      }
+    },
+    {
+      "candidate_action": "hu",
+      "dealer_seat": 2,
+      "game_id": "sitin-stage:np-H-2026100221-r20-s0-t1",
+      "meld_counts": [
+        2,
+        1,
+        2,
+        1
+      ],
+      "oracle_optimal": [
+        "discard:2t"
+      ],
+      "overlay_triggered": false,
+      "remaining_tile_count": 44,
+      "river_lengths": [
+        11,
+        12,
+        12,
+        10
+      ],
+      "round_no": 2,
+      "seat": 0,
+      "snapshot_seq": 411,
+      "wealth_count": 3,
+      "window_identity_sha256": "f1c7416700fa7a37f6e280f6aeea1e8e469b7c899952c62d22ae957726031fe7",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026100221-r20-s0-t1",
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 411
+      }
+    },
+    {
+      "candidate_action": "hu",
+      "dealer_seat": 3,
+      "game_id": "sitin-stage:np-H-2026100221-r25-s0-t2",
+      "meld_counts": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "oracle_optimal": [
+        "discard:5w"
+      ],
+      "overlay_triggered": false,
+      "remaining_tile_count": 72,
+      "river_lengths": [
+        3,
+        3,
+        3,
+        3
+      ],
+      "round_no": 7,
+      "seat": 1,
+      "snapshot_seq": 1177,
+      "wealth_count": 3,
+      "window_identity_sha256": "7d37322d41feef080e1beabc8d1c51701fe21e050a3701050150fa48108ec081",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026100221-r25-s0-t2",
+        "phase": "draw",
+        "round_no": 7,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 1177
+      }
+    },
+    {
+      "candidate_action": "hu",
+      "dealer_seat": 2,
+      "game_id": "sitin-stage:np-H-2026100221-r26-s3-t2",
+      "meld_counts": [
+        2,
+        3,
+        1,
+        2
+      ],
+      "oracle_optimal": [
+        "discard:2w",
+        "discard:5w"
+      ],
+      "overlay_triggered": false,
+      "remaining_tile_count": 62,
+      "river_lengths": [
+        5,
+        7,
+        8,
+        7
+      ],
+      "round_no": 6,
+      "seat": 0,
+      "snapshot_seq": 1376,
+      "wealth_count": 3,
+      "window_identity_sha256": "cd8e7b64c062cd648e3f90b30eff29080ab58aa23b718803b2da9250cc11e76a",
+      "window_key": {
+        "game_id": "sitin-stage:np-H-2026100221-r26-s3-t2",
+        "phase": "draw",
+        "round_no": 6,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1376
+      }
+    },
+    {
+      "candidate_action": "hu",
+      "dealer_seat": 1,
+      "game_id": "sitin-stage:np-M-2026100221-r01-s2-t2",
+      "meld_counts": [
+        0,
+        2,
+        0,
+        1
+      ],
+      "oracle_optimal": [
+        "discard:9t"
+      ],
+      "overlay_triggered": false,
+      "remaining_tile_count": 72,
+      "river_lengths": [
+        3,
+        4,
+        4,
+        3
+      ],
+      "round_no": 2,
+      "seat": 3,
+      "snapshot_seq": 398,
+      "wealth_count": 3,
+      "window_identity_sha256": "52227de853677383b35241eb891f50e4f89bd503fe2dcf746c4daafdd5a2d1df",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026100221-r01-s2-t2",
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 398
+      }
+    },
+    {
+      "candidate_action": "hu",
+      "dealer_seat": 0,
+      "game_id": "sitin-stage:np-M-2026100221-r22-s0-t1",
+      "meld_counts": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "oracle_optimal": [
+        "discard:1b"
+      ],
+      "overlay_triggered": false,
+      "remaining_tile_count": 61,
+      "river_lengths": [
+        6,
+        6,
+        6,
+        6
+      ],
+      "round_no": 1,
+      "seat": 0,
+      "snapshot_seq": 142,
+      "wealth_count": 3,
+      "window_identity_sha256": "57ca6aacb178595074d7b7ef0c687ba698b04f4185777742b599e25bebec0814",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026100221-r22-s0-t1",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 142
+      }
+    },
+    {
+      "candidate_action": "hu",
+      "dealer_seat": 2,
+      "game_id": "sitin-stage:np-M-2026100221-r25-s1-t2",
+      "meld_counts": [
+        0,
+        1,
+        2,
+        0
+      ],
+      "oracle_optimal": [
+        "discard:2w",
+        "discard:4w"
+      ],
+      "overlay_triggered": false,
+      "remaining_tile_count": 64,
+      "river_lengths": [
+        5,
+        6,
+        6,
+        5
+      ],
+      "round_no": 5,
+      "seat": 2,
+      "snapshot_seq": 1024,
+      "wealth_count": 3,
+      "window_identity_sha256": "2b5a0e38c7b52c05aaa1fba768a33ae0f8e548880a287af464cd3ac5919711b7",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026100221-r25-s1-t2",
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 1024
+      }
+    },
+    {
+      "candidate_action": "hu",
+      "dealer_seat": 3,
+      "game_id": "sitin-stage:np-M-2026100221-r28-s1-t1",
+      "meld_counts": [
+        1,
+        1,
+        2,
+        0
+      ],
+      "oracle_optimal": [
+        "discard:9t"
+      ],
+      "overlay_triggered": false,
+      "remaining_tile_count": 70,
+      "river_lengths": [
+        5,
+        4,
+        4,
+        4
+      ],
+      "round_no": 8,
+      "seat": 1,
+      "snapshot_seq": 1287,
+      "wealth_count": 3,
+      "window_identity_sha256": "6724978c34ce4ab218459c9cd50025a835106660a81ef37813927976c9e363d9",
+      "window_key": {
+        "game_id": "sitin-stage:np-M-2026100221-r28-s1-t1",
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 1287
+      }
+    }
+  ],
+  "rates": {
+    "hu_white_baotou_per_draw_window": {
+      "denominator": 35621,
+      "events": 11,
+      "rate": 0.0003088066028466354,
+      "wilson_95": [
+        0.00017244707160369433,
+        0.0005529304392145552
+      ]
+    },
+    "oracle_piao_hand_per_completed_hand": {
+      "denominator": 4096,
+      "events": 2,
+      "rate": 0.00048828125,
+      "wilson_95": [
+        0.00013391454481334652,
+        0.0017787103455524616
+      ]
+    },
+    "oracle_piao_per_draw_window": {
+      "denominator": 35621,
+      "events": 2,
+      "rate": 5.614665506302462e-05,
+      "wilson_95": [
+        1.5397573015455034e-05,
+        0.00020471453133617248
+      ]
+    },
+    "p3_trigger_hand_per_completed_hand": {
+      "denominator": 4096,
+      "events": 2,
+      "rate": 0.00048828125,
+      "wilson_95": [
+        0.00013391454481334652,
+        0.0017787103455524616
+      ]
+    },
+    "p3_trigger_hand_per_table": {
+      "denominator": 512,
+      "events": 2,
+      "rate": 0.00390625,
+      "wilson_95": [
+        0.0010718890803936704,
+        0.014129407144654047
+      ]
+    },
+    "p3_trigger_per_draw_window": {
+      "denominator": 35621,
+      "events": 2,
+      "rate": 5.614665506302462e-05,
+      "wilson_95": [
+        1.5397573015455034e-05,
+        0.00020471453133617248
+      ]
+    },
+    "wealth_3_or_4_draw_per_draw_window": {
+      "denominator": 35621,
+      "events": 274,
+      "rate": 0.007692091743634373,
+      "wilson_95": [
+        0.006836396613690265,
+        0.008653958886097046
+      ]
+    },
+    "wealth_3_or_4_hand_per_completed_hand": {
+      "denominator": 4096,
+      "events": 68,
+      "rate": 0.0166015625,
+      "wilson_95": [
+        0.013117213150496153,
+        0.020991778678890113
+      ]
+    }
+  },
+  "release_eligible": false,
+  "runtime_counts": {
+    "audit_missing": 0,
+    "auto_actions": 0,
+    "fallbacks": 0,
+    "illegal_choices": 0,
+    "timeouts": 0
+  },
+  "schema": "r18-p3-natural-exposure-result/1",
+  "selection_eligible": false,
+  "status": "COMPLETE_EXPOSURE_ESTIMATE",
+  "tables": 512
+}

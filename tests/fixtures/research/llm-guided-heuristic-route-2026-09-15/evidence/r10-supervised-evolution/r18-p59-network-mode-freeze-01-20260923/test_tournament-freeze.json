@@ -1,0 +1,43 @@
+{
+  "authorization": {
+    "approved_on": "2026-09-23",
+    "scope": "test_tournament",
+    "source": "当前项目监督会话中的仓库所有者明确授权"
+  },
+  "candidate_id": "1c44c5a56ebd88f5a2d5a9cbf3ae37ad66e105d678b6478dc85ac76ef2855416",
+  "current_status_evidence": {
+    "p57_release_rebind": {
+      "path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p57-network-release-rebind-01-20260923/result.json",
+      "sha256": "d9673d058f378d715ac0b40e4c690ce82de6acbaeb55e8b103094f66af8ae267"
+    },
+    "p58_successor_rejected": {
+      "path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p58-guarded-successor-confirmation-01-20260923/result.json",
+      "sha256": "4d128180d3a89164aad1e85db4eab579b6f06fae862f30521b1be6b1e0c21bca"
+    }
+  },
+  "current_status_snapshot": {
+    "path": "current-status-snapshot.json",
+    "sha256": "76d0c02ff7aa65b98c85685270cd92037d8ff79a05bd7db9b91660977479b9d4"
+  },
+  "entrypoint": {
+    "path": "scripts/run_participant.py",
+    "sha256": "3a81b3698be5a90a1cae31d8521109de090e0be269cf6934d2a52250806c8347"
+  },
+  "implementation": {
+    "bootstrap_sha256": "ce98e5d7d8fb85c91b0fba0b637f560f806cdc8c33a3b6d581ffe2473a0f0f84",
+    "release_module_sha256": "e95af97978c60b945e7bf8585655ab7a2b64b902a70aeb7e9065ced42e476bd7"
+  },
+  "mode": "test_tournament",
+  "mode_freeze_package_id": "09511dcaa654ee1305ec598555ccc5b02eef157e201025177ff25fc41749ddd6",
+  "official_tournament_allowed": false,
+  "production_default": false,
+  "release_package_id": "0b6c39204f0fcaf094b4ea3c5f9cceae2d97e50c62461107602817a3ff40bc1a",
+  "rules_source_hash": "d8a6346c8303a891523952bff618989931beb62fa041a511805b807ee471a6ef",
+  "runtime_config_template": {
+    "path": "configs/r18-integrated-positive-v1.test-tournament.example.json",
+    "required_binding_field": "expected_policy_release_id",
+    "sha256": "054a36dad635fb28aacadcc7e2450856e35a844832a62046d8862811c1e2fcf9"
+  },
+  "schema": "r18-network-mode-freeze/1",
+  "strategy": "r18_integrated_positive_v1"
+}

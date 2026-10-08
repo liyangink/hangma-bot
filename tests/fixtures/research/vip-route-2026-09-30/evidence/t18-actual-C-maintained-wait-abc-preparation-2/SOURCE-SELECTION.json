@@ -1,0 +1,569 @@
+{
+  "schema": "t18-maintained-wait-source-selection/2",
+  "at_utc": "2026-10-01T21:58:50.133953+00:00",
+  "selection_public_predicates": {
+    "positive": "H pool; >=2 whites; root current fan1; selected Hu; nonwhite discard remains ready with exact public capacity and all publicly unseen codes qualified at fan>=2; one per source root, greatest white count then earliest hand/seq/permutation",
+    "control": "H pool fourth root, zero white, fan1 selected Hu, no all-qualified payment upgrade; earliest hand/seq/permutation"
+  },
+  "facts_file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t18-natural-outcome-and-three-white-diagnostic-1/CURRENT-HU-MAINTAINED-WAIT-FACTS.json",
+  "facts_sha256": "4f73c77d1c948556eae86b422d51cf30b6943b45c1f740e4cc5eeb50b40828f8",
+  "inputs_file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t18-natural-outcome-and-three-white-diagnostic-1/ALL-C-CURRENT-HU-PUBLIC-INPUTS.json",
+  "inputs_sha256": "2a18e5ec6b5bb8171a4230307b4baac993806917df39e1cbd44dac34476eae85",
+  "audit_file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t17-natural-closure-2/AUDIT.json",
+  "audit_sha256": "74d93a7440da622cbd230bd730b6055a2896ae60bd173210890ef7b9c23e0718",
+  "selected": [
+    {
+      "profile": "maintained_wait_full_public_support_upgrade",
+      "fact": {
+        "alternatives": [
+          {
+            "action_key": "discard:2w",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 79,
+            "maximum_qualified_next_fan": 2,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 28,
+            "qualified_codes": 11,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:3w",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 79,
+            "maximum_qualified_next_fan": 2,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 25,
+            "qualified_codes": 10,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:4b",
+            "all_publicly_unseen_codes_qualified": true,
+            "all_qualified_next_fans_above_current": true,
+            "exact_unseen_capacity_sum": 79,
+            "maximum_qualified_next_fan": 4,
+            "minimum_qualified_next_fan": 2,
+            "qualified_capacity_sum": 79,
+            "qualified_codes": 32,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:4w",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 79,
+            "maximum_qualified_next_fan": 2,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 29,
+            "qualified_codes": 11,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:6t",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 79,
+            "maximum_qualified_next_fan": 2,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 30,
+            "qualified_codes": 12,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:7t",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 79,
+            "maximum_qualified_next_fan": 2,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 33,
+            "qualified_codes": 13,
+            "seven_pairs_shanten": 2,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:8b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 79,
+            "maximum_qualified_next_fan": 2,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 29,
+            "qualified_codes": 11,
+            "seven_pairs_shanten": 2,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:8t",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 79,
+            "maximum_qualified_next_fan": 2,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 23,
+            "qualified_codes": 9,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:9t",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 79,
+            "maximum_qualified_next_fan": 2,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 30,
+            "qualified_codes": 12,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          }
+        ],
+        "current_fan": 1,
+        "input_capture": {
+          "encode_monotonic_seconds": 0.006147583015263081,
+          "error": null,
+          "gzip_output_bytes_delta": 3698,
+          "json_bytes": 173647,
+          "saved_before_score": true,
+          "status": "stored",
+          "store_call_no": 1342,
+          "store_monotonic_seconds": 0.0007418340537697077,
+          "terminal_verification_pending": true,
+          "view_sha256": "82194cae9d06850c5d0ef38a6bb9db270b7a9c332983f2fc5904195ee57b2fd6"
+        },
+        "permutation": [
+          3,
+          0,
+          1,
+          2
+        ],
+        "pool": "H",
+        "qualification_scope": "normal draw conditional public facts; surviving to own next draw unknown; capacity includes other hands, not wall probability",
+        "root_id": "vip-t17-natural-2026102101",
+        "round_no": 5,
+        "selected_action_key": "hu",
+        "white_count": 3,
+        "window_key": {
+          "game_id": "vip-t17-public-interruption-natural4-20261002:H:vip-t17-natural-2026102101:3012:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+          "phase": "draw",
+          "round_no": 5,
+          "schema_version": 1,
+          "seat": 3,
+          "trigger_seq": 1114
+        }
+      },
+      "intervention_action_key": "discard:4b"
+    },
+    {
+      "profile": "maintained_wait_full_public_support_upgrade",
+      "fact": {
+        "alternatives": [
+          {
+            "action_key": "discard:1t",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 81,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 23,
+            "qualified_codes": 9,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:3b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 81,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 34,
+            "qualified_codes": 13,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:4b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 81,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 23,
+            "qualified_codes": 9,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:4w",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 81,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 22,
+            "qualified_codes": 8,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:5b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 81,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 25,
+            "qualified_codes": 10,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:5w",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 81,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 23,
+            "qualified_codes": 9,
+            "seven_pairs_shanten": 1,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:6b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 81,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 37,
+            "qualified_codes": 15,
+            "seven_pairs_shanten": 2,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:6w",
+            "all_publicly_unseen_codes_qualified": true,
+            "all_qualified_next_fans_above_current": true,
+            "exact_unseen_capacity_sum": 81,
+            "maximum_qualified_next_fan": 2,
+            "minimum_qualified_next_fan": 2,
+            "qualified_capacity_sum": 81,
+            "qualified_codes": 34,
+            "seven_pairs_shanten": 2,
+            "standard_shanten": 0
+          }
+        ],
+        "current_fan": 1,
+        "input_capture": {
+          "encode_monotonic_seconds": 0.005257416982203722,
+          "error": null,
+          "gzip_output_bytes_delta": 3232,
+          "json_bytes": 146831,
+          "saved_before_score": true,
+          "status": "stored",
+          "store_call_no": 1581,
+          "store_monotonic_seconds": 0.0006465830374509096,
+          "terminal_verification_pending": true,
+          "view_sha256": "5fa4c2d987473af3ff85c9c9bfb13aa496227f45ae5d2ab48c0f1703005ceed2"
+        },
+        "permutation": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "pool": "H",
+        "qualification_scope": "normal draw conditional public facts; surviving to own next draw unknown; capacity includes other hands, not wall probability",
+        "root_id": "vip-t17-natural-2026102102",
+        "round_no": 3,
+        "selected_action_key": "hu",
+        "white_count": 2,
+        "window_key": {
+          "game_id": "vip-t17-public-interruption-natural4-20261002:H:vip-t17-natural-2026102102:0123:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+          "phase": "draw",
+          "round_no": 3,
+          "schema_version": 1,
+          "seat": 0,
+          "trigger_seq": 605
+        }
+      },
+      "intervention_action_key": "discard:6w"
+    },
+    {
+      "profile": "maintained_wait_full_public_support_upgrade",
+      "fact": {
+        "alternatives": [
+          {
+            "action_key": "discard:3t",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 96,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 20,
+            "qualified_codes": 8,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:4b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 96,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 27,
+            "qualified_codes": 10,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:4t",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 96,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 20,
+            "qualified_codes": 8,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:5b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 96,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 23,
+            "qualified_codes": 9,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:5t",
+            "all_publicly_unseen_codes_qualified": true,
+            "all_qualified_next_fans_above_current": true,
+            "exact_unseen_capacity_sum": 96,
+            "maximum_qualified_next_fan": 2,
+            "minimum_qualified_next_fan": 2,
+            "qualified_capacity_sum": 96,
+            "qualified_codes": 32,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:6b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 96,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 27,
+            "qualified_codes": 10,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:7w",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 96,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 35,
+            "qualified_codes": 12,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          }
+        ],
+        "current_fan": 1,
+        "input_capture": {
+          "encode_monotonic_seconds": 0.004105499945580959,
+          "error": null,
+          "gzip_output_bytes_delta": 2635,
+          "json_bytes": 116027,
+          "saved_before_score": true,
+          "status": "stored",
+          "store_call_no": 3227,
+          "store_monotonic_seconds": 0.000515500083565712,
+          "terminal_verification_pending": true,
+          "view_sha256": "eb58293c0d3be1af20a26572f868ce6329b01fa2aab3ae9a9105d7a67e99d713"
+        },
+        "permutation": [
+          1,
+          2,
+          3,
+          0
+        ],
+        "pool": "H",
+        "qualification_scope": "normal draw conditional public facts; surviving to own next draw unknown; capacity includes other hands, not wall probability",
+        "root_id": "vip-t17-natural-2026102103",
+        "round_no": 1,
+        "selected_action_key": "hu",
+        "white_count": 2,
+        "window_key": {
+          "game_id": "vip-t17-public-interruption-natural4-20261002:H:vip-t17-natural-2026102103:1230:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+          "phase": "draw",
+          "round_no": 1,
+          "schema_version": 1,
+          "seat": 1,
+          "trigger_seq": 147
+        }
+      },
+      "intervention_action_key": "discard:5t"
+    },
+    {
+      "profile": "ordinary_zero_white_Hu_exit_control",
+      "fact": {
+        "alternatives": [
+          {
+            "action_key": "discard:4b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 89,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 9,
+            "qualified_codes": 3,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:5b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 89,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 7,
+            "qualified_codes": 2,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:6b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 89,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 8,
+            "qualified_codes": 2,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:7b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 89,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 7,
+            "qualified_codes": 2,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:8b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 89,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 7,
+            "qualified_codes": 2,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:8t",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 89,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 5,
+            "qualified_codes": 2,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          },
+          {
+            "action_key": "discard:9b",
+            "all_publicly_unseen_codes_qualified": false,
+            "all_qualified_next_fans_above_current": false,
+            "exact_unseen_capacity_sum": 89,
+            "maximum_qualified_next_fan": 1,
+            "minimum_qualified_next_fan": 1,
+            "qualified_capacity_sum": 11,
+            "qualified_codes": 3,
+            "seven_pairs_shanten": null,
+            "standard_shanten": 0
+          }
+        ],
+        "current_fan": 1,
+        "input_capture": {
+          "encode_monotonic_seconds": 0.001176874851807952,
+          "error": null,
+          "gzip_output_bytes_delta": 729,
+          "json_bytes": 31630,
+          "saved_before_score": true,
+          "status": "stored",
+          "store_call_no": 4107,
+          "store_monotonic_seconds": 0.00021666591055691242,
+          "terminal_verification_pending": true,
+          "view_sha256": "d0bd23714a701ca510a31ea55b7885f375049f23cbd8e4214494ac4ead336ffb"
+        },
+        "permutation": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "pool": "H",
+        "qualification_scope": "normal draw conditional public facts; surviving to own next draw unknown; capacity includes other hands, not wall probability",
+        "root_id": "vip-t17-natural-2026102104",
+        "round_no": 1,
+        "selected_action_key": "hu",
+        "white_count": 0,
+        "window_key": {
+          "game_id": "vip-t17-public-interruption-natural4-20261002:H:vip-t17-natural-2026102104:0123:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+          "phase": "draw",
+          "round_no": 1,
+          "schema_version": 1,
+          "seat": 0,
+          "trigger_seq": 166
+        }
+      },
+      "intervention_action_key": "hu"
+    }
+  ],
+  "source_windows": 4,
+  "mother_roots": 4,
+  "worlds": 8,
+  "continuation_instances": 40,
+  "worlds_not_new_natural_or_history_posterior": true,
+  "selection_uses_terminal_score": false,
+  "purpose": "identify present Hu-vs-maintained-wait decision; no new author until outcomes read",
+  "business_calls_before_execute_START": 0,
+  "arm_interventions": {
+    "A": "force legal Hu at current target once; actual terminal baseline",
+    "Sol-C": "force selected legal maintained-wait key once, then T17 continuous",
+    "Sol-B": "same forced key, then R18 continuous",
+    "S02-C": "same forced key, then T16 continuous",
+    "S02-B": "same forced key, then R18 continuous; duplicate B deterministic check, not extra evidence"
+  },
+  "action_choice": "lexicographically first qualified nonwhite action in frozen public facts, no outcome selection; control hu",
+  "not_natural_candidate_performance": true
+}

@@ -1,0 +1,22 @@
+{
+  "actual_error_message": "[Errno 1] Operation not permitted",
+  "actual_error_type": "PermissionError",
+  "actual_exit_code": 1,
+  "actual_tool_chunk_id": "b625f7",
+  "at_utc": "2026-10-04T16:12:03.605561+00:00",
+  "deadline_admission": false,
+  "entry": "close_development_readout_repair.py --receipt-precheck-first-source",
+  "entry_source_pin": {
+    "bytes": 31681,
+    "sha256": "a249d5c7f63f9a85d9188fca62f481142d072a21e7363e74b60b9b55a684c814"
+  },
+  "failure_kind": "sandbox_resource_policy_eprem_not_api_policy_scoring_or_table_failure",
+  "failure_phase": "own_process_nice_or_background_io_before_postprocess_lock",
+  "new_models_worlds_tables_scores": 0,
+  "original_evidence_retained": true,
+  "postprocess_lock_acquired": false,
+  "release_admission": false,
+  "retry_authorized": "same_readonly_precheck_entry_require_escalated; actual session87090 running/waiting, no success claimed",
+  "schema": "t182-development-repair-precheck-failure/1",
+  "scores_extracted": false
+}

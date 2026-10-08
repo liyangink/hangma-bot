@@ -1,0 +1,58 @@
+{
+  "schema": "r15-public-state-parent-router-preflight-result/1",
+  "status": "FAIL_R15_ZERO_TABLE_GATE",
+  "deduplicated_windows": 226,
+  "counts": {
+    "changed_choices": 26,
+    "non_tie_changed_choices": 5,
+    "record_inconsistent": 0,
+    "selected:specialist": 52,
+    "selected:stable_v2": 174,
+    "selected_parent_mismatch": 0,
+    "unknown_fallback_windows": 28,
+    "windows": 226
+  },
+  "rule_states": {
+    "closed_dual_family_competing": 52,
+    "closed_dual_family_not_competing": 62,
+    "seven_pairs_closed_proven": 84,
+    "unknown_public_rule_state": 28
+  },
+  "changed_origins": [
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/comparable-shape-second-diagnostic-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/followup-balance-diagnostic-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/followup-quality-diagnostic-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/pattern-generalization-diagnostic-v2-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route-decision-diagnostic-20260920/panel.json"
+  ],
+  "changed_seats": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "changed_transition_families": [
+    "discard->discard"
+  ],
+  "elapsed_seconds": 0.4926679579075426,
+  "mean_evaluate_ms": 2.179946716405056,
+  "gate_checks": {
+    "stable_branch_hit": true,
+    "specialist_branch_hit": true,
+    "selected_parent_exact": true,
+    "trace_consistent": true,
+    "unknown_fallback_exact_v2": true,
+    "non_tie_behavior_change": true,
+    "changed_origins": true,
+    "changed_seats": true,
+    "changed_transition_families": false,
+    "mean_evaluate_ms": true,
+    "no_contract_problems": true
+  },
+  "problems": [],
+  "effect_tables": 0,
+  "model_calls": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "next": "关闭当前父代与规则态路由实例；不消耗桌赛"
+}

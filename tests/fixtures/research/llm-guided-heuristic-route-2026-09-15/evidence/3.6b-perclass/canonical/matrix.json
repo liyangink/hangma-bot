@@ -1,0 +1,1965 @@
+{
+  "schema": "sitin-scenario-class-matrix/1",
+  "class_ids": [
+    "branch.chiitoi_live",
+    "branch.luxury_locked",
+    "branch.closer_seven_pairs",
+    "chain.open",
+    "chain.gang_step",
+    "chain.gang_draw_open",
+    "chain.piao_discard",
+    "chain.break_discard",
+    "chain.claim_repiao_circle",
+    "four_white.at_four",
+    "four_white.derivable_held4",
+    "four_white.unknown_piao",
+    "baotou.active",
+    "baotou.discard_recheck",
+    "baotou.meld_inherit",
+    "baotou.decline_win_for_piao",
+    "overlay.four_white_baotou",
+    "overlay.chiitoi_baotou",
+    "overlay.gang_piao_mix",
+    "overlay.plain_branch_max",
+    "overlay.global_max",
+    "payrole.self_dealer",
+    "payrole.self_nondealer",
+    "meld.claim_window",
+    "meld.waiting_facts_available",
+    "gate.you_cai_bi_kao",
+    "gate.wall_end_gang_ban",
+    "gate.catch_play_owner"
+  ],
+  "candidates": [
+    {
+      "candidate": "chain_path_value",
+      "declared_classes": 12,
+      "undeclared_classes": 16,
+      "status_counts": {
+        "undeclared": 16,
+        "fired_no_change": 6,
+        "changed": 1,
+        "no_window": 5
+      },
+      "cells": {
+        "branch.chiitoi_live": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 456,
+          "changed_windows": 49,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "branch.luxury_locked": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 215,
+          "changed_windows": 36,
+          "token_hit": [],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "branch.closer_seven_pairs": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 7,
+          "changed_windows": 3,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ]
+        },
+        "chain.open": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 478,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_count"
+          ],
+          "scope_hit": [
+            "discard",
+            "gang"
+          ]
+        },
+        "chain.gang_step": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 929,
+          "changed_windows": 81,
+          "token_hit": [
+            "chain_after_gang",
+            "Gang"
+          ],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "chain.gang_draw_open": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 273,
+          "changed_windows": 7,
+          "token_hit": [],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "chain.piao_discard": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 248,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou"
+          ],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "chain.break_discard": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 478,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_after_discard",
+            "baotou"
+          ],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "chain.claim_repiao_circle": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "peng"
+          ]
+        },
+        "four_white.at_four": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "four_white.derivable_held4": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "four_white.unknown_piao": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_piao"
+          ],
+          "scope_hit": []
+        },
+        "baotou.active": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 249,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou"
+          ],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ]
+        },
+        "baotou.discard_recheck": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 248,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "baotou.meld_inherit": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 9,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "baotou.decline_win_for_piao": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 246,
+          "changed_windows": 0,
+          "token_hit": [
+            "Hu"
+          ],
+          "scope_hit": [
+            "discard",
+            "hu"
+          ]
+        },
+        "overlay.four_white_baotou": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou"
+          ],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "overlay.chiitoi_baotou": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 60,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou"
+          ],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ]
+        },
+        "overlay.gang_piao_mix": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_piao",
+            "chain_count"
+          ],
+          "scope_hit": [
+            "discard",
+            "gang"
+          ]
+        },
+        "overlay.plain_branch_max": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_count",
+            "chain_piao",
+            "baotou"
+          ],
+          "scope_hit": []
+        },
+        "overlay.global_max": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_piao",
+            "baotou"
+          ],
+          "scope_hit": []
+        },
+        "payrole.self_dealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 505,
+          "changed_windows": 22,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ]
+        },
+        "payrole.self_nondealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 1136,
+          "changed_windows": 59,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ]
+        },
+        "meld.claim_window": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 315,
+          "changed_windows": 18,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "meld.waiting_facts_available": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 315,
+          "changed_windows": 18,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "gate.you_cai_bi_kao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard",
+            "hu"
+          ]
+        },
+        "gate.wall_end_gang_ban": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "gate.catch_play_owner": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 3,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "four_component_path_value",
+      "declared_classes": 19,
+      "undeclared_classes": 9,
+      "status_counts": {
+        "changed": 4,
+        "undeclared": 9,
+        "fired_no_change": 9,
+        "no_window": 6
+      },
+      "cells": {
+        "branch.chiitoi_live": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 10636,
+          "changed_windows": 997,
+          "token_hit": [
+            "meld_count_of"
+          ],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "branch.luxury_locked": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 248,
+          "changed_windows": 30,
+          "token_hit": [
+            "locked_luxury_groups",
+            "WEALTH_TOTAL"
+          ],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "branch.closer_seven_pairs": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 1617,
+          "changed_windows": 316,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ]
+        },
+        "chain.open": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 478,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_count"
+          ],
+          "scope_hit": [
+            "discard",
+            "gang"
+          ]
+        },
+        "chain.gang_step": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 929,
+          "changed_windows": 66,
+          "token_hit": [
+            "chain_after_action",
+            "Gang"
+          ],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "chain.gang_draw_open": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 273,
+          "changed_windows": 9,
+          "token_hit": [],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "chain.piao_discard": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 244,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou",
+            "wealth_code"
+          ],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "chain.break_discard": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 478,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_after_action",
+            "baotou"
+          ],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "chain.claim_repiao_circle": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "peng"
+          ]
+        },
+        "four_white.at_four": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 1,
+          "changed_windows": 0,
+          "token_hit": [
+            "four_white_indicator",
+            "four_white_state",
+            "wealth_count"
+          ],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "four_white.derivable_held4": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "known_piao"
+          ],
+          "scope_hit": []
+        },
+        "four_white.unknown_piao": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "known_piao",
+            "chain_piao"
+          ],
+          "scope_hit": []
+        },
+        "baotou.active": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 264,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou"
+          ],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ]
+        },
+        "baotou.discard_recheck": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 244,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou_after_action"
+          ],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "baotou.meld_inherit": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 28,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou_after_action"
+          ],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "baotou.decline_win_for_piao": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 242,
+          "changed_windows": 0,
+          "token_hit": [
+            "Hu"
+          ],
+          "scope_hit": [
+            "discard",
+            "hu"
+          ]
+        },
+        "overlay.four_white_baotou": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "four_white_indicator",
+            "four_white_state",
+            "baotou"
+          ],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "overlay.chiitoi_baotou": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 79,
+          "changed_windows": 0,
+          "token_hit": [
+            "meld_count_of",
+            "baotou"
+          ],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ]
+        },
+        "overlay.gang_piao_mix": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_piao",
+            "chain_count"
+          ],
+          "scope_hit": [
+            "discard",
+            "gang"
+          ]
+        },
+        "overlay.plain_branch_max": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_count",
+            "chain_piao",
+            "baotou",
+            "meld_count_of"
+          ],
+          "scope_hit": []
+        },
+        "overlay.global_max": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "locked_luxury_groups",
+            "chain_piao",
+            "baotou"
+          ],
+          "scope_hit": []
+        },
+        "payrole.self_dealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 3636,
+          "changed_windows": 280,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ]
+        },
+        "payrole.self_nondealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 8525,
+          "changed_windows": 745,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ]
+        },
+        "meld.claim_window": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 10345,
+          "changed_windows": 976,
+          "token_hit": [
+            "Chi",
+            "Peng"
+          ],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "meld.waiting_facts_available": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 10345,
+          "changed_windows": 976,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "gate.you_cai_bi_kao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard",
+            "hu"
+          ]
+        },
+        "gate.wall_end_gang_ban": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 3,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "gate.catch_play_owner": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 12,
+          "changed_windows": 1,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "meld_opportunity_cost",
+      "declared_classes": 2,
+      "undeclared_classes": 26,
+      "status_counts": {
+        "undeclared": 26,
+        "changed": 2
+      },
+      "cells": {
+        "branch.chiitoi_live": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 10212,
+          "changed_windows": 1224,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "branch.luxury_locked": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 33,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "branch.closer_seven_pairs": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 1617,
+          "changed_windows": 105,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "chain.open": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 1,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "chain.gang_step": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 315,
+          "changed_windows": 19,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "chain.gang_draw_open": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 119,
+          "changed_windows": 3,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "chain.piao_discard": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "chain.break_discard": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "chain.claim_repiao_circle": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "four_white.at_four": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "four_white.derivable_held4": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "four_white.unknown_piao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "baotou.active": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 47,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "baotou.discard_recheck": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "baotou.meld_inherit": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 47,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "baotou.decline_win_for_piao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "overlay.four_white_baotou": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "overlay.chiitoi_baotou": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "overlay.gang_piao_mix": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "overlay.plain_branch_max": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "overlay.global_max": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "payrole.self_dealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 4646,
+          "changed_windows": 465,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "payrole.self_nondealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 11148,
+          "changed_windows": 1213,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "meld.claim_window": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 15794,
+          "changed_windows": 1678,
+          "token_hit": [
+            "Chi",
+            "Peng"
+          ],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "meld.waiting_facts_available": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 15794,
+          "changed_windows": 1678,
+          "token_hit": [
+            "natural_draw_value",
+            "useful_tiles"
+          ],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "gate.you_cai_bi_kao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "gate.wall_end_gang_ban": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 10,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "gate.catch_play_owner": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 13,
+          "changed_windows": 3,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "meld_waiting_conditional",
+      "declared_classes": 2,
+      "undeclared_classes": 26,
+      "status_counts": {
+        "undeclared": 26,
+        "changed": 2
+      },
+      "cells": {
+        "branch.chiitoi_live": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 9936,
+          "changed_windows": 3996,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "branch.luxury_locked": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 33,
+          "changed_windows": 14,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "branch.closer_seven_pairs": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 1534,
+          "changed_windows": 281,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "chain.open": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 1,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "chain.gang_step": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 312,
+          "changed_windows": 28,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "chain.gang_draw_open": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 119,
+          "changed_windows": 3,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "chain.piao_discard": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "chain.break_discard": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "chain.claim_repiao_circle": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "four_white.at_four": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "four_white.derivable_held4": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "four_white.unknown_piao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "baotou.active": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 47,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "baotou.discard_recheck": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "baotou.meld_inherit": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 47,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "baotou.decline_win_for_piao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "overlay.four_white_baotou": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "overlay.chiitoi_baotou": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "overlay.gang_piao_mix": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "overlay.plain_branch_max": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "overlay.global_max": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "payrole.self_dealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 4530,
+          "changed_windows": 2027,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "payrole.self_nondealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 10875,
+          "changed_windows": 4765,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "meld.claim_window": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 15405,
+          "changed_windows": 6792,
+          "token_hit": [
+            "Chi",
+            "Peng"
+          ],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "meld.waiting_facts_available": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 15405,
+          "changed_windows": 6792,
+          "token_hit": [
+            "natural_draw_value"
+          ],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "gate.you_cai_bi_kao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "gate.wall_end_gang_ban": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 10,
+          "changed_windows": 10,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "gate.catch_play_owner": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 13,
+          "changed_windows": 10,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "multiplier_path_potential",
+      "declared_classes": 11,
+      "undeclared_classes": 17,
+      "status_counts": {
+        "changed": 5,
+        "undeclared": 17,
+        "fired_no_change": 2,
+        "no_window": 4
+      },
+      "cells": {
+        "branch.chiitoi_live": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 10212,
+          "changed_windows": 171,
+          "token_hit": [
+            "seven_pairs_shanten_after",
+            "seven_pairs_useful_tiles"
+          ],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "branch.luxury_locked": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 33,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "branch.closer_seven_pairs": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 1617,
+          "changed_windows": 24,
+          "token_hit": [
+            "standard_shanten_after",
+            "seven_pairs_shanten_after"
+          ],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "chain.open": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 1,
+          "changed_windows": 1,
+          "token_hit": [
+            "chain_count"
+          ],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "chain.gang_step": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 182,
+          "changed_windows": 1,
+          "token_hit": [],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "chain.gang_draw_open": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 44,
+          "changed_windows": 0,
+          "token_hit": [
+            "replacement_draw_unknown",
+            "shanten_after"
+          ],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "chain.piao_discard": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou",
+            "wealth_code"
+          ],
+          "scope_hit": []
+        },
+        "chain.break_discard": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou"
+          ],
+          "scope_hit": []
+        },
+        "chain.claim_repiao_circle": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "four_white.at_four": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "wealth_count"
+          ],
+          "scope_hit": []
+        },
+        "four_white.derivable_held4": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "four_white.unknown_piao": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_piao"
+          ],
+          "scope_hit": []
+        },
+        "baotou.active": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 20,
+          "changed_windows": 1,
+          "token_hit": [
+            "baotou"
+          ],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "baotou.discard_recheck": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "baotou.meld_inherit": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 20,
+          "changed_windows": 1,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "baotou.decline_win_for_piao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "overlay.four_white_baotou": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "baotou"
+          ],
+          "scope_hit": []
+        },
+        "overlay.chiitoi_baotou": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "token_hit": [
+            "seven_pairs_shanten_after",
+            "baotou"
+          ],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "overlay.gang_piao_mix": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_piao",
+            "chain_count"
+          ],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "overlay.plain_branch_max": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_count",
+            "chain_piao",
+            "baotou"
+          ],
+          "scope_hit": []
+        },
+        "overlay.global_max": {
+          "declared": true,
+          "status": "no_window",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [
+            "chain_piao",
+            "baotou"
+          ],
+          "scope_hit": []
+        },
+        "payrole.self_dealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 3051,
+          "changed_windows": 42,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "payrole.self_nondealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 7162,
+          "changed_windows": 130,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "meld.claim_window": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 10213,
+          "changed_windows": 172,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "meld.waiting_facts_available": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 10213,
+          "changed_windows": 172,
+          "token_hit": [
+            "useful_tiles"
+          ],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "gate.you_cai_bi_kao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "gate.wall_end_gang_ban": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 3,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "gate.catch_play_owner": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 10,
+          "changed_windows": 1,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        }
+      }
+    },
+    {
+      "candidate": "seven_pairs_path_value",
+      "declared_classes": 4,
+      "undeclared_classes": 24,
+      "status_counts": {
+        "changed": 2,
+        "undeclared": 24,
+        "fired_no_change": 2
+      },
+      "cells": {
+        "branch.chiitoi_live": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 10212,
+          "changed_windows": 66,
+          "token_hit": [
+            "seven_pairs_shanten_after"
+          ],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "branch.luxury_locked": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 33,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "branch.closer_seven_pairs": {
+          "declared": true,
+          "status": "changed",
+          "fired_windows": 1617,
+          "changed_windows": 20,
+          "token_hit": [
+            "standard_shanten_after",
+            "seven_pairs_shanten_after",
+            "closer_bonus"
+          ],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ]
+        },
+        "chain.open": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard",
+            "gang"
+          ]
+        },
+        "chain.gang_step": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 182,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "chain.gang_draw_open": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 44,
+          "changed_windows": 0,
+          "token_hit": [
+            "shanten_after"
+          ],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "chain.piao_discard": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "chain.break_discard": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "chain.claim_repiao_circle": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "peng"
+          ]
+        },
+        "four_white.at_four": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "four_white.derivable_held4": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "four_white.unknown_piao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "baotou.active": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ]
+        },
+        "baotou.discard_recheck": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "baotou.meld_inherit": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ]
+        },
+        "baotou.decline_win_for_piao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard",
+            "hu"
+          ]
+        },
+        "overlay.four_white_baotou": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard"
+          ]
+        },
+        "overlay.chiitoi_baotou": {
+          "declared": true,
+          "status": "fired_no_change",
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "token_hit": [
+            "seven_pairs_shanten_after"
+          ],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ]
+        },
+        "overlay.gang_piao_mix": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard",
+            "gang"
+          ]
+        },
+        "overlay.plain_branch_max": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "overlay.global_max": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": []
+        },
+        "payrole.self_dealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 3051,
+          "changed_windows": 17,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ]
+        },
+        "payrole.self_nondealer": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 7161,
+          "changed_windows": 49,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ]
+        },
+        "meld.claim_window": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 10212,
+          "changed_windows": 66,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "meld.waiting_facts_available": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 10212,
+          "changed_windows": 66,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "peng"
+          ]
+        },
+        "gate.you_cai_bi_kao": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "discard",
+            "hu"
+          ]
+        },
+        "gate.wall_end_gang_ban": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 3,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "gang"
+          ]
+        },
+        "gate.catch_play_owner": {
+          "declared": false,
+          "status": "undeclared",
+          "fired_windows": 9,
+          "changed_windows": 0,
+          "token_hit": [],
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ]
+        }
+      }
+    }
+  ],
+  "legend": {
+    "undeclared": "候选没有声明覆盖该类（派单口径：无声明即标 undeclared）",
+    "no_window": "本面板该类一个窗口都没有（**不是**机制稀有的结论）",
+    "no_fire": "类内有窗口但候选一次都没给出非零调整",
+    "fired_no_change": "触发过但没改变首选",
+    "changed": "触发且改变了首选"
+  },
+  "note": "矩阵只描述**现状与缺口**，不给任何效果结论；数字由 coverage.json 同一份逐窗口记录聚合而来，可用 --coverage 复算。"
+}

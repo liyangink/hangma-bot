@@ -1,0 +1,165 @@
+====================================================================================================
+AV-SUB 静态规则探针（零模型；执行器 action-value-executor/6，sha256=c876c46295b76233）
+规则总数 60；合同 sha256=3c0b4d3a2fdd1f43
+====================================================================================================
+
+[0] 公开证据机械校验（题面行号 → 逐字引用）
+  - AV-SUB-001  P05       L76   - 计费：算术使用有界整数/有限浮点；拒绝大整数膨胀和不受限幂运算（** 仅允许指数 <= 4 的整数常量）
+  - AV-SUB-001  CONTRACT  L98   "算术使用有界整数/有限浮点；拒绝大整数膨胀和不受限幂运算（** 仅允许指数 <= 4 的整数常量）"
+  - AV-SUB-002  P05       L76   - 计费：算术使用有界整数/有限浮点；拒绝大整数膨胀和不受限幂运算（** 仅允许指数 <= 4 的整数常量）
+  - AV-SUB-002  P05       L50   - sum/sorted/all/any/map/filter/enumerate/reversed/zip 按输入长度保守计费；int()/float() 转换非有限结果即整
+  - AV-SUB-005  P05       L87   - 禁止：全局可变状态
+  - AV-SUB-005  P05       L48   【工具目录（冻结白名单；不在表内一律禁止）】
+  - AV-SUB-006  P05       L87   - 禁止：全局可变状态
+  - AV-SUB-006  P05       L93   - 允许：一个导出函数 score_actions
+  - AV-SUB-006  P05       L94   - 允许：可有无递归的局部纯辅助函数
+  - AV-SUB-008  P05       L52   - 运算符：算术 + - * /；整除 // 与取模 %（除零即失败）；比较与布尔；下标与切片（只读）；字符串拼接与格式化（计入操作数）
+  - AV-SUB-009  P05       L48   【工具目录（冻结白名单；不在表内一律禁止）】
+  - AV-SUB-009  P05       L49   - 内建：len、min、max、abs、sum、sorted、reversed、enumerate、zip、range、round、int、float、bool、all、an
+  - AV-SUB-009  P05       L96   - 允许：调用对象只来自冻结白名单
+  - AV-SUB-009  CONTRACT  L103  "builtins": ["len", "min", "max", "abs", "sum", "sorted", "reversed", "enumerate", "zip"
+  - AV-SUB-011  P05       L48   【工具目录（冻结白名单；不在表内一律禁止）】
+  - AV-SUB-011  P05       L51   - 只读方法：.get、.items、.keys、.values、.count、.index、.append(仅局部构造期)、.add(仅局部集合构造期)
+  - AV-SUB-011  CONTRACT  L105  "methods_readonly": [".get", ".items", ".keys", ".values", ".count", ".index", ".append(
+  - AV-SUB-016  P05       L48   【工具目录（冻结白名单；不在表内一律禁止）】
+  - AV-SUB-016  P05       L52   - 运算符：算术 + - * /；整除 // 与取模 %（除零即失败）；比较与布尔；下标与切片（只读）；字符串拼接与格式化（计入操作数）
+  - AV-SUB-017  P05       L76   - 计费：算术使用有界整数/有限浮点；拒绝大整数膨胀和不受限幂运算（** 仅允许指数 <= 4 的整数常量）
+  - AV-SUB-018  P05       L52   - 运算符：算术 + - * /；整除 // 与取模 %（除零即失败）；比较与布尔；下标与切片（只读）；字符串拼接与格式化（计入操作数）
+  - AV-SUB-021  P05       L90   - 禁止：生成器与 yield
+  - AV-SUB-021  CONTRACT  L67   "forbidden": ["while 循环", "递归", "动态执行(eval/exec/compile)", "import", "反射(getattr/setattr
+  - AV-SUB-024  P05       L90   - 禁止：生成器与 yield
+  - AV-SUB-024  P05       L83   - 禁止：动态执行(eval/exec/compile)
+  - AV-SUB-028  P05       L52   - 运算符：算术 + - * /；整除 // 与取模 %（除零即失败）；比较与布尔；下标与切片（只读）；字符串拼接与格式化（计入操作数）
+  - AV-SUB-029  P05       L48   【工具目录（冻结白名单；不在表内一律禁止）】
+  - AV-SUB-029  P05       L52   - 运算符：算术 + - * /；整除 // 与取模 %（除零即失败）；比较与布尔；下标与切片（只读）；字符串拼接与格式化（计入操作数）
+  - AV-SUB-030  P05       L81   - 禁止：while 循环
+  - AV-SUB-030  CONTRACT  L67   "forbidden": ["while 循环", "递归", "动态执行(eval/exec/compile)", "import", "反射(getattr/setattr
+  - AV-SUB-031  P05       L53   - import：全部禁止（首版不开放任何 import：math/第三方库默认关闭；需要新增推导工具时进入工具目录版本与耗时门禁，不能临时绕过接缝）
+  - AV-SUB-031  P05       L84   - 禁止：import
+  - AV-SUB-031  CONTRACT  L108  "modules_note": "首版不开放任何 import：math/第三方库默认关闭；需要新增推导工具时进入工具目录版本与耗时门禁，不能临时绕过接缝",
+  - AV-SUB-032  P05       L87   - 禁止：全局可变状态
+  - AV-SUB-032  CONTRACT  L67   "forbidden": ["while 循环", "递归", "动态执行(eval/exec/compile)", "import", "反射(getattr/setattr
+  - AV-SUB-039  P05       L89   - 禁止：lambda 之外的可调用构造
+  - AV-SUB-045  P05       L89   - 禁止：lambda 之外的可调用构造
+  - AV-SUB-046  P05       L15   【score_actions 完整签名（不得改动）】
+  - AV-SUB-046  P05       L16   - score_actions(view: ScoringView) -> ScoreBatch
+  - AV-SUB-048  P05       L82   - 禁止：递归
+  - AV-SUB-048  P05       L94   - 允许：可有无递归的局部纯辅助函数
+  - AV-SUB-048  CONTRACT  L67   "forbidden": ["while 循环", "递归", "动态执行(eval/exec/compile)", "import", "反射(getattr/setattr
+  - AV-SUB-054  P05       L93   - 允许：一个导出函数 score_actions
+  - AV-SUB-054  P05       L94   - 允许：可有无递归的局部纯辅助函数
+  - AV-SUB-055  P05       L93   - 允许：一个导出函数 score_actions
+  - AV-SUB-055  P05       L15   【score_actions 完整签名（不得改动）】
+  - AV-SUB-058  P05       L56   【数值与工作量限制（违反即拒绝装载）】
+  - AV-SUB-058  P05       L62   - max_source_bytes：65536
+  - AV-SUB-058  CONTRACT  L80   "max_source_bytes": 65536,
+  - AV-SUB-060  P05       L87   - 禁止：全局可变状态
+  证据条目 50，逐字命中 50
+
+[1] 逐条正/反例实测（ActionValueExecutor 实际装载）
+  编号          行  可  公开    正例        反例                        判定
+  ------------------------------------------------------------------------------------------------
+  AV-SUB-001  L241  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-002  L245  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-003  L247  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-004  L265  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-005  L273  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-006  L277  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-007  L290  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-008  L310  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-009  L327  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-010  L333  否   ABSENT   n/a         SYNTH✓                       
+  AV-SUB-011  L335  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-012  L344  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-013  L348  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-014  L353  否   ABSENT   n/a         SYNTH✓                       
+  AV-SUB-015  L373  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-016  L380  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-017  L389  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-018  L397  否   VERBATIM PASS        SYNTH✓                       
+  AV-SUB-019  L418  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-020  L424  否   ABSENT   PASS        SYNTH✓                       
+  AV-SUB-021  L443  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-022  L445  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-023  L447  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-024  L449  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-025  L450  否   ABSENT   PASS        SYNTH✓                       
+  AV-SUB-026  L464  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-027  L484  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-028  L491  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-029  L493  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-030  L512  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-031  L514  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-032  L516  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-033  L518  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-034  L523  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-035  L525  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-036  L527  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-037  L529  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-038  L531  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-039  L533  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-040  L535  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-041  L546  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-042  L548  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-043  L553  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-044  L555  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-045  L557  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-046  L575  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-047  L577  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-048  L615  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-049  L631  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-050  L633  否   ABSENT   PASS        n/a(不可达)                     
+  AV-SUB-051  L643  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-052  L649  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-053  L652  是   ABSENT   PASS        REJECT✓                      
+  AV-SUB-054  L656  是   PARTIAL  PASS        REJECT✓                      
+  AV-SUB-055  L662  是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-056  L940  否   ABSENT   PASS        SYNTH✓                       
+  AV-SUB-057  L2093 是   ABSENT   PASS        SYNTH✓                       
+  AV-SUB-058  L2098 是   VERBATIM PASS        REJECT✓                      
+  AV-SUB-059  L2115 否   ABSENT   PASS        n/a(不可达)                     
+  AV-SUB-060  L2138 否   PARTIAL  PASS        SYNTH✓                       
+
+[2] 异常项探针（不是 StaticCheckError 的装载期失败）
+  - AV-SUB-A01 CRASH:KeyError → 符合预期 :: 'g'
+
+[3] 不可达分支的证据（源码路径被上游规则先拦）
+  - AV-SUB-010 源码路径实测：REJECT :: 赋值/循环目标必须是简单名字或名字元组，得到 Attribute
+  - AV-SUB-014 源码路径实测：REJECT :: 赋值/循环目标必须是简单名字或名字元组，得到 Subscript
+  - AV-SUB-056 源码路径实测：REJECT :: 禁止 ** 字典解包
+  - AV-SUB-020 lambda 参数注解语法：SyntaxError（Python 语法不允许 ⇒ 不可达）
+  - AV-SUB-050 ast.parse 恒返回 Module：True
+  - AV-SUB-018 _UNARY_OPS 覆盖全部一元运算：True（+/-/not/~）
+  - AV-SUB-059 每条正例装载后 callable(score_actions)=True：见 [1] 正例列
+
+[4] 同源渲染 A：预检诊断（消息 → AV-SUB 编号）
+  实测拒绝消息 58 条；唯一命中自身编号 58 条，歧义/未命中 0 条
+  样例 AV-SUB-007 :: AV-SUB-007
+  样例 AV-SUB-011 :: AV-SUB-011
+  样例 AV-SUB-033 :: AV-SUB-033
+  现生产分类器 token 表（sitin_model_admission.py:_violating_static_reason）= ['import', 'while', 'eval', 'exec', 'yield', '递归']
+  未公开规则中，拒绝消息能被现分类器判为『受限子集硬禁项』的：1 / 45 ['AV-SUB-024']
+
+[5] 同源渲染 B：候选提示片段（未公开/部分公开规则 → 题面补充约束行）
+  渲染行数 47（60 条规则中按公开判据筛出）
+  【受限子集静态约束（AV-SUB，编号稳定；与执行器同一份定义渲染）】
+    - AV-SUB-001（部分公开）：任意位置的整数字面量（含一元负号包裹）绝对值 > 2^63-1 ⇒ 拒绝装载；整数常量 {0} 超过 63 位界限（拒绝大整数膨胀）
+    - AV-SUB-002（部分公开）：浮点字面量为 inf/nan（如 1e400） ⇒ 拒绝装载；浮点常量必须有限（1e400 等字面量直接拒绝）
+    - AV-SUB-003（未公开）：常量类型不属于 None/str/bool/int/float（complex、bytes、Ellipsis） ⇒ 拒绝装载；不允许的常量类型 {0}
+    - AV-SUB-004（未公开）：模块级赋值右侧是 +/- 一元运算，且操作数不是 int/float 常量 ⇒ 拒绝装载；模块级一元符号只允许作用于数值常量
+    - AV-SUB-005（部分公开）：模块级 list/set/dict 字面量 ⇒ 拒绝装载；模块级 {0} 字面量被拒绝：跨调用可变状态；可变容器请在函数内局部构造（受限包装随调用丢弃）
+    - AV-SUB-006（部分公开）：模块级赋值右侧既不是常量、也不是数值一元/元组常量（表达式兜底） ⇒ 拒绝装载；模块级只允许不可变常量赋值，得到 {0}
+    - AV-SUB-007（未公开）：函数名/模块常量名/参数名/lambda 参数名/赋值或循环目标名/被读取的名字以 _ 开头 ⇒ 拒绝装载；{0} {1!r} 以下划线开头：禁止触达执行器内部或双下划线名字
+  …（完整片段见 RULES.json 与 REPORT.md 的『未公开规则清单』）
+
+====================================================================================================
+[6] 汇总
+  规则总数 60：完全公开(VERBATIM) 13；部分公开(PARTIAL) 12；完全未公开(ABSENT) 35
+  未公开+部分公开合计 47 条
+  不可达分支 9 条：['AV-SUB-010', 'AV-SUB-014', 'AV-SUB-018', 'AV-SUB-020', 'AV-SUB-025', 'AV-SUB-050', 'AV-SUB-056', 'AV-SUB-059', 'AV-SUB-060']
+  正例通过 58 条，正例失败 0 条
+  反例实测触发 58 条（装载 REJECT 50 + 合成 8），未触发/不符 0 条
+  证据回读命中 50/50
+  失败项 0 条
+  结论：全部通过
+====================================================================================================

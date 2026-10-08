@@ -1,4 +1,21 @@
 """RF1独立包作用域/拒绝/组合根接线；全为本地合成收据，不连接平台。"""
+
+from pathlib import Path as _StoragePath
+import sys as _storage_sys
+_PROJECT_ROOT = next(p for p in _StoragePath(__file__).resolve().parents
+                     if (p / "src/hangma_bot/bootstrap.py").is_file())
+_storage_sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from hangma_bot.adapters.recording.project_storage import project_file as _resolve_project_file
+_PROJECT_STORAGE_ORIGIN = 'tests/unit/application'
+
+def _project_file(root, source):
+    """共享脚本的相邻数据沿用原逻辑目录，相邻代码从共享目录读取。"""
+    source = _StoragePath(source)
+    here = _StoragePath(__file__).resolve().parent
+    if source.is_absolute() and source.is_relative_to(here):
+        if not source.is_dir() and not (source.suffix == ".py" and source.is_file()):
+            source = root / _PROJECT_STORAGE_ORIGIN / source.relative_to(here)
+    return _resolve_project_file(root, source)
 import hashlib
 import json
 import platform
@@ -31,7 +48,7 @@ def compiled_root(tmp_path):
     root.mkdir(); (root / "src").symlink_to(real / "src", target_is_directory=True)
     directory = root / release.COMPILED_DIRECTORY; directory.mkdir(parents=True)
     name = release.MODULE_NAME; suffix = sysconfig.get_config_var("EXT_SUFFIX")
-    (directory / "source.py").write_bytes((real / "review/vip-route-2026-09-30/evidence/t226-minimal-scoring-repair-1/candidate.py").read_bytes())
+    (directory / "source.py").write_bytes((real / 'tests/fixtures/research/vip-route-2026-09-30/evidence/t226-minimal-scoring-repair-1/candidate.py').read_bytes())
     for filename in [name + ".pyx", name + ".c", name + suffix, "_s02_meter.pxd"]:
         (directory / filename).write_bytes(b"synthetic-test-only-not-executable")
     shared = {"directory": "test-shared", "manifest_sha256": "a" * 64}

@@ -1,0 +1,579 @@
+{
+ "schema": "sitin-model-admission-regrade-by-view-schema/1",
+ "note": "同一批 R6 旧回复在两种视图结构版本下的重判分（内存内换版本，不改 src/）。",
+ "budget_note": "0 真实 LLM、0 真实桌赛；只读既有回复。",
+ "t10_note": "T10 候选自带「schema != sitin-scoring-view/1 → ABSTAIN」自守卫，版本不匹配时拒绝猜测＝正确防御行为，不是判分器或升版缺陷。",
+ "versions": {
+  "sitin-scoring-view/1": {
+   "r1": {
+    "tasks": {
+     "T01": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T02": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T03": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T04": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T05": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T06": {
+      "pass": false,
+      "problems": [
+       "能力合同：反例窗口 unknown_branch_none 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.8941 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）",
+       "能力合同：反例窗口 unknown_branch_bool 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.8941 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）"
+      ]
+     },
+     "T07": {
+      "pass": false,
+      "problems": [
+       "能力合同：反例窗口 unknown_branch_none 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.8941 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）",
+       "能力合同：反例窗口 unknown_branch_bool 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.8941 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）"
+      ]
+     },
+     "T08": {
+      "pass": false,
+      "problems": [
+       "能力合同：反例窗口 unknown_branch_none 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.1687 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）",
+       "能力合同：反例窗口 unknown_branch_bool 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.1687 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）"
+      ]
+     },
+     "T09": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T10": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T11": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T12": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T13": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T14": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T15": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T16": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T17": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T18": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T19": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T20": {
+      "pass": true,
+      "kind": "repair",
+      "problems": []
+     },
+     "T21": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T22": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T23": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T24": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     }
+    },
+    "summary": {
+     "pass": 21,
+     "tasks": 24,
+     "scorer_pass": 3,
+     "failed_tasks": [
+      "T06",
+      "T07",
+      "T08"
+     ]
+    }
+   },
+   "r2": {
+    "tasks": {
+     "T01": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T02": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T03": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T04": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T05": {
+      "pass": false,
+      "problems": [
+       "能力合同：反例窗口 unknown_branch_none 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -1.3883333333333332 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）",
+       "能力合同：反例窗口 unknown_branch_bool 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -1.3883333333333332 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）"
+      ]
+     },
+     "T06": {
+      "pass": false,
+      "problems": [
+       "能力合同：反例窗口 unknown_branch_none 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.8941 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）",
+       "能力合同：反例窗口 unknown_branch_bool 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.8941 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）"
+      ]
+     },
+     "T07": {
+      "pass": false,
+      "problems": [
+       "能力合同：反例窗口 unknown_branch_none 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.8941 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）",
+       "能力合同：反例窗口 unknown_branch_bool 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.8941 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）"
+      ]
+     },
+     "T08": {
+      "pass": false,
+      "problems": [
+       "能力合同：反例窗口 unknown_branch_none 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.5296 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）",
+       "能力合同：反例窗口 unknown_branch_bool 未通过：未知动作 discard:2b 得分 0.0 排在已知负分动作 discard:1w 得分 -17.5296 之上（违反 batch_failure_policy：未知不得自动排在已知负分之前）"
+      ]
+     },
+     "T09": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T10": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T11": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T12": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T13": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T14": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T15": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T16": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T17": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T18": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T19": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T20": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T21": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T22": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T23": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T24": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     }
+    },
+    "summary": {
+     "pass": 20,
+     "tasks": 24,
+     "scorer_pass": 2,
+     "failed_tasks": [
+      "T05",
+      "T06",
+      "T07",
+      "T08"
+     ]
+    }
+   }
+  },
+  "sitin-scoring-view/2": {
+   "r1": {
+    "tasks": {
+     "T01": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T02": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T03": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T04": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T05": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T06": {
+      "pass": false,
+      "problems": [
+       "能力合同：冻结可解窗口 cap_progress 未实际完成评分（ABSTAIN：schema_version='sitin-scoring-view/2' 不兼容 sitin-scoring-view/1，拒绝评分）——安全合同允许主动弃权，但弃权不能兑换能力",
+       "能力合同：声明窗口行为签名与父代完全一致（只改说明不改行为）——视图 sample、fam_hu、fam_pass、fam_chi、fam_peng、fam_gang、fam_discard、route_combo、unknown_missing、max_input 上评分与父代逐项相同，修订未产生可观察行为差异"
+      ]
+     },
+     "T07": {
+      "pass": false,
+      "problems": [
+       "能力合同：冻结可解窗口 cap_progress 未实际完成评分（ABSTAIN：schema_version='sitin-scoring-view/2' 不兼容 sitin-scoring-view/1，拒绝评分）——安全合同允许主动弃权，但弃权不能兑换能力",
+       "能力合同：声明窗口行为签名与父代完全一致（只改说明不改行为）——视图 sample、route_combo、unknown_missing 上评分与父代逐项相同，修订未产生可观察行为差异"
+      ]
+     },
+     "T08": {
+      "pass": false,
+      "problems": [
+       "能力合同：冻结可解窗口 cap_progress 未实际完成评分（ABSTAIN：schema_version='sitin-scoring-view/2' 不兼容 sitin-scoring-view/1，拒绝评分）——安全合同允许主动弃权，但弃权不能兑换能力",
+       "能力合同：声明窗口行为签名与父代完全一致（只改说明不改行为）——视图 sample、route_combo、unknown_missing 上评分与父代逐项相同，修订未产生可观察行为差异"
+      ]
+     },
+     "T09": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T10": {
+      "pass": false,
+      "problems": [
+       "能力合同：冻结可解窗口 cap_progress 未实际完成评分（ABSTAIN：schema_version 不支持：拒绝在未知结构上猜分）——安全合同允许主动弃权，但弃权不能兑换能力"
+      ]
+     },
+     "T11": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T12": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T13": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T14": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T15": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T16": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T17": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T18": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T19": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T20": {
+      "pass": true,
+      "kind": "repair",
+      "problems": []
+     },
+     "T21": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T22": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T23": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T24": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     }
+    },
+    "summary": {
+     "pass": 20,
+     "tasks": 24,
+     "scorer_pass": 2,
+     "failed_tasks": [
+      "T06",
+      "T07",
+      "T08",
+      "T10"
+     ]
+    }
+   },
+   "r2": {
+    "tasks": {
+     "T01": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T02": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T03": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T04": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T05": {
+      "pass": false,
+      "problems": [
+       "能力合同：冻结可解窗口 cap_progress 未实际完成评分（ABSTAIN：clutch_dual_gate: 未知 schema_version，字段语义不可保证）——安全合同允许主动弃权，但弃权不能兑换能力"
+      ]
+     },
+     "T06": {
+      "pass": false,
+      "problems": [
+       "能力合同：冻结可解窗口 cap_progress 未实际完成评分（ABSTAIN：schema_version='sitin-scoring-view/2' 不兼容 sitin-scoring-view/1，拒绝评分）——安全合同允许主动弃权，但弃权不能兑换能力",
+       "能力合同：声明窗口行为签名与父代完全一致（只改说明不改行为）——视图 sample、fam_hu、fam_pass、fam_chi、fam_peng、fam_gang、fam_discard、route_combo、unknown_missing、max_input 上评分与父代逐项相同，修订未产生可观察行为差异"
+      ]
+     },
+     "T07": {
+      "pass": false,
+      "problems": [
+       "能力合同：冻结可解窗口 cap_progress 未实际完成评分（ABSTAIN：schema_version='sitin-scoring-view/2' 不兼容 sitin-scoring-view/1，拒绝评分）——安全合同允许主动弃权，但弃权不能兑换能力",
+       "能力合同：声明窗口行为签名与父代完全一致（只改说明不改行为）——视图 sample、route_combo、unknown_missing 上评分与父代逐项相同，修订未产生可观察行为差异"
+      ]
+     },
+     "T08": {
+      "pass": false,
+      "problems": [
+       "能力合同：冻结可解窗口 cap_progress 未实际完成评分（ABSTAIN：schema_version='sitin-scoring-view/2' 不兼容 sitin-scoring-view/1，拒绝评分）——安全合同允许主动弃权，但弃权不能兑换能力",
+       "能力合同：声明窗口行为签名与父代完全一致（只改说明不改行为）——视图 sample、route_combo、unknown_missing 上评分与父代逐项相同，修订未产生可观察行为差异"
+      ]
+     },
+     "T09": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T10": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T11": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T12": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T13": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T14": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T15": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T16": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T17": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T18": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T19": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T20": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T21": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T22": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T23": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     },
+     "T24": {
+      "pass": true,
+      "kind": "first",
+      "problems": []
+     }
+    },
+    "summary": {
+     "pass": 20,
+     "tasks": 24,
+     "scorer_pass": 2,
+     "failed_tasks": [
+      "T05",
+      "T06",
+      "T07",
+      "T08"
+     ]
+    }
+   }
+  }
+ }
+}

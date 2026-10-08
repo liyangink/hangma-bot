@@ -1,0 +1,187 @@
+{
+  "arms": "立即 hu vs 该形状冻结 oracle 最优动作；首动作后四家稳定 V2",
+  "direction_rule": {
+    "CONTRADICT": "该手牌机械全通过且配对均值bootstrap 95%上界<0",
+    "INCONCLUSIVE": "其余情况",
+    "SUPPORT": "该手牌机械全通过且配对均值bootstrap 95%下界>0"
+  },
+  "hidden_bank_read": false,
+  "pairs": 576,
+  "release_eligible": false,
+  "schema": "r18-wealth-gap-counterfactual-manifest/1",
+  "selection_eligible": false,
+  "shape_selection": "每分层按sha256('r18-wealth-gap-cf|'+stratum+'|'+request_sha256)取前6",
+  "shapes": [
+    {
+      "case_id": "r18-wgap-067",
+      "opportunity_stratum": "three_wealth_piao",
+      "oracle_target_minus_hu": 97.57377049180329,
+      "reachability_witness_sha256": "06e6aa61913e9ef19b268b1658bf7bfe9e0d1f0a087ae9c8ff3bb17ef2336cb2",
+      "request_sha256": "2d7dce0231cc4127cfc0500534528dce86aba752b31da5044d122e3617c73567",
+      "shape_rank": 1,
+      "target_action_key": "discard:白"
+    },
+    {
+      "case_id": "r18-wgap-077",
+      "opportunity_stratum": "three_wealth_piao",
+      "oracle_target_minus_hu": 97.57377049180329,
+      "reachability_witness_sha256": "162702045fc204c3b19dc7e417aaed1965e54c1abc04169236aaf2279580d613",
+      "request_sha256": "376f59ca2b42f7024e15af436f3fe36a1d145506eb60cd13560891982445b887",
+      "shape_rank": 2,
+      "target_action_key": "discard:白"
+    },
+    {
+      "case_id": "r18-wgap-088",
+      "opportunity_stratum": "three_wealth_piao",
+      "oracle_target_minus_hu": 99.14754098360655,
+      "reachability_witness_sha256": "08a86d07403530d6d4826729f5a8ea2bd0bb63e73e248844e286749dbb2f4e94",
+      "request_sha256": "382e5f45cefce6a76194616ccc01bb58cd99008dc4aa482250729c3927a863c4",
+      "shape_rank": 3,
+      "target_action_key": "discard:白"
+    },
+    {
+      "case_id": "r18-wgap-082",
+      "opportunity_stratum": "three_wealth_piao",
+      "oracle_target_minus_hu": 195.14754098360658,
+      "reachability_witness_sha256": "48d740f97be53c32a6c553c0325dd20eb64ae889b26ea95d28b991fe8bf018a3",
+      "request_sha256": "d84e3f7bac482f23268ad1bc4e0cb658612d29adc370a15515b0f81a0ba44a94",
+      "shape_rank": 4,
+      "target_action_key": "discard:白"
+    },
+    {
+      "case_id": "r18-wgap-069",
+      "opportunity_stratum": "three_wealth_piao",
+      "oracle_target_minus_hu": 97.57377049180329,
+      "reachability_witness_sha256": "f7aebffa7bd1e46088be408c3acc5767156ca7e90c4794f40356631fcb8696ff",
+      "request_sha256": "4b36f72980e0b85a6f1c1370d2de9cc7b35d941828bcd5e5fd2ea1e51f19a278",
+      "shape_rank": 5,
+      "target_action_key": "discard:白"
+    },
+    {
+      "case_id": "r18-wgap-070",
+      "opportunity_stratum": "three_wealth_piao",
+      "oracle_target_minus_hu": 97.57377049180329,
+      "reachability_witness_sha256": "1a734c06f2d016cf9374e9aaa635590e06cb3330911731936704c61b56d847ed",
+      "request_sha256": "32909907dac9649fd6c02297e033c49e174505a3f58c2db153363d5a81a5e41c",
+      "shape_rank": 6,
+      "target_action_key": "discard:白"
+    },
+    {
+      "case_id": "r18-wgap-033",
+      "opportunity_stratum": "three_wealth_keep",
+      "oracle_target_minus_hu": 0.7868852459016438,
+      "reachability_witness_sha256": "9681504fd625f3dd325e08f3bebb417781ec25b5d0a58ce74b527ddea188579a",
+      "request_sha256": "df056c4d7ff53d651fdac411d78ebc2841ec8905e9cd86aab656381fc83035a0",
+      "shape_rank": 1,
+      "target_action_key": "discard:5t"
+    },
+    {
+      "case_id": "r18-wgap-062",
+      "opportunity_stratum": "three_wealth_keep",
+      "oracle_target_minus_hu": 0.7868852459016438,
+      "reachability_witness_sha256": "3cf6e8f7266f4c58502c4b562553abad1bf58312f998a97e1e97e1c00e4b86be",
+      "request_sha256": "25e70098708eb2a300595c660c0dbf974f93c0fb2a5fc3de732ad6841617e07b",
+      "shape_rank": 2,
+      "target_action_key": "discard:1w"
+    },
+    {
+      "case_id": "r18-wgap-058",
+      "opportunity_stratum": "three_wealth_keep",
+      "oracle_target_minus_hu": 0.3934426229508219,
+      "reachability_witness_sha256": "e7c7379a5a3710066ee950ee97dcd41d290fdf7967dd9e9e751176a433925a76",
+      "request_sha256": "9f39d79e462bf5f3c36a049684f6c8a2be48c1da0a53ac9c5deeaf39c7864c4e",
+      "shape_rank": 3,
+      "target_action_key": "discard:1b"
+    },
+    {
+      "case_id": "r18-wgap-042",
+      "opportunity_stratum": "three_wealth_keep",
+      "oracle_target_minus_hu": 0.7868852459016438,
+      "reachability_witness_sha256": "8d491f717e4045221e5dbc8d506fe7a8b8448cc0e2586994b602688a47ff53d1",
+      "request_sha256": "5454fd82921d3167dae619d7a5b05b35a3bb97d19347733870ace7f9b8f5487c",
+      "shape_rank": 4,
+      "target_action_key": "discard:1b"
+    },
+    {
+      "case_id": "r18-wgap-052",
+      "opportunity_stratum": "three_wealth_keep",
+      "oracle_target_minus_hu": 0.3934426229508219,
+      "reachability_witness_sha256": "bd61b4d5abbcafaf7be7b6208ecbb155245adf11f9202f407f3cb96b36f3acff",
+      "request_sha256": "c9eb82ce0aa3f3f76abb548bff5b943be39097f9b41ea8301838bd7bcda5d23b",
+      "shape_rank": 5,
+      "target_action_key": "discard:7w"
+    },
+    {
+      "case_id": "r18-wgap-054",
+      "opportunity_stratum": "three_wealth_keep",
+      "oracle_target_minus_hu": 1.5737704918032733,
+      "reachability_witness_sha256": "baf794eccef9a4f5f7b00b31310c85e716e843604768f3133e45ece7a81b8b96",
+      "request_sha256": "2f04c1fed9a62e6a04e74ce9b304ea6c607d1835ddd8aa53adc0596e7dd89f8f",
+      "shape_rank": 6,
+      "target_action_key": "discard:2b"
+    },
+    {
+      "case_id": "r18-wgap-020",
+      "opportunity_stratum": "four_wealth_keep",
+      "oracle_target_minus_hu": 11.803278688524586,
+      "reachability_witness_sha256": "fa6439a041b9d1efb67d854f46e2870a8a021277bb741dfcfc888842a13c36c4",
+      "request_sha256": "e0ed5b804afebbb42ad5f9bf8248844e1d6bf01cc0691dbc478f495e365740a1",
+      "shape_rank": 1,
+      "target_action_key": "discard:8w"
+    },
+    {
+      "case_id": "r18-wgap-013",
+      "opportunity_stratum": "four_wealth_keep",
+      "oracle_target_minus_hu": 1.5737704918032875,
+      "reachability_witness_sha256": "ba68b882a4c8d828a203ab7c1100c1c73110efb10fa5d62d7892a5c49807c768",
+      "request_sha256": "9baa61dcde9660731dec476352ddf9d1927373bc412870d96282264e6ebff6e3",
+      "shape_rank": 2,
+      "target_action_key": "discard:4t"
+    },
+    {
+      "case_id": "r18-wgap-021",
+      "opportunity_stratum": "four_wealth_keep",
+      "oracle_target_minus_hu": 1.5737704918032875,
+      "reachability_witness_sha256": "cdfffb670577a05762c9693bf6c54b40c650e839a60727c0335a62f06a4b5da1",
+      "request_sha256": "6ba2989966509e4d42acba0cde5966b5c9d06770412b956de5ad7529bb29d4f8",
+      "shape_rank": 3,
+      "target_action_key": "discard:6w"
+    },
+    {
+      "case_id": "r18-wgap-017",
+      "opportunity_stratum": "four_wealth_keep",
+      "oracle_target_minus_hu": 1.5737704918032875,
+      "reachability_witness_sha256": "1c20f5717ebb35b637efc366060bb6459ee76f53cbc07172e2fd0361ae526eb9",
+      "request_sha256": "7623a03bf90f52abbf3cdf651fc2b7f0f930c0f5fac85efc31ee2cec576a4d55",
+      "shape_rank": 4,
+      "target_action_key": "discard:5t"
+    },
+    {
+      "case_id": "r18-wgap-014",
+      "opportunity_stratum": "four_wealth_keep",
+      "oracle_target_minus_hu": 1.5737704918032875,
+      "reachability_witness_sha256": "20078999ea7cced294c86fa87503f19f62034c5123dedd87a0fc3e9d1eadb8fb",
+      "request_sha256": "ff055e61f5d8db86579750446290649f2ed25dedc618f59f44924c605a53bdf5",
+      "shape_rank": 5,
+      "target_action_key": "discard:1w"
+    },
+    {
+      "case_id": "r18-wgap-003",
+      "opportunity_stratum": "four_wealth_keep",
+      "oracle_target_minus_hu": 11.803278688524586,
+      "reachability_witness_sha256": "dba2617f6e331258ac18657c2a582607312f2919a2176f379709e0b67c8850a1",
+      "request_sha256": "5c30d094133d55f1a1a6d5de2cb928993ef2b3bbaecd5fbfa84592627409ee6f",
+      "shape_rank": 6,
+      "target_action_key": "discard:2w"
+    }
+  ],
+  "source_hashes": {
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-wealth-gap-bank-01-20260922/development-parent-score.json": "f9d3b49cf630bbe080c82de39533cf2efbc33b6dc37ea12ee94e3bd3596e27b7",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-wealth-gap-bank-01-20260922/development.json": "a01901c9cfb676f9947934cedb24e7eef54a189bba6d62f2c029596390f618bd",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-wealth-gap-bank-01-20260922/manifest.json": "56769ab8e14984298eb86eadf5e02bd4fd865a41de52db5e68f2b490d97cce49",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p4_counterfactual_pilot.py": "ab7a6100da68b7ecce7c0256c29ec8984ce7f5c563ababf7c31ddfaed45c9eef",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_wealth_gap_counterfactual.py": "73001294626b11937e2f4f4a041e627e78bb6b88ba666971a6ab5521e4c3ff1d"
+  },
+  "world_identity": "global_index=stratum_rank*1000000+shape_rank*10000+local_index；复用已审计完整世界构造",
+  "worlds_per_shape": 32
+}

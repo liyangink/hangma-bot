@@ -1,0 +1,96 @@
+{
+  "schema": "r11-dv1-scaled-discard-teacher-result/1",
+  "status": "PASS_DV1_2_SCALED_TEACHER_FOR_GROUPED_MODELING",
+  "manifest_sha256": "2af645dbb818f0d14fe39f1922c298c39cb50cc57df49189b39770e2a268ed13",
+  "dataset_sha256": "cf99b46564e8f2352b8f2c196ea675d36bf627eabb51c410e5f1de30aa06b345",
+  "shards": [
+    {
+      "panel_seed": 2026092340,
+      "mix": "H",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092340,
+      "mix": "M",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092341,
+      "mix": "H",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092341,
+      "mix": "M",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092342,
+      "mix": "H",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092342,
+      "mix": "M",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092343,
+      "mix": "H",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092343,
+      "mix": "M",
+      "attempts": 16,
+      "valid_snapshots": 16,
+      "complete": true,
+      "mechanical_failure": null
+    }
+  ],
+  "summary": {
+    "snapshots": 128,
+    "action_counts": {
+      "min": 9,
+      "max": 14,
+      "mean": 12.0390625
+    },
+    "paired_action_rollouts": 12096,
+    "full_or_partial_tables": 24192,
+    "rollout_counts": {
+      "four": 840,
+      "eight": 310,
+      "sixteen": 391
+    },
+    "positive_alternative_snapshots": 116,
+    "stage1_ranking_stable_snapshots": 80,
+    "stage1_ranking_unstable_snapshots": 48,
+    "all_mechanical": true,
+    "complete": true,
+    "strength_claim": false
+  },
+  "next": "冻结快照分组，训练低容量成对排序器、受限树与广义加性模型；完整面板留出不得拆窗",
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

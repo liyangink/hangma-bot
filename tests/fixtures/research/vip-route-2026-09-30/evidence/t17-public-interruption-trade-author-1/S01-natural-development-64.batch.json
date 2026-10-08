@@ -1,0 +1,163 @@
+{
+  "schema": "vip-route-development-batch/2",
+  "batch_id": "vip-t17-public-interruption-natural4-20261002",
+  "generation_batch_file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t17-public-interruption-trade-author-1/S01-generation.batch.json",
+  "generation_batch_sha256": "80b2f5e01e52f00d5f9236cea9b82af0207507f283ebb58ff71ff50b90c18e29",
+  "candidate_package": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t17-public-interruption-trade-author-1/S01-model-output",
+  "candidate_generation_sha256": "3fa9ccf04dfb9d223e362594284deb54af70a7acd46b67507f88e48d70b4d3f3",
+  "candidate_source_sha256": "a32ee8e2f7c6b3a17899ff3a07bf9559ad15cbc38775962f404338074cb1d38b",
+  "behavior_probe_summary_file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t17-public-interruption-trade-author-1/S01-cross-source-probe-1/summary.json",
+  "behavior_probe_summary_sha256": "0ceb7fca4ad0a99b1c7fd86f1e4fcf42e851e5a3f0751f1b7e0aab893c12533f",
+  "seeds": [
+    {
+      "root_id": "vip-t17-natural-2026102101",
+      "seed": 2026102101,
+      "permutations": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3,
+          0
+        ],
+        [
+          2,
+          3,
+          0,
+          1
+        ],
+        [
+          3,
+          0,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "root_id": "vip-t17-natural-2026102102",
+      "seed": 2026102102,
+      "permutations": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3,
+          0
+        ],
+        [
+          2,
+          3,
+          0,
+          1
+        ],
+        [
+          3,
+          0,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "root_id": "vip-t17-natural-2026102103",
+      "seed": 2026102103,
+      "permutations": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3,
+          0
+        ],
+        [
+          2,
+          3,
+          0,
+          1
+        ],
+        [
+          3,
+          0,
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "root_id": "vip-t17-natural-2026102104",
+      "seed": 2026102104,
+      "permutations": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          1,
+          2,
+          3,
+          0
+        ],
+        [
+          2,
+          3,
+          0,
+          1
+        ],
+        [
+          3,
+          0,
+          1,
+          2
+        ]
+      ]
+    }
+  ],
+  "pools": [
+    "H",
+    "M"
+  ],
+  "rounds": 8,
+  "initial_dealer_physical": 0,
+  "initial_scores": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "table_instance_limit": 64,
+  "wall_clock_limit_seconds": 3600,
+  "step_limit": 10000,
+  "scoring_input_capture": {
+    "max_unique_views": 20000,
+    "max_view_json_bytes": 67108864,
+    "max_total_json_bytes": 2147483648
+  },
+  "behavior_reference_policy": [
+    {
+      "basis": "generation_direct_parents",
+      "candidate_id": "b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+      "reference_ids": [
+        "93d7ab4fd0967078b26b4f4fd6dd509df8a770b2809b556e6c9c99be344c2f8b"
+      ]
+    }
+  ],
+  "behavior_exploration": null
+}

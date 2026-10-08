@@ -1,0 +1,79 @@
+{
+  "schema": "sitin-action-value-ledger/1",
+  "accounts": [
+    "tokens_input",
+    "tokens_output",
+    "tables_full",
+    "tables_partial",
+    "prefix_generation",
+    "confirm_reserved"
+  ],
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 3072.0,
+    "tables_partial": 0,
+    "prefix_generation": 8.0,
+    "confirm_reserved": 0
+  },
+  "confirm_authorized_budget": 0.0,
+  "authorized_budgets": {
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "tables_full": 3072.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 8.0,
+    "confirm_reserved": 8.0
+  },
+  "confirm_policy": "confirm 硬禁继承现状：默认 0，无显式授权任何 confirm 记账拒绝",
+  "limit_policy": "Q3：正数记账须在授权总额内（扣已结算+在途预留）；未声明额度 fail-closed 拒绝；amount=0 纯登记不限额",
+  "reservations": [
+    {
+      "reservation_id": "r18:p40a:natural-exposure#1",
+      "step_id": "r18:p40a:natural-exposure",
+      "account": "tables_full",
+      "amount": 2560.0,
+      "note": "独立确认候选冻结后的全新P5自然轨迹目标机会搜索；按完整返回桌数结算",
+      "at_utc": "2026-09-22T12:56:38Z",
+      "status": "settled",
+      "charged": 2560.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "r18:p40a:capture#2",
+      "step_id": "r18:p40a:capture",
+      "account": "prefix_generation",
+      "amount": 8.0,
+      "note": "八个全新独立确认自然根的P5精确合法前缀捕获；按成功捕获并核验候选动作的根计",
+      "at_utc": "2026-09-22T13:09:06Z",
+      "status": "settled",
+      "charged": 0.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "r18:p40a:capture-after-target-shape-correction#3",
+      "step_id": "r18:p40a:capture-after-target-shape-correction",
+      "account": "prefix_generation",
+      "amount": 8.0,
+      "note": "八个全新独立确认自然根的P5精确合法前缀捕获；按成功捕获并核验候选动作的根计",
+      "at_utc": "2026-09-22T13:14:44Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "r18:p40a:hidden-confirmation#4",
+      "step_id": "r18:p40a:hidden-confirmation",
+      "account": "tables_full",
+      "amount": 512.0,
+      "note": "八个独立确认根×32共同隐藏世界×立即胡/飘财神；按成功两臂桌数结算",
+      "at_utc": "2026-09-22T13:15:41Z",
+      "status": "settled",
+      "charged": 512.0,
+      "usage_unknown": false
+    }
+  ],
+  "workers_active": 0,
+  "worker_lease": "ledger.json.workers.json",
+  "worker_cap": 12
+}

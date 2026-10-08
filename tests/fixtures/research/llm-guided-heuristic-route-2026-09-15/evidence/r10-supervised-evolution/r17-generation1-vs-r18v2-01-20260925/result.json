@@ -1,0 +1,507 @@
+{
+  "schema": "p28-r17-vs-r18v2-result/1",
+  "manifest_sha256": "8354171560c5f549595f2881ae7112986f1738cb527c3fa0074c75272d78f3ba",
+  "baseline": {
+    "strategy": "action_value:r18_integrated_positive_v2",
+    "panel_name": "r18_integrated_positive_v2",
+    "assembly": "hangma_bot.bootstrap.build_research_policy",
+    "injection": "运行期补丁：sitin_stage.build_panel_policy 只把面板基线名重定向到 R18 v2；sitin_natural_panel.BASELINE_FOCAL_POLICY 逐臂设置；合同对手名（weighted_heuristic_v2 / _white_guard / _v1）逐字不变"
+  },
+  "panel_seed": 2026093028,
+  "source_units": 192,
+  "tables_per_arm": 384,
+  "baseline_policy_identity_by_arm": {
+    "baseline": {
+      "action_value_v1:r18_integrated_positive_v2": 384
+    },
+    "reference:v2": {
+      "ComparableHeuristicPolicyV2": 384
+    },
+    "candidate:A": {
+      "r17-public-successor:a7e6f529e42b": 384
+    },
+    "candidate:B": {
+      "r17-public-successor:73c2833da12f": 384
+    }
+  },
+  "candidates": {
+    "candidate:A": {
+      "candidate_id": "A",
+      "candidate_identity": "a7e6f529e42b6ac81985877925bca878d01f592a2328459968feb97ef19ba1a8",
+      "candidate_sha256": "b0ae33525f46c66c7b462e4db9825df13d8608d5748b803e759b49c2a16eb76d",
+      "overall": {
+        "sources": 192,
+        "first_table_delta_mean": 3.1979166666666665,
+        "stage_score_delta_mean": 3.2864583333333335,
+        "stage_score_delta_quantiles": {
+          "min": -231.0,
+          "p10": -73.0,
+          "median": 3.0,
+          "p90": 87.0,
+          "max": 297.0
+        },
+        "u_delta_low_mean": -0.041666666666666664,
+        "u_delta_high_mean": -0.03125,
+        "candidate_fourth_rate": 0.20833333333333334,
+        "baseline_fourth_rate": 0.21875,
+        "fourth_rate_delta": -0.010416666666666657,
+        "candidate_unresolved_rate": 0.010416666666666666,
+        "baseline_unresolved_rate": 0.0
+      },
+      "by_mix": {
+        "H": {
+          "sources": 96,
+          "first_table_delta_mean": 7.239583333333333,
+          "stage_score_delta_mean": 11.229166666666666,
+          "stage_score_delta_quantiles": {
+            "min": -129.0,
+            "p10": -61.0,
+            "median": 12.0,
+            "p90": 95.0,
+            "max": 210.0
+          },
+          "u_delta_low_mean": -0.03125,
+          "u_delta_high_mean": -0.020833333333333332,
+          "candidate_fourth_rate": 0.25,
+          "baseline_fourth_rate": 0.25,
+          "fourth_rate_delta": 0.0,
+          "candidate_unresolved_rate": 0.010416666666666666,
+          "baseline_unresolved_rate": 0.0
+        },
+        "M": {
+          "sources": 96,
+          "first_table_delta_mean": -0.84375,
+          "stage_score_delta_mean": -4.65625,
+          "stage_score_delta_quantiles": {
+            "min": -231.0,
+            "p10": -76.0,
+            "median": -2.0,
+            "p90": 83.0,
+            "max": 297.0
+          },
+          "u_delta_low_mean": -0.052083333333333336,
+          "u_delta_high_mean": -0.041666666666666664,
+          "candidate_fourth_rate": 0.16666666666666666,
+          "baseline_fourth_rate": 0.1875,
+          "fourth_rate_delta": -0.020833333333333343,
+          "candidate_unresolved_rate": 0.010416666666666666,
+          "baseline_unresolved_rate": 0.0
+        }
+      },
+      "by_seat": {
+        "0": {
+          "sources": 48,
+          "first_table_delta_mean": 6.083333333333333,
+          "stage_score_delta_mean": 1.75,
+          "stage_score_delta_quantiles": {
+            "min": -129.0,
+            "p10": -72.0,
+            "median": 4.0,
+            "p90": 72.0,
+            "max": 181.0
+          },
+          "u_delta_low_mean": -0.0625,
+          "u_delta_high_mean": -0.041666666666666664,
+          "candidate_fourth_rate": 0.22916666666666666,
+          "baseline_fourth_rate": 0.20833333333333334,
+          "fourth_rate_delta": 0.020833333333333315,
+          "candidate_unresolved_rate": 0.020833333333333332,
+          "baseline_unresolved_rate": 0.0
+        },
+        "1": {
+          "sources": 48,
+          "first_table_delta_mean": -0.3333333333333333,
+          "stage_score_delta_mean": 8.791666666666666,
+          "stage_score_delta_quantiles": {
+            "min": -214.0,
+            "p10": -73.0,
+            "median": 3.0,
+            "p90": 81.0,
+            "max": 158.0
+          },
+          "u_delta_low_mean": -0.0625,
+          "u_delta_high_mean": -0.041666666666666664,
+          "candidate_fourth_rate": 0.10416666666666667,
+          "baseline_fourth_rate": 0.1875,
+          "fourth_rate_delta": -0.08333333333333333,
+          "candidate_unresolved_rate": 0.020833333333333332,
+          "baseline_unresolved_rate": 0.0
+        },
+        "2": {
+          "sources": 48,
+          "first_table_delta_mean": -4.604166666666667,
+          "stage_score_delta_mean": -5.020833333333333,
+          "stage_score_delta_quantiles": {
+            "min": -231.0,
+            "p10": -68.0,
+            "median": 1.0,
+            "p90": 51.0,
+            "max": 210.0
+          },
+          "u_delta_low_mean": -0.10416666666666667,
+          "u_delta_high_mean": -0.10416666666666667,
+          "candidate_fourth_rate": 0.22916666666666666,
+          "baseline_fourth_rate": 0.1875,
+          "fourth_rate_delta": 0.04166666666666666,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        },
+        "3": {
+          "sources": 48,
+          "first_table_delta_mean": 11.645833333333334,
+          "stage_score_delta_mean": 7.625,
+          "stage_score_delta_quantiles": {
+            "min": -199.0,
+            "p10": -53.0,
+            "median": 4.0,
+            "p90": 89.0,
+            "max": 297.0
+          },
+          "u_delta_low_mean": 0.0625,
+          "u_delta_high_mean": 0.0625,
+          "candidate_fourth_rate": 0.2708333333333333,
+          "baseline_fourth_rate": 0.2916666666666667,
+          "fourth_rate_delta": -0.02083333333333337,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        }
+      },
+      "positive_u_units": 37,
+      "positive_u_distinct_roots": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        20,
+        23,
+        24
+      ],
+      "positive_u_distinct_seats": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "window_counts": {
+        "focal_decisions": 126167,
+        "draw_windows": 26252,
+        "response_windows_exact_fallback": 99915
+      },
+      "live": {
+        "eligible_draw_windows": 26251,
+        "complete_reductions": 26251,
+        "incomplete_reductions": 0,
+        "changed_discard_orders": 22783,
+        "provider_calls": 26251,
+        "provider_failures": 0,
+        "incomplete_reason_samples": [],
+        "analysis_cost": {
+          "samples": 26251,
+          "p50_ms": 89.427,
+          "p90_ms": 160.404,
+          "p99_ms": 196.623,
+          "max_ms": 297.932,
+          "mean_ms": 96.638
+        },
+        "reduction_cost": {
+          "samples": 26251,
+          "p50_ms": 30.253,
+          "p90_ms": 53.632,
+          "p99_ms": 78.436,
+          "max_ms": 162.095,
+          "mean_ms": 32.587
+        },
+        "focal_choose_cost": {
+          "samples": 126167,
+          "p50_ms": 0.248,
+          "p90_ms": 126.356,
+          "p99_ms": 234.114,
+          "max_ms": 395.676,
+          "mean_ms": 27.448
+        }
+      }
+    },
+    "candidate:B": {
+      "candidate_id": "B",
+      "candidate_identity": "73c2833da12f2844f69559d4ad6202c44fc4a1adc1b60e0b8b140c82590b4c37",
+      "candidate_sha256": "fb9764faa2a01ded3f8cea94eeee27d59929f014f1dcc0ffbd56380e5b1384a2",
+      "overall": {
+        "sources": 192,
+        "first_table_delta_mean": -1.6458333333333333,
+        "stage_score_delta_mean": -3.2864583333333335,
+        "stage_score_delta_quantiles": {
+          "min": -207.0,
+          "p10": -75.0,
+          "median": 0.0,
+          "p90": 68.0,
+          "max": 219.0
+        },
+        "u_delta_low_mean": -0.015625,
+        "u_delta_high_mean": -0.015625,
+        "candidate_fourth_rate": 0.22395833333333334,
+        "baseline_fourth_rate": 0.21875,
+        "fourth_rate_delta": 0.005208333333333343,
+        "candidate_unresolved_rate": 0.0,
+        "baseline_unresolved_rate": 0.0
+      },
+      "by_mix": {
+        "H": {
+          "sources": 96,
+          "first_table_delta_mean": 6.260416666666667,
+          "stage_score_delta_mean": 8.177083333333334,
+          "stage_score_delta_quantiles": {
+            "min": -146.0,
+            "p10": -70.0,
+            "median": 10.0,
+            "p90": 81.0,
+            "max": 219.0
+          },
+          "u_delta_low_mean": 0.020833333333333332,
+          "u_delta_high_mean": 0.020833333333333332,
+          "candidate_fourth_rate": 0.23958333333333334,
+          "baseline_fourth_rate": 0.25,
+          "fourth_rate_delta": -0.010416666666666657,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        },
+        "M": {
+          "sources": 96,
+          "first_table_delta_mean": -9.552083333333334,
+          "stage_score_delta_mean": -14.75,
+          "stage_score_delta_quantiles": {
+            "min": -207.0,
+            "p10": -83.0,
+            "median": -10.0,
+            "p90": 49.0,
+            "max": 199.0
+          },
+          "u_delta_low_mean": -0.052083333333333336,
+          "u_delta_high_mean": -0.052083333333333336,
+          "candidate_fourth_rate": 0.20833333333333334,
+          "baseline_fourth_rate": 0.1875,
+          "fourth_rate_delta": 0.020833333333333343,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        }
+      },
+      "by_seat": {
+        "0": {
+          "sources": 48,
+          "first_table_delta_mean": 2.8125,
+          "stage_score_delta_mean": 4.666666666666667,
+          "stage_score_delta_quantiles": {
+            "min": -146.0,
+            "p10": -57.0,
+            "median": -4.0,
+            "p90": 69.0,
+            "max": 219.0
+          },
+          "u_delta_low_mean": -0.020833333333333332,
+          "u_delta_high_mean": -0.020833333333333332,
+          "candidate_fourth_rate": 0.2916666666666667,
+          "baseline_fourth_rate": 0.20833333333333334,
+          "fourth_rate_delta": 0.08333333333333334,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        },
+        "1": {
+          "sources": 48,
+          "first_table_delta_mean": -5.25,
+          "stage_score_delta_mean": -3.7916666666666665,
+          "stage_score_delta_quantiles": {
+            "min": -207.0,
+            "p10": -82.0,
+            "median": 16.0,
+            "p90": 73.0,
+            "max": 140.0
+          },
+          "u_delta_low_mean": 0.020833333333333332,
+          "u_delta_high_mean": 0.020833333333333332,
+          "candidate_fourth_rate": 0.16666666666666666,
+          "baseline_fourth_rate": 0.1875,
+          "fourth_rate_delta": -0.020833333333333343,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        },
+        "2": {
+          "sources": 48,
+          "first_table_delta_mean": -9.395833333333334,
+          "stage_score_delta_mean": -10.520833333333334,
+          "stage_score_delta_quantiles": {
+            "min": -94.0,
+            "p10": -71.0,
+            "median": -8.0,
+            "p90": 49.0,
+            "max": 125.0
+          },
+          "u_delta_low_mean": -0.08333333333333333,
+          "u_delta_high_mean": -0.08333333333333333,
+          "candidate_fourth_rate": 0.20833333333333334,
+          "baseline_fourth_rate": 0.1875,
+          "fourth_rate_delta": 0.020833333333333343,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        },
+        "3": {
+          "sources": 48,
+          "first_table_delta_mean": 5.25,
+          "stage_score_delta_mean": -3.5,
+          "stage_score_delta_quantiles": {
+            "min": -112.0,
+            "p10": -87.0,
+            "median": 0.0,
+            "p90": 65.0,
+            "max": 134.0
+          },
+          "u_delta_low_mean": 0.020833333333333332,
+          "u_delta_high_mean": 0.020833333333333332,
+          "candidate_fourth_rate": 0.22916666666666666,
+          "baseline_fourth_rate": 0.2916666666666667,
+          "fourth_rate_delta": -0.06250000000000003,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        }
+      },
+      "positive_u_units": 34,
+      "positive_u_distinct_roots": [
+        1,
+        3,
+        4,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        22,
+        23,
+        24
+      ],
+      "positive_u_distinct_seats": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "window_counts": {
+        "focal_decisions": 125690,
+        "draw_windows": 26241,
+        "response_windows_exact_fallback": 99449
+      },
+      "live": {
+        "eligible_draw_windows": 26241,
+        "complete_reductions": 26241,
+        "incomplete_reductions": 0,
+        "changed_discard_orders": 18648,
+        "provider_calls": 26241,
+        "provider_failures": 0,
+        "incomplete_reason_samples": [],
+        "analysis_cost": {
+          "samples": 26241,
+          "p50_ms": 88.148,
+          "p90_ms": 158.602,
+          "p99_ms": 196.364,
+          "max_ms": 287.25,
+          "mean_ms": 95.739
+        },
+        "reduction_cost": {
+          "samples": 26241,
+          "p50_ms": 45.458,
+          "p90_ms": 73.359,
+          "p99_ms": 103.022,
+          "max_ms": 223.143,
+          "mean_ms": 47.856
+        },
+        "focal_choose_cost": {
+          "samples": 125690,
+          "p50_ms": 0.248,
+          "p90_ms": 141.187,
+          "p99_ms": 252.429,
+          "max_ms": 512.943,
+          "mean_ms": 30.532
+        }
+      }
+    }
+  },
+  "reference_arm": null,
+  "judgement": {
+    "candidate:A": {
+      "u_delta_low_mean": -0.041666666666666664,
+      "stage_score_delta_mean": 3.2864583333333335,
+      "fourth_rate_delta": -0.010416666666666657,
+      "verdict": "NO_CONCLUSION",
+      "reason": "保守 U 差与阶段积分差均值符号相反；不给结论，报实测值交回主审"
+    },
+    "candidate:B": {
+      "u_delta_low_mean": -0.015625,
+      "stage_score_delta_mean": -3.2864583333333335,
+      "fourth_rate_delta": 0.005208333333333343,
+      "verdict": "CLOSE_AXIS",
+      "reason": "两者都 <=0，关闭 2 步公开后继搜索这条轴（在当前 R18 v2 父代之上无增量）"
+    }
+  },
+  "simulation_execution_audit": {
+    "schema": "sitin-policy-execution-review/1",
+    "status": "requires_review",
+    "tables": 1536,
+    "recorded_tables": 1536,
+    "missing_tables": 0,
+    "recorded_counts": {
+      "decision_count": 2021209,
+      "action_value_scored": 127024,
+      "action_value_failed": 0,
+      "other_policy_decisions": 1642328,
+      "ambiguous_diagnostics": 251857,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "abstain": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "zero_internal_failures_verified": false
+  },
+  "run_summary": {
+    "schema": "p28-r17-vs-r18v2-run/1",
+    "stage_files": 768,
+    "actual_tables": 1536,
+    "preexisting_complete_tables": 0,
+    "executed_tables_this_run": 1536,
+    "usage_unknown": false,
+    "wall_seconds": 2590.2,
+    "failures": [],
+    "spent": {
+      "tokens_input": 0,
+      "tokens_output": 0,
+      "tables_full": 1536.0,
+      "tables_partial": 0,
+      "prefix_generation": 0,
+      "confirm_reserved": 0
+    }
+  },
+  "strength_claim": false,
+  "sign_frame": "本批所有差值的符号都是相对 R18 v2（r18_integrated_positive_v2）的；R17 原批次（相对稳定 V2 为正）与本批不冲突"
+}

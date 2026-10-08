@@ -2,6 +2,23 @@
 
 from __future__ import annotations
 
+from pathlib import Path as _StoragePath
+import sys as _storage_sys
+_PROJECT_ROOT = next(p for p in _StoragePath(__file__).resolve().parents
+                     if (p / "src/hangma_bot/bootstrap.py").is_file())
+_storage_sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from hangma_bot.adapters.recording.project_storage import project_file as _resolve_project_file
+_PROJECT_STORAGE_ORIGIN = 'tests/review'
+
+def _project_file(root, source):
+    """共享脚本的相邻数据沿用原逻辑目录，相邻代码从共享目录读取。"""
+    source = _StoragePath(source)
+    here = _StoragePath(__file__).resolve().parent
+    if source.is_absolute() and source.is_relative_to(here):
+        if not source.is_dir() and not (source.suffix == ".py" and source.is_file()):
+            source = root / _PROJECT_STORAGE_ORIGIN / source.relative_to(here)
+    return _resolve_project_file(root, source)
+
 from argparse import Namespace
 from hashlib import sha256
 from pathlib import Path
@@ -11,7 +28,7 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[2]
-REVIEW = ROOT / "review/freematch-deep-dive-20260925"
+REVIEW = _project_file(_PROJECT_ROOT, ROOT / "review/freematch-deep-dive-20260925")
 if str(REVIEW) not in sys.path:
     sys.path.insert(0, str(REVIEW))
 
@@ -67,7 +84,7 @@ def test_both_arms_build_under_same_analysis_limits(monkeypatch) -> None:
         (research_parent.R18_INTEGRATED_POSITIVE_V2_NAME,
          subject.R18_INTEGRATED_POSITIVE_V2_SOURCE, subject.panel.paired.LIMITS),
         ("research:" + Path(CANDIDATE).stem,
-         (ROOT / CANDIDATE.removeprefix("candidate@")).read_text(encoding="utf-8"),
+         (_project_file(_PROJECT_ROOT, ROOT / CANDIDATE.removeprefix("candidate@"))).read_text(encoding="utf-8"),
          subject.panel.paired.LIMITS),
     ]
 
@@ -83,9 +100,9 @@ def test_manifest_separates_research_identity_from_release() -> None:
     assert row["rules_source_hash"] == row["research_rules_source_hash"]
     assert list(row["candidate_sources"]) == [CANDIDATE]
     assert row["candidate_sources"][CANDIDATE] == sha256(
-        (ROOT / CANDIDATE.removeprefix("candidate@")).read_bytes()).hexdigest()
-    assert row["input_identity"]["review/freematch-deep-dive-20260925/g261_current_rules_panel.py"] == (
-        subject.digest(REVIEW / "g261_current_rules_panel.py"))
+        (_project_file(_PROJECT_ROOT, ROOT / CANDIDATE.removeprefix("candidate@"))).read_bytes()).hexdigest()
+    assert row["input_identity"]['tools/research/freematch-deep-dive-20260925/g261_current_rules_panel.py'] == (
+        subject.digest(_project_file(_PROJECT_ROOT, REVIEW / "g261_current_rules_panel.py")))
 
 
 def test_run_unit_passes_same_rules_to_both_arms(monkeypatch) -> None:

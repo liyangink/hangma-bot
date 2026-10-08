@@ -10,6 +10,23 @@
 
 from __future__ import annotations
 
+from pathlib import Path as _StoragePath
+import sys as _storage_sys
+_PROJECT_ROOT = next(p for p in _StoragePath(__file__).resolve().parents
+                     if (p / "src/hangma_bot/bootstrap.py").is_file())
+_storage_sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from hangma_bot.adapters.recording.project_storage import project_file as _resolve_project_file
+_PROJECT_STORAGE_ORIGIN = 'tests/review'
+
+def _project_file(root, source):
+    """共享脚本的相邻数据沿用原逻辑目录，相邻代码从共享目录读取。"""
+    source = _StoragePath(source)
+    here = _StoragePath(__file__).resolve().parent
+    if source.is_absolute() and source.is_relative_to(here):
+        if not source.is_dir() and not (source.suffix == ".py" and source.is_file()):
+            source = root / _PROJECT_STORAGE_ORIGIN / source.relative_to(here)
+    return _resolve_project_file(root, source)
+
 import importlib.util
 import sys
 from pathlib import Path
@@ -17,14 +34,14 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
-SCRIPT = ROOT / "review/r18-four-arm-evaluation-2026-09-23/paired_study.py"
-CANDIDATE = ROOT / ("review/wiring-queue-rootcause-2026-09-25/"
-                    "candidates/OPTY-R18-C03-RIVER0.py")
+SCRIPT = _project_file(_PROJECT_ROOT, ROOT / "review/r18-four-arm-evaluation-2026-09-23/paired_study.py")
+CANDIDATE = _project_file(_PROJECT_ROOT, ROOT / ("review/wiring-queue-rootcause-2026-09-25/"
+                    "candidates/OPTY-R18-C03-RIVER0.py"))
 CANDIDATE_ARM = "candidate@review/wiring-queue-rootcause-2026-09-25/candidates/OPTY-R18-C03-RIVER0.py"
 
 
 def _load():
-    for entry in (ROOT / "src", ROOT / "review/llm-guided-heuristic-route-2026-09-15/tools"):
+    for entry in (_project_file(_PROJECT_ROOT, ROOT / "src"), _project_file(_PROJECT_ROOT, ROOT / "review/llm-guided-heuristic-route-2026-09-15/tools")):
         if str(entry) not in sys.path:
             sys.path.insert(0, str(entry))
     spec = importlib.util.spec_from_file_location("paired_study", SCRIPT)

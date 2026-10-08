@@ -1,0 +1,59 @@
+{
+  "complete": true,
+  "original_driver": {
+    "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/free_watchdog.py",
+    "bytes": 20328,
+    "sha256": "2b3b1b638f2eb5bcd1dad4b5fc782727611cfa49a8ba2ff8914b842835ad6166"
+  },
+  "successor_driver": {
+    "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/successor-wiring-1/free_watchdog.py",
+    "bytes": 20725,
+    "sha256": "bbc48019e304bbe574b256021ed45312f1fdd44bef5c5b7470369acc5a8a2d92"
+  },
+  "explicit_replacements": [
+    {
+      "before": "T191 独立自由赛守护",
+      "after": "T191 S03独立自由赛守护"
+    },
+    {
+      "before": "ROOT = HERE.parents[3]",
+      "after": "ROOT = HERE.parents[4]"
+    },
+    {
+      "before": "OLD = HERE.parent / 't165-live-watchdog-1'",
+      "after": "OLD = HERE.parent.parent / 't165-live-watchdog-1'"
+    },
+    {
+      "before": ".private/t191-free-watchdog",
+      "after": ".private/t191-s03-free-watchdog"
+    },
+    {
+      "before": "b.VIP_S02_FREE_SUCCESSOR_STRATEGY",
+      "after": "b.VIP_S03_FREE_STRATEGY"
+    },
+    {
+      "before": "('vip_s02_bounded_d1_free_v6', 'vip_s02_bounded_d1_free_v7')",
+      "after": "('vip_s02_bounded_d1_free_v6', 'vip_s02_bounded_d1_free_v7', 'vip_s03_bounded_d1_free_v1')"
+    },
+    {
+      "before": "t191-live-%s-free",
+      "after": "t191-s03-live-%s-free"
+    },
+    {
+      "before": "T191专属计算版持续自由赛",
+      "after": "T191 S03专属计算版持续自由赛"
+    },
+    {
+      "before": "'t170-free-only-watchdog-1': '.private/t170-free-watchdog'",
+      "after": "'t170-free-only-watchdog-1': '.private/t170-free-watchdog',\n                't191-four-day-execution-1': '.private/t191-free-watchdog'"
+    },
+    {
+      "before": "h.write(directory / 'PLAN.json', plan, exclusive=True)",
+      "after": "# 审计脱敏会截断长源码映射；另存完整公共包，不读取Token。\n    import hangma_bot.bootstrap as b\n    release = b._load_vip_manifest(frozen['free_strategy'], frozen['package_ids']['free'])\n    h.write(directory / 'RELEASE-SNAPSHOT.json', release, exclusive=True)\n    h.write(directory / 'PLAN.json', plan, exclusive=True)"
+    }
+  ],
+  "same_global_token_owner_lock_and_postprocess_lock": true,
+  "new_driver_started": false,
+  "main_source_modified": false,
+  "new_score_worker_world_table_HTTP_model_calls": 0
+}

@@ -1,0 +1,311 @@
+{
+  "schema": "t191-first-new-free-closed-readback/1",
+  "verified_at_utc": "2026-10-05T13:43:06.099008+00:00",
+  "run_id": "run-a0fd93da89884de28acec6a9031aae75",
+  "room_id": "a_173f9ef528bf",
+  "unique_tables": 10,
+  "unique_hands": 80,
+  "natural_exit_code": 0,
+  "resources_zero": true,
+  "decision_compute": {
+    "submitted": 3098,
+    "dispatched": 3098,
+    "completed": 3085,
+    "discarded": 4,
+    "rejected": 0,
+    "faults": 0,
+    "policy_failures": 0,
+    "process_starts": 10,
+    "restarts": 0,
+    "peak_owned": 4,
+    "peak_pending": 0,
+    "peak_transport": 10,
+    "transport_inflight": 0,
+    "late_reap_inflight": 0,
+    "late_reap_threads_alive": 0,
+    "transport_threads_alive": 0,
+    "owned": 0,
+    "pending": 0,
+    "active": 0,
+    "ready": 0,
+    "live_processes": 0,
+    "current": 0,
+    "bound_games": 0,
+    "releasing_games": 0,
+    "closed": true
+  },
+  "postgame_audit_complete": true,
+  "postgame_bundle_verified": true,
+  "plan_count": 3105,
+  "complete_plans": 3085,
+  "complete_legal_outputs": 9833,
+  "complete_plan_legal_key_mismatches": [],
+  "missing_full_score": 20,
+  "missing_full_score_with_choice": 2,
+  "zero_attempt_windows_unclassified": 39,
+  "own_official_timeout_by_kind": {
+    "response": 2134
+  },
+  "http_categories": {
+    "action": {
+      "200": 1183,
+      "409": 1
+    },
+    "guide": {
+      "200": 1
+    },
+    "lifecycle": {
+      "200": 3475
+    },
+    "state": {
+      "200": 7388,
+      "429": 1
+    }
+  },
+  "rule_statuses_explicit_actual_config": {
+    "passed": 66,
+    "not_checked": 13,
+    "failed": 1
+  },
+  "rule_issue_codes_explicit_actual_config": {
+    "not_checked.gang_wall_boundary": 15,
+    "conflict.timeout_discard_unpaired": 1
+  },
+  "actual_config_original": {
+    "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/ACTUAL-CONFIG.json",
+    "bytes": 1325,
+    "sha256": "6a7bdbb41d02b0689f45bbb2e0adecd7c1622feb43b8a4a8a24901d65ac75657"
+  },
+  "rules_rows": [
+    {
+      "game_id": "a_173f9ef528bf_r1_b3_t0",
+      "own_seat": 2,
+      "official_original": {
+        "path": "artifacts/sessions/t191-live-batch-001-free/official/dl-148148a4774b4fcd8e31c7d6a9c0b1b5/events.json",
+        "bytes": 182655,
+        "sha256": "b2c9761371d5cc48cf30de6e7e20d2684bf5b63ed43bcaae235792ac579dc70a"
+      },
+      "rule_check": {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/a_173f9ef528bf_r1_b3_t0/rule-check.json",
+        "bytes": 6267,
+        "sha256": "178ac81970dd1339b11fed2f6d30bec96323d8c045f80a8b087e323a3b4bfa3c"
+      },
+      "statuses": {
+        "passed": 7,
+        "not_checked": 1
+      },
+      "final_scores_match": true
+    },
+    {
+      "game_id": "a_173f9ef528bf_r1_b0_t0",
+      "own_seat": 2,
+      "official_original": {
+        "path": "artifacts/sessions/t191-live-batch-001-free/official/dl-3ea786b383fa4ac3a7b3e7efff5e0e34/events.json",
+        "bytes": 146934,
+        "sha256": "06757ed139b4d6584802ad0ee5163020c45f20d54bcbfa807d86efede392dad3"
+      },
+      "rule_check": {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/a_173f9ef528bf_r1_b0_t0/rule-check.json",
+        "bytes": 5998,
+        "sha256": "1a24e57e647a4d0399a6d79f2d41a672d7c1ea64e73f79be6b759b6f5da14b1a"
+      },
+      "statuses": {
+        "passed": 8
+      },
+      "final_scores_match": true
+    },
+    {
+      "game_id": "a_173f9ef528bf_r1_b9_t0",
+      "own_seat": 0,
+      "official_original": {
+        "path": "artifacts/sessions/t191-live-batch-001-free/official/dl-4ab07ca5374d4ec9874ae768b180f13f/events.json",
+        "bytes": 137194,
+        "sha256": "adcb3f800628efe43d519d0cfb69fe83b8e1182fc6b5c08aabcb6617e75e9bca"
+      },
+      "rule_check": {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/a_173f9ef528bf_r1_b9_t0/rule-check.json",
+        "bytes": 6507,
+        "sha256": "18cdfaa2413ec11863400908c05baa503cfc1510bf0fd87fc76ec6611ea08b5a"
+      },
+      "statuses": {
+        "passed": 6,
+        "not_checked": 2
+      },
+      "final_scores_match": true
+    },
+    {
+      "game_id": "a_173f9ef528bf_r1_b5_t0",
+      "own_seat": 1,
+      "official_original": {
+        "path": "artifacts/sessions/t191-live-batch-001-free/official/dl-5f9bdd7c27544d11b583bf1eb6350cdf/events.json",
+        "bytes": 159643,
+        "sha256": "2cfd3637d38cb86603168ebb5765785cedaec3814f98e39466db49f1e74f5e80"
+      },
+      "rule_check": {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/a_173f9ef528bf_r1_b5_t0/rule-check.json",
+        "bytes": 6261,
+        "sha256": "c6890dab4efd2e6a402ffc5688947aecc0ea0afd6540d0ff5586d07f9ebbaad3"
+      },
+      "statuses": {
+        "not_checked": 1,
+        "passed": 7
+      },
+      "final_scores_match": true
+    },
+    {
+      "game_id": "a_173f9ef528bf_r1_b7_t0",
+      "own_seat": 3,
+      "official_original": {
+        "path": "artifacts/sessions/t191-live-batch-001-free/official/dl-65fd773167f04d2fa0f5f57e03cbbd38/events.json",
+        "bytes": 161131,
+        "sha256": "5463b93eeed5e3854bd2e3c12a25ca9b778520ee85e29832a0aaea13fcbf3131"
+      },
+      "rule_check": {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/a_173f9ef528bf_r1_b7_t0/rule-check.json",
+        "bytes": 6263,
+        "sha256": "f73e44fbacf94237c0e9ab687e50480ecc8b013239bd15f16a87ca55bba2cfad"
+      },
+      "statuses": {
+        "not_checked": 1,
+        "passed": 7
+      },
+      "final_scores_match": true
+    },
+    {
+      "game_id": "a_173f9ef528bf_r1_b8_t0",
+      "own_seat": 0,
+      "official_original": {
+        "path": "artifacts/sessions/t191-live-batch-001-free/official/dl-978cb14da7cb4c91a8b5b11b16ef86c2/events.json",
+        "bytes": 160123,
+        "sha256": "e02014b9cb589d777833bbc194bbdf5ba5c792cd2e5be90d35afe3afbfe4a970"
+      },
+      "rule_check": {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/a_173f9ef528bf_r1_b8_t0/rule-check.json",
+        "bytes": 6263,
+        "sha256": "5261eff46228369cc9fe76c9921e841201fe55e5c92328c64bcb0a5c3aa8a787"
+      },
+      "statuses": {
+        "passed": 7,
+        "failed": 1
+      },
+      "final_scores_match": true
+    },
+    {
+      "game_id": "a_173f9ef528bf_r1_b2_t0",
+      "own_seat": 1,
+      "official_original": {
+        "path": "artifacts/sessions/t191-live-batch-001-free/official/dl-a5bc08e399494c2cafda7b6157e651b5/events.json",
+        "bytes": 153555,
+        "sha256": "dd612ec969247f366c7950bd2ec9812a2976c7ef62d3cca0c168566d4fd83393"
+      },
+      "rule_check": {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/a_173f9ef528bf_r1_b2_t0/rule-check.json",
+        "bytes": 6495,
+        "sha256": "0789fd759c9820ab5395a1c6fa62d7be8a4187cf51c54424912a66ee0a5dbd33"
+      },
+      "statuses": {
+        "passed": 6,
+        "not_checked": 2
+      },
+      "final_scores_match": true
+    },
+    {
+      "game_id": "a_173f9ef528bf_r1_b6_t0",
+      "own_seat": 3,
+      "official_original": {
+        "path": "artifacts/sessions/t191-live-batch-001-free/official/dl-cbd394879a7a4a4b9380dd91347d9448/events.json",
+        "bytes": 161571,
+        "sha256": "f8f8e74b2cf0ad0e67b16f20ee132ed56d3510cc804cea022d9cb987603f89eb"
+      },
+      "rule_check": {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/a_173f9ef528bf_r1_b6_t0/rule-check.json",
+        "bytes": 6263,
+        "sha256": "02314d03d5d62f63fdd82bd53a640fbc5d584d42c750d120fd7154382775692f"
+      },
+      "statuses": {
+        "passed": 7,
+        "not_checked": 1
+      },
+      "final_scores_match": true
+    },
+    {
+      "game_id": "a_173f9ef528bf_r1_b1_t0",
+      "own_seat": 3,
+      "official_original": {
+        "path": "artifacts/sessions/t191-live-batch-001-free/official/dl-d5e765c5f0344e06b3453d276fcc6dca/events.json",
+        "bytes": 124762,
+        "sha256": "11334b1ccf86e5f179534d49a06cd960a6fba59ab7fd1fd379787737f1126497"
+      },
+      "rule_check": {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/a_173f9ef528bf_r1_b1_t0/rule-check.json",
+        "bytes": 6718,
+        "sha256": "d05e7223ab17ea2a67fb7dede894ea3fe2711263447ff35ec31a030e6d31982b"
+      },
+      "statuses": {
+        "passed": 7,
+        "not_checked": 1
+      },
+      "final_scores_match": true
+    },
+    {
+      "game_id": "a_173f9ef528bf_r1_b4_t0",
+      "own_seat": 0,
+      "official_original": {
+        "path": "artifacts/sessions/t191-live-batch-001-free/official/dl-f8ed75e8d7e846679281cf68c4c82159/events.json",
+        "bytes": 166417,
+        "sha256": "b741c2d8f190bc52b59fbc0724a4595effcf93d8eef486b896e049753640950f"
+      },
+      "rule_check": {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/first-free-room-rule-check/a_173f9ef528bf_r1_b4_t0/rule-check.json",
+        "bytes": 6993,
+        "sha256": "4a1510918750847f9f40629f00ea2a78246f7d36c4d0dcb48c26eb9ca5a2daf9"
+      },
+      "statuses": {
+        "passed": 4,
+        "not_checked": 4
+      },
+      "final_scores_match": true
+    }
+  ],
+  "accounts": {
+    "T110": {
+      "ordinary_hu_income": 468,
+      "total_score": 220,
+      "seat_hand_observations": 80,
+      "payment_when_other_hu": -368,
+      "high_fan_hu_income": 120
+    }
+  },
+  "source_pins": [
+    {
+      "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/batch-001/FREE-CHILD-TERMINAL.json",
+      "bytes": 123,
+      "sha256": "6fa10d39d551d9ca79edbc6104ee2ced21dafc5faf1fde928d2bd58ed4f65482"
+    },
+    {
+      "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/batch-001/RUN-CLOSED.json",
+      "bytes": 5170,
+      "sha256": "374ac1355b160bad209bcbbc0aa63d7f34a1b571a2702bd815d5261fc18df5c4"
+    },
+    {
+      "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/batch-001/POSTPROCESS-CLOSED.json",
+      "bytes": 106,
+      "sha256": "ba2a7cab6a28c0769bc42c583c6bf29640cc6d7c99c26d839c72b9f03e0adb29"
+    },
+    {
+      "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/batch-001/SUMMARY.json",
+      "bytes": 254193,
+      "sha256": "87b49c8e4d64efafc55ba0b858edc44dd717fc64eb30ca6601e6044ace3b0828"
+    }
+  ],
+  "full_score_gate_granted": false,
+  "formal_release": false,
+  "strength_admission": false,
+  "limitations": [
+    "首房非随机对照，不授算法增强",
+    "后台原unknown规则报告保留，新规则检查单独补证",
+    "原审计长路径键脱敏合并限制仍保留，以完整冻结来源侧件核身份",
+    "响应零尝试未逐窗判定丢失动作机会，不把响应timeout都称弃牌超时",
+    "不授实际官方测试赛事门"
+  ]
+}

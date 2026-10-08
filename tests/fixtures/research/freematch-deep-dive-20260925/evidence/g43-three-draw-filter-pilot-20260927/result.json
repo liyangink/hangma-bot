@@ -1,0 +1,166 @@
+{
+  "baseline_arm": "r18_v2",
+  "boundary": "开发根描述值；单局是收入分量而非独立统计单位，发布仍需全新根确认。",
+  "complete_tables": 64,
+  "descriptive_mean_delta_vs_baseline_per_table": {
+    "g43_edge_three_draw_filter_v1": -0.78125
+  },
+  "g43_metrics": {
+    "counts": {
+      "adopted": 11,
+      "rejected": 2
+    },
+    "elapsed_ms": {
+      "max": 2296.799,
+      "p50": 1412.38,
+      "p95": 1966.249
+    },
+    "per_mix": {
+      "H": {
+        "adopted": 5
+      },
+      "M": {
+        "adopted": 6,
+        "rejected": 2
+      }
+    }
+  },
+  "independent_root_clusters": 4,
+  "manifest_sha256": "3527a98b756ebf6be68c8148f16aa16cad49a24b6f49253583ac7a0e4e61cb9e",
+  "root_clusters": [
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g43_edge_three_draw_filter_v1": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g43_edge_three_draw_filter_v1": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.875,
+          "plain_self_win_delta": 24.5,
+          "special_self_win_delta": 30.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.875,
+          "plain_self_win_delta": 24.5,
+          "special_self_win_delta": 30.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g43_edge_three_draw_filter_v1": 0.0
+      },
+      "mix": "H",
+      "root_index": 1,
+      "table_score_mean_by_arm": {
+        "g43_edge_three_draw_filter_v1": 24.125,
+        "r18_v2": 24.125
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g43_edge_three_draw_filter_v1": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g43_edge_three_draw_filter_v1": {
+          "draw_delta": 0.0,
+          "other_win_delta": -28.0,
+          "plain_self_win_delta": 22.0,
+          "special_self_win_delta": 24.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -28.0,
+          "plain_self_win_delta": 22.0,
+          "special_self_win_delta": 24.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g43_edge_three_draw_filter_v1": 0.0
+      },
+      "mix": "H",
+      "root_index": 2,
+      "table_score_mean_by_arm": {
+        "g43_edge_three_draw_filter_v1": 18.5,
+        "r18_v2": 18.5
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g43_edge_three_draw_filter_v1": {
+          "draw_delta": 0.0,
+          "other_win_delta": -0.125,
+          "plain_self_win_delta": -1.25,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g43_edge_three_draw_filter_v1": {
+          "draw_delta": 0.0,
+          "other_win_delta": -31.875,
+          "plain_self_win_delta": 18.5,
+          "special_self_win_delta": 5.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -31.75,
+          "plain_self_win_delta": 19.75,
+          "special_self_win_delta": 5.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g43_edge_three_draw_filter_v1": -1.375
+      },
+      "mix": "M",
+      "root_index": 1,
+      "table_score_mean_by_arm": {
+        "g43_edge_three_draw_filter_v1": -8.375,
+        "r18_v2": -7.0
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g43_edge_three_draw_filter_v1": {
+          "draw_delta": 0.0,
+          "other_win_delta": -1.75,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g43_edge_three_draw_filter_v1": {
+          "draw_delta": 0.0,
+          "other_win_delta": -35.25,
+          "plain_self_win_delta": 28.75,
+          "special_self_win_delta": 17.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -33.5,
+          "plain_self_win_delta": 28.75,
+          "special_self_win_delta": 17.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g43_edge_three_draw_filter_v1": -1.75
+      },
+      "mix": "M",
+      "root_index": 2,
+      "table_score_mean_by_arm": {
+        "g43_edge_three_draw_filter_v1": 11.0,
+        "r18_v2": 12.75
+      }
+    }
+  ],
+  "schema": "g14-accounted-paired-result/1",
+  "script_sha256": "5f72ded91c4487bcacd1b26aea155b56a885b9a8270d667c8b33120e8e57a6a4"
+}

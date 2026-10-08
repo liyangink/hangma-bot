@@ -1,0 +1,29 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r12-sv1-utility-increment-01",
+  "batch_label": "public-stage-utility-model-01-20260921",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 0.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 0.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T07:56:06Z",
+  "issuance_basis": "SV1连续失败后的强制文献复盘：Suphx以最终比赛奖励而非原始积分做全局奖励预测",
+  "scope": "只读复用SV1语料；排除1个U=[0,1]来源；公开榜与完整公开状态同容量比较；不确认不发布",
+  "max_model_calls": 0,
+  "max_full_tables": 0,
+  "confirmation_roots": 0
+}

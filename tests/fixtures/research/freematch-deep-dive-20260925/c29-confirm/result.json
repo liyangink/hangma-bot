@@ -1,0 +1,2671 @@
+{
+  "baseline_arm": "r18_v2",
+  "complete_tables": 3264,
+  "descriptive_mean_delta_vs_baseline_per_table": {
+    "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.3737745098039216,
+    "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.4399509803921569,
+    "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.7279411764705882
+  },
+  "descriptive_mean_delta_vs_v2_per_table": {
+    "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.3737745098039216,
+    "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.4399509803921569,
+    "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.7279411764705882
+  },
+  "independent_root_clusters": 102,
+  "note": "小批均值只校验执行与估计方差；正式结论使用独立根、预冻结多重比较门禁。 delta_vs_v2_per_table 的名称是历史遗留，基准实为 arms[0]。",
+  "root_clusters": [
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.875
+      },
+      "mix": "H",
+      "root_index": 49,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 5.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 24.25,
+        "r18_v2": 8.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 0.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.125,
+        "r18_v2": 4.25
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -4.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -4.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.0
+      },
+      "mix": "H",
+      "root_index": 50,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -36.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -22.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -19.0,
+        "r18_v2": -27.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -18.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -11.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -9.5,
+        "r18_v2": -13.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -2.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -2.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.125
+      },
+      "mix": "H",
+      "root_index": 51,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 25.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 34.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 32.75,
+        "r18_v2": 30.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 12.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 17.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 16.375,
+        "r18_v2": 15.25
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.875
+      },
+      "mix": "H",
+      "root_index": 52,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -6.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -19.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -21.0,
+        "r18_v2": -15.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -9.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -10.5,
+        "r18_v2": -7.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -47.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -47.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.0
+      },
+      "mix": "H",
+      "root_index": 53,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -28.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 67.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 72.25,
+        "r18_v2": 66.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 33.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 36.125,
+        "r18_v2": 33.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 13.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.5
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 13.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.5
+      },
+      "mix": "H",
+      "root_index": 54,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 34.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.75,
+        "r18_v2": 6.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 17.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.875,
+        "r18_v2": 3.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -5.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -6.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -5.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -6.625
+      },
+      "mix": "H",
+      "root_index": 55,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 27.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 15.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 13.0,
+        "r18_v2": 26.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 13.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 7.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.5,
+        "r18_v2": 13.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -4.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -4.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.0
+      },
+      "mix": "H",
+      "root_index": 56,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -32.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -37.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -44.25,
+        "r18_v2": -28.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -16.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -18.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -22.125,
+        "r18_v2": -14.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 38.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 25.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.75
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 38.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 25.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.75
+      },
+      "mix": "H",
+      "root_index": 57,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 59.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 34.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 8.25,
+        "r18_v2": -17.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 29.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 17.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.125,
+        "r18_v2": -8.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 42.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 18.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 42.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 18.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.875
+      },
+      "mix": "H",
+      "root_index": 58,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 59.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 11.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -31.25,
+        "r18_v2": -25.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 29.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 5.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -15.625,
+        "r18_v2": -12.75
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -11.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -10.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -7.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -11.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -10.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -7.25
+      },
+      "mix": "H",
+      "root_index": 59,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 10.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 16.25,
+        "r18_v2": 30.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 5.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 8.125,
+        "r18_v2": 15.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 7.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.5
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 7.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.5
+      },
+      "mix": "H",
+      "root_index": 60,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 5.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 39.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 33.75,
+        "r18_v2": 24.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 19.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 16.875,
+        "r18_v2": 12.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -49.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 5.75
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -49.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 5.75
+      },
+      "mix": "H",
+      "root_index": 61,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -19.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 79.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 90.25,
+        "r18_v2": 78.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 39.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 45.125,
+        "r18_v2": 39.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 9.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 9.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "mix": "H",
+      "root_index": 62,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -27.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -5.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -24.5,
+        "r18_v2": -24.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -13.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -12.25,
+        "r18_v2": -12.25
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.75
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.75
+      },
+      "mix": "H",
+      "root_index": 63,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 7.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 28.75,
+        "r18_v2": 15.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -4.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 14.375,
+        "r18_v2": 7.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 34.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 34.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.25
+      },
+      "mix": "H",
+      "root_index": 64,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 53.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -6.25,
+        "r18_v2": -14.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 26.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -0.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -3.125,
+        "r18_v2": -7.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -26.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -19.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -3.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -26.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -19.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -3.875
+      },
+      "mix": "H",
+      "root_index": 65,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 38.25,
+        "r18_v2": 46.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 19.125,
+        "r18_v2": 23.0
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 16.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 16.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.125
+      },
+      "mix": "H",
+      "root_index": 66,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 6.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -23.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -23.5,
+        "r18_v2": -27.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -11.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -11.75,
+        "r18_v2": -13.875
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.25
+      },
+      "mix": "H",
+      "root_index": 67,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -21.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.25,
+        "r18_v2": -2.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -10.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.125,
+        "r18_v2": -1.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 41.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 41.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.0
+      },
+      "mix": "H",
+      "root_index": 68,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 80.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 31.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.75,
+        "r18_v2": -1.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 40.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 15.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.375,
+        "r18_v2": -0.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -47.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -13.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.5
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -47.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -13.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.5
+      },
+      "mix": "H",
+      "root_index": 69,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -30.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 39.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 56.0,
+        "r18_v2": 65.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -15.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 19.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 28.0,
+        "r18_v2": 32.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -24.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -24.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.375
+      },
+      "mix": "H",
+      "root_index": 70,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 29.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 37.75,
+        "r18_v2": 37.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -6.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 14.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 18.875,
+        "r18_v2": 18.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -30.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -19.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -30.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -19.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.375
+      },
+      "mix": "H",
+      "root_index": 71,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -30.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 31.0,
+        "r18_v2": 31.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -15.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 15.5,
+        "r18_v2": 15.875
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -8.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -8.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "mix": "H",
+      "root_index": 72,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 27.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 50.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 44.0,
+        "r18_v2": 44.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 13.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 25.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 22.0,
+        "r18_v2": 22.0
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -9.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -9.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.875
+      },
+      "mix": "H",
+      "root_index": 73,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.0,
+        "r18_v2": 20.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.5,
+        "r18_v2": 10.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 22.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -5.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 22.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -5.375
+      },
+      "mix": "H",
+      "root_index": 74,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 52.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 18.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.0,
+        "r18_v2": 6.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 26.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 9.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.0,
+        "r18_v2": 3.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 31.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.75
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 31.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.75
+      },
+      "mix": "H",
+      "root_index": 75,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 29.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -26.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -29.5,
+        "r18_v2": -33.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 14.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -13.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -14.75,
+        "r18_v2": -16.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 8.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 8.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "mix": "H",
+      "root_index": 76,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -18.75,
+        "r18_v2": -18.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -7.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -9.375,
+        "r18_v2": -9.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 22.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 29.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 18.5
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 22.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 29.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 18.5
+      },
+      "mix": "H",
+      "root_index": 77,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 21.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0,
+        "r18_v2": -37.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 10.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0,
+        "r18_v2": -18.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.25
+      },
+      "mix": "H",
+      "root_index": 78,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -24.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -19.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -26.5,
+        "r18_v2": -27.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -9.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -13.25,
+        "r18_v2": -13.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -11.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -11.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.625
+      },
+      "mix": "H",
+      "root_index": 79,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 13.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 25.5,
+        "r18_v2": 30.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.75,
+        "r18_v2": 15.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -19.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.5
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -19.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.5
+      },
+      "mix": "H",
+      "root_index": 80,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -25.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 14.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.0,
+        "r18_v2": 13.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 7.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.0,
+        "r18_v2": 6.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.25
+      },
+      "mix": "H",
+      "root_index": 81,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 52.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 46.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 48.75,
+        "r18_v2": 46.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 26.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 23.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 24.375,
+        "r18_v2": 23.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 19.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 11.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.75
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 19.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 11.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.75
+      },
+      "mix": "H",
+      "root_index": 82,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 48.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 31.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 35.0,
+        "r18_v2": 9.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 24.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 15.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 17.5,
+        "r18_v2": 4.75
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -5.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -6.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -5.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -5.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -6.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -5.25
+      },
+      "mix": "H",
+      "root_index": 83,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 15.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 12.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 14.5,
+        "r18_v2": 25.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.25,
+        "r18_v2": 12.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.25
+      },
+      "mix": "H",
+      "root_index": 84,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 28.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 13.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 13.75,
+        "r18_v2": 13.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 14.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.875,
+        "r18_v2": 6.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.375
+      },
+      "mix": "H",
+      "root_index": 85,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 12.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 24.5,
+        "r18_v2": 17.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.25,
+        "r18_v2": 8.875
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -4.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -10.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -10.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -4.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -10.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -10.625
+      },
+      "mix": "H",
+      "root_index": 86,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -17.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -28.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -29.25,
+        "r18_v2": -8.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -8.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -14.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -14.625,
+        "r18_v2": -4.0
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 33.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 5.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 33.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 5.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.25
+      },
+      "mix": "H",
+      "root_index": 87,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 38.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -16.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -21.0,
+        "r18_v2": -27.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 19.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -10.5,
+        "r18_v2": -13.75
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -18.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -0.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -18.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -0.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.375
+      },
+      "mix": "H",
+      "root_index": 88,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -21.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 13.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 13.5,
+        "r18_v2": 14.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -10.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.75,
+        "r18_v2": 7.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.625
+      },
+      "mix": "H",
+      "root_index": 89,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 26.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 17.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 19.0,
+        "r18_v2": 20.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 13.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 8.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 9.5,
+        "r18_v2": 10.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -11.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -9.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -11.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -9.875
+      },
+      "mix": "H",
+      "root_index": 90,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 23.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 33.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 27.0,
+        "r18_v2": 46.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 11.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 13.5,
+        "r18_v2": 23.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.75
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.75
+      },
+      "mix": "H",
+      "root_index": 91,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -6.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 20.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 22.25,
+        "r18_v2": 12.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 10.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 11.125,
+        "r18_v2": 6.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.125
+      },
+      "mix": "H",
+      "root_index": 92,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 32.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 33.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 25.75,
+        "r18_v2": 26.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 16.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.875,
+        "r18_v2": 13.0
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 29.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 30.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 18.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 29.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 30.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 18.375
+      },
+      "mix": "H",
+      "root_index": 93,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 13.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.0,
+        "r18_v2": -44.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 6.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 8.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.0,
+        "r18_v2": -22.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -22.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -22.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.0
+      },
+      "mix": "H",
+      "root_index": 94,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -29.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 22.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 23.75,
+        "r18_v2": 15.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 11.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 11.875,
+        "r18_v2": 7.875
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.375
+      },
+      "mix": "H",
+      "root_index": 95,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 30.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 27.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 24.0,
+        "r18_v2": 21.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 15.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 13.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.0,
+        "r18_v2": 10.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -7.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -3.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -7.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -3.875
+      },
+      "mix": "H",
+      "root_index": 96,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -24.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -17.5,
+        "r18_v2": -9.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -12.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.75,
+        "r18_v2": -4.875
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 15.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 10.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 15.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 10.125
+      },
+      "mix": "H",
+      "root_index": 97,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 27.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 42.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 32.0,
+        "r18_v2": 11.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 13.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 21.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 16.0,
+        "r18_v2": 5.875
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.125
+      },
+      "mix": "H",
+      "root_index": 98,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -13.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -9.5,
+        "r18_v2": -11.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -6.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.75,
+        "r18_v2": -5.875
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.375
+      },
+      "mix": "H",
+      "root_index": 99,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -7.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 21.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 42.0,
+        "r18_v2": 17.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 10.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 21.0,
+        "r18_v2": 8.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.125
+      },
+      "mix": "M",
+      "root_index": 49,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 18.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.75,
+        "r18_v2": 3.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 9.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.375,
+        "r18_v2": 1.75
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -5.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -5.125
+      },
+      "mix": "M",
+      "root_index": 50,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -4.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -7.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -13.0,
+        "r18_v2": -2.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -6.5,
+        "r18_v2": -1.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -8.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 12.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -8.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 12.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.625
+      },
+      "mix": "M",
+      "root_index": 51,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 50.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 92.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 61.5,
+        "r18_v2": 66.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 25.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 46.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 30.75,
+        "r18_v2": 33.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 6.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 5.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 6.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 5.125
+      },
+      "mix": "M",
+      "root_index": 52,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -19.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -17.0,
+        "r18_v2": -27.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -7.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -9.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.5,
+        "r18_v2": -13.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -10.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -10.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.875
+      },
+      "mix": "M",
+      "root_index": 53,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 5.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 9.0,
+        "r18_v2": 26.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 4.5,
+        "r18_v2": 13.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -8.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -1.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -8.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -1.375
+      },
+      "mix": "M",
+      "root_index": 54,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 18.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 18.25,
+        "r18_v2": 21.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 9.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 9.125,
+        "r18_v2": 10.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.125
+      },
+      "mix": "M",
+      "root_index": 55,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -19.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -22.0,
+        "r18_v2": -22.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -9.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -4.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -11.0,
+        "r18_v2": -11.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 12.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 12.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.625
+      },
+      "mix": "M",
+      "root_index": 56,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 8.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -20.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -26.25,
+        "r18_v2": -17.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -10.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -13.125,
+        "r18_v2": -8.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -37.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -20.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -37.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -20.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.125
+      },
+      "mix": "M",
+      "root_index": 57,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -35.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 39.0,
+        "r18_v2": 39.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -17.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 19.5,
+        "r18_v2": 19.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 11.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 11.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.875
+      },
+      "mix": "M",
+      "root_index": 58,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 31.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 14.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 17.0,
+        "r18_v2": 9.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 15.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 7.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 8.5,
+        "r18_v2": 4.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "mix": "M",
+      "root_index": 59,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 9.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 5.5,
+        "r18_v2": 5.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 4.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.75,
+        "r18_v2": 2.75
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.125
+      },
+      "mix": "M",
+      "root_index": 60,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -8.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -11.0,
+        "r18_v2": -17.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -4.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -5.5,
+        "r18_v2": -8.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 5.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 5.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.0
+      },
+      "mix": "M",
+      "root_index": 61,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 11.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.5,
+        "r18_v2": 0.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 5.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.25,
+        "r18_v2": 0.25
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -8.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -5.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -8.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -5.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.875
+      },
+      "mix": "M",
+      "root_index": 62,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -6.75,
+        "r18_v2": 3.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -7.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -3.375,
+        "r18_v2": 1.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 26.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.5
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 26.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.5
+      },
+      "mix": "M",
+      "root_index": 63,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 53.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.75,
+        "r18_v2": -0.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 26.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.375,
+        "r18_v2": -0.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.125
+      },
+      "mix": "M",
+      "root_index": 64,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -29.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -14.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -26.5,
+        "r18_v2": -22.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -7.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -13.25,
+        "r18_v2": -11.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -34.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -10.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -15.75
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -34.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -10.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -15.75
+      },
+      "mix": "M",
+      "root_index": 65,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -11.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 36.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 25.0,
+        "r18_v2": 56.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -5.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 18.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.5,
+        "r18_v2": 28.25
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -18.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -18.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "mix": "M",
+      "root_index": 66,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 76.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 25.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 62.75,
+        "r18_v2": 62.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 38.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 12.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 31.375,
+        "r18_v2": 31.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -16.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -9.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -9.75
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -16.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -9.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -9.75
+      },
+      "mix": "M",
+      "root_index": 67,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -29.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -15.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -15.5,
+        "r18_v2": 4.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -7.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -7.75,
+        "r18_v2": 2.0
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.375
+      },
+      "mix": "M",
+      "root_index": 68,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -47.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -40.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -28.0,
+        "r18_v2": -23.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -23.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -20.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -14.0,
+        "r18_v2": -11.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.5
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.5
+      },
+      "mix": "M",
+      "root_index": 69,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -0.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -0.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.25,
+        "r18_v2": 6.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -0.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -0.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.625,
+        "r18_v2": 3.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "mix": "M",
+      "root_index": 70,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 9.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 12.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.25,
+        "r18_v2": 12.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.125,
+        "r18_v2": 6.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "mix": "M",
+      "root_index": 71,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 10.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 28.0,
+        "r18_v2": 28.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 5.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 14.0,
+        "r18_v2": 14.0
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 12.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 12.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.625
+      },
+      "mix": "M",
+      "root_index": 72,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 16.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -5.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -17.0,
+        "r18_v2": -7.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 8.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -8.5,
+        "r18_v2": -3.875
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -13.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -13.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.125
+      },
+      "mix": "M",
+      "root_index": 73,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -6.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 33.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 19.75,
+        "r18_v2": 20.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -3.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 9.875,
+        "r18_v2": 10.0
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -6.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -6.25
+      },
+      "mix": "M",
+      "root_index": 74,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 32.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 18.0,
+        "r18_v2": 30.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 0.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 9.0,
+        "r18_v2": 15.25
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -34.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -7.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -3.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -34.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -7.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -3.375
+      },
+      "mix": "M",
+      "root_index": 75,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -24.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 28.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 37.5,
+        "r18_v2": 44.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 14.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 18.75,
+        "r18_v2": 22.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 11.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 10.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 9.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 11.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 10.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 9.875
+      },
+      "mix": "M",
+      "root_index": 76,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 18.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 15.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 15.0,
+        "r18_v2": -4.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 9.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 7.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.5,
+        "r18_v2": -2.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 18.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 31.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 20.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 18.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 31.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 20.625
+      },
+      "mix": "M",
+      "root_index": 77,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 39.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 65.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 44.0,
+        "r18_v2": 2.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 19.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 32.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 22.0,
+        "r18_v2": 1.375
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 16.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 12.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 5.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 16.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 12.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 5.625
+      },
+      "mix": "M",
+      "root_index": 78,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 34.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 26.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 13.5,
+        "r18_v2": 2.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 17.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 13.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.75,
+        "r18_v2": 1.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 5.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 5.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.375
+      },
+      "mix": "M",
+      "root_index": 79,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 58.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 60.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 62.5,
+        "r18_v2": 47.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 29.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 30.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 31.25,
+        "r18_v2": 23.875
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -19.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 8.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -19.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 8.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.875
+      },
+      "mix": "M",
+      "root_index": 80,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 58.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 55.25,
+        "r18_v2": 41.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 29.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 27.625,
+        "r18_v2": 20.75
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 8.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 8.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.0
+      },
+      "mix": "M",
+      "root_index": 81,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 22.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 5.5,
+        "r18_v2": 5.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 11.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.75,
+        "r18_v2": 2.75
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 13.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 14.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 13.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 14.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.875
+      },
+      "mix": "M",
+      "root_index": 82,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 44.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 45.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 18.75,
+        "r18_v2": 17.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 22.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 22.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 9.375,
+        "r18_v2": 8.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 7.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -2.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.625
+      },
+      "mix": "M",
+      "root_index": 83,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -17.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -12.5,
+        "r18_v2": -11.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -6.25,
+        "r18_v2": -5.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 9.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 9.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.375
+      },
+      "mix": "M",
+      "root_index": 84,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -14.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -19.5,
+        "r18_v2": -22.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -2.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -7.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -9.75,
+        "r18_v2": -11.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 4.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.125
+      },
+      "mix": "M",
+      "root_index": 85,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 26.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.25,
+        "r18_v2": -6.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 13.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.125,
+        "r18_v2": -3.0
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 39.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 18.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 39.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 18.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.375
+      },
+      "mix": "M",
+      "root_index": 86,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 73.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 32.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.75,
+        "r18_v2": -5.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 36.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 0.875,
+        "r18_v2": -2.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.75
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -2.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.75
+      },
+      "mix": "M",
+      "root_index": 87,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -2.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 15.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 15.75,
+        "r18_v2": 2.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 7.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.875,
+        "r18_v2": 1.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -23.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -7.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -23.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -7.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.625
+      },
+      "mix": "M",
+      "root_index": 88,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -34.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -3.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 15.0,
+        "r18_v2": 11.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -17.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.5,
+        "r18_v2": 5.875
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -10.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -5.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -10.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -5.0
+      },
+      "mix": "M",
+      "root_index": 89,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -40.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -23.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -30.25,
+        "r18_v2": -20.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -20.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -11.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -15.125,
+        "r18_v2": -10.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 9.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.5
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -12.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 9.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 3.5
+      },
+      "mix": "M",
+      "root_index": 90,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 29.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 17.25,
+        "r18_v2": 10.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -7.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 14.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 8.625,
+        "r18_v2": 5.125
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -5.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -5.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -0.25
+      },
+      "mix": "M",
+      "root_index": 91,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 5.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 14.75,
+        "r18_v2": 15.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -7.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 2.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.375,
+        "r18_v2": 7.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 28.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 28.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 3.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.25
+      },
+      "mix": "M",
+      "root_index": 92,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 25.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -25.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -27.0,
+        "r18_v2": -31.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 12.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -12.625,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -13.5,
+        "r18_v2": -15.75
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.0
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 1.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 1.0
+      },
+      "mix": "M",
+      "root_index": 93,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 6.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 1.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 5.0,
+        "r18_v2": 3.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.5,
+        "r18_v2": 1.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.375
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 2.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -1.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -2.375
+      },
+      "mix": "M",
+      "root_index": 94,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 24.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 15.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 13.75,
+        "r18_v2": 18.5
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 12.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 7.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.875,
+        "r18_v2": 9.25
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -5.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.25
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -5.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 2.25
+      },
+      "mix": "M",
+      "root_index": 95,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -2.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 8.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.5,
+        "r18_v2": 8.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -1.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 4.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 6.25,
+        "r18_v2": 4.0
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -19.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.125
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -19.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -8.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -4.125
+      },
+      "mix": "M",
+      "root_index": 96,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -5.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 16.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 24.75,
+        "r18_v2": 33.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -2.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 8.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 12.375,
+        "r18_v2": 16.5
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -23.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -5.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -3.75
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -23.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -5.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -3.75
+      },
+      "mix": "M",
+      "root_index": 97,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -20.25,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 15.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 19.75,
+        "r18_v2": 27.25
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -10.125,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 7.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 9.875,
+        "r18_v2": 13.625
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 10.625
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -14.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 0.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 10.625
+      },
+      "mix": "M",
+      "root_index": 98,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -4.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 24.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 45.25,
+        "r18_v2": 24.0
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -2.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 12.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 22.625,
+        "r18_v2": 12.0
+      }
+    },
+    {
+      "delta_vs_baseline_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.875
+      },
+      "delta_vs_v2_per_table": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": 3.5,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": 6.375,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": 7.875
+      },
+      "mix": "M",
+      "root_index": 99,
+      "stage_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -31.75,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -26.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -23.0,
+        "r18_v2": -38.75
+      },
+      "table_score_mean_by_arm": {
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R10.py": -15.875,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-CELL-R6.py": -13.0,
+        "candidate@review/freematch-deep-dive-20260925/candidates/OPTY-R18-C27-TENPAI-R6.py": -11.5,
+        "r18_v2": -19.375
+      }
+    }
+  ],
+  "schema": "r18-four-arm-paired-result/1"
+}

@@ -1,0 +1,675 @@
+{
+  "actual_costs_by_block": [
+    {
+      "actual_started_known_subtotal": 256,
+      "actual_started_unknown_entries": 0,
+      "block": 1,
+      "charged_instances_known": 256,
+      "completed_pairs": 128,
+      "cost_record_present": true,
+      "failed_pairs": 0
+    },
+    {
+      "actual_started_known_subtotal": 256,
+      "actual_started_unknown_entries": 0,
+      "block": 2,
+      "charged_instances_known": 256,
+      "completed_pairs": 128,
+      "cost_record_present": true,
+      "failed_pairs": 0
+    },
+    {
+      "actual_started_known_subtotal": 256,
+      "actual_started_unknown_entries": 0,
+      "block": 3,
+      "charged_instances_known": 256,
+      "completed_pairs": 128,
+      "cost_record_present": true,
+      "failed_pairs": 0
+    },
+    {
+      "actual_started_known_subtotal": 256,
+      "actual_started_unknown_entries": 0,
+      "block": 4,
+      "charged_instances_known": 256,
+      "completed_pairs": 128,
+      "cost_record_present": true,
+      "failed_pairs": 0
+    }
+  ],
+  "candidate_identity": {
+    "candidate_id": "10cba94704291038653f586127be1809ef518dcaf68fa1fe38d1fc9ab92ca18f",
+    "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+    "contract_sha256": "f782bb9e68948aa1b73f1593006b599874a4455cae8bd4f15c853559e7db8adf",
+    "deps_digest": "3a6a1d3e53e3733b8998fe152ec61352c10b115b0bb95c33e098af5b4b9a741e",
+    "graph_schema_version": "vip-route-action-graph/3",
+    "math_backend": {
+      "fallback_reason": null,
+      "implementation": "c_grouped",
+      "native_binary": {
+        "bytes": 52552,
+        "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+      },
+      "semantics_version": "hangma-standard-grouped-v1"
+    },
+    "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+    "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+    "params": {
+      "max_local_collection_size": 8192,
+      "max_operations": 4800000,
+      "projection_limits": {
+        "max_branches": 16384,
+        "max_nodes": 8192,
+        "max_waiting_draw_witnesses": 65536
+      },
+      "route_limits": {
+        "max_expansions": 8192,
+        "max_routes_per_candidate": 128
+      },
+      "rule_config": {
+        "base_score": 1,
+        "ruleset_version": "hangma-mvp-v10-public-counts",
+        "you_cai_bi_kao": false
+      }
+    },
+    "source_manifest": {
+      "src/hangma_bot/hangma/__init__.py": {
+        "bytes": 145,
+        "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+      },
+      "src/hangma_bot/hangma/_grouped_native.c": {
+        "bytes": 19322,
+        "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+      },
+      "src/hangma_bot/hangma/_standard.py": {
+        "bytes": 1542,
+        "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+      },
+      "src/hangma_bot/hangma/_standard_python.py": {
+        "bytes": 14730,
+        "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+      },
+      "src/hangma_bot/hangma/action_families.py": {
+        "bytes": 20884,
+        "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+      },
+      "src/hangma_bot/hangma/candidate_facts.py": {
+        "bytes": 19139,
+        "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+      },
+      "src/hangma_bot/hangma/catch_play.py": {
+        "bytes": 10173,
+        "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+      },
+      "src/hangma_bot/hangma/emergency.py": {
+        "bytes": 4153,
+        "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+      },
+      "src/hangma_bot/hangma/engine.py": {
+        "bytes": 32121,
+        "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+      },
+      "src/hangma_bot/hangma/hand_analysis.py": {
+        "bytes": 20852,
+        "sha256": "5fda1016122df9aaa894c62fccd8cbfa2f8600122d08cfb0ea208173f32bb763"
+      },
+      "src/hangma_bot/hangma/interface.py": {
+        "bytes": 37378,
+        "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+      },
+      "src/hangma_bot/hangma/internal_types.py": {
+        "bytes": 8611,
+        "sha256": "0404ace8a801c81d0c812a5b209e45e29a888b11f1bac341f5a13f3700568051"
+      },
+      "src/hangma_bot/hangma/natural_preparation.py": {
+        "bytes": 5636,
+        "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+      },
+      "src/hangma_bot/hangma/observation_rules.py": {
+        "bytes": 21637,
+        "sha256": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486"
+      },
+      "src/hangma_bot/hangma/progression.py": {
+        "bytes": 44196,
+        "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+      },
+      "src/hangma_bot/hangma/progression_payload.py": {
+        "bytes": 15798,
+        "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+      },
+      "src/hangma_bot/hangma/public_successor.py": {
+        "bytes": 21173,
+        "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+      },
+      "src/hangma_bot/hangma/public_tile_counts.py": {
+        "bytes": 36925,
+        "sha256": "f3095119f4bac03bb7769b74d10926e339f67801e979a4afc70b24c31f3856fd"
+      },
+      "src/hangma_bot/hangma/route_frontier.py": {
+        "bytes": 11581,
+        "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+      },
+      "src/hangma_bot/hangma/route_hu_witness.py": {
+        "bytes": 8183,
+        "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+      },
+      "src/hangma_bot/hangma/route_structure.py": {
+        "bytes": 10649,
+        "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+      },
+      "src/hangma_bot/hangma/route_transition.py": {
+        "bytes": 72490,
+        "sha256": "42a3e6acd01bdadc138388e3b11d0f79d7f442f63c56f3de60d2d173a672fc17"
+      },
+      "src/hangma_bot/hangma/settlement.py": {
+        "bytes": 10643,
+        "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+      },
+      "src/hangma_bot/hangma/special_rules.py": {
+        "bytes": 11609,
+        "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+      },
+      "src/hangma_bot/hangma/value_analysis.py": {
+        "bytes": 18251,
+        "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+      },
+      "src/hangma_bot/kernel/actions.py": {
+        "bytes": 10754,
+        "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+      },
+      "src/hangma_bot/kernel/config.py": {
+        "bytes": 3236,
+        "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+      },
+      "src/hangma_bot/kernel/observation.py": {
+        "bytes": 17784,
+        "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+      },
+      "src/hangma_bot/kernel/outcomes.py": {
+        "bytes": 8643,
+        "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+      },
+      "src/hangma_bot/policy/action_value.py": {
+        "bytes": 45125,
+        "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+      },
+      "src/hangma_bot/policy/action_value_executor.py": {
+        "bytes": 105899,
+        "sha256": "d48720b07f84b466ce8d390dd3685fd5a68d6393296536fc826de0ad23a60f58"
+      },
+      "src/hangma_bot/policy/errors.py": {
+        "bytes": 372,
+        "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+      },
+      "src/hangma_bot/policy/interface.py": {
+        "bytes": 3546,
+        "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+      },
+      "src/hangma_bot/policy/route_heuristic_view.py": {
+        "bytes": 27957,
+        "sha256": "82555e304073755ff9f2758de0c470e3595e96ceeb2497897a7b846d75f121d1"
+      },
+      "src/hangma_bot/policy/route_vip_heuristic.py": {
+        "bytes": 34849,
+        "sha256": "1948b15d063bbd7194b83077d2f6284406e2bd8387aa95d6231767387f3cfdce"
+      },
+      "src/hangma_bot/policy/safe_fallback.py": {
+        "bytes": 2352,
+        "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+      }
+    },
+    "source_sha256": "78e1ec645cfb81e195ae242fd9a7c850deab3b44cb5619b4e936a44dc6fecbaa",
+    "view_schema_version": "vip-route-scoring-view/3"
+  },
+  "confirmation_claim": false,
+  "highfan_root_clusters": {
+    "A": [
+      "t97-natural-preparation:reserved_confirmation:012",
+      "t97-natural-preparation:reserved_confirmation:017",
+      "t97-natural-preparation:reserved_confirmation:025",
+      "t97-natural-preparation:reserved_confirmation:027",
+      "t97-natural-preparation:reserved_confirmation:029",
+      "t97-natural-preparation:reserved_confirmation:030",
+      "t97-natural-preparation:reserved_confirmation:031",
+      "t97-natural-preparation:reserved_confirmation:040",
+      "t97-natural-preparation:reserved_confirmation:043",
+      "t97-natural-preparation:reserved_confirmation:045",
+      "t97-natural-preparation:reserved_confirmation:046",
+      "t97-natural-preparation:reserved_confirmation:054",
+      "t97-natural-preparation:reserved_confirmation:058",
+      "t97-natural-preparation:reserved_confirmation:068",
+      "t97-natural-preparation:reserved_confirmation:070",
+      "t97-natural-preparation:reserved_confirmation:071",
+      "t97-natural-preparation:reserved_confirmation:079",
+      "t97-natural-preparation:reserved_confirmation:083",
+      "t97-natural-preparation:reserved_confirmation:084",
+      "t97-natural-preparation:reserved_confirmation:085",
+      "t97-natural-preparation:reserved_confirmation:089",
+      "t97-natural-preparation:reserved_confirmation:091",
+      "t97-natural-preparation:reserved_confirmation:092",
+      "t97-natural-preparation:reserved_confirmation:093",
+      "t97-natural-preparation:reserved_confirmation:098",
+      "t97-natural-preparation:reserved_confirmation:110",
+      "t97-natural-preparation:reserved_confirmation:114",
+      "t97-natural-preparation:reserved_confirmation:121",
+      "t97-natural-preparation:reserved_confirmation:122",
+      "t97-natural-preparation:reserved_confirmation:125"
+    ],
+    "C": [
+      "t97-natural-preparation:reserved_confirmation:009",
+      "t97-natural-preparation:reserved_confirmation:010",
+      "t97-natural-preparation:reserved_confirmation:012",
+      "t97-natural-preparation:reserved_confirmation:014",
+      "t97-natural-preparation:reserved_confirmation:018",
+      "t97-natural-preparation:reserved_confirmation:025",
+      "t97-natural-preparation:reserved_confirmation:027",
+      "t97-natural-preparation:reserved_confirmation:030",
+      "t97-natural-preparation:reserved_confirmation:031",
+      "t97-natural-preparation:reserved_confirmation:033",
+      "t97-natural-preparation:reserved_confirmation:040",
+      "t97-natural-preparation:reserved_confirmation:043",
+      "t97-natural-preparation:reserved_confirmation:047",
+      "t97-natural-preparation:reserved_confirmation:048",
+      "t97-natural-preparation:reserved_confirmation:068",
+      "t97-natural-preparation:reserved_confirmation:071",
+      "t97-natural-preparation:reserved_confirmation:072",
+      "t97-natural-preparation:reserved_confirmation:075",
+      "t97-natural-preparation:reserved_confirmation:083",
+      "t97-natural-preparation:reserved_confirmation:085",
+      "t97-natural-preparation:reserved_confirmation:086",
+      "t97-natural-preparation:reserved_confirmation:091",
+      "t97-natural-preparation:reserved_confirmation:092",
+      "t97-natural-preparation:reserved_confirmation:099",
+      "t97-natural-preparation:reserved_confirmation:105",
+      "t97-natural-preparation:reserved_confirmation:107",
+      "t97-natural-preparation:reserved_confirmation:109",
+      "t97-natural-preparation:reserved_confirmation:110",
+      "t97-natural-preparation:reserved_confirmation:115",
+      "t97-natural-preparation:reserved_confirmation:118"
+    ]
+  },
+  "issues": [],
+  "net_positive_interval": false,
+  "net_score_delta_per_table": 5.275390625,
+  "new_models_scores_worlds_tables_in_readback": 0,
+  "observed_hands_in_this_readback": 8192,
+  "planned_actual_tables": 1024,
+  "planned_hands": 8192,
+  "planned_independent_roots": 128,
+  "published": false,
+  "realized_mutually_exclusive_bands": {
+    "A": {
+      "draw": {
+        "hands": 303,
+        "score": 0
+      },
+      "opponent_hu": {
+        "hands": 2430,
+        "score": -17214
+      },
+      "own_4_to7": {
+        "hands": 64,
+        "score": 4072
+      },
+      "own_8_to15": {
+        "hands": 0,
+        "score": 0
+      },
+      "own_ge16": {
+        "hands": 0,
+        "score": 0
+      },
+      "own_lt4": {
+        "hands": 1299,
+        "score": 24686
+      }
+    },
+    "C": {
+      "draw": {
+        "hands": 259,
+        "score": 0
+      },
+      "opponent_hu": {
+        "hands": 2402,
+        "score": -16457
+      },
+      "own_4_to7": {
+        "hands": 61,
+        "score": 3672
+      },
+      "own_8_to15": {
+        "hands": 2,
+        "score": 160
+      },
+      "own_ge16": {
+        "hands": 0,
+        "score": 0
+      },
+      "own_lt4": {
+        "hands": 1372,
+        "score": 26870
+      }
+    }
+  },
+  "realized_net_by_arm": {
+    "A": 11544,
+    "C": 14245
+  },
+  "root_cluster_percentile_95": [
+    -1.85546875,
+    12.54296875
+  ],
+  "root_mean_deltas": [
+    40.5,
+    10.75,
+    20.75,
+    14.5,
+    -2.75,
+    -14.75,
+    16,
+    51,
+    19.5,
+    29,
+    -29,
+    79,
+    -38,
+    33,
+    27.5,
+    40,
+    7,
+    -8,
+    -12,
+    24,
+    -12.75,
+    60,
+    -53.5,
+    18,
+    -67,
+    87.5,
+    20.5,
+    31,
+    -2,
+    20,
+    1.25,
+    -21.75,
+    179.5,
+    1.5,
+    69,
+    16,
+    1,
+    17.75,
+    -14.75,
+    -15,
+    34.75,
+    60.75,
+    88,
+    0.25,
+    66.75,
+    -19,
+    104.75,
+    13.5,
+    -34.5,
+    -38.75,
+    44.75,
+    17,
+    -1.75,
+    -60.5,
+    -27.75,
+    -4,
+    -15.25,
+    -48.25,
+    14,
+    7.25,
+    11,
+    -19,
+    -20.5,
+    -25,
+    -3.5,
+    -7,
+    -16,
+    -53.75,
+    18,
+    23.25,
+    -86,
+    135.5,
+    22.25,
+    -3,
+    33.25,
+    -19.75,
+    6.5,
+    -12,
+    -28.5,
+    17.25,
+    36.5,
+    -36.25,
+    24,
+    26,
+    23,
+    26,
+    -3.25,
+    8,
+    -10,
+    -23.25,
+    1,
+    30.75,
+    -45.25,
+    -79.25,
+    -7.5,
+    9.75,
+    -25,
+    -13.75,
+    -19.25,
+    40.25,
+    0,
+    -12.25,
+    20.25,
+    -33.75,
+    13.25,
+    -33.25,
+    33,
+    -34,
+    -8.25,
+    -2.25,
+    -43.75,
+    -17.25,
+    44.25,
+    -6.5,
+    -13.5,
+    -28.5,
+    39.25,
+    6.75,
+    38,
+    -23.25,
+    -162.25,
+    -1.25,
+    -28,
+    36.5,
+    45,
+    38,
+    19.75,
+    7.5
+  ],
+  "schema": "t103-whole-fresh-natural-confirmation-result/1",
+  "scope": "current fixed execution identity, fresh128-root qualifier scenario; no automatic admission/top3/deadline/publication",
+  "source_input_audits": [
+    {
+      "actual_score_calls": 48720,
+      "all_seat_decisions": 390055,
+      "block": 1,
+      "candidate_decisions": 48720,
+      "choose_with_capture_ms_by_phase": {
+        "draw": {
+          "max_ms": 330.86341619491577,
+          "n": 10550,
+          "p50_ms": 7.278583012521267,
+          "p95_ms": 14.755083015188575
+        },
+        "response_chi": {
+          "max_ms": 108.22225012816489,
+          "n": 9194,
+          "p50_ms": 1.0706658940762281,
+          "p95_ms": 8.801582967862487
+        },
+        "response_peng": {
+          "max_ms": 341.77787508815527,
+          "n": 28976,
+          "p50_ms": 1.13416719250381,
+          "p95_ms": 2.641916973516345
+        }
+      },
+      "finite_legal_action_score_outputs": 139027,
+      "max_candidate_operations": 748011,
+      "selected_action_counts": {
+        "chi": 736,
+        "discard": 10171,
+        "gang": 40,
+        "hu": 355,
+        "pass": 36827,
+        "peng": 591
+      },
+      "timing_scope": "offline choose plus capture; excludes rules/worker/network/SSE; not online deadline credit",
+      "unique_complete_views": 48720,
+      "white_counts_at_C_decisions": {
+        "0": 28925,
+        "1": 17331,
+        "2": 2272,
+        "3": 186,
+        "4": 6
+      }
+    },
+    {
+      "actual_score_calls": 47860,
+      "all_seat_decisions": 386673,
+      "block": 2,
+      "candidate_decisions": 47860,
+      "choose_with_capture_ms_by_phase": {
+        "draw": {
+          "max_ms": 621.689666993916,
+          "n": 10291,
+          "p50_ms": 6.762458011507988,
+          "p95_ms": 14.482291880995035
+        },
+        "response_chi": {
+          "max_ms": 178.77783393487334,
+          "n": 8953,
+          "p50_ms": 1.067749923095107,
+          "p95_ms": 8.727417094632983
+        },
+        "response_peng": {
+          "max_ms": 846.7021670658141,
+          "n": 28616,
+          "p50_ms": 1.1252909898757935,
+          "p95_ms": 2.1574581041932106
+        }
+      },
+      "finite_legal_action_score_outputs": 134328,
+      "max_candidate_operations": 829814,
+      "selected_action_counts": {
+        "chi": 802,
+        "discard": 9913,
+        "gang": 22,
+        "hu": 357,
+        "pass": 36112,
+        "peng": 654
+      },
+      "timing_scope": "offline choose plus capture; excludes rules/worker/network/SSE; not online deadline credit",
+      "unique_complete_views": 47860,
+      "white_counts_at_C_decisions": {
+        "0": 30159,
+        "1": 15935,
+        "2": 1733,
+        "3": 33
+      }
+    },
+    {
+      "actual_score_calls": 47666,
+      "all_seat_decisions": 381274,
+      "block": 3,
+      "candidate_decisions": 47666,
+      "choose_with_capture_ms_by_phase": {
+        "draw": {
+          "max_ms": 1070.8957919850945,
+          "n": 10230,
+          "p50_ms": 7.492750184610486,
+          "p95_ms": 15.897250035777688
+        },
+        "response_chi": {
+          "max_ms": 65.2994578704238,
+          "n": 9015,
+          "p50_ms": 1.0973340831696987,
+          "p95_ms": 8.835542015731335
+        },
+        "response_peng": {
+          "max_ms": 332.51479105092585,
+          "n": 28421,
+          "p50_ms": 1.163708046078682,
+          "p95_ms": 2.816291991621256
+        }
+      },
+      "finite_legal_action_score_outputs": 136367,
+      "max_candidate_operations": 983462,
+      "selected_action_counts": {
+        "chi": 682,
+        "discard": 9826,
+        "gang": 45,
+        "hu": 369,
+        "pass": 36137,
+        "peng": 607
+      },
+      "timing_scope": "offline choose plus capture; excludes rules/worker/network/SSE; not online deadline credit",
+      "unique_complete_views": 47666,
+      "white_counts_at_C_decisions": {
+        "0": 26748,
+        "1": 16404,
+        "2": 4109,
+        "3": 404,
+        "4": 1
+      }
+    },
+    {
+      "actual_score_calls": 48310,
+      "all_seat_decisions": 393853,
+      "block": 4,
+      "candidate_decisions": 48310,
+      "choose_with_capture_ms_by_phase": {
+        "draw": {
+          "max_ms": 380.1609999500215,
+          "n": 10426,
+          "p50_ms": 7.464791880920529,
+          "p95_ms": 15.434500062838197
+        },
+        "response_chi": {
+          "max_ms": 209.41520808264613,
+          "n": 9134,
+          "p50_ms": 1.0777921415865421,
+          "p95_ms": 8.841583970934153
+        },
+        "response_peng": {
+          "max_ms": 337.57075015455484,
+          "n": 28750,
+          "p50_ms": 1.1399160139262676,
+          "p95_ms": 3.946250071749091
+        }
+      },
+      "finite_legal_action_score_outputs": 138385,
+      "max_candidate_operations": 765035,
+      "selected_action_counts": {
+        "chi": 723,
+        "discard": 10039,
+        "gang": 37,
+        "hu": 354,
+        "pass": 36570,
+        "peng": 587
+      },
+      "timing_scope": "offline choose plus capture; excludes rules/worker/network/SSE; not online deadline credit",
+      "unique_complete_views": 48310,
+      "white_counts_at_C_decisions": {
+        "0": 29504,
+        "1": 16275,
+        "2": 2196,
+        "3": 335
+      }
+    }
+  ],
+  "whole_batch_valid": true
+}

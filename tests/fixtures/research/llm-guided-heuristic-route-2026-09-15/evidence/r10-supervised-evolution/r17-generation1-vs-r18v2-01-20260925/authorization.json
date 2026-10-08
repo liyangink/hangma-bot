@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "p28-r17-vs-r18v2-01",
+  "batch_label": "r17-generation1-vs-r18v2-01-20260925",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 1536.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 0.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-25T14:34:24Z",
+  "issuance_basis": "P28 预登记：R17 A/B 冻结源码原样进入；评价基线从稳定 V2 换成 R18 v2，用于测量 2 步公开后继搜索相对当前部署父代有无增量",
+  "scope": "R18 v2（预登记基线）+ 稳定 V2（参考臂，不参与判定）+ R17 冻结叶程序 A/B；全新 panel_seed 2026093028；H/M 各 24 根、4 焦点座位、每单元 2 桌；每臂 384 张完整桌",
+  "max_model_calls": 0,
+  "confirmation_roots": 0
+}

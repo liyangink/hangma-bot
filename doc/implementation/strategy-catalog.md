@@ -1,8 +1,12 @@
 # 主线可用策略枚举
 
+## 2026-10-09：共享存储迁移
+
+当前正式赛采用 P0 approved-v5，测试房、测试赛事和自由赛采用 G37-RF1 v2 包装；策略枚举保持原值。目录迁移只重冻结源码摘要，算法、规则、编译体及原批准资格保持。参赛配置见[操作说明](../participate-quickstart.md)，公共工具与本机历史边界见[研究索引](../research/INDEX.md)。下文日期段是交付时快照。
+
 ## 2026-10-09：实验默认与真实并发验证
 
-**测试房、测试赛事和自由赛默认改用G37-RF1；正式锦标赛默认仍为P0 approved-v4。** 用户已恢复自由赛，M10/R16四席同RF1测试房与M10/R8自由赛并行运行。原算法、规则、编译体和动作预算保持；新独立控制器只适配修复准入与不同认证域的玩家检查，共用原全局Token owner和后台统计锁。真实160单局压力与自由赛结果待自然完赛，不写成已通过。[当前操作、冻结根和验收](../../review/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)。下文T226的默认/暂停描述是交付时快照。
+**测试房、测试赛事和自由赛默认改用G37-RF1；正式锦标赛默认仍为P0 approved-v4。** 用户已恢复自由赛，M10/R16四席同RF1测试房与M10/R8自由赛并行运行。原算法、规则、编译体和动作预算保持；新独立控制器只适配修复准入与不同认证域的玩家检查，共用原全局Token owner和后台统计锁。真实160单局压力与自由赛结果待自然完赛，不写成已通过。[当前操作、冻结根和验收](../research/materials/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)。下文T226的默认/暂停描述是交付时快照。
 
 ## 2026-10-08：G37-RF1 独立可选评分修复（修复发布）
 
@@ -15,11 +19,11 @@
 | `vip_g37_rf1_test_tournament_v1` | `test_tournament` | `vip-g37-rf1-v1.test-tournament.example.json` | 修复准入，非强度晋级 |
 | `vip_g37_rf1_official_tournament_v1` | `official_tournament` | `vip-g37-rf1-v1.official-tournament.example.json` | 修复准入，非强度晋级 |
 
-启动准入字段（`startup_admitted`，允许该冻结包在指定模式启动）为 `true`，绑定已获批的真实修复、原生评分等价、原截止及时合法和代表性回归收据。强度准入字段（`strength_admission`，相对稳定版本的增强资格）保持 `false`。按[当前修复验收](../../review/vip-route-2026-09-30/evidence/t224-G38-four-source-effect-1/REPAIR-ACCEPTANCE.md)，不要求 +8 或参加官方现场比赛；正式／测试赛事另验基础接线、配置与包作用域和生命周期。
+启动准入字段（`startup_admitted`，允许该冻结包在指定模式启动）为 `true`，绑定已获批的真实修复、原生评分等价、原截止及时合法和代表性回归收据。强度准入字段（`strength_admission`，相对稳定版本的增强资格）保持 `false`。按[当前修复验收](../research/materials/vip-route-2026-09-30/evidence/t224-G38-four-source-effect-1/REPAIR-ACCEPTANCE.md)，不要求 +8 或参加官方现场比赛；正式／测试赛事另验基础接线、配置与包作用域和生命周期。
 
 RF1 编译目录为 `prebuilt/vip-g37-rf1-compiled-v1/`，复用 S03 合法保底、原生规则后端（`native`，已核验的 C 数学实现）、原截止和服务器通知流（`SSE Notify Stream`，事件水位通知）。独立预热 10 个每桌专属工作进程，`max_pending=0`；配置必须明确选择本模式策略与对应冻结包，不能因枚举存在而忽略准入。资源及依赖见[架构](../architecture.md#g37-rf1-独立可选评分修复接线2026-10-08)。
 
-本轮实包和回归结果见[G37-RF1交付报告](../../review/vip-route-2026-09-30/evidence/t226-minimal-scoring-repair-1/REPORT.md)；真实自由赛继续暂停，接线不自动启动比赛。
+本轮实包和回归结果见[G37-RF1交付报告](../research/materials/vip-route-2026-09-30/evidence/t226-minimal-scoring-repair-1/REPORT.md)；真实自由赛继续暂停，接线不自动启动比赛。
 
 ## 2026-10-08：P0参赛发布包装
 
@@ -39,7 +43,7 @@ RF1 编译目录为 `prebuilt/vip-g37-rf1-compiled-v1/`，复用 S03 合法保�
 
 `OfficialGameSession.aclose`只对尚未取消的本场owned任务发cancel，shield等待HTTP／SSE finally完成后才返回；重入不二次打断，调用者取消完成收尾后传播。永久不协作关闭并未被证明可回收。无兴趣响应单步只在新鲜snapshot-first、同单局／phase／弃牌周期、非本人下家、无抓打圈／保留墙／未决动作时暂缓一次GET；不推进last_seq、不猜timeout，原1.2秒探针与核验失败关闭过滤保持。下一未知帧照常读取。
 
-正式／测试赛事只验基础接线、配置绑定和生命周期，按用户2026-10-06[现行口径](../../review/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)执行；官方现场不是候选上线门。上线与真实必要测试房由总筹按已有授权在旧房自然边界接入，副本不启动网络玩家、迁移watchdog或触碰Token。旧S03实测与效果证据复用，不冒称新工程包已联网；两次真实worker故障仍未知。当前核验与模板见[工程后继交付](../../review/vip-route-2026-09-30/evidence/t192-targeted-followup-1/wiring/REPORT.md)。
+正式／测试赛事只验基础接线、配置绑定和生命周期，按用户2026-10-06[现行口径](../research/materials/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)执行；官方现场不是候选上线门。上线与真实必要测试房由总筹按已有授权在旧房自然边界接入，副本不启动网络玩家、迁移watchdog或触碰Token。旧S03实测与效果证据复用，不冒称新工程包已联网；两次真实worker故障仍未知。当前核验与模板见[工程后继交付](../../review/vip-route-2026-09-30/evidence/t192-targeted-followup-1/wiring/REPORT.md)。
 
 ## 2026-10-06 T191：T110-S03候选与S02备用
 
@@ -74,7 +78,7 @@ S03格式`vip-route-bounded-release/3`，必须对应完整包ID和SSE。S02当�
 
 2026-10-04更新：新testroom_v6／free_v4已完成T161自由赛和T163四席M10/R8快速测试房的真实工程验收；对局摸切、429、计算故障/重启均0，原截止、限深1、公式和稳定默认版本不变。T163一只过评分超期及两只过零规划例外保留，严格零降级false；T161缓发虽开启但因快照时间依据不足全跳过，不能授缓发改善信用。T148强度false仍保留，正式/测试赛事发布门未授。详情见[验收报告](../../review/vip-route-2026-09-30/evidence/t163-received-fix-fast-four-seat-testroom-1/REPORT.md)。
 
-省略 `strategy` 时，代码默认仍为 `weighted_heuristic`（V0），不会自动选择最新策略。2026-09-29 的连续自由赛运行清单使用显式配置的 `r18_integrated_positive_v2`；模板、代码默认值和实际运行身份是三件事，后者须从相应运行清单核对。当前进化与接线结论从[研究证据索引](../../review/INDEX.md)进入。
+省略 `strategy` 时，代码默认仍为 `weighted_heuristic`（V0），不会自动选择最新策略。2026-09-29 的连续自由赛运行清单使用显式配置的 `r18_integrated_positive_v2`；模板、代码默认值和实际运行身份是三件事，后者须从相应运行清单核对。当前进化与接线结论从[研究证据索引](../research/INDEX.md)进入。
 
 | 枚举值 | 支持的运行模式 | 说明 |
 | --- | --- | --- |

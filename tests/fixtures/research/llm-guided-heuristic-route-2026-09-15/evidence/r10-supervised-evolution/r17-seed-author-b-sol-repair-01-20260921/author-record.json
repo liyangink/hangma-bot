@@ -1,0 +1,111 @@
+{
+  "schema_version": "r17-seed-repair-author-record/1",
+  "author_slot": "B",
+  "model": "gpt-5.6-sol",
+  "date": "2026-09-21",
+  "task": "对 R17 种子 B 做第 1 次且唯一一次整窗计数操作预算修复；保留双路线、family_progress、链/爆头/财神公开状态和完整阶段账结构。",
+  "frozen_commit": "12f7499995e0d8941654982bfa775e816d8b8fc6",
+  "contract": {
+    "path": "review/llm-guided-heuristic-route-2026-09-15/contracts/r17-public-successor-leaf-v1.json",
+    "sha256": "28a8964bef4d69403c156f63c026f371c1a540be007367b634419c37e749067c",
+    "executor_version": "action-value-executor/6",
+    "max_counted_operations_per_leaf": 2048,
+    "max_counted_operations_per_window": 500000,
+    "max_leaf_evaluations_per_window": 4096
+  },
+  "repair": {
+    "repair_count": 1,
+    "repair_limit": 1,
+    "repair_type": "counted_operation_budget",
+    "parent_candidate_path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r17-seed-author-b-sol-01-20260921/candidate.py",
+    "parent_source_sha256": "c75d0aaa0308591d1096d2453d477219293e7e5490156b196836694229021b9e",
+    "parent_overwritten": false
+  },
+  "received_feedback": {
+    "scope": "zero-table workload only",
+    "draw_windows": 179,
+    "complete_draw_windows": 169,
+    "fallback_draw_windows": 10,
+    "sole_failure_reason": "叶程序整窗操作数超过固定上限 500000",
+    "maximum_operations_in_a_complete_window": 495102,
+    "effect_feedback_received": false,
+    "behavior_feedback_used_for_repair": false,
+    "statement": "修复只依据上述整窗操作超限信号；未依据动作选择或任何效果指标修改权重。"
+  },
+  "candidate": {
+    "path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r17-seed-author-b-sol-repair-01-20260921/candidate.py",
+    "entrypoint": "score_actions(view)",
+    "sha256": "fb9764faa2a01ded3f8cea94eeee27d59929f014f1dcc0ffbd56380e5b1384a2"
+  },
+  "rationale": {
+    "path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r17-seed-author-b-sol-repair-01-20260921/rationale.md"
+  },
+  "preserved_structure": [
+    "standard and seven-pairs routes remain separate; null seven-pairs stays unavailable",
+    "branch, chain, four_white and baotou family_progress remain rule-owned inputs",
+    "chain_count, baotou, wealth_count and known chain_piao gate family direction",
+    "only complete current_stage_scores may alter competition style",
+    "conditional gang remains discounted because replacement draw and future wall eligibility are unknown"
+  ],
+  "workload_changes": [
+    "removed helper calls and reciprocal/min/max route aggregation",
+    "removed the non-core useful breadth and support mass tie-breakers",
+    "collapsed family interpretation to one pass and one family_score",
+    "reused family_score in the stage-account gate",
+    "used direct comparisons for output clamping"
+  ],
+  "references": [
+    "AGENTS.md",
+    "src/hangma_bot/policy/AGENTS.md",
+    "src/hangma_bot/hangma/AGENTS.md",
+    "review/llm-guided-heuristic-route-2026-09-15/R17-RULE-OWNED-PUBLIC-SEARCH-EVOLUTION-PLAN-2026-09-21.md",
+    "review/llm-guided-heuristic-route-2026-09-15/R17-P1-LEAF-CONTRACT-AND-ZERO-TABLE-RESULT-2026-09-21.md",
+    "review/llm-guided-heuristic-route-2026-09-15/contracts/r17-public-successor-leaf-v1.json",
+    "src/hangma_bot/policy/public_successor_search.py",
+    "src/hangma_bot/policy/public_successor_leaf_executor.py",
+    "src/hangma_bot/policy/action_value_executor.py",
+    "src/hangma_bot/hangma/interface.py",
+    "src/hangma_bot/hangma/progression_payload.py",
+    "review/llm-guided-heuristic-route-2026-09-15/refs/REF-EoH-FunSearch-ReEvo.md",
+    "review/llm-guided-heuristic-route-2026-09-15/refs/REF-MEoH-AlphaEvolve.md",
+    "review/llm-guided-heuristic-route-2026-09-15/refs/REF-DECOMP-mahjong-systems.md",
+    "review/llm-guided-heuristic-route-2026-09-15/refs/REF-DECOMP-riichi-axis.md"
+  ],
+  "independence": {
+    "author_a_source_read": false,
+    "author_a_gate_results_read": false,
+    "future_effect_results_read": false,
+    "table_runs_executed": false,
+    "shared_production_code_modified": false
+  },
+  "verification": [
+    {
+      "check": "py_compile",
+      "result": "passed",
+      "runtime": ".venv/bin/python"
+    },
+    {
+      "check": "LeafProgramExecutor static load",
+      "result": "passed",
+      "executor_version": "action-value-executor/6"
+    },
+    {
+      "check": "handcrafted no-effect leaf calls",
+      "result": "passed",
+      "operation_counts": [
+        94,
+        69,
+        107
+      ],
+      "heaviest_synthetic_path_score": -0.125188,
+      "all_scores_finite_and_in_range": true
+    },
+    {
+      "check": "heaviest synthetic path repeated to contract leaf maximum",
+      "calculation": "107 * 4096",
+      "counted_operations": 438272,
+      "window_limit": 500000,
+      "result": "below_limit"
+    }
+  ]
+}

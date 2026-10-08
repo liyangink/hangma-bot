@@ -1,0 +1,89 @@
+{
+  "schema": "sitin-action-value-ledger/1",
+  "accounts": [
+    "tokens_input",
+    "tokens_output",
+    "tables_full",
+    "tables_partial",
+    "prefix_generation",
+    "confirm_reserved"
+  ],
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 36.0,
+    "tables_partial": 1.0,
+    "prefix_generation": 1.0,
+    "confirm_reserved": 0
+  },
+  "confirm_authorized_budget": 0.0,
+  "authorized_budgets": {
+    "tokens_input": 8000000.0,
+    "tokens_output": 8000000.0,
+    "tables_full": 1024.0,
+    "tables_partial": 512.0,
+    "prefix_generation": 128.0
+  },
+  "confirm_policy": "confirm 硬禁继承现状：默认 0，无显式授权任何 confirm 记账拒绝",
+  "limit_policy": "Q3：正数记账须在授权总额内（扣已结算+在途预留）；未声明额度 fail-closed 拒绝；amount=0 纯登记不限额",
+  "reservations": [
+    {
+      "reservation_id": "evaluate:56ffb066459a:branch_open#1",
+      "step_id": "evaluate:56ffb066459a:branch_open",
+      "account": "prefix_generation",
+      "amount": 1.0,
+      "note": "C1 v2_behavior 前缀生成（批次 7 授权；tables_partial 按被启动桌赛实例另记）；v2_behavior前缀（attempts=1）",
+      "at_utc": "2026-09-17T04:29:11Z",
+      "status": "settled",
+      "charged": 1.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "evaluate:56ffb066459a:branch_open:tables-partial#2",
+      "step_id": "evaluate:56ffb066459a:branch_open:tables-partial",
+      "account": "tables_partial",
+      "amount": 16.0,
+      "note": "v2_behavior 前缀生成预留（每被启动桌赛实例扣 1，上限 16）；v2_behavior 前缀实际启动桌赛实例 1 个（attempts={'total': 1, 'hit': 1, 'missed': 0, 'unknown': 0, 'errors': 0, 'cap': 16, 'attempts_exhausted': False}）",
+      "at_utc": "2026-09-17T04:29:11Z",
+      "status": "settled",
+      "charged": 1.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "evaluate:56ffb066459a:branch_open:tables-full#3",
+      "step_id": "evaluate:56ffb066459a:branch_open:tables-full",
+      "account": "tables_full",
+      "amount": 4.0,
+      "note": "条件双臂完整剩余阶段（2 臂 × 2 桌；部分桌另记 tables_partial）；条件双臂完整阶段实际执行 4 桌（前缀启动 1 桌另记）",
+      "at_utc": "2026-09-17T04:29:11Z",
+      "status": "settled",
+      "charged": 4.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "natural:fd1d7ddbf737:H:1#4",
+      "step_id": "natural:fd1d7ddbf737:H:1",
+      "account": "tables_full",
+      "amount": 16.0,
+      "note": "自然面板：1 根 × 4 座位 × 2 臂 × 2 桌/阶段；自然面板实跑桌赛实例 16/16（失败桌照记）",
+      "at_utc": "2026-09-17T04:29:34Z",
+      "status": "settled",
+      "charged": 16.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "natural:fd1d7ddbf737:M:1#5",
+      "step_id": "natural:fd1d7ddbf737:M:1",
+      "account": "tables_full",
+      "amount": 16.0,
+      "note": "自然面板：1 根 × 4 座位 × 2 臂 × 2 桌/阶段；自然面板实跑桌赛实例 16/16（失败桌照记）",
+      "at_utc": "2026-09-17T04:30:09Z",
+      "status": "settled",
+      "charged": 16.0,
+      "usage_unknown": false
+    }
+  ],
+  "workers_active": 0,
+  "worker_lease": "av-ledger.json.workers.json",
+  "worker_cap": 12
+}

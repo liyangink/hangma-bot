@@ -1,0 +1,143 @@
+{
+  "schema": "r17-public-successor-leaf-contract/1",
+  "objective": "在 HangmaRules 冻结的完整公开自摸后继图上，只演化单叶评分程序；搜索、合法性、未知处理、归约、V2 退路与效果评价均由固定骨架拥有。",
+  "candidate": {
+    "entrypoint": "score_actions(view)",
+    "input_schema_version": "r17-public-successor-leaf/1",
+    "output": {
+      "type": "finite_number",
+      "minimum": -1.0,
+      "maximum": 1.0,
+      "meaning": "单个后继弃牌或条件杠叶的相对质量；不是胜率、摸牌概率或完整赛事收益"
+    },
+    "called_for": [
+      "restricted_drawn_only.discard_frontier",
+      "restricted_drawn_only.conditional_gang",
+      "unrestricted.discard_frontier",
+      "unrestricted.conditional_gang"
+    ],
+    "not_called_for": [
+      "terminal_hu"
+    ]
+  },
+  "view": {
+    "window": [
+      "seat",
+      "dealer_seat",
+      "round_no",
+      "table_scores[seat_0..3]",
+      "table_rank",
+      "stage_scores[seat_0..3]|null",
+      "current_stage_scores[seat_0..3]|null",
+      "freshness_masks",
+      "chain_count",
+      "baotou",
+      "wealth_count",
+      "chain_piao|null",
+      "remaining_tile_count|null",
+      "catch_play",
+      "catch_play_owner_seat|null"
+    ],
+    "root": [
+      "action_key",
+      "discard_code",
+      "shanten_after",
+      "standard_shanten_after",
+      "seven_pairs_shanten_after|null",
+      "useful_tiles[(canonical_code,public_remaining_0_to_4)]",
+      "useful_tile_count",
+      "support_remaining",
+      "family_progress[(family,progress,route_status)]",
+      "value_coverage"
+    ],
+    "draw": [
+      "code",
+      "capacity_1_to_4",
+      "is_currently_useful",
+      "envelope_kind"
+    ],
+    "next": [
+      "action_key",
+      "action_type[discard|gang]",
+      "shanten_after",
+      "standard_shanten_after",
+      "seven_pairs_shanten_after|null",
+      "useful_tiles[(canonical_code,public_remaining_0_to_4)]",
+      "useful_tile_count",
+      "support_remaining",
+      "replacement_draw_unknown",
+      "requires_future_wall_gt20"
+    ],
+    "excluded": [
+      "panel_or_seed_identity",
+      "H_or_M_source_label",
+      "effect_or_terminal_label",
+      "opponent_implementation",
+      "WorldState",
+      "opponent_concealed_tiles",
+      "future_wall_order",
+      "wall_clock_or_randomness",
+      "raw_PlayerObservation",
+      "human_readable_rule_evidence_strings"
+    ]
+  },
+  "fixed_reducer": {
+    "terminal_hu": "always_selected; fixed_score=1.0; conditional settlement support is read from matching COMPLETE ValueRoute by the skeleton",
+    "next_action": "without_conditional_gang=max(discard_frontier); with_conditional_gang=max(discard_frontier,conditional_gang)",
+    "future_wall_unknown": "forms lower_and_upper_bound; gang is never assumed definitely available",
+    "future_catch_play_unknown": "restricted and unrestricted envelopes form lower_and_upper_bound; candidate cannot choose the better envelope",
+    "root_aggregation": "capacity-multiplicity-weighted lower and upper support scores over every committed positive-capacity edge; capacity is not probability; when the official 20-tile reserve has been reached, the complete empty graph becomes an all-zero Pareto tie and preserves exact V2 order",
+    "root_dimensions": [
+      "conditional_hu_net_support",
+      "lower_support_score",
+      "upper_support_score"
+    ],
+    "ordering": "Pareto non-dominated fronts over all three maximized dimensions; exact V2 order inside one front",
+    "tamper_guard": "PublicSuccessorRoot commits the complete 34-dimensional positive-capacity mask, packed capacities and capacity total; deletion or mutation is rejected"
+  },
+  "limits": {
+    "max_leaf_evaluations_per_window": 17136,
+    "max_leaf_evaluations_derivation": "14 distinct discard roots × 34 draw codes × 2 catch-play envelopes × (14 discard-frontier leaves + 4 gang leaves); this is a structural integrity ceiling, while actual candidate cost remains bounded by counted operations and release runtime gates",
+    "max_counted_operations_per_leaf": 2048,
+    "max_counted_operations_per_window": 500000,
+    "candidate_source_bytes": 65536,
+    "executor": "reuse action-value-executor/6 hardened restricted subset",
+    "numeric_output": "finite [-1,1]",
+    "state": "no mutable module state; deterministic repeated calls"
+  },
+  "all_or_nothing_fallback": [
+    "successor coverage is not COMPLETE",
+    "ruleset version mismatch",
+    "root keys differ from current legal discard keys",
+    "root HAND_PROGRESS facts are absent, degraded or inconsistent",
+    "a terminal Hu edge lacks an exact COMPLETE normal-draw ValueRoute",
+    "capacity commitment mismatch",
+    "leaf or operation limit exceeded",
+    "candidate compile, runtime, type, finiteness or range failure"
+  ],
+  "fallback_behavior": "return no search roots and preserve the exact stable V2 order for the whole window; never fill unknown with zero",
+  "forbidden_candidate_behavior": [
+    "recompute rules, shanten, useful tiles, settlements or legal actions",
+    "delete, duplicate or reorder search edges",
+    "choose search depth or node limit",
+    "treat public capacity as true draw probability",
+    "select the more favorable catch-play envelope",
+    "assume a conditional gang is definitely legal",
+    "perform IO, network, time, randomness, imports, reflection, recursion or unbounded iteration",
+    "return a complete DecisionPlan or submit an action"
+  ],
+  "identity_inputs": [
+    "candidate_source",
+    "this_contract_sha256",
+    "leaf_executor_version",
+    "first_party_dependency_digest",
+    "effective_parameters"
+  ],
+  "evaluation": {
+    "zero_table": "all frozen draw windows complete; response windows exact fallback; reorder invariant; deleting a positive-capacity edge rejected; at least two sources and two seats show non-tie behavior",
+    "development": "new-source H/M each 8 roots, four seat swaps, two complete tables, 256 tables total; conservative U improvement >0 and H/M non-negative",
+    "replication": "second independent 256-table source with identical source hash",
+    "confirmation": "H/M each 32 roots, four seat swaps, two arms, 1024 complete tables; one-sided 95% lower bound >0, H/M non-inferior, zero rule/execution failures",
+    "release": "runtime optimization, 1s/3s action windows, recovery and official test tournament gates"
+  }
+}

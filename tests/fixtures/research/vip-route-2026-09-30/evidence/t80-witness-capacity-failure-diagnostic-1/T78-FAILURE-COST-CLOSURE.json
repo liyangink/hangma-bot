@@ -1,0 +1,139 @@
+{
+  "actual_decision_windows": 389700,
+  "all_four_handles_terminal_exit1": true,
+  "blocks": [
+    {
+      "block": 1,
+      "charged_tables": 60,
+      "completed_hands": 480,
+      "decision_windows": 95651,
+      "issues": [
+        "RuntimeError: 其他分块出现工程故障，不启新桌；保留全分母"
+      ],
+      "started_tables": 60,
+      "status_counts": {
+        "complete": 60
+      },
+      "terminal_capture": {
+        "closed": true,
+        "compressed_sha256": "61ef1bc8bc6d50596a9648e515efbd0aeb77c7f0458ab87633560ce7f111c4be",
+        "errors": [],
+        "observed_compressed_bytes": 5926041,
+        "store_calls_reconciled": true,
+        "terminal_valid": true,
+        "verification_monotonic_seconds": 8.593374749878421,
+        "verified": true,
+        "verified_unique_views": 12096
+      }
+    },
+    {
+      "block": 2,
+      "charged_tables": 58,
+      "completed_hands": 464,
+      "decision_windows": 93836,
+      "issues": [
+        "RuntimeError: 其他分块出现工程故障，不启新桌；保留全分母"
+      ],
+      "started_tables": 58,
+      "status_counts": {
+        "complete": 58
+      },
+      "terminal_capture": {
+        "closed": true,
+        "compressed_sha256": "c6d99cc30b8510a595af45bbc93f50f086d597aca9a853ea94dc17f72c90cd28",
+        "errors": [],
+        "observed_compressed_bytes": 5770642,
+        "store_calls_reconciled": true,
+        "terminal_valid": true,
+        "verification_monotonic_seconds": 8.107973834034055,
+        "verified": true,
+        "verified_unique_views": 11481
+      }
+    },
+    {
+      "block": 3,
+      "charged_tables": 66,
+      "completed_hands": 523,
+      "decision_windows": 99312,
+      "issues": [
+        "失败决策:t78-net-upgrade-fixed-confirmation:t75-qualifier-reserved_confirmation:073:0123:vip:9df5499d88ab13f9fb6038ca2f7881ae445140aa101fc9d387b953266ce209b4:t78-net-upgrade-fixed-confirmation:t75-qualifier-reserved_confirmation:073:0123:vip:9df5499d88ab13f9fb6038ca2f7881ae445140aa101fc9d387b953266ce209b4:4:806:response_peng:seat0",
+        "ValueError: 桌未完成或运行计数非零:['t78-net-upgrade-fixed-confirmation:t75-qualifier-reserved_confirmation:073:0123:vip:9df5499d88ab13f9fb6038ca2f7881ae445140aa101fc9d387b953266ce209b4']",
+        "单局分账与完整桌积分不守恒:C"
+      ],
+      "started_tables": 66,
+      "status_counts": {
+        "complete": 65,
+        "partial": 1
+      },
+      "terminal_capture": {
+        "closed": true,
+        "compressed_sha256": "28ed6cef8a93af6d171d05dbe0395873646cff73db78fae8cc5addfa7742b9eb",
+        "errors": [],
+        "observed_compressed_bytes": 5761478,
+        "store_calls_reconciled": true,
+        "terminal_valid": true,
+        "verification_monotonic_seconds": 8.45521125011146,
+        "verified": true,
+        "verified_unique_views": 11958
+      }
+    },
+    {
+      "block": 4,
+      "charged_tables": 66,
+      "completed_hands": 528,
+      "decision_windows": 100901,
+      "issues": [
+        "RuntimeError: 其他分块出现工程故障，不启新桌；保留全分母"
+      ],
+      "started_tables": 66,
+      "status_counts": {
+        "complete": 66
+      },
+      "terminal_capture": {
+        "closed": true,
+        "compressed_sha256": "6b9e24d7e76df34003a7ac3d8e8ec1fe662ba95c2bd36cbfd924e36e96625162",
+        "errors": [],
+        "observed_compressed_bytes": 6739166,
+        "store_calls_reconciled": true,
+        "terminal_valid": true,
+        "verification_monotonic_seconds": 9.79095762502402,
+        "verified": true,
+        "verified_unique_views": 12652
+      }
+    }
+  ],
+  "charged_and_started_tables": 250,
+  "complete_tables": 249,
+  "completed_hands": 1995,
+  "confirmation_claim": false,
+  "failure": "RouteHeuristicResearchError: VIP SEARCH_TRUNCATED [request]: 终点胡条件见证达到冻结上限",
+  "handle_ids": [
+    91886,
+    61223,
+    39284,
+    69235
+  ],
+  "new_models_scores_worlds_tables": 0,
+  "online_admission": false,
+  "partial_tables": 1,
+  "planned_actual_tables": 1024,
+  "schema": "t78-failed-campaign-cost-readback/1",
+  "scope": "纯终态文件核账；不把幸存桌均值当完整确认，不重评分或推进世界",
+  "source_files": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-01/end-freeze.json": "779cf83b770ec39a905c3981a75ac0d7eeae4d1d2fd96aaeeb5dc6b3e5291679",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-01/results.jsonl": "f4d40298840423da37d855fda54f19453974694f3dd347112130c46bbe611478",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-01/summary.json": "3ad8b612ab5178076489dee9da775aa301bd4c209380c09f78a3bed048858f00",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-02/end-freeze.json": "7f8386d0d8d741632c0947736a74079557939bea9c483e078ec117b15de4c10e",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-02/results.jsonl": "ce26e9f3228de3121dc26d3a0e439a06735d4b9dadd14fc089262901e06f9d11",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-02/summary.json": "874a15462ef2132f65d325a9b17aa6445154d9cb4b7399534052fd0a8d80b4c7",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-03/decisions.jsonl.gz": "8f2091150bb9e8aacbeab9f6ca440581e4a1d3a95c680f8fe0a452826f6bfecc",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-03/end-freeze.json": "c010c9efca5b8f1e5d7dccca7ed2a98a251332ad68a38afdcc69d0fa794a53cf",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-03/results.jsonl": "715305800ff274ac0b3b07dde64bc11efeca1f935ca157110a24a77d336575f6",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-03/summary.json": "c1d93b99e05c30a4f7df7a586d07be9499d07a469eb63a88e03daf4def13ec6d",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-04/end-freeze.json": "aa5b2e4c1a0621b58b8a8c96789946157b69c1e6119048703db156dd02ff2196",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-04/results.jsonl": "bcb054f8fe14cba4ef7fb18843d5a0c67ddddb9cb88090390c835c02010a82f2",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t78-net-upgrade-fixed-qualifier-confirmation-1/block-04/summary.json": "99f228d9d248f3710c336110724b69fe1da8cb3c1cb0ae6fe4adc07318824422"
+  },
+  "unstarted_tables_retained_in_plan": 774,
+  "whole_batch_valid": false
+}

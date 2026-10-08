@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-claim-counterfactual-cf1-20260921",
+  "batch_label": "r10-claim-counterfactual-cf1",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 32.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 32.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T02:34:25Z",
+  "issuance_basis": "用户取消旧目标并要求按文献复盘方向推进；CF1只验证反事实标签接缝、命中和成本",
+  "scope": "H/M各按预登记根顺序最多检查16根并取前4个行为命中；每样本过牌/具体鸣牌两臂，各续打两桌；不训练、不选优、不确认、不发布",
+  "max_model_calls": 0,
+  "confirmation_roots": 0
+}

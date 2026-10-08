@@ -1,0 +1,58 @@
+{
+ "schema": "sitin-headless-repair-prompts/2",
+ "diagnostic_schema": "sitin-admission-diagnostic/1",
+ "generated_from": "判分报告的具名条目（公开字段白名单渲染；不复述原文）",
+ "diagnostics_available_tasks": [
+  "TD01",
+  "TD05"
+ ],
+ "diagnostics_unavailable_tasks": [],
+ "source_report": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/reports/criterion-first.grade.json",
+ "replies": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/replies/first",
+ "out": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/repair-prompts",
+ "tasks": [
+  {
+   "task_id": "TD01",
+   "chars": 61571,
+   "added_chars": 1341,
+   "diagnostic_schema": "sitin-admission-diagnostic/1",
+   "diagnostics_available": true,
+   "diagnostic_source": "structured",
+   "diagnostic_stats": {
+    "entries": 2,
+    "codes": [
+     "UNKNOWN_ABOVE_KNOWN_NEGATIVE",
+     "UNKNOWN_ABOVE_KNOWN_NEGATIVE"
+    ],
+    "dropped_private_fields": [],
+    "package_skipped": 0,
+    "redactions": [],
+    "source": "structured",
+    "diagnostics_available": true
+   },
+   "leak_tokens": []
+  },
+  {
+   "task_id": "TD05",
+   "chars": 23571,
+   "added_chars": 790,
+   "diagnostic_schema": "sitin-admission-diagnostic/1",
+   "diagnostics_available": true,
+   "diagnostic_source": "structured",
+   "diagnostic_stats": {
+    "entries": 1,
+    "codes": [
+     "STOP_NO_RESULT_AS_NO_CONSUMPTION"
+    ],
+    "dropped_private_fields": [],
+    "package_skipped": 0,
+    "redactions": [
+     "退回全部预留"
+    ],
+    "source": "structured",
+    "diagnostics_available": true
+   },
+   "leak_tokens": []
+  }
+ ]
+}

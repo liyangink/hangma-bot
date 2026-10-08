@@ -1,0 +1,196 @@
+{
+  "schema": "sitin-gates/1",
+  "evidence_kind": "admission",
+  "gate_level_admitted": true,
+  "constructed_trigger_set": false,
+  "candidate": "meld_opportunity_cost",
+  "weights": {
+    "adj.beta": 20.0
+  },
+  "candidate_identity": "heuristic-adjustment-v1+meld-opportunity-cost-v1+beta=20.0,ref=21.0,bound=300.0,scope=chi+peng",
+  "bound_identity": "meld_opportunity_cost|adj(beta=20.0)|base(default)|srcf0629e9069096ac8",
+  "weights_effective": {
+    "adj.beta": 20.0
+  },
+  "gates": [
+    {
+      "gate": "G-0 装载与构造",
+      "status": "PASS",
+      "problems": [],
+      "notes": [],
+      "detail": {
+        "supervised": true,
+        "bound_identity": "meld_opportunity_cost|adj(beta=20.0)|base(default)|srcf0629e9069096ac8",
+        "scope": [
+          "chi",
+          "peng"
+        ],
+        "dependency_digest": "f0629e9069096ac8",
+        "execution": {
+          "returncode": 0,
+          "timed_out": false,
+          "elapsed_sec": 0.216,
+          "signals_sent": [],
+          "group_still_alive": false,
+          "output_truncated": false,
+          "stdout_tail": "",
+          "stderr_tail": ""
+        }
+      }
+    },
+    {
+      "gate": "G-1 时间与纯度",
+      "status": "PASS",
+      "problems": [],
+      "detail": {
+        "forbidden_hits": [],
+        "nondeterministic_windows": 0,
+        "bound": 300.0,
+        "over_bound_parts": 0,
+        "overhead_ms_p50": 0.2731,
+        "overhead_ms_p99": 0.3376,
+        "windows_measured": 40,
+        "triggered_windows_timed": 40,
+        "slowest_triggered_ms": 0.3588,
+        "supervised": true,
+        "supervision": {
+          "returncode": 0,
+          "timed_out": false,
+          "elapsed_sec": 1.724,
+          "signals_sent": [],
+          "group_still_alive": false,
+          "output_truncated": false,
+          "stdout_tail": "",
+          "stderr_tail": ""
+        }
+      }
+    },
+    {
+      "gate": "G-2 退化检测",
+      "status": "PASS",
+      "problems": [],
+      "notes": [],
+      "diagnosis": {
+        "applicable_windows": 109,
+        "fired_windows_in_scope": 109,
+        "changed_in_scope": 18,
+        "basis": 109,
+        "change_rate": 0.1651,
+        "change_matrix": {
+          "peng->pass": 17,
+          "chi->pass": 1
+        },
+        "out_of_scope_changed": 0,
+        "candidate_execution_failure_count": 0,
+        "baseline_execution_failure_count": 0,
+        "note": "行为诊断只描述面板行为，不判定策略好坏（REVIEW-9）"
+      },
+      "triage": {
+        "decision": "upgrade",
+        "reason": "无执行故障、覆盖足够、行为有分化：可进入下一级评估",
+        "is_a_verdict_on_the_mechanism": false
+      },
+      "detail": {
+        "window_classes": {
+          "other": 3231,
+          "response": 109,
+          "self_draw_gang": 2
+        },
+        "excluded": 1,
+        "excluded_decode": 0,
+        "excluded_degraded": 1,
+        "candidate_execution_failures": [],
+        "baseline_execution_failures": [],
+        "candidate_execution_failure_samples": 0,
+        "baseline_execution_failure_samples": 0,
+        "failed_windows": {
+          "candidate": 0,
+          "baseline": 0
+        },
+        "accounting": {
+          "rows": 3343,
+          "excluded": 1,
+          "baseline_failed": 0,
+          "candidate_failed": 0,
+          "applicable": 109,
+          "out_of_scope": 3233,
+          "sum": 3343,
+          "reconciles": true
+        },
+        "declared_scope": [
+          "chi",
+          "peng"
+        ],
+        "applicable_windows": 109,
+        "applicable_changed": 18,
+        "applicable_change_rate": 0.1651,
+        "fired_windows": 109,
+        "fired_windows_in_scope": 109,
+        "out_of_scope_windows": 3233,
+        "out_of_scope_changed": 0,
+        "response_windows": 109,
+        "response_changed": 18,
+        "offscope_changed": 0,
+        "offscope_windows": 3233,
+        "change_matrix": {
+          "peng->pass": 17,
+          "chi->pass": 1
+        },
+        "baseline_first_kinds": {
+          "pass": 2213,
+          "discard": 1033,
+          "peng": 62,
+          "hu": 21,
+          "chi": 9,
+          "gang": 4
+        },
+        "has_offscope_spill": false,
+        "note": "本项只作门禁与诊断，禁止用于适应度排序（README §4.2/DESIGN §4.3）",
+        "supervised": true,
+        "supervision": {
+          "returncode": 0,
+          "timed_out": false,
+          "elapsed_sec": 5.651,
+          "signals_sent": [],
+          "group_still_alive": false,
+          "output_truncated": false,
+          "stdout_tail": "",
+          "stderr_tail": ""
+        }
+      },
+      "directions_present": [
+        "pass"
+      ]
+    },
+    {
+      "gate": "G-3 评估记账",
+      "status": "PASS",
+      "problems": [],
+      "detail": {
+        "candidate": "meld_opportunity_cost",
+        "trigger": "窗口内存在带完整等待事实的 Pass 候选（fact_kind=HAND_PROGRESS 且 completeness=COMPLETE 且满足可比等待基线），且被评分候选为吃或碰",
+        "changed_actions": "吃、碰的总分追加一个非正分项；不改弃牌、过、胡与杠的评分",
+        "expected_direction": "等待有效牌剩余估计越高 ⇒ 鸣牌越贵 ⇒ 更少鸣牌。**单向**：正 β 下结构上不可能产生『过→吃碰』",
+        "counterexample": "等待事实缺失/不完整/非 HAND_PROGRESS 的窗口必须『不加不减』退回基线；杠类候选必须完全不受影响（明杠也补牌、暗杠与补杠是自摸窗口无响应 Pass）",
+        "selected_config": {
+          "adj.beta": 20
+        },
+        "selection_provenance": "β 由 2.1a 的幅度扫描选定（等效有效牌系数 1.0→1.95）。**该选择属开发探索，不计作独立验证**（README §17.5）。"
+      }
+    }
+  ],
+  "all_pass": true,
+  "admitted": true,
+  "failed": [],
+  "insufficient": [],
+  "perclass": null,
+  "perclass_note": "G-2C 逐类覆盖：只回答「候选自己声明的每个场景类在本面板上被验证到什么程度」，不参与 admitted/all_pass。未开启时本段为 null —— **没跑不等于通过**。",
+  "corpus": {
+    "path": "/Users/liyang/hangma-bot/datasets/derived/auto-match-2026-09-06/decisions.jsonl",
+    "rows": 3343,
+    "sha256": "e690aa3e5fae8758e17ec3068badb63e5be085448816e641998893b328b7cef4",
+    "bytes": 37037186,
+    "constructed_trigger_set": false
+  },
+  "note": "门禁只做准入，不作排序；G-2 输出禁止用于适应度（README §4.2）"
+}

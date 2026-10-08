@@ -1,0 +1,83 @@
+{
+  "status": "COMPLETE_V2_PARAMETER_NEW_DEVELOPMENT",
+  "disposition": "NO_POSITIVE_DEVELOPMENT",
+  "config_id": "v2_joint_07",
+  "candidate_id": "offline-v2-joint-v1:470b4798c7813ca430dd5ab05cef0be240562a0c92baa5ff25f58cde5eba7033",
+  "policy_weights_sha256": "470b4798c7813ca430dd5ab05cef0be240562a0c92baa5ff25f58cde5eba7033",
+  "full_tables_verified": 4096,
+  "roots_per_mix": 128,
+  "panels": {
+    "H": {
+      "n_roots": 128,
+      "mean_delta": -0.0068359375,
+      "standard_error": 0.01830533010905687,
+      "interval_95": [
+        -0.04271372523886812,
+        0.02904185023886812
+      ],
+      "mean_delta_low": -0.009765625,
+      "standard_error_low": 0.018684750259785284,
+      "interval_95_low": [
+        -0.046387062569304575,
+        0.026855812569304575
+      ],
+      "mean_delta_high": -0.00390625,
+      "unresolved_roots": 2
+    },
+    "M": {
+      "n_roots": 128,
+      "mean_delta": 0.0087890625,
+      "standard_error": 0.015008993581506178,
+      "interval_95": [
+        -0.020628024363944945,
+        0.038206149363944945
+      ],
+      "mean_delta_low": 0.005859375,
+      "standard_error_low": 0.014794577367573334,
+      "interval_95_low": [
+        -0.023137463806935137,
+        0.03485621380693514
+      ],
+      "mean_delta_high": 0.01171875,
+      "unresolved_roots": 3
+    }
+  },
+  "declared_equal_mix": {
+    "weights": {
+      "H": 0.5,
+      "M": 0.5
+    },
+    "mean_delta": 0.0009765625,
+    "mean_delta_low": -0.001953125,
+    "mean_delta_high": 0.00390625,
+    "status": "ok",
+    "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例"
+  },
+  "conservative_equal_mix_sampling": {
+    "mean": -0.001953125,
+    "standard_error": 0.011916369117265327,
+    "interval_95": [
+      -0.025308779296325398,
+      0.021402529296325398
+    ],
+    "formula": "sqrt(SE_H_low^2 + SE_M_low^2) / 2",
+    "kind": "sampling_uncertainty_normal_approx_on_conservative_root_delta"
+  },
+  "family_regressions": [],
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 4096.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "continue_confirmation_preparation": false,
+  "retain_as_structural_parent": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "按R10文献复盘转入小型多父代结构搜索，不追加本批根"
+}

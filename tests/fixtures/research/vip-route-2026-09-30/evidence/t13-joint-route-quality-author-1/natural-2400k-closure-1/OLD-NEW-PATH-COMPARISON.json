@@ -1,0 +1,278 @@
+{
+  "schema": "t13-budget-only-natural-reexecution-comparison/1",
+  "business_calls": 0,
+  "actual_original_tables": 16,
+  "actual_reexecuted_tables": 16,
+  "old_complete_tables_path_and_final_scores_equal": 14,
+  "old_failed_applied_prefixes_equal": 2,
+  "original_failed_records_and_denominators_preserved": true,
+  "game_id_batch_namespace_normalized_only": true,
+  "rows": [
+    {
+      "pool": "H",
+      "permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "arm": "A",
+      "original_status": "complete",
+      "original_applied_action_count": 1594,
+      "new_decision_count": 1594,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "H",
+      "permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "arm": "C",
+      "original_status": "complete",
+      "original_applied_action_count": 1314,
+      "new_decision_count": 1314,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "H",
+      "permutation": [
+        1,
+        2,
+        3,
+        0
+      ],
+      "arm": "A",
+      "original_status": "complete",
+      "original_applied_action_count": 1594,
+      "new_decision_count": 1594,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "H",
+      "permutation": [
+        1,
+        2,
+        3,
+        0
+      ],
+      "arm": "C",
+      "original_status": "complete",
+      "original_applied_action_count": 1170,
+      "new_decision_count": 1170,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "H",
+      "permutation": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "arm": "A",
+      "original_status": "complete",
+      "original_applied_action_count": 1594,
+      "new_decision_count": 1594,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "H",
+      "permutation": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "arm": "C",
+      "original_status": "complete",
+      "original_applied_action_count": 1341,
+      "new_decision_count": 1341,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "H",
+      "permutation": [
+        3,
+        0,
+        1,
+        2
+      ],
+      "arm": "A",
+      "original_status": "complete",
+      "original_applied_action_count": 1594,
+      "new_decision_count": 1594,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "H",
+      "permutation": [
+        3,
+        0,
+        1,
+        2
+      ],
+      "arm": "C",
+      "original_status": "partial",
+      "original_applied_action_count": 580,
+      "new_decision_count": 1329,
+      "old_complete_all_path_and_final_scores_equal": null,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": {
+        "original_action": null,
+        "original_failure": "policy_error: RouteHeuristicResearchError: VIP WORKLOAD_EXCEEDED [request]: 计数操作超限：已用 1200001，上限 1200000",
+        "new_action": "gang:concealed:9t",
+        "no_original_applied_action_at_failed_window": true
+      }
+    },
+    {
+      "pool": "M",
+      "permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "arm": "A",
+      "original_status": "complete",
+      "original_applied_action_count": 1594,
+      "new_decision_count": 1594,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "M",
+      "permutation": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "arm": "C",
+      "original_status": "complete",
+      "original_applied_action_count": 1365,
+      "new_decision_count": 1365,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "M",
+      "permutation": [
+        1,
+        2,
+        3,
+        0
+      ],
+      "arm": "A",
+      "original_status": "complete",
+      "original_applied_action_count": 1252,
+      "new_decision_count": 1252,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "M",
+      "permutation": [
+        1,
+        2,
+        3,
+        0
+      ],
+      "arm": "C",
+      "original_status": "complete",
+      "original_applied_action_count": 1254,
+      "new_decision_count": 1254,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "M",
+      "permutation": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "arm": "A",
+      "original_status": "complete",
+      "original_applied_action_count": 1436,
+      "new_decision_count": 1436,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "M",
+      "permutation": [
+        2,
+        3,
+        0,
+        1
+      ],
+      "arm": "C",
+      "original_status": "complete",
+      "original_applied_action_count": 1226,
+      "new_decision_count": 1226,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "M",
+      "permutation": [
+        3,
+        0,
+        1,
+        2
+      ],
+      "arm": "A",
+      "original_status": "complete",
+      "original_applied_action_count": 1429,
+      "new_decision_count": 1429,
+      "old_complete_all_path_and_final_scores_equal": true,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": null
+    },
+    {
+      "pool": "M",
+      "permutation": [
+        3,
+        0,
+        1,
+        2
+      ],
+      "arm": "C",
+      "original_status": "partial",
+      "original_applied_action_count": 580,
+      "new_decision_count": 1226,
+      "old_complete_all_path_and_final_scores_equal": null,
+      "old_applied_prefix_all_equal": true,
+      "original_failure_window": {
+        "original_action": null,
+        "original_failure": "policy_error: RouteHeuristicResearchError: VIP WORKLOAD_EXCEEDED [request]: 计数操作超限：已用 1200001，上限 1200000",
+        "new_action": "gang:concealed:9t",
+        "no_original_applied_action_at_failed_window": true
+      }
+    }
+  ]
+}

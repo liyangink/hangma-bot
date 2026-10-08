@@ -1,0 +1,474 @@
+{
+  "schema": "sitin-action-value-evaluation/1",
+  "ok": true,
+  "identity": {
+    "candidate_id": "2fc08dfce2fb50fe48d57a5ab5bdbeaf04e9177be731048d322ec5cdf99120c2",
+    "evaluation_id": "ad19f939408808202038e215e8a7d7133c625bfc3cf31f62dea825779afc3fc4",
+    "baseline_id": "v2-baseline-frozen",
+    "target_contract_sha256": "1012c5d996f0bb913c4a29d36b493ebc5b81e959af496051ba9568ba7bcd08e4",
+    "opponent_mix": "H",
+    "panel_epoch": "v2-behavior-prefix-v1@branch_open",
+    "executor_version": "action-value-executor/2",
+    "contract_sha256": "7d6b3013e03285d0383706a220f787b915da3cb7f5fe35359be9f27db7ff6f41"
+  },
+  "admission": {
+    "identity": {
+      "candidate_kind": "action_value_v1",
+      "candidate_source_sha256": "b9b5c18d385c3658177796389c7c3d7aa734c9f8187fe20bfe78d922e275bb49",
+      "candidate_id": "2fc08dfce2fb50fe48d57a5ab5bdbeaf04e9177be731048d322ec5cdf99120c2",
+      "contract_sha256": "7d6b3013e03285d0383706a220f787b915da3cb7f5fe35359be9f27db7ff6f41",
+      "executor_version": "action-value-executor/2",
+      "deps_digest": "ca450556a4eac028a299e2db68055d469128259ed47b34a771e7020cffca0fa8",
+      "deps_digest_basis": "first_party_file_contents(S4)",
+      "params": {
+        "value_analysis_limits": {
+          "max_expansions": 2048,
+          "max_routes_per_candidate": 128
+        }
+      },
+      "candidate_id_inputs": [
+        "候选种类 action_value_v1",
+        "原始/执行源码",
+        "有效参数",
+        "输入输出合同（本合同 sha256）",
+        "骨架",
+        "规则/特征/代理版本",
+        "分析上限",
+        "执行器版本",
+        "第一方传递依赖摘要"
+      ]
+    },
+    "execution_safety_pass": true,
+    "coverage": {
+      "views": {
+        "fam_hu": {
+          "status": "PASS",
+          "entries": 1,
+          "operations": 187
+        },
+        "fam_pass": {
+          "status": "PASS",
+          "entries": 1,
+          "operations": 176
+        },
+        "fam_chi": {
+          "status": "PASS",
+          "entries": 1,
+          "operations": 176
+        },
+        "fam_peng": {
+          "status": "PASS",
+          "entries": 1,
+          "operations": 176
+        },
+        "fam_gang": {
+          "status": "PASS",
+          "entries": 1,
+          "operations": 176
+        },
+        "fam_discard": {
+          "status": "PASS",
+          "entries": 1,
+          "operations": 176
+        },
+        "route_combo": {
+          "status": "PASS",
+          "entries": 2,
+          "operations": 369
+        },
+        "unknown_missing": {
+          "status": "PASS",
+          "entries": 0,
+          "operations": 264
+        }
+      },
+      "status": "PASS"
+    }
+  },
+  "panel": {
+    "generator": "v2-behavior-prefix-v1",
+    "prefix_source": "v2_behavior",
+    "predicate": "branch_open",
+    "prefix_attempts": {
+      "total": 1,
+      "hit": 1,
+      "missed": 0,
+      "unknown": 0,
+      "errors": 0,
+      "cap": 16,
+      "attempts_exhausted": false
+    },
+    "prefix_attempt_errors": [],
+    "engine_kind": "simulation_runtime_double",
+    "tables_full_executed": 4,
+    "budget_red_line": {
+      "real_table_instances_started": 0,
+      "fixture_table_instances": 0,
+      "search_ledger_note": "搜索账 384/384 已用尽；本面板为夹具/验证替身执行，零真实桌赛实例（真实 v2_behavior 前缀生成留给 R6 E 重验按新授权跑）"
+    },
+    "table_instance_basis": "v2_behavior 路由按前缀尝试计被启动桌赛实例（生成器 v2-behavior-prefix-v1；前缀推进为 V2 行为站立策略，截取局面由规则引擎真实分析）"
+  },
+  "double_arm": {
+    "valid": true,
+    "arms": {
+      "baseline": {
+        "arm": "baseline",
+        "status": "complete",
+        "usable": true,
+        "error": null,
+        "focal_policy_id": "ComparableHeuristicPolicyV2",
+        "tables": [
+          {
+            "table_id": "av-eval-branch_open:branch_open:root000:current",
+            "match_status": "complete",
+            "scores_by_seat": [
+              -26,
+              35,
+              -8,
+              -1
+            ],
+            "partial": true
+          },
+          {
+            "table_id": "av-eval-branch_open:branch_open:root000:t2",
+            "match_status": "complete",
+            "scores_by_seat": [
+              7,
+              25,
+              -14,
+              -18
+            ],
+            "partial": false
+          }
+        ],
+        "decisions_after_cut": 1253,
+        "stage_totals_by_participant": {
+          "focal": -19,
+          "opp-0": 60,
+          "opp-1": -22,
+          "opp-2": -19
+        },
+        "stage_place_points_by_participant": {
+          "focal": -2,
+          "opp-0": 6,
+          "opp-1": -2,
+          "opp-2": -2
+        },
+        "focal_stage_score": -19,
+        "u": null,
+        "u_low": 0.0,
+        "u_high": 1.0,
+        "unresolved": true,
+        "u_interval": {
+          "a": 2,
+          "b": 3,
+          "tie_block": [
+            "focal",
+            "opp-2"
+          ]
+        },
+        "elapsed_ms": 3745.17
+      },
+      "candidate": {
+        "arm": "candidate",
+        "status": "complete",
+        "usable": true,
+        "error": null,
+        "focal_policy_id": "action_value_v1:av-candidate",
+        "tables": [
+          {
+            "table_id": "av-eval-branch_open:branch_open:root000:current",
+            "match_status": "complete",
+            "scores_by_seat": [
+              -24,
+              -20,
+              38,
+              6
+            ],
+            "partial": true
+          },
+          {
+            "table_id": "av-eval-branch_open:branch_open:root000:t2",
+            "match_status": "complete",
+            "scores_by_seat": [
+              -51,
+              -40,
+              99,
+              -8
+            ],
+            "partial": false
+          }
+        ],
+        "decisions_after_cut": 1342,
+        "stage_totals_by_participant": {
+          "focal": -75,
+          "opp-0": -60,
+          "opp-1": 137,
+          "opp-2": -2
+        },
+        "stage_place_points_by_participant": {
+          "focal": -6,
+          "opp-0": -2,
+          "opp-1": 6,
+          "opp-2": 2
+        },
+        "focal_stage_score": -75,
+        "u": 0.0,
+        "u_low": 0.0,
+        "u_high": 0.0,
+        "unresolved": false,
+        "u_interval": {
+          "a": 4,
+          "b": 4,
+          "tie_block": [
+            "focal"
+          ]
+        },
+        "elapsed_ms": 4373.334
+      }
+    },
+    "declared_endpoint": "stage_complete"
+  },
+  "samples": [
+    {
+      "schema": "sitin-action-value-sample/1",
+      "source_root_id": "av-eval-branch_open:branch_open:root000",
+      "candidate_id": "2fc08dfce2fb50fe48d57a5ab5bdbeaf04e9177be731048d322ec5cdf99120c2",
+      "scenario": "branch_open",
+      "opponent_mix": "H",
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "policy_id": "ComparableHeuristicPolicyV2",
+          "status": "complete",
+          "usable": true,
+          "error": null,
+          "final_scores": null,
+          "elapsed_ms": 3745.17,
+          "u": null,
+          "u_low": 0.0,
+          "u_high": 1.0,
+          "unresolved": true,
+          "u_interval": {
+            "a": 2,
+            "b": 3,
+            "tie_block": [
+              "focal",
+              "opp-2"
+            ]
+          }
+        },
+        "candidate": {
+          "candidate_id": "2fc08dfce2fb50fe48d57a5ab5bdbeaf04e9177be731048d322ec5cdf99120c2",
+          "policy_id": "action_value_v1:av-candidate",
+          "status": "complete",
+          "usable": true,
+          "error": null,
+          "final_scores": null,
+          "elapsed_ms": 4373.334,
+          "u": 0.0,
+          "u_low": 0.0,
+          "u_high": 0.0,
+          "unresolved": false,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          }
+        }
+      },
+      "completeness": "complete",
+      "invalid_reasons": [],
+      "cost": {
+        "elapsed_ms": 8118.504
+      },
+      "fixture_mode": false,
+      "real_table_instances": 1
+    }
+  ],
+  "statistics": {
+    "schema": "sitin-stage-statistics/1",
+    "n_samples": 1,
+    "min_roots": 1,
+    "by_candidate": {
+      "2fc08dfce2fb50fe48d57a5ab5bdbeaf04e9177be731048d322ec5cdf99120c2": {
+        "panels": {
+          "branch_open": {
+            "panels": {
+              "H": {
+                "n_samples": 1,
+                "n_roots": 1,
+                "n_invalid_samples": 0,
+                "n_uncomputable_samples": 0,
+                "n_invalid_roots": 0,
+                "invalid_roots": [],
+                "manifest_complete": true,
+                "n_refresh_roots": 0,
+                "status": "ok",
+                "mean_delta": -0.5,
+                "standard_error": null,
+                "interval_95": null,
+                "interval_kind": "sampling_uncertainty_normal_approx",
+                "interval_note": "95% 正态近似抽样不确定性区间，非识别区间，不作为已证明提升的证据",
+                "self_comparison": false,
+                "delta_bounds": {
+                  "mean_delta_low": -1.0,
+                  "mean_delta_high": 0.0,
+                  "standard_error_low": null,
+                  "standard_error_high": null,
+                  "interval_95_low": null,
+                  "interval_95_high": null,
+                  "unresolved_roots": 1,
+                  "note": "识别区间（缺 god_count 等事实造成）：d_low=候选U下界−基线U上界、d_high=候选U上界−基线U下界（§2 保守配对）；与 interval_95 分开报告"
+                },
+                "roots": [
+                  "av-eval-branch_open:branch_open:root000"
+                ],
+                "root_rows": [
+                  {
+                    "root_id": "av-eval-branch_open:branch_open:root000",
+                    "n_windows": 1,
+                    "d_point": -0.5,
+                    "d_low": -1.0,
+                    "d_high": 0.0,
+                    "unresolved": true,
+                    "self": false,
+                    "role": "core",
+                    "usage": "development_core",
+                    "root_content_digest": null,
+                    "opponent_mix": "H",
+                    "cost": 8118.504
+                  }
+                ],
+                "invalid_records": [],
+                "uncomputable_records": []
+              }
+            },
+            "declared_mix": {
+              "weights": {
+                "H": 0.5,
+                "M": 0.5
+              },
+              "mean_delta": null,
+              "mean_delta_low": null,
+              "mean_delta_high": null,
+              "status": "missing_mix",
+              "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例"
+            }
+          }
+        },
+        "family_development_values": {
+          "branch": {
+            "value": null,
+            "open": {
+              "declared_mix_value": null
+            },
+            "cost": {
+              "declared_mix_value": null
+            },
+            "complete": false,
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分"
+          },
+          "chain": {
+            "value": null,
+            "open": {
+              "declared_mix_value": null
+            },
+            "cost": {
+              "declared_mix_value": null
+            },
+            "complete": false,
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分"
+          },
+          "four_white": {
+            "value": null,
+            "open": {
+              "declared_mix_value": null
+            },
+            "cost": {
+              "declared_mix_value": null
+            },
+            "complete": false,
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分"
+          },
+          "baotou": {
+            "value": null,
+            "open": {
+              "declared_mix_value": null
+            },
+            "cost": {
+              "declared_mix_value": null
+            },
+            "complete": false,
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分"
+          }
+        }
+      }
+    },
+    "invalid_count": 0,
+    "uncomputable_count": 0,
+    "invalid_records": [],
+    "uncomputable_records": [],
+    "notes": [
+      "抽样单位=来源根（source_root_id）：同根多窗口/换座先根内平均，不放大 n（T10）",
+      "interval_95 为抽样不确定性（正态近似），与 delta_bounds 识别区间分开",
+      "无效样本不补零：原始记录保留于 invalid_records/uncomputable_records"
+    ]
+  },
+  "steps": [
+    {
+      "step": "admission",
+      "status": "PASS",
+      "execution_safety": "PASS",
+      "coverage": "PASS"
+    },
+    {
+      "step": "panel",
+      "status": "sampled",
+      "predicate": "branch_open",
+      "prefix_attempts": {
+        "total": 1,
+        "hit": 1,
+        "missed": 0,
+        "unknown": 0,
+        "errors": 0,
+        "cap": 16,
+        "attempts_exhausted": false
+      }
+    },
+    {
+      "step": "double_arm",
+      "status": "valid",
+      "valid": true,
+      "arm_policy_ids": {
+        "baseline": "ComparableHeuristicPolicyV2",
+        "candidate": "action_value_v1:av-candidate"
+      }
+    },
+    {
+      "step": "statistics",
+      "status": "ok",
+      "n_samples": 1,
+      "invalid_count": 0
+    }
+  ],
+  "fixture_mode": false,
+  "prefix_source": "v2_behavior",
+  "real_table_instances": 1,
+  "tables_partial_charged": 1.0,
+  "feedback": {
+    "schema": "sitin-action-value-feedback/1",
+    "facts": [
+      "baseline 臂：status=complete，elapsed_ms=3745.17，含终端 U=0.0",
+      "candidate 臂：status=complete，elapsed_ms=4373.334，含终端 U=0.0",
+      "覆盖层：None"
+    ],
+    "associated_results": [
+      "branch_open: mean_delta=None，n_roots=None，status=None"
+    ],
+    "mechanism_hypothesis": "差异可能来自候选在机会子场景的分支取舍；下一版准备调整触发条件与反例门控；预计在缺史/未知窗口可能失效（待下一轮真实结果检验）",
+    "boundary": "未做单动作反事实实验；本反馈只含开发结果，不含确认集数据"
+  }
+}

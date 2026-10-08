@@ -1,0 +1,142 @@
+{
+  "schema": "r17-public-successor-production-admission-result/1",
+  "status": "FAIL_R17_P0_PRODUCTION_ADMISSION",
+  "windows": 226,
+  "performance_protocol": {
+    "passes": 6,
+    "gc_enabled": true,
+    "timed_scope": "HangmaRules.analyze + analyze_public_self_draw_successors；包含同源合法动作分析",
+    "tracemalloc_mixed_into_timing": false
+  },
+  "semantic_equivalence": {
+    "passed": true,
+    "raw_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+    "pass_digests": [
+      "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12"
+    ],
+    "deterministic": true
+  },
+  "coverage": {
+    "passed": true,
+    "counts": {
+      "all_capacity_edges": 60597,
+      "discard_roots": 1825,
+      "discard_roots_covered": 1825,
+      "draw_windows": 179,
+      "drawn_only_discard": 60597,
+      "drawn_only_discard_pareto": 60597,
+      "drawn_only_gang": 532,
+      "drawn_only_hu": 777,
+      "non_useful_edges": 42084,
+      "response_fallback_windows": 47,
+      "unrestricted_discard": 642562,
+      "unrestricted_discard_pareto": 208464,
+      "unrestricted_gang": 1071,
+      "unrestricted_hu": 777,
+      "useful_edges": 18513,
+      "value_route_edges": 777,
+      "value_route_groups": 151
+    },
+    "issue_count_per_pass": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "route_issue_count_per_pass": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "bounded_return_objects_per_window_max": {
+    "edges": 476,
+    "frontier_leaf_objects": 3003,
+    "roots": 14
+  },
+  "latency_passes": [
+    {
+      "mean_ms": 198.30215808820998,
+      "p50_ms": 184.5605419948697,
+      "p90_ms": 332.215458038263,
+      "p95_ms": 367.8236659616232,
+      "p99_ms": 433.58675006311387,
+      "max_ms": 458.58645800035447
+    },
+    {
+      "mean_ms": 200.53927354220633,
+      "p50_ms": 184.7961249295622,
+      "p90_ms": 336.0800410155207,
+      "p95_ms": 369.0276249544695,
+      "p99_ms": 424.27737498655915,
+      "max_ms": 454.2205419857055
+    },
+    {
+      "mean_ms": 202.58347367394362,
+      "p50_ms": 184.55991696100682,
+      "p90_ms": 336.2531670136377,
+      "p95_ms": 369.91108395159245,
+      "p99_ms": 434.7556659486145,
+      "max_ms": 510.73820900637656
+    },
+    {
+      "mean_ms": 202.9142241675261,
+      "p50_ms": 188.03712504450232,
+      "p90_ms": 343.0897919461131,
+      "p95_ms": 370.3341669170186,
+      "p99_ms": 434.42441697698087,
+      "max_ms": 474.155250005424
+    },
+    {
+      "mean_ms": 203.24688943365703,
+      "p50_ms": 187.98041704576463,
+      "p90_ms": 341.21470898389816,
+      "p95_ms": 377.45808297768235,
+      "p99_ms": 456.2069580424577,
+      "max_ms": 456.5315410727635
+    },
+    {
+      "mean_ms": 204.77911129440363,
+      "p50_ms": 190.52487495355308,
+      "p90_ms": 354.5983750373125,
+      "p95_ms": 375.7710420759395,
+      "p99_ms": 461.1337080132216,
+      "max_ms": 474.7967920266092
+    }
+  ],
+  "gate": {
+    "passed": false,
+    "p99_ms_max": 200.0,
+    "window_max_ms": 500.0
+  },
+  "memory": {
+    "passed": true,
+    "scope": "独立于性能门的226窗全遍；每窗结果立即删除后强制collect",
+    "tracemalloc_current_before_bytes": 0,
+    "tracemalloc_current_after_bytes": 664,
+    "tracemalloc_retained_delta_bytes": 664,
+    "tracemalloc_peak_bytes": 27844706,
+    "gc_tracked_objects_before": 162280,
+    "gc_tracked_objects_after": 162283,
+    "gc_tracked_objects_delta": 3,
+    "process_ru_maxrss_platform_units": 151306240
+  },
+  "rules": {
+    "response": "UNAVAILABLE，策略回退稳定V2",
+    "you_cai_bi_kao": "未来爆头资格未知时整项UNAVAILABLE",
+    "gang": "当前wall=21时下一普通摸后不可能>20；仅当前>21保留未来wall>20条件叶",
+    "capacity": "枚举全34牌码中公开容量>0的边，包含非useful边；容量不是概率"
+  },
+  "selection_eligible": false,
+  "strength_claim": false
+}

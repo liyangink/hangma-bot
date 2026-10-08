@@ -1,0 +1,159 @@
+{
+  "slim": [
+    {
+      "task_id": "TD01",
+      "first_pass": false,
+      "repair_pass": false,
+      "pass": false,
+      "repair_gate": null,
+      "attempt_change": {
+        "schema": "sitin-admission-attempt-change/2",
+        "code_changed": true,
+        "behavior_changed": null,
+        "behavior_changed_views": [],
+        "text_changed": true,
+        "first_executable_digest": "3348e1d0b85141502a26d2cada31879b5255fa88771d5e4963dc67529feb8e82",
+        "repair_executable_digest": "0c1869df1aea44604c7953ff2dcc6822ddc6f835796f31d2e34bcb456f3cc265",
+        "first_source_state": "VALID_AST",
+        "repair_source_state": "VALID_AST",
+        "definition": "代码改变 = 去 docstring/注释后的可执行 AST 不同；行为改变 = 声明视图上首选动作（生产排序）+ 未知掩码至少一窗不同；两者都不成立时，一次反馈后的修复不兑换修复信用（说明/文档字符串修订）。"
+      }
+    },
+    {
+      "task_id": "TD02",
+      "first_pass": true,
+      "repair_pass": null,
+      "pass": true,
+      "repair_gate": null,
+      "attempt_change": null
+    },
+    {
+      "task_id": "TD03",
+      "first_pass": false,
+      "repair_pass": false,
+      "pass": false,
+      "repair_gate": null,
+      "attempt_change": {
+        "schema": "sitin-admission-attempt-change/2",
+        "code_changed": true,
+        "behavior_changed": null,
+        "behavior_changed_views": [],
+        "text_changed": true,
+        "first_executable_digest": "bb486f52440d27994bdc2fd8a50fd79175118a5a81461e5a2f8c6a4ee7d07171",
+        "repair_executable_digest": "6128d65a28a4ff0c3658bfb2c5144fb70f949fb801aba5cb8e95f7ca724e6972",
+        "first_source_state": "VALID_AST",
+        "repair_source_state": "VALID_AST",
+        "definition": "代码改变 = 去 docstring/注释后的可执行 AST 不同；行为改变 = 声明视图上首选动作（生产排序）+ 未知掩码至少一窗不同；两者都不成立时，一次反馈后的修复不兑换修复信用（说明/文档字符串修订）。"
+      }
+    },
+    {
+      "task_id": "TD04",
+      "first_pass": true,
+      "repair_pass": null,
+      "pass": true,
+      "repair_gate": null,
+      "attempt_change": null
+    },
+    {
+      "task_id": "TD05",
+      "first_pass": false,
+      "repair_pass": true,
+      "pass": true,
+      "repair_gate": null,
+      "attempt_change": {
+        "schema": "sitin-admission-attempt-change/2",
+        "code_changed": null,
+        "behavior_changed": null,
+        "behavior_changed_views": [],
+        "text_changed": true,
+        "first_executable_digest": null,
+        "repair_executable_digest": null,
+        "first_source_state": "NOT_EXTRACTED",
+        "repair_source_state": "NOT_EXTRACTED",
+        "definition": "代码改变 = 去 docstring/注释后的可执行 AST 不同；行为改变 = 声明视图上首选动作（生产排序）+ 未知掩码至少一窗不同；两者都不成立时，一次反馈后的修复不兑换修复信用（说明/文档字符串修订）。"
+      }
+    },
+    {
+      "task_id": "TD06",
+      "first_pass": true,
+      "repair_pass": null,
+      "pass": true,
+      "repair_gate": null,
+      "attempt_change": null
+    }
+  ],
+  "glm": [
+    {
+      "task_id": "TD01",
+      "first_pass": false,
+      "repair_pass": null,
+      "pass": false,
+      "repair_gate": null,
+      "attempt_change": null
+    },
+    {
+      "task_id": "TD02",
+      "first_pass": true,
+      "repair_pass": null,
+      "pass": true,
+      "repair_gate": null,
+      "attempt_change": null
+    },
+    {
+      "task_id": "TD03",
+      "first_pass": true,
+      "repair_pass": null,
+      "pass": true,
+      "repair_gate": null,
+      "attempt_change": null
+    },
+    {
+      "task_id": "TD04",
+      "first_pass": false,
+      "repair_pass": true,
+      "pass": true,
+      "repair_gate": null,
+      "attempt_change": {
+        "schema": "sitin-admission-attempt-change/2",
+        "code_changed": null,
+        "behavior_changed": null,
+        "behavior_changed_views": [],
+        "text_changed": true,
+        "first_executable_digest": null,
+        "repair_executable_digest": "40952456f642db872639c3cd51e80696a04f2101e7ec45e593df4acac3101b79",
+        "first_source_state": "INVALID_SYNTAX",
+        "repair_source_state": "VALID_AST",
+        "definition": "代码改变 = 去 docstring/注释后的可执行 AST 不同；行为改变 = 声明视图上首选动作（生产排序）+ 未知掩码至少一窗不同；两者都不成立时，一次反馈后的修复不兑换修复信用（说明/文档字符串修订）。",
+        "delivery_recovered": true,
+        "repair_credit_basis": "DELIVERY_RECOVERED"
+      }
+    },
+    {
+      "task_id": "TD05",
+      "first_pass": true,
+      "repair_pass": null,
+      "pass": true,
+      "repair_gate": null,
+      "attempt_change": null
+    },
+    {
+      "task_id": "TD06",
+      "first_pass": true,
+      "repair_pass": false,
+      "pass": true,
+      "repair_gate": null,
+      "attempt_change": {
+        "schema": "sitin-admission-attempt-change/2",
+        "code_changed": null,
+        "behavior_changed": null,
+        "behavior_changed_views": [],
+        "text_changed": true,
+        "first_executable_digest": null,
+        "repair_executable_digest": null,
+        "first_source_state": "NOT_EXTRACTED",
+        "repair_source_state": "NOT_EXTRACTED",
+        "definition": "代码改变 = 去 docstring/注释后的可执行 AST 不同；行为改变 = 声明视图上首选动作（生产排序）+ 未知掩码至少一窗不同；两者都不成立时，一次反馈后的修复不兑换修复信用（说明/文档字符串修订）。"
+      }
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "bad_inputs_rejected": [
+    "duplicate_root_id",
+    "missing_rotation",
+    "inconsistent_account",
+    "source_order_gap"
+  ],
+  "complete": true,
+  "files": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/NATURAL-STAGE-002-PLAN.json": {
+      "bytes": 73080,
+      "sha256": "c18934a44c2ef666aec100c0286f08471ab22c64741c456fe59037c4f2257d05"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/check_cumulative_reader.py": {
+      "bytes": 4398,
+      "sha256": "031d004fbf5fb75a4caf635e8ac00f4d427800cd1ce88898a5ea49f59d82002b"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/natural-stage-002-dispatch/CUMULATIVE-SUMMARY.json": {
+      "bytes": 387758,
+      "sha256": "8c5744a990baff625fcbe0781323646c017d6bc5a8991de931f0ae56f9795873"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/read_natural_cumulative-v2.py": {
+      "bytes": 6676,
+      "sha256": "2aa3104935753016fc6508ed8c357466a14d1bcc69f5ef613fecec817fc274a3"
+    }
+  },
+  "new_scores_worlds_tables_models_HTTP": 0,
+  "real_16_source_statistics_exact_match": true,
+  "real_max_source_exclusion_mean": 3.4,
+  "stronger_candidate_or_online_admission": false,
+  "synthetic_all_criteria_pass": true,
+  "synthetic_failed_criteria": [
+    {
+      "label": "below_practical_net",
+      "specified_criterion_rejected": "mean_net_at_least_5",
+      "synthetic_not_candidate_score": true
+    },
+    {
+      "label": "negative_large_income",
+      "specified_criterion_rejected": "cumulative_large_income_nonnegative",
+      "synthetic_not_candidate_score": true
+    },
+    {
+      "label": "only_one_large_positive_source",
+      "specified_criterion_rejected": "two_distinct_large_income_positive_sources",
+      "synthetic_not_candidate_score": true
+    },
+    {
+      "label": "latest_block_negative",
+      "specified_criterion_rejected": "latest_block_net_positive",
+      "synthetic_not_candidate_score": true
+    },
+    {
+      "label": "one_extreme_source",
+      "specified_criterion_rejected": "excluding_maximum_net_source_still_positive",
+      "synthetic_not_candidate_score": true
+    }
+  ]
+}

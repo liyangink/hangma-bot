@@ -1,0 +1,134 @@
+{
+ "schema": "sitin-model-admission-manifest/1",
+ "issued_by": "R9-P25 §3「缩短任务卡后小诊断」：把 TD01—TD06 用卡面入口（build_action_value_card_prompt）按机制相关性重渲染，机制与判据逐字不变",
+ "not_admission": "本包不是准入题包：不设门槛、不计入准入通过数、不用于任何ADMISSION_PASS 判定；只用于检验「测量与修复链是否工作」。",
+ "task_count": 6,
+ "category_distribution": {
+  "scorer_generation": 4,
+  "stop_recovery": 2
+ },
+ "hard_constraint_tasks": [],
+ "thresholds": null,
+ "target_model": {
+  "provider": "deepseek-official",
+  "model": "deepseek-v4-flash",
+  "note": "与长卡轮同模型同通道，便于对比"
+ },
+ "cards": [
+  {
+   "task_id": "TD01",
+   "prompt_sha256": "d6d1d709e4fe4a72ad1adcece773cdbf51e73939f964233daa5856fbefc1918c",
+   "capability_face": "① 完整输入评分",
+   "validator_kind": "code",
+   "views": [
+    "sample",
+    "fam_discard",
+    "route_combo",
+    "unknown_missing",
+    "max_input",
+    "cap_progress",
+    "pair_unscored_discard"
+   ],
+   "must_differ_from": null,
+   "before_chars": 44112,
+   "after_chars": 23479
+  },
+  {
+   "task_id": "TD02",
+   "prompt_sha256": "e813c83024c5900f0b8f580afec5be4973ce761a06919068c3738652c4582ba3",
+   "capability_face": "② 未知越位修订",
+   "validator_kind": "code",
+   "views": [
+    "cap_progress",
+    "pair_unscored_discard",
+    "pair_unknown_shapes",
+    "unknown_branch_none",
+    "unknown_branch_bool",
+    "unscored_action",
+    "route_combo",
+    "sample"
+   ],
+   "must_differ_from": "materials/dev-parent-hold-v1.py",
+   "before_chars": 46634,
+   "after_chars": 27685
+  },
+  {
+   "task_id": "TD03",
+   "prompt_sha256": "c3a830128051f2daf1655d971797574dfed9dd2765a4163f9e6f8539b121c2cc",
+   "capability_face": "③ 可解窗错误弃权",
+   "validator_kind": "code",
+   "views": [
+    "sample",
+    "cap_progress",
+    "fam_discard",
+    "route_combo",
+    "unknown_missing",
+    "pair_unscored_discard"
+   ],
+   "must_differ_from": null,
+   "before_chars": 43912,
+   "after_chars": 22839
+  },
+  {
+   "task_id": "TD04",
+   "prompt_sha256": "10bca1bfd0bf32d7c1f9c59b284394f31ba91ab5e6c1cb4f99d27b31d6fea964",
+   "capability_face": "④ 行为等价修订",
+   "validator_kind": "code",
+   "views": [
+    "cap_progress",
+    "sample",
+    "route_combo",
+    "fam_discard"
+   ],
+   "must_differ_from": "materials/dev-parent-hold-v2.py",
+   "before_chars": 48366,
+   "after_chars": 29741
+  },
+  {
+   "task_id": "TD05",
+   "prompt_sha256": "4c93902ad5cef3c9cdb5667ec335b2af5a00c494d3d246984b30cded963aa1d0",
+   "capability_face": "⑤ 恢复计费",
+   "validator_kind": "keyword",
+   "views": null,
+   "must_differ_from": null,
+   "before_chars": 22226,
+   "after_chars": 2055
+  },
+  {
+   "task_id": "TD06",
+   "prompt_sha256": "8e3e0c681a1860826e557079668e28cf849036d4743ae35659063c42cf4646d7",
+   "capability_face": "⑥ 停止隔离",
+   "validator_kind": "keyword",
+   "views": null,
+   "must_differ_from": null,
+   "before_chars": 21415,
+   "after_chars": 1244
+  }
+ ],
+ "slim_summary": {
+  "TD01": {
+   "before": 44112,
+   "after": 23479
+  },
+  "TD02": {
+   "before": 46634,
+   "after": 27685
+  },
+  "TD03": {
+   "before": 43912,
+   "after": 22839
+  },
+  "TD04": {
+   "before": 48366,
+   "after": 29741
+  },
+  "TD05": {
+   "before": 22226,
+   "after": 2055
+  },
+  "TD06": {
+   "before": 21415,
+   "after": 1244
+  }
+ }
+}

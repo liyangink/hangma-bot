@@ -1,0 +1,46 @@
+{
+  "diagnosis": "三父代共用V2直评基座（base=-100·shanten_after+Σremaining_estimate，吃固定-10，财神项与未知锚定不动，且财神项在同窗吃/过两侧同值、不参与比较）。用公开算术复演四窗：V2的吃-过边际=Δsupport-10，即w1:+2、w2:+11、w3:-3、w4:+4，故V2在w1/w2/w4选吃、w3选过。S3的fbv=GAIN·(1-best_branch_combined_shanten)，但四窗中best_branch_shanten与shanten_after逐一相同（2/4/0/3）、best_branch_support与direct_support逐一相同（30/82/19/82），且过牌followup_branch_count恒为0、fbv只在吃侧触发，因此fbv退化为GAIN·(1-shanten_after)的吃侧常数偏移：shanten=0时+4，shanten=2/4/3时-4/-12/-8，使S3在四窗全部偏离V2（w1/w2/w4改过、w3改吃）。T2源码声称对直评可比动作关门，但按分数反推四窗吃的fbv为-2/-6/+2/-4，恰为GAIN=2·(1-shanten)、support系数为0，与注释的选择性关门不一致（审计待复核）；其净效果是S3减半剂量，四窗全部回到V2选择（w1/w4并列-182/-222按动作序落吃）。因此第二批的4次改选=S3相对V2的四个窄带偏离被半剂量回退，属剂量-响应而非机制修复（equal_point -0.0117→-0.0059约减半），而T2仍低于V2的残差只能来自未展示的fbv触发视图，不可由本批窗口归因。稀疏成因：改选需|Δsupport-10|<|fbv|的2~12分窄带、分支事实只在M族response_chi的吃侧生产（H轨迹零改选），5587视图仅命中4窗。重复计数三处：(1)best_branch_combined_shanten重复shanten_after（base已按-100/级计价）；(2)best_branch_support重复direct_support（已全额加进入base）；(3)分支仅吃侧存在使两动作shanten单价不一致（吃等效-(100-GAIN)·shanten，过为-100·shanten）。同窗吃/过机会成本已足够的公开事实：Δshanten_after、ΔΣremaining_estimate（枚数差而非概率）、followup_branch_count不对称连同过牌best_followup_discard为空与replacement_draw_unknown语义（未生产≠更差）、family_progress_entries的progress/route_status差（same/open_uncertain对close/closed_proven，w3双侧witnessed）、已计价的吃-10固定项；另w1/w2/w4中吃的seven_pairs_shanten_after为null而过侧有限（5/6/4），是规则已生产的路线上锁证据，但只可作已生产事实使用。全程遵守：阶段终局差只描述整阶段观察，不能给四窗任何一窗贴吃或过正确标签。",
+  "preserve": [
+    "V2直评基座、胡排序层、未知严格锚定与ABSTAIN纪律，且零效应配置可逐位复原V2（本批唯一零效应父代）。",
+    "单主结构+有界加性+trace全量记录+显式zero_effect配置空间的组织方式，并保留每视图决策改选计数器做暴露量对账。",
+    "只消费规则已生产的合法动作与结算事实（followup_branches、family_progress_entries、routes、immediate_settlement），support仅作枚数估计。",
+    "view_sha256级四窗可对账的M族response_chi复盘审计路径。"
+  ],
+  "reject": [
+    "绝对最佳combined_shanten后续项GAIN·(1-shanten)：与base的-100·shanten重复计价，且随shanten变号（0时为正、≥2时为负），并非后续价值。",
+    "只在比较单侧触发的特征直接入分（分支事实仅吃侧存在）：结构上是吃偏置而非比较量。",
+    "重复入分best_branch_support（与direct_support同源同值）。",
+    "以半剂量续用旧项（T2已证明伤害减半不等于修复），以及把4次改选或阶段终局差当作单窗动作正确性标签。",
+    "把support概率化，或引入点炮、日麻番型、隐藏牌墙、对手暗牌、终局动作标签等一切未生产事实。"
+  ],
+  "hypotheses": [
+    {
+      "mechanism": "同shanten平价窗内吃/过取舍应由差分窄带margin=Δsupport-10决定；删除绝对fbv后shanten重复计价与变号同时消失，决策只依赖跨动作差分量。",
+      "observable_trigger": "response_chi窗口中吃与过均为direct可比且shanten_after相等（本批四窗全部满足）。",
+      "falsifier": "回放5587视图：若带分支动作中best_branch_shanten不等于shanten_after、或best_branch_support不等于direct_support的比例显著（如>5%），说明分支确含增量信息，常数偏移论断被证伪；若平价差分带的改选数不为小集合、或16桌equal_point未回到V2噪声带内，同样证伪。",
+      "rule_risk": "低：仅使用shanten_after与remaining_estimate枚数和，不新增任何结算语义。"
+    },
+    {
+      "mechanism": "过牌分支为空源于补牌未知（规则未生产），不应折价为0而对吃侧施加带符号项；后续枚举只能作为非负、有界、随followup_branch_count单调的并列打破项，从而消除shanten=0与≥2之间的符号翻转。",
+      "observable_trigger": "followup_branch_count(吃)>0且followup_branch_count(过)=0、Δshanten=0且|margin|≤并列带。",
+      "falsifier": "回放中若该非负有界并列项产生0次改选而阶段指标仍移动，则指标移动不可归因于该项，归因校验失败即弃；若改选后conservative_fitness劣化超出噪声带，证伪符号稳定无害假设。",
+      "rule_risk": "把枚举当价值有违背support为枚数估计而非概率的红线风险：只允许序数与计数用法，禁止任何概率加权。"
+    },
+    {
+      "mechanism": "家族进度差是未被计价的可比公开量：w1/w2/w4吃侧branch为close+closed_proven而过侧为same+open_uncertain，w3双侧witnessed；吃的seven_pairs_shanten_after为null而过侧有限构成路线上锁证据，可作第二级并列打破依据。",
+      "observable_trigger": "Δshanten=0且|margin|≤并列带时，两侧family_entries存在progress或route_status差。",
+      "falsifier": "若并列带窗口中两侧family_entries完全相同（无信息量），或引入后改选数超过O(10)且equal_point变差，证伪；若七对形态在杭麻规则中不存在已生产结算，该子信号必须整体删除，规则红线即证伪条件。",
+      "rule_risk": "中：family名称（chain/four_white/baotou/seven_pairs）只可消费规则已生产的progress、route_status与距离字段，不得自造番值、结算或动作。"
+    }
+  ],
+  "preferred_experiment": {
+    "primary_structure": "V2加单一差分结构：仅当吃与过均direct可比且Δshanten=0时，比较量取Δsupport-10；在并列带内依次以(1)非负有界、随followup_branch_count单调的后续枚举并列项、(2)family progress/route_status差打破并列；完全删除绝对fbv及其shanten索引项。",
+    "why": "四窗全部翻转都是(Δsupport-10)与GAIN·(shanten-1)的窄带算术且量值重复计数；差分化消除重复，非负并列项消除变号，层级并列保留可证伪性：每次改选必须落在可审计窄带并逐窗计数，与16桌阶段指标做暴露量对账，而不用终局差给任何单窗贴吃或过正确标签。",
+    "parameters": [
+      {"name": "TIE_BAND", "grid": [0.0, 2.0, 4.0], "zero": 0.0},
+      {"name": "CONT_BONUS", "grid": [0.0, 2.0, 4.0], "zero": 0.0, "constraint": "非负且≤有界上限"},
+      {"name": "FAMILY_BREAK", "grid": [0, 1], "zero": 0}
+    ],
+    "zero_effect": "三参数全零时在全部5587视图逐位复现V2：0次决策改选、trace与V2等价；并要求任何阶段指标移动必须伴随非零暴露计数，否则判归因失败并回退该结构。"
+  }
+}

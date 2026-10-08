@@ -1,0 +1,560 @@
+{
+  "both_signs_window_count": 15,
+  "boundary": "分层仅作探索，不对八个非后验隐藏样本做独立显著性或发布收益推断。",
+  "by_stratum": {
+    "H/far/white_0": {
+      "both_signs_windows": 1,
+      "positive_zero_negative": [
+        1,
+        6,
+        1
+      ],
+      "roots": 1,
+      "status": "INSUFFICIENT",
+      "windows": 1
+    },
+    "H/near/white_0": {
+      "both_signs_windows": 2,
+      "positive_zero_negative": [
+        12,
+        40,
+        4
+      ],
+      "roots": 4,
+      "status": "OBSERVED",
+      "windows": 7
+    },
+    "H/near/white_1plus": {
+      "both_signs_windows": 2,
+      "positive_zero_negative": [
+        10,
+        19,
+        3
+      ],
+      "roots": 2,
+      "status": "INSUFFICIENT",
+      "windows": 4
+    },
+    "M/far/white_0": {
+      "both_signs_windows": 3,
+      "positive_zero_negative": [
+        8,
+        18,
+        6
+      ],
+      "roots": 2,
+      "status": "INSUFFICIENT",
+      "windows": 4
+    },
+    "M/far/white_1plus": {
+      "both_signs_windows": 1,
+      "positive_zero_negative": [
+        3,
+        4,
+        1
+      ],
+      "roots": 1,
+      "status": "INSUFFICIENT",
+      "windows": 1
+    },
+    "M/near/white_0": {
+      "both_signs_windows": 1,
+      "positive_zero_negative": [
+        6,
+        19,
+        15
+      ],
+      "roots": 4,
+      "status": "OBSERVED",
+      "windows": 5
+    },
+    "M/near/white_1plus": {
+      "both_signs_windows": 5,
+      "positive_zero_negative": [
+        11,
+        18,
+        11
+      ],
+      "roots": 3,
+      "status": "OBSERVED",
+      "windows": 5
+    }
+  },
+  "historical_nonzero": 8,
+  "no_window_tables": 5,
+  "paired_windows": 27,
+  "paired_worlds": 243,
+  "resampled_class_transitions": {
+    "draw->draw": 8,
+    "draw->other_win": 1,
+    "draw->plain_self_win": 7,
+    "draw->special_self_win": 2,
+    "other_win->other_win": 91,
+    "other_win->plain_self_win": 24,
+    "other_win->special_self_win": 3,
+    "plain_self_win->draw": 2,
+    "plain_self_win->other_win": 18,
+    "plain_self_win->plain_self_win": 34,
+    "plain_self_win->special_self_win": 3,
+    "special_self_win->other_win": 5,
+    "special_self_win->plain_self_win": 6,
+    "special_self_win->special_self_win": 12
+  },
+  "resampled_sign_total": {
+    "negative": 41,
+    "positive": 51,
+    "zero": 124
+  },
+  "schema": "g96-verify-and-summarize/1",
+  "source_sha256": "ee0ef2b1a85a3857e71e12128ead76875012f81efcd5253c59d83027008133c5",
+  "tables": 32,
+  "windows": [
+    {
+      "both_signs": false,
+      "focal_seat": 2,
+      "historical_delta": 0,
+      "mix": "H",
+      "resampled_delta_sum": 104,
+      "resampled_signs": {
+        "positive": 4,
+        "zero": 4
+      },
+      "root_index": 1,
+      "shanten": 0,
+      "stratum": "near/white_1plus",
+      "table_id": "np-H-2026111001-r01-s2-t1",
+      "white_before": 1
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 3,
+      "historical_delta": -1,
+      "mix": "H",
+      "resampled_delta_sum": 28,
+      "resampled_signs": {
+        "positive": 1,
+        "zero": 7
+      },
+      "root_index": 1,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-H-2026111001-r01-s3-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 0,
+      "historical_delta": 0,
+      "mix": "H",
+      "resampled_delta_sum": 88,
+      "resampled_signs": {
+        "positive": 4,
+        "zero": 4
+      },
+      "root_index": 2,
+      "shanten": 1,
+      "stratum": "near/white_1plus",
+      "table_id": "np-H-2026111001-r02-s0-t1",
+      "white_before": 1
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 1,
+      "historical_delta": 0,
+      "mix": "H",
+      "resampled_delta_sum": 0,
+      "resampled_signs": {
+        "negative": 2,
+        "positive": 1,
+        "zero": 5
+      },
+      "root_index": 2,
+      "shanten": 0,
+      "stratum": "near/white_1plus",
+      "table_id": "np-H-2026111001-r02-s1-t1",
+      "white_before": 1
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 2,
+      "historical_delta": 0,
+      "mix": "H",
+      "resampled_delta_sum": 36,
+      "resampled_signs": {
+        "positive": 3,
+        "zero": 5
+      },
+      "root_index": 2,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-H-2026111001-r02-s2-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 3,
+      "historical_delta": 0,
+      "mix": "H",
+      "resampled_delta_sum": -29,
+      "resampled_signs": {
+        "negative": 1,
+        "positive": 1,
+        "zero": 6
+      },
+      "root_index": 2,
+      "shanten": 1,
+      "stratum": "near/white_1plus",
+      "table_id": "np-H-2026111001-r02-s3-t1",
+      "white_before": 2
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 1,
+      "historical_delta": 0,
+      "mix": "H",
+      "resampled_delta_sum": 30,
+      "resampled_signs": {
+        "positive": 4,
+        "zero": 4
+      },
+      "root_index": 3,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-H-2026111001-r03-s1-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 2,
+      "historical_delta": 0,
+      "mix": "H",
+      "resampled_delta_sum": -40,
+      "resampled_signs": {
+        "negative": 1,
+        "zero": 7
+      },
+      "root_index": 3,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-H-2026111001-r03-s2-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 3,
+      "historical_delta": 0,
+      "mix": "H",
+      "resampled_delta_sum": 0,
+      "resampled_signs": {
+        "negative": 1,
+        "positive": 1,
+        "zero": 6
+      },
+      "root_index": 3,
+      "shanten": 4,
+      "stratum": "far/white_0",
+      "table_id": "np-H-2026111001-r03-s3-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 0,
+      "historical_delta": 56,
+      "mix": "H",
+      "resampled_delta_sum": 8,
+      "resampled_signs": {
+        "positive": 1,
+        "zero": 7
+      },
+      "root_index": 4,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-H-2026111001-r04-s0-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 1,
+      "historical_delta": 0,
+      "mix": "H",
+      "resampled_delta_sum": 5,
+      "resampled_signs": {
+        "negative": 1,
+        "positive": 2,
+        "zero": 5
+      },
+      "root_index": 4,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-H-2026111001-r04-s1-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 2,
+      "historical_delta": 0,
+      "mix": "H",
+      "resampled_delta_sum": -11,
+      "resampled_signs": {
+        "negative": 2,
+        "positive": 1,
+        "zero": 5
+      },
+      "root_index": 4,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-H-2026111001-r04-s2-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 0,
+      "historical_delta": -18,
+      "mix": "M",
+      "resampled_delta_sum": 22,
+      "resampled_signs": {
+        "negative": 1,
+        "positive": 3,
+        "zero": 4
+      },
+      "root_index": 1,
+      "shanten": 2,
+      "stratum": "far/white_1plus",
+      "table_id": "np-M-2026111001-r01-s0-t1",
+      "white_before": 1
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 1,
+      "historical_delta": -6,
+      "mix": "M",
+      "resampled_delta_sum": 30,
+      "resampled_signs": {
+        "positive": 3,
+        "zero": 5
+      },
+      "root_index": 1,
+      "shanten": 0,
+      "stratum": "near/white_0",
+      "table_id": "np-M-2026111001-r01-s1-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 2,
+      "historical_delta": 7,
+      "mix": "M",
+      "resampled_delta_sum": -17,
+      "resampled_signs": {
+        "negative": 2,
+        "positive": 1,
+        "zero": 5
+      },
+      "root_index": 1,
+      "shanten": 1,
+      "stratum": "near/white_1plus",
+      "table_id": "np-M-2026111001-r01-s2-t1",
+      "white_before": 1
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 3,
+      "historical_delta": 0,
+      "mix": "M",
+      "resampled_delta_sum": -78,
+      "resampled_signs": {
+        "negative": 7,
+        "zero": 1
+      },
+      "root_index": 1,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-M-2026111001-r01-s3-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 0,
+      "historical_delta": -18,
+      "mix": "M",
+      "resampled_delta_sum": 6,
+      "resampled_signs": {
+        "negative": 3,
+        "positive": 3,
+        "zero": 2
+      },
+      "root_index": 2,
+      "shanten": 1,
+      "stratum": "near/white_1plus",
+      "table_id": "np-M-2026111001-r02-s0-t1",
+      "white_before": 1
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 1,
+      "historical_delta": 0,
+      "mix": "M",
+      "resampled_delta_sum": -32,
+      "resampled_signs": {
+        "negative": 4,
+        "zero": 4
+      },
+      "root_index": 2,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-M-2026111001-r02-s1-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 2,
+      "historical_delta": 0,
+      "mix": "M",
+      "resampled_delta_sum": -56,
+      "resampled_signs": {
+        "negative": 3,
+        "positive": 2,
+        "zero": 3
+      },
+      "root_index": 2,
+      "shanten": 0,
+      "stratum": "near/white_1plus",
+      "table_id": "np-M-2026111001-r02-s2-t1",
+      "white_before": 1
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 3,
+      "historical_delta": 0,
+      "mix": "M",
+      "resampled_delta_sum": 7,
+      "resampled_signs": {
+        "positive": 1,
+        "zero": 7
+      },
+      "root_index": 2,
+      "shanten": 2,
+      "stratum": "far/white_0",
+      "table_id": "np-M-2026111001-r02-s3-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 0,
+      "historical_delta": 0,
+      "mix": "M",
+      "resampled_delta_sum": 16,
+      "resampled_signs": {
+        "negative": 2,
+        "positive": 3,
+        "zero": 3
+      },
+      "root_index": 3,
+      "shanten": 2,
+      "stratum": "far/white_0",
+      "table_id": "np-M-2026111001-r03-s0-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 1,
+      "historical_delta": -7,
+      "mix": "M",
+      "resampled_delta_sum": 20,
+      "resampled_signs": {
+        "negative": 3,
+        "positive": 3,
+        "zero": 2
+      },
+      "root_index": 3,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-M-2026111001-r03-s1-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 2,
+      "historical_delta": 0,
+      "mix": "M",
+      "resampled_delta_sum": -22,
+      "resampled_signs": {
+        "negative": 2,
+        "positive": 2,
+        "zero": 4
+      },
+      "root_index": 3,
+      "shanten": 2,
+      "stratum": "far/white_0",
+      "table_id": "np-M-2026111001-r03-s2-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 3,
+      "historical_delta": 0,
+      "mix": "M",
+      "resampled_delta_sum": -2,
+      "resampled_signs": {
+        "negative": 2,
+        "positive": 2,
+        "zero": 4
+      },
+      "root_index": 3,
+      "shanten": 2,
+      "stratum": "far/white_0",
+      "table_id": "np-M-2026111001-r03-s3-t1",
+      "white_before": 0
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 0,
+      "historical_delta": 0,
+      "mix": "M",
+      "resampled_delta_sum": 30,
+      "resampled_signs": {
+        "negative": 1,
+        "positive": 2,
+        "zero": 5
+      },
+      "root_index": 4,
+      "shanten": 1,
+      "stratum": "near/white_1plus",
+      "table_id": "np-M-2026111001-r04-s0-t1",
+      "white_before": 1
+    },
+    {
+      "both_signs": true,
+      "focal_seat": 1,
+      "historical_delta": -56,
+      "mix": "M",
+      "resampled_delta_sum": 8,
+      "resampled_signs": {
+        "negative": 2,
+        "positive": 3,
+        "zero": 3
+      },
+      "root_index": 4,
+      "shanten": 0,
+      "stratum": "near/white_1plus",
+      "table_id": "np-M-2026111001-r04-s1-t1",
+      "white_before": 1
+    },
+    {
+      "both_signs": false,
+      "focal_seat": 2,
+      "historical_delta": 0,
+      "mix": "M",
+      "resampled_delta_sum": -32,
+      "resampled_signs": {
+        "negative": 1,
+        "zero": 7
+      },
+      "root_index": 4,
+      "shanten": 1,
+      "stratum": "near/white_0",
+      "table_id": "np-M-2026111001-r04-s2-t1",
+      "white_before": 0
+    }
+  ]
+}

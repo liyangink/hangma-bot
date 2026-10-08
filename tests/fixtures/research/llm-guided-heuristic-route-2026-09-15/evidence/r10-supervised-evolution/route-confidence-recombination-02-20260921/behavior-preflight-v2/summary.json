@@ -1,0 +1,419 @@
+{
+  "schema": "r10-route-confidence-behavior-preflight/1",
+  "corpus": {
+    "record_files": 238,
+    "unique_real_views": 226,
+    "source_directories": {
+      "batch03-known-root-diagnostic": 32,
+      "comparable-shape-second-diagnostic-20260920": 30,
+      "discard-shape-mix-diagnostic-20260920": 17,
+      "followup-balance-diagnostic-20260920": 30,
+      "followup-quality-diagnostic-20260920": 29,
+      "pattern-generalization-diagnostic-v2-20260920": 15,
+      "piao-opportunity-probe-20260920": 8,
+      "real-behavior-panel-v1": 19,
+      "route-decision-diagnostic-20260920": 24,
+      "selfdraw-tempo-diagnostic-20260920": 30
+    }
+  },
+  "tasks": [
+    {
+      "task": "C",
+      "source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route-confidence-recombination-02-20260921/generations/C/candidate.py",
+      "source_sha256": "2d29015b5aa430d0e899df7f5120b075c2922e4e2cf9dc0352d079add33d16bf",
+      "zero_reference": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "zero_reference_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "views": 226,
+      "all_configurations_clean": true,
+      "zero_config_index": 0,
+      "zero_exact_score_equivalence": true,
+      "zero_changed_score_views": 0,
+      "author_default_index": 1,
+      "default_changed_preferred_views": 2,
+      "default_changed_score_views": 14,
+      "any_configuration_changes_preferred": true,
+      "unique_preference_signatures": 3,
+      "unique_score_signatures": 8,
+      "duplicate_preference_groups": [
+        2,
+        5
+      ],
+      "duplicate_score_groups": [],
+      "behavior_preflight_pass": true,
+      "failure_reason": null,
+      "configurations": [
+        {
+          "config_id": "c-cfg-00",
+          "index": 0,
+          "values": {
+            "RC_RAW_FLOOR": -0.1,
+            "RC_RAW_WIDTH": 0.35,
+            "RC_MARGIN_REF": 0.22,
+            "RC_DISCARD_CAP": 0.0,
+            "RC_CLAIM_FACTOR": 0.5,
+            "RC_FIXED_BLEND": 0.0
+          },
+          "source_sha256": "4b67cd423078f3bd3611517a895ccc3d6437829409f6cffa3242a651c58bd451",
+          "is_zero_effect": true,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "ad415e5e6650f1caedaa1ebcfb54dee26034600e333003f13fc4f7bbfce77817",
+          "max_operations": 15662
+        },
+        {
+          "config_id": "c-cfg-01",
+          "index": 1,
+          "values": {
+            "RC_RAW_FLOOR": -0.1,
+            "RC_RAW_WIDTH": 0.35,
+            "RC_MARGIN_REF": 0.22,
+            "RC_DISCARD_CAP": 8.0,
+            "RC_CLAIM_FACTOR": 0.5,
+            "RC_FIXED_BLEND": 0.0
+          },
+          "source_sha256": "6fb9f27603c4d866c5158dedf2a24f0972287fa20bdee5610cd0c239ba976625",
+          "is_zero_effect": false,
+          "is_author_default": true,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 14,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "ce79e64cd31a72d2dbfa1d7389f5176447f277ed571253dab9bd813936bdc460",
+          "max_operations": 15688
+        },
+        {
+          "config_id": "c-cfg-02",
+          "index": 2,
+          "values": {
+            "RC_RAW_FLOOR": -0.15,
+            "RC_RAW_WIDTH": 0.45,
+            "RC_MARGIN_REF": 0.12,
+            "RC_DISCARD_CAP": 7.5,
+            "RC_CLAIM_FACTOR": 0.25,
+            "RC_FIXED_BLEND": 0.0
+          },
+          "source_sha256": "2fcb33134f2ff093920561e928c2c6189b074abc6c58e1a103a46f54fd522102",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 14,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "713c6330d54d09ce22534f6776bc8fd9f497df8f356c40afd4ac90c7c186a95c",
+          "max_operations": 15688
+        },
+        {
+          "config_id": "c-cfg-03",
+          "index": 3,
+          "values": {
+            "RC_RAW_FLOOR": -0.1,
+            "RC_RAW_WIDTH": 0.35,
+            "RC_MARGIN_REF": 0.22,
+            "RC_DISCARD_CAP": 8.0,
+            "RC_CLAIM_FACTOR": 0.0,
+            "RC_FIXED_BLEND": 0.0
+          },
+          "source_sha256": "3a0adf45c266963014b7bcd4efa4c4d8a45f2be0fbf112c1c024965efc5e9f5b",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 9,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "17da1e3ea6a260d9ebd71019d71811c37fb6260abb23bf72b08265d7cc16e820",
+          "max_operations": 15688
+        },
+        {
+          "config_id": "c-cfg-04",
+          "index": 4,
+          "values": {
+            "RC_RAW_FLOOR": -0.1,
+            "RC_RAW_WIDTH": 0.35,
+            "RC_MARGIN_REF": 0.22,
+            "RC_DISCARD_CAP": 8.0,
+            "RC_CLAIM_FACTOR": 0.25,
+            "RC_FIXED_BLEND": 0.0
+          },
+          "source_sha256": "f7a2a8fa4074138cbb1a2d37e4bdfc10d269f08a8ff0befb849b6f068c63b360",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 14,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "dbb9a54bf74f65a3050f986f2c82cc2bc103ad88b74590ab4530a0e90412a582",
+          "max_operations": 15688
+        },
+        {
+          "config_id": "c-cfg-05",
+          "index": 5,
+          "values": {
+            "RC_RAW_FLOOR": -0.1,
+            "RC_RAW_WIDTH": 0.35,
+            "RC_MARGIN_REF": 0.12,
+            "RC_DISCARD_CAP": 8.0,
+            "RC_CLAIM_FACTOR": 0.5,
+            "RC_FIXED_BLEND": 0.0
+          },
+          "source_sha256": "933d877744c7520a8b7baae25f2b2f8b4aee75f0571cf75e13a508c08658eb6f",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 14,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "51a2a8668eb0b0005dd2093e84cfc2bf58ef14640c16d367589bb3cbd57e9711",
+          "max_operations": 15688
+        },
+        {
+          "config_id": "c-cfg-06",
+          "index": 6,
+          "values": {
+            "RC_RAW_FLOOR": -0.15,
+            "RC_RAW_WIDTH": 0.35,
+            "RC_MARGIN_REF": 0.22,
+            "RC_DISCARD_CAP": 8.0,
+            "RC_CLAIM_FACTOR": 0.5,
+            "RC_FIXED_BLEND": 0.0
+          },
+          "source_sha256": "e1e3609b3385b4833d73665ca09fdcf49dfbf9c313f7f3d6e6274d1c3a9ad83e",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 14,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "9d1022aa6217b5534be8a5ee6254d360e75644282c21bd43ef64445d8f16102b",
+          "max_operations": 15688
+        },
+        {
+          "config_id": "c-cfg-07",
+          "index": 7,
+          "values": {
+            "RC_RAW_FLOOR": -0.1,
+            "RC_RAW_WIDTH": 0.35,
+            "RC_MARGIN_REF": 0.22,
+            "RC_DISCARD_CAP": 8.0,
+            "RC_CLAIM_FACTOR": 1.0,
+            "RC_FIXED_BLEND": 1.0
+          },
+          "source_sha256": "cfd4717610aa09096537fee1bbae631a88ed78a56430c4f173503739ffa9bb8f",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 6,
+          "changed_scores_vs_base": 36,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "a641f47883c74c66defd8043ef9b5d99fedb64b6041f19e4827ff86473966249",
+          "score_signature": "be7f39eca0b9a35ca3e90c3b6749d58e38dd60a62487ac5764506bb0d3007fa9",
+          "max_operations": 15688
+        }
+      ]
+    }
+  ],
+  "passed_tasks": [
+    "C"
+  ],
+  "failed_tasks": [],
+  "configurations_materialized": 8,
+  "effect_tables": 0,
+  "selection_eligible": false,
+  "confidence_behavior": [
+    {
+      "config_id": "c-cfg-00",
+      "positive_bonus_entries": 0,
+      "positive_confidence_entries": 0,
+      "preferred_with_positive_bonus": 0,
+      "bonus_min": null,
+      "bonus_max": null,
+      "distinct_bonus_rounded": 0,
+      "confidence_min": null,
+      "confidence_max": null,
+      "distinct_confidence_rounded": 0,
+      "family_bonus_entries": {}
+    },
+    {
+      "config_id": "c-cfg-01",
+      "positive_bonus_entries": 14,
+      "positive_confidence_entries": 14,
+      "preferred_with_positive_bonus": 3,
+      "bonus_min": 0.048853,
+      "bonus_max": 8.0,
+      "distinct_bonus_rounded": 13,
+      "confidence_min": 0.006106686,
+      "confidence_max": 1.0,
+      "distinct_confidence_rounded": 13,
+      "family_bonus_entries": {
+        "discard": 9,
+        "chi": 3,
+        "peng": 2
+      }
+    },
+    {
+      "config_id": "c-cfg-02",
+      "positive_bonus_entries": 14,
+      "positive_confidence_entries": 14,
+      "preferred_with_positive_bonus": 3,
+      "bonus_min": 0.196335,
+      "bonus_max": 7.5,
+      "distinct_bonus_rounded": 13,
+      "confidence_min": 0.026177982,
+      "confidence_max": 1.0,
+      "distinct_confidence_rounded": 13,
+      "family_bonus_entries": {
+        "discard": 9,
+        "chi": 3,
+        "peng": 2
+      }
+    },
+    {
+      "config_id": "c-cfg-03",
+      "positive_bonus_entries": 9,
+      "positive_confidence_entries": 9,
+      "preferred_with_positive_bonus": 1,
+      "bonus_min": 0.048853,
+      "bonus_max": 8.0,
+      "distinct_bonus_rounded": 8,
+      "confidence_min": 0.006106686,
+      "confidence_max": 1.0,
+      "distinct_confidence_rounded": 8,
+      "family_bonus_entries": {
+        "discard": 9
+      }
+    },
+    {
+      "config_id": "c-cfg-04",
+      "positive_bonus_entries": 14,
+      "positive_confidence_entries": 14,
+      "preferred_with_positive_bonus": 3,
+      "bonus_min": 0.048853,
+      "bonus_max": 8.0,
+      "distinct_bonus_rounded": 13,
+      "confidence_min": 0.006106686,
+      "confidence_max": 1.0,
+      "distinct_confidence_rounded": 13,
+      "family_bonus_entries": {
+        "discard": 9,
+        "chi": 3,
+        "peng": 2
+      }
+    },
+    {
+      "config_id": "c-cfg-05",
+      "positive_bonus_entries": 14,
+      "positive_confidence_entries": 14,
+      "preferred_with_positive_bonus": 3,
+      "bonus_min": 0.089565,
+      "bonus_max": 8.0,
+      "distinct_bonus_rounded": 13,
+      "confidence_min": 0.01119559,
+      "confidence_max": 1.0,
+      "distinct_confidence_rounded": 13,
+      "family_bonus_entries": {
+        "discard": 9,
+        "chi": 3,
+        "peng": 2
+      }
+    },
+    {
+      "config_id": "c-cfg-06",
+      "positive_bonus_entries": 14,
+      "positive_confidence_entries": 14,
+      "preferred_with_positive_bonus": 3,
+      "bonus_min": 0.146869,
+      "bonus_max": 8.0,
+      "distinct_bonus_rounded": 13,
+      "confidence_min": 0.018358585,
+      "confidence_max": 1.0,
+      "distinct_confidence_rounded": 13,
+      "family_bonus_entries": {
+        "discard": 9,
+        "chi": 3,
+        "peng": 2
+      }
+    },
+    {
+      "config_id": "c-cfg-07",
+      "positive_bonus_entries": 60,
+      "positive_confidence_entries": 60,
+      "preferred_with_positive_bonus": 21,
+      "bonus_min": 8.0,
+      "bonus_max": 8.0,
+      "distinct_bonus_rounded": 1,
+      "confidence_min": 1.0,
+      "confidence_max": 1.0,
+      "distinct_confidence_rounded": 1,
+      "family_bonus_entries": {
+        "discard": 52,
+        "chi": 6,
+        "peng": 2
+      }
+    }
+  ],
+  "route_partition_and_order": {
+    "current_core_real_views": 226,
+    "configurations": [
+      {
+        "config_id": "c-cfg-00",
+        "cases": 12,
+        "passed": 12
+      },
+      {
+        "config_id": "c-cfg-01",
+        "cases": 12,
+        "passed": 12
+      },
+      {
+        "config_id": "c-cfg-02",
+        "cases": 12,
+        "passed": 12
+      },
+      {
+        "config_id": "c-cfg-03",
+        "cases": 12,
+        "passed": 12
+      },
+      {
+        "config_id": "c-cfg-04",
+        "cases": 12,
+        "passed": 12
+      },
+      {
+        "config_id": "c-cfg-05",
+        "cases": 12,
+        "passed": 12
+      },
+      {
+        "config_id": "c-cfg-06",
+        "cases": 12,
+        "passed": 12
+      },
+      {
+        "config_id": "c-cfg-07",
+        "cases": 12,
+        "passed": 12
+      }
+    ],
+    "cases": 96,
+    "passed": 96
+  },
+  "scope_note": "冻结真实观察只检验接线、精确退化、奖励幅度和路线变形；不提供动作标签或效果。"
+}

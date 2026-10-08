@@ -1,0 +1,8 @@
+name: Shared repository storage
+on: [push, pull_request]
+jobs:
+  storage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: python3 scripts/check_git_storage.py

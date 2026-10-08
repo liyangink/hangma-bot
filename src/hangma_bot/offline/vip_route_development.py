@@ -21,6 +21,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
+from hangma_bot.adapters.recording.project_storage import project_file
 from hangma_bot.application.deadline import BudgetPolicy
 from hangma_bot.hangma._standard import backend_info
 from hangma_bot.hangma.engine import HangmaRules
@@ -635,7 +636,7 @@ async def run_vip_route_development(
     (out_dir / "generation-batch.json").write_bytes(generation.raw)
     (out_dir / "behavior-probe-summary.json").write_bytes(batch.behavior_probe_summary_file.read_bytes())
     (out_dir / "candidate-generation.json").write_bytes((batch.candidate_package / "generation.json").read_bytes())
-    (out_dir / "contract.md").write_bytes((REPO_ROOT / identity["contract_path"]).read_bytes())
+    (out_dir / "contract.md").write_bytes(project_file(REPO_ROOT, identity["contract_path"]).read_bytes())
     native_path = backend_info()["native_path"]
     if native_path is not None:
         (out_dir / "math-native.bin").write_bytes(Path(native_path).read_bytes())

@@ -1,0 +1,207 @@
+{
+  "status": "CONSISTENT_COMPLETE_MATCH_RESULTS",
+  "summary_reconciliation": {
+    "schema": "natural-evidence-reconciliation/1",
+    "status": "CONSISTENT_TABLE_SUMMARIES",
+    "panel_digest": "70d154459534c2e17b70bee8bce21b854efd7083ec1aedcfb39232f173c253e6",
+    "identity": {
+      "av_contract_sha256": "3c0b4d3a2fdd1f438e2e5d295e4269f578485032aeddad0eb558fdcce981d4a9",
+      "baseline_id": "v2-baseline-frozen",
+      "candidate_execution_profile": {
+        "max_operations": 200000,
+        "name": "research-200k-v1",
+        "research_only": true,
+        "schema": "sitin-candidate-execution-profile/1"
+      },
+      "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+      "candidate_source_sha256": "96ecd73f139e566be86623a0ed5cea678bb4c759cba30cd0e30b41dba8def1be",
+      "contract_id": "group-dev-v1",
+      "contract_sha256": "98c1e0a387550799b0985695a3846aeb1862ad85a4cfb71f22dbb433e63d7f6e",
+      "opponent_mix": "H",
+      "panel_epoch": "natural-opening-panel-v2@H",
+      "panel_seed": 2026092001,
+      "policy_execution_schema": "sitin-policy-execution/1",
+      "stage_projection": "per_table_completed_account_v1"
+    },
+    "n_roots": 1,
+    "n_seat_pairs": 4,
+    "n_table_summaries": 16,
+    "statistics": {
+      "schema": "sitin-stage-statistics/1",
+      "n_samples": 4,
+      "min_roots": 1,
+      "by_candidate": {
+        "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551": {
+          "panels": {
+            "normal": {
+              "panels": {
+                "H": {
+                  "n_samples": 4,
+                  "n_roots": 1,
+                  "n_invalid_samples": 0,
+                  "n_uncomputable_samples": 0,
+                  "n_invalid_roots": 0,
+                  "invalid_roots": [],
+                  "manifest_complete": true,
+                  "n_refresh_roots": 0,
+                  "status": "ok",
+                  "mean_delta": -0.5,
+                  "standard_error": null,
+                  "interval_95": null,
+                  "interval_kind": "sampling_uncertainty_normal_approx",
+                  "interval_note": "95% 正态近似抽样不确定性区间，非识别区间，不作为已证明提升的证据",
+                  "self_comparison": false,
+                  "delta_bounds": {
+                    "mean_delta_low": -0.5,
+                    "mean_delta_high": -0.5,
+                    "standard_error_low": null,
+                    "standard_error_high": null,
+                    "interval_95_low": null,
+                    "interval_95_high": null,
+                    "unresolved_roots": 0,
+                    "note": "识别区间（缺 god_count 等事实造成）：d_low=候选U下界−基线U上界、d_high=候选U上界−基线U下界（§2 保守配对）；与 interval_95 分开报告"
+                  },
+                  "roots": [
+                    "np-H-2026092001-root01"
+                  ],
+                  "root_rows": [
+                    {
+                      "root_id": "np-H-2026092001-root01",
+                      "n_windows": 4,
+                      "d_point": -0.5,
+                      "d_low": -0.5,
+                      "d_high": -0.5,
+                      "unresolved": false,
+                      "self": false,
+                      "role": "core",
+                      "usage": "development_core",
+                      "root_content_digest": "4fda1e6d2e4f88ae7cb3d73b8991dfb34acede9808faf37dabc095da2b41f2cc",
+                      "opponent_mix": "H",
+                      "cost": 16.0,
+                      "recorded_cost": 41390.527
+                    }
+                  ],
+                  "invalid_records": [],
+                  "uncomputable_records": []
+                }
+              },
+              "declared_mix": {
+                "weights": {
+                  "H": 0.5,
+                  "M": 0.5
+                },
+                "mean_delta": null,
+                "mean_delta_low": null,
+                "mean_delta_high": null,
+                "status": "missing_mix",
+                "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例"
+              }
+            }
+          },
+          "family_development_values": {
+            "branch": {
+              "value": null,
+              "open": {
+                "declared_mix_value": null
+              },
+              "cost": {
+                "declared_mix_value": null
+              },
+              "complete": false,
+              "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分"
+            },
+            "chain": {
+              "value": null,
+              "open": {
+                "declared_mix_value": null
+              },
+              "cost": {
+                "declared_mix_value": null
+              },
+              "complete": false,
+              "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分"
+            },
+            "four_white": {
+              "value": null,
+              "open": {
+                "declared_mix_value": null
+              },
+              "cost": {
+                "declared_mix_value": null
+              },
+              "complete": false,
+              "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分"
+            },
+            "baotou": {
+              "value": null,
+              "open": {
+                "declared_mix_value": null
+              },
+              "cost": {
+                "declared_mix_value": null
+              },
+              "complete": false,
+              "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分"
+            }
+          }
+        }
+      },
+      "invalid_count": 0,
+      "uncomputable_count": 0,
+      "invalid_records": [],
+      "uncomputable_records": [],
+      "notes": [
+        "抽样单位=来源根（source_root_id）：同根多窗口/换座先根内平均，不放大 n（T10）",
+        "interval_95 为抽样不确定性（正态近似），与 delta_bounds 识别区间分开",
+        "无效样本不补零：原始记录保留于 invalid_records/uncomputable_records"
+      ]
+    },
+    "selection_eligible": false,
+    "release_eligible": false,
+    "limitations": [
+      "未保存完整 MatchResult，无法独立核验完成单局数",
+      "未重新运行策略或规则，不证明单桌原始积分计算正确",
+      "未验证来源消费与预登记时序，不作为独立确认"
+    ]
+  },
+  "full_results_verified": 16,
+  "results_digest": "e5350ab988d0ff9f0b11ade0aa4ca3db10c68e3c5c3d3ac5110e254693e4a3f4",
+  "runtime_counts": {
+    "audit_missing": 0,
+    "auto_actions": 0,
+    "fallbacks": 0,
+    "illegal_choices": 0,
+    "timeouts": 0
+  },
+  "execution_review": {
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 16,
+    "recorded_tables": 16,
+    "missing_tables": 0,
+    "recorded_counts": {
+      "decision_count": 22626,
+      "action_value_scored": 2852,
+      "action_value_failed": 0,
+      "other_policy_decisions": 19774,
+      "ambiguous_diagnostics": 0,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "abstain": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "zero_internal_failures_verified": true
+  },
+  "selection_eligible": false,
+  "release_eligible": false,
+  "limitations": [
+    "完整MatchResult是终端结果，不是逐动作或逐笔结算日志",
+    "没有独立复演规则/牌墙，不能证明所有结算数学正确",
+    "持久来源/显著性消费账本和赛事可靠性门禁另行验收",
+    "不独立证明候选源码实际装配或供应商身份；依赖冻结执行器与运行证据"
+  ]
+}

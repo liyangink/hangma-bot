@@ -1,0 +1,954 @@
+{
+  "scope": "complete_exposed_development_action_sequences_not_single_action_value",
+  "counts": {
+    "paired_candidate_tables": 64,
+    "action_sequence_changed_tables": 54,
+    "first_difference_common_window": 54,
+    "first_difference:hu->discard": 17,
+    "first_difference:discard->discard": 34,
+    "full_action_sequence_identical_tables": 10,
+    "first_difference:pass->peng": 1,
+    "first_difference:chi->pass": 2
+  },
+  "independent_changed_roots": [
+    "001",
+    "002",
+    "003",
+    "004",
+    "005",
+    "006",
+    "007",
+    "008",
+    "009",
+    "010",
+    "011",
+    "012",
+    "013",
+    "014",
+    "015",
+    "016"
+  ],
+  "differences": [
+    {
+      "root_serial": "001",
+      "group_file": "group-001-0123.json.gz",
+      "first_decision_index": 1087,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1296
+      },
+      "seat": 0,
+      "parent_action": "hu",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "001",
+      "group_file": "group-001-1230.json.gz",
+      "first_decision_index": 1008,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 1199
+      },
+      "seat": 1,
+      "parent_action": "hu",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "001",
+      "group_file": "group-001-2301.json.gz",
+      "first_decision_index": 900,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 1074
+      },
+      "seat": 2,
+      "parent_action": "hu",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "001",
+      "group_file": "group-001-3012.json.gz",
+      "first_decision_index": 735,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 877
+      },
+      "seat": 3,
+      "parent_action": "hu",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "002",
+      "group_file": "group-002-0123.json.gz",
+      "first_decision_index": 1401,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1652
+      },
+      "seat": 0,
+      "parent_action": "discard:北",
+      "child_action": "discard:8t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "002",
+      "group_file": "group-002-1230.json.gz",
+      "first_decision_index": 45,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 54
+      },
+      "seat": 1,
+      "parent_action": "discard:6w",
+      "child_action": "discard:1b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "002",
+      "group_file": "group-002-2301.json.gz",
+      "first_decision_index": 671,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 795
+      },
+      "seat": 2,
+      "parent_action": "discard:1w",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "002",
+      "group_file": "group-002-3012.json.gz",
+      "first_decision_index": 669,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 790
+      },
+      "seat": 3,
+      "parent_action": "discard:1w",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "003",
+      "group_file": "group-003-1230.json.gz",
+      "first_decision_index": 125,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 147
+      },
+      "seat": 1,
+      "parent_action": "hu",
+      "child_action": "discard:9t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "003",
+      "group_file": "group-003-2301.json.gz",
+      "first_decision_index": 986,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 6,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 1174
+      },
+      "seat": 2,
+      "parent_action": "discard:5w",
+      "child_action": "discard:5b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "004",
+      "group_file": "group-004-0123.json.gz",
+      "first_decision_index": 847,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 1024
+      },
+      "seat": 0,
+      "parent_action": "discard:5b",
+      "child_action": "discard:南",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "004",
+      "group_file": "group-004-1230.json.gz",
+      "first_decision_index": 747,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 900
+      },
+      "seat": 1,
+      "parent_action": "discard:5b",
+      "child_action": "discard:南",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "004",
+      "group_file": "group-004-2301.json.gz",
+      "first_decision_index": 725,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 875
+      },
+      "seat": 2,
+      "parent_action": "discard:5b",
+      "child_action": "discard:南",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "004",
+      "group_file": "group-004-3012.json.gz",
+      "first_decision_index": 597,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 712
+      },
+      "seat": 3,
+      "parent_action": "discard:5b",
+      "child_action": "discard:南",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "005",
+      "group_file": "group-005-0123.json.gz",
+      "first_decision_index": 680,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 810
+      },
+      "seat": 0,
+      "parent_action": "discard:4w",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "005",
+      "group_file": "group-005-1230.json.gz",
+      "first_decision_index": 784,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 930
+      },
+      "seat": 1,
+      "parent_action": "discard:4w",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "005",
+      "group_file": "group-005-2301.json.gz",
+      "first_decision_index": 219,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 264
+      },
+      "seat": 2,
+      "parent_action": "discard:9w",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "005",
+      "group_file": "group-005-3012.json.gz",
+      "first_decision_index": 412,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "response_peng",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 493
+      },
+      "seat": 3,
+      "parent_action": "pass",
+      "child_action": "peng:4t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "006",
+      "group_file": "group-006-0123.json.gz",
+      "first_decision_index": 493,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 584
+      },
+      "seat": 0,
+      "parent_action": "hu",
+      "child_action": "discard:3t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "006",
+      "group_file": "group-006-1230.json.gz",
+      "first_decision_index": 145,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 174
+      },
+      "seat": 1,
+      "parent_action": "discard:3t",
+      "child_action": "discard:6t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "006",
+      "group_file": "group-006-2301.json.gz",
+      "first_decision_index": 730,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 867
+      },
+      "seat": 2,
+      "parent_action": "hu",
+      "child_action": "discard:3t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "007",
+      "group_file": "group-007-0123.json.gz",
+      "first_decision_index": 514,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 613
+      },
+      "seat": 0,
+      "parent_action": "discard:4w",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "007",
+      "group_file": "group-007-1230.json.gz",
+      "first_decision_index": 105,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 125
+      },
+      "seat": 1,
+      "parent_action": "hu",
+      "child_action": "discard:2w",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "007",
+      "group_file": "group-007-2301.json.gz",
+      "first_decision_index": 824,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 983
+      },
+      "seat": 2,
+      "parent_action": "hu",
+      "child_action": "discard:9b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "007",
+      "group_file": "group-007-3012.json.gz",
+      "first_decision_index": 506,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 601
+      },
+      "seat": 3,
+      "parent_action": "discard:4w",
+      "child_action": "discard:中",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "008",
+      "group_file": "group-008-0123.json.gz",
+      "first_decision_index": 347,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 417
+      },
+      "seat": 0,
+      "parent_action": "discard:8t",
+      "child_action": "discard:1t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "008",
+      "group_file": "group-008-1230.json.gz",
+      "first_decision_index": 247,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 298
+      },
+      "seat": 1,
+      "parent_action": "hu",
+      "child_action": "discard:8t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "008",
+      "group_file": "group-008-2301.json.gz",
+      "first_decision_index": 10,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 12
+      },
+      "seat": 2,
+      "parent_action": "discard:4t",
+      "child_action": "discard:9b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "008",
+      "group_file": "group-008-3012.json.gz",
+      "first_decision_index": 441,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 534
+      },
+      "seat": 3,
+      "parent_action": "discard:8t",
+      "child_action": "discard:1t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "009",
+      "group_file": "group-009-1230.json.gz",
+      "first_decision_index": 895,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 1067
+      },
+      "seat": 1,
+      "parent_action": "hu",
+      "child_action": "discard:1t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "009",
+      "group_file": "group-009-2301.json.gz",
+      "first_decision_index": 921,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 1095
+      },
+      "seat": 2,
+      "parent_action": "hu",
+      "child_action": "discard:1t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "009",
+      "group_file": "group-009-3012.json.gz",
+      "first_decision_index": 55,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 66
+      },
+      "seat": 3,
+      "parent_action": "discard:中",
+      "child_action": "discard:4t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "010",
+      "group_file": "group-010-2301.json.gz",
+      "first_decision_index": 1400,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 1680
+      },
+      "seat": 2,
+      "parent_action": "discard:发",
+      "child_action": "discard:6b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "011",
+      "group_file": "group-011-0123.json.gz",
+      "first_decision_index": 641,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 4,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 763
+      },
+      "seat": 0,
+      "parent_action": "hu",
+      "child_action": "discard:2w",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "011",
+      "group_file": "group-011-1230.json.gz",
+      "first_decision_index": 106,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 127
+      },
+      "seat": 1,
+      "parent_action": "discard:3t",
+      "child_action": "discard:东",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "011",
+      "group_file": "group-011-2301.json.gz",
+      "first_decision_index": 217,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 260
+      },
+      "seat": 2,
+      "parent_action": "discard:南",
+      "child_action": "discard:2b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "011",
+      "group_file": "group-011-3012.json.gz",
+      "first_decision_index": 359,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 431
+      },
+      "seat": 3,
+      "parent_action": "discard:南",
+      "child_action": "discard:2b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "012",
+      "group_file": "group-012-0123.json.gz",
+      "first_decision_index": 1719,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 2057
+      },
+      "seat": 0,
+      "parent_action": "hu",
+      "child_action": "discard:东",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "012",
+      "group_file": "group-012-1230.json.gz",
+      "first_decision_index": 1950,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 2339
+      },
+      "seat": 1,
+      "parent_action": "hu",
+      "child_action": "discard:东",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "012",
+      "group_file": "group-012-2301.json.gz",
+      "first_decision_index": 1864,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 8,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 2227
+      },
+      "seat": 2,
+      "parent_action": "hu",
+      "child_action": "discard:东",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "012",
+      "group_file": "group-012-3012.json.gz",
+      "first_decision_index": 15,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 18
+      },
+      "seat": 3,
+      "parent_action": "discard:2w",
+      "child_action": "discard:2t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "013",
+      "group_file": "group-013-0123.json.gz",
+      "first_decision_index": 418,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "response_chi",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 493
+      },
+      "seat": 0,
+      "parent_action": "chi:7t,8t,9t",
+      "child_action": "pass",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "013",
+      "group_file": "group-013-1230.json.gz",
+      "first_decision_index": 861,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 1025
+      },
+      "seat": 1,
+      "parent_action": "hu",
+      "child_action": "discard:3w",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "013",
+      "group_file": "group-013-2301.json.gz",
+      "first_decision_index": 377,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "response_chi",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 446
+      },
+      "seat": 2,
+      "parent_action": "chi:7t,8t,9t",
+      "child_action": "pass",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "013",
+      "group_file": "group-013-3012.json.gz",
+      "first_decision_index": 24,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 28
+      },
+      "seat": 3,
+      "parent_action": "discard:中",
+      "child_action": "discard:2w",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "014",
+      "group_file": "group-014-0123.json.gz",
+      "first_decision_index": 155,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 183
+      },
+      "seat": 0,
+      "parent_action": "discard:1w",
+      "child_action": "discard:1t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "014",
+      "group_file": "group-014-1230.json.gz",
+      "first_decision_index": 85,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 102
+      },
+      "seat": 1,
+      "parent_action": "discard:6b",
+      "child_action": "discard:1t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "014",
+      "group_file": "group-014-2301.json.gz",
+      "first_decision_index": 478,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 569
+      },
+      "seat": 2,
+      "parent_action": "discard:2b",
+      "child_action": "discard:2t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "014",
+      "group_file": "group-014-3012.json.gz",
+      "first_decision_index": 339,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 404
+      },
+      "seat": 3,
+      "parent_action": "discard:2b",
+      "child_action": "discard:2t",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "015",
+      "group_file": "group-015-0123.json.gz",
+      "first_decision_index": 260,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 307
+      },
+      "seat": 0,
+      "parent_action": "discard:东",
+      "child_action": "discard:2b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "015",
+      "group_file": "group-015-1230.json.gz",
+      "first_decision_index": 145,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 168
+      },
+      "seat": 1,
+      "parent_action": "discard:9t",
+      "child_action": "discard:东",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "015",
+      "group_file": "group-015-3012.json.gz",
+      "first_decision_index": 190,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 2,
+        "schema_version": 1,
+        "seat": 3,
+        "trigger_seq": 224
+      },
+      "seat": 3,
+      "parent_action": "discard:东",
+      "child_action": "discard:2b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "016",
+      "group_file": "group-016-0123.json.gz",
+      "first_decision_index": 591,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 3,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 698
+      },
+      "seat": 0,
+      "parent_action": "discard:3b",
+      "child_action": "discard:8b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    },
+    {
+      "root_serial": "016",
+      "group_file": "group-016-2301.json.gz",
+      "first_decision_index": 704,
+      "same_window_and_seat": true,
+      "window": {
+        "phase": "draw",
+        "round_no": 5,
+        "schema_version": 1,
+        "seat": 2,
+        "trigger_seq": 824
+      },
+      "seat": 2,
+      "parent_action": "discard:5b",
+      "child_action": "discard:3b",
+      "scope": "known complete-development first divergence; public observation equality still to verify"
+    }
+  ],
+  "new_business_calls": 0,
+  "closure_sha256": "11de66e4776fbf281470bb202a60c9f41b71a4ea6eca1b29f5dd2607d1d904a9",
+  "reader_sha256": "8e1333b070fdf48cfd35ae62a81a22b8f9d7f2f451566ad250050ed8f44303aa"
+}

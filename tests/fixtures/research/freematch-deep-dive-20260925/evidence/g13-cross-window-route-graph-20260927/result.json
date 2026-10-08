@@ -1,0 +1,122 @@
+{
+  "accepted_events": 104610,
+  "analysis_script_sha256": "b88de40ae16ac03776dc7540892e10a8750f2e1a45484e29182fb2268f1a8a3f",
+  "boundary": "只联结冻结父代已接受动作；未来本人窗口仅作赛后链路审计，不进入前窗触发。鸣牌后手牌不猜。胡后无父代续行是结局截断，不证明弃胡后无价值。静态规则机会不是因果收益。",
+  "complete_official_tables": 909,
+  "edge_counts": {
+    "consecutive_own_window": 97340,
+    "matched_concealed_hand": 81786
+  },
+  "event_counts": {
+    "accepted_draw_discard": 62975,
+    "accepted_draw_gang": 229,
+    "accepted_draw_hu": 1966,
+    "accepted_response_chi_chi": 3863,
+    "accepted_response_chi_pass": 31346,
+    "accepted_response_peng_gang": 287,
+    "accepted_response_peng_peng": 3944,
+    "draw_already_baotou": 534,
+    "draw_already_baotou_legal_discard_white": 531,
+    "draw_already_baotou_parent_discard_white": 21,
+    "draw_any_legal_baotou_after_true": 1112,
+    "draw_any_legal_baotou_parent_None": 508,
+    "draw_any_legal_baotou_parent_True": 604,
+    "draw_parent_baotou_False": 62600,
+    "draw_parent_baotou_None": 1966,
+    "draw_parent_baotou_True": 604,
+    "parent_not_accepted": 181858
+  },
+  "g10_sha256": "1cd0579e6b9f139ce36e2426f5ce30510170e544a8a5e67105fdcff3c9d6bfb2",
+  "g11_behavior_sha256": "106df115276c62775a62156982e33e57ad06b2e3e3a28754eea5a81cbfb6c971",
+  "markers": {
+    "claim_to_pass": {
+      "complete_tables": 909,
+      "conditional_gain_for_plus2_all_tables": 2.0,
+      "g10_same_action": 0,
+      "g11_same_action": 0,
+      "has_next_parent_window": 8094,
+      "has_previous_parent_window": 7647,
+      "previous_parent_hand_matched": 6837,
+      "windows": 8094,
+      "with_white": 3117
+    },
+    "continue_to_hu": {
+      "complete_tables": 289,
+      "conditional_gain_for_plus2_all_tables": 6.290657439446367,
+      "g10_same_action": 0,
+      "g11_same_action": 0,
+      "has_next_parent_window": 314,
+      "has_previous_parent_window": 354,
+      "next_parent_hand_matched": 307,
+      "previous_parent_hand_matched": 321,
+      "windows": 354,
+      "with_white": 354
+    },
+    "discard_broader_standard": {
+      "complete_tables": 899,
+      "conditional_gain_for_plus2_all_tables": 2.0222469410456063,
+      "g10_same_action": 214,
+      "g11_same_action": 1062,
+      "has_next_parent_window": 4736,
+      "has_previous_parent_window": 4847,
+      "next_parent_hand_matched": 4372,
+      "previous_parent_hand_matched": 4267,
+      "windows": 5209,
+      "with_white": 2343
+    },
+    "discard_seven_route": {
+      "complete_tables": 688,
+      "conditional_gain_for_plus2_all_tables": 2.6424418604651163,
+      "g10_same_action": 625,
+      "g11_same_action": 39,
+      "has_next_parent_window": 1440,
+      "has_previous_parent_window": 1473,
+      "next_parent_hand_matched": 1440,
+      "previous_parent_hand_matched": 1473,
+      "windows": 1528,
+      "with_white": 643
+    },
+    "discard_standard_route": {
+      "complete_tables": 306,
+      "conditional_gain_for_plus2_all_tables": 5.9411764705882355,
+      "g10_same_action": 302,
+      "g11_same_action": 0,
+      "has_next_parent_window": 536,
+      "has_previous_parent_window": 523,
+      "next_parent_hand_matched": 536,
+      "previous_parent_hand_matched": 523,
+      "windows": 581,
+      "with_white": 321
+    },
+    "hu_to_continue": {
+      "complete_tables": 827,
+      "conditional_gain_for_plus2_all_tables": 2.1983071342200726,
+      "g10_same_action": 0,
+      "g11_same_action": 0,
+      "has_previous_parent_window": 1966,
+      "previous_parent_hand_matched": 1788,
+      "windows": 1966,
+      "with_white": 1651
+    },
+    "pass_to_claim": {
+      "complete_tables": 896,
+      "conditional_gain_for_plus2_all_tables": 2.029017857142857,
+      "g10_same_action": 0,
+      "g11_same_action": 0,
+      "has_next_parent_window": 5061,
+      "has_previous_parent_window": 5008,
+      "next_parent_hand_matched": 5061,
+      "previous_parent_hand_matched": 4538,
+      "windows": 5064,
+      "with_white": 2140
+    }
+  },
+  "official_rooms": 91,
+  "opportunity_rows": 22796,
+  "opportunity_sha256": "6ed980f6d4287c2c0e1cc36203f3dfcd71dbabc9effe7c45db4541f0e62da2fd",
+  "outcome_blind": true,
+  "parent_source_sha256": "a2d9b8af93beabdba75716fccae56b0668a6fd84f0bdce558d2ff3e569443618",
+  "schema": "g13-cross-window-route-graph/1",
+  "source_complete_ids_sha256": "9acfa00cb6b4dec4887a483af53f913570003d42c01e72f6be80b70383b66f99",
+  "source_frozen_rooms_sha256": "3869f77156945329065db36ba67e3c68d60b3e5776cac19e3ca49a38a25cecfd"
+}

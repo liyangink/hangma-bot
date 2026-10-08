@@ -1,0 +1,592 @@
+{
+  "schema": "sitin-real-behavior-result/2",
+  "panel_digest": "1d81b66850078ea231e453e1851a64d4917d4d28045a00fc6e487800ac235437",
+  "execution_identity": {
+    "deps_digest": "5b89261a6ac47d2231500b3f0c69ad9d34a6d351f70b093936147563176add15",
+    "candidate_execution_profile": {
+      "schema": "sitin-candidate-execution-profile/1",
+      "name": "research-200k-v1",
+      "max_operations": 200000,
+      "research_only": true
+    },
+    "runner_sha256": "82da334575082aef204b10223a8e984b3fece5c15030f444bccb4bc43ff2acad",
+    "entry_dependencies": {
+      "module:hangma_bot.adapters.official": "26b542cc794f40b4f3fdeb2af5be8782556f3f850209f479531898ddfd689709",
+      "module:hangma_bot.adapters.official.action_gate": "5b35e0ff9e34ced5567c9dae1ce864edf923cfc0721bc788a49b1f4340a6f298",
+      "module:hangma_bot.adapters.official.auto_match": "51d3aa6c8f77c722d04138de9d33f7ad40728c14c307274fadb206cbac7c9c49",
+      "module:hangma_bot.adapters.official.claim_interest": "d9cae16e12feb44a2dde508ded7af43dfecd59c130cafe362ed69007f151b8e8",
+      "module:hangma_bot.adapters.official.deadline_clock": "3a9ffa1c05e88e13373d5b8fad6bd8fe674e68bdb9c817401007c7f128074723",
+      "module:hangma_bot.adapters.official.discard_pacing": "d18ed01e2f03ba22da012cfc5172e18f05a03ab9581c3413f7ca70126b289cb7",
+      "module:hangma_bot.adapters.official.dto": "2d0c3d604df09c6b7e5950aa195b7a682e434cb798a9a4932556258ed39d2c3e",
+      "module:hangma_bot.adapters.official.errors": "a915a0b125ae9f4371abfecd926eaf9ec93fe624914ef8e2990d1f1452a92a9c",
+      "module:hangma_bot.adapters.official.game": "021d145414897620d9aee36c07a79ce9beb65224a3d31f31f47dfc9aa69729fc",
+      "module:hangma_bot.adapters.official.notify": "bff3289c9700487b9f9342cdb63a8a022dbbf6068dc411d5b1eebccd80b63900",
+      "module:hangma_bot.adapters.official.participant": "ba4476ec63821003f4b86dcfdef08997f6354f44c749734eb127116a2d77cb70",
+      "module:hangma_bot.adapters.official.projector": "9793c05aaa4b43f44e73031d62e11953ecf0a381def339ec9b9af2be9a1292b7",
+      "module:hangma_bot.adapters.official.request_audit": "c1014de64d4cd5ed427ada7dda31217e937f59fd3ceab8208c464879a5dc1435",
+      "module:hangma_bot.adapters.official.scheduler": "bc414c4e9964b90b75386fc2aed1bce241b77d08ca00925e2eb8898fba98ee35",
+      "module:hangma_bot.adapters.official.sync_state": "59803701c67399e74d0f94fe9785c71ec64b1bce60267d08882593f2ea73d934",
+      "module:hangma_bot.adapters.official.transport": "bd5080b0b510bcd28d4c1afeed4dce6617a09e25a876c2d64e4a5c5454a01381",
+      "module:hangma_bot.adapters.recording": "b88785ffd47c975965c0fae2aac307f27681ebb5c5fc3030b2b760ea2ef675fe",
+      "module:hangma_bot.adapters.recording.chain_piao": "2bddff35f313c5f0a83d61b1553c6a55c1dfdf1de7f771f1e98a5ff547f8a5c1",
+      "module:hangma_bot.adapters.recording.jsonl_sink": "898e9615ca2bde629ae38661d8c573148425606e322fd05b46757f727dac45c4",
+      "module:hangma_bot.adapters.recording.raw_events": "6be0476b8265788aaa815104240bbed1402c785a3c570ef828fffb4cb383fa50",
+      "module:hangma_bot.adapters.recording.redact": "f50e8165c5c8acee39affeaa921515f7fbfa3a0a29309b9a1fd03385ee408d69",
+      "module:hangma_bot.adapters.recording.schema": "9c6f1e11e9512e95dc7cc8cd9f49cd11406ad9a4ee85bdd7d8f03b5e5f1d903d",
+      "module:hangma_bot.adapters.recording.summary": "fe909762988a3b53104903a5389da96c1f88fb77f80e2296d6da67390b532c8d",
+      "module:hangma_bot.adapters.recording.validator": "3b41c40abac5c1125cf4adec60f1bbf8ac06596db361e54dd3a84c7db4196e21",
+      "module:hangma_bot.application.audit": "9c286d5e864af49452e3232e68b7be7037008e3fb2fc3a56e7cc8b28eed92f5d",
+      "module:hangma_bot.application.audit_codec": "411b1447716d645c0c62c6891ae29b0c821dad093ccbe7ddcfb5a0a946be0c27",
+      "module:hangma_bot.application.auto_match_runtime": "9198707a5ec732cac6a2ab3a0bced9a8589d14d28a3fcdf26b3c7ab56e51d6cb",
+      "module:hangma_bot.application.contracts": "cbece50eda81a376b5be923f5c894a96f67ea65f82b3e021fdbf592e242e53fa",
+      "module:hangma_bot.application.deadline": "4d280f95ed8dd29a31fb485c6267ff553fd74fe2b2d8d60b3ca596bf0c9d8496",
+      "module:hangma_bot.application.decision_loop": "eb7b0184f741e8a1af8f1755871b825ab0e47012b0bfec3476044926c044e057",
+      "module:hangma_bot.application.game_task": "f4cf03af311be3359631365ee75aec8087a9ccd6d55129e431695c638b047307",
+      "module:hangma_bot.application.ids": "9e5466f3c9e623a465353fb41bd6e04e877b78469053c5d180ed787770ea9031",
+      "module:hangma_bot.application.participant_runtime": "0856b229e7364fc38974fdbdd1fa1982b65ca270ce0bef538051b003a1329509",
+      "module:hangma_bot.application.tournament_supervisor": "0ef76b2ab973ca8b708572391861df9dc6a289fe887e9e0892b2aa29ebd9a969",
+      "module:hangma_bot.bootstrap": "62028844c9db7eb9d9d96c9afe5848a0851bddc604d6504a18a9d892fae0e0f8",
+      "module:hangma_bot.competition.outcome_utility": "f33db3c76ac9eeb7cf8069e0a7a688df23596e542a284915b3ef7e91262e2ce2",
+      "module:hangma_bot.hangma._grouped_native": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6",
+      "module:hangma_bot.hangma._standard": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98",
+      "module:hangma_bot.hangma._standard_python": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7",
+      "module:hangma_bot.hangma.action_families": "7ddf13ba4be1519c45224cd22711bea91e425e868fef600c5aef7a8f0573523d",
+      "module:hangma_bot.hangma.candidate_facts": "1318a08e8d51c67d1f07256dfd7f6d8d90bb9b85fc7d1e09b7d9146c40df08f9",
+      "module:hangma_bot.hangma.catch_play": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693",
+      "module:hangma_bot.hangma.emergency": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7",
+      "module:hangma_bot.hangma.engine": "4b7d32bd3b1de5d0b9268cd69990428334a0f5c7b9161e6fc15afdc3cf992632",
+      "module:hangma_bot.hangma.hand_analysis": "cc238a8e5a4d56e06e67cc5c52922521903f7953dc12958a9652e2f49f3cf8a4",
+      "module:hangma_bot.hangma.interface": "b701568e3edbe644c53ce2e5ae7e0b663a76fa3e39067243b6aa7fe2fc48db81",
+      "module:hangma_bot.hangma.internal_types": "4fa09590b0f375eca7e6f7985e8b74af4cdeeaea3d2492045a316b626773278a",
+      "module:hangma_bot.hangma.observation_rules": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486",
+      "module:hangma_bot.hangma.progression": "0aa4f45935114f711011c5b41f28c61a4ad4b54b7f8551126c38109911f2a537",
+      "module:hangma_bot.hangma.progression_payload": "ede2e3f09adb2db45d2a14f5166abdcd9e683041a7c76072f2c8a89fbcfc19b5",
+      "module:hangma_bot.hangma.public_tile_counts": "8ed6b138f4305614bf498234364ad7c1b645e0d00f98affd8e8a4c4fdbef89c4",
+      "module:hangma_bot.hangma.settlement": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4",
+      "module:hangma_bot.hangma.special_rules": "3592e931baae4e6e8da290dc44acd0ddb1673ec6831a2262244a4761976be487",
+      "module:hangma_bot.hangma.value_analysis": "a843a3d5f6123bb2e998b6710cb9727802db2b9fd72ec96cbddd9017d1729102",
+      "module:hangma_bot.kernel.actions": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9",
+      "module:hangma_bot.kernel.config": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97",
+      "module:hangma_bot.kernel.identity": "1e8a12c2394b9bd2370027d1d7e04c1b29e9bcad0764302f3047ac84aca06640",
+      "module:hangma_bot.kernel.observation": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6",
+      "module:hangma_bot.kernel.outcome_codec": "95508f188033654f1dbb0930386a800120c05a164aa3f2f5d9d122e257d693e6",
+      "module:hangma_bot.kernel.outcomes": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6",
+      "module:hangma_bot.kernel.serialization": "85d4a98d9c735090670110376f7bba6066710909fd7f8dcf95fcd45dac3ce56e",
+      "module:hangma_bot.learning.encoding": "78e91f7243810efd1dc9e56ff46630ce3ddf4cb1d4687743127ada1589e5c4d5",
+      "module:hangma_bot.learning.key_encoding": "5210de5ca49ed4b4e7925fc06f68ee6bd9fcc0faee1d880dc3272360f20f5cf1",
+      "module:hangma_bot.learning.outcome_model": "eb18489e3a985c21d1cb70f2d0e81c58ffb86f5af249a670dedf4baf79a9f21d",
+      "module:hangma_bot.learning.sequence_encoding": "f446c9dd4816001dbfc24fbcfa5fafb80e603685ab68d044cefc92623fed6ebf",
+      "module:hangma_bot.learning.sequence_model_artifact": "45471fa64a8178526a63dcf2dd13dd6f36c6d01eadfafff743715497b0b05589",
+      "module:hangma_bot.learning.sequence_policy": "4527bb54249905bd8af98d7d01f9dc045cc406452aa4a06432566604fa92224e",
+      "module:hangma_bot.offline.evaluate": "dc27d2559ef9d68149d26aecbc741699640ccafbe9a096d74b6265e463de1383",
+      "module:hangma_bot.offline.evaluation_results": "2ea2d68f158f054f283f98a319143d52d61b57cfdf79bc532235645069c54da7",
+      "module:hangma_bot.offline.scoring_sources": "da75c44b1919ccd9338ee0469391882be8aaaaeb079775223b5b43be5036d1e0",
+      "module:hangma_bot.policy": "acee94d5a15119784da66d3e1e18f2f6ade3520bdb2762a88b4b5ffdcda80331",
+      "module:hangma_bot.policy.action_value": "52cad37e49bf522ecb250f2c53bce63ebf29a78d92de256d3ce7a7db4e3e2c47",
+      "module:hangma_bot.policy.action_value_executor": "46bfc6849d9425ab3c3c28fe204eb0be0297a63f5c5276d65a54986e8dea93d2",
+      "module:hangma_bot.policy.action_value_policy": "cf0a246d6ab003096bde16c1b80f8da395b6988d5d167ffd86339aa5f2326c2a",
+      "module:hangma_bot.policy.action_value_seeds": "989564b1da2ad9546d10934d9048dc1c30ad3a7e053c180f83ab78d4fd339cb8",
+      "module:hangma_bot.policy.balanced_shadow": "f0a72eed0d5112ab7b5b24c5126fbfc95c6a6b0a8c60cea6b6c4826039e0bd37",
+      "module:hangma_bot.policy.catch_play_probe": "1c12bbe29c7ec0740c8d599869477eaa96c739a465b8b2a8812c7ee8a0f8366d",
+      "module:hangma_bot.policy.claim_if_legal": "acd4c887d59cd5f84e9ea2a6ab6c698278110623af0e2bb26a2f1b992d6a8f43",
+      "module:hangma_bot.policy.errors": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9",
+      "module:hangma_bot.policy.evaluation": "92f68d0f0eb384cff1444bdc84937fb93d90f398c9ac7b803e00f23d800d86e1",
+      "module:hangma_bot.policy.evaluation_v1": "b3198fcfc030a235873f67051bdf859f04a97b3290c4bd6783e870b7d7330fe0",
+      "module:hangma_bot.policy.evaluation_v2": "8df42443369cc6fa1702934660301f65991df509fa3e8d48823a206c5f4da830",
+      "module:hangma_bot.policy.heuristic_adapter": "f033610a9581842b9ee56e5008bb5feade95d31e7f1f80a0d4bc0f2a2501db45",
+      "module:hangma_bot.policy.heuristic_v1": "fb924e32375a033f84f6566160e761102308e3b145c7a5caa885db6f99affd4c",
+      "module:hangma_bot.policy.heuristic_v2": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af",
+      "module:hangma_bot.policy.heuristics": "f6261f9eec556b2c49064c8efd28cdfb7a219355368e0ec483c72e299f1c768b",
+      "module:hangma_bot.policy.heuristics.chain_path_value": "8249e7e1ed6e7ab2ccf0fa9cad89fdec77bcfe4d9f9f5151ead92f77b75e686c",
+      "module:hangma_bot.policy.heuristics.expected_score_path_value": "59a3dd39206477ec78cf8000eb2490f3d5b4def27bb8158821c5e1cb3a217e49",
+      "module:hangma_bot.policy.heuristics.four_component_path_value": "cad99b4ac0cc2800a73cefc6c514dc8810ad9c58002e56a39610fc1b3d7369cc",
+      "module:hangma_bot.policy.heuristics.meld_opportunity_cost": "37be910e3f467d67a45dbefaa6859177208ef9b4b287eaf11e88fbdab9ef60de",
+      "module:hangma_bot.policy.heuristics.meld_waiting_conditional": "b022f711b40eb1fd0460dd6b4169e0c8dc7ba8cd9b2050691edccdfea7584268",
+      "module:hangma_bot.policy.heuristics.multiplier_path_potential": "1ba12987535fba2edfbab1422ecac545444629328259233652a7e35fbf1622e2",
+      "module:hangma_bot.policy.heuristics.seven_pairs_path_value": "6ec111cdb73a51b6eb7085af9414b42d405394c6dbd149b689b99608bfcb65aa",
+      "module:hangma_bot.policy.hu_upgrade": "52e65eb5aa6b74880059bccea4b11be05516df4dc9e7bb3ead6c0df526322290",
+      "module:hangma_bot.policy.hu_upgrade_calibration": "20fc79df1050144bcae69236a5d34656fa1afbbb11d8c86d80d3a5319733a8a4",
+      "module:hangma_bot.policy.interface": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa",
+      "module:hangma_bot.policy.legacy_pass": "0345d91ebc567b1d00b93fe91735f2bb3b7fed1dd99fa3470a182e76344657ba",
+      "module:hangma_bot.policy.outcome_policy": "c3f0f9e9055a080dfc857ce50d0aa11f2c889a56a30be1971a61d39f1b0644fc",
+      "module:hangma_bot.policy.safe_fallback": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281",
+      "module:hangma_bot.policy.sequence_model_policy": "8dc61dd151785c23180fa6e50a3f7ee77c392d9e22ff13ef9813489863492614",
+      "module:hangma_bot.policy.v2_hu_upgrade": "5eb8bea746ea00e153f1191d2c7b5340621b6ee827e0769a8cda24dd830502f7",
+      "module:hangma_bot.policy.value_one_draw": "dd22ec5dc27c8b16fdf539bff833a42c7fc9e08973337387011da4939126c612",
+      "module:hangma_bot.policy.weighted_heuristic": "3228a68f544466d16bf5ab926fbb3a3ec7960509aed70bf56571f33d1af08bc5",
+      "module:hangma_bot.policy.weights": "385ecefe548eea7c4490e4efa2aa54d0c7a49911a729edcd06d1a5438c804b3f",
+      "module:hangma_bot.policy.weights_v1": "6dc4f4bf263ce055d0c450e914b556ab5323ecf3290cf104c06d9547aeed0f77",
+      "module:hangma_bot.policy.white_discard_guard": "291c71dffe8dbd2709cefbe7c44d43261ff46ec7ba99afebb58bfb9c7141b70a",
+      "module:hangma_bot.simulation": "9940e70b041e4729b56d825b8f85abec12594cf25a84b8672a927ce20b29e844",
+      "module:hangma_bot.simulation.artifacts": "0176f939b276e9ee22c9e72e42939d1e04b2c35aa5c6273d43dab731324e4a32",
+      "module:hangma_bot.simulation.engine": "a51e84277ed08e631bddb3bfda08305b65aa7d16b3a7146638f80db263119737",
+      "module:hangma_bot.simulation.identity": "8087385814bdb604ea92fcd757e111f430c3d0a53a1bd08ddedfee35efe0e58e",
+      "module:hangma_bot.simulation.interface": "7f1262c0cd75249627eaf8031a410fbff2262940ef7a9923f1b8c18721b76d6f",
+      "module:hangma_bot.simulation.projection": "c98aaa4204115657ed2c20a24bf13fb525f48dc4e298ed7df67580cfb9682007",
+      "module:hangma_bot.simulation.shuffle": "aef5087ea4dca5d834267b90ed1925e0d638cfc10918ea6bb0e83d46e95b172f",
+      "module:hangma_bot.simulation.state": "7b760825e545da2ccebc7d5849da86183c76194bc6623c4b9670df52fee16737",
+      "tool:sitin_deps": "291e121fde04058cbb4855de85b0a135e855122b951e67fb5c88630b095d7373",
+      "tool:sitin_execution_audit": "442803d45f80fe924bf15d2c02f8a24a0f19341141bc099c84fdfc63e7ff5c28",
+      "tool:sitin_execution_profile": "94236e69b434a2c0571500183742ed759012485a835ea805814696b80d7192ed",
+      "tool:sitin_gates": "62ee3a93b7be0c7fa91745274cbd6f651335b8a1f6bb0f80f75fef579171a65c",
+      "tool:sitin_real_behavior": "82da334575082aef204b10223a8e984b3fece5c15030f444bccb4bc43ff2acad"
+    }
+  },
+  "source_sha256": "96ecd73f139e566be86623a0ed5cea678bb4c759cba30cd0e30b41dba8def1be",
+  "comparable": true,
+  "windows": [
+    {
+      "window_id": "01954a3a77f3332727821097aabe18fae3c8d3ffe1450c3f05f22bb903ee6ad0",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass",
+        "peng:7b"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0,
+        "peng:7b": 0.0
+      }
+    },
+    {
+      "window_id": "0eba0cc80247413dc0886851ec8874735429b08e0cfd4ec1fb1c7f8b43e58302",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass",
+        "peng:4w"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0,
+        "peng:4w": 0.0
+      }
+    },
+    {
+      "window_id": "100e2cc06e3f465c003a57fd5458bd66a54ca212e5cbf8450906e21032987503",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0
+      }
+    },
+    {
+      "window_id": "1c57c0a55edc4fb3dba35b9183a585ba9d5475a41b88bd504fa996dfce626ba4",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass",
+        "peng:北"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0,
+        "peng:北": 0.0
+      }
+    },
+    {
+      "window_id": "53e1e5c912e038be9f89c4c688767c2caafcc94ff9c47ab179af1e2ae7a9374c",
+      "status": "SCORED",
+      "action_key": "chi:3t,4t,5t",
+      "raw_action_key": "chi:3t,4t,5t",
+      "ordered_actions": [
+        "chi:3t,4t,5t",
+        "pass"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "chi:3t,4t,5t": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "window_id": "570f0813ea988f0ac0355538ea92e104a0262093a4035dbcc6f6555b26ea0860",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass",
+        "peng:3t"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0,
+        "peng:3t": 0.0
+      }
+    },
+    {
+      "window_id": "5800fb2aa8a500b3fef24c9012327634a93f383135a7c8640e8123d9e71c4fd9",
+      "status": "SCORED",
+      "action_key": "chi:3b,4b,5b",
+      "raw_action_key": "chi:3b,4b,5b",
+      "ordered_actions": [
+        "chi:3b,4b,5b",
+        "pass"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "chi:3b,4b,5b": 0.0,
+        "pass": 0.0
+      }
+    },
+    {
+      "window_id": "59be625f8449b5c5760478ff03aff9b93985d2779d10fe1d6350c3cc0c90c192",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass",
+        "peng:7b"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0,
+        "peng:7b": 0.0
+      }
+    },
+    {
+      "window_id": "6800a189349b4e4f21f827e83dbbc4ad0f6c4eaff1fcf689e549d95a8a7ec2d8",
+      "status": "SCORED",
+      "action_key": "discard:2t",
+      "raw_action_key": "discard:2t",
+      "ordered_actions": [
+        "discard:2t",
+        "discard:3b",
+        "discard:3t",
+        "discard:4t",
+        "discard:5b",
+        "discard:7t",
+        "discard:7w",
+        "discard:9w",
+        "discard:东",
+        "discard:中",
+        "discard:白",
+        "discard:西"
+      ],
+      "emergency_actions": [
+        "discard:3b"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "discard:2t": 0.0,
+        "discard:3b": 0.0,
+        "discard:3t": 0.0,
+        "discard:4t": 0.0,
+        "discard:5b": 0.0,
+        "discard:7t": 0.0,
+        "discard:7w": 0.0,
+        "discard:9w": 0.0,
+        "discard:东": 0.0,
+        "discard:中": 0.0,
+        "discard:白": 0.0,
+        "discard:西": 0.0
+      }
+    },
+    {
+      "window_id": "7dfbd0351332babd0a54aaf011a6ac83cb503dfab5ed2c6fa5f0f0fcc6c672c5",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass",
+        "peng:北"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0,
+        "peng:北": 0.0
+      }
+    },
+    {
+      "window_id": "8ceff9498f841a0d920706e9ed81a37b95ff3e608aa84b5f51dad2bf325fd0bb",
+      "status": "SCORED",
+      "action_key": "discard:1t",
+      "raw_action_key": "discard:1t",
+      "ordered_actions": [
+        "discard:1t",
+        "discard:2t",
+        "discard:3t",
+        "discard:4t",
+        "discard:5b",
+        "discard:7t",
+        "discard:7w",
+        "discard:9w",
+        "discard:东",
+        "discard:中",
+        "discard:白",
+        "discard:西"
+      ],
+      "emergency_actions": [
+        "discard:3t"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "discard:1t": 0.0,
+        "discard:2t": 0.0,
+        "discard:3t": 0.0,
+        "discard:4t": 0.0,
+        "discard:5b": 0.0,
+        "discard:7t": 0.0,
+        "discard:7w": 0.0,
+        "discard:9w": 0.0,
+        "discard:东": 0.0,
+        "discard:中": 0.0,
+        "discard:白": 0.0,
+        "discard:西": 0.0
+      }
+    },
+    {
+      "window_id": "97d35f503f89d51598d6f8a3fc08ce8b24b82454a40f1efabf723310fcd581c7",
+      "status": "SCORED",
+      "action_key": "discard:5b",
+      "raw_action_key": "discard:5b",
+      "ordered_actions": [
+        "discard:5b",
+        "discard:6b",
+        "discard:6w",
+        "discard:7b",
+        "discard:8b",
+        "discard:8w",
+        "discard:白",
+        "hu"
+      ],
+      "emergency_actions": [
+        "discard:6b"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "discard:5b": 0.0,
+        "discard:6b": 0.0,
+        "discard:6w": 0.0,
+        "discard:7b": 0.0,
+        "discard:8b": 0.0,
+        "discard:8w": 0.0,
+        "discard:白": 0.0,
+        "hu": 0.0
+      }
+    },
+    {
+      "window_id": "a908603602f6e0adb603b1d7a83b5443a81c665e777258a6f89a26f672881cc2",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass",
+        "peng:1t"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0,
+        "peng:1t": 0.0
+      }
+    },
+    {
+      "window_id": "c0feb52c1f0d264f87f45bb3f17a0fb371794da0a62dd8e7f7049915d0069d6a",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass",
+        "peng:南"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0,
+        "peng:南": 0.0
+      }
+    },
+    {
+      "window_id": "c33130bdf06355c71d9f3df66ee85c0d596557f981fcdec3c88112743918b3f7",
+      "status": "SCORED",
+      "action_key": "discard:8w",
+      "raw_action_key": "discard:8w",
+      "ordered_actions": [
+        "discard:8w",
+        "discard:9w",
+        "discard:发",
+        "discard:白",
+        "discard:西",
+        "hu"
+      ],
+      "emergency_actions": [
+        "discard:发"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "discard:8w": 0.0,
+        "discard:9w": 0.0,
+        "discard:发": 0.0,
+        "discard:白": 0.0,
+        "discard:西": 0.0,
+        "hu": 0.0
+      }
+    },
+    {
+      "window_id": "cc00dc68d98e12e62348231f270734a52eb43e73f679ee53d35db7926264caf9",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0
+      }
+    },
+    {
+      "window_id": "cec19e66933a818e0f7a63341d4e9fae33848f785b88944199f64a2bf17c6520",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0
+      }
+    },
+    {
+      "window_id": "f00827bc962619007ac2781c9675f9f43a6fd3046a6f1683f160e5b41604e281",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0
+      }
+    },
+    {
+      "window_id": "f9cc8675065734bb8991b520d3223bbf275c63efa92f619df2aa2763450ab531",
+      "status": "SCORED",
+      "action_key": "pass",
+      "raw_action_key": "pass",
+      "ordered_actions": [
+        "pass",
+        "peng:3b"
+      ],
+      "emergency_actions": [
+        "pass"
+      ],
+      "revision": 1,
+      "degraded_reasons": [
+        "action_value: real-development-panel 评分完成"
+      ],
+      "scores": {
+        "pass": 0.0,
+        "peng:3b": 0.0
+      }
+    }
+  ],
+  "behavior_digest": "d291c43bc3641d23d72c3724fd7ee15624d9426bd759b6b969458ce2fa6c1ce9",
+  "scope": "仅限该开发观察清单；不证明全域等价或效果增强"
+}

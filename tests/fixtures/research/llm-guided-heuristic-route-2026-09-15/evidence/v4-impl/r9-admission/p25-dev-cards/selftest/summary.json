@@ -1,0 +1,75 @@
+{
+ "cards": [
+  {
+   "card": "TD01",
+   "frozen_final_pass": true,
+   "card_ok": true,
+   "checks": {
+    "direct_projection_field_probe": true,
+    "unknown_not_above_known": true,
+    "declared_windows": true
+   },
+   "problems": []
+  },
+  {
+   "card": "TD02",
+   "frozen_final_pass": true,
+   "card_ok": true,
+   "checks": {
+    "revision_verdict": true,
+    "unknown_not_above_known": true
+   },
+   "problems": []
+  },
+  {
+   "card": "TD03",
+   "frozen_final_pass": true,
+   "card_ok": true,
+   "checks": {
+    "solvable_windows_scored": true,
+    "declared_windows": true
+   },
+   "problems": []
+  },
+  {
+   "card": "TD04",
+   "frozen_final_pass": true,
+   "card_ok": true,
+   "checks": {
+    "revision_verdict": true,
+    "equivalence_controls": true
+   },
+   "problems": []
+  },
+  {
+   "card": "TD05",
+   "frozen_final_pass": true,
+   "card_ok": true,
+   "checks": {
+    "structured_predicates": true,
+    "frozen_safety_contract": true,
+    "no_result_predicate_attribution": true
+   },
+   "problems": []
+  },
+  {
+   "card": "TD06",
+   "frozen_final_pass": true,
+   "card_ok": true,
+   "checks": {
+    "structured_predicates": true,
+    "frozen_safety_contract": true,
+    "structured_choice": true,
+    "contrary_claim_attribution": true
+   },
+   "problems": []
+  }
+ ],
+ "negative_controls": {
+  "TD05_no_result_as_no_consumption": false,
+  "TD06_contrary_execution": true,
+  "TD06_false_reject_probe": false
+ },
+ "all_card_ok": true,
+ "all_controls_ok": false
+}

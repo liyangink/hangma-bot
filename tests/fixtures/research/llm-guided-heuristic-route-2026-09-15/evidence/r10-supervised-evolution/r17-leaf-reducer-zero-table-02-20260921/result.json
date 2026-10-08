@@ -1,0 +1,47 @@
+{
+  "schema": "r17-leaf-reducer-zero-table-result/1",
+  "status": "PASS_R17_LEAF_REDUCER_ZERO_TABLE",
+  "windows": 226,
+  "counts": {
+    "changed_draw_windows": 177,
+    "complete_reductions": 179,
+    "draw_windows": 179,
+    "response_fallbacks": 47,
+    "response_windows": 47
+  },
+  "coverage_pass": true,
+  "behavior_pass": true,
+  "changed_seats": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "changed_source_count": 10,
+  "changed_sources": [
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/comparable-shape-second-diagnostic-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/discard-shape-mix-diagnostic-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/followup-balance-diagnostic-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/followup-quality-diagnostic-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/pattern-generalization-diagnostic-v2-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/piao-opportunity-probe-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/real-behavior-panel-v1/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route-decision-diagnostic-20260920/panel.json",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+  ],
+  "max_leaf_evaluations": 3003,
+  "max_candidate_operations": 45705,
+  "fixed_limit": 4096,
+  "candidate_operation_limit": 500000,
+  "reducer_latency": {
+    "mean_ms": 20.014252124728852,
+    "p50_ms": 19.372542039491236,
+    "p95_ms": 34.303124994039536,
+    "p99_ms": 41.557000018656254,
+    "max_ms": 55.70529098622501
+  },
+  "failures": [],
+  "strength_claim": false,
+  "seed_scope": "基础设施行为探针；不是效果候选或待发布算法"
+}

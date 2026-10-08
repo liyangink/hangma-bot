@@ -1,0 +1,19 @@
+{
+  "initial_actual_scores": 0,
+  "new_models_worlds_tables": 0,
+  "next": "related public tests, actual failed response then broad exact score and timing verification if useful",
+  "old_source_sha256": "5e8d3e5e6a034b03cdd0768821e4531896ceca75bf95a2f664df7699a4805e19",
+  "online_admission": false,
+  "proposed_source_sha256": "f3095119f4bac03bb7769b74d10926e339f67801e979a4afc70b24c31f3856fd",
+  "purpose": "same exact field validation without recursion for scalar unions and fixed scalar tuples; no capacity formula, route, LRU or result cache changes",
+  "schema": "t84-public-shape-dispatch-prechange/1",
+  "semantic_constraints": [
+    "type identity not equality membership",
+    "exact tuple length and per-item types",
+    "boolean is not integer",
+    "all non-scalar shape paths unchanged",
+    "bounded identity cache/locks/close unchanged"
+  ],
+  "source_base_commit": "0c92d38b4ce5c2216ead140bd75294baac9855a5",
+  "source_path": "/Users/liyang/.codex/worktrees/t54-public-count-cache/hangma-bot/src/hangma_bot/hangma/public_tile_counts.py"
+}

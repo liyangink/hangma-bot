@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-claim-counterfactual-cf2b-20260921",
+  "batch_label": "r10-claim-counterfactual-cf2b",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 28.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 64.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T02:45:46Z",
+  "issuance_basis": "CF2的25个命中全部机械有效且标签丰富度通过，但预登记32根/层不足以填满H/M各16；只补未运行根的行为配额",
+  "scope": "沿用CF2 panel_seed；H/M分别从root33升序检查到64，只补H=5、M=2；根选择不读取标签；最多7个样本、28条桌记录",
+  "max_model_calls": 0,
+  "confirmation_roots": 0
+}

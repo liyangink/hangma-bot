@@ -1,0 +1,84 @@
+{
+  "action_value_failure_windows": 0,
+  "by_mix": {
+    "H": {
+      "negative_units": 0,
+      "stage_score_delta_mean": 0.0,
+      "units": 8
+    },
+    "M": {
+      "negative_units": 0,
+      "stage_score_delta_mean": 0.0,
+      "units": 8
+    }
+  },
+  "candidate_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+  "confirmation_eligible": true,
+  "execution_review": {
+    "missing_tables": 0,
+    "recorded_counts": {
+      "action_value_failed": 0,
+      "action_value_scored": 10419,
+      "ambiguous_diagnostics": 0,
+      "decision_count": 83432,
+      "other_policy_decisions": 73013,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "abstain": 0,
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "recorded_tables": 64,
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 64,
+    "zero_internal_failures_verified": true
+  },
+  "gate_checks": {
+    "all_candidate_requests_action_value_scored": true,
+    "all_tables_complete": true,
+    "candidate_request_errors": true,
+    "negative_paired_stage_units_zero": true,
+    "paired_stage_score_delta_mean_nonnegative": true,
+    "zero_action_value_failure_windows": true,
+    "zero_runtime_failures": true
+  },
+  "manifest_sha256": "c2c87b681b816d377184809bf4047e183d0e1f6cd9e893b1d52889983d307111",
+  "measurement_defect": {
+    "affected_field": "v1.request_audit_counts.degraded_plans",
+    "authoritative_failed": 0,
+    "authoritative_scored": 10419,
+    "correct_interpretation": "评分成功诊断条目数，不是失败/保底数",
+    "observed": 10419
+  },
+  "natural_trigger_interpretation": "本批自然桌未出现四财神飘触发；本结果只证明接缝/回退安全与桌赛非劣，不估计机会收益频率",
+  "next": "扩展多手牌P4开发/新隐藏题；P4作为Pareto机会精英进入下一代",
+  "overall": {
+    "negative_units": 0,
+    "positive_units": 0,
+    "score_trajectory_equal_units": 16,
+    "stage_score_delta_mean": 0.0,
+    "u_delta_high_mean": 0.0,
+    "u_delta_low_mean": 0.0,
+    "zero_units": 16
+  },
+  "release_eligible": false,
+  "request_counts": {
+    "changed_top_actions": 0,
+    "opportunity_overlay_present": 0,
+    "opportunity_triggered": 0,
+    "policy_errors": 0,
+    "requests": 10419
+  },
+  "schema": "r18-p4-table-preflight-result/2",
+  "source_units": 16,
+  "status": "PASS_R18_P4_TABLE_PREFLIGHT",
+  "strength_claim": false,
+  "supersedes_result_sha256": "44a68ad5fd0283c6e63c2a0d830d817a360336c7008e2397e3df88e7bfcba2cc",
+  "supersession_reason": "v1把所有非空degraded_reasons误判为降级；ActionValuePolicy成功路径按合同也写入action_value: <scorer> 评分完成。v2改用sitin_execution_audit对action_value_failed/ambiguous/unclassified的正式分类。",
+  "tables": 64,
+  "tables_reexecuted": 0
+}

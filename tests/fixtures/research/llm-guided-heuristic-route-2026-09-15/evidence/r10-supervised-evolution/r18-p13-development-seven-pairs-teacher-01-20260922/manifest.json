@@ -1,0 +1,1471 @@
+{
+  "base_states": 28,
+  "contract_sha256": "1012c5d996f0bb913c4a29d36b493ebc5b81e959af496051ba9568ba7bcd08e4",
+  "created_at_utc": "2026-09-22T03:45:42Z",
+  "development_labels_selection_eligible": true,
+  "frontier_sha256": "145f5fb1b00dabfbc66e1230c099fb4cb71de9f00adadebfdf21257e3b6bf0f9",
+  "hidden_labels_opened": false,
+  "parent_sha256": "02a0c09b790a5cb264b1a4a9f9e2e87a827263a9f04273aae83371f702ddf9cb",
+  "planned_tables": 1792,
+  "primary_labels": [
+    "focal_hu",
+    "focal_hu_fan",
+    "opponent_hu",
+    "wall_draw_or_non_hu_end",
+    "focal_current_round_settlement"
+  ],
+  "release_eligible": false,
+  "rollouts_per_state": 32,
+  "runtime": {
+    "explicit_sources": {
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json": "1012c5d996f0bb913c4a29d36b493ebc5b81e959af496051ba9568ba7bcd08e4",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/claim_counterfactual_pilot.py": "9ce4886d2857795a50ffa759e1ed260858351b00dded828f892f565f83bbd1a6",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/confirmation_execution_identity.py": "ee70633bc99bf59206ae74fc35bc519226c9fdc4375ae29641dfd7b82b04f130",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/confirmation_pairing.py": "84929cd840eeb6e001d9f3e787c92c6cfde04affa3bba80bc6095314d9763340",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p12-natural-seven-pairs-frontier-01-20260922/frozen-frontier.json": "145f5fb1b00dabfbc66e1230c099fb4cb71de9f00adadebfdf21257e3b6bf0f9",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p13-development-seven-pairs-teacher-01-20260922/authorization.json": "a3f60c83a32f4da75ccc692e6df06cc2c365bf9919c1bcfa18943f3d274d97f0",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p13-development-seven-pairs-teacher-01-20260922/targets.json": "66e3d043a7bc05f09f847257ebcfb0cc2714556083cf19ce9f6a9122ff4bf104",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p5-gang-dominance-01-20260922/generation/candidate.py": "02a0c09b790a5cb264b1a4a9f9e2e87a827263a9f04273aae83371f702ddf9cb",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p11_settlement_cascade_teacher.py": "02b287285c293363d0e715cf8bff06f6ce0f8dbb9eb291e24863a717a9afa1ae",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p12_natural_seven_pairs_frontier.py": "6c667bb3044c6a342ac4c3b8473bca07f5c09ccaa1e5e1061b01354f252af528",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p13_development_seven_pairs_teacher.py": "cd7a593e7b58e6df1f73950a88e8f6f07e5773981d49d15aea4eb6629f53caea",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p9_midgame_hidden_world_teacher.py": "905953d8834c1cabf28ecb097afb531c11eda89098cedc635809ec8f920e3042",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/tools/sitin_natural_panel.py": "df0ee8b4568482c85bf6387f41716428e065e797092003a003aee3cd3836bce4",
+      "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/tools/sitin_opportunities.py": "5214aab12c96794ef18ab88fdd465dca15268af6eb2f393b13ddce0eae06db0f",
+      "/Users/liyang/hangma-bot/src/hangma_bot/offline/forced_action.py": "905269899807e144488c96da5358e16131e0b39a06987bc0dd7b159db83f3d7c",
+      "/Users/liyang/hangma-bot/src/hangma_bot/simulation/engine.py": "91dd2134acc27d67fdf6d927c568eafb0c2397eed35defe25ed9c912dad9ab57",
+      "/Users/liyang/hangma-bot/src/hangma_bot/simulation/shuffle.py": "5e8597e06dc7d94e8aa2825f066df5faef47c2298b1c1919bccbf2a7756f91f5"
+    },
+    "production_digest": "1175ec88bfdc006defda5a45e709ba2f59bc9eab33f0db85f91d8c2c7e4c34f5",
+    "production_manifest": {
+      "baseline_missing_modules": [],
+      "baseline_module_closure": {
+        "hangma_bot.hangma.interface": "6fd456a6ac24eb0803bd2c2f38b2742df91bdc18faa5b74b68314e072a84bf43",
+        "hangma_bot.kernel.actions": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9",
+        "hangma_bot.kernel.observation": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6",
+        "hangma_bot.kernel.outcomes": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6",
+        "hangma_bot.policy.errors": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9",
+        "hangma_bot.policy.evaluation_v1": "b3198fcfc030a235873f67051bdf859f04a97b3290c4bd6783e870b7d7330fe0",
+        "hangma_bot.policy.evaluation_v2": "8df42443369cc6fa1702934660301f65991df509fa3e8d48823a206c5f4da830",
+        "hangma_bot.policy.heuristic_adapter": "f033610a9581842b9ee56e5008bb5feade95d31e7f1f80a0d4bc0f2a2501db45",
+        "hangma_bot.policy.heuristic_v1": "fb924e32375a033f84f6566160e761102308e3b145c7a5caa885db6f99affd4c",
+        "hangma_bot.policy.heuristic_v2": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af",
+        "hangma_bot.policy.interface": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa",
+        "hangma_bot.policy.weights": "385ecefe548eea7c4490e4efa2aa54d0c7a49911a729edcd06d1a5438c804b3f",
+        "hangma_bot.policy.weights_v1": "6dc4f4bf263ce055d0c450e914b556ab5323ecf3290cf104c06d9547aeed0f77",
+        "hangma_bot.policy.white_discard_guard": "291c71dffe8dbd2709cefbe7c44d43261ff46ec7ba99afebb58bfb9c7141b70a"
+      },
+      "contract_files": {
+        "contracts/action-value-v1.json": "3c0b4d3a2fdd1f438e2e5d295e4269f578485032aeddad0eb558fdcce981d4a9",
+        "contracts/group-dev-v1.json": "1012c5d996f0bb913c4a29d36b493ebc5b81e959af496051ba9568ba7bcd08e4"
+      },
+      "entry_coverage_gaps": [],
+      "entry_edges": {
+        "module:hangma_bot": [],
+        "module:hangma_bot.adapters.official": [
+          "module:hangma_bot.adapters.official.auto_match",
+          "module:hangma_bot.adapters.official.game",
+          "module:hangma_bot.adapters.official.participant",
+          "module:hangma_bot.adapters.official.scheduler",
+          "module:hangma_bot.adapters.official.transport"
+        ],
+        "module:hangma_bot.adapters.official.action_gate": [
+          "module:hangma_bot.kernel.actions"
+        ],
+        "module:hangma_bot.adapters.official.auto_match": [
+          "module:hangma_bot.adapters.official.dto",
+          "module:hangma_bot.adapters.official.errors",
+          "module:hangma_bot.adapters.official.game",
+          "module:hangma_bot.adapters.official.notify",
+          "module:hangma_bot.adapters.official.projector",
+          "module:hangma_bot.adapters.official.request_audit",
+          "module:hangma_bot.adapters.official.scheduler",
+          "module:hangma_bot.adapters.official.transport",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.kernel.config"
+        ],
+        "module:hangma_bot.adapters.official.claim_interest": [],
+        "module:hangma_bot.adapters.official.deadline_clock": [],
+        "module:hangma_bot.adapters.official.discard_pacing": [
+          "module:hangma_bot.application.contracts"
+        ],
+        "module:hangma_bot.adapters.official.dto": [
+          "module:hangma_bot.adapters.official.errors",
+          "module:hangma_bot.kernel.actions"
+        ],
+        "module:hangma_bot.adapters.official.errors": [],
+        "module:hangma_bot.adapters.official.game": [
+          "module:hangma_bot.adapters.official.action_gate",
+          "module:hangma_bot.adapters.official.discard_pacing",
+          "module:hangma_bot.adapters.official.dto",
+          "module:hangma_bot.adapters.official.errors",
+          "module:hangma_bot.adapters.official.notify",
+          "module:hangma_bot.adapters.official.projector",
+          "module:hangma_bot.adapters.official.request_audit",
+          "module:hangma_bot.adapters.official.scheduler",
+          "module:hangma_bot.adapters.official.sync_state",
+          "module:hangma_bot.adapters.official.transport",
+          "module:hangma_bot.adapters.recording",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.hangma.catch_play",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.kernel.serialization"
+        ],
+        "module:hangma_bot.adapters.official.notify": [
+          "module:hangma_bot.adapters.official.errors",
+          "module:hangma_bot.adapters.official.request_audit",
+          "module:hangma_bot.adapters.official.transport"
+        ],
+        "module:hangma_bot.adapters.official.participant": [
+          "module:hangma_bot.adapters.official.dto",
+          "module:hangma_bot.adapters.official.errors",
+          "module:hangma_bot.adapters.official.game",
+          "module:hangma_bot.adapters.official.notify",
+          "module:hangma_bot.adapters.official.projector",
+          "module:hangma_bot.adapters.official.request_audit",
+          "module:hangma_bot.adapters.official.scheduler",
+          "module:hangma_bot.adapters.official.transport",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.kernel.config"
+        ],
+        "module:hangma_bot.adapters.official.projector": [
+          "module:hangma_bot.adapters.official.dto",
+          "module:hangma_bot.adapters.official.errors",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.adapters.official.request_audit": [
+          "module:hangma_bot.application.contracts"
+        ],
+        "module:hangma_bot.adapters.official.scheduler": [
+          "module:hangma_bot.adapters.official.deadline_clock"
+        ],
+        "module:hangma_bot.adapters.official.sync_state": [
+          "module:hangma_bot.adapters.official.claim_interest",
+          "module:hangma_bot.adapters.official.dto",
+          "module:hangma_bot.adapters.official.errors",
+          "module:hangma_bot.adapters.official.projector",
+          "module:hangma_bot.hangma.observation_rules",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.adapters.official.transport": [
+          "module:hangma_bot.adapters.official.dto",
+          "module:hangma_bot.adapters.official.errors"
+        ],
+        "module:hangma_bot.adapters.recording": [
+          "module:hangma_bot.adapters.recording.jsonl_sink",
+          "module:hangma_bot.adapters.recording.raw_events",
+          "module:hangma_bot.adapters.recording.redact",
+          "module:hangma_bot.adapters.recording.schema",
+          "module:hangma_bot.adapters.recording.summary",
+          "module:hangma_bot.adapters.recording.validator"
+        ],
+        "module:hangma_bot.adapters.recording.chain_piao": [
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.hangma.settlement",
+          "module:hangma_bot.hangma.special_rules",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.kernel.serialization"
+        ],
+        "module:hangma_bot.adapters.recording.jsonl_sink": [
+          "module:hangma_bot.adapters.recording.chain_piao",
+          "module:hangma_bot.adapters.recording.raw_events",
+          "module:hangma_bot.adapters.recording.redact",
+          "module:hangma_bot.adapters.recording.schema",
+          "module:hangma_bot.adapters.recording.summary",
+          "module:hangma_bot.application.contracts"
+        ],
+        "module:hangma_bot.adapters.recording.raw_events": [],
+        "module:hangma_bot.adapters.recording.redact": [],
+        "module:hangma_bot.adapters.recording.schema": [
+          "module:hangma_bot.application.contracts"
+        ],
+        "module:hangma_bot.adapters.recording.summary": [
+          "module:hangma_bot.adapters.recording.schema"
+        ],
+        "module:hangma_bot.adapters.recording.validator": [
+          "module:hangma_bot.adapters.recording.raw_events",
+          "module:hangma_bot.adapters.recording.redact",
+          "module:hangma_bot.adapters.recording.schema",
+          "module:hangma_bot.application.contracts"
+        ],
+        "module:hangma_bot.application.audit": [
+          "module:hangma_bot.application.audit_codec",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.application.deadline"
+        ],
+        "module:hangma_bot.application.audit_codec": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.outcome_codec",
+          "module:hangma_bot.kernel.serialization",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.application.auto_match_runtime": [
+          "module:hangma_bot.application.audit",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.application.decision_loop",
+          "module:hangma_bot.application.game_task",
+          "module:hangma_bot.application.ids",
+          "module:hangma_bot.application.participant_runtime",
+          "module:hangma_bot.application.tournament_supervisor",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.application.contracts": [
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.application.deadline": [
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.application.decision_loop": [
+          "module:hangma_bot.application.audit",
+          "module:hangma_bot.application.audit_codec",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.application.ids",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.kernel.serialization",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.application.game_task": [
+          "module:hangma_bot.application.audit",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.application.decision_loop",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.application.ids": [
+          "module:hangma_bot.kernel.actions"
+        ],
+        "module:hangma_bot.application.participant_runtime": [
+          "module:hangma_bot.application.audit",
+          "module:hangma_bot.application.audit_codec",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.application.decision_loop",
+          "module:hangma_bot.application.ids",
+          "module:hangma_bot.application.tournament_supervisor",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.application.tournament_supervisor": [
+          "module:hangma_bot.application.audit",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.application.decision_loop",
+          "module:hangma_bot.application.game_task",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.bootstrap": [
+          "module:hangma_bot.adapters.official",
+          "module:hangma_bot.adapters.official.deadline_clock",
+          "module:hangma_bot.adapters.official.scheduler",
+          "module:hangma_bot.adapters.recording",
+          "module:hangma_bot.application.audit_codec",
+          "module:hangma_bot.application.auto_match_runtime",
+          "module:hangma_bot.application.contracts",
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.application.ids",
+          "module:hangma_bot.application.participant_runtime",
+          "module:hangma_bot.application.tournament_supervisor",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.outcome_codec",
+          "module:hangma_bot.kernel.outcomes",
+          "module:hangma_bot.learning.outcome_model",
+          "module:hangma_bot.learning.sequence_model_artifact",
+          "module:hangma_bot.policy.action_value_policy",
+          "module:hangma_bot.policy.balanced_shadow",
+          "module:hangma_bot.policy.catch_play_probe",
+          "module:hangma_bot.policy.heuristic_v1",
+          "module:hangma_bot.policy.heuristic_v2",
+          "module:hangma_bot.policy.hu_upgrade_calibration",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.legacy_pass",
+          "module:hangma_bot.policy.outcome_policy",
+          "module:hangma_bot.policy.safe_fallback",
+          "module:hangma_bot.policy.sequence_model_policy",
+          "module:hangma_bot.policy.v2_hu_upgrade",
+          "module:hangma_bot.policy.weights_v1",
+          "module:hangma_bot.policy.white_discard_guard",
+          "module:hangma_bot.simulation",
+          "module:hangma_bot.simulation.artifacts"
+        ],
+        "module:hangma_bot.competition.outcome_utility": [
+          "module:hangma_bot.kernel.outcomes"
+        ],
+        "module:hangma_bot.hangma": [
+          "module:hangma_bot.hangma.engine"
+        ],
+        "module:hangma_bot.hangma._grouped_native": [],
+        "module:hangma_bot.hangma._standard": [
+          "module:hangma_bot.hangma._grouped_native",
+          "module:hangma_bot.hangma._standard_python"
+        ],
+        "module:hangma_bot.hangma._standard_python": [],
+        "module:hangma_bot.hangma.action_families": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.kernel.actions"
+        ],
+        "module:hangma_bot.hangma.candidate_facts": [
+          "module:hangma_bot.hangma.hand_analysis",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.hangma.public_tile_counts",
+          "module:hangma_bot.kernel.actions"
+        ],
+        "module:hangma_bot.hangma.catch_play": [
+          "module:hangma_bot.hangma.special_rules",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.emergency": [
+          "module:hangma_bot.hangma.catch_play",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.engine": [
+          "module:hangma_bot.hangma.action_families",
+          "module:hangma_bot.hangma.candidate_facts",
+          "module:hangma_bot.hangma.catch_play",
+          "module:hangma_bot.hangma.emergency",
+          "module:hangma_bot.hangma.hand_analysis",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.hangma.observation_rules",
+          "module:hangma_bot.hangma.progression_payload",
+          "module:hangma_bot.hangma.public_successor",
+          "module:hangma_bot.hangma.public_tile_counts",
+          "module:hangma_bot.hangma.settlement",
+          "module:hangma_bot.hangma.special_rules",
+          "module:hangma_bot.hangma.value_analysis",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.hand_analysis": [
+          "module:hangma_bot.hangma._standard",
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.kernel.actions"
+        ],
+        "module:hangma_bot.hangma.interface": [
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.internal_types": [
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.observation_rules": [
+          "module:hangma_bot.hangma.progression",
+          "module:hangma_bot.hangma.settlement",
+          "module:hangma_bot.hangma.special_rules",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.progression": [
+          "module:hangma_bot.hangma.hand_analysis",
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.hangma.settlement",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.progression_payload": [
+          "module:hangma_bot.hangma.hand_analysis",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.hangma.progression",
+          "module:hangma_bot.hangma.special_rules",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.public_successor": [
+          "module:hangma_bot.hangma.action_families",
+          "module:hangma_bot.hangma.candidate_facts",
+          "module:hangma_bot.hangma.hand_analysis",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.hangma.public_tile_counts",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config"
+        ],
+        "module:hangma_bot.hangma.public_tile_counts": [
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.hangma.special_rules",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.settlement": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.hangma.special_rules",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.special_rules": [
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.hangma.value_analysis": [
+          "module:hangma_bot.hangma.action_families",
+          "module:hangma_bot.hangma.candidate_facts",
+          "module:hangma_bot.hangma.hand_analysis",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.internal_types",
+          "module:hangma_bot.hangma.progression",
+          "module:hangma_bot.hangma.progression_payload",
+          "module:hangma_bot.hangma.public_tile_counts",
+          "module:hangma_bot.hangma.settlement",
+          "module:hangma_bot.hangma.special_rules",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.kernel": [],
+        "module:hangma_bot.kernel.actions": [],
+        "module:hangma_bot.kernel.config": [
+          "module:hangma_bot.kernel.actions"
+        ],
+        "module:hangma_bot.kernel.identity": [],
+        "module:hangma_bot.kernel.observation": [
+          "module:hangma_bot.kernel.actions"
+        ],
+        "module:hangma_bot.kernel.outcome_codec": [
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.kernel.outcomes",
+          "module:hangma_bot.kernel.serialization"
+        ],
+        "module:hangma_bot.kernel.outcomes": [],
+        "module:hangma_bot.kernel.serialization": [
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.learning.encoding": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.learning.key_encoding": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.learning.encoding"
+        ],
+        "module:hangma_bot.learning.outcome_model": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.kernel.outcome_codec",
+          "module:hangma_bot.kernel.outcomes"
+        ],
+        "module:hangma_bot.learning.sequence_encoding": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.learning.encoding",
+          "module:hangma_bot.learning.key_encoding"
+        ],
+        "module:hangma_bot.learning.sequence_model_artifact": [
+          "module:hangma_bot.learning.sequence_encoding",
+          "module:hangma_bot.learning.sequence_policy"
+        ],
+        "module:hangma_bot.learning.sequence_policy": [
+          "module:hangma_bot.learning.encoding",
+          "module:hangma_bot.learning.key_encoding",
+          "module:hangma_bot.learning.sequence_encoding"
+        ],
+        "module:hangma_bot.offline.evaluate": [
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.kernel.serialization",
+          "module:hangma_bot.offline.evaluation_results",
+          "module:hangma_bot.policy.action_value_policy",
+          "module:hangma_bot.policy.errors",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.offline.evaluation_results": [
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.identity",
+          "module:hangma_bot.kernel.serialization",
+          "module:hangma_bot.simulation.artifacts"
+        ],
+        "module:hangma_bot.offline.scoring_sources": [],
+        "module:hangma_bot.policy": [
+          "module:hangma_bot.policy.action_value",
+          "module:hangma_bot.policy.action_value_seeds",
+          "module:hangma_bot.policy.catch_play_probe",
+          "module:hangma_bot.policy.claim_if_legal",
+          "module:hangma_bot.policy.errors",
+          "module:hangma_bot.policy.heuristic_v1",
+          "module:hangma_bot.policy.heuristic_v2",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.safe_fallback",
+          "module:hangma_bot.policy.weighted_heuristic",
+          "module:hangma_bot.policy.weights",
+          "module:hangma_bot.policy.weights_v1",
+          "module:hangma_bot.policy.white_discard_guard"
+        ],
+        "module:hangma_bot.policy.action_value": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.policy.action_value_executor": [
+          "module:hangma_bot.policy.action_value"
+        ],
+        "module:hangma_bot.policy.action_value_policy": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.policy.action_value",
+          "module:hangma_bot.policy.action_value_executor",
+          "module:hangma_bot.policy.action_value_seeds",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.policy.action_value_seeds": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.policy.action_value",
+          "module:hangma_bot.policy.action_value_executor"
+        ],
+        "module:hangma_bot.policy.balanced_shadow": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.v2_hu_upgrade"
+        ],
+        "module:hangma_bot.policy.catch_play_probe": [
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.policy.claim_if_legal": [
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weighted_heuristic",
+          "module:hangma_bot.policy.weights"
+        ],
+        "module:hangma_bot.policy.errors": [],
+        "module:hangma_bot.policy.evaluation": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weights"
+        ],
+        "module:hangma_bot.policy.evaluation_v1": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "module:hangma_bot.policy.evaluation_v2": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.heuristic_adapter",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "module:hangma_bot.policy.heuristic_adapter": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.heuristic_v2",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "module:hangma_bot.policy.heuristic_v1": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.errors",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "module:hangma_bot.policy.heuristic_v2": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.errors",
+          "module:hangma_bot.policy.evaluation_v2",
+          "module:hangma_bot.policy.heuristic_adapter",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "module:hangma_bot.policy.heuristics": [
+          "module:hangma_bot.policy.heuristic_adapter",
+          "module:hangma_bot.policy.heuristics.chain_path_value",
+          "module:hangma_bot.policy.heuristics.expected_score_path_value",
+          "module:hangma_bot.policy.heuristics.four_component_path_value",
+          "module:hangma_bot.policy.heuristics.meld_opportunity_cost",
+          "module:hangma_bot.policy.heuristics.meld_waiting_conditional",
+          "module:hangma_bot.policy.heuristics.multiplier_path_potential",
+          "module:hangma_bot.policy.heuristics.seven_pairs_path_value",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "module:hangma_bot.policy.heuristics.chain_path_value": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.progression",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.heuristic_adapter"
+        ],
+        "module:hangma_bot.policy.heuristics.expected_score_path_value": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.progression",
+          "module:hangma_bot.hangma.settlement",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.heuristic_adapter",
+          "module:hangma_bot.policy.heuristics.four_component_path_value"
+        ],
+        "module:hangma_bot.policy.heuristics.four_component_path_value": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.progression",
+          "module:hangma_bot.hangma.special_rules",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.heuristic_adapter"
+        ],
+        "module:hangma_bot.policy.heuristics.meld_opportunity_cost": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.evaluation_v2",
+          "module:hangma_bot.policy.heuristic_adapter"
+        ],
+        "module:hangma_bot.policy.heuristics.meld_waiting_conditional": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.heuristic_adapter",
+          "module:hangma_bot.policy.heuristics.meld_opportunity_cost"
+        ],
+        "module:hangma_bot.policy.heuristics.multiplier_path_potential": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.heuristic_adapter"
+        ],
+        "module:hangma_bot.policy.heuristics.seven_pairs_path_value": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.heuristic_adapter"
+        ],
+        "module:hangma_bot.policy.hu_upgrade": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.policy.errors",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.value_one_draw",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "module:hangma_bot.policy.hu_upgrade_calibration": [
+          "module:hangma_bot.policy.hu_upgrade"
+        ],
+        "module:hangma_bot.policy.interface": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.kernel.outcomes"
+        ],
+        "module:hangma_bot.policy.legacy_pass": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.claim_if_legal",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weighted_heuristic"
+        ],
+        "module:hangma_bot.policy.outcome_policy": [
+          "module:hangma_bot.competition.outcome_utility",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.outcome_codec",
+          "module:hangma_bot.kernel.outcomes",
+          "module:hangma_bot.learning.outcome_model",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.policy.safe_fallback": [
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.policy.sequence_model_policy": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.outcome_codec",
+          "module:hangma_bot.learning.sequence_encoding",
+          "module:hangma_bot.learning.sequence_model_artifact",
+          "module:hangma_bot.learning.sequence_policy",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.policy.v2_hu_upgrade": [
+          "module:hangma_bot.policy.heuristic_v2",
+          "module:hangma_bot.policy.hu_upgrade",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "module:hangma_bot.policy.value_one_draw": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.errors",
+          "module:hangma_bot.policy.heuristic_v2",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "module:hangma_bot.policy.weighted_heuristic": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.errors",
+          "module:hangma_bot.policy.evaluation",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weights"
+        ],
+        "module:hangma_bot.policy.weights": [],
+        "module:hangma_bot.policy.weights_v1": [],
+        "module:hangma_bot.policy.white_discard_guard": [
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.interface"
+        ],
+        "module:hangma_bot.simulation": [
+          "module:hangma_bot.simulation.artifacts",
+          "module:hangma_bot.simulation.engine",
+          "module:hangma_bot.simulation.identity",
+          "module:hangma_bot.simulation.interface",
+          "module:hangma_bot.simulation.shuffle",
+          "module:hangma_bot.simulation.state"
+        ],
+        "module:hangma_bot.simulation.artifacts": [
+          "module:hangma_bot.hangma.hand_analysis",
+          "module:hangma_bot.kernel.identity"
+        ],
+        "module:hangma_bot.simulation.engine": [
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.progression",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.simulation.artifacts",
+          "module:hangma_bot.simulation.identity",
+          "module:hangma_bot.simulation.interface",
+          "module:hangma_bot.simulation.projection",
+          "module:hangma_bot.simulation.shuffle",
+          "module:hangma_bot.simulation.state"
+        ],
+        "module:hangma_bot.simulation.identity": [
+          "module:hangma_bot.kernel.identity"
+        ],
+        "module:hangma_bot.simulation.interface": [
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "module:hangma_bot.simulation.projection": [
+          "module:hangma_bot.hangma.progression",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.simulation.state"
+        ],
+        "module:hangma_bot.simulation.shuffle": [
+          "module:hangma_bot.kernel.actions"
+        ],
+        "module:hangma_bot.simulation.state": [
+          "module:hangma_bot.hangma.progression",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "tool:c1_runtime_double": [
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.observation"
+        ],
+        "tool:sitin_archive": [],
+        "tool:sitin_config": [
+          "module:hangma_bot.simulation.artifacts"
+        ],
+        "tool:sitin_deps": [],
+        "tool:sitin_execution_audit": [],
+        "tool:sitin_execution_profile": [
+          "module:hangma_bot.policy.action_value_executor",
+          "tool:sitin_execution_audit"
+        ],
+        "tool:sitin_feedback": [
+          "tool:sitin_execution_profile"
+        ],
+        "tool:sitin_gates": [
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.bootstrap",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.offline.evaluate",
+          "module:hangma_bot.offline.scoring_sources",
+          "module:hangma_bot.policy",
+          "module:hangma_bot.policy.heuristic_v2",
+          "module:hangma_bot.policy.heuristics",
+          "module:hangma_bot.policy.interface",
+          "tool:sitin_execution_profile"
+        ],
+        "tool:sitin_generate": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.action_value_executor",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "tool:sitin_m4_policy": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy.errors",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.evaluation_v2",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "tool:sitin_m4_recompute": [
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.bootstrap",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.offline.evaluate",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.evaluation_v2",
+          "module:hangma_bot.policy.heuristic_v2",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "tool:sitin_model_admission": [
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.policy",
+          "module:hangma_bot.policy.action_value",
+          "module:hangma_bot.policy.action_value_executor",
+          "module:hangma_bot.policy.action_value_seeds",
+          "tool:sitin_gates",
+          "tool:sitin_generate"
+        ],
+        "tool:sitin_natural_panel": [
+          "module:hangma_bot",
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.bootstrap",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.offline.evaluate",
+          "module:hangma_bot.offline.evaluation_results",
+          "module:hangma_bot.policy.action_value_policy",
+          "module:hangma_bot.policy.action_value_seeds",
+          "tool:sitin_archive",
+          "tool:sitin_execution_audit",
+          "tool:sitin_execution_profile",
+          "tool:sitin_gates",
+          "tool:sitin_search",
+          "tool:sitin_stage"
+        ],
+        "tool:sitin_opportunities": [
+          "module:hangma_bot",
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.bootstrap",
+          "module:hangma_bot.hangma.action_families",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.kernel.observation",
+          "module:hangma_bot.kernel.serialization",
+          "module:hangma_bot.offline.evaluate",
+          "module:hangma_bot.policy.interface",
+          "module:hangma_bot.simulation.interface",
+          "tool:c1_runtime_double",
+          "tool:sitin_execution_audit",
+          "tool:sitin_predicates_v4",
+          "tool:sitin_stage"
+        ],
+        "tool:sitin_power": [],
+        "tool:sitin_predicates_v4": [],
+        "tool:sitin_process": [],
+        "tool:sitin_real_behavior": [
+          "module:hangma_bot.application.audit_codec",
+          "module:hangma_bot.policy.action_value",
+          "module:hangma_bot.policy.action_value_executor",
+          "module:hangma_bot.policy.action_value_policy",
+          "module:hangma_bot.policy.action_value_seeds",
+          "module:hangma_bot.policy.interface",
+          "tool:sitin_deps",
+          "tool:sitin_execution_profile",
+          "tool:sitin_gates"
+        ],
+        "tool:sitin_scenario_classes": [
+          "module:hangma_bot.adapters.recording",
+          "module:hangma_bot.adapters.recording.chain_piao",
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.bootstrap",
+          "module:hangma_bot.hangma.action_families",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.hangma.settlement",
+          "module:hangma_bot.kernel.actions",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.offline.evaluate",
+          "module:hangma_bot.policy",
+          "module:hangma_bot.policy.evaluation_v1",
+          "module:hangma_bot.policy.heuristic_v2",
+          "module:hangma_bot.policy.heuristics",
+          "module:hangma_bot.policy.heuristics.four_component_path_value",
+          "module:hangma_bot.policy.heuristics.meld_opportunity_cost",
+          "module:hangma_bot.policy.interface"
+        ],
+        "tool:sitin_scheduler": [
+          "module:hangma_bot.policy",
+          "module:hangma_bot.policy.heuristics",
+          "module:hangma_bot.policy.weights_v1"
+        ],
+        "tool:sitin_search": [
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.hangma",
+          "module:hangma_bot.hangma._standard",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.hand_analysis",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.offline.evaluate",
+          "module:hangma_bot.policy",
+          "module:hangma_bot.policy.action_value_executor",
+          "module:hangma_bot.policy.action_value_policy",
+          "module:hangma_bot.policy.action_value_seeds"
+        ],
+        "tool:sitin_stage": [
+          "module:hangma_bot",
+          "module:hangma_bot.application.deadline",
+          "module:hangma_bot.bootstrap",
+          "module:hangma_bot.hangma.engine",
+          "module:hangma_bot.hangma.interface",
+          "module:hangma_bot.kernel.config",
+          "module:hangma_bot.offline.evaluate",
+          "module:hangma_bot.offline.evaluation_results",
+          "module:hangma_bot.offline.scoring_sources",
+          "module:hangma_bot.policy",
+          "module:hangma_bot.policy.heuristic_v1",
+          "module:hangma_bot.policy.heuristic_v2",
+          "module:hangma_bot.policy.heuristics",
+          "module:hangma_bot.policy.safe_fallback",
+          "module:hangma_bot.policy.white_discard_guard",
+          "tool:sitin_natural_panel"
+        ]
+      },
+      "entry_files": {
+        "sitin_archive.py": "d7ab6fb82ec8404094d129223a89d5d46f35c90af4d808bfa48fd77ab4474850",
+        "sitin_config.py": "3fe3c8803e4edb59a362a4222b2fca44e0cf5512c8e4395ea45053a39e23e2a8",
+        "sitin_deps.py": "291e121fde04058cbb4855de85b0a135e855122b951e67fb5c88630b095d7373",
+        "sitin_execution_audit.py": "442803d45f80fe924bf15d2c02f8a24a0f19341141bc099c84fdfc63e7ff5c28",
+        "sitin_execution_profile.py": "94236e69b434a2c0571500183742ed759012485a835ea805814696b80d7192ed",
+        "sitin_feedback.py": "601e3c3183ad05afef62aa6b9e47b7b3d2015036b2c0e77de4dcfdf2224ae65d",
+        "sitin_gates.py": "62ee3a93b7be0c7fa91745274cbd6f651335b8a1f6bb0f80f75fef579171a65c",
+        "sitin_generate.py": "476a57f0637304adcb33a3363564cfbf4fd6bad654b1a55af6d0e1cadc9e907a",
+        "sitin_m4_policy.py": "831de8ee2a1a832a1b781ea44deb38601671f86921788b8ca37aec299e568e1e",
+        "sitin_m4_recompute.py": "74c94462a45e50044f909aaa02c1a14c12578a98bca3798f4a5403c23bd20025",
+        "sitin_model_admission.py": "9922d17b0b32177866326c89d88053b37b821a75831edb5ec228caef2d9ff9b6",
+        "sitin_natural_panel.py": "df0ee8b4568482c85bf6387f41716428e065e797092003a003aee3cd3836bce4",
+        "sitin_opportunities.py": "5214aab12c96794ef18ab88fdd465dca15268af6eb2f393b13ddce0eae06db0f",
+        "sitin_power.py": "fba85d3ff9d628011e88ce8137c3deff3cb537485cf46ebd31f193f3efa53b27",
+        "sitin_process.py": "483de9b9b4099c3c4efa05358bdf76b0f695ca669142381389fa6454300bc5a5",
+        "sitin_real_behavior.py": "82da334575082aef204b10223a8e984b3fece5c15030f444bccb4bc43ff2acad",
+        "sitin_scenario_classes.py": "bcda7dd828324d2e18dd18102a3e00d9ca8b0d247a4b518cd57ffad108e5800b",
+        "sitin_scheduler.py": "39684bf5a8860af86bfae342371a255fe4a691726d5d761a3323dcba94f9959e",
+        "sitin_search.py": "3218f40f378c4e6f74358b4b1bb0b012d73a032ef63f7ff082add807896cbc69",
+        "sitin_stage.py": "266041e546cc1eb230d9fe3251983ab975e35e3d889d48ab4eafbc05923e8013"
+      },
+      "entry_missing": [],
+      "entry_module_closure": {
+        "hangma_bot": "825b34bad229681f1b84f4c4437bf77825abea1a25a15420b77eba7f5d8bc32f",
+        "hangma_bot.adapters.official": "26b542cc794f40b4f3fdeb2af5be8782556f3f850209f479531898ddfd689709",
+        "hangma_bot.adapters.official.action_gate": "5b35e0ff9e34ced5567c9dae1ce864edf923cfc0721bc788a49b1f4340a6f298",
+        "hangma_bot.adapters.official.auto_match": "51d3aa6c8f77c722d04138de9d33f7ad40728c14c307274fadb206cbac7c9c49",
+        "hangma_bot.adapters.official.claim_interest": "d9cae16e12feb44a2dde508ded7af43dfecd59c130cafe362ed69007f151b8e8",
+        "hangma_bot.adapters.official.deadline_clock": "3a9ffa1c05e88e13373d5b8fad6bd8fe674e68bdb9c817401007c7f128074723",
+        "hangma_bot.adapters.official.discard_pacing": "d18ed01e2f03ba22da012cfc5172e18f05a03ab9581c3413f7ca70126b289cb7",
+        "hangma_bot.adapters.official.dto": "2d0c3d604df09c6b7e5950aa195b7a682e434cb798a9a4932556258ed39d2c3e",
+        "hangma_bot.adapters.official.errors": "a915a0b125ae9f4371abfecd926eaf9ec93fe624914ef8e2990d1f1452a92a9c",
+        "hangma_bot.adapters.official.game": "021d145414897620d9aee36c07a79ce9beb65224a3d31f31f47dfc9aa69729fc",
+        "hangma_bot.adapters.official.notify": "bff3289c9700487b9f9342cdb63a8a022dbbf6068dc411d5b1eebccd80b63900",
+        "hangma_bot.adapters.official.participant": "ba4476ec63821003f4b86dcfdef08997f6354f44c749734eb127116a2d77cb70",
+        "hangma_bot.adapters.official.projector": "9793c05aaa4b43f44e73031d62e11953ecf0a381def339ec9b9af2be9a1292b7",
+        "hangma_bot.adapters.official.request_audit": "c1014de64d4cd5ed427ada7dda31217e937f59fd3ceab8208c464879a5dc1435",
+        "hangma_bot.adapters.official.scheduler": "bc414c4e9964b90b75386fc2aed1bce241b77d08ca00925e2eb8898fba98ee35",
+        "hangma_bot.adapters.official.sync_state": "59803701c67399e74d0f94fe9785c71ec64b1bce60267d08882593f2ea73d934",
+        "hangma_bot.adapters.official.transport": "bd5080b0b510bcd28d4c1afeed4dce6617a09e25a876c2d64e4a5c5454a01381",
+        "hangma_bot.adapters.recording": "b88785ffd47c975965c0fae2aac307f27681ebb5c5fc3030b2b760ea2ef675fe",
+        "hangma_bot.adapters.recording.chain_piao": "2bddff35f313c5f0a83d61b1553c6a55c1dfdf1de7f771f1e98a5ff547f8a5c1",
+        "hangma_bot.adapters.recording.jsonl_sink": "898e9615ca2bde629ae38661d8c573148425606e322fd05b46757f727dac45c4",
+        "hangma_bot.adapters.recording.raw_events": "6be0476b8265788aaa815104240bbed1402c785a3c570ef828fffb4cb383fa50",
+        "hangma_bot.adapters.recording.redact": "f50e8165c5c8acee39affeaa921515f7fbfa3a0a29309b9a1fd03385ee408d69",
+        "hangma_bot.adapters.recording.schema": "9c6f1e11e9512e95dc7cc8cd9f49cd11406ad9a4ee85bdd7d8f03b5e5f1d903d",
+        "hangma_bot.adapters.recording.summary": "fe909762988a3b53104903a5389da96c1f88fb77f80e2296d6da67390b532c8d",
+        "hangma_bot.adapters.recording.validator": "3b41c40abac5c1125cf4adec60f1bbf8ac06596db361e54dd3a84c7db4196e21",
+        "hangma_bot.application.audit": "9c286d5e864af49452e3232e68b7be7037008e3fb2fc3a56e7cc8b28eed92f5d",
+        "hangma_bot.application.audit_codec": "411b1447716d645c0c62c6891ae29b0c821dad093ccbe7ddcfb5a0a946be0c27",
+        "hangma_bot.application.auto_match_runtime": "9198707a5ec732cac6a2ab3a0bced9a8589d14d28a3fcdf26b3c7ab56e51d6cb",
+        "hangma_bot.application.contracts": "cbece50eda81a376b5be923f5c894a96f67ea65f82b3e021fdbf592e242e53fa",
+        "hangma_bot.application.deadline": "4d280f95ed8dd29a31fb485c6267ff553fd74fe2b2d8d60b3ca596bf0c9d8496",
+        "hangma_bot.application.decision_loop": "eb7b0184f741e8a1af8f1755871b825ab0e47012b0bfec3476044926c044e057",
+        "hangma_bot.application.game_task": "f4cf03af311be3359631365ee75aec8087a9ccd6d55129e431695c638b047307",
+        "hangma_bot.application.ids": "9e5466f3c9e623a465353fb41bd6e04e877b78469053c5d180ed787770ea9031",
+        "hangma_bot.application.participant_runtime": "0856b229e7364fc38974fdbdd1fa1982b65ca270ce0bef538051b003a1329509",
+        "hangma_bot.application.tournament_supervisor": "0ef76b2ab973ca8b708572391861df9dc6a289fe887e9e0892b2aa29ebd9a969",
+        "hangma_bot.bootstrap": "62028844c9db7eb9d9d96c9afe5848a0851bddc604d6504a18a9d892fae0e0f8",
+        "hangma_bot.competition.outcome_utility": "f33db3c76ac9eeb7cf8069e0a7a688df23596e542a284915b3ef7e91262e2ce2",
+        "hangma_bot.hangma": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c",
+        "hangma_bot.hangma._grouped_native": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6",
+        "hangma_bot.hangma._standard": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98",
+        "hangma_bot.hangma._standard_python": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7",
+        "hangma_bot.hangma.action_families": "90187a1369f87c499418c2bc929f828661657cf3b835edd81a4a52d2589154c1",
+        "hangma_bot.hangma.candidate_facts": "1318a08e8d51c67d1f07256dfd7f6d8d90bb9b85fc7d1e09b7d9146c40df08f9",
+        "hangma_bot.hangma.catch_play": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693",
+        "hangma_bot.hangma.emergency": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7",
+        "hangma_bot.hangma.engine": "15c0e2659f53ec794c362741dbf52ab2116aa4a50dfaabf6d5492ddb6bd2f1b3",
+        "hangma_bot.hangma.hand_analysis": "50a6fde8eacd080dd1eaecf656bb5f55ee6bb30337330f45b65df698d6b1ff7e",
+        "hangma_bot.hangma.interface": "6fd456a6ac24eb0803bd2c2f38b2742df91bdc18faa5b74b68314e072a84bf43",
+        "hangma_bot.hangma.internal_types": "f7763208b1dae156f85e89df49a72d84443b9b6d2087642aca0bc46c428f4476",
+        "hangma_bot.hangma.observation_rules": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486",
+        "hangma_bot.hangma.progression": "0aa4f45935114f711011c5b41f28c61a4ad4b54b7f8551126c38109911f2a537",
+        "hangma_bot.hangma.progression_payload": "ede2e3f09adb2db45d2a14f5166abdcd9e683041a7c76072f2c8a89fbcfc19b5",
+        "hangma_bot.hangma.public_successor": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f",
+        "hangma_bot.hangma.public_tile_counts": "ffbe6bb3fb75e0970bddf3d377681f3a9fc98704c02d3ec29084ccd1344d6e29",
+        "hangma_bot.hangma.settlement": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4",
+        "hangma_bot.hangma.special_rules": "3592e931baae4e6e8da290dc44acd0ddb1673ec6831a2262244a4761976be487",
+        "hangma_bot.hangma.value_analysis": "a843a3d5f6123bb2e998b6710cb9727802db2b9fd72ec96cbddd9017d1729102",
+        "hangma_bot.kernel": "1c7bc3c6883b2d46b28da917ed9aaa3cdd23c6f70530b5119475cea30e6ba42b",
+        "hangma_bot.kernel.actions": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9",
+        "hangma_bot.kernel.config": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97",
+        "hangma_bot.kernel.identity": "1e8a12c2394b9bd2370027d1d7e04c1b29e9bcad0764302f3047ac84aca06640",
+        "hangma_bot.kernel.observation": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6",
+        "hangma_bot.kernel.outcome_codec": "95508f188033654f1dbb0930386a800120c05a164aa3f2f5d9d122e257d693e6",
+        "hangma_bot.kernel.outcomes": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6",
+        "hangma_bot.kernel.serialization": "85d4a98d9c735090670110376f7bba6066710909fd7f8dcf95fcd45dac3ce56e",
+        "hangma_bot.learning.encoding": "78e91f7243810efd1dc9e56ff46630ce3ddf4cb1d4687743127ada1589e5c4d5",
+        "hangma_bot.learning.key_encoding": "5210de5ca49ed4b4e7925fc06f68ee6bd9fcc0faee1d880dc3272360f20f5cf1",
+        "hangma_bot.learning.outcome_model": "eb18489e3a985c21d1cb70f2d0e81c58ffb86f5af249a670dedf4baf79a9f21d",
+        "hangma_bot.learning.sequence_encoding": "f446c9dd4816001dbfc24fbcfa5fafb80e603685ab68d044cefc92623fed6ebf",
+        "hangma_bot.learning.sequence_model_artifact": "45471fa64a8178526a63dcf2dd13dd6f36c6d01eadfafff743715497b0b05589",
+        "hangma_bot.learning.sequence_policy": "4527bb54249905bd8af98d7d01f9dc045cc406452aa4a06432566604fa92224e",
+        "hangma_bot.offline.evaluate": "dc27d2559ef9d68149d26aecbc741699640ccafbe9a096d74b6265e463de1383",
+        "hangma_bot.offline.evaluation_results": "2ea2d68f158f054f283f98a319143d52d61b57cfdf79bc532235645069c54da7",
+        "hangma_bot.offline.scoring_sources": "da75c44b1919ccd9338ee0469391882be8aaaaeb079775223b5b43be5036d1e0",
+        "hangma_bot.policy": "acee94d5a15119784da66d3e1e18f2f6ade3520bdb2762a88b4b5ffdcda80331",
+        "hangma_bot.policy.action_value": "52cad37e49bf522ecb250f2c53bce63ebf29a78d92de256d3ce7a7db4e3e2c47",
+        "hangma_bot.policy.action_value_executor": "46bfc6849d9425ab3c3c28fe204eb0be0297a63f5c5276d65a54986e8dea93d2",
+        "hangma_bot.policy.action_value_policy": "cf0a246d6ab003096bde16c1b80f8da395b6988d5d167ffd86339aa5f2326c2a",
+        "hangma_bot.policy.action_value_seeds": "989564b1da2ad9546d10934d9048dc1c30ad3a7e053c180f83ab78d4fd339cb8",
+        "hangma_bot.policy.balanced_shadow": "f0a72eed0d5112ab7b5b24c5126fbfc95c6a6b0a8c60cea6b6c4826039e0bd37",
+        "hangma_bot.policy.catch_play_probe": "1c12bbe29c7ec0740c8d599869477eaa96c739a465b8b2a8812c7ee8a0f8366d",
+        "hangma_bot.policy.claim_if_legal": "acd4c887d59cd5f84e9ea2a6ab6c698278110623af0e2bb26a2f1b992d6a8f43",
+        "hangma_bot.policy.errors": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9",
+        "hangma_bot.policy.evaluation": "92f68d0f0eb384cff1444bdc84937fb93d90f398c9ac7b803e00f23d800d86e1",
+        "hangma_bot.policy.evaluation_v1": "b3198fcfc030a235873f67051bdf859f04a97b3290c4bd6783e870b7d7330fe0",
+        "hangma_bot.policy.evaluation_v2": "8df42443369cc6fa1702934660301f65991df509fa3e8d48823a206c5f4da830",
+        "hangma_bot.policy.heuristic_adapter": "f033610a9581842b9ee56e5008bb5feade95d31e7f1f80a0d4bc0f2a2501db45",
+        "hangma_bot.policy.heuristic_v1": "fb924e32375a033f84f6566160e761102308e3b145c7a5caa885db6f99affd4c",
+        "hangma_bot.policy.heuristic_v2": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af",
+        "hangma_bot.policy.heuristics": "f6261f9eec556b2c49064c8efd28cdfb7a219355368e0ec483c72e299f1c768b",
+        "hangma_bot.policy.heuristics.chain_path_value": "8249e7e1ed6e7ab2ccf0fa9cad89fdec77bcfe4d9f9f5151ead92f77b75e686c",
+        "hangma_bot.policy.heuristics.expected_score_path_value": "59a3dd39206477ec78cf8000eb2490f3d5b4def27bb8158821c5e1cb3a217e49",
+        "hangma_bot.policy.heuristics.four_component_path_value": "cad99b4ac0cc2800a73cefc6c514dc8810ad9c58002e56a39610fc1b3d7369cc",
+        "hangma_bot.policy.heuristics.meld_opportunity_cost": "37be910e3f467d67a45dbefaa6859177208ef9b4b287eaf11e88fbdab9ef60de",
+        "hangma_bot.policy.heuristics.meld_waiting_conditional": "b022f711b40eb1fd0460dd6b4169e0c8dc7ba8cd9b2050691edccdfea7584268",
+        "hangma_bot.policy.heuristics.multiplier_path_potential": "1ba12987535fba2edfbab1422ecac545444629328259233652a7e35fbf1622e2",
+        "hangma_bot.policy.heuristics.seven_pairs_path_value": "6ec111cdb73a51b6eb7085af9414b42d405394c6dbd149b689b99608bfcb65aa",
+        "hangma_bot.policy.hu_upgrade": "52e65eb5aa6b74880059bccea4b11be05516df4dc9e7bb3ead6c0df526322290",
+        "hangma_bot.policy.hu_upgrade_calibration": "20fc79df1050144bcae69236a5d34656fa1afbbb11d8c86d80d3a5319733a8a4",
+        "hangma_bot.policy.interface": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa",
+        "hangma_bot.policy.legacy_pass": "0345d91ebc567b1d00b93fe91735f2bb3b7fed1dd99fa3470a182e76344657ba",
+        "hangma_bot.policy.outcome_policy": "c3f0f9e9055a080dfc857ce50d0aa11f2c889a56a30be1971a61d39f1b0644fc",
+        "hangma_bot.policy.safe_fallback": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281",
+        "hangma_bot.policy.sequence_model_policy": "8dc61dd151785c23180fa6e50a3f7ee77c392d9e22ff13ef9813489863492614",
+        "hangma_bot.policy.v2_hu_upgrade": "5eb8bea746ea00e153f1191d2c7b5340621b6ee827e0769a8cda24dd830502f7",
+        "hangma_bot.policy.value_one_draw": "dd22ec5dc27c8b16fdf539bff833a42c7fc9e08973337387011da4939126c612",
+        "hangma_bot.policy.weighted_heuristic": "3228a68f544466d16bf5ab926fbb3a3ec7960509aed70bf56571f33d1af08bc5",
+        "hangma_bot.policy.weights": "385ecefe548eea7c4490e4efa2aa54d0c7a49911a729edcd06d1a5438c804b3f",
+        "hangma_bot.policy.weights_v1": "6dc4f4bf263ce055d0c450e914b556ab5323ecf3290cf104c06d9547aeed0f77",
+        "hangma_bot.policy.white_discard_guard": "291c71dffe8dbd2709cefbe7c44d43261ff46ec7ba99afebb58bfb9c7141b70a",
+        "hangma_bot.simulation": "9940e70b041e4729b56d825b8f85abec12594cf25a84b8672a927ce20b29e844",
+        "hangma_bot.simulation.artifacts": "0176f939b276e9ee22c9e72e42939d1e04b2c35aa5c6273d43dab731324e4a32",
+        "hangma_bot.simulation.engine": "91dd2134acc27d67fdf6d927c568eafb0c2397eed35defe25ed9c912dad9ab57",
+        "hangma_bot.simulation.identity": "8087385814bdb604ea92fcd757e111f430c3d0a53a1bd08ddedfee35efe0e58e",
+        "hangma_bot.simulation.interface": "7f1262c0cd75249627eaf8031a410fbff2262940ef7a9923f1b8c18721b76d6f",
+        "hangma_bot.simulation.projection": "c98aaa4204115657ed2c20a24bf13fb525f48dc4e298ed7df67580cfb9682007",
+        "hangma_bot.simulation.shuffle": "5e8597e06dc7d94e8aa2825f066df5faef47c2298b1c1919bccbf2a7756f91f5",
+        "hangma_bot.simulation.state": "f43e6f283912eff8662f456a4685b0336ac256a86f1eebdd5bc5925e6420fadf"
+      },
+      "entry_tool_closure": {
+        "c1_runtime_double.py": "ee80d8414aa03d42f62fa30da221e1673056313e2cedb145d11162181973b319",
+        "sitin_archive.py": "d7ab6fb82ec8404094d129223a89d5d46f35c90af4d808bfa48fd77ab4474850",
+        "sitin_config.py": "3fe3c8803e4edb59a362a4222b2fca44e0cf5512c8e4395ea45053a39e23e2a8",
+        "sitin_deps.py": "291e121fde04058cbb4855de85b0a135e855122b951e67fb5c88630b095d7373",
+        "sitin_execution_audit.py": "442803d45f80fe924bf15d2c02f8a24a0f19341141bc099c84fdfc63e7ff5c28",
+        "sitin_execution_profile.py": "94236e69b434a2c0571500183742ed759012485a835ea805814696b80d7192ed",
+        "sitin_feedback.py": "601e3c3183ad05afef62aa6b9e47b7b3d2015036b2c0e77de4dcfdf2224ae65d",
+        "sitin_gates.py": "62ee3a93b7be0c7fa91745274cbd6f651335b8a1f6bb0f80f75fef579171a65c",
+        "sitin_generate.py": "476a57f0637304adcb33a3363564cfbf4fd6bad654b1a55af6d0e1cadc9e907a",
+        "sitin_m4_policy.py": "831de8ee2a1a832a1b781ea44deb38601671f86921788b8ca37aec299e568e1e",
+        "sitin_m4_recompute.py": "74c94462a45e50044f909aaa02c1a14c12578a98bca3798f4a5403c23bd20025",
+        "sitin_model_admission.py": "9922d17b0b32177866326c89d88053b37b821a75831edb5ec228caef2d9ff9b6",
+        "sitin_natural_panel.py": "df0ee8b4568482c85bf6387f41716428e065e797092003a003aee3cd3836bce4",
+        "sitin_opportunities.py": "5214aab12c96794ef18ab88fdd465dca15268af6eb2f393b13ddce0eae06db0f",
+        "sitin_power.py": "fba85d3ff9d628011e88ce8137c3deff3cb537485cf46ebd31f193f3efa53b27",
+        "sitin_predicates_v4.py": "023a691196a2d23d4b1e41d70a7f478945193cf993f6b32b5ea66eda1f0984c3",
+        "sitin_process.py": "483de9b9b4099c3c4efa05358bdf76b0f695ca669142381389fa6454300bc5a5",
+        "sitin_real_behavior.py": "82da334575082aef204b10223a8e984b3fece5c15030f444bccb4bc43ff2acad",
+        "sitin_scenario_classes.py": "bcda7dd828324d2e18dd18102a3e00d9ca8b0d247a4b518cd57ffad108e5800b",
+        "sitin_scheduler.py": "39684bf5a8860af86bfae342371a255fe4a691726d5d761a3323dcba94f9959e",
+        "sitin_search.py": "3218f40f378c4e6f74358b4b1bb0b012d73a032ef63f7ff082add807896cbc69",
+        "sitin_stage.py": "266041e546cc1eb230d9fe3251983ab975e35e3d889d48ab4eafbc05923e8013"
+      },
+      "missing_modules": [],
+      "module_closure": {
+        "hangma_bot.hangma._grouped_native": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6",
+        "hangma_bot.hangma._standard": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98",
+        "hangma_bot.hangma._standard_python": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7",
+        "hangma_bot.hangma.action_families": "90187a1369f87c499418c2bc929f828661657cf3b835edd81a4a52d2589154c1",
+        "hangma_bot.hangma.candidate_facts": "1318a08e8d51c67d1f07256dfd7f6d8d90bb9b85fc7d1e09b7d9146c40df08f9",
+        "hangma_bot.hangma.catch_play": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693",
+        "hangma_bot.hangma.emergency": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7",
+        "hangma_bot.hangma.engine": "15c0e2659f53ec794c362741dbf52ab2116aa4a50dfaabf6d5492ddb6bd2f1b3",
+        "hangma_bot.hangma.hand_analysis": "50a6fde8eacd080dd1eaecf656bb5f55ee6bb30337330f45b65df698d6b1ff7e",
+        "hangma_bot.hangma.interface": "6fd456a6ac24eb0803bd2c2f38b2742df91bdc18faa5b74b68314e072a84bf43",
+        "hangma_bot.hangma.internal_types": "f7763208b1dae156f85e89df49a72d84443b9b6d2087642aca0bc46c428f4476",
+        "hangma_bot.hangma.observation_rules": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486",
+        "hangma_bot.hangma.progression": "0aa4f45935114f711011c5b41f28c61a4ad4b54b7f8551126c38109911f2a537",
+        "hangma_bot.hangma.progression_payload": "ede2e3f09adb2db45d2a14f5166abdcd9e683041a7c76072f2c8a89fbcfc19b5",
+        "hangma_bot.hangma.public_successor": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f",
+        "hangma_bot.hangma.public_tile_counts": "ffbe6bb3fb75e0970bddf3d377681f3a9fc98704c02d3ec29084ccd1344d6e29",
+        "hangma_bot.hangma.settlement": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4",
+        "hangma_bot.hangma.special_rules": "3592e931baae4e6e8da290dc44acd0ddb1673ec6831a2262244a4761976be487",
+        "hangma_bot.hangma.value_analysis": "a843a3d5f6123bb2e998b6710cb9727802db2b9fd72ec96cbddd9017d1729102",
+        "hangma_bot.kernel.actions": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9",
+        "hangma_bot.kernel.config": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97",
+        "hangma_bot.kernel.identity": "1e8a12c2394b9bd2370027d1d7e04c1b29e9bcad0764302f3047ac84aca06640",
+        "hangma_bot.kernel.observation": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6",
+        "hangma_bot.kernel.outcomes": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6",
+        "hangma_bot.policy.action_value": "52cad37e49bf522ecb250f2c53bce63ebf29a78d92de256d3ce7a7db4e3e2c47",
+        "hangma_bot.policy.action_value_executor": "46bfc6849d9425ab3c3c28fe204eb0be0297a63f5c5276d65a54986e8dea93d2",
+        "hangma_bot.policy.action_value_policy": "cf0a246d6ab003096bde16c1b80f8da395b6988d5d167ffd86339aa5f2326c2a",
+        "hangma_bot.policy.action_value_seeds": "989564b1da2ad9546d10934d9048dc1c30ad3a7e053c180f83ab78d4fd339cb8",
+        "hangma_bot.policy.interface": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa",
+        "hangma_bot.simulation.artifacts": "0176f939b276e9ee22c9e72e42939d1e04b2c35aa5c6273d43dab731324e4a32",
+        "hangma_bot.simulation.engine": "91dd2134acc27d67fdf6d927c568eafb0c2397eed35defe25ed9c912dad9ab57",
+        "hangma_bot.simulation.identity": "8087385814bdb604ea92fcd757e111f430c3d0a53a1bd08ddedfee35efe0e58e",
+        "hangma_bot.simulation.interface": "7f1262c0cd75249627eaf8031a410fbff2262940ef7a9923f1b8c18721b76d6f",
+        "hangma_bot.simulation.projection": "c98aaa4204115657ed2c20a24bf13fb525f48dc4e298ed7df67580cfb9682007",
+        "hangma_bot.simulation.shuffle": "5e8597e06dc7d94e8aa2825f066df5faef47c2298b1c1919bccbf2a7756f91f5",
+        "hangma_bot.simulation.state": "f43e6f283912eff8662f456a4685b0336ac256a86f1eebdd5bc5925e6420fadf"
+      },
+      "roots": [
+        "hangma_bot.hangma.candidate_facts",
+        "hangma_bot.hangma.engine",
+        "hangma_bot.hangma.interface",
+        "hangma_bot.hangma.progression_payload",
+        "hangma_bot.hangma.value_analysis",
+        "hangma_bot.policy.action_value",
+        "hangma_bot.policy.action_value_executor",
+        "hangma_bot.policy.action_value_policy",
+        "hangma_bot.policy.action_value_seeds",
+        "hangma_bot.simulation.engine",
+        "hangma_bot.simulation.identity",
+        "hangma_bot.simulation.projection"
+      ],
+      "schema": "sitin-action-value-frozen-manifest/4",
+      "surfaces": {
+        "analysis_config": {
+          "module_sha256": {
+            "hangma_bot.hangma.interface": "6fd456a6ac24eb0803bd2c2f38b2742df91bdc18faa5b74b68314e072a84bf43"
+          },
+          "value_analysis_limits": {
+            "max_expansions": 2048,
+            "max_routes_per_candidate": 128
+          }
+        },
+        "author_feedback_mode": "full_v1",
+        "baseline": {
+          "baseline_id": "v2-baseline-frozen",
+          "entry_digests": {
+            "hangma_bot.policy.evaluation_v2": "8df42443369cc6fa1702934660301f65991df509fa3e8d48823a206c5f4da830",
+            "hangma_bot.policy.heuristic_v1": "fb924e32375a033f84f6566160e761102308e3b145c7a5caa885db6f99affd4c",
+            "hangma_bot.policy.heuristic_v2": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af",
+            "hangma_bot.policy.weights": "385ecefe548eea7c4490e4efa2aa54d0c7a49911a729edcd06d1a5438c804b3f",
+            "hangma_bot.policy.white_discard_guard": "291c71dffe8dbd2709cefbe7c44d43261ff46ec7ba99afebb58bfb9c7141b70a"
+          },
+          "missing": [],
+          "modules": {
+            "hangma_bot.hangma.interface": "6fd456a6ac24eb0803bd2c2f38b2742df91bdc18faa5b74b68314e072a84bf43",
+            "hangma_bot.kernel.actions": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9",
+            "hangma_bot.kernel.observation": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6",
+            "hangma_bot.kernel.outcomes": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6",
+            "hangma_bot.policy.errors": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9",
+            "hangma_bot.policy.evaluation_v1": "b3198fcfc030a235873f67051bdf859f04a97b3290c4bd6783e870b7d7330fe0",
+            "hangma_bot.policy.evaluation_v2": "8df42443369cc6fa1702934660301f65991df509fa3e8d48823a206c5f4da830",
+            "hangma_bot.policy.heuristic_adapter": "f033610a9581842b9ee56e5008bb5feade95d31e7f1f80a0d4bc0f2a2501db45",
+            "hangma_bot.policy.heuristic_v1": "fb924e32375a033f84f6566160e761102308e3b145c7a5caa885db6f99affd4c",
+            "hangma_bot.policy.heuristic_v2": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af",
+            "hangma_bot.policy.interface": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa",
+            "hangma_bot.policy.weights": "385ecefe548eea7c4490e4efa2aa54d0c7a49911a729edcd06d1a5438c804b3f",
+            "hangma_bot.policy.weights_v1": "6dc4f4bf263ce055d0c450e914b556ab5323ecf3290cf104c06d9547aeed0f77",
+            "hangma_bot.policy.white_discard_guard": "291c71dffe8dbd2709cefbe7c44d43261ff46ec7ba99afebb58bfb9c7141b70a"
+          },
+          "roots": [
+            "hangma_bot.policy.heuristic_v2",
+            "hangma_bot.policy.evaluation_v2",
+            "hangma_bot.policy.weights",
+            "hangma_bot.policy.white_discard_guard",
+            "hangma_bot.policy.heuristic_v1"
+          ]
+        },
+        "development_behavior_panel": null,
+        "entry_graph": {
+          "coverage_gaps": [],
+          "entries": [
+            "sitin_archive.py",
+            "sitin_config.py",
+            "sitin_deps.py",
+            "sitin_execution_audit.py",
+            "sitin_execution_profile.py",
+            "sitin_feedback.py",
+            "sitin_gates.py",
+            "sitin_generate.py",
+            "sitin_m4_policy.py",
+            "sitin_m4_recompute.py",
+            "sitin_model_admission.py",
+            "sitin_natural_panel.py",
+            "sitin_opportunities.py",
+            "sitin_power.py",
+            "sitin_process.py",
+            "sitin_real_behavior.py",
+            "sitin_scenario_classes.py",
+            "sitin_scheduler.py",
+            "sitin_search.py",
+            "sitin_stage.py"
+          ],
+          "missing": [],
+          "module_nodes": 118,
+          "nodes": 140,
+          "note": "真实装配入口（编排状态机 + 桌赛执行件 + 已登记 sibling）→ 第一方模块 / 同目录工具模块的传递闭包；桌赛驱动与组合根在内，见 entry_edges",
+          "tool_nodes": 22
+        },
+        "executor": {
+          "modules": {
+            "hangma_bot.policy.action_value_executor": "46bfc6849d9425ab3c3c28fe204eb0be0297a63f5c5276d65a54986e8dea93d2"
+          },
+          "version": "action-value-executor/6"
+        },
+        "family_channel": {
+          "declared": null,
+          "enabled": false,
+          "enabled_families": [
+            "branch"
+          ],
+          "families": [
+            "baotou",
+            "branch",
+            "chain",
+            "four_white"
+          ],
+          "family": null,
+          "inactive_families": [
+            "chain",
+            "four_white",
+            "baotou"
+          ],
+          "note": "家族通道**按开轮显式声明启用**（plan.family_channel）：缺省 = 不接线、零家族评价、零行为变化；启用时身份必须能区分「哪个族」与**本版启用集合**（S4：仅 branch，其余显式 inactive 并由调度跳过），故本面落声明原文、解析族名与范围状态",
+          "problems": [],
+          "scope": {
+            "reason": "家族名 '' 不在本版登记范围内（启用 ['branch']；显式 inactive ['chain', 'four_white', 'baotou']）：既不接线也不猜测",
+            "status": "unknown",
+            "stop_reason": "family_refresh_inactive_family_skipped"
+          }
+        },
+        "family_refresh": {
+          "count": 0,
+          "declarations": [],
+          "note": "开轮声明的家族刷新批（显式根声明：子场景 × 对手情景 × 面板种子 × 根序号 × 座位数）；逐条原文与派生根身份进摘要",
+          "problems": []
+        },
+        "opponent": {
+          "contract_sha256": "1012c5d996f0bb913c4a29d36b493ebc5b81e959af496051ba9568ba7bcd08e4",
+          "contracts": {
+            "contracts/action-value-v1.json": "3c0b4d3a2fdd1f438e2e5d295e4269f578485032aeddad0eb558fdcce981d4a9",
+            "contracts/group-dev-v1.json": "1012c5d996f0bb913c4a29d36b493ebc5b81e959af496051ba9568ba7bcd08e4"
+          },
+          "scenario": null
+        },
+        "panel": {
+          "generators": {
+            "conditional": "scripted-prefix-fixture-v1",
+            "natural": "natural-opening-panel-v2",
+            "stage_account_mode": "per_table_completed_account_v1"
+          },
+          "modules": {
+            "sitin_natural_panel.py": "df0ee8b4568482c85bf6387f41716428e065e797092003a003aee3cd3836bce4",
+            "sitin_opportunities.py": "5214aab12c96794ef18ab88fdd465dca15268af6eb2f393b13ddce0eae06db0f",
+            "sitin_predicates_v4.py": "023a691196a2d23d4b1e41d70a7f478945193cf993f6b32b5ea66eda1f0984c3"
+          }
+        },
+        "projection": {
+          "digest": "a16790e8094c62b07f1bae3050efa4bcbedfb7afd742718ae14125cb69dac4b5",
+          "modules": {
+            "hangma_bot.policy.action_value": "52cad37e49bf522ecb250f2c53bce63ebf29a78d92de256d3ce7a7db4e3e2c47",
+            "hangma_bot.policy.action_value_policy": "cf0a246d6ab003096bde16c1b80f8da395b6988d5d167ffd86339aa5f2326c2a",
+            "hangma_bot.policy.action_value_seeds": "989564b1da2ad9546d10934d9048dc1c30ad3a7e053c180f83ab78d4fd339cb8"
+          }
+        },
+        "root_purpose": {
+          "generation_mode": null,
+          "natural_opponents": [
+            "H",
+            "M"
+          ],
+          "natural_roots": null,
+          "natural_seats": null,
+          "operator": null,
+          "opponent": null,
+          "panel_seed": null,
+          "predicate": null,
+          "prefix_source": null,
+          "seed_name": null
+        },
+        "rules": {
+          "digest": "d84d310ef6ad94af94b6f809fc9d558b95897c209083b61b1b640a037458b16e",
+          "modules": {
+            "hangma_bot.hangma._grouped_native": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6",
+            "hangma_bot.hangma._standard": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98",
+            "hangma_bot.hangma._standard_python": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7",
+            "hangma_bot.hangma.action_families": "90187a1369f87c499418c2bc929f828661657cf3b835edd81a4a52d2589154c1",
+            "hangma_bot.hangma.candidate_facts": "1318a08e8d51c67d1f07256dfd7f6d8d90bb9b85fc7d1e09b7d9146c40df08f9",
+            "hangma_bot.hangma.catch_play": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693",
+            "hangma_bot.hangma.emergency": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7",
+            "hangma_bot.hangma.engine": "15c0e2659f53ec794c362741dbf52ab2116aa4a50dfaabf6d5492ddb6bd2f1b3",
+            "hangma_bot.hangma.hand_analysis": "50a6fde8eacd080dd1eaecf656bb5f55ee6bb30337330f45b65df698d6b1ff7e",
+            "hangma_bot.hangma.interface": "6fd456a6ac24eb0803bd2c2f38b2742df91bdc18faa5b74b68314e072a84bf43",
+            "hangma_bot.hangma.internal_types": "f7763208b1dae156f85e89df49a72d84443b9b6d2087642aca0bc46c428f4476",
+            "hangma_bot.hangma.observation_rules": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486",
+            "hangma_bot.hangma.progression": "0aa4f45935114f711011c5b41f28c61a4ad4b54b7f8551126c38109911f2a537",
+            "hangma_bot.hangma.progression_payload": "ede2e3f09adb2db45d2a14f5166abdcd9e683041a7c76072f2c8a89fbcfc19b5",
+            "hangma_bot.hangma.public_successor": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f",
+            "hangma_bot.hangma.public_tile_counts": "ffbe6bb3fb75e0970bddf3d377681f3a9fc98704c02d3ec29084ccd1344d6e29",
+            "hangma_bot.hangma.settlement": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4",
+            "hangma_bot.hangma.special_rules": "3592e931baae4e6e8da290dc44acd0ddb1673ec6831a2262244a4761976be487",
+            "hangma_bot.hangma.value_analysis": "a843a3d5f6123bb2e998b6710cb9727802db2b9fd72ec96cbddd9017d1729102"
+          },
+          "note": "第一方传递依赖闭包中的规则来源（含 hand_analysis/_standard 与原生数学后端）"
+        },
+        "simulator": {
+          "digest": "f6eb4b8d00cb383e4b789445fa1eaf678ed87ce426e25b24b36fd9e5fa199d2f",
+          "modules": {
+            "hangma_bot.simulation.artifacts": "0176f939b276e9ee22c9e72e42939d1e04b2c35aa5c6273d43dab731324e4a32",
+            "hangma_bot.simulation.engine": "91dd2134acc27d67fdf6d927c568eafb0c2397eed35defe25ed9c912dad9ab57",
+            "hangma_bot.simulation.identity": "8087385814bdb604ea92fcd757e111f430c3d0a53a1bd08ddedfee35efe0e58e",
+            "hangma_bot.simulation.interface": "7f1262c0cd75249627eaf8031a410fbff2262940ef7a9923f1b8c18721b76d6f",
+            "hangma_bot.simulation.projection": "c98aaa4204115657ed2c20a24bf13fb525f48dc4e298ed7df67580cfb9682007",
+            "hangma_bot.simulation.shuffle": "5e8597e06dc7d94e8aa2825f066df5faef47c2298b1c1919bccbf2a7756f91f5",
+            "hangma_bot.simulation.state": "f43e6f283912eff8662f456a4685b0336ac256a86f1eebdd5bc5925e6420fadf"
+          }
+        },
+        "statistics": {
+          "modules": {
+            "sitin_archive.py": "d7ab6fb82ec8404094d129223a89d5d46f35c90af4d808bfa48fd77ab4474850",
+            "sitin_stage.py": "266041e546cc1eb230d9fe3251983ab975e35e3d889d48ab4eafbc05923e8013"
+          },
+          "version": "sitin-paired-stage-stats/1"
+        },
+        "supervisor_feedback": null
+      },
+      "tool_files": {
+        "sitin_archive.py": "d7ab6fb82ec8404094d129223a89d5d46f35c90af4d808bfa48fd77ab4474850",
+        "sitin_config.py": "3fe3c8803e4edb59a362a4222b2fca44e0cf5512c8e4395ea45053a39e23e2a8",
+        "sitin_deps.py": "291e121fde04058cbb4855de85b0a135e855122b951e67fb5c88630b095d7373",
+        "sitin_execution_audit.py": "442803d45f80fe924bf15d2c02f8a24a0f19341141bc099c84fdfc63e7ff5c28",
+        "sitin_execution_profile.py": "94236e69b434a2c0571500183742ed759012485a835ea805814696b80d7192ed",
+        "sitin_feedback.py": "601e3c3183ad05afef62aa6b9e47b7b3d2015036b2c0e77de4dcfdf2224ae65d",
+        "sitin_gates.py": "62ee3a93b7be0c7fa91745274cbd6f651335b8a1f6bb0f80f75fef579171a65c",
+        "sitin_generate.py": "476a57f0637304adcb33a3363564cfbf4fd6bad654b1a55af6d0e1cadc9e907a",
+        "sitin_m4_policy.py": "831de8ee2a1a832a1b781ea44deb38601671f86921788b8ca37aec299e568e1e",
+        "sitin_m4_recompute.py": "74c94462a45e50044f909aaa02c1a14c12578a98bca3798f4a5403c23bd20025",
+        "sitin_model_admission.py": "9922d17b0b32177866326c89d88053b37b821a75831edb5ec228caef2d9ff9b6",
+        "sitin_natural_panel.py": "df0ee8b4568482c85bf6387f41716428e065e797092003a003aee3cd3836bce4",
+        "sitin_opportunities.py": "5214aab12c96794ef18ab88fdd465dca15268af6eb2f393b13ddce0eae06db0f",
+        "sitin_power.py": "fba85d3ff9d628011e88ce8137c3deff3cb537485cf46ebd31f193f3efa53b27",
+        "sitin_process.py": "483de9b9b4099c3c4efa05358bdf76b0f695ca669142381389fa6454300bc5a5",
+        "sitin_real_behavior.py": "82da334575082aef204b10223a8e984b3fece5c15030f444bccb4bc43ff2acad",
+        "sitin_scenario_classes.py": "bcda7dd828324d2e18dd18102a3e00d9ca8b0d247a4b518cd57ffad108e5800b",
+        "sitin_scheduler.py": "39684bf5a8860af86bfae342371a255fe4a691726d5d761a3323dcba94f9959e",
+        "sitin_search.py": "3218f40f378c4e6f74358b4b1bb0b012d73a032ef63f7ff082add807896cbc69",
+        "sitin_stage.py": "266041e546cc1eb230d9fe3251983ab975e35e3d889d48ab4eafbc05923e8013"
+      }
+    },
+    "python_version": "3.11.15 (main, Mar 20 2026, 00:41:54) [Clang 22.1.1 ]",
+    "release_eligible": false,
+    "schema": "confirmation-execution-identity/1"
+  },
+  "safety_diagnostic": "focal_remaining_table_score；不得直接写回七对动作教师",
+  "sample_keys": [
+    "r18-p13-dev-hidden-world-01",
+    "r18-p13-dev-hidden-world-02",
+    "r18-p13-dev-hidden-world-03",
+    "r18-p13-dev-hidden-world-04",
+    "r18-p13-dev-hidden-world-05",
+    "r18-p13-dev-hidden-world-06",
+    "r18-p13-dev-hidden-world-07",
+    "r18-p13-dev-hidden-world-08",
+    "r18-p13-dev-hidden-world-09",
+    "r18-p13-dev-hidden-world-10",
+    "r18-p13-dev-hidden-world-11",
+    "r18-p13-dev-hidden-world-12",
+    "r18-p13-dev-hidden-world-13",
+    "r18-p13-dev-hidden-world-14",
+    "r18-p13-dev-hidden-world-15",
+    "r18-p13-dev-hidden-world-16",
+    "r18-p13-dev-hidden-world-17",
+    "r18-p13-dev-hidden-world-18",
+    "r18-p13-dev-hidden-world-19",
+    "r18-p13-dev-hidden-world-20",
+    "r18-p13-dev-hidden-world-21",
+    "r18-p13-dev-hidden-world-22",
+    "r18-p13-dev-hidden-world-23",
+    "r18-p13-dev-hidden-world-24",
+    "r18-p13-dev-hidden-world-25",
+    "r18-p13-dev-hidden-world-26",
+    "r18-p13-dev-hidden-world-27",
+    "r18-p13-dev-hidden-world-28",
+    "r18-p13-dev-hidden-world-29",
+    "r18-p13-dev-hidden-world-30",
+    "r18-p13-dev-hidden-world-31",
+    "r18-p13-dev-hidden-world-32"
+  ],
+  "sampling_unit": "自然基础状态；32个隐藏分配只估计该状态的等权稳健性",
+  "schema": "r18-p13-development-teacher-manifest/1",
+  "targets_sha256": "66e3d043a7bc05f09f847257ebcfb0cc2714556083cf19ce9f6a9122ff4bf104",
+  "workers": 8
+}

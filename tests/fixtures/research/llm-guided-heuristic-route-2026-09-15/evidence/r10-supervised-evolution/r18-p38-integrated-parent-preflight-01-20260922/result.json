@@ -1,0 +1,48 @@
+{
+  "candidate_sha256": "38cc7e9705ed5902b2a221b45605323471840bf7ef5acc61caf05f9d5762d3f7",
+  "checks": {
+    "packaged_digest_matches_constant": true,
+    "packaged_source_exactly_matches_p37": true,
+    "strategy_absent_from_network_registry": true,
+    "strategy_in_research_registry": true
+  },
+  "choose_replay": {
+    "action_value_failures": 0,
+    "all_exact_plan_equal": true,
+    "latency_ms": {
+      "max": 6.22225,
+      "p50": 0.916041,
+      "p95": 2.610333,
+      "p99": 6.182916
+    },
+    "requests": 252
+  },
+  "confirmation_eligible": true,
+  "next": "冻结发布候选身份并执行全链并发时限、独立确认和人工发布审核",
+  "platform": {
+    "implementation": "CPython",
+    "machine": "arm64",
+    "python": "3.11.15",
+    "system": "Darwin"
+  },
+  "release_eligible": false,
+  "schema": "r18-p38-integrated-parent-preflight-result/1",
+  "scoring_replay": {
+    "all_exact_batch_equal": true,
+    "calls": 765,
+    "latency_ms": {
+      "max": 6.20525,
+      "p50": 0.845625,
+      "p95": 3.104333,
+      "p99": 5.998
+    },
+    "maximum_operations": 55396,
+    "operation_limit": 100000,
+    "repeats": 3,
+    "views": 255
+  },
+  "selection_eligible": true,
+  "status": "PASS_P38_PACKAGE_INTEGRATION",
+  "strategy": "action_value:r18_two_wealth_baotou_v1",
+  "timing_scope": "单进程离线诊断；scoring 仅含受限候选评分，choose 含 ScoringView 投影、评分和计划组装，不含规则分析、应用调度、并发和网络预留"
+}

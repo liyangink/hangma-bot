@@ -1,0 +1,96 @@
+{
+  "schema": "p28-cost-probe/1",
+  "sources": 4,
+  "arms": {
+    "candidate:A": {
+      "tables": 8,
+      "wall_seconds": 82.8,
+      "live": {
+        "eligible_draw_windows": 537,
+        "complete_reductions": 537,
+        "incomplete_reductions": 0,
+        "changed_discard_orders": 468,
+        "provider_calls": 537,
+        "provider_failures": 0,
+        "incomplete_reason_samples": [],
+        "analysis_cost": {
+          "samples": 537,
+          "p50_ms": 84.855,
+          "p90_ms": 159.059,
+          "p99_ms": 194.852,
+          "max_ms": 233.814,
+          "mean_ms": 92.434
+        },
+        "reduction_cost": {
+          "samples": 537,
+          "p50_ms": 28.075,
+          "p90_ms": 53.182,
+          "p99_ms": 77.39,
+          "max_ms": 95.927,
+          "mean_ms": 31.534
+        },
+        "focal_choose_cost": {
+          "samples": 2595,
+          "p50_ms": 0.235,
+          "p90_ms": 117.846,
+          "p99_ms": 234.632,
+          "max_ms": 317.786,
+          "mean_ms": 26.198
+        }
+      }
+    },
+    "candidate:B": {
+      "tables": 8,
+      "wall_seconds": 93.0,
+      "live": {
+        "eligible_draw_windows": 529,
+        "complete_reductions": 529,
+        "incomplete_reductions": 0,
+        "changed_discard_orders": 364,
+        "provider_calls": 529,
+        "provider_failures": 0,
+        "incomplete_reason_samples": [],
+        "analysis_cost": {
+          "samples": 529,
+          "p50_ms": 90.656,
+          "p90_ms": 159.646,
+          "p99_ms": 192.865,
+          "max_ms": 222.082,
+          "mean_ms": 96.154
+        },
+        "reduction_cost": {
+          "samples": 529,
+          "p50_ms": 46.73,
+          "p90_ms": 72.855,
+          "p99_ms": 102.624,
+          "max_ms": 135.386,
+          "mean_ms": 48.8
+        },
+        "focal_choose_cost": {
+          "samples": 2498,
+          "p50_ms": 0.244,
+          "p90_ms": 143.432,
+          "p99_ms": 255.155,
+          "max_ms": 310.719,
+          "mean_ms": 31.252
+        }
+      }
+    },
+    "baseline": {
+      "tables": 8,
+      "wall_seconds": 16.6,
+      "live": {
+        "eligible_draw_windows": 0,
+        "complete_reductions": 0,
+        "incomplete_reductions": 0,
+        "changed_discard_orders": 0,
+        "provider_calls": 0,
+        "provider_failures": 0,
+        "incomplete_reason_samples": [],
+        "analysis_cost": null,
+        "reduction_cost": null,
+        "focal_choose_cost": null
+      }
+    }
+  }
+}

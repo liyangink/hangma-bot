@@ -1,0 +1,221 @@
+{
+  "boundary": "已执行强手动作及父代局结果的观察性后继；缺重建下一摸不填成自由或受限，最终赢家不等于该次摸牌立即胡；不是备选弃牌的反事实概率或候选收益。",
+  "g219_actual_strong_path": {
+    "by_peer_first": {
+      "tengshe_0638": {
+        "events": {
+          "reconstructed/free": 28,
+          "terminal/other_win": 5,
+          "unreconstructed/eventual_other_win": 1
+        },
+        "free_among_reconstructed": 1.0,
+        "free_among_reconstructed_room_bootstrap_95": [
+          1.0,
+          1.0
+        ],
+        "free_share_lower_bound_among_all_next_draws": 0.9655172413793104,
+        "mode_reconstructed": 28,
+        "next_draw": 29,
+        "restricted_share_upper_bound_among_all_next_draws": 0.034482758620689655,
+        "rooms": 17,
+        "windows": 34
+      },
+      "xuanwu_2346": {
+        "events": {
+          "reconstructed/free": 25,
+          "terminal/other_win": 3,
+          "unreconstructed/eventual_win": 2
+        },
+        "free_among_reconstructed": 1.0,
+        "free_among_reconstructed_room_bootstrap_95": [
+          1.0,
+          1.0
+        ],
+        "free_share_lower_bound_among_all_next_draws": 0.9259259259259259,
+        "mode_reconstructed": 25,
+        "next_draw": 27,
+        "restricted_share_upper_bound_among_all_next_draws": 0.07407407407407407,
+        "rooms": 15,
+        "windows": 30
+      }
+    },
+    "first": {
+      "events": {
+        "reconstructed/free": 53,
+        "terminal/other_win": 8,
+        "unreconstructed/eventual_other_win": 1,
+        "unreconstructed/eventual_win": 2
+      },
+      "free_among_reconstructed": 1.0,
+      "free_among_reconstructed_room_bootstrap_95": [
+        1.0,
+        1.0
+      ],
+      "free_share_lower_bound_among_all_next_draws": 0.9464285714285714,
+      "mode_reconstructed": 53,
+      "next_draw": 56,
+      "restricted_share_upper_bound_among_all_next_draws": 0.05357142857142857,
+      "rooms": 31,
+      "windows": 64
+    },
+    "second_given_reconstructed_first": {
+      "events": {
+        "reconstructed/free": 37,
+        "terminal/other_win": 11,
+        "unreconstructed/eventual_win": 5
+      },
+      "free_among_reconstructed": 1.0,
+      "free_among_reconstructed_room_bootstrap_95": [
+        1.0,
+        1.0
+      ],
+      "free_share_lower_bound_among_all_next_draws": 0.8809523809523809,
+      "mode_reconstructed": 37,
+      "next_draw": 42,
+      "restricted_share_upper_bound_among_all_next_draws": 0.11904761904761904,
+      "rooms": 31,
+      "windows": 53
+    }
+  },
+  "groups": {
+    "closed": {
+      "events": {
+        "reconstructed/free": 9731,
+        "reconstructed/restricted": 21,
+        "terminal/other_win": 616,
+        "terminal/wall_draw": 3,
+        "unreconstructed/eventual_draw": 3,
+        "unreconstructed/eventual_other_win": 27,
+        "unreconstructed/eventual_win": 218
+      },
+      "free_among_reconstructed": 0.9978465955701394,
+      "free_among_reconstructed_room_bootstrap_95": [
+        0.9965100924353896,
+        0.9990449915110357
+      ],
+      "free_share_lower_bound_among_all_next_draws": 0.9731,
+      "mode_reconstructed": 9752,
+      "next_draw": 10000,
+      "restricted_share_upper_bound_among_all_next_draws": 0.0269,
+      "rooms": 31,
+      "windows": 10619
+    },
+    "postclaim": {
+      "events": {
+        "reconstructed/free": 5518,
+        "reconstructed/restricted": 18,
+        "terminal/other_win": 1178,
+        "terminal/wall_draw": 7,
+        "unreconstructed/eventual_other_win": 69,
+        "unreconstructed/eventual_win": 529
+      },
+      "free_among_reconstructed": 0.9967485549132948,
+      "free_among_reconstructed_room_bootstrap_95": [
+        0.9953634707733069,
+        0.9980905098338744
+      ],
+      "free_share_lower_bound_among_all_next_draws": 0.8995761330290186,
+      "mode_reconstructed": 5536,
+      "next_draw": 6134,
+      "restricted_share_upper_bound_among_all_next_draws": 0.10042386697098142,
+      "rooms": 31,
+      "windows": 7319
+    },
+    "tengshe_0638/closed": {
+      "events": {
+        "reconstructed/free": 5330,
+        "reconstructed/restricted": 13,
+        "terminal/other_win": 333,
+        "terminal/wall_draw": 1,
+        "unreconstructed/eventual_draw": 1,
+        "unreconstructed/eventual_other_win": 21,
+        "unreconstructed/eventual_win": 113
+      },
+      "free_among_reconstructed": 0.9975669099756691,
+      "free_among_reconstructed_room_bootstrap_95": [
+        0.9958955223880597,
+        0.9989049096550465
+      ],
+      "free_share_lower_bound_among_all_next_draws": 0.97298284045272,
+      "mode_reconstructed": 5343,
+      "next_draw": 5478,
+      "restricted_share_upper_bound_among_all_next_draws": 0.02701715954728003,
+      "rooms": 17,
+      "windows": 5812
+    },
+    "tengshe_0638/postclaim": {
+      "events": {
+        "reconstructed/free": 2947,
+        "reconstructed/restricted": 12,
+        "terminal/other_win": 622,
+        "terminal/wall_draw": 4,
+        "unreconstructed/eventual_other_win": 43,
+        "unreconstructed/eventual_win": 279
+      },
+      "free_among_reconstructed": 0.9959445758702264,
+      "free_among_reconstructed_room_bootstrap_95": [
+        0.9936112979152656,
+        0.9980353634577603
+      ],
+      "free_share_lower_bound_among_all_next_draws": 0.8982017677537336,
+      "mode_reconstructed": 2959,
+      "next_draw": 3281,
+      "restricted_share_upper_bound_among_all_next_draws": 0.10179823224626638,
+      "rooms": 17,
+      "windows": 3907
+    },
+    "xuanwu_2346/closed": {
+      "events": {
+        "reconstructed/free": 4401,
+        "reconstructed/restricted": 8,
+        "terminal/other_win": 283,
+        "terminal/wall_draw": 2,
+        "unreconstructed/eventual_draw": 2,
+        "unreconstructed/eventual_other_win": 6,
+        "unreconstructed/eventual_win": 105
+      },
+      "free_among_reconstructed": 0.9981855295985484,
+      "free_among_reconstructed_room_bootstrap_95": [
+        0.9964125560538116,
+        0.9995611147684881
+      ],
+      "free_share_lower_bound_among_all_next_draws": 0.9732419283502874,
+      "mode_reconstructed": 4409,
+      "next_draw": 4522,
+      "restricted_share_upper_bound_among_all_next_draws": 0.026758071649712518,
+      "rooms": 15,
+      "windows": 4807
+    },
+    "xuanwu_2346/postclaim": {
+      "events": {
+        "reconstructed/free": 2571,
+        "reconstructed/restricted": 6,
+        "terminal/other_win": 556,
+        "terminal/wall_draw": 3,
+        "unreconstructed/eventual_other_win": 26,
+        "unreconstructed/eventual_win": 250
+      },
+      "free_among_reconstructed": 0.9976717112922002,
+      "free_among_reconstructed_room_bootstrap_95": [
+        0.9959612277867528,
+        0.9992166079122601
+      ],
+      "free_share_lower_bound_among_all_next_draws": 0.9011566771819137,
+      "mode_reconstructed": 2577,
+      "next_draw": 2853,
+      "restricted_share_upper_bound_among_all_next_draws": 0.09884332281808622,
+      "rooms": 15,
+      "windows": 3412
+    }
+  },
+  "schema": "g220-future-qualification-audit/1",
+  "source_sha256": {
+    "catch_play_production": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693",
+    "g219": "b44cdb3a620c6825562dcce6da0da985c987141aa2a4273ec240d61943a16a22",
+    "g61": "483e9e5082b30b9d2cce0ee369105b5516d648fe0b547d5d37e2454b2b97e9c1",
+    "g64": "4ce798ebd2aead538d377dc9d1e4c3105a0da18b19421d142ff84cba111c5e35",
+    "g65_result": "f0772242508b1c6c02db5e76c97d88c00b38732578f74ad4713589b5663317e6",
+    "g65_rows": "d1ed8df72720d463be00637649b59eef13337fc6989b529e1970580bd90617d1",
+    "script": "caae1eac7a03dd85d193b2b4618a86d63a1a66b99954e303e774ec6bf5cda9bb"
+  }
+}

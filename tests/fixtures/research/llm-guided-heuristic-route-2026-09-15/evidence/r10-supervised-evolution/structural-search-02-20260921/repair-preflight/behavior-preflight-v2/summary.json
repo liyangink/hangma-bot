@@ -1,0 +1,336 @@
+{
+  "schema": "r10-structural-repair-behavior-preflight/2",
+  "corpus": {
+    "record_files": 234,
+    "unique_real_views": 226,
+    "source_directories": {
+      "batch03-known-root-diagnostic": 32,
+      "comparable-shape-second-diagnostic-20260920": 30,
+      "discard-shape-mix-diagnostic-20260920": 17,
+      "followup-balance-diagnostic-20260920": 30,
+      "followup-quality-diagnostic-20260920": 29,
+      "pattern-generalization-diagnostic-v2-20260920": 15,
+      "piao-opportunity-probe-20260920": 8,
+      "real-behavior-panel-v1": 19,
+      "route-decision-diagnostic-20260920": 24,
+      "selfdraw-tempo-diagnostic-20260920": 30
+    }
+  },
+  "tasks": [
+    {
+      "task": "T2",
+      "source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-02-20260921/generations/T2/repair/normalized/candidate.py",
+      "source_sha256": "77c51ae7d973ee10cf845af7dbbbf194b112786bba51bccf5421acd1ff9c16da",
+      "zero_reference": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-01-20260921/behavior-preflight-v2/configurations/s3-cfg-02/candidate.py",
+      "zero_reference_sha256": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "views": 226,
+      "all_configurations_clean": true,
+      "zero_config_index": 1,
+      "zero_exact_score_equivalence": true,
+      "zero_changed_score_views": 0,
+      "author_default_index": 2,
+      "default_changed_preferred_views": 2,
+      "default_changed_score_views": 27,
+      "any_configuration_changes_preferred": true,
+      "unique_preference_signatures": 2,
+      "unique_score_signatures": 3,
+      "duplicate_preference_groups": [
+        3,
+        3
+      ],
+      "duplicate_score_groups": [
+        3,
+        2
+      ],
+      "behavior_preflight_pass": true,
+      "failure_reason": null,
+      "configurations": [
+        {
+          "config_id": "s2-cfg-00",
+          "index": 0,
+          "values": {
+            "FBV_GAIN": 4.0,
+            "FBV_SUPPORT": 0.5,
+            "FBV_SUPPORT_CAP": 12.0,
+            "FBV_CAP": 16.0
+          },
+          "source_sha256": "1d9750d32c2277d445407f5272f3cfc803373f192eec462f3b582a04c393c08e",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 27,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "8681b3b4e3f11d0024394ad24eb4d3830353f2037852a06a5bfb1f12197b121a",
+          "max_operations": 6300
+        },
+        {
+          "config_id": "s2-cfg-01",
+          "index": 1,
+          "values": {
+            "FBV_GAIN": 0.0,
+            "FBV_SUPPORT": 0.0,
+            "FBV_SUPPORT_CAP": 0.0,
+            "FBV_CAP": 0.0
+          },
+          "source_sha256": "74c182b6967aeb7298fe6a55b4545e32f7e284ab9fee89f757082af2d6fe551c",
+          "is_zero_effect": true,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "1f31dbf6b439665713b459c1a913564aa8b3457c16cdd34844ab3d9b661104d6",
+          "max_operations": 6300
+        },
+        {
+          "config_id": "s2-cfg-02",
+          "index": 2,
+          "values": {
+            "FBV_GAIN": 4.0,
+            "FBV_SUPPORT": 0.0,
+            "FBV_SUPPORT_CAP": 12.0,
+            "FBV_CAP": 16.0
+          },
+          "source_sha256": "1fbffd0b771593a23cb72f80a1e3607683d4b9a17898e58f3723ed8821aea3c7",
+          "is_zero_effect": false,
+          "is_author_default": true,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 27,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "8681b3b4e3f11d0024394ad24eb4d3830353f2037852a06a5bfb1f12197b121a",
+          "max_operations": 6300
+        },
+        {
+          "config_id": "s2-cfg-03",
+          "index": 3,
+          "values": {
+            "FBV_GAIN": 0.0,
+            "FBV_SUPPORT": 0.5,
+            "FBV_SUPPORT_CAP": 12.0,
+            "FBV_CAP": 16.0
+          },
+          "source_sha256": "8d8c488c0abf24087dc1d111d9b31c3785ec901d8f3105660c394b8284182535",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "1f31dbf6b439665713b459c1a913564aa8b3457c16cdd34844ab3d9b661104d6",
+          "max_operations": 6300
+        },
+        {
+          "config_id": "s2-cfg-04",
+          "index": 4,
+          "values": {
+            "FBV_GAIN": 2.0,
+            "FBV_SUPPORT": 0.25,
+            "FBV_SUPPORT_CAP": 6.0,
+            "FBV_CAP": 8.0
+          },
+          "source_sha256": "1886ffa23cfd7f3d41cad807a372ae80e17f381cb13b1c9e4a97fec2527eee41",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 27,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "bfba62c51b8b7680d25a1880548a3e860f70145f85cf58d2c3e9f9bffe19f931",
+          "max_operations": 6300
+        },
+        {
+          "config_id": "s2-cfg-05",
+          "index": 5,
+          "values": {
+            "FBV_GAIN": 8.0,
+            "FBV_SUPPORT": 1.0,
+            "FBV_SUPPORT_CAP": 12.0,
+            "FBV_CAP": 24.0
+          },
+          "source_sha256": "cc9bc6dd92103e98d3f9b49c7ac0ecf77c90750eaff7c11661acee60c5ad7515",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 27,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "8681b3b4e3f11d0024394ad24eb4d3830353f2037852a06a5bfb1f12197b121a",
+          "max_operations": 6300
+        }
+      ],
+      "internal_family_id": "S2"
+    },
+    {
+      "task": "T4",
+      "source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-02-20260921/generations/T4/repair/normalized/candidate.py",
+      "source_sha256": "9737e640afcfc27dff80da26dc4d48bf48f36fa149ff5d3f66c052197952be6f",
+      "zero_reference": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-01-20260921/behavior-preflight-v2/configurations/s3-cfg-02/candidate.py",
+      "zero_reference_sha256": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "views": 226,
+      "all_configurations_clean": true,
+      "zero_config_index": 1,
+      "zero_exact_score_equivalence": true,
+      "zero_changed_score_views": 0,
+      "author_default_index": 0,
+      "default_changed_preferred_views": 0,
+      "default_changed_score_views": 33,
+      "any_configuration_changes_preferred": false,
+      "unique_preference_signatures": 1,
+      "unique_score_signatures": 6,
+      "duplicate_preference_groups": [
+        6
+      ],
+      "duplicate_score_groups": [],
+      "behavior_preflight_pass": false,
+      "failure_reason": "234个真实观察均未产生首选变化",
+      "configurations": [
+        {
+          "config_id": "s4-cfg-00",
+          "index": 0,
+          "values": {
+            "FB_TIE_STEP": 0.25,
+            "FB_ORD_MAX": 3
+          },
+          "source_sha256": "c77383cfa335099a4ed67dd24896130bc486340680acd49d755ac23281201714",
+          "is_zero_effect": false,
+          "is_author_default": true,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 33,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "af21017323ec36980d5165d9b4a87c9d7aa66d9c6c72fb43ec1a1d09f5e6ee00",
+          "max_operations": 6498
+        },
+        {
+          "config_id": "s4-cfg-01",
+          "index": 1,
+          "values": {
+            "FB_TIE_STEP": 0.0,
+            "FB_ORD_MAX": 3
+          },
+          "source_sha256": "63bb0eed55c8e393958a6ca9c6fe2ed6bf04a85226e4bae0c046ab7befa79589",
+          "is_zero_effect": true,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "97197cf63891d83c559e9c1c5ae353808fee833096feab9a9aabce68a569d0d1",
+          "max_operations": 6498
+        },
+        {
+          "config_id": "s4-cfg-02",
+          "index": 2,
+          "values": {
+            "FB_TIE_STEP": 0.25,
+            "FB_ORD_MAX": 1
+          },
+          "source_sha256": "775963951c495823a48fd2c84fbd65f307fe1e856500658126adea572cb4a680",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 11,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "518e1f1861d7cdba3dc4ba41f00f470ed2832ce4b25308ccf5339152d5ae3891",
+          "max_operations": 6498
+        },
+        {
+          "config_id": "s4-cfg-03",
+          "index": 3,
+          "values": {
+            "FB_TIE_STEP": 0.25,
+            "FB_ORD_MAX": 2
+          },
+          "source_sha256": "7a82481e7cb064f7d4d83a949212bff434bce2b8b0bc62592b81db38b9587d46",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 23,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "fa95156f8fa90f54e58411dbb15451afe8538903cc070641d114bbd83f8fc762",
+          "max_operations": 6498
+        },
+        {
+          "config_id": "s4-cfg-04",
+          "index": 4,
+          "values": {
+            "FB_TIE_STEP": 0.1,
+            "FB_ORD_MAX": 3
+          },
+          "source_sha256": "1eec8aabb2c0453e4823498f2fd2050d6ba3e990317671a012096c711f3c3391",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 33,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "eb4e9f0b1af62b0779a188add80b2dc256591beb424c29300ff1b2accf642076",
+          "max_operations": 6498
+        },
+        {
+          "config_id": "s4-cfg-05",
+          "index": 5,
+          "values": {
+            "FB_TIE_STEP": 0.3,
+            "FB_ORD_MAX": 2
+          },
+          "source_sha256": "545d612639118d719c7442269ddf522bf25e3fdd8cf1b23ab4e6d0cb9f7b01a6",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 23,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "79fbf3244ab0c140fe1a816bbedf2444432da6223a707eaa3a937ebcc8fca104",
+          "max_operations": 6498
+        }
+      ],
+      "internal_family_id": "S4"
+    }
+  ],
+  "passed_tasks": [
+    "T2"
+  ],
+  "failed_tasks": [
+    "T4"
+  ],
+  "configurations_materialized": 12,
+  "effect_tables": 0,
+  "selection_eligible": false,
+  "task_id_mapping": {
+    "S2": "T2",
+    "S4": "T4"
+  },
+  "closed_before_preflight": [
+    "T1",
+    "T3"
+  ]
+}

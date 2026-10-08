@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 def _load():
-    spec = importlib.util.spec_from_file_location("compare_arms", ROOT / "datamart" / "compare_arms.py")
+    spec = importlib.util.spec_from_file_location("compare_arms", ROOT / "tools/offline/datamart/compare_arms.py")
     module = importlib.util.module_from_spec(spec)
     sys.modules["compare_arms"] = module
     spec.loader.exec_module(module)

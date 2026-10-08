@@ -1,0 +1,78 @@
+{
+  "cases": [
+    {
+      "config": "configs/vip-s02-bounded-d1-v9.test-room.example.json",
+      "identity": "qinglong",
+      "strategy": "vip_s02_bounded_d1_testroom_v9",
+      "scope": "test_room",
+      "token_kind": "test",
+      "release_id": "b828932754801388e362023b6e7b0dcdd7c463736691d949196ad478b8a0ae76",
+      "accepted": true
+    },
+    {
+      "config": "configs/vip-s02-bounded-d1-v9.test-room.example.json",
+      "identity": "baihu",
+      "strategy": "vip_s02_bounded_d1_testroom_v9",
+      "scope": "test_room",
+      "token_kind": "test",
+      "release_id": "b828932754801388e362023b6e7b0dcdd7c463736691d949196ad478b8a0ae76",
+      "accepted": true
+    },
+    {
+      "config": "configs/vip-s02-bounded-d1-v9.test-room.example.json",
+      "identity": "zhuque",
+      "strategy": "vip_s02_bounded_d1_testroom_v9",
+      "scope": "test_room",
+      "token_kind": "test",
+      "release_id": "b828932754801388e362023b6e7b0dcdd7c463736691d949196ad478b8a0ae76",
+      "accepted": true
+    },
+    {
+      "config": "configs/vip-s02-bounded-d1-v9.test-room.example.json",
+      "identity": "xuanwu",
+      "strategy": "vip_s02_bounded_d1_testroom_v9",
+      "scope": "test_room",
+      "token_kind": "test",
+      "release_id": "b828932754801388e362023b6e7b0dcdd7c463736691d949196ad478b8a0ae76",
+      "accepted": true
+    },
+    {
+      "config": "configs/vip-s02-bounded-d1-v7.free-match.example.json",
+      "identity": null,
+      "strategy": "vip_s02_bounded_d1_free_v7",
+      "scope": "auto_match",
+      "token_kind": "official",
+      "release_id": "3bc912f5e52a71c6978dff9dc06fdf26c9cac9f7bdd4f06b3c95e749382f267a",
+      "accepted": true
+    },
+    {
+      "config": "configs/vip-s02-bounded-d1.test-tournament.example.json",
+      "identity": null,
+      "strategy": "vip_s02_bounded_d1_test_tournament_v1",
+      "scope": "test_tournament",
+      "token_kind": "test",
+      "release_id": "197d2f63dc7e2b0bcdff15703812768ea467a7f37a08626b89aeb3ffa8183f99",
+      "accepted": true
+    },
+    {
+      "config": "configs/vip-s02-bounded-d1.official-tournament.example.json",
+      "identity": null,
+      "strategy": "vip_s02_bounded_d1_official_tournament_v1",
+      "scope": "official_tournament",
+      "token_kind": "official",
+      "release_id": "fbf3fdfbd3bef7f9020b1593b6948a74accd10a0986505c793795764a9ccfd35",
+      "accepted": true
+    }
+  ],
+  "source_sha256": {
+    "src/hangma_bot/bootstrap.py": "1de0a5711242a8722f18376dbc420fdd3e89216b5757dfe1b4cf089e15a33f3b",
+    "scripts/run_test_room.py": "cd38af726cfdc3f8e7e959c7c81bb04f37c02ee697ff54fb08c63be7062c7b5a",
+    "scripts/run_participant.py": "29fdc23be3de24f95d155a743550904328ee6aaeafee0f4c59264356c007884b",
+    "scripts/run_auto_match.py": "fb4f609f3084cd9e1a65b8f459fc556cd609b3f30267f6f1796dfc6bc56807e2"
+  },
+  "network_started": false,
+  "real_tokens_read": false,
+  "worker_processes_started": false,
+  "configuration_placeholders_remaining": true,
+  "tournament_entry": "scripts/run_participant.py; repository contains no run_tournament.py"
+}

@@ -1,0 +1,60 @@
+{
+  "candidate_max_operations": 100000,
+  "candidate_sha256": "02a0c09b790a5cb264b1a4a9f9e2e87a827263a9f04273aae83371f702ddf9cb",
+  "completed_hands": 24576,
+  "counts": {
+    "nonstrict_windows": 2646,
+    "strict_actions": 7,
+    "strict_windows": 7
+  },
+  "gate_checks": {
+    "mechanical_failures_zero": true,
+    "nonstrict_mismatches_zero": true,
+    "strict_distinct_source_roots_min": true,
+    "strict_distinct_tables_min": true,
+    "strict_required_mixes": true,
+    "strict_selection_failures_zero": true,
+    "strict_states_min": true
+  },
+  "max_candidate_operations": 18996,
+  "next": "P5获得补杠严格支配机会资格；进入冻结完整桌安全门",
+  "parent_sha256": "68f31d5138918b03837078e4e29cd5b011cce5d795cd7754b2e6884e03a38363",
+  "release_eligible": false,
+  "runtime_counts": {
+    "audit_missing": 0,
+    "auto_actions": 0,
+    "fallbacks": 0,
+    "illegal_choices": 0,
+    "timeouts": 0
+  },
+  "schema": "r18-p5-hidden-admission-result/1",
+  "selection_eligible": true,
+  "status": "PASS_P5_HIDDEN",
+  "strict_evidence": {
+    "by_mix": {
+      "H": 4,
+      "M": 3
+    },
+    "by_panel_seed": {
+      "2026100719": 5,
+      "2026100733": 2
+    },
+    "distinct_source_roots": 7,
+    "distinct_tables": 7,
+    "local_gains": [
+      20,
+      20,
+      48,
+      20,
+      20,
+      20,
+      48
+    ],
+    "mixes": [
+      "H",
+      "M"
+    ],
+    "states": 7
+  },
+  "tables": 3072
+}

@@ -1,0 +1,118 @@
+{
+  "schema": "r10-structural-author-batch/3",
+  "target_model": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3"
+  },
+  "expected_request_config": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3",
+    "reasoningEffort": "high",
+    "maxTokens": 32768
+  },
+  "tasks": [
+    {
+      "task_id": "C1",
+      "name": "contrastive-chi-pass-recombination",
+      "zero_effect_parent": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "comparison_parents": [
+        "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+        "e41532984aad6a1da953d203969592dac715b975ff3558276fbbf10cb1d0a052"
+      ],
+      "reflection_sha256": "09738e1bc25e754b8fc3a2cab2b704b057dc70028f1fc5106cbbc099828acbcd",
+      "contract_identity": "caf8648ef8e19d5779d0369547e4171e5ddf13d466b7260317c26924e8d34888",
+      "focus": {
+        "schema": "sitin-action-value-card/1",
+        "objective": "以稳定V2为零效应父代，把S3的后续分支价值和T2的选择性收缩重组为一个只在同窗吃/过事实可比较时触发的机会成本结构。",
+        "change_point": "新增项必须显式比较同一response_chi窗口中的chi与pass，而不是给chi独立加一个绝对后续分。主判据只能使用向听、直接有效牌支持、followup_branches和权威family_progress_entries；七对因副露关闭只能作为可见机会成本，不能当固定禁止吃。",
+        "input_groups": [
+          "actions",
+          "actions[]",
+          "actions[].useful_tiles",
+          "actions[].standard_useful_tiles",
+          "actions[].seven_pairs_useful_tiles",
+          "actions[].followup_branches",
+          "actions[].family_progress_entries",
+          "visible_state",
+          "visible_state.rule_state",
+          "analysis_profile"
+        ],
+        "budget_note": "首答计费；不得根据模型自报结果选留。",
+        "examples": "output",
+        "gate": "none",
+        "guard": "full",
+        "input_overview": "contract",
+        "rules": "compact",
+        "guard_reference": false
+      },
+      "prompt_sha256": "b653061dde01f1776fae03391daa3e1c9e7c4983bb49d19a030d9ed66b741968",
+      "prompt_chars": 81708
+    },
+    {
+      "task_id": "C2",
+      "name": "minimal-chi-pass-ordinal-gate",
+      "zero_effect_parent": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "comparison_parents": [
+        "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+        "e41532984aad6a1da953d203969592dac715b975ff3558276fbbf10cb1d0a052"
+      ],
+      "reflection_sha256": "09738e1bc25e754b8fc3a2cab2b704b057dc70028f1fc5106cbbc099828acbcd",
+      "contract_identity": "9c144c4a004c8ec60fa77da7c4dc520c25d4f69415c26717d11d20ad05603bf9",
+      "focus": {
+        "schema": "sitin-action-value-card/1",
+        "objective": "从稳定V2构造一个比S3/T2更短的吃/过序数门，只处理同向听或近似平分的响应窗口。",
+        "change_point": "删除S3/T2的support/cap多维自由度；只允许一个主序数或分层判据，明确区分听牌、未听和七对路线关闭事实。不得使用局终结果、H/M标签、对手身份或牌墙。",
+        "input_groups": [
+          "actions",
+          "actions[]",
+          "actions[].useful_tiles",
+          "actions[].standard_useful_tiles",
+          "actions[].seven_pairs_useful_tiles",
+          "actions[].followup_branches",
+          "actions[].family_progress_entries",
+          "visible_state",
+          "visible_state.rule_state",
+          "analysis_profile"
+        ],
+        "budget_note": "首答计费；不得根据模型自报结果选留。",
+        "examples": "output",
+        "gate": "none",
+        "guard": "full",
+        "input_overview": "contract",
+        "rules": "compact",
+        "guard_reference": false
+      },
+      "prompt_sha256": "35355013c7d23aa27a173f7cb4f326225a02e2c3bd4a56d1c676c8de7acd8ce5",
+      "prompt_chars": 81542
+    }
+  ],
+  "parent_registry": {
+    "v2": {
+      "name": "v2",
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "identity": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "candidate_id": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "thought": "稳定V2：当前线上可审计研究基线和本批唯一零效应父代。",
+      "code_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f"
+    },
+    "s3": {
+      "name": "s3",
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-01-20260921/behavior-preflight-v2/configurations/s3-cfg-02/candidate.py",
+      "identity": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "candidate_id": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "thought": "S3：在V2上加入绝对最佳combined_shanten后续项；跨新来源弱正但未分辨。",
+      "code_sha256": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41"
+    },
+    "t2": {
+      "name": "t2",
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-02-20260921/behavior-preflight-v2/configurations/s2-cfg-04/candidate.py",
+      "identity": "e41532984aad6a1da953d203969592dac715b975ff3558276fbbf10cb1d0a052",
+      "candidate_id": "e41532984aad6a1da953d203969592dac715b975ff3558276fbbf10cb1d0a052",
+      "thought": "T2：选择性收缩S3后续项；优于S3但仍低于V2，只作失败机制材料。",
+      "code_sha256": "e41532984aad6a1da953d203969592dac715b975ff3558276fbbf10cb1d0a052"
+    }
+  },
+  "reflection_usage_sha256": "2de45254071e76ebe476a4c8290227ee7dbfd2fe10ea99d1ddd9f00931bfe17f",
+  "effect_evaluation_started": false,
+  "confirmation_reserved": 0
+}

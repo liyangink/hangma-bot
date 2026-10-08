@@ -1,0 +1,56 @@
+{
+  "schema": "r10-route-microfunction-outcome-diagnostic-summary/1",
+  "status": "COMPLETE",
+  "selected_roots": 12,
+  "stages": 96,
+  "tables": 192,
+  "all_original_totals_reproduced": true,
+  "counts_by_outcome_class": {
+    "negative_extreme": {
+      "views": 21416,
+      "phase:draw": 4442,
+      "preferred_changed": 132,
+      "phase:response_peng": 12946,
+      "phase:response_chi": 4028
+    },
+    "positive_extreme": {
+      "views": 21031,
+      "phase:draw": 4379,
+      "preferred_changed": 110,
+      "phase:response_peng": 12652,
+      "phase:response_chi": 4000
+    },
+    "zero": {
+      "views": 20963,
+      "phase:draw": 4381,
+      "preferred_changed": 127,
+      "phase:response_peng": 12615,
+      "phase:response_chi": 3967
+    }
+  },
+  "preferred_disagreements": 369,
+  "transitions": {
+    "discard->discard": 201,
+    "pass->chi": 112,
+    "pass->peng": 53,
+    "chi->chi": 2,
+    "peng->pass": 1
+  },
+  "phases": {
+    "draw": 201,
+    "response_chi": 114,
+    "response_peng": 54
+  },
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 192.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "selection_eligible": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "用正/零/负根的同观察分歧和路线trace构造多父代条件化重组任务"
+}

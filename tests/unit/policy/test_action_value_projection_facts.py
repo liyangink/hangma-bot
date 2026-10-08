@@ -10,6 +10,23 @@
 
 from __future__ import annotations
 
+from pathlib import Path as _StoragePath
+import sys as _storage_sys
+_PROJECT_ROOT = next(p for p in _StoragePath(__file__).resolve().parents
+                     if (p / "src/hangma_bot/bootstrap.py").is_file())
+_storage_sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from hangma_bot.adapters.recording.project_storage import project_file as _resolve_project_file
+_PROJECT_STORAGE_ORIGIN = 'tests/unit/policy'
+
+def _project_file(root, source):
+    """共享脚本的相邻数据沿用原逻辑目录，相邻代码从共享目录读取。"""
+    source = _StoragePath(source)
+    here = _StoragePath(__file__).resolve().parent
+    if source.is_absolute() and source.is_relative_to(here):
+        if not source.is_dir() and not (source.suffix == ".py" and source.is_file()):
+            source = root / _PROJECT_STORAGE_ORIGIN / source.relative_to(here)
+    return _resolve_project_file(root, source)
+
 import pytest
 
 from hangma_bot.hangma.engine import HangmaRules
@@ -1054,9 +1071,9 @@ class TestStageCompositionUnknownAndScheduleGap:
             assert absent not in dumped, absent
 
         contract = json.loads((
-            Path(__file__).resolve().parents[3]
+            _project_file(_PROJECT_ROOT, Path(__file__).resolve().parents[3]
             / "review/llm-guided-heuristic-route-2026-09-15"
-              "/contracts/action-value-v1.json"
+              "/contracts/action-value-v1.json")
         ).read_text(encoding="utf-8"))
         # 旧机器合同按摘要冻结；其 stage_no/stage_total 的桌序解释已由
         # interface-contracts.md 的 2026-09-30 勘误废止，不能被新策略采用。

@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-av1-future-order-variance-20260921",
+  "batch_label": "r10-av1-future-order-variance",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 512.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 0.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T03:43:41Z",
+  "issuance_basis": "AV1-2的8个低容量模型均无法使M层非负；按Suphx奖励预测与rollout信息集边界先分解未来顺序方差",
+  "scope": "AV1-1每个panel_seed×H/M分片按root_index取前4个有效快照；每快照8个预编号未来可摸区重排；过牌/具体鸣牌同一重排配对",
+  "max_model_calls": 0,
+  "confirmation_roots": 0
+}

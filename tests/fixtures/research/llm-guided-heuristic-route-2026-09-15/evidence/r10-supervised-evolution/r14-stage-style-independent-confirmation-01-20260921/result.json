@@ -1,0 +1,78 @@
+{
+  "schema": "r14-stage-style-independent-confirmation-result/1",
+  "status": "INCONCLUSIVE_R14_INDEPENDENT_CONFIRMATION",
+  "manifest_sha256": "9fb76b1f888240d62378f37ba04b060428a7f22d56cd0f26d99b1e91d5053a1d",
+  "candidate_sha256": "51e0da11ca6ca58106ece2bf70cc80b8e883b1fd253626324e827e015b01a48c",
+  "independent_roots": 64,
+  "roots_per_mix": {
+    "H": 32,
+    "M": 32
+  },
+  "effect": {
+    "overall_mean": -0.02734375,
+    "by_mix_mean": {
+      "H": 0.015625,
+      "M": -0.0703125
+    },
+    "by_mix_variance": {
+      "H": 0.023941532258064516,
+      "M": 0.03723538306451613
+    },
+    "stratified_standard_error": 0.021861945269295257,
+    "one_sided_95_normal_lower": -0.06330344996841489
+  },
+  "exact_sign_flip": {
+    "nonzero_roots": 19,
+    "observed_sum": -1.75,
+    "distribution_states": 24,
+    "extreme_assignments": 480696,
+    "total_assignments": 524288,
+    "one_sided_p": 0.9168548583984375
+  },
+  "stage_score_delta_mean": 0.0390625,
+  "positive_roots_by_mix": {
+    "H": 5,
+    "M": 2
+  },
+  "negative_roots_by_mix": {
+    "H": 4,
+    "M": 8
+  },
+  "unresolved_seat_units": 3,
+  "gate_checks": {
+    "execution_failures": true,
+    "unresolved_intervals": false,
+    "overall_mean_effect": false,
+    "each_mix_nonnegative": false,
+    "exact_sign_flip": false,
+    "normal_lower_bound": false,
+    "stage_score_delta": true,
+    "positive_root_each_mix": true
+  },
+  "execution_audit": {
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 1024,
+    "recorded_tables": 1024,
+    "missing_tables": 0,
+    "recorded_counts": {
+      "decision_count": 1359862,
+      "action_value_scored": 169543,
+      "action_value_failed": 0,
+      "other_policy_decisions": 1190319,
+      "ambiguous_diagnostics": 0,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "abstain": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "zero_internal_failures_verified": true
+  },
+  "strength_claim": false,
+  "release_eligible": false,
+  "next": "不得扩样追认；回到公开规则态父代路由器作为下一条可证伪结构路线"
+}

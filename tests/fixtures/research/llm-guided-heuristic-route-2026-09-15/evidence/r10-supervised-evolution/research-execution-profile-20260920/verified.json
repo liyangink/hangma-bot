@@ -1,0 +1,95 @@
+{
+  "status": "PASS_RESEARCH_PROFILE_ENGINEERING",
+  "natural_tables": 16,
+  "conditional_table_instances": 4,
+  "prefix_instances": 1,
+  "natural_tables_rerun_on_resume": 0,
+  "natural_execution_review": {
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 16,
+    "recorded_tables": 16,
+    "missing_tables": 0,
+    "recorded_counts": {
+      "decision_count": 22626,
+      "action_value_scored": 2852,
+      "action_value_failed": 0,
+      "other_policy_decisions": 19774,
+      "ambiguous_diagnostics": 0,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "abstain": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "zero_internal_failures_verified": true
+  },
+  "conditional_execution_reviews": {
+    "baseline": {
+      "schema": "sitin-policy-execution-review/1",
+      "status": "complete",
+      "tables": 2,
+      "recorded_tables": 2,
+      "missing_tables": 0,
+      "recorded_counts": {
+        "decision_count": 2119,
+        "action_value_scored": 0,
+        "action_value_failed": 0,
+        "other_policy_decisions": 2119,
+        "ambiguous_diagnostics": 0,
+        "unclassified_action_value": 0
+      },
+      "recorded_failure_kinds": {
+        "operation_limit": 0,
+        "resource_or_numeric_limit": 0,
+        "abstain": 0,
+        "scoring_error": 0,
+        "unclassified_failure": 0
+      },
+      "zero_internal_failures_verified": true
+    },
+    "candidate": {
+      "schema": "sitin-policy-execution-review/1",
+      "status": "complete",
+      "tables": 2,
+      "recorded_tables": 2,
+      "missing_tables": 0,
+      "recorded_counts": {
+        "decision_count": 2442,
+        "action_value_scored": 609,
+        "action_value_failed": 0,
+        "other_policy_decisions": 1833,
+        "ambiguous_diagnostics": 0,
+        "unclassified_action_value": 0
+      },
+      "recorded_failure_kinds": {
+        "operation_limit": 0,
+        "resource_or_numeric_limit": 0,
+        "abstain": 0,
+        "scoring_error": 0,
+        "unclassified_failure": 0
+      },
+      "zero_internal_failures_verified": true
+    }
+  },
+  "candidate_id": "5d45f38377da6eabf91b18d99290b2d43373d81e718bed0413afd2c2fbe8c551",
+  "execution_profile": {
+    "schema": "sitin-candidate-execution-profile/1",
+    "name": "research-200k-v1",
+    "max_operations": 200000,
+    "research_only": true
+  },
+  "accounts": {
+    "tables_full": 20.0,
+    "tables_partial": 1.0,
+    "prefix_generation": 1.0
+  },
+  "models_called": 0,
+  "confirmation_roots": 0,
+  "release_eligible": false,
+  "strength_evidence": false,
+  "automatic_archive_profile_supported": false
+}

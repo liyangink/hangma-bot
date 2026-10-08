@@ -1,0 +1,64 @@
+{
+  "status": "COMPLETE_STRUCTURAL_PHASE_A_DEVELOPMENT_RANKING",
+  "configurations": 24,
+  "families": 4,
+  "roots_per_configuration": 16,
+  "candidate_tables": 3072,
+  "baseline_tables": 128,
+  "full_tables": 3200,
+  "selected_for_b": [
+    "s2-cfg-02",
+    "s3-cfg-02",
+    "s3-cfg-04",
+    "v2-control-02",
+    "s2-cfg-00",
+    "s1-cfg-01",
+    "s2-cfg-01",
+    "s2-cfg-04",
+    "s3-cfg-01",
+    "v2-control-default"
+  ],
+  "leader": {
+    "config_id": "s2-cfg-02",
+    "candidate_id": "action_value_v1:offline-structural-v1:7815186952c39710784e90e207cec2a24c4c3d754dff7fd5a4e049a2903439aa",
+    "kind": "action_value_source",
+    "family": "S2",
+    "is_zero_effect": false,
+    "is_author_default": false,
+    "fitness_mean_delta_low": 0.03125,
+    "mean_delta": 0.046875,
+    "mean_delta_high": 0.0625,
+    "H": {
+      "n_roots": 8,
+      "mean_delta": -0.03125,
+      "standard_error": 0.06987712429686843,
+      "interval_95": [
+        -0.16820664696509088,
+        0.10570664696509088
+      ]
+    },
+    "M": {
+      "n_roots": 8,
+      "mean_delta": 0.125,
+      "standard_error": 0.0472455591261534,
+      "interval_95": [
+        0.032400405683281674,
+        0.21759959431671833
+      ]
+    }
+  },
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 3200.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "按 phase-b-freeze 补 H/M 各8根；阶段A仅分配预算"
+}

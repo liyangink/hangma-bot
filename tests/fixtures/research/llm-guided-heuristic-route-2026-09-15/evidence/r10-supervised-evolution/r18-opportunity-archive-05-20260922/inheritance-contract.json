@@ -1,0 +1,42 @@
+{
+  "active_parent_id": "r18-p47-integrated-positive",
+  "active_parent_sha256": "0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d",
+  "author_parent_rule": "新作者任务只能以active_parent_sha256对应源码为父代",
+  "default_successor_rule": "任何新家族候选必须在全部既有能力视图上保持完整ScoreBatch和首选动作一致；若要修改既有目标，必须先冻结该目标的新开发/隐藏/配对反事实证据并显式列为替代目标",
+  "locked_objective_ids": [
+    "multi_wealth_baotou/four_wealth_piao",
+    "multi_wealth_baotou/four_wealth_take_hu",
+    "multi_wealth_baotou/four_wealth_keep_wealth",
+    "multi_wealth_baotou/three_wealth_piao",
+    "multi_wealth_baotou/three_wealth_keep_wealth",
+    "gang_chain/added_gang_strict_dominance",
+    "seven_pairs_closed/dealer_initial_tradeoff",
+    "multi_wealth_baotou/two_wealth_piao_keeps_baotou"
+  ],
+  "release_eligible": false,
+  "required_suites": {
+    "capability_and_boundary_views": {
+      "groups": {
+        "p37_current_views": 255,
+        "p8_natural_boundary": 29,
+        "p8_seven_pairs_tradeoff": 64,
+        "p8_standard_switch": 32
+      },
+      "result_path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p45-integrated-positive-parent-01-20260922/result.json",
+      "result_sha256": "5c5c3fee66b19c5b092671fd52eed8f50e77e7a92d97d1955f7bc5f153874c9b",
+      "views": 380
+    },
+    "formal_policy_replay": {
+      "requests": 377,
+      "result_path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p47-integrated-parent-registration-01-20260922/result.json",
+      "result_sha256": "1e277e8567e6994ba0e0d60b769df175e435393bde8c5e2c8a9c2952306157ba"
+    },
+    "fresh_table_safety": {
+      "result_path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p46-integrated-parent-table-safety-01-20260922/result.json",
+      "result_sha256": "62063b2c0506f3e9904692882bcd543cb163f9fb5889e1bdf0d950a268286ad9",
+      "source_units": 512,
+      "tables": 2048
+    }
+  },
+  "schema": "r18-capability-inheritance-contract/1"
+}

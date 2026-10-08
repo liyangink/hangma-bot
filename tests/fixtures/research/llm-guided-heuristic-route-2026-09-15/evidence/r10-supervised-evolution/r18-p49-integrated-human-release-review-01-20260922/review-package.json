@@ -1,0 +1,78 @@
+{
+  "schema": "r18-p49-integrated-human-release-review-package/1",
+  "candidate": {
+    "candidate_id": "1c44c5a56ebd88f5a2d5a9cbf3ae37ad66e105d678b6478dc85ac76ef2855416",
+    "candidate_name": "r18_integrated_positive_v1",
+    "candidate_sha256": "0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d",
+    "offline_strategy": "action_value:r18_integrated_positive_v1",
+    "parent": "P37 two-wealth baotou active research parent",
+    "ruleset_version": "hangma-mvp-v10-public-counts",
+    "value_analysis_limits": {
+      "max_expansions": 2048,
+      "max_routes_per_candidate": 128
+    }
+  },
+  "decision": {
+    "status": "AWAITING_HUMAN_REVIEW",
+    "test_tournament": "PROPOSED",
+    "official_tournament": "NOT_REQUESTED",
+    "production_default": "NOT_REQUESTED",
+    "approved_by": null,
+    "approved_at_utc": null
+  },
+  "evidence": {
+    "p45_capability_merge": {
+      "path": "r18-p45-integrated-positive-parent-01-20260922/result.json",
+      "sha256": "5c5c3fee66b19c5b092671fd52eed8f50e77e7a92d97d1955f7bc5f153874c9b",
+      "status": "PASS_P45_INTEGRATED_PREFLIGHT"
+    },
+    "p46_fresh_table_safety": {
+      "path": "r18-p46-integrated-parent-table-safety-01-20260922/result.json",
+      "sha256": "62063b2c0506f3e9904692882bcd543cb163f9fb5889e1bdf0d950a268286ad9",
+      "status": "PASS_P46_INTEGRATED_TABLE_SAFETY"
+    },
+    "p47_package_registration": {
+      "path": "r18-p47-integrated-parent-registration-01-20260922/result.json",
+      "sha256": "1e277e8567e6994ba0e0d60b769df175e435393bde8c5e2c8a9c2952306157ba",
+      "status": "PASS_P47_INTEGRATED_PARENT_REGISTRATION"
+    },
+    "p48_full_chain_preflight": {
+      "path": "r18-p48-integrated-full-chain-preflight-01-20260922/result.json",
+      "sha256": "fd8962c07921cefea9ddabbad2002777a17fd8a171f2ef6bd544fe1a57e55825",
+      "status": "PASS_P48_INTEGRATED_FULL_CHAIN_PREFLIGHT"
+    },
+    "inherited_two_wealth_confirmation": {
+      "p40a_sha256": "9b230e59c48c3005291d14f1736447dc0362808b5554e72a64e47b1cd14029e5",
+      "p40b_sha256": "188ab4d806b4bed3a136b8d0b82d37b9da4acdbb21d1384c8d2c0639a1edf001",
+      "transfer_basis": "七对覆盖只允许纯弃牌窗口；双财神覆盖要求父代首选胡，因此两者触发域互斥；P46另自然触发双财神5次且零回归"
+    },
+    "inherited_seven_pairs_confirmation": {
+      "historical_hidden_sha256": "048180531da20aa3d381603c344567a5358ad290d2fea3f25eba893b30b0aee0",
+      "natural_boundary_sha256": "7fcf39614fb766ee13121d9604c6cc0cd790b7c54e81ef255e2d8e8bb84751b0",
+      "outcome_calibration": "16种庄家起手×32完整物理世界；15/16形状为正，总体均值+8.625，bootstrap 95%区间[+6.171875,+11.09375]"
+    },
+    "regression_tests": {
+      "command": ".venv/bin/pytest -q tests/unit/policy/test_research_candidates.py tests/unit/policy/test_action_value_policy.py tests/unit/application/test_decision_loop.py tests/unit/application/test_decision_loop_audit_plus.py tests/unit/application/test_value_runtime_wiring.py tests/integration/test_bootstrap_assembly.py",
+      "result": "127 passed in 14.57s"
+    }
+  },
+  "known_limits": [
+    "P46的2,048张随机完整桌没有自然触发庄家起手七对；该能力的方向证据来自既有题库、16种起手的配对完整世界和29个自然中后段反例，而不是本批随机桌。",
+    "P46相对P37的512个来源单元全部同轨迹，因此证明组合安全与能力保留，不证明总体场均显著高于P37。",
+    "P48使用本机内存会话，不包含HTTP、TLS、官方平台拥塞和服务端真实拒绝分布。",
+    "尚未执行同版本官方测试赛事，不能替代AGENTS.md规定的发布门禁。"
+  ],
+  "proposed_scope": {
+    "allow": [
+      "生成绑定当前摘要的test_tournament专用发布包",
+      "在官方测试房和官方测试赛事收集协议、时限、恢复、机会触发和完整赛事指标"
+    ],
+    "deny": [
+      "加入official_tournament可选策略",
+      "设为默认策略",
+      "跳过官方测试赛事直接参加正式赛事"
+    ]
+  },
+  "recommendation": "APPROVE_TEST_TOURNAMENT_PACKAGE_ONLY",
+  "release_eligible": false
+}

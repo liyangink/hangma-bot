@@ -1,0 +1,175 @@
+{
+  "actual_score_calls": 112,
+  "capture": {
+    "deduplicated_calls": 98,
+    "encode_attempts": 112,
+    "encode_monotonic_seconds": 0.5323019579518586,
+    "encoded_complete_json_bytes": 15131848,
+    "failed_store_calls": 0,
+    "gzip_attempts": 15,
+    "gzip_monotonic_seconds": 0.012227540835738182,
+    "gzip_output_bytes": 51965,
+    "gzip_output_bytes_scope": "confirmed_returned_write_bytes",
+    "gzip_write_attempts": 37,
+    "gzip_write_result_uncertain_attempts": 0,
+    "last_store_failure": null,
+    "raw_record_bytes_attempted": 1893528,
+    "raw_record_bytes_saved": 1893528,
+    "store_calls": 112,
+    "store_monotonic_seconds": 0.012434500502422452,
+    "terminal": {
+      "closed": true,
+      "compressed_sha256": "d0c98ffeb1b30254bb438a57b055a55b5aa57eddbdf559479f1e9464f06cdd51",
+      "errors": [],
+      "observed_compressed_bytes": 51965,
+      "store_calls_reconciled": true,
+      "terminal_valid": true,
+      "verification_monotonic_seconds": 0.07765966700389981,
+      "verified": true,
+      "verified_unique_views": 14
+    },
+    "unique_json_bytes_saved": 1891481,
+    "unique_views_saved": 14,
+    "verification_encode_attempts": 14,
+    "verification_encode_monotonic_seconds": 0.065729915862903,
+    "verification_encoded_json_bytes": 1891481
+  },
+  "complete": true,
+  "elapsed_monotonic_seconds": 3.8346649578306824,
+  "failure": null,
+  "files": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t188-joint-score-mechanism-1/PROBE-PREPARATION.json": {
+      "bytes": 37685,
+      "sha256": "fc8d77564dd7d58c23a70e20a74f3d3ea8413581133557369664fae8095d4a45"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t188-joint-score-mechanism-1/run_probes.py": {
+      "bytes": 8905,
+      "sha256": "793c368372c4ebb0553d07274ae45a68113466c32a545aa7c9eb7c9edfc9e9cd"
+    }
+  },
+  "new_worlds_tables_models_HTTP": 0,
+  "original_deadline_or_strength_admission": false,
+  "rows": 56,
+  "rows_pin": {
+    "bytes": 203694,
+    "sha256": "08ab3b892e060f5282d20ae610be9064a5e62cc51456b0caf6108915db0f3429"
+  },
+  "source_stable": true,
+  "summary": {
+    "D": {
+      "changed_vs_C": [
+        9,
+        10
+      ],
+      "first_choices": {
+        "1": "discard:1t",
+        "10": "discard:6t",
+        "11": "discard:3b",
+        "12": "discard:9w",
+        "13": "discard:1t",
+        "14": "discard:6t",
+        "2": "hu",
+        "3": "discard:7w",
+        "4": "discard:北",
+        "5": "hu",
+        "6": "discard:5t",
+        "7": "pass",
+        "8": "peng:6w",
+        "9": "discard:北"
+      },
+      "maximum_duplicate_codes": 0,
+      "positive_duplicate_targets": [],
+      "rows": 14
+    },
+    "DE": {
+      "changed_vs_C": [
+        2,
+        9,
+        10
+      ],
+      "first_choices": {
+        "1": "discard:1t",
+        "10": "discard:6t",
+        "11": "discard:3b",
+        "12": "discard:9w",
+        "13": "discard:1t",
+        "14": "discard:6t",
+        "2": "discard:7w",
+        "3": "discard:7w",
+        "4": "discard:北",
+        "5": "hu",
+        "6": "discard:5t",
+        "7": "pass",
+        "8": "peng:6w",
+        "9": "discard:北"
+      },
+      "maximum_duplicate_codes": 0,
+      "positive_duplicate_targets": [],
+      "rows": 14
+    },
+    "E": {
+      "changed_vs_C": [
+        2
+      ],
+      "first_choices": {
+        "1": "discard:1t",
+        "10": "discard:3w",
+        "11": "discard:3b",
+        "12": "discard:9w",
+        "13": "discard:1t",
+        "14": "discard:6t",
+        "2": "discard:7w",
+        "3": "discard:7w",
+        "4": "discard:北",
+        "5": "hu",
+        "6": "discard:5t",
+        "7": "pass",
+        "8": "peng:6w",
+        "9": "discard:4t"
+      },
+      "maximum_duplicate_codes": 19,
+      "positive_duplicate_targets": [
+        1,
+        3,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "rows": 14
+    },
+    "I": {
+      "changed_vs_C": [],
+      "first_choices": {
+        "1": "discard:1t",
+        "10": "discard:3w",
+        "11": "discard:3b",
+        "12": "discard:9w",
+        "13": "discard:1t",
+        "14": "discard:6t",
+        "2": "hu",
+        "3": "discard:7w",
+        "4": "discard:北",
+        "5": "hu",
+        "6": "discard:5t",
+        "7": "pass",
+        "8": "peng:6w",
+        "9": "discard:4t"
+      },
+      "maximum_duplicate_codes": 19,
+      "positive_duplicate_targets": [
+        1,
+        3,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "rows": 14
+    }
+  }
+}

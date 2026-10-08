@@ -1,0 +1,58 @@
+{
+  "bank_sha256": "2d933ffe9fad92f4030d70cb71fa84fb6a2e572852b8d8de1bea6a9d9b1ac1a0",
+  "candidate_sha256": "68f31d5138918b03837078e4e29cd5b011cce5d795cd7754b2e6884e03a38363",
+  "capability": {
+    "candidate_optimal": 32,
+    "candidate_piao": 32,
+    "cases": 32,
+    "mean_gain_over_parent": 56.81494256898725,
+    "parent_hu": 32
+  },
+  "checks": {
+    "all_cases_scored": true,
+    "all_counterfactual_arms_complete": true,
+    "candidate_all_optimal": true,
+    "candidate_all_piao": true,
+    "each_role_bootstrap_lower_positive": true,
+    "each_role_mean_above_32": true,
+    "overall_positive_pair_fraction": true,
+    "zero_candidate_regressions": true
+  },
+  "counterfactual": {
+    "mean_piao_minus_hu": 58.375,
+    "mechanical_ok": 32,
+    "pairs": 32,
+    "positive_pairs": 32,
+    "role_summaries": {
+      "dealer_after_rotation": {
+        "bootstrap_95_mean": [
+          66.0,
+          90.0
+        ],
+        "mean_piao_minus_hu": 78.0,
+        "median_piao_minus_hu": 96.0,
+        "negative_pairs": 0,
+        "pairs": 16,
+        "positive_pairs": 16,
+        "zero_pairs": 0
+      },
+      "nondealer_after_dealer_discard": {
+        "bootstrap_95_mean": [
+          30.0,
+          51.25
+        ],
+        "mean_piao_minus_hu": 38.75,
+        "median_piao_minus_hu": 40.0,
+        "negative_pairs": 0,
+        "pairs": 16,
+        "positive_pairs": 16,
+        "zero_pairs": 0
+      }
+    }
+  },
+  "interpretation": "P3 三财神飘已外推到模拟器真实推进得到的庄家轮转后与非庄家中局；仍需估计自然暴露率并由完整桌赛守住非劣",
+  "parent_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+  "release_eligible": false,
+  "schema": "r18-p3-reachable-midgame-result/1",
+  "status": "PASS_REACHABLE_MIDGAME"
+}

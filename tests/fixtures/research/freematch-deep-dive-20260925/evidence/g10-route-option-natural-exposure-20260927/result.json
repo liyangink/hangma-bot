@@ -1,0 +1,3464 @@
+{
+  "completed_tables": 384,
+  "counts": {
+    "H": {
+      "eligible": 203,
+      "focal_requests": 64160,
+      "no_route_option": 6489,
+      "not_draw": 50859,
+      "parent_facts_missing": 6194,
+      "parent_not_discard": 415
+    },
+    "M": {
+      "eligible": 204,
+      "focal_requests": 65859,
+      "no_route_option": 6647,
+      "not_draw": 52149,
+      "parent_facts_missing": 6389,
+      "parent_not_discard": 470
+    }
+  },
+  "independence_unit": "mix × source_root_id",
+  "independent_roots_by_route": {
+    "H": {
+      "seven_pairs": 24,
+      "standard": 23
+    },
+    "M": {
+      "seven_pairs": 24,
+      "standard": 24
+    }
+  },
+  "outcome_labels_opened": false,
+  "panel_seed": 2026110501,
+  "parent_source_sha256": "a2d9b8af93beabdba75716fccae56b0668a6fd84f0bdce558d2ff3e569443618",
+  "planned_tables": 384,
+  "release_eligible": false,
+  "schema": "g10-route-option-natural-exposure/1",
+  "selected": [
+    {
+      "alternate_action": "discard:西",
+      "alternate_route_shanten": [
+        1,
+        1,
+        2
+      ],
+      "alternate_score": -76.0,
+      "alternate_support": 19,
+      "game_id": "sitin-stage:np-H-2026110501-r01-s0-t2",
+      "parent_action": "discard:5t",
+      "parent_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "parent_score": -76.0,
+      "parent_support": 16,
+      "request_sha256": "da0869e90d2a7e6a35b1fbea47d67f1578acb765c390e2940c304a660c9db283",
+      "round_no": 4,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 1,
+        "source_id": "H:g10:2026110501:r001:s0",
+        "source_root_id": "H:g10:2026110501:r001"
+      },
+      "table_no": 2,
+      "trigger_seq": 664,
+      "wall_remaining": 67,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:6w",
+      "alternate_route_shanten": [
+        1,
+        1,
+        2
+      ],
+      "alternate_score": -85.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-H-2026110501-r02-s0-t2",
+      "parent_action": "discard:西",
+      "parent_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "parent_score": -78.0,
+      "parent_support": 15,
+      "request_sha256": "f8d1560f68a4dd111a150ea24782c6341aa4c3322666904d4b3cc00d0b246fec",
+      "round_no": 7,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 2,
+        "source_id": "H:g10:2026110501:r002:s0",
+        "source_root_id": "H:g10:2026110501:r002"
+      },
+      "table_no": 2,
+      "trigger_seq": 1486,
+      "wall_remaining": 63,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:8t",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -88.0,
+      "alternate_support": 12,
+      "game_id": "sitin-stage:np-H-2026110501-r03-s0-t1",
+      "parent_action": "discard:7b",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -88.0,
+      "parent_support": 12,
+      "request_sha256": "e794c8ae8a7df79d5a66c439e1463585c713b63c504234389695b9c3c0068ca0",
+      "round_no": 1,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 3,
+        "source_id": "H:g10:2026110501:r003:s0",
+        "source_root_id": "H:g10:2026110501:r003"
+      },
+      "table_no": 1,
+      "trigger_seq": 47,
+      "wall_remaining": 76,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:9t",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -142.0,
+      "alternate_support": 56,
+      "game_id": "sitin-stage:np-H-2026110501-r04-s0-t2",
+      "parent_action": "discard:2b",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -141.0,
+      "parent_support": 54,
+      "request_sha256": "42fbde3c30343e2177f6782ebd8c93fed93b712655a47b1d29662383cd76a4c5",
+      "round_no": 7,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 4,
+        "source_id": "H:g10:2026110501:r004:s0",
+        "source_root_id": "H:g10:2026110501:r004"
+      },
+      "table_no": 2,
+      "trigger_seq": 1207,
+      "wall_remaining": 76,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:2w",
+      "alternate_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "alternate_score": -78.0,
+      "alternate_support": 20,
+      "game_id": "sitin-stage:np-H-2026110501-r05-s0-t1",
+      "parent_action": "discard:1b",
+      "parent_route_shanten": [
+        1,
+        1,
+        5
+      ],
+      "parent_score": -78.0,
+      "parent_support": 20,
+      "request_sha256": "4766f2b62a41de01b4329538bac705e49a6610252943a8e045c939987d817109",
+      "round_no": 3,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 5,
+        "source_id": "H:g10:2026110501:r005:s0",
+        "source_root_id": "H:g10:2026110501:r005"
+      },
+      "table_no": 1,
+      "trigger_seq": 603,
+      "wall_remaining": 70,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:1b",
+      "alternate_route_shanten": [
+        1,
+        1,
+        2
+      ],
+      "alternate_score": -96.0,
+      "alternate_support": 10,
+      "game_id": "sitin-stage:np-H-2026110501-r06-s2-t1",
+      "parent_action": "discard:6b",
+      "parent_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "parent_score": -90.0,
+      "parent_support": 10,
+      "request_sha256": "57946398d07f4d024b4f5428fe0680f4d0b9c82740f76a25fca29af9a019715f",
+      "round_no": 5,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "root_index": 6,
+        "source_id": "H:g10:2026110501:r006:s2",
+        "source_root_id": "H:g10:2026110501:r006"
+      },
+      "table_no": 1,
+      "trigger_seq": 830,
+      "wall_remaining": 60,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:7t",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -72.0,
+      "alternate_support": 23,
+      "game_id": "sitin-stage:np-H-2026110501-r07-s2-t1",
+      "parent_action": "discard:3t",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -72.0,
+      "parent_support": 23,
+      "request_sha256": "1c61ffa9c215a2571b08111264e2462dcbf58e2992127ca4ce61d389e14b5007",
+      "round_no": 6,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "root_index": 7,
+        "source_id": "H:g10:2026110501:r007:s2",
+        "source_root_id": "H:g10:2026110501:r007"
+      },
+      "table_no": 1,
+      "trigger_seq": 993,
+      "wall_remaining": 77,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:6b",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -185.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-H-2026110501-r08-s0-t1",
+      "parent_action": "discard:4w",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -185.0,
+      "parent_support": 15,
+      "request_sha256": "50665c8c601b31600a6d266ac18da0f178493ea4e050f97d03ba886d25de9330",
+      "round_no": 2,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 8,
+        "source_id": "H:g10:2026110501:r008:s0",
+        "source_root_id": "H:g10:2026110501:r008"
+      },
+      "table_no": 1,
+      "trigger_seq": 291,
+      "wall_remaining": 68,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:南",
+      "alternate_route_shanten": [
+        1,
+        1,
+        2
+      ],
+      "alternate_score": -76.0,
+      "alternate_support": 19,
+      "game_id": "sitin-stage:np-H-2026110501-r09-s3-t1",
+      "parent_action": "discard:6t",
+      "parent_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "parent_score": -76.0,
+      "parent_support": 19,
+      "request_sha256": "ac798dd38cbc083e27e571d418806f8fe3ac85fc60903e6ac72a4ec3351a36fa",
+      "round_no": 1,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "root_index": 9,
+        "source_id": "H:g10:2026110501:r009:s3",
+        "source_root_id": "H:g10:2026110501:r009"
+      },
+      "table_no": 1,
+      "trigger_seq": 33,
+      "wall_remaining": 79,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:东",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -88.0,
+      "alternate_support": 12,
+      "game_id": "sitin-stage:np-H-2026110501-r10-s1-t2",
+      "parent_action": "discard:2w",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -88.0,
+      "parent_support": 12,
+      "request_sha256": "a2d87541356b98449d36c0f39e9c6beac8b8bf2b30458db05a714961417ff234",
+      "round_no": 5,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 10,
+        "source_id": "H:g10:2026110501:r010:s1",
+        "source_root_id": "H:g10:2026110501:r010"
+      },
+      "table_no": 2,
+      "trigger_seq": 593,
+      "wall_remaining": 82,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:1w",
+      "alternate_route_shanten": [
+        0,
+        0,
+        4
+      ],
+      "alternate_score": 0.0,
+      "alternate_support": 6,
+      "game_id": "sitin-stage:np-H-2026110501-r11-s1-t1",
+      "parent_action": "discard:2w",
+      "parent_route_shanten": [
+        0,
+        0,
+        5
+      ],
+      "parent_score": 8.0,
+      "parent_support": 5,
+      "request_sha256": "d87852a3a2a2b83700bb0fc2d24903a32c870d067cc25ea09f03f63c6441f987",
+      "round_no": 7,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 11,
+        "source_id": "H:g10:2026110501:r011:s1",
+        "source_root_id": "H:g10:2026110501:r011"
+      },
+      "table_no": 1,
+      "trigger_seq": 1124,
+      "wall_remaining": 50,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:6t",
+      "alternate_route_shanten": [
+        1,
+        1,
+        2
+      ],
+      "alternate_score": -73.0,
+      "alternate_support": 22,
+      "game_id": "sitin-stage:np-H-2026110501-r12-s2-t1",
+      "parent_action": "discard:1b",
+      "parent_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "parent_score": -73.0,
+      "parent_support": 22,
+      "request_sha256": "1eb47cb340b4d25e601f11c3fab8bb4296fbf608461ae290071eb516d0f4fdc7",
+      "round_no": 3,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "root_index": 12,
+        "source_id": "H:g10:2026110501:r012:s2",
+        "source_root_id": "H:g10:2026110501:r012"
+      },
+      "table_no": 1,
+      "trigger_seq": 533,
+      "wall_remaining": 72,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:6b",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -76.0,
+      "alternate_support": 25,
+      "game_id": "sitin-stage:np-H-2026110501-r13-s1-t2",
+      "parent_action": "discard:4w",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -74.0,
+      "parent_support": 21,
+      "request_sha256": "34fe3e9cf6fcff32c03c41555531b86003e5b1b97d4058cfec4916fdd5567c38",
+      "round_no": 7,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 13,
+        "source_id": "H:g10:2026110501:r013:s1",
+        "source_root_id": "H:g10:2026110501:r013"
+      },
+      "table_no": 2,
+      "trigger_seq": 1331,
+      "wall_remaining": 68,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:2t",
+      "alternate_route_shanten": [
+        0,
+        0,
+        2
+      ],
+      "alternate_score": 32.0,
+      "alternate_support": 22,
+      "game_id": "sitin-stage:np-H-2026110501-r14-s0-t2",
+      "parent_action": "discard:1t",
+      "parent_route_shanten": [
+        0,
+        0,
+        3
+      ],
+      "parent_score": 32.0,
+      "parent_support": 22,
+      "request_sha256": "e129f6d4019a572b6fbe5dbadb5c873640d34451e27e70f513e654926479f303",
+      "round_no": 8,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 14,
+        "source_id": "H:g10:2026110501:r014:s0",
+        "source_root_id": "H:g10:2026110501:r014"
+      },
+      "table_no": 2,
+      "trigger_seq": 1680,
+      "wall_remaining": 57,
+      "white_count": 2
+    },
+    {
+      "alternate_action": "discard:北",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -175.0,
+      "alternate_support": 23,
+      "game_id": "sitin-stage:np-H-2026110501-r15-s0-t1",
+      "parent_action": "discard:5b",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -173.0,
+      "parent_support": 22,
+      "request_sha256": "a7f5cd8919f4a2e5c6cc3e7312aca0c56284eb5f7615fac27e33b1103b47f35a",
+      "round_no": 6,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 15,
+        "source_id": "H:g10:2026110501:r015:s0",
+        "source_root_id": "H:g10:2026110501:r015"
+      },
+      "table_no": 1,
+      "trigger_seq": 917,
+      "wall_remaining": 65,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:7w",
+      "alternate_route_shanten": [
+        1,
+        1,
+        2
+      ],
+      "alternate_score": -89.0,
+      "alternate_support": 17,
+      "game_id": "sitin-stage:np-H-2026110501-r16-s0-t1",
+      "parent_action": "discard:3t",
+      "parent_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "parent_score": -86.0,
+      "parent_support": 14,
+      "request_sha256": "be51e8571611d17ab435a02050ecab9e01b92b8a3209bfc57b681a1e0469c9b5",
+      "round_no": 1,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 16,
+        "source_id": "H:g10:2026110501:r016:s0",
+        "source_root_id": "H:g10:2026110501:r016"
+      },
+      "table_no": 1,
+      "trigger_seq": 199,
+      "wall_remaining": 53,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:发",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -76.0,
+      "alternate_support": 19,
+      "game_id": "sitin-stage:np-H-2026110501-r17-s1-t1",
+      "parent_action": "discard:7w",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -76.0,
+      "parent_support": 19,
+      "request_sha256": "0ff8a86d296e605ca6c003c1741aac44f43e7d16b3dfbab31ea84a6f7a5e1b11",
+      "round_no": 4,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 17,
+        "source_id": "H:g10:2026110501:r017:s1",
+        "source_root_id": "H:g10:2026110501:r017"
+      },
+      "table_no": 1,
+      "trigger_seq": 394,
+      "wall_remaining": 82,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:3t",
+      "alternate_route_shanten": [
+        0,
+        0,
+        3
+      ],
+      "alternate_score": 16.0,
+      "alternate_support": 17,
+      "game_id": "sitin-stage:np-H-2026110501-r18-s2-t1",
+      "parent_action": "discard:7b",
+      "parent_route_shanten": [
+        0,
+        0,
+        4
+      ],
+      "parent_score": 18.0,
+      "parent_support": 13,
+      "request_sha256": "0acfcdc38c488ce62230f2acc4eb567348f8ad5764bde1e7a4f78160dae517d6",
+      "round_no": 3,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "root_index": 18,
+        "source_id": "H:g10:2026110501:r018:s2",
+        "source_root_id": "H:g10:2026110501:r018"
+      },
+      "table_no": 1,
+      "trigger_seq": 546,
+      "wall_remaining": 71,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:7w",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -176.0,
+      "alternate_support": 24,
+      "game_id": "sitin-stage:np-H-2026110501-r19-s0-t2",
+      "parent_action": "discard:3w",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -176.0,
+      "parent_support": 24,
+      "request_sha256": "e4b0a69b5267b0c61ad17889b25fe1a23106c9bd9213348f954dfa71ebca871e",
+      "round_no": 3,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 19,
+        "source_id": "H:g10:2026110501:r019:s0",
+        "source_root_id": "H:g10:2026110501:r019"
+      },
+      "table_no": 2,
+      "trigger_seq": 339,
+      "wall_remaining": 80,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:北",
+      "alternate_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "alternate_score": -87.0,
+      "alternate_support": 11,
+      "game_id": "sitin-stage:np-H-2026110501-r20-s0-t1",
+      "parent_action": "discard:9w",
+      "parent_route_shanten": [
+        1,
+        1,
+        5
+      ],
+      "parent_score": -87.0,
+      "parent_support": 11,
+      "request_sha256": "d31101fa902e79bc09599d90841768a929a457ffdfa5953c84881af3fd531136",
+      "round_no": 2,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 20,
+        "source_id": "H:g10:2026110501:r020:s0",
+        "source_root_id": "H:g10:2026110501:r020"
+      },
+      "table_no": 1,
+      "trigger_seq": 332,
+      "wall_remaining": 69,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:5b",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -179.0,
+      "alternate_support": 19,
+      "game_id": "sitin-stage:np-H-2026110501-r21-s0-t1",
+      "parent_action": "discard:2b",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -179.0,
+      "parent_support": 19,
+      "request_sha256": "0b08607f84aff31718992d09352bb65e44770ac54ea4c434d54cba29ee44618f",
+      "round_no": 5,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 21,
+        "source_id": "H:g10:2026110501:r021:s0",
+        "source_root_id": "H:g10:2026110501:r021"
+      },
+      "table_no": 1,
+      "trigger_seq": 801,
+      "wall_remaining": 69,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:7w",
+      "alternate_route_shanten": [
+        0,
+        0,
+        3
+      ],
+      "alternate_score": 9.0,
+      "alternate_support": 9,
+      "game_id": "sitin-stage:np-H-2026110501-r22-s1-t2",
+      "parent_action": "discard:9w",
+      "parent_route_shanten": [
+        0,
+        0,
+        4
+      ],
+      "parent_score": 11.0,
+      "parent_support": 8,
+      "request_sha256": "d6d3b9e997bb7c474966175be28f8b8352f36195957633eb792d4e3d546e1da1",
+      "round_no": 2,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 22,
+        "source_id": "H:g10:2026110501:r022:s1",
+        "source_root_id": "H:g10:2026110501:r022"
+      },
+      "table_no": 2,
+      "trigger_seq": 502,
+      "wall_remaining": 44,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:8w",
+      "alternate_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "alternate_score": -96.0,
+      "alternate_support": 10,
+      "game_id": "sitin-stage:np-H-2026110501-r23-s0-t1",
+      "parent_action": "discard:5b",
+      "parent_route_shanten": [
+        1,
+        1,
+        5
+      ],
+      "parent_score": -90.0,
+      "parent_support": 10,
+      "request_sha256": "b55dd4e68da12926e9eb5af3dd11c9fea366ba4eafff19c6a12678139dfa8543",
+      "round_no": 1,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 23,
+        "source_id": "H:g10:2026110501:r023:s0",
+        "source_root_id": "H:g10:2026110501:r023"
+      },
+      "table_no": 1,
+      "trigger_seq": 183,
+      "wall_remaining": 54,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:2w",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -87.0,
+      "alternate_support": 11,
+      "game_id": "sitin-stage:np-H-2026110501-r24-s0-t1",
+      "parent_action": "discard:7t",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -84.0,
+      "parent_support": 11,
+      "request_sha256": "48c5c75fb9be758e8314a1254af35268a5a7645c586012ab33e066d2aa528c47",
+      "round_no": 5,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 24,
+        "source_id": "H:g10:2026110501:r024:s0",
+        "source_root_id": "H:g10:2026110501:r024"
+      },
+      "table_no": 1,
+      "trigger_seq": 757,
+      "wall_remaining": 62,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:3w",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -80.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-H-2026110501-r01-s0-t1",
+      "parent_action": "discard:3b",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -80.0,
+      "parent_support": 15,
+      "request_sha256": "b34ee887277c9e090dab0601c4da08aef8513303bc4fb0979d65075752b791e1",
+      "round_no": 3,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 1,
+        "source_id": "H:g10:2026110501:r001:s0",
+        "source_root_id": "H:g10:2026110501:r001"
+      },
+      "table_no": 1,
+      "trigger_seq": 382,
+      "wall_remaining": 83,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:4b",
+      "alternate_route_shanten": [
+        0,
+        0,
+        0
+      ],
+      "alternate_score": 9.0,
+      "alternate_support": 13,
+      "game_id": "sitin-stage:np-H-2026110501-r02-s0-t2",
+      "parent_action": "discard:6t",
+      "parent_route_shanten": [
+        0,
+        1,
+        0
+      ],
+      "parent_score": 14.0,
+      "parent_support": 6,
+      "request_sha256": "811f5739baa4f8d0017f09d52b14b323f998cf3b80fe9e912f4ad48ef76f2204",
+      "round_no": 8,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 2,
+        "source_id": "H:g10:2026110501:r002:s0",
+        "source_root_id": "H:g10:2026110501:r002"
+      },
+      "table_no": 2,
+      "trigger_seq": 1746,
+      "wall_remaining": 44,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:8w",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -80.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-H-2026110501-r03-s0-t1",
+      "parent_action": "discard:3t",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -80.0,
+      "parent_support": 15,
+      "request_sha256": "aa24bfb3ecc4715d71fe4506067f76fff50a8dde642a2d8daff3e002e86cf02d",
+      "round_no": 7,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 3,
+        "source_id": "H:g10:2026110501:r003:s0",
+        "source_root_id": "H:g10:2026110501:r003"
+      },
+      "table_no": 1,
+      "trigger_seq": 1350,
+      "wall_remaining": 82,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:西",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -80.0,
+      "alternate_support": 10,
+      "game_id": "sitin-stage:np-H-2026110501-r04-s0-t1",
+      "parent_action": "discard:8t",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -80.0,
+      "parent_support": 10,
+      "request_sha256": "2b36df6b38dd3c31f7ad2956ad70598aafd2d86d03e76bf0e88bb1a75bb70b61",
+      "round_no": 4,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 4,
+        "source_id": "H:g10:2026110501:r004:s0",
+        "source_root_id": "H:g10:2026110501:r004"
+      },
+      "table_no": 1,
+      "trigger_seq": 852,
+      "wall_remaining": 54,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:1b",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -269.0,
+      "alternate_support": 26,
+      "game_id": "sitin-stage:np-H-2026110501-r05-s0-t1",
+      "parent_action": "discard:8b",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -266.0,
+      "parent_support": 26,
+      "request_sha256": "12cce73a6c2750cd21b628b20afda91dd009447902526903ce8530934908d90f",
+      "round_no": 8,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 5,
+        "source_id": "H:g10:2026110501:r005:s0",
+        "source_root_id": "H:g10:2026110501:r005"
+      },
+      "table_no": 1,
+      "trigger_seq": 1583,
+      "wall_remaining": 75,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:2t",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -268.0,
+      "alternate_support": 27,
+      "game_id": "sitin-stage:np-H-2026110501-r06-s0-t2",
+      "parent_action": "discard:1w",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -268.0,
+      "parent_support": 27,
+      "request_sha256": "130b35da4c18846cf986a2c95ceb4358d21eda0f85c6da55cb994aa73a5378b9",
+      "round_no": 7,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 6,
+        "source_id": "H:g10:2026110501:r006:s0",
+        "source_root_id": "H:g10:2026110501:r006"
+      },
+      "table_no": 2,
+      "trigger_seq": 1052,
+      "wall_remaining": 81,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:2t",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -73.0,
+      "alternate_support": 17,
+      "game_id": "sitin-stage:np-H-2026110501-r07-s0-t2",
+      "parent_action": "discard:2b",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -73.0,
+      "parent_support": 17,
+      "request_sha256": "77801ad42cf5499888d223d850433cca0823e80c786cca99c8698fde044e3a05",
+      "round_no": 7,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 7,
+        "source_id": "H:g10:2026110501:r007:s0",
+        "source_root_id": "H:g10:2026110501:r007"
+      },
+      "table_no": 2,
+      "trigger_seq": 1174,
+      "wall_remaining": 81,
+      "white_count": 2
+    },
+    {
+      "alternate_action": "discard:1t",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -185.0,
+      "alternate_support": 18,
+      "game_id": "sitin-stage:np-H-2026110501-r08-s0-t2",
+      "parent_action": "discard:3w",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -182.0,
+      "parent_support": 18,
+      "request_sha256": "5113dc1d59a6283f3245b29cc522a4314d5c073cd15c0a776e0ec597b22602fd",
+      "round_no": 1,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 8,
+        "source_id": "H:g10:2026110501:r008:s0",
+        "source_root_id": "H:g10:2026110501:r008"
+      },
+      "table_no": 2,
+      "trigger_seq": 171,
+      "wall_remaining": 57,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:6t",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -268.0,
+      "alternate_support": 27,
+      "game_id": "sitin-stage:np-H-2026110501-r09-s1-t1",
+      "parent_action": "discard:1b",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -268.0,
+      "parent_support": 27,
+      "request_sha256": "d1b128a1e11f6be439fdfcd09387f65d9f5dcd22dc010bffc4d94d60f27febe9",
+      "round_no": 1,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 9,
+        "source_id": "H:g10:2026110501:r009:s1",
+        "source_root_id": "H:g10:2026110501:r009"
+      },
+      "table_no": 1,
+      "trigger_seq": 6,
+      "wall_remaining": 82,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:2t",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -73.0,
+      "alternate_support": 17,
+      "game_id": "sitin-stage:np-H-2026110501-r11-s1-t1",
+      "parent_action": "discard:1b",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -73.0,
+      "parent_support": 17,
+      "request_sha256": "625ccf45f9619af7f191a79c35bceb2beff28e9aaabfb427117346b2d7e95ccc",
+      "round_no": 8,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 11,
+        "source_id": "H:g10:2026110501:r011:s1",
+        "source_root_id": "H:g10:2026110501:r011"
+      },
+      "table_no": 1,
+      "trigger_seq": 1149,
+      "wall_remaining": 83,
+      "white_count": 2
+    },
+    {
+      "alternate_action": "discard:5b",
+      "alternate_route_shanten": [
+        4,
+        5,
+        4
+      ],
+      "alternate_score": -369.0,
+      "alternate_support": 31,
+      "game_id": "sitin-stage:np-H-2026110501-r12-s1-t1",
+      "parent_action": "discard:2t",
+      "parent_route_shanten": [
+        4,
+        6,
+        4
+      ],
+      "parent_score": -369.0,
+      "parent_support": 31,
+      "request_sha256": "6851732b15d4e1fbfc105f8c8b2b818445b4588ea76db4a3fccf2ad2d7e686f4",
+      "round_no": 6,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 12,
+        "source_id": "H:g10:2026110501:r012:s1",
+        "source_root_id": "H:g10:2026110501:r012"
+      },
+      "table_no": 1,
+      "trigger_seq": 801,
+      "wall_remaining": 80,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:7w",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -87.0,
+      "alternate_support": 13,
+      "game_id": "sitin-stage:np-H-2026110501-r13-s0-t2",
+      "parent_action": "discard:1t",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -87.0,
+      "parent_support": 13,
+      "request_sha256": "dba4451a334d7da671426cf64df44cd5d3ba204e709aad467f314b896acc64d9",
+      "round_no": 3,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 13,
+        "source_id": "H:g10:2026110501:r013:s0",
+        "source_root_id": "H:g10:2026110501:r013"
+      },
+      "table_no": 2,
+      "trigger_seq": 559,
+      "wall_remaining": 62,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:3t",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -275.0,
+      "alternate_support": 25,
+      "game_id": "sitin-stage:np-H-2026110501-r14-s0-t2",
+      "parent_action": "discard:3b",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -275.0,
+      "parent_support": 25,
+      "request_sha256": "f0c4b72632edb8911e3569f2eb3fac3b5ca4dddb113d4ad70bbe82f48fdc18cd",
+      "round_no": 5,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 14,
+        "source_id": "H:g10:2026110501:r014:s0",
+        "source_root_id": "H:g10:2026110501:r014"
+      },
+      "table_no": 2,
+      "trigger_seq": 698,
+      "wall_remaining": 80,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:北",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -177.0,
+      "alternate_support": 18,
+      "game_id": "sitin-stage:np-H-2026110501-r15-s0-t2",
+      "parent_action": "discard:2w",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -177.0,
+      "parent_support": 18,
+      "request_sha256": "bf443e75f709c1cd7b84c38922dab06b35bc4055f45c4f3e0e9a9ed60b426b40",
+      "round_no": 6,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 15,
+        "source_id": "H:g10:2026110501:r015:s0",
+        "source_root_id": "H:g10:2026110501:r015"
+      },
+      "table_no": 2,
+      "trigger_seq": 964,
+      "wall_remaining": 76,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:3t",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -174.0,
+      "alternate_support": 21,
+      "game_id": "sitin-stage:np-H-2026110501-r16-s1-t1",
+      "parent_action": "discard:1w",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -174.0,
+      "parent_support": 21,
+      "request_sha256": "3b9823a5f40479d0b51ff1e826b0d5615155e5e1af203e7a77349a76a25cb713",
+      "round_no": 7,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 16,
+        "source_id": "H:g10:2026110501:r016:s1",
+        "source_root_id": "H:g10:2026110501:r016"
+      },
+      "table_no": 1,
+      "trigger_seq": 1186,
+      "wall_remaining": 76,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:7t",
+      "alternate_route_shanten": [
+        0,
+        2,
+        0
+      ],
+      "alternate_score": 7.0,
+      "alternate_support": 7,
+      "game_id": "sitin-stage:np-H-2026110501-r17-s0-t2",
+      "parent_action": "discard:5w",
+      "parent_route_shanten": [
+        0,
+        3,
+        0
+      ],
+      "parent_score": 7.0,
+      "parent_support": 7,
+      "request_sha256": "ce9d0dd1aff8cc62c93ba8aa024d26a9fa47b2604e3a576f0f3278164bdf75d1",
+      "round_no": 6,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 17,
+        "source_id": "H:g10:2026110501:r017:s0",
+        "source_root_id": "H:g10:2026110501:r017"
+      },
+      "table_no": 2,
+      "trigger_seq": 1082,
+      "wall_remaining": 61,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:2w",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -275.0,
+      "alternate_support": 25,
+      "game_id": "sitin-stage:np-H-2026110501-r18-s1-t1",
+      "parent_action": "discard:1t",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -275.0,
+      "parent_support": 25,
+      "request_sha256": "1b9afa8cc9c81a3591f0ef43a2060f2503446896c19872212a022da41718ebab",
+      "round_no": 3,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 18,
+        "source_id": "H:g10:2026110501:r018:s1",
+        "source_root_id": "H:g10:2026110501:r018"
+      },
+      "table_no": 1,
+      "trigger_seq": 486,
+      "wall_remaining": 80,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:北",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -78.0,
+      "alternate_support": 14,
+      "game_id": "sitin-stage:np-H-2026110501-r19-s3-t1",
+      "parent_action": "discard:1b",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -78.0,
+      "parent_support": 14,
+      "request_sha256": "b5ada746b5f5ab806a76a7e9e5c67903205bcc7aaae5a2bb83d0f343bb6f49b7",
+      "round_no": 6,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "root_index": 19,
+        "source_id": "H:g10:2026110501:r019:s3",
+        "source_root_id": "H:g10:2026110501:r019"
+      },
+      "table_no": 1,
+      "trigger_seq": 1267,
+      "wall_remaining": 69,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:3w",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -275.0,
+      "alternate_support": 25,
+      "game_id": "sitin-stage:np-H-2026110501-r20-s1-t2",
+      "parent_action": "discard:1t",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -275.0,
+      "parent_support": 25,
+      "request_sha256": "212d4bbbfa3dc13c6791879e0e375aac79e508f560944a3f4010524934a09cce",
+      "round_no": 3,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "root_index": 20,
+        "source_id": "H:g10:2026110501:r020:s1",
+        "source_root_id": "H:g10:2026110501:r020"
+      },
+      "table_no": 2,
+      "trigger_seq": 488,
+      "wall_remaining": 83,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:8w",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -179.0,
+      "alternate_support": 19,
+      "game_id": "sitin-stage:np-H-2026110501-r21-s0-t1",
+      "parent_action": "discard:7t",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -179.0,
+      "parent_support": 19,
+      "request_sha256": "8e42c22df5da636b87c76966f456025912d7ac8ff9421fe53c69ede8b1fd0137",
+      "round_no": 6,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 21,
+        "source_id": "H:g10:2026110501:r021:s0",
+        "source_root_id": "H:g10:2026110501:r021"
+      },
+      "table_no": 1,
+      "trigger_seq": 917,
+      "wall_remaining": 72,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:7w",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -175.0,
+      "alternate_support": 20,
+      "game_id": "sitin-stage:np-H-2026110501-r22-s0-t1",
+      "parent_action": "discard:3t",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -175.0,
+      "parent_support": 20,
+      "request_sha256": "59193d071e47eb63fa70cedf7ce9bcf40491e6bc113b2ebb4d26c0936a519bfb",
+      "round_no": 7,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 22,
+        "source_id": "H:g10:2026110501:r022:s0",
+        "source_root_id": "H:g10:2026110501:r022"
+      },
+      "table_no": 1,
+      "trigger_seq": 1284,
+      "wall_remaining": 76,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:5b",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -181.0,
+      "alternate_support": 19,
+      "game_id": "sitin-stage:np-H-2026110501-r23-s0-t2",
+      "parent_action": "discard:3w",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -181.0,
+      "parent_support": 19,
+      "request_sha256": "a9d42a60b52c59d94924b5e801a25564f41e4adbebac2d54c1854b3528210737",
+      "round_no": 3,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 23,
+        "source_id": "H:g10:2026110501:r023:s0",
+        "source_root_id": "H:g10:2026110501:r023"
+      },
+      "table_no": 2,
+      "trigger_seq": 540,
+      "wall_remaining": 74,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:6t",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -275.0,
+      "alternate_support": 23,
+      "game_id": "sitin-stage:np-H-2026110501-r24-s0-t1",
+      "parent_action": "discard:4t",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -272.0,
+      "parent_support": 23,
+      "request_sha256": "77eecab883ba41c6beea7af0854afdf5d98e246af626a3c86785e04dc19c7c37",
+      "round_no": 8,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "root_index": 24,
+        "source_id": "H:g10:2026110501:r024:s0",
+        "source_root_id": "H:g10:2026110501:r024"
+      },
+      "table_no": 1,
+      "trigger_seq": 1518,
+      "wall_remaining": 79,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:4b",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -177.0,
+      "alternate_support": 23,
+      "game_id": "sitin-stage:np-M-2026110501-r01-s1-t2",
+      "parent_action": "discard:2w",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -177.0,
+      "parent_support": 23,
+      "request_sha256": "0db4528a7f2a1a2a3fc3b08108d49092d10f367affb0ab3184fd9bd5c54a1165",
+      "round_no": 7,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 1,
+        "source_id": "M:g10:2026110501:r001:s1",
+        "source_root_id": "M:g10:2026110501:r001"
+      },
+      "table_no": 2,
+      "trigger_seq": 1294,
+      "wall_remaining": 71,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:8t",
+      "alternate_route_shanten": [
+        0,
+        0,
+        4
+      ],
+      "alternate_score": 10.0,
+      "alternate_support": 8,
+      "game_id": "sitin-stage:np-M-2026110501-r02-s0-t1",
+      "parent_action": "discard:6t",
+      "parent_route_shanten": [
+        0,
+        0,
+        5
+      ],
+      "parent_score": 10.0,
+      "parent_support": 8,
+      "request_sha256": "d1585f1fc461a9c1cebb1dd817022d53f82648b70f03ee0248a1ceb88d15ad16",
+      "round_no": 3,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 2,
+        "source_id": "M:g10:2026110501:r002:s0",
+        "source_root_id": "M:g10:2026110501:r002"
+      },
+      "table_no": 1,
+      "trigger_seq": 389,
+      "wall_remaining": 70,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:西",
+      "alternate_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "alternate_score": -80.0,
+      "alternate_support": 20,
+      "game_id": "sitin-stage:np-M-2026110501-r03-s0-t1",
+      "parent_action": "discard:4b",
+      "parent_route_shanten": [
+        1,
+        1,
+        5
+      ],
+      "parent_score": -80.0,
+      "parent_support": 20,
+      "request_sha256": "0d64eb4ba122598391457d5ec41fd805ce4be4a1859d23b749de4431cb6b656d",
+      "round_no": 1,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 3,
+        "source_id": "M:g10:2026110501:r003:s0",
+        "source_root_id": "M:g10:2026110501:r003"
+      },
+      "table_no": 1,
+      "trigger_seq": 48,
+      "wall_remaining": 75,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:南",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -178.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-M-2026110501-r04-s0-t2",
+      "parent_action": "discard:9w",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -178.0,
+      "parent_support": 15,
+      "request_sha256": "ca45f294053a479b2db56a68ae588bc5a3ab6bcea2ef41fa53ff119c6a193bdf",
+      "round_no": 5,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 4,
+        "source_id": "M:g10:2026110501:r004:s0",
+        "source_root_id": "M:g10:2026110501:r004"
+      },
+      "table_no": 2,
+      "trigger_seq": 867,
+      "wall_remaining": 69,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:中",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -86.0,
+      "alternate_support": 14,
+      "game_id": "sitin-stage:np-M-2026110501-r05-s1-t2",
+      "parent_action": "discard:8b",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -86.0,
+      "parent_support": 14,
+      "request_sha256": "463666efa64a0c1becaa3a914354770df04d7d80a076f6d908f68f57849929d0",
+      "round_no": 3,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 5,
+        "source_id": "M:g10:2026110501:r005:s1",
+        "source_root_id": "M:g10:2026110501:r005"
+      },
+      "table_no": 2,
+      "trigger_seq": 399,
+      "wall_remaining": 71,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:9w",
+      "alternate_route_shanten": [
+        1,
+        1,
+        2
+      ],
+      "alternate_score": -73.0,
+      "alternate_support": 22,
+      "game_id": "sitin-stage:np-M-2026110501-r06-s0-t1",
+      "parent_action": "discard:7t",
+      "parent_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "parent_score": -73.0,
+      "parent_support": 22,
+      "request_sha256": "8fcf609fea7759703b109f64e8ac19c7d7016054490785644765b0b47f1288b4",
+      "round_no": 2,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 6,
+        "source_id": "M:g10:2026110501:r006:s0",
+        "source_root_id": "M:g10:2026110501:r006"
+      },
+      "table_no": 1,
+      "trigger_seq": 349,
+      "wall_remaining": 72,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:中",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -87.0,
+      "alternate_support": 13,
+      "game_id": "sitin-stage:np-M-2026110501-r07-s2-t1",
+      "parent_action": "discard:1b",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -87.0,
+      "parent_support": 13,
+      "request_sha256": "8ef10055c26705523ef59966883b6d5a221fea8515770f909862786ef293a2c1",
+      "round_no": 1,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 7,
+        "source_id": "M:g10:2026110501:r007:s2",
+        "source_root_id": "M:g10:2026110501:r007"
+      },
+      "table_no": 1,
+      "trigger_seq": 154,
+      "wall_remaining": 59,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:中",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -178.0,
+      "alternate_support": 20,
+      "game_id": "sitin-stage:np-M-2026110501-r08-s0-t2",
+      "parent_action": "discard:5b",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -178.0,
+      "parent_support": 20,
+      "request_sha256": "ecdca5b358059c04e3198ef75ae718943eab96467fbcd753cb274ef20f1494af",
+      "round_no": 7,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 8,
+        "source_id": "M:g10:2026110501:r008:s0",
+        "source_root_id": "M:g10:2026110501:r008"
+      },
+      "table_no": 2,
+      "trigger_seq": 928,
+      "wall_remaining": 81,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:西",
+      "alternate_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "alternate_score": -82.0,
+      "alternate_support": 18,
+      "game_id": "sitin-stage:np-M-2026110501-r09-s1-t2",
+      "parent_action": "discard:7t",
+      "parent_route_shanten": [
+        1,
+        1,
+        5
+      ],
+      "parent_score": -82.0,
+      "parent_support": 18,
+      "request_sha256": "d46518752bb37b3014717a15381744156fa63c6e7969d0130585deb118d4a264",
+      "round_no": 2,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 9,
+        "source_id": "M:g10:2026110501:r009:s1",
+        "source_root_id": "M:g10:2026110501:r009"
+      },
+      "table_no": 2,
+      "trigger_seq": 314,
+      "wall_remaining": 55,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:7b",
+      "alternate_route_shanten": [
+        1,
+        1,
+        2
+      ],
+      "alternate_score": -87.0,
+      "alternate_support": 14,
+      "game_id": "sitin-stage:np-M-2026110501-r10-s0-t2",
+      "parent_action": "discard:5w",
+      "parent_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "parent_score": -81.0,
+      "parent_support": 14,
+      "request_sha256": "d5da2419e1d3a6b512e5b65294d35aa13a82658f02baf72cf5acb7990d2b24c3",
+      "round_no": 7,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 10,
+        "source_id": "M:g10:2026110501:r010:s0",
+        "source_root_id": "M:g10:2026110501:r010"
+      },
+      "table_no": 2,
+      "trigger_seq": 1406,
+      "wall_remaining": 72,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:8t",
+      "alternate_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "alternate_score": -180.0,
+      "alternate_support": 20,
+      "game_id": "sitin-stage:np-M-2026110501-r11-s2-t1",
+      "parent_action": "discard:2b",
+      "parent_route_shanten": [
+        2,
+        2,
+        5
+      ],
+      "parent_score": -180.0,
+      "parent_support": 20,
+      "request_sha256": "38a1fffd96fbb530bef60205860e513cb4a456e9b4b775b9165976e8e35d52fe",
+      "round_no": 4,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 11,
+        "source_id": "M:g10:2026110501:r011:s2",
+        "source_root_id": "M:g10:2026110501:r011"
+      },
+      "table_no": 1,
+      "trigger_seq": 609,
+      "wall_remaining": 75,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:1w",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -176.0,
+      "alternate_support": 24,
+      "game_id": "sitin-stage:np-M-2026110501-r12-s0-t2",
+      "parent_action": "discard:1b",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -173.0,
+      "parent_support": 24,
+      "request_sha256": "fff9c3213b18357a3a0512863dae4d66cd7664964edfae59becb30c3d7d64c77",
+      "round_no": 5,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 12,
+        "source_id": "M:g10:2026110501:r012:s0",
+        "source_root_id": "M:g10:2026110501:r012"
+      },
+      "table_no": 2,
+      "trigger_seq": 947,
+      "wall_remaining": 75,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:南",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -181.0,
+      "alternate_support": 19,
+      "game_id": "sitin-stage:np-M-2026110501-r13-s0-t2",
+      "parent_action": "discard:1w",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -181.0,
+      "parent_support": 16,
+      "request_sha256": "e89fdcae291c1a0cbe99de53c689fb4db953e4ad858a07c8076a750e8c143a55",
+      "round_no": 2,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 13,
+        "source_id": "M:g10:2026110501:r013:s0",
+        "source_root_id": "M:g10:2026110501:r013"
+      },
+      "table_no": 2,
+      "trigger_seq": 194,
+      "wall_remaining": 78,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:6b",
+      "alternate_route_shanten": [
+        0,
+        0,
+        4
+      ],
+      "alternate_score": 22.0,
+      "alternate_support": 17,
+      "game_id": "sitin-stage:np-M-2026110501-r14-s1-t1",
+      "parent_action": "discard:4b",
+      "parent_route_shanten": [
+        0,
+        0,
+        5
+      ],
+      "parent_score": 22.0,
+      "parent_support": 17,
+      "request_sha256": "e4d8aeb94a318bb13fe97c732449dcb2058ad88d103d3ed10636d518ff584822",
+      "round_no": 5,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 14,
+        "source_id": "M:g10:2026110501:r014:s1",
+        "source_root_id": "M:g10:2026110501:r014"
+      },
+      "table_no": 1,
+      "trigger_seq": 791,
+      "wall_remaining": 73,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:8w",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -185.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-M-2026110501-r15-s0-t2",
+      "parent_action": "discard:5t",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -185.0,
+      "parent_support": 15,
+      "request_sha256": "e722aeafb99917d936cba59b85de153843272a13d60fbfd1f7735d4c9ae760e6",
+      "round_no": 8,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 15,
+        "source_id": "M:g10:2026110501:r015:s0",
+        "source_root_id": "M:g10:2026110501:r015"
+      },
+      "table_no": 2,
+      "trigger_seq": 1754,
+      "wall_remaining": 73,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:4w",
+      "alternate_route_shanten": [
+        1,
+        1,
+        2
+      ],
+      "alternate_score": -61.0,
+      "alternate_support": 34,
+      "game_id": "sitin-stage:np-M-2026110501-r16-s0-t1",
+      "parent_action": "discard:1w",
+      "parent_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "parent_score": -61.0,
+      "parent_support": 34,
+      "request_sha256": "ace9b86e499cfc315c0e2d7316605f508349df4fdac123f8df280c1c7fe163ff",
+      "round_no": 2,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 16,
+        "source_id": "M:g10:2026110501:r016:s0",
+        "source_root_id": "M:g10:2026110501:r016"
+      },
+      "table_no": 1,
+      "trigger_seq": 444,
+      "wall_remaining": 75,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:北",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -80.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-M-2026110501-r17-s1-t1",
+      "parent_action": "discard:5w",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -80.0,
+      "parent_support": 15,
+      "request_sha256": "535391382a2790a762d3adc08fe0bb225002856c0d68473bb107ebbb2ad10300",
+      "round_no": 3,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 17,
+        "source_id": "M:g10:2026110501:r017:s1",
+        "source_root_id": "M:g10:2026110501:r017"
+      },
+      "table_no": 1,
+      "trigger_seq": 348,
+      "wall_remaining": 81,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:北",
+      "alternate_route_shanten": [
+        2,
+        2,
+        3
+      ],
+      "alternate_score": -180.0,
+      "alternate_support": 20,
+      "game_id": "sitin-stage:np-M-2026110501-r18-s0-t1",
+      "parent_action": "discard:2w",
+      "parent_route_shanten": [
+        2,
+        2,
+        4
+      ],
+      "parent_score": -180.0,
+      "parent_support": 20,
+      "request_sha256": "a986e865d79216c4cdf7a4727e8084ab09b60f2ca6b1ce5beb874980145f0bb4",
+      "round_no": 2,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 18,
+        "source_id": "M:g10:2026110501:r018:s0",
+        "source_root_id": "M:g10:2026110501:r018"
+      },
+      "table_no": 1,
+      "trigger_seq": 415,
+      "wall_remaining": 71,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:西",
+      "alternate_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "alternate_score": -85.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-M-2026110501-r19-s0-t2",
+      "parent_action": "discard:1b",
+      "parent_route_shanten": [
+        1,
+        1,
+        5
+      ],
+      "parent_score": -81.0,
+      "parent_support": 12,
+      "request_sha256": "fb47bc1a3088170ed655340f675be88727cfd05ac9bdad646da6f7a95a23cef4",
+      "round_no": 1,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 19,
+        "source_id": "M:g10:2026110501:r019:s0",
+        "source_root_id": "M:g10:2026110501:r019"
+      },
+      "table_no": 2,
+      "trigger_seq": 174,
+      "wall_remaining": 54,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:4b",
+      "alternate_route_shanten": [
+        0,
+        0,
+        1
+      ],
+      "alternate_score": 17.0,
+      "alternate_support": 12,
+      "game_id": "sitin-stage:np-M-2026110501-r20-s2-t1",
+      "parent_action": "discard:2b",
+      "parent_route_shanten": [
+        0,
+        0,
+        2
+      ],
+      "parent_score": 17.0,
+      "parent_support": 12,
+      "request_sha256": "b3c84f712fc107316186288653372871f248d4f60aa3567b3c13f67b411f9def",
+      "round_no": 2,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 20,
+        "source_id": "M:g10:2026110501:r020:s2",
+        "source_root_id": "M:g10:2026110501:r020"
+      },
+      "table_no": 1,
+      "trigger_seq": 323,
+      "wall_remaining": 64,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:5t",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -85.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-M-2026110501-r21-s1-t2",
+      "parent_action": "discard:6b",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -81.0,
+      "parent_support": 12,
+      "request_sha256": "2e90b155096e46d6e90d267576977898028e48622d918b4ca38c280bb77a4fec",
+      "round_no": 1,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 21,
+        "source_id": "M:g10:2026110501:r021:s1",
+        "source_root_id": "M:g10:2026110501:r021"
+      },
+      "table_no": 2,
+      "trigger_seq": 131,
+      "wall_remaining": 62,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:2b",
+      "alternate_route_shanten": [
+        1,
+        1,
+        2
+      ],
+      "alternate_score": -83.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-M-2026110501-r22-s0-t1",
+      "parent_action": "discard:9b",
+      "parent_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "parent_score": -80.0,
+      "parent_support": 15,
+      "request_sha256": "46350f918469eccb117bdc7f5dd4bfb8721cfee5a288869fdcc0390151472d95",
+      "round_no": 4,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 22,
+        "source_id": "M:g10:2026110501:r022:s0",
+        "source_root_id": "M:g10:2026110501:r022"
+      },
+      "table_no": 1,
+      "trigger_seq": 931,
+      "wall_remaining": 64,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:8t",
+      "alternate_route_shanten": [
+        0,
+        0,
+        2
+      ],
+      "alternate_score": 19.0,
+      "alternate_support": 14,
+      "game_id": "sitin-stage:np-M-2026110501-r23-s0-t1",
+      "parent_action": "discard:5t",
+      "parent_route_shanten": [
+        0,
+        0,
+        3
+      ],
+      "parent_score": 19.0,
+      "parent_support": 14,
+      "request_sha256": "0c2531a6fc632e9b706c95c8a6cd91d515b8b9d23fd0d9d76486547eb13893b0",
+      "round_no": 1,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 23,
+        "source_id": "M:g10:2026110501:r023:s0",
+        "source_root_id": "M:g10:2026110501:r023"
+      },
+      "table_no": 1,
+      "trigger_seq": 72,
+      "wall_remaining": 71,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:西",
+      "alternate_route_shanten": [
+        1,
+        1,
+        3
+      ],
+      "alternate_score": -88.0,
+      "alternate_support": 12,
+      "game_id": "sitin-stage:np-M-2026110501-r24-s2-t1",
+      "parent_action": "discard:9t",
+      "parent_route_shanten": [
+        1,
+        1,
+        4
+      ],
+      "parent_score": -88.0,
+      "parent_support": 12,
+      "request_sha256": "9fbe338fd19a7314dc7125496553cff79978ac94d34c1b062db4b2d7b60f1772",
+      "round_no": 2,
+      "route_improvements": [
+        "seven_pairs"
+      ],
+      "route_kind": "seven_pairs",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 24,
+        "source_id": "M:g10:2026110501:r024:s2",
+        "source_root_id": "M:g10:2026110501:r024"
+      },
+      "table_no": 1,
+      "trigger_seq": 245,
+      "wall_remaining": 78,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:北",
+      "alternate_route_shanten": [
+        4,
+        5,
+        4
+      ],
+      "alternate_score": -367.0,
+      "alternate_support": 28,
+      "game_id": "sitin-stage:np-M-2026110501-r01-s2-t2",
+      "parent_action": "discard:3b",
+      "parent_route_shanten": [
+        4,
+        6,
+        4
+      ],
+      "parent_score": -367.0,
+      "parent_support": 28,
+      "request_sha256": "e2d3d8739309f64f6bdc7a374cd1564f9f06e934199fb8ea0a9f8bed7ed98db1",
+      "round_no": 5,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 1,
+        "source_id": "M:g10:2026110501:r001:s2",
+        "source_root_id": "M:g10:2026110501:r001"
+      },
+      "table_no": 2,
+      "trigger_seq": 924,
+      "wall_remaining": 77,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:4w",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -181.0,
+      "alternate_support": 19,
+      "game_id": "sitin-stage:np-M-2026110501-r02-s2-t1",
+      "parent_action": "discard:1b",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -181.0,
+      "parent_support": 19,
+      "request_sha256": "72a2a14de31b7e88cbd553f4976b36218462185723449b914e1c9d2ee4dfd0cf",
+      "round_no": 5,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 2,
+        "source_id": "M:g10:2026110501:r002:s2",
+        "source_root_id": "M:g10:2026110501:r002"
+      },
+      "table_no": 1,
+      "trigger_seq": 769,
+      "wall_remaining": 83,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:东",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -177.0,
+      "alternate_support": 18,
+      "game_id": "sitin-stage:np-M-2026110501-r03-s0-t1",
+      "parent_action": "discard:6b",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -177.0,
+      "parent_support": 18,
+      "request_sha256": "3ec17b51349cb26c6581405b8ffd8e3531b74b84abe12b73914d535182d66f02",
+      "round_no": 8,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 3,
+        "source_id": "M:g10:2026110501:r003:s0",
+        "source_root_id": "M:g10:2026110501:r003"
+      },
+      "table_no": 1,
+      "trigger_seq": 1600,
+      "wall_remaining": 76,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:2w",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -174.0,
+      "alternate_support": 21,
+      "game_id": "sitin-stage:np-M-2026110501-r04-s2-t1",
+      "parent_action": "discard:1b",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -174.0,
+      "parent_support": 21,
+      "request_sha256": "f38fdaab9ee9605a047527baebc7a96ac7050436dfc69139ec328c735a4fdf73",
+      "round_no": 7,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 4,
+        "source_id": "M:g10:2026110501:r004:s2",
+        "source_root_id": "M:g10:2026110501:r004"
+      },
+      "table_no": 1,
+      "trigger_seq": 1255,
+      "wall_remaining": 82,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:9w",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -78.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-M-2026110501-r05-s0-t1",
+      "parent_action": "discard:3t",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -78.0,
+      "parent_support": 15,
+      "request_sha256": "7f49c33feddb7b18ab686b79db98708fe11628d9a685a61d3ef78576d04ace6a",
+      "round_no": 6,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 5,
+        "source_id": "M:g10:2026110501:r005:s0",
+        "source_root_id": "M:g10:2026110501:r005"
+      },
+      "table_no": 1,
+      "trigger_seq": 1034,
+      "wall_remaining": 82,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:5b",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -275.0,
+      "alternate_support": 25,
+      "game_id": "sitin-stage:np-M-2026110501-r06-s2-t2",
+      "parent_action": "discard:3t",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -275.0,
+      "parent_support": 25,
+      "request_sha256": "098b709f6c60e06292ef58ca1dc0167118a6a09bef48f2fa453703a63e61dfeb",
+      "round_no": 3,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 6,
+        "source_id": "M:g10:2026110501:r006:s2",
+        "source_root_id": "M:g10:2026110501:r006"
+      },
+      "table_no": 2,
+      "trigger_seq": 375,
+      "wall_remaining": 80,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:5b",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -80.0,
+      "alternate_support": 15,
+      "game_id": "sitin-stage:np-M-2026110501-r07-s1-t2",
+      "parent_action": "discard:2w",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -80.0,
+      "parent_support": 15,
+      "request_sha256": "fed7133a86e4e3011df74569092c430853947b5ba7a6d16ef802fcde96ce708a",
+      "round_no": 2,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 7,
+        "source_id": "M:g10:2026110501:r007:s1",
+        "source_root_id": "M:g10:2026110501:r007"
+      },
+      "table_no": 2,
+      "trigger_seq": 248,
+      "wall_remaining": 73,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:2t",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -266.0,
+      "alternate_support": 27,
+      "game_id": "sitin-stage:np-M-2026110501-r08-s3-t2",
+      "parent_action": "discard:1w",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -266.0,
+      "parent_support": 27,
+      "request_sha256": "e6ce75f66e12d36a07c7a2bf8096d0a1d9116eb90dc4134bca195e34b16f48a8",
+      "round_no": 2,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "root_index": 8,
+        "source_id": "M:g10:2026110501:r008:s3",
+        "source_root_id": "M:g10:2026110501:r008"
+      },
+      "table_no": 2,
+      "trigger_seq": 192,
+      "wall_remaining": 81,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:4t",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -268.0,
+      "alternate_support": 27,
+      "game_id": "sitin-stage:np-M-2026110501-r09-s0-t2",
+      "parent_action": "discard:3w",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -268.0,
+      "parent_support": 27,
+      "request_sha256": "7e2fcc01fa1a6f249bec7af9d32f174098ff2eb784af8bfc0054c3a052cfdaf9",
+      "round_no": 4,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 9,
+        "source_id": "M:g10:2026110501:r009:s0",
+        "source_root_id": "M:g10:2026110501:r009"
+      },
+      "table_no": 2,
+      "trigger_seq": 724,
+      "wall_remaining": 82,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:8w",
+      "alternate_route_shanten": [
+        0,
+        2,
+        0
+      ],
+      "alternate_score": 7.0,
+      "alternate_support": 7,
+      "game_id": "sitin-stage:np-M-2026110501-r10-s0-t2",
+      "parent_action": "discard:5w",
+      "parent_route_shanten": [
+        0,
+        3,
+        0
+      ],
+      "parent_score": 7.0,
+      "parent_support": 7,
+      "request_sha256": "12e43ae273307c4ce9b4b2188bd0f4d2fa52c63cfd09284d475806ba127dd1ca",
+      "round_no": 4,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 10,
+        "source_id": "M:g10:2026110501:r010:s0",
+        "source_root_id": "M:g10:2026110501:r010"
+      },
+      "table_no": 2,
+      "trigger_seq": 874,
+      "wall_remaining": 57,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:5b",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -268.0,
+      "alternate_support": 27,
+      "game_id": "sitin-stage:np-M-2026110501-r11-s0-t1",
+      "parent_action": "discard:4t",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -268.0,
+      "parent_support": 27,
+      "request_sha256": "49de300b521f96f7e7f3e487098f79a32b66d27a7f24d32cb479b3bcca3e0954",
+      "round_no": 8,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 11,
+        "source_id": "M:g10:2026110501:r011:s0",
+        "source_root_id": "M:g10:2026110501:r011"
+      },
+      "table_no": 1,
+      "trigger_seq": 1283,
+      "wall_remaining": 77,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:2t",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -174.0,
+      "alternate_support": 21,
+      "game_id": "sitin-stage:np-M-2026110501-r12-s2-t2",
+      "parent_action": "discard:1w",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -174.0,
+      "parent_support": 21,
+      "request_sha256": "c124f9033d6583d24c1e5c340aae5a454172f87db16a6ccd1869a6e182316035",
+      "round_no": 7,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "root_index": 12,
+        "source_id": "M:g10:2026110501:r012:s2",
+        "source_root_id": "M:g10:2026110501:r012"
+      },
+      "table_no": 2,
+      "trigger_seq": 999,
+      "wall_remaining": 83,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:7w",
+      "alternate_route_shanten": [
+        0,
+        0,
+        0
+      ],
+      "alternate_score": 73.0,
+      "alternate_support": 69,
+      "game_id": "sitin-stage:np-M-2026110501-r13-s1-t2",
+      "parent_action": "discard:6w",
+      "parent_route_shanten": [
+        0,
+        1,
+        0
+      ],
+      "parent_score": 84.0,
+      "parent_support": 69,
+      "request_sha256": "849e6d847f117c7275412519df748e00c9777aae9d6ed9bd837931e960f023c8",
+      "round_no": 5,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 13,
+        "source_id": "M:g10:2026110501:r013:s1",
+        "source_root_id": "M:g10:2026110501:r013"
+      },
+      "table_no": 2,
+      "trigger_seq": 1189,
+      "wall_remaining": 39,
+      "white_count": 2
+    },
+    {
+      "alternate_action": "discard:4b",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -174.0,
+      "alternate_support": 21,
+      "game_id": "sitin-stage:np-M-2026110501-r14-s0-t1",
+      "parent_action": "discard:3t",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -174.0,
+      "parent_support": 21,
+      "request_sha256": "0e602d50844ac2cf73ea41845fe48b9500af121b7975df414a4111166414b130",
+      "round_no": 1,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 14,
+        "source_id": "M:g10:2026110501:r014:s0",
+        "source_root_id": "M:g10:2026110501:r014"
+      },
+      "table_no": 1,
+      "trigger_seq": 24,
+      "wall_remaining": 79,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:4t",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -266.0,
+      "alternate_support": 27,
+      "game_id": "sitin-stage:np-M-2026110501-r15-s0-t1",
+      "parent_action": "discard:2b",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -266.0,
+      "parent_support": 27,
+      "request_sha256": "c95790f7e14eac1f5abfb3a0c0f32624939577a1f9acdd7010fa9450a1649d12",
+      "round_no": 8,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 15,
+        "source_id": "M:g10:2026110501:r015:s0",
+        "source_root_id": "M:g10:2026110501:r015"
+      },
+      "table_no": 1,
+      "trigger_seq": 1290,
+      "wall_remaining": 75,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:4b",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -176.0,
+      "alternate_support": 17,
+      "game_id": "sitin-stage:np-M-2026110501-r16-s0-t2",
+      "parent_action": "discard:2t",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -176.0,
+      "parent_support": 17,
+      "request_sha256": "382d4008a9ef749fc48a216b570ef0f0088a82abd9ceee3e79815ca134664f32",
+      "round_no": 2,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 16,
+        "source_id": "M:g10:2026110501:r016:s0",
+        "source_root_id": "M:g10:2026110501:r016"
+      },
+      "table_no": 2,
+      "trigger_seq": 231,
+      "wall_remaining": 70,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:8b",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -76.0,
+      "alternate_support": 14,
+      "game_id": "sitin-stage:np-M-2026110501-r17-s0-t1",
+      "parent_action": "discard:6w",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -76.0,
+      "parent_support": 14,
+      "request_sha256": "d5a2211852471c79fed85d4de1f0511a2f072d6403e3b93ea6aeb0db380022c4",
+      "round_no": 6,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 17,
+        "source_id": "M:g10:2026110501:r017:s0",
+        "source_root_id": "M:g10:2026110501:r017"
+      },
+      "table_no": 1,
+      "trigger_seq": 1136,
+      "wall_remaining": 70,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:西",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -81.0,
+      "alternate_support": 12,
+      "game_id": "sitin-stage:np-M-2026110501-r18-s1-t1",
+      "parent_action": "discard:4w",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -81.0,
+      "parent_support": 12,
+      "request_sha256": "ab2b54b0fa58410298dc61291a35ba01b277b63425d7585b7fe9ff7a8308a472",
+      "round_no": 8,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 18,
+        "source_id": "M:g10:2026110501:r018:s1",
+        "source_root_id": "M:g10:2026110501:r018"
+      },
+      "table_no": 1,
+      "trigger_seq": 1285,
+      "wall_remaining": 74,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:西",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -87.0,
+      "alternate_support": 13,
+      "game_id": "sitin-stage:np-M-2026110501-r19-s1-t2",
+      "parent_action": "discard:8w",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -87.0,
+      "parent_support": 13,
+      "request_sha256": "0079a70113b718bbdc829e462ba5e34c5b568d0be32db41f979a896b705be22f",
+      "round_no": 8,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 19,
+        "source_id": "M:g10:2026110501:r019:s1",
+        "source_root_id": "M:g10:2026110501:r019"
+      },
+      "table_no": 2,
+      "trigger_seq": 1430,
+      "wall_remaining": 66,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:2t",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -266.0,
+      "alternate_support": 27,
+      "game_id": "sitin-stage:np-M-2026110501-r20-s0-t1",
+      "parent_action": "discard:2b",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -266.0,
+      "parent_support": 27,
+      "request_sha256": "64ee589c8cc0763cfc7f5228fda1ae8c36a303742d15a29da98a0ff6d10c86c9",
+      "round_no": 5,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 20,
+        "source_id": "M:g10:2026110501:r020:s0",
+        "source_root_id": "M:g10:2026110501:r020"
+      },
+      "table_no": 1,
+      "trigger_seq": 786,
+      "wall_remaining": 82,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:北",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -170.0,
+      "alternate_support": 20,
+      "game_id": "sitin-stage:np-M-2026110501-r21-s1-t1",
+      "parent_action": "discard:5t",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -170.0,
+      "parent_support": 20,
+      "request_sha256": "833c1d849e78e8564bb4e148d59c0d868d0195ab694ee9a7a4e0dd523de37111",
+      "round_no": 6,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 21,
+        "source_id": "M:g10:2026110501:r021:s1",
+        "source_root_id": "M:g10:2026110501:r021"
+      },
+      "table_no": 1,
+      "trigger_seq": 888,
+      "wall_remaining": 69,
+      "white_count": 1
+    },
+    {
+      "alternate_action": "discard:4w",
+      "alternate_route_shanten": [
+        3,
+        4,
+        3
+      ],
+      "alternate_score": -273.0,
+      "alternate_support": 25,
+      "game_id": "sitin-stage:np-M-2026110501-r22-s0-t1",
+      "parent_action": "discard:2t",
+      "parent_route_shanten": [
+        3,
+        5,
+        3
+      ],
+      "parent_score": -273.0,
+      "parent_support": 25,
+      "request_sha256": "11bd96c37a5aa7dfa19962a66a3089c6de9b96e6549a6b13bc94e2505bec14e4",
+      "round_no": 2,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 22,
+        "source_id": "M:g10:2026110501:r022:s0",
+        "source_root_id": "M:g10:2026110501:r022"
+      },
+      "table_no": 1,
+      "trigger_seq": 137,
+      "wall_remaining": 77,
+      "white_count": 0
+    },
+    {
+      "alternate_action": "discard:5b",
+      "alternate_route_shanten": [
+        1,
+        2,
+        1
+      ],
+      "alternate_score": -73.0,
+      "alternate_support": 17,
+      "game_id": "sitin-stage:np-M-2026110501-r23-s0-t2",
+      "parent_action": "discard:3w",
+      "parent_route_shanten": [
+        1,
+        3,
+        1
+      ],
+      "parent_score": -73.0,
+      "parent_support": 17,
+      "request_sha256": "b2d831ac65d66d116d2fdd8c4443d4ebfccbca510f43b824e51bc0a2210f05d7",
+      "round_no": 5,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "root_index": 23,
+        "source_id": "M:g10:2026110501:r023:s0",
+        "source_root_id": "M:g10:2026110501:r023"
+      },
+      "table_no": 2,
+      "trigger_seq": 1049,
+      "wall_remaining": 71,
+      "white_count": 2
+    },
+    {
+      "alternate_action": "discard:8b",
+      "alternate_route_shanten": [
+        2,
+        3,
+        2
+      ],
+      "alternate_score": -181.0,
+      "alternate_support": 19,
+      "game_id": "sitin-stage:np-M-2026110501-r24-s1-t1",
+      "parent_action": "discard:1w",
+      "parent_route_shanten": [
+        2,
+        4,
+        2
+      ],
+      "parent_score": -181.0,
+      "parent_support": 19,
+      "request_sha256": "d2cff4279af4cf4600e46c5296f7917f9c1caac9b5e77eb78305e8a6684076a4",
+      "round_no": 4,
+      "route_improvements": [
+        "standard"
+      ],
+      "route_kind": "standard",
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "root_index": 24,
+        "source_id": "M:g10:2026110501:r024:s1",
+        "source_root_id": "M:g10:2026110501:r024"
+      },
+      "table_no": 1,
+      "trigger_seq": 493,
+      "wall_remaining": 82,
+      "white_count": 0
+    }
+  ],
+  "teacher_entry_open": {
+    "seven_pairs": true,
+    "standard": true
+  }
+}

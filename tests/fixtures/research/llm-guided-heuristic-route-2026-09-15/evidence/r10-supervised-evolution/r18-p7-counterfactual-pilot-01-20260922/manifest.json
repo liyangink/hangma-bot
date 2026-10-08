@@ -1,0 +1,139 @@
+{
+  "arms": "P7 首选弃牌 vs P5 首选弃牌",
+  "continuation": "首动作后四家均恢复稳定 ComparableHeuristicPolicyV2，完整打完当前单局",
+  "development_only": true,
+  "direction_rule": {
+    "CONTRADICT": "总体配对均值的冻结 bootstrap 95% 上界<0，且至多4/16手牌的配对均值>0",
+    "INCONCLUSIVE": "其余情况",
+    "SUPPORT": "总体配对均值的冻结 bootstrap 95% 下界>0，且至少12/16手牌的配对均值>0"
+  },
+  "pairs": 512,
+  "release_eligible": false,
+  "schema": "r18-p7-counterfactual-pilot-manifest/1",
+  "selection_eligible": false,
+  "shape_selection": "开发 seven_pairs_tradeoff 按 sha256('r18-p7-counterfactual|'+request_sha256) 升序取前16",
+  "shapes": [
+    {
+      "candidate_action": "discard:7t",
+      "case_id": "r18-7p-040",
+      "parent_action": "discard:6t",
+      "reachability_witness_sha256": "bafe2c09f3aea296ad844d34472289c990ea3ba201141073679bfadb56f59225",
+      "request_sha256": "0d83db478de9f29baf14af66b01cd5150db94c13b53bb66d61f538fb3602963a"
+    },
+    {
+      "candidate_action": "discard:7b",
+      "case_id": "r18-7p-057",
+      "parent_action": "discard:6b",
+      "reachability_witness_sha256": "ab8216e9e65400a27c0839de54ff229f5b78d6fea1d0292230d6ca6754b92c60",
+      "request_sha256": "64e4fa346bfedb0fa7b832243c44235cef68a17f6b43e9819968959749556f1c"
+    },
+    {
+      "candidate_action": "discard:7b",
+      "case_id": "r18-7p-044",
+      "parent_action": "discard:6b",
+      "reachability_witness_sha256": "d7afb2945a088e3fd958c214fa2130bcc719f7aafa1d985d930bb663d2fd273d",
+      "request_sha256": "03c147f108b883750c8db70cc0679f405e99a03e09672c230b1f742236c19599"
+    },
+    {
+      "candidate_action": "discard:6w",
+      "case_id": "r18-7p-034",
+      "parent_action": "discard:5w",
+      "reachability_witness_sha256": "148a7f9efdc9a91128c01abf46afb06f2a446ea9f7bfad71aba1d0eaf179340d",
+      "request_sha256": "f860f5bce1012d386f0914d5ee60fcdce259d72a2d1b4da44fdb70f1e5f7ee64"
+    },
+    {
+      "candidate_action": "discard:8t",
+      "case_id": "r18-7p-041",
+      "parent_action": "discard:7t",
+      "reachability_witness_sha256": "ad71637639c3d630751769ff8ab01d4d39b40bb338d214afdab1895aafe8f5f5",
+      "request_sha256": "144397216d91dbfe255e3337669462dae2f03459e8ec41c935e7bca6ec11e1ef"
+    },
+    {
+      "candidate_action": "discard:7b",
+      "case_id": "r18-7p-056",
+      "parent_action": "discard:6b",
+      "reachability_witness_sha256": "962436380d3e168bb779baceeeeab9b9da56643134e0ba5d556dfb58d3bef4ca",
+      "request_sha256": "e0836c2864425552319a4a2ae835a15b9c0f5d72b35cee6a722ab1015e8d9b6e"
+    },
+    {
+      "candidate_action": "discard:3b",
+      "case_id": "r18-7p-027",
+      "parent_action": "discard:2b",
+      "reachability_witness_sha256": "d40843221ce2462a444eadfdd150b501658e4cbc8dbff9cc5d917d82e073d57d",
+      "request_sha256": "d4f7d1fbbd315791812e85b110f55d4c8133e4fc61b027c4a8d0e1b68ecc99b3"
+    },
+    {
+      "candidate_action": "discard:2w",
+      "case_id": "r18-7p-017",
+      "parent_action": "discard:1w",
+      "reachability_witness_sha256": "9dadb54fee0f606439d6954cfec774cbac32e1bf20feb2d26525e944931d2136",
+      "request_sha256": "323b38c97a18c9622cb58d479314b50694f41921786ca17e803d2ec2b3942b57"
+    },
+    {
+      "candidate_action": "discard:3b",
+      "case_id": "r18-7p-022",
+      "parent_action": "discard:2b",
+      "reachability_witness_sha256": "ec20c9041eb7ca9f793a07cc21f8bdeadf4ac8484ddc27a559253a8bb6fe7b2e",
+      "request_sha256": "f1f8c1669fe13d8a9524bc413206b28f892c22a819c477792a5388cf07058d0a"
+    },
+    {
+      "candidate_action": "discard:7t",
+      "case_id": "r18-7p-064",
+      "parent_action": "discard:6t",
+      "reachability_witness_sha256": "144189c06bddc4d6fe8202a88a69db13754c636b83e204b4ff871337bc07f764",
+      "request_sha256": "b0c9aecd44027caf459e0193d1c87588559c17cf4e2488e439e98149d2b3691f"
+    },
+    {
+      "candidate_action": "discard:8t",
+      "case_id": "r18-7p-026",
+      "parent_action": "discard:7t",
+      "reachability_witness_sha256": "58a737f469146a17afaedb1d9c234b6cd97102ab1d57fc6a7a065a28f85a8a3a",
+      "request_sha256": "9f7320c7f99113d376f188f334db22765c010de709ebaa67236a21ed087df7db"
+    },
+    {
+      "candidate_action": "discard:2b",
+      "case_id": "r18-7p-002",
+      "parent_action": "discard:1b",
+      "reachability_witness_sha256": "f9436190df161415a45227496b7c31e112e64009f2a575cda072be7a41d8f19e",
+      "request_sha256": "504b1282880b8896267b9e01cbe776aa74676af94a9b5f43ca7818db1f78e5ef"
+    },
+    {
+      "candidate_action": "discard:4t",
+      "case_id": "r18-7p-047",
+      "parent_action": "discard:3t",
+      "reachability_witness_sha256": "539efb77dee442eb787d6fabaf3bf0908d7e47219987847e68e9fe3eab97df91",
+      "request_sha256": "26a4b35b36a55df4aaecc99e808053ada460b2f7b1444b1c86daa9a5fabe1132"
+    },
+    {
+      "candidate_action": "discard:8b",
+      "case_id": "r18-7p-037",
+      "parent_action": "discard:7b",
+      "reachability_witness_sha256": "b93f76d7a924e2fbf9c6f7a010f74bbc46501f04cc1a65bb51b6346fbf9d272d",
+      "request_sha256": "2007da594b744286e1251a8cd59983f733666897cc40f118824c807f1725658b"
+    },
+    {
+      "candidate_action": "discard:6w",
+      "case_id": "r18-7p-055",
+      "parent_action": "discard:5w",
+      "reachability_witness_sha256": "3486a3bded91d08283f12c9de0e1a071d7185e745085b0622ea1200dbb762ec5",
+      "request_sha256": "01486ca30e7922379200e3450b032faf945b4eccdc379d19f3e561397c4175c7"
+    },
+    {
+      "candidate_action": "discard:5b",
+      "case_id": "r18-7p-043",
+      "parent_action": "discard:4b",
+      "reachability_witness_sha256": "81286ac9aa52a059ffdfa82fd0927928f9b6795e60d541160dc3beadd6bc1f6d",
+      "request_sha256": "61efb5eef4ba47d09f7fcc97a157203020c6008af26cdf41f78e4a42518018fd"
+    }
+  ],
+  "source_hashes": {
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p7-seven-pairs-value-01-20260922/development-preflight-01/result.json": "2d7d20379a73938deab9e3223296e5491d24048dd4607050d62333900e6ee0f2",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-seven-pairs-bank-01-20260922/development.json": "d4441fe76087317ddd0139966599281842c80d39107feacecac3fcbbd88fd8ad",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-seven-pairs-bank-01-20260922/manifest.json": "597d754cda5cee4c1b73187915937efefde813d4b7fceb589cacec51411e78a6",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p4_counterfactual_pilot.py": "ab7a6100da68b7ecce7c0256c29ec8984ce7f5c563ababf7c31ddfaed45c9eef",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p7_counterfactual_pilot.py": "340d0dd4948cd13dff6541c5d0336de0dfdceeccc32e8bb35af5557c43ee7b59"
+  },
+  "table_strength_claim": false,
+  "world_construction": "复用已审计的完整136张物理世界构造；同一对仅强制首动作不同",
+  "worlds_per_shape": 32
+}

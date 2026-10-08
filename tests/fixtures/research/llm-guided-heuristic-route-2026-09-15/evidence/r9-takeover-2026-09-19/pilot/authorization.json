@@ -1,0 +1,36 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r9-takeover-20260919-three-proposals",
+  "batch_label": "r9-takeover-supervised-pilot",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 128.0,
+    "tables_partial": 12.0,
+    "prefix_generation": 12.0,
+    "tokens_input": 393216.0,
+    "tokens_output": 98304.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "user request: 接手修复复核并推进进化搜索；root 设定保守批次上界",
+  "issued_at_utc": "2026-09-19T11:12:51.868931+00:00",
+  "generation_call_limits": {
+    "tokens_input": 131072,
+    "tokens_output": 32768
+  },
+  "route": "supervised_candidate_development",
+  "autonomous_admission": false,
+  "max_model_calls": 3,
+  "max_proposals": 3,
+  "repair_calls_count_in_total": true,
+  "wall_clock_limit_seconds": 3600,
+  "scope": "离线开发，先一项 I1，通过后才基于真实反馈 M1；不打开确认集，不发布",
+  "natural_panel_note": "每个 H/M 子面板 1 个完整桌赛 seed × 4 座位；小样本链路试运行，不构成效果证据"
+}

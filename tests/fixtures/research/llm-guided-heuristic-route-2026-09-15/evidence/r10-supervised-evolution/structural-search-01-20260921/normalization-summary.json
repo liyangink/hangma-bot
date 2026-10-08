@@ -1,0 +1,88 @@
+{
+  "schema": "r10-structural-engineering-normalization/1",
+  "rows": [
+    {
+      "task": "S1",
+      "source_sha256": "0c4c75d2675facf666a713a8c77c36c877689519f9691acd0f5889aca2b91666",
+      "normalized_sha256": "53abbc47defbf93f24efc182c09a61482d5d1b2cee97245f62faa8cdcfbbe2f6",
+      "comment_only_normalization": true,
+      "space_normalization": [
+        "参数域由六配置逐参数投影",
+        "删除仅供人读的 config.name",
+        "参数名绑定模块级大写常数",
+        "zero_effect 扩展为完整配置"
+      ],
+      "executable_changes": [],
+      "static_precheck": true,
+      "structure_space": true,
+      "channel_clean": true,
+      "accepted_for_behavior_preflight": true,
+      "problems": []
+    },
+    {
+      "task": "S2",
+      "source_sha256": "ff32d78047bcb7f19297bc3cbe992d296fc1d831b625af2a9c1729931f01343f",
+      "normalized_sha256": "ba4e6c1c3793e6a59d5e7753940fcb6b0426db7acd8fd365f64afe42b183fb17",
+      "comment_only_normalization": true,
+      "space_normalization": [
+        "参数域由六配置逐参数投影",
+        "删除仅供人读的 config.name",
+        "参数名绑定模块级大写常数",
+        "zero_effect 扩展为完整配置"
+      ],
+      "executable_changes": [],
+      "static_precheck": true,
+      "structure_space": true,
+      "channel_clean": true,
+      "accepted_for_behavior_preflight": true,
+      "problems": []
+    },
+    {
+      "task": "S3",
+      "source_sha256": "463f102c5f5090208831ca070c7fe5765c0cdc35538bbb0b0ddffbf0e6b6ed71",
+      "normalized_sha256": "62caccad8559f8f7936f5a5a06453bcc9473c1d406a462b3717e9e46ddb02f57",
+      "comment_only_normalization": false,
+      "space_normalization": [
+        "参数域由六配置逐参数投影",
+        "删除仅供人读的 config.name",
+        "参数名绑定模块级大写常数",
+        "zero_effect 扩展为完整配置"
+      ],
+      "executable_changes": [
+        {
+          "before": "if branches is not None and isinstance(branches, (list, tuple)):",
+          "after": "if branches is not None:",
+          "reason": "输入合同已限定容器/数值形状；移除非白名单 isinstance"
+        },
+        {
+          "before": "                if not isinstance(branch, dict):\n                    continue\n",
+          "after": "",
+          "reason": "输入合同已限定容器/数值形状；移除非白名单 isinstance"
+        },
+        {
+          "before": " or not isinstance(combined, (int, float))",
+          "after": "",
+          "reason": "输入合同已限定容器/数值形状；移除非白名单 isinstance"
+        },
+        {
+          "before": " or not isinstance(remain, (int, float))",
+          "after": "",
+          "reason": "输入合同已限定容器/数值形状；移除非白名单 isinstance"
+        }
+      ],
+      "static_precheck": true,
+      "structure_space": true,
+      "channel_clean": true,
+      "accepted_for_behavior_preflight": true,
+      "problems": []
+    }
+  ],
+  "accepted_for_behavior_preflight": [
+    "S1",
+    "S2",
+    "S3",
+    "S4"
+  ],
+  "effect_evaluation_started": false,
+  "note": "原始模型交付不覆盖；S1/S2 只规范注释，S3 另做输入合同等价的白名单替换。"
+}

@@ -1,0 +1,45 @@
+{
+  "budgets": {
+    "model_calls": 0,
+    "tables_full": 0
+  },
+  "created_at_utc": "2026-09-22T16:11:26Z",
+  "expected_requests": 377,
+  "expected_special_plans": 87,
+  "frozen_inputs": {
+    "leaf_executor": "3cde4dfd847d3b92131febfe1c9760c59eea9db228b23ebfe8152d7aaf62cc4c",
+    "p47_parent": "612897fde269d5907929a30bc41c6010436257d001498b3fdd8afda652655796",
+    "p47_result": "1e277e8567e6994ba0e0d60b769df175e435393bde8c5e2c8a9c2952306157ba",
+    "p51_result": "475eb1d622e66536690ab86ade83c0dd489b299b4ab803bf69196cae6d262884",
+    "public_successor_policy": "a978f3a2c470f899291e2d48925d23dba169173566cacf9ba9aa027e8db9be00",
+    "public_successor_search": "1f30002e10d9217958f6c0b5192292cef72d363a35da52caf30e8c21b09fbc2a",
+    "r17_author": "7623f10e7ccd8fd678de73f89c27d0978934e5c810befc134f8744dbded0fc73",
+    "r17_reproduction": "c65bff6f6037be93f2f7cb84b25cc61fd639fdbd42f0c9fce64b8b57a6c5976e",
+    "r17_source": "fb9764faa2a01ded3f8cea94eeee27d59929f014f1dcc0ffbd56380e5b1384a2",
+    "r18_candidate": "df6ab003754ecc275cb61ed1ffabc629c2270f1320d203486de4e86d196e4245",
+    "script": "c26d499f23d01cb6bddce13967a04c3a0e6aaefd82f1c2e14dc511058183fc22"
+  },
+  "guard": {
+    "ordinary_scope": "仅无专项触发的draw弃牌窗口进入既有R17包装器",
+    "rule": "任一候选评分解释触发冻结专项覆盖时，完整返回P47计划",
+    "special_trace_keys": [
+      "r18_opportunity_overlay",
+      "r18_gang_dominance_overlay",
+      "r18_seven_pairs_value_overlay",
+      "two_wealth_piao_keeps_baotou_cf"
+    ]
+  },
+  "p47_candidate_sha256": "0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d",
+  "pass_conditions": {
+    "action_value_failures": 0,
+    "all_response_plans_exact": true,
+    "all_special_plans_exact": true,
+    "candidate_key_sets_preserved": true,
+    "ordinary_changed_plans_min": 1
+  },
+  "purpose": "只验证组合可行性；不运行完整桌、不调用模型、不取得发布资格",
+  "r17_candidate_identity": "73c2833da12f2844f69559d4ad6202c44fc4a1adc1b60e0b8b140c82590b4c37",
+  "r17_source_sha256": "fb9764faa2a01ded3f8cea94eeee27d59929f014f1dcc0ffbd56380e5b1384a2",
+  "release_eligible": false,
+  "schema": "r18-p52-guarded-successor-composition-authorization/1"
+}

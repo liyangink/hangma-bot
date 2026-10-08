@@ -1,0 +1,989 @@
+{
+  "config": {
+    "focal_policy": {
+      "baseline": "weighted_heuristic_v2",
+      "candidate": "ActionValuePolicy(av-candidate)"
+    },
+    "min_roots": 1,
+    "opponent_policies": [
+      "weighted_heuristic_v2",
+      "weighted_heuristic_v2",
+      "weighted_heuristic_v2"
+    ],
+    "roots": 1,
+    "seats_per_root": 4,
+    "step_limit": 100000,
+    "tables_per_group": 2,
+    "value_limits": {
+      "max_expansions": 2048,
+      "max_routes_per_candidate": 128
+    }
+  },
+  "cost": {
+    "cpu_sec": 31.171,
+    "note": "tables_full 按每臂每座位每阶段 2 桌计；无 LLM 调用",
+    "tables_full_executed": 16,
+    "tables_full_planned": 16,
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "wall_sec": 33.809
+  },
+  "generator": "natural-opening-panel-v1",
+  "identity": {
+    "av_contract_sha256": "7d6b3013e03285d0383706a220f787b915da3cb7f5fe35359be9f27db7ff6f41",
+    "baseline_id": "v2-baseline-frozen",
+    "candidate_id": "44d3c9f0a0b08c4c494e58454977075dda9d8fcd3cc5e560b09e30661ab9e64b",
+    "candidate_source_sha256": "b9b5c18d385c3658177796389c7c3d7aa734c9f8187fe20bfe78d922e275bb49",
+    "contract_id": "group-dev-v1",
+    "contract_sha256": "98c1e0a387550799b0985695a3846aeb1862ad85a4cfb71f22dbb433e63d7f6e",
+    "opponent_mix": "H",
+    "panel_epoch": "natural-opening-panel-v1@H",
+    "panel_seed": 20260916
+  },
+  "red_lines": {
+    "candidate_failure_policy": "T16：候选臂任一座位失败 ⇒ 整根 invalid，费用照记",
+    "non_focal_policies_identical_across_arms": true,
+    "same_seed_both_arms": "table_id/seed 不含臂标识（同根同牌山）",
+    "world_state_access": "仅经 drive_match 公开 PlayerObservation"
+  },
+  "samples": [
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 3488.389,
+          "error": null,
+          "focal_stage_score": 81,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": 81,
+            "opp-1": -23,
+            "opp-2": -45,
+            "opp-3": -13
+          },
+          "status": "complete",
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "44d3c9f0a0b08c4c494e58454977075dda9d8fcd3cc5e560b09e30661ab9e64b",
+          "elapsed_ms": 3872.658,
+          "error": null,
+          "focal_stage_score": -56,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -56,
+            "opp-1": -11,
+            "opp-2": 29,
+            "opp-3": 38
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "44d3c9f0a0b08c4c494e58454977075dda9d8fcd3cc5e560b09e30661ab9e64b",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 7361.0470000000005
+      },
+      "focal_anchor_seat": 0,
+      "invalid_reasons": [],
+      "opponent_mix": "H",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 3488.389,
+          "error": null,
+          "focal_stage_score": 81,
+          "stage_place_points_by_participant": {
+            "focal": 6,
+            "opp-1": -2,
+            "opp-2": -2,
+            "opp-3": -2
+          },
+          "stage_totals_by_participant": {
+            "focal": 81,
+            "opp-1": -23,
+            "opp-2": -45,
+            "opp-3": -13
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                32,
+                -29,
+                -21,
+                18
+              ],
+              "seed": 50316934399476,
+              "table_id": "np-H-20260916-r01-s0-t1",
+              "wall_ms": 1520.697
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -31,
+                49,
+                6,
+                -24
+              ],
+              "seed": 4328248873106,
+              "table_id": "np-H-20260916-r01-s0-t2",
+              "wall_ms": 1937.911
+            }
+          ],
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_interval": {
+            "a": 1,
+            "b": 1,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 3872.658,
+          "error": null,
+          "focal_stage_score": -56,
+          "stage_place_points_by_participant": {
+            "focal": -6,
+            "opp-1": -1,
+            "opp-2": 4,
+            "opp-3": 3
+          },
+          "stage_totals_by_participant": {
+            "focal": -56,
+            "opp-1": -11,
+            "opp-2": 29,
+            "opp-3": 38
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -37,
+                -11,
+                10,
+                38
+              ],
+              "seed": 50316934399476,
+              "table_id": "np-H-20260916-r01-s0-t1",
+              "wall_ms": 1842.21
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                0,
+                -19,
+                0,
+                19
+              ],
+              "seed": 4328248873106,
+              "table_id": "np-H-20260916-r01-s0-t2",
+              "wall_ms": 2025.613
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "a373486560e84aad19a347aa0cd70adc5411ad9abac5d55659a394544faf1595",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 109887957447187,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "focal",
+          "opp-1",
+          "opp-2",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "focal",
+          "opp-1",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-H-20260916-root01",
+      "table_ids": [
+        "np-H-20260916-r01-s0-t1",
+        "np-H-20260916-r01-s0-t2"
+      ],
+      "table_seeds": [
+        50316934399476,
+        4328248873106
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 4096.013,
+          "error": null,
+          "focal_stage_score": -56,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": -56,
+            "opp-0": 69,
+            "opp-2": 24,
+            "opp-3": -37
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "44d3c9f0a0b08c4c494e58454977075dda9d8fcd3cc5e560b09e30661ab9e64b",
+          "elapsed_ms": 5937.462,
+          "error": null,
+          "focal_stage_score": -62,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -62,
+            "opp-0": 99,
+            "opp-2": -11,
+            "opp-3": -26
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "44d3c9f0a0b08c4c494e58454977075dda9d8fcd3cc5e560b09e30661ab9e64b",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 10033.475
+      },
+      "focal_anchor_seat": 1,
+      "invalid_reasons": [],
+      "opponent_mix": "H",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 4096.013,
+          "error": null,
+          "focal_stage_score": -56,
+          "stage_place_points_by_participant": {
+            "focal": -6,
+            "opp-0": 4,
+            "opp-2": 2,
+            "opp-3": 0
+          },
+          "stage_totals_by_participant": {
+            "focal": -56,
+            "opp-0": 69,
+            "opp-2": 24,
+            "opp-3": -37
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                39,
+                -18,
+                -14,
+                -7
+              ],
+              "seed": 127884581709352,
+              "table_id": "np-H-20260916-r01-s1-t1",
+              "wall_ms": 1896.361
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -30,
+                30,
+                -38,
+                38
+              ],
+              "seed": 167057488730121,
+              "table_id": "np-H-20260916-r01-s1-t2",
+              "wall_ms": 2194.542
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 5937.462,
+          "error": null,
+          "focal_stage_score": -62,
+          "stage_place_points_by_participant": {
+            "focal": -5,
+            "opp-0": 6,
+            "opp-2": 0,
+            "opp-3": -1
+          },
+          "stage_totals_by_participant": {
+            "focal": -62,
+            "opp-0": 99,
+            "opp-2": -11,
+            "opp-3": -26
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                58,
+                -35,
+                12,
+                -35
+              ],
+              "seed": 127884581709352,
+              "table_id": "np-H-20260916-r01-s1-t1",
+              "wall_ms": 2913.857
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                9,
+                41,
+                -27,
+                -23
+              ],
+              "seed": 167057488730121,
+              "table_id": "np-H-20260916-r01-s1-t2",
+              "wall_ms": 3018.347
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "a373486560e84aad19a347aa0cd70adc5411ad9abac5d55659a394544faf1595",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 109887957447187,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "focal",
+          "opp-2",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "opp-0",
+          "focal",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-H-20260916-root01",
+      "table_ids": [
+        "np-H-20260916-r01-s1-t1",
+        "np-H-20260916-r01-s1-t2"
+      ],
+      "table_seeds": [
+        127884581709352,
+        167057488730121
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 3921.186,
+          "error": null,
+          "focal_stage_score": -31,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": -31,
+            "opp-0": 8,
+            "opp-1": 15,
+            "opp-3": 8
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "44d3c9f0a0b08c4c494e58454977075dda9d8fcd3cc5e560b09e30661ab9e64b",
+          "elapsed_ms": 4310.492,
+          "error": null,
+          "focal_stage_score": -46,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -46,
+            "opp-0": -12,
+            "opp-1": 17,
+            "opp-3": 41
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "44d3c9f0a0b08c4c494e58454977075dda9d8fcd3cc5e560b09e30661ab9e64b",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 8231.678
+      },
+      "focal_anchor_seat": 2,
+      "invalid_reasons": [],
+      "opponent_mix": "H",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 3921.186,
+          "error": null,
+          "focal_stage_score": -31,
+          "stage_place_points_by_participant": {
+            "focal": -4,
+            "opp-0": 2,
+            "opp-1": 2,
+            "opp-3": 0
+          },
+          "stage_totals_by_participant": {
+            "focal": -31,
+            "opp-0": 8,
+            "opp-1": 15,
+            "opp-3": 8
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                24,
+                10,
+                -4,
+                -30
+              ],
+              "seed": 143819204457795,
+              "table_id": "np-H-20260916-r01-s2-t1",
+              "wall_ms": 1982.009
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                38,
+                -16,
+                5,
+                -27
+              ],
+              "seed": 9622576438819,
+              "table_id": "np-H-20260916-r01-s2-t2",
+              "wall_ms": 1934.16
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 4310.492,
+          "error": null,
+          "focal_stage_score": -46,
+          "stage_place_points_by_participant": {
+            "focal": -4,
+            "opp-0": -1,
+            "opp-1": 2,
+            "opp-3": 3
+          },
+          "stage_totals_by_participant": {
+            "focal": -46,
+            "opp-0": -12,
+            "opp-1": 17,
+            "opp-3": 41
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -30,
+                31,
+                -24,
+                23
+              ],
+              "seed": 143819204457795,
+              "table_id": "np-H-20260916-r01-s2-t1",
+              "wall_ms": 1734.856
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                18,
+                18,
+                -14,
+                -22
+              ],
+              "seed": 9622576438819,
+              "table_id": "np-H-20260916-r01-s2-t2",
+              "wall_ms": 2570.336
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "a373486560e84aad19a347aa0cd70adc5411ad9abac5d55659a394544faf1595",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 109887957447187,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "opp-1",
+          "focal",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "opp-0",
+          "opp-1",
+          "focal"
+        ]
+      ],
+      "source_root_id": "np-H-20260916-root01",
+      "table_ids": [
+        "np-H-20260916-r01-s2-t1",
+        "np-H-20260916-r01-s2-t2"
+      ],
+      "table_seeds": [
+        143819204457795,
+        9622576438819
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 3630.38,
+          "error": null,
+          "focal_stage_score": -56,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": -56,
+            "opp-0": 118,
+            "opp-1": -35,
+            "opp-2": -27
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "44d3c9f0a0b08c4c494e58454977075dda9d8fcd3cc5e560b09e30661ab9e64b",
+          "elapsed_ms": 4552.021,
+          "error": null,
+          "focal_stage_score": -104,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -104,
+            "opp-0": -4,
+            "opp-1": 36,
+            "opp-2": 72
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "44d3c9f0a0b08c4c494e58454977075dda9d8fcd3cc5e560b09e30661ab9e64b",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 8182.401
+      },
+      "focal_anchor_seat": 3,
+      "invalid_reasons": [],
+      "opponent_mix": "H",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 3630.38,
+          "error": null,
+          "focal_stage_score": -56,
+          "stage_place_points_by_participant": {
+            "focal": -6,
+            "opp-0": 6,
+            "opp-1": 0,
+            "opp-2": 0
+          },
+          "stage_totals_by_participant": {
+            "focal": -56,
+            "opp-0": 118,
+            "opp-1": -35,
+            "opp-2": -27
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                24,
+                -12,
+                7,
+                -19
+              ],
+              "seed": 194018128718158,
+              "table_id": "np-H-20260916-r01-s3-t1",
+              "wall_ms": 1903.327
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -37,
+                94,
+                -23,
+                -34
+              ],
+              "seed": 123281700133121,
+              "table_id": "np-H-20260916-r01-s3-t2",
+              "wall_ms": 1721.879
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 4552.021,
+          "error": null,
+          "focal_stage_score": -104,
+          "stage_place_points_by_participant": {
+            "focal": -6,
+            "opp-0": 0,
+            "opp-1": 4,
+            "opp-2": 2
+          },
+          "stage_totals_by_participant": {
+            "focal": -104,
+            "opp-0": -4,
+            "opp-1": 36,
+            "opp-2": 72
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                41,
+                48,
+                -37,
+                -52
+              ],
+              "seed": 194018128718158,
+              "table_id": "np-H-20260916-r01-s3-t1",
+              "wall_ms": 2221.393
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -52,
+                -45,
+                -12,
+                109
+              ],
+              "seed": 123281700133121,
+              "table_id": "np-H-20260916-r01-s3-t2",
+              "wall_ms": 2325.469
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "a373486560e84aad19a347aa0cd70adc5411ad9abac5d55659a394544faf1595",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 109887957447187,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "opp-1",
+          "opp-2",
+          "focal"
+        ],
+        [
+          "focal",
+          "opp-0",
+          "opp-1",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-H-20260916-root01",
+      "table_ids": [
+        "np-H-20260916-r01-s3-t1",
+        "np-H-20260916-r01-s3-t2"
+      ],
+      "table_seeds": [
+        194018128718158,
+        123281700133121
+      ]
+    }
+  ],
+  "schema": "sitin-natural-panel/1",
+  "statistics": {
+    "by_candidate": {
+      "44d3c9f0a0b08c4c494e58454977075dda9d8fcd3cc5e560b09e30661ab9e64b": {
+        "family_development_values": {
+          "baotou": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          },
+          "branch": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          },
+          "chain": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          },
+          "four_white": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          }
+        },
+        "panels": {
+          "normal": {
+            "declared_mix": {
+              "mean_delta": null,
+              "mean_delta_high": null,
+              "mean_delta_low": null,
+              "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例",
+              "status": "missing_mix",
+              "weights": {
+                "H": 0.5,
+                "M": 0.5
+              }
+            },
+            "panels": {
+              "H": {
+                "delta_bounds": {
+                  "interval_95_high": null,
+                  "interval_95_low": null,
+                  "mean_delta_high": -0.25,
+                  "mean_delta_low": -0.25,
+                  "note": "识别区间（缺 god_count 等事实造成）：d_low=候选U下界−基线U上界、d_high=候选U上界−基线U下界（§2 保守配对）；与 interval_95 分开报告",
+                  "standard_error_high": null,
+                  "standard_error_low": null,
+                  "unresolved_roots": 0
+                },
+                "interval_95": null,
+                "interval_kind": "sampling_uncertainty_normal_approx",
+                "interval_note": "95% 正态近似抽样不确定性区间，非识别区间，不作为已证明提升的证据",
+                "invalid_records": [],
+                "invalid_roots": [],
+                "manifest_complete": true,
+                "mean_delta": -0.25,
+                "n_invalid_roots": 0,
+                "n_invalid_samples": 0,
+                "n_refresh_roots": 0,
+                "n_roots": 1,
+                "n_samples": 4,
+                "n_uncomputable_samples": 0,
+                "root_rows": [
+                  {
+                    "cost": 33808.601,
+                    "d_high": -0.25,
+                    "d_low": -0.25,
+                    "d_point": -0.25,
+                    "n_windows": 4,
+                    "opponent_mix": "H",
+                    "role": "core",
+                    "root_content_digest": "a373486560e84aad19a347aa0cd70adc5411ad9abac5d55659a394544faf1595",
+                    "root_id": "np-H-20260916-root01",
+                    "self": false,
+                    "unresolved": false,
+                    "usage": "development_core"
+                  }
+                ],
+                "roots": [
+                  "np-H-20260916-root01"
+                ],
+                "self_comparison": false,
+                "standard_error": null,
+                "status": "ok",
+                "uncomputable_records": []
+              }
+            }
+          }
+        }
+      }
+    },
+    "invalid_count": 0,
+    "invalid_records": [],
+    "min_roots": 1,
+    "n_samples": 4,
+    "notes": [
+      "抽样单位=来源根（source_root_id）：同根多窗口/换座先根内平均，不放大 n（T10）",
+      "interval_95 为抽样不确定性（正态近似），与 delta_bounds 识别区间分开",
+      "无效样本不补零：原始记录保留于 invalid_records/uncomputable_records"
+    ],
+    "schema": "sitin-stage-statistics/1",
+    "uncomputable_count": 0,
+    "uncomputable_records": []
+  }
+}

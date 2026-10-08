@@ -1,0 +1,885 @@
+{
+  "schema": "r10-route-claim-new-source-diagnosis/1",
+  "scope": "只读行为和阶段结果诊断；不重评候选，不改变关闭裁定",
+  "new_source": {
+    "decisions": {
+      "H": 168747,
+      "M": 170894
+    },
+    "changes": {
+      "H": [
+        {
+          "from": "chi",
+          "to": "chi",
+          "count": 1
+        },
+        {
+          "from": "pass",
+          "to": "chi",
+          "count": 212
+        },
+        {
+          "from": "pass",
+          "to": "peng",
+          "count": 125
+        },
+        {
+          "from": "peng",
+          "to": "pass",
+          "count": 2
+        }
+      ],
+      "M": [
+        {
+          "from": "chi",
+          "to": "pass",
+          "count": 1
+        },
+        {
+          "from": "pass",
+          "to": "chi",
+          "count": 226
+        },
+        {
+          "from": "pass",
+          "to": "peng",
+          "count": 132
+        },
+        {
+          "from": "peng",
+          "to": "pass",
+          "count": 8
+        }
+      ]
+    },
+    "changed_stages": {
+      "H": 200,
+      "M": 185
+    },
+    "stage_change_histogram": {
+      "H": {
+        "0": 56,
+        "1": 107,
+        "2": 58,
+        "3": 25,
+        "4": 8,
+        "5": 2
+      },
+      "M": {
+        "0": 71,
+        "1": 80,
+        "2": 57,
+        "3": 28,
+        "4": 13,
+        "5": 6,
+        "7": 1
+      }
+    },
+    "per_root": {
+      "H": {
+        "1": {
+          "pass->peng": 4,
+          "pass->chi": 1
+        },
+        "2": {
+          "pass->chi": 6,
+          "pass->peng": 2
+        },
+        "3": {
+          "pass->chi": 3,
+          "pass->peng": 1
+        },
+        "4": {
+          "pass->chi": 5,
+          "pass->peng": 2
+        },
+        "5": {
+          "pass->peng": 2,
+          "pass->chi": 5
+        },
+        "6": {
+          "pass->chi": 3,
+          "pass->peng": 2
+        },
+        "7": {
+          "pass->chi": 2,
+          "pass->peng": 3
+        },
+        "8": {
+          "pass->peng": 4,
+          "pass->chi": 2
+        },
+        "9": {
+          "pass->chi": 1,
+          "pass->peng": 2
+        },
+        "10": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "11": {
+          "pass->chi": 2,
+          "pass->peng": 3
+        },
+        "12": {
+          "pass->chi": 3
+        },
+        "13": {
+          "pass->chi": 2,
+          "pass->peng": 2
+        },
+        "14": {
+          "pass->chi": 4,
+          "pass->peng": 6
+        },
+        "15": {
+          "pass->chi": 4
+        },
+        "16": {
+          "pass->chi": 3,
+          "pass->peng": 1
+        },
+        "17": {
+          "pass->chi": 3,
+          "pass->peng": 3
+        },
+        "18": {
+          "pass->peng": 5,
+          "pass->chi": 2
+        },
+        "19": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "20": {
+          "pass->chi": 5,
+          "pass->peng": 2
+        },
+        "21": {
+          "pass->peng": 2,
+          "pass->chi": 6
+        },
+        "22": {
+          "pass->chi": 2
+        },
+        "23": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "24": {
+          "pass->chi": 3,
+          "pass->peng": 2
+        },
+        "25": {
+          "pass->chi": 1,
+          "pass->peng": 1
+        },
+        "26": {
+          "pass->chi": 5,
+          "pass->peng": 1
+        },
+        "27": {
+          "peng->pass": 1,
+          "pass->chi": 4,
+          "pass->peng": 1
+        },
+        "28": {
+          "pass->chi": 6
+        },
+        "29": {
+          "pass->peng": 1,
+          "pass->chi": 2
+        },
+        "30": {
+          "pass->peng": 1,
+          "pass->chi": 1
+        },
+        "31": {
+          "pass->chi": 5,
+          "pass->peng": 1
+        },
+        "32": {
+          "pass->chi": 5,
+          "pass->peng": 1
+        },
+        "33": {
+          "pass->peng": 2,
+          "pass->chi": 2
+        },
+        "34": {
+          "pass->peng": 1,
+          "pass->chi": 3
+        },
+        "35": {
+          "pass->chi": 4,
+          "pass->peng": 2
+        },
+        "36": {
+          "pass->peng": 5,
+          "pass->chi": 3
+        },
+        "37": {
+          "pass->chi": 4,
+          "pass->peng": 1
+        },
+        "38": {
+          "pass->chi": 4,
+          "pass->peng": 4
+        },
+        "39": {
+          "pass->chi": 3,
+          "pass->peng": 4
+        },
+        "40": {
+          "pass->peng": 3,
+          "pass->chi": 2
+        },
+        "41": {
+          "pass->chi": 1,
+          "pass->peng": 1
+        },
+        "42": {
+          "pass->peng": 1,
+          "pass->chi": 4
+        },
+        "43": {
+          "chi->chi": 1,
+          "pass->chi": 3
+        },
+        "44": {
+          "pass->chi": 1,
+          "pass->peng": 4
+        },
+        "45": {
+          "pass->chi": 5,
+          "pass->peng": 5
+        },
+        "46": {
+          "pass->peng": 1,
+          "pass->chi": 4
+        },
+        "47": {
+          "pass->chi": 6,
+          "pass->peng": 2
+        },
+        "48": {
+          "pass->chi": 6,
+          "pass->peng": 2
+        },
+        "49": {
+          "pass->peng": 5,
+          "pass->chi": 4
+        },
+        "50": {
+          "pass->chi": 6,
+          "pass->peng": 1
+        },
+        "51": {
+          "pass->peng": 2,
+          "pass->chi": 2
+        },
+        "52": {
+          "pass->chi": 3
+        },
+        "53": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "54": {
+          "pass->chi": 7,
+          "peng->pass": 1
+        },
+        "55": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "56": {
+          "pass->peng": 3,
+          "pass->chi": 7
+        },
+        "57": {
+          "pass->peng": 1,
+          "pass->chi": 2
+        },
+        "58": {
+          "pass->peng": 3,
+          "pass->chi": 4
+        },
+        "59": {
+          "pass->chi": 2,
+          "pass->peng": 4
+        },
+        "60": {
+          "pass->peng": 2,
+          "pass->chi": 4
+        },
+        "61": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "62": {
+          "pass->chi": 4,
+          "pass->peng": 2
+        },
+        "63": {
+          "pass->peng": 2,
+          "pass->chi": 2
+        },
+        "64": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        }
+      },
+      "M": {
+        "1": {
+          "pass->chi": 8,
+          "peng->pass": 1,
+          "pass->peng": 2
+        },
+        "2": {
+          "pass->chi": 2,
+          "pass->peng": 2
+        },
+        "3": {
+          "pass->peng": 4,
+          "pass->chi": 4
+        },
+        "4": {
+          "pass->peng": 2,
+          "pass->chi": 1
+        },
+        "5": {
+          "pass->chi": 2
+        },
+        "6": {
+          "pass->chi": 2
+        },
+        "7": {
+          "pass->peng": 3,
+          "pass->chi": 1
+        },
+        "8": {
+          "pass->chi": 5,
+          "pass->peng": 4
+        },
+        "9": {
+          "pass->peng": 1,
+          "pass->chi": 2
+        },
+        "10": {
+          "pass->chi": 3,
+          "pass->peng": 2
+        },
+        "11": {
+          "pass->peng": 2,
+          "pass->chi": 7
+        },
+        "12": {
+          "pass->chi": 6,
+          "pass->peng": 2
+        },
+        "13": {
+          "pass->peng": 1,
+          "pass->chi": 3
+        },
+        "14": {
+          "pass->chi": 5
+        },
+        "15": {
+          "pass->chi": 5,
+          "pass->peng": 2
+        },
+        "16": {
+          "pass->peng": 3,
+          "pass->chi": 2
+        },
+        "17": {
+          "pass->chi": 4,
+          "pass->peng": 2
+        },
+        "18": {
+          "pass->chi": 3,
+          "pass->peng": 2
+        },
+        "19": {
+          "pass->peng": 3,
+          "pass->chi": 4
+        },
+        "20": {
+          "pass->chi": 11,
+          "pass->peng": 2
+        },
+        "21": {
+          "pass->chi": 2
+        },
+        "22": {
+          "pass->chi": 4,
+          "chi->pass": 1
+        },
+        "23": {
+          "pass->chi": 5,
+          "pass->peng": 5
+        },
+        "24": {
+          "pass->chi": 3
+        },
+        "25": {
+          "pass->peng": 4,
+          "pass->chi": 2
+        },
+        "26": {
+          "pass->chi": 3,
+          "pass->peng": 4
+        },
+        "27": {
+          "pass->chi": 6,
+          "pass->peng": 2
+        },
+        "28": {
+          "pass->chi": 2
+        },
+        "29": {
+          "pass->chi": 7,
+          "pass->peng": 1
+        },
+        "30": {
+          "pass->chi": 4,
+          "pass->peng": 1
+        },
+        "31": {
+          "pass->peng": 4,
+          "pass->chi": 1
+        },
+        "32": {
+          "pass->chi": 5,
+          "pass->peng": 1
+        },
+        "33": {
+          "pass->peng": 8,
+          "pass->chi": 5
+        },
+        "34": {
+          "pass->peng": 3,
+          "pass->chi": 1
+        },
+        "35": {
+          "pass->chi": 2,
+          "pass->peng": 2
+        },
+        "36": {
+          "pass->peng": 3,
+          "pass->chi": 6
+        },
+        "37": {
+          "peng->pass": 4,
+          "pass->chi": 3,
+          "pass->peng": 1
+        },
+        "38": {
+          "pass->chi": 4,
+          "pass->peng": 1
+        },
+        "39": {
+          "pass->peng": 4,
+          "pass->chi": 3
+        },
+        "40": {
+          "pass->peng": 2,
+          "pass->chi": 2
+        },
+        "41": {
+          "pass->chi": 1,
+          "pass->peng": 1
+        },
+        "42": {
+          "pass->chi": 4,
+          "pass->peng": 4
+        },
+        "43": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "44": {
+          "pass->chi": 4,
+          "peng->pass": 1
+        },
+        "45": {
+          "pass->chi": 2,
+          "pass->peng": 4
+        },
+        "46": {
+          "pass->chi": 5,
+          "pass->peng": 1
+        },
+        "47": {
+          "pass->chi": 5,
+          "pass->peng": 1
+        },
+        "48": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "49": {
+          "pass->peng": 2,
+          "pass->chi": 1
+        },
+        "50": {
+          "pass->chi": 3,
+          "pass->peng": 1
+        },
+        "51": {
+          "pass->peng": 2,
+          "pass->chi": 3
+        },
+        "52": {
+          "pass->peng": 5,
+          "pass->chi": 1
+        },
+        "53": {
+          "pass->chi": 1
+        },
+        "54": {
+          "pass->peng": 4,
+          "pass->chi": 2
+        },
+        "55": {
+          "pass->chi": 7,
+          "pass->peng": 1,
+          "peng->pass": 1
+        },
+        "56": {
+          "pass->peng": 4,
+          "pass->chi": 3
+        },
+        "57": {
+          "pass->peng": 3,
+          "pass->chi": 5
+        },
+        "58": {
+          "pass->chi": 5,
+          "pass->peng": 1
+        },
+        "59": {
+          "pass->chi": 7,
+          "pass->peng": 1
+        },
+        "60": {
+          "pass->chi": 1,
+          "pass->peng": 1,
+          "peng->pass": 1
+        },
+        "61": {
+          "pass->chi": 4
+        },
+        "62": {
+          "pass->peng": 4,
+          "pass->chi": 2
+        },
+        "63": {
+          "pass->peng": 2,
+          "pass->chi": 3
+        },
+        "64": {
+          "pass->chi": 3,
+          "pass->peng": 3
+        }
+      }
+    }
+  },
+  "development_c_new_roots": {
+    "decisions": {
+      "H": 41257,
+      "M": 44474
+    },
+    "changes": {
+      "H": [
+        {
+          "from": "chi",
+          "to": "pass",
+          "count": 1
+        },
+        {
+          "from": "pass",
+          "to": "chi",
+          "count": 64
+        },
+        {
+          "from": "pass",
+          "to": "peng",
+          "count": 22
+        }
+      ],
+      "M": [
+        {
+          "from": "pass",
+          "to": "chi",
+          "count": 50
+        },
+        {
+          "from": "pass",
+          "to": "peng",
+          "count": 26
+        },
+        {
+          "from": "peng",
+          "to": "pass",
+          "count": 1
+        }
+      ]
+    },
+    "changed_stages": {
+      "H": 45,
+      "M": 44
+    },
+    "stage_change_histogram": {
+      "H": {
+        "0": 19,
+        "1": 18,
+        "2": 17,
+        "3": 6,
+        "4": 3,
+        "5": 1
+      },
+      "M": {
+        "0": 20,
+        "1": 25,
+        "2": 9,
+        "3": 7,
+        "4": 2,
+        "5": 1
+      }
+    },
+    "per_root": {
+      "H": {
+        "13": {
+          "pass->chi": 5
+        },
+        "14": {
+          "pass->chi": 7,
+          "pass->peng": 1
+        },
+        "15": {
+          "pass->chi": 4
+        },
+        "16": {
+          "pass->chi": 5,
+          "pass->peng": 2
+        },
+        "17": {
+          "chi->pass": 1,
+          "pass->chi": 6
+        },
+        "18": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "19": {
+          "pass->chi": 2
+        },
+        "20": {
+          "pass->chi": 4,
+          "pass->peng": 4
+        },
+        "21": {
+          "pass->chi": 1,
+          "pass->peng": 2
+        },
+        "22": {
+          "pass->chi": 5
+        },
+        "23": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "24": {
+          "pass->chi": 4,
+          "pass->peng": 2
+        },
+        "25": {
+          "pass->peng": 2,
+          "pass->chi": 5
+        },
+        "26": {
+          "pass->chi": 4,
+          "pass->peng": 1
+        },
+        "27": {
+          "pass->peng": 1,
+          "pass->chi": 3
+        },
+        "28": {
+          "pass->peng": 5,
+          "pass->chi": 5
+        }
+      },
+      "M": {
+        "13": {
+          "pass->chi": 4,
+          "pass->peng": 2
+        },
+        "14": {
+          "pass->chi": 4,
+          "pass->peng": 1
+        },
+        "15": {
+          "pass->peng": 3,
+          "pass->chi": 6
+        },
+        "16": {
+          "pass->chi": 4,
+          "pass->peng": 1
+        },
+        "17": {
+          "pass->peng": 2,
+          "peng->pass": 1,
+          "pass->chi": 4
+        },
+        "18": {
+          "pass->chi": 1
+        },
+        "19": {
+          "pass->chi": 3,
+          "pass->peng": 1
+        },
+        "20": {
+          "pass->peng": 1,
+          "pass->chi": 1
+        },
+        "21": {
+          "pass->peng": 2,
+          "pass->chi": 4
+        },
+        "22": {
+          "pass->peng": 4,
+          "pass->chi": 2
+        },
+        "23": {
+          "pass->chi": 2,
+          "pass->peng": 1
+        },
+        "24": {
+          "pass->chi": 5,
+          "pass->peng": 1
+        },
+        "25": {
+          "pass->chi": 4,
+          "pass->peng": 3
+        },
+        "26": {
+          "pass->chi": 3
+        },
+        "27": {
+          "pass->peng": 3,
+          "pass->chi": 1
+        },
+        "28": {
+          "pass->peng": 1,
+          "pass->chi": 2
+        }
+      }
+    }
+  },
+  "new_source_effect_by_change_count": {
+    "H": {
+      "by_root_change_count": {
+        "2": {
+          "roots": 4,
+          "mean_root_delta": 0.0
+        },
+        "3": {
+          "roots": 12,
+          "mean_root_delta": -0.041666666666666664
+        },
+        "4": {
+          "roots": 9,
+          "mean_root_delta": 0.1111111111111111
+        },
+        "5": {
+          "roots": 10,
+          "mean_root_delta": 0.025
+        },
+        "6": {
+          "roots": 11,
+          "mean_root_delta": -0.045454545454545456
+        },
+        "7": {
+          "roots": 7,
+          "mean_root_delta": -0.07142857142857142
+        },
+        "8": {
+          "roots": 7,
+          "mean_root_delta": 0.14285714285714285
+        },
+        "9": {
+          "roots": 1,
+          "mean_root_delta": -0.25
+        },
+        "10": {
+          "roots": 3,
+          "mean_root_delta": -0.08333333333333333
+        }
+      },
+      "pearson_change_count_vs_root_delta": -0.02829710809140395,
+      "note": "候选改选会改变后续轨迹；这里只是描述关联，不是单步动作因果估计。"
+    },
+    "M": {
+      "by_root_change_count": {
+        "1": {
+          "roots": 1,
+          "mean_root_delta": 0.0
+        },
+        "2": {
+          "roots": 5,
+          "mean_root_delta": -0.05
+        },
+        "3": {
+          "roots": 7,
+          "mean_root_delta": 0.03571428571428571
+        },
+        "4": {
+          "roots": 8,
+          "mean_root_delta": 0.03125
+        },
+        "5": {
+          "roots": 11,
+          "mean_root_delta": -0.022727272727272728
+        },
+        "6": {
+          "roots": 11,
+          "mean_root_delta": -0.09090909090909091
+        },
+        "7": {
+          "roots": 5,
+          "mean_root_delta": 0.05
+        },
+        "8": {
+          "roots": 8,
+          "mean_root_delta": -0.0625
+        },
+        "9": {
+          "roots": 4,
+          "mean_root_delta": -0.0625
+        },
+        "10": {
+          "roots": 1,
+          "mean_root_delta": 0.25
+        },
+        "11": {
+          "roots": 1,
+          "mean_root_delta": 0.0
+        },
+        "13": {
+          "roots": 2,
+          "mean_root_delta": -0.125
+        }
+      },
+      "pearson_change_count_vs_root_delta": -0.07857378700480402,
+      "note": "候选改选会改变后续轨迹；这里只是描述关联，不是单步动作因果估计。"
+    }
+  },
+  "interpretation_limits": [
+    "prototype_audit 的 base_first 是候选轨迹同状态下的 V2 反事实排序。",
+    "首次改选后候选与基线轨迹可分叉，后续审计行不能与基线轨迹逐动作配对。",
+    "根级改选数与阶段效用差相关只用于提出下一假设，不能证明某个动作正确或错误。"
+  ]
+}

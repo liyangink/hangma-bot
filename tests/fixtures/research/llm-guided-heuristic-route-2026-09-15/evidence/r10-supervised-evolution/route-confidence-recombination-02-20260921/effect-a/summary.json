@@ -1,0 +1,138 @@
+{
+  "status": "COMPLETE_ROUTE_CONFIDENCE_PHASE_A_DEVELOPMENT_RANKING",
+  "configurations": 9,
+  "families": 2,
+  "roots_per_configuration": 16,
+  "candidate_tables": 1152,
+  "baseline_tables": 128,
+  "full_tables": 1280,
+  "selected_for_b": [
+    "c-cfg-01",
+    "c-cfg-05",
+    "fixed-parent-exact",
+    "c-cfg-00"
+  ],
+  "leader": {
+    "config_id": "c-cfg-00",
+    "candidate_id": "action_value_v1:offline-route-confidence:4b67cd423078f3bd3611517a895ccc3d6437829409f6cffa3242a651c58bd451",
+    "family": "ROUTE_CONFIDENCE_HYBRID",
+    "is_zero_effect": true,
+    "is_author_default": false,
+    "values": {
+      "RC_RAW_FLOOR": -0.1,
+      "RC_RAW_WIDTH": 0.35,
+      "RC_MARGIN_REF": 0.22,
+      "RC_DISCARD_CAP": 0.0,
+      "RC_CLAIM_FACTOR": 0.5,
+      "RC_FIXED_BLEND": 0.0
+    },
+    "fitness_mean_delta_low": 0.0,
+    "mean_delta": 0.0,
+    "mean_delta_high": 0.0,
+    "H": {
+      "n_roots": 8,
+      "mean_delta": 0.0,
+      "standard_error": 0.0,
+      "interval_95": [
+        0.0,
+        0.0
+      ]
+    },
+    "M": {
+      "n_roots": 8,
+      "mean_delta": 0.0,
+      "standard_error": 0.0,
+      "interval_95": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 1280.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "按 phase-b-freeze 追加H/M各8根；阶段A仅分配预算",
+  "old_parent_control": {
+    "config_id": "fixed-parent-exact",
+    "candidate_id": "action_value_v1:offline-route-fixed-parent:b753f5bb83860428ca101836bca3365b477827eef58c2d2a8f06a812a40d841f",
+    "family": "ROUTE_FIXED_FULL_BONUS_PARENT",
+    "is_zero_effect": false,
+    "is_author_default": false,
+    "values": {
+      "RMF_SCALE": 8.0,
+      "RMF_SHAPE": 64.0,
+      "RMF_CAP": 8.0
+    },
+    "fitness_mean_delta_low": -0.046875,
+    "mean_delta": -0.0390625,
+    "mean_delta_high": -0.03125,
+    "H": {
+      "n_roots": 8,
+      "mean_delta": -0.046875,
+      "standard_error": 0.10004881620988826,
+      "interval_95": [
+        -0.24296707646724813,
+        0.14921707646724813
+      ]
+    },
+    "M": {
+      "n_roots": 8,
+      "mean_delta": -0.03125,
+      "standard_error": 0.08759561102834189,
+      "interval_95": [
+        -0.20293424281932967,
+        0.14043424281932967
+      ]
+    },
+    "rank": 9,
+    "disposition": "ADVANCE_TO_2B"
+  },
+  "v2_control": {
+    "config_id": "c-cfg-00",
+    "candidate_id": "action_value_v1:offline-route-confidence:4b67cd423078f3bd3611517a895ccc3d6437829409f6cffa3242a651c58bd451",
+    "family": "ROUTE_CONFIDENCE_HYBRID",
+    "is_zero_effect": true,
+    "is_author_default": false,
+    "values": {
+      "RC_RAW_FLOOR": -0.1,
+      "RC_RAW_WIDTH": 0.35,
+      "RC_MARGIN_REF": 0.22,
+      "RC_DISCARD_CAP": 0.0,
+      "RC_CLAIM_FACTOR": 0.5,
+      "RC_FIXED_BLEND": 0.0
+    },
+    "fitness_mean_delta_low": 0.0,
+    "mean_delta": 0.0,
+    "mean_delta_high": 0.0,
+    "H": {
+      "n_roots": 8,
+      "mean_delta": 0.0,
+      "standard_error": 0.0,
+      "interval_95": [
+        0.0,
+        0.0
+      ]
+    },
+    "M": {
+      "n_roots": 8,
+      "mean_delta": 0.0,
+      "standard_error": 0.0,
+      "interval_95": [
+        0.0,
+        0.0
+      ]
+    },
+    "rank": 1,
+    "disposition": "ADVANCE_TO_2B"
+  }
+}

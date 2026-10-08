@@ -1,0 +1,108 @@
+{
+  "schema": "r10-structural-phase-c-ranking/1",
+  "ranking": [
+    {
+      "config_id": "s3-cfg-02",
+      "candidate_id": "action_value_v1:offline-structural-v1:984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "kind": "action_value_source",
+      "family": "S3",
+      "is_zero_effect": false,
+      "is_author_default": false,
+      "fitness_mean_delta_low": 0.0234375,
+      "mean_delta": 0.03125,
+      "mean_delta_high": 0.0390625,
+      "H": {
+        "n_roots": 32,
+        "mean_delta": 0.0390625,
+        "standard_error": 0.028307817564804563,
+        "interval_95": [
+          -0.016419802907947284,
+          0.09454480290794728
+        ]
+      },
+      "M": {
+        "n_roots": 32,
+        "mean_delta": 0.0234375,
+        "standard_error": 0.03245533337241378,
+        "interval_95": [
+          -0.040173784516171915,
+          0.08704878451617191
+        ]
+      },
+      "rank": 1,
+      "disposition": "DEVELOPMENT_CHAMPION"
+    },
+    {
+      "config_id": "s3-cfg-04",
+      "candidate_id": "action_value_v1:offline-structural-v1:7c0cb6bb6e6babfaecbc2e1f2a2fb2f733f5fd7ed785dee8b524e02d651b04e9",
+      "kind": "action_value_source",
+      "family": "S3",
+      "is_zero_effect": false,
+      "is_author_default": false,
+      "fitness_mean_delta_low": 0.01171875,
+      "mean_delta": 0.01953125,
+      "mean_delta_high": 0.02734375,
+      "H": {
+        "n_roots": 32,
+        "mean_delta": 0.015625,
+        "standard_error": 0.02430355534524434,
+        "interval_95": [
+          -0.032009093172954826,
+          0.06325909317295483
+        ]
+      },
+      "M": {
+        "n_roots": 32,
+        "mean_delta": 0.0234375,
+        "standard_error": 0.030452267564146797,
+        "interval_95": [
+          -0.036247847673305,
+          0.083122847673305
+        ]
+      },
+      "rank": 2,
+      "disposition": "NOT_SELECTED_WITHIN_BUDGET"
+    },
+    {
+      "config_id": "v2-control-default",
+      "candidate_id": "offline-v2-joint-v1:fc8a9aa84c4ff9a8929ce76bd158df6c78de8e3b1865963de00b2244ee9909ef",
+      "kind": "v2_weights",
+      "family": "V2_CONTROL",
+      "is_zero_effect": true,
+      "is_author_default": true,
+      "fitness_mean_delta_low": -0.01171875,
+      "mean_delta": 0.0,
+      "mean_delta_high": 0.01171875,
+      "H": {
+        "n_roots": 32,
+        "mean_delta": 0.0,
+        "standard_error": 0.0,
+        "interval_95": [
+          0.0,
+          0.0
+        ]
+      },
+      "M": {
+        "n_roots": 32,
+        "mean_delta": 0.0,
+        "standard_error": 0.0,
+        "interval_95": [
+          0.0,
+          0.0
+        ]
+      },
+      "rank": 3,
+      "disposition": "NOT_SELECTED_WITHIN_BUDGET"
+    }
+  ],
+  "development_champion": "s3-cfg-02",
+  "selection_rule": {
+    "fitness": "阶段A+B+C累计H/M等权的根级保守差d_low均值",
+    "keep": 1,
+    "rule": "按适应度降序、config_id升序冻结一个开发冠军",
+    "meaning": "开发冻结，不是显著性检验；只有非默认冠军且保守差为正才可进入新来源复核"
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

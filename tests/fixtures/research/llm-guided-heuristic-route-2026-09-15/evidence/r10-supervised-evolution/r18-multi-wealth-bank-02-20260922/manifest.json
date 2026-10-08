@@ -1,0 +1,86 @@
+{
+  "schema": "r18-multi-wealth-bank-manifest/1",
+  "generator_seed": 2026092201,
+  "generator_sha256": "64f6ea738cf3c84476f5dfc33318ef8238e9bc71a78424a5a6c428c34404a540",
+  "rules_hash": "3d28709994ce32d75594af53822e82a2b76f3b5b54b6ecc4e7006827c998a0af",
+  "oracle_version": "hangma-one-self-draw-score-delta/1",
+  "cases": 32,
+  "unique_base_scenarios": 32,
+  "development_cases": 24,
+  "hidden_cases": 8,
+  "split_rule": "每个财神数2个隐藏基础场景；按piao/keep_wealth/take_hu/gang_or_decline/other顺序各取确定性哈希首项，再补case_id；候选运行前冻结",
+  "counts": [
+    {
+      "split": "development",
+      "wealth_count": 1,
+      "decision_type": "take_hu",
+      "count": 6
+    },
+    {
+      "split": "development",
+      "wealth_count": 2,
+      "decision_type": "take_hu",
+      "count": 6
+    },
+    {
+      "split": "development",
+      "wealth_count": 3,
+      "decision_type": "keep_wealth",
+      "count": 6
+    },
+    {
+      "split": "development",
+      "wealth_count": 4,
+      "decision_type": "piao",
+      "count": 1
+    },
+    {
+      "split": "development",
+      "wealth_count": 4,
+      "decision_type": "take_hu",
+      "count": 5
+    },
+    {
+      "split": "hidden",
+      "wealth_count": 1,
+      "decision_type": "take_hu",
+      "count": 2
+    },
+    {
+      "split": "hidden",
+      "wealth_count": 2,
+      "decision_type": "take_hu",
+      "count": 2
+    },
+    {
+      "split": "hidden",
+      "wealth_count": 3,
+      "decision_type": "keep_wealth",
+      "count": 1
+    },
+    {
+      "split": "hidden",
+      "wealth_count": 3,
+      "decision_type": "piao",
+      "count": 1
+    },
+    {
+      "split": "hidden",
+      "wealth_count": 4,
+      "decision_type": "keep_wealth",
+      "count": 1
+    },
+    {
+      "split": "hidden",
+      "wealth_count": 4,
+      "decision_type": "piao",
+      "count": 1
+    }
+  ],
+  "scope": "庄家起手后首次摸牌；无副露、牌河、杠候选和赛事处境；只校准胡/飘/保财",
+  "limitations": [
+    "oracle 只算候选后下一次本人摸牌立即胡，不建模他家先胡、鸣牌、轮转和更远续值",
+    "本批不覆盖杠，不能独立满足完整 multi_wealth_baotou 家族准入",
+    "隐藏题只靠运行隔离；制品在仓库内，作者提示构建时必须排除 hidden 文件"
+  ]
+}

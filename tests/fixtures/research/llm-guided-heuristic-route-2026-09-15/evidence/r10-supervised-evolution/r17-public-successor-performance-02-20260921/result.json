@@ -1,0 +1,77 @@
+{
+  "schema": "r17-public-successor-performance-result/1",
+  "status": "FAIL_PERFORMANCE_AFTER_ONE_EQUIVALENT_OPTIMIZATION",
+  "windows": 226,
+  "tables": 0,
+  "model_calls": 0,
+  "strength_claim": false,
+  "selection_eligible": false,
+  "semantic_equivalence": {
+    "passed": true,
+    "raw_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+    "cold_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+    "warm_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12"
+  },
+  "determinism": {
+    "passed": true
+  },
+  "counts": {
+    "all_capacity_edges": 60597,
+    "discard_roots": 1825,
+    "discard_roots_covered": 1825,
+    "draw_windows": 179,
+    "drawn_only_discard": 60597,
+    "drawn_only_discard_pareto": 60597,
+    "drawn_only_gang": 532,
+    "drawn_only_hu": 777,
+    "non_useful_edges": 42084,
+    "response_fallback_windows": 47,
+    "unrestricted_discard": 642562,
+    "unrestricted_discard_pareto": 208464,
+    "unrestricted_gang": 1071,
+    "unrestricted_hu": 777,
+    "useful_edges": 18513,
+    "value_route_edges": 777,
+    "value_route_groups": 151
+  },
+  "performance_counts": {
+    "leaf_cache_hits": 354187,
+    "leaf_cache_misses": 348972,
+    "logical_discard_leaf_requests": 703159
+  },
+  "latency": {
+    "cold": {
+      "mean_ms": 264.5939588000446,
+      "p50_ms": 292.2090420033783,
+      "p90_ms": 461.9240410393104,
+      "p95_ms": 506.8645830033347,
+      "p99_ms": 549.5960839325562,
+      "max_ms": 555.9392920695245
+    },
+    "warm": {
+      "mean_ms": 266.30317388029573,
+      "p50_ms": 298.37120801676065,
+      "p90_ms": 465.34854208584875,
+      "p95_ms": 507.2511250618845,
+      "p99_ms": 531.9312909850851,
+      "max_ms": 550.2270830329508
+    }
+  },
+  "gate": {
+    "passed": false,
+    "p99_ms_max": 200.0,
+    "window_max_ms": 500.0,
+    "observed_warm_p99_ms": 531.9312909850851,
+    "observed_warm_max_ms": 550.2270830329508
+  },
+  "issues": {
+    "route": 0,
+    "projection": 0
+  },
+  "next_minimum_equivalent_optimization_if_failed": {
+    "name": "BATCH_34_DRAW_TRANSITIONS_WITH_LAZY_FRONTIER",
+    "scope": "在hangma一次传入根手牌，批量返回34种容量边共享的规范手牌分析；只在固定reducer实际读取时物化叶对象",
+    "invariants": "全34容量边、双抓打包络、胡/杠单列、ValueRoute核对、canonical语义摘要全部不变",
+    "stop_rule": "下一次优化仍不过冻结门则关闭当前深度骨架，先复盘规则投影与固定搜索深度，不生成候选"
+  }
+}

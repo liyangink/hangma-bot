@@ -1,0 +1,59 @@
+{
+  "schema": "r18-opportunity-author-call-usage/1",
+  "retry_of": "call-usage.json",
+  "calls": [
+    {
+      "task": "K3",
+      "run_id": "session-d4fdd76a-1844-4397-bad5-1aeff3635528",
+      "exit_code": 1,
+      "protocol_ok": true,
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "max",
+        "maxTokens": 20000
+      },
+      "usage": {
+        "usage": {
+          "inputTokens": 18885,
+          "outputTokens": 20000,
+          "totalTokens": 38885
+        },
+        "session_bytes": 679273,
+        "session_sha256": "f53791dcce31d7023e1e8e137e9d8ae77c4c64a5423a6396a072a17b19dccedf",
+        "source_status": "OK"
+      },
+      "ingestable_channel": false
+    },
+    {
+      "task": "P4",
+      "run_id": "session-7bbc6357-fd8c-4457-9dae-beb23b837d34",
+      "exit_code": 1,
+      "protocol_ok": true,
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "max",
+        "maxTokens": 20000
+      },
+      "usage": {
+        "usage": {
+          "inputTokens": 18650,
+          "outputTokens": 20000,
+          "totalTokens": 38842,
+          "cacheReadTokens": 192
+        },
+        "session_bytes": 674775,
+        "session_sha256": "f8759de6d702a1051b0832f00f98b4d512d1c785e0f54944401e2e544d9160b4",
+        "source_status": "OK"
+      },
+      "ingestable_channel": false
+    }
+  ],
+  "problems": [
+    "K3",
+    "P4"
+  ],
+  "total_input_tokens": 37535,
+  "total_output_tokens": 40000
+}

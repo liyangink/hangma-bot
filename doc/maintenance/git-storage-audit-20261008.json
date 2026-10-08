@@ -1,0 +1,1464 @@
+{
+  "schema": "hangma-repository-cleanup-audit/2",
+  "baseline_commit": "f608024c130070c035a64e1b03700c9977312769",
+  "client_date": "2026-10-08",
+  "timezone": "Asia/Shanghai",
+  "observed_at_utc": "2026-10-08T16:13:16.823254+00:00",
+  "scope": "Git 中项目数据构成、参赛必要依赖、过时重复数据和文件体积排名；不以轻量克隆代替清理核对。",
+  "head": {
+    "files": 139192,
+    "logical_bytes": 13887702157,
+    "top_level": [
+      {
+        "path": "review",
+        "bytes": 13466462251
+      },
+      {
+        "path": "datasets",
+        "bytes": 323743272
+      },
+      {
+        "path": "game-records",
+        "bytes": 54695066
+      },
+      {
+        "path": "prebuilt",
+        "bytes": 17481957
+      },
+      {
+        "path": "datamart",
+        "bytes": 10447785
+      },
+      {
+        "path": "tests",
+        "bytes": 7370532
+      },
+      {
+        "path": "src",
+        "bytes": 3427608
+      },
+      {
+        "path": "doc",
+        "bytes": 2303251
+      },
+      {
+        "path": "spectator",
+        "bytes": 841614
+      },
+      {
+        "path": "scripts",
+        "bytes": 701366
+      },
+      {
+        "path": "UBIQUITOUS_LANGUAGE.md",
+        "bytes": 68671
+      },
+      {
+        "path": "configs",
+        "bytes": 66463
+      },
+      {
+        "path": "AGENT-BRIEFING.md",
+        "bytes": 23786
+      },
+      {
+        "path": "AGENTS.md",
+        "bytes": 11241
+      },
+      {
+        "path": "uv.lock",
+        "bytes": 10896
+      },
+      {
+        "path": "README.md",
+        "bytes": 9855
+      },
+      {
+        "path": ".gitignore",
+        "bytes": 9479
+      },
+      {
+        "path": "archive",
+        "bytes": 9194
+      },
+      {
+        "path": "EVOLUTION-HANDOFF-2026-09-23.md",
+        "bytes": 7095
+      },
+      {
+        "path": "hatch_build.py",
+        "bytes": 6247
+      },
+      {
+        "path": "participate.sh",
+        "bytes": 2783
+      },
+      {
+        "path": "pyproject.toml",
+        "bytes": 1357
+      },
+      {
+        "path": "token",
+        "bytes": 388
+      }
+    ],
+    "data_categories": [
+      {
+        "category": "证据分块",
+        "logical_bytes": 5252485529,
+        "logical_percent": 37.82112742353508,
+        "files": 478,
+        "stored_bytes": 5177379867,
+        "stored_percent": 62.44659459897971,
+        "unique_objects": 296
+      },
+      {
+        "category": "JSON 证据与准备记录",
+        "logical_bytes": 4381405964,
+        "logical_percent": 31.548818620016146,
+        "files": 109719,
+        "stored_bytes": 151403916,
+        "stored_percent": 1.8261474348082598,
+        "unique_objects": 101393
+      },
+      {
+        "category": "压缩日志或数据",
+        "logical_bytes": 1715787525,
+        "logical_percent": 12.354725825792348,
+        "files": 6187,
+        "stored_bytes": 1403932100,
+        "stored_percent": 16.933425969378316,
+        "unique_objects": 5807
+      },
+      {
+        "category": "证据压缩包",
+        "logical_bytes": 1544117578,
+        "logical_percent": 11.118596586705298,
+        "files": 162,
+        "stored_bytes": 1492215073,
+        "stored_percent": 17.99824469362582,
+        "unique_objects": 159
+      },
+      {
+        "category": "展开 JSONL 数据",
+        "logical_bytes": 590901599,
+        "logical_percent": 4.254855067597775,
+        "files": 1760,
+        "stored_bytes": 24164440,
+        "stored_percent": 0.29145765370809895,
+        "unique_objects": 1596
+      },
+      {
+        "category": "Python 源码含研究快照",
+        "logical_bytes": 220928608,
+        "logical_percent": 1.5908219048940537,
+        "files": 12251,
+        "stored_bytes": 15471130,
+        "stored_percent": 0.18660392088593739,
+        "unique_objects": 4778
+      },
+      {
+        "category": "其他",
+        "logical_bytes": 182075354,
+        "logical_percent": 1.3110545714592978,
+        "files": 8635,
+        "stored_bytes": 26325716,
+        "stored_percent": 0.3175257286138541,
+        "unique_objects": 6163
+      }
+    ],
+    "largest_files": [
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t29-closed-common-natural-archive-1/closed-t29-common-natural-full.tar.gz",
+        "oid": "0269d8296ce1c754ae837ed7729a41e63f18fd84",
+        "bytes": 83620983,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t4-conditional-payment-batch-1/glm-i1-natural-development-1/match-data.tar.gz",
+        "oid": "ca63921b04c4e35b4d9502556d80f70095886257",
+        "bytes": 72826705,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t18-actual-C-maintained-wait-abc-preparation-2/PREPARED.json",
+        "oid": "5a4cea1d610d5ff32827496e645478f7bcacb163",
+        "bytes": 72714464,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t18-actual-C-maintained-wait-abc-preparation-1/PREPARED.json",
+        "oid": "9115ad691d1d79517402d1205ed2cb4711ead115",
+        "bytes": 72713736,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t27-t28-closed-natural-and-coverage-archive-1/closed-t27-t28-natural-and-coverage-full.tar.gz",
+        "oid": "c4d04c3a3710b3b612eaf94ca09075dc71836657",
+        "bytes": 72547794,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t6-absolute-route-credit-1/closed-natural-evidence-archive/S02/source-evidence.tar.gz",
+        "oid": "93e2c7e6ee75f0d330c25e6bc472c20e6b92dac0",
+        "bytes": 71687538,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t4-conditional-payment-batch-1/sol-i1-natural-development-1/match-data.tar.gz",
+        "oid": "4415cd34ec57ea5c69c81d806239d62798dcfb6e",
+        "bytes": 70872397,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t6-absolute-route-credit-1/closed-natural-evidence-archive/S01/source-evidence.tar.gz",
+        "oid": "c79ff5ef928eef43c1d38b8e9f467c41a08bf378",
+        "bytes": 66099283,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-natural-1/wait-stage-002-raw.tar.gz",
+        "oid": "d4f7a158cc361949040d7e06ebd1139780f0f550",
+        "bytes": 60250107,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-natural-1/wait-stage-001-raw.tar.gz",
+        "oid": "9a132daea71be150fa00fd99543c111504c466c5",
+        "bytes": 56877645,
+        "mode": "100644"
+      },
+      {
+        "path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p12-natural-seven-pairs-frontier-01-20260922/dataset.json",
+        "oid": "645ebea71d73f17915ff61a750cdecce62ee5414",
+        "bytes": 53382545,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t17-natural64-closed-archive-1/T17-NATURAL64-CLOSED.tar.gz.part-001",
+        "oid": "6effdbab30178ea50ba3678c87d50a3f5bc44a69",
+        "bytes": 50331648,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t17-natural64-closed-archive-1/T17-NATURAL64-CLOSED.tar.gz.part-002",
+        "oid": "28e7ed7e61c8218ea47e279633378a9b8b9d278c",
+        "bytes": 50331648,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-common-natural-closed-archive-1/closed-common-natural-full.part-01",
+        "oid": "990d56be56f091cb4e05171c05efbb8f5d63ce6e",
+        "bytes": 50331648,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-common-natural-closed-archive-1/closed-common-natural-full.part-02",
+        "oid": "9125e1ff069a5f7f5ede403fc1e110fab59bc788",
+        "bytes": 50331648,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-common-natural-closed-archive-1/closed-common-natural-full.part-03",
+        "oid": "b9e38e99d31ff0f8f2e6ef6666094d0afd729fd0",
+        "bytes": 50331648,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1/closed-last2-natural-full.part-01",
+        "oid": "da811fc60d0ee1c637df9bc3d5fa4b914ac65895",
+        "bytes": 50331648,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1/closed-last2-natural-full.part-02",
+        "oid": "f9cae75c280ed1c087262f2a98b6ee9c7352755f",
+        "bytes": 50331648,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1/closed-last2-natural-full.part-03",
+        "oid": "42ca2530993f3774458b44726aaaccad76878328",
+        "bytes": 50331648,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/runtime-preparation-1/original-deadline-probe/rows.jsonl",
+        "oid": "47463bc87f2619623454f1a730d41f2b1fd4679f",
+        "bytes": 45940527,
+        "mode": "100644"
+      },
+      {
+        "path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/discard-value-scaled-teacher-01-20260921/dataset.json",
+        "oid": "65317d3c3f0bb55be6113d1c05455a85b370aadc",
+        "bytes": 41075712,
+        "mode": "100644"
+      },
+      {
+        "path": "review/auto-match-value-2026-09-08/decisions.compact.jsonl.gz",
+        "oid": "f246e705aedd4c7e5bcdd93622b9380c57a1db2e",
+        "bytes": 40305392,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-001",
+        "oid": "a29933a83b54aad72bd43b9ffc80929451660104",
+        "bytes": 40000000,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-002",
+        "oid": "1c987fa961ed126496024febad4086b873d10d67",
+        "bytes": 40000000,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-003",
+        "oid": "51d9ed54c5e9ecc7058e478734de974763aaa9c5",
+        "bytes": 40000000,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-004",
+        "oid": "2def11d1583a092385ba1d09cbc33b0462495ce8",
+        "bytes": 40000000,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-005",
+        "oid": "2bb9764f89cb8bc28f8a7dcb5f5e6d6df15f029f",
+        "bytes": 40000000,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-006",
+        "oid": "4bde55955d7c4bc6aca8be2c441d512a82f28163",
+        "bytes": 40000000,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-007",
+        "oid": "f5b0802d515e79aefcb5255ff1dfe9b5dba85d96",
+        "bytes": 40000000,
+        "mode": "100644"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-008",
+        "oid": "064e7f84cbda8a254333cf21639c9c5980fe8985",
+        "bytes": 40000000,
+        "mode": "100644"
+      }
+    ],
+    "largest_directories": [
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1",
+        "logical_bytes": 1504132317,
+        "stored_bytes": 1361579353
+      },
+      {
+        "path": "review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution",
+        "logical_bytes": 1277742759,
+        "stored_bytes": 53661401
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t195-future-progress-formula-1",
+        "logical_bytes": 1143902524,
+        "stored_bytes": 608321778
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t39-t41-closed-evidence-archive-1",
+        "logical_bytes": 1074800771,
+        "stored_bytes": 1070179587
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t4-conditional-payment-batch-1",
+        "logical_bytes": 674197671,
+        "stored_bytes": 523089547
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t142-t131-closed-archive-1",
+        "logical_bytes": 343082384,
+        "stored_bytes": 342505093
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t6-absolute-route-credit-1",
+        "logical_bytes": 326741521,
+        "stored_bytes": 238151859
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t8-bounded-natural-geometry-1",
+        "logical_bytes": 311712061,
+        "stored_bytes": 235547810
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t11-abc-informed-joint-author-1",
+        "logical_bytes": 302313090,
+        "stored_bytes": 281139985
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t9-closed-natural-new8-archive-1",
+        "logical_bytes": 252488785,
+        "stored_bytes": 250548228
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t5-joint-formula-batch-1",
+        "logical_bytes": 203453593,
+        "stored_bytes": 150488951
+      },
+      {
+        "path": "review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl",
+        "logical_bytes": 184497019,
+        "stored_bytes": 10633026
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t3-development-batch-2",
+        "logical_bytes": 178452532,
+        "stored_bytes": 131225151
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t158-t155-t157-closed-archive-1",
+        "logical_bytes": 169225914,
+        "stored_bytes": 169183454
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1",
+        "logical_bytes": 161476044,
+        "stored_bytes": 160766992
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t7-natural-purpose-scale-1",
+        "logical_bytes": 161137177,
+        "stored_bytes": 115370691
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-common-natural-closed-archive-1",
+        "logical_bytes": 159195721,
+        "stored_bytes": 158494647
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t13-joint-route-quality-author-1",
+        "logical_bytes": 153658637,
+        "stored_bytes": 81960868
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1",
+        "logical_bytes": 146992781,
+        "stored_bytes": 41828539
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t3-development-batch-1",
+        "logical_bytes": 144589030,
+        "stored_bytes": 116755118
+      }
+    ]
+  },
+  "git_objects": {
+    "current_file_stored_bytes": 8290892242,
+    "category_summary": {
+      "unreachable": {
+        "count": 37802,
+        "logical_bytes": 9240686227,
+        "stored_bytes": 3931551979
+      },
+      "main_deleted_path": {
+        "count": 24657,
+        "logical_bytes": 330139991,
+        "stored_bytes": 212388864
+      },
+      "current_head": {
+        "count": 120192,
+        "logical_bytes": 13191628701,
+        "stored_bytes": 8290892242
+      },
+      "main_old_version": {
+        "count": 3076,
+        "logical_bytes": 181276241,
+        "stored_bytes": 6074152
+      },
+      "auxiliary_ref_only": {
+        "count": 11041,
+        "logical_bytes": 19161200642,
+        "stored_bytes": 14284666409
+      }
+    },
+    "local_unique_count": 196768,
+    "missing_main_promised_objects": 5990,
+    "main_reachable_local_stored_bytes": 8509355258,
+    "largest_main_files_by_stored_bytes": [
+      {
+        "path": "review/heuristic-baseline-campaign-2026-09-07/base-source.tar.gz",
+        "bytes": 88382675,
+        "stored_bytes": 88216506,
+        "oid": "691f8b708175689eb8fcbf1a781e906dfca115de",
+        "state": "main_deleted_path"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t29-closed-common-natural-archive-1/closed-t29-common-natural-full.tar.gz",
+        "bytes": 83620983,
+        "stored_bytes": 83329880,
+        "oid": "0269d8296ce1c754ae837ed7729a41e63f18fd84",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t4-conditional-payment-batch-1/glm-i1-natural-development-1/match-data.tar.gz",
+        "bytes": 72826705,
+        "stored_bytes": 72353788,
+        "oid": "ca63921b04c4e35b4d9502556d80f70095886257",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t27-t28-closed-natural-and-coverage-archive-1/closed-t27-t28-natural-and-coverage-full.tar.gz",
+        "bytes": 72547794,
+        "stored_bytes": 72289004,
+        "oid": "c4d04c3a3710b3b612eaf94ca09075dc71836657",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t6-absolute-route-credit-1/closed-natural-evidence-archive/S02/source-evidence.tar.gz",
+        "bytes": 71687538,
+        "stored_bytes": 71171658,
+        "oid": "93e2c7e6ee75f0d330c25e6bc472c20e6b92dac0",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t4-conditional-payment-batch-1/sol-i1-natural-development-1/match-data.tar.gz",
+        "bytes": 70872397,
+        "stored_bytes": 70411403,
+        "oid": "4415cd34ec57ea5c69c81d806239d62798dcfb6e",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t6-absolute-route-credit-1/closed-natural-evidence-archive/S01/source-evidence.tar.gz",
+        "bytes": 66099283,
+        "stored_bytes": 65618053,
+        "oid": "c79ff5ef928eef43c1d38b8e9f467c41a08bf378",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-natural-1/wait-stage-002-raw.tar.gz",
+        "bytes": 60250107,
+        "stored_bytes": 60050379,
+        "oid": "d4f7a158cc361949040d7e06ebd1139780f0f550",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-natural-1/wait-stage-001-raw.tar.gz",
+        "bytes": 56877645,
+        "stored_bytes": 56695767,
+        "oid": "9a132daea71be150fa00fd99543c111504c466c5",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1/closed-last2-natural-full.part-02",
+        "bytes": 50331648,
+        "stored_bytes": 50200680,
+        "oid": "f9cae75c280ed1c087262f2a98b6ee9c7352755f",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-common-natural-closed-archive-1/closed-common-natural-full.part-02",
+        "bytes": 50331648,
+        "stored_bytes": 50197578,
+        "oid": "9125e1ff069a5f7f5ede403fc1e110fab59bc788",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t17-natural64-closed-archive-1/T17-NATURAL64-CLOSED.tar.gz.part-001",
+        "bytes": 50331648,
+        "stored_bytes": 50183803,
+        "oid": "6effdbab30178ea50ba3678c87d50a3f5bc44a69",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1/closed-last2-natural-full.part-03",
+        "bytes": 50331648,
+        "stored_bytes": 50156784,
+        "oid": "42ca2530993f3774458b44726aaaccad76878328",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-common-natural-closed-archive-1/closed-common-natural-full.part-03",
+        "bytes": 50331648,
+        "stored_bytes": 50154619,
+        "oid": "b9e38e99d31ff0f8f2e6ef6666094d0afd729fd0",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-common-natural-closed-archive-1/closed-common-natural-full.part-01",
+        "bytes": 50331648,
+        "stored_bytes": 50100853,
+        "oid": "990d56be56f091cb4e05171c05efbb8f5d63ce6e",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1/closed-last2-natural-full.part-01",
+        "bytes": 50331648,
+        "stored_bytes": 50086576,
+        "oid": "da811fc60d0ee1c637df9bc3d5fa4b914ac65895",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t17-natural64-closed-archive-1/T17-NATURAL64-CLOSED.tar.gz.part-002",
+        "bytes": 50331648,
+        "stored_bytes": 49811172,
+        "oid": "28e7ed7e61c8218ea47e279633378a9b8b9d278c",
+        "state": "current_head"
+      },
+      {
+        "path": "review/auto-match-value-2026-09-08/decisions.compact.jsonl.gz",
+        "bytes": 40305392,
+        "stored_bytes": 40248508,
+        "oid": "f246e705aedd4c7e5bcdd93622b9380c57a1db2e",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-013",
+        "bytes": 40000000,
+        "stored_bytes": 39884747,
+        "oid": "89fa149c0ff01e4c43857ac408ed04780416dbe7",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-007",
+        "bytes": 40000000,
+        "stored_bytes": 39883417,
+        "oid": "f5b0802d515e79aefcb5255ff1dfe9b5dba85d96",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-002",
+        "bytes": 40000000,
+        "stored_bytes": 39882486,
+        "oid": "1c987fa961ed126496024febad4086b873d10d67",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-003",
+        "bytes": 40000000,
+        "stored_bytes": 39881270,
+        "oid": "51d9ed54c5e9ecc7058e478734de974763aaa9c5",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-021",
+        "bytes": 40000000,
+        "stored_bytes": 39880045,
+        "oid": "adac8b985f4a2d85f0bade445c0f914381107d54",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-016",
+        "bytes": 40000000,
+        "stored_bytes": 39877219,
+        "oid": "07e92cd54db4706905af194328cb8b56058a123f",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-019",
+        "bytes": 40000000,
+        "stored_bytes": 39876554,
+        "oid": "8e6eaef1c0529f115017a8f4147d98e8b6fca639",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-001",
+        "bytes": 40000000,
+        "stored_bytes": 39875895,
+        "oid": "a29933a83b54aad72bd43b9ffc80929451660104",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-005",
+        "bytes": 40000000,
+        "stored_bytes": 39875305,
+        "oid": "2bb9764f89cb8bc28f8a7dcb5f5e6d6df15f029f",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-010",
+        "bytes": 40000000,
+        "stored_bytes": 39873018,
+        "oid": "bd54e7c7206c9656dde9a71ba0e694c2b92388af",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-015",
+        "bytes": 40000000,
+        "stored_bytes": 39871877,
+        "oid": "6d808165ee2a20f1bcfc3f4ba87c80156f00c5d3",
+        "state": "current_head"
+      },
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/wait-confirmation-1/sealed-originals-1/raw.part-017",
+        "bytes": 40000000,
+        "stored_bytes": 39871782,
+        "oid": "ca71ca1501e3a054b5ded09c00622847bad91ae9",
+        "state": "current_head"
+      }
+    ],
+    "local_git_allocated_bytes": 38286630912,
+    "pack_count": 50,
+    "packed_object_entries": 406942,
+    "duplicate_pack_entries_last_measured": 219286,
+    "remote_heads": [
+      {
+        "ref": "refs/heads/main",
+        "commit": "f608024c130070c035a64e1b03700c9977312769"
+      }
+    ],
+    "path_attribution": "同一对象多路径时按代表路径归属；存储长度为 cat-file 选中的副本，非预估可释放量。"
+  },
+  "runtime_dependency_validation": {
+    "baseline_commit": "f608024c130070c035a64e1b03700c9977312769",
+    "preserved_file_count": 399,
+    "preserved_file_bytes": 14127431,
+    "includes_all_src_and_scripts": true,
+    "review_required": false,
+    "datasets_required": false,
+    "checks": [
+      {
+        "family": "P0",
+        "mode": "official_tournament",
+        "template": "configs/vip-s03-rulefix-p0-approved-v4.official-tournament.example.json",
+        "manifest": "prebuilt/vip-s03-rulefix-p0-official-tournament-approved-v4/manifest.json",
+        "source_manifest_entries": 187,
+        "passed": true,
+        "release_package_id": "9abd22d5e948d2fcdf7e757062f3430141e36714ce842cd79b22a539e8091b5f"
+      },
+      {
+        "family": "P0",
+        "mode": "test_tournament",
+        "template": "configs/vip-s03-rulefix-p0-approved-v4.test-tournament.example.json",
+        "manifest": "prebuilt/vip-s03-rulefix-p0-test-tournament-approved-v4/manifest.json",
+        "source_manifest_entries": 187,
+        "passed": true,
+        "release_package_id": "98139665f1519c7d4740844d9f747f274e6a426df4713157c08383bba8bb7ef3"
+      },
+      {
+        "family": "G37-RF1",
+        "mode": "official_tournament",
+        "template": "configs/vip-g37-rf1-v1.official-tournament.example.json",
+        "manifest": "prebuilt/vip-g37-rf1-official-tournament-v1/manifest.json",
+        "source_manifest_entries": 187,
+        "passed": true,
+        "release_package_id": "a2b63169fee0a7e3b80208c378dcea99909324a897a24f0c8f621012bfd67435"
+      },
+      {
+        "family": "G37-RF1",
+        "mode": "test_tournament",
+        "template": "configs/vip-g37-rf1-v1.test-tournament.example.json",
+        "manifest": "prebuilt/vip-g37-rf1-test-tournament-v1/manifest.json",
+        "source_manifest_entries": 187,
+        "passed": true,
+        "release_package_id": "0a5a58533637122cbd0e070f0c82a4df2bfd38d90d02efbb6ff8f7c5161e3069"
+      }
+    ],
+    "platform_HTTP_requests": 0,
+    "legacy_maintenance_dependencies": {
+      "P0_v1_v2_v3_manifests_count": 12,
+      "logical_bytes": 690327,
+      "v3_used_by": [
+        "scripts/freeze_vip_rf1_release.py",
+        "tests/unit/scripts/test_resolve_tournament.py"
+      ],
+      "action": "保留 v3 清单及模板作为当前发布维护和回归输入；不按版本号批量删除"
+    }
+  },
+  "cleanup_candidates": {
+    "duplicate_source_verification": {
+      "baseline_commit": "f608024c130070c035a64e1b03700c9977312769",
+      "archive_indexes_examined": 35,
+      "archives_with_payload_verified": 31,
+      "verified_duplicate_tracked_files": 1355,
+      "verified_duplicate_tracked_bytes": 235483181,
+      "largest_duplicate_files": [
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t18-actual-C-maintained-wait-abc-preparation-2/PREPARED.json",
+          "bytes": 72714464,
+          "sha256": "ebed4fc26a5095ea6c569d8d240cb4ec863d59a7f5926e88efd0425b11778955",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t18-closed-maintained-wait-archive-1/MANIFEST.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t18-actual-C-maintained-wait-abc-preparation-1/PREPARED.json",
+          "bytes": 72713736,
+          "sha256": "1ad5118967879974662921f6b78ac6d45c205b83877ae6cf07d2854626931bd8",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t18-closed-maintained-wait-archive-1/MANIFEST.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t18-natural-outcome-and-three-white-diagnostic-1/ALL-C-CURRENT-HU-PUBLIC-INPUTS.json",
+          "bytes": 5734749,
+          "sha256": "2a18e5ec6b5bb8171a4230307b4baac993806917df39e1cbd44dac34476eae85",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t17-natural64-closed-archive-1/MANIFEST.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t17-actual-C-first-change-abc-preparation-1/PREPARED.json",
+          "bytes": 5427064,
+          "sha256": "598bb64ec5e6c949342fdb66bd056c1f3e484c13c345641e792e32121e479fe0",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t17-closed-local-phase-archive-1/MANIFEST.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t19-last2-parent-scout-closure-1/FIRST-COMMON-PUBLIC-DIVERGENCES.json",
+          "bytes": 4476680,
+          "sha256": "eb658d50e89bd7b3ce6c9be0c2dc4d33c70737c859bade9e1cd0b6c7f602d210",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1/RECEIPT.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t18-natural-outcome-and-three-white-diagnostic-1/THREE-WHITE-PUBLIC-DRAWS.json",
+          "bytes": 3643064,
+          "sha256": "4eb08bc57b5ae94a137007c2422aaa06887561743515b204d85e525b82e6db42",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t17-natural64-closed-archive-1/MANIFEST.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t155-pruned-s02-engineering-testroom-1/ROOM-AUDIT-SUMMARY.json",
+          "bytes": 2934022,
+          "sha256": "f2a2079ca95eba0db767da0e70e32082fe4d0c7777a837c08cf45ad9dd4034d2",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t158-t155-t157-closed-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t163-received-fix-fast-four-seat-testroom-1/ROOM-AUDIT-SUMMARY.json",
+          "bytes": 2901151,
+          "sha256": "384731a5154236cad787fc9baeeb766011c35ec545341d010a534438852a56f6",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t164-t163-closed-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t17-nested-first-difference-preparation-1/PREPARED.json",
+          "bytes": 2862909,
+          "sha256": "63b7c231151cefbf592e7d27ad72abe3593f8e722347db4c774a86ce79320cf2",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t17-closed-local-phase-archive-1/MANIFEST.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t40-t25-ordinary-first-choice-causal-1/PREPARED.json",
+          "bytes": 2676821,
+          "sha256": "0ce01c5aebcb6e904b99709c591365710007b8fd91fef42bb0f00812ebd9bdae",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t38-t40-closed-evidence-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t157-pruned-s02-experimental-free-1/FAILED-WINDOWS-ORIGINAL-CHAIN.json",
+          "bytes": 1538985,
+          "sha256": "54660fbee81dad99cf982a612e26cb9cf19f817082f1ce5482d00b44259f02dc",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t158-t155-t157-closed-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t19-last2-current-hu-shadow-1/SLOTS.json",
+          "bytes": 1478251,
+          "sha256": "a7afae5c7b97217bdaf7080f66a8eee0bfbb4836581ebbdbcd1bd6b0816e0b24",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1/RECEIPT.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t131-bounded-chain-natural-preservation-1/remaining-1/block-04/OPTIMIZATION-STATS.json",
+          "bytes": 995402,
+          "sha256": "2dabf8f5139480313d4352d2afccf6e2fc49fafec7c5d971a16f89d81a11fe35",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t142-t131-closed-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t38-t25-natural-source-diagnosis-1/FIRST-COMMON-PUBLIC-DIVERGENCES.json",
+          "bytes": 992041,
+          "sha256": "8f66231d652db85645d56cb2951fb08a2255ead19189b13b821012705108e71d",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t38-t40-closed-evidence-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t17-public-interruption-trade-author-1/S01-prompt-emission/prompt.txt",
+          "bytes": 958979,
+          "sha256": "f11704d90dc3dfdc4e57afdafe992d7648b7f4089f2707bf567009aab9a168e7",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t17-closed-local-phase-archive-1/MANIFEST.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t17-public-interruption-trade-author-1/S01-cross-source-probe-1/results.jsonl",
+          "bytes": 895148,
+          "sha256": "a2d7b76f9bb8389d01219a395acd1bd84f9e6e0851ec6c24c67831ea809f70e0",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t17-closed-local-phase-archive-1/MANIFEST.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t36-t35-single-ordinary-change-1/PREPARED.json",
+          "bytes": 878283,
+          "sha256": "78cc5e214f61ebd4778e3c4742c46f6c38970ecffd41746986b1bdb62a755fae",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t35-t36-closed-evidence-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t17-public-interruption-trade-author-1/FEEDBACK.json",
+          "bytes": 804687,
+          "sha256": "6378e00efc2f38cc0d7a2d73da8f5f9b55a58cad2ddfb2c5f1b36a08d3d040e5",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t17-closed-local-phase-archive-1/MANIFEST.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t20-early-tie-causal-preparation-1/SOURCE-SELECTION.json",
+          "bytes": 789973,
+          "sha256": "d53c7c66b5074ca8b7cd7528322527944ab9c10b6e84aeec94d70bbc56b828d0",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t20-closed-causal-archive-1/RECEIPT.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t131-bounded-chain-natural-preservation-1/revision-2/block-02/OPTIMIZATION-STATS.json",
+          "bytes": 709720,
+          "sha256": "adc339beb14ce457f24afb0bf59ea471c7d733833809cd00e70423f93cf3a67f",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t142-t131-closed-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t38-t25-natural-source-diagnosis-1/HAND-ORIGINS.json",
+          "bytes": 698523,
+          "sha256": "16d2670398fe06b272697ee5445cd5e1c4cbc7c07fb30d3229dd9f900636976f",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t38-t40-closed-evidence-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t19-last2-parent-scout-closure-1/RANKING-DECOMPOSITION.json",
+          "bytes": 638058,
+          "sha256": "e3f0d9af5b549a5111536ab1d3936537666495867358ad47938ac46f31d69de0",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1/RECEIPT.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t131-bounded-chain-natural-preservation-1/revision-2/block-04/OPTIMIZATION-STATS.json",
+          "bytes": 610660,
+          "sha256": "9d02aea05fa0f28ce8c946ca20200cfb3af584642c4cf568151df683eb032133",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t142-t131-closed-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t131-bounded-chain-natural-preservation-1/revision-2/block-03/OPTIMIZATION-STATS.json",
+          "bytes": 603231,
+          "sha256": "0a8dc23024f7ecd709da6077899ec15459c037b1b116d89511e5809b0e441b71",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t142-t131-closed-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t131-bounded-chain-natural-preservation-1/revision-2/FAILED-MATCH-FAULT-ONLY.json",
+          "bytes": 575655,
+          "sha256": "f6802c0745f8ccda3ac7d7b2df2f366300c2385209be0503634aff4b82e090f7",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t142-t131-closed-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t21-early-strict-choice-causal-preparation-1/SOURCE-SELECTION.json",
+          "bytes": 563902,
+          "sha256": "8f71a130a6d4d950150749ff85bb0d133492e9698cb57b75f0c8506c69940b7d",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t21-closed-causal-archive-1/RECEIPT.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t131-bounded-chain-natural-preservation-1/revision-2/block-01/OPTIMIZATION-STATS.json",
+          "bytes": 551546,
+          "sha256": "2ae868babe2e70a00132b1b009e61ef846e37ac29e23fb2c62cbf0d54206d1de",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t142-t131-closed-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t29-common-natural-closure-1/PATH-AND-HAND-DECOMPOSITION.json",
+          "bytes": 486181,
+          "sha256": "026ee5b2c1d76d4a5fa9e4f7e1892b1bc38fe62eb5ccb984540f0e15603f9bd6",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t29-closed-common-natural-archive-1/RECEIPT.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t35-same-source-closure-1/T36-FIRST-FOLLOWUP-DIFFERENCES.json",
+          "bytes": 453583,
+          "sha256": "07644fce4b95f2cb1534fc98846d6459500c115b105c912105526ca3a83b6d36",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t35-t36-closed-evidence-archive-1/INDEX.json"
+          ]
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t22-claim-route-opportunity-author-1/frozen-code-snapshot-full.tar.gz",
+          "bytes": 412860,
+          "sha256": "121f8e0cf2fe90c7fd0f400fabccdc7a5c41a4e9be2f272d114b1be71fdf63ef",
+          "archive_indexes": [
+            "review/vip-route-2026-09-30/evidence/t22-closed-development-archive-1/RECEIPT.json"
+          ]
+        }
+      ],
+      "by_archive": [
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t18-closed-maintained-wait-archive-1/MANIFEST.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 26,
+          "matched_tracked_bytes": 145680483,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t142-t131-closed-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 21,
+          "matched_tracked_sources": 240,
+          "matched_tracked_bytes": 19649448,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t64-t65-closed-evidence-archive-1/INDEX.json",
+          "archive_payload_verified": false,
+          "verification": "",
+          "archive_payload_files": 0,
+          "matched_tracked_sources": 736,
+          "matched_tracked_bytes": 14220206,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t77-closed-evidence-archive-1/INDEX.json",
+          "archive_payload_verified": false,
+          "verification": "",
+          "archive_payload_files": 0,
+          "matched_tracked_sources": 407,
+          "matched_tracked_bytes": 13983232,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t17-closed-local-phase-archive-1/MANIFEST.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 58,
+          "matched_tracked_bytes": 12725413,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t17-natural64-closed-archive-1/MANIFEST.json",
+          "archive_payload_verified": true,
+          "verification": "ordered_parts_whole_archive_sha256",
+          "archive_payload_files": 3,
+          "matched_tracked_sources": 36,
+          "matched_tracked_bytes": 10461967,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "ordered_parts_whole_archive_sha256",
+          "archive_payload_files": 4,
+          "matched_tracked_sources": 39,
+          "matched_tracked_bytes": 7359555,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t164-t163-closed-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 8,
+          "matched_tracked_sources": 74,
+          "matched_tracked_bytes": 5900581,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t158-t155-t157-closed-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 11,
+          "matched_tracked_sources": 69,
+          "matched_tracked_bytes": 5594545,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t38-t40-closed-evidence-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 28,
+          "matched_tracked_bytes": 5188788,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t35-t36-closed-evidence-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 71,
+          "matched_tracked_bytes": 2927959,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t162-t161-closed-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 2,
+          "matched_tracked_sources": 71,
+          "matched_tracked_bytes": 2892713,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t22-closed-development-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 81,
+          "matched_tracked_bytes": 2533847,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t39-t41-closed-evidence-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 65,
+          "matched_tracked_sources": 56,
+          "matched_tracked_bytes": 2082693,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t25-closed-development-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 64,
+          "matched_tracked_bytes": 1436603,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t156-t151-t154-closed-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 2,
+          "matched_tracked_sources": 42,
+          "matched_tracked_bytes": 1405353,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t24-closed-development-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 68,
+          "matched_tracked_bytes": 1270537,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t20-closed-causal-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 16,
+          "matched_tracked_bytes": 990171,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t30-t31-closed-evidence-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 9,
+          "matched_tracked_sources": 43,
+          "matched_tracked_bytes": 926527,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t27-t28-closed-natural-and-coverage-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 46,
+          "matched_tracked_bytes": 875289,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t29-closed-common-natural-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 29,
+          "matched_tracked_bytes": 864249,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t19-common-natural-closed-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "ordered_parts_whole_archive_sha256",
+          "archive_payload_files": 4,
+          "matched_tracked_sources": 22,
+          "matched_tracked_bytes": 820242,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t21-closed-causal-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 18,
+          "matched_tracked_bytes": 776675,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t33-t34-closed-evidence-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 36,
+          "matched_tracked_bytes": 769402,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t32-closed-multiwhite-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 15,
+          "matched_tracked_bytes": 684586,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t24-frozen-preparations-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 30,
+          "matched_tracked_bytes": 615308,
+          "source_mismatches": [
+            "review/vip-route-2026-09-30/evidence/t24-discard-route-portfolio-author-1/S01-generation.batch.vip-eoh-ledger.json"
+          ]
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t23-closed-development-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 23,
+          "matched_tracked_bytes": 538032,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t16-new-natural-and-intervention-archive-1/MANIFEST.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 28,
+          "matched_tracked_bytes": 527627,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t37-closed-evidence-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 8,
+          "matched_tracked_sources": 24,
+          "matched_tracked_bytes": 469967,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t19-closed-local-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 24,
+          "matched_tracked_bytes": 407982,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t67-closed-evidence-archive-1/INDEX.json",
+          "archive_payload_verified": false,
+          "verification": "",
+          "archive_payload_files": 0,
+          "matched_tracked_sources": 19,
+          "matched_tracked_bytes": 287644,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t26-closed-diagnostic-archive-1/RECEIPT.json",
+          "archive_payload_verified": true,
+          "verification": "whole_archive_sha256",
+          "archive_payload_files": 1,
+          "matched_tracked_sources": 14,
+          "matched_tracked_bytes": 84736,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t52-closed-confirmation-archive-1/INDEX.json",
+          "archive_payload_verified": false,
+          "verification": "",
+          "archive_payload_files": 0,
+          "matched_tracked_sources": 10,
+          "matched_tracked_bytes": 82349,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t146-t143-closed-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 3,
+          "matched_tracked_sources": 0,
+          "matched_tracked_bytes": 0,
+          "source_mismatches": []
+        },
+        {
+          "index": "review/vip-route-2026-09-30/evidence/t49-closed-pilot-archive-1/INDEX.json",
+          "archive_payload_verified": true,
+          "verification": "all_part_sha256",
+          "archive_payload_files": 9,
+          "matched_tracked_sources": 0,
+          "matched_tracked_bytes": 0,
+          "source_mismatches": []
+        }
+      ],
+      "unverified_archive_indexes": [
+        "review/vip-route-2026-09-30/evidence/t52-closed-confirmation-archive-1/INDEX.json",
+        "review/vip-route-2026-09-30/evidence/t64-t65-closed-evidence-archive-1/INDEX.json",
+        "review/vip-route-2026-09-30/evidence/t67-closed-evidence-archive-1/INDEX.json",
+        "review/vip-route-2026-09-30/evidence/t77-closed-evidence-archive-1/INDEX.json"
+      ],
+      "cleanup_executed": false,
+      "qualification": "展开文件与封包索引逐文件摘要一致，封包／分片实际摘要已核；移出跟踪前仍需保留恢复入口并修复引用。"
+    },
+    "archived_data_payload_count": 899,
+    "archived_data_payload_bytes": 218669728,
+    "protected_duplicate_documents_scripts_ledgers_count": 456,
+    "protected_duplicate_documents_scripts_ledgers_bytes": 16813453,
+    "standalone_archive_roots": {
+      "count": 41,
+      "logical_bytes": 3333499168,
+      "largest": [
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t39-t41-closed-evidence-archive-1",
+          "bytes": 1074800771
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t142-t131-closed-archive-1",
+          "bytes": 343082384
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t9-closed-natural-new8-archive-1",
+          "bytes": 252488785
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t158-t155-t157-closed-archive-1",
+          "bytes": 169225914
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t19-last2-natural-closed-archive-1",
+          "bytes": 161476044
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t19-common-natural-closed-archive-1",
+          "bytes": 159195721
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t30-t31-closed-evidence-archive-1",
+          "bytes": 143320185
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t49-closed-pilot-archive-1",
+          "bytes": 136144762
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t164-t163-closed-archive-1",
+          "bytes": 132303141
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t37-closed-evidence-archive-1",
+          "bytes": 129394335
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t17-natural64-closed-archive-1",
+          "bytes": 127929727
+        },
+        {
+          "path": "review/vip-route-2026-09-30/evidence/t29-closed-common-natural-archive-1",
+          "bytes": 83693004
+        }
+      ]
+    },
+    "generated_cache": [
+      {
+        "path": "review/vip-route-2026-09-30/evidence/t96-natural-set-single-action-known-case-1/__pycache__/extract.cpython-311.pyc",
+        "bytes": 3500,
+        "reason": "误跟踪的 Python 生成缓存；源码保留。"
+      }
+    ]
+  },
+  "operations": {
+    "README_and_quickstart_unrequested_changes_withdrawn": true,
+    "project_data_deleted": false,
+    "history_rewritten": false,
+    "remote_changed": false,
+    "current_user_modifications_preserved": true
+  },
+  "units": {
+    "MiB": 1048576,
+    "GiB": 1073741824,
+    "logical_bytes": "按当前提交路径累计文件长度",
+    "stored_bytes": "本地唯一对象选中副本的存储长度；多副本／差量编码会影响实际 GC 后结果"
+  },
+  "methods": [
+    "固定 main 提交的 ls-tree",
+    "GIT_NO_LAZY_FETCH=1 下 rev-list --objects --missing=print 与 cat-file --batch-all-objects",
+    "独立 sha256 核验归档文件／顺序分片与展开副本",
+    "当前 P0 v4 与 G37-RF1 正式／测试发布依赖公开 load_config 校验",
+    "只读 ls-remote --heads 核对当前远端分支"
+  ],
+  "evolution_dependency_followup_20261009": {
+    "baseline_commit": "f608024c130070c035a64e1b03700c9977312769",
+    "current_review_dependencies": [
+      "review/llm-guided-heuristic-route-2026-09-15/tools/sitin_generate.py",
+      "review/llm-guided-heuristic-route-2026-09-15/tools/sitin_process.py",
+      "review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/AUTHOR-BATCH.json",
+      "review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/glm_max_transport.py",
+      "review/vip-route-2026-09-30/evidence/t200-eoh-fast-evolution-1/"
+    ],
+    "private_dependencies_to_preserve": [
+      ".private/t199-four-step-execution/",
+      ".private/t200-eoh-fast-evolution/"
+    ],
+    "parent_loader_recursive_provenance": true,
+    "future_never_used_guarantee": false,
+    "cleanup_scope": "已保全载荷可退出默认交付；保留源码、父包谱系、当前反例与恢复索引",
+    "full_clone_reduced_by_tip_deletion_alone": false,
+    "project_data_deleted": false
+  },
+  "history_slimming_plan_20261009": {
+    "observed_latest_main": "46aa3277f2178fdceedfb6bd9913af900d0a9d96",
+    "method": "移出当前大载荷并使用 git-filter-repo 精确路径过滤全部相关历史；保留代码历史",
+    "backup_destination": "仓库之外，不保留同远端旧历史备份引用",
+    "requires_current_dependency_allowlist": true,
+    "requires_historical_renamed_paths": true,
+    "one_time_old_client_realignment": true,
+    "acceptance": [
+      "普通从零完整克隆的传输与落盘体积",
+      "从清理后较旧提交追到最新main的传输体积",
+      "当前代码与发布证明字节一致",
+      "参赛配置及进化工具依赖校验"
+    ],
+    "execution_status": "未改写历史，未修改远端"
+  }
+}

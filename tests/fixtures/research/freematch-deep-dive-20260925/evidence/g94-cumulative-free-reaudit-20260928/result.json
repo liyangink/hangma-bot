@@ -1,0 +1,283 @@
+{
+  "actual_path_of_wide_first_per_hand": {
+    "all": {
+      "hands": 251,
+      "rooms": 31,
+      "score_sum": -16,
+      "white_0_hands": 156,
+      "win_hands": 58
+    },
+    "tengshe_0638": {
+      "hands": 140,
+      "rooms": 17,
+      "score_sum": 54,
+      "white_0_hands": 88,
+      "win_hands": 34
+    },
+    "xuanwu_2346": {
+      "hands": 111,
+      "rooms": 15,
+      "score_sum": -70,
+      "white_0_hands": 68,
+      "win_hands": 24
+    }
+  },
+  "boundary": "强手实际弃牌后的后继和结算是观察值；未执行的父代弃牌没有官方反事实。窗口同局相关，不能把窗口数当独立收益样本；G88 模仿率不是强度。",
+  "exploratory": true,
+  "schema": "g94-cumulative-free-reaudit/1",
+  "sources_sha256": {
+    "g64": "4ce798ebd2aead538d377dc9d1e4c3105a0da18b19421d142ff84cba111c5e35",
+    "g86": "fd029d1b0a6e23ea1ccd2813bed320f4075ef8f1da5ae53d8a53b686c30f974e",
+    "g87": "41425e21b5c02ccaaad456281329d926bcd125c1141cf3a1d49b18578dd37160",
+    "g88": "4f2ac2b7be8897f63b49b6698b7a3a9b027cc4ba444c21687eccfec4dfa5e362"
+  },
+  "wide_by_peer": {
+    "tengshe_0638": {
+      "capacity_delta": {
+        "1": 28,
+        "2": 44,
+        "3": 40,
+        "4": 47,
+        "5": 16,
+        "6": 18,
+        "7": 1,
+        "8": 6,
+        "10": 1,
+        "12": 3
+      },
+      "claim_draw_bucket": {
+        "first": 49,
+        "gang_intervened": 4,
+        "second": 52,
+        "third_plus": 99
+      },
+      "codes_delta": {
+        "1": 140,
+        "2": 48,
+        "3": 11,
+        "4": 3,
+        "5": 2
+      },
+      "component": {
+        "base_score": {
+          "parent_favoured": 0,
+          "strong_favoured": 204,
+          "sum": -713.0
+        },
+        "risk_part": {
+          "parent_favoured": 73,
+          "strong_favoured": 0,
+          "sum": 459.0
+        },
+        "river_part": {
+          "parent_favoured": 179,
+          "strong_favoured": 0,
+          "sum": 537.0
+        },
+        "style_part": {
+          "parent_favoured": 131,
+          "strong_favoured": 0,
+          "sum": 524.0
+        }
+      },
+      "distinct_hands": 140,
+      "g88_changed_windows": 161,
+      "g88_matched_strong_windows": 112,
+      "next_actual_status": {
+        "next_self_chi": 13,
+        "next_self_peng": 8,
+        "next_self_tile_drawn": 151,
+        "other_win_before_next_action": 32
+      },
+      "rooms": 17,
+      "white_0_windows": 141,
+      "windows": 204
+    },
+    "xuanwu_2346": {
+      "capacity_delta": {
+        "1": 14,
+        "2": 25,
+        "3": 32,
+        "4": 42,
+        "5": 14,
+        "6": 10,
+        "7": 3,
+        "8": 2,
+        "9": 1,
+        "10": 2
+      },
+      "claim_draw_bucket": {
+        "first": 47,
+        "gang_intervened": 4,
+        "second": 31,
+        "third_plus": 63
+      },
+      "codes_delta": {
+        "1": 103,
+        "2": 32,
+        "3": 8,
+        "4": 2
+      },
+      "component": {
+        "base_score": {
+          "parent_favoured": 0,
+          "strong_favoured": 145,
+          "sum": -524.0
+        },
+        "risk_part": {
+          "parent_favoured": 61,
+          "strong_favoured": 0,
+          "sum": 381.0
+        },
+        "river_part": {
+          "parent_favoured": 124,
+          "strong_favoured": 0,
+          "sum": 372.0
+        },
+        "style_part": {
+          "parent_favoured": 85,
+          "strong_favoured": 0,
+          "sum": 340.0
+        }
+      },
+      "distinct_hands": 111,
+      "g88_changed_windows": 108,
+      "g88_matched_strong_windows": 81,
+      "next_actual_status": {
+        "next_self_chi": 10,
+        "next_self_gang": 1,
+        "next_self_peng": 13,
+        "next_self_tile_drawn": 98,
+        "other_win_before_next_action": 23
+      },
+      "rooms": 15,
+      "white_0_windows": 94,
+      "windows": 145
+    }
+  },
+  "wide_first_per_hand": {
+    "capacity_delta": {
+      "1": 30,
+      "2": 46,
+      "3": 55,
+      "4": 65,
+      "5": 22,
+      "6": 20,
+      "7": 3,
+      "8": 5,
+      "9": 1,
+      "10": 2,
+      "12": 2
+    },
+    "claim_draw_bucket": {
+      "first": 92,
+      "gang_intervened": 4,
+      "second": 60,
+      "third_plus": 95
+    },
+    "codes_delta": {
+      "1": 176,
+      "2": 55,
+      "3": 14,
+      "4": 4,
+      "5": 2
+    },
+    "component": {
+      "base_score": {
+        "parent_favoured": 0,
+        "strong_favoured": 251,
+        "sum": -891.0
+      },
+      "risk_part": {
+        "parent_favoured": 99,
+        "strong_favoured": 0,
+        "sum": 615.0
+      },
+      "river_part": {
+        "parent_favoured": 210,
+        "strong_favoured": 0,
+        "sum": 630.0
+      },
+      "style_part": {
+        "parent_favoured": 146,
+        "strong_favoured": 0,
+        "sum": 584.0
+      }
+    },
+    "distinct_hands": 251,
+    "g88_changed_windows": 188,
+    "g88_matched_strong_windows": 134,
+    "next_actual_status": {
+      "next_self_chi": 17,
+      "next_self_peng": 18,
+      "next_self_tile_drawn": 182,
+      "other_win_before_next_action": 34
+    },
+    "rooms": 31,
+    "white_0_windows": 156,
+    "windows": 251
+  },
+  "wide_windows": {
+    "capacity_delta": {
+      "1": 42,
+      "2": 69,
+      "3": 72,
+      "4": 89,
+      "5": 30,
+      "6": 28,
+      "7": 4,
+      "8": 8,
+      "9": 1,
+      "10": 3,
+      "12": 3
+    },
+    "claim_draw_bucket": {
+      "first": 96,
+      "gang_intervened": 8,
+      "second": 83,
+      "third_plus": 162
+    },
+    "codes_delta": {
+      "1": 243,
+      "2": 80,
+      "3": 19,
+      "4": 5,
+      "5": 2
+    },
+    "component": {
+      "base_score": {
+        "parent_favoured": 0,
+        "strong_favoured": 349,
+        "sum": -1237.0
+      },
+      "risk_part": {
+        "parent_favoured": 134,
+        "strong_favoured": 0,
+        "sum": 840.0
+      },
+      "river_part": {
+        "parent_favoured": 303,
+        "strong_favoured": 0,
+        "sum": 909.0
+      },
+      "style_part": {
+        "parent_favoured": 216,
+        "strong_favoured": 0,
+        "sum": 864.0
+      }
+    },
+    "distinct_hands": 251,
+    "g88_changed_windows": 269,
+    "g88_matched_strong_windows": 193,
+    "next_actual_status": {
+      "next_self_chi": 23,
+      "next_self_gang": 1,
+      "next_self_peng": 21,
+      "next_self_tile_drawn": 249,
+      "other_win_before_next_action": 55
+    },
+    "rooms": 31,
+    "white_0_windows": 235,
+    "windows": 349
+  }
+}

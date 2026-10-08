@@ -1,0 +1,82 @@
+{
+  "boundary": "仅实际到达下一本人正常摸牌后的条件命中预测；不可外推合法备选的赛事收益。",
+  "complete_official_tables": 909,
+  "input_sha256": {
+    "frozen_rooms": "3869f77156945329065db36ba67e3c68d60b3e5776cac19e3ca49a38a25cecfd",
+    "g11_result": "9ffe2738f7942e3baba0005bea9441c04b3cba3201b9855969e606dfe11b1e54",
+    "prereg": "0ae5a5528abaf49c1a324a53f0bba5b3d5ab9fb52b31906c4dc4a5394470b3e0",
+    "script": "c5286929b730c3fa8b3c3427a596afbe5340f687fb2a48b33087956b5305ba07"
+  },
+  "model": {
+    "base_coefficients": [
+      -2.0195068529989015,
+      2.2494448321757803,
+      -0.27318350130138674,
+      -0.40134741663709445,
+      -0.29199070490392137,
+      -2.1203357233783677,
+      -0.03375762941069892,
+      0.011213266294274446,
+      -0.006608703517271733,
+      0.04888930784731496,
+      0.2564873731590288
+    ],
+    "base_holdout_brier": 0.14658291197734472,
+    "base_holdout_logloss": 0.44428815462389937,
+    "by_white": {
+      "0": {
+        "hit_rate": 0.24651162790697675,
+        "mean_logloss_gain_base_minus_extended": 0.00034529535230851853,
+        "windows": 3870
+      },
+      "1": {
+        "hit_rate": 0.2612312811980033,
+        "mean_logloss_gain_base_minus_extended": 0.0004434354580855568,
+        "windows": 2404
+      },
+      "2": {
+        "hit_rate": 0.26158940397350994,
+        "mean_logloss_gain_base_minus_extended": 0.00014693080353458656,
+        "windows": 604
+      }
+    },
+    "extended_coefficients": [
+      -2.260922889031078,
+      1.470725502623699,
+      -0.23536005214403977,
+      -0.36313682527180374,
+      -0.1081655941035646,
+      -2.0488677617570716,
+      0.009341704211366214,
+      0.03261402066629399,
+      0.041289935515508726,
+      0.07421698969101304,
+      0.2790298180403903,
+      0.6035418138247869
+    ],
+    "extended_holdout_brier": 0.1464702075477932,
+    "extended_holdout_logloss": 0.4439259769472483,
+    "holdout_hit_rate": 0.2529805175923234,
+    "holdout_room_bootstrap_95": [
+      -4.429407544244587e-05,
+      0.0007571280071375673
+    ],
+    "holdout_rooms": 15,
+    "holdout_windows": 6878,
+    "mean_logloss_gain_base_minus_extended": 0.00036217767665113924,
+    "predictive_gate_pass": false,
+    "train_hit_rate": 0.2589880918466184,
+    "train_rooms": 76,
+    "train_windows": 35102,
+    "types_coefficient": 0.6035418138247869
+  },
+  "pair_counts": {
+    "consecutive_normal_draw_pairs": 47905,
+    "hand_not_continuous": 8,
+    "mechanically_continuous": 41980,
+    "meld_changed": 5917,
+    "samples": 41980
+  },
+  "schema": "g174-draw-breadth-predictive-probe/1",
+  "source_accepted_draw_discards": 55170
+}

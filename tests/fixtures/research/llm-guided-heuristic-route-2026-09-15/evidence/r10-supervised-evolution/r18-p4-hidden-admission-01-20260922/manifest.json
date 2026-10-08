@@ -1,0 +1,68 @@
+{
+  "candidate_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-opportunity-author-01-20260922/generations/P4/normalized-v2/candidate.py",
+  "candidate_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+  "hidden_cases_from_public_manifest": 8,
+  "on_fail": "本隐藏集视为已消耗；候选不得按失败题修补后复用本集准入",
+  "on_pass": "只准进入正式策略接缝与完整桌赛非劣门，不直接发布",
+  "one_shot": true,
+  "pass_rule": {
+    "all_scored": "8/8候选与基线均SCORED",
+    "hit_rate": "candidate_optimal_hit_rate>baseline_optimal_hit_rate",
+    "mean_gain": "mean_capability_gain>0",
+    "no_regression": "capability_gain<0 为0题",
+    "real_improvement": "capability_gain>0 至少1题"
+  },
+  "pre_run_hidden_content_inspected": false,
+  "public_hidden_strata": [
+    {
+      "count": 2,
+      "decision_type": "take_hu",
+      "split": "hidden",
+      "wealth_count": 1
+    },
+    {
+      "count": 2,
+      "decision_type": "take_hu",
+      "split": "hidden",
+      "wealth_count": 2
+    },
+    {
+      "count": 1,
+      "decision_type": "keep_wealth",
+      "split": "hidden",
+      "wealth_count": 3
+    },
+    {
+      "count": 1,
+      "decision_type": "piao",
+      "split": "hidden",
+      "wealth_count": 3
+    },
+    {
+      "count": 1,
+      "decision_type": "keep_wealth",
+      "split": "hidden",
+      "wealth_count": 4
+    },
+    {
+      "count": 1,
+      "decision_type": "piao",
+      "split": "hidden",
+      "wealth_count": 4
+    }
+  ],
+  "release_eligible": false,
+  "schema": "r18-p4-hidden-admission-manifest/1",
+  "source_hashes": {
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-multi-wealth-bank-02-20260922/hidden.json": "075050e37cda06208cba78f109ca20f298ea736f28a6acde8b81a9398e583bd4",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-multi-wealth-bank-02-20260922/manifest.json": "81da1e914dde673a5415c4e581b960fe1c886e8a82e6c8b9d7b0b70f688fd83e",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-opportunity-author-01-20260922/development-preflight-v2.json": "acc2f7cc455e2e0f9eaaaae410427aab1bfec2615eeb08bd45fa71a2ec63f4db",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-opportunity-author-01-20260922/generations/P4/normalized-v2/candidate.py": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-opportunity-author-01-20260922/normalized-v2-ingest-summary.json": "5be98989639560de86ba51d3a49885340303190c7cf4998170ba88412efb5051",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p4-counterfactual-pilot-01-20260922/event-audit-v2.json": "935e1b017b67e8d35b3c9275722114f5cdfdb2328cfd2fe52c911d6b7d53692a",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p4-counterfactual-pilot-01-20260922/result.json": "580940716eb67b2f4428a2f77ed656cfaf1b2bf889f5690c40b9dda82350f9e3",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p4-tail-stress-01-20260922/result.json": "d9b04396cb1b24ea6dbd792f38b7aa0702df89f64433fa77b60de62b4f4b562b",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p4_hidden_admission.py": "db2beb48785a1910632a6da8a0ce775ae77244471cd71a0bccb96de2dfd95891"
+  },
+  "table_strength_claim": false
+}

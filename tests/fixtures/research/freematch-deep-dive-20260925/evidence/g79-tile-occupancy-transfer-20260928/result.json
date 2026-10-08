@@ -1,0 +1,863 @@
+{
+  "boundary": "三家暗手牌码只用于离线标签；平方误差改善不是动作排序或完整桌收益。",
+  "external": {
+    "by_position": {
+      "1": {
+        "baseline_sse": 204753.21071617145,
+        "model_sse": 205137.66106616045,
+        "windows": 7839
+      },
+      "4": {
+        "baseline_sse": 197749.45382695203,
+        "model_sse": 181178.16570957936,
+        "windows": 7577
+      },
+      "7": {
+        "baseline_sse": 139909.94339071756,
+        "model_sse": 123491.63396597402,
+        "windows": 5797
+      }
+    },
+    "by_room": {
+      "a_039deae1f0dd": {
+        "baseline_sse": 5355.268760856126,
+        "model_sse": 5052.023353129225,
+        "sse_difference": -303.24540772690784,
+        "windows": 212
+      },
+      "a_095e0b8a832f": {
+        "baseline_sse": 5407.37950546413,
+        "model_sse": 5099.6061410343,
+        "sse_difference": -307.773364429833,
+        "windows": 215
+      },
+      "a_0a1dcd866cbb": {
+        "baseline_sse": 5670.840129709172,
+        "model_sse": 5288.34967824098,
+        "sse_difference": -382.490451468186,
+        "windows": 219
+      },
+      "a_0a263af3e8a5": {
+        "baseline_sse": 5412.271720727088,
+        "model_sse": 5037.155251491994,
+        "sse_difference": -375.11646923509505,
+        "windows": 220
+      },
+      "a_0b157160509f": {
+        "baseline_sse": 5366.669262756331,
+        "model_sse": 5086.390374643445,
+        "sse_difference": -280.27888811288324,
+        "windows": 216
+      },
+      "a_0b54166b82b2": {
+        "baseline_sse": 5340.436189555695,
+        "model_sse": 5018.404468490271,
+        "sse_difference": -322.03172106542223,
+        "windows": 206
+      },
+      "a_0b5ce89533a4": {
+        "baseline_sse": 5418.351448810295,
+        "model_sse": 5051.868644753198,
+        "sse_difference": -366.48280405710125,
+        "windows": 214
+      },
+      "a_0d0e6797d2e2": {
+        "baseline_sse": 5759.763465558852,
+        "model_sse": 5480.182430606861,
+        "sse_difference": -279.58103495198617,
+        "windows": 216
+      },
+      "a_0df0f4785750": {
+        "baseline_sse": 5323.015862034432,
+        "model_sse": 5013.367918171977,
+        "sse_difference": -309.64794386245325,
+        "windows": 223
+      },
+      "a_0e111a5903a2": {
+        "baseline_sse": 5626.176395094089,
+        "model_sse": 5297.92622034122,
+        "sse_difference": -328.25017475286995,
+        "windows": 219
+      },
+      "a_11f7d00fe232": {
+        "baseline_sse": 5344.203161681257,
+        "model_sse": 4967.226313466307,
+        "sse_difference": -376.9768482149492,
+        "windows": 210
+      },
+      "a_1423abfa3681": {
+        "baseline_sse": 5722.188911173056,
+        "model_sse": 5355.262593851471,
+        "sse_difference": -366.9263173215925,
+        "windows": 219
+      },
+      "a_15512e3e412e": {
+        "baseline_sse": 5538.406329183138,
+        "model_sse": 5086.3675419460005,
+        "sse_difference": -452.0387872371346,
+        "windows": 219
+      },
+      "a_173e93ba6fd7": {
+        "baseline_sse": 5657.232624323294,
+        "model_sse": 5369.725459859823,
+        "sse_difference": -287.5071644634712,
+        "windows": 213
+      },
+      "a_17cc763735b9": {
+        "baseline_sse": 5530.138563667988,
+        "model_sse": 5193.548090290705,
+        "sse_difference": -336.5904733772828,
+        "windows": 214
+      },
+      "a_17e75698737b": {
+        "baseline_sse": 5837.965592846079,
+        "model_sse": 5465.7475914506695,
+        "sse_difference": -372.21800139540744,
+        "windows": 221
+      },
+      "a_2463240f4877": {
+        "baseline_sse": 5579.382049500255,
+        "model_sse": 5233.290327909914,
+        "sse_difference": -346.0917215903423,
+        "windows": 215
+      },
+      "a_270cf31b0ad3": {
+        "baseline_sse": 5538.7860842326845,
+        "model_sse": 5127.566706261394,
+        "sse_difference": -411.21937797128976,
+        "windows": 217
+      },
+      "a_2762f39da674": {
+        "baseline_sse": 5557.273028820807,
+        "model_sse": 5224.294943135393,
+        "sse_difference": -332.9780856854162,
+        "windows": 214
+      },
+      "a_29dea973c3db": {
+        "baseline_sse": 5458.800263943872,
+        "model_sse": 5075.77747760129,
+        "sse_difference": -383.0227863425828,
+        "windows": 214
+      },
+      "a_2aff7bd752f9": {
+        "baseline_sse": 5763.510513615853,
+        "model_sse": 5398.295353766117,
+        "sse_difference": -365.215159849737,
+        "windows": 223
+      },
+      "a_30fd207da6fa": {
+        "baseline_sse": 5571.757233344902,
+        "model_sse": 5281.044795928676,
+        "sse_difference": -290.71243741622123,
+        "windows": 219
+      },
+      "a_34184a5c0689": {
+        "baseline_sse": 5553.449236751188,
+        "model_sse": 5234.881820745185,
+        "sse_difference": -318.5674160060067,
+        "windows": 217
+      },
+      "a_37063837a694": {
+        "baseline_sse": 5551.806733253122,
+        "model_sse": 5211.069160820762,
+        "sse_difference": -340.73757243236173,
+        "windows": 220
+      },
+      "a_3b7b7e0afcf9": {
+        "baseline_sse": 5713.596156449282,
+        "model_sse": 5313.375934665786,
+        "sse_difference": -400.2202217835012,
+        "windows": 222
+      },
+      "a_409502856d42": {
+        "baseline_sse": 5684.50289727189,
+        "model_sse": 5278.056220147141,
+        "sse_difference": -406.44667712474995,
+        "windows": 216
+      },
+      "a_4a13eef30d6a": {
+        "baseline_sse": 5587.752940647829,
+        "model_sse": 5202.150058277123,
+        "sse_difference": -385.60288237069835,
+        "windows": 215
+      },
+      "a_4b10d7266ec5": {
+        "baseline_sse": 5355.952664696291,
+        "model_sse": 5011.042875404966,
+        "sse_difference": -344.90978929132444,
+        "windows": 218
+      },
+      "a_4da66c1291f7": {
+        "baseline_sse": 5584.17503764123,
+        "model_sse": 5263.486650729938,
+        "sse_difference": -320.68838691129207,
+        "windows": 223
+      },
+      "a_4f8e3b5e58da": {
+        "baseline_sse": 5296.975483465554,
+        "model_sse": 4977.369193433147,
+        "sse_difference": -319.6062900324119,
+        "windows": 213
+      },
+      "a_52b58fff9d51": {
+        "baseline_sse": 5548.964812311046,
+        "model_sse": 5296.615665350267,
+        "sse_difference": -252.34914696077897,
+        "windows": 215
+      },
+      "a_54769334b33f": {
+        "baseline_sse": 5546.134650220511,
+        "model_sse": 5183.5034666040865,
+        "sse_difference": -362.63118361642086,
+        "windows": 213
+      },
+      "a_549f65b4bd07": {
+        "baseline_sse": 5480.430311436005,
+        "model_sse": 5131.746234470793,
+        "sse_difference": -348.6840769652171,
+        "windows": 217
+      },
+      "a_54d3497fb5f0": {
+        "baseline_sse": 5503.617937393316,
+        "model_sse": 5189.877861131602,
+        "sse_difference": -313.74007626171584,
+        "windows": 217
+      },
+      "a_5643a9044964": {
+        "baseline_sse": 5268.521815314255,
+        "model_sse": 4979.401359989423,
+        "sse_difference": -289.1204553248399,
+        "windows": 215
+      },
+      "a_5e16dfc1305b": {
+        "baseline_sse": 5399.397356154521,
+        "model_sse": 5238.857772744922,
+        "sse_difference": -160.53958340959704,
+        "windows": 218
+      },
+      "a_5e29192a7f88": {
+        "baseline_sse": 5361.248001486243,
+        "model_sse": 5007.760455025699,
+        "sse_difference": -353.4875464605444,
+        "windows": 215
+      },
+      "a_6381a4a18465": {
+        "baseline_sse": 5424.211976472369,
+        "model_sse": 5091.263983155333,
+        "sse_difference": -332.94799331703905,
+        "windows": 215
+      },
+      "a_6865b26c49db": {
+        "baseline_sse": 5418.376352396598,
+        "model_sse": 5115.4432934940605,
+        "sse_difference": -302.93305890253947,
+        "windows": 214
+      },
+      "a_688f8df41051": {
+        "baseline_sse": 5832.596323966453,
+        "model_sse": 5471.688033877208,
+        "sse_difference": -360.90829008924896,
+        "windows": 220
+      },
+      "a_6b37c9d49bcb": {
+        "baseline_sse": 5936.068628661045,
+        "model_sse": 5562.973695239221,
+        "sse_difference": -373.09493342182265,
+        "windows": 222
+      },
+      "a_6c604b05bc00": {
+        "baseline_sse": 5575.432609348032,
+        "model_sse": 5185.757701371366,
+        "sse_difference": -389.6749079766729,
+        "windows": 222
+      },
+      "a_6d8995365f4a": {
+        "baseline_sse": 5641.59507462916,
+        "model_sse": 5253.593665121421,
+        "sse_difference": -388.00140950773437,
+        "windows": 214
+      },
+      "a_6fc8f0f71b9c": {
+        "baseline_sse": 5403.077884875064,
+        "model_sse": 5068.404426836974,
+        "sse_difference": -334.6734580380902,
+        "windows": 219
+      },
+      "a_70b2ae92fe29": {
+        "baseline_sse": 5748.316904541545,
+        "model_sse": 5408.648406015221,
+        "sse_difference": -339.6684985263251,
+        "windows": 223
+      },
+      "a_7fae66b4d5cd": {
+        "baseline_sse": 5592.463705848756,
+        "model_sse": 5310.315332086736,
+        "sse_difference": -282.1483737620189,
+        "windows": 217
+      },
+      "a_8199f27c6daf": {
+        "baseline_sse": 5666.873707433793,
+        "model_sse": 5373.816319542061,
+        "sse_difference": -293.0573878917319,
+        "windows": 220
+      },
+      "a_8920b3022066": {
+        "baseline_sse": 5615.729214974174,
+        "model_sse": 5308.400485175707,
+        "sse_difference": -307.32872979846707,
+        "windows": 219
+      },
+      "a_9004f7aeeb60": {
+        "baseline_sse": 5375.594590017222,
+        "model_sse": 5034.543782720634,
+        "sse_difference": -341.05080729658795,
+        "windows": 211
+      },
+      "a_959b789cac0b": {
+        "baseline_sse": 5438.301328468477,
+        "model_sse": 5144.744065999478,
+        "sse_difference": -293.5572624690015,
+        "windows": 213
+      },
+      "a_965b552bb5ad": {
+        "baseline_sse": 5443.086885070336,
+        "model_sse": 5294.247006815292,
+        "sse_difference": -148.83987825504573,
+        "windows": 209
+      },
+      "a_97e1907d57fd": {
+        "baseline_sse": 5877.758590088018,
+        "model_sse": 5529.598971462647,
+        "sse_difference": -348.15961862537193,
+        "windows": 227
+      },
+      "a_9882ee0b5abe": {
+        "baseline_sse": 5362.084418681628,
+        "model_sse": 5141.971750373858,
+        "sse_difference": -220.1126683077685,
+        "windows": 215
+      },
+      "a_9a166cd5d04d": {
+        "baseline_sse": 5703.784469594142,
+        "model_sse": 5341.976179395986,
+        "sse_difference": -361.8082901981555,
+        "windows": 223
+      },
+      "a_9c5a9202f517": {
+        "baseline_sse": 5813.120632488258,
+        "model_sse": 5423.521841505712,
+        "sse_difference": -389.5987909825442,
+        "windows": 220
+      },
+      "a_a0ccc2c1145a": {
+        "baseline_sse": 5431.947930098735,
+        "model_sse": 5193.4127017578185,
+        "sse_difference": -238.5352283409184,
+        "windows": 214
+      },
+      "a_a1a5571cf3b8": {
+        "baseline_sse": 5422.602897111033,
+        "model_sse": 5120.474585479184,
+        "sse_difference": -302.12831163185024,
+        "windows": 213
+      },
+      "a_a84b3a170f9e": {
+        "baseline_sse": 5571.817296427223,
+        "model_sse": 5271.0812937284245,
+        "sse_difference": -300.73600269879717,
+        "windows": 215
+      },
+      "a_a8ce23a921ce": {
+        "baseline_sse": 5618.554199243726,
+        "model_sse": 5269.604540673523,
+        "sse_difference": -348.94965857020134,
+        "windows": 208
+      },
+      "a_acc191732472": {
+        "baseline_sse": 5300.251461897512,
+        "model_sse": 4960.434830918589,
+        "sse_difference": -339.81663097891936,
+        "windows": 212
+      },
+      "a_b00b6f8ffedf": {
+        "baseline_sse": 5339.333963952345,
+        "model_sse": 5020.8045380616895,
+        "sse_difference": -318.52942589065,
+        "windows": 211
+      },
+      "a_b01daf5cdad8": {
+        "baseline_sse": 5577.465511191997,
+        "model_sse": 5204.062250095063,
+        "sse_difference": -373.4032610969294,
+        "windows": 222
+      },
+      "a_b227dc9810cc": {
+        "baseline_sse": 5752.755710443792,
+        "model_sse": 5389.358450439234,
+        "sse_difference": -363.3972600045565,
+        "windows": 222
+      },
+      "a_b9de02def914": {
+        "baseline_sse": 5598.968220067578,
+        "model_sse": 5203.515290203914,
+        "sse_difference": -395.4529298636709,
+        "windows": 217
+      },
+      "a_bebba33a8355": {
+        "baseline_sse": 5631.161837013538,
+        "model_sse": 5330.0575340968035,
+        "sse_difference": -301.1043029167347,
+        "windows": 224
+      },
+      "a_bf944c218afe": {
+        "baseline_sse": 5610.006354082469,
+        "model_sse": 5249.290124496945,
+        "sse_difference": -360.7162295855233,
+        "windows": 217
+      },
+      "a_c5417f501d75": {
+        "baseline_sse": 5285.127651381018,
+        "model_sse": 4936.61690903189,
+        "sse_difference": -348.5107423491311,
+        "windows": 211
+      },
+      "a_c5f3c6cb10d1": {
+        "baseline_sse": 5257.403775353276,
+        "model_sse": 4920.097074373452,
+        "sse_difference": -337.3067009798222,
+        "windows": 212
+      },
+      "a_c6c4ed2f7d6e": {
+        "baseline_sse": 5377.008454216849,
+        "model_sse": 5103.21562501441,
+        "sse_difference": -273.7928292024392,
+        "windows": 209
+      },
+      "a_c71b603f3fc5": {
+        "baseline_sse": 5821.637213516303,
+        "model_sse": 5437.407654459723,
+        "sse_difference": -384.22955905658677,
+        "windows": 219
+      },
+      "a_cc5b47b56045": {
+        "baseline_sse": 5340.089202519,
+        "model_sse": 5212.047696103157,
+        "sse_difference": -128.0415064158403,
+        "windows": 215
+      },
+      "a_d03b9436758a": {
+        "baseline_sse": 5275.895131529882,
+        "model_sse": 4972.159913077478,
+        "sse_difference": -303.7352184524046,
+        "windows": 213
+      },
+      "a_d10085f2cc45": {
+        "baseline_sse": 5528.606946600997,
+        "model_sse": 5214.646554699146,
+        "sse_difference": -313.960391901855,
+        "windows": 216
+      },
+      "a_d1011103acd8": {
+        "baseline_sse": 5664.160186259277,
+        "model_sse": 5218.593025997818,
+        "sse_difference": -445.56716026145887,
+        "windows": 217
+      },
+      "a_d186d1378e87": {
+        "baseline_sse": 5430.649383041908,
+        "model_sse": 5053.10206691055,
+        "sse_difference": -377.54731613135806,
+        "windows": 217
+      },
+      "a_d1eafda8fc23": {
+        "baseline_sse": 5579.643180489245,
+        "model_sse": 5218.730301000708,
+        "sse_difference": -360.9128794885393,
+        "windows": 216
+      },
+      "a_d2f89b7ddeac": {
+        "baseline_sse": 5611.054773892029,
+        "model_sse": 5316.6415712738635,
+        "sse_difference": -294.41320261816566,
+        "windows": 212
+      },
+      "a_d7c3190a1422": {
+        "baseline_sse": 5309.291493357957,
+        "model_sse": 4934.063641610603,
+        "sse_difference": -375.22785174735134,
+        "windows": 213
+      },
+      "a_da46e29c7f88": {
+        "baseline_sse": 5629.171392044738,
+        "model_sse": 5256.285057221963,
+        "sse_difference": -372.88633482277714,
+        "windows": 218
+      },
+      "a_da7c85aace32": {
+        "baseline_sse": 5466.3315143373065,
+        "model_sse": 5125.144916470083,
+        "sse_difference": -341.1865978672248,
+        "windows": 218
+      },
+      "a_da9bfc607719": {
+        "baseline_sse": 5576.288414759328,
+        "model_sse": 5248.8859768025195,
+        "sse_difference": -327.4024379568066,
+        "windows": 219
+      },
+      "a_e026d23463da": {
+        "baseline_sse": 5550.54288578284,
+        "model_sse": 5259.872591799051,
+        "sse_difference": -290.6702939837803,
+        "windows": 216
+      },
+      "a_e04de72e859e": {
+        "baseline_sse": 5666.704385417726,
+        "model_sse": 5299.479196467851,
+        "sse_difference": -367.2251889498776,
+        "windows": 215
+      },
+      "a_e15c4f4cb6b9": {
+        "baseline_sse": 5603.3883442079605,
+        "model_sse": 5263.897782305542,
+        "sse_difference": -339.49056190241566,
+        "windows": 216
+      },
+      "a_e4d46909f494": {
+        "baseline_sse": 5611.926613233876,
+        "model_sse": 5304.6278049727725,
+        "sse_difference": -307.29880826110406,
+        "windows": 219
+      },
+      "a_e840af59a5c7": {
+        "baseline_sse": 5630.207007795764,
+        "model_sse": 5325.040235196736,
+        "sse_difference": -305.1667725990304,
+        "windows": 209
+      },
+      "a_f1db2f998272": {
+        "baseline_sse": 5545.310859441667,
+        "model_sse": 5260.6293657343695,
+        "sse_difference": -284.68149370729463,
+        "windows": 223
+      },
+      "a_f39dacadc88a": {
+        "baseline_sse": 5535.934861381133,
+        "model_sse": 5229.638003296667,
+        "sse_difference": -306.2968580844643,
+        "windows": 219
+      },
+      "a_f5e6c201dec1": {
+        "baseline_sse": 5597.364727596576,
+        "model_sse": 5193.642245332004,
+        "sse_difference": -403.7224822645718,
+        "windows": 219
+      },
+      "a_f62d19a5a54b": {
+        "baseline_sse": 5554.64769276056,
+        "model_sse": 5206.259438730665,
+        "sse_difference": -348.38825402989494,
+        "windows": 215
+      },
+      "a_f6d96a23fe1f": {
+        "baseline_sse": 5634.027633522935,
+        "model_sse": 5194.105989184866,
+        "sse_difference": -439.92164433806687,
+        "windows": 219
+      },
+      "a_f840c9e0857c": {
+        "baseline_sse": 5594.228845706774,
+        "model_sse": 5202.979422044479,
+        "sse_difference": -391.2494236622978,
+        "windows": 221
+      },
+      "a_fa3462493fca": {
+        "baseline_sse": 5440.5275689149685,
+        "model_sse": 5147.853044356414,
+        "sse_difference": -292.6745245585535,
+        "windows": 213
+      },
+      "a_fb17f3ac68a6": {
+        "baseline_sse": 5426.650656572408,
+        "model_sse": 5105.375273514857,
+        "sse_difference": -321.27538305754837,
+        "windows": 208
+      },
+      "a_fb5f44af8869": {
+        "baseline_sse": 5463.902464882099,
+        "model_sse": 5153.621622970945,
+        "sse_difference": -310.2808419111542,
+        "windows": 218
+      },
+      "a_fb86c1c8ba19": {
+        "baseline_sse": 5357.623140799035,
+        "model_sse": 5079.1372141841475,
+        "sse_difference": -278.4859266148848,
+        "windows": 210
+      },
+      "a_fc8e52516b6c": {
+        "baseline_sse": 5683.307518825665,
+        "model_sse": 5254.463715164113,
+        "sse_difference": -428.8438036615496,
+        "windows": 221
+      },
+      "a_fee6daf19b6f": {
+        "baseline_sse": 5424.272203223312,
+        "model_sse": 5163.578326359396,
+        "sse_difference": -260.6938768639204,
+        "windows": 217
+      }
+    },
+    "overall": {
+      "baseline_sse": 542412.6079338412,
+      "mean_sse_difference_per_window": -1.5370361189896158,
+      "model_sse": 509807.4607417146,
+      "sse_difference": -32605.14719212672,
+      "windows": 21213
+    },
+    "pass": true,
+    "room_bootstrap_95": [
+      -1.5860120327963492,
+      -1.4856494010651686
+    ],
+    "rooms_model_better": 98,
+    "rooms_model_worse": 0
+  },
+  "model": {
+    "coefficients": {
+      "edge": -0.014961917717368121,
+      "honor": -0.38848115001872163,
+      "opponent_neighbor_river": -0.12319071328188232,
+      "opponent_same_river": -0.5977443449686253,
+      "opponent_same_suit_melds": 0.07069363765681849,
+      "own_same_river": -0.2728501961943542,
+      "terminal": -0.11671563439860233,
+      "unknown_minus_two": 0.11224980696275833
+    },
+    "features": [
+      "honor",
+      "terminal",
+      "edge",
+      "unknown_minus_two",
+      "opponent_same_river",
+      "own_same_river",
+      "opponent_neighbor_river",
+      "opponent_same_suit_melds"
+    ],
+    "fit": {
+      "base_penalized_binomial_loss": 1334314.3354784101,
+      "feature_rows": 657824,
+      "fitted_penalized_binomial_loss": 1307293.5837222482,
+      "newton_iterations": 5,
+      "windows": 19558
+    },
+    "ridge": 100.0
+  },
+  "preregistered": true,
+  "schema": "g79-tile-occupancy-transfer/1",
+  "source_sha256": {
+    "g60_manifest": "b4559dff1333a8423d5ede0dce1cc05ca21077ed939be767fcaa4a7f942f4be1",
+    "g9_rooms": "3869f77156945329065db36ba67e3c68d60b3e5776cac19e3ca49a38a25cecfd",
+    "official_docs_fingerprint": "ecb32248cb99965eb3a4a21e331b5c6b69bd81eb44fddcfcedfe982689a81b65",
+    "prereg": "c4cab3f6b123800a7303c1b64345cd9a46f0127af1e3df3cec1efd3d98d47b2d",
+    "script": "45906bade55269aa7f36ab248663e9879ddf274673092f912e6fccd3df95e510"
+  },
+  "split": {
+    "dev_rooms": [
+      "a_0215da55fbf1",
+      "a_02228c8d73c5",
+      "a_0525f4514164",
+      "a_090f89d335ba",
+      "a_0beadd7c20ec",
+      "a_0c0b08606314",
+      "a_10735c68e0fe",
+      "a_127d301b8057",
+      "a_130afffc2c41",
+      "a_15b16f8c772b",
+      "a_1b1218333c71",
+      "a_1e9a18f1951a",
+      "a_1efbcaa39ce9",
+      "a_1fb28f174570",
+      "a_2721870d7344",
+      "a_28fb92468b60",
+      "a_2a8aa14dc8a1",
+      "a_2ac3c0ab7d84",
+      "a_2ba9afa9697d",
+      "a_3c9b8c294df1",
+      "a_3cc4c40be504",
+      "a_40330d461e2d",
+      "a_4111a0e3f482",
+      "a_47be952496f7",
+      "a_4e0b110b9020",
+      "a_4e6c05751c90",
+      "a_51e700c16e9b",
+      "a_53f4861835b9",
+      "a_576cc1f66c79",
+      "a_5a3a3f4fea6b",
+      "a_5ab07d501de1",
+      "a_5b409450150a",
+      "a_5f95901e0f28",
+      "a_5ff3fe3a5c59",
+      "a_63b1b5d2ada6",
+      "a_6c7cb0c60362",
+      "a_7293767fe516",
+      "a_754e02a45164",
+      "a_7d4b80bb62f4",
+      "a_82c34e995def",
+      "a_8448cc0c89fd",
+      "a_84d49097106e",
+      "a_84e6008176e0",
+      "a_852fb97c102e",
+      "a_8a86663508e5",
+      "a_8cb4422c6d71",
+      "a_8e8aec99969b",
+      "a_8f44d0828905",
+      "a_906902b7c7f1",
+      "a_93f30e8ac13f",
+      "a_961fde8d2ce5",
+      "a_9b5ad5a81405",
+      "a_9ee7874d4f99",
+      "a_9f5d90ba56ec",
+      "a_9ff2f4f25296",
+      "a_a2dd84116fa9",
+      "a_a5a78c5a0641",
+      "a_a738d103dfae",
+      "a_aacdc2914766",
+      "a_acad66efe76c",
+      "a_aebf384d5515",
+      "a_b08410b0cae4",
+      "a_b0d2cf5da218",
+      "a_b322adb86e44",
+      "a_b3e4ba33b114",
+      "a_b4e1fe83f979",
+      "a_b711a7c02a81",
+      "a_bc08d07ca56c",
+      "a_bd6546c30b89",
+      "a_be45985e6e16",
+      "a_c483e4cafd04",
+      "a_ca179fbbb24e",
+      "a_cf1dac6bbac5",
+      "a_d0c11d42d7ef",
+      "a_d48ec29d231f",
+      "a_d539acd906b5",
+      "a_d53a046ceb62",
+      "a_d773a8e428a0",
+      "a_d8e15fe8bc96",
+      "a_dc1579d00cf1",
+      "a_e123ecfc7b67",
+      "a_eab08b1f5d1a",
+      "a_eb4ce48c74aa",
+      "a_ee0fd34a23e2",
+      "a_f029a21dbe6a",
+      "a_f341e9fce089",
+      "a_f8ddc4c3bd9b",
+      "a_f9a057a58973",
+      "a_fa51c277a2d5",
+      "a_ffaadfb5b591"
+    ],
+    "dev_rounds": 7200,
+    "dev_windows": 19558,
+    "external_rooms": [
+      "a_039deae1f0dd",
+      "a_095e0b8a832f",
+      "a_0a1dcd866cbb",
+      "a_0a263af3e8a5",
+      "a_0b157160509f",
+      "a_0b54166b82b2",
+      "a_0b5ce89533a4",
+      "a_0d0e6797d2e2",
+      "a_0df0f4785750",
+      "a_0e111a5903a2",
+      "a_11f7d00fe232",
+      "a_1423abfa3681",
+      "a_15512e3e412e",
+      "a_173e93ba6fd7",
+      "a_17cc763735b9",
+      "a_17e75698737b",
+      "a_2463240f4877",
+      "a_270cf31b0ad3",
+      "a_2762f39da674",
+      "a_29dea973c3db",
+      "a_2aff7bd752f9",
+      "a_30fd207da6fa",
+      "a_34184a5c0689",
+      "a_37063837a694",
+      "a_3b7b7e0afcf9",
+      "a_409502856d42",
+      "a_4a13eef30d6a",
+      "a_4b10d7266ec5",
+      "a_4da66c1291f7",
+      "a_4f8e3b5e58da",
+      "a_52b58fff9d51",
+      "a_54769334b33f",
+      "a_549f65b4bd07",
+      "a_54d3497fb5f0",
+      "a_5643a9044964",
+      "a_5e16dfc1305b",
+      "a_5e29192a7f88",
+      "a_6381a4a18465",
+      "a_6865b26c49db",
+      "a_688f8df41051",
+      "a_6b37c9d49bcb",
+      "a_6c604b05bc00",
+      "a_6d8995365f4a",
+      "a_6fc8f0f71b9c",
+      "a_70b2ae92fe29",
+      "a_7fae66b4d5cd",
+      "a_8199f27c6daf",
+      "a_8920b3022066",
+      "a_9004f7aeeb60",
+      "a_959b789cac0b",
+      "a_965b552bb5ad",
+      "a_97e1907d57fd",
+      "a_9882ee0b5abe",
+      "a_9a166cd5d04d",
+      "a_9c5a9202f517",
+      "a_a0ccc2c1145a",
+      "a_a1a5571cf3b8",
+      "a_a84b3a170f9e",
+      "a_a8ce23a921ce",
+      "a_acc191732472",
+      "a_b00b6f8ffedf",
+      "a_b01daf5cdad8",
+      "a_b227dc9810cc",
+      "a_b9de02def914",
+      "a_bebba33a8355",
+      "a_bf944c218afe",
+      "a_c5417f501d75",
+      "a_c5f3c6cb10d1",
+      "a_c6c4ed2f7d6e",
+      "a_c71b603f3fc5",
+      "a_cc5b47b56045",
+      "a_d03b9436758a",
+      "a_d10085f2cc45",
+      "a_d1011103acd8",
+      "a_d186d1378e87",
+      "a_d1eafda8fc23",
+      "a_d2f89b7ddeac",
+      "a_d7c3190a1422",
+      "a_da46e29c7f88",
+      "a_da7c85aace32",
+      "a_da9bfc607719",
+      "a_e026d23463da",
+      "a_e04de72e859e",
+      "a_e15c4f4cb6b9",
+      "a_e4d46909f494",
+      "a_e840af59a5c7",
+      "a_f1db2f998272",
+      "a_f39dacadc88a",
+      "a_f5e6c201dec1",
+      "a_f62d19a5a54b",
+      "a_f6d96a23fe1f",
+      "a_f840c9e0857c",
+      "a_fa3462493fca",
+      "a_fb17f3ac68a6",
+      "a_fb5f44af8869",
+      "a_fb86c1c8ba19",
+      "a_fc8e52516b6c",
+      "a_fee6daf19b6f"
+    ],
+    "external_rounds": 7840,
+    "external_windows": 21213
+  }
+}

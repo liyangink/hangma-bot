@@ -1,0 +1,4016 @@
+{
+  "aggregate": {
+    "fit_selected_open_states": 1,
+    "leave_one_source_root_out_mean": {
+      "H:r01": -0.06854838709677419,
+      "H:r02": -0.06854838709677419,
+      "H:r03": -0.06854838709677419,
+      "H:r04": -0.06854838709677419,
+      "H:r05": -0.06854838709677419,
+      "H:r06": -0.06854838709677419,
+      "H:r07": -0.06854838709677419,
+      "H:r08": -0.06854838709677419,
+      "H:r09": -0.06854838709677419,
+      "H:r10": -0.06854838709677419,
+      "H:r11": -0.06854838709677419,
+      "H:r12": -0.06854838709677419,
+      "H:r13": -0.06854838709677419,
+      "H:r14": -0.06854838709677419,
+      "H:r15": -0.06854838709677419,
+      "H:r16": -0.06854838709677419,
+      "M:r01": -0.06854838709677419,
+      "M:r02": -0.06854838709677419,
+      "M:r03": -0.06854838709677419,
+      "M:r04": -0.06854838709677419,
+      "M:r05": -0.06854838709677419,
+      "M:r06": -0.06854838709677419,
+      "M:r07": -0.06854838709677419,
+      "M:r08": -0.06854838709677419,
+      "M:r09": -0.06854838709677419,
+      "M:r10": -0.06854838709677419,
+      "M:r11": 0.0,
+      "M:r12": -0.06854838709677419,
+      "M:r13": -0.06854838709677419,
+      "M:r14": -0.06854838709677419,
+      "M:r15": -0.06854838709677419,
+      "M:r16": -0.06854838709677419
+    },
+    "minimum_leave_one_source_root_out_mean": -0.06854838709677419,
+    "replication_all_state_policy_bootstrap_95": [
+      -0.19921875,
+      0.0
+    ],
+    "replication_all_state_policy_mean": -0.06640625,
+    "replication_positive_selected_states": 0,
+    "replication_selected_open_mean": -2.125,
+    "replication_selected_open_remaining_table_mean": -0.75,
+    "required_replication_positive_selected_states": 1
+  },
+  "decision": "CLOSE_STANDARD_CATCH_OPEN",
+  "development_states": 32,
+  "gate_passed": false,
+  "hidden_labels_opened": false,
+  "hidden_states_frozen_unopened": 32,
+  "interpretation": "独立统计单位是32个自然基础状态；32个隐藏分配不增加独立状态数",
+  "mechanical_ok": true,
+  "next_gate": "保留P5并关闭标准主动开圈；不得查看hidden标签后补阈值",
+  "release_eligible": false,
+  "rollouts": 1024,
+  "schema": "r18-p17-catch-open-result/1",
+  "states": [
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 3,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:4w",
+          "discard:8w",
+          "discard:9w",
+          "discard:3b",
+          "discard:7b",
+          "discard:8b",
+          "discard:4t",
+          "discard:8t",
+          "discard:东",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:2w",
+          "discard:4w",
+          "discard:8w",
+          "discard:9w",
+          "discard:3b",
+          "discard:7b",
+          "discard:8b",
+          "discard:4t",
+          "discard:8t",
+          "discard:东",
+          "discard:发"
+        ],
+        "remaining_tile_count": 83,
+        "round_no": 2,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 1,
+          "mean_focal_settlement": -7.5,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -20.0,
+        "mean_remaining_table_score_delta": -12.8125,
+        "reference": {
+          "focal_hu": 10,
+          "mean_focal_settlement": 12.5,
+          "opponent_hu": 6,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -32,
+          0,
+          0,
+          0,
+          -56,
+          -32,
+          0,
+          -24,
+          -32,
+          -40,
+          -8,
+          -32,
+          8,
+          0,
+          -32,
+          -40
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:东",
+      "replication": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -3.0,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -8.0,
+        "mean_remaining_table_score_delta": -5.6875,
+        "positive": false,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 5.0,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -32,
+          0,
+          -8,
+          -40,
+          -56,
+          -32,
+          8,
+          32,
+          0,
+          0
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 1,
+        "source_id": "H:r01:s2",
+        "source_root_id": "H:r01",
+        "table_id": "np-H-2026102202-r01-s2-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-01"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:3w",
+          "discard:3b",
+          "discard:5b",
+          "discard:6b",
+          "discard:2t",
+          "discard:6t",
+          "discard:7t",
+          "discard:南",
+          "discard:西",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:2w",
+          "discard:3w",
+          "discard:3b",
+          "discard:5b",
+          "discard:6b",
+          "discard:2t",
+          "discard:6t",
+          "discard:7t",
+          "discard:南",
+          "discard:西"
+        ],
+        "remaining_tile_count": 81,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -1.4375,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -5.0625,
+        "mean_remaining_table_score_delta": -10.0625,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 3.625,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -18,
+          -21,
+          0,
+          0,
+          15,
+          11,
+          0,
+          -12,
+          0,
+          -7,
+          -10,
+          -7,
+          0,
+          0,
+          -21,
+          -11
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:2t",
+      "replication": {
+        "intervention": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 1.0625,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -0.125,
+        "mean_remaining_table_score_delta": -5.1875,
+        "positive": false,
+        "reference": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 1.1875,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          18,
+          12,
+          -11,
+          7,
+          -21,
+          1,
+          -1,
+          -15,
+          7,
+          -7,
+          18,
+          0,
+          -11,
+          -11,
+          12
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 2,
+        "source_id": "H:r02:s2",
+        "source_root_id": "H:r02",
+        "table_id": "np-H-2026102202-r02-s2-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-02"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:8w",
+          "discard:4b",
+          "discard:6b",
+          "discard:7b",
+          "discard:8b",
+          "discard:2t",
+          "discard:4t",
+          "discard:6t",
+          "discard:9t",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:8w",
+          "discard:4b",
+          "discard:6b",
+          "discard:7b",
+          "discard:8b",
+          "discard:2t",
+          "discard:4t",
+          "discard:6t",
+          "discard:9t",
+          "discard:发"
+        ],
+        "remaining_tile_count": 80,
+        "round_no": 1,
+        "wealth_count": 2
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 9,
+          "mean_focal_settlement": 4.625,
+          "opponent_hu": 7,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -4.125,
+        "mean_remaining_table_score_delta": -28.875,
+        "reference": {
+          "focal_hu": 13,
+          "mean_focal_settlement": 8.75,
+          "opponent_hu": 3,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          10,
+          -21,
+          -18,
+          -10,
+          11,
+          -11,
+          10,
+          0,
+          -18,
+          -11,
+          0,
+          0,
+          0,
+          -15,
+          7,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:发",
+      "replication": {
+        "intervention": {
+          "focal_hu": 8,
+          "mean_focal_settlement": 3.25,
+          "opponent_hu": 7,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -5.4375,
+        "mean_remaining_table_score_delta": -36.9375,
+        "positive": false,
+        "reference": {
+          "focal_hu": 13,
+          "mean_focal_settlement": 8.6875,
+          "opponent_hu": 3,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -28,
+          -11,
+          0,
+          0,
+          0,
+          2,
+          0,
+          18,
+          0,
+          -18,
+          0,
+          0,
+          -11,
+          -21,
+          0,
+          -18
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 3,
+        "source_id": "H:r03:s2",
+        "source_root_id": "H:r03",
+        "table_id": "np-H-2026102202-r03-s2-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-03"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 1,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:5w",
+          "discard:1b",
+          "discard:3b",
+          "discard:4b",
+          "discard:5b",
+          "discard:8b",
+          "discard:9b",
+          "discard:5t",
+          "discard:东",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:1w",
+          "discard:5w",
+          "discard:1b",
+          "discard:3b",
+          "discard:4b",
+          "discard:5b",
+          "discard:8b",
+          "discard:9b",
+          "discard:5t",
+          "discard:东",
+          "discard:发"
+        ],
+        "remaining_tile_count": 77,
+        "round_no": 3,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -1.3125,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -1.25,
+        "mean_remaining_table_score_delta": -0.4375,
+        "reference": {
+          "focal_hu": 5,
+          "mean_focal_settlement": -0.0625,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          0,
+          0,
+          -11,
+          -12,
+          -11,
+          0,
+          -12,
+          7,
+          0,
+          -28,
+          0,
+          1,
+          0,
+          18,
+          28
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:1w",
+      "replication": {
+        "intervention": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 1.0625,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -2.6875,
+        "mean_remaining_table_score_delta": 0.75,
+        "positive": false,
+        "reference": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 3.75,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          11,
+          7,
+          0,
+          6,
+          0,
+          -18,
+          -11,
+          0,
+          -18,
+          11,
+          0,
+          -10,
+          7,
+          0,
+          -28,
+          0
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 2,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 4,
+        "source_id": "H:r04:s2",
+        "source_root_id": "H:r04",
+        "table_id": "np-H-2026102202-r04-s2-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-04"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:3b",
+          "discard:5b",
+          "discard:2t",
+          "discard:4t",
+          "discard:5t",
+          "discard:8t",
+          "discard:西",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:1w",
+          "discard:3b",
+          "discard:5b",
+          "discard:2t",
+          "discard:4t",
+          "discard:5t",
+          "discard:8t",
+          "discard:西"
+        ],
+        "remaining_tile_count": 83,
+        "round_no": 1,
+        "wealth_count": 2
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 1.5,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -8.0625,
+        "mean_remaining_table_score_delta": -6.5,
+        "reference": {
+          "focal_hu": 10,
+          "mean_focal_settlement": 9.5625,
+          "opponent_hu": 6,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -1,
+          11,
+          -18,
+          -18,
+          12,
+          11,
+          -26,
+          -48,
+          0,
+          -21,
+          0,
+          -10,
+          0,
+          0,
+          -21
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:1w",
+      "replication": {
+        "intervention": {
+          "focal_hu": 5,
+          "mean_focal_settlement": -0.0625,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -9.1875,
+        "mean_remaining_table_score_delta": -6.6875,
+        "positive": false,
+        "reference": {
+          "focal_hu": 14,
+          "mean_focal_settlement": 9.125,
+          "opponent_hu": 2,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -36,
+          -18,
+          -11,
+          -21,
+          0,
+          -18,
+          0,
+          0,
+          26,
+          -18,
+          -11,
+          10,
+          -18,
+          -21,
+          -11
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 5,
+        "source_id": "H:r05:s1",
+        "source_root_id": "H:r05",
+        "table_id": "np-H-2026102202-r05-s1-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-05"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:6w",
+          "discard:8w",
+          "discard:3b",
+          "discard:4b",
+          "discard:7b",
+          "discard:6t",
+          "discard:9t",
+          "discard:东",
+          "discard:南",
+          "discard:北",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:6w",
+          "discard:8w",
+          "discard:3b",
+          "discard:4b",
+          "discard:7b",
+          "discard:6t",
+          "discard:9t",
+          "discard:东",
+          "discard:南",
+          "discard:北",
+          "discard:发"
+        ],
+        "remaining_tile_count": 80,
+        "round_no": 2,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -1.0625,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -1.5,
+        "mean_remaining_table_score_delta": -8.6875,
+        "reference": {
+          "focal_hu": 4,
+          "mean_focal_settlement": 0.4375,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -26,
+          -18,
+          0,
+          -1,
+          -11,
+          18,
+          0,
+          -7,
+          7,
+          0,
+          0,
+          0,
+          21,
+          0,
+          -7
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:9t",
+      "replication": {
+        "intervention": {
+          "focal_hu": 4,
+          "mean_focal_settlement": 2.0,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 2
+        },
+        "mean_current_round_settlement_delta": 6.1875,
+        "mean_remaining_table_score_delta": 7.875,
+        "positive": false,
+        "reference": {
+          "focal_hu": 0,
+          "mean_focal_settlement": -4.1875,
+          "opponent_hu": 15,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "values": [
+          28,
+          11,
+          14,
+          0,
+          10,
+          16,
+          0,
+          0,
+          0,
+          11,
+          0,
+          7,
+          0,
+          0,
+          1,
+          1
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 6,
+        "source_id": "H:r06:s3",
+        "source_root_id": "H:r06",
+        "table_id": "np-H-2026102202-r06-s3-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-06"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:8w",
+          "discard:1b",
+          "discard:4b",
+          "discard:7b",
+          "discard:1t",
+          "discard:9t",
+          "discard:东",
+          "discard:西",
+          "discard:北",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:8w",
+          "discard:1b",
+          "discard:4b",
+          "discard:7b",
+          "discard:1t",
+          "discard:9t",
+          "discard:东",
+          "discard:西",
+          "discard:北"
+        ],
+        "remaining_tile_count": 81,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 1,
+          "mean_focal_settlement": -2.6875,
+          "opponent_hu": 15,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -2.375,
+        "mean_remaining_table_score_delta": 0.625,
+        "reference": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -0.3125,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          7,
+          0,
+          12,
+          0,
+          -15,
+          0,
+          0,
+          -11,
+          0,
+          0,
+          -1,
+          -7,
+          7,
+          -12,
+          0,
+          -18
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:东",
+      "replication": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -1.625,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -3.625,
+        "mean_remaining_table_score_delta": -0.625,
+        "positive": false,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 2.0,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -7,
+          0,
+          -11,
+          0,
+          -11,
+          -7,
+          7,
+          0,
+          -11,
+          -36,
+          11,
+          0,
+          0,
+          0,
+          0,
+          7
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 3,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 7,
+        "source_id": "H:r07:s3",
+        "source_root_id": "H:r07",
+        "table_id": "np-H-2026102202-r07-s3-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-07"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:5w",
+          "discard:6w",
+          "discard:2b",
+          "discard:4b",
+          "discard:5b",
+          "discard:6b",
+          "discard:7b",
+          "discard:2t",
+          "discard:9t",
+          "discard:南",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:5w",
+          "discard:6w",
+          "discard:2b",
+          "discard:4b",
+          "discard:5b",
+          "discard:6b",
+          "discard:7b",
+          "discard:2t",
+          "discard:9t",
+          "discard:南",
+          "discard:发"
+        ],
+        "remaining_tile_count": 82,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -1.5,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -2.625,
+        "mean_remaining_table_score_delta": 0.375,
+        "reference": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 1.125,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          7,
+          -11,
+          -8,
+          1,
+          -20,
+          8,
+          1,
+          11,
+          0,
+          -7,
+          11,
+          -11,
+          -1,
+          -12,
+          -11,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:南",
+      "replication": {
+        "intervention": {
+          "focal_hu": 4,
+          "mean_focal_settlement": -0.4375,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -4.875,
+        "mean_remaining_table_score_delta": 2.5625,
+        "positive": false,
+        "reference": {
+          "focal_hu": 9,
+          "mean_focal_settlement": 4.4375,
+          "opponent_hu": 7,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          11,
+          -18,
+          0,
+          -8,
+          8,
+          -7,
+          0,
+          -11,
+          -11,
+          -11,
+          0,
+          -20,
+          0,
+          0,
+          0,
+          -11
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 8,
+        "source_id": "H:r08:s0",
+        "source_root_id": "H:r08",
+        "table_id": "np-H-2026102202-r08-s0-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-08"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 2,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:3w",
+          "discard:4w",
+          "discard:8w",
+          "discard:4b",
+          "discard:6b",
+          "discard:7b",
+          "discard:8b",
+          "discard:2t",
+          "discard:7t",
+          "discard:8t",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:1w",
+          "discard:3w",
+          "discard:4w",
+          "discard:8w",
+          "discard:4b",
+          "discard:6b",
+          "discard:7b",
+          "discard:8b",
+          "discard:2t",
+          "discard:7t",
+          "discard:8t"
+        ],
+        "remaining_tile_count": 80,
+        "round_no": 2,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 0.4375,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -1.75,
+        "mean_remaining_table_score_delta": -1.1875,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 2.1875,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -18,
+          -15,
+          -6,
+          0,
+          -11,
+          11,
+          -7,
+          -11,
+          18,
+          0,
+          18,
+          0,
+          -7,
+          0,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:2t",
+      "replication": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -2.5,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -6.75,
+        "mean_remaining_table_score_delta": -3.9375,
+        "positive": false,
+        "reference": {
+          "focal_hu": 9,
+          "mean_focal_settlement": 4.25,
+          "opponent_hu": 7,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -11,
+          0,
+          -18,
+          0,
+          7,
+          -11,
+          0,
+          -11,
+          0,
+          -6,
+          -7,
+          -8,
+          -18,
+          0,
+          -10,
+          -15
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 9,
+        "source_id": "H:r09:s1",
+        "source_root_id": "H:r09",
+        "table_id": "np-H-2026102202-r09-s1-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-09"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:7w",
+          "discard:9w",
+          "discard:1b",
+          "discard:3b",
+          "discard:7b",
+          "discard:1t",
+          "discard:2t",
+          "discard:3t",
+          "discard:5t",
+          "discard:8t",
+          "discard:东",
+          "discard:南",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:2w",
+          "discard:7w",
+          "discard:9w",
+          "discard:1b",
+          "discard:3b",
+          "discard:7b",
+          "discard:1t",
+          "discard:2t",
+          "discard:3t",
+          "discard:5t",
+          "discard:8t",
+          "discard:东",
+          "discard:南"
+        ],
+        "remaining_tile_count": 82,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 0.25,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -0.125,
+        "mean_remaining_table_score_delta": -3.125,
+        "reference": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 0.375,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -8,
+          7,
+          0,
+          18,
+          18,
+          0,
+          -11,
+          1,
+          1,
+          -11,
+          7,
+          -7,
+          0,
+          -10,
+          -7,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:东",
+      "replication": {
+        "intervention": {
+          "focal_hu": 0,
+          "mean_focal_settlement": -3.6875,
+          "opponent_hu": 16,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -4.1875,
+        "mean_remaining_table_score_delta": 1.125,
+        "positive": false,
+        "reference": {
+          "focal_hu": 4,
+          "mean_focal_settlement": 0.5,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -21,
+          0,
+          0,
+          -11,
+          -7,
+          -11,
+          -11,
+          0,
+          1,
+          0,
+          8,
+          0,
+          -8,
+          0,
+          -7
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 10,
+        "source_id": "H:r10:s0",
+        "source_root_id": "H:r10",
+        "table_id": "np-H-2026102202-r10-s0-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-10"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:3w",
+          "discard:4w",
+          "discard:6w",
+          "discard:7w",
+          "discard:8w",
+          "discard:7b",
+          "discard:8t",
+          "discard:北",
+          "discard:中",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:1w",
+          "discard:3w",
+          "discard:4w",
+          "discard:6w",
+          "discard:7w",
+          "discard:8w",
+          "discard:7b",
+          "discard:8t",
+          "discard:北",
+          "discard:中",
+          "discard:发"
+        ],
+        "remaining_tile_count": 79,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -2.0,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -2.75,
+        "mean_remaining_table_score_delta": -3.8125,
+        "reference": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 0.75,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -11,
+          0,
+          0,
+          0,
+          -18,
+          -7,
+          7,
+          -7,
+          -21,
+          0,
+          -7,
+          0,
+          12,
+          0,
+          0,
+          8
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:中",
+      "replication": {
+        "intervention": {
+          "focal_hu": 1,
+          "mean_focal_settlement": -3.0,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -6.25,
+        "mean_remaining_table_score_delta": -9.0,
+        "positive": false,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 3.25,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -1,
+          -11,
+          0,
+          -18,
+          2,
+          -7,
+          0,
+          -1,
+          11,
+          -21,
+          -7,
+          -7,
+          -11,
+          -7,
+          -11,
+          -11
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 11,
+        "source_id": "H:r11:s1",
+        "source_root_id": "H:r11",
+        "table_id": "np-H-2026102202-r11-s1-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-11"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:5w",
+          "discard:9w",
+          "discard:1b",
+          "discard:2b",
+          "discard:5b",
+          "discard:9b",
+          "discard:2t",
+          "discard:4t",
+          "discard:7t",
+          "discard:北",
+          "discard:中",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:5w",
+          "discard:9w",
+          "discard:1b",
+          "discard:2b",
+          "discard:5b",
+          "discard:9b",
+          "discard:2t",
+          "discard:4t",
+          "discard:7t",
+          "discard:北",
+          "discard:中",
+          "discard:发"
+        ],
+        "remaining_tile_count": 83,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 1,
+          "mean_focal_settlement": -7.0,
+          "opponent_hu": 15,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -5.0,
+        "mean_remaining_table_score_delta": -14.375,
+        "reference": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -2.0,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          0,
+          -8,
+          40,
+          -56,
+          0,
+          0,
+          0,
+          0,
+          8,
+          -32,
+          0,
+          -32,
+          0,
+          0,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:中",
+      "replication": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -4.0,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -10.0,
+        "mean_remaining_table_score_delta": -14.125,
+        "positive": false,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 6.0,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "values": [
+          -8,
+          0,
+          -32,
+          0,
+          0,
+          0,
+          -40,
+          -32,
+          0,
+          0,
+          32,
+          -16,
+          -32,
+          0,
+          -32,
+          0
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 12,
+        "source_id": "H:r12:s0",
+        "source_root_id": "H:r12",
+        "table_id": "np-H-2026102202-r12-s0-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-12"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:4w",
+          "discard:6w",
+          "discard:4b",
+          "discard:8b",
+          "discard:1t",
+          "discard:5t",
+          "discard:8t",
+          "discard:9t",
+          "discard:西",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:2w",
+          "discard:4w",
+          "discard:6w",
+          "discard:4b",
+          "discard:8b",
+          "discard:1t",
+          "discard:5t",
+          "discard:8t",
+          "discard:9t",
+          "discard:西"
+        ],
+        "remaining_tile_count": 80,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 1,
+          "mean_focal_settlement": -1.3125,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -0.5,
+        "mean_remaining_table_score_delta": 3.5625,
+        "reference": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -0.8125,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -1,
+          1,
+          -11,
+          11,
+          0,
+          7,
+          7,
+          0,
+          -7,
+          1,
+          6,
+          0,
+          0,
+          -11,
+          -11
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:西",
+      "replication": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -2.0,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -3.3125,
+        "mean_remaining_table_score_delta": 4.375,
+        "positive": false,
+        "reference": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 1.3125,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 2
+        },
+        "values": [
+          -1,
+          -21,
+          10,
+          0,
+          0,
+          -12,
+          0,
+          -18,
+          0,
+          1,
+          7,
+          -18,
+          0,
+          -8,
+          7,
+          0
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 13,
+        "source_id": "H:r13:s1",
+        "source_root_id": "H:r13",
+        "table_id": "np-H-2026102202-r13-s1-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-13"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:7w",
+          "discard:9w",
+          "discard:2b",
+          "discard:4b",
+          "discard:1t",
+          "discard:3t",
+          "discard:9t",
+          "discard:南",
+          "discard:西",
+          "discard:北",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:7w",
+          "discard:9w",
+          "discard:2b",
+          "discard:4b",
+          "discard:1t",
+          "discard:3t",
+          "discard:9t",
+          "discard:南",
+          "discard:西",
+          "discard:北"
+        ],
+        "remaining_tile_count": 83,
+        "round_no": 2,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -4.0,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -12.5,
+        "mean_remaining_table_score_delta": -11.125,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 8.5,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -32,
+          0,
+          8,
+          0,
+          0,
+          -56,
+          -32,
+          -56,
+          -32,
+          32,
+          0,
+          -24,
+          -8,
+          0,
+          0,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:1t",
+      "replication": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -4.0,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -2.0,
+        "mean_remaining_table_score_delta": -1.9375,
+        "positive": false,
+        "reference": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -2.0,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -8,
+          8,
+          -8,
+          8,
+          -32,
+          0,
+          0,
+          -56,
+          56,
+          0,
+          0,
+          0,
+          -32,
+          0,
+          32
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 14,
+        "source_id": "H:r14:s0",
+        "source_root_id": "H:r14",
+        "table_id": "np-H-2026102202-r14-s0-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-14"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:4w",
+          "discard:6w",
+          "discard:9w",
+          "discard:2b",
+          "discard:4b",
+          "discard:5b",
+          "discard:1t",
+          "discard:5t",
+          "discard:6t",
+          "discard:7t",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:4w",
+          "discard:6w",
+          "discard:9w",
+          "discard:2b",
+          "discard:4b",
+          "discard:5b",
+          "discard:1t",
+          "discard:5t",
+          "discard:6t",
+          "discard:7t",
+          "discard:发"
+        ],
+        "remaining_tile_count": 82,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": 0.3125,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -4.8125,
+        "mean_remaining_table_score_delta": -6.8125,
+        "reference": {
+          "focal_hu": 10,
+          "mean_focal_settlement": 5.125,
+          "opponent_hu": 6,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          15,
+          -11,
+          -11,
+          -10,
+          -11,
+          -11,
+          21,
+          0,
+          -26,
+          0,
+          18,
+          -11,
+          -10,
+          -12,
+          -18,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:发",
+      "replication": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -3.3125,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -3.3125,
+        "mean_remaining_table_score_delta": 33.4375,
+        "positive": false,
+        "reference": {
+          "focal_hu": 3,
+          "mean_focal_settlement": 0.0,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          8,
+          11,
+          -18,
+          -7,
+          -15,
+          -15,
+          0,
+          0,
+          -18,
+          0,
+          -1,
+          0,
+          -11,
+          12,
+          1,
+          0
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 1,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 15,
+        "source_id": "H:r15:s1",
+        "source_root_id": "H:r15",
+        "table_id": "np-H-2026102202-r15-s1-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-15"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:3w",
+          "discard:4w",
+          "discard:7w",
+          "discard:8w",
+          "discard:9w",
+          "discard:1t",
+          "discard:8t",
+          "discard:中",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:3w",
+          "discard:4w",
+          "discard:7w",
+          "discard:8w",
+          "discard:9w",
+          "discard:1t",
+          "discard:8t",
+          "discard:中"
+        ],
+        "remaining_tile_count": 82,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 2.0,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -6.5625,
+        "mean_remaining_table_score_delta": 19.0,
+        "reference": {
+          "focal_hu": 14,
+          "mean_focal_settlement": 8.5625,
+          "opponent_hu": 2,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -18,
+          0,
+          -11,
+          -12,
+          1,
+          0,
+          0,
+          -18,
+          0,
+          -18,
+          -11,
+          0,
+          0,
+          -18,
+          11,
+          -11
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:8t",
+      "replication": {
+        "intervention": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 1.9375,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -5.6875,
+        "mean_remaining_table_score_delta": 17.6875,
+        "positive": false,
+        "reference": {
+          "focal_hu": 12,
+          "mean_focal_settlement": 7.625,
+          "opponent_hu": 4,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -21,
+          10,
+          -1,
+          -18,
+          0,
+          -11,
+          0,
+          -18,
+          -21,
+          18,
+          -11,
+          -18,
+          18,
+          0,
+          0,
+          -18
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 0,
+        "mix": "H",
+        "panel_seed": 2026102202,
+        "root_index": 16,
+        "source_id": "H:r16:s0",
+        "source_root_id": "H:r16",
+        "table_id": "np-H-2026102202-r16-s0-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-16"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 1,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:4w",
+          "discard:5w",
+          "discard:8w",
+          "discard:9w",
+          "discard:3b",
+          "discard:9b",
+          "discard:3t",
+          "discard:4t",
+          "discard:南",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:2w",
+          "discard:4w",
+          "discard:5w",
+          "discard:8w",
+          "discard:9w",
+          "discard:3b",
+          "discard:9b",
+          "discard:3t",
+          "discard:4t",
+          "discard:南"
+        ],
+        "remaining_tile_count": 53,
+        "round_no": 3,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 1,
+          "mean_focal_settlement": -2.8125,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 4
+        },
+        "mean_current_round_settlement_delta": -5.3125,
+        "mean_remaining_table_score_delta": 3.75,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 2.5,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "values": [
+          -12,
+          0,
+          -7,
+          -20,
+          0,
+          8,
+          -18,
+          -18,
+          0,
+          -11,
+          7,
+          0,
+          0,
+          11,
+          1,
+          -26
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:9b",
+      "replication": {
+        "intervention": {
+          "focal_hu": 1,
+          "mean_focal_settlement": -0.8125,
+          "opponent_hu": 7,
+          "wall_draw_or_non_hu_end": 8
+        },
+        "mean_current_round_settlement_delta": -3.5625,
+        "mean_remaining_table_score_delta": 2.625,
+        "positive": false,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 2.75,
+          "opponent_hu": 8,
+          "wall_draw_or_non_hu_end": 2
+        },
+        "values": [
+          7,
+          0,
+          -20,
+          -26,
+          -1,
+          0,
+          -1,
+          -10,
+          18,
+          8,
+          -10,
+          -11,
+          0,
+          8,
+          -20,
+          1
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 1,
+        "source_id": "M:r01:s3",
+        "source_root_id": "M:r01",
+        "table_id": "np-M-2026102202-r01-s3-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-17"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 3,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:2w",
+          "discard:7w",
+          "discard:8w",
+          "discard:9w",
+          "discard:5b",
+          "discard:6b",
+          "discard:3t",
+          "discard:5t",
+          "discard:7t",
+          "discard:南",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:1w",
+          "discard:2w",
+          "discard:7w",
+          "discard:8w",
+          "discard:9w",
+          "discard:5b",
+          "discard:6b",
+          "discard:3t",
+          "discard:5t",
+          "discard:7t",
+          "discard:南"
+        ],
+        "remaining_tile_count": 81,
+        "round_no": 3,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -0.875,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 2
+        },
+        "mean_current_round_settlement_delta": -0.5625,
+        "mean_remaining_table_score_delta": -2.0625,
+        "reference": {
+          "focal_hu": 4,
+          "mean_focal_settlement": -0.3125,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          1,
+          11,
+          3,
+          0,
+          -7,
+          -10,
+          8,
+          7,
+          -7,
+          -11,
+          -11,
+          11,
+          -11,
+          8,
+          -1
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:南",
+      "replication": {
+        "intervention": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 0.6875,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -7.5,
+        "mean_remaining_table_score_delta": -16.75,
+        "positive": false,
+        "reference": {
+          "focal_hu": 14,
+          "mean_focal_settlement": 8.1875,
+          "opponent_hu": 2,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -18,
+          -11,
+          -12,
+          -18,
+          -10,
+          10,
+          -18,
+          7,
+          -11,
+          0,
+          -12,
+          -15,
+          0,
+          -12,
+          0
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 2,
+        "source_id": "M:r02:s0",
+        "source_root_id": "M:r02",
+        "table_id": "np-M-2026102202-r02-s0-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-18"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:3w",
+          "discard:4w",
+          "discard:6w",
+          "discard:7w",
+          "discard:5b",
+          "discard:6b",
+          "discard:2t",
+          "discard:4t",
+          "discard:6t",
+          "discard:7t",
+          "discard:中",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:3w",
+          "discard:4w",
+          "discard:6w",
+          "discard:7w",
+          "discard:5b",
+          "discard:6b",
+          "discard:2t",
+          "discard:4t",
+          "discard:6t",
+          "discard:7t",
+          "discard:中"
+        ],
+        "remaining_tile_count": 81,
+        "round_no": 2,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 4,
+          "mean_focal_settlement": 0.875,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -1.375,
+        "mean_remaining_table_score_delta": -6.625,
+        "reference": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 2.25,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -21,
+          7,
+          0,
+          11,
+          8,
+          -11,
+          11,
+          8,
+          0,
+          -11,
+          0,
+          1,
+          -11,
+          -11,
+          7,
+          -10
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:7w",
+      "replication": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": 0.125,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -0.8125,
+        "mean_remaining_table_score_delta": 3.125,
+        "positive": false,
+        "reference": {
+          "focal_hu": 3,
+          "mean_focal_settlement": 0.9375,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          11,
+          0,
+          0,
+          0,
+          -26,
+          0,
+          0,
+          0,
+          -10,
+          0,
+          0,
+          0,
+          11,
+          0,
+          1,
+          0
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 3,
+        "source_id": "M:r03:s2",
+        "source_root_id": "M:r03",
+        "table_id": "np-M-2026102202-r03-s2-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-19"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:4w",
+          "discard:8w",
+          "discard:4b",
+          "discard:8b",
+          "discard:2t",
+          "discard:4t",
+          "discard:6t",
+          "discard:8t",
+          "discard:9t",
+          "discard:东",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:4w",
+          "discard:8w",
+          "discard:4b",
+          "discard:8b",
+          "discard:2t",
+          "discard:4t",
+          "discard:6t",
+          "discard:8t",
+          "discard:9t",
+          "discard:东",
+          "discard:发"
+        ],
+        "remaining_tile_count": 81,
+        "round_no": 1,
+        "wealth_count": 2
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 4,
+          "mean_focal_settlement": -1.375,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -5.0625,
+        "mean_remaining_table_score_delta": 11.3125,
+        "reference": {
+          "focal_hu": 8,
+          "mean_focal_settlement": 3.6875,
+          "opponent_hu": 8,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -11,
+          -8,
+          -10,
+          0,
+          -10,
+          0,
+          -18,
+          -28,
+          26,
+          -11,
+          0,
+          0,
+          -11,
+          0,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:6t",
+      "replication": {
+        "intervention": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 4.25,
+          "opponent_hu": 8,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": 1.8125,
+        "mean_remaining_table_score_delta": -2.875,
+        "positive": false,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 2.4375,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          1,
+          -11,
+          0,
+          -11,
+          0,
+          28,
+          0,
+          -7,
+          11,
+          0,
+          18,
+          28,
+          -11,
+          -7,
+          -10
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 4,
+        "source_id": "M:r04:s2",
+        "source_root_id": "M:r04",
+        "table_id": "np-M-2026102202-r04-s2-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-20"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:3w",
+          "discard:4w",
+          "discard:5w",
+          "discard:2b",
+          "discard:8b",
+          "discard:5t",
+          "discard:6t",
+          "discard:8t",
+          "discard:北",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:1w",
+          "discard:3w",
+          "discard:4w",
+          "discard:5w",
+          "discard:2b",
+          "discard:8b",
+          "discard:5t",
+          "discard:6t",
+          "discard:8t",
+          "discard:北"
+        ],
+        "remaining_tile_count": 79,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 1.0625,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -2.0,
+        "mean_remaining_table_score_delta": -7.4375,
+        "reference": {
+          "focal_hu": 8,
+          "mean_focal_settlement": 3.0625,
+          "opponent_hu": 8,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          18,
+          -11,
+          0,
+          0,
+          0,
+          -6,
+          0,
+          0,
+          -18,
+          -11,
+          -7,
+          -11,
+          1,
+          -11,
+          18,
+          6
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:2b",
+      "replication": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -0.5625,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -5.25,
+        "mean_remaining_table_score_delta": -2.3125,
+        "positive": false,
+        "reference": {
+          "focal_hu": 10,
+          "mean_focal_settlement": 4.6875,
+          "opponent_hu": 6,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -12,
+          -11,
+          11,
+          0,
+          0,
+          -11,
+          0,
+          -11,
+          15,
+          0,
+          -11,
+          -11,
+          -10,
+          -18,
+          6,
+          -21
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 3,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 5,
+        "source_id": "M:r05:s3",
+        "source_root_id": "M:r05",
+        "table_id": "np-M-2026102202-r05-s3-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-21"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:3w",
+          "discard:4w",
+          "discard:6w",
+          "discard:8w",
+          "discard:2b",
+          "discard:3b",
+          "discard:5t",
+          "discard:6t",
+          "discard:7t",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:2w",
+          "discard:3w",
+          "discard:4w",
+          "discard:6w",
+          "discard:8w",
+          "discard:2b",
+          "discard:3b",
+          "discard:5t",
+          "discard:6t",
+          "discard:7t"
+        ],
+        "remaining_tile_count": 41,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 5.5,
+          "opponent_hu": 3,
+          "wall_draw_or_non_hu_end": 8
+        },
+        "mean_current_round_settlement_delta": -6.0,
+        "mean_remaining_table_score_delta": -6.8125,
+        "reference": {
+          "focal_hu": 9,
+          "mean_focal_settlement": 11.5,
+          "opponent_hu": 6,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "values": [
+          -24,
+          8,
+          8,
+          -24,
+          0,
+          -24,
+          0,
+          8,
+          0,
+          32,
+          8,
+          -40,
+          32,
+          -48,
+          -32,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:6w",
+      "replication": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": 2.0,
+          "opponent_hu": 5,
+          "wall_draw_or_non_hu_end": 8
+        },
+        "mean_current_round_settlement_delta": -9.0,
+        "mean_remaining_table_score_delta": -11.4375,
+        "positive": false,
+        "reference": {
+          "focal_hu": 9,
+          "mean_focal_settlement": 11.0,
+          "opponent_hu": 5,
+          "wall_draw_or_non_hu_end": 2
+        },
+        "values": [
+          0,
+          0,
+          0,
+          -24,
+          32,
+          0,
+          -24,
+          -24,
+          -32,
+          0,
+          0,
+          -24,
+          8,
+          8,
+          -32,
+          -32
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 6,
+        "source_id": "M:r06:s0",
+        "source_root_id": "M:r06",
+        "table_id": "np-M-2026102202-r06-s0-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-22"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:4w",
+          "discard:9w",
+          "discard:1b",
+          "discard:7b",
+          "discard:8b",
+          "discard:4t",
+          "discard:5t",
+          "discard:9t",
+          "discard:东",
+          "discard:中",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:4w",
+          "discard:9w",
+          "discard:1b",
+          "discard:7b",
+          "discard:8b",
+          "discard:4t",
+          "discard:5t",
+          "discard:9t",
+          "discard:东",
+          "discard:中",
+          "discard:发"
+        ],
+        "remaining_tile_count": 80,
+        "round_no": 1,
+        "wealth_count": 2
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 4,
+          "mean_focal_settlement": -0.25,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -7.625,
+        "mean_remaining_table_score_delta": -43.625,
+        "reference": {
+          "focal_hu": 11,
+          "mean_focal_settlement": 7.375,
+          "opponent_hu": 5,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -12,
+          -21,
+          0,
+          0,
+          0,
+          0,
+          -18,
+          -26,
+          0,
+          0,
+          -1,
+          -11,
+          -12,
+          -10,
+          -11,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:东",
+      "replication": {
+        "intervention": {
+          "focal_hu": 4,
+          "mean_focal_settlement": 0.375,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -2.75,
+        "mean_remaining_table_score_delta": -16.9375,
+        "positive": false,
+        "reference": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 3.125,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -11,
+          0,
+          -11,
+          0,
+          1,
+          -28,
+          -10,
+          11,
+          -7,
+          11,
+          15,
+          -11,
+          0,
+          -18,
+          14,
+          0
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 7,
+        "source_id": "M:r07:s2",
+        "source_root_id": "M:r07",
+        "table_id": "np-M-2026102202-r07-s2-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-23"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:5w",
+          "discard:6w",
+          "discard:7w",
+          "discard:9w",
+          "discard:3b",
+          "discard:4b",
+          "discard:6b",
+          "discard:1t",
+          "discard:3t",
+          "discard:6t",
+          "discard:中",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:5w",
+          "discard:6w",
+          "discard:7w",
+          "discard:9w",
+          "discard:3b",
+          "discard:4b",
+          "discard:6b",
+          "discard:1t",
+          "discard:3t",
+          "discard:6t",
+          "discard:中",
+          "discard:发"
+        ],
+        "remaining_tile_count": 82,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 4,
+          "mean_focal_settlement": 0.3125,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -1.5,
+        "mean_remaining_table_score_delta": -16.6875,
+        "reference": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 1.8125,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -11,
+          0,
+          7,
+          0,
+          -7,
+          -12,
+          0,
+          -11,
+          18,
+          -18,
+          11,
+          0,
+          7,
+          -1,
+          0,
+          -7
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:中",
+      "replication": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -1.0,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -3.1875,
+        "mean_remaining_table_score_delta": 13.1875,
+        "positive": false,
+        "reference": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 2.1875,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          7,
+          0,
+          -21,
+          0,
+          0,
+          7,
+          -12,
+          -11,
+          -18,
+          18,
+          1,
+          0,
+          0,
+          7,
+          -18,
+          -11
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 8,
+        "source_id": "M:r08:s1",
+        "source_root_id": "M:r08",
+        "table_id": "np-M-2026102202-r08-s1-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-24"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 3,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:2w",
+          "discard:5w",
+          "discard:9w",
+          "discard:2b",
+          "discard:3b",
+          "discard:6t",
+          "discard:7t",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:1w",
+          "discard:2w",
+          "discard:5w",
+          "discard:9w",
+          "discard:2b",
+          "discard:3b",
+          "discard:6t",
+          "discard:7t"
+        ],
+        "remaining_tile_count": 73,
+        "round_no": 2,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -0.375,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -2.4375,
+        "mean_remaining_table_score_delta": -0.8125,
+        "reference": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 2.0625,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          7,
+          7,
+          0,
+          0,
+          -11,
+          -11,
+          11,
+          11,
+          -18,
+          7,
+          -11,
+          0,
+          -12,
+          -11,
+          -8
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:9w",
+      "replication": {
+        "intervention": {
+          "focal_hu": 9,
+          "mean_focal_settlement": 3.3125,
+          "opponent_hu": 7,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -2.75,
+        "mean_remaining_table_score_delta": -0.0625,
+        "positive": false,
+        "reference": {
+          "focal_hu": 11,
+          "mean_focal_settlement": 6.0625,
+          "opponent_hu": 5,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -18,
+          0,
+          1,
+          18,
+          -18,
+          -11,
+          0,
+          0,
+          -1,
+          0,
+          0,
+          -15,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 9,
+        "source_id": "M:r09:s1",
+        "source_root_id": "M:r09",
+        "table_id": "np-M-2026102202-r09-s1-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-25"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:6w",
+          "discard:7w",
+          "discard:3t",
+          "discard:5t",
+          "discard:南",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:2w",
+          "discard:6w",
+          "discard:7w",
+          "discard:3t",
+          "discard:5t",
+          "discard:南"
+        ],
+        "remaining_tile_count": 62,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -0.4375,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -7.5625,
+        "mean_remaining_table_score_delta": -9.375,
+        "reference": {
+          "focal_hu": 12,
+          "mean_focal_settlement": 7.125,
+          "opponent_hu": 4,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -18,
+          0,
+          -11,
+          -12,
+          -10,
+          0,
+          0,
+          0,
+          -11,
+          -11,
+          -11,
+          0,
+          0,
+          -11,
+          -26
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:2w",
+      "replication": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": 0.5625,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -5.9375,
+        "mean_remaining_table_score_delta": -5.125,
+        "positive": false,
+        "reference": {
+          "focal_hu": 11,
+          "mean_focal_settlement": 6.5,
+          "opponent_hu": 5,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -11,
+          -11,
+          0,
+          0,
+          -12,
+          0,
+          -11,
+          0,
+          -11,
+          -18,
+          1,
+          -11,
+          0,
+          0,
+          -11
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 10,
+        "source_id": "M:r10:s1",
+        "source_root_id": "M:r10",
+        "table_id": "np-M-2026102202-r10-s1-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-26"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:4w",
+          "discard:5w",
+          "discard:6w",
+          "discard:9w",
+          "discard:2b",
+          "discard:1t",
+          "discard:2t",
+          "discard:7t",
+          "discard:9t",
+          "discard:北",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:2w",
+          "discard:4w",
+          "discard:5w",
+          "discard:6w",
+          "discard:9w",
+          "discard:2b",
+          "discard:1t",
+          "discard:2t",
+          "discard:7t",
+          "discard:9t",
+          "discard:北",
+          "discard:发"
+        ],
+        "remaining_tile_count": 82,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 4,
+          "mean_focal_settlement": -0.5,
+          "opponent_hu": 11,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": 0.1875,
+        "mean_remaining_table_score_delta": -2.75,
+        "reference": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -0.6875,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          0,
+          -1,
+          11,
+          0,
+          0,
+          -26,
+          0,
+          0,
+          0,
+          11,
+          0,
+          0,
+          18,
+          -10,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": -2.125,
+      "reference_action": "discard:北",
+      "replication": {
+        "intervention": {
+          "focal_hu": 2,
+          "mean_focal_settlement": -1.4375,
+          "opponent_hu": 12,
+          "wall_draw_or_non_hu_end": 2
+        },
+        "mean_current_round_settlement_delta": -2.125,
+        "mean_remaining_table_score_delta": -0.75,
+        "positive": false,
+        "reference": {
+          "focal_hu": 5,
+          "mean_focal_settlement": 0.6875,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "values": [
+          16,
+          -1,
+          0,
+          0,
+          -10,
+          -1,
+          -1,
+          0,
+          7,
+          -11,
+          0,
+          0,
+          -15,
+          -7,
+          -11,
+          0
+        ]
+      },
+      "selected_open_from_fit": true,
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 11,
+        "source_id": "M:r11:s1",
+        "source_root_id": "M:r11",
+        "table_id": "np-M-2026102202-r11-s1-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-27"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:3w",
+          "discard:4w",
+          "discard:5w",
+          "discard:1b",
+          "discard:5b",
+          "discard:4t",
+          "discard:5t",
+          "discard:6t",
+          "discard:南",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:3w",
+          "discard:4w",
+          "discard:5w",
+          "discard:1b",
+          "discard:5b",
+          "discard:4t",
+          "discard:5t",
+          "discard:6t",
+          "discard:南"
+        ],
+        "remaining_tile_count": 81,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 3.3125,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -3.5,
+        "mean_remaining_table_score_delta": -9.0625,
+        "reference": {
+          "focal_hu": 10,
+          "mean_focal_settlement": 6.8125,
+          "opponent_hu": 6,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -11,
+          -1,
+          -11,
+          -11,
+          -10,
+          0,
+          -11,
+          11,
+          26,
+          -10,
+          -11,
+          0,
+          -7,
+          0,
+          0,
+          -10
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:5b",
+      "replication": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -1.25,
+          "opponent_hu": 13,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -5.8125,
+        "mean_remaining_table_score_delta": -13.75,
+        "positive": false,
+        "reference": {
+          "focal_hu": 8,
+          "mean_focal_settlement": 4.5625,
+          "opponent_hu": 8,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          0,
+          -18,
+          0,
+          -10,
+          -18,
+          -11,
+          -7,
+          -6,
+          0,
+          0,
+          -11,
+          0,
+          0,
+          0,
+          -12
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 12,
+        "source_id": "M:r12:s1",
+        "source_root_id": "M:r12",
+        "table_id": "np-M-2026102202-r12-s1-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-28"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:9w",
+          "discard:4b",
+          "discard:5b",
+          "discard:6b",
+          "discard:2t",
+          "discard:5t",
+          "discard:7t",
+          "discard:8t",
+          "discard:9t",
+          "discard:北",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:2w",
+          "discard:9w",
+          "discard:4b",
+          "discard:5b",
+          "discard:6b",
+          "discard:2t",
+          "discard:5t",
+          "discard:7t",
+          "discard:8t",
+          "discard:9t",
+          "discard:北"
+        ],
+        "remaining_tile_count": 81,
+        "round_no": 1,
+        "wealth_count": 2
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 11,
+          "mean_focal_settlement": 8.1875,
+          "opponent_hu": 5,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -6.8125,
+        "mean_remaining_table_score_delta": -4.8125,
+        "reference": {
+          "focal_hu": 16,
+          "mean_focal_settlement": 15.0,
+          "opponent_hu": 0,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -10,
+          0,
+          0,
+          -30,
+          -28,
+          -18,
+          0,
+          10,
+          -11,
+          -11,
+          -21,
+          0,
+          10,
+          0,
+          0
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:北",
+      "replication": {
+        "intervention": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 2.8125,
+          "opponent_hu": 7,
+          "wall_draw_or_non_hu_end": 2
+        },
+        "mean_current_round_settlement_delta": -9.0,
+        "mean_remaining_table_score_delta": -10.0,
+        "positive": false,
+        "reference": {
+          "focal_hu": 12,
+          "mean_focal_settlement": 11.8125,
+          "opponent_hu": 4,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          1,
+          -48,
+          -20,
+          11,
+          0,
+          0,
+          -10,
+          0,
+          -11,
+          0,
+          10,
+          0,
+          -28,
+          -21,
+          -28
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 13,
+        "source_id": "M:r13:s2",
+        "source_root_id": "M:r13",
+        "table_id": "np-M-2026102202-r13-s2-t1",
+        "table_no": 1
+      },
+      "target_id": "r18-p17-development-29"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:2w",
+          "discard:5b",
+          "discard:6b",
+          "discard:7b",
+          "discard:9b",
+          "discard:2t",
+          "discard:5t",
+          "discard:6t",
+          "discard:8t",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:1w",
+          "discard:2w",
+          "discard:5b",
+          "discard:6b",
+          "discard:7b",
+          "discard:9b",
+          "discard:2t",
+          "discard:5t",
+          "discard:6t",
+          "discard:8t"
+        ],
+        "remaining_tile_count": 51,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 4,
+          "mean_focal_settlement": -0.75,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 3
+        },
+        "mean_current_round_settlement_delta": -3.875,
+        "mean_remaining_table_score_delta": 0.9375,
+        "reference": {
+          "focal_hu": 7,
+          "mean_focal_settlement": 3.125,
+          "opponent_hu": 7,
+          "wall_draw_or_non_hu_end": 2
+        },
+        "values": [
+          0,
+          -10,
+          -11,
+          0,
+          26,
+          0,
+          2,
+          -11,
+          11,
+          -16,
+          -8,
+          -11,
+          -18,
+          -10,
+          -7,
+          1
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:9b",
+      "replication": {
+        "intervention": {
+          "focal_hu": 4,
+          "mean_focal_settlement": 0.875,
+          "opponent_hu": 10,
+          "wall_draw_or_non_hu_end": 2
+        },
+        "mean_current_round_settlement_delta": -3.5625,
+        "mean_remaining_table_score_delta": -12.375,
+        "positive": false,
+        "reference": {
+          "focal_hu": 9,
+          "mean_focal_settlement": 4.4375,
+          "opponent_hu": 5,
+          "wall_draw_or_non_hu_end": 2
+        },
+        "values": [
+          0,
+          0,
+          -1,
+          0,
+          0,
+          11,
+          -12,
+          -1,
+          -10,
+          -12,
+          -11,
+          0,
+          0,
+          -11,
+          0,
+          -10
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 1,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 14,
+        "source_id": "M:r14:s1",
+        "source_root_id": "M:r14",
+        "table_id": "np-M-2026102202-r14-s1-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-30"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:3w",
+          "discard:6w",
+          "discard:7w",
+          "discard:9w",
+          "discard:1b",
+          "discard:6b",
+          "discard:3t",
+          "discard:7t",
+          "discard:北",
+          "discard:中",
+          "discard:发",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:3w",
+          "discard:6w",
+          "discard:7w",
+          "discard:9w",
+          "discard:1b",
+          "discard:6b",
+          "discard:3t",
+          "discard:7t",
+          "discard:北",
+          "discard:中",
+          "discard:发"
+        ],
+        "remaining_tile_count": 80,
+        "round_no": 1,
+        "wealth_count": 2
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 3,
+          "mean_focal_settlement": -1.4375,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 4
+        },
+        "mean_current_round_settlement_delta": -7.8125,
+        "mean_remaining_table_score_delta": -1.6875,
+        "reference": {
+          "focal_hu": 9,
+          "mean_focal_settlement": 6.375,
+          "opponent_hu": 6,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "values": [
+          -20,
+          -10,
+          18,
+          -12,
+          -18,
+          -10,
+          2,
+          -16,
+          -10,
+          -11,
+          11,
+          0,
+          -21,
+          -21,
+          0,
+          -7
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:1b",
+      "replication": {
+        "intervention": {
+          "focal_hu": 6,
+          "mean_focal_settlement": 3.4375,
+          "opponent_hu": 9,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -3.6875,
+        "mean_remaining_table_score_delta": 0.5625,
+        "positive": false,
+        "reference": {
+          "focal_hu": 10,
+          "mean_focal_settlement": 7.125,
+          "opponent_hu": 6,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -10,
+          -10,
+          0,
+          0,
+          21,
+          -21,
+          10,
+          -26,
+          0,
+          11,
+          -12,
+          0,
+          0,
+          -11,
+          -11
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 2,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 15,
+        "source_id": "M:r15:s2",
+        "source_root_id": "M:r15",
+        "table_id": "np-M-2026102202-r15-s2-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-31"
+    },
+    {
+      "features": {
+        "baotou": false,
+        "catch_play_active": false,
+        "chain_count": 0,
+        "chain_piao": 0,
+        "dealer_seat": 0,
+        "family": "catch.open",
+        "has_immediate_hu": false,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:9w",
+          "discard:7b",
+          "discard:8b",
+          "discard:9b",
+          "discard:4t",
+          "discard:6t",
+          "discard:9t",
+          "discard:白"
+        ],
+        "nonwhite_discard_keys": [
+          "discard:1w",
+          "discard:9w",
+          "discard:7b",
+          "discard:8b",
+          "discard:9b",
+          "discard:4t",
+          "discard:6t",
+          "discard:9t"
+        ],
+        "remaining_tile_count": 72,
+        "round_no": 1,
+        "wealth_count": 1
+      },
+      "fit": {
+        "intervention": {
+          "focal_hu": 1,
+          "mean_focal_settlement": -3.0625,
+          "opponent_hu": 14,
+          "wall_draw_or_non_hu_end": 1
+        },
+        "mean_current_round_settlement_delta": -7.375,
+        "mean_remaining_table_score_delta": -2.0,
+        "reference": {
+          "focal_hu": 9,
+          "mean_focal_settlement": 4.3125,
+          "opponent_hu": 7,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          -18,
+          -11,
+          0,
+          -11,
+          0,
+          7,
+          -11,
+          -18,
+          0,
+          -26,
+          -10,
+          7,
+          -15,
+          -1,
+          0,
+          -11
+        ]
+      },
+      "intervention_action": "discard:白",
+      "policy_replication_value": 0.0,
+      "reference_action": "discard:9t",
+      "replication": {
+        "intervention": {
+          "focal_hu": 8,
+          "mean_focal_settlement": 5.125,
+          "opponent_hu": 8,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "mean_current_round_settlement_delta": -4.125,
+        "mean_remaining_table_score_delta": -3.4375,
+        "positive": false,
+        "reference": {
+          "focal_hu": 11,
+          "mean_focal_settlement": 9.25,
+          "opponent_hu": 5,
+          "wall_draw_or_non_hu_end": 0
+        },
+        "values": [
+          0,
+          -10,
+          -41,
+          -11,
+          11,
+          -11,
+          0,
+          0,
+          0,
+          0,
+          18,
+          10,
+          -11,
+          0,
+          -21,
+          0
+        ]
+      },
+      "selected_open_from_fit": false,
+      "source": {
+        "focal_seat": 0,
+        "mix": "M",
+        "panel_seed": 2026102202,
+        "root_index": 16,
+        "source_id": "M:r16:s0",
+        "source_root_id": "M:r16",
+        "table_id": "np-M-2026102202-r16-s0-t2",
+        "table_no": 2
+      },
+      "target_id": "r18-p17-development-32"
+    }
+  ],
+  "status": "COMPLETE_P17_CATCH_OPEN_TEACHER",
+  "tables": 2048
+}

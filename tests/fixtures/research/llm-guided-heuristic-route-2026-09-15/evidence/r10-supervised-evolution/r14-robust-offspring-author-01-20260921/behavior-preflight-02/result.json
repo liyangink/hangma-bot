@@ -1,0 +1,47 @@
+{
+  "schema": "r14-robust-offspring-behavior-preflight-result/1",
+  "status": "FAIL",
+  "deduplicated_windows": 226,
+  "baseline_elapsed_seconds": 0.41637708398047835,
+  "candidates": [
+    {
+      "candidate_id": "R1",
+      "status": "FAIL",
+      "counts": {
+        "changed_choices": 0,
+        "fallback_score_mismatches": 0,
+        "trigger_without_score_change": 0,
+        "triggered_actions": 41,
+        "triggered_windows": 39,
+        "windows": 226
+      },
+      "problems": [
+        "no_real_behavior_change"
+      ],
+      "elapsed_seconds": 0.48673770803725347,
+      "mean_evaluate_ms": 2.15370667273121,
+      "scope": "既有已消费真实公开观察；验证触发/退化/行为，不是效果或线上时限证据"
+    },
+    {
+      "candidate_id": "R2",
+      "status": "PASS",
+      "counts": {
+        "changed_choices": 4,
+        "fallback_score_mismatches": 0,
+        "transition:discard->discard": 4,
+        "trigger_without_score_change": 0,
+        "triggered_actions": 12,
+        "triggered_windows": 11,
+        "windows": 226
+      },
+      "problems": [],
+      "elapsed_seconds": 0.5512898750021122,
+      "mean_evaluate_ms": 2.4393357300978415,
+      "scope": "既有已消费真实公开观察；验证触发/退化/行为，不是效果或线上时限证据"
+    }
+  ],
+  "effect_tables": 0,
+  "model_calls": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false
+}

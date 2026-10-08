@@ -1,0 +1,43 @@
+{
+  "active_research_parent": true,
+  "candidate_sha256": "0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d",
+  "checks": {
+    "p46_candidate_identity": true,
+    "p46_passed": true,
+    "packaged_digest_matches_constant": true,
+    "packaged_source_exactly_matches_p45": true,
+    "strategy_absent_from_network_registry": true,
+    "strategy_in_research_registry": true
+  },
+  "choose_replay": {
+    "action_value_failures": 0,
+    "all_exact_plan_equal": true,
+    "latency_ms": {
+      "max": 6.34825,
+      "p50": 0.904917,
+      "p95": 1.948833,
+      "p99": 6.22775
+    },
+    "requests": 377
+  },
+  "next": "执行累计候选全链并发、截止、409重规划与紧急降级预检",
+  "release_eligible": false,
+  "schema": "r18-p47-integrated-parent-registration-result/1",
+  "scoring_replay": {
+    "all_exact_batch_equal": true,
+    "calls": 1140,
+    "latency_ms": {
+      "max": 52.9665,
+      "p50": 0.8385,
+      "p95": 2.487459,
+      "p99": 6.228416
+    },
+    "maximum_operations": 55431,
+    "operation_limit": 100000,
+    "repeats": 3,
+    "views": 380
+  },
+  "selection_eligible": true,
+  "status": "PASS_P47_INTEGRATED_PARENT_REGISTRATION",
+  "strategy": "action_value:r18_integrated_positive_v1"
+}

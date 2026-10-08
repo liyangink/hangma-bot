@@ -1,0 +1,57 @@
+{
+  "status": "COMPLETE_STRUCTURAL_PHASE_B_DEVELOPMENT_RANKING",
+  "configurations": 10,
+  "new_roots_per_configuration": 16,
+  "cumulative_roots_per_configuration": 32,
+  "candidate_tables": 1280,
+  "baseline_tables": 128,
+  "full_tables": 1408,
+  "selected_for_c": [
+    "s3-cfg-02",
+    "s3-cfg-04",
+    "v2-control-default"
+  ],
+  "leader": {
+    "config_id": "s3-cfg-02",
+    "candidate_id": "action_value_v1:offline-structural-v1:984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+    "kind": "action_value_source",
+    "family": "S3",
+    "is_zero_effect": false,
+    "is_author_default": false,
+    "fitness_mean_delta_low": 0.03125,
+    "mean_delta": 0.04296875,
+    "mean_delta_high": 0.0546875,
+    "H": {
+      "n_roots": 16,
+      "mean_delta": 0.0546875,
+      "standard_error": 0.049697981074855214,
+      "interval_95": [
+        -0.04271875301106942,
+        0.15209375301106942
+      ]
+    },
+    "M": {
+      "n_roots": 16,
+      "mean_delta": 0.03125,
+      "standard_error": 0.038696199210430646,
+      "interval_95": [
+        -0.044593156791031346,
+        0.10709315679103135
+      ]
+    }
+  },
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 1408.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "按 phase-c-freeze 补 H/M 各16根并冻结单一开发冠军"
+}

@@ -1,0 +1,25 @@
+{
+  "changed_production_modules": {
+    "hangma_bot.hangma.special_rules": {
+      "current_sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70",
+      "frozen_sha256": "3592e931baae4e6e8da290dc44acd0ddb1673ec6831a2262244a4761976be487"
+    }
+  },
+  "checks": {
+    "run_completed_1024_tables": true,
+    "run_failures_empty": true,
+    "runtime_identity_changed": true,
+    "special_rules_changed": true
+  },
+  "current_production_digest": "51e5b13f06ee2283366c9c1d4954207146be355fd05b43a067a97cfc74f91a11",
+  "data_policy": "保留全部阶段作执行审计；不得计算或引用强度统计，不得补签旧身份。",
+  "frozen_production_digest": "65eecd560a48fd1eb22f95874f90ec8cc1d4315cc65bb86ab4f1600805deccd5",
+  "next": "冻结自由赛规则修复后的新生产身份，使用新panel_seed重跑独立确认。",
+  "reason": "P56 预注册后、1024桌执行结束前，官方自由赛复盘修改了special_rules 与其记录派生调用方；分析前冻结身份校验正确拒绝继续。",
+  "schema": "r18-p56-runtime-drift-invalidation/1",
+  "selection_eligible": false,
+  "status": "INVALID_P56_DEPENDENCY_DRIFT",
+  "strength_analyzed": false,
+  "strength_claim": false,
+  "tables_executed": 1024
+}

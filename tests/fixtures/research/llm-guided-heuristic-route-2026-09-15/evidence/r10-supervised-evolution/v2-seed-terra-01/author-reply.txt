@@ -1,0 +1,201 @@
+{以合法胡、可信直接牌效、公开手牌与牌河/副露固定项依次构成默认 V2 基础分，并将无已生产事实的动作严格锚定在已知最低分以下。}
+```json
+{
+  "trigger": "首次决策的正常完整规则事实窗口中，合法 hu 取基础 1000；其余具 hand_progress 且 shanten_after 为非布尔非负整数的动作取 -100×向听加有效牌剩余枚数和，pass 仅在该牌效、无 best_followup_discard 且 replacement_draw_unknown 为 false 时取同式；再叠加公开财神、弃牌熟张/副露邻近风险、吃碰杠和桌内名次固定项。competition、阶段门线、剩余赛程和参考代理均不参与。无直接可信牌效但已有路线、分支、结算或家族事实时只以 0 作为“已生产但 V2 基础范围之外”的中性基础并在 trace 标注，不加路线奖励；完全无已生产事实的动作不是 0 分。",
+  "changed_branches": "这是 I1 的首个冻结 V2 基础排序种子，非 M1 修订，故没有父代可作生产首选差异比较。窗口类为“可信 discard/peng/chi/gang 与无事实候选并存”：可信动作按基础公式计分，无事实 action_key 取已知最低分−1，因而可能由未知动作首选变为可信动作首选；该差异来自未知锚定而非新增奖励。M1 四项读数在本首答均为不适用：①分值变化项数=无父代；②排序是否变化=无父代；③最终首选动作=无父代→本种子不适用；④弃权/未知掩码=无父代。本种子自身在全未知窗口 ABSTAIN，在有已知评分窗口对未知严格置底。",
+  "expected_direction": "预期在正常、可信牌效齐全的开发面板窗口复现默认 V2 的可审计基础排序；在混有未分析合法动作的窗口，避免未知动作因伪造 0 分压过已知负分动作。没有实验成绩、本种子不声明提分或赛事增强；带路线/分支而缺直接牌效的窗口明确属于 V2 范围之外，0 仅表示已生产事实未被本基础公式量化，可能与完整 V2 不等价。",
+  "counterexample": "摸牌已包含在满足 14−3×我方副露组数的 my_hand 时不再加 drawn_tile，避免双计财神；合法 hu 使用规则给定的合法身份和基础 1000，正常牌码支持范围内即使可信非胡基础分较高也不能压胡，且不自判胡。完全未知动作不能凭 0 分越过已知负分；若全窗口均未知必须 ABSTAIN。pass 的向听不进入 best_shanten，后者只在 trace 中由可信非 pass 的向听及合法 hu 的 −1 计算。下家恰为庄家时同花色数牌邻近同时计下家 1 与庄家 0.5，风险单位为 1.5；桌内并列第一按严格高于我方积分的座位数计名次，仍可触发熟张弃牌加分。缺少 pass 等待基线时不冒充完整 V2 等价，而按未知/已生产事实范围处理；字牌不作邻近牌，缺失、布尔或非有限有效牌读数不冒充有效牌效。"
+}
+```
+```python
+"""候选机制说明：默认 V2 基础排序与严格未知锚定的可审计种子。"""
+
+def score_actions(view):
+    """按同一动作窗口的只读可见事实，为全部合法动作评分。"""
+    actions = view.get("actions")
+    visible = view.get("visible_state")
+    if actions is None or visible is None or len(actions) == 0:
+        return {"status": "ABSTAIN", "reason": "缺少动作表或公开可见状态"}
+    seat = visible.get("seat")
+    if seat is None or seat is True or seat is False or seat < 0 or seat > 3:
+        return {"status": "ABSTAIN", "reason": "我方座位不可用"}
+    hand = visible.get("my_hand")
+    discards = visible.get("discards")
+    melds = visible.get("melds")
+    scores = visible.get("table_scores")
+    rule_state = visible.get("rule_state")
+    if hand is None or discards is None or melds is None or scores is None or rule_state is None:
+        return {"status": "ABSTAIN", "reason": "基础公式所需公开状态缺失"}
+    if len(discards) != 4 or len(melds) != 4 or len(scores) != 4:
+        return {"status": "ABSTAIN", "reason": "四座公开状态长度不合法"}
+    wealth = rule_state.get("wealth_god")
+    if wealth is None:
+        return {"status": "ABSTAIN", "reason": "财神牌码缺失"}
+    own_meld_count = len(melds[seat])
+    wealth_count = hand.count(wealth)
+    drawn = visible.get("drawn_tile")
+    if drawn is not None and len(hand) != 14 - 3 * own_meld_count and drawn == wealth:
+        wealth_count += 1
+    table_rank = 1
+    own_table_score = scores[seat]
+    if own_table_score is None or own_table_score is True or own_table_score is False:
+        return {"status": "ABSTAIN", "reason": "我方桌内积分缺失"}
+    own_table_value = float(own_table_score)
+    if own_table_value - own_table_value != 0:
+        return {"status": "ABSTAIN", "reason": "我方桌内积分非有限"}
+    for item in scores:
+        if item is None or item is True or item is False:
+            return {"status": "ABSTAIN", "reason": "桌内积分缺失"}
+        value = float(item)
+        if value - value != 0:
+            return {"status": "ABSTAIN", "reason": "桌内积分非有限"}
+        if value > own_table_value:
+            table_rank += 1
+    dealer = visible.get("dealer_seat")
+    if dealer is None or dealer is True or dealer is False or dealer < 0 or dealer > 3:
+        return {"status": "ABSTAIN", "reason": "庄家座位不可用"}
+    known = []
+    pending = []
+    best_shanten = None
+    for action in actions:
+        key = action.get("action_key")
+        kind = action.get("action_type")
+        if key is None or kind is None or action.get("is_legal") is not True:
+            return {"status": "ABSTAIN", "reason": "动作合法身份或键缺失"}
+        direct = False
+        base = None
+        shanten = action.get("shanten_after")
+        useful = action.get("useful_tiles")
+        fact_kind = action.get("fact_kind")
+        if kind == "hu":
+            direct = True
+            base = 1000.0
+            if best_shanten is None or -1 < best_shanten:
+                best_shanten = -1
+        elif fact_kind == "hand_progress" and shanten is not None and shanten is not True and shanten is not False and shanten >= 0:
+            valid_useful = True
+            support = 0.0
+            for tile in useful:
+                remaining = tile.get("remaining_estimate")
+                if remaining is None or remaining is True or remaining is False:
+                    valid_useful = False
+                else:
+                    amount = float(remaining)
+                    if amount - amount != 0:
+                        valid_useful = False
+                    else:
+                        support += amount
+            if valid_useful:
+                direct = True
+                base = -100.0 * float(shanten) + round(support, 1)
+                if kind != "pass" and (best_shanten is None or shanten < best_shanten):
+                    best_shanten = shanten
+        if kind == "pass" and direct:
+            if action.get("best_followup_discard") is not None or action.get("replacement_draw_unknown") is not False:
+                direct = False
+                base = None
+        produced = action.get("immediate_settlement") is not None
+        routes = action.get("routes")
+        branches = action.get("followup_branches")
+        families = action.get("family_progress_entries")
+        if routes is not None and len(routes) > 0:
+            produced = True
+        if branches is not None:
+            produced = True
+        if families is not None and len(families) > 0:
+            produced = True
+        if direct:
+            pending.append({"action": action, "base": base, "basis": "direct_v2", "shanten": shanten})
+        elif produced:
+            pending.append({"action": action, "base": 0.0, "basis": "produced_outside_v2", "shanten": None})
+        else:
+            pending.append({"action": action, "base": None, "basis": "unknown", "shanten": None})
+    for item in pending:
+        if item.get("base") is not None:
+            known.append(item.get("base"))
+    if len(known) == 0:
+        return {"status": "ABSTAIN", "reason": "全部动作均无已生产事实，未知不能取零分"}
+    floor = min(known)
+    entries = []
+    for item in pending:
+        action = item.get("action")
+        key = action.get("action_key")
+        kind = action.get("action_type")
+        base = item.get("base")
+        unknown = base is None
+        if unknown:
+            total = floor - 1.0
+        else:
+            total = base
+        retained_wealth = wealth_count
+        tile_code = None
+        if kind == "discard":
+            tile_code = key[8:]
+            if tile_code == wealth:
+                retained_wealth -= 1
+        wealth_part = 5.0 * retained_wealth
+        total += wealth_part
+        wealth_discard_part = 0.0
+        river_part = 0.0
+        risk_units = 0.0
+        style_part = 0.0
+        familiar = False
+        if kind == "discard":
+            if tile_code == wealth:
+                wealth_discard_part = -60.0
+                total += wealth_discard_part
+            for river in discards:
+                if river.count(tile_code) > 0:
+                    familiar = True
+            if familiar:
+                river_part = 3.0
+                total += river_part
+            elif len(tile_code) >= 2 and tile_code[0] in "123456789" and tile_code[-1] in "wbt":
+                suit = tile_code[-1]
+                rank = int(tile_code[0])
+                next_seat = (seat + 1) % 4
+                for meld in melds[next_seat]:
+                    for other in meld.get("tiles"):
+                        if len(other) >= 2 and other[0] in "123456789" and other[-1] == suit and abs(int(other[0]) - rank) <= 2:
+                            risk_units += 1.0
+                if dealer != seat:
+                    for meld in melds[dealer]:
+                        for other in meld.get("tiles"):
+                            if len(other) >= 2 and other[0] in "123456789" and other[-1] == suit and abs(int(other[0]) - rank) <= 2:
+                                risk_units += 0.5
+                total -= round(6.0 * risk_units, 1)
+            if table_rank == 1 and familiar:
+                style_part = 4.0
+            elif table_rank == 4 and item.get("shanten") is not None and item.get("shanten") == best_shanten:
+                style_part = 2.0
+            total = round(total, 6)
+            total += style_part
+            total = round(total, 6)
+        else:
+            fixed = 0.0
+            if kind == "peng":
+                fixed = -6.0
+            elif kind == "chi":
+                fixed = -10.0
+            elif kind == "gang":
+                fixed = 40.0
+            total += fixed
+            total = round(total, 6)
+        trace = {"basis": item.get("basis"), "base_score": base, "shanten_after": item.get("shanten"), "best_shanten_non_pass": best_shanten, "wealth_part": wealth_part, "wealth_discard_part": wealth_discard_part, "river_part": river_part, "risk_units": risk_units, "style_part": style_part, "unknown": unknown, "unknown_policy": "known_floor_minus_1" if unknown else None, "scope": "direct_v2_or_produced_outside_v2"}
+        entries.append({"action_key": key, "score": total, "trace": trace})
+    final_floor = None
+    for entry in entries:
+        if entry.get("trace").get("unknown") is not True:
+            score = entry.get("score")
+            if final_floor is None or score < final_floor:
+                final_floor = score
+    if final_floor is None:
+        return {"status": "ABSTAIN", "reason": "没有可用已知最终评分，未知不能取零分"}
+    final_entries = []
+    for entry in entries:
+        score = entry.get("score")
+        if entry.get("trace").get("unknown") is True:
+            score = final_floor - 1.0
+        final_entries.append({"action_key": entry.get("action_key"), "score": score, "trace": entry.get("trace")})
+    return {"status": "SCORED", "entries": final_entries, "reason": "未知动作严格锚定在本窗口已知最终分最低值以下；路线和分支事实未获额外奖励"}
+```

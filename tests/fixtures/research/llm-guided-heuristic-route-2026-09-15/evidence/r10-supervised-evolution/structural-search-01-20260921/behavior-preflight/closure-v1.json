@@ -1,0 +1,7 @@
+{
+  "schema": "r10-structural-behavior-preflight-closure/1",
+  "status": "SUPERSEDED_MEASUREMENT_BUG",
+  "problem": "v1 的 same_scores 把允许变化的 ScoreBatch.reason 诊断文案纳入逐分等价，导致 S2/S4 即使动作分完全相同也被记 changed_scores。",
+  "correction": "v2 只比较 status 与每动作 score；reason 变化单独报告。",
+  "effect_tables": 0
+}

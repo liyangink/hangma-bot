@@ -1,0 +1,86 @@
+{
+  "all_touched_table_delta": 289,
+  "boundary": "严格子集按赛后响应/下一真实摸牌筛出，仅用于检验机制可兑现性；不能据此推断总体因果收益或作为在线特征。",
+  "counts": {
+    "first|natural_gap_lower": 23,
+    "next1|natural_gap|lower": 19,
+    "next1|natural_gap|same": 4,
+    "next1|white|same": 23,
+    "next2|both_present": 22,
+    "next2|censored": 1,
+    "next2|natural_gap|higher": 1,
+    "next2|natural_gap|lower": 18,
+    "next2|natural_gap|same": 3,
+    "next2|white|same": 22,
+    "strict|next1|combined_shanten_after|lower": 1,
+    "strict|next1|combined_shanten_after|same": 15,
+    "strict|next1|natural_gap|lower": 13,
+    "strict|next1|natural_gap|same": 3,
+    "strict|next1|seven_pairs_shanten_after|lower": 1,
+    "strict|next1|seven_pairs_shanten_after|same": 15,
+    "strict|next1|standard_shanten_after|lower": 13,
+    "strict|next1|standard_shanten_after|same": 3,
+    "strict|next1|white|same": 16,
+    "strict|next2|natural_gap|higher": 1,
+    "strict|next2|natural_gap|lower": 13,
+    "strict|next2|natural_gap|same": 2,
+    "strict|next2|same_actual_draw": 11,
+    "strict|next2|white|same": 16,
+    "strict|score|negative": 2,
+    "strict|score|positive": 8,
+    "strict|score|zero": 6
+  },
+  "schema": "g50-g49-route-analysis/1",
+  "script_sha256": "67cdfe89e2e489055780a8a4082fdcc4e984ae1c2048b8269372fe4574b57386",
+  "source_sha256": "977db3151c02a47df6a595642f4e959bcc5d03e822b14874b4944bfb86eb52f5",
+  "strict_negative_cases": [
+    {
+      "next1_natural_gap": {
+        "baseline": 5,
+        "candidate": 4
+      },
+      "table_delta": -15,
+      "table_id": "np-H-2026122706-r12-s0-t1"
+    },
+    {
+      "next1_natural_gap": {
+        "baseline": 5,
+        "candidate": 4
+      },
+      "table_delta": -30,
+      "table_id": "np-M-2026122706-r11-s3-t2"
+    }
+  ],
+  "strict_table_count": 16,
+  "top_cases": [
+    {
+      "candidate_first_hand_details": [
+        "七对",
+        "爆头"
+      ],
+      "delta": 136,
+      "first_action": {
+        "baseline": "discard:8b",
+        "candidate": "discard:9w"
+      },
+      "first_hand_white_after": 1,
+      "next1_white_same": true,
+      "table_id": "np-M-2026122706-r05-s3-t1"
+    },
+    {
+      "candidate_first_hand_details": [
+        "七对",
+        "爆头"
+      ],
+      "delta": 97,
+      "first_action": {
+        "baseline": "discard:8b",
+        "candidate": "discard:3w"
+      },
+      "first_hand_white_after": 1,
+      "next1_white_same": true,
+      "table_id": "np-M-2026122706-r09-s0-t2"
+    }
+  ],
+  "top_two_positive_delta": 233
+}

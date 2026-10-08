@@ -5,12 +5,11 @@
 ## 1. 拉取程序
 
 ```bash
-git clone --filter=blob:none --sparse https://github.com/liyangink/hangma-bot.git
+git clone https://github.com/liyangink/hangma-bot.git
 cd hangma-bot
-git sparse-checkout set configs doc prebuilt scripts spectator src tests token
 ```
 
-该方式只检出参赛代码和发布依赖，无须下载 `review/`、`datasets/` 等离线数据。当前 P0 使用 `approved-v3` 发布包；资格证明已随 `prebuilt/` 交付，仍执行原摘要校验。v3重新冻结更新后的主线源码，P0公式、规则、二进制和原批准资格保持。测试赛使用的v2快照保留；更新代码后重新执行`check`生成匹配当前包的配置。
+普通克隆已包含参赛程序、共享工具和精选回归夹具；完整离线历史已从 Git 移除。当前正式赛默认 P0 `approved-v5`，测试房、测试赛事和自由赛默认 G37-RF1 `v2` 包装。此次仅重新绑定共享源码，算法、规则、二进制和原批准资格保持。更新代码后重新执行 `check`，生成匹配当前发布包的配置。
 
 ## 2. 检查赛事
 

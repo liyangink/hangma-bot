@@ -1,0 +1,1148 @@
+{
+  "bank_manifest_sha256": "597d754cda5cee4c1b73187915937efefde813d4b7fceb589cacec51411e78a6",
+  "bank_split_sha256": "d4441fe76087317ddd0139966599281842c80d39107feacecac3fcbbd88fd8ad",
+  "by_type": {
+    "seven_pairs_tradeoff": {
+      "candidate_optimal_hits": 48,
+      "cases": 48,
+      "mean_capability_gain": 1.1803278688524588,
+      "parent_optimal_hits": 0,
+      "triggered": 48
+    },
+    "standard_switch": {
+      "candidate_optimal_hits": 24,
+      "cases": 24,
+      "mean_capability_gain": 0.0,
+      "parent_optimal_hits": 24,
+      "triggered": 0
+    }
+  },
+  "candidate_sha256": "8cb4acd1809c249b7e2a3cc8453998cec6fde4b4a09d10caa53a338bc9690d8c",
+  "checks": {
+    "expected_counts": true,
+    "operations_within_default_limit": true,
+    "problems_zero": true,
+    "seven_pairs_all_hit_and_trigger": true,
+    "seven_pairs_parent_headroom_all": true,
+    "standard_controls_both_hit": true,
+    "standard_controls_never_trigger": true
+  },
+  "max_candidate_operations": 3902,
+  "parent_sha256": "02a0c09b790a5cb264b1a4a9f9e2e87a827263a9f04273aae83371f702ddf9cb",
+  "problems": [],
+  "release_eligible": false,
+  "rows": [
+    {
+      "candidate_action": "discard:2b",
+      "candidate_operations": 3328,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-002",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:2b",
+        "discard:3b"
+      ],
+      "parent_action": "discard:1b",
+      "reachability_witness_sha256": "f9436190df161415a45227496b7c31e112e64009f2a575cda072be7a41d8f19e",
+      "trigger_keys": [
+        "discard:2b"
+      ]
+    },
+    {
+      "candidate_action": "discard:5w",
+      "candidate_operations": 3378,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-003",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:5w",
+        "discard:6w"
+      ],
+      "parent_action": "discard:4w",
+      "reachability_witness_sha256": "ef7ae9b5bdf73bb2a20f80907b0c426de918aaf19c4b5de9e42d015d6601ae7b",
+      "trigger_keys": [
+        "discard:5w"
+      ]
+    },
+    {
+      "candidate_action": "discard:7t",
+      "candidate_operations": 3358,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-005",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7t",
+        "discard:8t"
+      ],
+      "parent_action": "discard:6t",
+      "reachability_witness_sha256": "e58c62ffae406f5906ce26030da5ed2a5e9876d060e1f1b04838e7bb415c8283",
+      "trigger_keys": [
+        "discard:7t"
+      ]
+    },
+    {
+      "candidate_action": "discard:5t",
+      "candidate_operations": 3366,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-006",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:5t",
+        "discard:6t"
+      ],
+      "parent_action": "discard:4t",
+      "reachability_witness_sha256": "3ec7d8d27cf28ec9d230f180008df3e0bca7b966dc8bc3a96a210a42a81a1aaa",
+      "trigger_keys": [
+        "discard:5t"
+      ]
+    },
+    {
+      "candidate_action": "discard:2b",
+      "candidate_operations": 3358,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-007",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:2b",
+        "discard:3b"
+      ],
+      "parent_action": "discard:1b",
+      "reachability_witness_sha256": "ad8c2433fcf64c246eb3c40602f12694f09a93bd8f7b1041dbbd4a05f5313bd5",
+      "trigger_keys": [
+        "discard:2b"
+      ]
+    },
+    {
+      "candidate_action": "discard:2b",
+      "candidate_operations": 3358,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-008",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:2b",
+        "discard:3b"
+      ],
+      "parent_action": "discard:1b",
+      "reachability_witness_sha256": "62fb802ad90697154c96cd4b80efb65490693b251196f462a92570c30106c730",
+      "trigger_keys": [
+        "discard:2b"
+      ]
+    },
+    {
+      "candidate_action": "discard:2b",
+      "candidate_operations": 3358,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-009",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:2b",
+        "discard:3b"
+      ],
+      "parent_action": "discard:1b",
+      "reachability_witness_sha256": "85c76e1a6f0ffc2924ec1cfbe21791351ff583650f68a14e0db6916f84da4ae7",
+      "trigger_keys": [
+        "discard:2b"
+      ]
+    },
+    {
+      "candidate_action": "discard:2b",
+      "candidate_operations": 3358,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-010",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:2b",
+        "discard:3b"
+      ],
+      "parent_action": "discard:1b",
+      "reachability_witness_sha256": "deef53713a3c69f6c50220989eb35141ee69b3689682543f8ae5ad2eff57d714",
+      "trigger_keys": [
+        "discard:2b"
+      ]
+    },
+    {
+      "candidate_action": "discard:2t",
+      "candidate_operations": 3348,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-011",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:2t",
+        "discard:3t"
+      ],
+      "parent_action": "discard:1t",
+      "reachability_witness_sha256": "78f704f682f6d85f6d8dfa339e3090d933ca9dc0e721a011e48df76b572ed2c7",
+      "trigger_keys": [
+        "discard:2t"
+      ]
+    },
+    {
+      "candidate_action": "discard:2t",
+      "candidate_operations": 3358,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-014",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:2t",
+        "discard:3t"
+      ],
+      "parent_action": "discard:1t",
+      "reachability_witness_sha256": "be4f020b04b07e4003c5128ddcf25beda77bd98d191d11f2af173b38db3c9b1d",
+      "trigger_keys": [
+        "discard:2t"
+      ]
+    },
+    {
+      "candidate_action": "discard:7b",
+      "candidate_operations": 3369,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-015",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7b",
+        "discard:8b"
+      ],
+      "parent_action": "discard:6b",
+      "reachability_witness_sha256": "8578046f485a970fe8e3da0c29831a0de7847d6d7739fb30060ffdc28f5eef0d",
+      "trigger_keys": [
+        "discard:7b"
+      ]
+    },
+    {
+      "candidate_action": "discard:3t",
+      "candidate_operations": 3336,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-016",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:3t",
+        "discard:4t"
+      ],
+      "parent_action": "discard:2t",
+      "reachability_witness_sha256": "94c6d38e4c01253f7cb609b523bea4ee90dbd7a1733b1bf78d7e5fd7fb199040",
+      "trigger_keys": [
+        "discard:3t"
+      ]
+    },
+    {
+      "candidate_action": "discard:2w",
+      "candidate_operations": 3358,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-017",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:2w",
+        "discard:3w"
+      ],
+      "parent_action": "discard:1w",
+      "reachability_witness_sha256": "9dadb54fee0f606439d6954cfec774cbac32e1bf20feb2d26525e944931d2136",
+      "trigger_keys": [
+        "discard:2w"
+      ]
+    },
+    {
+      "candidate_action": "discard:2w",
+      "candidate_operations": 3358,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-020",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:2w",
+        "discard:3w"
+      ],
+      "parent_action": "discard:1w",
+      "reachability_witness_sha256": "37126e61d6f3fcf1d0c6a88cd3c20cb5cd158853b57478c88aab479e6a39d0e6",
+      "trigger_keys": [
+        "discard:2w"
+      ]
+    },
+    {
+      "candidate_action": "discard:2w",
+      "candidate_operations": 3348,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-021",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:2w",
+        "discard:3w"
+      ],
+      "parent_action": "discard:1w",
+      "reachability_witness_sha256": "208370c112ab73b0e8f3554f6f39a88fd4c62715cd011df43240f93212509c2e",
+      "trigger_keys": [
+        "discard:2w"
+      ]
+    },
+    {
+      "candidate_action": "discard:3b",
+      "candidate_operations": 3368,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-022",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:3b",
+        "discard:4b"
+      ],
+      "parent_action": "discard:2b",
+      "reachability_witness_sha256": "ec20c9041eb7ca9f793a07cc21f8bdeadf4ac8484ddc27a559253a8bb6fe7b2e",
+      "trigger_keys": [
+        "discard:3b"
+      ]
+    },
+    {
+      "candidate_action": "discard:4w",
+      "candidate_operations": 3367,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-024",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:4w",
+        "discard:5w"
+      ],
+      "parent_action": "discard:3w",
+      "reachability_witness_sha256": "e98fda0c62c6711d672be7d322b64107f332c030ad5927f9cafcbf8abd812229",
+      "trigger_keys": [
+        "discard:4w"
+      ]
+    },
+    {
+      "candidate_action": "discard:8w",
+      "candidate_operations": 3381,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-025",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:8w",
+        "discard:9w"
+      ],
+      "parent_action": "discard:7w",
+      "reachability_witness_sha256": "1ea781e7e2021659eb82b51f1f04f9c68487dec5c33cb56c6d1f6629303c98aa",
+      "trigger_keys": [
+        "discard:8w"
+      ]
+    },
+    {
+      "candidate_action": "discard:8t",
+      "candidate_operations": 3349,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-026",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:8t",
+        "discard:9t"
+      ],
+      "parent_action": "discard:7t",
+      "reachability_witness_sha256": "58a737f469146a17afaedb1d9c234b6cd97102ab1d57fc6a7a065a28f85a8a3a",
+      "trigger_keys": [
+        "discard:8t"
+      ]
+    },
+    {
+      "candidate_action": "discard:3b",
+      "candidate_operations": 3368,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-027",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:3b",
+        "discard:4b"
+      ],
+      "parent_action": "discard:2b",
+      "reachability_witness_sha256": "d40843221ce2462a444eadfdd150b501658e4cbc8dbff9cc5d917d82e073d57d",
+      "trigger_keys": [
+        "discard:3b"
+      ]
+    },
+    {
+      "candidate_action": "discard:3t",
+      "candidate_operations": 3368,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-028",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:3t",
+        "discard:4t"
+      ],
+      "parent_action": "discard:2t",
+      "reachability_witness_sha256": "9acc7cbfae3495941d6587332162a8383fa328870480403bd5d8a4d79d316386",
+      "trigger_keys": [
+        "discard:3t"
+      ]
+    },
+    {
+      "candidate_action": "discard:6w",
+      "candidate_operations": 3388,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-033",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:6w",
+        "discard:7w"
+      ],
+      "parent_action": "discard:5w",
+      "reachability_witness_sha256": "d8b52215413e2585211a2ab9dc88b5c9d5079fb53f95ac74b417d97e981d4cca",
+      "trigger_keys": [
+        "discard:6w"
+      ]
+    },
+    {
+      "candidate_action": "discard:6w",
+      "candidate_operations": 3399,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-034",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:6w",
+        "discard:7w"
+      ],
+      "parent_action": "discard:5w",
+      "reachability_witness_sha256": "148a7f9efdc9a91128c01abf46afb06f2a446ea9f7bfad71aba1d0eaf179340d",
+      "trigger_keys": [
+        "discard:6w"
+      ]
+    },
+    {
+      "candidate_action": "discard:4b",
+      "candidate_operations": 3386,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-035",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:4b",
+        "discard:5b"
+      ],
+      "parent_action": "discard:3b",
+      "reachability_witness_sha256": "356b1e4d7a04d93f38548860f5d878263c4c5941ce8afe106591ccaba6f241b2",
+      "trigger_keys": [
+        "discard:4b"
+      ]
+    },
+    {
+      "candidate_action": "discard:4b",
+      "candidate_operations": 3386,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-036",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:4b",
+        "discard:5b"
+      ],
+      "parent_action": "discard:3b",
+      "reachability_witness_sha256": "45d9d9166b8ad7d34da7061cb69b607efe8994b6ddfbaa85ae455d6ab102200e",
+      "trigger_keys": [
+        "discard:4b"
+      ]
+    },
+    {
+      "candidate_action": "discard:8b",
+      "candidate_operations": 3381,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-037",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:8b",
+        "discard:9b"
+      ],
+      "parent_action": "discard:7b",
+      "reachability_witness_sha256": "b93f76d7a924e2fbf9c6f7a010f74bbc46501f04cc1a65bb51b6346fbf9d272d",
+      "trigger_keys": [
+        "discard:8b"
+      ]
+    },
+    {
+      "candidate_action": "discard:7t",
+      "candidate_operations": 3369,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-038",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7t",
+        "discard:8t"
+      ],
+      "parent_action": "discard:6t",
+      "reachability_witness_sha256": "f6233eb9f9af1f791359616cd8c87057ff9dbac99b4c6e9ae0821d5555cc386a",
+      "trigger_keys": [
+        "discard:7t"
+      ]
+    },
+    {
+      "candidate_action": "discard:7t",
+      "candidate_operations": 3401,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-040",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7t",
+        "discard:8t"
+      ],
+      "parent_action": "discard:6t",
+      "reachability_witness_sha256": "bafe2c09f3aea296ad844d34472289c990ea3ba201141073679bfadb56f59225",
+      "trigger_keys": [
+        "discard:7t"
+      ]
+    },
+    {
+      "candidate_action": "discard:8t",
+      "candidate_operations": 3380,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-041",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:8t",
+        "discard:9t"
+      ],
+      "parent_action": "discard:7t",
+      "reachability_witness_sha256": "ad71637639c3d630751769ff8ab01d4d39b40bb338d214afdab1895aafe8f5f5",
+      "trigger_keys": [
+        "discard:8t"
+      ]
+    },
+    {
+      "candidate_action": "discard:4b",
+      "candidate_operations": 3388,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-042",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:4b",
+        "discard:5b"
+      ],
+      "parent_action": "discard:3b",
+      "reachability_witness_sha256": "ea98ef488cac64646626e530e928db66e9f822cff9ff1a78a8744850968f09ab",
+      "trigger_keys": [
+        "discard:4b"
+      ]
+    },
+    {
+      "candidate_action": "discard:5b",
+      "candidate_operations": 3366,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-043",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:5b",
+        "discard:6b"
+      ],
+      "parent_action": "discard:4b",
+      "reachability_witness_sha256": "81286ac9aa52a059ffdfa82fd0927928f9b6795e60d541160dc3beadd6bc1f6d",
+      "trigger_keys": [
+        "discard:5b"
+      ]
+    },
+    {
+      "candidate_action": "discard:7b",
+      "candidate_operations": 3400,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-044",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7b",
+        "discard:8b"
+      ],
+      "parent_action": "discard:6b",
+      "reachability_witness_sha256": "d7afb2945a088e3fd958c214fa2130bcc719f7aafa1d985d930bb663d2fd273d",
+      "trigger_keys": [
+        "discard:7b"
+      ]
+    },
+    {
+      "candidate_action": "discard:6b",
+      "candidate_operations": 3398,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-045",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:6b",
+        "discard:7b"
+      ],
+      "parent_action": "discard:5b",
+      "reachability_witness_sha256": "18958779bd50d3d043e6465549773f2b367a7a400b81e31f2b998b045bf7aa42",
+      "trigger_keys": [
+        "discard:6b"
+      ]
+    },
+    {
+      "candidate_action": "discard:4t",
+      "candidate_operations": 3378,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-047",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:4t",
+        "discard:5t"
+      ],
+      "parent_action": "discard:3t",
+      "reachability_witness_sha256": "539efb77dee442eb787d6fabaf3bf0908d7e47219987847e68e9fe3eab97df91",
+      "trigger_keys": [
+        "discard:4t"
+      ]
+    },
+    {
+      "candidate_action": "discard:5t",
+      "candidate_operations": 3396,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-048",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:5t",
+        "discard:6t"
+      ],
+      "parent_action": "discard:4t",
+      "reachability_witness_sha256": "a3ac5c87c0a9a48031626620c050da840575a78337bb9124ba72898e5d84ad9e",
+      "trigger_keys": [
+        "discard:5t"
+      ]
+    },
+    {
+      "candidate_action": "discard:7w",
+      "candidate_operations": 3401,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-050",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7w",
+        "discard:8w"
+      ],
+      "parent_action": "discard:6w",
+      "reachability_witness_sha256": "b8171014ab33f070f840121ba5296d98aedf9b2ce96268a710566dd42d91dc26",
+      "trigger_keys": [
+        "discard:7w"
+      ]
+    },
+    {
+      "candidate_action": "discard:6t",
+      "candidate_operations": 3387,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-052",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:6t",
+        "discard:7t"
+      ],
+      "parent_action": "discard:5t",
+      "reachability_witness_sha256": "87bca49df355099f5230e63597c38678bc1239190ba1bbbb1cf75312c66fb51e",
+      "trigger_keys": [
+        "discard:6t"
+      ]
+    },
+    {
+      "candidate_action": "discard:7t",
+      "candidate_operations": 3389,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-053",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7t",
+        "discard:8t"
+      ],
+      "parent_action": "discard:6t",
+      "reachability_witness_sha256": "fe14e4d3f133718d92c4f900a989faf66ad396751bd15c6585bc0cca15e057f3",
+      "trigger_keys": [
+        "discard:7t"
+      ]
+    },
+    {
+      "candidate_action": "discard:6w",
+      "candidate_operations": 3397,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-054",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:6w",
+        "discard:7w"
+      ],
+      "parent_action": "discard:5w",
+      "reachability_witness_sha256": "3181d940dc51ff5a39265e933665f2bd0392e948616ccbc76b53f2800053621c",
+      "trigger_keys": [
+        "discard:6w"
+      ]
+    },
+    {
+      "candidate_action": "discard:6w",
+      "candidate_operations": 3387,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-055",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:6w",
+        "discard:7w"
+      ],
+      "parent_action": "discard:5w",
+      "reachability_witness_sha256": "3486a3bded91d08283f12c9de0e1a071d7185e745085b0622ea1200dbb762ec5",
+      "trigger_keys": [
+        "discard:6w"
+      ]
+    },
+    {
+      "candidate_action": "discard:7b",
+      "candidate_operations": 3367,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-056",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7b",
+        "discard:8b"
+      ],
+      "parent_action": "discard:6b",
+      "reachability_witness_sha256": "962436380d3e168bb779baceeeeab9b9da56643134e0ba5d556dfb58d3bef4ca",
+      "trigger_keys": [
+        "discard:7b"
+      ]
+    },
+    {
+      "candidate_action": "discard:7b",
+      "candidate_operations": 3398,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-057",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7b",
+        "discard:8b"
+      ],
+      "parent_action": "discard:6b",
+      "reachability_witness_sha256": "ab8216e9e65400a27c0839de54ff229f5b78d6fea1d0292230d6ca6754b92c60",
+      "trigger_keys": [
+        "discard:7b"
+      ]
+    },
+    {
+      "candidate_action": "discard:7t",
+      "candidate_operations": 3397,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-058",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7t",
+        "discard:8t"
+      ],
+      "parent_action": "discard:6t",
+      "reachability_witness_sha256": "283eb9a7deab47bb1f630f8a51faa474198f5a27fd915d4f7af31a5387709799",
+      "trigger_keys": [
+        "discard:7t"
+      ]
+    },
+    {
+      "candidate_action": "discard:6t",
+      "candidate_operations": 3398,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-059",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:6t",
+        "discard:7t"
+      ],
+      "parent_action": "discard:5t",
+      "reachability_witness_sha256": "60872c65bd6ae0c2dd4d0a8f3186ce1f9ae047febfe29e60e54f84a3cbac9ece",
+      "trigger_keys": [
+        "discard:6t"
+      ]
+    },
+    {
+      "candidate_action": "discard:8b",
+      "candidate_operations": 3367,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-060",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:8b",
+        "discard:9b"
+      ],
+      "parent_action": "discard:7b",
+      "reachability_witness_sha256": "2083ab5935242dd16d091407d7995ff12b8198b4c4ea69832f6a29162939aeef",
+      "trigger_keys": [
+        "discard:8b"
+      ]
+    },
+    {
+      "candidate_action": "discard:8t",
+      "candidate_operations": 3368,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-062",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:8t",
+        "discard:9t"
+      ],
+      "parent_action": "discard:7t",
+      "reachability_witness_sha256": "70ca12efab657196f92b3ff503c06a1a6811476bd930d027cad7d6f863980dbd",
+      "trigger_keys": [
+        "discard:8t"
+      ]
+    },
+    {
+      "candidate_action": "discard:7b",
+      "candidate_operations": 3358,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-063",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7b",
+        "discard:8b"
+      ],
+      "parent_action": "discard:6b",
+      "reachability_witness_sha256": "75862f67af5b27adc5fa8a88145250be6fe1aeb89e931b66cd3b5319e61a30c3",
+      "trigger_keys": [
+        "discard:7b"
+      ]
+    },
+    {
+      "candidate_action": "discard:7t",
+      "candidate_operations": 3358,
+      "capability_gain": 1.180327868852459,
+      "case_id": "r18-7p-064",
+      "decision_type": "seven_pairs_tradeoff",
+      "optimal_action_keys": [
+        "discard:7t",
+        "discard:8t"
+      ],
+      "parent_action": "discard:6t",
+      "reachability_witness_sha256": "144189c06bddc4d6fe8202a88a69db13754c636b83e204b4ff871337bc07f764",
+      "trigger_keys": [
+        "discard:7t"
+      ]
+    },
+    {
+      "candidate_action": "discard:4b",
+      "candidate_operations": 3270,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-065",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:4b"
+      ],
+      "parent_action": "discard:4b",
+      "reachability_witness_sha256": "170b38b95009301b8decef78e4131509e041717b55fcfdcd676c3543d21ca9fe",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:8t",
+      "candidate_operations": 3291,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-066",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:8t"
+      ],
+      "parent_action": "discard:8t",
+      "reachability_witness_sha256": "266e5aeaa4807676783c97881afdae61e2b145547748f77a5ae3efb0c99a83e1",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:7b",
+      "candidate_operations": 3210,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-067",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:7b"
+      ],
+      "parent_action": "discard:7b",
+      "reachability_witness_sha256": "ac140c018623a221d2fea9c30d4cf3f9bfdec11910567c1572ffb27dfc742324",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:9w",
+      "candidate_operations": 3388,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-068",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:9w"
+      ],
+      "parent_action": "discard:9w",
+      "reachability_witness_sha256": "ef332ca873c70bad8ccf206e19fb0529d3636315299d0e135bd32f0acd600ac4",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:4w",
+      "candidate_operations": 3316,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-069",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:4w"
+      ],
+      "parent_action": "discard:4w",
+      "reachability_witness_sha256": "cbc80febc4289d74695361042b4e5978ee9c054da3e76c9e79a580e37021bcac",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:1t",
+      "candidate_operations": 3460,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-071",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:1t"
+      ],
+      "parent_action": "discard:1t",
+      "reachability_witness_sha256": "5c1856ebcd421ec1f64ca3568f5f81acca214953e12350a7b378c6bc04c8cad9",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:1t",
+      "candidate_operations": 3209,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-072",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:1t"
+      ],
+      "parent_action": "discard:1t",
+      "reachability_witness_sha256": "350ea8068084fc00343b84ea9b9c795f008046262edb95b0f1cea2c255926a69",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:1b",
+      "candidate_operations": 3324,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-073",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:1b"
+      ],
+      "parent_action": "discard:1b",
+      "reachability_witness_sha256": "9c8043e349d62ac52cc2271e0b5d7f89f85fab6e7d6d9fe94749f0477e1c85f0",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:1w",
+      "candidate_operations": 3574,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-074",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:1w",
+        "discard:4w"
+      ],
+      "parent_action": "discard:1w",
+      "reachability_witness_sha256": "ee950db579411bb9b4de41f6033f62c688286b35622c70e5ceaddfbe6ec19d8e",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:3t",
+      "candidate_operations": 3272,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-075",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:3t"
+      ],
+      "parent_action": "discard:3t",
+      "reachability_witness_sha256": "464303fd6f649862eace28cb6722bbfc866e9607047543f505e43e3667788933",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:9t",
+      "candidate_operations": 3170,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-077",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:9t"
+      ],
+      "parent_action": "discard:9t",
+      "reachability_witness_sha256": "2c5d4c8283e8aa393e7e1ed73e9c7ce7e18f1cdd0de58f6375c04eab3214c388",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:7t",
+      "candidate_operations": 3236,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-078",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:7t"
+      ],
+      "parent_action": "discard:7t",
+      "reachability_witness_sha256": "0d07c06c46c18b718d37b904c662ccca55bf9de75d70fb781933bd4b3328761c",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:9b",
+      "candidate_operations": 3339,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-079",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:9b"
+      ],
+      "parent_action": "discard:9b",
+      "reachability_witness_sha256": "891fc9e96cf60f483e25b3048fd3fcb8d0a345a4cca272c387ea81d5efba3f09",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:3t",
+      "candidate_operations": 3372,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-081",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:3t"
+      ],
+      "parent_action": "discard:3t",
+      "reachability_witness_sha256": "78ed926763aac404aa42d85de30c15a261d14d48e19e7b09aeca1cf098d6242b",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:北",
+      "candidate_operations": 3196,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-082",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:北"
+      ],
+      "parent_action": "discard:北",
+      "reachability_witness_sha256": "c8abebd76aa16fbb57781802805001b0ffdfa0f773f8060d541e9f278f97c893",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:1w",
+      "candidate_operations": 3268,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-083",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:1w"
+      ],
+      "parent_action": "discard:1w",
+      "reachability_witness_sha256": "2b4003ea060579ee12e380c53d8dea22f451104bc471aa1d5730b72d4c1a41fc",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:2w",
+      "candidate_operations": 3193,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-084",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:2w"
+      ],
+      "parent_action": "discard:2w",
+      "reachability_witness_sha256": "c4a7e8a7f775cd400bf6fecf9d7122b1216c2ed28bf09181b3b0e69d30fe1cf0",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:3b",
+      "candidate_operations": 3279,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-087",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:3b"
+      ],
+      "parent_action": "discard:3b",
+      "reachability_witness_sha256": "1d8e55d49dd3d8e64f6a229f03ba2b284b5d722f732849da2956336e86d02277",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:7t",
+      "candidate_operations": 3397,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-088",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:7t"
+      ],
+      "parent_action": "discard:7t",
+      "reachability_witness_sha256": "4cd3342574004706409f02fe903c7c2610b1ccf3b9afd03cacd2064798ad8f98",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:东",
+      "candidate_operations": 3263,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-089",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:东"
+      ],
+      "parent_action": "discard:东",
+      "reachability_witness_sha256": "1dd27d4304b455e58fef3363171dbb881eb44e2e66dce457f7bb71044d8949da",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:4t",
+      "candidate_operations": 3445,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-090",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:4t"
+      ],
+      "parent_action": "discard:4t",
+      "reachability_witness_sha256": "b2321abf36913aa47435a9f32ea4488272377d932a7b1830ee874d899111900e",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:5t",
+      "candidate_operations": 3385,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-091",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:5t"
+      ],
+      "parent_action": "discard:5t",
+      "reachability_witness_sha256": "8b1b8a35309346f816c3e5c2e0644431eef12904fd3d1078dbe43efe57e1ae13",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:7w",
+      "candidate_operations": 3465,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-092",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:7w",
+        "discard:9w"
+      ],
+      "parent_action": "discard:7w",
+      "reachability_witness_sha256": "4033f3ab534db39b984a546106db2d5e51759a984c8df3acc606c2257cdaa8fa",
+      "trigger_keys": []
+    },
+    {
+      "candidate_action": "discard:4t",
+      "candidate_operations": 3902,
+      "capability_gain": 0.0,
+      "case_id": "r18-7p-095",
+      "decision_type": "standard_switch",
+      "optimal_action_keys": [
+        "discard:4t",
+        "discard:7t"
+      ],
+      "parent_action": "discard:4t",
+      "reachability_witness_sha256": "c058f839df27b41860aa09acb01e0df03dea09e53b5f43edff3f1f2369cb84ed",
+      "trigger_keys": []
+    }
+  ],
+  "schema": "r18-p8-boundary-admission/1",
+  "selection_eligible": false,
+  "split": "development",
+  "status": "PASS_P8_DEVELOPMENT",
+  "summary": {
+    "base_scenario_count": 72,
+    "baseline_optimal_hit_rate": 0.3333333333333333,
+    "candidate_optimal_hit_rate": 1.0,
+    "case_count": 72,
+    "conservative_capability_gain": 0.7868852459016391,
+    "family": "seven_pairs_closed",
+    "mean_baseline_regret": 0.7868852459016391,
+    "mean_candidate_regret": 0.0,
+    "mean_capability_gain": 0.7868852459016391,
+    "optimistic_capability_gain": 0.7868852459016391,
+    "scored_base_scenario_count": 72,
+    "scored_case_count": 72,
+    "split": "development",
+    "status_counts": [
+      [
+        "baseline:SCORED",
+        72
+      ],
+      [
+        "candidate:SCORED",
+        72
+      ]
+    ]
+  }
+}

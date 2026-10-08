@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-av2-averaged-action-value-model-20260921",
+  "batch_label": "r10-av2-averaged-action-value-model",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 0.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 0.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T04:25:17Z",
+  "issuance_basis": "AV2-1取得64个全新来源、八未来顺序平均且机械全绿的动作价值样本",
+  "scope": "只在AV2-1按完整panel_seed两折留出；H/M只作结果分层，不进入训练特征；零新桌赛",
+  "max_model_calls": 0,
+  "confirmation_roots": 0
+}

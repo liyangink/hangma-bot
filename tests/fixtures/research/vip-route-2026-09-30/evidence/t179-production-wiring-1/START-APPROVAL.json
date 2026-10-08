@@ -1,0 +1,41 @@
+{
+  "identity": {
+    "free_strategy": "vip_s02_bounded_d1_free_v6",
+    "package_ids": {
+      "free": "324d4cc7828906696dde01a9ddd92f182d6f6ca549b4d5da6fa6546e6b44a1c6"
+    },
+    "rules_source_hash": "8e7a8100b5f3428191373e4819c36849f2a9e9819a95c3c69442dc49405f9565",
+    "hand_math": {
+      "implementation": "c_grouped",
+      "semantics_version": "hangma-standard-grouped-v1",
+      "fallback_reason": null,
+      "native_sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+    }
+  },
+  "driver_sha256": {
+    "free_watchdog.py": "3084f1456b2beea99670c318355062b1936eed3754a99afd54795bb5ca4ea167",
+    "watchdog_nonblocking.py": "b47c35db24ba5226a088f9b7f78906b4827a8d7225ed66ba1f474fcc58c69c48",
+    "watchdog.py": "c75e4498e8956a5cfb4fa2ddff60f57a08f5101eca4251d1e1f343efeeafaca6",
+    "analyze.py": "3b020f58faf81e5720d0e1c589d993473e3cf5540814801e7d77815971a4a765"
+  },
+  "approved": true,
+  "formal_release": false,
+  "strength_admission": false,
+  "authorization": "用户既有授权要求自由赛一直续打并维护watchdog；root核实并授权本次最小入口修复与恢复。仅将已自然完赛的已知掉记录记为真实警告，独立续赛安全和审计完整性；不修改生产候选/Token，不授正式或强度门。",
+  "at_unix": 1791116298.741018,
+  "previous_driver_sha256": {
+    "free_watchdog.py": "3edf7f353ac175ca6af7dcb67a16075d3446b8fa25d956b7a6cf7ebdc5b835c1",
+    "watchdog_nonblocking.py": "b47c35db24ba5226a088f9b7f78906b4827a8d7225ed66ba1f474fcc58c69c48",
+    "watchdog.py": "c75e4498e8956a5cfb4fa2ddff60f57a08f5101eca4251d1e1f343efeeafaca6",
+    "analyze.py": "3b020f58faf81e5720d0e1c589d993473e3cf5540814801e7d77815971a4a765"
+  },
+  "recovery_evidence": "review/vip-route-2026-09-30/evidence/t181-strategic-priority-review-1/watchdog/",
+  "repair_scope": {
+    "known_closed_audit_loss_warns": true,
+    "missing_terminal_or_files_block": true,
+    "unknown_matching_not_retried": true,
+    "frozen_identity_and_closed_resources_required": true,
+    "formal_release": false,
+    "strength_admission": false
+  }
+}

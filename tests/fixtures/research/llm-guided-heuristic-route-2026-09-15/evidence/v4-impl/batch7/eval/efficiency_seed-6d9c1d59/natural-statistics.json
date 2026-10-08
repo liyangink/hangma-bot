@@ -1,0 +1,167 @@
+{
+  "by_candidate": {
+    "6d9c1d5914509a966bf79a349142d41b2625c05eac55c28fb4b573b2ba56674e": {
+      "family_development_values": {
+        "baotou": {
+          "complete": false,
+          "cost": {
+            "declared_mix_value": null
+          },
+          "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+          "open": {
+            "declared_mix_value": null
+          },
+          "value": null
+        },
+        "branch": {
+          "complete": false,
+          "cost": {
+            "declared_mix_value": null
+          },
+          "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+          "open": {
+            "declared_mix_value": null
+          },
+          "value": null
+        },
+        "chain": {
+          "complete": false,
+          "cost": {
+            "declared_mix_value": null
+          },
+          "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+          "open": {
+            "declared_mix_value": null
+          },
+          "value": null
+        },
+        "four_white": {
+          "complete": false,
+          "cost": {
+            "declared_mix_value": null
+          },
+          "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+          "open": {
+            "declared_mix_value": null
+          },
+          "value": null
+        }
+      },
+      "panels": {
+        "normal": {
+          "declared_mix": {
+            "mean_delta": -0.5,
+            "mean_delta_high": -0.5,
+            "mean_delta_low": -0.5,
+            "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例",
+            "status": "ok",
+            "weights": {
+              "H": 0.5,
+              "M": 0.5
+            }
+          },
+          "panels": {
+            "H": {
+              "delta_bounds": {
+                "interval_95_high": null,
+                "interval_95_low": null,
+                "mean_delta_high": -0.5,
+                "mean_delta_low": -0.5,
+                "note": "识别区间（缺 god_count 等事实造成）：d_low=候选U下界−基线U上界、d_high=候选U上界−基线U下界（§2 保守配对）；与 interval_95 分开报告",
+                "standard_error_high": null,
+                "standard_error_low": null,
+                "unresolved_roots": 0
+              },
+              "interval_95": null,
+              "interval_kind": "sampling_uncertainty_normal_approx",
+              "interval_note": "95% 正态近似抽样不确定性区间，非识别区间，不作为已证明提升的证据",
+              "invalid_records": [],
+              "mean_delta": -0.5,
+              "n_invalid_samples": 0,
+              "n_refresh_roots": 0,
+              "n_roots": 1,
+              "n_samples": 4,
+              "n_uncomputable_samples": 0,
+              "root_rows": [
+                {
+                  "cost": 28817.002,
+                  "d_high": -0.5,
+                  "d_low": -0.5,
+                  "d_point": -0.5,
+                  "n_windows": 4,
+                  "opponent_mix": "H",
+                  "role": "core",
+                  "root_id": "np-H-root01",
+                  "self": false,
+                  "unresolved": false
+                }
+              ],
+              "roots": [
+                "np-H-root01"
+              ],
+              "self_comparison": false,
+              "standard_error": null,
+              "status": "ok",
+              "uncomputable_records": []
+            },
+            "M": {
+              "delta_bounds": {
+                "interval_95_high": null,
+                "interval_95_low": null,
+                "mean_delta_high": -0.5,
+                "mean_delta_low": -0.5,
+                "note": "识别区间（缺 god_count 等事实造成）：d_low=候选U下界−基线U上界、d_high=候选U上界−基线U下界（§2 保守配对）；与 interval_95 分开报告",
+                "standard_error_high": null,
+                "standard_error_low": null,
+                "unresolved_roots": 0
+              },
+              "interval_95": null,
+              "interval_kind": "sampling_uncertainty_normal_approx",
+              "interval_note": "95% 正态近似抽样不确定性区间，非识别区间，不作为已证明提升的证据",
+              "invalid_records": [],
+              "mean_delta": -0.5,
+              "n_invalid_samples": 0,
+              "n_refresh_roots": 0,
+              "n_roots": 1,
+              "n_samples": 4,
+              "n_uncomputable_samples": 0,
+              "root_rows": [
+                {
+                  "cost": 31836.889,
+                  "d_high": -0.5,
+                  "d_low": -0.5,
+                  "d_point": -0.5,
+                  "n_windows": 4,
+                  "opponent_mix": "M",
+                  "role": "core",
+                  "root_id": "np-M-root01",
+                  "self": false,
+                  "unresolved": false
+                }
+              ],
+              "roots": [
+                "np-M-root01"
+              ],
+              "self_comparison": false,
+              "standard_error": null,
+              "status": "ok",
+              "uncomputable_records": []
+            }
+          }
+        }
+      }
+    }
+  },
+  "invalid_count": 0,
+  "invalid_records": [],
+  "min_roots": 1,
+  "n_samples": 8,
+  "notes": [
+    "抽样单位=来源根（source_root_id）：同根多窗口/换座先根内平均，不放大 n（T10）",
+    "interval_95 为抽样不确定性（正态近似），与 delta_bounds 识别区间分开",
+    "无效样本不补零：原始记录保留于 invalid_records/uncomputable_records"
+  ],
+  "schema": "sitin-stage-statistics/1",
+  "uncomputable_count": 0,
+  "uncomputable_records": []
+}

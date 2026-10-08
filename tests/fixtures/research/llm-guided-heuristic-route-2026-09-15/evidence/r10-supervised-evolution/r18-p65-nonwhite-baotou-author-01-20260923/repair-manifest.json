@@ -1,0 +1,24 @@
+{
+  "allowed_change": "第768行冒号前插入一个右括号",
+  "created_at_utc": "2026-09-22T21:43:23.594343+00:00",
+  "effect_feedback_used": false,
+  "expected_repaired_code_sha256": "a256e2cf96129ac072a7c353dfaa40b3b3dfe30a74169a2786b6a268509d7910",
+  "expected_request_config": {
+    "maxTokens": 16000,
+    "model": "glm-5.3",
+    "provider": "zai-coding-cn",
+    "reasoningEffort": "low"
+  },
+  "inputs": {
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p65-nonwhite-baotou-author-01-20260923/call-usage.json": "b1514b9f88e7578d610919d66d3c73fa725819befaa361f587d2826f6fc38ed3",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p65-nonwhite-baotou-author-01-20260923/generation/candidate.py": "4e9a02e814c55824648838f68ddad28b6e70d4cae17b74d7dcfb373aab92c857",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p65-nonwhite-baotou-author-01-20260923/generation/precheck.json": "65ecb1527532acf25885aa857a28ac0011f724b555455c2e60360b4fd8542f99",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p65-nonwhite-baotou-author-01-20260923/ingest-summary.json": "9a2451836f04a687f7178c1fa7821d77b80e04d92e555fc743b3c74fda3a7706"
+  },
+  "max_repairs": 1,
+  "prompt_chars": 48016,
+  "prompt_sha256": "a48bcd431e955bd085d845faf364e09313273c19b02ee8e5bce40c165e47fa82",
+  "reason": "首答只报告 AV-SUB-049；第768行冒号前缺一个右括号",
+  "replication_input_used": false,
+  "schema": "r18-p65-nonwhite-baotou-repair-manifest/1"
+}

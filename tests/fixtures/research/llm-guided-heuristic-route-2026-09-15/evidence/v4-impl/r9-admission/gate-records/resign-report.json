@@ -1,0 +1,168 @@
+{
+ "schema": "sitin-candidate-admission-resign/1",
+ "purpose": "投影/V2 参数批次改变候选绑定身份后，按当前身份在同一真实准入语料上重跑四道门禁并重签记录（不手改字段、不放宽门槛）",
+ "corpus": {
+  "path": "datasets/derived/auto-match-2026-09-06/decisions.jsonl",
+  "sha256": "e690aa3e5fae8758e17ec3068badb63e5be085448816e641998893b328b7cef4"
+ },
+ "rows": [
+  {
+   "record": "gates-chain_path_value.json",
+   "candidate": "chain_path_value",
+   "weights": {
+    "adj.scale": 40.0
+   },
+   "prior_sha256": "c9dde143a1037764724f8c80acfcd796178f7fdf8e803d14373e88aa5a5f16de",
+   "prior_bound_identity": "chain_path_value|adj(scale=40.0)|base(default)|srcbc4b987155cdcbab",
+   "current_bound_identity": "chain_path_value|adj(scale=40.0)|base(default)|src0a52cc01e25c67c9",
+   "prior_admitted": false,
+   "corpus_identity_matches": true,
+   "status": "REISSUED",
+   "new_bound_identity": "chain_path_value|adj(scale=40.0)|base(default)|src0a52cc01e25c67c9",
+   "new_admitted": false,
+   "new_all_pass": false,
+   "new_failed": [],
+   "new_insufficient": [
+    "G-2 退化检测"
+   ],
+   "identity_ok": true,
+   "gates": [
+    {
+     "gate": "G-0 装载与构造",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-1 时间与纯度",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-2 退化检测",
+     "status": "INSUFFICIENT"
+    },
+    {
+     "gate": "G-3 评估记账",
+     "status": "PASS"
+    }
+   ],
+   "staged_sha256": "447a6d3b29795c2dd257c130c9e8a2cf1c1cdd4c993579fca3f64f088901f9cf"
+  },
+  {
+   "record": "gates-meld_opportunity_cost.json",
+   "candidate": "meld_opportunity_cost",
+   "weights": {
+    "adj.beta": 20.0
+   },
+   "prior_sha256": "3afaaaaef3642d0461bbd75c09ad55d3b17bad414a00c00180be025cd847df8d",
+   "prior_bound_identity": "meld_opportunity_cost|adj(beta=20.0)|base(default)|srcdad4fd1a1e50e233",
+   "current_bound_identity": "meld_opportunity_cost|adj(beta=20.0)|base(default)|srcf0629e9069096ac8",
+   "prior_admitted": true,
+   "corpus_identity_matches": true,
+   "status": "REISSUED",
+   "new_bound_identity": "meld_opportunity_cost|adj(beta=20.0)|base(default)|srcf0629e9069096ac8",
+   "new_admitted": true,
+   "new_all_pass": true,
+   "new_failed": [],
+   "new_insufficient": [],
+   "identity_ok": true,
+   "gates": [
+    {
+     "gate": "G-0 装载与构造",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-1 时间与纯度",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-2 退化检测",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-3 评估记账",
+     "status": "PASS"
+    }
+   ],
+   "staged_sha256": "8e817770374a9016f1292511abb658d71d8ccafb7d546e94910b898ed2a6a386"
+  },
+  {
+   "record": "gates-meld_waiting_conditional.json",
+   "candidate": "meld_waiting_conditional",
+   "weights": {
+    "adj.gain": 60.0,
+    "adj.reference": 21.0
+   },
+   "prior_sha256": "26cec50cff3c21fbd2a92435c3ad55a09825e0b3cec8a95e69011c788990fa58",
+   "prior_bound_identity": "meld_waiting_conditional|adj(gain=60.0,reference=21.0)|base(default)|srce771edf36f1a8191",
+   "current_bound_identity": "meld_waiting_conditional|adj(gain=60.0,reference=21.0)|base(default)|srcaffcc2460964135d",
+   "prior_admitted": true,
+   "corpus_identity_matches": true,
+   "status": "REISSUED",
+   "new_bound_identity": "meld_waiting_conditional|adj(gain=60.0,reference=21.0)|base(default)|srcaffcc2460964135d",
+   "new_admitted": true,
+   "new_all_pass": true,
+   "new_failed": [],
+   "new_insufficient": [],
+   "identity_ok": true,
+   "gates": [
+    {
+     "gate": "G-0 装载与构造",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-1 时间与纯度",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-2 退化检测",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-3 评估记账",
+     "status": "PASS"
+    }
+   ],
+   "staged_sha256": "6b9b0ab55cc1c597e943ffa8f712b086a732873eaad2384192d64c0875f33483"
+  },
+  {
+   "record": "gates-seven_pairs_path_value.json",
+   "candidate": "seven_pairs_path_value",
+   "weights": {
+    "adj.closer_bonus": 1.0,
+    "adj.path_log2": 1.0
+   },
+   "prior_sha256": "b6f8d0a20484439753ccb4cf4a61d8624747f60c483ea7991c361d8459602989",
+   "prior_bound_identity": "seven_pairs_path_value|adj(closer_bonus=1.0,path_log2=1.0)|base(default)|src4dbd6786e29a37f6",
+   "current_bound_identity": "seven_pairs_path_value|adj(closer_bonus=1.0,path_log2=1.0)|base(default)|src404a6b9253ed9783",
+   "prior_admitted": true,
+   "corpus_identity_matches": true,
+   "status": "REISSUED",
+   "new_bound_identity": "seven_pairs_path_value|adj(closer_bonus=1.0,path_log2=1.0)|base(default)|src404a6b9253ed9783",
+   "new_admitted": true,
+   "new_all_pass": true,
+   "new_failed": [],
+   "new_insufficient": [],
+   "identity_ok": true,
+   "gates": [
+    {
+     "gate": "G-0 装载与构造",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-1 时间与纯度",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-2 退化检测",
+     "status": "PASS"
+    },
+    {
+     "gate": "G-3 评估记账",
+     "status": "PASS"
+    }
+   ],
+   "staged_sha256": "ac104ec48e673c2dbb65cac83ad53a33194b980f06d0ab95e396a1ac443a8e95"
+  }
+ ],
+ "applied": true,
+ "ok": true
+}

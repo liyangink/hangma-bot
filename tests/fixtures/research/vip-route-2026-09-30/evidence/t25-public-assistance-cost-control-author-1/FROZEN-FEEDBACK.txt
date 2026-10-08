@@ -1,0 +1,468 @@
+你是一次离线 m1 控制作者，唯一真父是 T24 edda117c2593f75e1098e280546187084655f35f540642fc081842cf484e43a1，不是T19。目标是严格隔离公开助攻代理费用，不创作第二套联合公式，也不调权重。
+只在父 root_portfolio 中，把 publicfacts 非空时的 refund 改为完整 publicfacts[0]。这取消的只是父已经明确限定的无当前Hu、discard、直接wait、drawscale>0根弃牌助攻净扣分。其余联合核、bridge、credit、支持证据、全部父常数、八个继承helper、score_actions的数值计算、原护栏和所有后继节点必须逐字节或等价AST不变。ROOTHELP_BLEND可保持为未使用旧常数，不删改数值。只修相关注释及trace的公式标识，以准确解释这是全费返还诊断；p的单位/顺序不改。不得把这个控制称为更强策略或官方规则。
+单白父首手未修，八世界父子终分全0增量。诊断取消费用不表示普遍该取消风险；四起点和双白/普通负控全部保留。对完整原始公开DTO只静态读，不执行候选、规则、投影、模拟、网络、git、pytest、START，不调用另一个模型/agent。允许标准库ast与compile。不要用特定牌码、seq、题目ID、哈希或隐藏信息控制行为，不修改其他目录。
+交付一个符合标准冻结m1提示词的中文thought＋严格JSON机制封套＋完整Python源码；目录中独占写 RAW-REPLY.txt、candidate.py、STATIC-CHECKS.json，可另写rationale.md。唯一原答，交付后不自行修复。静态检查须对真T24核八个helper、所有旧常数、score_actions AST数值护栏，以及root_portfolio只改一赋值的范围。max源码65536字节，操作和trace实测未知。实际后端/token不暴露时记unknown。
+
+{
+  "schema": "t25-isolated-assistance-control-feedback/1",
+  "parent": {
+    "candidate_id": "edda117c2593f75e1098e280546187084655f35f540642fc081842cf484e43a1",
+    "source_sha256": "58f284742c57927ee077fb45503a880a72214537ff867e1a302e69c03fe8b82d",
+    "package": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t24-discard-route-portfolio-author-1/S01-model-output"
+  },
+  "cases": [
+    {
+      "file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t25-public-assistance-cost-control-author-1/public-cases/case-01.json",
+      "sha256": "0f75714660fdefe51362c6c66bc937c100d81ee5c722fbdf733ef263784dab30",
+      "role": "same already-exposed complete public DTO, not gold"
+    },
+    {
+      "file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t25-public-assistance-cost-control-author-1/public-cases/case-02.json",
+      "sha256": "5d579018700f249d883af98995d2789bb89a8e5834896a77bcca8addc634a4da",
+      "role": "same already-exposed complete public DTO, not gold"
+    },
+    {
+      "file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t25-public-assistance-cost-control-author-1/public-cases/case-03.json",
+      "sha256": "17ff06ee347e78042f442814735b64b83be8c637938dd76a4c4714bc000c060e",
+      "role": "same already-exposed complete public DTO, not gold"
+    },
+    {
+      "file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t25-public-assistance-cost-control-author-1/public-cases/case-04.json",
+      "sha256": "2c25228f88656643e57bb0bfe0d06cd39febd2bd6030d85e8a6cfef972d615da",
+      "role": "same already-exposed complete public DTO, not gold"
+    }
+  ],
+  "T24_known_outcomes": [
+    {
+      "mother_root": "vip-t19-natural-2026102404",
+      "profile": "near_seven_backup_vs_public_penalty",
+      "target_window": {
+        "game_id": "vip-t19-true-T17-parent-last2-opportunity-scout-20261002:H:vip-t19-natural-2026102404:1230:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 195
+      },
+      "variant": "nested_source_base",
+      "first_action_keys": {
+        "A": "discard:南",
+        "Sol-C": "discard:6b",
+        "Sol-B": "discard:6b",
+        "S02-C": "discard:6b",
+        "S02-B": "discard:6b"
+      },
+      "focal_single_hand_scores": {
+        "A": -1,
+        "Sol-C": -16,
+        "Sol-B": -16,
+        "S02-C": -16,
+        "S02-B": -16
+      },
+      "child_minus_true_parent": 0,
+      "child_minus_R18": -15,
+      "child_followup_minus_R18_same_child_first": 0,
+      "child_entry_B_minus_R18": -15,
+      "parent_entry_B_minus_R18": -15,
+      "parent_followup_C_minus_B": 0,
+      "known_development_source_not_fresh_confirmation": true
+    },
+    {
+      "mother_root": "vip-t19-natural-2026102404",
+      "profile": "near_seven_backup_vs_public_penalty",
+      "target_window": {
+        "game_id": "vip-t19-true-T17-parent-last2-opportunity-scout-20261002:H:vip-t19-natural-2026102404:1230:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 195
+      },
+      "variant": "public_consistent_hidden_1",
+      "first_action_keys": {
+        "A": "discard:南",
+        "Sol-C": "discard:6b",
+        "Sol-B": "discard:6b",
+        "S02-C": "discard:6b",
+        "S02-B": "discard:6b"
+      },
+      "focal_single_hand_scores": {
+        "A": 10,
+        "Sol-C": -1,
+        "Sol-B": -16,
+        "S02-C": -1,
+        "S02-B": -16
+      },
+      "child_minus_true_parent": 0,
+      "child_minus_R18": -11,
+      "child_followup_minus_R18_same_child_first": 15,
+      "child_entry_B_minus_R18": -26,
+      "parent_entry_B_minus_R18": -26,
+      "parent_followup_C_minus_B": 15,
+      "known_development_source_not_fresh_confirmation": true
+    },
+    {
+      "mother_root": "vip-t19-natural-2026102403",
+      "profile": "dominant_natural_plateau_hides_standard_capacity",
+      "target_window": {
+        "game_id": "vip-t19-true-T17-parent-last2-opportunity-scout-20261002:H:vip-t19-natural-2026102403:1230:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 146
+      },
+      "variant": "nested_source_base",
+      "first_action_keys": {
+        "A": "discard:西",
+        "Sol-C": "discard:西",
+        "Sol-B": "discard:西",
+        "S02-C": "discard:1b",
+        "S02-B": "discard:1b"
+      },
+      "focal_single_hand_scores": {
+        "A": 10,
+        "Sol-C": 10,
+        "Sol-B": 10,
+        "S02-C": 10,
+        "S02-B": 10
+      },
+      "child_minus_true_parent": 0,
+      "child_minus_R18": 0,
+      "child_followup_minus_R18_same_child_first": 0,
+      "child_entry_B_minus_R18": 0,
+      "parent_entry_B_minus_R18": 0,
+      "parent_followup_C_minus_B": 0,
+      "known_development_source_not_fresh_confirmation": true
+    },
+    {
+      "mother_root": "vip-t19-natural-2026102403",
+      "profile": "dominant_natural_plateau_hides_standard_capacity",
+      "target_window": {
+        "game_id": "vip-t19-true-T17-parent-last2-opportunity-scout-20261002:H:vip-t19-natural-2026102403:1230:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 1,
+        "trigger_seq": 146
+      },
+      "variant": "public_consistent_hidden_1",
+      "first_action_keys": {
+        "A": "discard:西",
+        "Sol-C": "discard:西",
+        "Sol-B": "discard:西",
+        "S02-C": "discard:1b",
+        "S02-B": "discard:1b"
+      },
+      "focal_single_hand_scores": {
+        "A": -1,
+        "Sol-C": -1,
+        "Sol-B": -1,
+        "S02-C": -1,
+        "S02-B": -1
+      },
+      "child_minus_true_parent": 0,
+      "child_minus_R18": 0,
+      "child_followup_minus_R18_same_child_first": 0,
+      "child_entry_B_minus_R18": 0,
+      "parent_entry_B_minus_R18": 0,
+      "parent_followup_C_minus_B": 0,
+      "known_development_source_not_fresh_confirmation": true
+    },
+    {
+      "mother_root": "vip-t19-natural-2026102403",
+      "profile": "ordinary_broader_support_control",
+      "target_window": {
+        "game_id": "vip-t19-true-T17-parent-last2-opportunity-scout-20261002:H:vip-t19-natural-2026102403:0123:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 157
+      },
+      "variant": "nested_source_base",
+      "first_action_keys": {
+        "A": "discard:5w",
+        "Sol-C": "discard:9w",
+        "Sol-B": "discard:9w",
+        "S02-C": "discard:9w",
+        "S02-B": "discard:9w"
+      },
+      "focal_single_hand_scores": {
+        "A": -8,
+        "Sol-C": -8,
+        "Sol-B": -8,
+        "S02-C": -8,
+        "S02-B": -8
+      },
+      "child_minus_true_parent": 0,
+      "child_minus_R18": 0,
+      "child_followup_minus_R18_same_child_first": 0,
+      "child_entry_B_minus_R18": 0,
+      "parent_entry_B_minus_R18": 0,
+      "parent_followup_C_minus_B": 0,
+      "known_development_source_not_fresh_confirmation": true
+    },
+    {
+      "mother_root": "vip-t19-natural-2026102403",
+      "profile": "ordinary_broader_support_control",
+      "target_window": {
+        "game_id": "vip-t19-true-T17-parent-last2-opportunity-scout-20261002:H:vip-t19-natural-2026102403:0123:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 157
+      },
+      "variant": "public_consistent_hidden_1",
+      "first_action_keys": {
+        "A": "discard:5w",
+        "Sol-C": "discard:9w",
+        "Sol-B": "discard:9w",
+        "S02-C": "discard:9w",
+        "S02-B": "discard:9w"
+      },
+      "focal_single_hand_scores": {
+        "A": -8,
+        "Sol-C": -16,
+        "Sol-B": -8,
+        "S02-C": -16,
+        "S02-B": -8
+      },
+      "child_minus_true_parent": 0,
+      "child_minus_R18": -8,
+      "child_followup_minus_R18_same_child_first": -8,
+      "child_entry_B_minus_R18": 0,
+      "parent_entry_B_minus_R18": 0,
+      "parent_followup_C_minus_B": -8,
+      "known_development_source_not_fresh_confirmation": true
+    },
+    {
+      "mother_root": "vip-t19-natural-2026102401",
+      "profile": "multiwhite_standard_vs_seven_opportunity",
+      "target_window": {
+        "game_id": "vip-t19-true-T17-parent-common-first2-20261002:H:vip-t19-natural-2026102401:0123:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 251
+      },
+      "variant": "nested_source_base",
+      "first_action_keys": {
+        "A": "discard:2w",
+        "Sol-C": "discard:3w",
+        "Sol-B": "discard:3w",
+        "S02-C": "discard:3w",
+        "S02-B": "discard:3w"
+      },
+      "focal_single_hand_scores": {
+        "A": -16,
+        "Sol-C": -8,
+        "Sol-B": -16,
+        "S02-C": -8,
+        "S02-B": -16
+      },
+      "child_minus_true_parent": 0,
+      "child_minus_R18": 8,
+      "child_followup_minus_R18_same_child_first": 8,
+      "child_entry_B_minus_R18": 0,
+      "parent_entry_B_minus_R18": 0,
+      "parent_followup_C_minus_B": 8,
+      "known_development_source_not_fresh_confirmation": true
+    },
+    {
+      "mother_root": "vip-t19-natural-2026102401",
+      "profile": "multiwhite_standard_vs_seven_opportunity",
+      "target_window": {
+        "game_id": "vip-t19-true-T17-parent-common-first2-20261002:H:vip-t19-natural-2026102401:0123:vip:b198e694fb46bb95cfac31b0d14a08744e018efb5f0966034b4015a31b05f655",
+        "phase": "draw",
+        "round_no": 1,
+        "schema_version": 1,
+        "seat": 0,
+        "trigger_seq": 251
+      },
+      "variant": "public_consistent_hidden_1",
+      "first_action_keys": {
+        "A": "discard:2w",
+        "Sol-C": "discard:3w",
+        "Sol-B": "discard:3w",
+        "S02-C": "discard:3w",
+        "S02-B": "discard:3w"
+      },
+      "focal_single_hand_scores": {
+        "A": 0,
+        "Sol-C": -16,
+        "Sol-B": 24,
+        "S02-C": -16,
+        "S02-B": 24
+      },
+      "child_minus_true_parent": 0,
+      "child_minus_R18": -16,
+      "child_followup_minus_R18_same_child_first": -40,
+      "child_entry_B_minus_R18": 24,
+      "parent_entry_B_minus_R18": 24,
+      "parent_followup_C_minus_B": -40,
+      "known_development_source_not_fresh_confirmation": true
+    }
+  ],
+  "single_white_components": {
+    "schema": "t24-single-white-known-entry-component-diagnostic/1",
+    "status": "pure_read_cached_actual_scores_not_new_execution",
+    "slot_no": 254,
+    "view_sha256": "1a7dc136a980b056a4981373ef1f0a34679884ac894967d348c2bd6e157a1e50",
+    "cached_parent_first": "discard:6b",
+    "child_first": "discard:6b",
+    "actions": [
+      {
+        "action_key": "discard:6b",
+        "parent_score": 9.842528963414633,
+        "child_score": 10.388069199254502,
+        "exact_delta": 0.5455402358398693,
+        "trace": {
+          "std": [
+            1,
+            2,
+            17,
+            6,
+            0,
+            1.555,
+            0.074,
+            -1.845
+          ],
+          "seven": [
+            2,
+            3,
+            19,
+            7,
+            0,
+            1.649,
+            -5.151
+          ],
+          "nat": [
+            0,
+            "standard",
+            "complete_structure",
+            0,
+            2,
+            0,
+            2,
+            1,
+            0,
+            5,
+            0.0,
+            3.4,
+            1.75,
+            -1.65
+          ],
+          "oj": [
+            -1.845,
+            -1.65,
+            "natural"
+          ],
+          "public": 0.07,
+          "public_facts": [
+            0.07,
+            "exact",
+            1,
+            1,
+            1,
+            0.75,
+            0.0,
+            0.094
+          ],
+          "p": [
+            0.546,
+            0.068,
+            0.607,
+            0.007,
+            11.7,
+            4.2,
+            33,
+            12,
+            0,
+            0.0
+          ]
+        }
+      },
+      {
+        "action_key": "discard:南",
+        "parent_score": 9.490966463414633,
+        "child_score": 10.201290653891414,
+        "exact_delta": 0.710324190476781,
+        "trace": {
+          "std": [
+            1,
+            2,
+            17,
+            6,
+            0,
+            1.555,
+            0.074,
+            -1.845
+          ],
+          "seven": [
+            1,
+            2,
+            15,
+            5,
+            0,
+            1.293,
+            -2.107
+          ],
+          "nat": [
+            0,
+            "standard",
+            "complete_structure",
+            0,
+            2,
+            0,
+            2,
+            1,
+            0,
+            5,
+            0.0,
+            3.4,
+            1.75,
+            -1.65
+          ],
+          "oj": [
+            -1.845,
+            -1.65,
+            "natural"
+          ],
+          "public": 0.422,
+          "public_facts": [
+            0.422,
+            "exact",
+            3,
+            3,
+            0,
+            0.75,
+            0.0,
+            0.562
+          ],
+          "p": [
+            0.71,
+            0.068,
+            0.73,
+            0.049,
+            14.5,
+            5.0,
+            29,
+            10,
+            0,
+            0.0
+          ]
+        }
+      }
+    ],
+    "ranking_units": "heuristic rank points, not win probability or score expectation",
+    "not_gold_or_complete_causal_component_attribution": true,
+    "business_calls": 0
+  },
+  "symbolic_prediction_source": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t25-public-assistance-cost-isolation-preparation-1/PREPARATION.json",
+  "zero_new_score_or_rule_or_world_calls": true,
+  "exact_requested_control": "refund = publicfacts[0], under unchanged root_portfolio call guard; no other numeric change",
+  "not_ranking_models_or_strength_claim": true
+}

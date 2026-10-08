@@ -1,0 +1,87 @@
+{
+  "schema": "r10-structural-phase-2c-ranking/1",
+  "ranking": [
+    {
+      "config_id": "t2-cfg-04",
+      "candidate_id": "action_value_v1:offline-structural-t2:1886ffa23cfd7f3d41cad807a372ae80e17f381cb13b1c9e4a97fec2527eee41",
+      "family": "T2_SELECTIVE_FOLLOWUP",
+      "is_zero_effect": false,
+      "is_author_default": false,
+      "values": {
+        "FBV_GAIN": 2.0,
+        "FBV_SUPPORT": 0.25,
+        "FBV_SUPPORT_CAP": 6.0,
+        "FBV_CAP": 8.0
+      },
+      "fitness_mean_delta_low": -0.015625,
+      "mean_delta": -0.005859375,
+      "mean_delta_high": 0.00390625,
+      "H": {
+        "n_roots": 32,
+        "mean_delta": 0.0078125,
+        "standard_error": 0.0078125,
+        "interval_95": [
+          -0.007499718629219172,
+          0.023124718629219172
+        ]
+      },
+      "M": {
+        "n_roots": 32,
+        "mean_delta": -0.01953125,
+        "standard_error": 0.025169144911870923,
+        "interval_95": [
+          -0.06886186754893656,
+          0.029799367548936563
+        ]
+      },
+      "rank": 1,
+      "disposition": "DEVELOPMENT_CHAMPION"
+    },
+    {
+      "config_id": "t2-cfg-01",
+      "candidate_id": "action_value_v1:offline-structural-t2:74c182b6967aeb7298fe6a55b4545e32f7e284ab9fee89f757082af2d6fe551c",
+      "family": "T2_SELECTIVE_FOLLOWUP",
+      "is_zero_effect": true,
+      "is_author_default": false,
+      "values": {
+        "FBV_GAIN": 0.0,
+        "FBV_SUPPORT": 0.0,
+        "FBV_SUPPORT_CAP": 0.0,
+        "FBV_CAP": 0.0
+      },
+      "fitness_mean_delta_low": -0.01953125,
+      "mean_delta": -0.01171875,
+      "mean_delta_high": -0.00390625,
+      "H": {
+        "n_roots": 32,
+        "mean_delta": 0.015625,
+        "standard_error": 0.024943231918666573,
+        "interval_95": [
+          -0.03326283621861639,
+          0.06451283621861639
+        ]
+      },
+      "M": {
+        "n_roots": 32,
+        "mean_delta": -0.0390625,
+        "standard_error": 0.0314697415314529,
+        "interval_95": [
+          -0.10074206000443205,
+          0.022617060004432046
+        ]
+      },
+      "rank": 2,
+      "disposition": "NOT_SELECTED_WITHIN_BUDGET"
+    }
+  ],
+  "development_champion": "t2-cfg-04",
+  "selection_rule": {
+    "fitness": "阶段2A+2B+2C累计H/M等权的根级保守差d_low均值",
+    "keep": 1,
+    "rule": "按适应度降序、config_id升序冻结一个开发冠军",
+    "meaning": "开发冻结，不是显著性检验；只有非父代冠军且保守差为正才可进入新来源复核"
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

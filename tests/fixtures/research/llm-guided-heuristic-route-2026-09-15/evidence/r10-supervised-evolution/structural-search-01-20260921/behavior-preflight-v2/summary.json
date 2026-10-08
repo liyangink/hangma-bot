@@ -1,0 +1,612 @@
+{
+  "schema": "r10-structural-behavior-preflight/1",
+  "corpus": {
+    "record_files": 234,
+    "unique_real_views": 226,
+    "source_directories": {
+      "batch03-known-root-diagnostic": 32,
+      "comparable-shape-second-diagnostic-20260920": 30,
+      "discard-shape-mix-diagnostic-20260920": 17,
+      "followup-balance-diagnostic-20260920": 30,
+      "followup-quality-diagnostic-20260920": 29,
+      "pattern-generalization-diagnostic-v2-20260920": 15,
+      "piao-opportunity-probe-20260920": 8,
+      "real-behavior-panel-v1": 19,
+      "route-decision-diagnostic-20260920": 24,
+      "selfdraw-tempo-diagnostic-20260920": 30
+    }
+  },
+  "tasks": [
+    {
+      "task": "S1",
+      "source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-01-20260921/generations/S1/normalized/candidate.py",
+      "source_sha256": "53abbc47defbf93f24efc182c09a61482d5d1b2cee97245f62faa8cdcfbbe2f6",
+      "zero_reference": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/comparable-shape-20260920/comparable-shape-terra-max/run/iterations/iter-01/generation/candidate.py",
+      "zero_reference_sha256": "3a4850b2433f7c18457c7a08d1f0328a5475fa986c1d67b50131ed0085f5cc06",
+      "views": 226,
+      "all_configurations_clean": true,
+      "zero_config_index": 1,
+      "zero_exact_score_equivalence": true,
+      "zero_changed_score_views": 0,
+      "author_default_index": 0,
+      "default_changed_preferred_views": 27,
+      "default_changed_score_views": 127,
+      "any_configuration_changes_preferred": true,
+      "unique_preference_signatures": 4,
+      "unique_score_signatures": 6,
+      "duplicate_preference_groups": [
+        3
+      ],
+      "duplicate_score_groups": [],
+      "behavior_preflight_pass": true,
+      "failure_reason": null,
+      "configurations": [
+        {
+          "config_id": "s1-cfg-00",
+          "index": 0,
+          "values": {
+            "RC3_SCALE": 0.9,
+            "RC3_WITNESS_GATE": 2,
+            "RC3_RISK_SUPPRESS": 0.5
+          },
+          "source_sha256": "7d71bbd7e6942c21a523a2571088e235d6b56c3f8c17c00b25551e1452dd1cdc",
+          "is_zero_effect": false,
+          "is_author_default": true,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 27,
+          "changed_scores_vs_base": 127,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "e8c2cbc83b8a000336e6b4801c699e76ff4c1fd8ae07189a90ec3ae2405e891a",
+          "score_signature": "267e1d3b09905d3ce6ae5d820d4b8aeace59e425a8f0072e8df33e2a91350cc3",
+          "max_operations": 25809
+        },
+        {
+          "config_id": "s1-cfg-01",
+          "index": 1,
+          "values": {
+            "RC3_SCALE": 0.0,
+            "RC3_WITNESS_GATE": 2,
+            "RC3_RISK_SUPPRESS": 0.5
+          },
+          "source_sha256": "93e64aae2a0d92f43226cc3c6b34e7deeb9cd9ee26c24dc3cd54efb5de3c097e",
+          "is_zero_effect": true,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "6d3ba7c7a48370254c349c0d033978809379b35b5fe7baa3b0ba82c4ce40b273",
+          "score_signature": "0634bae3af4e44a644c6438dbb412c1ba1ed2b140218f55911dda7bf4f117017",
+          "max_operations": 25016
+        },
+        {
+          "config_id": "s1-cfg-02",
+          "index": 2,
+          "values": {
+            "RC3_SCALE": 0.9,
+            "RC3_WITNESS_GATE": 1,
+            "RC3_RISK_SUPPRESS": 0.5
+          },
+          "source_sha256": "884444f0c02486bef15ae86f9a3d932a6845619415d2424a7126b9a12bb70d6d",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 27,
+          "changed_scores_vs_base": 127,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "e8c2cbc83b8a000336e6b4801c699e76ff4c1fd8ae07189a90ec3ae2405e891a",
+          "score_signature": "32b6e2d188c958d23911824a2dda0d15a71cad24b008b6dfb809b4811083979c",
+          "max_operations": 25809
+        },
+        {
+          "config_id": "s1-cfg-03",
+          "index": 3,
+          "values": {
+            "RC3_SCALE": 0.9,
+            "RC3_WITNESS_GATE": 2,
+            "RC3_RISK_SUPPRESS": 0.0
+          },
+          "source_sha256": "e825f0c06b9821cd4eedfc486c447f023b8f2e83966812e56b3cd449e55b570b",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 28,
+          "changed_scores_vs_base": 127,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "cfd67569bf67b105f7eb4e61c59d9cbb62a33d8bdc4b1c5c98a3dc824281df3a",
+          "score_signature": "394380decdfb11b559999f7350849508b629571ff2fe113791d0a3bd0acbfcbc",
+          "max_operations": 25809
+        },
+        {
+          "config_id": "s1-cfg-04",
+          "index": 4,
+          "values": {
+            "RC3_SCALE": 0.9,
+            "RC3_WITNESS_GATE": 2,
+            "RC3_RISK_SUPPRESS": 1.0
+          },
+          "source_sha256": "8b878b0823e97a774531174c8527aecd3e79dccd0e9b77949d3f70a726ecb2b9",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 27,
+          "changed_scores_vs_base": 127,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "e8c2cbc83b8a000336e6b4801c699e76ff4c1fd8ae07189a90ec3ae2405e891a",
+          "score_signature": "0f619b4e726c00c1bdf9d9c22823fda0017936a55872aebd78d075394a28099b",
+          "max_operations": 25809
+        },
+        {
+          "config_id": "s1-cfg-05",
+          "index": 5,
+          "values": {
+            "RC3_SCALE": 0.6,
+            "RC3_WITNESS_GATE": 3,
+            "RC3_RISK_SUPPRESS": 0.5
+          },
+          "source_sha256": "2ed4f45012b691cee82429089835c33b2d262617ed6e9ac78b35d96311e1b035",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 29,
+          "changed_scores_vs_base": 125,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "b700e34e66b218b937b3d92aafbbe1bc84e40176a9d3b1647de862a5d51c21e3",
+          "score_signature": "7c3863f3ce13fda33994aa81f5961c6ef65175fcd902abffab74dbfb4d50f06f",
+          "max_operations": 25809
+        }
+      ]
+    },
+    {
+      "task": "S2",
+      "source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-01-20260921/generations/S2/normalized/candidate.py",
+      "source_sha256": "ba4e6c1c3793e6a59d5e7753940fcb6b0426db7acd8fd365f64afe42b183fb17",
+      "zero_reference": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "zero_reference_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "views": 226,
+      "all_configurations_clean": true,
+      "zero_config_index": 1,
+      "zero_exact_score_equivalence": true,
+      "zero_changed_score_views": 0,
+      "author_default_index": 0,
+      "default_changed_preferred_views": 24,
+      "default_changed_score_views": 139,
+      "any_configuration_changes_preferred": true,
+      "unique_preference_signatures": 6,
+      "unique_score_signatures": 6,
+      "duplicate_preference_groups": [],
+      "duplicate_score_groups": [],
+      "behavior_preflight_pass": true,
+      "failure_reason": null,
+      "configurations": [
+        {
+          "config_id": "s2-cfg-00",
+          "index": 0,
+          "values": {
+            "LEEWAY_UNIT_WEIGHT": 0.2,
+            "LEEWAY_UNIT_CLIP": 10.0,
+            "OPTION_SUPPORT_CAP": 8.0,
+            "OPTION_SUPPORT_DIVISOR": 4.0
+          },
+          "source_sha256": "5046dad07c0b438c4d7f2e891576058beb996cf96aa51bb4eee5b2d9ef4ebbad",
+          "is_zero_effect": false,
+          "is_author_default": true,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 24,
+          "changed_scores_vs_base": 139,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "608682227f465747da5c7e2821fe1b70123f5fd516f0ac5db7213237221b6257",
+          "score_signature": "ca58420352f69998b602d883ab604eb347ed259745b9bdf5cc2cd193a775256a",
+          "max_operations": 33258
+        },
+        {
+          "config_id": "s2-cfg-01",
+          "index": 1,
+          "values": {
+            "LEEWAY_UNIT_WEIGHT": 0.0,
+            "LEEWAY_UNIT_CLIP": 10.0,
+            "OPTION_SUPPORT_CAP": 0.0,
+            "OPTION_SUPPORT_DIVISOR": 4.0
+          },
+          "source_sha256": "9ccc9804c1c4e7c23f2eb9a012bf40b5c5f169445b6e3f5375d0fbbc6995fa55",
+          "is_zero_effect": true,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "ea9396c99fb2297bdab515d012141689a4385e16f50760593cab6d190ec07d12",
+          "max_operations": 33258
+        },
+        {
+          "config_id": "s2-cfg-02",
+          "index": 2,
+          "values": {
+            "LEEWAY_UNIT_WEIGHT": 0.35,
+            "LEEWAY_UNIT_CLIP": 12.0,
+            "OPTION_SUPPORT_CAP": 8.0,
+            "OPTION_SUPPORT_DIVISOR": 4.0
+          },
+          "source_sha256": "7815186952c39710784e90e207cec2a24c4c3d754dff7fd5a4e049a2903439aa",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 35,
+          "changed_scores_vs_base": 139,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "c05fbb5872ed51472f707eed353eab5a91da67a5f7fed541131deeeb2239e7df",
+          "score_signature": "c6b03f23961adb1c153342aaf03350f4ca5e620c3d8311cb72ec9aa6f1409ec7",
+          "max_operations": 33262
+        },
+        {
+          "config_id": "s2-cfg-03",
+          "index": 3,
+          "values": {
+            "LEEWAY_UNIT_WEIGHT": 0.2,
+            "LEEWAY_UNIT_CLIP": 10.0,
+            "OPTION_SUPPORT_CAP": 12.0,
+            "OPTION_SUPPORT_DIVISOR": 2.0
+          },
+          "source_sha256": "a9ab9d77e28adf38de2d9e262501b47d08a900e71c7b32551d6f26f46b5e739d",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 23,
+          "changed_scores_vs_base": 139,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "2afccf960fb39fb980bbee76d45d23b6404959e196a334ad2896ef9b7817bd1a",
+          "score_signature": "ed9fbd1f44143a345791a1c3ceb8c8e9ad3998afd8692e6b33827cb47610685b",
+          "max_operations": 33258
+        },
+        {
+          "config_id": "s2-cfg-04",
+          "index": 4,
+          "values": {
+            "LEEWAY_UNIT_WEIGHT": 0.1,
+            "LEEWAY_UNIT_CLIP": 6.0,
+            "OPTION_SUPPORT_CAP": 4.0,
+            "OPTION_SUPPORT_DIVISOR": 8.0
+          },
+          "source_sha256": "dc8318a68a1dfeec6c95c106bb06e6301ea67d80b68be17148eb7b2d347f249a",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 9,
+          "changed_scores_vs_base": 139,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7d2872b0edb4f6268d662cf194deb74dce7082f2e230dd29694ded72470f75a1",
+          "score_signature": "4e015c3bcab14a43793e73c20461de88b9f6a3023733b886cd2350e3183df8d8",
+          "max_operations": 33238
+        },
+        {
+          "config_id": "s2-cfg-05",
+          "index": 5,
+          "values": {
+            "LEEWAY_UNIT_WEIGHT": 0.5,
+            "LEEWAY_UNIT_CLIP": 4.0,
+            "OPTION_SUPPORT_CAP": 16.0,
+            "OPTION_SUPPORT_DIVISOR": 16.0
+          },
+          "source_sha256": "c70dc08750aa4dd69852df16e8856b5329d35b7cf9df03263db8f0cf4efa3586",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 9,
+          "changed_scores_vs_base": 139,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "f7c644a2343a6e26ca75ede0331b0eac423a89f9a17f0834b438cdfee69a812b",
+          "score_signature": "6b36efb3997c8fc11fff33f0b13a8de9cac1dec6d3559b6404074e713caab717",
+          "max_operations": 33236
+        }
+      ]
+    },
+    {
+      "task": "S3",
+      "source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-01-20260921/generations/S3/normalized/candidate.py",
+      "source_sha256": "62caccad8559f8f7936f5a5a06453bcc9473c1d406a462b3717e9e46ddb02f57",
+      "zero_reference": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "zero_reference_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "views": 226,
+      "all_configurations_clean": true,
+      "zero_config_index": 1,
+      "zero_exact_score_equivalence": true,
+      "zero_changed_score_views": 0,
+      "author_default_index": 0,
+      "default_changed_preferred_views": 10,
+      "default_changed_score_views": 39,
+      "any_configuration_changes_preferred": true,
+      "unique_preference_signatures": 5,
+      "unique_score_signatures": 6,
+      "duplicate_preference_groups": [
+        2
+      ],
+      "duplicate_score_groups": [],
+      "behavior_preflight_pass": true,
+      "failure_reason": null,
+      "configurations": [
+        {
+          "config_id": "s3-cfg-00",
+          "index": 0,
+          "values": {
+            "FBV_GAIN": 4.0,
+            "FBV_SUPPORT": 0.5,
+            "FBV_SUPPORT_CAP": 12.0,
+            "FBV_CAP": 16.0
+          },
+          "source_sha256": "ecce8d1ed2b3f0f153b1d8d1d9e9659ffa18b19f7659761369f71788202d89ed",
+          "is_zero_effect": false,
+          "is_author_default": true,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 10,
+          "changed_scores_vs_base": 39,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "ce9a13111d2eb10cdfe5ff229ba2fc474f539ef1fd727fafedfc7b18f14b57e2",
+          "score_signature": "5fda592f0c68951b0a38e035efbc2f16dc88e9a2c5792e75bf9c6c7ba61db4b9",
+          "max_operations": 6245
+        },
+        {
+          "config_id": "s3-cfg-01",
+          "index": 1,
+          "values": {
+            "FBV_GAIN": 0.0,
+            "FBV_SUPPORT": 0.0,
+            "FBV_SUPPORT_CAP": 0.0,
+            "FBV_CAP": 0.0
+          },
+          "source_sha256": "d9e738fb309b0d6c11bcc850e1c0139af55dae2b72cfe297db35bd844ed1ef64",
+          "is_zero_effect": true,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "ad415e5e6650f1caedaa1ebcfb54dee26034600e333003f13fc4f7bbfce77817",
+          "max_operations": 6245
+        },
+        {
+          "config_id": "s3-cfg-02",
+          "index": 2,
+          "values": {
+            "FBV_GAIN": 4.0,
+            "FBV_SUPPORT": 0.0,
+            "FBV_SUPPORT_CAP": 12.0,
+            "FBV_CAP": 16.0
+          },
+          "source_sha256": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 27,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "af18a084e9b7afbdbaac8199e1d7e65a1b423e12002cbe86ecca56b66dfcc094",
+          "max_operations": 6245
+        },
+        {
+          "config_id": "s3-cfg-03",
+          "index": 3,
+          "values": {
+            "FBV_GAIN": 0.0,
+            "FBV_SUPPORT": 0.5,
+            "FBV_SUPPORT_CAP": 12.0,
+            "FBV_CAP": 16.0
+          },
+          "source_sha256": "a6dfe9b85369a255e3270ef836a0c566b6b923e1b32a97470d3015de70f4e876",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 9,
+          "changed_scores_vs_base": 39,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "95c3508f99c0abd6fbc1fef52757ebf4571f26978f0a92b272dd55eaaad62305",
+          "score_signature": "3879ff677a2ee1f6b376f6d8aa8cc5707f4d268d4bc28b9d25b90c6c843704a1",
+          "max_operations": 6245
+        },
+        {
+          "config_id": "s3-cfg-04",
+          "index": 4,
+          "values": {
+            "FBV_GAIN": 2.0,
+            "FBV_SUPPORT": 0.25,
+            "FBV_SUPPORT_CAP": 6.0,
+            "FBV_CAP": 8.0
+          },
+          "source_sha256": "7c0cb6bb6e6babfaecbc2e1f2a2fb2f733f5fd7ed785dee8b524e02d651b04e9",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 39,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "3331e902a8ec39f968361be8f6757287c6391513af1ea671512acb03ab2e764d",
+          "score_signature": "cbb7a950b2fcc3a91cfccf247c30ff611e245b57f997fa4d694ff2835a80bef8",
+          "max_operations": 6245
+        },
+        {
+          "config_id": "s3-cfg-05",
+          "index": 5,
+          "values": {
+            "FBV_GAIN": 8.0,
+            "FBV_SUPPORT": 1.0,
+            "FBV_SUPPORT_CAP": 12.0,
+            "FBV_CAP": 24.0
+          },
+          "source_sha256": "167f1901518f3167fdc6046742ab863347fab511d53f42edb54f11ef13f68657",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 18,
+          "changed_scores_vs_base": 39,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "6bee08ee90f2999b65f8736e67b625d148e9fcfefbf2b8b1ace3ef4da919cb7b",
+          "score_signature": "ccf7c131eefdbef45bbe70fceafc1c80b0c550711ba84f4f17f806f3ad6c0575",
+          "max_operations": 6245
+        }
+      ]
+    },
+    {
+      "task": "S4",
+      "source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-01-20260921/generations/S4/candidate.py",
+      "source_sha256": "ff79436cbd1036d41ba76de32295a8f3ff2e2d854d7de08eaf5ffebdacff95de",
+      "zero_reference": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "zero_reference_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "views": 226,
+      "all_configurations_clean": true,
+      "zero_config_index": 0,
+      "zero_exact_score_equivalence": false,
+      "zero_changed_score_views": 142,
+      "author_default_index": 3,
+      "default_changed_preferred_views": 8,
+      "default_changed_score_views": 125,
+      "any_configuration_changes_preferred": true,
+      "unique_preference_signatures": 6,
+      "unique_score_signatures": 6,
+      "duplicate_preference_groups": [],
+      "duplicate_score_groups": [],
+      "behavior_preflight_pass": false,
+      "failure_reason": "零效应未回到预登记基线",
+      "configurations": [
+        {
+          "config_id": "s4-cfg-00",
+          "index": 0,
+          "values": {
+            "SAFETY_STEP": 0.0
+          },
+          "source_sha256": "3cd78311223072c090282931aa01fddb50a66881f9c5e0c6dd42ee363f8533c9",
+          "is_zero_effect": true,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 55,
+          "changed_scores_vs_base": 142,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "f847ad778512310a47e7ed58f3295c0ab6bfb84674a7302e4ad2c38f3f2ba7ba",
+          "score_signature": "4167e86fade85f9774f2554d6556f5aca1c955d7cd5725e3f16d3c5a8d54ed51",
+          "max_operations": 6030
+        },
+        {
+          "config_id": "s4-cfg-01",
+          "index": 1,
+          "values": {
+            "SAFETY_STEP": 1.0
+          },
+          "source_sha256": "062754978b85a658c5611b0ea341607ecd0f5908c166f16a5c451eb30eccfa11",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 18,
+          "changed_scores_vs_base": 142,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "5f4a09a065e9ceba0e60d85a0b1a35d52efd501260ab39a11e48914f517e3e56",
+          "score_signature": "9da9a1ff5db6da4537f6519863a0260adecff4b828568f15733ce9db44e8a73e",
+          "max_operations": 6030
+        },
+        {
+          "config_id": "s4-cfg-02",
+          "index": 2,
+          "values": {
+            "SAFETY_STEP": 2.0
+          },
+          "source_sha256": "00056b51b106988b066008120677bb187d59e9847ae2ec290245b675de90bba8",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 13,
+          "changed_scores_vs_base": 142,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "73a2531094d04ca199f08341eae14c9108e562670f4a82cbf0a0b5ffdd8f7e1e",
+          "score_signature": "996f1b42c25cfc15f4dc56745cdb8ec03304f941ed40320ad13ca08e3918c9c0",
+          "max_operations": 6030
+        },
+        {
+          "config_id": "s4-cfg-03",
+          "index": 3,
+          "values": {
+            "SAFETY_STEP": 3.0
+          },
+          "source_sha256": "730a5ee2733cac57a9f13647fff62867110892dd11a54fcbd7568b11ba4d574a",
+          "is_zero_effect": false,
+          "is_author_default": true,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 8,
+          "changed_scores_vs_base": 125,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "cc3832e84b71c407bb63f66ea433616fed8fbc0b35212370f1d55f3eec041fc0",
+          "score_signature": "ae93e802d1a4ac503f8b8c4f617ca2648d1fb1624f9c6fca9ab6e59758bf1f54",
+          "max_operations": 6030
+        },
+        {
+          "config_id": "s4-cfg-04",
+          "index": 4,
+          "values": {
+            "SAFETY_STEP": 4.0
+          },
+          "source_sha256": "e55735741bd08128753cb5e0d7a569e46cf49153547d25c5b3786fceb20a244f",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 15,
+          "changed_scores_vs_base": 142,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7df024c706b5bf154cb1e677fee98a7cfb9e3929de73d80ec91530fd65058773",
+          "score_signature": "110298370a40d5d504d87c3e32cd869a7ba10d4976630df45a8e7ee8a229eff1",
+          "max_operations": 6030
+        },
+        {
+          "config_id": "s4-cfg-05",
+          "index": 5,
+          "values": {
+            "SAFETY_STEP": 6.0
+          },
+          "source_sha256": "e29c82b265bead04cc5bd977451767d14eb90e020a6532667166de4f4cb09777",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 11,
+          "changed_scores_vs_base": 136,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "efd8db43a2b8e9e41d8291f79bab3cbf74e37dc141080c02f212da7505629111",
+          "score_signature": "9a8ed2968e90fdd7709f9c9602aaa414acbc10ba040314dbf124c5dbc3d76c52",
+          "max_operations": 6030
+        }
+      ]
+    }
+  ],
+  "passed_tasks": [
+    "S1",
+    "S2",
+    "S3"
+  ],
+  "failed_tasks": [
+    "S4"
+  ],
+  "configurations_materialized": 24,
+  "effect_tables": 0,
+  "selection_eligible": false
+}

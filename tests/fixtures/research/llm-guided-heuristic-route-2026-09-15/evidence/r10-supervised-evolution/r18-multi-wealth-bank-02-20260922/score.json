@@ -1,0 +1,3806 @@
+{
+  "schema": "r18-multi-wealth-bank-score/1",
+  "controls_are_oracle_aware_and_for_measurement_only": true,
+  "summaries": {
+    "v2": {
+      "development": {
+        "family": "multi_wealth_baotou",
+        "split": "development",
+        "case_count": 24,
+        "base_scenario_count": 24,
+        "scored_case_count": 24,
+        "scored_base_scenario_count": 24,
+        "mean_candidate_regret": 8.229508196721312,
+        "mean_baseline_regret": 8.229508196721312,
+        "mean_capability_gain": 0.0,
+        "conservative_capability_gain": 0.0,
+        "optimistic_capability_gain": 0.0,
+        "candidate_optimal_hit_rate": 0.7083333333333334,
+        "baseline_optimal_hit_rate": 0.7083333333333334,
+        "status_counts": [
+          [
+            "baseline:SCORED",
+            24
+          ],
+          [
+            "candidate:SCORED",
+            24
+          ]
+        ]
+      },
+      "hidden": {
+        "family": "multi_wealth_baotou",
+        "split": "hidden",
+        "case_count": 8,
+        "base_scenario_count": 8,
+        "scored_case_count": 8,
+        "scored_base_scenario_count": 8,
+        "mean_candidate_regret": 31.672131147540984,
+        "mean_baseline_regret": 31.672131147540984,
+        "mean_capability_gain": 0.0,
+        "conservative_capability_gain": 0.0,
+        "optimistic_capability_gain": 0.0,
+        "candidate_optimal_hit_rate": 0.5,
+        "baseline_optimal_hit_rate": 0.5,
+        "status_counts": [
+          [
+            "baseline:SCORED",
+            8
+          ],
+          [
+            "candidate:SCORED",
+            8
+          ]
+        ]
+      }
+    },
+    "positive_control": {
+      "development": {
+        "family": "multi_wealth_baotou",
+        "split": "development",
+        "case_count": 24,
+        "base_scenario_count": 24,
+        "scored_case_count": 24,
+        "scored_base_scenario_count": 24,
+        "mean_candidate_regret": 0.0,
+        "mean_baseline_regret": 8.229508196721312,
+        "mean_capability_gain": 8.229508196721312,
+        "conservative_capability_gain": 8.229508196721312,
+        "optimistic_capability_gain": 8.229508196721312,
+        "candidate_optimal_hit_rate": 1.0,
+        "baseline_optimal_hit_rate": 0.7083333333333334,
+        "status_counts": [
+          [
+            "baseline:SCORED",
+            24
+          ],
+          [
+            "candidate:SCORED",
+            24
+          ]
+        ]
+      },
+      "hidden": {
+        "family": "multi_wealth_baotou",
+        "split": "hidden",
+        "case_count": 8,
+        "base_scenario_count": 8,
+        "scored_case_count": 8,
+        "scored_base_scenario_count": 8,
+        "mean_candidate_regret": 0.0,
+        "mean_baseline_regret": 31.672131147540984,
+        "mean_capability_gain": 31.672131147540984,
+        "conservative_capability_gain": 31.672131147540984,
+        "optimistic_capability_gain": 31.672131147540984,
+        "candidate_optimal_hit_rate": 1.0,
+        "baseline_optimal_hit_rate": 0.5,
+        "status_counts": [
+          [
+            "baseline:SCORED",
+            8
+          ],
+          [
+            "candidate:SCORED",
+            8
+          ]
+        ]
+      }
+    },
+    "negative_control": {
+      "development": {
+        "family": "multi_wealth_baotou",
+        "split": "development",
+        "case_count": 24,
+        "base_scenario_count": 24,
+        "scored_case_count": 24,
+        "scored_base_scenario_count": 24,
+        "mean_candidate_regret": 82.97540983606558,
+        "mean_baseline_regret": 8.229508196721312,
+        "mean_capability_gain": -74.74590163934427,
+        "conservative_capability_gain": -74.74590163934427,
+        "optimistic_capability_gain": -74.74590163934427,
+        "candidate_optimal_hit_rate": 0.0,
+        "baseline_optimal_hit_rate": 0.7083333333333334,
+        "status_counts": [
+          [
+            "baseline:SCORED",
+            24
+          ],
+          [
+            "candidate:SCORED",
+            24
+          ]
+        ]
+      },
+      "hidden": {
+        "family": "multi_wealth_baotou",
+        "split": "hidden",
+        "case_count": 8,
+        "base_scenario_count": 8,
+        "scored_case_count": 8,
+        "scored_base_scenario_count": 8,
+        "mean_candidate_regret": 81.86065573770492,
+        "mean_baseline_regret": 31.672131147540984,
+        "mean_capability_gain": -50.18852459016394,
+        "conservative_capability_gain": -50.18852459016394,
+        "optimistic_capability_gain": -50.18852459016394,
+        "candidate_optimal_hit_rate": 0.0,
+        "baseline_optimal_hit_rate": 0.5,
+        "status_counts": [
+          [
+            "baseline:SCORED",
+            8
+          ],
+          [
+            "candidate:SCORED",
+            8
+          ]
+        ]
+      }
+    }
+  },
+  "rows": {
+    "v2": [
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-02",
+          "base_scenario_id": "r18-mw-w1-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-02",
+          "base_scenario_id": "r18-mw-w1-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-03",
+          "base_scenario_id": "r18-mw-w1-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-03",
+          "base_scenario_id": "r18-mw-w1-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-04",
+          "base_scenario_id": "r18-mw-w1-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-04",
+          "base_scenario_id": "r18-mw-w1-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-05",
+          "base_scenario_id": "r18-mw-w1-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-05",
+          "base_scenario_id": "r18-mw-w1-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-06",
+          "base_scenario_id": "r18-mw-w1-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-06",
+          "base_scenario_id": "r18-mw-w1-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-07",
+          "base_scenario_id": "r18-mw-w1-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-07",
+          "base_scenario_id": "r18-mw-w1-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-02",
+          "base_scenario_id": "r18-mw-w2-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:7b",
+            "discard:北",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-02",
+          "base_scenario_id": "r18-mw-w2-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:7b",
+            "discard:北",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-03",
+          "base_scenario_id": "r18-mw-w2-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:8b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-03",
+          "base_scenario_id": "r18-mw-w2-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:8b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-04",
+          "base_scenario_id": "r18-mw-w2-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-04",
+          "base_scenario_id": "r18-mw-w2-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-05",
+          "base_scenario_id": "r18-mw-w2-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-05",
+          "base_scenario_id": "r18-mw-w2-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-06",
+          "base_scenario_id": "r18-mw-w2-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-06",
+          "base_scenario_id": "r18-mw-w2-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-08",
+          "base_scenario_id": "r18-mw-w2-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-08",
+          "base_scenario_id": "r18-mw-w2-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-01",
+          "base_scenario_id": "r18-mw-w3-01",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "discard:7b",
+            "discard:东"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-01",
+          "base_scenario_id": "r18-mw-w3-01",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "discard:7b",
+            "discard:东"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-03",
+          "base_scenario_id": "r18-mw-w3-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:5w",
+            "discard:7b",
+            "discard:9b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-03",
+          "base_scenario_id": "r18-mw-w3-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:5w",
+            "discard:7b",
+            "discard:9b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-04",
+          "base_scenario_id": "r18-mw-w3-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8t"
+          ],
+          "regret": 1.5737704918032733,
+          "regret_lower": 1.5737704918032733,
+          "regret_upper": 1.5737704918032733,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-04",
+          "base_scenario_id": "r18-mw-w3-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8t"
+          ],
+          "regret": 1.5737704918032733,
+          "regret_lower": 1.5737704918032733,
+          "regret_upper": 1.5737704918032733,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-05",
+          "base_scenario_id": "r18-mw-w3-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:2w",
+            "discard:4t"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-05",
+          "base_scenario_id": "r18-mw-w3-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:2w",
+            "discard:4t"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-07",
+          "base_scenario_id": "r18-mw-w3-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8b",
+            "discard:9t"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-07",
+          "base_scenario_id": "r18-mw-w3-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8b",
+            "discard:9t"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-08",
+          "base_scenario_id": "r18-mw-w3-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2w",
+            "discard:5t",
+            "discard:8b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-08",
+          "base_scenario_id": "r18-mw-w3-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2w",
+            "discard:5t",
+            "discard:8b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-02",
+          "base_scenario_id": "r18-mw-w4-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-02",
+          "base_scenario_id": "r18-mw-w4-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-03",
+          "base_scenario_id": "r18-mw-w4-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 192.0,
+          "regret_lower": 192.0,
+          "regret_upper": 192.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-03",
+          "base_scenario_id": "r18-mw-w4-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 192.0,
+          "regret_lower": 192.0,
+          "regret_upper": 192.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-04",
+          "base_scenario_id": "r18-mw-w4-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1t",
+            "discard:2t",
+            "discard:4w",
+            "discard:5b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-04",
+          "base_scenario_id": "r18-mw-w4-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1t",
+            "discard:2t",
+            "discard:4w",
+            "discard:5b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-05",
+          "base_scenario_id": "r18-mw-w4-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "discard:6t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-05",
+          "base_scenario_id": "r18-mw-w4-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "discard:6t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-06",
+          "base_scenario_id": "r18-mw-w4-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:4w",
+            "discard:6b",
+            "discard:发",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-06",
+          "base_scenario_id": "r18-mw-w4-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:4w",
+            "discard:6b",
+            "discard:发",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-07",
+          "base_scenario_id": "r18-mw-w4-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:5t",
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-07",
+          "base_scenario_id": "r18-mw-w4-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:5t",
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-01",
+          "base_scenario_id": "r18-mw-w1-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-01",
+          "base_scenario_id": "r18-mw-w1-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-08",
+          "base_scenario_id": "r18-mw-w1-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-08",
+          "base_scenario_id": "r18-mw-w1-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-01",
+          "base_scenario_id": "r18-mw-w2-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6b",
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-01",
+          "base_scenario_id": "r18-mw-w2-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6b",
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-07",
+          "base_scenario_id": "r18-mw-w2-07",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-07",
+          "base_scenario_id": "r18-mw-w2-07",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-02",
+          "base_scenario_id": "r18-mw-w3-02",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:5w",
+            "discard:8b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-02",
+          "base_scenario_id": "r18-mw-w3-02",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:5w",
+            "discard:8b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-06",
+          "base_scenario_id": "r18-mw-w3-06",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 48.786885245901644,
+          "regret_lower": 48.786885245901644,
+          "regret_upper": 48.786885245901644,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-06",
+          "base_scenario_id": "r18-mw-w3-06",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 48.786885245901644,
+          "regret_lower": 48.786885245901644,
+          "regret_upper": 48.786885245901644,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-01",
+          "base_scenario_id": "r18-mw-w4-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 192.0,
+          "regret_lower": 192.0,
+          "regret_upper": 192.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-01",
+          "base_scenario_id": "r18-mw-w4-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 192.0,
+          "regret_lower": 192.0,
+          "regret_upper": 192.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-08",
+          "base_scenario_id": "r18-mw-w4-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6t"
+          ],
+          "regret": 11.803278688524586,
+          "regret_lower": 11.803278688524586,
+          "regret_upper": 11.803278688524586,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-08",
+          "base_scenario_id": "r18-mw-w4-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6t"
+          ],
+          "regret": 11.803278688524586,
+          "regret_lower": 11.803278688524586,
+          "regret_upper": 11.803278688524586,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      }
+    ],
+    "positive_control": [
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-02",
+          "base_scenario_id": "r18-mw-w1-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-02",
+          "base_scenario_id": "r18-mw-w1-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-03",
+          "base_scenario_id": "r18-mw-w1-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-03",
+          "base_scenario_id": "r18-mw-w1-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-04",
+          "base_scenario_id": "r18-mw-w1-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-04",
+          "base_scenario_id": "r18-mw-w1-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-05",
+          "base_scenario_id": "r18-mw-w1-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-05",
+          "base_scenario_id": "r18-mw-w1-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-06",
+          "base_scenario_id": "r18-mw-w1-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-06",
+          "base_scenario_id": "r18-mw-w1-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-07",
+          "base_scenario_id": "r18-mw-w1-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-07",
+          "base_scenario_id": "r18-mw-w1-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-02",
+          "base_scenario_id": "r18-mw-w2-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:7b",
+            "discard:北",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-02",
+          "base_scenario_id": "r18-mw-w2-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:7b",
+            "discard:北",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-03",
+          "base_scenario_id": "r18-mw-w2-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:8b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-03",
+          "base_scenario_id": "r18-mw-w2-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:8b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-04",
+          "base_scenario_id": "r18-mw-w2-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-04",
+          "base_scenario_id": "r18-mw-w2-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-05",
+          "base_scenario_id": "r18-mw-w2-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-05",
+          "base_scenario_id": "r18-mw-w2-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-06",
+          "base_scenario_id": "r18-mw-w2-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-06",
+          "base_scenario_id": "r18-mw-w2-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-08",
+          "base_scenario_id": "r18-mw-w2-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-08",
+          "base_scenario_id": "r18-mw-w2-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-01",
+          "base_scenario_id": "r18-mw-w3-01",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:东",
+          "optimal_action_keys": [
+            "discard:1b",
+            "discard:7b",
+            "discard:东"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-01",
+          "base_scenario_id": "r18-mw-w3-01",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "discard:7b",
+            "discard:东"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.7868852459016438,
+        "capability_gain_lower": 0.7868852459016438,
+        "capability_gain_upper": 0.7868852459016438
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-03",
+          "base_scenario_id": "r18-mw-w3-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:9b",
+          "optimal_action_keys": [
+            "discard:5w",
+            "discard:7b",
+            "discard:9b"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-03",
+          "base_scenario_id": "r18-mw-w3-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:5w",
+            "discard:7b",
+            "discard:9b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.7868852459016438,
+        "capability_gain_lower": 0.7868852459016438,
+        "capability_gain_upper": 0.7868852459016438
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-04",
+          "base_scenario_id": "r18-mw-w3-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:8t",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8t"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-04",
+          "base_scenario_id": "r18-mw-w3-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8t"
+          ],
+          "regret": 1.5737704918032733,
+          "regret_lower": 1.5737704918032733,
+          "regret_upper": 1.5737704918032733,
+          "error": null
+        },
+        "capability_gain": 1.5737704918032733,
+        "capability_gain_lower": 1.5737704918032733,
+        "capability_gain_upper": 1.5737704918032733
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-05",
+          "base_scenario_id": "r18-mw-w3-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:4t",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:2w",
+            "discard:4t"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-05",
+          "base_scenario_id": "r18-mw-w3-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:2w",
+            "discard:4t"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.7868852459016438,
+        "capability_gain_lower": 0.7868852459016438,
+        "capability_gain_upper": 0.7868852459016438
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-07",
+          "base_scenario_id": "r18-mw-w3-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:9t",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8b",
+            "discard:9t"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-07",
+          "base_scenario_id": "r18-mw-w3-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8b",
+            "discard:9t"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.7868852459016438,
+        "capability_gain_lower": 0.7868852459016438,
+        "capability_gain_upper": 0.7868852459016438
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-08",
+          "base_scenario_id": "r18-mw-w3-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:8b",
+          "optimal_action_keys": [
+            "discard:2w",
+            "discard:5t",
+            "discard:8b"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-08",
+          "base_scenario_id": "r18-mw-w3-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2w",
+            "discard:5t",
+            "discard:8b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.7868852459016438,
+        "capability_gain_lower": 0.7868852459016438,
+        "capability_gain_upper": 0.7868852459016438
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-02",
+          "base_scenario_id": "r18-mw-w4-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-02",
+          "base_scenario_id": "r18-mw-w4-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-03",
+          "base_scenario_id": "r18-mw-w4-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:白",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-03",
+          "base_scenario_id": "r18-mw-w4-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 192.0,
+          "regret_lower": 192.0,
+          "regret_upper": 192.0,
+          "error": null
+        },
+        "capability_gain": 192.0,
+        "capability_gain_lower": 192.0,
+        "capability_gain_upper": 192.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-04",
+          "base_scenario_id": "r18-mw-w4-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1t",
+            "discard:2t",
+            "discard:4w",
+            "discard:5b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-04",
+          "base_scenario_id": "r18-mw-w4-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1t",
+            "discard:2t",
+            "discard:4w",
+            "discard:5b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-05",
+          "base_scenario_id": "r18-mw-w4-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "discard:6t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-05",
+          "base_scenario_id": "r18-mw-w4-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "discard:6t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-06",
+          "base_scenario_id": "r18-mw-w4-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:4w",
+            "discard:6b",
+            "discard:发",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-06",
+          "base_scenario_id": "r18-mw-w4-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:4w",
+            "discard:6b",
+            "discard:发",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-07",
+          "base_scenario_id": "r18-mw-w4-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:5t",
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-07",
+          "base_scenario_id": "r18-mw-w4-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:5t",
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-01",
+          "base_scenario_id": "r18-mw-w1-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-01",
+          "base_scenario_id": "r18-mw-w1-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-08",
+          "base_scenario_id": "r18-mw-w1-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-08",
+          "base_scenario_id": "r18-mw-w1-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-01",
+          "base_scenario_id": "r18-mw-w2-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6b",
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-01",
+          "base_scenario_id": "r18-mw-w2-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6b",
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-07",
+          "base_scenario_id": "r18-mw-w2-07",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-07",
+          "base_scenario_id": "r18-mw-w2-07",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-02",
+          "base_scenario_id": "r18-mw-w3-02",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:8b",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:5w",
+            "discard:8b"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-02",
+          "base_scenario_id": "r18-mw-w3-02",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:5w",
+            "discard:8b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": 0.7868852459016438,
+        "capability_gain_lower": 0.7868852459016438,
+        "capability_gain_upper": 0.7868852459016438
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-06",
+          "base_scenario_id": "r18-mw-w3-06",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:白",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-06",
+          "base_scenario_id": "r18-mw-w3-06",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 48.786885245901644,
+          "regret_lower": 48.786885245901644,
+          "regret_upper": 48.786885245901644,
+          "error": null
+        },
+        "capability_gain": 48.786885245901644,
+        "capability_gain_lower": 48.786885245901644,
+        "capability_gain_upper": 48.786885245901644
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-01",
+          "base_scenario_id": "r18-mw-w4-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:白",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-01",
+          "base_scenario_id": "r18-mw-w4-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 192.0,
+          "regret_lower": 192.0,
+          "regret_upper": 192.0,
+          "error": null
+        },
+        "capability_gain": 192.0,
+        "capability_gain_lower": 192.0,
+        "capability_gain_upper": 192.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-08",
+          "base_scenario_id": "r18-mw-w4-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:6t",
+          "optimal_action_keys": [
+            "discard:6t"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-08",
+          "base_scenario_id": "r18-mw-w4-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6t"
+          ],
+          "regret": 11.803278688524586,
+          "regret_lower": 11.803278688524586,
+          "regret_upper": 11.803278688524586,
+          "error": null
+        },
+        "capability_gain": 11.803278688524586,
+        "capability_gain_lower": 11.803278688524586,
+        "capability_gain_upper": 11.803278688524586
+      }
+    ],
+    "negative_control": [
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-02",
+          "base_scenario_id": "r18-mw-w1-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:3b",
+          "optimal_action_keys": [
+            "discard:3w",
+            "hu"
+          ],
+          "regret": 46.22950819672131,
+          "regret_lower": 46.22950819672131,
+          "regret_upper": 46.22950819672131,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-02",
+          "base_scenario_id": "r18-mw-w1-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -46.22950819672131,
+        "capability_gain_lower": -46.22950819672131,
+        "capability_gain_upper": -46.22950819672131
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-03",
+          "base_scenario_id": "r18-mw-w1-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:白",
+          "optimal_action_keys": [
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 45.63934426229508,
+          "regret_lower": 45.63934426229508,
+          "regret_upper": 45.63934426229508,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-03",
+          "base_scenario_id": "r18-mw-w1-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -45.63934426229508,
+        "capability_gain_lower": -45.63934426229508,
+        "capability_gain_upper": -45.63934426229508
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-04",
+          "base_scenario_id": "r18-mw-w1-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:5t",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 46.22950819672131,
+          "regret_lower": 46.22950819672131,
+          "regret_upper": 46.22950819672131,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-04",
+          "base_scenario_id": "r18-mw-w1-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -46.22950819672131,
+        "capability_gain_lower": -46.22950819672131,
+        "capability_gain_upper": -46.22950819672131
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-05",
+          "base_scenario_id": "r18-mw-w1-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:3w",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 46.22950819672131,
+          "regret_lower": 46.22950819672131,
+          "regret_upper": 46.22950819672131,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-05",
+          "base_scenario_id": "r18-mw-w1-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -46.22950819672131,
+        "capability_gain_lower": -46.22950819672131,
+        "capability_gain_upper": -46.22950819672131
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-06",
+          "base_scenario_id": "r18-mw-w1-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:5b",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 46.22950819672131,
+          "regret_lower": 46.22950819672131,
+          "regret_upper": 46.22950819672131,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-06",
+          "base_scenario_id": "r18-mw-w1-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -46.22950819672131,
+        "capability_gain_lower": -46.22950819672131,
+        "capability_gain_upper": -46.22950819672131
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-07",
+          "base_scenario_id": "r18-mw-w1-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:5b",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 46.22950819672131,
+          "regret_lower": 46.22950819672131,
+          "regret_upper": 46.22950819672131,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-07",
+          "base_scenario_id": "r18-mw-w1-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -46.22950819672131,
+        "capability_gain_lower": -46.22950819672131,
+        "capability_gain_upper": -46.22950819672131
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-02",
+          "base_scenario_id": "r18-mw-w2-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:1t",
+          "optimal_action_keys": [
+            "discard:7b",
+            "discard:北",
+            "hu"
+          ],
+          "regret": 92.06557377049181,
+          "regret_lower": 92.06557377049181,
+          "regret_upper": 92.06557377049181,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-02",
+          "base_scenario_id": "r18-mw-w2-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:7b",
+            "discard:北",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -92.06557377049181,
+        "capability_gain_lower": -92.06557377049181,
+        "capability_gain_upper": -92.06557377049181
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-03",
+          "base_scenario_id": "r18-mw-w2-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:6b",
+          "optimal_action_keys": [
+            "discard:8b",
+            "hu"
+          ],
+          "regret": 43.67213114754098,
+          "regret_lower": 43.67213114754098,
+          "regret_upper": 43.67213114754098,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-03",
+          "base_scenario_id": "r18-mw-w2-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:8b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -43.67213114754098,
+        "capability_gain_lower": -43.67213114754098,
+        "capability_gain_upper": -43.67213114754098
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-04",
+          "base_scenario_id": "r18-mw-w2-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:2t",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 45.63934426229508,
+          "regret_lower": 45.63934426229508,
+          "regret_upper": 45.63934426229508,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-04",
+          "base_scenario_id": "r18-mw-w2-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -45.63934426229508,
+        "capability_gain_lower": -45.63934426229508,
+        "capability_gain_upper": -45.63934426229508
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-05",
+          "base_scenario_id": "r18-mw-w2-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:4w",
+          "optimal_action_keys": [
+            "discard:1t",
+            "hu"
+          ],
+          "regret": 45.63934426229508,
+          "regret_lower": 45.63934426229508,
+          "regret_upper": 45.63934426229508,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-05",
+          "base_scenario_id": "r18-mw-w2-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -45.63934426229508,
+        "capability_gain_lower": -45.63934426229508,
+        "capability_gain_upper": -45.63934426229508
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-06",
+          "base_scenario_id": "r18-mw-w2-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:3t",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 92.06557377049181,
+          "regret_lower": 92.06557377049181,
+          "regret_upper": 92.06557377049181,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-06",
+          "base_scenario_id": "r18-mw-w2-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -92.06557377049181,
+        "capability_gain_lower": -92.06557377049181,
+        "capability_gain_upper": -92.06557377049181
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-08",
+          "base_scenario_id": "r18-mw-w2-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:北",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 43.278688524590166,
+          "regret_lower": 43.278688524590166,
+          "regret_upper": 43.278688524590166,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-08",
+          "base_scenario_id": "r18-mw-w2-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -43.278688524590166,
+        "capability_gain_lower": -43.278688524590166,
+        "capability_gain_upper": -43.278688524590166
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-01",
+          "base_scenario_id": "r18-mw-w3-01",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:2t",
+          "optimal_action_keys": [
+            "discard:1b",
+            "discard:7b",
+            "discard:东"
+          ],
+          "regret": 91.672131147541,
+          "regret_lower": 91.672131147541,
+          "regret_upper": 91.672131147541,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-01",
+          "base_scenario_id": "r18-mw-w3-01",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1b",
+            "discard:7b",
+            "discard:东"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": -90.88524590163935,
+        "capability_gain_lower": -90.88524590163935,
+        "capability_gain_upper": -90.88524590163935
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-03",
+          "base_scenario_id": "r18-mw-w3-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:1t",
+          "optimal_action_keys": [
+            "discard:5w",
+            "discard:7b",
+            "discard:9b"
+          ],
+          "regret": 91.672131147541,
+          "regret_lower": 91.672131147541,
+          "regret_upper": 91.672131147541,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-03",
+          "base_scenario_id": "r18-mw-w3-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:5w",
+            "discard:7b",
+            "discard:9b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": -90.88524590163935,
+        "capability_gain_lower": -90.88524590163935,
+        "capability_gain_upper": -90.88524590163935
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-04",
+          "base_scenario_id": "r18-mw-w3-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:1w",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8t"
+          ],
+          "regret": 92.85245901639344,
+          "regret_lower": 92.85245901639344,
+          "regret_upper": 92.85245901639344,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-04",
+          "base_scenario_id": "r18-mw-w3-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8t"
+          ],
+          "regret": 1.5737704918032733,
+          "regret_lower": 1.5737704918032733,
+          "regret_upper": 1.5737704918032733,
+          "error": null
+        },
+        "capability_gain": -91.27868852459017,
+        "capability_gain_lower": -91.27868852459017,
+        "capability_gain_upper": -91.27868852459017
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-05",
+          "base_scenario_id": "r18-mw-w3-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:2b",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:2w",
+            "discard:4t"
+          ],
+          "regret": 91.672131147541,
+          "regret_lower": 91.672131147541,
+          "regret_upper": 91.672131147541,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-05",
+          "base_scenario_id": "r18-mw-w3-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:2w",
+            "discard:4t"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": -90.88524590163935,
+        "capability_gain_lower": -90.88524590163935,
+        "capability_gain_upper": -90.88524590163935
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-07",
+          "base_scenario_id": "r18-mw-w3-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:2w",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8b",
+            "discard:9t"
+          ],
+          "regret": 91.672131147541,
+          "regret_lower": 91.672131147541,
+          "regret_upper": 91.672131147541,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-07",
+          "base_scenario_id": "r18-mw-w3-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:8b",
+            "discard:9t"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": -90.88524590163935,
+        "capability_gain_lower": -90.88524590163935,
+        "capability_gain_upper": -90.88524590163935
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-08",
+          "base_scenario_id": "r18-mw-w3-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:3b",
+          "optimal_action_keys": [
+            "discard:2w",
+            "discard:5t",
+            "discard:8b"
+          ],
+          "regret": 91.672131147541,
+          "regret_lower": 91.672131147541,
+          "regret_upper": 91.672131147541,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-08",
+          "base_scenario_id": "r18-mw-w3-08",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2w",
+            "discard:5t",
+            "discard:8b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": -90.88524590163935,
+        "capability_gain_lower": -90.88524590163935,
+        "capability_gain_upper": -90.88524590163935
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-02",
+          "base_scenario_id": "r18-mw-w4-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:7t",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 84.98360655737704,
+          "regret_lower": 84.98360655737704,
+          "regret_upper": 84.98360655737704,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-02",
+          "base_scenario_id": "r18-mw-w4-02",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:9b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -84.98360655737704,
+        "capability_gain_lower": -84.98360655737704,
+        "capability_gain_upper": -84.98360655737704
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-03",
+          "base_scenario_id": "r18-mw-w4-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:1t",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 192.0,
+          "regret_lower": 192.0,
+          "regret_upper": 192.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-03",
+          "base_scenario_id": "r18-mw-w4-03",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 192.0,
+          "regret_lower": 192.0,
+          "regret_upper": 192.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-04",
+          "base_scenario_id": "r18-mw-w4-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:9w",
+          "optimal_action_keys": [
+            "discard:1t",
+            "discard:2t",
+            "discard:4w",
+            "discard:5b",
+            "hu"
+          ],
+          "regret": 176.2622950819672,
+          "regret_lower": 176.2622950819672,
+          "regret_upper": 176.2622950819672,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-04",
+          "base_scenario_id": "r18-mw-w4-04",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:1t",
+            "discard:2t",
+            "discard:4w",
+            "discard:5b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -176.2622950819672,
+        "capability_gain_lower": -176.2622950819672,
+        "capability_gain_upper": -176.2622950819672
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-05",
+          "base_scenario_id": "r18-mw-w4-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:3w",
+          "optimal_action_keys": [
+            "discard:3t",
+            "discard:6t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 82.22950819672131,
+          "regret_lower": 82.22950819672131,
+          "regret_upper": 82.22950819672131,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-05",
+          "base_scenario_id": "r18-mw-w4-05",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "discard:6t",
+            "discard:7t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -82.22950819672131,
+        "capability_gain_lower": -82.22950819672131,
+        "capability_gain_upper": -82.22950819672131
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-06",
+          "base_scenario_id": "r18-mw-w4-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:3b",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:4w",
+            "discard:6b",
+            "discard:发",
+            "hu"
+          ],
+          "regret": 180.98360655737704,
+          "regret_lower": 180.98360655737704,
+          "regret_upper": 180.98360655737704,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-06",
+          "base_scenario_id": "r18-mw-w4-06",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4t",
+            "discard:4w",
+            "discard:6b",
+            "discard:发",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -180.98360655737704,
+        "capability_gain_lower": -180.98360655737704,
+        "capability_gain_upper": -180.98360655737704
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-07",
+          "base_scenario_id": "r18-mw-w4-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "discard:7b",
+          "optimal_action_keys": [
+            "discard:5t",
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 84.59016393442623,
+          "regret_lower": 84.59016393442623,
+          "regret_upper": 84.59016393442623,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-07",
+          "base_scenario_id": "r18-mw-w4-07",
+          "family": "multi_wealth_baotou",
+          "split": "development",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:5t",
+            "discard:9t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -84.59016393442623,
+        "capability_gain_lower": -84.59016393442623,
+        "capability_gain_upper": -84.59016393442623
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-01",
+          "base_scenario_id": "r18-mw-w1-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:2w",
+          "optimal_action_keys": [
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 46.22950819672131,
+          "regret_lower": 46.22950819672131,
+          "regret_upper": 46.22950819672131,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-01",
+          "base_scenario_id": "r18-mw-w1-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -46.22950819672131,
+        "capability_gain_lower": -46.22950819672131,
+        "capability_gain_upper": -46.22950819672131
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w1-08",
+          "base_scenario_id": "r18-mw-w1-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:6b",
+          "optimal_action_keys": [
+            "discard:4b",
+            "hu"
+          ],
+          "regret": 45.63934426229508,
+          "regret_lower": 45.63934426229508,
+          "regret_upper": 45.63934426229508,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w1-08",
+          "base_scenario_id": "r18-mw-w1-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:4b",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -45.63934426229508,
+        "capability_gain_lower": -45.63934426229508,
+        "capability_gain_upper": -45.63934426229508
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-01",
+          "base_scenario_id": "r18-mw-w2-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:1b",
+          "optimal_action_keys": [
+            "discard:6b",
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 92.06557377049181,
+          "regret_lower": 92.06557377049181,
+          "regret_upper": 92.06557377049181,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-01",
+          "base_scenario_id": "r18-mw-w2-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6b",
+            "discard:6w",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -92.06557377049181,
+        "capability_gain_lower": -92.06557377049181,
+        "capability_gain_upper": -92.06557377049181
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w2-07",
+          "base_scenario_id": "r18-mw-w2-07",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:4w",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 42.885245901639344,
+          "regret_lower": 42.885245901639344,
+          "regret_upper": 42.885245901639344,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w2-07",
+          "base_scenario_id": "r18-mw-w2-07",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:3t",
+            "hu"
+          ],
+          "regret": 0.0,
+          "regret_lower": 0.0,
+          "regret_upper": 0.0,
+          "error": null
+        },
+        "capability_gain": -42.885245901639344,
+        "capability_gain_lower": -42.885245901639344,
+        "capability_gain_upper": -42.885245901639344
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-02",
+          "base_scenario_id": "r18-mw-w3-02",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:1t",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:5w",
+            "discard:8b"
+          ],
+          "regret": 91.672131147541,
+          "regret_lower": 91.672131147541,
+          "regret_upper": 91.672131147541,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-02",
+          "base_scenario_id": "r18-mw-w3-02",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:2t",
+            "discard:5w",
+            "discard:8b"
+          ],
+          "regret": 0.7868852459016438,
+          "regret_lower": 0.7868852459016438,
+          "regret_upper": 0.7868852459016438,
+          "error": null
+        },
+        "capability_gain": -90.88524590163935,
+        "capability_gain_lower": -90.88524590163935,
+        "capability_gain_upper": -90.88524590163935
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w3-06",
+          "base_scenario_id": "r18-mw-w3-06",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 48.786885245901644,
+          "regret_lower": 48.786885245901644,
+          "regret_upper": 48.786885245901644,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w3-06",
+          "base_scenario_id": "r18-mw-w3-06",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 48.786885245901644,
+          "regret_lower": 48.786885245901644,
+          "regret_upper": 48.786885245901644,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-01",
+          "base_scenario_id": "r18-mw-w4-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:1t",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 192.0,
+          "regret_lower": 192.0,
+          "regret_upper": 192.0,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-01",
+          "base_scenario_id": "r18-mw-w4-01",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:白"
+          ],
+          "regret": 192.0,
+          "regret_lower": 192.0,
+          "regret_upper": 192.0,
+          "error": null
+        },
+        "capability_gain": 0.0,
+        "capability_gain_lower": 0.0,
+        "capability_gain_upper": 0.0
+      },
+      {
+        "candidate": {
+          "case_id": "r18-mw-w4-08",
+          "base_scenario_id": "r18-mw-w4-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "discard:东",
+          "optimal_action_keys": [
+            "discard:6t"
+          ],
+          "regret": 95.60655737704917,
+          "regret_lower": 95.60655737704917,
+          "regret_upper": 95.60655737704917,
+          "error": null
+        },
+        "baseline": {
+          "case_id": "r18-mw-w4-08",
+          "base_scenario_id": "r18-mw-w4-08",
+          "family": "multi_wealth_baotou",
+          "split": "hidden",
+          "status": "SCORED",
+          "chosen_action_key": "hu",
+          "optimal_action_keys": [
+            "discard:6t"
+          ],
+          "regret": 11.803278688524586,
+          "regret_lower": 11.803278688524586,
+          "regret_upper": 11.803278688524586,
+          "error": null
+        },
+        "capability_gain": -83.80327868852459,
+        "capability_gain_lower": -83.80327868852459,
+        "capability_gain_upper": -83.80327868852459
+      }
+    ]
+  }
+}

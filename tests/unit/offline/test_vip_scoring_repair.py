@@ -1,6 +1,23 @@
 """验证修复隔离及真实三白接缝；不以桌赛得分增强作为通过条件。"""
 from __future__ import annotations
 
+from pathlib import Path as _StoragePath
+import sys as _storage_sys
+_PROJECT_ROOT = next(p for p in _StoragePath(__file__).resolve().parents
+                     if (p / "src/hangma_bot/bootstrap.py").is_file())
+_storage_sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from hangma_bot.adapters.recording.project_storage import project_file as _resolve_project_file
+_PROJECT_STORAGE_ORIGIN = 'tests/unit/offline'
+
+def _project_file(root, source):
+    """共享脚本的相邻数据沿用原逻辑目录，相邻代码从共享目录读取。"""
+    source = _StoragePath(source)
+    here = _StoragePath(__file__).resolve().parent
+    if source.is_absolute() and source.is_relative_to(here):
+        if not source.is_dir() and not (source.suffix == ".py" and source.is_file()):
+            source = root / _PROJECT_STORAGE_ORIGIN / source.relative_to(here)
+    return _resolve_project_file(root, source)
+
 import ast
 import importlib.util
 import json
@@ -12,7 +29,7 @@ from hangma_bot.offline.vip_scoring_repair import scoring_repair_phases
 from hangma_bot.policy.action_value_executor import ActionValueExecutor, static_check
 
 ROOT = Path(__file__).resolve().parents[3]
-FAULT = ROOT / "tests/fixtures/vip_scoring_repair/fault_g37.py"
+FAULT = _project_file(_PROJECT_ROOT, ROOT / "tests/fixtures/vip_scoring_repair/fault_g37.py")
 
 
 def definitions(source):
@@ -46,7 +63,7 @@ def test_repair_rejects_unknown_and_already_repaired_source():
 
 def test_real_qualified_hu_window_transmits_tie_quality_without_raising_continue():
     """真实原输入上，F2不涨主报价；RF1细分弃牌但保留Hu/继续门。"""
-    path = ROOT / "review/vip-route-2026-09-30/evidence/t226-minimal-scoring-repair-1/regression_probe.py"
+    path = _project_file(_PROJECT_ROOT, ROOT / "review/vip-route-2026-09-30/evidence/t226-minimal-scoring-repair-1/regression_probe.py")
     spec = importlib.util.spec_from_file_location("repair_probe", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -82,7 +99,7 @@ def test_repair_package_is_honest_and_cannot_impersonate_model_proposal(tmp_path
     )
     from hangma_bot.offline.vip_scoring_repair import write_scoring_repair_package
     from hangma_bot.policy.route_heuristic_view import VIP_ROUTE_CANDIDATE_KIND
-    fixture = json.loads((ROOT / "tests/fixtures/vip_scoring_repair/mature_three_white.json").read_text())
+    fixture = json.loads((_project_file(_PROJECT_ROOT, ROOT / "tests/fixtures/vip_scoring_repair/mature_three_white.json")).read_text())
     batch_file = tmp_path / "batch.json"
     batch_file.write_text(json.dumps({
         "schema": VIP_EOH_BATCH_SCHEMA, "batch_id": "synthetic-scoring-repair",

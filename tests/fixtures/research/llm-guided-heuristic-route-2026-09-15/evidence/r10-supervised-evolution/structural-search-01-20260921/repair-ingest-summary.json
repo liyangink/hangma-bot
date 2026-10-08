@@ -1,0 +1,76 @@
+{
+  "schema": "r10-structural-repair-ingest/1",
+  "repairs": [
+    {
+      "task": "S1",
+      "parse_status": "ok",
+      "static_precheck": true,
+      "structure_space": false,
+      "accepted_for_behavior_preflight": false,
+      "code_sha256": "52eb03d9abab82ac54f2291247b994e69b27995ebc4cb14e954d4f0dee0d70e7",
+      "problems": [
+        "参数域必须含至少两个有限数：RC3_SCALE",
+        "参数域必须含至少两个有限数：RC3_WITNESS_GATE",
+        "参数域必须含至少两个有限数：RC3_RISK_SUPPRESS",
+        "zero_effect 必须覆盖全部参数且不得多键",
+        "config[0] 未完整覆盖参数",
+        "config[1] 未完整覆盖参数",
+        "config[2] 未完整覆盖参数",
+        "config[3] 未完整覆盖参数",
+        "config[4] 未完整覆盖参数",
+        "config[5] 未完整覆盖参数"
+      ]
+    },
+    {
+      "task": "S2",
+      "parse_status": "ok",
+      "static_precheck": true,
+      "structure_space": false,
+      "accepted_for_behavior_preflight": false,
+      "code_sha256": "32dc5da583962c4544dd71ecfa7883c04bd705236772becbac46fd0cf1cb840c",
+      "problems": [
+        "参数不是大写常数名：leeway_unit_weight",
+        "参数域必须含至少两个有限数：leeway_unit_weight",
+        "参数不是大写常数名：leeway_unit_clip",
+        "参数域必须含至少两个有限数：leeway_unit_clip",
+        "参数不是大写常数名：option_support_cap",
+        "参数域必须含至少两个有限数：option_support_cap",
+        "参数不是大写常数名：option_support_divisor",
+        "参数域必须含至少两个有限数：option_support_divisor",
+        "config[0] 未完整覆盖参数",
+        "config[1] 未完整覆盖参数",
+        "config[2] 未完整覆盖参数",
+        "config[3] 未完整覆盖参数",
+        "config[4] 未完整覆盖参数",
+        "config[5] 未完整覆盖参数",
+        "六配置未包含 zero_effect",
+        "参数未全部定义为模块级数值常数"
+      ]
+    },
+    {
+      "task": "S3",
+      "parse_status": "ok",
+      "static_precheck": false,
+      "structure_space": false,
+      "accepted_for_behavior_preflight": false,
+      "code_sha256": "ea3de8279f6a88cc10938282870a8a20ce6aa4777b93cb668e8f5577ef7d6a3d",
+      "problems": [
+        "名字 'isinstance' 不在白名单 builtins、模块常量/函数或任何局部作用域内",
+        "参数域必须含至少两个有限数：FBV_GAIN",
+        "参数域必须含至少两个有限数：FBV_SUPPORT",
+        "参数域必须含至少两个有限数：FBV_SUPPORT_CAP",
+        "参数域必须含至少两个有限数：FBV_CAP"
+      ]
+    }
+  ],
+  "all_accepted_for_behavior_preflight": [
+    "S4"
+  ],
+  "closed_failed": [
+    "S1",
+    "S2",
+    "S3"
+  ],
+  "effect_evaluation_started": false,
+  "note": "每题修复额度已用尽；失败项关闭，不再调用模型。"
+}

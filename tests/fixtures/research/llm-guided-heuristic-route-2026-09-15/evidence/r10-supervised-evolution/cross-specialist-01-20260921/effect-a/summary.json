@@ -1,0 +1,140 @@
+{
+  "status": "COMPLETE_CROSS_SPECIALIST_PHASE_A_COMPONENT_SCREEN",
+  "configurations": 5,
+  "roots_per_mix": 4,
+  "candidate_tables": 320,
+  "baseline_tables": 64,
+  "full_tables": 384,
+  "leader": {
+    "config_id": "route_claim_only",
+    "mode": "route_claim_only",
+    "family": "ABLATION_ROUTE_CLAIM",
+    "candidate_id": "offline-cross-specialist-v1:route_claim_only:b753f5bb83860428",
+    "is_parent": false,
+    "is_crossover": false,
+    "fitness_mean_delta_low": 0.0625,
+    "mean_delta": 0.0625,
+    "mean_delta_high": 0.0625,
+    "H": {
+      "n_roots": 4,
+      "mean_delta": 0.0,
+      "standard_error": 0.10206207261596575,
+      "interval_95": [
+        -0.2000379865148046,
+        0.2000379865148046
+      ]
+    },
+    "M": {
+      "n_roots": 4,
+      "mean_delta": 0.125,
+      "standard_error": 0.07216878364870322,
+      "interval_95": [
+        -0.01644821675952146,
+        0.26644821675952146
+      ]
+    },
+    "audit": {
+      "decisions": 21409,
+      "statuses": {
+        "NOT_APPLICABLE": 4468,
+        "EVALUATED": 16941
+      },
+      "components": {
+        "v2": 4468,
+        "route_claim": 16941
+      },
+      "changes_by_component": {
+        "v2": 0,
+        "route_claim": 49
+      },
+      "first_changes": 49,
+      "rule_calls": 0,
+      "max_decision_seconds": 0.02335845900233835,
+      "total_decision_seconds": 8.884197701525409,
+      "runtime_counts": {
+        "timeouts": 0,
+        "illegal_choices": 0,
+        "fallbacks": 0,
+        "auto_actions": 0,
+        "audit_missing": 0
+      },
+      "has_fallback": false
+    }
+  },
+  "crossover": {
+    "config_id": "cross_followup_claim",
+    "mode": "cross_followup_claim",
+    "family": "CROSSOVER_FOLLOWUP_CLAIM",
+    "candidate_id": "offline-cross-specialist-v1:cross_followup_claim:b753f5bb83860428",
+    "is_parent": false,
+    "is_crossover": true,
+    "fitness_mean_delta_low": -0.0625,
+    "mean_delta": -0.0625,
+    "mean_delta_high": -0.0625,
+    "H": {
+      "n_roots": 4,
+      "mean_delta": -0.125,
+      "standard_error": 0.1613743060919757,
+      "interval_95": [
+        -0.441287827970415,
+        0.191287827970415
+      ]
+    },
+    "M": {
+      "n_roots": 4,
+      "mean_delta": 0.0,
+      "standard_error": 0.1767766952966369,
+      "interval_95": [
+        -0.3464759560874195,
+        0.3464759560874195
+      ]
+    },
+    "audit": {
+      "decisions": 21797,
+      "statuses": {
+        "EVALUATED": 18265,
+        "NOT_APPLICABLE": 3532
+      },
+      "components": {
+        "followup_discard": 4519,
+        "route_claim": 17278
+      },
+      "changes_by_component": {
+        "followup_discard": 423,
+        "route_claim": 38
+      },
+      "first_changes": 461,
+      "rule_calls": 69907,
+      "max_decision_seconds": 0.585520250024274,
+      "total_decision_seconds": 106.23806076293113,
+      "runtime_counts": {
+        "timeouts": 0,
+        "illegal_choices": 0,
+        "fallbacks": 0,
+        "auto_actions": 0,
+        "audit_missing": 0
+      },
+      "has_fallback": false
+    }
+  },
+  "selected_for_b": [
+    "followup_discard",
+    "route_all",
+    "cross_followup_claim",
+    "route_claim_only"
+  ],
+  "disposition": "EXTEND_CROSS_AND_COMPONENT_CONTROLS",
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 384.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

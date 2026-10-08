@@ -1,0 +1,52 @@
+{
+  "schema": "sitin-action-value-ledger/1",
+  "accounts": [
+    "tokens_input",
+    "tokens_output",
+    "tables_full",
+    "tables_partial",
+    "prefix_generation",
+    "confirm_reserved"
+  ],
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 672.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "confirm_authorized_budget": 0.0,
+  "authorized_budgets": {
+    "tables_full": 704.0
+  },
+  "confirm_policy": "confirm 硬禁继承现状：默认 0，无显式授权任何 confirm 记账拒绝",
+  "limit_policy": "Q3：正数记账须在授权总额内（扣已结算+在途预留）；未声明额度 fail-closed 拒绝；amount=0 纯登记不限额",
+  "reservations": [
+    {
+      "reservation_id": "mf1-stage1-and-baseline-stage2#1",
+      "step_id": "mf1-stage1-and-baseline-stage2",
+      "account": "tables_full",
+      "amount": 384.0,
+      "note": "全部候选第一桌及共享基线完整两桌",
+      "at_utc": "2026-09-21T08:07:27Z",
+      "status": "settled",
+      "charged": 384.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "mf1-selected-and-audit-stage2#2",
+      "step_id": "mf1-selected-and-audit-stage2",
+      "account": "tables_full",
+      "amount": 288.0,
+      "note": "保留候选与冻结淘汰审计候选第二桌",
+      "at_utc": "2026-09-21T08:11:18Z",
+      "status": "settled",
+      "charged": 288.0,
+      "usage_unknown": false
+    }
+  ],
+  "workers_active": 0,
+  "worker_lease": "ledger.json.workers.json",
+  "worker_cap": 12
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "sitin-supervised-author-channel/1",
+  "target_model": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3"
+  },
+  "expected_request_config": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3",
+    "reasoningEffort": "medium",
+    "maxTokens": 32768
+  },
+  "supervised_note": "上批max-tokens无正文；修正宿主/受限API说明并请求medium，是否实际生效只认协议记录，不推定供应商推理预算"
+}

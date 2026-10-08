@@ -22,10 +22,10 @@ COMPUTE_SETTINGS = {"workers": 10, "max_pending": 0, "max_message_bytes": 167772
     "startup_seconds": 5.0, "max_job_seconds": 3.0, "abandon_grace_seconds": 0.1,
     "resource_reap_seconds": 1.0, "max_restarts": 2, "per_game_workers": True}
 PACKAGE_SCOPES = {
-    "vip_g37_rf1_testroom_v1": ("test_room", "scoring_repair_testroom_only", "prebuilt/vip-g37-rf1-testroom-v1/manifest.json"),
-    "vip_g37_rf1_free_v1": ("auto_match", "scoring_repair_free_only", "prebuilt/vip-g37-rf1-free-v1/manifest.json"),
-    "vip_g37_rf1_test_tournament_v1": ("test_tournament", "scoring_repair_test_tournament_only", "prebuilt/vip-g37-rf1-test-tournament-v1/manifest.json"),
-    "vip_g37_rf1_official_tournament_v1": ("official_tournament", "scoring_repair_official_tournament_only", "prebuilt/vip-g37-rf1-official-tournament-v1/manifest.json"),
+    "vip_g37_rf1_testroom_v1": ("test_room", "scoring_repair_testroom_only", "prebuilt/vip-g37-rf1-testroom-v2/manifest.json"),
+    "vip_g37_rf1_free_v1": ("auto_match", "scoring_repair_free_only", "prebuilt/vip-g37-rf1-free-v2/manifest.json"),
+    "vip_g37_rf1_test_tournament_v1": ("test_tournament", "scoring_repair_test_tournament_only", "prebuilt/vip-g37-rf1-test-tournament-v2/manifest.json"),
+    "vip_g37_rf1_official_tournament_v1": ("official_tournament", "scoring_repair_official_tournament_only", "prebuilt/vip-g37-rf1-official-tournament-v2/manifest.json"),
 }
 REQUIRED_RECEIPTS = {
     "repair_passed": "REPAIR-CLOSED.json",

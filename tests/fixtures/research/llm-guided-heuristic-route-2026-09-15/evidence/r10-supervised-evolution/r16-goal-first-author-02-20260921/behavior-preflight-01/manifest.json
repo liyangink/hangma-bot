@@ -1,0 +1,33 @@
+{
+  "schema": "r16-generation2-preflight/1",
+  "sources": {
+    "stable_v2": {
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f"
+    },
+    "C": {
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r16-goal-first-author-02-20260921/C/candidate.py",
+      "sha256": "4a017ced86146e318779c7dd9ba520a37a4bcd888be824138dccae0249845fc3"
+    },
+    "D": {
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r16-goal-first-author-02-20260921/D/candidate.py",
+      "sha256": "aa27dc1c43e1f53b951705f7cdc2357718977fa0f302915e522390a3e3fc2946"
+    }
+  },
+  "deduplicated_windows": 226,
+  "tables_run": 0,
+  "gate": {
+    "active_windows_min": 1,
+    "changed_choices_min": 1,
+    "non_tie_changed_origins_min": 2,
+    "non_tie_changed_seats_min": 2,
+    "stage_ablation_exact_v2": true,
+    "route_ablation_exact_v2": true,
+    "partial_coverage_exact_v2": true,
+    "route_order_invariant": true,
+    "deterministic": true,
+    "mean_evaluate_ms_max": 25.0
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false
+}

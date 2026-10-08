@@ -1,0 +1,239 @@
+{
+  "schema": "sitin-action-value-ledger/1",
+  "accounts": [
+    "tokens_input",
+    "tokens_output",
+    "tables_full",
+    "tables_partial",
+    "prefix_generation",
+    "confirm_reserved"
+  ],
+  "spent": {
+    "tokens_input": 50946.0,
+    "tokens_output": 45588.0,
+    "tables_full": 72.0,
+    "tables_partial": 2.0,
+    "prefix_generation": 2.0,
+    "confirm_reserved": 0
+  },
+  "confirm_authorized_budget": 0.0,
+  "authorized_budgets": {
+    "tokens_input": 393216.0,
+    "tokens_output": 98304.0,
+    "tables_full": 128.0,
+    "tables_partial": 12.0,
+    "prefix_generation": 12.0,
+    "confirm_reserved": 0.0
+  },
+  "confirm_policy": "confirm 硬禁继承现状：默认 0，无显式授权任何 confirm 记账拒绝",
+  "limit_policy": "Q3：正数记账须在授权总额内（扣已结算+在途预留）；未声明额度 fail-closed 拒绝；amount=0 纯登记不限额",
+  "reservations": [
+    {
+      "reservation_id": "iter1:gen-tokens-in#1",
+      "step_id": "iter1:gen-tokens-in",
+      "account": "tokens_input",
+      "amount": 131072.0,
+      "note": "生成调用 token 输入上界预留（delegate 文件通道；回复 usage 未知时保守计费）；已终止的连接失败；会话观测用量，不冒充供应商最终账单；独立对账更正：superseded 连接失败不属于本次成功调用；来源 author-call/usage.json",
+      "at_utc": "2026-09-19T11:14:20Z",
+      "status": "settled",
+      "charged": 0.0,
+      "usage_unknown": false,
+      "superseded": true,
+      "superseded_reason": "连接失败已对账，授权批次内第二次尝试",
+      "superseded_at_utc": "2026-09-19T11:16:54Z"
+    },
+    {
+      "reservation_id": "iter1:gen-tokens-out#2",
+      "step_id": "iter1:gen-tokens-out",
+      "account": "tokens_output",
+      "amount": 32768.0,
+      "note": "生成调用 token 输出上界预留（含一次解析修复）；已终止的连接失败；会话观测用量，不冒充供应商最终账单；独立对账更正：superseded 连接失败不属于本次成功调用；来源 author-call/usage.json",
+      "at_utc": "2026-09-19T11:14:20Z",
+      "status": "settled",
+      "charged": 0.0,
+      "usage_unknown": false,
+      "superseded": true,
+      "superseded_reason": "连接失败已对账，授权批次内第二次尝试",
+      "superseded_at_utc": "2026-09-19T11:16:54Z"
+    },
+    {
+      "reservation_id": "iter1:gen-tokens-in#3",
+      "step_id": "iter1:gen-tokens-in",
+      "account": "tokens_input",
+      "amount": 131072.0,
+      "note": "生成调用 token 输入上界预留（delegate 文件通道；回复 usage 未知时保守计费）",
+      "at_utc": "2026-09-19T11:16:54Z",
+      "status": "settled",
+      "charged": 19839.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "iter1:gen-tokens-out#4",
+      "step_id": "iter1:gen-tokens-out",
+      "account": "tokens_output",
+      "amount": 32768.0,
+      "note": "生成调用 token 输出上界预留（含一次解析修复）",
+      "at_utc": "2026-09-19T11:16:54Z",
+      "status": "settled",
+      "charged": 26130.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "iter2:gen-tokens-in#5",
+      "step_id": "iter2:gen-tokens-in",
+      "account": "tokens_input",
+      "amount": 131072.0,
+      "note": "生成调用 token 输入上界预留（delegate 文件通道；回复 usage 未知时保守计费）",
+      "at_utc": "2026-09-19T11:27:09Z",
+      "status": "settled",
+      "charged": 0.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "iter2:gen-tokens-out#6",
+      "step_id": "iter2:gen-tokens-out",
+      "account": "tokens_output",
+      "amount": 32768.0,
+      "note": "生成调用 token 输出上界预留（含一次解析修复）",
+      "at_utc": "2026-09-19T11:27:09Z",
+      "status": "settled",
+      "charged": 0.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "evaluate:8f8a3820c7b4:branch_open#7",
+      "step_id": "evaluate:8f8a3820c7b4:branch_open",
+      "account": "prefix_generation",
+      "amount": 1.0,
+      "note": "C1 v2_behavior 前缀生成（批次 7 授权；tables_partial 按被启动桌赛实例另记）；v2_behavior前缀（attempts=1）",
+      "at_utc": "2026-09-19T11:28:16Z",
+      "status": "settled",
+      "charged": 1.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "evaluate:8f8a3820c7b4:branch_open:tables-partial#8",
+      "step_id": "evaluate:8f8a3820c7b4:branch_open:tables-partial",
+      "account": "tables_partial",
+      "amount": 8.0,
+      "note": "v2_behavior 真实前缀生成预留（每被启动真实桌赛实例扣 1，上限 8）；v2_behavior 前缀实际启动桌赛实例 1 个（attempts={'total': 1, 'hit': 1, 'missed': 0, 'unknown': 0, 'errors': 0, 'cap': 8, 'attempts_exhausted': False}）",
+      "at_utc": "2026-09-19T11:28:16Z",
+      "status": "settled",
+      "charged": 1.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "evaluate:8f8a3820c7b4:branch_open:tables-full#9",
+      "step_id": "evaluate:8f8a3820c7b4:branch_open:tables-full",
+      "account": "tables_full",
+      "amount": 4.0,
+      "note": "条件双臂完整剩余阶段（真实运行时：2 臂 × 2 桌；部分桌另记 tables_partial）；条件双臂完整阶段真实执行 4 桌（真实前缀启动 1 桌另记）",
+      "at_utc": "2026-09-19T11:28:16Z",
+      "status": "settled",
+      "charged": 4.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "natural:8f8a3820c7b4:H:1#10",
+      "step_id": "natural:8f8a3820c7b4:H:1",
+      "account": "tables_full",
+      "amount": 16.0,
+      "note": "自然面板 H：1 根 × 4 座位 × 2 臂 × 2 桌；自然面板实跑桌赛实例 16/16（失败桌照记）",
+      "at_utc": "2026-09-19T11:28:24Z",
+      "status": "settled",
+      "charged": 16.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "natural:8f8a3820c7b4:M:1#11",
+      "step_id": "natural:8f8a3820c7b4:M:1",
+      "account": "tables_full",
+      "amount": 16.0,
+      "note": "自然面板 M：1 根 × 4 座位 × 2 臂 × 2 桌；自然面板实跑桌赛实例 16/16（失败桌照记）",
+      "at_utc": "2026-09-19T11:28:57Z",
+      "status": "settled",
+      "charged": 16.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "iter3:gen-tokens-in#12",
+      "step_id": "iter3:gen-tokens-in",
+      "account": "tokens_input",
+      "amount": 131072.0,
+      "note": "生成调用 token 输入上界预留（delegate 文件通道；回复 usage 未知时保守计费）",
+      "at_utc": "2026-09-19T11:29:53Z",
+      "status": "settled",
+      "charged": 31107.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "iter3:gen-tokens-out#13",
+      "step_id": "iter3:gen-tokens-out",
+      "account": "tokens_output",
+      "amount": 32768.0,
+      "note": "生成调用 token 输出上界预留（含一次解析修复）",
+      "at_utc": "2026-09-19T11:29:53Z",
+      "status": "settled",
+      "charged": 19458.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "evaluate:b6d87201f9c7:branch_open#14",
+      "step_id": "evaluate:b6d87201f9c7:branch_open",
+      "account": "prefix_generation",
+      "amount": 1.0,
+      "note": "C1 v2_behavior 前缀生成（批次 7 授权；tables_partial 按被启动桌赛实例另记）；v2_behavior前缀（attempts=1）",
+      "at_utc": "2026-09-19T11:36:54Z",
+      "status": "settled",
+      "charged": 1.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "evaluate:b6d87201f9c7:branch_open:tables-partial#15",
+      "step_id": "evaluate:b6d87201f9c7:branch_open:tables-partial",
+      "account": "tables_partial",
+      "amount": 8.0,
+      "note": "v2_behavior 真实前缀生成预留（每被启动真实桌赛实例扣 1，上限 8）；v2_behavior 前缀实际启动桌赛实例 1 个（attempts={'total': 1, 'hit': 1, 'missed': 0, 'unknown': 0, 'errors': 0, 'cap': 8, 'attempts_exhausted': False}）",
+      "at_utc": "2026-09-19T11:36:54Z",
+      "status": "settled",
+      "charged": 1.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "evaluate:b6d87201f9c7:branch_open:tables-full#16",
+      "step_id": "evaluate:b6d87201f9c7:branch_open:tables-full",
+      "account": "tables_full",
+      "amount": 4.0,
+      "note": "条件双臂完整剩余阶段（真实运行时：2 臂 × 2 桌；部分桌另记 tables_partial）；条件双臂完整阶段真实执行 4 桌（真实前缀启动 1 桌另记）",
+      "at_utc": "2026-09-19T11:36:54Z",
+      "status": "settled",
+      "charged": 4.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "natural:b6d87201f9c7:H:1#17",
+      "step_id": "natural:b6d87201f9c7:H:1",
+      "account": "tables_full",
+      "amount": 16.0,
+      "note": "自然面板 H：1 根 × 4 座位 × 2 臂 × 2 桌；自然面板实跑桌赛实例 16/16（失败桌照记）",
+      "at_utc": "2026-09-19T11:37:02Z",
+      "status": "settled",
+      "charged": 16.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "natural:b6d87201f9c7:M:1#18",
+      "step_id": "natural:b6d87201f9c7:M:1",
+      "account": "tables_full",
+      "amount": 16.0,
+      "note": "自然面板 M：1 根 × 4 座位 × 2 臂 × 2 桌；自然面板实跑桌赛实例 16/16（失败桌照记）",
+      "at_utc": "2026-09-19T11:37:35Z",
+      "status": "settled",
+      "charged": 16.0,
+      "usage_unknown": false
+    }
+  ],
+  "workers_active": 0,
+  "worker_lease": "av-ledger.json.workers.json",
+  "worker_cap": 12
+}

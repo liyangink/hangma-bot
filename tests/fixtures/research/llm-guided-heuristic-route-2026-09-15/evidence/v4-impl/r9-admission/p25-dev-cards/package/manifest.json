@@ -1,0 +1,114 @@
+{
+ "schema": "sitin-model-admission-manifest/1",
+ "issued_by": "R9-P25 §3 第 2 步「小规模新调用诊断」：**公开开发卡**（TD01—TD06），与准入 24 张卡（T01—T24）不同题、不同窗口、不同情境",
+ "not_admission": "本包不是准入题包：不设门槛、不计入准入通过数、不用于任何ADMISSION_PASS 判定；只用于检验「测量与修复链是否工作」。",
+ "task_count": 6,
+ "category_distribution": {
+  "scorer_generation": 4,
+  "stop_recovery": 2
+ },
+ "hard_constraint_tasks": [],
+ "thresholds": null,
+ "target_model": {
+  "provider": "deepseek-official",
+  "model": "deepseek-v4-flash",
+  "note": "身份与准入目标模型相同，便于对比同通道"
+ },
+ "cards": [
+  {
+   "task_id": "TD01",
+   "category": "scorer_generation",
+   "capability_face": "① 完整输入评分",
+   "title": "开发卡·完整输入评分：终局保位面板上对全部动作有效评分",
+   "prompt_sha256": "3f918a4a165e7c63982fb7d8eab4266fc1754c2b2d1bf63eed46a0e885b28ab8",
+   "sealed_prompt_sha256": "b0fd8e4144d0a7b8cd7e16f23757c837d3244dac00c03aea605be721b8d6f9cf",
+   "validator_kind": "code",
+   "views": [
+    "sample",
+    "fam_discard",
+    "route_combo",
+    "unknown_missing",
+    "max_input",
+    "cap_progress",
+    "pair_unscored_discard"
+   ],
+   "must_differ_from": null
+  },
+  {
+   "task_id": "TD02",
+   "category": "scorer_generation",
+   "capability_face": "② 未知越位修订",
+   "title": "开发卡·未知越位修订：无事实动作不得排在已知负分之前",
+   "prompt_sha256": "ae7c0491f39429d7ebe700c95f16e704f406baedde02ad86cc4cbdd3f011c2cc",
+   "sealed_prompt_sha256": "9fd3533512b2124555fef3e6f57667ae5902d2b258155b815abd17d40c489d06",
+   "validator_kind": "code",
+   "views": [
+    "cap_progress",
+    "pair_unscored_discard",
+    "pair_unknown_shapes",
+    "unknown_branch_none",
+    "unknown_branch_bool",
+    "unscored_action",
+    "route_combo",
+    "sample"
+   ],
+   "must_differ_from": "materials/dev-parent-hold-v1.py"
+  },
+  {
+   "task_id": "TD03",
+   "category": "scorer_generation",
+   "capability_face": "③ 可解窗错误弃权",
+   "title": "开发卡·可解窗错误弃权：有可用事实时必须实际完成评分",
+   "prompt_sha256": "b42e33f4b2e1b24c39c27700bfa075aa27bc80e4ed2fecb4d4a9101ef7593ad2",
+   "sealed_prompt_sha256": "c69de24c3380be5adc98d183b9e654efdc39da8ee7f9814418dc3aa260e9aec8",
+   "validator_kind": "code",
+   "views": [
+    "sample",
+    "cap_progress",
+    "fam_discard",
+    "route_combo",
+    "unknown_missing",
+    "pair_unscored_discard"
+   ],
+   "must_differ_from": null
+  },
+  {
+   "task_id": "TD04",
+   "category": "scorer_generation",
+   "capability_face": "④ 行为等价修订",
+   "title": "开发卡·行为等价修订：保序变换不算行为差异，必须是真实改选",
+   "prompt_sha256": "c2690ea91f5024967cc67a4910d66d40d91d23577b5a725c9aad4aa3d6550c0d",
+   "sealed_prompt_sha256": "8c08386605292d6058826e128a3298b0e19e6fd661153584f97f2e8a89ed157b",
+   "validator_kind": "code",
+   "views": [
+    "cap_progress",
+    "sample",
+    "route_combo",
+    "fam_discard"
+   ],
+   "must_differ_from": "materials/dev-parent-hold-v2.py"
+  },
+  {
+   "task_id": "TD05",
+   "category": "stop_recovery",
+   "capability_face": "⑤ 恢复计费",
+   "title": "开发卡·恢复计费：无结果不等于无消耗，先核实再结算或释放",
+   "prompt_sha256": "490ed1cc5aac00d55208b3d959902b44610cf2e06793c775824d11dfdb42c58e",
+   "sealed_prompt_sha256": "b0dd0c020252c301f8db2fa2f286cb7354139c06459054c91e75ba91c7f9a1f3",
+   "validator_kind": "keyword",
+   "views": null,
+   "must_differ_from": null
+  },
+  {
+   "task_id": "TD06",
+   "category": "stop_recovery",
+   "capability_face": "⑥ 停止隔离",
+   "title": "开发卡·停止隔离：结构化决定 + 明确相反主张必须拒",
+   "prompt_sha256": "ad64eb3495fa17b6599d0600387efe42c025206eb9c2f10f0395bb3de72ea349",
+   "sealed_prompt_sha256": "6f173506ff57e2a6be6cdb5496d6c1a857ed3d1853e40573c38a95f66439dd9c",
+   "validator_kind": "keyword",
+   "views": null,
+   "must_differ_from": null
+  }
+ ]
+}

@@ -1,0 +1,70 @@
+{
+  "schema": "r18-opportunity-normalized-ingest/1",
+  "rows": [
+    {
+      "schema": "r18-opportunity-normalization/1",
+      "task": "K3",
+      "parent_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "parent_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "raw_author_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-opportunity-author-01-20260922/generations/K3/candidate.py",
+      "raw_author_sha256": "c8c4aa870c026c56f42018d8504c7bd911c7921932b9c485fa75a991f613757d",
+      "normalized_sha256": "28dcac8e78e2f88f2d5800334e3e428103aa8e6c63efa8015dafb730aaf01bbe",
+      "fixed_design_sha256": "fdbe9ff611ea4bb1eb95e6794e48f1dfe65abf444300a352d2c20d324c22c11e",
+      "effect_feedback_used": false,
+      "hidden_input_used": false,
+      "semantic_corrections": [
+        "conditional_settlement 从 routes[] 读取，不从动作层读取",
+        "进张牌码读取 useful_tiles[].code，不读取不存在的 tile",
+        "未知池只计剩余牌墙和其他三家暗手，不重复加入本家手牌",
+        "每条路线使用自己的 score_delta，不能复用单个动作级值",
+        "value_issues 缺失视为未知并回退，不能当空集合",
+        "候选返回值不做字典下标写入，保持受限子集纯返回",
+        "目标形状与家族门控保留在逐动作循环内，不能退缩为只检查最后动作"
+      ],
+      "static_precheck": {
+        "ok": true,
+        "problems": [],
+        "rule_ids": [],
+        "rule_hits": [],
+        "unmapped": false
+      },
+      "load_error": null,
+      "accepted_for_development_preflight": true
+    },
+    {
+      "schema": "r18-opportunity-normalization/1",
+      "task": "P4",
+      "parent_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "parent_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "raw_author_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-opportunity-author-01-20260922/generations/P4/candidate.py",
+      "raw_author_sha256": "1934bed4769e6f56f43752c0d5c12c6f9ac0db62f61cb228ce4be92b4ecb68e7",
+      "normalized_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+      "fixed_design_sha256": "8a4014ad2ee4c81f78a346e24b474cc8b9384249065cfbec7f480a4a0c6f7106",
+      "effect_feedback_used": false,
+      "hidden_input_used": false,
+      "semantic_corrections": [
+        "conditional_settlement 从 routes[] 读取，不从动作层读取",
+        "进张牌码读取 useful_tiles[].code，不读取不存在的 tile",
+        "未知池只计剩余牌墙和其他三家暗手，不重复加入本家手牌",
+        "每条路线使用自己的 score_delta，不能复用单个动作级值",
+        "value_issues 缺失视为未知并回退，不能当空集合",
+        "候选返回值不做字典下标写入，保持受限子集纯返回",
+        "目标形状与家族门控保留在逐动作循环内，不能退缩为只检查最后动作"
+      ],
+      "static_precheck": {
+        "ok": true,
+        "problems": [],
+        "rule_ids": [],
+        "rule_hits": [],
+        "unmapped": false
+      },
+      "load_error": null,
+      "accepted_for_development_preflight": true
+    }
+  ],
+  "accepted_for_development_preflight": [
+    "K3",
+    "P4"
+  ],
+  "hidden_evaluation_started": false
+}

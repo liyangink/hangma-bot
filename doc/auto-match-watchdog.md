@@ -1,6 +1,6 @@
 # 自由赛盯盘操作
 
-**2026-10-09当前：**使用[G37-RF1独立冻结根续赛](../review/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)。用户已恢复自由赛，唯一watch启用自动续，独立后台按完整桌分账；测试房160单局压力测试不会自动续。不要启动下方历史入口，也不要建立重复定时任务。
+**2026-10-09当前：**使用[G37-RF1独立冻结根续赛](research/materials/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)。用户已恢复自由赛，唯一watch启用自动续，独立后台按完整桌分账；测试房160单局压力测试不会自动续。不要启动下方历史入口，也不要建立重复定时任务。
 
 **2026-10-05 当前实验入口：**T110-S02使用[T191 free_v7自动续赛](../review/vip-route-2026-09-30/evidence/t191-four-day-execution-1/LIVE-WATCHDOG.md)，算法原公式保持，main已整合明确拒绝后合法备用和四作用域接线。先用其`free_watchdog.py status`核真实玩家；自然完赛先接续，独立后台统计。常驻后台直接续赛，不依赖Codex定时任务；已删除的`t110` heartbeat不恢复。旧T179控制已关，禁止恢复T179、T170、T165或下述历史循环；测试房不自动续。
 
@@ -8,7 +8,7 @@
 
 ## 启动前
 
-按[运行与赛后操作](operations.md#2-启动测试房间与赛事)准备网络代理例外和单个全局 Token。连续盯盘的现行入口读取 `configs/auto-match.local.json` 与 `token/global/全局自由赛token`；凭证路径只在私有运行配置中维护，不在报告或命令输出中打印内容。先检查配置的赛事模式、审计目录、策略名称和冻结包摘要，并确认同一 Token 没有其他参赛进程。当前策略与接线结论见[研究证据索引](../review/INDEX.md)。
+按[运行与赛后操作](operations.md#2-启动测试房间与赛事)准备网络代理例外和单个全局 Token。连续盯盘的现行入口读取 `configs/auto-match.local.json` 与 `token/global/全局自由赛token`；凭证路径只在私有运行配置中维护，不在报告或命令输出中打印内容。先检查配置的赛事模式、审计目录、策略名称和冻结包摘要，并确认同一 Token 没有其他参赛进程。当前策略与接线结论见[研究证据索引](research/INDEX.md)。
 
 本机账本是 `runs/auto-match-watchdog/auto-match-watchdog-state.json`（`runs/` 当前兼容旧目录的符号链接）。首次接手先**只读**检查 `stopped`、已结算房数和最后房号：
 
@@ -57,6 +57,6 @@ PY
 
 ## 结算与问题定位
 
-房间结束后，watchdog 先核对本地终局、下载官方牌谱，再将房分写入账本；`stopped=true` 只阻止续开，不阻止结算。若巡检返回退出码 3，查看 `runs/auto-match-watchdog/session-*.log` 的脱敏终态与对应 `artifacts/sessions/` 审计，不用重复开房掩盖异常。需要重新封存、转换或规则核验时，按[赛后处理](operations.md#4-完赛后下载封存与复核)使用 `scripts/audit_tool.py postgame`；具体房次的接线结论与取证脚本从[研究证据索引](../review/INDEX.md)进入。
+房间结束后，watchdog 先核对本地终局、下载官方牌谱，再将房分写入账本；`stopped=true` 只阻止续开，不阻止结算。若巡检返回退出码 3，查看 `runs/auto-match-watchdog/session-*.log` 的脱敏终态与对应 `artifacts/sessions/` 审计，不用重复开房掩盖异常。需要重新封存、转换或规则核验时，按[赛后处理](operations.md#4-完赛后下载封存与复核)使用 `scripts/audit_tool.py postgame`；具体房次的接线结论与取证脚本从[研究证据索引](research/INDEX.md)进入。
 
 官方响应 `timeout(kind=response)` 常是正常过牌终态。判断接线漏行动时，核对当时合法动作、冻结策略首选、同相位权威快照、请求排队、动作 POST 结果和官方事件，不能仅按 `timeout` 次数下结论。

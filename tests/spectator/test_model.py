@@ -270,12 +270,12 @@ def test_snapshot_only_exposes_active_games_and_their_sources(tmp_path):
 
 
 def test_discovers_checked_in_legacy_test_room_audit_layout():
-    """真实归档仍能被发现；但结束的历史牌局不进入实时观战快照。"""
+    """精选的真实历史审计布局仍能被发现；结束的牌局不进入实时观战快照。"""
 
     repository_root = Path(__file__).resolve().parents[2]
     audit_root = (
         repository_root
-        / "game-records/test-room/20260906-1444-t_74a7c2d75d5e/bot-audit"
+        / "tests/fixtures/legacy-audit"
     )
     target_run = audit_root / "xuanwu/run-8c975e27eaa14429973671b841c88923"
 

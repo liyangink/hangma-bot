@@ -1,0 +1,144 @@
+# 以下只复用公开计数纯结果；实际容量仍逐次读取当前本人暗牌与飘白。
+_PUBLIC_RESULT_CACHE_SIZE = 2048
+_PUBLIC_RESULT_GUARD_SIZE = 16384
+_PUBLIC_RESULT_HISTORY_LIMIT = 4096
+_PUBLIC_RESULT_TYPES = (Tile, PublicMeld, PublicEvent, PublicClaimEvidence, PublicTileView)
+_PUBLIC_RESULT_SCALARS = (bool, int, str, type(None))
+_UNSUPPORTED_PUBLIC_SHAPE = object()
+
+
+def _compile_public_shape(annotation):
+    """只编译共享值类型实际用到的不可变字段形状；未知注解一律不缓存。"""
+
+    if annotation in _PUBLIC_RESULT_SCALARS or annotation in _PUBLIC_RESULT_TYPES:
+        return annotation
+    origin, arguments = get_origin(annotation), get_args(annotation)
+    if origin in (Union, UnionType):
+        return ("union", tuple(_compile_public_shape(item) for item in arguments))
+    if origin is tuple:
+        if len(arguments) == 2 and arguments[1] is Ellipsis:
+            return ("tuple_each", _compile_public_shape(arguments[0]))
+        return ("tuple_fixed", tuple(_compile_public_shape(item) for item in arguments))
+    return _UNSUPPORTED_PUBLIC_SHAPE
+
+
+_PUBLIC_RESULT_FIELDS = {
+    cls: tuple((field.name, _compile_public_shape(get_type_hints(cls)[field.name]))
+               for field in fields(cls))
+    for cls in _PUBLIC_RESULT_TYPES
+}
+
+
+class _PublicInputGuard:
+    """严格核全字段及嵌套形状；同原件在不同字段形状下分别校验。
+
+    只保留有界强引用，避免对象编号复用。规范冻结对象必须通过新构造或
+    replace 变化，不能用 __dict__/object.__setattr__ 主动改写旧原件。
+    调用者持有所属缓存的锁，守卫本身不访问网络、时间或其他业务模块。
+    """
+
+    def __init__(self):
+        self.values = {}
+
+    def valid(self, value, shape):
+        if shape is _UNSUPPORTED_PUBLIC_SHAPE:
+            return False
+        if shape in _PUBLIC_RESULT_SCALARS:
+            return type(value) is shape
+        if type(shape) is tuple and shape[0] == "union":
+            return any(self.valid(value, member) for member in shape[1])
+        if type(shape) is tuple:
+            if type(value) is not tuple:
+                return False
+        elif type(value) is not shape:
+            return False
+        key = (id(value), shape)
+        previous = self.values.get(key)
+        if previous is not None:
+            assert previous[0] is value
+            return previous[1]
+        if type(shape) is tuple:
+            if shape[0] == "tuple_each":
+                valid = all(self.valid(item, shape[1]) for item in value)
+            else:
+                valid = len(value) == len(shape[1]) and all(
+                    self.valid(item, expected) for item, expected in zip(value, shape[1]))
+        else:
+            valid = all(self.valid(getattr(value, name), expected)
+                        for name, expected in _PUBLIC_RESULT_FIELDS[shape])
+        if len(self.values) < _PUBLIC_RESULT_GUARD_SIZE:
+            self.values[key] = (value, valid)
+        return valid
+
+
+class _PublicCountResultCache:
+    """一次公开构图内的纯结果缓存；生命周期与有界条目用同一锁维护。
+
+    ContextVar 只隔离绑定。显式复制上下文可能共享本对象，因此 lookup
+    与 close 都串行保护；退出后旧上下文仅走原计数，不再重新积累缓存。
+    """
+
+    def __init__(self):
+        self.guard = _PublicInputGuard()
+        self.values = {}
+        self.lock = RLock()
+        self.closed = False
+
+    def count(self, view, *, legacy_four_meld):
+        with self.lock:
+            if (self.closed or type(view) is not PublicTileView
+                    or type(legacy_four_meld) is not bool
+                    or type(view.public_history) is not tuple
+                    or len(view.public_history) > _PUBLIC_RESULT_HISTORY_LIMIT
+                    or not self.guard.valid(view, PublicTileView)):
+                return _compute_public_tiles_from_view(view, legacy_four_meld=legacy_four_meld)
+            key = (view.discards, view.melds, view.hand_counts, view.remaining_tile_count,
+                   _HistoryIdentity(view.public_history), view.snapshot_seq,
+                   view.consumed_seq, view.claim_evidence, legacy_four_meld)
+            previous = self.values.get(key)
+            if previous is not None:
+                return previous
+            result = _compute_public_tiles_from_view(view, legacy_four_meld=legacy_four_meld)
+            if len(self.values) < _PUBLIC_RESULT_CACHE_SIZE:
+                self.values[key] = result
+            return result
+
+    def close(self):
+        with self.lock:
+            self.closed = True
+            self.values.clear()
+            self.guard.values.clear()
+
+
+_PUBLIC_COUNT_RESULT_SCOPE: ContextVar[Optional[_PublicCountResultCache]] = ContextVar(
+    "hangma_public_count_result_scope", default=None)
+
+
+@contextmanager
+def public_count_result_scope():
+    """在一段同步构图内复用完整公开计数，退出或异常时清空并恢复外层。
+
+    无输入、yield None，不改变合法性、规则结果、异常或未见容量算法。
+    嵌套调用创建独立缓存。线程或异步任务正常应各自进入本作用域；显式
+    继承同一上下文时以锁保护共用对象，父作用域退出后原计数仍可安全执行。
+    返回值对象遵守共享冻结契约，不提供防主动绕过冻结的篡改能力。
+    """
+
+    cache = _PublicCountResultCache()
+    token = _PUBLIC_COUNT_RESULT_SCOPE.set(cache)
+    try:
+        yield None
+    finally:
+        cache.close()
+        _PUBLIC_COUNT_RESULT_SCOPE.reset(token)
+
+
+def _count_public_tiles_from_view(view: PublicTileView, *, legacy_four_meld: bool) -> PublicTileCounts:
+    """未开启构图作用域时完全走原计数；作用域只复用同输入的冻结结果。"""
+
+    cache = _PUBLIC_COUNT_RESULT_SCOPE.get()
+    if cache is None:
+        return _compute_public_tiles_from_view(view, legacy_four_meld=legacy_four_meld)
+    return cache.count(view, legacy_four_meld=legacy_four_meld)
+
+

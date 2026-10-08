@@ -1,0 +1,66 @@
+{
+  "candidate_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-opportunity-author-01-20260922/generations/P4/normalized-v2/candidate.py",
+  "candidate_sha256": "9eb090fc4824752e89ae9cd95ab25459194333008108ded2462aceb4fc40cd19",
+  "changed_count": 24,
+  "hidden_evaluation_started": false,
+  "hidden_read": false,
+  "improved_count": 24,
+  "manifest_sha256": "5dbc7345a8e1083d79eb9fd9c47f6af1a75d677bf0bf426e62bbf7b6bcfbd58c",
+  "regressed_count": 0,
+  "schema": "r18-p4-shape-development-score/1",
+  "split": "development",
+  "strata": {
+    "keep_wealth": {
+      "baseline_optimal": 0,
+      "candidate_optimal": 0,
+      "capability_gain_sum": 0.0,
+      "cases": 12,
+      "changed": 0,
+      "improved": 0,
+      "regressed": 0
+    },
+    "piao": {
+      "baseline_optimal": 0,
+      "candidate_optimal": 24,
+      "capability_gain_sum": 3651.1475409836066,
+      "cases": 24,
+      "changed": 24,
+      "improved": 24,
+      "regressed": 0
+    },
+    "take_hu": {
+      "baseline_optimal": 12,
+      "candidate_optimal": 12,
+      "capability_gain_sum": 0.0,
+      "cases": 12,
+      "changed": 0,
+      "improved": 0,
+      "regressed": 0
+    }
+  },
+  "summary": {
+    "base_scenario_count": 48,
+    "baseline_optimal_hit_rate": 0.25,
+    "candidate_optimal_hit_rate": 0.75,
+    "case_count": 48,
+    "conservative_capability_gain": 76.06557377049181,
+    "family": "multi_wealth_baotou",
+    "mean_baseline_regret": 76.88524590163935,
+    "mean_candidate_regret": 0.8196721311475427,
+    "mean_capability_gain": 76.06557377049181,
+    "optimistic_capability_gain": 76.06557377049181,
+    "scored_base_scenario_count": 48,
+    "scored_case_count": 48,
+    "split": "development",
+    "status_counts": [
+      [
+        "baseline:SCORED",
+        48
+      ],
+      [
+        "candidate:SCORED",
+        48
+      ]
+    ]
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "schema": "r17-public-successor-pilot-result/2",
+  "status": "PASS_MATH_FAIL_PERFORMANCE_P0_NOT_ADMITTED",
+  "windows": 226,
+  "tables": 0,
+  "model_calls": 0,
+  "strength_claim": false,
+  "selection_eligible": false,
+  "counts": {
+    "all_capacity_edges": 60597,
+    "discard_roots": 1825,
+    "discard_roots_covered": 1825,
+    "draw_windows": 179,
+    "drawn_only_discard": 60597,
+    "drawn_only_discard_pareto": 60597,
+    "drawn_only_gang": 532,
+    "drawn_only_hu": 777,
+    "non_useful_edges": 42084,
+    "response_fallback_windows": 47,
+    "unrestricted_discard": 642562,
+    "unrestricted_discard_pareto": 208464,
+    "unrestricted_gang": 1071,
+    "unrestricted_hu": 777,
+    "useful_edges": 18513,
+    "value_route_edges": 777,
+    "value_route_groups": 151
+  },
+  "coverage": {
+    "discard_roots": {
+      "covered": 1825,
+      "total": 1825
+    },
+    "all_capacity_edges": 60597,
+    "useful_edges": 18513,
+    "non_useful_edges": 42084,
+    "non_useful_share": 0.6944898262290212
+  },
+  "response_fallback": {
+    "mode": "EXACT_STABLE_V2_NO_R17_OVERRIDE_REQUIRED",
+    "windows": 47,
+    "window_ids_digest": "aa726271996558f920c7eed0e6d844333c5e2254ccf66b07d8b027b5c00aa020"
+  },
+  "determinism": {
+    "passed": true,
+    "cold_semantic_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+    "warm_semantic_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12"
+  },
+  "value_route_consistency": {
+    "passed": true,
+    "route_groups_checked": 151,
+    "route_edges_checked": 777,
+    "issue_count": 0,
+    "scope": "核验路线摸前暗牌、普通摸牌类型、公开容量与 hand_analysis 成胡；不重复结算数学"
+  },
+  "projection_issues": {
+    "passed": true,
+    "issue_count": 0
+  },
+  "latency": {
+    "cold_draw_windows": {
+      "mean_ms": 415.0021492429442,
+      "p50_ms": 449.1998329758644,
+      "p90_ms": 750.0427919439971,
+      "p95_ms": 813.0304999649525,
+      "p99_ms": 924.1493329172954,
+      "max_ms": 924.9757920624688
+    },
+    "warm_draw_windows": {
+      "mean_ms": 419.3194839640328,
+      "p50_ms": 453.185792081058,
+      "p90_ms": 759.4322909135371,
+      "p95_ms": 823.463249951601,
+      "p99_ms": 897.254417068325,
+      "max_ms": 979.261833941564
+    }
+  },
+  "workload": {
+    "capacity_edges_total": 60597,
+    "capacity_edges_per_draw_window_max": 476,
+    "capacity_edges_per_draw_window_p95": 442.0
+  },
+  "conditional_legality": {
+    "unrestricted": "下一摸牌窗口不受抓打约束时，由 action_families 生成的合法胡/杠/弃牌集合",
+    "drawn_only": "下一摸牌窗口受抓打约束时，由 action_families 生成的合法自摸胡/暗杠/摸切集合",
+    "gang": "仅当前 wall_remaining>20 时保留，并继续要求未来实际窗口 wall_remaining>20；未把哨兵 21 当未来事实",
+    "policy_requirement": "候选不得在当前观察中猜测未来属于哪一抓打/牌墙条件；消费时须对两条件分支做鲁棒聚合或回退 V2"
+  },
+  "semantic_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+  "full_frontier_rows": 60597,
+  "full_frontier_materialized_in_git": false,
+  "research_performance_gate": {
+    "passed": false,
+    "p99_ms_max": 200.0,
+    "window_max_ms": 500.0,
+    "observed_warm_p99_ms": 897.254417068325,
+    "observed_warm_max_ms": 979.261833941564
+  },
+  "one_allowed_equivalent_optimization": {
+    "name": "CANONICAL_LEAF_MEMOIZATION_AND_LAZY_PARETO",
+    "required_equivalence": "键必须覆盖规范暗牌计数、副露数、根弃牌新增公开计数、下一弃牌和抓打包络；命中必须逐字段等于当前规则输出",
+    "work": "同一窗口先按规范后继手牌键批量分析全部34摸牌，再惰性物化Pareto保留叶；胡/杠单列，不得删非useful边",
+    "current_logical_upper_bound": "每窗根弃牌数×至多34摸牌×至多14弃牌；本面板最大476条根-摸边，实际642562个unrestricted弃牌叶",
+    "stop_rule": "优化后仍不满足p99≤200ms且max≤500ms则P0继续关闭，回查固定深度/等价批量规则接口，不调用叶程序作者"
+  }
+}

@@ -1,0 +1,2339 @@
+{
+  "candidate_sha256": "38cc7e9705ed5902b2a221b45605323471840bf7ef5acc61caf05f9d5762d3f7",
+  "concurrency": {
+    "accepted": 252,
+    "audit_construction_failures": 0,
+    "audit_degraded": 0,
+    "concurrency": 10,
+    "latency_ms": {
+      "max": 140.477375,
+      "p50": 21.643333,
+      "p95": 77.627416,
+      "p99": 131.959791
+    },
+    "one_submit": 252,
+    "requests": 252,
+    "scored_without_failure": 252,
+    "window_seconds": 1.0
+  },
+  "confirmation_eligible": true,
+  "gate_checks": {
+    "all_concurrent_windows_accepted": true,
+    "all_concurrent_windows_one_submit": true,
+    "all_concurrent_windows_scored": true,
+    "concurrent_audit_complete": true,
+    "concurrent_max_below_send_budget": true,
+    "network_registry_closed": true,
+    "restart_behavior_equal": true,
+    "restart_scoring_complete": true,
+    "retry_accepted": true,
+    "retry_excludes_rejected_action": true,
+    "retry_keeps_original_budget": true,
+    "timeout_uses_emergency": true
+  },
+  "next": "生成只读人工发布审核包；保持真实策略注册关闭",
+  "release_eligible": false,
+  "requests_source": "P38 冻结的 252 个当前真实 DecisionRequest；P41 重新执行 HangmaRules.analyze",
+  "restart": {
+    "all_behavior_equal": true,
+    "all_scored_without_failure": true,
+    "fresh_policy_instances": 2,
+    "requests": 32
+  },
+  "retry": {
+    "attempts": 2,
+    "audit_degraded": false,
+    "outcome": "accepted",
+    "rejected_action_not_repeated": true,
+    "same_budget_after_refresh": true,
+    "source_label": "development:r18-p32-development-02",
+    "submitted": [
+      "discard:白",
+      "hu"
+    ]
+  },
+  "rows": [
+    {
+      "elapsed_ms": 140.477375,
+      "label": "c000",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 132.923709,
+      "label": "c001",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 131.959791,
+      "label": "c002",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 124.137916,
+      "label": "c003",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 123.268709,
+      "label": "c004",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 113.272791,
+      "label": "c005",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 106.938041,
+      "label": "c006",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 106.870208,
+      "label": "c007",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 101.443,
+      "label": "c008",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 101.148875,
+      "label": "c009",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 77.163584,
+      "label": "c010",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 69.210166,
+      "label": "c011",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 67.864209,
+      "label": "c012",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 64.656167,
+      "label": "c013",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 56.362416,
+      "label": "c014",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 55.922875,
+      "label": "c015",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 52.744375,
+      "label": "c016",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 49.3945,
+      "label": "c017",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 47.716708,
+      "label": "c018",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:白"
+      ]
+    },
+    {
+      "elapsed_ms": 46.743083,
+      "label": "c019",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:concealed:2w"
+      ]
+    },
+    {
+      "elapsed_ms": 33.178667,
+      "label": "c020",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:added:6t"
+      ]
+    },
+    {
+      "elapsed_ms": 32.555917,
+      "label": "c021",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:added:3t"
+      ]
+    },
+    {
+      "elapsed_ms": 28.708041,
+      "label": "c022",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:added:3b"
+      ]
+    },
+    {
+      "elapsed_ms": 27.397333,
+      "label": "c023",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:added:5t"
+      ]
+    },
+    {
+      "elapsed_ms": 26.007542,
+      "label": "c024",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:exposed:2t"
+      ]
+    },
+    {
+      "elapsed_ms": 24.057459,
+      "label": "c025",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:concealed:5w"
+      ]
+    },
+    {
+      "elapsed_ms": 23.259708,
+      "label": "c026",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:3t"
+      ]
+    },
+    {
+      "elapsed_ms": 22.409333,
+      "label": "c027",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 21.327166,
+      "label": "c028",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 20.645375,
+      "label": "c029",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7b"
+      ]
+    },
+    {
+      "elapsed_ms": 20.593375,
+      "label": "c030",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 20.35825,
+      "label": "c031",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 20.517709,
+      "label": "c032",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:中"
+      ]
+    },
+    {
+      "elapsed_ms": 20.024334,
+      "label": "c033",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2w"
+      ]
+    },
+    {
+      "elapsed_ms": 19.22425,
+      "label": "c034",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "peng:4w"
+      ]
+    },
+    {
+      "elapsed_ms": 18.062708,
+      "label": "c035",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 18.5475,
+      "label": "c036",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:3b"
+      ]
+    },
+    {
+      "elapsed_ms": 18.239125,
+      "label": "c037",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7w"
+      ]
+    },
+    {
+      "elapsed_ms": 17.711792,
+      "label": "c038",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5w"
+      ]
+    },
+    {
+      "elapsed_ms": 17.201083,
+      "label": "c039",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:9b"
+      ]
+    },
+    {
+      "elapsed_ms": 23.254417,
+      "label": "c040",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:4b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.746042,
+      "label": "c041",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:9b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.771667,
+      "label": "c042",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8b"
+      ]
+    },
+    {
+      "elapsed_ms": 21.97925,
+      "label": "c043",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 20.848125,
+      "label": "c044",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 20.608625,
+      "label": "c045",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6t"
+      ]
+    },
+    {
+      "elapsed_ms": 19.413125,
+      "label": "c046",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 18.599458,
+      "label": "c047",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 18.376,
+      "label": "c048",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1w"
+      ]
+    },
+    {
+      "elapsed_ms": 17.663042,
+      "label": "c049",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1w"
+      ]
+    },
+    {
+      "elapsed_ms": 24.414792,
+      "label": "c050",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:北"
+      ]
+    },
+    {
+      "elapsed_ms": 23.88975,
+      "label": "c051",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8t"
+      ]
+    },
+    {
+      "elapsed_ms": 23.490375,
+      "label": "c052",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.35575,
+      "label": "c053",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5w"
+      ]
+    },
+    {
+      "elapsed_ms": 22.194833,
+      "label": "c054",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "peng:5w"
+      ]
+    },
+    {
+      "elapsed_ms": 21.989042,
+      "label": "c055",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 21.937792,
+      "label": "c056",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 20.947708,
+      "label": "c057",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1t"
+      ]
+    },
+    {
+      "elapsed_ms": 20.558459,
+      "label": "c058",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 19.793167,
+      "label": "c059",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:4w"
+      ]
+    },
+    {
+      "elapsed_ms": 72.115209,
+      "label": "c060",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:exposed:1w"
+      ]
+    },
+    {
+      "elapsed_ms": 70.956958,
+      "label": "c061",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:东"
+      ]
+    },
+    {
+      "elapsed_ms": 70.821875,
+      "label": "c062",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 70.106167,
+      "label": "c063",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7t"
+      ]
+    },
+    {
+      "elapsed_ms": 69.754833,
+      "label": "c064",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 69.622917,
+      "label": "c065",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 69.245791,
+      "label": "c066",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8t"
+      ]
+    },
+    {
+      "elapsed_ms": 68.604375,
+      "label": "c067",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:added:东"
+      ]
+    },
+    {
+      "elapsed_ms": 68.643292,
+      "label": "c068",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:南"
+      ]
+    },
+    {
+      "elapsed_ms": 20.421,
+      "label": "c069",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:东"
+      ]
+    },
+    {
+      "elapsed_ms": 22.632333,
+      "label": "c070",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7w"
+      ]
+    },
+    {
+      "elapsed_ms": 22.695041,
+      "label": "c071",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 21.479209,
+      "label": "c072",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8w"
+      ]
+    },
+    {
+      "elapsed_ms": 21.112209,
+      "label": "c073",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 20.017791,
+      "label": "c074",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:exposed:2t"
+      ]
+    },
+    {
+      "elapsed_ms": 19.843,
+      "label": "c075",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 19.093917,
+      "label": "c076",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 19.169375,
+      "label": "c077",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 18.750917,
+      "label": "c078",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:9b"
+      ]
+    },
+    {
+      "elapsed_ms": 18.528792,
+      "label": "c079",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8b"
+      ]
+    },
+    {
+      "elapsed_ms": 19.13825,
+      "label": "c080",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 20.260375,
+      "label": "c081",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2w"
+      ]
+    },
+    {
+      "elapsed_ms": 19.693708,
+      "label": "c082",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6b"
+      ]
+    },
+    {
+      "elapsed_ms": 19.476208,
+      "label": "c083",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1t"
+      ]
+    },
+    {
+      "elapsed_ms": 17.53025,
+      "label": "c084",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 16.824083,
+      "label": "c085",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7t"
+      ]
+    },
+    {
+      "elapsed_ms": 16.107541,
+      "label": "c086",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 15.124334,
+      "label": "c087",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 15.995625,
+      "label": "c088",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:中"
+      ]
+    },
+    {
+      "elapsed_ms": 15.423792,
+      "label": "c089",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:4b"
+      ]
+    },
+    {
+      "elapsed_ms": 21.800166,
+      "label": "c090",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:西"
+      ]
+    },
+    {
+      "elapsed_ms": 20.181542,
+      "label": "c091",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 20.252083,
+      "label": "c092",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8b"
+      ]
+    },
+    {
+      "elapsed_ms": 19.155792,
+      "label": "c093",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "chi:3b,4b,5b"
+      ]
+    },
+    {
+      "elapsed_ms": 18.296959,
+      "label": "c094",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 17.849167,
+      "label": "c095",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7t"
+      ]
+    },
+    {
+      "elapsed_ms": 17.735958,
+      "label": "c096",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5w"
+      ]
+    },
+    {
+      "elapsed_ms": 16.102667,
+      "label": "c097",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 16.495459,
+      "label": "c098",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:9w"
+      ]
+    },
+    {
+      "elapsed_ms": 15.616833,
+      "label": "c099",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 23.805125,
+      "label": "c100",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:发"
+      ]
+    },
+    {
+      "elapsed_ms": 23.752875,
+      "label": "c101",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:南"
+      ]
+    },
+    {
+      "elapsed_ms": 22.813833,
+      "label": "c102",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8t"
+      ]
+    },
+    {
+      "elapsed_ms": 23.27225,
+      "label": "c103",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:西"
+      ]
+    },
+    {
+      "elapsed_ms": 22.679583,
+      "label": "c104",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "gang:added:1w"
+      ]
+    },
+    {
+      "elapsed_ms": 21.852208,
+      "label": "c105",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "peng:中"
+      ]
+    },
+    {
+      "elapsed_ms": 20.989,
+      "label": "c106",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6w"
+      ]
+    },
+    {
+      "elapsed_ms": 21.562417,
+      "label": "c107",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 20.408333,
+      "label": "c108",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 20.166833,
+      "label": "c109",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:中"
+      ]
+    },
+    {
+      "elapsed_ms": 24.171,
+      "label": "c110",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 23.060458,
+      "label": "c111",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5w"
+      ]
+    },
+    {
+      "elapsed_ms": 22.803542,
+      "label": "c112",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5t"
+      ]
+    },
+    {
+      "elapsed_ms": 22.530291,
+      "label": "c113",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6t"
+      ]
+    },
+    {
+      "elapsed_ms": 21.643333,
+      "label": "c114",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5t"
+      ]
+    },
+    {
+      "elapsed_ms": 22.156166,
+      "label": "c115",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:发"
+      ]
+    },
+    {
+      "elapsed_ms": 21.863167,
+      "label": "c116",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6w"
+      ]
+    },
+    {
+      "elapsed_ms": 21.573917,
+      "label": "c117",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2t"
+      ]
+    },
+    {
+      "elapsed_ms": 20.450834,
+      "label": "c118",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:9b"
+      ]
+    },
+    {
+      "elapsed_ms": 20.315042,
+      "label": "c119",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:3b"
+      ]
+    },
+    {
+      "elapsed_ms": 23.1085,
+      "label": "c120",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "chi:5w,6w,7w"
+      ]
+    },
+    {
+      "elapsed_ms": 21.259417,
+      "label": "c121",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 20.840417,
+      "label": "c122",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:3t"
+      ]
+    },
+    {
+      "elapsed_ms": 19.811292,
+      "label": "c123",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:发"
+      ]
+    },
+    {
+      "elapsed_ms": 18.964292,
+      "label": "c124",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 18.514875,
+      "label": "c125",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5b"
+      ]
+    },
+    {
+      "elapsed_ms": 18.371958,
+      "label": "c126",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1t"
+      ]
+    },
+    {
+      "elapsed_ms": 18.058041,
+      "label": "c127",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:南"
+      ]
+    },
+    {
+      "elapsed_ms": 17.978917,
+      "label": "c128",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5t"
+      ]
+    },
+    {
+      "elapsed_ms": 17.096417,
+      "label": "c129",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:西"
+      ]
+    },
+    {
+      "elapsed_ms": 23.979,
+      "label": "c130",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 23.965042,
+      "label": "c131",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:中"
+      ]
+    },
+    {
+      "elapsed_ms": 23.08975,
+      "label": "c132",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:4w"
+      ]
+    },
+    {
+      "elapsed_ms": 22.117875,
+      "label": "c133",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 21.795375,
+      "label": "c134",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1t"
+      ]
+    },
+    {
+      "elapsed_ms": 21.705042,
+      "label": "c135",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5t"
+      ]
+    },
+    {
+      "elapsed_ms": 20.32975,
+      "label": "c136",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 21.042625,
+      "label": "c137",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:中"
+      ]
+    },
+    {
+      "elapsed_ms": 20.54225,
+      "label": "c138",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 77.627416,
+      "label": "c139",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6t"
+      ]
+    },
+    {
+      "elapsed_ms": 24.053459,
+      "label": "c140",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:4t"
+      ]
+    },
+    {
+      "elapsed_ms": 24.347709,
+      "label": "c141",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 23.895166,
+      "label": "c142",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6w"
+      ]
+    },
+    {
+      "elapsed_ms": 23.685083,
+      "label": "c143",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.925291,
+      "label": "c144",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5t"
+      ]
+    },
+    {
+      "elapsed_ms": 23.034791,
+      "label": "c145",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.464333,
+      "label": "c146",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7b"
+      ]
+    },
+    {
+      "elapsed_ms": 21.708375,
+      "label": "c147",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:4w"
+      ]
+    },
+    {
+      "elapsed_ms": 20.890625,
+      "label": "c148",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "peng:9w"
+      ]
+    },
+    {
+      "elapsed_ms": 20.198791,
+      "label": "c149",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7t"
+      ]
+    },
+    {
+      "elapsed_ms": 22.150583,
+      "label": "c150",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7t"
+      ]
+    },
+    {
+      "elapsed_ms": 20.89725,
+      "label": "c151",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:4w"
+      ]
+    },
+    {
+      "elapsed_ms": 21.251166,
+      "label": "c152",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:东"
+      ]
+    },
+    {
+      "elapsed_ms": 20.598208,
+      "label": "c153",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2w"
+      ]
+    },
+    {
+      "elapsed_ms": 20.211667,
+      "label": "c154",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1t"
+      ]
+    },
+    {
+      "elapsed_ms": 19.581834,
+      "label": "c155",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5t"
+      ]
+    },
+    {
+      "elapsed_ms": 20.110375,
+      "label": "c156",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1t"
+      ]
+    },
+    {
+      "elapsed_ms": 18.735334,
+      "label": "c157",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6w"
+      ]
+    },
+    {
+      "elapsed_ms": 18.040292,
+      "label": "c158",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 18.522583,
+      "label": "c159",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "peng:1w"
+      ]
+    },
+    {
+      "elapsed_ms": 30.849625,
+      "label": "c160",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 26.49425,
+      "label": "c161",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6b"
+      ]
+    },
+    {
+      "elapsed_ms": 26.393667,
+      "label": "c162",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 25.098,
+      "label": "c163",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 24.885125,
+      "label": "c164",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7t"
+      ]
+    },
+    {
+      "elapsed_ms": 24.566792,
+      "label": "c165",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2t"
+      ]
+    },
+    {
+      "elapsed_ms": 23.223542,
+      "label": "c166",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:西"
+      ]
+    },
+    {
+      "elapsed_ms": 22.775875,
+      "label": "c167",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:4t"
+      ]
+    },
+    {
+      "elapsed_ms": 23.665375,
+      "label": "c168",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:中"
+      ]
+    },
+    {
+      "elapsed_ms": 22.792541,
+      "label": "c169",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2t"
+      ]
+    },
+    {
+      "elapsed_ms": 25.291708,
+      "label": "c170",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 24.648708,
+      "label": "c171",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:北"
+      ]
+    },
+    {
+      "elapsed_ms": 24.15775,
+      "label": "c172",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8t"
+      ]
+    },
+    {
+      "elapsed_ms": 23.109292,
+      "label": "c173",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 22.33625,
+      "label": "c174",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.322333,
+      "label": "c175",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2t"
+      ]
+    },
+    {
+      "elapsed_ms": 20.27175,
+      "label": "c176",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1t"
+      ]
+    },
+    {
+      "elapsed_ms": 19.759166,
+      "label": "c177",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "peng:1t"
+      ]
+    },
+    {
+      "elapsed_ms": 19.856125,
+      "label": "c178",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:东"
+      ]
+    },
+    {
+      "elapsed_ms": 18.562625,
+      "label": "c179",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:北"
+      ]
+    },
+    {
+      "elapsed_ms": 23.021209,
+      "label": "c180",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.200458,
+      "label": "c181",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.18925,
+      "label": "c182",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2w"
+      ]
+    },
+    {
+      "elapsed_ms": 21.714625,
+      "label": "c183",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 21.22525,
+      "label": "c184",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:9w"
+      ]
+    },
+    {
+      "elapsed_ms": 20.63775,
+      "label": "c185",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5t"
+      ]
+    },
+    {
+      "elapsed_ms": 19.858292,
+      "label": "c186",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5t"
+      ]
+    },
+    {
+      "elapsed_ms": 19.674833,
+      "label": "c187",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 19.368167,
+      "label": "c188",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 19.108333,
+      "label": "c189",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8w"
+      ]
+    },
+    {
+      "elapsed_ms": 25.915583,
+      "label": "c190",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "chi:2b,3b,4b"
+      ]
+    },
+    {
+      "elapsed_ms": 25.05325,
+      "label": "c191",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:9b"
+      ]
+    },
+    {
+      "elapsed_ms": 25.200292,
+      "label": "c192",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:南"
+      ]
+    },
+    {
+      "elapsed_ms": 25.564125,
+      "label": "c193",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2w"
+      ]
+    },
+    {
+      "elapsed_ms": 24.473083,
+      "label": "c194",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2t"
+      ]
+    },
+    {
+      "elapsed_ms": 23.945916,
+      "label": "c195",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:3w"
+      ]
+    },
+    {
+      "elapsed_ms": 23.400833,
+      "label": "c196",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5b"
+      ]
+    },
+    {
+      "elapsed_ms": 23.231334,
+      "label": "c197",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.484917,
+      "label": "c198",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 20.840666,
+      "label": "c199",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "peng:南"
+      ]
+    },
+    {
+      "elapsed_ms": 29.276042,
+      "label": "c200",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7w"
+      ]
+    },
+    {
+      "elapsed_ms": 28.523459,
+      "label": "c201",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 28.212625,
+      "label": "c202",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 25.443833,
+      "label": "c203",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 23.874125,
+      "label": "c204",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:3t"
+      ]
+    },
+    {
+      "elapsed_ms": 23.325583,
+      "label": "c205",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.655375,
+      "label": "c206",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 17.935291,
+      "label": "c207",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 16.575875,
+      "label": "c208",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 16.448334,
+      "label": "c209",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 21.804834,
+      "label": "c210",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 20.937292,
+      "label": "c211",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 21.722375,
+      "label": "c212",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2t"
+      ]
+    },
+    {
+      "elapsed_ms": 20.151375,
+      "label": "c213",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5b"
+      ]
+    },
+    {
+      "elapsed_ms": 19.871833,
+      "label": "c214",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:4w"
+      ]
+    },
+    {
+      "elapsed_ms": 19.217583,
+      "label": "c215",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:3w"
+      ]
+    },
+    {
+      "elapsed_ms": 18.612625,
+      "label": "c216",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 18.267791,
+      "label": "c217",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2t"
+      ]
+    },
+    {
+      "elapsed_ms": 18.014417,
+      "label": "c218",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7w"
+      ]
+    },
+    {
+      "elapsed_ms": 17.54625,
+      "label": "c219",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2w"
+      ]
+    },
+    {
+      "elapsed_ms": 84.419375,
+      "label": "c220",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1w"
+      ]
+    },
+    {
+      "elapsed_ms": 83.902,
+      "label": "c221",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6b"
+      ]
+    },
+    {
+      "elapsed_ms": 24.460583,
+      "label": "c222",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1w"
+      ]
+    },
+    {
+      "elapsed_ms": 23.899208,
+      "label": "c223",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2t"
+      ]
+    },
+    {
+      "elapsed_ms": 23.676291,
+      "label": "c224",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 22.458666,
+      "label": "c225",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 21.268708,
+      "label": "c226",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5w"
+      ]
+    },
+    {
+      "elapsed_ms": 21.086459,
+      "label": "c227",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "peng:5w"
+      ]
+    },
+    {
+      "elapsed_ms": 20.8865,
+      "label": "c228",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:南"
+      ]
+    },
+    {
+      "elapsed_ms": 20.193625,
+      "label": "c229",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:3b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.071708,
+      "label": "c230",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 21.613541,
+      "label": "c231",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 20.725,
+      "label": "c232",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8t"
+      ]
+    },
+    {
+      "elapsed_ms": 20.385875,
+      "label": "c233",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:8t"
+      ]
+    },
+    {
+      "elapsed_ms": 20.273,
+      "label": "c234",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:9b"
+      ]
+    },
+    {
+      "elapsed_ms": 20.169917,
+      "label": "c235",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "hu"
+      ]
+    },
+    {
+      "elapsed_ms": 16.833792,
+      "label": "c236",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 17.535,
+      "label": "c237",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6w"
+      ]
+    },
+    {
+      "elapsed_ms": 16.500042,
+      "label": "c238",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7t"
+      ]
+    },
+    {
+      "elapsed_ms": 16.282917,
+      "label": "c239",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 22.068709,
+      "label": "c240",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 20.996417,
+      "label": "c241",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:6b"
+      ]
+    },
+    {
+      "elapsed_ms": 21.283083,
+      "label": "c242",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    },
+    {
+      "elapsed_ms": 21.131084,
+      "label": "c243",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1t"
+      ]
+    },
+    {
+      "elapsed_ms": 20.485667,
+      "label": "c244",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:2b"
+      ]
+    },
+    {
+      "elapsed_ms": 20.522625,
+      "label": "c245",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:7w"
+      ]
+    },
+    {
+      "elapsed_ms": 20.345542,
+      "label": "c246",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:3t"
+      ]
+    },
+    {
+      "elapsed_ms": 19.769791,
+      "label": "c247",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "pass"
+      ]
+    },
+    {
+      "elapsed_ms": 19.350375,
+      "label": "c248",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:5t"
+      ]
+    },
+    {
+      "elapsed_ms": 19.81225,
+      "label": "c249",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "chi:5w,6w,7w"
+      ]
+    },
+    {
+      "elapsed_ms": 5.499166,
+      "label": "c250",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1w"
+      ]
+    },
+    {
+      "elapsed_ms": 5.814541,
+      "label": "c251",
+      "outcome": "accepted",
+      "scored_without_failure": true,
+      "submitted": [
+        "discard:1b"
+      ]
+    }
+  ],
+  "schema": "r18-p41-full-chain-release-preflight-result/1",
+  "status": "PASS_P41_FULL_CHAIN_PREFLIGHT",
+  "timeout_fallback": {
+    "attempts": 1,
+    "audit_degraded": false,
+    "elapsed_ms": 72.466958,
+    "outcome": "accepted",
+    "returned_plan_is_null": true,
+    "submitted": [
+      "discard:1t"
+    ],
+    "window_seconds": 0.2
+  },
+  "timing_scope": "本机离线内存会话；覆盖规则分析、策略评分、计划审计、合法复核和提交端口，不含 HTTP/TLS/官方平台时延，也不替代官方测试赛事"
+}

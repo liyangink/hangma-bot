@@ -1,0 +1,15 @@
+{
+  "schema": "r10-claim-gate-new-source-failure/1",
+  "status": "CLOSED_EXECUTION_DEFECT_NO_VALIDATION_RESULT",
+  "failed_operation": "run",
+  "error_type": "TypeError",
+  "error": "float() argument must be a string or a real number, not 'NoneType'",
+  "cause": "反事实脚本无条件把可空的识别区间中点u转换为float；底层u_low/u_high仍完整，麻将规则、强制动作和续打执行未被判错",
+  "evidence_written_before_failure": false,
+  "partial_tables_spent": "unknown_not_persisted",
+  "reuse_policy": "不续跑、不复用该panel_seed；修复批使用全新来源，避免未知已执行根污染验证",
+  "effect_claim": false,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "r18-opportunity-author-ingest/1",
+  "rows": [
+    {
+      "task": "K3",
+      "parse_status": "ok",
+      "static_precheck": false,
+      "load_error": null,
+      "accepted_for_development_preflight": false,
+      "code_sha256": "1b4b54f162c2ae43a9b13470e01e12d76058e79491857af16cc1e26b7527840d",
+      "problems": [
+        "函数名 '_finite' 以下划线开头：禁止触达执行器内部或双下划线名字"
+      ]
+    },
+    {
+      "task": "P4",
+      "parse_status": "ok",
+      "static_precheck": false,
+      "load_error": null,
+      "accepted_for_development_preflight": false,
+      "code_sha256": "a6ed6d672c4ab8253b0e61518105b6de3103c72ddb793e2021fbcd1b4001436d",
+      "problems": [
+        "候选源码语法错误：unmatched '}' (<action_value-candidate>, line 322)"
+      ]
+    }
+  ],
+  "accepted_for_development_preflight": [],
+  "repair_eligible": [
+    "K3",
+    "P4"
+  ],
+  "hidden_evaluation_started": false
+}

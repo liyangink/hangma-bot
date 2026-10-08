@@ -1,0 +1,68 @@
+{
+  "schema": "r14-generation1-effect-result/1",
+  "status": "FAIL_R14_G1_DEVELOPMENT_GATE",
+  "manifest_sha256": "360f69a85514d6acfd8ad9ff3435e2c7e09b56033e82ed2171c7870599e2e704",
+  "candidate_id": "R2-exclusive-discard-evidence-arbiter",
+  "candidate_sha256": "b4c9d0d0bdc1d330c9632784ef9be5adcd6cc36609e0e186d49c7e019cab5746",
+  "overall": {
+    "sources": 64,
+    "first_table_delta_mean": -0.421875,
+    "stage_score_delta_mean": -2.125,
+    "u_delta_low_mean": 0.0,
+    "u_delta_high_mean": 0.0
+  },
+  "by_mix": {
+    "H": {
+      "sources": 32,
+      "first_table_delta_mean": -0.15625,
+      "stage_score_delta_mean": -0.03125,
+      "u_delta_low_mean": 0.0,
+      "u_delta_high_mean": 0.0
+    },
+    "M": {
+      "sources": 32,
+      "first_table_delta_mean": -0.6875,
+      "stage_score_delta_mean": -4.21875,
+      "u_delta_low_mean": 0.0,
+      "u_delta_high_mean": 0.0
+    }
+  },
+  "positive_u_units": 0,
+  "positive_u_distinct_roots": [],
+  "positive_u_distinct_seats": [],
+  "gate_checks": {
+    "execution_failures": true,
+    "overall_u_delta_low_mean": false,
+    "each_mix_u_delta_low_mean": true,
+    "overall_stage_score_delta_mean": false,
+    "at_least_one_mix_u_delta_low_mean": false,
+    "positive_u_units_distinct_roots": false,
+    "positive_u_units_distinct_seats": false
+  },
+  "execution_audit": {
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 256,
+    "recorded_tables": 256,
+    "missing_tables": 0,
+    "recorded_counts": {
+      "decision_count": 339962,
+      "action_value_scored": 42498,
+      "action_value_failed": 0,
+      "other_policy_decisions": 297464,
+      "ambiguous_diagnostics": 0,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "abstain": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "zero_internal_failures_verified": true
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "next": "按R14执行失败复盘后只生成一个针对性代际2子代"
+}

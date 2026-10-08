@@ -1,0 +1,32 @@
+{
+  "schema": "exec-session-handles/1",
+  "processes": [
+    {
+      "block": 1,
+      "session_id": 45581,
+      "launch_returned_running": true,
+      "launch_yield_ms": 1000
+    },
+    {
+      "block": 2,
+      "session_id": 83205,
+      "launch_returned_running": true,
+      "launch_yield_ms": 1000
+    },
+    {
+      "block": 3,
+      "session_id": 50593,
+      "launch_returned_running": true,
+      "launch_yield_ms": 1000
+    },
+    {
+      "block": 4,
+      "session_id": 71571,
+      "launch_returned_running": true,
+      "launch_yield_ms": 1000
+    }
+  ],
+  "verification": "each exec_command returned session_id with no exit_code; START required separately; files alone do not prove a process remains live",
+  "restart_on_poll_timeout": false,
+  "forced_termination": false
+}

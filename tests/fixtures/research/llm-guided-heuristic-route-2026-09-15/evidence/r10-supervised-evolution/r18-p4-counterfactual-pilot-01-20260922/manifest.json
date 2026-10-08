@@ -1,0 +1,51 @@
+{
+  "arms": {
+    "hu": "首动作强制合法 hu 一次，随后稳定 V2",
+    "piao": "首动作强制合法 discard:白 一次，随后稳定 V2"
+  },
+  "bootstrap_replicates": 20000,
+  "case_id": "r18-mw-w4-03",
+  "case_reachability_witness_sha256": "1f36573ebfa35b6560499d164cf0d0260638319c863ecd06520c4a827a0767ab",
+  "case_request_sha256": "380676110a78c35576850f11d1cc15fa62fc44145069b2b3fba864f7a594e37a",
+  "continuation": "四家 ComparableHeuristicPolicyV2；同一对内完整世界完全相同",
+  "direction_rule": {
+    "CONTRADICT": "配对均值<0且确定性bootstrap 95%上界<0",
+    "INCONCLUSIVE": "其余情况",
+    "SUPPORT": "配对均值>0且确定性bootstrap 95%下界>0"
+  },
+  "hidden_bank_read": false,
+  "hidden_eligible": false,
+  "mechanical_pass": "64/64 两臂 complete；force_count=1；首动作逐字匹配；零 timeout/illegal/fallback/auto/audit_missing",
+  "pairs": 64,
+  "pre_execution_failures": [
+    {
+      "design_changed": false,
+      "fix": "直接读取 resume_match 有序决策审计第0条；不重建 WindowKey 序列化格式",
+      "labels_inspected": false,
+      "reason": "证据读取误访问 WindowKey.schema_version；首个当前胡臂在内存完成后、任何配对结果或标签写盘前异常退出",
+      "result_written": false,
+      "status": "ZERO_RESULT_FAIL_CLOSED"
+    }
+  ],
+  "purpose": "校准四财神飘链单步代理方向，并估计后续样本量",
+  "release_eligible": false,
+  "revision": 2,
+  "root_seed": 202609220401,
+  "sample_size_estimate": "试点样本标准差 s；后续达到均值半宽16分的近似样本量 ceil((1.96*s/16)^2)，至少64",
+  "schema": "r18-p4-counterfactual-pilot-manifest/2",
+  "seat_schedule": "focal_seat=(pair_index-1)%4；焦点始终为庄家",
+  "selection_eligible": false,
+  "source_hashes": {
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-multi-wealth-bank-02-20260922/development.json": "6d99771e88d5a3d1a24f56a42cbc41c00a14c69df0b5fb98792342678fee3dd2",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18_p4_counterfactual_pilot.py": "ab7a6100da68b7ecce7c0256c29ec8984ce7f5c563ababf7c31ddfaed45c9eef",
+    "/Users/liyang/hangma-bot/src/hangma_bot/hangma/engine.py": "15c0e2659f53ec794c362741dbf52ab2116aa4a50dfaabf6d5492ddb6bd2f1b3",
+    "/Users/liyang/hangma-bot/src/hangma_bot/offline/evaluate.py": "dc27d2559ef9d68149d26aecbc741699640ccafbe9a096d74b6265e463de1383",
+    "/Users/liyang/hangma-bot/src/hangma_bot/offline/forced_action.py": "905269899807e144488c96da5358e16131e0b39a06987bc0dd7b159db83f3d7c",
+    "/Users/liyang/hangma-bot/src/hangma_bot/policy/heuristic_v2.py": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af",
+    "/Users/liyang/hangma-bot/src/hangma_bot/simulation/engine.py": "ccb1b5bd0b4b758b727c2b705a70a34ebe8debb2abc0d02245469a5b02c6cb37"
+  },
+  "supersedes_manifest_sha256": "26e2ace16f450ff706a6df8b090ce2a468bc07865b8090387245fbc12979645c",
+  "table_strength_claim": false,
+  "training": false,
+  "world_construction": "同一可达13张焦点手牌与庄家直抽；从完整136张牌移除后确定性洗牌，依次发三家13张，余83张为墙"
+}

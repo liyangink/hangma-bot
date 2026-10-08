@@ -1,0 +1,640 @@
+{
+  "room_id": "a_ec1fe93b696a",
+  "package_id": "b7267e24f80ceb9ea601f0863666e78c9a08d9277cb179b9c35afa7b4200259a",
+  "scope": "one_observational_free_match_room",
+  "unique_tables": 10,
+  "unique_hands": 80,
+  "audit": {
+    "run_id": "run-2ed31bb1bf184a5c84e0329b883094e0",
+    "plans": 2866,
+    "complete_plans": 2866,
+    "complete_legal_outputs": 9578,
+    "inputs_without_plan_count": 0,
+    "failed_plans": [],
+    "full_plan_legal_key_mismatches": [],
+    "policy_errors": [],
+    "kind_counts": {
+      "lifecycle_changed": 29,
+      "authoritative_state": 28472,
+      "http_request": 16888,
+      "decision_input": 2866,
+      "decision_planned": 2866,
+      "candidate_validated": 2866,
+      "submission_intent": 3705,
+      "submission_outcome": 5732,
+      "decision_ended": 2866,
+      "participant_finished": 1,
+      "protocol_recovered": 2156,
+      "game_finished": 20
+    },
+    "decision_end": {
+      "submitted": 839,
+      "exhausted": 2027
+    },
+    "attempt_outcomes": {
+      "SubmitAccepted": 839,
+      "SubmitNotSent": 2027
+    },
+    "not_sent": {
+      "pass_deferred_until_chi": 2027
+    },
+    "http_started": 8444,
+    "http_finished": 8444,
+    "http_categories": {
+      "action": {
+        "200": 839
+      },
+      "guide": {
+        "200": 1
+      },
+      "lifecycle": {
+        "200": 4064
+      },
+      "state": {
+        "200": 3540
+      }
+    },
+    "rule_elapsed": {
+      "count": 2866,
+      "mean_ms": 27.106172714584787,
+      "p95_ms": 147.762,
+      "max_ms": 205.528
+    },
+    "policy_elapsed": {
+      "count": 2866,
+      "mean_ms": 11.162893579902303,
+      "p95_ms": 23.736,
+      "max_ms": 623.65
+    },
+    "complete_policy_elapsed": {
+      "count": 2866,
+      "mean_ms": 11.162893579902303,
+      "p95_ms": 23.736,
+      "max_ms": 623.65
+    },
+    "state_queue_wait": {
+      "count": 3540,
+      "mean_ms": 41.6276340082151,
+      "p95_ms": 227.744875010103,
+      "max_ms": 979.6760410536081
+    },
+    "state_transport_elapsed": {
+      "count": 3540,
+      "mean_ms": 112.03814601074473,
+      "p95_ms": 18.856042064726353,
+      "max_ms": 5192.1931670513
+    },
+    "queue_waiters_at_grant_max": 5,
+    "state_purposes": {
+      "sse_initial": 11,
+      "sse_frame": 1217,
+      "current_state_sync": 1853,
+      "known_window_refresh": 75,
+      "sse_self_wake": 155,
+      "anticipated_chi_sync": 98,
+      "sse_settled_long_poll": 129,
+      "sse_phase_probe": 2
+    },
+    "complete_plans_by_phase": {
+      "draw": 701,
+      "response_peng": 2067,
+      "response_chi": 98
+    },
+    "elapsed_by_phase": {
+      "draw": {
+        "rule": {
+          "count": 701,
+          "mean_ms": 107.25494293865906,
+          "p95_ms": 177.7,
+          "max_ms": 205.528
+        },
+        "policy": {
+          "count": 701,
+          "mean_ms": 32.117383737517834,
+          "p95_ms": 191.171,
+          "max_ms": 623.65
+        },
+        "local_until_plan_record": {
+          "count": 701,
+          "mean_ms": 276.89918206563584,
+          "p95_ms": 443.8416671473533,
+          "max_ms": 926.3464591931552
+        }
+      },
+      "response_peng": {
+        "rule": {
+          "count": 2067,
+          "mean_ms": 1.0382631833575229,
+          "p95_ms": 1.839,
+          "max_ms": 20.917
+        },
+        "policy": {
+          "count": 2067,
+          "mean_ms": 4.1488853410740205,
+          "p95_ms": 6.497,
+          "max_ms": 444.899
+        },
+        "local_until_plan_record": {
+          "count": 2067,
+          "mean_ms": 14.050155127985132,
+          "p95_ms": 22.406124975532293,
+          "max_ms": 491.8847498483956
+        }
+      },
+      "response_chi": {
+        "rule": {
+          "count": 98,
+          "mean_ms": 3.617204081632653,
+          "p95_ms": 8.029,
+          "max_ms": 10.43
+        },
+        "policy": {
+          "count": 98,
+          "mean_ms": 9.21245918367347,
+          "p95_ms": 15.455,
+          "max_ms": 101.947
+        },
+        "local_until_plan_record": {
+          "count": 98,
+          "mean_ms": 38.094737635906405,
+          "p95_ms": 69.17783408425748,
+          "max_ms": 122.58541607297957
+        }
+      }
+    },
+    "actual_audit_summary": {
+      "schema_version": 1,
+      "level": "run",
+      "run_id": "run-2ed31bb1bf184a5c84e0329b883094e0",
+      "written": 85267,
+      "written_by_kind": {
+        "authoritative_state": 28472,
+        "candidate_validated": 2866,
+        "decision_ended": 2866,
+        "decision_input": 2866,
+        "decision_planned": 2866,
+        "game_finished": 20,
+        "http_request": 16888,
+        "lifecycle_changed": 29,
+        "participant_finished": 1,
+        "protocol_recovered": 2156,
+        "raw_protocol_state": 16799,
+        "run_manifest": 1,
+        "submission_intent": 3705,
+        "submission_outcome": 5732
+      },
+      "written_by_path": {
+        "lifecycle.jsonl": 29,
+        "manifest.json": 1,
+        "participants/u_13495c3d79c8/decisions.jsonl": 39455,
+        "participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b0_t0.jsonl": 3038,
+        "participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b1_t0.jsonl": 2600,
+        "participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b2_t0.jsonl": 2558,
+        "participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b3_t0.jsonl": 3048,
+        "participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b4_t0.jsonl": 3419,
+        "participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b5_t0.jsonl": 3183,
+        "participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b6_t0.jsonl": 2337,
+        "participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b7_t0.jsonl": 2911,
+        "participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b8_t0.jsonl": 2880,
+        "participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b9_t0.jsonl": 2998,
+        "participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b0_t0.jsonl": 1349,
+        "participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b1_t0.jsonl": 1157,
+        "participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b2_t0.jsonl": 1135,
+        "participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b3_t0.jsonl": 1338,
+        "participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b4_t0.jsonl": 1497,
+        "participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b5_t0.jsonl": 1407,
+        "participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b6_t0.jsonl": 1046,
+        "participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b7_t0.jsonl": 1280,
+        "participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b8_t0.jsonl": 1256,
+        "participants/u_13495c3d79c8/raw/a_ec1fe93b696a_r1_b9_t0.jsonl": 1321,
+        "participants/u_13495c3d79c8/raw/global.jsonl": 4008,
+        "participants/unknown/decisions.jsonl": 11,
+        "participants/unknown/raw/global.jsonl": 5
+      },
+      "dropped_low_priority": 0,
+      "missing_high_priority": 0,
+      "serialization_failures": 0,
+      "write_failures": 0,
+      "audit_degraded": false,
+      "participants": [
+        "u_13495c3d79c8",
+        "unknown"
+      ],
+      "raw_retention": {
+        "mode": "per_game_files_gzip",
+        "gzip": true,
+        "emitted_attempts": 16799,
+        "dropped": 0,
+        "rotate_bytes": 33554432
+      }
+    }
+  },
+  "participant_terminal_record": {
+    "run_id": "run-2ed31bb1bf184a5c84e0329b883094e0",
+    "audit_dir": "/Users/liyang/hangma-bot/artifacts/sessions/t161-vip-s02-free-v4-paced/audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0",
+    "participant_id_prefix": "u_13",
+    "terminal_reason": "tournament_finished",
+    "detail": "自动房finished",
+    "audit_degraded": false,
+    "audit_summary": {
+      "written": 85267,
+      "dropped_low_priority": 0,
+      "missing_high_priority": 0,
+      "serialization_failures": 0,
+      "audit_degraded": false
+    },
+    "decision_compute": {
+      "submitted": 2866,
+      "dispatched": 2866,
+      "completed": 2866,
+      "discarded": 0,
+      "rejected": 0,
+      "faults": 0,
+      "policy_failures": 0,
+      "process_starts": 2,
+      "restarts": 0,
+      "peak_owned": 4,
+      "peak_pending": 2,
+      "peak_transport": 2,
+      "transport_inflight": 0,
+      "late_reap_inflight": 0,
+      "late_reap_threads_alive": 0,
+      "transport_threads_alive": 0,
+      "owned": 0,
+      "pending": 0,
+      "active": 0,
+      "ready": 0,
+      "live_processes": 0,
+      "current": 0,
+      "closed": true
+    }
+  },
+  "all_tables": [
+    {
+      "game_id": "a_ec1fe93b696a_r1_b0_t0",
+      "batch": 0,
+      "rounds": 8,
+      "our_seat": 2,
+      "scores_seat_order": [
+        30,
+        2,
+        -2,
+        -30
+      ],
+      "our_score": -2,
+      "rank_ties_shared": 3,
+      "opponents": [
+        {
+          "name": "腾蛇-0638",
+          "user_id": "u_b2aa6abe7811"
+        },
+        {
+          "name": "依旧进不了前16",
+          "user_id": "u_2ad9f6a1ad0b"
+        },
+        {
+          "name": "走马",
+          "user_id": "u_259672aad365"
+        }
+      ]
+    },
+    {
+      "game_id": "a_ec1fe93b696a_r1_b1_t0",
+      "batch": 1,
+      "rounds": 8,
+      "our_seat": 1,
+      "scores_seat_order": [
+        122,
+        -11,
+        -64,
+        -47
+      ],
+      "our_score": -11,
+      "rank_ties_shared": 2,
+      "opponents": [
+        {
+          "name": "腾蛇-0638",
+          "user_id": "u_b2aa6abe7811"
+        },
+        {
+          "name": "走马",
+          "user_id": "u_259672aad365"
+        },
+        {
+          "name": "依旧进不了前16",
+          "user_id": "u_2ad9f6a1ad0b"
+        }
+      ]
+    },
+    {
+      "game_id": "a_ec1fe93b696a_r1_b2_t0",
+      "batch": 2,
+      "rounds": 8,
+      "our_seat": 0,
+      "scores_seat_order": [
+        -36,
+        35,
+        38,
+        -37
+      ],
+      "our_score": -36,
+      "rank_ties_shared": 3,
+      "opponents": [
+        {
+          "name": "走马",
+          "user_id": "u_259672aad365"
+        },
+        {
+          "name": "腾蛇-0638",
+          "user_id": "u_b2aa6abe7811"
+        },
+        {
+          "name": "依旧进不了前16",
+          "user_id": "u_2ad9f6a1ad0b"
+        }
+      ]
+    },
+    {
+      "game_id": "a_ec1fe93b696a_r1_b3_t0",
+      "batch": 3,
+      "rounds": 8,
+      "our_seat": 2,
+      "scores_seat_order": [
+        52,
+        -23,
+        -31,
+        2
+      ],
+      "our_score": -31,
+      "rank_ties_shared": 4,
+      "opponents": [
+        {
+          "name": "走马",
+          "user_id": "u_259672aad365"
+        },
+        {
+          "name": "依旧进不了前16",
+          "user_id": "u_2ad9f6a1ad0b"
+        },
+        {
+          "name": "腾蛇-0638",
+          "user_id": "u_b2aa6abe7811"
+        }
+      ]
+    },
+    {
+      "game_id": "a_ec1fe93b696a_r1_b4_t0",
+      "batch": 4,
+      "rounds": 8,
+      "our_seat": 0,
+      "scores_seat_order": [
+        -32,
+        -14,
+        52,
+        -6
+      ],
+      "our_score": -32,
+      "rank_ties_shared": 4,
+      "opponents": [
+        {
+          "name": "依旧进不了前16",
+          "user_id": "u_2ad9f6a1ad0b"
+        },
+        {
+          "name": "走马",
+          "user_id": "u_259672aad365"
+        },
+        {
+          "name": "腾蛇-0638",
+          "user_id": "u_b2aa6abe7811"
+        }
+      ]
+    },
+    {
+      "game_id": "a_ec1fe93b696a_r1_b5_t0",
+      "batch": 5,
+      "rounds": 8,
+      "our_seat": 0,
+      "scores_seat_order": [
+        29,
+        -4,
+        -3,
+        -22
+      ],
+      "our_score": 29,
+      "rank_ties_shared": 1,
+      "opponents": [
+        {
+          "name": "依旧进不了前16",
+          "user_id": "u_2ad9f6a1ad0b"
+        },
+        {
+          "name": "腾蛇-0638",
+          "user_id": "u_b2aa6abe7811"
+        },
+        {
+          "name": "走马",
+          "user_id": "u_259672aad365"
+        }
+      ]
+    },
+    {
+      "game_id": "a_ec1fe93b696a_r1_b6_t0",
+      "batch": 6,
+      "rounds": 8,
+      "our_seat": 3,
+      "scores_seat_order": [
+        -67,
+        -18,
+        62,
+        23
+      ],
+      "our_score": 23,
+      "rank_ties_shared": 2,
+      "opponents": [
+        {
+          "name": "依旧进不了前16",
+          "user_id": "u_2ad9f6a1ad0b"
+        },
+        {
+          "name": "腾蛇-0638",
+          "user_id": "u_b2aa6abe7811"
+        },
+        {
+          "name": "走马",
+          "user_id": "u_259672aad365"
+        }
+      ]
+    },
+    {
+      "game_id": "a_ec1fe93b696a_r1_b7_t0",
+      "batch": 7,
+      "rounds": 8,
+      "our_seat": 2,
+      "scores_seat_order": [
+        33,
+        16,
+        -10,
+        -39
+      ],
+      "our_score": -10,
+      "rank_ties_shared": 3,
+      "opponents": [
+        {
+          "name": "走马",
+          "user_id": "u_259672aad365"
+        },
+        {
+          "name": "依旧进不了前16",
+          "user_id": "u_2ad9f6a1ad0b"
+        },
+        {
+          "name": "腾蛇-0638",
+          "user_id": "u_b2aa6abe7811"
+        }
+      ]
+    },
+    {
+      "game_id": "a_ec1fe93b696a_r1_b8_t0",
+      "batch": 8,
+      "rounds": 8,
+      "our_seat": 2,
+      "scores_seat_order": [
+        63,
+        -36,
+        -30,
+        3
+      ],
+      "our_score": -30,
+      "rank_ties_shared": 3,
+      "opponents": [
+        {
+          "name": "走马",
+          "user_id": "u_259672aad365"
+        },
+        {
+          "name": "依旧进不了前16",
+          "user_id": "u_2ad9f6a1ad0b"
+        },
+        {
+          "name": "腾蛇-0638",
+          "user_id": "u_b2aa6abe7811"
+        }
+      ]
+    },
+    {
+      "game_id": "a_ec1fe93b696a_r1_b9_t0",
+      "batch": 9,
+      "rounds": 8,
+      "our_seat": 2,
+      "scores_seat_order": [
+        -30,
+        -48,
+        -41,
+        119
+      ],
+      "our_score": -41,
+      "rank_ties_shared": 3,
+      "opponents": [
+        {
+          "name": "腾蛇-0638",
+          "user_id": "u_b2aa6abe7811"
+        },
+        {
+          "name": "走马",
+          "user_id": "u_259672aad365"
+        },
+        {
+          "name": "依旧进不了前16",
+          "user_id": "u_2ad9f6a1ad0b"
+        }
+      ]
+    }
+  ],
+  "official_unique_event_counts": {
+    "tile_discarded": 2772,
+    "timeout": 10168,
+    "tile_drawn": 2443,
+    "round_ended": 80,
+    "peng": 166,
+    "chi": 174,
+    "pass": 58,
+    "gang": 17,
+    "game_ended": 10
+  },
+  "official_timeout_counts_by_kind": {
+    "response": 10168
+  },
+  "official_discard_timeouts": [],
+  "our_discard_timeouts": 0,
+  "our_total_score": -141,
+  "our_mean_score_per_table": -14.1,
+  "our_table_rank_counts": {
+    "3": 5,
+    "1": 1,
+    "4": 2,
+    "2": 2
+  },
+  "all_wins_by_official_multiplier": {
+    "1": 55,
+    "4": 6,
+    "2": 19
+  },
+  "our_wins_by_official_multiplier": {
+    "1": 12,
+    "4": 2,
+    "2": 1
+  },
+  "official_rule_statuses": {
+    "passed": 64,
+    "not_checked": 16
+  },
+  "official_summary_statuses": {
+    "passed": 80
+  },
+  "official_origin_conflicts": [],
+  "official_final_scores_match": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "postgame_audit_complete": true,
+  "postgame_bundle_verified": true,
+  "strict_full_plan_zero_fault_gate": true,
+  "causal_strength_admission": false,
+  "formal_release": false,
+  "interpretation": "单房无R18同牌山对照，成绩只作实战观察；对手不凭昵称分类强弱。指南429与对局状态／动作分开，他家摸打超时与我方分开。",
+  "audit_counter_helper_sha256": "e2eb8f3c5d625a21b35a2fd2c471f2e0640e542657e3b1f579534e133ee78f7c",
+  "source_sha256": {
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/lifecycle.jsonl": "4cc33b0cbe1a62def3bb947a75966af4c4dd6c3a56cf5a14bf06fa9295227fd6",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/decisions.jsonl": "67152b7196b7ba0ac7bbcb77647340471cfbfdbb32046ec99a329a26ed82d4dc",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b0_t0.jsonl": "37a3038235f91116e57de9d5c2f812e6e9dba6da871b9b8a64b7eecb6ff91453",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b1_t0.jsonl": "e344b43f320a3e0a0a34479a0f8620815785896eb0de7c982409469439117668",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b2_t0.jsonl": "83e769ea75e1dcaa31d1886cf294dd3958fd262d966d5f1068cb57f82abcbe42",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b3_t0.jsonl": "5fcb6c426d365ac73289cfe0981b5913e74bdbac37e506c4a81fb92773377ab6",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b4_t0.jsonl": "252d8375c77a4333b31696f454446fb65c8175bdb0d32b224d5a35f97a348996",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b5_t0.jsonl": "510d7834ada84b117353d7255ed7590da27ce656d4853b067114159e0f836dee",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b6_t0.jsonl": "0cc41aa9a146492bd4e029d4c9384b137f837cae2b61c7bd1e9e2e9a233461f7",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b7_t0.jsonl": "35847e41dc71e89891e09e72830810d98ea2d930f8df5e9279f2a87f9ec2fdcc",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b8_t0.jsonl": "2566e31c6fc6144dd525e95159ef4ce3d62f9dddf28514180fef711494ca375e",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/u_13495c3d79c8/games/a_ec1fe93b696a_r1_b9_t0.jsonl": "9cedfa1edb4834d1f26576009abf62233fa4172b6a33cb964ac5bd65975aeb74",
+    "audit/runs/run-2ed31bb1bf184a5c84e0329b883094e0/participants/unknown/decisions.jsonl": "05fbd074d5a8c1a52aa66124cc62e070b75776a73ae42f44e6e0588e604feba1",
+    "official/dl-0fb5922e64a1457c991e274602ef4f7a/events.json": "3daebe6e2eaccdf57c8b15eac2c147f87b299a812e7e1038deb1e6b68605429c",
+    "official/dl-2c4f96da59f04dcc81b95d14c914c409/events.json": "8ba50cfa614ace0304824a9493298b0686ad75c4fdc9512f0fb7324e1e9dbc90",
+    "official/dl-34e3aae301334328b30ecb1bd567f31b/events.json": "9634afa973429b19650ad791f50b9ec43a62a271fc6a5b6e9b170c5399d8db90",
+    "official/dl-39a5cb4c87644b0f863fdfee8b60ba6b/events.json": "766920a83b90acc8bd02ffaef1eaf5497fc7635da1c01c130335aaeb41529f7b",
+    "official/dl-3faa4b55e4344c3982276dd0dd904079/events.json": "389e99d97a6fc7994a713474b1a5a56ef80e5ee88bcacf439c5821d27005b447",
+    "official/dl-8564fb0834d44294b1c66d68db26d390/events.json": "ee65fdbc157b01c4feee6ce5fb0f0f243dae79393a02a5fe93fb4638ab0468ba",
+    "official/dl-a280984cfa034faba50ad445d61798f7/events.json": "5b9460949c746c46d0bdc0bdffef0ccad1d0f86472ded9d4290657332e038bd1",
+    "official/dl-c695722c4e9e41bb8011ba288d23d966/events.json": "eb614c2d141d30d810e1209b461342fdd969969e2b8831d600395b2b658289cc",
+    "official/dl-f1f6ef09d86144d796a048b678399766/events.json": "cd19d6f4abf5443069227982f080ba42705d4352a5fbe1cd6e70e0da63a6fecb",
+    "official/dl-fe040738d83143ca9b495b45eca5f606/events.json": "4b29d9ba0b76544bfe1168220be2c684aabcf978335da2d35edcd1caa9910701"
+  }
+}

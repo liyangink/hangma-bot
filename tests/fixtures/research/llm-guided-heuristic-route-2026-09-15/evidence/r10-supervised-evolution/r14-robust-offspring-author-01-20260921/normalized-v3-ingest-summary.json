@@ -1,0 +1,25 @@
+{
+  "schema": "r14-robust-offspring-normalized-ingest/3",
+  "accepted_for_behavior_preflight": [
+    "R1",
+    "R2-normalized-v3"
+  ],
+  "r2_normalization": {
+    "schema": "r14-r2-engineering-normalization/3",
+    "source_sha256": "b8f820df5dc0aa0289db57de063e93ac794c0b732693d7c720c1ff6dcbb1b11f",
+    "normalized_sha256": "b4c9d0d0bdc1d330c9632784ef9be5adcd6cc36609e0e186d49c7e019cab5746",
+    "supersedes_failed_normalization": "../normalized-v2/normalization-record.json",
+    "replacement": {
+      "start": "for idxs in tie_groups",
+      "end": "return SCORED final_entries",
+      "reason": "用追加式仲裁记录与最终重建替代下标赋值；分组、证据、阈值和+0.04不变"
+    },
+    "mechanism_changed": false,
+    "static_precheck": true,
+    "load_error": null,
+    "accepted_for_behavior_preflight": true,
+    "problems": []
+  },
+  "closed_failed": [],
+  "effect_evaluation_started": false
+}

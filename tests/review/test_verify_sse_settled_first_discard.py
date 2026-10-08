@@ -8,9 +8,7 @@ import json
 from pathlib import Path
 
 
-SCRIPT = (Path(__file__).resolve().parents[2] / "review"
-          / "r18-four-arm-evaluation-2026-09-23"
-          / "verify_sse_settled_first_discard.py")
+SCRIPT = Path(__file__).resolve().parents[2] / "tools/research/r18-four-arm-evaluation-2026-09-23/verify_sse_settled_first_discard.py"
 SPEC = importlib.util.spec_from_file_location("verify_sse_settled_first_discard", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)

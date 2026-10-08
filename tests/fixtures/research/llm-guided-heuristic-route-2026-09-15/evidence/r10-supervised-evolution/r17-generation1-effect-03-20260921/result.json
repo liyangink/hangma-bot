@@ -1,0 +1,232 @@
+{
+  "schema": "r17-generation1-effect-result/1",
+  "status": "PASS_SOME_R17_GENERATION1_DEVELOPMENT_GATE",
+  "manifest_sha256": "126ecd384049055d5f7c7190fca85c2605b92a8aa66cf2e36df3c63ba57aa67a",
+  "candidates": [
+    {
+      "candidate_id": "A",
+      "candidate_identity": "a7e6f529e42b6ac81985877925bca878d01f592a2328459968feb97ef19ba1a8",
+      "candidate_sha256": "b0ae33525f46c66c7b462e4db9825df13d8608d5748b803e759b49c2a16eb76d",
+      "status": "PASS_R17_GENERATION1_DEVELOPMENT_GATE",
+      "overall": {
+        "sources": 64,
+        "first_table_delta_mean": 8.46875,
+        "stage_score_delta_mean": 12.28125,
+        "stage_score_delta_quantiles": {
+          "min": -216.0,
+          "p10": -55.0,
+          "median": 3.0,
+          "p90": 95.0,
+          "max": 237.0
+        },
+        "u_delta_low_mean": 0.0625,
+        "u_delta_high_mean": 0.0625,
+        "candidate_fourth_rate": 0.140625,
+        "baseline_fourth_rate": 0.234375,
+        "candidate_unresolved_rate": 0.0,
+        "baseline_unresolved_rate": 0.0
+      },
+      "by_mix": {
+        "H": {
+          "sources": 32,
+          "first_table_delta_mean": 8.34375,
+          "stage_score_delta_mean": 1.96875,
+          "stage_score_delta_quantiles": {
+            "min": -216.0,
+            "p10": -65.0,
+            "median": -8.0,
+            "p90": 95.0,
+            "max": 213.0
+          },
+          "u_delta_low_mean": 0.0,
+          "u_delta_high_mean": 0.0,
+          "candidate_fourth_rate": 0.15625,
+          "baseline_fourth_rate": 0.21875,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        },
+        "M": {
+          "sources": 32,
+          "first_table_delta_mean": 8.59375,
+          "stage_score_delta_mean": 22.59375,
+          "stage_score_delta_quantiles": {
+            "min": -91.0,
+            "p10": -23.0,
+            "median": 18.0,
+            "p90": 90.0,
+            "max": 237.0
+          },
+          "u_delta_low_mean": 0.125,
+          "u_delta_high_mean": 0.125,
+          "candidate_fourth_rate": 0.125,
+          "baseline_fourth_rate": 0.25,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        }
+      },
+      "positive_u_units": 20,
+      "positive_u_distinct_roots": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "positive_u_distinct_seats": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "request_audit_counts": {
+        "requests": 42401,
+        "response_exact_fallbacks": 33531,
+        "draw_not_applicable": 0,
+        "eligible_draws": 8870,
+        "complete_eligible_draws": 8870,
+        "changed_eligible_draws": 7621
+      },
+      "request_audit_failure_sources": [],
+      "gate_checks": {
+        "simulation_execution_failures": true,
+        "r17_request_audit_failures": true,
+        "all_eligible_draws_complete": true,
+        "overall_u_delta_low_mean": true,
+        "each_mix_u_delta_low_mean": true,
+        "at_least_one_mix_u_delta_low_mean": true,
+        "positive_u_units_distinct_roots": true,
+        "positive_u_units_distinct_seats": true
+      }
+    },
+    {
+      "candidate_id": "B",
+      "candidate_identity": "73c2833da12f2844f69559d4ad6202c44fc4a1adc1b60e0b8b140c82590b4c37",
+      "candidate_sha256": "fb9764faa2a01ded3f8cea94eeee27d59929f014f1dcc0ffbd56380e5b1384a2",
+      "status": "PASS_R17_GENERATION1_DEVELOPMENT_GATE",
+      "overall": {
+        "sources": 64,
+        "first_table_delta_mean": 10.4375,
+        "stage_score_delta_mean": 21.296875,
+        "stage_score_delta_quantiles": {
+          "min": -109.0,
+          "p10": -40.0,
+          "median": 18.0,
+          "p90": 99.0,
+          "max": 141.0
+        },
+        "u_delta_low_mean": 0.1875,
+        "u_delta_high_mean": 0.1875,
+        "candidate_fourth_rate": 0.140625,
+        "baseline_fourth_rate": 0.234375,
+        "candidate_unresolved_rate": 0.0,
+        "baseline_unresolved_rate": 0.0
+      },
+      "by_mix": {
+        "H": {
+          "sources": 32,
+          "first_table_delta_mean": 8.0625,
+          "stage_score_delta_mean": 13.0,
+          "stage_score_delta_quantiles": {
+            "min": -109.0,
+            "p10": -45.0,
+            "median": 17.0,
+            "p90": 85.0,
+            "max": 141.0
+          },
+          "u_delta_low_mean": 0.09375,
+          "u_delta_high_mean": 0.09375,
+          "candidate_fourth_rate": 0.125,
+          "baseline_fourth_rate": 0.21875,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        },
+        "M": {
+          "sources": 32,
+          "first_table_delta_mean": 12.8125,
+          "stage_score_delta_mean": 29.59375,
+          "stage_score_delta_quantiles": {
+            "min": -64.0,
+            "p10": -23.0,
+            "median": 21.0,
+            "p90": 101.0,
+            "max": 118.0
+          },
+          "u_delta_low_mean": 0.28125,
+          "u_delta_high_mean": 0.28125,
+          "candidate_fourth_rate": 0.15625,
+          "baseline_fourth_rate": 0.25,
+          "candidate_unresolved_rate": 0.0,
+          "baseline_unresolved_rate": 0.0
+        }
+      },
+      "positive_u_units": 18,
+      "positive_u_distinct_roots": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "positive_u_distinct_seats": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "request_audit_counts": {
+        "requests": 42146,
+        "response_exact_fallbacks": 33301,
+        "draw_not_applicable": 0,
+        "eligible_draws": 8845,
+        "complete_eligible_draws": 8845,
+        "changed_eligible_draws": 6288
+      },
+      "request_audit_failure_sources": [],
+      "gate_checks": {
+        "simulation_execution_failures": true,
+        "r17_request_audit_failures": true,
+        "all_eligible_draws_complete": true,
+        "overall_u_delta_low_mean": true,
+        "each_mix_u_delta_low_mean": true,
+        "at_least_one_mix_u_delta_low_mean": true,
+        "positive_u_units_distinct_roots": true,
+        "positive_u_units_distinct_seats": true
+      }
+    }
+  ],
+  "passed_candidate_ids": [
+    "A",
+    "B"
+  ],
+  "simulation_execution_audit": {
+    "schema": "sitin-policy-execution-review/1",
+    "status": "complete",
+    "tables": 384,
+    "recorded_tables": 384,
+    "missing_tables": 0,
+    "recorded_counts": {
+      "decision_count": 506652,
+      "action_value_scored": 0,
+      "action_value_failed": 0,
+      "other_policy_decisions": 506652,
+      "ambiguous_diagnostics": 0,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "abstain": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "zero_internal_failures_verified": true
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "next": "按冻结选择键保留至多一个，以同一源码进入第二套全新开发来源"
+}

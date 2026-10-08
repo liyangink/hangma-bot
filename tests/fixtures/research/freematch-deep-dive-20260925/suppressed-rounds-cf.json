@@ -1,0 +1,1097 @@
+{
+ "meta": {
+  "decisions_scanned": 59636,
+  "discard_decisions": 23973,
+  "audit_roots": [
+   "r18-auto-match-campaign-20260923",
+   "r18-v2-sse-freematch-20260925-pm",
+   "r18-v2-sse-freematch-20260925-pm2",
+   "r18-v2-sse-freematch-20260925-pm3",
+   "r18-integrated-positive-v1-auto-match"
+  ]
+ },
+ "reason_field_stats": {
+  "base_score": {
+   "seen": 291027,
+   "nonzero": 291027,
+   "nonzero_share": 1.0
+  },
+  "basis": {
+   "seen": 291118,
+   "nonzero": 0,
+   "nonzero_share": 0.0
+  },
+  "best_shanten_non_pass": {
+   "seen": 261646,
+   "nonzero": 198562,
+   "nonzero_share": 0.7588956070415752
+  },
+  "hu_sorting_layer": {
+   "seen": 291118,
+   "nonzero": 0,
+   "nonzero_share": 0.0
+  },
+  "risk_units": {
+   "seen": 291118,
+   "nonzero": 16558,
+   "nonzero_share": 0.056877280003297635
+  },
+  "river_part": {
+   "seen": 291118,
+   "nonzero": 37596,
+   "nonzero_share": 0.12914350881773026
+  },
+  "scope": {
+   "seen": 29563,
+   "nonzero": 0,
+   "nonzero_share": 0.0
+  }
+ },
+ "candidate_count_distribution": {
+  "1": 29569,
+  "2": 4817,
+  "3": 528,
+  "4": 276,
+  "5": 362,
+  "6": 769,
+  "7": 1779,
+  "8": 2029,
+  "9": 3563,
+  "10": 4639,
+  "11": 4048,
+  "12": 3944,
+  "13": 2570,
+  "14": 741,
+  "15": 2
+ },
+ "discard_feed_overall": {
+  "n": 23973,
+  "feeds": 1095,
+  "feed_rate": {
+   "k": 1095,
+   "n": 23973,
+   "rate": 0.045676385934175945,
+   "wilson": [
+    0.043105439890623105,
+    0.04839291659015707
+   ],
+   "cluster": [
+    0.04270035203975978,
+    0.048821407600033555
+   ]
+  }
+ },
+ "discard_feed_by_context": {
+  "CTX_其他": {
+   "n": 13629,
+   "feed_rate": {
+    "k": 617,
+    "n": 13629,
+    "rate": 0.04527111306772324,
+    "wilson": [
+     0.0419069954405272,
+     0.04889150690545472
+    ],
+    "cluster": [
+     0.04127666104035599,
+     0.049367088607594936
+    ]
+   },
+   "mean_remaining": {
+    "n": 13629,
+    "mean": 66.70019810697777,
+    "se": 0.10156591729640407,
+    "median": 68
+   },
+   "mean_candidates": {
+    "n": 13629,
+    "mean": 10.148653606280725,
+    "se": 0.01906112714396622,
+    "median": 10
+   },
+   "melded_share": {
+    "k": 5944,
+    "n": 13629,
+    "rate": 0.4361288429085039,
+    "wilson": [
+     0.4278222821472233,
+     0.4444714001911674
+    ],
+    "cluster": [
+     0.41815966747885913,
+     0.454886372159304
+    ]
+   }
+  },
+  "CTX_对手连庄中": {
+   "n": 4062,
+   "feed_rate": {
+    "k": 181,
+    "n": 4062,
+    "rate": 0.04455933037912359,
+    "wilson": [
+     0.038632693990836596,
+     0.051346610662842004
+    ],
+    "cluster": [
+     0.03775388291517324,
+     0.051690821256038647
+    ]
+   },
+   "mean_remaining": {
+    "n": 4062,
+    "mean": 66.72698178237322,
+    "se": 0.17566779715523043,
+    "median": 68
+   },
+   "mean_candidates": {
+    "n": 4062,
+    "mean": 10.124569177744954,
+    "se": 0.034028376880611846,
+    "median": 10
+   },
+   "melded_share": {
+    "k": 1946,
+    "n": 4062,
+    "rate": 0.4790743476120138,
+    "wilson": [
+     0.4637383867889509,
+     0.494449851532975
+    ],
+    "cluster": [
+     0.445487860742098,
+     0.511633485248261
+    ]
+   }
+  },
+  "CTX_对手连胡2局": {
+   "n": 45,
+   "feed_rate": {
+    "k": 0,
+    "n": 45,
+    "rate": 0.0,
+    "wilson": [
+     0.0,
+     0.07865426194064076
+    ],
+    "cluster": [
+     0.0,
+     0.0
+    ]
+   },
+   "mean_remaining": {
+    "n": 45,
+    "mean": 59.4,
+    "se": 2.329303880058711,
+    "median": 61
+   },
+   "mean_candidates": {
+    "n": 45,
+    "mean": 9.222222222222221,
+    "se": 0.27868538593225695,
+    "median": 9
+   },
+   "melded_share": {
+    "k": 20,
+    "n": 45,
+    "rate": 0.4444444444444444,
+    "wilson": [
+     0.30938708549039107,
+     0.5882411658363467
+    ],
+    "cluster": [
+     0.14285714285714285,
+     0.8888888888888888
+    ]
+   }
+  },
+  "CTX_我方连失2局": {
+   "n": 6033,
+   "feed_rate": {
+    "k": 291,
+    "n": 6033,
+    "rate": 0.04823470909995027,
+    "wilson": [
+     0.043109550984385236,
+     0.053934837259957624
+    ],
+    "cluster": [
+     0.042294520547945205,
+     0.05436177036561898
+    ]
+   },
+   "mean_remaining": {
+    "n": 6033,
+    "mean": 66.66103099618763,
+    "se": 0.14589908781463365,
+    "median": 68
+   },
+   "mean_candidates": {
+    "n": 6033,
+    "mean": 10.081717221945963,
+    "se": 0.028257963627827738,
+    "median": 10
+   },
+   "melded_share": {
+    "k": 2894,
+    "n": 6033,
+    "rate": 0.4796950107740759,
+    "wilson": [
+     0.467105249250079,
+     0.4923106148335504
+    ],
+    "cluster": [
+     0.45270500170125894,
+     0.5070866141732283
+    ]
+   }
+  },
+  "未知": {
+   "n": 204,
+   "feed_rate": {
+    "k": 6,
+    "n": 204,
+    "rate": 0.029411764705882353,
+    "wilson": [
+     0.01354776147009199,
+     0.06267182113512274
+    ],
+    "cluster": [
+     0.00975609756097561,
+     0.05339805825242718
+    ]
+   },
+   "mean_remaining": {
+    "n": 204,
+    "mean": 52.32843137254902,
+    "se": 1.2955782550740609,
+    "median": 53
+   },
+   "mean_candidates": {
+    "n": 204,
+    "mean": 9.0,
+    "se": 0.1462694937520217,
+    "median": 10
+   },
+   "melded_share": {
+    "k": 117,
+    "n": 204,
+    "rate": 0.5735294117647058,
+    "wilson": [
+     0.5049190081710342,
+     0.639421682046901
+    ],
+    "cluster": [
+     0.3482587064676617,
+     0.7740384615384616
+    ]
+   }
+  }
+ },
+ "tile_claim_rate": {
+  "1b": {
+   "n": 973,
+   "claimed": 48,
+   "rate": 0.04933196300102775
+  },
+  "1t": {
+   "n": 996,
+   "claimed": 42,
+   "rate": 0.04216867469879518
+  },
+  "1w": {
+   "n": 1002,
+   "claimed": 60,
+   "rate": 0.059880239520958084
+  },
+  "2b": {
+   "n": 704,
+   "claimed": 42,
+   "rate": 0.05965909090909091
+  },
+  "2t": {
+   "n": 690,
+   "claimed": 36,
+   "rate": 0.05217391304347826
+  },
+  "2w": {
+   "n": 701,
+   "claimed": 39,
+   "rate": 0.05563480741797432
+  },
+  "3b": {
+   "n": 533,
+   "claimed": 20,
+   "rate": 0.0375234521575985
+  },
+  "3t": {
+   "n": 560,
+   "claimed": 21,
+   "rate": 0.0375
+  },
+  "3w": {
+   "n": 522,
+   "claimed": 25,
+   "rate": 0.04789272030651341
+  },
+  "4b": {
+   "n": 470,
+   "claimed": 22,
+   "rate": 0.04680851063829787
+  },
+  "4t": {
+   "n": 482,
+   "claimed": 24,
+   "rate": 0.04979253112033195
+  },
+  "4w": {
+   "n": 463,
+   "claimed": 17,
+   "rate": 0.0367170626349892
+  },
+  "5b": {
+   "n": 460,
+   "claimed": 23,
+   "rate": 0.05
+  },
+  "5t": {
+   "n": 466,
+   "claimed": 22,
+   "rate": 0.04721030042918455
+  },
+  "5w": {
+   "n": 470,
+   "claimed": 25,
+   "rate": 0.05319148936170213
+  },
+  "6b": {
+   "n": 469,
+   "claimed": 18,
+   "rate": 0.03837953091684435
+  },
+  "6t": {
+   "n": 440,
+   "claimed": 29,
+   "rate": 0.0659090909090909
+  },
+  "6w": {
+   "n": 419,
+   "claimed": 14,
+   "rate": 0.03341288782816229
+  },
+  "7b": {
+   "n": 441,
+   "claimed": 12,
+   "rate": 0.027210884353741496
+  },
+  "7t": {
+   "n": 406,
+   "claimed": 26,
+   "rate": 0.06403940886699508
+  },
+  "7w": {
+   "n": 445,
+   "claimed": 23,
+   "rate": 0.051685393258426963
+  },
+  "8b": {
+   "n": 583,
+   "claimed": 22,
+   "rate": 0.03773584905660377
+  },
+  "8t": {
+   "n": 617,
+   "claimed": 25,
+   "rate": 0.04051863857374392
+  },
+  "8w": {
+   "n": 564,
+   "claimed": 24,
+   "rate": 0.0425531914893617
+  },
+  "9b": {
+   "n": 865,
+   "claimed": 48,
+   "rate": 0.055491329479768786
+  },
+  "9t": {
+   "n": 772,
+   "claimed": 30,
+   "rate": 0.038860103626943004
+  },
+  "9w": {
+   "n": 798,
+   "claimed": 34,
+   "rate": 0.042606516290726815
+  },
+  "东": {
+   "n": 1346,
+   "claimed": 58,
+   "rate": 0.04309063893016345
+  },
+  "中": {
+   "n": 1277,
+   "claimed": 54,
+   "rate": 0.042286609240407204
+  },
+  "北": {
+   "n": 1295,
+   "claimed": 61,
+   "rate": 0.047104247104247106
+  },
+  "南": {
+   "n": 1244,
+   "claimed": 51,
+   "rate": 0.0409967845659164
+  },
+  "发": {
+   "n": 1257,
+   "claimed": 48,
+   "rate": 0.03818615751789976
+  },
+  "白": {
+   "n": 6,
+   "claimed": 0,
+   "rate": 0.0
+  },
+  "西": {
+   "n": 1237,
+   "claimed": 52,
+   "rate": 0.04203718674211803
+  }
+ },
+ "tie_regret_model": {
+  "tie_discard_decisions": 9884,
+  "tie_decisions_where_fed": 487,
+  "chosen_tile_claim_rate_mean": {
+   "n": 9884,
+   "mean": 0.04638106034112633,
+   "ci": [
+    0.04622464576277275,
+    0.0465404521239178
+   ],
+   "n_rooms": 350
+  },
+  "mean_of_tied_alternatives_claim_rate": {
+   "n": 9884,
+   "mean": 0.04433267710516933,
+   "ci": [
+    0.04415407544259479,
+    0.04450863153198757
+   ],
+   "n_rooms": 350
+  },
+  "min_of_tied_alternatives_claim_rate": {
+   "n": 9884,
+   "mean": 0.04223643348756764,
+   "ci": [
+    0.04203961882901109,
+    0.042430276664407116
+   ],
+   "n_rooms": 350
+  },
+  "expected_feed_rate_reduction_if_tiebreak_min_claim_rate": 0.0041446268535586875
+ },
+ "feed_consequence_observational": {
+  "claimer_won_given_claimed": {
+   "k": 730,
+   "n": 2964,
+   "rate": 0.24628879892037786,
+   "wilson": [
+    0.23111269752576455,
+    0.2621217122890988
+   ],
+   "cluster": [
+    0.23302309548431574,
+    0.2596252129471891
+   ]
+  },
+  "claimer_won_given_no_claim": {
+   "k": 1312,
+   "n": 5400,
+   "rate": 0.24296296296296296,
+   "wilson": [
+    0.23170930489612965,
+    0.2545820771458606
+   ],
+   "cluster": [
+    0.23410938654841093,
+    0.25162488393686167
+   ]
+  }
+ },
+ "fed_dealer": {
+  "rounds_opp_dealer": 2088,
+  "my_claims_fed": 753,
+  "rounds_streak": 487,
+  "rounds_i_fed_dealer": 265,
+  "rounds_streak_i_fed_dealer": 64
+ },
+ "tie_analysis": {
+  "discard_decisions": 23973,
+  "with_tie_at_best_score": 9884,
+  "tie_share": 0.41229716764693614,
+  "tie_feed_rate": {
+   "k": 487,
+   "n": 9884,
+   "rate": 0.04927154997976528,
+   "wilson": [
+    0.045176966955083574,
+    0.05371636483129942
+   ],
+   "cluster": [
+    0.045112016293279024,
+    0.05377668308702791
+   ]
+  },
+  "tie_with_safe_equal_alternative_and_not_fed": 9083,
+  "tie_with_safe_equal_alternative_and_not_fed_share_of_ties": 0.9189599352488871
+ },
+ "samples_fed_with_safe_equal_alternative": [
+  {
+   "game_id": "a_00a841afe1a6_r1_b1_t0",
+   "round_no": 3,
+   "trigger_seq": 293,
+   "ctx": "CTX_对手连庄中",
+   "chosen": "discard:1t",
+   "chosen_tile": "1t",
+   "n_candidates": 12,
+   "n_tied_best": 10,
+   "fed": true,
+   "fed_by": [
+    {
+     "seat": 0,
+     "kind": "peng"
+    }
+   ],
+   "safe_alt_same_score_same_shanten": [
+    "discard:1w",
+    "discard:2t",
+    "discard:5t",
+    "discard:6w",
+    "discard:9b",
+    "discard:9w",
+    "discard:中",
+    "discard:南",
+    "discard:西"
+   ],
+   "alt_tiles_tied": [
+    "1w",
+    "2t",
+    "5t",
+    "6w",
+    "9b",
+    "9w",
+    "中",
+    "南",
+    "西"
+   ],
+   "risk_units": 0.0,
+   "river_part": 0.0,
+   "base_score": -369.0,
+   "best_shanten_non_pass": 4.0,
+   "remaining": 81,
+   "n_hand": 14,
+   "n_melds": 0,
+   "drawn": "9b",
+   "hand": [
+    "4b",
+    "1t",
+    "西",
+    "2w",
+    "6w",
+    "2t",
+    "2w",
+    "5t",
+    "中",
+    "4b",
+    "9w",
+    "1w",
+    "南",
+    "9b"
+   ],
+   "top3": [
+    {
+     "action_key": "discard:1t",
+     "base_score": -369.0,
+     "shanten": 4.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:1w",
+     "base_score": -369.0,
+     "shanten": 4.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:2t",
+     "base_score": -369.0,
+     "shanten": 4.0,
+     "risk_units": 0.0
+    }
+   ]
+  },
+  {
+   "game_id": "a_00a841afe1a6_r1_b2_t0",
+   "round_no": 6,
+   "trigger_seq": 1048,
+   "ctx": "CTX_对手连庄中",
+   "chosen": "discard:2b",
+   "chosen_tile": "2b",
+   "n_candidates": 9,
+   "n_tied_best": 2,
+   "fed": true,
+   "fed_by": [
+    {
+     "seat": 2,
+     "kind": "peng"
+    }
+   ],
+   "safe_alt_same_score_same_shanten": [
+    "discard:北"
+   ],
+   "alt_tiles_tied": [
+    "北"
+   ],
+   "risk_units": 0.0,
+   "river_part": 0.0,
+   "base_score": -180.0,
+   "best_shanten_non_pass": 2.0,
+   "remaining": 73,
+   "n_hand": 11,
+   "n_melds": 1,
+   "drawn": "2b",
+   "hand": [
+    "9w",
+    "8w",
+    "1w",
+    "3t",
+    "中",
+    "中",
+    "1t",
+    "3w",
+    "北",
+    "3t",
+    "2b"
+   ],
+   "top3": [
+    {
+     "action_key": "discard:2b",
+     "base_score": -180.0,
+     "shanten": 2.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:北",
+     "base_score": -180.0,
+     "shanten": 2.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:1t",
+     "base_score": -184.0,
+     "shanten": 2.0,
+     "risk_units": 0.0
+    }
+   ]
+  },
+  {
+   "game_id": "a_00a841afe1a6_r1_b5_t0",
+   "round_no": 4,
+   "trigger_seq": 648,
+   "ctx": "CTX_对手连庄中",
+   "chosen": "discard:9w",
+   "chosen_tile": "9w",
+   "n_candidates": 7,
+   "n_tied_best": 2,
+   "fed": true,
+   "fed_by": [
+    {
+     "seat": 2,
+     "kind": "peng"
+    }
+   ],
+   "safe_alt_same_score_same_shanten": [
+    "discard:东"
+   ],
+   "alt_tiles_tied": [
+    "东"
+   ],
+   "risk_units": 0.0,
+   "river_part": 0.0,
+   "base_score": -85.0,
+   "best_shanten_non_pass": 1.0,
+   "remaining": 62,
+   "n_hand": 8,
+   "n_melds": 2,
+   "drawn": null,
+   "hand": [
+    "东",
+    "6t",
+    "5t",
+    "9w",
+    "6t",
+    "3t",
+    "7b",
+    "6b"
+   ],
+   "top3": [
+    {
+     "action_key": "discard:9w",
+     "base_score": -85.0,
+     "shanten": 1.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:东",
+     "base_score": -85.0,
+     "shanten": 1.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:5t",
+     "base_score": -159.0,
+     "shanten": 1.0,
+     "risk_units": 0.0
+    }
+   ]
+  },
+  {
+   "game_id": "a_00a841afe1a6_r1_b7_t0",
+   "round_no": 3,
+   "trigger_seq": 427,
+   "ctx": "CTX_对手连庄中",
+   "chosen": "discard:1b",
+   "chosen_tile": "1b",
+   "n_candidates": 12,
+   "n_tied_best": 4,
+   "fed": true,
+   "fed_by": [
+    {
+     "seat": 2,
+     "kind": "peng"
+    }
+   ],
+   "safe_alt_same_score_same_shanten": [
+    "discard:9w",
+    "discard:西"
+   ],
+   "alt_tiles_tied": [
+    "9w",
+    "北",
+    "西"
+   ],
+   "risk_units": 0.0,
+   "river_part": 0.0,
+   "base_score": -276.0,
+   "best_shanten_non_pass": 3.0,
+   "remaining": 77,
+   "n_hand": 13,
+   "n_melds": 0,
+   "drawn": "9w",
+   "hand": [
+    "9t",
+    "1b",
+    "9t",
+    "6b",
+    "西",
+    "5t",
+    "3t",
+    "3w",
+    "4b",
+    "4w",
+    "8b",
+    "北",
+    "8b"
+   ],
+   "top3": [
+    {
+     "action_key": "discard:1b",
+     "base_score": -276.0,
+     "shanten": 3.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:9w",
+     "base_score": -276.0,
+     "shanten": 3.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:北",
+     "base_score": -276.0,
+     "shanten": 3.0,
+     "risk_units": 0.0
+    }
+   ]
+  },
+  {
+   "game_id": "a_00a841afe1a6_r1_b7_t0",
+   "round_no": 3,
+   "trigger_seq": 475,
+   "ctx": "CTX_对手连庄中",
+   "chosen": "discard:北",
+   "chosen_tile": "北",
+   "n_candidates": 9,
+   "n_tied_best": 2,
+   "fed": true,
+   "fed_by": [
+    {
+     "seat": 3,
+     "kind": "peng"
+    }
+   ],
+   "safe_alt_same_score_same_shanten": [
+    "discard:西"
+   ],
+   "alt_tiles_tied": [
+    "西"
+   ],
+   "risk_units": 0.0,
+   "river_part": 0.0,
+   "base_score": -174.0,
+   "best_shanten_non_pass": 2.0,
+   "remaining": 70,
+   "n_hand": 11,
+   "n_melds": 1,
+   "drawn": null,
+   "hand": [
+    "9t",
+    "9t",
+    "6b",
+    "西",
+    "3t",
+    "3w",
+    "4b",
+    "4w",
+    "北",
+    "6b",
+    "2t"
+   ],
+   "top3": [
+    {
+     "action_key": "discard:北",
+     "base_score": -174.0,
+     "shanten": 2.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:西",
+     "base_score": -174.0,
+     "shanten": 2.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:4b",
+     "base_score": -178.0,
+     "shanten": 2.0,
+     "risk_units": 0.0
+    }
+   ]
+  },
+  {
+   "game_id": "a_00a841afe1a6_r1_b7_t0",
+   "round_no": 5,
+   "trigger_seq": 897,
+   "ctx": "CTX_对手连庄中",
+   "chosen": "discard:9w",
+   "chosen_tile": "9w",
+   "n_candidates": 12,
+   "n_tied_best": 3,
+   "fed": true,
+   "fed_by": [
+    {
+     "seat": 3,
+     "kind": "peng"
+    }
+   ],
+   "safe_alt_same_score_same_shanten": [
+    "discard:北",
+    "discard:4w"
+   ],
+   "alt_tiles_tied": [
+    "北",
+    "4w"
+   ],
+   "risk_units": 0.0,
+   "river_part": 0.0,
+   "base_score": -185.0,
+   "best_shanten_non_pass": 2.0,
+   "remaining": 70,
+   "n_hand": 13,
+   "n_melds": 0,
+   "drawn": "9w",
+   "hand": [
+    "7t",
+    "2t",
+    "8b",
+    "4t",
+    "7t",
+    "3t",
+    "6t",
+    "9t",
+    "6b",
+    "北",
+    "9b",
+    "9b",
+    "4w"
+   ],
+   "top3": [
+    {
+     "action_key": "discard:9w",
+     "base_score": -185.0,
+     "shanten": 2.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:北",
+     "base_score": -185.0,
+     "shanten": 2.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:4w",
+     "base_score": -185.0,
+     "shanten": 2.0,
+     "risk_units": 0.5
+    }
+   ]
+  },
+  {
+   "game_id": "a_00a841afe1a6_r1_b8_t0",
+   "round_no": 7,
+   "trigger_seq": 1509,
+   "ctx": "CTX_我方连失2局",
+   "chosen": "discard:1w",
+   "chosen_tile": "1w",
+   "n_candidates": 12,
+   "n_tied_best": 2,
+   "fed": true,
+   "fed_by": [
+    {
+     "seat": 1,
+     "kind": "peng"
+    }
+   ],
+   "safe_alt_same_score_same_shanten": [
+    "discard:5w"
+   ],
+   "alt_tiles_tied": [
+    "5w"
+   ],
+   "risk_units": 0.0,
+   "river_part": 0.0,
+   "base_score": -157.0,
+   "best_shanten_non_pass": 2.0,
+   "remaining": 75,
+   "n_hand": 13,
+   "n_melds": 0,
+   "drawn": "8b",
+   "hand": [
+    "8w",
+    "8t",
+    "白",
+    "9t",
+    "2t",
+    "1t",
+    "9t",
+    "1t",
+    "5w",
+    "9b",
+    "1w",
+    "6t",
+    "7b"
+   ],
+   "top3": [
+    {
+     "action_key": "discard:1w",
+     "base_score": -157.0,
+     "shanten": 2.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:8w",
+     "base_score": -154.0,
+     "shanten": 2.0,
+     "risk_units": 0.5
+    },
+    {
+     "action_key": "discard:1t",
+     "base_score": -158.0,
+     "shanten": 2.0,
+     "risk_units": 0.0
+    }
+   ]
+  },
+  {
+   "game_id": "a_17cc763735b9_r1_b0_t0",
+   "round_no": 6,
+   "trigger_seq": 1077,
+   "ctx": "CTX_对手连庄中",
+   "chosen": "discard:1w",
+   "chosen_tile": "1w",
+   "n_candidates": 11,
+   "n_tied_best": 4,
+   "fed": true,
+   "fed_by": [
+    {
+     "seat": 1,
+     "kind": "peng"
+    }
+   ],
+   "safe_alt_same_score_same_shanten": [
+    "discard:4w",
+    "discard:6b",
+    "discard:7w"
+   ],
+   "alt_tiles_tied": [
+    "4w",
+    "6b",
+    "7w"
+   ],
+   "risk_units": 0.0,
+   "river_part": 0.0,
+   "base_score": -54.0,
+   "best_shanten_non_pass": 1.0,
+   "remaining": 71,
+   "n_hand": 13,
+   "n_melds": 0,
+   "drawn": "5w",
+   "hand": [
+    "9w",
+    "6w",
+    "3w",
+    "9w",
+    "7w",
+    "5t",
+    "4w",
+    "2w",
+    "白",
+    "4w",
+    "6b",
+    "1w",
+    "5w"
+   ],
+   "top3": [
+    {
+     "action_key": "discard:1w",
+     "base_score": -54.0,
+     "shanten": 1.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:4w",
+     "base_score": -54.0,
+     "shanten": 1.0,
+     "risk_units": 0.0
+    },
+    {
+     "action_key": "discard:6b",
+     "base_score": -54.0,
+     "shanten": 1.0,
+     "risk_units": 0.0
+    }
+   ]
+  }
+ ]
+}

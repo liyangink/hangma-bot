@@ -1,0 +1,136 @@
+{
+  "schema": "sitin-action-value-contract/1",
+  "contract_id": "action-value-v1",
+  "candidate_kind": "action_value_v1",
+  "authority": "review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md §4 §5 §6 §7.3",
+  "entry_point": {
+    "signature": "score_actions(view: ScoringView) -> ScoreBatch",
+    "docstring": "根据同一动作窗口的只读可见事实，返回所有合法动作的完整评分。view 不含隐藏世界、实验种子或赛后结果；返回 SCORED 加完整动作评分，或 ABSTAIN 加明确原因；评分点越大越优先。错误：抛错、非有限数、遗漏/重复/越界动作、超工作量均使本窗口整批失效。副作用：无；不读时间、随机源、网络、文件，不修改输入。",
+    "hu_mode": "compare_legal",
+    "hu_mode_note": "新入口明确允许比较合法 Hu 与其他合法动作；立即胡永远支配继续不是规则定理。首批种子必须包含立即胡优先对照实现，骨架不强制它。紧急动作保持 HangmaRules.emergency_action 的 Pass/Discard 路径；不存在胡牌保底，不得误称。",
+    "rank_contract": "按分数降序、action_key 升序稳定排列；rank 从 1 开始（policy/interface.py 受控语义）。适配 RankedCandidate 时新总分放单个 ScorePart，保持 total_score == sum(score_parts) 不变量；非线性机制明细放有版本 trace，不拆成虚假可加贡献。"
+  },
+  "scoring_view": {
+    "schema_version": "sitin-scoring-view/4",
+    "fields": {
+      "visible_state": "白名单只读观察（自己牌、公开副露与牌河、当前窗口、庄闲、公开规则状态、墙余量）；不含 WorldState、研究标签、种子、结果、token、评估分组身份；不直接给完整 DecisionRequest",
+      "competition": "可见赛事上下文与可用/陈旧掩码。三份账按「已完成 / 当前桌 / 当前阶段合计」分别命名（座位序、单位、可空与未知语义逐条见 competition_bases）：stage_scores = 本阶段【已完成各桌】的积分和，按物理座位 0—3（下标 i 是坐在 i 号位的身份，不是名次序；不含当前桌进行中积分与未来桌赛结果）；table_scores = 本桌进行中积分，同座位序，与 visible_state.table_scores 是同一事实；current_stage_scores = 前两份账逐座位相加 = 当前阶段合计（两项互不重叠，相加合法；stage_scores 为空时它同为空）。身份→座位只承认「桌内座位序账」，我方身份的唯一锚点为我方名次：ranking[我方座位].rank 必须等于可见赛事上下文发布的我方名次；不满足即视为不可映射。无阶段账（ranking 为空）或不可映射时 stage_scores 与 current_stage_scores 均为 null —— 未知不得当 0、不得用另一基准顶替。唯一禁止的重复累计是 table_scores 与同一份 visible_state.table_scores 相加（同一事实的两个基准名）。可用/陈旧原因见 freshness_masks（位置序 [stage_scores, table_scores]，闭集取值见 competition_bases.freshness_masks.values；current_stage_scores 的可用性与 stage_scores 同掩码，不单列第三个掩码位）；不得投影其他进行中桌赛的未来结果；剩余赛程当前未投影，见 competition_bases.residual_gaps（显式登记的剩余缺口，不得默认已可见）",
+      "actions": "按 action_key 升序的不可变动作表（稳定 action_key、规则动作类型、合法身份、立即结算），附不可变后续分支 (action_key, followup_key)、机械转移后的可见手牌、普通/七对进展、关键规则状态；吃碰后不同弃牌不得预合并成一个牌效最佳分支；每个动作还包含 hangma 规则层同源产生的 baotou_after（动作后是否爆头，终局/未知/未分析为 null）",
+      "analysis_profile": "语义版本、固定工作量上限、截断范围；不含计时器或可变缓存句柄",
+      "reference_features": "代理值、版本、单位、缺失原因；与规则事实分开存储；可不用；无校准证据不得标真实概率或严格下界"
+    },
+    "competition_bases": {
+      "seat_order": "物理座位 0—3（与本桌可见观察同序）；freshness_masks 的位置序固定为 [stage_scores, table_scores]",
+      "units": "积分点（整数，允许负分），与 PlayerObservation.scores / RankingEntry.total_score 同源；名次分不进本字段",
+      "stage_scores": "本阶段已完成各完整桌赛的积分和，按座位 0—3；不含当前桌进行中积分、不含名次分、不含未来桌赛结果；无账或不可映射时为 null",
+      "table_scores": "本桌进行中积分，按座位 0—3；与 visible_state.table_scores 是同一事实的另一个基准名（本桌积分对本人恒可见，故恒非 null）。与 stage_scores 互不重叠：一项只含已完成桌、一项只含本桌进行中",
+      "current_stage_scores": "当前阶段合计（三概念之三）= 已完成账 + 当前桌账，逐座位相加：current_stage_scores[i] = stage_scores[i] + table_scores[i]；座位序与单位同 stage_scores（物理座位 0—3、积分点、整数、允许负分）。两项互不重叠（一项只含已完成桌、一项只含本桌进行中），因此相加是【重建完整当前阶段分数】，不是重复累计 —— 算当前阶段名次与门线必须用它（或经核验同座位、同单位、互不重叠的 stage_scores + table_scores 两账相加并显式命名来源）。只加已完成账会把当前领先者当落后者（已完成账里落后、加上本桌进行中积分后领先），只看本桌积分也不是阶段门线。stage_scores 为 null（absent/unmappable）时本字段同时为 null：未知，不得补零、不得用 table_scores 顶替当阶段账。唯一禁止的重复累计：table_scores 与同一份 visible_state.table_scores 相加（同一事实的两个基准名，相加等于把本桌积分算两次）。一致性是机器不变量：CompetitionView 在同时给出两账与合计时校验 current_stage_scores == stage_scores + table_scores，不符即构造期失败",
+      "identity_mapping": "只承认「桌内座位序账」：ranking[i] 是坐在物理座位 i 的参赛者在本阶段已完成各桌的账（offline StageSituationProjection.competition_context 逐位置构造，位置 i 与 participant_ids_by_seat[i] 一一对应；面板侧由 plan.seats() 生成，换座后身份随座位搬移）。策略侧没有 participant_id，唯一锚点是我方名次 participant_rank（由驱动/适配器按请求座位发布）",
+      "admission_conditions": [
+        "ranking 恰 4 条（一桌四座；阶段级榜单无法映射到本桌座位）",
+        "四个 participant_id 互不相同（一席一身份）",
+        "我方名次非空且 ranking[我方座位].rank == participant_rank（我方身份必须位于我方物理座位）",
+        "四条 games_played 相同（四个座位覆盖同一批已完成桌）",
+        "名次与已知键 (total_score, place_points) 降序不矛盾（名次是该键的单调函数）"
+      ],
+      "unknown_is_not_zero": "ranking 为空 ⇒ stage_account:absent；有排名事实但不满足任一准入条件 ⇒ stage_account:unmappable；两种情形 stage_scores 与 current_stage_scores 均为 null（未知），不得补零、不得当成「四家同分」、不得用 table_scores 顶替当阶段账。反之，驱动在尚无已完成桌时注入的四座全 0 账是已知的零，按 stage_account:complete 投影（此时 current_stage_scores 就等于本桌进行中积分）",
+      "freshness_masks": {
+        "order": ["stage_scores", "table_scores"],
+        "values": ["stage_account:complete", "stage_account:absent", "stage_account:unmappable", "table_account:live"]
+      },
+      "staleness": "策略不读时钟，投影不判陈旧；上游判定排名陈旧时应注入空 ranking / 空名次（→ stage_account:absent），不得注入陈旧数值冒充可用",
+      "residual_risk": "平台级 4 人榜单恰好在请求座位携带我方名次、且四条 games_played 一致时与座位序账结构上不可区分；当前该通道的唯一生产者是离线驱动的桌内投影，在线路径若要用该字段须先给 CompetitionContext 增加显式座位序声明（kernel 契约变更）",
+      "residual_gaps": [
+        "剩余赛程（本阶段还剩多少桌）当前【未投影】：CompetitionContext.stage_no（当前桌序，从 1 起）与 stage_total（阶段总桌数）在请求里可见，但候选视图不携带它们的任何推导值 —— 把剩余桌数从 0 改为 6，candidate_view() 逐字不变（E3 用例 test_remaining_schedule_is_not_visible_and_is_registered_as_a_gap 固定；合同与提示词都登记本条）。补齐时必须遵守的单位与未知语义：剩余桌数 = stage_total − stage_no，整数、非负，单位「桌」，不含当前桌；stage_no/stage_total 任一为 null、或二者不可比（stage_no > stage_total）时一律为 null（未知，不得当 0），不得由积分、已完成局数或名次反推。补齐它需要单独升结构版本并附「最后机会追分 / 仍有多桌可保守」策略的验收；在此之前任何机制说明都不得把剩余赛程当可见事实"
+      ]
+    },
+    "route_states": ["WITNESSED", "OPEN_UNCERTAIN", "CLOSED_PROVEN", "UNANALYZED"],
+    "progress_states": ["ADVANCE", "SAME", "RETREAT", "CLOSE", "UNKNOWN"],
+    "route_progress_note": "路线状态回答证据状态，进展回答动作相对变化，不得混成三态；未枚举不等于机会为 0。"
+  },
+  "output_contract": {
+    "status_values": ["SCORED", "ABSTAIN"],
+    "scored_entries": "SCORED 时对输入全部动作恰好一项；ABSTAIN 时为空；不能部分成功后用 0 补齐",
+    "action_score": {"action_key": "动作键", "score": "有限浮点评分点；不跨候选比较绝对量级，不当实际积分", "trace": "有界结构化解释：分支选择、所用事实键、代理/分项、组合方式；非线性项不强求相加等于总分"},
+    "reason": "ABSTAIN/降级原因字符串；不得用特殊数值表示未知",
+    "batch_failure_conditions": ["抛出异常", "非有限数（NaN/Inf）", "布尔冒充数", "遗漏/重复/越界动作键", "超工作量限额", "缺必需字段（候选清单声明）"],
+    "batch_failure_policy": "整窗口失效，降级到已备合法紧急计划；不悄悄拼 V2 分数；未知不得自动排在已知负分之前"
+  },
+  "restricted_subset": {
+    "language": "Python 受限子集",
+    "allowed": [
+      "一个导出函数 score_actions",
+      "可有无递归的局部纯辅助函数",
+      "仅允许对有长度上限的输入/局部集合迭代",
+      "调用对象只来自冻结白名单"
+    ],
+    "forbidden": ["while 循环", "递归", "动态执行(eval/exec/compile)", "import", "反射(getattr/setattr/hasattr 于白名单外对象)", "文件/网络/进程操作", "全局可变状态", "读取时钟或随机数", "lambda 之外的可调用构造", "生成器与 yield"],
+    "enforcement": [
+      "静态子集检查（AST 层，禁用节点与名字白名单）",
+      "循环/运算计数限额插桩（固定执行器进行；候选不能捕获工作量耗尽异常继续执行）",
+      "实际整链计时（紧急路径、规则分析、事实构建、评分、计划输出各段 + 全链 p50/p95/p99/最大值，按实际 DecisionBudget 剩余额度检查，保留固定网络余量）"
+    ],
+    "note": "静态检查通过不免除隔离装载；离线所有装载复用 sitin_process.run_supervised，到期终止整个进程组。受监管子进程是故障隔离不是操作系统安全沙箱。异步 timeout 无法打断堵塞事件循环的同步代码：新评分器与规则分析在固定工作量下完成，所有允许计算路径需通过最大输入/故障/满载门禁。"
+  },
+  "limits": {
+    "rule_analysis": {"max_expansions": 2048, "max_routes_per_candidate": 128, "source": "hangma.interface.ValueAnalysisLimits"},
+    "candidate": {
+      "max_counted_operations": 100000,
+      "max_local_collection_size": 4096,
+      "max_source_bytes": 65536,
+      "max_trace_bytes": 32768,
+      "max_string_chars": 65536,
+      "max_data_depth": 12,
+      "max_data_cells": 131072,
+      "structure_limits_note": "结构遍历上限（R6/S1 引入，R9/S1 补齐单元口径，R9/S1b 补齐分派与返回值口径）：单次结构遍历的**单元数**上限，容器节点与标量叶同口径各计 1 个单元（字符串按 64 字符一段、至少 1 段）；集合式字典视图 dict_keys/dict_items/dict_values 按底层键、或键+值逐项展开并计入同一上限；嵌套深度超过 max_data_depth 或单元数超过 max_data_cells 即在进入原生哈希/比较之前整批拒绝（WorkloadExceeded）。共享引用按出现次数累积，不做去重。分派之外的未知类型保守兜底：有 len() 按 max(1,len) 计、可调用对象计 1、其余按 max_data_cells+1 计费（默认计数预算下必然整批拒绝）。候选返回值（含 trace）在骨架递归校验与序列化之前按同一口径逐节点计费；字符串拼接/重复/格式化结果按 64 字符一段计费。",
+      "max_output_branches_total": "全部分支与路线内存上限：B 包机器合同冻结具体数值",
+      "numeric_range": "候选声明有限数值范围用于异常检查；越界整批失败并审计"
+    },
+    "metering_rules": [
+      "每循环迭代计费 1",
+      "每个允许调用按其规范计费（len/min/max/abs 计 1；sum/sorted/all/any/enumerate 按输入长度保守计费）",
+      "禁止不计费的批量计算",
+      "结构遍历按展开节点计费：容器节点与标量叶同口径各计 1 个单元（字符串按 64 字符一段、至少 1 段），共享引用按出现次数累积而不去重——原生哈希与比较在 C 层逐项访问这些节点，不去重也不缓存子对象哈希",
+      "结构单元超过 max_data_cells 或深度超过 max_data_depth 即在原生哈希/比较之前拒绝；顶层标量与短字符串走常数快路径，普通标量比较与短键查询的计费量级不变",
+      "集合式字典视图按底层键/键值对展开（dict_items 的相等比较是集合式语义：逐项哈希键并逐值比较，视图本身不是容器实例）；分派之外的未知类型保守兜底，禁止「未知 ⇒ 0 单元」",
+      "候选返回值与 trace 在序列化之前计费并做体积预判：返回值按结构单元逐节点计费（共享引用按出现次数），trace 的序列化字节下界超过 max_trace_bytes 即在递归校验与 json.dumps 之前拒绝",
+      "字符串产出（拼接、重复、f-string 与 % 格式化结果）按 64 字符一段计费，与字符串哈希/比较同口径；单次结果的字符数上限仍为 max_string_chars",
+      "算术使用有界整数/有限浮点；拒绝大整数膨胀和不受限幂运算（** 仅允许指数 <= 4 的整数常量）"
+    ],
+    "escalation": "限额不是毫秒保证：B 包基准不通过就缩小有版本的分析配置并重评；不得删除合法候选凑限额"
+  },
+  "whitelist": {
+    "builtins": ["len", "min", "max", "abs", "sum", "sorted", "reversed", "enumerate", "zip", "range", "round", "int", "float", "bool", "all", "any", "tuple", "list", "dict", "set", "frozenset", "map", "filter"],
+    "builtin_notes": "sum/sorted/all/any/map/filter/enumerate/reversed/zip 按输入长度保守计费；int()/float() 转换非有限结果即整批失败",
+    "methods_readonly": [".get", ".items", ".keys", ".values", ".count", ".index", ".append(仅局部构造期)", ".add(仅局部集合构造期)"],
+    "operators": ["算术 + - * /", "整除 // 与取模 %（除零即失败）", "比较与布尔", "下标与切片（只读）", "字符串拼接与格式化（计入操作数）"],
+    "modules": [],
+    "modules_note": "首版不开放任何 import：math/第三方库默认关闭；需要新增推导工具时进入工具目录版本与耗时门禁，不能临时绕过接缝",
+    "view_api": "ScoringView 只读访问器与不可变集合类型由 B2 冻结并进入候选身份（第一方传递依赖摘要）"
+  },
+  "identity": {
+    "candidate_id_inputs": ["候选种类 action_value_v1", "原始/执行源码", "有效参数", "输入输出合同（本合同 sha256）", "骨架", "规则/特征/代理版本", "分析上限", "执行器版本", "第一方传递依赖摘要"],
+    "candidate_id_excluded_provenance": ["生成模型", "提示词", "算子", "父代", "调用账单（作为出处另存）"],
+    "evaluation_id_inputs": ["目标合同（group-dev-v1.json sha256）", "候选/基线 candidate_id", "对手", "面板/来源根", "随机映射", "换座", "续打终点", "统计版本"],
+    "cache_policy": "缓存仅在完整 evaluation_id 相同时命中；不能只按手牌或 seed 命中",
+    "recovery_policy": "恢复必须逐项匹配身份；依赖变化即拒绝续写旧结果"
+  },
+  "admission_record_schema": "sitin-action-value-admission/1",
+  "admission_layers": {
+    "execution_safety": "输入权限、代码子集、全链限额、输出合同、隔离故障、保底和审计测试通过；FAIL 禁止效果执行；未知关键安全性质不放行",
+    "coverage": "胡/过/吃/碰/杠/弃牌、路线组合、未知与缺史逐类有结果；样本不足标 INSUFFICIENT 不汇总抹平",
+    "controlled_research": "执行安全通过 + 场景生成器合法 + 数据和候选身份绑定 + 资源有余量；不等于发布准入",
+    "effect": "实际续打与统计结果（group-dev-v1 面板）；不显著可进有限探索档案；运行失败不补零",
+    "release": "独立确认、规则一致性、实际阶段范围与时限/恢复全部通过，再由人审核；本合同不触发发布"
+  },
+  "predicates_binding": {
+    "predicate_ids": ["branch_open", "branch_cost", "chain_open", "chain_cost", "four_white_open", "four_white_cost", "baotou_open", "baotou_cost"],
+    "module": "tools/sitin_predicates_v4.py",
+    "note": "A 包冻结的八谓词纯函数与阈值（wall 16/8、gap 1/2、support 0/1）；阈值只定义采样条件，不传入策略作强制偏好；C1 只执行不解释"
+  },
+  "seeds_required": ["efficiency_seed", "route_value_seed", "立即胡优先对照实现（首批种子必须包含）"],
+  "compatibility": {
+    "legacy_delta": "旧 delta 候选继续走 heuristic_adapter.py 旧入口；新候选不得叠加 V2 底分；旧 admitted 不重解释为新准入",
+    "emergency": "策略收到任何模型或搜索结果之前必须已有合法保底动作；紧急动作路径独立可用"
+  }
+}

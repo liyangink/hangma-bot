@@ -1,0 +1,38 @@
+{
+  "at_utc": "2026-10-04T04:08:05.266194+00:00",
+  "approved": true,
+  "scope": "仅T165实验自由赛和两席T110两席R18混合测试房持续监督；不授候选强度或正式发布。",
+  "user_authorization": "既有自主自由赛/测试房及代理监督授权；2026-10-04明确要求先续赛、统计并行。",
+  "driver_sha256": {
+    "watchdog_nonblocking.py": "b47c35db24ba5226a088f9b7f78906b4827a8d7225ed66ba1f474fcc58c69c48",
+    "watchdog.py": "c75e4498e8956a5cfb4fa2ddff60f57a08f5101eca4251d1e1f343efeeafaca6",
+    "analyze.py": "3b020f58faf81e5720d0e1c589d993473e3cf5540814801e7d77815971a4a765"
+  },
+  "package_ids": {
+    "free": "1a692fe9609735390a2591d9f31e34e5f2afbef7ec8556c6b1486f72fec20945",
+    "mixed_t110": "02468524c993d959f871f1898eed24e2c7804ccd196d6ea57fef90429c5d55ec",
+    "mixed_r18": "667ee6b4259955a410af710ae039e7f75b1a0d1cf6975b77ab8c137ba373c3db"
+  },
+  "validation": {
+    "actual_tool_terminal": "879f11",
+    "actual_exit_code": 0,
+    "necessary_checks": 12,
+    "preflight_tool_terminal": "5d85aa",
+    "preflight_exit_code": 0,
+    "status_compatibility_tool_terminal": "a705f2",
+    "status_exit_code": 0,
+    "new_official_calls": 0,
+    "new_players": 0
+  },
+  "switch_condition": "旧控制器自然收尾且真实官方玩家均结束、同一控制锁释放；不得终止任何玩家或并开owner。",
+  "background_constraints": {
+    "single_worker": true,
+    "cpu_nice": 15,
+    "io_priority_requires_actual_success": true,
+    "contains_compression": true,
+    "pause_new_jobs_is_manual": true,
+    "interrupted_jobs_not_automatically_retried": true
+  },
+  "formal_release": false,
+  "strength_admission": false
+}

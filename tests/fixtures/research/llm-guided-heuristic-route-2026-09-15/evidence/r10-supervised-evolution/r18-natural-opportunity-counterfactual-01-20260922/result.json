@@ -1,0 +1,58 @@
+{
+  "checks": {
+    "all_pairs_mechanical_ok": true,
+    "keep_bootstrap_lower_positive": false,
+    "keep_mean_positive": false,
+    "keep_positive_at_least_8_of_9": false,
+    "piao_positive_control_2_of_2": true
+  },
+  "decision": "KEEP_WEALTH_DIRECTION_PAUSED",
+  "interpretation": "一次冻结自然未来牌序的探索校准；若重开也只重开horizon/生存模型研究，不直接发作者任务",
+  "mechanical_ok_pairs": 11,
+  "pairs": 11,
+  "release_eligible": false,
+  "schema": "r18-natural-opportunity-counterfactual-result/1",
+  "selection_eligible": false,
+  "status": "COMPLETE_NATURAL_COUNTERFACTUAL",
+  "strata": {
+    "natural_keep_wealth_probe": {
+      "bootstrap_95_mean": [
+        0.0,
+        0.0
+      ],
+      "mean_target_table_delta": 0.0,
+      "median_target_table_delta": 0.0,
+      "negative": 0,
+      "pairs": 9,
+      "positive": 0,
+      "values": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "zero": 9
+    },
+    "natural_piao_positive_control": {
+      "bootstrap_95_mean": [
+        20.0,
+        20.0
+      ],
+      "mean_target_table_delta": 20.0,
+      "median_target_table_delta": 20.0,
+      "negative": 0,
+      "pairs": 2,
+      "positive": 2,
+      "values": [
+        20.0,
+        20.0
+      ],
+      "zero": 0
+    }
+  }
+}

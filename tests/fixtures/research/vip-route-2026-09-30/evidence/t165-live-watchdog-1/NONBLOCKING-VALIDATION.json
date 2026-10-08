@@ -1,0 +1,56 @@
+{
+  "new_official_calls": 0,
+  "new_players": 0,
+  "driver_sha256": {
+    "watchdog_nonblocking.py": "b47c35db24ba5226a088f9b7f78906b4827a8d7225ed66ba1f474fcc58c69c48",
+    "watchdog.py": "c75e4498e8956a5cfb4fa2ddff60f57a08f5101eca4251d1e1f343efeeafaca6",
+    "analyze.py": "3b020f58faf81e5720d0e1c589d993473e3cf5540814801e7d77815971a4a765"
+  },
+  "checks": {
+    "real_free_closure": {
+      "passed": true,
+      "unique_tables": 10
+    },
+    "real_mixed_closure": {
+      "passed": true,
+      "unique_tables": 10
+    },
+    "actual_run_failure_blocks": {
+      "rejected": true,
+      "reason": ""
+    },
+    "raw_audit_gap_blocks": {
+      "rejected": true,
+      "reason": "原始审计缺口：missing_high_priority"
+    },
+    "release_identity_drift_blocks": {
+      "rejected": true,
+      "reason": ""
+    },
+    "resource_leak_blocks": {
+      "rejected": true,
+      "reason": "运行或资源终态异常：active"
+    },
+    "game_filename_is_not_completion": {
+      "rejected": true,
+      "reason": "缺明确 game_finished，不能以文件存在冒充完成：/Users/liyang/hangma-bot/.private/t165-live-watchdog/nb-validation-umn6w5jl/unfinished.jsonl"
+    },
+    "unclosed_batch_blocks": {
+      "rejected": true,
+      "reason": ""
+    },
+    "statistics_failure_does_not_block_safe_runs": {
+      "passed": true
+    },
+    "interrupted_and_failed_jobs_not_retried": {
+      "passed": true
+    },
+    "status_retains_orphan_job_running_unknown": {
+      "passed": true,
+      "fixture_only": true
+    },
+    "orphan_postprocess_inherits_single_worker_lock": {
+      "passed": true
+    }
+  }
+}

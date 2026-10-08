@@ -49,7 +49,7 @@ runs/                             # 运行态（进程 stdout 日志、盯盘账
 
 `--once` 使每个身份在收到一次 `tournament_finished` 后退出，不再创建下一批次的注册进程；等四身份汇总退出后再执行赛后分析。配置 `max_completed_batches: 2` 可完成两个批次；省略或设为 `null` 沿用持续续赛，`--once` 优先于配置。正常完赛不消耗失败重启预算。Ctrl-C、SIGINT、SIGTERM 会转发给子进程并中止当前工作，不能当成“打完本批次后停”。新测试优先在启动时定好批次数。
 
-按用户 2026-10-06 修正，正式／测试赛事只验证基础接线、配置与包作用域、完整生命周期回归；官方现场实测、实际赛事 ID／日期／Token 不作为候选上线前置。已取消的测试锦标赛命令保留作兼容入口。实际参赛启动时仍须核真实赛事配置并注入对应凭据；本地工程通过不写成官方现场通过。详见[现行验收口径](../review/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)。
+按用户 2026-10-06 修正，正式／测试赛事只验证基础接线、配置与包作用域、完整生命周期回归；官方现场实测、实际赛事 ID／日期／Token 不作为候选上线前置。已取消的测试锦标赛命令保留作兼容入口。实际参赛启动时仍须核真实赛事配置并注入对应凭据；本地工程通过不写成官方现场通过。详见[现行验收口径](research/materials/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)。
 
 正式赛和单身份测试赛事共用“查询并生成配置 → 启动”流程，完整命令见[参赛说明](participate-quickstart.md)。当前 P0 分别使用[正式赛事模板](../configs/vip-s03-rulefix-p0-approved-v1.official-tournament.example.json)与[测试赛事模板](../configs/vip-s03-rulefix-p0-approved-v1.test-tournament.example.json)，选择其他策略先核对[策略目录](implementation/strategy-catalog.md)。旧 R18 模板保留作历史资料，在当前主线因绑定漂移拒装，不作为默认启动范例。
 

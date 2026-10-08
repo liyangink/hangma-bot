@@ -1,0 +1,1104 @@
+{
+  "baseline_arm": "r18_v2",
+  "boundary": "开发根描述值；单局是收入分量而非独立统计单位，发布仍需全新根确认。",
+  "complete_tables": 512,
+  "descriptive_mean_delta_vs_baseline_per_table": {
+    "g243_competing_risk_filter": -0.91015625
+  },
+  "g243_metrics": {
+    "adopted_predicted_gain": {
+      "maximum": 0.010772207,
+      "median": 0.002027091,
+      "minimum": 4.618e-06
+    },
+    "changed_roots": {
+      "H": 16,
+      "M": 16
+    },
+    "changed_stage_identities": {
+      "H": 38,
+      "M": 29
+    },
+    "counts": {
+      "adopted": 104,
+      "filtered": 74
+    },
+    "per_mix": {
+      "H": {
+        "adopted": 64,
+        "filtered": 39
+      },
+      "M": {
+        "adopted": 40,
+        "filtered": 35
+      }
+    },
+    "selector_elapsed_ms": {
+      "max": 0.141,
+      "p50": 0.101,
+      "p95": 0.123
+    }
+  },
+  "independent_root_clusters": 32,
+  "manifest_sha256": "406b1debe1821466d088a1baa47ee7e88b99ccc616ab812106696fb4a7a0610d",
+  "root_clusters": [
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.125,
+          "plain_self_win_delta": 1.25,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -36.0,
+          "plain_self_win_delta": 21.0,
+          "special_self_win_delta": 10.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -36.125,
+          "plain_self_win_delta": 19.75,
+          "special_self_win_delta": 10.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 1.375
+      },
+      "mix": "H",
+      "root_index": 1,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -5.0,
+        "r18_v2": -6.375
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 1.75,
+          "plain_self_win_delta": 4.75,
+          "special_self_win_delta": -2.5
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -29.625,
+          "plain_self_win_delta": 16.0,
+          "special_self_win_delta": 10.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -31.375,
+          "plain_self_win_delta": 11.25,
+          "special_self_win_delta": 12.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 4.0
+      },
+      "mix": "H",
+      "root_index": 2,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -3.625,
+        "r18_v2": -7.625
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -1.875,
+          "plain_self_win_delta": -4.75,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -35.5,
+          "plain_self_win_delta": 27.0,
+          "special_self_win_delta": 12.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -33.625,
+          "plain_self_win_delta": 31.75,
+          "special_self_win_delta": 12.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -6.625
+      },
+      "mix": "H",
+      "root_index": 3,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 3.5,
+        "r18_v2": 10.125
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.25,
+          "plain_self_win_delta": -3.75,
+          "special_self_win_delta": -8.5
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.25,
+          "plain_self_win_delta": 11.75,
+          "special_self_win_delta": 13.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.5,
+          "plain_self_win_delta": 15.5,
+          "special_self_win_delta": 22.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -12.0
+      },
+      "mix": "H",
+      "root_index": 4,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -5.0,
+        "r18_v2": 7.0
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": -1.25,
+          "special_self_win_delta": 2.5
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -29.625,
+          "plain_self_win_delta": 25.0,
+          "special_self_win_delta": 26.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -29.625,
+          "plain_self_win_delta": 26.25,
+          "special_self_win_delta": 23.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 1.25
+      },
+      "mix": "H",
+      "root_index": 5,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 21.375,
+        "r18_v2": 20.125
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.75,
+          "plain_self_win_delta": 1.25,
+          "special_self_win_delta": -5.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -28.375,
+          "plain_self_win_delta": 31.25,
+          "special_self_win_delta": 29.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -29.125,
+          "plain_self_win_delta": 30.0,
+          "special_self_win_delta": 34.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -3.0
+      },
+      "mix": "H",
+      "root_index": 6,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 31.875,
+        "r18_v2": 34.875
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 1.0,
+          "plain_self_win_delta": 1.75,
+          "special_self_win_delta": 2.5
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -29.0,
+          "plain_self_win_delta": 25.0,
+          "special_self_win_delta": 21.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.0,
+          "plain_self_win_delta": 23.25,
+          "special_self_win_delta": 18.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 5.25
+      },
+      "mix": "H",
+      "root_index": 7,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 17.0,
+        "r18_v2": 11.75
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -0.875,
+          "plain_self_win_delta": -1.25,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -27.875,
+          "plain_self_win_delta": 23.25,
+          "special_self_win_delta": 6.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -27.0,
+          "plain_self_win_delta": 24.5,
+          "special_self_win_delta": 6.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -2.125
+      },
+      "mix": "H",
+      "root_index": 8,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 1.375,
+        "r18_v2": 3.5
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -1.875,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -34.125,
+          "plain_self_win_delta": 23.75,
+          "special_self_win_delta": 8.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -32.25,
+          "plain_self_win_delta": 23.75,
+          "special_self_win_delta": 8.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -1.875
+      },
+      "mix": "H",
+      "root_index": 9,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -1.875,
+        "r18_v2": 0.0
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.75,
+          "plain_self_win_delta": -1.25,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.25,
+          "plain_self_win_delta": 19.75,
+          "special_self_win_delta": 7.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -31.0,
+          "plain_self_win_delta": 21.0,
+          "special_self_win_delta": 7.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -0.5
+      },
+      "mix": "H",
+      "root_index": 10,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -3.0,
+        "r18_v2": -2.5
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -4.0,
+          "plain_self_win_delta": 3.75,
+          "special_self_win_delta": -13.5
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -34.25,
+          "plain_self_win_delta": 18.5,
+          "special_self_win_delta": 19.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.25,
+          "plain_self_win_delta": 14.75,
+          "special_self_win_delta": 33.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -13.75
+      },
+      "mix": "H",
+      "root_index": 11,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 3.75,
+        "r18_v2": 17.5
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -40.125,
+          "plain_self_win_delta": 12.25,
+          "special_self_win_delta": 10.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -40.125,
+          "plain_self_win_delta": 12.25,
+          "special_self_win_delta": 10.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 0.0
+      },
+      "mix": "H",
+      "root_index": 12,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -17.875,
+        "r18_v2": -17.875
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 1.0,
+          "plain_self_win_delta": 1.25,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -31.75,
+          "plain_self_win_delta": 18.5,
+          "special_self_win_delta": 23.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -32.75,
+          "plain_self_win_delta": 17.25,
+          "special_self_win_delta": 23.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 2.25
+      },
+      "mix": "H",
+      "root_index": 13,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 9.75,
+        "r18_v2": 7.5
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 1.0,
+          "plain_self_win_delta": 1.25,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -25.375,
+          "plain_self_win_delta": 35.25,
+          "special_self_win_delta": 8.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -26.375,
+          "plain_self_win_delta": 34.0,
+          "special_self_win_delta": 8.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 2.25
+      },
+      "mix": "H",
+      "root_index": 14,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 18.375,
+        "r18_v2": 16.125
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.0,
+          "plain_self_win_delta": 12.5,
+          "special_self_win_delta": 11.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.0,
+          "plain_self_win_delta": 12.5,
+          "special_self_win_delta": 11.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 0.0
+      },
+      "mix": "H",
+      "root_index": 15,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -6.5,
+        "r18_v2": -6.5
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": -2.5,
+          "special_self_win_delta": 2.5
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -32.375,
+          "plain_self_win_delta": 25.75,
+          "special_self_win_delta": 5.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -32.375,
+          "plain_self_win_delta": 28.25,
+          "special_self_win_delta": 2.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 0.0
+      },
+      "mix": "H",
+      "root_index": 16,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -1.625,
+        "r18_v2": -1.625
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.75,
+          "plain_self_win_delta": 16.0,
+          "special_self_win_delta": 17.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.75,
+          "plain_self_win_delta": 16.0,
+          "special_self_win_delta": 17.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 0.0
+      },
+      "mix": "M",
+      "root_index": 1,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 2.25,
+        "r18_v2": 2.25
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.625,
+          "plain_self_win_delta": 13.5,
+          "special_self_win_delta": 7.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -30.625,
+          "plain_self_win_delta": 13.5,
+          "special_self_win_delta": 7.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 0.0
+      },
+      "mix": "M",
+      "root_index": 2,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -9.625,
+        "r18_v2": -9.625
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": 1.25,
+          "special_self_win_delta": -2.5
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -25.875,
+          "plain_self_win_delta": 28.0,
+          "special_self_win_delta": 19.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -25.875,
+          "plain_self_win_delta": 26.75,
+          "special_self_win_delta": 22.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -1.25
+      },
+      "mix": "M",
+      "root_index": 3,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 21.625,
+        "r18_v2": 22.875
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -3.25,
+          "plain_self_win_delta": -7.25,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -32.875,
+          "plain_self_win_delta": 12.75,
+          "special_self_win_delta": 31.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -29.625,
+          "plain_self_win_delta": 20.0,
+          "special_self_win_delta": 31.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -10.5
+      },
+      "mix": "M",
+      "root_index": 4,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 10.875,
+        "r18_v2": 21.375
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.125,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -37.75,
+          "plain_self_win_delta": 10.5,
+          "special_self_win_delta": 30.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -37.875,
+          "plain_self_win_delta": 10.5,
+          "special_self_win_delta": 30.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 0.125
+      },
+      "mix": "M",
+      "root_index": 5,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 3.25,
+        "r18_v2": 3.125
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 1.0,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -37.25,
+          "plain_self_win_delta": 25.25,
+          "special_self_win_delta": 10.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -38.25,
+          "plain_self_win_delta": 25.25,
+          "special_self_win_delta": 10.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 1.0
+      },
+      "mix": "M",
+      "root_index": 6,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -2.0,
+        "r18_v2": -3.0
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.125,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 2.5
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -35.25,
+          "plain_self_win_delta": 16.0,
+          "special_self_win_delta": 25.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -35.375,
+          "plain_self_win_delta": 16.0,
+          "special_self_win_delta": 23.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 2.625
+      },
+      "mix": "M",
+      "root_index": 7,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 6.25,
+        "r18_v2": 3.625
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 1.125,
+          "plain_self_win_delta": 3.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -36.25,
+          "plain_self_win_delta": 21.5,
+          "special_self_win_delta": 22.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -37.375,
+          "plain_self_win_delta": 18.5,
+          "special_self_win_delta": 22.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 4.125
+      },
+      "mix": "M",
+      "root_index": 8,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 7.25,
+        "r18_v2": 3.125
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -26.25,
+          "plain_self_win_delta": 42.75,
+          "special_self_win_delta": 23.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -26.25,
+          "plain_self_win_delta": 42.75,
+          "special_self_win_delta": 23.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 0.0
+      },
+      "mix": "M",
+      "root_index": 9,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 39.5,
+        "r18_v2": 39.5
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -1.25,
+          "plain_self_win_delta": -3.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -36.0,
+          "plain_self_win_delta": 29.5,
+          "special_self_win_delta": 16.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -34.75,
+          "plain_self_win_delta": 32.5,
+          "special_self_win_delta": 16.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -4.25
+      },
+      "mix": "M",
+      "root_index": 10,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 9.5,
+        "r18_v2": 13.75
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.125,
+          "plain_self_win_delta": 1.25,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -36.75,
+          "plain_self_win_delta": 14.25,
+          "special_self_win_delta": 19.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -36.875,
+          "plain_self_win_delta": 13.0,
+          "special_self_win_delta": 19.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 1.375
+      },
+      "mix": "M",
+      "root_index": 11,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -3.0,
+        "r18_v2": -4.375
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 1.0,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 6.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -33.5,
+          "plain_self_win_delta": 21.5,
+          "special_self_win_delta": 39.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -34.5,
+          "plain_self_win_delta": 21.5,
+          "special_self_win_delta": 33.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 7.0
+      },
+      "mix": "M",
+      "root_index": 12,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 27.0,
+        "r18_v2": 20.0
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -2.0,
+          "plain_self_win_delta": -4.25,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -34.0,
+          "plain_self_win_delta": 16.5,
+          "special_self_win_delta": 18.0
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -32.0,
+          "plain_self_win_delta": 20.75,
+          "special_self_win_delta": 18.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -6.25
+      },
+      "mix": "M",
+      "root_index": 13,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 0.5,
+        "r18_v2": 6.75
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.0,
+          "plain_self_win_delta": 0.0,
+          "special_self_win_delta": 0.0
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -27.625,
+          "plain_self_win_delta": 20.75,
+          "special_self_win_delta": 36.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -27.625,
+          "plain_self_win_delta": 20.75,
+          "special_self_win_delta": 36.5
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 0.0
+      },
+      "mix": "M",
+      "root_index": 14,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 29.625,
+        "r18_v2": 29.625
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": 0.125,
+          "plain_self_win_delta": 1.75,
+          "special_self_win_delta": 2.5
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -28.625,
+          "plain_self_win_delta": 26.25,
+          "special_self_win_delta": 17.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -28.75,
+          "plain_self_win_delta": 24.5,
+          "special_self_win_delta": 15.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": 4.375
+      },
+      "mix": "M",
+      "root_index": 15,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": 15.125,
+        "r18_v2": 10.75
+      }
+    },
+    {
+      "component_delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -0.25,
+          "plain_self_win_delta": -1.25,
+          "special_self_win_delta": -2.5
+        }
+      },
+      "component_mean_by_arm": {
+        "g243_competing_risk_filter": {
+          "draw_delta": 0.0,
+          "other_win_delta": -41.75,
+          "plain_self_win_delta": 14.75,
+          "special_self_win_delta": 7.5
+        },
+        "r18_v2": {
+          "draw_delta": 0.0,
+          "other_win_delta": -41.5,
+          "plain_self_win_delta": 16.0,
+          "special_self_win_delta": 10.0
+        }
+      },
+      "delta_vs_baseline_per_table": {
+        "g243_competing_risk_filter": -4.0
+      },
+      "mix": "M",
+      "root_index": 16,
+      "table_score_mean_by_arm": {
+        "g243_competing_risk_filter": -19.5,
+        "r18_v2": -15.5
+      }
+    }
+  ],
+  "schema": "g14-accounted-paired-result/1",
+  "script_sha256": "bbceb10a6eacc32138d8da28062566a9a4d7791976f26423f99f52f8229ff809"
+}

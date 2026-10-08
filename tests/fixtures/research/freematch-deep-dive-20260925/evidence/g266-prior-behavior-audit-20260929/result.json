@@ -1,0 +1,1491 @@
+{
+  "current_rules_source_hash": "14e670edd631cb91a2c4c31d8131e360e9ebfb2d82d7c9ac9425f01d099e678d",
+  "date": "2026-09-29",
+  "g61_windows_sha256_by_unit": {
+    "tengshe_0638/a_3c9b8c294df1": "91a4090fa901994449506c5b1559524d52f0b0c335d0a7ef59a9fd7acead3e84",
+    "tengshe_0638/a_53f4861835b9": "67f565077b4301f7b10a8dc7fdf7f080a0d3b016de5fc8eaf3c3668a58f6ec2b",
+    "tengshe_0638/a_6b37c9d49bcb": "58345ed5f82ef4a341bce89e1f32453a7c6d7835ac895996d98294082076d0ee",
+    "tengshe_0638/a_7fae66b4d5cd": "957b16a099ae0c5479ef82cbd6e756a0cf2a52bd18d9b1a041a9b8222be6736f",
+    "tengshe_0638/a_8e8aec99969b": "8d6d1684049e7041aa34d1722e54027c43055a419386479db67adaac25f6c100",
+    "tengshe_0638/a_a5a78c5a0641": "a33b2ba92ddc07538017a1dffcbb6f635ca3115e30c664cfeed4f4d26479cd00",
+    "tengshe_0638/a_a84b3a170f9e": "a465f2f86d0d76a1634c0546ad2ae40680ca6843c04cb8da940a49ca5203f518",
+    "tengshe_0638/a_a8ce23a921ce": "45a7b00e7aee742c8214e6fe108a1ff45a70a2864650bb94c152efff18f6627c",
+    "tengshe_0638/a_d539acd906b5": "cf2f750fe7dcd6f1e7e79600636f7ed8147dda9e041deaffc730f6d503461468",
+    "tengshe_0638/a_d53a046ceb62": "8aa8c0cf6be642c76817f3a9350e08fee686f0793929d9b479f8ba53c1bf9a7c",
+    "tengshe_0638/a_d773a8e428a0": "7bc24a3f85ed7dcc53c81baa063c136a4ee0529373058166be7f17c9c38a2202",
+    "tengshe_0638/a_d8e15fe8bc96": "ce1ca0d43f3e0dfc8196005908e30f909ad47edd165f88615dd7ef28ed54bd81",
+    "tengshe_0638/a_e4d46909f494": "9bbfac8970f35d0d412f1d8e6d4dc20b17af15aac57d5ae7ef5e41d5ffce0f2e",
+    "tengshe_0638/a_f6d96a23fe1f": "732f09ee241dcd76b69139facfc13d9009442b43a89bfb4f6ec25af206ed7fbb",
+    "xuanwu_2346/a_11f7d00fe232": "30fde3585ee187efb8a967e548ab24052a45ff5b856ee5de2c2a0913a252f992",
+    "xuanwu_2346/a_2a8aa14dc8a1": "55e2708ede264023fb87ceb1aa7fb6f7e41612cda7b0730e8940ca37f7ced0f1",
+    "xuanwu_2346/a_3cc4c40be504": "32471ea74acdd6aaa8f08e954eec39f485d494b01268533d3fe45390d9b8f960",
+    "xuanwu_2346/a_409502856d42": "a79e2e40f106f9081ba4ad501cf7e7d6e5459b24361ba52aa84e7e0a4f02b1d1",
+    "xuanwu_2346/a_5b409450150a": "c7c3791e425b5b78ec02f1e625ad866e63186ecb87207f8da8c0d407deeeaee3",
+    "xuanwu_2346/a_5e29192a7f88": "c47587f71ee1a9da368d9981f9e45377b7d37db3a75fddd31822c3b4faf392cd",
+    "xuanwu_2346/a_84d49097106e": "8fef1f717ad0af86205df0c0ef048239353bc24a45ad50e09f144dfd64d27277",
+    "xuanwu_2346/a_a2dd84116fa9": "546ebab1eb6414786fae0601bd024c4308916488f0c9adbfabe6c6187784a012",
+    "xuanwu_2346/a_c5f3c6cb10d1": "e93cf310905f18ec96be19a21f5fc9948cedb2e75f813ef034c2e8ca6cd53597",
+    "xuanwu_2346/a_d773a8e428a0": "c04cf9aecc31635ceed92888688c77bf1707a0f4be6e76b4210a334cc42675ee",
+    "xuanwu_2346/a_f8ddc4c3bd9b": "a71b648c0cce5263830cbe8b53266747ac68d06b583f5a34fba0bae86c72dafd",
+    "xuanwu_2346/a_fc8e52516b6c": "d2a1732bb294e4ea1f6af836097d56de6ddb53676094ec8420dbd3d2a509e424"
+  },
+  "limitations": [
+    "G259 目标按强手与父代严格分歧及普通宽/七对损失预选；负控按两者一致预选，窗口率不是总体敏感度/特异度。",
+    "G61 未存该官方动作窗完整 rejected_attempts 或历史降级记录；g87.request_for 为离线重判填空元组，不能核 G266 该硬门。",
+    "同一房、完整桌、单局中可有多个窗口；17/61/60 均非独立房数，不报告因果效果或收益。",
+    "只在旧官方正常弃牌行动前观察重判；未运行新牌山、隐藏世界、完整桌或后续结算。"
+  ],
+  "matched_agreement_control": {
+    "by_peer": {
+      "tengshe_0638": {
+        "false_triggers": 6,
+        "windows": 34
+      },
+      "xuanwu_2346": {
+        "false_triggers": 4,
+        "windows": 27
+      }
+    },
+    "cross_room_false_triggers": 9,
+    "cross_room_windows": 60,
+    "distinct_rooms": 21,
+    "false_triggers": 10,
+    "windows": 61
+  },
+  "schema": "g266-prior-behavior-audit/1",
+  "selected_rows": [
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "tengshe_0638",
+        "a_8e8aec99969b",
+        "a_8e8aec99969b_r1_b7_t0",
+        8,
+        1480,
+        2
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:中",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:7b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:中"
+    },
+    {
+      "eligible_alternative_count": 3,
+      "identity": [
+        "tengshe_0638",
+        "a_a8ce23a921ce",
+        "a_a8ce23a921ce_r1_b8_t0",
+        4,
+        581,
+        3
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:9w",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:1w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:9w"
+    },
+    {
+      "eligible_alternative_count": 2,
+      "identity": [
+        "tengshe_0638",
+        "a_d773a8e428a0",
+        "a_d773a8e428a0_r1_b8_t0",
+        6,
+        1167,
+        0
+      ],
+      "kind": "target",
+      "matches_observed_action": false,
+      "observed_action": "discard:北",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:4b",
+      "same_rank_before_action_key": true,
+      "selected_alternative": "discard:9w"
+    },
+    {
+      "eligible_alternative_count": 3,
+      "identity": [
+        "tengshe_0638",
+        "a_d8e15fe8bc96",
+        "a_d8e15fe8bc96_r1_b6_t0",
+        2,
+        349,
+        0
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:5b",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:8t",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:5b"
+    },
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "tengshe_0638",
+        "a_d8e15fe8bc96",
+        "a_d8e15fe8bc96_r1_b7_t0",
+        1,
+        54,
+        1
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:西",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:1w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:西"
+    },
+    {
+      "eligible_alternative_count": 4,
+      "identity": [
+        "tengshe_0638",
+        "a_e4d46909f494",
+        "a_e4d46909f494_r1_b0_t0",
+        1,
+        65,
+        3
+      ],
+      "kind": "target",
+      "matches_observed_action": false,
+      "observed_action": "discard:1b",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:6b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:1w"
+    },
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "tengshe_0638",
+        "a_f6d96a23fe1f",
+        "a_f6d96a23fe1f_r1_b2_t0",
+        3,
+        349,
+        1
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:发",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:2w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:发"
+    },
+    {
+      "eligible_alternative_count": 4,
+      "identity": [
+        "xuanwu_2346",
+        "a_11f7d00fe232",
+        "a_11f7d00fe232_r1_b8_t0",
+        5,
+        952,
+        1
+      ],
+      "kind": "target",
+      "matches_observed_action": false,
+      "observed_action": "discard:中",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:2t",
+      "same_rank_before_action_key": true,
+      "selected_alternative": "discard:东"
+    },
+    {
+      "eligible_alternative_count": 4,
+      "identity": [
+        "xuanwu_2346",
+        "a_5b409450150a",
+        "a_5b409450150a_r1_b8_t0",
+        6,
+        909,
+        3
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:东",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:9b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:东"
+    },
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "xuanwu_2346",
+        "a_5e29192a7f88",
+        "a_5e29192a7f88_r1_b4_t0",
+        5,
+        665,
+        1
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:发",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:1b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:发"
+    },
+    {
+      "eligible_alternative_count": 3,
+      "identity": [
+        "xuanwu_2346",
+        "a_5e29192a7f88",
+        "a_5e29192a7f88_r1_b7_t0",
+        6,
+        839,
+        2
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:北",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:1b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:北"
+    },
+    {
+      "eligible_alternative_count": 2,
+      "identity": [
+        "xuanwu_2346",
+        "a_5e29192a7f88",
+        "a_5e29192a7f88_r1_b7_t0",
+        6,
+        863,
+        2
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:发",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:1b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:发"
+    },
+    {
+      "eligible_alternative_count": 4,
+      "identity": [
+        "xuanwu_2346",
+        "a_84d49097106e",
+        "a_84d49097106e_r1_b6_t0",
+        6,
+        668,
+        1
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:1w",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:5b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:1w"
+    },
+    {
+      "eligible_alternative_count": 2,
+      "identity": [
+        "xuanwu_2346",
+        "a_a2dd84116fa9",
+        "a_a2dd84116fa9_r1_b2_t0",
+        8,
+        1640,
+        3
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:5t",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:1b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:5t"
+    },
+    {
+      "eligible_alternative_count": 2,
+      "identity": [
+        "xuanwu_2346",
+        "a_a2dd84116fa9",
+        "a_a2dd84116fa9_r1_b2_t0",
+        8,
+        1664,
+        3
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:9w",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:1b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:9w"
+    },
+    {
+      "eligible_alternative_count": 3,
+      "identity": [
+        "xuanwu_2346",
+        "a_c5f3c6cb10d1",
+        "a_c5f3c6cb10d1_r1_b3_t0",
+        7,
+        1226,
+        3
+      ],
+      "kind": "target",
+      "matches_observed_action": false,
+      "observed_action": "discard:5b",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:3t",
+      "same_rank_before_action_key": true,
+      "selected_alternative": "discard:2b"
+    },
+    {
+      "eligible_alternative_count": 2,
+      "identity": [
+        "xuanwu_2346",
+        "a_d773a8e428a0",
+        "a_d773a8e428a0_r1_b7_t0",
+        4,
+        786,
+        3
+      ],
+      "kind": "target",
+      "matches_observed_action": true,
+      "observed_action": "discard:6t",
+      "observed_action_is_eligible_alternative": true,
+      "parent_action": "discard:9w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:6t"
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_3c9b8c294df1",
+        "a_3c9b8c294df1_r1_b5_t0",
+        2,
+        288,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:西",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:西",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "tengshe_0638",
+        "a_3c9b8c294df1",
+        "a_3c9b8c294df1_r1_b8_t0",
+        5,
+        862,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:5t",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:5t",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:5b"
+    },
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "tengshe_0638",
+        "a_53f4861835b9",
+        "a_53f4861835b9_r1_b2_t0",
+        2,
+        279,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:9b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:9b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:9w"
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_53f4861835b9",
+        "a_53f4861835b9_r1_b4_t0",
+        1,
+        6,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:南",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:南",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_53f4861835b9",
+        "a_53f4861835b9_r1_b4_t0",
+        8,
+        1252,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:北",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:北",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_6b37c9d49bcb",
+        "a_6b37c9d49bcb_r1_b8_t0",
+        4,
+        723,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1w",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_6b37c9d49bcb",
+        "a_6b37c9d49bcb_r1_b8_t0",
+        4,
+        747,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:发",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:发",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_7fae66b4d5cd",
+        "a_7fae66b4d5cd_r1_b8_t0",
+        1,
+        66,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:发",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:发",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_8e8aec99969b",
+        "a_8e8aec99969b_r1_b4_t0",
+        3,
+        363,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:北",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:北",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_8e8aec99969b",
+        "a_8e8aec99969b_r1_b7_t0",
+        2,
+        183,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1t",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1t",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 3,
+      "identity": [
+        "tengshe_0638",
+        "a_a5a78c5a0641",
+        "a_a5a78c5a0641_r1_b0_t0",
+        1,
+        18,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:9t",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:9t",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:南"
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_a5a78c5a0641",
+        "a_a5a78c5a0641_r1_b1_t0",
+        2,
+        230,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:9w",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:9w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_a5a78c5a0641",
+        "a_a5a78c5a0641_r1_b1_t0",
+        2,
+        254,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:西",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:西",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "tengshe_0638",
+        "a_a5a78c5a0641",
+        "a_a5a78c5a0641_r1_b1_t0",
+        2,
+        278,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:3w"
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_a5a78c5a0641",
+        "a_a5a78c5a0641_r1_b1_t0",
+        2,
+        302,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:8t",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:8t",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_a5a78c5a0641",
+        "a_a5a78c5a0641_r1_b1_t0",
+        3,
+        341,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:中",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:中",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_a5a78c5a0641",
+        "a_a5a78c5a0641_r1_b1_t0",
+        3,
+        389,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_a5a78c5a0641",
+        "a_a5a78c5a0641_r1_b3_t0",
+        4,
+        723,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:西",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:西",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_a5a78c5a0641",
+        "a_a5a78c5a0641_r1_b4_t0",
+        1,
+        24,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:东",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:东",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_a5a78c5a0641",
+        "a_a5a78c5a0641_r1_b9_t0",
+        2,
+        192,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:西",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:西",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_a84b3a170f9e",
+        "a_a84b3a170f9e_r1_b7_t0",
+        8,
+        1439,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:3b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:3b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_d539acd906b5",
+        "a_d539acd906b5_r1_b2_t0",
+        7,
+        1288,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:发",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:发",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_d53a046ceb62",
+        "a_d53a046ceb62_r1_b0_t0",
+        5,
+        840,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:中",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:中",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_d53a046ceb62",
+        "a_d53a046ceb62_r1_b0_t0",
+        5,
+        864,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:东",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:东",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_d53a046ceb62",
+        "a_d53a046ceb62_r1_b6_t0",
+        2,
+        336,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:西",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:西",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_d53a046ceb62",
+        "a_d53a046ceb62_r1_b7_t0",
+        7,
+        1320,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:西",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:西",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_d773a8e428a0",
+        "a_d773a8e428a0_r1_b7_t0",
+        4,
+        792,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:西",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:西",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_d773a8e428a0",
+        "a_d773a8e428a0_r1_b7_t0",
+        4,
+        839,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1w",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_d773a8e428a0",
+        "a_d773a8e428a0_r1_b9_t0",
+        7,
+        1307,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:9b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:9b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_d8e15fe8bc96",
+        "a_d8e15fe8bc96_r1_b4_t0",
+        2,
+        156,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:南",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:南",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "tengshe_0638",
+        "a_e4d46909f494",
+        "a_e4d46909f494_r1_b6_t0",
+        1,
+        71,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1t",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1t",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:1w"
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_f6d96a23fe1f",
+        "a_f6d96a23fe1f_r1_b0_t0",
+        1,
+        65,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:9t",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:9t",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "tengshe_0638",
+        "a_f6d96a23fe1f",
+        "a_f6d96a23fe1f_r1_b2_t0",
+        7,
+        1238,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:7b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:7b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:2w"
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "tengshe_0638",
+        "a_f6d96a23fe1f",
+        "a_f6d96a23fe1f_r1_b2_t0",
+        7,
+        1262,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:2t",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:2t",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_2a8aa14dc8a1",
+        "a_2a8aa14dc8a1_r1_b1_t0",
+        1,
+        36,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:北",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:北",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_2a8aa14dc8a1",
+        "a_2a8aa14dc8a1_r1_b1_t0",
+        1,
+        60,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_3cc4c40be504",
+        "a_3cc4c40be504_r1_b4_t0",
+        3,
+        536,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_409502856d42",
+        "a_409502856d42_r1_b1_t0",
+        6,
+        821,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:东",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:东",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_409502856d42",
+        "a_409502856d42_r1_b1_t0",
+        6,
+        869,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:中",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:中",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_409502856d42",
+        "a_409502856d42_r1_b6_t0",
+        2,
+        255,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1w",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_409502856d42",
+        "a_409502856d42_r1_b6_t0",
+        5,
+        824,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_409502856d42",
+        "a_409502856d42_r1_b7_t0",
+        3,
+        304,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:南",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:南",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_409502856d42",
+        "a_409502856d42_r1_b8_t0",
+        1,
+        12,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:3w",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:3w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_5b409450150a",
+        "a_5b409450150a_r1_b4_t0",
+        3,
+        345,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:中",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:中",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_5b409450150a",
+        "a_5b409450150a_r1_b5_t0",
+        1,
+        114,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:南",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:南",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_5b409450150a",
+        "a_5b409450150a_r1_b5_t0",
+        1,
+        138,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:发",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:发",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "xuanwu_2346",
+        "a_5b409450150a",
+        "a_5b409450150a_r1_b7_t0",
+        1,
+        117,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:8t",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:8t",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:东"
+    },
+    {
+      "eligible_alternative_count": 1,
+      "identity": [
+        "xuanwu_2346",
+        "a_5b409450150a",
+        "a_5b409450150a_r1_b8_t0",
+        2,
+        271,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:4b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:4b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:9b"
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_84d49097106e",
+        "a_84d49097106e_r1_b0_t0",
+        6,
+        1036,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:南",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:南",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_a2dd84116fa9",
+        "a_a2dd84116fa9_r1_b3_t0",
+        5,
+        799,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:东",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:东",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 2,
+      "identity": [
+        "xuanwu_2346",
+        "a_a2dd84116fa9",
+        "a_a2dd84116fa9_r1_b4_t0",
+        4,
+        748,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:4b",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:4b",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:1b"
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_a2dd84116fa9",
+        "a_a2dd84116fa9_r1_b8_t0",
+        4,
+        698,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1w",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_d773a8e428a0",
+        "a_d773a8e428a0_r1_b7_t0",
+        4,
+        762,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:西",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:西",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_d773a8e428a0",
+        "a_d773a8e428a0_r1_b7_t0",
+        4,
+        810,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:9w",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:9w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_f8ddc4c3bd9b",
+        "a_f8ddc4c3bd9b_r1_b1_t0",
+        6,
+        1097,
+        3
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:北",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:北",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_f8ddc4c3bd9b",
+        "a_f8ddc4c3bd9b_r1_b5_t0",
+        7,
+        1231,
+        2
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:1w",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:1w",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_f8ddc4c3bd9b",
+        "a_f8ddc4c3bd9b_r1_b7_t0",
+        4,
+        663,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:西",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:西",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_f8ddc4c3bd9b",
+        "a_f8ddc4c3bd9b_r1_b8_t0",
+        7,
+        1083,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:东",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:东",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 3,
+      "identity": [
+        "xuanwu_2346",
+        "a_fc8e52516b6c",
+        "a_fc8e52516b6c_r1_b2_t0",
+        6,
+        1223,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:4t",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:4t",
+      "same_rank_before_action_key": false,
+      "selected_alternative": "discard:1t"
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_fc8e52516b6c",
+        "a_fc8e52516b6c_r1_b2_t0",
+        8,
+        1575,
+        1
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:南",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:南",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    },
+    {
+      "eligible_alternative_count": 0,
+      "identity": [
+        "xuanwu_2346",
+        "a_fc8e52516b6c",
+        "a_fc8e52516b6c_r1_b5_t0",
+        4,
+        773,
+        0
+      ],
+      "kind": "control",
+      "matches_observed_action": false,
+      "observed_action": "discard:东",
+      "observed_action_is_eligible_alternative": false,
+      "parent_action": "discard:东",
+      "same_rank_before_action_key": false,
+      "selected_alternative": null
+    }
+  ],
+  "source_sha256": {
+    "audit_script": "00c01006def9b8768d519cd58b00e7b294aa92accb0800a0a3fb86dac0784d9e",
+    "c31_parent_loader": "21084a66783679ad6ce66c3f2e6f121b1b79d122a150176673f9fb9e4f313495",
+    "g05_view": "dd25efa11f95a53f81e195c7811db54f5c24595f7ca823180e6bc75f3ed6f78e",
+    "g138_opportunity": "2f90594b6171ab1a91284a1111101681444b41f40dd21ef3b07b55fcfb8618da",
+    "g259_controls": "f566feb29eea31812f040946cd08764fa87e475240219d63e06730c1f0af2dda",
+    "g259_reconstructor": "16c8c926bf5711aa21611768ea89fdeb162c1b2f7d9cda197553c2b349d27038",
+    "g259_result": "c0baff0debc981ab58194e80f77b12aa60ecd940e441aab35546710028755b89",
+    "g259_targets": "5c3bac06287b6d5364a96ccc6a5e453593d0102fcbfeee61d754027723ae90fa",
+    "g61_result": "483e9e5082b30b9d2cce0ee369105b5516d648fe0b547d5d37e2454b2b97e9c1",
+    "g87_request": "fc59a04d20a6e8d0a1a8d29849047f7dd3d537f2f654a3f9799452c3902da536",
+    "r18_scoring_source": "e18eaecb63ced3501b71e23aafd336491c7b1fd08dc4bcc2ac4396650a86a8d0"
+  },
+  "target": {
+    "by_peer": {
+      "tengshe_0638": {
+        "hits": 5,
+        "windows": 7
+      },
+      "xuanwu_2346": {
+        "hits": 8,
+        "windows": 10
+      }
+    },
+    "distinct_rooms": 12,
+    "hit_strong_action": 13,
+    "mismatch_same_rank_before_action_key": 3,
+    "windows": 17
+  }
+}

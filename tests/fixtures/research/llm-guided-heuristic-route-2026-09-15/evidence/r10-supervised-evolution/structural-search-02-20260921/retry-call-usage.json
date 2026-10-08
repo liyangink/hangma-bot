@@ -1,0 +1,104 @@
+{
+  "schema": "r10-structural-call-usage/2",
+  "calls": [
+    {
+      "task": "T1",
+      "run_id": "session-b25d0f1c-8e26-41ea-a733-c915400cde7e",
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "high",
+        "maxTokens": 32768
+      },
+      "protocol_ok": true,
+      "exit_code": 0,
+      "usage": {
+        "usage": {
+          "inputTokens": 16686,
+          "outputTokens": 31308,
+          "totalTokens": 47994
+        },
+        "session_bytes": 852001,
+        "session_sha256": "54afefc2a0d93389b45abb93761d095fc68f3d7fdf72f9db6a726265e7b5a11b",
+        "source_status": "OK"
+      },
+      "ingestable_channel": true
+    },
+    {
+      "task": "T2",
+      "run_id": "session-c1577721-78c9-4436-b353-b05bf48d61be",
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "high",
+        "maxTokens": 32768
+      },
+      "protocol_ok": true,
+      "exit_code": 0,
+      "usage": {
+        "usage": {
+          "inputTokens": 17017,
+          "outputTokens": 22548,
+          "totalTokens": 39565
+        },
+        "session_bytes": 661691,
+        "session_sha256": "099351ba9d0d7494d70ef16ffd905007603bbec0243ddae60aeea5393b580c34",
+        "source_status": "OK"
+      },
+      "ingestable_channel": true
+    },
+    {
+      "task": "T3",
+      "run_id": "session-4bc00605-79b9-4bcf-874b-ce8d81b0d954",
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "high",
+        "maxTokens": 32768
+      },
+      "protocol_ok": true,
+      "exit_code": 0,
+      "usage": {
+        "usage": {
+          "inputTokens": 21400,
+          "outputTokens": 15966,
+          "totalTokens": 37558,
+          "cacheReadTokens": 192
+        },
+        "session_bytes": 534161,
+        "session_sha256": "7b5b90b73cef3a9857937eea9ce71fd9d1a800a0b77588112eac6beccffff8e2",
+        "source_status": "OK"
+      },
+      "ingestable_channel": true
+    },
+    {
+      "task": "T4",
+      "run_id": "session-e413c782-c4a4-41ba-9266-1604b3bf15e4",
+      "observed_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "high",
+        "maxTokens": 32768
+      },
+      "protocol_ok": true,
+      "exit_code": 0,
+      "usage": {
+        "usage": {
+          "inputTokens": 16507,
+          "outputTokens": 23713,
+          "totalTokens": 40412,
+          "cacheReadTokens": 192
+        },
+        "session_bytes": 687989,
+        "session_sha256": "e87cbc3bbd47fbb3195c0ee8e2ed3c8b04d1e4946452f0055dca091a0d781816",
+        "source_status": "OK"
+      },
+      "ingestable_channel": true
+    }
+  ],
+  "retry_basis": "首次四请求均为TRANSPORT错误且供应商用量为零",
+  "first_attempt_usage_sha256": "9cec7dd22056b2a27c99373d971cd3b18d0e4d7ff3ab6429ae697b244221b78f",
+  "total_input_tokens": 71610,
+  "total_output_tokens": 93535,
+  "problems": []
+}

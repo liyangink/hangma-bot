@@ -1,0 +1,55 @@
+{
+  "checks": {
+    "action_value_failures_zero": true,
+    "all_ordinary_reductions_complete": true,
+    "all_protected_plans_exact": true,
+    "all_response_plans_exact": true,
+    "all_takeover_invariants_hold": true,
+    "candidate_key_set_failures_zero": true,
+    "failures_empty": true,
+    "ordinary_order_mismatches_zero": true,
+    "prerequisites_pass": true,
+    "request_count_exact": true,
+    "strict_takeover_nonempty": true,
+    "strict_takeover_rate_bounded": true
+  },
+  "model_calls": 0,
+  "network_calls": 0,
+  "next": "冻结组合并在与P58隔离的新来源运行256桌开发筛选",
+  "prerequisite_checks": {
+    "p47_is_active_parent": true,
+    "p58_broad_reorder_rejected": true,
+    "r17_source_exact": true
+  },
+  "release_eligible": false,
+  "schema": "r18-p60-confirmed-hu-takeover-preflight-result/1",
+  "selection_eligible": false,
+  "status": "PASS_P60_CONFIRMED_HU_TAKEOVER_PREFLIGHT",
+  "strength_claim": false,
+  "summary": {
+    "changed_ordinary_rate": 0.07024793388429752,
+    "counts": {
+      "changed_ordinary_draws": 17,
+      "complete_ordinary_draws": 242,
+      "eligible_ordinary_draws": 242,
+      "protected:r18_gang_dominance_overlay": 4,
+      "protected:r18_seven_pairs_value_overlay": 64,
+      "protected:two_wealth_piao_keeps_baotou_cf": 19,
+      "protected_exact_plans": 87,
+      "protected_plans": 87,
+      "requests": 377,
+      "response_exact_plans": 48,
+      "response_plans": 48
+    },
+    "failures": [],
+    "latency_ms": {
+      "max": 349.610583,
+      "mean": 87.14738514588858
+    },
+    "workload": {
+      "max_candidate_operations": 272365,
+      "max_leaf_evaluations": 3003
+    }
+  },
+  "tables_run": 0
+}

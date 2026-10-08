@@ -1,0 +1,34 @@
+{
+  "schema": "r14-robust-offspring-author/1",
+  "created_at_utc": "2026-09-21T08:26:17.500893+00:00",
+  "expected_request_config": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3",
+    "reasoningEffort": "max",
+    "maxTokens": 32768
+  },
+  "tasks": [
+    {
+      "task": "R1",
+      "name": "v2-anchored-claim-rebase",
+      "prompt_sha256": "25326d57cf4f02cbd1179e95f7ec36be22eb4c7dc59697ec54e4babc3e6d8e70",
+      "prompt_chars": 67283
+    },
+    {
+      "task": "R2",
+      "name": "exclusive-discard-evidence-arbiter",
+      "prompt_sha256": "e25fc6722236722f6e26fb30ee375c7f602a6d78250cac170c2f2627da31509f",
+      "prompt_chars": 77806
+    }
+  ],
+  "inputs": {
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/strong-seeds-20260920/hard-sol-max/run/iterations/iter-02/generation/candidate.py": "5fe81ccca1cfc3a375b9fe84346b008d139d610934c7e681ccbdf71736af6698",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/strong-seeds-20260920/river-sol-high/run/iterations/iter-01/generation/candidate.py": "cadcf620ffc0c396c8f529771bf66b583c1e671205e69d2108437e583eb996d6",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/multifidelity-prospective-audit-01-20260921/result.json": "680f7afd63ce69ac4d2488ad6fad742ec2b9f9c3ba9f4f4883bc6bd6cd4b3676",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/hard-sol-max-m-failure-diagnosis-01-retry01-20260921/summary.json": "bb07a3e5d193e7a0e06ee10ee59b9abf1bcc5f5db88f5f43210015bc5e8f5932",
+    "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/hard-sol-max-m-failure-diagnosis-01-retry01-20260921/changed-decisions.jsonl": "b8ed964673cef9df86840d1d234db5b34b602117017ac604d764e34fdf496d07"
+  },
+  "effect_evaluation_started": false,
+  "confirmation_reserved": 0
+}

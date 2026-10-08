@@ -1,0 +1,808 @@
+{
+  "arms": [
+    "P",
+    "C",
+    "A"
+  ],
+  "candidate_identity": {
+    "candidate_id": "10cba94704291038653f586127be1809ef518dcaf68fa1fe38d1fc9ab92ca18f",
+    "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+    "contract_sha256": "f782bb9e68948aa1b73f1593006b599874a4455cae8bd4f15c853559e7db8adf",
+    "deps_digest": "3a6a1d3e53e3733b8998fe152ec61352c10b115b0bb95c33e098af5b4b9a741e",
+    "graph_schema_version": "vip-route-action-graph/3",
+    "math_backend": {
+      "fallback_reason": null,
+      "implementation": "c_grouped",
+      "native_binary": {
+        "bytes": 52552,
+        "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+      },
+      "semantics_version": "hangma-standard-grouped-v1"
+    },
+    "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+    "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+    "params": {
+      "max_local_collection_size": 8192,
+      "max_operations": 4800000,
+      "projection_limits": {
+        "max_branches": 16384,
+        "max_nodes": 8192,
+        "max_waiting_draw_witnesses": 65536
+      },
+      "route_limits": {
+        "max_expansions": 8192,
+        "max_routes_per_candidate": 128
+      },
+      "rule_config": {
+        "base_score": 1,
+        "ruleset_version": "hangma-mvp-v10-public-counts",
+        "you_cai_bi_kao": false
+      }
+    },
+    "source_manifest": {
+      "src/hangma_bot/hangma/__init__.py": {
+        "bytes": 145,
+        "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+      },
+      "src/hangma_bot/hangma/_grouped_native.c": {
+        "bytes": 19322,
+        "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+      },
+      "src/hangma_bot/hangma/_standard.py": {
+        "bytes": 1542,
+        "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+      },
+      "src/hangma_bot/hangma/_standard_python.py": {
+        "bytes": 14730,
+        "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+      },
+      "src/hangma_bot/hangma/action_families.py": {
+        "bytes": 20884,
+        "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+      },
+      "src/hangma_bot/hangma/candidate_facts.py": {
+        "bytes": 19139,
+        "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+      },
+      "src/hangma_bot/hangma/catch_play.py": {
+        "bytes": 10173,
+        "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+      },
+      "src/hangma_bot/hangma/emergency.py": {
+        "bytes": 4153,
+        "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+      },
+      "src/hangma_bot/hangma/engine.py": {
+        "bytes": 32121,
+        "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+      },
+      "src/hangma_bot/hangma/hand_analysis.py": {
+        "bytes": 20852,
+        "sha256": "5fda1016122df9aaa894c62fccd8cbfa2f8600122d08cfb0ea208173f32bb763"
+      },
+      "src/hangma_bot/hangma/interface.py": {
+        "bytes": 37378,
+        "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+      },
+      "src/hangma_bot/hangma/internal_types.py": {
+        "bytes": 8611,
+        "sha256": "0404ace8a801c81d0c812a5b209e45e29a888b11f1bac341f5a13f3700568051"
+      },
+      "src/hangma_bot/hangma/natural_preparation.py": {
+        "bytes": 5636,
+        "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+      },
+      "src/hangma_bot/hangma/observation_rules.py": {
+        "bytes": 21637,
+        "sha256": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486"
+      },
+      "src/hangma_bot/hangma/progression.py": {
+        "bytes": 44196,
+        "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+      },
+      "src/hangma_bot/hangma/progression_payload.py": {
+        "bytes": 15798,
+        "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+      },
+      "src/hangma_bot/hangma/public_successor.py": {
+        "bytes": 21173,
+        "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+      },
+      "src/hangma_bot/hangma/public_tile_counts.py": {
+        "bytes": 36925,
+        "sha256": "f3095119f4bac03bb7769b74d10926e339f67801e979a4afc70b24c31f3856fd"
+      },
+      "src/hangma_bot/hangma/route_frontier.py": {
+        "bytes": 11581,
+        "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+      },
+      "src/hangma_bot/hangma/route_hu_witness.py": {
+        "bytes": 8183,
+        "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+      },
+      "src/hangma_bot/hangma/route_structure.py": {
+        "bytes": 10649,
+        "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+      },
+      "src/hangma_bot/hangma/route_transition.py": {
+        "bytes": 72490,
+        "sha256": "42a3e6acd01bdadc138388e3b11d0f79d7f442f63c56f3de60d2d173a672fc17"
+      },
+      "src/hangma_bot/hangma/settlement.py": {
+        "bytes": 10643,
+        "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+      },
+      "src/hangma_bot/hangma/special_rules.py": {
+        "bytes": 11609,
+        "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+      },
+      "src/hangma_bot/hangma/value_analysis.py": {
+        "bytes": 18251,
+        "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+      },
+      "src/hangma_bot/kernel/actions.py": {
+        "bytes": 10754,
+        "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+      },
+      "src/hangma_bot/kernel/config.py": {
+        "bytes": 3236,
+        "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+      },
+      "src/hangma_bot/kernel/observation.py": {
+        "bytes": 17784,
+        "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+      },
+      "src/hangma_bot/kernel/outcomes.py": {
+        "bytes": 8643,
+        "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+      },
+      "src/hangma_bot/policy/action_value.py": {
+        "bytes": 45125,
+        "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+      },
+      "src/hangma_bot/policy/action_value_executor.py": {
+        "bytes": 105899,
+        "sha256": "d48720b07f84b466ce8d390dd3685fd5a68d6393296536fc826de0ad23a60f58"
+      },
+      "src/hangma_bot/policy/errors.py": {
+        "bytes": 372,
+        "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+      },
+      "src/hangma_bot/policy/interface.py": {
+        "bytes": 3546,
+        "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+      },
+      "src/hangma_bot/policy/route_heuristic_view.py": {
+        "bytes": 27957,
+        "sha256": "82555e304073755ff9f2758de0c470e3595e96ceeb2497897a7b846d75f121d1"
+      },
+      "src/hangma_bot/policy/route_vip_heuristic.py": {
+        "bytes": 34849,
+        "sha256": "1948b15d063bbd7194b83077d2f6284406e2bd8387aa95d6231767387f3cfdce"
+      },
+      "src/hangma_bot/policy/safe_fallback.py": {
+        "bytes": 2352,
+        "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+      }
+    },
+    "source_sha256": "78e1ec645cfb81e195ae242fd9a7c850deab3b44cb5619b4e936a44dc6fecbaa",
+    "view_schema_version": "vip-route-scoring-view/3"
+  },
+  "capture": {
+    "max_total_json_bytes": 536870912,
+    "max_unique_views": 1200,
+    "max_view_json_bytes": 67108864
+  },
+  "child_identity": {
+    "candidate_id": "3e1ee06beed7c34838c9a8943f63abe8a8940b59d0864a4181ca46cc9d28be0f",
+    "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+    "contract_sha256": "f782bb9e68948aa1b73f1593006b599874a4455cae8bd4f15c853559e7db8adf",
+    "deps_digest": "3a6a1d3e53e3733b8998fe152ec61352c10b115b0bb95c33e098af5b4b9a741e",
+    "graph_schema_version": "vip-route-action-graph/3",
+    "math_backend": {
+      "fallback_reason": null,
+      "implementation": "c_grouped",
+      "native_binary": {
+        "bytes": 52552,
+        "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+      },
+      "semantics_version": "hangma-standard-grouped-v1"
+    },
+    "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+    "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+    "params": {
+      "max_local_collection_size": 8192,
+      "max_operations": 4800000,
+      "projection_limits": {
+        "max_branches": 16384,
+        "max_nodes": 8192,
+        "max_waiting_draw_witnesses": 65536
+      },
+      "route_limits": {
+        "max_expansions": 8192,
+        "max_routes_per_candidate": 128
+      },
+      "rule_config": {
+        "base_score": 1,
+        "ruleset_version": "hangma-mvp-v10-public-counts",
+        "you_cai_bi_kao": false
+      }
+    },
+    "source_manifest": {
+      "src/hangma_bot/hangma/__init__.py": {
+        "bytes": 145,
+        "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+      },
+      "src/hangma_bot/hangma/_grouped_native.c": {
+        "bytes": 19322,
+        "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+      },
+      "src/hangma_bot/hangma/_standard.py": {
+        "bytes": 1542,
+        "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+      },
+      "src/hangma_bot/hangma/_standard_python.py": {
+        "bytes": 14730,
+        "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+      },
+      "src/hangma_bot/hangma/action_families.py": {
+        "bytes": 20884,
+        "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+      },
+      "src/hangma_bot/hangma/candidate_facts.py": {
+        "bytes": 19139,
+        "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+      },
+      "src/hangma_bot/hangma/catch_play.py": {
+        "bytes": 10173,
+        "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+      },
+      "src/hangma_bot/hangma/emergency.py": {
+        "bytes": 4153,
+        "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+      },
+      "src/hangma_bot/hangma/engine.py": {
+        "bytes": 32121,
+        "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+      },
+      "src/hangma_bot/hangma/hand_analysis.py": {
+        "bytes": 20852,
+        "sha256": "5fda1016122df9aaa894c62fccd8cbfa2f8600122d08cfb0ea208173f32bb763"
+      },
+      "src/hangma_bot/hangma/interface.py": {
+        "bytes": 37378,
+        "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+      },
+      "src/hangma_bot/hangma/internal_types.py": {
+        "bytes": 8611,
+        "sha256": "0404ace8a801c81d0c812a5b209e45e29a888b11f1bac341f5a13f3700568051"
+      },
+      "src/hangma_bot/hangma/natural_preparation.py": {
+        "bytes": 5636,
+        "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+      },
+      "src/hangma_bot/hangma/observation_rules.py": {
+        "bytes": 21637,
+        "sha256": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486"
+      },
+      "src/hangma_bot/hangma/progression.py": {
+        "bytes": 44196,
+        "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+      },
+      "src/hangma_bot/hangma/progression_payload.py": {
+        "bytes": 15798,
+        "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+      },
+      "src/hangma_bot/hangma/public_successor.py": {
+        "bytes": 21173,
+        "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+      },
+      "src/hangma_bot/hangma/public_tile_counts.py": {
+        "bytes": 36925,
+        "sha256": "f3095119f4bac03bb7769b74d10926e339f67801e979a4afc70b24c31f3856fd"
+      },
+      "src/hangma_bot/hangma/route_frontier.py": {
+        "bytes": 11581,
+        "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+      },
+      "src/hangma_bot/hangma/route_hu_witness.py": {
+        "bytes": 8183,
+        "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+      },
+      "src/hangma_bot/hangma/route_structure.py": {
+        "bytes": 10649,
+        "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+      },
+      "src/hangma_bot/hangma/route_transition.py": {
+        "bytes": 72490,
+        "sha256": "42a3e6acd01bdadc138388e3b11d0f79d7f442f63c56f3de60d2d173a672fc17"
+      },
+      "src/hangma_bot/hangma/settlement.py": {
+        "bytes": 10643,
+        "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+      },
+      "src/hangma_bot/hangma/special_rules.py": {
+        "bytes": 11609,
+        "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+      },
+      "src/hangma_bot/hangma/value_analysis.py": {
+        "bytes": 18251,
+        "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+      },
+      "src/hangma_bot/kernel/actions.py": {
+        "bytes": 10754,
+        "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+      },
+      "src/hangma_bot/kernel/config.py": {
+        "bytes": 3236,
+        "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+      },
+      "src/hangma_bot/kernel/observation.py": {
+        "bytes": 17784,
+        "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+      },
+      "src/hangma_bot/kernel/outcomes.py": {
+        "bytes": 8643,
+        "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+      },
+      "src/hangma_bot/policy/action_value.py": {
+        "bytes": 45125,
+        "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+      },
+      "src/hangma_bot/policy/action_value_executor.py": {
+        "bytes": 105899,
+        "sha256": "d48720b07f84b466ce8d390dd3685fd5a68d6393296536fc826de0ad23a60f58"
+      },
+      "src/hangma_bot/policy/errors.py": {
+        "bytes": 372,
+        "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+      },
+      "src/hangma_bot/policy/interface.py": {
+        "bytes": 3546,
+        "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+      },
+      "src/hangma_bot/policy/route_heuristic_view.py": {
+        "bytes": 27957,
+        "sha256": "82555e304073755ff9f2758de0c470e3595e96ceeb2497897a7b846d75f121d1"
+      },
+      "src/hangma_bot/policy/route_vip_heuristic.py": {
+        "bytes": 34849,
+        "sha256": "1948b15d063bbd7194b83077d2f6284406e2bd8387aa95d6231767387f3cfdce"
+      },
+      "src/hangma_bot/policy/safe_fallback.py": {
+        "bytes": 2352,
+        "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+      }
+    },
+    "source_sha256": "a5ad6f144899733421007d52167fbcfcfc122f944ef95c1c73d4aa9487dc2b5a",
+    "view_schema_version": "vip-route-scoring-view/3"
+  },
+  "child_source_file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/S01-model-output/candidate.py",
+  "files": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t101-joint-breadth-recovery-author-1/S02-model-output/candidate.py": {
+      "bytes": 32143,
+      "sha256": "78e1ec645cfb81e195ae242fd9a7c850deab3b44cb5619b4e936a44dc6fecbaa"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t101-joint-breadth-recovery-author-1/S02-model-output/generation.json": {
+      "bytes": 76434,
+      "sha256": "95951bfb557bfd90b2411fb2ef8253182a47aa4b69b81bf844738ea27056e87b"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t107-four-white-wait-credit-1/ROOT-READBACK.json": {
+      "bytes": 10162,
+      "sha256": "501e3549848e888d05e2cd8b0a07778e1f20b1e79970a8706f0ccaeb4e7d18a1"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/AUTHOR-BATCH.json": {
+      "bytes": 1041,
+      "sha256": "c5a1d966e9f2fbe39f2f4c9a7dd922296c97941fbd10a04f62f4053b926cca65"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/S01-continuation-root009/PUBLIC-TARGETS.json": {
+      "bytes": 165840,
+      "sha256": "329a9db02b1d3459453758d638b5697742a2074e0508e1f2053ada337190c525"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/S01-continuation-root009/TEACHER-SOURCE-TRACES.json.gz": {
+      "bytes": 1215240,
+      "sha256": "dc337bbcdab7ed36a480fadaf292c7ae8460fe2e69856bdfbdea65bec9ce6aea"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/S01-continuation-root009/io_helpers.py": {
+      "bytes": 824,
+      "sha256": "6cd85d3262950c6e88525e11e31e13d21595704ad108ce08085949e20a07e089"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/S01-continuation-root009/run_causal.py": {
+      "bytes": 18322,
+      "sha256": "446a47fc9d1cabf8f308fb4d186afff543fbf3083891fd0b00d58bec153353d9"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/S01-model-output/candidate.py": {
+      "bytes": 32516,
+      "sha256": "a5ad6f144899733421007d52167fbcfcfc122f944ef95c1c73d4aa9487dc2b5a"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/S01-model-output/generation.json": {
+      "bytes": 82041,
+      "sha256": "07a7f5816fea0090a24c0cebbe08312a10c76258302549b85b7a934ae74d387b"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/S01-public-probe/ACTUAL-TOOL-TERMINAL.json": {
+      "bytes": 102,
+      "sha256": "10b3bbe00590c1a4293a8603ba277fd40ed579e82d9ee8f528b9bdbb3020e15b"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/S01-public-probe/CLOSURE.json": {
+      "bytes": 1153808,
+      "sha256": "c3bc4e91bd8a228543ea8cce00c31997232a6933ebc0305c22a459cbaebbf92e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/prepare_continuation.py": {
+      "bytes": 7372,
+      "sha256": "854505232cf4e5d7cc08e5bfbc590353c327d4ec03a2700235bf230aafd67247"
+    }
+  },
+  "force_first_action": false,
+  "fresh_result_blind_confirmation": false,
+  "generation_file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t108-target-cost-joint-evolution-1/AUTHOR-BATCH.json",
+  "hand_no": 3,
+  "independent_sources": 1,
+  "max_continuations": 6,
+  "max_recovery_frames": 5000,
+  "mother_root": "t97-natural-preparation:reserved_confirmation:009",
+  "new_model_calls": 0,
+  "original_C_hand_fan": 4,
+  "original_C_hand_net": 40,
+  "predecessor_results": {
+    "directory": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t107-four-white-wait-credit-1",
+    "outcomes_not_transferred": true
+  },
+  "published": false,
+  "raw_source_file": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t101-joint-breadth-recovery-author-1/S02-model-output/candidate.py",
+  "schema": "t108-whole-child-known-case-plan/1",
+  "scope": "exposed development whole formula continuation; no first-action forcing",
+  "source_manifest": {
+    "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md": {
+      "bytes": 16364,
+      "sha256": "f782bb9e68948aa1b73f1593006b599874a4455cae8bd4f15c853559e7db8adf"
+    },
+    "src/hangma_bot/application/contracts.py": {
+      "bytes": 16212,
+      "sha256": "cbece50eda81a376b5be923f5c894a96f67ea65f82b3e021fdbf592e242e53fa"
+    },
+    "src/hangma_bot/application/deadline.py": {
+      "bytes": 7527,
+      "sha256": "4d280f95ed8dd29a31fb485c6267ff553fd74fe2b2d8d60b3ca596bf0c9d8496"
+    },
+    "src/hangma_bot/hangma/__init__.py": {
+      "bytes": 145,
+      "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+    },
+    "src/hangma_bot/hangma/_grouped_native.c": {
+      "bytes": 19322,
+      "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+    },
+    "src/hangma_bot/hangma/_standard.py": {
+      "bytes": 1542,
+      "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+    },
+    "src/hangma_bot/hangma/_standard_python.py": {
+      "bytes": 14730,
+      "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+    },
+    "src/hangma_bot/hangma/action_families.py": {
+      "bytes": 20884,
+      "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+    },
+    "src/hangma_bot/hangma/candidate_facts.py": {
+      "bytes": 19139,
+      "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+    },
+    "src/hangma_bot/hangma/catch_play.py": {
+      "bytes": 10173,
+      "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+    },
+    "src/hangma_bot/hangma/emergency.py": {
+      "bytes": 4153,
+      "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+    },
+    "src/hangma_bot/hangma/engine.py": {
+      "bytes": 32121,
+      "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+    },
+    "src/hangma_bot/hangma/hand_analysis.py": {
+      "bytes": 20852,
+      "sha256": "5fda1016122df9aaa894c62fccd8cbfa2f8600122d08cfb0ea208173f32bb763"
+    },
+    "src/hangma_bot/hangma/interface.py": {
+      "bytes": 37378,
+      "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+    },
+    "src/hangma_bot/hangma/internal_types.py": {
+      "bytes": 8611,
+      "sha256": "0404ace8a801c81d0c812a5b209e45e29a888b11f1bac341f5a13f3700568051"
+    },
+    "src/hangma_bot/hangma/natural_preparation.py": {
+      "bytes": 5636,
+      "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+    },
+    "src/hangma_bot/hangma/observation_rules.py": {
+      "bytes": 21637,
+      "sha256": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486"
+    },
+    "src/hangma_bot/hangma/progression.py": {
+      "bytes": 44196,
+      "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+    },
+    "src/hangma_bot/hangma/progression_payload.py": {
+      "bytes": 15798,
+      "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+    },
+    "src/hangma_bot/hangma/public_successor.py": {
+      "bytes": 21173,
+      "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+    },
+    "src/hangma_bot/hangma/public_tile_counts.py": {
+      "bytes": 36925,
+      "sha256": "f3095119f4bac03bb7769b74d10926e339f67801e979a4afc70b24c31f3856fd"
+    },
+    "src/hangma_bot/hangma/route_frontier.py": {
+      "bytes": 11581,
+      "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+    },
+    "src/hangma_bot/hangma/route_hu_witness.py": {
+      "bytes": 8183,
+      "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+    },
+    "src/hangma_bot/hangma/route_structure.py": {
+      "bytes": 10649,
+      "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+    },
+    "src/hangma_bot/hangma/route_transition.py": {
+      "bytes": 72490,
+      "sha256": "42a3e6acd01bdadc138388e3b11d0f79d7f442f63c56f3de60d2d173a672fc17"
+    },
+    "src/hangma_bot/hangma/settlement.py": {
+      "bytes": 10643,
+      "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+    },
+    "src/hangma_bot/hangma/special_rules.py": {
+      "bytes": 11609,
+      "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+    },
+    "src/hangma_bot/hangma/value_analysis.py": {
+      "bytes": 18251,
+      "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+    },
+    "src/hangma_bot/kernel/actions.py": {
+      "bytes": 10754,
+      "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+    },
+    "src/hangma_bot/kernel/config.py": {
+      "bytes": 3236,
+      "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+    },
+    "src/hangma_bot/kernel/identity.py": {
+      "bytes": 3520,
+      "sha256": "1e8a12c2394b9bd2370027d1d7e04c1b29e9bcad0764302f3047ac84aca06640"
+    },
+    "src/hangma_bot/kernel/observation.py": {
+      "bytes": 17784,
+      "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+    },
+    "src/hangma_bot/kernel/outcomes.py": {
+      "bytes": 8643,
+      "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+    },
+    "src/hangma_bot/kernel/serialization.py": {
+      "bytes": 27049,
+      "sha256": "85d4a98d9c735090670110376f7bba6066710909fd7f8dcf95fcd45dac3ce56e"
+    },
+    "src/hangma_bot/offline/evaluate.py": {
+      "bytes": 88427,
+      "sha256": "ba49be2eb653aac1edfc43e00d30f0eff24798b9b120d6d2b7aa39f9ff49a376"
+    },
+    "src/hangma_bot/offline/evaluation_results.py": {
+      "bytes": 32657,
+      "sha256": "2ea2d68f158f054f283f98a319143d52d61b57cfdf79bc532235645069c54da7"
+    },
+    "src/hangma_bot/offline/evaluation_statistics.py": {
+      "bytes": 22675,
+      "sha256": "8f357bac85774cff75eb3d9f8f669aee58398dae7fbb1e49c87be2b598ea4491"
+    },
+    "src/hangma_bot/offline/qualifier_opponents.py": {
+      "bytes": 8124,
+      "sha256": "4ba661c94bbb20fe03b110acf049724c36c958980233268278e5900cb6776d7d"
+    },
+    "src/hangma_bot/offline/scoring_input_capture.py": {
+      "bytes": 16172,
+      "sha256": "858c75e621ecf23913b8df0af58af197301e780b1f48c9d4304fe13ad0712e85"
+    },
+    "src/hangma_bot/offline/scoring_sources.py": {
+      "bytes": 9453,
+      "sha256": "da75c44b1919ccd9338ee0469391882be8aaaaeb079775223b5b43be5036d1e0"
+    },
+    "src/hangma_bot/offline/vip_eoh_generate.py": {
+      "bytes": 64915,
+      "sha256": "b0285471a99b9074a40acdc2ac90e8f12416f3aa906d60eae4ee9111d260fef9"
+    },
+    "src/hangma_bot/offline/vip_eoh_input_sources.py": {
+      "bytes": 32957,
+      "sha256": "4b85778bef99cd12f0b93bb53fe7c50513d653880b66725560e6c2dded5109c7"
+    },
+    "src/hangma_bot/offline/vip_eoh_probe.py": {
+      "bytes": 21103,
+      "sha256": "03c34f87aadac5a7a70f31d62206e633d7a9578404d0a033e3fcb1e63aac5488"
+    },
+    "src/hangma_bot/offline/vip_eoh_probe_v2.py": {
+      "bytes": 35624,
+      "sha256": "a7f506b487668bd34e3b2ed4979443a5486bcad2ac6a0d476bce5f6929f53033"
+    },
+    "src/hangma_bot/offline/vip_eoh_rebind.py": {
+      "bytes": 10083,
+      "sha256": "9745d98408420a910022dd2a234cda9f2f55a53e96bab3273e793bc622696d6b"
+    },
+    "src/hangma_bot/offline/vip_eoh_trace_repair.py": {
+      "bytes": 17236,
+      "sha256": "46c355392b8585b2845c018363dac791f356c6c5b4af56d9a62e963c91d7473c"
+    },
+    "src/hangma_bot/offline/vip_evaluation.py": {
+      "bytes": 14069,
+      "sha256": "4172d6f6aec859c6c71f04f42c0b4a3823510f04f136d85285cb93f40f99ae82"
+    },
+    "src/hangma_bot/offline/vip_heuristic_smoke.py": {
+      "bytes": 11065,
+      "sha256": "db07eca11efffba9e93129c24c07a66c9b849ef0675dbde4f55d020977bbc5a6"
+    },
+    "src/hangma_bot/offline/vip_route_development.py": {
+      "bytes": 56814,
+      "sha256": "43214d2051cf66194e27eb5c2ae60c9c0c7b8c5214a8812e72c07709fbeea4c9"
+    },
+    "src/hangma_bot/policy/action_value.py": {
+      "bytes": 45125,
+      "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+    },
+    "src/hangma_bot/policy/action_value_executor.py": {
+      "bytes": 105899,
+      "sha256": "d48720b07f84b466ce8d390dd3685fd5a68d6393296536fc826de0ad23a60f58"
+    },
+    "src/hangma_bot/policy/action_value_policy.py": {
+      "bytes": 26047,
+      "sha256": "8bbcdeb3fc968736f45f831a4c516e5375ef8e5dfe879aa4f696cf2b48d8982b"
+    },
+    "src/hangma_bot/policy/action_value_seeds.py": {
+      "bytes": 26114,
+      "sha256": "dc50f4e2127936368aed0282cce505d68dabf628904daae537928c78e387578a"
+    },
+    "src/hangma_bot/policy/claim_if_legal.py": {
+      "bytes": 4405,
+      "sha256": "acd4c887d59cd5f84e9ea2a6ab6c698278110623af0e2bb26a2f1b992d6a8f43"
+    },
+    "src/hangma_bot/policy/errors.py": {
+      "bytes": 372,
+      "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+    },
+    "src/hangma_bot/policy/evaluation.py": {
+      "bytes": 16532,
+      "sha256": "92f68d0f0eb384cff1444bdc84937fb93d90f398c9ac7b803e00f23d800d86e1"
+    },
+    "src/hangma_bot/policy/evaluation_v1.py": {
+      "bytes": 24085,
+      "sha256": "b3198fcfc030a235873f67051bdf859f04a97b3290c4bd6783e870b7d7330fe0"
+    },
+    "src/hangma_bot/policy/evaluation_v2.py": {
+      "bytes": 4586,
+      "sha256": "8df42443369cc6fa1702934660301f65991df509fa3e8d48823a206c5f4da830"
+    },
+    "src/hangma_bot/policy/heuristic_adapter.py": {
+      "bytes": 9462,
+      "sha256": "f033610a9581842b9ee56e5008bb5feade95d31e7f1f80a0d4bc0f2a2501db45"
+    },
+    "src/hangma_bot/policy/heuristic_v2.py": {
+      "bytes": 8660,
+      "sha256": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af"
+    },
+    "src/hangma_bot/policy/hu_upgrade.py": {
+      "bytes": 15927,
+      "sha256": "52e65eb5aa6b74880059bccea4b11be05516df4dc9e7bb3ead6c0df526322290"
+    },
+    "src/hangma_bot/policy/hu_upgrade_calibration.py": {
+      "bytes": 2481,
+      "sha256": "20fc79df1050144bcae69236a5d34656fa1afbbb11d8c86d80d3a5319733a8a4"
+    },
+    "src/hangma_bot/policy/interface.py": {
+      "bytes": 3546,
+      "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+    },
+    "src/hangma_bot/policy/legacy_pass.py": {
+      "bytes": 3137,
+      "sha256": "0345d91ebc567b1d00b93fe91735f2bb3b7fed1dd99fa3470a182e76344657ba"
+    },
+    "src/hangma_bot/policy/r18_integrated_positive_v1.py": {
+      "bytes": 45369,
+      "sha256": "df6ab003754ecc275cb61ed1ffabc629c2270f1320d203486de4e86d196e4245"
+    },
+    "src/hangma_bot/policy/r18_integrated_positive_v2.py": {
+      "bytes": 55990,
+      "sha256": "e18eaecb63ced3501b71e23aafd336491c7b1fd08dc4bcc2ac4396650a86a8d0"
+    },
+    "src/hangma_bot/policy/research_candidates.py": {
+      "bytes": 33795,
+      "sha256": "a3002d22c027e2e96d92f24cce3a0581e2c81ca61f340919b9f28542e6f243eb"
+    },
+    "src/hangma_bot/policy/route_heuristic_view.py": {
+      "bytes": 27957,
+      "sha256": "82555e304073755ff9f2758de0c470e3595e96ceeb2497897a7b846d75f121d1"
+    },
+    "src/hangma_bot/policy/route_vip_heuristic.py": {
+      "bytes": 34849,
+      "sha256": "1948b15d063bbd7194b83077d2f6284406e2bd8387aa95d6231767387f3cfdce"
+    },
+    "src/hangma_bot/policy/safe_fallback.py": {
+      "bytes": 2352,
+      "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+    },
+    "src/hangma_bot/policy/v2_hu_upgrade.py": {
+      "bytes": 1490,
+      "sha256": "5eb8bea746ea00e153f1191d2c7b5340621b6ee827e0769a8cda24dd830502f7"
+    },
+    "src/hangma_bot/policy/value_one_draw.py": {
+      "bytes": 11147,
+      "sha256": "dd22ec5dc27c8b16fdf539bff833a42c7fc9e08973337387011da4939126c612"
+    },
+    "src/hangma_bot/policy/weighted_heuristic.py": {
+      "bytes": 6432,
+      "sha256": "3228a68f544466d16bf5ab926fbb3a3ec7960509aed70bf56571f33d1af08bc5"
+    },
+    "src/hangma_bot/policy/weights.py": {
+      "bytes": 1648,
+      "sha256": "385ecefe548eea7c4490e4efa2aa54d0c7a49911a729edcd06d1a5438c804b3f"
+    },
+    "src/hangma_bot/policy/weights_v1.py": {
+      "bytes": 2987,
+      "sha256": "6dc4f4bf263ce055d0c450e914b556ab5323ecf3290cf104c06d9547aeed0f77"
+    },
+    "src/hangma_bot/simulation/__init__.py": {
+      "bytes": 1236,
+      "sha256": "9940e70b041e4729b56d825b8f85abec12594cf25a84b8672a927ce20b29e844"
+    },
+    "src/hangma_bot/simulation/artifacts.py": {
+      "bytes": 3264,
+      "sha256": "0176f939b276e9ee22c9e72e42939d1e04b2c35aa5c6273d43dab731324e4a32"
+    },
+    "src/hangma_bot/simulation/engine.py": {
+      "bytes": 44570,
+      "sha256": "c32e7d589765c7a973a72be534fdaadf21f8c4bd91c404d471189d49cbbf6b27"
+    },
+    "src/hangma_bot/simulation/identity.py": {
+      "bytes": 1371,
+      "sha256": "8087385814bdb604ea92fcd757e111f430c3d0a53a1bd08ddedfee35efe0e58e"
+    },
+    "src/hangma_bot/simulation/interface.py": {
+      "bytes": 5426,
+      "sha256": "7f1262c0cd75249627eaf8031a410fbff2262940ef7a9923f1b8c18721b76d6f"
+    },
+    "src/hangma_bot/simulation/projection.py": {
+      "bytes": 6026,
+      "sha256": "1d729c3e0be45ff8f137c85b906b4d7e2454dd6627cde5db9f5bf1915cf58490"
+    },
+    "src/hangma_bot/simulation/shuffle.py": {
+      "bytes": 7411,
+      "sha256": "5e8597e06dc7d94e8aa2825f066df5faef47c2298b1c1919bccbf2a7756f91f5"
+    },
+    "src/hangma_bot/simulation/state.py": {
+      "bytes": 3309,
+      "sha256": "c57f0a3f5ff42736d3b1514c44527c77382e79b1fe8feeef6c571fea4d154556"
+    }
+  },
+  "source_selected_after_known_results": true,
+  "status": "prepared_not_started",
+  "steps_per_continuation": 5000,
+  "targets": [
+    {
+      "forced_first": "hu",
+      "name": "early_four_white_current_hu",
+      "original_first": "discard:6w",
+      "reason": "当前两番可胡；只改为立即兑现，随后固定C，检验等待到四番的条件代价",
+      "trigger_seq": 761
+    },
+    {
+      "forced_first": "discard:8w",
+      "name": "later_four_white_continue",
+      "original_first": "hu",
+      "reason": "当前四番立即胡；仅改为原C最高非胡合法动作，随后固定C，不强制多手等待或财飘",
+      "trigger_seq": 785
+    }
+  ],
+  "wall_seconds": 1800
+}

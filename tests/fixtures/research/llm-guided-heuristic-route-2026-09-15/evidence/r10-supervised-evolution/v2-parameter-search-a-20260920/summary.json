@@ -1,0 +1,60 @@
+{
+  "status": "COMPLETE_PHASE_A_DEVELOPMENT_RANKING",
+  "configurations": 24,
+  "roots_per_configuration": 16,
+  "candidate_tables": 3072,
+  "baseline_tables": 128,
+  "full_tables": 3200,
+  "selected_for_b": [
+    "v2_joint_02",
+    "v2_joint_14",
+    "v2_joint_03",
+    "v2_joint_06",
+    "v2_joint_07",
+    "v2_joint_17",
+    "v2_joint_10",
+    "v2_joint_22"
+  ],
+  "leader": {
+    "config_id": "v2_joint_02",
+    "candidate_id": "offline-v2-joint-v1:9cd3826adffe0d18f138e04db9dd3c055828ec6aca6ad9b1877fc038da018d7d",
+    "design_weights_sha256": "df824f66478de4b5479c582344506aef07bf95670b8b41a33ffe676486506ddf",
+    "policy_weights_sha256": "9cd3826adffe0d18f138e04db9dd3c055828ec6aca6ad9b1877fc038da018d7d",
+    "fitness_mean_delta_low": 0.09375,
+    "mean_delta": 0.09375,
+    "mean_delta_high": 0.09375,
+    "H": {
+      "n_roots": 8,
+      "mean_delta": 0.125,
+      "standard_error": 0.0944911182523068,
+      "interval_95": [
+        -0.06019918863343665,
+        0.31019918863343665
+      ]
+    },
+    "M": {
+      "n_roots": 8,
+      "mean_delta": 0.0625,
+      "standard_error": 0.07834789631600109,
+      "interval_95": [
+        -0.09105905504384051,
+        0.21605905504384051
+      ]
+    },
+    "normalized_l1_from_default": 0.26666666666666666
+  },
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 3200.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "按phase-b-freeze补H/M各8根；阶段A排名仅分配预算"
+}

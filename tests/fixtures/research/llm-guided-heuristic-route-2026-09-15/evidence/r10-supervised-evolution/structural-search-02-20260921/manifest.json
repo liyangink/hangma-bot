@@ -1,0 +1,173 @@
+{
+  "schema": "r10-structural-author-batch/2",
+  "target_model": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3"
+  },
+  "expected_request_config": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3",
+    "reasoningEffort": "high",
+    "maxTokens": 32768
+  },
+  "tasks": [
+    {
+      "task_id": "T1",
+      "name": "relative-followup-margin",
+      "primary_parent": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "companion_parent": null,
+      "contract_identity": "004e3deb9b5f7a7ad4f831282d58c39feff23dbd506419e9a1f717dbca30583f",
+      "focus": {
+        "schema": "sitin-action-value-card/1",
+        "objective": "把绝对后续向听加分改成同窗可比动作之间的相对后续优势结构。",
+        "change_point": "现父代对每个有分支动作独立加4*(1-best_shanten)，即使窗口没有可比的第二个分支动作也平移分数。设计一个只在证据可比较时触发的相对、归一化或门控结构；不得读取H/M标签，不得把support当概率。",
+        "input_groups": [
+          "actions",
+          "actions[]",
+          "actions[].useful_tiles",
+          "actions[].followup_branches",
+          "visible_state",
+          "visible_state.rule_state",
+          "competition",
+          "analysis_profile"
+        ],
+        "budget_note": "首答计费；不得依据模型自报结果选留。",
+        "examples": "output",
+        "gate": "none",
+        "guard": "full",
+        "input_overview": "none",
+        "rules": "compact",
+        "guard_reference": false
+      },
+      "prompt_sha256": "52ea11b64bef3bdf982e2828f160769ade7b461dc533c80f5dc7cdd74610e7f6",
+      "prompt_chars": 40222
+    },
+    {
+      "task_id": "T2",
+      "name": "selective-followup-trigger",
+      "primary_parent": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "companion_parent": null,
+      "contract_identity": "1d9eb02e4338926978bbd5ed42bb95529c2034d9608b6c37e37ffecb59a2a268",
+      "focus": {
+        "schema": "sitin-action-value-card/1",
+        "objective": "在不按对手族分支的前提下，为后续价值设计可审计的选择性触发。",
+        "change_point": "父代对所有携带followup_branches的动作采用同一公式，跨新来源信号为正但M族保守差为0。根据动作类型、直接牌效是否可比、分支信息完整度或同窗差距选择一个主门控；不得同时堆叠多套奖励，也不得针对H/M写运行时条件。",
+        "input_groups": [
+          "actions",
+          "actions[]",
+          "actions[].useful_tiles",
+          "actions[].followup_branches",
+          "actions[].family_progress_entries",
+          "visible_state",
+          "visible_state.rule_state",
+          "competition",
+          "analysis_profile"
+        ],
+        "budget_note": "首答计费；不得依据模型自报结果选留。",
+        "examples": "output",
+        "gate": "none",
+        "guard": "full",
+        "input_overview": "none",
+        "rules": "compact",
+        "guard_reference": false
+      },
+      "prompt_sha256": "ad70dd3fafcbfafb4e1cf51cbce3832e22715fefd039ea474949cba73866b718",
+      "prompt_chars": 41019
+    },
+    {
+      "task_id": "T3",
+      "name": "settlement-route-witness",
+      "primary_parent": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "companion_parent": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "contract_identity": "70f2c5e06e3d372b0f4503753e723ac591f9c69824ed4b9307ac0bdb31b1b766",
+      "focus": {
+        "schema": "sitin-action-value-card/1",
+        "objective": "探索与分支向听不同的、基于已生产结算或路线见证的有界价值结构。",
+        "change_point": "首批证明后续分支方向有弱正信号但未分辨；本题从V2重新出发，只选择immediate_settlement、routes或conditional_settlement中的一个主见证结构。结算是条件见证，不是发生概率或期望；不能把它与S3项直接相加。",
+        "input_groups": [
+          "actions",
+          "actions[]",
+          "actions[].immediate_settlement",
+          "actions[].routes",
+          "actions[].routes[].useful_tiles",
+          "actions[].routes[].conditions",
+          "actions[].routes[].conditional_settlement",
+          "actions[].followup_branches",
+          "visible_state",
+          "visible_state.rule_state",
+          "competition",
+          "analysis_profile"
+        ],
+        "budget_note": "首答计费；不得依据模型自报结果选留。",
+        "examples": "output",
+        "gate": "none",
+        "guard": "full",
+        "input_overview": "contract",
+        "rules": "compact",
+        "guard_reference": false
+      },
+      "prompt_sha256": "ad320028e36b69b5a5058ad3356517867f3dc9af03c906f99f497ef1271cd569",
+      "prompt_chars": 55337
+    },
+    {
+      "task_id": "T4",
+      "name": "followup-simplification",
+      "primary_parent": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "companion_parent": null,
+      "contract_identity": "a52bc197b7681d3b379d4045c042ef2414603feb28f768414ceff8975e3408b7",
+      "focus": {
+        "schema": "sitin-action-value-card/1",
+        "objective": "简化首批冠军，删除未产生可辨行为的参数和绝对尺度依赖。",
+        "change_point": "s3-cfg-02的FBV_SUPPORT=0，FBV_SUPPORT_CAP不影响可执行分数；cfg-02与cfg-04在226视图上首选签名相同。至少删除这些无贡献自由度，并把主结构改成更短的序数、分层或打破平分机制；不能只交同一公式的新常数。",
+        "input_groups": [
+          "actions",
+          "actions[]",
+          "actions[].useful_tiles",
+          "actions[].followup_branches",
+          "visible_state",
+          "visible_state.rule_state",
+          "competition",
+          "analysis_profile"
+        ],
+        "budget_note": "首答计费；不得依据模型自报结果选留。",
+        "examples": "output",
+        "gate": "none",
+        "guard": "full",
+        "input_overview": "none",
+        "rules": "compact",
+        "guard_reference": false
+      },
+      "prompt_sha256": "c23dab14b26a5324485bbf6c1e8c9047fc9500e5020b990b9bff66b397335e69",
+      "prompt_chars": 40243
+    }
+  ],
+  "parent_registry": {
+    "s3": {
+      "name": "s3",
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-01-20260921/behavior-preflight-v2/configurations/s3-cfg-02/candidate.py",
+      "identity": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "candidate_id": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+      "thought": "默认V2骨架加唯一主结构：只读followup_branches最佳combined_shanten的有界后续价值项。",
+      "code_sha256": "984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41"
+    },
+    "v2": {
+      "name": "v2",
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "identity": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "candidate_id": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "thought": "默认V2基础排序、胡排序层与严格未知锚定的可审计种子。",
+      "code_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f"
+    },
+    "pattern": {
+      "name": "pattern",
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/pattern-option-20260920/pattern-option-terra-max/run/iterations/iter-01/generation/candidate.py",
+      "identity": "756233cb62cc7759b9a6facea209420e36de0b1e2bb90a16203c9e9351795f31",
+      "candidate_id": "756233cb62cc7759b9a6facea209420e36de0b1e2bb90a16203c9e9351795f31",
+      "thought": "普通型与七对的可见选项结构研究父代；只作重组材料，不继承效果结论。",
+      "code_sha256": "756233cb62cc7759b9a6facea209420e36de0b1e2bb90a16203c9e9351795f31"
+    }
+  },
+  "feedback_source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-01-20260921/new-source-01/summary.json",
+  "effect_evaluation_started": false,
+  "confirmation_reserved": 0
+}

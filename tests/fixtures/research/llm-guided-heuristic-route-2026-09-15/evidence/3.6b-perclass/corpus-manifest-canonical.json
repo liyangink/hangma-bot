@@ -1,0 +1,700 @@
+{
+  "schema": "sitin-corpus-manifest/1",
+  "panel_id": "panel-canonical-20260910",
+  "record_layer": "filled",
+  "record_layer_filled": true,
+  "record_layer_source": "src/hangma_bot/adapters/recording/chain_piao.py:normalize_decision_input_payload（单一来源；本清单不复制推导）",
+  "generator": "review/llm-guided-heuristic-route-2026-09-15/evidence/3.6b-perclass/build_canonical_manifest.py",
+  "frozen_before_run": true,
+  "selection_rule": "glob artifacts/sessions/*/postgame/*/derived/*/decisions.jsonl（路径字典序）；纳入判据 = 该文件每一行的 request.observation 都带 chain_piao 键；不抽样、不截断，纳入文件全部行进入统计；判据只看记录形态。与 3.6d 冻结清单逐份交叉核对（不一致即报错退出）。",
+  "rows": 359262,
+  "excluded_rows": 6775,
+  "excluded_ratio": 0.0185,
+  "family_rows": 366037,
+  "family_files": 112,
+  "cross_package": {
+    "peer_manifest": "evidence/3.6d-corpus/raw/newbaseline-files.txt",
+    "peer_excluded_rows": 6775,
+    "peer_excluded_ratio": 0.0185,
+    "agree_on_excluded_rows": true,
+    "note": "排除账由本脚本按**整文件行数**重算；与 3.6d 的 excluded_rows 对拍一致，不一致时本脚本会打印差异而不是静默通过。"
+  },
+  "files": [
+    {
+      "path": "artifacts/sessions/adapter-acceptance-20260909-d37d2250de96/postgame/20260909T090140Z-349b0c8b/derived/17e2bc9a0324412fafdbda822ab8797b/decisions.jsonl",
+      "bytes": 67579615,
+      "rows": 2756,
+      "sha256": "e75c61d330e59cf6dbc3291da595a3879a94f6c4404b60608c9abcad7b45e53d"
+    },
+    {
+      "path": "artifacts/sessions/adapter-confirm-20260909-d37d2250de96/postgame/20260909T090929Z-41823a54/derived/de603850c1cd41e68c9d77f274ec26a2/decisions.jsonl",
+      "bytes": 66217006,
+      "rows": 2844,
+      "sha256": "9edcf8e88c5c25d1b2f5f9508ed7a9a3c518f6b02c4693e595477b0de5e6a439"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_014aab011c14/postgame/20260908T143632Z-08e9883f/derived/7b74eba3c5c74237b6da0c03f224e4fa/decisions.jsonl",
+      "bytes": 47392502,
+      "rows": 2935,
+      "sha256": "f9a932582a6c4de90e32609f6c811d5b0b9ac1fd4f69ab7fa27b476e2a3ccefa"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_0534484863f3/postgame/20260910T015846Z-6ad9576e/derived/70aabae4928742e8aee46e3a2872b102/decisions.jsonl",
+      "bytes": 87920508,
+      "rows": 3464,
+      "sha256": "5edef1f0a581163aa5a6ea79cf4697508ff30b2b6e7a68b9cb167d65d3e800c1"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_06fcf39d8ef7/postgame/20260908T143643Z-74875423/derived/0f2c21331a9a4d74b6699a39c96f1146/decisions.jsonl",
+      "bytes": 55384043,
+      "rows": 3372,
+      "sha256": "6547d23277718448840352e0feab9709d2cf3f011fa4badd52dcd4f133dc3369"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_097edb17d2c7/postgame/20260910T015904Z-8fd80546/derived/65fa040dae934b3d8050d8a4bf2de398/decisions.jsonl",
+      "bytes": 92745056,
+      "rows": 3477,
+      "sha256": "b3727f8c0eae091e3154a5dcbe0075faa2b3b59902e7192f12a7d30198e3e3d2"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_0c8a9bd9e09e/postgame/20260908T143655Z-fcf1e301/derived/91321933adf44dd8bd37c29d210c607a/decisions.jsonl",
+      "bytes": 54983442,
+      "rows": 3178,
+      "sha256": "6d888b0e557a1a39b940daf1da669dffcf975e0130d0b8a860b876728d0546cb"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_0fdaf1be70c0/postgame/20260910T015923Z-1a2036b6/derived/2888b2c6ae144045aeed05c19c68e4c2/decisions.jsonl",
+      "bytes": 97329065,
+      "rows": 3565,
+      "sha256": "ec9ec32f21080e43165b01714b513d62f179ff61436caef64ebe0de6c8d3a88e"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_10fa4a6f7bc7/postgame/20260910T015943Z-dfd796e4/derived/a6ee9d9529284baab49aa36fbc91bf67/decisions.jsonl",
+      "bytes": 81355855,
+      "rows": 3346,
+      "sha256": "5b8b039afd17a889d369ca9ec2b2ad5fc5664c2239b2449eb077963aabd5d3c1"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_1515a95f670b/postgame/20260908T143730Z-fab88333/derived/81ff2ef9417143c2bdd53a3107afdbfc/decisions.jsonl",
+      "bytes": 58326650,
+      "rows": 3591,
+      "sha256": "c1b941f713c3b1cf79e0438a4bbc622b4c5f211fac3b06286f683388b89e2638"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_1a3803f0269d/postgame/20260910T020000Z-0a60f3f4/derived/b306972396f940189f0fcdb79e37cbe1/decisions.jsonl",
+      "bytes": 70801387,
+      "rows": 2999,
+      "sha256": "1df98076a0bce3fa9ee4e572c4a950989c90d2bef2ad39ed760fbbb404c32de5"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_1da79ad74063/postgame/20260910T020015Z-69b438da/derived/d973fde765ad4c55b602a296a45553da/decisions.jsonl",
+      "bytes": 86799404,
+      "rows": 3431,
+      "sha256": "1955c141b35c77760e48e0751efce3a95908cb894ce33c0bf757af264538c1d5"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_22fa52669b39/postgame/20260908T143744Z-78c20e32/derived/f15a87449c8a4f03a5c99de19ce74a2f/decisions.jsonl",
+      "bytes": 70833339,
+      "rows": 3750,
+      "sha256": "9e68d6adaeb2e0977ac9b50243cb39b13cadd2801937e6d9631e1621c13ec5d7"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_23dcf81b6808/postgame/20260910T020033Z-c56a93c9/derived/22b4bfbbba2a4abfadb02ccb9191f532/decisions.jsonl",
+      "bytes": 106847120,
+      "rows": 3832,
+      "sha256": "df9e7948f5b531d195b529e9d5c6ca828b982673b027debf7f234de834a59a65"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_2495e0fda3b7/postgame/20260908T143830Z-e31c3568/derived/0f17a82fee8043ba80c2eb3e7f681c15/decisions.jsonl",
+      "bytes": 57816108,
+      "rows": 3672,
+      "sha256": "0a8b4096760b22b102019b589939d4005040bc66437519f6777dc69154b15e60"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_2610609fa425/postgame/20260910T020112Z-1286754f/derived/42511a85b4bb4869a30aa048cb59d7bd/decisions.jsonl",
+      "bytes": 77220224,
+      "rows": 3060,
+      "sha256": "b85b96cb2ac6f85de48c2a7716004d1c351ab6b3792b5f4fdf014a9dabc19207"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_28f1e529ff07/postgame/20260910T020128Z-5b890b89/derived/0776e4dfa3c34069b2c40ea7ccc6a24b/decisions.jsonl",
+      "bytes": 67916699,
+      "rows": 2841,
+      "sha256": "aa298fe161248780f8e20f157b1888fbfec9fb9d6f44d52d8ae962c7970903ba"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_2a2325f65163/postgame/20260908T143844Z-5172529c/derived/d83655f333ef45ac9a5bda9b8c362407/decisions.jsonl",
+      "bytes": 56383550,
+      "rows": 3498,
+      "sha256": "bc23d9a99a4083f3ec90653003002d1ef1c445712283af3be6b62ce1cf94ed4a"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_2b57c14757df/postgame/20260908T143858Z-6a2464e4/derived/d814ef01463e4ad3ae6e24d64b2c88d0/decisions.jsonl",
+      "bytes": 48500383,
+      "rows": 2940,
+      "sha256": "50dc0f56f88ffa559821a7741f30149b3921d42c2849411e3d3c24e8a43162ac"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_2e00f34ba4f4/postgame/20260910T020143Z-a1e37bbb/derived/5a812915e1e44d67807cd26f24985cc3/decisions.jsonl",
+      "bytes": 90406380,
+      "rows": 3468,
+      "sha256": "f9e62b401dc78014905d0131af7d5dc8f81ced641da159efbcc6b43936a7e24d"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_2e25b63381cf/postgame/20260908T143910Z-1ae541f5/derived/9f18b1f4e81c42d288a29f3ecc524553/decisions.jsonl",
+      "bytes": 63945852,
+      "rows": 3703,
+      "sha256": "649138cd4ec1b88d71aacf65fabc89073314dd5d016b738f3128598f439d803e"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_2e49c34ad2ba/postgame/20260908T143924Z-1398c47f/derived/6cc72896da0c40e08a070996a2de2e67/decisions.jsonl",
+      "bytes": 52895311,
+      "rows": 3311,
+      "sha256": "20041fb82daa9aa0daad7335f94a31ef888f50eb4edc8dd90f82672fef39d359"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_301f448fd10a/postgame/20260908T143937Z-39fec2fc/derived/6687507548034feda0217422ef35683d/decisions.jsonl",
+      "bytes": 47523249,
+      "rows": 3325,
+      "sha256": "4847e05266ef246f8458e468b931bd95aa995417f1034b910d6d47bc4f5f0bfb"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_3152990a75b5/postgame/20260908T143950Z-c7c1b23f/derived/0b66417481c442d78e1862ab7b943c09/decisions.jsonl",
+      "bytes": 56465942,
+      "rows": 3566,
+      "sha256": "8f9500fb87b76dffb9f29d97982c782707144b5597a3231a6ad4f74873cfc0fc"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_331e368b65bf/postgame/20260910T020202Z-61fdd427/derived/c949907f4ede414d9709e359e14f5f8a/decisions.jsonl",
+      "bytes": 94716881,
+      "rows": 3553,
+      "sha256": "e5fc9087880fe9f6b00ad7939a9a811e724918caa11846eee3e1ddb418ca241f"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_38edd200c577/postgame/20260910T020222Z-babb54c7/derived/f3f6c836b6144ef5bce96b28b980fff7/decisions.jsonl",
+      "bytes": 77336680,
+      "rows": 3118,
+      "sha256": "2fc2e8ebc801c6b975f6a0a557f8c0e7479cbcd988ec113912d76c53b731ccb8"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_3a632d7f4138/postgame/20260910T020238Z-07fa5799/derived/769d0ec83cfd4ba39c57e2d6b29c0ca8/decisions.jsonl",
+      "bytes": 84565038,
+      "rows": 3355,
+      "sha256": "15f6e5c37eb65b602dfbf923a50d8f1a115a91e1cda3947fa2059af1f826b195"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_3ae605bc0a75/postgame/20260910T020255Z-92e8afcf/derived/e2749e088c60441c90794ed635e75a11/decisions.jsonl",
+      "bytes": 99093517,
+      "rows": 3745,
+      "sha256": "bd516e6ea0f7146f9e4b38b08193146e8a7b606e4094e1b1b65ecef4869ed4e6"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_3e55dbbc2fac/postgame/20260910T020316Z-37ccd374/derived/2cc110f31dc94bf5ba33b0de1be0481a/decisions.jsonl",
+      "bytes": 72109528,
+      "rows": 3084,
+      "sha256": "a926cdefa80f17a6cf87bec2532330c4c2c3349056c6cb30404bdabfc7d24c50"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_3eb17fcc2773/postgame/20260908T144040Z-0e812bea/derived/e5076dcc0bc14f7ca5cc4dd476af08c9/decisions.jsonl",
+      "bytes": 48250080,
+      "rows": 3226,
+      "sha256": "05a922daae8921f7dad10b16c03a9af97a0d13539fa413b8446da9cdd816d498"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_3f4a252ff898/postgame/20260910T020332Z-00fb157c/derived/31167a9782e84c0ba55f055e47bda9a2/decisions.jsonl",
+      "bytes": 86375275,
+      "rows": 3331,
+      "sha256": "3a12495d4a637e6a84b49060ba2ee0288e714c768cc7d56a1317d0ed971cb0c2"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_44a77f44f41b/postgame/20260910T020350Z-fc709023/derived/4c7aa35937f447b09a369ac038db7307/decisions.jsonl",
+      "bytes": 78204620,
+      "rows": 3243,
+      "sha256": "bc10a766a4ef2a752181afd5b366c08f4eefa9f6a6078ef1413e296339d0e131"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_47f6f1c86c8c/postgame/20260910T020407Z-b777aa82/derived/7e224cfc35e34f50a8f2c6a38ab2915b/decisions.jsonl",
+      "bytes": 94507346,
+      "rows": 3570,
+      "sha256": "d65f2f58b298684106ceacd72447c0c0f92cbff19c409e0904e727c5d570d5f6"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_494bc23524c9/postgame/20260908T144052Z-a656122c/derived/e66ad9823a684f5296e9806d58d2a2b4/decisions.jsonl",
+      "bytes": 47847223,
+      "rows": 3202,
+      "sha256": "6e0d0e46ae724a914bf2be6f262debbeb483f3b6fb99f59a0465c80380873609"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_503c819b12f8/postgame/20260910T020425Z-7705de27/derived/b044bbcdcb5d45f0a2c419a576af2b8f/decisions.jsonl",
+      "bytes": 76027288,
+      "rows": 2977,
+      "sha256": "1ebace12dc42746a27b1ef9cdb86d40ba7b62018e9cf6fb3b04ef3f680cb826d"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_506c1697c531/postgame/20260908T144104Z-31ded83f/derived/1b07b95a02514a11a224a1fcb66512ad/decisions.jsonl",
+      "bytes": 52356732,
+      "rows": 3339,
+      "sha256": "2e13e73832c93860ff61185cd29428448d7fc12fbb5797fb93cc4f995bbd6e68"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_5437e0f38143/postgame/20260910T020441Z-85d7ac97/derived/095d1b567a2d461cae6c0a55bdb45090/decisions.jsonl",
+      "bytes": 78837371,
+      "rows": 3208,
+      "sha256": "b2f7ffee5ab316ae48ee9ce81f06992268ce959f8f9fe3e765512c9cb3cec81d"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_54ecb8a94693/postgame/20260908T144144Z-6b4c160a/derived/c0626c9d51ab4ec1b9458d2c27f8968f/decisions.jsonl",
+      "bytes": 46047672,
+      "rows": 2907,
+      "sha256": "aafb8d632ae6894b9c2b456efae57e34f6cdc89c29c50c638ba6990b85ee4775"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_56aad1309f00/postgame/20260910T020458Z-7cb78ac2/derived/1636a5ba396c40938f4d542ed34f5651/decisions.jsonl",
+      "bytes": 83166228,
+      "rows": 3307,
+      "sha256": "b54278da1bd704f88c86fdbcc76e88c0a59fd2d444fcd3edb3159572e5af37aa"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_5710ed69b1f2/postgame/20260908T144155Z-19bbc017/derived/138a8942f1ef46f1a59e45774089bd02/decisions.jsonl",
+      "bytes": 54677858,
+      "rows": 3403,
+      "sha256": "7973eb05826f705f63aedcbabc12fc48ee7e860612d593c83aaa9117af64d433"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_5bcbe61fc99b/postgame/20260908T144207Z-4c5d8fe3/derived/d42e8e83ad94449bbb7ae96ed3386a60/decisions.jsonl",
+      "bytes": 46427959,
+      "rows": 3248,
+      "sha256": "c720cbe7ca0bcab714b80bc343b45c8ec7f0343d1c0c5983c830b65308a06020"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_5f0f5a01d79c/postgame/20260908T144219Z-9269b115/derived/b3888d07fdc4459bbac0382c03c2f068/decisions.jsonl",
+      "bytes": 57671093,
+      "rows": 3320,
+      "sha256": "f9f346efd202a8e838cf4566d44e0ed389d7c285032a3fa2d65c5e99899bdec3"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_61b4af68d574/postgame/20260910T020516Z-ea8f3f1d/derived/1b635074647b4bd8bb5286179cb40d55/decisions.jsonl",
+      "bytes": 82297381,
+      "rows": 3327,
+      "sha256": "c65242de8bbcd5eff27f784572543227f105ea4c459bf8c8bac39c18612beb79"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_632c4abe5dd0/postgame/20260910T020532Z-0209f3b5/derived/ed5239ee667e403ebb6917e1ac8c5635/decisions.jsonl",
+      "bytes": 143616055,
+      "rows": 4194,
+      "sha256": "d11ca761b5c931e892a129ebc42186f0b744e17428b32eb4d342626b4174c924"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_65c74e043ed5/postgame/20260908T144256Z-18e05486/derived/59c80a30322d40878e9cd48d8253d37a/decisions.jsonl",
+      "bytes": 55845808,
+      "rows": 3425,
+      "sha256": "d09b3f71974ec6fbe92c7d8b14d8f03b0db5c0d350789bbbb870b149df6bac4a"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_699dd2c3a335/postgame/20260910T020559Z-0d1bd5a8/derived/6b30070fad0b4e469f3609214debdd42/decisions.jsonl",
+      "bytes": 92108489,
+      "rows": 3470,
+      "sha256": "acb0ebae2597106560d31756628abbfcad5d0e070bd8ff9be73fe5a457760fba"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_6bd823fc65bd/postgame/20260910T020618Z-9338e330/derived/8a82888a457b4612bae7594271a4dafc/decisions.jsonl",
+      "bytes": 73638367,
+      "rows": 2932,
+      "sha256": "afc2a6577b22dcf76e4fbf984c237bfb5a8385c47a4943b36de490c4fa1e4d8c"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_6c280fd4e25b/postgame/20260910T020633Z-410b1fb4/derived/b880fbbddaeb4e188e9c4cdd6db69fd8/decisions.jsonl",
+      "bytes": 85388241,
+      "rows": 3394,
+      "sha256": "1ceea78e0ff5547efac6b377e3ef164445f2146d8e0d6c5701c840e6bbdc8af7"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_6cf0cd6067ff/postgame/20260908T144309Z-5810bd64/derived/ef1c88de2a8c49519b9bbff51dc37bb0/decisions.jsonl",
+      "bytes": 51153341,
+      "rows": 3098,
+      "sha256": "0a50f3ecbe36110cead232ac4b12bcf48046c45ca82a70a81d517f4839b62ac8"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_6dd08b996920/postgame/20260910T020650Z-4473cf34/derived/5f8a18f4d584440289ebd95791f3d239/decisions.jsonl",
+      "bytes": 83312611,
+      "rows": 3261,
+      "sha256": "4c7140551ad6294e5acf5072016566f4fcbe38862c68fca79f6bdf9fa932d07c"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_74567b6d4a3b/postgame/20260910T020708Z-bc1bd9c1/derived/8bcecf1ce4074c8c9e347e1f91e4e323/decisions.jsonl",
+      "bytes": 70980582,
+      "rows": 2934,
+      "sha256": "11027676dc781f6c75d9325e8453b39f49b14e9eb8d2a1b808620eb5d5b22f45"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_84ff25b863a1/postgame/20260910T020723Z-0a0a47b1/derived/d6f02f4113e1464a8e40ac1781a595b8/decisions.jsonl",
+      "bytes": 79140374,
+      "rows": 3221,
+      "sha256": "cd9de0d896cb5d469d50fa59cd7b78c014dd61cd0fdfcc0754b6a83c2287cb68"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_85a614df4ed6/postgame/20260908T144320Z-ee8b873a/derived/fcceec8d80974042bbbf0b3f201c7f92/decisions.jsonl",
+      "bytes": 65827637,
+      "rows": 3602,
+      "sha256": "89769acde296cd9c80ebab97de9e0e4d45f051604e02ddb447dc6f7bf650a78b"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_8620774a16e8/postgame/20260910T020739Z-a82df5ec/derived/18de578f15994a2eb36dd7b78b21d88b/decisions.jsonl",
+      "bytes": 76788480,
+      "rows": 3114,
+      "sha256": "ed653442354e7414ae6929252068e64ff5cd82d8570ee20ece76623e1ec117c9"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_890241a9a990/postgame/20260908T144358Z-e27fc080/derived/af2142308148490dae0ce392f0f8afd2/decisions.jsonl",
+      "bytes": 46729302,
+      "rows": 3204,
+      "sha256": "36494c6b6a2fbede5cf1a710ccd3e829ddad95ff449d3362b33e25e7e07461b2"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_9321db900414/postgame/20260908T144410Z-ff50c86f/derived/1345e5ffc5294f5aaa8cac5556e960ce/decisions.jsonl",
+      "bytes": 44541758,
+      "rows": 3260,
+      "sha256": "39f0b4d52366aa9556cee502c29ce6d515b0e3362e61afdbe19d3646569f7d44"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_96a3410c5ee7/postgame/20260908T144421Z-125fe046/derived/6fbe6c9cda3f4b948dfeef4bce6723ea/decisions.jsonl",
+      "bytes": 65987304,
+      "rows": 3733,
+      "sha256": "271efa932df0c0c6e610343599c83956413b887846c2483bf23cf0f47c80bf70"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_9b513817de19/postgame/20260910T020755Z-346a1cfb/derived/1e6832cd76fb468d88beb48697afa290/decisions.jsonl",
+      "bytes": 86621358,
+      "rows": 3541,
+      "sha256": "d895d644e075c448e1769d19f6fc8b552878ca97fdbf3c142a0c88815bdd8ca7"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_9ceaf4308aa8/postgame/20260908T144435Z-32f2eff7/derived/ffb6cc5f931c40948770a25ffd98468c/decisions.jsonl",
+      "bytes": 52324549,
+      "rows": 3223,
+      "sha256": "c2b16900f552199e146f1b859440709082caf1f954c6604fc023d2ee2ae0fca6"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_9d3d76a962c0/postgame/20260908T144507Z-700127de/derived/5bd057b5d5f14b469e18a0edf1047b0a/decisions.jsonl",
+      "bytes": 63314667,
+      "rows": 3953,
+      "sha256": "38144e2de5478892c3930b523a28dbd945d5d6f2d84cae9eaeadb886b4f94d57"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_9f7043655503/postgame/20260910T020813Z-a5c88ec0/derived/b54fd61425784d0cb40a4a9e4b7d5f60/decisions.jsonl",
+      "bytes": 81003142,
+      "rows": 2981,
+      "sha256": "eb0672cce4db2e08d564b1f6da9463060e86b9a646f5e0b260feb6db1471348b"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_9f9fe44ce27c/postgame/20260908T144544Z-c2f0479d/derived/a5d5171a97264e689c8d20b4549b4377/decisions.jsonl",
+      "bytes": 44474054,
+      "rows": 3085,
+      "sha256": "9060e8f0f2fa8233983cd7e191b9127263630048fe66a23243b8b2fbff8383d4"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_a0687ee6b813/postgame/20260910T020829Z-f76b5939/derived/f5bcb3b6593445fd9f9027c91afd06be/decisions.jsonl",
+      "bytes": 95436097,
+      "rows": 3685,
+      "sha256": "098b474a77132650dea907782e160972a411967586deb67a7b60dcb5fe3a88a4"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_a24582ede246/postgame/20260910T020848Z-61628e49/derived/f543d77638624654a28ecefeedd5a013/decisions.jsonl",
+      "bytes": 82798323,
+      "rows": 3169,
+      "sha256": "d90c961b79f891f4558ad22fec92e246cf33dd9e58f994e5190bfa96264f72bd"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_a7d63b5d886d/postgame/20260910T020905Z-f6f3b7ef/derived/8ba8415a8a844033a38ab9b7b831029d/decisions.jsonl",
+      "bytes": 72342542,
+      "rows": 2818,
+      "sha256": "54764fc85a1ff560a92c06bc077863cae7e43f308ee8711cf9e24c19080288e0"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_aaecd8dd4e30/postgame/20260910T020919Z-632e4ede/derived/35882071089d42aba231909e4d0b0252/decisions.jsonl",
+      "bytes": 92237805,
+      "rows": 3630,
+      "sha256": "6c08b538d3b84e1676cc3f77841f3dce38a70dd25c679d03ef7d049b2e3f4b30"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_acf100981ba2/postgame/20260908T144554Z-2ec8006a/derived/6c8fbcdcbeb14d809cf1122a34c592fa/decisions.jsonl",
+      "bytes": 54727409,
+      "rows": 3343,
+      "sha256": "4970706c2fdfe2ba28402bebf0b8830180f6297d34ad77fcbca992004d6f162f"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_af399463d8d4/postgame/20260908T144632Z-831d6bb1/derived/8bc6bb5c821247dea4d47ea5ca0cf3fb/decisions.jsonl",
+      "bytes": 29742305,
+      "rows": 1799,
+      "sha256": "e2ef12018de9ef2f4a6a6df6a26f3a0aaa507fbdc66ea11306f21b3d7434dd8e"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_b112c883ebfe/postgame/20260908T144639Z-ca5d789f/derived/301963c25f384dbda4aed7b7c316fb83/decisions.jsonl",
+      "bytes": 58406584,
+      "rows": 3847,
+      "sha256": "3570ceee778eb8d15943fec1e9af8fff697cc6c3c26828e4d1205a5f21fb9cde"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_b287ac645f5a/postgame/20260910T020937Z-212e795e/derived/e8f52bdc023b42609e640eb317d50ff9/decisions.jsonl",
+      "bytes": 98761064,
+      "rows": 3638,
+      "sha256": "de6450983846fac192f95733e3cb0aa4a11ae4bc18fe4fd0c8a591097a3cfbe1"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_b41d435b6d2f/postgame/20260908T144720Z-2d5493e5/derived/a1f32b078e68483ab1f8d1e07cb2d9ec/decisions.jsonl",
+      "bytes": 52567334,
+      "rows": 3329,
+      "sha256": "4a5f9d05ca6d672f9475fe168b52ec02556746628a600c47d34962da533044e6"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_b490feba6167/postgame/20260910T020957Z-ac1ef648/derived/b0c7f00de6de41c9921afeca8282b570/decisions.jsonl",
+      "bytes": 69309097,
+      "rows": 3039,
+      "sha256": "a14ebb6213121a2023e29d03a3a96bb19dc0cf45a7a5f769b700011204f9134a"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_b837ab2d6a21/postgame/20260910T021011Z-846af742/derived/6f6519bcbf5d4f66ba81670838cd6c99/decisions.jsonl",
+      "bytes": 80067691,
+      "rows": 3197,
+      "sha256": "65f8d2cfebb830088fbb429dc38a66dbc514d0f1a80e00daa740e5d295d691ef"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_bc9a6cef4d89/postgame/20260908T144732Z-0169f8de/derived/60e7314adbc44b01801d98ec793edeb2/decisions.jsonl",
+      "bytes": 70150044,
+      "rows": 3966,
+      "sha256": "59bcf8eebc5315cb431035a6a4c68072ae241f797d21eff9d2d849355fdb5aaa"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_bce3dcf1909a/postgame/20260908T144817Z-6dcfa28d/derived/a236696d119a41dca35f053890f9a9af/decisions.jsonl",
+      "bytes": 55524944,
+      "rows": 3317,
+      "sha256": "47f93ec3a7010da67c57fc4e9d3a1ff2d956a16a35457b2ef5a227443ea4f7b7"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_c3c146453604/postgame/20260910T021028Z-e7b88ab7/derived/c7655f037d634ff5b1984c40808116d2/decisions.jsonl",
+      "bytes": 86362757,
+      "rows": 3436,
+      "sha256": "a9af321bde89feff92ac2002fc3cad7903c8bf89c162aa480ea2dfc490478201"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_c63ebb920733/postgame/20260910T021046Z-ffba2f5c/derived/4944a17919d343219c5c649f312c6507/decisions.jsonl",
+      "bytes": 128916338,
+      "rows": 3943,
+      "sha256": "5e390558d639330d74ad16f394075f7694c6b26dddc978bb444e4742f3d6894e"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_c6c7d691c61c/postgame/20260908T144829Z-536e923c/derived/5983e6194bcd44179ed6440e58879999/decisions.jsonl",
+      "bytes": 47274812,
+      "rows": 3115,
+      "sha256": "62242c7b7328d7c20e095188a52c427882b3d9d7b27cdb2ef6571e78fa1d0d1f"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_c8ae8cdf2afb/postgame/20260908T144908Z-5e69e0c7/derived/f97f0a94b84e4e1ba13183684f6b91fc/decisions.jsonl",
+      "bytes": 45238768,
+      "rows": 2835,
+      "sha256": "6051e303fc2f4fe1381d8743b6cd8680dda44cbddc5da3113246b43571593fed"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_ca4a6b3329d1/postgame/20260908T144919Z-b2b7d997/derived/682e3916e7a0460b89d7a702a50cec9d/decisions.jsonl",
+      "bytes": 60104387,
+      "rows": 3705,
+      "sha256": "2a0af4ee088a418030df425adfec357515acc352d55d892467166c500b0d4b8f"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_d0c721d96d48/postgame/20260908T144935Z-a868af09/derived/8961746b058c4a03bc098360e905ab62/decisions.jsonl",
+      "bytes": 50555471,
+      "rows": 3282,
+      "sha256": "56c51130b254fba831d69cd9492249ab5f3ba4df45b0ee1a20296a1d8e64b283"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_d1c8720d65f4/postgame/20260910T021109Z-bd5763df/derived/3bb0ece976da41918bb182f89f939ef0/decisions.jsonl",
+      "bytes": 94868823,
+      "rows": 3731,
+      "sha256": "ed6c669e1b58189aea5312be489709ffc0f67f254767cc9b3f73dca5276c35a3"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_d2baa85f1612/postgame/20260908T145012Z-6fc0c7da/derived/6d44a713315c4fce89fc7be6aa9788ea/decisions.jsonl",
+      "bytes": 48423073,
+      "rows": 3094,
+      "sha256": "34dc070ff4f19457bce8f3abb4bcba7525e85956b8c59da5f38150158308cfef"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_d303274a8edd/postgame/20260910T021129Z-45f7e8d2/derived/a5769093494142b1a4f39c8973cb1b84/decisions.jsonl",
+      "bytes": 80268449,
+      "rows": 2975,
+      "sha256": "bd09e47d2a2189f1b2e2530d3c3c3a1148d97763683bbf90eef7cdef137ab28e"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_d3b34793b175/postgame/20260908T145051Z-3f98b426/derived/975dbd61b5854f46b0eacb4485fdcdae/decisions.jsonl",
+      "bytes": 58923825,
+      "rows": 3474,
+      "sha256": "e2795698c99927c4089401113e2d810e8a7837647de0bcedca34c2ed55144b47"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_d3b5d48668d7/postgame/20260910T021146Z-37036178/derived/5744f73bbe5d4d26b58ffff44a0aa658/decisions.jsonl",
+      "bytes": 66644183,
+      "rows": 2889,
+      "sha256": "c30fc9e8c2f451614e905c53dda3f234278d31093c34a14c5679c2a141ca1e59"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_daf62d6bdd4d/postgame/20260910T021200Z-d146f7c5/derived/49dd3261aa9247b08e84425fa947b346/decisions.jsonl",
+      "bytes": 70993726,
+      "rows": 3021,
+      "sha256": "fe809c0bc2b843abb72963042dc33f2b130d1cfee69e04087a8ceea05c6fdb3e"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_de1d194af10a/postgame/20260908T145105Z-448e98f9/derived/a966f01ff53749be843475f3d4fc67e3/decisions.jsonl",
+      "bytes": 59516621,
+      "rows": 3446,
+      "sha256": "f8bbab62461bd47bdf917d6fb17ecd0fce9b7723f60a2f8aa81255fc5c8948ef"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_df5de5962a32/postgame/20260908T145119Z-433ab24b/derived/d1bd134970534dd38e536d9eb9a22e8a/decisions.jsonl",
+      "bytes": 50851405,
+      "rows": 3089,
+      "sha256": "39c6232dd83ef8228fc6f1615711c0bcb76927da0985f5963c398c4c10c8e0e0"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_e0581415c7fe/postgame/20260910T021216Z-2c57a3aa/derived/0a209373577048d9b9383d8b8bed31c1/decisions.jsonl",
+      "bytes": 92996104,
+      "rows": 3579,
+      "sha256": "a8bd1731be428043dd91ddd6a234722b95d00bff8a36c0515a2479ff3a81bff2"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_ec93a12a1913/postgame/20260908T145130Z-98d7ad13/derived/0d1aeb4efce54b26b1c6b891520e2c54/decisions.jsonl",
+      "bytes": 20093285,
+      "rows": 1633,
+      "sha256": "275a40a18a47edc9cd294d4710fa391df356f704f2983d92e072a9d1cd940bc4"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_efdcec8879f3/postgame/20260908T145135Z-7fcae46a/derived/6d6c33de56454686ace603c965bf1d8e/decisions.jsonl",
+      "bytes": 55825241,
+      "rows": 3193,
+      "sha256": "ebcc70fb0fc4d57faec6b3333a8571ac8f643c37d358d3c8829c373fcb4229a9"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_f24da7e66619/postgame/20260910T021236Z-04cb0c3a/derived/6d367d5a24f845279827ca54e4f4dac0/decisions.jsonl",
+      "bytes": 75004817,
+      "rows": 3201,
+      "sha256": "87980137963cf4aa4a9196d9db646f3bf7b166a0b9ec61365a3ceb0f2a9528ee"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_f5885115dbf0/postgame/20260908T145148Z-400fe75b/derived/026c72d24ad742efb035897d36796c6c/decisions.jsonl",
+      "bytes": 52240825,
+      "rows": 3094,
+      "sha256": "dbca7c4234bf9fcb0d6af6b97ad1fa6f7c6d491bbcf6d76b93add313cbe55396"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_fa4bce14d968/postgame/20260910T021253Z-9a84a2f1/derived/4f8a184ea87c401b8a7d3af8433d7afa/decisions.jsonl",
+      "bytes": 73614680,
+      "rows": 2097,
+      "sha256": "ef50b82c88ed53185f26dab0fc1b3ba42abbb50499aa582a292e908b4033f279"
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_fe6232f47fdf/postgame/20260910T021307Z-933bccc9/derived/17bc1338ef3047c9939de280b8bc2bf7/decisions.jsonl",
+      "bytes": 83063371,
+      "rows": 3289,
+      "sha256": "9b82a3c8419516bd222d7156a8601b712515c03c7c18aff72e162ddabb1c0aa1"
+    },
+    {
+      "path": "artifacts/sessions/test-room-20260907-2f3fd296193f/postgame/20260908T145424Z-73dc81c3/derived/9b9e63ad97374359983ebd4365dd2723/decisions.jsonl",
+      "bytes": 48194746,
+      "rows": 2998,
+      "sha256": "88f897437848a59254c0ee46dade1cd3bd6f197f2e9ada1912887ae06b415770"
+    },
+    {
+      "path": "artifacts/sessions/test-room-20260907-5fb2a7c5096e/postgame/20260908T145436Z-25786e87/derived/c321a4c17c3c40e5a91928e5bfcb55b5/decisions.jsonl",
+      "bytes": 64319932,
+      "rows": 3857,
+      "sha256": "a2762e39f5c693962688235003c7f72145e685fcfd0ba17c7cca37ba5d6fdf93"
+    },
+    {
+      "path": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T084839Z-61255059/derived/3bbbccc485974983b1be91e86c0aa535/decisions.jsonl",
+      "bytes": 142143543,
+      "rows": 7510,
+      "sha256": "8c0f02aa2d77a4d29101ed375403467969609810877fcd981cfa5c4a4a52fb82"
+    },
+    {
+      "path": "artifacts/sessions/test-room-20260907-b684d5c3eea4/postgame/20260907T085616Z-1de58bc5/derived/ffa38ac0b3374e12b34ba8e8154f9081/decisions.jsonl",
+      "bytes": 142143543,
+      "rows": 7510,
+      "sha256": "8c0f02aa2d77a4d29101ed375403467969609810877fcd981cfa5c4a4a52fb82"
+    },
+    {
+      "path": "artifacts/sessions/test-room-20260907-e91b044cc716/postgame/20260907T034425Z-7e59b3e3/derived/49d9c873cef047debe86a7b67a352268/decisions.jsonl",
+      "bytes": 341994880,
+      "rows": 7014,
+      "sha256": "06469cd37b903146328d81ce7fb7c9efebc47cbb980bf5dd786b95ec711d8992"
+    },
+    {
+      "path": "artifacts/sessions/test-room-20260907-ef9bd5a31110/postgame/20260907T113712Z-efbb8d26/derived/1ab10c3aee164dadb7e5f8e5779def16/decisions.jsonl",
+      "bytes": 106005899,
+      "rows": 5716,
+      "sha256": "c5b5a54c5283053fd1f8db28d7ff96b5688498d7fecc980b011fd37aad9d0502"
+    },
+    {
+      "path": "artifacts/sessions/test-room-20260909-32d3356ee4ce/postgame/20260909T062402Z-8837ecb6/derived/8c86bb0c3c6c479d996de3e95d0760f2/decisions.jsonl",
+      "bytes": 78931134,
+      "rows": 3191,
+      "sha256": "7b0582d3120de220f878a34513bb5dc63ca5d2889d4b129b9c2c320f638b1d2d"
+    },
+    {
+      "path": "artifacts/sessions/test-room-20260909-32d3356ee4ce/postgame/20260909T062727Z-1081878f/derived/1a004645304d4190be9bc9af142868ab/decisions.jsonl",
+      "bytes": 78931134,
+      "rows": 3191,
+      "sha256": "7b0582d3120de220f878a34513bb5dc63ca5d2889d4b129b9c2c320f638b1d2d"
+    },
+    {
+      "path": "artifacts/sessions/test-room-20260909-d37d2250de96/postgame/20260909T082916Z-b2d43a26/derived/dd92753bb8bd41ea890ecceaf74f13e2/decisions.jsonl",
+      "bytes": 83577663,
+      "rows": 3365,
+      "sha256": "9cebf0745dda55b45fe2143e4701678bb32f3b91f00fb9df0a86f9a5632994ce"
+    }
+  ],
+  "excluded": [
+    {
+      "path": "artifacts/sessions/auto-match-a_b74eb4bd9136/postgame/20260908T144732Z-0f681544/derived/c25d707d86684e36b11b067c4b8baa57/decisions.jsonl",
+      "rows": 199,
+      "reason": "observation 缺 chain_piao 键（旧序列化器形态）",
+      "first_rejected_line": 1
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_cd5c88f494b2/postgame/20260908T144932Z-36e2c387/derived/da1088fd22444e4fa840b200f17c1935/decisions.jsonl",
+      "rows": 982,
+      "reason": "observation 缺 chain_piao 键（旧序列化器形态）",
+      "first_rejected_line": 1
+    },
+    {
+      "path": "artifacts/sessions/auto-match-a_fb47fc10cd1a/postgame/20260908T145200Z-0a2652ab/derived/57aeba370e77449dbe2f1e53f4900c61/decisions.jsonl",
+      "rows": 2361,
+      "reason": "observation 缺 chain_piao 键（旧序列化器形态）",
+      "first_rejected_line": 1
+    },
+    {
+      "path": "artifacts/sessions/auto-match-matching-aborted-20260908/postgame/20260908T145206Z-5b89b223/derived/d1666a2eab194124ba04d610b961487c/decisions.jsonl",
+      "rows": 0,
+      "reason": "空文件（无行）",
+      "first_rejected_line": null
+    },
+    {
+      "path": "artifacts/sessions/auto-match-matching-aborted-20260910/postgame/20260910T021325Z-b199d776/derived/f657b272ace94e37b27bd74094a3f8d1/decisions.jsonl",
+      "rows": 0,
+      "reason": "空文件（无行）",
+      "first_rejected_line": null
+    },
+    {
+      "path": "artifacts/sessions/test-room-legacy-20260906/postgame/20260908T133048Z-e415db7f/derived/f7ff741014884868a29804053732ab43/decisions.jsonl",
+      "rows": 3233,
+      "reason": "observation 缺 chain_piao 键（旧序列化器形态）",
+      "first_rejected_line": 1
+    },
+    {
+      "path": "artifacts/sessions/test-room-t-dee58824c308-20260904/postgame/20260908T145207Z-c8c115b5/derived/44ed0c1ffacd4c1d89ea95f6aad82a53/decisions.jsonl",
+      "rows": 0,
+      "reason": "空文件（无行）",
+      "first_rejected_line": null
+    }
+  ],
+  "fingerprint": "c1d3155b6e981b921cd9a1d50a3f4d90ba5b80e5df20fdf2f731f4485224c5db",
+  "note": "canonical 面板（记录层归一化口径）。引用时必须同时给出 panel_id + 指纹 + 行数 + record_layer_filled=true；与诊断子集 subset-perclass-frozen 的数字**不得相加或混用**。"
+}

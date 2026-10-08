@@ -1,0 +1,30 @@
+{
+  "counts": {
+    "complete_ordinary_draws": 242,
+    "eligible_ordinary_draws": 242,
+    "protected_plans": 87,
+    "requests": 377,
+    "response_plans": 48
+  },
+  "exact_tie_rows": [],
+  "failures": [],
+  "interpretation": "冻结回归请求中没有严格平分且满足四条件的动作对；当前破同表示无可评估支持，不值得生成新自然桌或共同隐藏世界标签",
+  "mechanical_checks_passed": true,
+  "minimum_teacher_states": 24,
+  "model_calls": 0,
+  "network_calls": 0,
+  "next": "关闭R17-B动作接管表示；主搜索转向新的精确杭麻机会家族",
+  "prerequisite_checks": {
+    "p47_active_parent": true,
+    "p60_static_preflight_passed": true,
+    "p61_effect_rejected": true,
+    "r17_source_exact": true
+  },
+  "release_eligible": false,
+  "schema": "r18-p62-exact-tie-takeover-preflight-result/1",
+  "selection_eligible": false,
+  "status": "CLOSE_P62_EXACT_TIE_TAKEOVER_INSUFFICIENT_SUPPORT",
+  "strength_claim": false,
+  "tables_run": 0,
+  "teacher_opened": false
+}

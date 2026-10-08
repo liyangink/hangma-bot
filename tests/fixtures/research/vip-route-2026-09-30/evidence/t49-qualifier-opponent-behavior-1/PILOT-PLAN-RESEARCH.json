@@ -1,0 +1,31 @@
+{
+  "schema": "t49-qualifier-pilot-plan/2",
+  "purpose": "development_engineering_and_weak_majority_joint_formula_effect",
+  "planned_roots": 8,
+  "planned_actual_tables": 64,
+  "paired_tables": 32,
+  "rounds": 8,
+  "planned_hands_per_arm": 256,
+  "main_weak_fraction": 0.6,
+  "wall_clock_limit_seconds": 7200,
+  "step_limit": 10000,
+  "scoring_input_capture": {
+    "max_view_json_bytes": 33554432,
+    "max_total_json_bytes": 17179869184,
+    "max_unique_views": 100000
+  },
+  "stop_rule": "engineering fault stops new groups; preserve planned 64 row denominator; never score only survivors",
+  "primary_metric": "true_official_rule_net_score_delta_per_complete_table; no artificial highfan multiplier",
+  "promotion_scope": "development only; before unexposed confirmation and deadlines/SSE/release gates",
+  "sensitivity_not_started": [
+    0.5,
+    0.75
+  ],
+  "strong_H_M_diagnostic_not_required_each_nonnegative": true,
+  "candidate_readiness": "immutable generation package + complete real22window probe + behavior difference",
+  "offline_candidate_max_operations": 4800000,
+  "original_2400000_probe_failed": true,
+  "source_unchanged": true,
+  "online_budget_or_deadline_relaxed": false,
+  "reason": "Research capacity increase is allowed by prior human performance guidance; actual strength and deadline remain unproven"
+}

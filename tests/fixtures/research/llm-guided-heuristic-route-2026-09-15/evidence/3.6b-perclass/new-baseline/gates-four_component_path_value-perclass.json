@@ -1,0 +1,1108 @@
+{
+  "schema": "sitin-gates/1",
+  "evidence_kind": "admission",
+  "gate_level_admitted": true,
+  "constructed_trigger_set": false,
+  "candidate": "four_component_path_value",
+  "weights": {},
+  "candidate_identity": "heuristic-adjustment-v1+four-component-path-value-v1+scale=40.0,branch_cap=4.0,chain_cap=6,bound=480.0,use=branch1+chain1+four_white1+baotou1,scope=chi+peng+gang+discard+pass+hu",
+  "bound_identity": "four_component_path_value|adj(default)|base(default)|src88c8e8f16fc4b687",
+  "weights_effective": {},
+  "gates": [
+    {
+      "gate": "G-0 装载与构造",
+      "status": "PASS",
+      "problems": [],
+      "notes": [],
+      "detail": {
+        "supervised": true,
+        "bound_identity": "four_component_path_value|adj(default)|base(default)|src88c8e8f16fc4b687",
+        "scope": [
+          "chi",
+          "peng",
+          "gang",
+          "discard",
+          "pass",
+          "hu"
+        ],
+        "dependency_digest": "88c8e8f16fc4b687",
+        "execution": {
+          "returncode": 0,
+          "timed_out": false,
+          "elapsed_sec": 0.237,
+          "signals_sent": [],
+          "group_still_alive": false,
+          "output_truncated": false,
+          "stdout_tail": "",
+          "stderr_tail": ""
+        }
+      }
+    },
+    {
+      "gate": "G-1 时间与纯度",
+      "status": "PASS",
+      "problems": [],
+      "detail": {
+        "forbidden_hits": [],
+        "nondeterministic_windows": 0,
+        "bound": 480.0,
+        "over_bound_parts": 0,
+        "overhead_ms_p50": 0.2353,
+        "overhead_ms_p99": 0.9874,
+        "windows_measured": 40,
+        "triggered_windows_timed": 40,
+        "slowest_triggered_ms": 1.0038,
+        "supervised": true,
+        "supervision": {
+          "returncode": 0,
+          "timed_out": false,
+          "elapsed_sec": 3.178,
+          "signals_sent": [],
+          "group_still_alive": false,
+          "output_truncated": false,
+          "stdout_tail": "",
+          "stderr_tail": ""
+        }
+      }
+    },
+    {
+      "gate": "G-2 退化检测",
+      "status": "PASS",
+      "problems": [],
+      "notes": [
+        "候选只在 572/16191 个适用窗口触发；判据分母取**触发面**"
+      ],
+      "diagnosis": {
+        "applicable_windows": 16191,
+        "fired_windows_in_scope": 572,
+        "changed_in_scope": 46,
+        "basis": 572,
+        "change_rate": 0.0804,
+        "change_matrix": {
+          "chi->pass": 19,
+          "peng->pass": 24,
+          "gang->discard": 3
+        },
+        "out_of_scope_changed": 0,
+        "candidate_execution_failure_count": 0,
+        "baseline_execution_failure_count": 0,
+        "note": "行为诊断只描述面板行为，不判定策略好坏（REVIEW-9）"
+      },
+      "triage": {
+        "decision": "upgrade",
+        "reason": "无执行故障、覆盖足够、行为有分化：可进入下一级评估",
+        "is_a_verdict_on_the_mechanism": false
+      },
+      "detail": {
+        "window_classes": {
+          "other": 15458,
+          "response": 698,
+          "self_draw_gang": 35
+        },
+        "excluded": 660,
+        "excluded_decode": 0,
+        "excluded_degraded": 660,
+        "candidate_execution_failures": [],
+        "baseline_execution_failures": [],
+        "candidate_execution_failure_samples": 0,
+        "baseline_execution_failure_samples": 0,
+        "failed_windows": {
+          "candidate": 0,
+          "baseline": 0
+        },
+        "accounting": {
+          "rows": 16851,
+          "excluded": 660,
+          "baseline_failed": 0,
+          "candidate_failed": 0,
+          "applicable": 16191,
+          "out_of_scope": 0,
+          "sum": 16851,
+          "reconciles": true
+        },
+        "declared_scope": [
+          "chi",
+          "peng",
+          "gang",
+          "discard",
+          "pass",
+          "hu"
+        ],
+        "applicable_windows": 16191,
+        "applicable_changed": 46,
+        "applicable_change_rate": 0.0804,
+        "fired_windows": 572,
+        "fired_windows_in_scope": 572,
+        "out_of_scope_windows": 0,
+        "out_of_scope_changed": 0,
+        "response_windows": 698,
+        "response_changed": 43,
+        "offscope_changed": 0,
+        "offscope_windows": 0,
+        "change_matrix": {
+          "chi->pass": 19,
+          "peng->pass": 24,
+          "gang->discard": 3
+        },
+        "baseline_first_kinds": {
+          "pass": 12478,
+          "discard": 3205,
+          "peng": 161,
+          "hu": 106,
+          "chi": 208,
+          "gang": 33
+        },
+        "has_offscope_spill": false,
+        "note": "本项只作门禁与诊断，禁止用于适应度排序（README §4.2/DESIGN §4.3）",
+        "supervised": true,
+        "supervision": {
+          "returncode": 0,
+          "timed_out": false,
+          "elapsed_sec": 22.392,
+          "signals_sent": [],
+          "group_still_alive": false,
+          "output_truncated": false,
+          "stdout_tail": "",
+          "stderr_tail": ""
+        }
+      },
+      "directions_present": [
+        "discard",
+        "pass"
+      ]
+    },
+    {
+      "gate": "G-3 评估记账",
+      "status": "PASS",
+      "problems": [],
+      "detail": {
+        "candidate": "four_component_path_value",
+        "trigger": "动作改变了官方番型公式四个乘子中的至少一个：弃牌（断链或飘使链次数变化、弃后暗牌使爆头进出、手留财神减少、弃掉手里恰好 4 张的**自然牌**一组而少一个豪华组）；杠（链 +1）；吃 / 碰 / 杠（副露永久关闭七对路径）；过牌不改变任何分量。门控 g_i(s) 只依赖单个状态：四白需要链内飘出可判定（观察落盘，或由「piao ≤ count ⇒ 链 0」与「手留 4 张 ⇒ 飘出 0」两条规则事实推导），分支与弃牌后爆头需要暗牌张数能反推副露数。分量在端点不可判定或端点越出声明域时，**该转移整段判为域外并返回 0**（域外规则见 domain_rules，逐条枚举、逐条测试）。胡为终局，本项返回 0。",
+        "changed_actions": "按**状态变化**生效，不按动作标签分档：四个分量各自进 Φ，增量取 Φ(s′) − Φ(s) 的完整差值（branch / chain / four_white / baotou，单位评分点 = scale × log2 番）。吃碰只通过「关闭七对路径」扣分支分，不吃碰本身不加不减；杠只通过「链 +1」加分；弃牌按链、爆头、四白、豪华组的实际变化计分。",
+        "expected_direction": "更倾向保留已经锁定的番型乘子：不在链非零时用普通弃牌断链、不在爆头态做会退出爆头的弃牌、不轻易打掉已锁定的四白（飘除外：飘不改变四白之和）与手中恰好 4 张的自然牌豪华组、不为了副露而永久关闭七对路径。方向是**减少**这类「打掉乘子」的动作，而不是无条件减少或增加某一动作族。",
+        "counterexample": "四个分量都不可判定或都没有变化时必须恒为 0：纯弃牌窗口里弃散牌（链 0、爆头不变、无 4 张组）必须为 0；过牌恒为 0；链内飘出真的未知（链非零且未落盘、手留 < 4）时四白分量不得按 False 计入；暗牌张数不是 13/14 − 3×副露 的合法形态时不得猜（D4）；链次数越出官方 0—6 域时该分量必须整段不计入（D1，不得算成「扣掉整条链」）；某分量在一端可判定、另一端不可判定的转移必须整段返回 0（D2）；胡必须返回 0（D3 终局例外）。另外：手里 4 张**财神**时打出其中一张，分支分量必须为 0 —— 豪华组只数自然牌的四张。",
+        "domain_rules": {
+          "D1": "任一端点有分量越出声明域（链次数 ∉ [0,6]；分支 ∉ [0,4]；指示量非 0/1）⇒ 该转移域外，返回 0 并记录原因（不夹取、不惩罚）",
+          "D2": "某分量在两端点的可判定性模式不同（一端 g=1、另一端 g=0）⇒ 该转移域外，返回 0 并记录原因；差值里若混进门控开关本身就不是价值变化",
+          "D3": "终局（胡）：声明的终局例外，path_term 直接返回 0（合法胡恒为 priority = 0，评分不参与其排序）",
+          "D4": "无法构造 s′（未知动作类型；副露数不能由暗牌张数反推）⇒ 返回 0（不猜）",
+          "scope": "可加性（F(A,B)+F(B,C)=F(A,C)）与环判据只在**两端点都在声明域内且可判定性模式恒定**的转移集上声明成立；域外转移是声明过的降级值 0，把它们混进加法会出现差额（最小反例见 evidence/3.0-baseline/four-component-structure.json 的 gated_counterexample，差额 = scale = 40）"
+        },
+        "family": "价值族（Value-Path Family）",
+        "value_path": "官方《1.3 番型倍率》的四个乘子：分支因子（平胡 ×1 / 七对 ×2 / 豪华 N 组 2×2^N）、动作链（飘与杠每个动作 ×2，0—6 次）、4 白板（手留 + 链内飘出正好 4 张 ⇒ ×2）、爆头（×2）。官方「最后统一加」即指数相加，故 log2 下是四个加数之和。",
+        "safety": "写成单态势差：Φ(s) = scale · Σ_i g_i(s) · φ_i(s)，门控 g_i(s) 只依赖**单个状态**（该分量在 s 可判定且落在声明域内），增量取 Φ(s′) − Φ(s) 的完整差值，**不是**动作标签加分。四个分量的事实全部来自 hangma：链与四白走 progression.chain_after_action / wealth_after_action，爆头走 progression.baotou_after_action，四白等值条件走 special_rules.four_white_indicator；policy 不复制规则。bound 由声明域推导（scale × (4 + 6 + 1 + 1) = 480），候选内部不做任何裁剪，唯一的强制点是适配器。**这不是单步启发式的最优策略不变保证**（PLAN-REVISION §1.2）：势差只是结构约定，效果须实测。",
+        "selected_config": {
+          "scale": 40,
+          "branch_cap": 4,
+          "chain_cap": 6,
+          "bound": 480
+        },
+        "selection_provenance": "结构基线；参数为工程初始选择，未做参数搜索。scale=40 沿用价值族② 的锚点（V1 权重 gang_bonus=40.0 已是「一次杠 = log2 +1」的分值），单位是评分点 / log2 番；branch_cap=4 与 chain_cap=6 来自官方声明域（七对 1 + 豪华最多 3 组；fan-calc chain.count 0—6），bound=480 由这四个上界推导，不是调参结果。消融变体（use_branch / use_chain / use_four_white / use_baotou 取 0）是**独立候选身份**，须各自重新准入。"
+      }
+    }
+  ],
+  "all_pass": true,
+  "admitted": true,
+  "failed": [],
+  "insufficient": [],
+  "perclass": {
+    "gate": "G-2C 逐类覆盖",
+    "status": "INSUFFICIENT",
+    "problems": [],
+    "notes": [
+      "汇总只取**最弱环节**：已声明 19 类，其中 reliable 4 类；**类间不可互相掩盖**（任一已声明类未达 reliable 即汇总不给通过），反之**一个类的 reliable 也不构成整候选结论**"
+    ],
+    "detail": {
+      "schema": "sitin-gates-perclass/1",
+      "candidate": "four_component_path_value",
+      "weights": {},
+      "weights_applied": true,
+      "declared_classes": [
+        "branch.chiitoi_live",
+        "branch.luxury_locked",
+        "chain.open",
+        "chain.gang_step",
+        "chain.piao_discard",
+        "chain.break_discard",
+        "four_white.at_four",
+        "four_white.derivable_held4",
+        "four_white.unknown_piao",
+        "baotou.active",
+        "baotou.discard_recheck",
+        "baotou.meld_inherit",
+        "baotou.decline_win_for_piao",
+        "overlay.four_white_baotou",
+        "overlay.chiitoi_baotou",
+        "overlay.gang_piao_mix",
+        "overlay.plain_branch_max",
+        "overlay.global_max",
+        "meld.claim_window"
+      ],
+      "ruleset_version": "v26",
+      "record_layer": "raw",
+      "declaration_note": null,
+      "classes": [
+        {
+          "id": "branch.chiitoi_live",
+          "name": "七对路径存活（本人无副露）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "meld_count_of"
+          ],
+          "windows_in_class": 9569,
+          "windows_undecided": 0,
+          "windows_out_of_class": 6622,
+          "fired_windows": 486,
+          "changed_windows": 46,
+          "verdict": "reliable",
+          "reason": "ok",
+          "verdict_note": "本面板上该类位点与触发面均达下限、且观察到改选：**只说明该类被验证过**，不是效果结论，也不构成整候选结论。 判据：位点与触发面均达下限，且观察到改选。"
+        },
+        {
+          "id": "branch.luxury_locked",
+          "name": "已锁定豪华组（暗牌含恰好 4 张自然牌码）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "locked_luxury_groups",
+            "WEALTH_TOTAL"
+          ],
+          "windows_in_class": 58,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16133,
+          "fired_windows": 17,
+          "changed_windows": 3,
+          "verdict": "reliable",
+          "reason": "ok",
+          "verdict_note": "本面板上该类位点与触发面均达下限、且观察到改选：**只说明该类被验证过**，不是效果结论，也不构成整候选结论。 判据：位点与触发面均达下限，且观察到改选。"
+        },
+        {
+          "id": "branch.closer_seven_pairs",
+          "name": "七对是更近路径",
+          "kind": "rule_scenario",
+          "level": "【当前观察·实现】",
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "windows_in_class": 1420,
+          "windows_undecided": 1877,
+          "windows_out_of_class": 12894,
+          "fired_windows": 93,
+          "changed_windows": 19,
+          "verdict": "undeclared",
+          "reason": "not_declared",
+          "verdict_note": "候选没有声明覆盖该类：这是**声明**的陈述，不是对该类的判定。 判据：候选静态声明里没有该类（记号级**弱**声明，见 boundaries 第 1 条）。"
+        },
+        {
+          "id": "chain.open",
+          "name": "链已开启（本人链次数 >= 1）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "discard",
+            "gang"
+          ],
+          "token_hit": [
+            "chain_count"
+          ],
+          "windows_in_class": 37,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16154,
+          "fired_windows": 33,
+          "changed_windows": 0,
+          "verdict": "insufficient",
+          "reason": "fired_no_change",
+          "verdict_note": "已声明但证据不足（位点或触发面不到下限，或触发到了没改选）：**不等于通过**，也不等于机制无效（REVIEW-9：极值只作行为诊断）。 判据：触发过但没有改变首选：本面板与本配置下该类**没有被验证**；按 REVIEW-9，这**不是**退化判定。"
+        },
+        {
+          "id": "chain.gang_step",
+          "name": "杠推进链（窗口存在杠候选）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [
+            "chain_after_action",
+            "Gang"
+          ],
+          "windows_in_class": 51,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16140,
+          "fired_windows": 51,
+          "changed_windows": 3,
+          "verdict": "reliable",
+          "reason": "ok",
+          "verdict_note": "本面板上该类位点与触发面均达下限、且观察到改选：**只说明该类被验证过**，不是效果结论，也不构成整候选结论。 判据：位点与触发面均达下限，且观察到改选。"
+        },
+        {
+          "id": "chain.gang_draw_open",
+          "name": "杠前已听（杠开位点）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": false,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [],
+          "windows_in_class": 9,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16182,
+          "fired_windows": 9,
+          "changed_windows": 0,
+          "verdict": "undeclared",
+          "reason": "not_declared",
+          "verdict_note": "候选没有声明覆盖该类：这是**声明**的陈述，不是对该类的判定。 判据：候选静态声明里没有该类（记号级**弱**声明，见 boundaries 第 1 条）。"
+        },
+        {
+          "id": "chain.piao_discard",
+          "name": "飘（爆头态打出财神）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "baotou",
+            "wealth_code"
+          ],
+          "windows_in_class": 19,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16172,
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "verdict": "insufficient",
+          "reason": "fired_no_change",
+          "verdict_note": "已声明但证据不足（位点或触发面不到下限，或触发到了没改选）：**不等于通过**，也不等于机制无效（REVIEW-9：极值只作行为诊断）。 判据：触发过但没有改变首选：本面板与本配置下该类**没有被验证**；按 REVIEW-9，这**不是**退化判定。"
+        },
+        {
+          "id": "chain.break_discard",
+          "name": "断链位点（链非零时打出非飘非杠的牌）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "chain_after_action",
+            "baotou"
+          ],
+          "windows_in_class": 33,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16158,
+          "fired_windows": 33,
+          "changed_windows": 0,
+          "verdict": "insufficient",
+          "reason": "fired_no_change",
+          "verdict_note": "已声明但证据不足（位点或触发面不到下限，或触发到了没改选）：**不等于通过**，也不等于机制无效（REVIEW-9：极值只作行为诊断）。 判据：触发过但没有改变首选：本面板与本配置下该类**没有被验证**；按 REVIEW-9，这**不是**退化判定。"
+        },
+        {
+          "id": "chain.claim_repiao_circle",
+          "name": "抓打圈内吃碰后再打财神（财飘链 +1 位点）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "peng"
+          ],
+          "token_hit": [],
+          "windows_in_class": 0,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16191,
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "verdict": "undeclared",
+          "reason": "not_declared",
+          "verdict_note": "候选没有声明覆盖该类：这是**声明**的陈述，不是对该类的判定。 判据：候选静态声明里没有该类（记号级**弱**声明，见 boundaries 第 1 条）。"
+        },
+        {
+          "id": "four_white.at_four",
+          "name": "四白等值条件成立（手留白 + 链内飘出 == 4）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "four_white_indicator",
+            "four_white_state",
+            "wealth_count"
+          ],
+          "windows_in_class": 0,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16191,
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "verdict": "not_verified",
+          "reason": "no_position_on_panel",
+          "verdict_note": "已声明但本面板上无法验证（无位点，或所需事实在该类上不可判定）：**不得填零**，也不得读成「无影响」。 判据：本面板上该类一个可判定窗口都没有 ⇒ **未验证**（不是「无影响」，也不得填零）。"
+        },
+        {
+          "id": "four_white.derivable_held4",
+          "name": "手留 4 张 ⇒ 链内飘出必为 0（可推导）",
+          "kind": "rule_scenario",
+          "level": "【推导·未一手核实】",
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "known_piao"
+          ],
+          "windows_in_class": 0,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16191,
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "verdict": "not_verified",
+          "reason": "no_position_on_panel",
+          "verdict_note": "已声明但本面板上无法验证（无位点，或所需事实在该类上不可判定）：**不得填零**，也不得读成「无影响」。 判据：本面板上该类一个可判定窗口都没有 ⇒ **未验证**（不是「无影响」，也不得填零）。"
+        },
+        {
+          "id": "four_white.unknown_piao",
+          "name": "链内飘出不可判定（未知态）",
+          "kind": "evidence_state",
+          "level": "【当前观察·实现】",
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "known_piao",
+            "chain_piao"
+          ],
+          "windows_in_class": 0,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16191,
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "verdict": "not_verified",
+          "reason": "no_position_on_panel",
+          "verdict_note": "已声明但本面板上无法验证（无位点，或所需事实在该类上不可判定）：**不得填零**，也不得读成「无影响」。 判据：本面板上该类一个可判定窗口都没有 ⇒ **未验证**（不是「无影响」，也不得填零）。"
+        },
+        {
+          "id": "baotou.active",
+          "name": "当前爆头",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [
+            "baotou"
+          ],
+          "windows_in_class": 91,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16100,
+          "fired_windows": 22,
+          "changed_windows": 0,
+          "verdict": "insufficient",
+          "reason": "fired_no_change",
+          "verdict_note": "已声明但证据不足（位点或触发面不到下限，或触发到了没改选）：**不等于通过**，也不等于机制无效（REVIEW-9：极值只作行为诊断）。 判据：触发过但没有改变首选：本面板与本配置下该类**没有被验证**；按 REVIEW-9，这**不是**退化判定。"
+        },
+        {
+          "id": "baotou.discard_recheck",
+          "name": "弃牌后重判爆头",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "baotou_after_action"
+          ],
+          "windows_in_class": 19,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16172,
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "verdict": "insufficient",
+          "reason": "fired_no_change",
+          "verdict_note": "已声明但证据不足（位点或触发面不到下限，或触发到了没改选）：**不等于通过**，也不等于机制无效（REVIEW-9：极值只作行为诊断）。 判据：触发过但没有改变首选：本面板与本配置下该类**没有被验证**；按 REVIEW-9，这**不是**退化判定。"
+        },
+        {
+          "id": "baotou.meld_inherit",
+          "name": "吃碰杠继承爆头",
+          "kind": "rule_scenario",
+          "level": "【当前观察·实现】",
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "baotou_after_action"
+          ],
+          "windows_in_class": 9,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16182,
+          "fired_windows": 3,
+          "changed_windows": 0,
+          "verdict": "insufficient",
+          "reason": "fired_below_floor",
+          "verdict_note": "已声明但证据不足（位点或触发面不到下限，或触发到了没改选）：**不等于通过**，也不等于机制无效（REVIEW-9：极值只作行为诊断）。 判据：类内候选触发窗口数低于下限 ⇒ 触发面太小，证据不足。"
+        },
+        {
+          "id": "baotou.decline_win_for_piao",
+          "name": "弃胡续飘位点（可胡而选择不胡）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "discard",
+            "hu"
+          ],
+          "token_hit": [
+            "Hu"
+          ],
+          "windows_in_class": 19,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16172,
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "verdict": "insufficient",
+          "reason": "fired_no_change",
+          "verdict_note": "已声明但证据不足（位点或触发面不到下限，或触发到了没改选）：**不等于通过**，也不等于机制无效（REVIEW-9：极值只作行为诊断）。 判据：触发过但没有改变首选：本面板与本配置下该类**没有被验证**；按 REVIEW-9，这**不是**退化判定。"
+        },
+        {
+          "id": "overlay.four_white_baotou",
+          "name": "四白 × 爆头 叠加",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "four_white_indicator",
+            "four_white_state",
+            "baotou"
+          ],
+          "windows_in_class": 0,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16191,
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "verdict": "not_verified",
+          "reason": "no_position_on_panel",
+          "verdict_note": "已声明但本面板上无法验证（无位点，或所需事实在该类上不可判定）：**不得填零**，也不得读成「无影响」。 判据：本面板上该类一个可判定窗口都没有 ⇒ **未验证**（不是「无影响」，也不得填零）。"
+        },
+        {
+          "id": "overlay.chiitoi_baotou",
+          "name": "七对 × 爆头（七客 / 豪华七客）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "meld_count_of",
+            "baotou"
+          ],
+          "windows_in_class": 38,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16153,
+          "fired_windows": 10,
+          "changed_windows": 0,
+          "verdict": "insufficient",
+          "reason": "fired_no_change",
+          "verdict_note": "已声明但证据不足（位点或触发面不到下限，或触发到了没改选）：**不等于通过**，也不等于机制无效（REVIEW-9：极值只作行为诊断）。 判据：触发过但没有改变首选：本面板与本配置下该类**没有被验证**；按 REVIEW-9，这**不是**退化判定。"
+        },
+        {
+          "id": "overlay.gang_piao_mix",
+          "name": "杠飘混合链",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "discard",
+            "gang"
+          ],
+          "token_hit": [
+            "chain_piao",
+            "chain_count"
+          ],
+          "windows_in_class": 0,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16191,
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "verdict": "not_verified",
+          "reason": "no_position_on_panel",
+          "verdict_note": "已声明但本面板上无法验证（无位点，或所需事实在该类上不可判定）：**不得填零**，也不得读成「无影响」。 判据：本面板上该类一个可判定窗口都没有 ⇒ **未验证**（不是「无影响」，也不得填零）。"
+        },
+        {
+          "id": "overlay.plain_branch_max",
+          "name": "平胡分支上界组合（3 连杠 + 三财飘 + 爆头 + 四白板）",
+          "kind": "official_bound",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "chain_count",
+            "chain_piao",
+            "baotou",
+            "meld_count_of"
+          ],
+          "windows_in_class": 0,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16191,
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "verdict": "not_verified",
+          "reason": "no_position_on_panel",
+          "verdict_note": "已声明但本面板上无法验证（无位点，或所需事实在该类上不可判定）：**不得填零**，也不得读成「无影响」。 判据：本面板上该类一个可判定窗口都没有 ⇒ **未验证**（不是「无影响」，也不得填零）。"
+        },
+        {
+          "id": "overlay.global_max",
+          "name": "全局上界组合（三豪华七对 + 三财飘 + 四白 + 爆头）",
+          "kind": "official_bound",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "locked_luxury_groups",
+            "chain_piao",
+            "baotou"
+          ],
+          "windows_in_class": 0,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16191,
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "verdict": "not_verified",
+          "reason": "no_position_on_panel",
+          "verdict_note": "已声明但本面板上无法验证（无位点，或所需事实在该类上不可判定）：**不得填零**，也不得读成「无影响」。 判据：本面板上该类一个可判定窗口都没有 ⇒ **未验证**（不是「无影响」，也不得填零）。"
+        },
+        {
+          "id": "payrole.self_dealer",
+          "name": "本人坐庄（付方恒为 ×8）",
+          "kind": "settlement_outcome",
+          "level": "【官方已确认】",
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [],
+          "windows_in_class": 4596,
+          "windows_undecided": 0,
+          "windows_out_of_class": 11595,
+          "fired_windows": 145,
+          "changed_windows": 13,
+          "verdict": "undeclared",
+          "reason": "not_declared",
+          "verdict_note": "候选没有声明覆盖该类：这是**声明**的陈述，不是对该类的判定。 判据：候选静态声明里没有该类（记号级**弱**声明，见 boundaries 第 1 条）。"
+        },
+        {
+          "id": "payrole.self_nondealer",
+          "name": "本人闲家（本人胡 +10；庄家胡付 8；闲家胡付 1）",
+          "kind": "settlement_outcome",
+          "level": "【官方已确认】",
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [],
+          "windows_in_class": 11595,
+          "windows_undecided": 0,
+          "windows_out_of_class": 4596,
+          "fired_windows": 427,
+          "changed_windows": 33,
+          "verdict": "undeclared",
+          "reason": "not_declared",
+          "verdict_note": "候选没有声明覆盖该类：这是**声明**的陈述，不是对该类的判定。 判据：候选静态声明里没有该类（记号级**弱**声明，见 boundaries 第 1 条）。"
+        },
+        {
+          "id": "meld.claim_window",
+          "name": "鸣牌窗口（存在吃/碰候选）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [
+            "Chi",
+            "Peng"
+          ],
+          "windows_in_class": 698,
+          "windows_undecided": 0,
+          "windows_out_of_class": 15493,
+          "fired_windows": 457,
+          "changed_windows": 43,
+          "verdict": "reliable",
+          "reason": "ok",
+          "verdict_note": "本面板上该类位点与触发面均达下限、且观察到改选：**只说明该类被验证过**，不是效果结论，也不构成整候选结论。 判据：位点与触发面均达下限，且观察到改选。"
+        },
+        {
+          "id": "meld.waiting_facts_available",
+          "name": "等待事实可用（窗口内有带完整等待事实的 Pass 候选）",
+          "kind": "evidence_state",
+          "level": "【当前观察·实现】",
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "windows_in_class": 12863,
+          "windows_undecided": 0,
+          "windows_out_of_class": 3328,
+          "fired_windows": 457,
+          "changed_windows": 43,
+          "verdict": "undeclared",
+          "reason": "not_declared",
+          "verdict_note": "候选没有声明覆盖该类：这是**声明**的陈述，不是对该类的判定。 判据：候选静态声明里没有该类（记号级**弱**声明，见 boundaries 第 1 条）。"
+        },
+        {
+          "id": "gate.you_cai_bi_kao",
+          "name": "有财必拷响（手上有财神时不允许平胡）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": false,
+          "scope_hit": [
+            "discard",
+            "hu"
+          ],
+          "token_hit": [],
+          "windows_in_class": 0,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16191,
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "verdict": "undeclared",
+          "reason": "not_declared",
+          "verdict_note": "候选没有声明覆盖该类：这是**声明**的陈述，不是对该类的判定。 判据：候选静态声明里没有该类（记号级**弱**声明，见 boundaries 第 1 条）。"
+        },
+        {
+          "id": "gate.wall_end_gang_ban",
+          "name": "末局禁杠（牌墙最后 10 墩内禁止杠）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": false,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [],
+          "windows_in_class": 4,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16187,
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "verdict": "undeclared",
+          "reason": "not_declared",
+          "verdict_note": "候选没有声明覆盖该类：这是**声明**的陈述，不是对该类的判定。 判据：候选静态声明里没有该类（记号级**弱**声明，见 boundaries 第 1 条）。"
+        },
+        {
+          "id": "gate.catch_play_owner",
+          "name": "抓打圈主身份（圈内本人是否为新打财神者）",
+          "kind": "rule_scenario",
+          "level": "【官方已确认】",
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "windows_in_class": 5,
+          "windows_undecided": 0,
+          "windows_out_of_class": 16186,
+          "fired_windows": 1,
+          "changed_windows": 0,
+          "verdict": "undeclared",
+          "reason": "not_declared",
+          "verdict_note": "候选没有声明覆盖该类：这是**声明**的陈述，不是对该类的判定。 判据：候选静态声明里没有该类（记号级**弱**声明，见 boundaries 第 1 条）。"
+        }
+      ],
+      "rollup": {
+        "status": "INSUFFICIENT",
+        "problems": [],
+        "notes": [
+          "汇总只取**最弱环节**：已声明 19 类，其中 reliable 4 类；**类间不可互相掩盖**（任一已声明类未达 reliable 即汇总不给通过），反之**一个类的 reliable 也不构成整候选结论**"
+        ],
+        "counts": {
+          "reliable": 4,
+          "insufficient": 8,
+          "not_verified": 7,
+          "undeclared": 9
+        },
+        "declared_classes": [
+          "branch.chiitoi_live",
+          "branch.luxury_locked",
+          "chain.open",
+          "chain.gang_step",
+          "chain.piao_discard",
+          "chain.break_discard",
+          "four_white.at_four",
+          "four_white.derivable_held4",
+          "four_white.unknown_piao",
+          "baotou.active",
+          "baotou.discard_recheck",
+          "baotou.meld_inherit",
+          "baotou.decline_win_for_piao",
+          "overlay.four_white_baotou",
+          "overlay.chiitoi_baotou",
+          "overlay.gang_piao_mix",
+          "overlay.plain_branch_max",
+          "overlay.global_max",
+          "meld.claim_window"
+        ],
+        "reliable_classes": [
+          "branch.chiitoi_live",
+          "branch.luxury_locked",
+          "chain.gang_step",
+          "meld.claim_window"
+        ],
+        "blocking_classes": [
+          {
+            "class_id": "chain.open",
+            "verdict": "insufficient",
+            "reason": "fired_no_change"
+          },
+          {
+            "class_id": "chain.piao_discard",
+            "verdict": "insufficient",
+            "reason": "fired_no_change"
+          },
+          {
+            "class_id": "chain.break_discard",
+            "verdict": "insufficient",
+            "reason": "fired_no_change"
+          },
+          {
+            "class_id": "four_white.at_four",
+            "verdict": "not_verified",
+            "reason": "no_position_on_panel"
+          },
+          {
+            "class_id": "four_white.derivable_held4",
+            "verdict": "not_verified",
+            "reason": "no_position_on_panel"
+          },
+          {
+            "class_id": "four_white.unknown_piao",
+            "verdict": "not_verified",
+            "reason": "no_position_on_panel"
+          },
+          {
+            "class_id": "baotou.active",
+            "verdict": "insufficient",
+            "reason": "fired_no_change"
+          },
+          {
+            "class_id": "baotou.discard_recheck",
+            "verdict": "insufficient",
+            "reason": "fired_no_change"
+          },
+          {
+            "class_id": "baotou.meld_inherit",
+            "verdict": "insufficient",
+            "reason": "fired_below_floor"
+          },
+          {
+            "class_id": "baotou.decline_win_for_piao",
+            "verdict": "insufficient",
+            "reason": "fired_no_change"
+          },
+          {
+            "class_id": "overlay.four_white_baotou",
+            "verdict": "not_verified",
+            "reason": "no_position_on_panel"
+          },
+          {
+            "class_id": "overlay.chiitoi_baotou",
+            "verdict": "insufficient",
+            "reason": "fired_no_change"
+          },
+          {
+            "class_id": "overlay.gang_piao_mix",
+            "verdict": "not_verified",
+            "reason": "no_position_on_panel"
+          },
+          {
+            "class_id": "overlay.plain_branch_max",
+            "verdict": "not_verified",
+            "reason": "no_position_on_panel"
+          },
+          {
+            "class_id": "overlay.global_max",
+            "verdict": "not_verified",
+            "reason": "no_position_on_panel"
+          }
+        ],
+        "reliable_count": 4,
+        "declared_count": 19,
+        "not_admission_basis": true,
+        "is_a_verdict_on_strength": false,
+        "is_a_verdict_on_safety": false,
+        "note": "本汇总是**覆盖**结论：不得当准入、不得当效果、不得用于排序或适应度。覆盖 INSUFFICIENT **不等于**不安全，也不等于低价值（PHASE3-RULE-AWARE §4.4）。"
+      },
+      "out_of_class_increment": {
+        "declared_classes": [
+          "branch.chiitoi_live",
+          "branch.luxury_locked",
+          "chain.open",
+          "chain.gang_step",
+          "chain.piao_discard",
+          "chain.break_discard",
+          "four_white.at_four",
+          "four_white.derivable_held4",
+          "four_white.unknown_piao",
+          "baotou.active",
+          "baotou.discard_recheck",
+          "baotou.meld_inherit",
+          "baotou.decline_win_for_piao",
+          "overlay.four_white_baotou",
+          "overlay.chiitoi_baotou",
+          "overlay.gang_piao_mix",
+          "overlay.plain_branch_max",
+          "overlay.global_max",
+          "meld.claim_window"
+        ],
+        "changed_windows": 46,
+        "violations": [],
+        "violation_total": 0,
+        "undecided_changes": [],
+        "undecided_change_total": 0,
+        "note": "类外零增量：改选必须落在已声明类内。violations 是**确定的外溢**；undecided_changes 是**归属未知**，两者分开、都不填零。"
+      },
+      "panel": {
+        "rows_seen": 16851,
+        "rows_total": 16851,
+        "record_layer": "raw",
+        "excluded_decode": 0,
+        "excluded_degraded": 660,
+        "baseline_failed": 0,
+        "candidate_failed": 0,
+        "scored": 16191,
+        "accounting_sum": 16851,
+        "baseline_failure_samples": [],
+        "candidate_failure_samples": [],
+        "reconciles": true,
+        "legal_reconciliation": {
+          "match": 16191,
+          "mismatch": 0,
+          "recorded_absent": 0,
+          "note": "本地规则重算的合法候选与记录落盘合法候选相同的窗口数。match 高 ⇒ 面板的规则配置（ruleset / base_score / you_cai_bi_kao）与产生记录时一致；mismatch 高 ⇒ 结论必须降级读（先解释差异，别把差异算进候选行为）。"
+        },
+        "raw_coverage": {
+          "raw_windows": 16851,
+          "undecodable": 0,
+          "raw_catch_play_true": 14,
+          "raw_catch_play_owner_known": 14,
+          "raw_chain_count_nonzero": 41,
+          "raw_chain_piao_known": 16851,
+          "raw_chain_piao_undecidable": 0,
+          "raw_baotou_true": 103,
+          "raw_hand_holds_wealth": 6790,
+          "note": "**只统计原始观察（未过滤）**：回答「这份语料到底有没有该类的位点」。只报过滤后的可用窗口，会把「被规则层降级排除」误读成「数据里不存在」（§F.4 的教训）。可用窗口数见同一份产物的 panel 段。"
+        }
+      },
+      "panel_facts": {
+        "ruleset_version": "v26",
+        "base_score": 1,
+        "record_layer": "raw",
+        "you_cai_bi_kao": false,
+        "you_cai_bi_kao_source": "面板声明参数（CLI/调用方可覆盖）；记录里不含该开关 ⇒ 只能声明，不能从记录反推。一致性由 legal_reconciliation 旁证。",
+        "note": "工具侧面板事实；you_cai_bi_kao 已接线（其余两项由观察填充）。两者都不是效果证据。"
+      },
+      "panel_raw": {
+        "raw_windows": 16851,
+        "undecodable": 0,
+        "raw_catch_play_true": 14,
+        "raw_catch_play_owner_known": 14,
+        "raw_chain_count_nonzero": 41,
+        "raw_chain_piao_known": 16851,
+        "raw_chain_piao_undecidable": 0,
+        "raw_baotou_true": 103,
+        "raw_hand_holds_wealth": 6790,
+        "note": "**只统计原始观察（未过滤）**：回答「这份语料到底有没有该类的位点」。只报过滤后的可用窗口，会把「被规则层降级排除」误读成「数据里不存在」（§F.4 的教训）。可用窗口数见同一份产物的 panel 段。"
+      },
+      "window_floor": 8,
+      "fired_floor": 8,
+      "units": {
+        "windows_in_class": "计数：本面板上该类**判定为成立**的窗口数",
+        "windows_undecided": "计数：该类**不可判定**的窗口数（事实缺失，不得填零）",
+        "fired_windows": "计数：类内候选给出过非零调整的窗口数",
+        "changed_windows": "计数：类内首选动作被改选的窗口数",
+        "note": "本段**只含计数**：没有番、没有积分、没有评分点、没有权重，也不产出排序或适应度。"
+      },
+      "not_in_admitted": "本段**不参与** `admitted`/`all_pass`：覆盖不足不等于不安全（PHASE3-RULE-AWARE §4.4）。研究执行资格见研究入口。",
+      "boundaries": [
+        "触发集是构造集：只证明接线与提供可触发作用面；不得用于效应估计、排序、淘汰或晋级声明。",
+        "unknown/not_verified 不得填零，也不得读成「无影响」。",
+        "逐类三态不得合并成单一总分；汇总只取最弱环节，且不是准入或效果结论。",
+        "记录缺口 ≠ 机制稀有：面板无位点不构成机制稀缺性判断，也不得据此做预算规划。"
+      ],
+      "supervised": true,
+      "supervision": {
+        "returncode": 0,
+        "timed_out": false,
+        "elapsed_sec": 21.66,
+        "signals_sent": [],
+        "group_still_alive": false,
+        "output_truncated": false,
+        "stdout_tail": "",
+        "stderr_tail": ""
+      }
+    }
+  },
+  "perclass_note": "G-2C 逐类覆盖：只回答「候选自己声明的每个场景类在本面板上被验证到什么程度」，不参与 admitted/all_pass。未开启时本段为 null —— **没跑不等于通过**。",
+  "corpus": {
+    "path": "review/llm-guided-heuristic-route-2026-09-15/evidence/3.6b-perclass/corpus-manifest.json",
+    "rows": 16851,
+    "sha256": "0f7d4906731123284421536688260bd881fd2cf5cb5e1a1fcebda18bf009f956",
+    "bytes": 32540,
+    "constructed_trigger_set": false,
+    "manifest": {
+      "schema": "sitin-corpus-manifest/1",
+      "files": 5,
+      "rows": 16851,
+      "row_cap": 20000,
+      "selection_rule": "会话目录名以 auto-match- 开头 ∧ postgame 时间戳以 20260910T 开头；按路径字符串升序；整份文件取到累计行数 <= row_cap 为止（不拆文件）。规则写死在 select_corpus.py 里，运行前冻结，不按候选表现挑语料。",
+      "frozen_before_run": true
+    }
+  },
+  "note": "门禁只做准入，不作排序；G-2 输出禁止用于适应度（README §4.2）"
+}

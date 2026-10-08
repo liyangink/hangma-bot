@@ -1,0 +1,329 @@
+{
+  "schema": "r10-structural-behavior-preflight/3",
+  "corpus": {
+    "record_files": 238,
+    "unique_real_views": 226,
+    "source_directories": {
+      "batch03-known-root-diagnostic": 32,
+      "comparable-shape-second-diagnostic-20260920": 30,
+      "discard-shape-mix-diagnostic-20260920": 17,
+      "followup-balance-diagnostic-20260920": 30,
+      "followup-quality-diagnostic-20260920": 29,
+      "pattern-generalization-diagnostic-v2-20260920": 15,
+      "piao-opportunity-probe-20260920": 8,
+      "real-behavior-panel-v1": 19,
+      "route-decision-diagnostic-20260920": 24,
+      "selfdraw-tempo-diagnostic-20260920": 30
+    }
+  },
+  "tasks": [
+    {
+      "task": "C1",
+      "source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-03-20260921/generations/C1/repair/normalized-v2/candidate.py",
+      "source_sha256": "d9ec26d6e7ff30255bef107a851b5fc65c1afc47cf26db181ee6c8cbc3d080f7",
+      "zero_reference": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "zero_reference_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "views": 226,
+      "all_configurations_clean": true,
+      "zero_config_index": 0,
+      "zero_exact_score_equivalence": true,
+      "zero_changed_score_views": 0,
+      "author_default_index": 3,
+      "default_changed_preferred_views": 0,
+      "default_changed_score_views": 1,
+      "any_configuration_changes_preferred": true,
+      "unique_preference_signatures": 3,
+      "unique_score_signatures": 5,
+      "duplicate_preference_groups": [
+        3,
+        2
+      ],
+      "duplicate_score_groups": [
+        2
+      ],
+      "behavior_preflight_pass": true,
+      "failure_reason": null,
+      "configurations": [
+        {
+          "config_id": "c1-cfg-00",
+          "index": 0,
+          "values": {
+            "CONT_BONUS": 0.0,
+            "FAMILY_BREAK": 0,
+            "TIE_BAND": 0.0
+          },
+          "source_sha256": "aea8de8b095d82c94c5bd692ab1ad6919222f552be7f4d010f954941eb5a80c3",
+          "is_zero_effect": true,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "cf0bc5e8f15d666e1bd95380cf7c2a045f3e930def7bbd5d6727c78a87954a9e",
+          "max_operations": 6106
+        },
+        {
+          "config_id": "c1-cfg-01",
+          "index": 1,
+          "values": {
+            "CONT_BONUS": 0.0,
+            "FAMILY_BREAK": 0,
+            "TIE_BAND": 2.0
+          },
+          "source_sha256": "e3ec74f9c82499979a94df102e0f9ec965b561ea4f92dd85b141963bcd20157a",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "cf0bc5e8f15d666e1bd95380cf7c2a045f3e930def7bbd5d6727c78a87954a9e",
+          "max_operations": 6106
+        },
+        {
+          "config_id": "c1-cfg-02",
+          "index": 2,
+          "values": {
+            "CONT_BONUS": 2.0,
+            "FAMILY_BREAK": 0,
+            "TIE_BAND": 2.0
+          },
+          "source_sha256": "53a1fcd329992af11566cc25da5d1d3fedf512831ff425547c42015688ebd876",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 1,
+          "changed_scores_vs_base": 1,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "c0775b753b2b67fc13293b0f75ed3bcc651ea908d825034bf8d2d678d3512dbf",
+          "score_signature": "8d5dd5f77dd37484a35fcbeccee2986ba7f71757755bfe0c342b6cef1ac3cc3f",
+          "max_operations": 6106
+        },
+        {
+          "config_id": "c1-cfg-03",
+          "index": 3,
+          "values": {
+            "CONT_BONUS": 2.0,
+            "FAMILY_BREAK": 1,
+            "TIE_BAND": 2.0
+          },
+          "source_sha256": "9bab19dd12520f47b2c36c2574325515669e80dc5c2766ab3ed516fb8e6fd90c",
+          "is_zero_effect": false,
+          "is_author_default": true,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 1,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "74b8e6aa28145e099b43d55315200d61b4e3b708ef34bdb5c11666701398704c",
+          "max_operations": 6106
+        },
+        {
+          "config_id": "c1-cfg-04",
+          "index": 4,
+          "values": {
+            "CONT_BONUS": 4.0,
+            "FAMILY_BREAK": 0,
+            "TIE_BAND": 4.0
+          },
+          "source_sha256": "07a17c2b31e44d21d6481d6bbaffb224f87af634acc6cc2e7c68bcd067d098ad",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 2,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7e6b60c95d3dab5c622bf12af4b9175cabbe475cb9998ab170132d45934690dc",
+          "score_signature": "4533370679447ce5b5c09a345eb92c7eb00e6501019a1bc206c16b8a8ec8e67d",
+          "max_operations": 6106
+        },
+        {
+          "config_id": "c1-cfg-05",
+          "index": 5,
+          "values": {
+            "CONT_BONUS": 4.0,
+            "FAMILY_BREAK": 1,
+            "TIE_BAND": 4.0
+          },
+          "source_sha256": "ad33b7b941c0e006001e11dccf07050ec11bf24c2aacec4410f01ccd4b957aa4",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 2,
+          "changed_scores_vs_base": 2,
+          "changed_reasons_vs_base": 226,
+          "preference_signature": "7e6b60c95d3dab5c622bf12af4b9175cabbe475cb9998ab170132d45934690dc",
+          "score_signature": "044598a1f597479f287d6121d2fdffaaf9a5efab7a9046db9747c4d3127e78fd",
+          "max_operations": 6106
+        }
+      ]
+    },
+    {
+      "task": "C2",
+      "source": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/structural-search-03-20260921/generations/C2/repair/normalized-v2/candidate.py",
+      "source_sha256": "96735a9f0e921970f74e6bf829d5059712054759ba3af76da059fe29d0daa89a",
+      "zero_reference": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "zero_reference_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "views": 226,
+      "all_configurations_clean": true,
+      "zero_config_index": 0,
+      "zero_exact_score_equivalence": true,
+      "zero_changed_score_views": 0,
+      "author_default_index": 0,
+      "default_changed_preferred_views": 0,
+      "default_changed_score_views": 0,
+      "any_configuration_changes_preferred": false,
+      "unique_preference_signatures": 1,
+      "unique_score_signatures": 1,
+      "duplicate_preference_groups": [
+        6
+      ],
+      "duplicate_score_groups": [
+        6
+      ],
+      "behavior_preflight_pass": false,
+      "failure_reason": "234个真实观察均未产生首选变化",
+      "configurations": [
+        {
+          "config_id": "c2-cfg-00",
+          "index": 0,
+          "values": {
+            "CONT_BONUS": 0.0,
+            "FAMILY_BREAK": 0,
+            "TIE_BAND": 0.0
+          },
+          "source_sha256": "ec5b1a67ce94fe58e5bf34aed0532204437a203b8b66cbb92a8108e83ec2c567",
+          "is_zero_effect": true,
+          "is_author_default": true,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "ad415e5e6650f1caedaa1ebcfb54dee26034600e333003f13fc4f7bbfce77817",
+          "max_operations": 6019
+        },
+        {
+          "config_id": "c2-cfg-01",
+          "index": 1,
+          "values": {
+            "CONT_BONUS": 0.0,
+            "FAMILY_BREAK": 0,
+            "TIE_BAND": 2.0
+          },
+          "source_sha256": "89f357bad08fd3e5e33f4cb59597edde8f61f03893e754a8a429d48a34897cc8",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "ad415e5e6650f1caedaa1ebcfb54dee26034600e333003f13fc4f7bbfce77817",
+          "max_operations": 6019
+        },
+        {
+          "config_id": "c2-cfg-02",
+          "index": 2,
+          "values": {
+            "CONT_BONUS": 0.0,
+            "FAMILY_BREAK": 0,
+            "TIE_BAND": 4.0
+          },
+          "source_sha256": "04889ebcad1742938ad5a9d71a94f80097bc9eef3a37fbab1542dbd1d34cac1c",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "ad415e5e6650f1caedaa1ebcfb54dee26034600e333003f13fc4f7bbfce77817",
+          "max_operations": 6019
+        },
+        {
+          "config_id": "c2-cfg-03",
+          "index": 3,
+          "values": {
+            "CONT_BONUS": 2.0,
+            "FAMILY_BREAK": 0,
+            "TIE_BAND": 2.0
+          },
+          "source_sha256": "a5dbcd0899f096de7c3486f78d0494f97016577ad8c533f0d8cc573a697967da",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "ad415e5e6650f1caedaa1ebcfb54dee26034600e333003f13fc4f7bbfce77817",
+          "max_operations": 6019
+        },
+        {
+          "config_id": "c2-cfg-04",
+          "index": 4,
+          "values": {
+            "CONT_BONUS": 2.0,
+            "FAMILY_BREAK": 1,
+            "TIE_BAND": 4.0
+          },
+          "source_sha256": "8c1563cf77a74b108facd8f769c1cfe08dbf2e10227c4f62e2575cd599c2021c",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "ad415e5e6650f1caedaa1ebcfb54dee26034600e333003f13fc4f7bbfce77817",
+          "max_operations": 6019
+        },
+        {
+          "config_id": "c2-cfg-05",
+          "index": 5,
+          "values": {
+            "CONT_BONUS": 4.0,
+            "FAMILY_BREAK": 1,
+            "TIE_BAND": 4.0
+          },
+          "source_sha256": "4a123877cdd63eec0ee4be313d62ca43893605e786aff78790aa14ca41368497",
+          "is_zero_effect": false,
+          "is_author_default": false,
+          "views": 226,
+          "failures": [],
+          "changed_preferred_vs_base": 0,
+          "changed_scores_vs_base": 0,
+          "changed_reasons_vs_base": 0,
+          "preference_signature": "7eae14b9f5759269d0d5feafc6f75a0523f03f280079b84ffbe490abf54dd5c1",
+          "score_signature": "ad415e5e6650f1caedaa1ebcfb54dee26034600e333003f13fc4f7bbfce77817",
+          "max_operations": 6019
+        }
+      ]
+    }
+  ],
+  "passed_tasks": [
+    "C1"
+  ],
+  "failed_tasks": [
+    "C2"
+  ],
+  "configurations_materialized": 12,
+  "effect_tables": 0,
+  "selection_eligible": false,
+  "normalization": "normalization-v2-summary.json",
+  "scope_note": "真实观察只用于零效应、运行上界和新行为存在性检查，不含第三批效果标签，不能选优。"
+}

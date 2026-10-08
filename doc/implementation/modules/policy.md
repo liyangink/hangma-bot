@@ -7,7 +7,7 @@
 
 `AutoMatchRuntime.route_limits`复用原`RuntimeServices`和唯一`HangmaRules`；正常清单增加`route_analysis_limits`（工作量次数，不是毫秒）。默认None保持旧调用，额度冲突在任何会话操作前拒绝；原截止、409、规则复核及动作门不变。自由赛组合根拥有独立计算服务，预热先于包含匹配的initialize，正常/异常/启动取消关闭计算资源。脚本终态显示计算计数；LLM不在线。
 
-源码漂移、模式错配及非法URL端口在HTTP/审计线程创建前拒绝。自由赛策略不能从测试房或普通参赛入口启动。真实完整Fake链和131项集中回归通过，旧R18绑定一项显式排除；本地证据不替代完整联网门禁。[当前报告](../../../review/vip-route-2026-09-30/T138-FREE-WIRING-AND-ENGINEERING-STATUS.md)。
+源码漂移、模式错配及非法URL端口在HTTP/审计线程创建前拒绝。自由赛策略不能从测试房或普通参赛入口启动。真实完整Fake链和131项集中回归通过，旧R18绑定一项显式排除；本地证据不替代完整联网门禁。[当前报告](../../research/materials/vip-route-2026-09-30/T138-FREE-WIRING-AND-ENGINEERING-STATUS.md)。
 
 
 ## 2026-10-04 T133—T136 测试房专用候选接线
@@ -30,7 +30,7 @@ HTTP 提交端口签名不变；默认策略及 R18 仍保持原调用方式。
 
 正式自由赛、测试赛事和正式赛事仍需独立绑定包与相应门禁。限深版不得
 继承原完整展开 S02 的统计强度；T131 只对已有来源补齐保持性对照，不能
-计作新的独立样本。实现、实际工具终态和官方验证见[T133记录](../../../review/vip-route-2026-09-30/T133-TESTROOM-WIRING-AND-ACCEPTANCE.md)。
+计作新的独立样本。实现、实际工具终态和官方验证见[T133记录](../../research/materials/vip-route-2026-09-30/T133-TESTROOM-WIRING-AND-ACCEPTANCE.md)。
 
 
 ## 2026-10-04 可选后继杠链限深
@@ -39,10 +39,10 @@ HTTP 提交端口签名不变；默认策略及 R18 仍保持原调用方式。
 
 同名字段进入`VipRouteScoringView`、候选输入`limits`及外层评分轨迹；投影参数、源码/依赖摘要改变候选身份。未来完成子图缓存必须把剩余深度放入键，不能混用不同展开预算。`choose`和官方提交接口不变，线上默认策略不自动切换。规则数学仍由唯一`hangma`提供，预估的后继动作不可盲执行。
 
-研究装配固定八选择首次满足原0.63／2.03秒返回预算，极端响应0.168秒；当前main普通Python装配也8／8通过，极端0.356秒，全分值/解释/操作一致；仍不授并发/SSE/官方门，新变体须另验证强度。完整证据见[成组优化及有限展开](../../../review/vip-route-2026-09-30/T129-T130-GROUPED-OPTIMIZATION-AND-BOUNDED-CHAIN.md)。
+研究装配固定八选择首次满足原0.63／2.03秒返回预算，极端响应0.168秒；当前main普通Python装配也8／8通过，极端0.356秒，全分值/解释/操作一致；仍不授并发/SSE/官方门，新变体须另验证强度。完整证据见[成组优化及有限展开](../../research/materials/vip-route-2026-09-30/T129-T130-GROUPED-OPTIMIZATION-AND-BOUNDED-CHAIN.md)。
 
 
-> **2026-09-16 新接缝规划（待实施）**：新增 `action_value_v1` 独立完整动作评分，按[框架 v4](../../../review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)施工。下文“唯一装载路径”仅指旧 delta 候选；新策略仍只实现同一个 BotPolicy.choose，对合法动作完整评分，显式允许比较合法胡与继续，遵守原保底/截止/审计。公共输入、codec、注册表与新门禁同批升级，不修改冻结 V0/V1/V2。
+> **2026-09-16 新接缝规划（待实施）**：新增 `action_value_v1` 独立完整动作评分，按[框架 v4](../../research/materials/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)施工。下文“唯一装载路径”仅指旧 delta 候选；新策略仍只实现同一个 BotPolicy.choose，对合法动作完整评分，显式允许比较合法胡与继续，遵守原保底/截止/审计。公共输入、codec、注册表与新门禁同批升级，不修改冻结 V0/V1/V2。
 
 ## 交付结果
 

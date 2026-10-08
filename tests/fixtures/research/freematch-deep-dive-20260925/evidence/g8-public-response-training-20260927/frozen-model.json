@@ -1,0 +1,713 @@
+{
+  "coefficients": [
+    -1.3432252852643278,
+    -0.125252649024278,
+    -0.15359601717082336,
+    -0.23776359789581392,
+    0.17279086028578886,
+    0.16614295735988832,
+    0.13600897311663723,
+    0.4587691597399692,
+    0.4882604742512664,
+    0.59289464326698,
+    0.3052564152187199,
+    0.25681445511906625,
+    0.2517494905724618,
+    0.24192687043732325,
+    0.4095560383543338,
+    0.3865061569634933,
+    0.4273039126448089,
+    0.22158774714309215,
+    0.2518407063709568,
+    0.5380563116162239,
+    0.47409844357123654,
+    0.46134718785021334,
+    0.062107884266989995,
+    0.06621600537114154,
+    0.07679927774585396,
+    -0.2263343341389511,
+    -0.1016589610909254,
+    -0.048219509453639176,
+    -0.843169983944788,
+    -0.6938185596359698,
+    -0.6874520041298466,
+    -0.7185071642792896,
+    -0.7661717224324079,
+    -1.1644560141658182,
+    -0.6796334539041669,
+    -0.06584899138455466,
+    0.0633550494695668,
+    -0.022522606652854438,
+    0.025016548567645788,
+    0.5215789937271854,
+    -0.32123431109374706,
+    -0.5808080351605398,
+    -0.17402041009869046,
+    -1.579047070113385,
+    -3.8822851999826753,
+    -2.370361384495125,
+    1.0999332368726753,
+    0.10138197239764676,
+    -0.03980540304954609,
+    -0.6869202833649078,
+    0.10522028763288124,
+    0.14863011465572012,
+    -5.747149672321364,
+    0.2104512947491274,
+    0.29733418754804675
+  ],
+  "extractor_source_sha256": "2b83c08af0d0c29c24a5ffcbd3bca98543f10e6599d8e4dfcca1d1f4dc88d621",
+  "features": [
+    "intercept",
+    "tile:1b",
+    "tile:1t",
+    "tile:1w",
+    "tile:2b",
+    "tile:2t",
+    "tile:2w",
+    "tile:3b",
+    "tile:3t",
+    "tile:3w",
+    "tile:4b",
+    "tile:4t",
+    "tile:4w",
+    "tile:5b",
+    "tile:5t",
+    "tile:5w",
+    "tile:6b",
+    "tile:6t",
+    "tile:6w",
+    "tile:7b",
+    "tile:7t",
+    "tile:7w",
+    "tile:8b",
+    "tile:8t",
+    "tile:8w",
+    "tile:9b",
+    "tile:9t",
+    "tile:9w",
+    "tile:东",
+    "tile:中",
+    "tile:北",
+    "tile:南",
+    "tile:发",
+    "tile:白",
+    "tile:西",
+    "dealer_relative:0",
+    "dealer_relative:1",
+    "dealer_relative:2",
+    "dealer_relative:3",
+    "wall_100",
+    "shanten_5",
+    "risk_1p5",
+    "white_4",
+    "own_tile_4",
+    "public_tile_4",
+    "catch_play",
+    "river_length_rel1_20",
+    "river_length_rel2_20",
+    "river_length_rel3_20",
+    "meld_length_rel1_4",
+    "meld_length_rel2_4",
+    "meld_length_rel3_4",
+    "same_tile_river_rel1_4",
+    "same_tile_river_rel2_4",
+    "same_tile_river_rel3_4"
+  ],
+  "fit": "L2 Newton logistic; 训练房逐房留一选 Brier 最小；候选分母=已接受实际弃牌",
+  "numeric_scales": "固定 100/5/1.5/4/20；见编码脚本",
+  "numpy_version": "2.4.6",
+  "penalty": 1.0,
+  "risk_baseline_coefficients": [
+    -1.9116457146620849,
+    -0.1334970079407224
+  ],
+  "schema": "g8-public-response-frozen-model/1",
+  "tile_dealer_baseline_counts": {
+    "1b|0": {
+      "claimed": 80,
+      "total": 720
+    },
+    "1b|1": {
+      "claimed": 90,
+      "total": 640
+    },
+    "1b|2": {
+      "claimed": 70,
+      "total": 604
+    },
+    "1b|3": {
+      "claimed": 88,
+      "total": 653
+    },
+    "1t|0": {
+      "claimed": 86,
+      "total": 718
+    },
+    "1t|1": {
+      "claimed": 86,
+      "total": 648
+    },
+    "1t|2": {
+      "claimed": 82,
+      "total": 651
+    },
+    "1t|3": {
+      "claimed": 67,
+      "total": 631
+    },
+    "1w|0": {
+      "claimed": 78,
+      "total": 728
+    },
+    "1w|1": {
+      "claimed": 78,
+      "total": 606
+    },
+    "1w|2": {
+      "claimed": 53,
+      "total": 598
+    },
+    "1w|3": {
+      "claimed": 68,
+      "total": 581
+    },
+    "2b|0": {
+      "claimed": 79,
+      "total": 516
+    },
+    "2b|1": {
+      "claimed": 87,
+      "total": 480
+    },
+    "2b|2": {
+      "claimed": 83,
+      "total": 454
+    },
+    "2b|3": {
+      "claimed": 68,
+      "total": 464
+    },
+    "2t|0": {
+      "claimed": 96,
+      "total": 573
+    },
+    "2t|1": {
+      "claimed": 75,
+      "total": 456
+    },
+    "2t|2": {
+      "claimed": 68,
+      "total": 445
+    },
+    "2t|3": {
+      "claimed": 83,
+      "total": 450
+    },
+    "2w|0": {
+      "claimed": 90,
+      "total": 559
+    },
+    "2w|1": {
+      "claimed": 67,
+      "total": 427
+    },
+    "2w|2": {
+      "claimed": 66,
+      "total": 456
+    },
+    "2w|3": {
+      "claimed": 77,
+      "total": 495
+    },
+    "3b|0": {
+      "claimed": 92,
+      "total": 419
+    },
+    "3b|1": {
+      "claimed": 93,
+      "total": 323
+    },
+    "3b|2": {
+      "claimed": 67,
+      "total": 342
+    },
+    "3b|3": {
+      "claimed": 58,
+      "total": 341
+    },
+    "3t|0": {
+      "claimed": 84,
+      "total": 401
+    },
+    "3t|1": {
+      "claimed": 78,
+      "total": 365
+    },
+    "3t|2": {
+      "claimed": 74,
+      "total": 333
+    },
+    "3t|3": {
+      "claimed": 72,
+      "total": 318
+    },
+    "3w|0": {
+      "claimed": 84,
+      "total": 403
+    },
+    "3w|1": {
+      "claimed": 64,
+      "total": 295
+    },
+    "3w|2": {
+      "claimed": 96,
+      "total": 352
+    },
+    "3w|3": {
+      "claimed": 75,
+      "total": 329
+    },
+    "4b|0": {
+      "claimed": 66,
+      "total": 359
+    },
+    "4b|1": {
+      "claimed": 59,
+      "total": 301
+    },
+    "4b|2": {
+      "claimed": 53,
+      "total": 307
+    },
+    "4b|3": {
+      "claimed": 65,
+      "total": 326
+    },
+    "4t|0": {
+      "claimed": 53,
+      "total": 344
+    },
+    "4t|1": {
+      "claimed": 58,
+      "total": 297
+    },
+    "4t|2": {
+      "claimed": 46,
+      "total": 276
+    },
+    "4t|3": {
+      "claimed": 64,
+      "total": 294
+    },
+    "4w|0": {
+      "claimed": 38,
+      "total": 322
+    },
+    "4w|1": {
+      "claimed": 57,
+      "total": 281
+    },
+    "4w|2": {
+      "claimed": 57,
+      "total": 278
+    },
+    "4w|3": {
+      "claimed": 54,
+      "total": 283
+    },
+    "5b|0": {
+      "claimed": 75,
+      "total": 400
+    },
+    "5b|1": {
+      "claimed": 54,
+      "total": 299
+    },
+    "5b|2": {
+      "claimed": 58,
+      "total": 279
+    },
+    "5b|3": {
+      "claimed": 51,
+      "total": 314
+    },
+    "5t|0": {
+      "claimed": 65,
+      "total": 327
+    },
+    "5t|1": {
+      "claimed": 58,
+      "total": 283
+    },
+    "5t|2": {
+      "claimed": 62,
+      "total": 308
+    },
+    "5t|3": {
+      "claimed": 71,
+      "total": 296
+    },
+    "5w|0": {
+      "claimed": 71,
+      "total": 341
+    },
+    "5w|1": {
+      "claimed": 75,
+      "total": 321
+    },
+    "5w|2": {
+      "claimed": 61,
+      "total": 301
+    },
+    "5w|3": {
+      "claimed": 49,
+      "total": 298
+    },
+    "6b|0": {
+      "claimed": 76,
+      "total": 336
+    },
+    "6b|1": {
+      "claimed": 53,
+      "total": 264
+    },
+    "6b|2": {
+      "claimed": 50,
+      "total": 272
+    },
+    "6b|3": {
+      "claimed": 59,
+      "total": 278
+    },
+    "6t|0": {
+      "claimed": 63,
+      "total": 342
+    },
+    "6t|1": {
+      "claimed": 47,
+      "total": 287
+    },
+    "6t|2": {
+      "claimed": 49,
+      "total": 276
+    },
+    "6t|3": {
+      "claimed": 58,
+      "total": 303
+    },
+    "6w|0": {
+      "claimed": 59,
+      "total": 352
+    },
+    "6w|1": {
+      "claimed": 57,
+      "total": 289
+    },
+    "6w|2": {
+      "claimed": 49,
+      "total": 277
+    },
+    "6w|3": {
+      "claimed": 57,
+      "total": 309
+    },
+    "7b|0": {
+      "claimed": 70,
+      "total": 320
+    },
+    "7b|1": {
+      "claimed": 71,
+      "total": 270
+    },
+    "7b|2": {
+      "claimed": 45,
+      "total": 287
+    },
+    "7b|3": {
+      "claimed": 67,
+      "total": 297
+    },
+    "7t|0": {
+      "claimed": 64,
+      "total": 290
+    },
+    "7t|1": {
+      "claimed": 56,
+      "total": 267
+    },
+    "7t|2": {
+      "claimed": 49,
+      "total": 261
+    },
+    "7t|3": {
+      "claimed": 63,
+      "total": 274
+    },
+    "7w|0": {
+      "claimed": 70,
+      "total": 315
+    },
+    "7w|1": {
+      "claimed": 53,
+      "total": 254
+    },
+    "7w|2": {
+      "claimed": 46,
+      "total": 254
+    },
+    "7w|3": {
+      "claimed": 57,
+      "total": 274
+    },
+    "8b|0": {
+      "claimed": 52,
+      "total": 419
+    },
+    "8b|1": {
+      "claimed": 60,
+      "total": 392
+    },
+    "8b|2": {
+      "claimed": 61,
+      "total": 348
+    },
+    "8b|3": {
+      "claimed": 53,
+      "total": 368
+    },
+    "8t|0": {
+      "claimed": 58,
+      "total": 398
+    },
+    "8t|1": {
+      "claimed": 56,
+      "total": 392
+    },
+    "8t|2": {
+      "claimed": 52,
+      "total": 368
+    },
+    "8t|3": {
+      "claimed": 59,
+      "total": 364
+    },
+    "8w|0": {
+      "claimed": 61,
+      "total": 467
+    },
+    "8w|1": {
+      "claimed": 51,
+      "total": 354
+    },
+    "8w|2": {
+      "claimed": 48,
+      "total": 379
+    },
+    "8w|3": {
+      "claimed": 68,
+      "total": 361
+    },
+    "9b|0": {
+      "claimed": 49,
+      "total": 562
+    },
+    "9b|1": {
+      "claimed": 59,
+      "total": 528
+    },
+    "9b|2": {
+      "claimed": 63,
+      "total": 529
+    },
+    "9b|3": {
+      "claimed": 49,
+      "total": 515
+    },
+    "9t|0": {
+      "claimed": 62,
+      "total": 590
+    },
+    "9t|1": {
+      "claimed": 84,
+      "total": 562
+    },
+    "9t|2": {
+      "claimed": 55,
+      "total": 481
+    },
+    "9t|3": {
+      "claimed": 53,
+      "total": 507
+    },
+    "9w|0": {
+      "claimed": 62,
+      "total": 571
+    },
+    "9w|1": {
+      "claimed": 64,
+      "total": 538
+    },
+    "9w|2": {
+      "claimed": 48,
+      "total": 480
+    },
+    "9w|3": {
+      "claimed": 76,
+      "total": 503
+    },
+    "东|0": {
+      "claimed": 47,
+      "total": 963
+    },
+    "东|1": {
+      "claimed": 38,
+      "total": 881
+    },
+    "东|2": {
+      "claimed": 31,
+      "total": 776
+    },
+    "东|3": {
+      "claimed": 53,
+      "total": 831
+    },
+    "中|0": {
+      "claimed": 44,
+      "total": 899
+    },
+    "中|1": {
+      "claimed": 59,
+      "total": 856
+    },
+    "中|2": {
+      "claimed": 45,
+      "total": 838
+    },
+    "中|3": {
+      "claimed": 53,
+      "total": 803
+    },
+    "北|0": {
+      "claimed": 58,
+      "total": 851
+    },
+    "北|1": {
+      "claimed": 43,
+      "total": 791
+    },
+    "北|2": {
+      "claimed": 43,
+      "total": 792
+    },
+    "北|3": {
+      "claimed": 40,
+      "total": 766
+    },
+    "南|0": {
+      "claimed": 56,
+      "total": 880
+    },
+    "南|1": {
+      "claimed": 41,
+      "total": 814
+    },
+    "南|2": {
+      "claimed": 34,
+      "total": 828
+    },
+    "南|3": {
+      "claimed": 46,
+      "total": 783
+    },
+    "发|0": {
+      "claimed": 50,
+      "total": 853
+    },
+    "发|1": {
+      "claimed": 34,
+      "total": 809
+    },
+    "发|2": {
+      "claimed": 50,
+      "total": 791
+    },
+    "发|3": {
+      "claimed": 39,
+      "total": 809
+    },
+    "白|0": {
+      "claimed": 0,
+      "total": 5
+    },
+    "白|1": {
+      "claimed": 0,
+      "total": 6
+    },
+    "白|2": {
+      "claimed": 0,
+      "total": 4
+    },
+    "白|3": {
+      "claimed": 0,
+      "total": 7
+    },
+    "西|0": {
+      "claimed": 54,
+      "total": 853
+    },
+    "西|1": {
+      "claimed": 38,
+      "total": 828
+    },
+    "西|2": {
+      "claimed": 39,
+      "total": 780
+    },
+    "西|3": {
+      "claimed": 44,
+      "total": 745
+    }
+  },
+  "tile_dealer_baseline_global_rate": 0.12849543469630806,
+  "tile_dealer_baseline_strength": 20,
+  "tiles": [
+    "1b",
+    "1t",
+    "1w",
+    "2b",
+    "2t",
+    "2w",
+    "3b",
+    "3t",
+    "3w",
+    "4b",
+    "4t",
+    "4w",
+    "5b",
+    "5t",
+    "5w",
+    "6b",
+    "6t",
+    "6w",
+    "7b",
+    "7t",
+    "7w",
+    "8b",
+    "8t",
+    "8w",
+    "9b",
+    "9t",
+    "9w",
+    "东",
+    "中",
+    "北",
+    "南",
+    "发",
+    "白",
+    "西"
+  ],
+  "train_rows_gzip_sha256": "9acfa00cb6b4dec4887a483af53f913570003d42c01e72f6be80b70383b66f99",
+  "trainer_source_sha256": "a6335ecf1316025a57d3f50acd73ba5f982041a2faa267cd62d2fa71b71f4767",
+  "validation_labels_opened": false
+}

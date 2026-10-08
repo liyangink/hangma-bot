@@ -1,0 +1,86 @@
+{
+  "adopted_half_total_gain": {
+    "at_most_0_05": 107,
+    "at_most_0_1": 116,
+    "at_most_0_25": 126,
+    "max": 1.497565725,
+    "median": 0.023975672,
+    "p95_nearest_rank": 0.719413919
+  },
+  "boundary": "八个独立开发根的描述性区间；选择器条件分不是整桌因果收益。",
+  "changed_complete_tables_by_mix": {
+    "H": 27,
+    "M": 29
+  },
+  "changed_stage_units_by_mix": {
+    "H": 15,
+    "M": 16
+  },
+  "component_delta_per_table_by_mix": {
+    "H": {
+      "draw_delta": 0.0,
+      "other_win_delta": -0.40625,
+      "plain_self_win_delta": 1.6875,
+      "special_self_win_delta": -1.875
+    },
+    "M": {
+      "draw_delta": 0.0,
+      "other_win_delta": -0.5,
+      "plain_self_win_delta": -1.375,
+      "special_self_win_delta": -0.25
+    }
+  },
+  "execution_review_integer_totals": {
+    "abstain": 0,
+    "action_value_failed": 0,
+    "ambiguous_diagnostics": 0,
+    "operation_limit": 0,
+    "resource_or_numeric_limit": 0,
+    "scoring_error": 0,
+    "unclassified_action_value": 0,
+    "unclassified_failure": 0
+  },
+  "independent_root_clusters": 8,
+  "mean_delta_per_table_by_mix": {
+    "H": -0.59375,
+    "M": -2.125
+  },
+  "root_deltas_per_table": {
+    "H": [
+      3.0,
+      -33.875,
+      23.0,
+      5.5
+    ],
+    "M": [
+      11.5,
+      -4.25,
+      -14.0,
+      -1.75
+    ]
+  },
+  "schema": "g221-settlement-route-analysis/1",
+  "selector_fallback_error_types": {
+    "RouteLimitExceeded": 26
+  },
+  "selector_fallback_reasons": {
+    "selector_exception": 26
+  },
+  "selector_statuses": {
+    "adopted": 148,
+    "fallback": 26,
+    "kept_parent": 1444
+  },
+  "source_manifest_sha256": "3022c4c2d90fba2fe8d28286386899a8208cf5d7bc78b9983af68a00ca536bf5",
+  "source_result_sha256": "7e7df29a0cebb6becba487a029a61aee67a1b3e3a4e3cef4287986966b4fd7f3",
+  "source_stage_count": 64,
+  "stratified_root_bootstrap": {
+    "descriptive_95_interval": [
+      -13.078125,
+      8.9375
+    ],
+    "method": "H/M 各自四根有放回抽四根，然后两池等权",
+    "repetitions": 100000,
+    "seed": 20261229221
+  }
+}

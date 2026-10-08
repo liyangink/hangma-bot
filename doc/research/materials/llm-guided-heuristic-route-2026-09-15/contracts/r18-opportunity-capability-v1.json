@@ -1,0 +1,110 @@
+{
+  "schema": "r18-opportunity-capability-contract/1",
+  "objective": "在稳定V2牌效底座之上，分家族测量并演化杭麻低频高收益机会能力；能力题库负责发现和保留专长，完整桌赛负责退化安全与最终强度确认。",
+  "candidate_execution": {
+    "entrypoint": "BotPolicy.choose(DecisionRequest, DecisionBudget)",
+    "must_use_production_policy_path": true,
+    "forbidden_shortcuts": [
+      "直接调用候选scorer并绕过生产策略组合",
+      "读取WorldState、未来牌墙、他家暗手、题目答案或隐藏集身份",
+      "重算合法动作、胡牌、向听、爆头、链或结算",
+      "把oracle缺失的合法动作从argmax静默删除"
+    ],
+    "fallback": "任一事实、oracle或执行不完整时，候选运行必须原样回退稳定V2；该题标记未覆盖，不冒充命中"
+  },
+  "families": [
+    "multi_wealth_baotou",
+    "hu_versus_continue",
+    "gang_chain",
+    "chain_keep_or_break",
+    "catch_play",
+    "seven_pairs_closed",
+    "competition_situation"
+  ],
+  "case": {
+    "required_identity_fields": [
+      "case_id",
+      "base_scenario_id",
+      "family",
+      "split",
+      "generator_seed",
+      "rules_hash",
+      "generator_sha256",
+      "oracle_version",
+      "request_sha256",
+      "reachability_witness_sha256"
+    ],
+    "split_values": [
+      "development",
+      "hidden"
+    ],
+    "grouping_rule": "同一基础状态的财神数、链深、horizon、座位、庄闲和赛事处境变体必须共享base_scenario_id并进入同一split",
+    "request": "可由正式DecisionCodec复算的DecisionRequest；策略输入只含PlayerObservation",
+    "reachability": "每个计分题须有模拟事件前缀、官方回放前缀或物理牌守恒+规则转移求解见证之一",
+    "legal_action_values": "题面全部合法动作逐项给value、error_bound、oracle_level和evidence；同题单位与oracle_level必须一致",
+    "oracle_incomplete": "任一合法动作没有可信值时整题退出regret和命中计分，只计覆盖缺口"
+  },
+  "oracle_levels": [
+    "official_gold_or_rule_dominance",
+    "bounded_exhaustive_expectation",
+    "declared_conditional_proxy",
+    "paired_counterfactual"
+  ],
+  "known_tile_conservation": {
+    "physical_copies_per_code": 4,
+    "subtract": [
+      "own_concealed_hand",
+      "current_drawn_tile",
+      "all_public_discards",
+      "all_public_meld_tiles"
+    ],
+    "property": "每个牌码的已知张数+未知张数恒为4；不得把当前摸牌同时留在未知池"
+  },
+  "metrics": {
+    "primary": "regret=oracle_best_value-oracle_value_of_policy_action",
+    "regret_interval": "若动作值有双侧绝对误差界e，则lower=max(0,max_i(v_i-e_i)-(v_a+e_a))，upper=max_i(v_i+e_i)-(v_a-e_a)",
+    "paired_gain": "regret_v2-regret_candidate",
+    "paired_gain_interval": "lower=regret_v2_lower-regret_candidate_upper，upper=regret_v2_upper-regret_candidate_lower",
+    "secondary": [
+      "optimal_action_hit",
+      "coverage_rate",
+      "abstain_rate",
+      "execution_error_rate",
+      "cost"
+    ],
+    "reporting": "逐family独立报告，不按题数合成总分",
+    "uncertainty_unit": "base_scenario_id或生成seed的聚类bootstrap，不以展开后的单题为独立样本",
+    "aggregation": "每个base_scenario_id内先对变体取均值，再对基础场景等权取均值；报告点估计、保守下界与乐观上界"
+  },
+  "selection": {
+    "archive": "任一隐藏家族相对V2改善且其他已验证家族无实质退化，可进入Pareto/Lexicase专长档案",
+    "research_retention": "完整桌赛没有足够证据证明实质退化时可保留研究专长，但不得声称非劣",
+    "production": "必须另过完整桌赛预登记非劣/增强门、独立确认和发布门",
+    "no_scalar_blend": true
+  },
+  "calibration": {
+    "required_controls": [
+      "stable_v2",
+      "family_positive_control",
+      "deliberately_wrong_negative_control"
+    ],
+    "paired_counterfactual_minimum": "每个拟进入隐藏门的代理家族须用数百个同墙同对手机会位点校准方向；实际样本数由预实验方差和功效计算冻结",
+    "failure": "正负控不能分开，或代理regret与配对反事实方向相反，则该家族不得用于候选选择"
+  },
+  "first_family": {
+    "name": "multi_wealth_baotou",
+    "minimum_unique_base_scenarios": 30,
+    "required_wealth_counts": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "required_decision_types": [
+      "take_hu",
+      "keep_wealth",
+      "piao",
+      "gang_or_decline"
+    ]
+  }
+}

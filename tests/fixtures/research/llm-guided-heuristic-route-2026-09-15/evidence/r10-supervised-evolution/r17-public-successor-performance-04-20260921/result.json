@@ -1,0 +1,662 @@
+{
+  "schema": "r17-public-successor-gc-diagnostic-result/1",
+  "status": "PASS_EVIDENCE_HARNESS_GC_DIAGNOSIS_PRODUCTION_NOT_ADMITTED",
+  "passes": 6,
+  "windows_per_pass": 226,
+  "tables": 0,
+  "model_calls": 0,
+  "strength_claim": false,
+  "selection_eligible": false,
+  "raw_digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+  "all_digests_equal": true,
+  "all_performance_gates_passed": true,
+  "gc_protocol": {
+    "initial_enabled": true,
+    "final_enabled": true,
+    "final_restored": true,
+    "all_passes_restored": true,
+    "all_passes_followed_protocol": true,
+    "tracemalloc": false
+  },
+  "latency_ranges": {
+    "mean_ms_min": 77.51566623389596,
+    "mean_ms_max": 79.90626858575946,
+    "p99_ms_min": 143.36108299903572,
+    "p99_ms_max": 150.85191710386425,
+    "window_max_ms_min": 147.2049580188468,
+    "window_max_ms_max": 162.43012493941933
+  },
+  "passes_summary": [
+    {
+      "pass_index": 1,
+      "digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "digest_matches_raw": true,
+      "latency": {
+        "mean_ms": 77.51566623389596,
+        "p50_ms": 76.9286670256406,
+        "p90_ms": 121.71404203400016,
+        "p95_ms": 131.72449998091906,
+        "p99_ms": 143.36108299903572,
+        "max_ms": 147.2049580188468
+      },
+      "gate": {
+        "passed": true,
+        "p99_ms_max": 200.0,
+        "window_max_ms": 500.0
+      },
+      "wall_seconds_including_digest": 14.291573833907023,
+      "gc": {
+        "collected_before": 0,
+        "enabled_before": true,
+        "disabled_inside_critical": true,
+        "restored_after_critical": true,
+        "stats_before": [
+          {
+            "collections": 326,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 3,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ],
+        "collected_after_deleting_large_objects": 0,
+        "enabled_after_cleanup": true,
+        "garbage_len_after_cleanup": 0,
+        "stats_after_cleanup": [
+          {
+            "collections": 327,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 4,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ]
+      },
+      "peak_rss_after_critical": {
+        "ru_maxrss_raw": 601587712,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 573.71875,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      },
+      "counts": {
+        "all_capacity_edges": 60597,
+        "discard_roots": 1825,
+        "discard_roots_covered": 1825,
+        "draw_windows": 179,
+        "drawn_only_discard": 60597,
+        "drawn_only_discard_pareto": 60597,
+        "drawn_only_gang": 532,
+        "drawn_only_hu": 777,
+        "non_useful_edges": 42084,
+        "response_fallback_windows": 47,
+        "unrestricted_discard": 642562,
+        "unrestricted_discard_pareto": 208464,
+        "unrestricted_gang": 1071,
+        "unrestricted_hu": 777,
+        "useful_edges": 18513,
+        "value_route_edges": 777,
+        "value_route_groups": 151
+      },
+      "performance_counts": {
+        "hand_summary_cache_hits": 60384,
+        "hand_summary_cache_misses": 349185,
+        "leaf_scalar_cache_hits": 354187,
+        "leaf_scalar_cache_misses": 348972,
+        "logical_discard_leaf_requests": 703159
+      },
+      "issues": {
+        "route": 0,
+        "projection": 0
+      },
+      "peak_rss_after_cleanup": {
+        "ru_maxrss_raw": 601587712,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 573.71875,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      }
+    },
+    {
+      "pass_index": 2,
+      "digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "digest_matches_raw": true,
+      "latency": {
+        "mean_ms": 77.87601212325751,
+        "p50_ms": 77.49595795758069,
+        "p90_ms": 120.84966595284641,
+        "p95_ms": 133.20116593968123,
+        "p99_ms": 144.36704199761152,
+        "max_ms": 147.66287500970066
+      },
+      "gate": {
+        "passed": true,
+        "p99_ms_max": 200.0,
+        "window_max_ms": 500.0
+      },
+      "wall_seconds_including_digest": 14.365801459061913,
+      "gc": {
+        "collected_before": 0,
+        "enabled_before": true,
+        "disabled_inside_critical": true,
+        "restored_after_critical": true,
+        "stats_before": [
+          {
+            "collections": 327,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 5,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ],
+        "collected_after_deleting_large_objects": 0,
+        "enabled_after_cleanup": true,
+        "garbage_len_after_cleanup": 0,
+        "stats_after_cleanup": [
+          {
+            "collections": 328,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 6,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ]
+      },
+      "peak_rss_after_critical": {
+        "ru_maxrss_raw": 673595392,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 642.390625,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      },
+      "counts": {
+        "all_capacity_edges": 60597,
+        "discard_roots": 1825,
+        "discard_roots_covered": 1825,
+        "draw_windows": 179,
+        "drawn_only_discard": 60597,
+        "drawn_only_discard_pareto": 60597,
+        "drawn_only_gang": 532,
+        "drawn_only_hu": 777,
+        "non_useful_edges": 42084,
+        "response_fallback_windows": 47,
+        "unrestricted_discard": 642562,
+        "unrestricted_discard_pareto": 208464,
+        "unrestricted_gang": 1071,
+        "unrestricted_hu": 777,
+        "useful_edges": 18513,
+        "value_route_edges": 777,
+        "value_route_groups": 151
+      },
+      "performance_counts": {
+        "hand_summary_cache_hits": 60384,
+        "hand_summary_cache_misses": 349185,
+        "leaf_scalar_cache_hits": 354187,
+        "leaf_scalar_cache_misses": 348972,
+        "logical_discard_leaf_requests": 703159
+      },
+      "issues": {
+        "route": 0,
+        "projection": 0
+      },
+      "peak_rss_after_cleanup": {
+        "ru_maxrss_raw": 673595392,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 642.390625,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      }
+    },
+    {
+      "pass_index": 3,
+      "digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "digest_matches_raw": true,
+      "latency": {
+        "mean_ms": 78.54896691737062,
+        "p50_ms": 78.36124999448657,
+        "p90_ms": 121.89154198858887,
+        "p95_ms": 132.12016702163965,
+        "p99_ms": 146.14379196427763,
+        "max_ms": 155.03187500871718
+      },
+      "gate": {
+        "passed": true,
+        "p99_ms_max": 200.0,
+        "window_max_ms": 500.0
+      },
+      "wall_seconds_including_digest": 14.48066304193344,
+      "gc": {
+        "collected_before": 0,
+        "enabled_before": true,
+        "disabled_inside_critical": true,
+        "restored_after_critical": true,
+        "stats_before": [
+          {
+            "collections": 328,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 7,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ],
+        "collected_after_deleting_large_objects": 0,
+        "enabled_after_cleanup": true,
+        "garbage_len_after_cleanup": 0,
+        "stats_after_cleanup": [
+          {
+            "collections": 329,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 8,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ]
+      },
+      "peak_rss_after_critical": {
+        "ru_maxrss_raw": 890126336,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 848.890625,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      },
+      "counts": {
+        "all_capacity_edges": 60597,
+        "discard_roots": 1825,
+        "discard_roots_covered": 1825,
+        "draw_windows": 179,
+        "drawn_only_discard": 60597,
+        "drawn_only_discard_pareto": 60597,
+        "drawn_only_gang": 532,
+        "drawn_only_hu": 777,
+        "non_useful_edges": 42084,
+        "response_fallback_windows": 47,
+        "unrestricted_discard": 642562,
+        "unrestricted_discard_pareto": 208464,
+        "unrestricted_gang": 1071,
+        "unrestricted_hu": 777,
+        "useful_edges": 18513,
+        "value_route_edges": 777,
+        "value_route_groups": 151
+      },
+      "performance_counts": {
+        "hand_summary_cache_hits": 60384,
+        "hand_summary_cache_misses": 349185,
+        "leaf_scalar_cache_hits": 354187,
+        "leaf_scalar_cache_misses": 348972,
+        "logical_discard_leaf_requests": 703159
+      },
+      "issues": {
+        "route": 0,
+        "projection": 0
+      },
+      "peak_rss_after_cleanup": {
+        "ru_maxrss_raw": 890126336,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 848.890625,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      }
+    },
+    {
+      "pass_index": 4,
+      "digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "digest_matches_raw": true,
+      "latency": {
+        "mean_ms": 79.46024091677563,
+        "p50_ms": 79.07433295622468,
+        "p90_ms": 122.62479204218835,
+        "p95_ms": 134.02816699817777,
+        "p99_ms": 150.85191710386425,
+        "max_ms": 152.12933404836804
+      },
+      "gate": {
+        "passed": true,
+        "p99_ms_max": 200.0,
+        "window_max_ms": 500.0
+      },
+      "wall_seconds_including_digest": 14.653162749949843,
+      "gc": {
+        "collected_before": 0,
+        "enabled_before": true,
+        "disabled_inside_critical": true,
+        "restored_after_critical": true,
+        "stats_before": [
+          {
+            "collections": 329,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 9,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ],
+        "collected_after_deleting_large_objects": 0,
+        "enabled_after_cleanup": true,
+        "garbage_len_after_cleanup": 0,
+        "stats_after_cleanup": [
+          {
+            "collections": 330,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 10,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ]
+      },
+      "peak_rss_after_critical": {
+        "ru_maxrss_raw": 890535936,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 849.28125,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      },
+      "counts": {
+        "all_capacity_edges": 60597,
+        "discard_roots": 1825,
+        "discard_roots_covered": 1825,
+        "draw_windows": 179,
+        "drawn_only_discard": 60597,
+        "drawn_only_discard_pareto": 60597,
+        "drawn_only_gang": 532,
+        "drawn_only_hu": 777,
+        "non_useful_edges": 42084,
+        "response_fallback_windows": 47,
+        "unrestricted_discard": 642562,
+        "unrestricted_discard_pareto": 208464,
+        "unrestricted_gang": 1071,
+        "unrestricted_hu": 777,
+        "useful_edges": 18513,
+        "value_route_edges": 777,
+        "value_route_groups": 151
+      },
+      "performance_counts": {
+        "hand_summary_cache_hits": 60384,
+        "hand_summary_cache_misses": 349185,
+        "leaf_scalar_cache_hits": 354187,
+        "leaf_scalar_cache_misses": 348972,
+        "logical_discard_leaf_requests": 703159
+      },
+      "issues": {
+        "route": 0,
+        "projection": 0
+      },
+      "peak_rss_after_cleanup": {
+        "ru_maxrss_raw": 890535936,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 849.28125,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      }
+    },
+    {
+      "pass_index": 5,
+      "digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "digest_matches_raw": true,
+      "latency": {
+        "mean_ms": 79.90626858575946,
+        "p50_ms": 79.91408300586045,
+        "p90_ms": 125.36979105789214,
+        "p95_ms": 134.7545840544626,
+        "p99_ms": 149.2287910077721,
+        "max_ms": 162.43012493941933
+      },
+      "gate": {
+        "passed": true,
+        "p99_ms_max": 200.0,
+        "window_max_ms": 500.0
+      },
+      "wall_seconds_including_digest": 14.74857083405368,
+      "gc": {
+        "collected_before": 0,
+        "enabled_before": true,
+        "disabled_inside_critical": true,
+        "restored_after_critical": true,
+        "stats_before": [
+          {
+            "collections": 330,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 11,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ],
+        "collected_after_deleting_large_objects": 0,
+        "enabled_after_cleanup": true,
+        "garbage_len_after_cleanup": 0,
+        "stats_after_cleanup": [
+          {
+            "collections": 331,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 12,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ]
+      },
+      "peak_rss_after_critical": {
+        "ru_maxrss_raw": 890912768,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 849.640625,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      },
+      "counts": {
+        "all_capacity_edges": 60597,
+        "discard_roots": 1825,
+        "discard_roots_covered": 1825,
+        "draw_windows": 179,
+        "drawn_only_discard": 60597,
+        "drawn_only_discard_pareto": 60597,
+        "drawn_only_gang": 532,
+        "drawn_only_hu": 777,
+        "non_useful_edges": 42084,
+        "response_fallback_windows": 47,
+        "unrestricted_discard": 642562,
+        "unrestricted_discard_pareto": 208464,
+        "unrestricted_gang": 1071,
+        "unrestricted_hu": 777,
+        "useful_edges": 18513,
+        "value_route_edges": 777,
+        "value_route_groups": 151
+      },
+      "performance_counts": {
+        "hand_summary_cache_hits": 60384,
+        "hand_summary_cache_misses": 349185,
+        "leaf_scalar_cache_hits": 354187,
+        "leaf_scalar_cache_misses": 348972,
+        "logical_discard_leaf_requests": 703159
+      },
+      "issues": {
+        "route": 0,
+        "projection": 0
+      },
+      "peak_rss_after_cleanup": {
+        "ru_maxrss_raw": 890912768,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 849.640625,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      }
+    },
+    {
+      "pass_index": 6,
+      "digest": "5db94acf10972588e47ae2b05f6c3c644f039fbc7837a434ecb20f8e164b6a12",
+      "digest_matches_raw": true,
+      "latency": {
+        "mean_ms": 79.17612638876008,
+        "p50_ms": 79.45620908867568,
+        "p90_ms": 124.11420897115022,
+        "p95_ms": 134.30954201612622,
+        "p99_ms": 147.77724992018193,
+        "max_ms": 150.19504202064127
+      },
+      "gate": {
+        "passed": true,
+        "p99_ms_max": 200.0,
+        "window_max_ms": 500.0
+      },
+      "wall_seconds_including_digest": 14.622068124939688,
+      "gc": {
+        "collected_before": 0,
+        "enabled_before": true,
+        "disabled_inside_critical": true,
+        "restored_after_critical": true,
+        "stats_before": [
+          {
+            "collections": 331,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 13,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ],
+        "collected_after_deleting_large_objects": 0,
+        "enabled_after_cleanup": true,
+        "garbage_len_after_cleanup": 0,
+        "stats_after_cleanup": [
+          {
+            "collections": 332,
+            "collected": 183,
+            "uncollectable": 0
+          },
+          {
+            "collections": 29,
+            "collected": 88,
+            "uncollectable": 0
+          },
+          {
+            "collections": 14,
+            "collected": 0,
+            "uncollectable": 0
+          }
+        ]
+      },
+      "peak_rss_after_critical": {
+        "ru_maxrss_raw": 890912768,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 849.640625,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      },
+      "counts": {
+        "all_capacity_edges": 60597,
+        "discard_roots": 1825,
+        "discard_roots_covered": 1825,
+        "draw_windows": 179,
+        "drawn_only_discard": 60597,
+        "drawn_only_discard_pareto": 60597,
+        "drawn_only_gang": 532,
+        "drawn_only_hu": 777,
+        "non_useful_edges": 42084,
+        "response_fallback_windows": 47,
+        "unrestricted_discard": 642562,
+        "unrestricted_discard_pareto": 208464,
+        "unrestricted_gang": 1071,
+        "unrestricted_hu": 777,
+        "useful_edges": 18513,
+        "value_route_edges": 777,
+        "value_route_groups": 151
+      },
+      "performance_counts": {
+        "hand_summary_cache_hits": 60384,
+        "hand_summary_cache_misses": 349185,
+        "leaf_scalar_cache_hits": 354187,
+        "leaf_scalar_cache_misses": 348972,
+        "logical_discard_leaf_requests": 703159
+      },
+      "issues": {
+        "route": 0,
+        "projection": 0
+      },
+      "peak_rss_after_cleanup": {
+        "ru_maxrss_raw": 890912768,
+        "platform_unit": "bytes",
+        "peak_rss_mib": 849.640625,
+        "meaning": "进程生命周期累计高水位，不是该遍独占内存，也不是当前RSS"
+      }
+    }
+  ],
+  "diagnosis": "在语义与工作量相同、只改变证据工具循环GC时，六遍全部通过冻结性能门；结合performance-03暖遍连续尾延迟，支持其主因是循环GC扫描/大对象证据物化，不支持把该探针直接认定为生产可准入实现。",
+  "production_admission_remaining": [
+    "把34摸牌批量接口下沉到hangma唯一规则边界，policy不重算规则数学",
+    "生产路径不得物化完整edge_rows；固定reducer应流式消费或只保留有界前沿",
+    "增加重复调用RSS/对象数量无增长与循环引用检查",
+    "在正式1秒/3秒动作链包含最终复核、审计和提交余量的性能门复验"
+  ]
+}

@@ -57,8 +57,8 @@ check 只查询并保存准备结果；start 需要检查生成的配置。两�
     config_path = folder / "participant.json"
     token_path = folder / "participant.token"
     # 实验/测试默认RF1；正式锦标赛继续使用稳定P0，不跨模式复用包。
-    template_name = ("vip-g37-rf1-v1.test-tournament.example.json" if args.test
-                     else "vip-s03-rulefix-p0-approved-v4.official-tournament.example.json")
+    template_name = ("vip-g37-rf1-v2.test-tournament.example.json" if args.test
+                     else "vip-s03-rulefix-p0-approved-v5.official-tournament.example.json")
     template = root / "configs" / template_name
     token = ""
     try:

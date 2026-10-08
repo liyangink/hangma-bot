@@ -1,0 +1,55 @@
+{
+  "status": "COMPLETE_PHASE_B_DEVELOPMENT_RANKING",
+  "configurations": 8,
+  "new_roots_per_configuration": 16,
+  "cumulative_roots_per_configuration": 32,
+  "candidate_tables": 1024,
+  "baseline_tables": 128,
+  "full_tables": 1152,
+  "selected_for_c": [
+    "v2_joint_07",
+    "v2_joint_14",
+    "v2_joint_17"
+  ],
+  "leader": {
+    "config_id": "v2_joint_07",
+    "candidate_id": "offline-v2-joint-v1:470b4798c7813ca430dd5ab05cef0be240562a0c92baa5ff25f58cde5eba7033",
+    "policy_weights_sha256": "470b4798c7813ca430dd5ab05cef0be240562a0c92baa5ff25f58cde5eba7033",
+    "fitness_mean_delta_low": 0.03125,
+    "mean_delta": 0.03515625,
+    "mean_delta_high": 0.0390625,
+    "H": {
+      "n_roots": 16,
+      "mean_delta": -0.015625,
+      "standard_error": 0.015625,
+      "interval_95": [
+        -0.046249437258438345,
+        0.014999437258438345
+      ]
+    },
+    "M": {
+      "n_roots": 16,
+      "mean_delta": 0.0859375,
+      "standard_error": 0.04069505178253657,
+      "interval_95": [
+        0.006176664157235792,
+        0.16569833584276422
+      ]
+    },
+    "normalized_l1_from_default": 0.5
+  },
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 1152.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "按phase-c-freeze补H/M各16根并冻结单一冠军"
+}

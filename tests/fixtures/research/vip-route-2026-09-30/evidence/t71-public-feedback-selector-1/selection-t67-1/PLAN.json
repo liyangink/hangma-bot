@@ -1,0 +1,36 @@
+{
+  "experimental_strata_only": {
+    "broad_capacity_at_least": 3,
+    "broad_codes_at_least": 2,
+    "late_wall_at_most": 24
+  },
+  "max_per_stratum": 4,
+  "max_selected_per_mother": 2,
+  "new_models_scores_rules_worlds_tables": 0,
+  "schema": "t71-public-fact-panel-selection/1",
+  "selection": "minimum SHA256 per mother/stratum, then digest order, global mother cap",
+  "selector_sha256": "44be01cb913de72e4ef546177ac49edef59d734544966ad4f5c07b8e664bd0ef",
+  "source": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t67-second-joint-fixed-qualifier-confirmation-1",
+  "source_artifacts": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t67-second-joint-fixed-qualifier-confirmation-1/block-01/decisions.jsonl.gz": "b3c7a15a04c3375ac33c576567daaf527911346850f95eba611dd9748ddea146",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t67-second-joint-fixed-qualifier-confirmation-1/block-01/views.jsonl.gz": "a82f157bf59d9e859c4f40027a60956087a1c1eb4c8c1018e8a64b23302da1d4",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t67-second-joint-fixed-qualifier-confirmation-1/block-02/decisions.jsonl.gz": "4559dcb78d381eb509ab07ff6654344d4e732712c71e413273dba7f1a5ae907d",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t67-second-joint-fixed-qualifier-confirmation-1/block-02/views.jsonl.gz": "df7ccefd6af693764cf8a61586700798c9162b75aecfa356f2cc990e92fa2e5c",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t67-second-joint-fixed-qualifier-confirmation-1/block-03/decisions.jsonl.gz": "97292f5804a6be98fae941c3822a2dcc101e96c3c18845153cf78d11a08461d4",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t67-second-joint-fixed-qualifier-confirmation-1/block-03/views.jsonl.gz": "52a9990ea45d789dbffff723bd6c1ccc63d8d66f11710f0dcd2ae8cb8e613b53",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t67-second-joint-fixed-qualifier-confirmation-1/block-04/decisions.jsonl.gz": "e7282d648c1db926bfcfe8a09b287c406e07984cf4c054187956f38b6ceefa80",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t67-second-joint-fixed-qualifier-confirmation-1/block-04/views.jsonl.gz": "247c764ffe6f8cfae38e90da9325696abd3db5bd7567090afd94c11a2ced166b"
+  },
+  "source_closed_readback_sha256": "f7cad019b52bf1ced3d94cdd6a4117e54fcc5275dd0a53aa3a47e561a6485c00",
+  "strata_priority": [
+    "current_hu_upgrade_broad_early",
+    "current_hu_upgrade_narrow_early",
+    "current_hu_upgrade_late",
+    "current_hu_unknown_or_gap",
+    "current_hu_no_local_upgrade",
+    "response_multi_white",
+    "no_current_hu_multi_white",
+    "no_current_hu_ordinary"
+  ],
+  "uses_realized_scores_selected_actions_or_candidate_values": false
+}

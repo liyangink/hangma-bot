@@ -1,0 +1,171 @@
+{
+  "schema": "r10-structural-author-batch/1",
+  "target_model": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3"
+  },
+  "expected_request_config": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3",
+    "reasoningEffort": "max",
+    "maxTokens": 32768
+  },
+  "tasks": [
+    {
+      "task_id": "S1",
+      "name": "single-parent-stability",
+      "primary_parent": "3a4850b2433f7c18457c7a08d1f0328a5475fa986c1d67b50131ed0085f5cc06",
+      "companion_parent": null,
+      "contract_identity": "72966accf1659917fb1bb223d4b074d84ae6be18b5f341b383a3562054b57fc5",
+      "focus": {
+        "schema": "sitin-action-value-card/1",
+        "objective": "改良统一残余凝聚度结构，使其跨 H/M 对手族更稳定；不得只改原权重。",
+        "change_point": "保留统一残余凝聚度作为可消融研究材料，但针对它在第二开发清单 H +0.125、M -0.03125 的分层差异，改变触发、归一化或与直接牌效/风险的交互结构。历史点值只用于指出不稳定性，不是动作标签。",
+        "input_groups": [
+          "actions",
+          "actions[]",
+          "actions[].useful_tiles",
+          "actions[].standard_useful_tiles",
+          "visible_state",
+          "visible_state.rule_state",
+          "analysis_profile"
+        ],
+        "budget_note": "首答计费；生成端不依据模型自报结果选留。",
+        "examples": "output",
+        "gate": "none",
+        "guard": "full",
+        "input_overview": "none",
+        "rules": "compact",
+        "guard_reference": false
+      },
+      "prompt_sha256": "05f227562425131989eaa5617334cda6967b55c0547ca2c8dbbe8c5625b8349b",
+      "prompt_chars": 43459
+    },
+    {
+      "task_id": "S2",
+      "name": "dual-parent-recombination",
+      "primary_parent": "3a4850b2433f7c18457c7a08d1f0328a5475fa986c1d67b50131ed0085f5cc06",
+      "companion_parent": "756233cb62cc7759b9a6facea209420e36de0b1e2bb90a16203c9e9351795f31",
+      "contract_identity": "29538c279f3547cd39ff126e2e117a5c9110fcfbdec832ee6c8f6cbee10d010c",
+      "focus": {
+        "schema": "sitin-action-value-card/1",
+        "objective": "非叠加式重组残余凝聚度与普通型/七对选项结构，相同事实只计一次。",
+        "change_point": "比较两个父代的触发、未知退化和尺度，设计一个共同的选择余地结构；禁止简单把residual_part 与 pattern_bonus 相加。普通型/七对父代在全新开发 H=0、M=+0.0078125，只表明它近零且分层稳定，不表明动作正确。",
+        "input_groups": [
+          "actions",
+          "actions[]",
+          "actions[].useful_tiles",
+          "actions[].standard_useful_tiles",
+          "actions[].seven_pairs_useful_tiles",
+          "visible_state",
+          "visible_state.rule_state",
+          "analysis_profile"
+        ],
+        "budget_note": "首答计费；生成端不依据模型自报结果选留。",
+        "examples": "output",
+        "gate": "none",
+        "guard": "full",
+        "input_overview": "none",
+        "rules": "compact",
+        "guard_reference": false
+      },
+      "prompt_sha256": "2029a6165bdd71b01446e857847eaf9e9b0f92423aaea96a1e723754a01647fc",
+      "prompt_chars": 61473
+    },
+    {
+      "task_id": "S3",
+      "name": "bounded-followup-value",
+      "primary_parent": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "companion_parent": null,
+      "contract_identity": "52575cd7c925ff96cd1955e73aa6add76ebc9eaa1dd7393acd4626fb72a93047",
+      "focus": {
+        "schema": "sitin-action-value-card/1",
+        "objective": "探索一个基于已生产路线/后续分支/阶段处境的有界后续价值近似。",
+        "change_point": "从 V2 研究骨架出发，只使用 routes、followup_branches 或可映射 current_stage_scores。选择一个主结构，不能同时堆叠三套奖励；条件结算是见证值而非期望值，support 不是胡率，剩余赛程尚未投影。",
+        "input_groups": [
+          "actions",
+          "actions[]",
+          "actions[].useful_tiles",
+          "actions[].followup_branches",
+          "actions[].routes",
+          "actions[].routes[].useful_tiles",
+          "actions[].routes[].conditions",
+          "actions[].routes[].conditional_settlement",
+          "actions[].immediate_settlement",
+          "actions[].family_progress_entries",
+          "competition",
+          "visible_state",
+          "visible_state.rule_state",
+          "analysis_profile"
+        ],
+        "budget_note": "首答计费；生成端不依据模型自报结果选留。",
+        "examples": "output",
+        "gate": "none",
+        "guard": "full",
+        "input_overview": "contract",
+        "rules": "compact",
+        "guard_reference": false
+      },
+      "prompt_sha256": "e1967db1ca3edb35077c0085b12e4df5038d5aefe1e01bd8abe08e814098a8c8",
+      "prompt_chars": 43305
+    },
+    {
+      "task_id": "S4",
+      "name": "v2-simplification",
+      "primary_parent": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "companion_parent": null,
+      "contract_identity": "6cfeca728547893a4b39113931cb1cbd586dbcde852f274881deeb7fbdefcdec",
+      "focus": {
+        "schema": "sitin-action-value-card/1",
+        "objective": "压缩 V2 中缺乏新来源支持的风格/安全代理和重复局部项，形成更少参数的结构。",
+        "change_point": "审查 style_adjust、牌河熟悉度和副露邻近旧代理的相互作用，至少删除或合并一类项；style_adjust=0 在 256 个全新 H/M 根上保守差 -0.001953125，只能作为删减证据，不得当作动作标签。保持向听、支持、财神和胡排序骨架。",
+        "input_groups": [
+          "actions",
+          "actions[]",
+          "actions[].useful_tiles",
+          "visible_state",
+          "visible_state.rule_state",
+          "competition",
+          "analysis_profile"
+        ],
+        "budget_note": "首答计费；生成端不依据模型自报结果选留。",
+        "examples": "output",
+        "gate": "none",
+        "guard": "full",
+        "input_overview": "contract",
+        "rules": "compact",
+        "guard_reference": false
+      },
+      "prompt_sha256": "26132d0757a4bdb33a4678746bdd163888a796dff35e8a520570bc97cab0cf31",
+      "prompt_chars": 38859
+    }
+  ],
+  "parent_registry": {
+    "v2": {
+      "name": "v2",
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/v2-parent-revalidation-20260920/parent/generation/candidate.py",
+      "identity": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "candidate_id": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f",
+      "thought": "以合法胡的动态排序层、可信直接牌效和公开固定分项构成默认 V2 基础排序，并把无已生产事实的动作严格锚定在全部已知最终分以下。",
+      "code_sha256": "a0c389b3a4757a38febf5ca6bf16e9c4779159df0c15b82d2e804e1f4ac9638f"
+    },
+    "cohesion": {
+      "name": "cohesion",
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/comparable-shape-20260920/comparable-shape-terra-max/run/iterations/iter-01/generation/candidate.py",
+      "identity": "3a4850b2433f7c18457c7a08d1f0328a5475fa986c1d67b50131ed0085f5cc06",
+      "candidate_id": "3a4850b2433f7c18457c7a08d1f0328a5475fa986c1d67b50131ed0085f5cc06",
+      "thought": "统一残余凝聚度（residual_cohesion_v2）：仅在可信普通型直接弃牌的当前最优向听边界，从完整可见手牌逐次移除候选牌，以每一张保留自然牌恰归入对子、相邻、受有效牌见证的隔张或孤张之一的共同牌位口径，给出有界残余分。",
+      "code_sha256": "3a4850b2433f7c18457c7a08d1f0328a5475fa986c1d67b50131ed0085f5cc06"
+    },
+    "pattern": {
+      "name": "pattern",
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/pattern-option-20260920/pattern-option-terra-max/run/iterations/iter-01/generation/candidate.py",
+      "identity": "756233cb62cc7759b9a6facea209420e36de0b1e2bb90a16203c9e9351795f31",
+      "candidate_id": "756233cb62cc7759b9a6facea209420e36de0b1e2bb90a16203c9e9351795f31",
+      "thought": "在无合法胡且直接已知弃牌的普通型与七对事实一致时，本机制仅以距综合向听一或二步的次优牌型独有有效牌支持加入至多 2 分的后续选择余地加分，并让所有其余情形逐分退化为父代。",
+      "code_sha256": "756233cb62cc7759b9a6facea209420e36de0b1e2bb90a16203c9e9351795f31"
+    }
+  },
+  "effect_evaluation_started": false,
+  "confirmation_reserved": 0
+}

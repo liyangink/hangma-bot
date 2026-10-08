@@ -1,0 +1,1587 @@
+{
+  "aggregate": {
+    "fit_selected_renew_states": 0,
+    "leave_one_source_case_out_mean": {
+      "r18-p3-mid-001": 0.0,
+      "r18-p3-mid-002": 0.0,
+      "r18-p3-mid-004": 0.0,
+      "r18-p3-mid-005": 0.0,
+      "r18-p3-mid-007": 0.0,
+      "r18-p3-mid-008": 0.0,
+      "r18-p3-mid-009": 0.0,
+      "r18-p3-mid-011": 0.0,
+      "r18-p3-mid-012": 0.0,
+      "r18-p3-mid-015": 0.0,
+      "r18-p3-mid-017": 0.0,
+      "r18-p3-mid-018": 0.0,
+      "r18-p3-mid-019": 0.0,
+      "r18-p3-mid-021": 0.0,
+      "r18-p3-mid-022": 0.0,
+      "r18-p3-mid-025": 0.0,
+      "r18-p3-mid-026": 0.0,
+      "r18-p3-mid-028": 0.0,
+      "r18-p3-mid-030": 0.0,
+      "r18-p3-mid-032": 0.0
+    },
+    "minimum_leave_one_source_case_out_mean": 0.0,
+    "replication_all_state_policy_bootstrap_95": [
+      0.0,
+      0.0
+    ],
+    "replication_all_state_policy_mean": 0.0,
+    "replication_positive_selected_states": 0,
+    "replication_selected_renew_mean": 0.0,
+    "required_replication_positive_selected_states": 0
+  },
+  "decision": "CLOSE_SECOND_PIAO",
+  "development_states": 20,
+  "gate_passed": false,
+  "hidden_labels_opened": false,
+  "hidden_states_frozen_unopened": 9,
+  "mechanical_ok": true,
+  "next_gate": "保留P5立即胡；不得查看P18 hidden后补续飘阈值",
+  "release_eligible": false,
+  "rollouts": 640,
+  "schema": "r18-p19-piao-chain-result/1",
+  "states": [
+    {
+      "case_id": "r18-p3-mid-030",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 1,
+        "legal_action_keys": [
+          "discard:1b",
+          "discard:2b",
+          "discard:3b",
+          "discard:4b",
+          "discard:5b",
+          "discard:6b",
+          "discard:1t",
+          "discard:2t",
+          "discard:3t",
+          "discard:5t",
+          "discard:6t",
+          "discard:8t",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 78,
+        "role": "nondealer_after_dealer_discard",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -25.5,
+        "values": [
+          -30,
+          -20,
+          -30,
+          -40,
+          -30,
+          -20,
+          -20,
+          0,
+          -30,
+          -30,
+          -20,
+          -30,
+          -48,
+          -30,
+          0,
+          -30
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -28.8125,
+        "positive": false,
+        "values": [
+          -30,
+          -30,
+          -30,
+          -20,
+          -30,
+          -30,
+          -30,
+          -30,
+          -20,
+          -40,
+          -41,
+          -20,
+          -30,
+          -30,
+          -30,
+          -20
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-030",
+        "focal_seat": 1,
+        "role": "nondealer_after_dealer_discard"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-012",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 3,
+        "legal_action_keys": [
+          "discard:6w",
+          "discard:8w",
+          "discard:2b",
+          "discard:3b",
+          "discard:4b",
+          "discard:6b",
+          "discard:7b",
+          "discard:8b",
+          "discard:4t",
+          "discard:5t",
+          "discard:6t",
+          "discard:9t",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 75,
+        "role": "dealer_after_rotation",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -65.5,
+        "values": [
+          -72,
+          -72,
+          -72,
+          -72,
+          -48,
+          -72,
+          -72,
+          -104,
+          -72,
+          -48,
+          -104,
+          -72,
+          -48,
+          0,
+          -72,
+          -48
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -73.5,
+        "positive": false,
+        "values": [
+          -72,
+          -72,
+          -72,
+          -48,
+          0,
+          -72,
+          -72,
+          -72,
+          -104,
+          -96,
+          -72,
+          -72,
+          -104,
+          -96,
+          -48,
+          -104
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-012",
+        "focal_seat": 3,
+        "role": "dealer_after_rotation"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-026",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 1,
+        "legal_action_keys": [
+          "discard:3w",
+          "discard:7w",
+          "discard:4b",
+          "discard:5t",
+          "discard:8t",
+          "discard:9t",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 78,
+        "role": "nondealer_after_dealer_discard",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -54.4375,
+        "values": [
+          -60,
+          -60,
+          0,
+          -80,
+          -60,
+          -60,
+          80,
+          -60,
+          -60,
+          -60,
+          -81,
+          -60,
+          -81,
+          -60,
+          -81,
+          -88
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -48.625,
+        "positive": false,
+        "values": [
+          -88,
+          80,
+          -60,
+          80,
+          -81,
+          -60,
+          -88,
+          80,
+          -82,
+          -96,
+          -80,
+          -80,
+          -81,
+          -60,
+          -81,
+          -81
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-026",
+        "focal_seat": 1,
+        "role": "nondealer_after_dealer_discard"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-007",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 2,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:2w",
+          "discard:5w",
+          "discard:6w",
+          "discard:7w",
+          "discard:1b",
+          "discard:2b",
+          "discard:3b",
+          "discard:5b",
+          "discard:6b",
+          "discard:7b",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 75,
+        "role": "dealer_after_rotation",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -51.0,
+        "values": [
+          -104,
+          0,
+          -48,
+          -104,
+          -48,
+          -48,
+          -72,
+          -48,
+          0,
+          -48,
+          -48,
+          -96,
+          -72,
+          -72,
+          96,
+          -104
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -71.0,
+        "positive": false,
+        "values": [
+          -72,
+          -104,
+          -72,
+          -72,
+          -48,
+          -72,
+          -48,
+          -48,
+          -104,
+          -48,
+          -104,
+          -48,
+          -72,
+          -104,
+          -48,
+          -72
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-007",
+        "focal_seat": 2,
+        "role": "dealer_after_rotation"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-021",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 0,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:2w",
+          "discard:3w",
+          "discard:4w",
+          "discard:2b",
+          "discard:4b",
+          "discard:3t",
+          "discard:4t",
+          "discard:5t",
+          "discard:6t",
+          "discard:7t",
+          "discard:8t",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 78,
+        "role": "nondealer_after_dealer_discard",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -30.5625,
+        "values": [
+          -30,
+          -30,
+          -30,
+          -30,
+          -30,
+          -30,
+          -41,
+          -30,
+          -30,
+          -30,
+          -30,
+          -20,
+          -20,
+          -48,
+          -30,
+          -30
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -32.0,
+        "positive": false,
+        "values": [
+          -20,
+          -30,
+          -41,
+          -40,
+          -20,
+          -41,
+          -48,
+          -30,
+          -30,
+          -41,
+          -30,
+          -20,
+          -30,
+          -41,
+          -30,
+          -20
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-021",
+        "focal_seat": 0,
+        "role": "nondealer_after_dealer_discard"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-018",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 1,
+        "legal_action_keys": [
+          "discard:3w",
+          "discard:2b",
+          "discard:8b",
+          "discard:4t",
+          "discard:8t",
+          "discard:东",
+          "discard:中",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 78,
+        "role": "nondealer_after_dealer_discard",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -70.8125,
+        "values": [
+          -60,
+          -96,
+          -60,
+          -82,
+          -88,
+          -80,
+          -60,
+          -60,
+          -60,
+          -81,
+          -81,
+          -60,
+          -88,
+          -81,
+          -96,
+          0
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -58.1875,
+        "positive": false,
+        "values": [
+          80,
+          -60,
+          -60,
+          -60,
+          -60,
+          -60,
+          -88,
+          -60,
+          -60,
+          -81,
+          -60,
+          -60,
+          -81,
+          -80,
+          -81,
+          -60
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-018",
+        "focal_seat": 1,
+        "role": "nondealer_after_dealer_discard"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-008",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 3,
+        "legal_action_keys": [
+          "discard:1w",
+          "discard:3w",
+          "discard:6w",
+          "discard:1b",
+          "discard:9b",
+          "discard:2t",
+          "discard:西",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 75,
+        "role": "dealer_after_rotation",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -189.0,
+        "values": [
+          -200,
+          -200,
+          -200,
+          -200,
+          -200,
+          -200,
+          -200,
+          -192,
+          -144,
+          -200,
+          -144,
+          -200,
+          -144,
+          -200,
+          -200,
+          -200
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -172.0,
+        "positive": false,
+        "values": [
+          -200,
+          -192,
+          -144,
+          -144,
+          -200,
+          -200,
+          -144,
+          -144,
+          -200,
+          -144,
+          -200,
+          -200,
+          -144,
+          -144,
+          -144,
+          -208
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-008",
+        "focal_seat": 3,
+        "role": "dealer_after_rotation"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-032",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 3,
+        "legal_action_keys": [
+          "discard:8w",
+          "discard:2b",
+          "discard:3b",
+          "discard:4b",
+          "discard:7b",
+          "discard:8b",
+          "discard:9b",
+          "discard:1t",
+          "discard:2t",
+          "discard:3t",
+          "discard:9t",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 78,
+        "role": "nondealer_after_dealer_discard",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -24.875,
+        "values": [
+          0,
+          -20,
+          -30,
+          -48,
+          0,
+          -20,
+          -30,
+          -30,
+          -30,
+          -20,
+          -30,
+          -30,
+          -30,
+          -30,
+          -20,
+          -30
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -22.5,
+        "positive": false,
+        "values": [
+          -30,
+          -20,
+          -30,
+          0,
+          -30,
+          0,
+          -30,
+          -30,
+          -30,
+          -30,
+          -20,
+          -30,
+          -30,
+          0,
+          -30,
+          -20
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-032",
+        "focal_seat": 3,
+        "role": "nondealer_after_dealer_discard"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-009",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 0,
+        "legal_action_keys": [
+          "discard:4w",
+          "discard:1b",
+          "discard:2b",
+          "discard:3b",
+          "discard:2t",
+          "discard:南",
+          "discard:发",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 75,
+        "role": "dealer_after_rotation",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -146.5,
+        "values": [
+          -144,
+          -200,
+          -200,
+          -192,
+          -144,
+          -144,
+          -200,
+          -200,
+          -144,
+          -144,
+          0,
+          -200,
+          0,
+          -144,
+          -144,
+          -144
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -170.5,
+        "positive": false,
+        "values": [
+          -192,
+          -200,
+          -144,
+          -144,
+          -200,
+          -144,
+          -168,
+          -200,
+          -192,
+          -144,
+          0,
+          -200,
+          -200,
+          -200,
+          -200,
+          -200
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-009",
+        "focal_seat": 0,
+        "role": "dealer_after_rotation"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-002",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 1,
+        "legal_action_keys": [
+          "discard:9w",
+          "discard:4b",
+          "discard:5b",
+          "discard:9b",
+          "discard:8t",
+          "discard:中",
+          "discard:发",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 75,
+        "role": "dealer_after_rotation",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -137.5,
+        "values": [
+          -168,
+          -144,
+          -144,
+          -144,
+          -192,
+          -144,
+          0,
+          -144,
+          -200,
+          0,
+          -144,
+          -144,
+          -200,
+          -144,
+          -144,
+          -144
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -163.5,
+        "positive": false,
+        "values": [
+          -144,
+          -144,
+          -144,
+          -200,
+          -200,
+          -200,
+          -144,
+          -144,
+          -200,
+          -144,
+          -200,
+          0,
+          -208,
+          -144,
+          -200,
+          -200
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-002",
+        "focal_seat": 1,
+        "role": "dealer_after_rotation"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-004",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 3,
+        "legal_action_keys": [
+          "discard:7w",
+          "discard:8w",
+          "discard:6b",
+          "discard:7b",
+          "discard:8b",
+          "discard:2t",
+          "discard:3t",
+          "discard:4t",
+          "discard:5t",
+          "discard:6t",
+          "discard:7t",
+          "discard:发",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 75,
+        "role": "dealer_after_rotation",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -68.5,
+        "values": [
+          -72,
+          -48,
+          -72,
+          -72,
+          -104,
+          -72,
+          -72,
+          0,
+          -104,
+          -72,
+          -72,
+          -72,
+          -72,
+          -72,
+          -72,
+          -48
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -65.5,
+        "positive": false,
+        "values": [
+          -48,
+          -72,
+          -48,
+          -72,
+          -72,
+          -96,
+          -72,
+          -48,
+          0,
+          -72,
+          -72,
+          -48,
+          -48,
+          -104,
+          -104,
+          -72
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-004",
+        "focal_seat": 3,
+        "role": "dealer_after_rotation"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-011",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 2,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:3w",
+          "discard:7w",
+          "discard:2b",
+          "discard:7b",
+          "discard:8b",
+          "discard:3t",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 75,
+        "role": "dealer_after_rotation",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -146.5,
+        "values": [
+          -200,
+          0,
+          -144,
+          -144,
+          -192,
+          -144,
+          -144,
+          -144,
+          -200,
+          -200,
+          -200,
+          -144,
+          -144,
+          0,
+          -200,
+          -144
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -129.5,
+        "positive": false,
+        "values": [
+          -200,
+          -144,
+          -144,
+          -192,
+          -144,
+          -144,
+          -200,
+          0,
+          -144,
+          0,
+          192,
+          -208,
+          -200,
+          -200,
+          -144,
+          -200
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-011",
+        "focal_seat": 2,
+        "role": "dealer_after_rotation"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-028",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 3,
+        "legal_action_keys": [
+          "discard:4w",
+          "discard:8w",
+          "discard:2b",
+          "discard:3t",
+          "discard:5t",
+          "discard:西",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 78,
+        "role": "nondealer_after_dealer_discard",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -68.9375,
+        "values": [
+          -88,
+          -40,
+          -40,
+          -60,
+          -60,
+          -81,
+          -80,
+          -70,
+          -81,
+          -80,
+          -81,
+          -60,
+          -60,
+          -81,
+          -60,
+          -81
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -70.625,
+        "positive": false,
+        "values": [
+          -81,
+          -81,
+          -60,
+          -81,
+          -60,
+          -88,
+          -60,
+          -88,
+          -60,
+          -60,
+          -80,
+          -60,
+          -60,
+          -60,
+          -70,
+          -81
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-028",
+        "focal_seat": 3,
+        "role": "nondealer_after_dealer_discard"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-019",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 2,
+        "legal_action_keys": [
+          "discard:5b",
+          "discard:7b",
+          "discard:1t",
+          "discard:2t",
+          "discard:7t",
+          "discard:北",
+          "discard:发",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 78,
+        "role": "nondealer_after_dealer_discard",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -64.5625,
+        "values": [
+          -60,
+          0,
+          -60,
+          -60,
+          -60,
+          -60,
+          -81,
+          -88,
+          -60,
+          -60,
+          -81,
+          -81,
+          -81,
+          -60,
+          -81,
+          -60
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -71.0,
+        "positive": false,
+        "values": [
+          -88,
+          -80,
+          -60,
+          -60,
+          -88,
+          -60,
+          -81,
+          -60,
+          -88,
+          -88,
+          -60,
+          -81,
+          -40,
+          -82,
+          -60,
+          -60
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-019",
+        "focal_seat": 2,
+        "role": "nondealer_after_dealer_discard"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-005",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 0,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:3w",
+          "discard:4w",
+          "discard:2b",
+          "discard:3b",
+          "discard:4b",
+          "discard:5b",
+          "discard:3t",
+          "discard:4t",
+          "discard:5t",
+          "discard:8t",
+          "discard:9t",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 75,
+        "role": "dealer_after_rotation",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -71.0,
+        "values": [
+          0,
+          -48,
+          -72,
+          -72,
+          -72,
+          -96,
+          -72,
+          -72,
+          -96,
+          -104,
+          -72,
+          -72,
+          -112,
+          -104,
+          -72,
+          0
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -48.5,
+        "positive": false,
+        "values": [
+          -96,
+          0,
+          -104,
+          -72,
+          -72,
+          -72,
+          0,
+          96,
+          -72,
+          -72,
+          -72,
+          -48,
+          -72,
+          -72,
+          -48,
+          0
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-005",
+        "focal_seat": 0,
+        "role": "dealer_after_rotation"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-001",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 0,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:5w",
+          "discard:9w",
+          "discard:1b",
+          "discard:6t",
+          "discard:8t",
+          "discard:北",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 75,
+        "role": "dealer_after_rotation",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -164.0,
+        "values": [
+          -144,
+          -144,
+          -144,
+          -200,
+          -200,
+          -200,
+          -144,
+          -200,
+          -144,
+          -192,
+          -144,
+          -144,
+          -144,
+          -192,
+          -144,
+          -144
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -152.0,
+        "positive": false,
+        "values": [
+          -144,
+          -144,
+          -200,
+          -144,
+          -200,
+          -144,
+          -200,
+          -144,
+          0,
+          -200,
+          -144,
+          -144,
+          -144,
+          -144,
+          -192,
+          -144
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-001",
+        "focal_seat": 0,
+        "role": "dealer_after_rotation"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-022",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 1,
+        "legal_action_keys": [
+          "discard:2w",
+          "discard:3w",
+          "discard:6b",
+          "discard:8b",
+          "discard:1t",
+          "discard:东",
+          "discard:西",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 78,
+        "role": "nondealer_after_dealer_discard",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -65.3125,
+        "values": [
+          -81,
+          -60,
+          -60,
+          -60,
+          -60,
+          -81,
+          -80,
+          -81,
+          -60,
+          -80,
+          -60,
+          -60,
+          0,
+          -60,
+          -81,
+          -81
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -77.3125,
+        "positive": false,
+        "values": [
+          -60,
+          -81,
+          -80,
+          -60,
+          -88,
+          -80,
+          -82,
+          -80,
+          -88,
+          -88,
+          -60,
+          -81,
+          -60,
+          -81,
+          -88,
+          -80
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-022",
+        "focal_seat": 1,
+        "role": "nondealer_after_dealer_discard"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-015",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 2,
+        "legal_action_keys": [
+          "discard:6w",
+          "discard:7w",
+          "discard:8w",
+          "discard:3b",
+          "discard:4b",
+          "discard:5b",
+          "discard:7b",
+          "discard:8b",
+          "discard:9b",
+          "discard:3t",
+          "discard:4t",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 75,
+        "role": "dealer_after_rotation",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -48.5,
+        "values": [
+          -48,
+          0,
+          -72,
+          -48,
+          -72,
+          0,
+          0,
+          -48,
+          -104,
+          -48,
+          -72,
+          -72,
+          -72,
+          -48,
+          0,
+          -72
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -45.0,
+        "positive": false,
+        "values": [
+          -72,
+          -48,
+          -72,
+          -48,
+          -48,
+          -72,
+          -72,
+          -72,
+          -48,
+          -48,
+          0,
+          96,
+          -72,
+          -72,
+          -72,
+          0
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-015",
+        "focal_seat": 2,
+        "role": "dealer_after_rotation"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-025",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 0,
+        "legal_action_keys": [
+          "discard:4w",
+          "discard:5w",
+          "discard:6w",
+          "discard:7b",
+          "discard:1t",
+          "discard:2t",
+          "discard:3t",
+          "discard:5t",
+          "discard:7t",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 78,
+        "role": "nondealer_after_dealer_discard",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -13.125,
+        "values": [
+          -20,
+          -20,
+          -20,
+          -30,
+          -30,
+          120,
+          -30,
+          40,
+          -30,
+          -30,
+          -30,
+          -30,
+          -30,
+          -30,
+          -20,
+          -20
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -22.5,
+        "positive": false,
+        "values": [
+          0,
+          -30,
+          -30,
+          -48,
+          -20,
+          -30,
+          -30,
+          0,
+          -20,
+          0,
+          0,
+          -30,
+          -20,
+          -41,
+          -41,
+          -20
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-025",
+        "focal_seat": 0,
+        "role": "nondealer_after_dealer_discard"
+      }
+    },
+    {
+      "case_id": "r18-p3-mid-017",
+      "features": {
+        "baotou": true,
+        "chain_count": 1,
+        "chain_piao": 1,
+        "focal_seat": 0,
+        "legal_action_keys": [
+          "discard:3b",
+          "discard:1t",
+          "discard:2t",
+          "discard:3t",
+          "discard:6t",
+          "discard:西",
+          "discard:中",
+          "discard:白",
+          "hu"
+        ],
+        "remaining_tile_count": 78,
+        "role": "nondealer_after_dealer_discard",
+        "wealth_count": 2
+      },
+      "fit": {
+        "mean": -63.875,
+        "values": [
+          0,
+          -80,
+          -70,
+          -60,
+          -81,
+          -60,
+          -81,
+          -80,
+          -60,
+          -60,
+          -60,
+          -88,
+          -80,
+          -81,
+          0,
+          -81
+        ]
+      },
+      "policy_replication_value": 0.0,
+      "reference_action": "hu",
+      "renew_action": "discard:白",
+      "replication": {
+        "mean": -61.9375,
+        "positive": false,
+        "values": [
+          -81,
+          -60,
+          -60,
+          -81,
+          -60,
+          -60,
+          -88,
+          -60,
+          -60,
+          -60,
+          -60,
+          -81,
+          -60,
+          -60,
+          0,
+          -60
+        ]
+      },
+      "selected_renew_from_fit": false,
+      "source": {
+        "case_id": "r18-p3-mid-017",
+        "focal_seat": 0,
+        "role": "nondealer_after_dealer_discard"
+      }
+    }
+  ],
+  "status": "COMPLETE_P19_PIAO_CHAIN_TEACHER",
+  "tables": 1280
+}

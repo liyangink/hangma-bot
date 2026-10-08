@@ -1,0 +1,50 @@
+{
+  "schema": "r14-robust-offspring-normalized-ingest/2",
+  "accepted_for_behavior_preflight": [
+    "R1"
+  ],
+  "r2_normalization": {
+    "schema": "r14-r2-engineering-normalization/2",
+    "source_sha256": "847f46f8f4ca1840bb65da917b23d5cab53636639b4f2ec704de4aa442d04df8",
+    "normalized_sha256": "b8f820df5dc0aa0289db57de063e93ac794c0b732693d7c720c1ff6dcbb1b11f",
+    "supersedes_failed_normalization": "../normalized/normalization-record.json",
+    "replacements": [
+      {
+        "before": "    tie_groups = {}",
+        "after": "    tie_groups = []\n    tie_group_keys = []",
+        "reason": "并列组容器改为两个同序列表，避免受限语法禁止的动态字典写入"
+      },
+      {
+        "before": "        tie_groups.setdefault((item.get(\"base\"), entry.get(\"score\")), []).append(idx)",
+        "after": "        group_key = (item.get(\"base\"), entry.get(\"score\"))\n        if group_key in tie_group_keys:\n            group_pos = tie_group_keys.index(group_key)\n        else:\n            tie_group_keys.append(group_key)\n            tie_groups.append([])\n            group_pos = len(tie_groups) - 1\n        tie_groups[group_pos].append(idx)",
+        "reason": "用白名单列表 append/index 实现与 setdefault 相同的分组"
+      },
+      {
+        "before": "    for idxs in tie_groups.values():",
+        "after": "    for idxs in tie_groups:",
+        "reason": "列表分组直接迭代，保持首次出现顺序"
+      },
+      {
+        "before": "            dual = pending[idx].get(\"action\").get(\"dual_shanten_after\")\n            if not isinstance(dual, dict):\n                dual_ok = False\n                break\n            std = dual.get(\"standard\")\n            sev = dual.get(\"seven_pairs\")",
+        "after": "            target_action = pending[idx].get(\"action\")\n            std = target_action.get(\"standard_shanten_after\")\n            sev = target_action.get(\"seven_pairs_shanten_after\")",
+        "reason": "把模型虚构的 dual_shanten_after 包装映射为合同已有的两个直接字段"
+      },
+      {
+        "before": "                dual = pending[idx].get(\"action\").get(\"dual_shanten_after\")\n                gap = abs(float(dual.get(\"standard\")) - float(dual.get(\"seven_pairs\")))",
+        "after": "                target_action = pending[idx].get(\"action\")\n                gap = abs(float(target_action.get(\"standard_shanten_after\"))\n                          - float(target_action.get(\"seven_pairs_shanten_after\")))",
+        "reason": "双型证据计算读取相同的合同直接字段"
+      }
+    ],
+    "mechanism_changed": false,
+    "static_precheck": false,
+    "load_error": null,
+    "accepted_for_behavior_preflight": false,
+    "problems": [
+      "赋值/循环目标必须是简单名字或名字元组，得到 Subscript"
+    ]
+  },
+  "closed_failed": [
+    "R2"
+  ],
+  "effect_evaluation_started": false
+}

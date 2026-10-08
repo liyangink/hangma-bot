@@ -1,6 +1,23 @@
 """条件诊断按实际消费事件排序；人工最小记录不生成牌局或评分。"""
 from __future__ import annotations
 
+from pathlib import Path as _StoragePath
+import sys as _storage_sys
+_PROJECT_ROOT = next(p for p in _StoragePath(__file__).resolve().parents
+                     if (p / "src/hangma_bot/bootstrap.py").is_file())
+_storage_sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from hangma_bot.adapters.recording.project_storage import project_file as _resolve_project_file
+_PROJECT_STORAGE_ORIGIN = 'tests/unit/offline'
+
+def _project_file(root, source):
+    """共享脚本的相邻数据沿用原逻辑目录，相邻代码从共享目录读取。"""
+    source = _StoragePath(source)
+    here = _StoragePath(__file__).resolve().parent
+    if source.is_absolute() and source.is_relative_to(here):
+        if not source.is_dir() and not (source.suffix == ".py" and source.is_file()):
+            source = root / _PROJECT_STORAGE_ORIGIN / source.relative_to(here)
+    return _resolve_project_file(root, source)
+
 import gzip
 import importlib.util
 import json
@@ -12,8 +29,8 @@ import pytest
 @pytest.fixture
 def reader():
     """装载公开薄读回入口，不导入策略或读取私有牌谱。"""
-    path = (Path(__file__).resolve().parents[3] / "review/vip-route-2026-09-30/evidence"
-            / "t200-eoh-fast-evolution-1/common_readback.py")
+    path = (_project_file(_PROJECT_ROOT, Path(__file__).resolve().parents[3] / "review/vip-route-2026-09-30/evidence"
+            / "t200-eoh-fast-evolution-1/common_readback.py"))
     spec = importlib.util.spec_from_file_location("common_condition_readback", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

@@ -1,0 +1,65 @@
+{
+  "status": "COMPLETE_PHASE_C_DEVELOPMENT_CHAMPION",
+  "configurations": 3,
+  "new_roots_per_configuration": 32,
+  "cumulative_roots_per_configuration": 64,
+  "candidate_tables": 768,
+  "baseline_tables": 256,
+  "full_tables": 1024,
+  "development_champion": {
+    "config_id": "v2_joint_07",
+    "candidate_id": "offline-v2-joint-v1:470b4798c7813ca430dd5ab05cef0be240562a0c92baa5ff25f58cde5eba7033",
+    "policy_weights_sha256": "470b4798c7813ca430dd5ab05cef0be240562a0c92baa5ff25f58cde5eba7033",
+    "weights": {
+      "win_now": 1000.0,
+      "gang_bonus": 40.0,
+      "wealth_god_keep": 60.0,
+      "shanten_step": 100.0,
+      "effective_tile": 1.0,
+      "win_potential": 5.0,
+      "flexibility": 2.0,
+      "claim_risk_peng": 6.0,
+      "claim_risk_chi": 10.0,
+      "feed_risk": 6.0,
+      "safe_tile_bonus": 3.0,
+      "style_adjust": 0.0
+    },
+    "fitness_mean_delta_low": 0.015625,
+    "mean_delta": 0.017578125,
+    "mean_delta_high": 0.01953125,
+    "H": {
+      "n_roots": 32,
+      "mean_delta": 0.0,
+      "standard_error": 0.015875015875023813,
+      "interval_95": [
+        -0.031114459369048286,
+        0.031114459369048286
+      ]
+    },
+    "M": {
+      "n_roots": 32,
+      "mean_delta": 0.03515625,
+      "standard_error": 0.025863596496618936,
+      "interval_95": [
+        -0.015535467644049429,
+        0.08584796764404942
+      ]
+    },
+    "normalized_l1_from_default": 0.5
+  },
+  "positive_development_signal": true,
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 1024.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "冻结冠军；先复盘H/M分层与效应大小，再以全新来源执行独立复核"
+}

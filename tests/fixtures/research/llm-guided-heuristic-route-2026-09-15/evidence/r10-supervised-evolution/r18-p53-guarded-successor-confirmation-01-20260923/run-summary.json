@@ -1,0 +1,33 @@
+{
+  "actual_tables": 1018,
+  "executed_tables_this_run": 1024,
+  "failures": [
+    {
+      "arm": "candidate",
+      "error": "RuntimeError: P53 候选请求审计失败",
+      "source_id": "H:p53:r02:s3"
+    },
+    {
+      "arm": "candidate",
+      "error": "RuntimeError: P53 候选请求审计失败",
+      "source_id": "M:p53:r02:s3"
+    },
+    {
+      "arm": "candidate",
+      "error": "RuntimeError: P53 候选请求审计失败",
+      "source_id": "M:p53:r12:s3"
+    }
+  ],
+  "preexisting_complete_tables": 0,
+  "schema": "r18-p53-guarded-successor-confirmation-run/1",
+  "spent": {
+    "confirm_reserved": 0,
+    "prefix_generation": 0,
+    "tables_full": 1024.0,
+    "tables_partial": 0,
+    "tokens_input": 0,
+    "tokens_output": 0
+  },
+  "stage_files": 509,
+  "usage_unknown": false
+}

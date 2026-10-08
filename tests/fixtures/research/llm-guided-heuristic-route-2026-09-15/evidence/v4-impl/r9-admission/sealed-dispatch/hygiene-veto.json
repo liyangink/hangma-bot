@@ -1,0 +1,496 @@
+{
+ "schema": "sitin-sealed-dispatch-veto/1",
+ "status": "INVALID",
+ "admission_eligible": false,
+ "rounds": [
+  "r1",
+  "r2"
+ ],
+ "rejected_tasks": [
+  "T01",
+  "T02",
+  "T03",
+  "T04",
+  "T05",
+  "T06",
+  "T07",
+  "T08",
+  "T09",
+  "T10",
+  "T11",
+  "T12",
+  "T13",
+  "T14",
+  "T15",
+  "T16",
+  "T17",
+  "T18",
+  "T19",
+  "T20",
+  "T21",
+  "T22",
+  "T23",
+  "T24"
+ ],
+ "rejected_runs": [
+  {
+   "task_id": "T01",
+   "kind": "r1",
+   "run_id": "669ea158-ab14-481d-b0a9-84a38062b790",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T11",
+   "kind": "r1",
+   "run_id": "8663e571-7b6e-4eff-8e6b-17c08a604602",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T12",
+   "kind": "r1",
+   "run_id": "7f62a2c5-864d-4b47-9e90-0679f7b352d1",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T22",
+   "kind": "r1",
+   "run_id": "de0dbda9-c184-4441-8518-db845daf27bd",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T14",
+   "kind": "r1",
+   "run_id": "02e51df7-2c3f-4619-9f46-7b2de6f429a9",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T16",
+   "kind": "r1",
+   "run_id": "6b0113b3-2c67-4c46-aeff-475d27121178",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T15",
+   "kind": "r1",
+   "run_id": "0dcd96a0-f28e-40b3-bc27-b7a74ef65708",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 14,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T13",
+   "kind": "r1",
+   "run_id": "da3f2253-54c4-4c9b-b1d6-1c51954b55ca",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 38,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T21",
+   "kind": "r1",
+   "run_id": "4eb68473-b384-4ab6-b7ce-c05d39951e50",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 64,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T01",
+   "kind": "r1",
+   "run_id": "20ea3a91-1c90-4b92-ba6b-184974c3dbb1",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T23",
+   "kind": "r1",
+   "run_id": "19c7c969-333f-4b33-ae0d-d78318f43eb6",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T04",
+   "kind": "r1",
+   "run_id": "0ac933c7-50c0-49a4-aa10-62b280a3c13c",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T24",
+   "kind": "r1",
+   "run_id": "e53ebf88-542a-4a6a-9254-71152f33ee1a",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T18",
+   "kind": "r1",
+   "run_id": "6b232061-9de8-499e-b437-fdac9713eb34",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T02",
+   "kind": "r1",
+   "run_id": "5abf396c-70ed-4de9-b7f2-b92d7366584a",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 4,
+   "file_access_hits": 3
+  },
+  {
+   "task_id": "T20",
+   "kind": "r1",
+   "run_id": "02c56d35-602d-42e6-99f3-4487f47ffc24",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T19",
+   "kind": "r1",
+   "run_id": "7484ffb1-b3e6-47c0-9949-0b4b7f10a09e",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T03",
+   "kind": "r1",
+   "run_id": "3e956dac-890d-473c-8822-81376ff5f0eb",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 26,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T17",
+   "kind": "r1",
+   "run_id": "4d61fb58-c642-4dae-86a8-f7429f8b04c2",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 80,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T09",
+   "kind": "r1",
+   "run_id": "c23afa68-fe55-4f02-8323-399342546d1b",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T10",
+   "kind": "r1",
+   "run_id": "7ab7bc0b-500c-4c3e-8326-11b6191470b1",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 274,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T05",
+   "kind": "r1",
+   "run_id": "7747097b-ed17-4dee-bd70-823533f05cb7",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 218,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T06",
+   "kind": "r1",
+   "run_id": "0477123f-d28c-432f-ad04-2ba9acd7fc96",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T08",
+   "kind": "r1",
+   "run_id": "4ae15667-c168-4893-8329-4eed3ee3e358",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T07",
+   "kind": "r1",
+   "run_id": "9d5b9b70-71cb-4c7d-bbcd-8d310c36af7d",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 276,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T09",
+   "kind": "r1-dup",
+   "run_id": "138f97d8-9943-45f4-8095-ae3b97e94422",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 166,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T13",
+   "kind": "r1-repair",
+   "run_id": "2c4a0fcf-187d-4c08-acea-339340ca8005",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T15",
+   "kind": "r1-repair",
+   "run_id": "35ed6de2-5613-4b74-934a-49137f4a6107",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T18",
+   "kind": "r1-repair",
+   "run_id": "79550ef2-d39d-4889-933d-036054ecb78d",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T20",
+   "kind": "r1-repair",
+   "run_id": "a95dccad-be4a-4d6c-bf25-5640515b3e10",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T22",
+   "kind": "r1-repair",
+   "run_id": "40d57478-a3ba-4df4-931d-129552b97e73",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T24",
+   "kind": "r1-repair",
+   "run_id": "2923e667-22c1-4421-b183-30ab5ea3b964",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T06",
+   "kind": "r1-repair",
+   "run_id": "0e4c48bc-243f-40b3-8df7-5f4620f12d91",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 26,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T07",
+   "kind": "r1-repair",
+   "run_id": "710af30f-9d4d-48e2-9510-75a900ee3589",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 268,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T08",
+   "kind": "r1-repair",
+   "run_id": "db366473-b432-4173-8d96-13857988f209",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T09",
+   "kind": "r1-repair",
+   "run_id": "4d825b00-1321-4f57-9943-67c72c6ee10b",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T10",
+   "kind": "r1-repair",
+   "run_id": "ac593150-1a3e-4e7a-ac29-3edb31d5a747",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 4,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T01",
+   "kind": "r2",
+   "run_id": "9eb58847-105a-45ce-a4c6-d4b04ab09d88",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T02",
+   "kind": "r2",
+   "run_id": "d4052700-3e63-4168-946f-397d4db06e12",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 10,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T03",
+   "kind": "r2",
+   "run_id": "b690e365-246e-452f-8a14-5a180ed286dd",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 8,
+   "file_access_hits": 6
+  },
+  {
+   "task_id": "T04",
+   "kind": "r2",
+   "run_id": "38ef0d20-fddc-46ab-aff9-7185571bbecc",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T11",
+   "kind": "r2",
+   "run_id": "ca7aee0e-6ef3-4383-98a0-e94fc8aaacd8",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T12",
+   "kind": "r2",
+   "run_id": "acc52e76-e666-4191-a4ec-b96a0f48f90f",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T13",
+   "kind": "r2",
+   "run_id": "d02f7a04-6425-435f-ae30-2177b4f89c23",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T14",
+   "kind": "r2",
+   "run_id": "9f05e964-e6e1-45a1-8ef9-04f9a6d14896",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T15",
+   "kind": "r2",
+   "run_id": "54e6ac28-8bb2-4a31-97da-88454ad2ad6f",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 10,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T16",
+   "kind": "r2",
+   "run_id": "6c9a4c3c-d485-4836-a949-467242c85755",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 20,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T21",
+   "kind": "r2",
+   "run_id": "5d0b99e5-0a8e-42a4-be19-3571c76502ad",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 26,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T22",
+   "kind": "r2",
+   "run_id": "c00d9b75-503b-4fc6-8047-d77a5c832328",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T23",
+   "kind": "r2",
+   "run_id": "d2811165-b418-45c6-9256-884255ea8c5b",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T24",
+   "kind": "r2",
+   "run_id": "73483c1e-b0ed-451d-aef9-1c2c6ceeec8b",
+   "status": "MISSING_SEAL",
+   "tool_calls": 0,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T05",
+   "kind": "r2",
+   "run_id": "334b8d93-6574-4a2e-8db5-b2ba00c571a7",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 212,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T06",
+   "kind": "r2",
+   "run_id": "15b6b980-49cf-426f-bddf-c8a4dc5fd159",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 242,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T07",
+   "kind": "r2",
+   "run_id": "f9ebac8a-7388-44b8-93b0-010579ad296a",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 68,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T08",
+   "kind": "r2",
+   "run_id": "5a7eeb35-a6fd-457d-b218-575c46d79d6e",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 30,
+   "file_access_hits": 8
+  },
+  {
+   "task_id": "T09",
+   "kind": "r2",
+   "run_id": "58045a0f-7b03-457c-9016-18e31fd79f3c",
+   "status": "CONTAMINATED_TOOL_USE",
+   "tool_calls": 8,
+   "file_access_hits": 0
+  },
+  {
+   "task_id": "T10",
+   "kind": "r2",
+   "run_id": "2245a651-5201-41e3-a4ae-125c6bf63269",
+   "status": "CONTAMINATED_FILE_ACCESS",
+   "tool_calls": 290,
+   "file_access_hits": 8
+  }
+ ],
+ "accepted_tasks": [],
+ "note": "任一拒收 ⇒ 整批 INVALID：被拒题不进入判分、不计入通过数；整批不得判 ADMISSION_PASS / NOT_ADMITTED（先修派发接缝再重跑）",
+ "decided_at": "2026-09-19T05:15:35"
+}

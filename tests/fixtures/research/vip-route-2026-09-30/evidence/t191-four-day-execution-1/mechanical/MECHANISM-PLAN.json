@@ -1,0 +1,92 @@
+{
+  "actual_public_states_per_source": 28,
+  "batch_pin": {
+    "bytes": 847,
+    "sha256": "18e97b240ee37b8541cd3c47c204a05bc372f58c71f6c1e409f5ba74cb216743"
+  },
+  "cache_source_pins": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/AUTHOR-speed-model-output-qualification/views.jsonl.gz": {
+      "bytes": 360222,
+      "sha256": "110ad1a3e524ebf45ee73546e024bbf7985c31866d21c8ab569a8b928960121d"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/qualification/views.jsonl.gz": {
+      "bytes": 629899,
+      "sha256": "78df04e85ef1dce780a4c8157ac63719925bfd17bd2415195a03057d5d2edc5b"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t189-online-issue-ledger-and-offer-diagnosis-1/diagnostic/views.jsonl.gz": {
+      "bytes": 73700,
+      "sha256": "8b8f416dc63c9cb1e0874c5c176bac845f3fd7592c7ffc623d7dcb2b10aa8206"
+    }
+  },
+  "case_source_pins": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/CANDIDATE-CAUSAL-PLAN.json": {
+      "bytes": 263712,
+      "sha256": "d7bb8584aedc4e33ba117b544bed63d3572ab6778cdb6e00c5f5214bf13732fb"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t186-incremental-opportunity-repair-1/OPPORTUNITY-PROBE-PLAN-v2.json": {
+      "bytes": 998831,
+      "sha256": "74b40fa4f8f4e8ca625fd8d278cb73ffed25ebdc7c51ea54a233af607378bf03"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t187-family-combination-evolution-1/EXPLORATION-QUALIFICATION-PLAN.json": {
+      "bytes": 21381710,
+      "sha256": "fb6de5cb61196ba1f82d611ef1d29679cb4df28cfb5a0898ae70aafb828cc494"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t188-joint-score-mechanism-1/LATER-QUALIFICATION-CASES.json": {
+      "bytes": 690465,
+      "sha256": "69168ffa7422150dc2adc9f94f6b6869e2e50ef06b45b1271d290f99f44b517e"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t189-online-issue-ledger-and-offer-diagnosis-1/DIAGNOSTIC-PLAN.json": {
+      "bytes": 11852,
+      "sha256": "639e6826ab0849b75a5c178e7bc3f2f04cb94164fef1f4b34e37eff98b27c368"
+    }
+  },
+  "competing_explanations": [
+    {
+      "discriminator": "固定目标和容量，纯普通支持与去重并集核齐；单一最快路线不变。",
+      "id": "same_speed_union_unpaid",
+      "prediction": "同最小向听联合支持缺失；补进两路线基础，目标max前已付，备用不得重复。"
+    },
+    {
+      "discriminator": "原1万较慢普通路线备用保留；只核两项增量，不把抹掉备用当同速修复。",
+      "id": "slow_route_backup_credit",
+      "prediction": "较慢路线备用已付信用与同速联合缺失可独立共存。"
+    },
+    {
+      "discriminator": "根分差与端点基础/目标/备用分别报，不要求固定全部历史首选。",
+      "id": "target_scale_tradeoff",
+      "prediction": "即使并集补齐，目标尺度取舍仍可能维持原选择。"
+    }
+  ],
+  "hard_checks": [
+    "single_physical_code_dedup",
+    "route_target_reorder_and_copy_cannot_increase_score",
+    "exact_zero_stock_no_credit",
+    "pure_ordinary_union_monotonic_only",
+    "mature_base_carry_zero"
+  ],
+  "instrument_calls_per_source": 28,
+  "no_worlds_tables_models_http": true,
+  "parent_pin": {
+    "bytes": 24794,
+    "sha256": "2a59cbb18aefa3d24aadf0b3df70f5a4359c204b96a3f0dc208f77d53c196f30"
+  },
+  "planned_score_calls_per_source": 98,
+  "positive_controls": [
+    "supplement:004:05",
+    "fresh:005:04",
+    "closed-confirmation:060",
+    "closed-confirmation:114"
+  ],
+  "public_controls_pin": {
+    "bytes": 9714175,
+    "sha256": "621138ba9ab906536cb78f66a85873429551b5c4dbee277bdad34d94fa3e2c74"
+  },
+  "red_failure_expected": [
+    "same_speed_union_paid",
+    "mature_base_carry_zero"
+  ],
+  "repeats_per_source": 2,
+  "schema": "t191-minimal-mechanism-plan/1",
+  "strength_or_deadline_admission": false,
+  "synthetic_mechanism_states_per_source": 7
+}

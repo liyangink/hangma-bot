@@ -1,0 +1,66 @@
+{
+  "active_parent": {
+    "active_parent_sha256": "0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d",
+    "candidate_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p45-integrated-positive-parent-01-20260922/candidate.py",
+    "candidate_sha256": "0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d",
+    "exact_batch_equal_views": 380,
+    "failed_groups": {},
+    "failed_views": 0,
+    "gate_passed": true,
+    "maximum_operations": 55431,
+    "operation_limit": 100000,
+    "same_top_action_views": 380,
+    "static_precheck_passed": true,
+    "views": 380
+  },
+  "checks": {
+    "active_parent_passes": true,
+    "all_candidates_statically_valid": true,
+    "expected_locked_view_count": true,
+    "missing_seven_control_rejected": true,
+    "missing_two_wealth_control_rejected": true
+  },
+  "contract_sha256": "1393fdf479f57b8a16545eaeedc3998c0bdecd03d610e8a5fb3316c886fc0a3c",
+  "negative_controls": {
+    "missing_seven": {
+      "active_parent_sha256": "0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d",
+      "candidate_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p37-two-wealth-active-parent-01-20260922/candidate.py",
+      "candidate_sha256": "38cc7e9705ed5902b2a221b45605323471840bf7ef5acc61caf05f9d5762d3f7",
+      "exact_batch_equal_views": 316,
+      "failed_groups": {
+        "p8_seven_pairs_tradeoff": 64
+      },
+      "failed_views": 64,
+      "gate_passed": false,
+      "maximum_operations": 55396,
+      "operation_limit": 100000,
+      "same_top_action_views": 316,
+      "static_precheck_passed": true,
+      "views": 380
+    },
+    "missing_two_wealth": {
+      "active_parent_sha256": "0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d",
+      "candidate_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r18-p8-seven-pairs-initial-01-20260922/generation/candidate.py",
+      "candidate_sha256": "8cb4acd1809c249b7e2a3cc8453998cec6fde4b4a09d10caa53a338bc9690d8c",
+      "exact_batch_equal_views": 0,
+      "failed_groups": {
+        "p37_current_views": 255,
+        "p8_natural_boundary": 29,
+        "p8_seven_pairs_tradeoff": 64,
+        "p8_standard_switch": 32
+      },
+      "failed_views": 380,
+      "gate_passed": false,
+      "maximum_operations": 55200,
+      "operation_limit": 100000,
+      "same_top_action_views": 361,
+      "static_precheck_passed": true,
+      "views": 380
+    }
+  },
+  "next": "所有新候选在开发题评分前先调用本门；默认零豁免",
+  "release_eligible": false,
+  "schema": "r18-p51-capability-inheritance-gate-result/1",
+  "status": "PASS_P51_INHERITANCE_GATE",
+  "successor_policy": "任何新家族候选必须在全部既有能力视图上保持完整ScoreBatch和首选动作一致；若要修改既有目标，必须先冻结该目标的新开发/隐藏/配对反事实证据并显式列为替代目标"
+}

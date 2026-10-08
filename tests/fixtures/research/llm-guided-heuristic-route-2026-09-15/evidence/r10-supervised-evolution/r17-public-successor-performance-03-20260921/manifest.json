@@ -1,0 +1,24 @@
+{
+  "schema": "r17-public-successor-batch-performance-manifest/1",
+  "runner": {
+    "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r17_public_successor_batch_performance_probe.py",
+    "sha256": "327c651a013af39045faf20cd2393ffea632d20f3bda4913e24d7a3538582e1d"
+  },
+  "raw_result": {
+    "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/r17-public-successor-pilot-01-20260921/result.json",
+    "sha256": "fc93624bafcdfa11a2be019b7b75a5b910b7b404d4691fc0a612abbc07977c5e"
+  },
+  "optimization": "跨根共享HandSummary；批量公开支持；惰性标量前沿，不构造弃牌CandidateFacts",
+  "forbidden_changes": [
+    "删除容量边",
+    "删除合法叶",
+    "合并抓打包络",
+    "改变冻结阈值"
+  ],
+  "outputs": [
+    "result.json",
+    "per-window.json",
+    "frontier-sample.json",
+    "issues.json"
+  ]
+}

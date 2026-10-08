@@ -1,0 +1,311 @@
+{
+  "schema": "r10-cross-specialist-phase-a-ranking/1",
+  "ranking": [
+    {
+      "config_id": "route_claim_only",
+      "mode": "route_claim_only",
+      "family": "ABLATION_ROUTE_CLAIM",
+      "candidate_id": "offline-cross-specialist-v1:route_claim_only:b753f5bb83860428",
+      "is_parent": false,
+      "is_crossover": false,
+      "fitness_mean_delta_low": 0.0625,
+      "mean_delta": 0.0625,
+      "mean_delta_high": 0.0625,
+      "H": {
+        "n_roots": 4,
+        "mean_delta": 0.0,
+        "standard_error": 0.10206207261596575,
+        "interval_95": [
+          -0.2000379865148046,
+          0.2000379865148046
+        ]
+      },
+      "M": {
+        "n_roots": 4,
+        "mean_delta": 0.125,
+        "standard_error": 0.07216878364870322,
+        "interval_95": [
+          -0.01644821675952146,
+          0.26644821675952146
+        ]
+      },
+      "audit": {
+        "decisions": 21409,
+        "statuses": {
+          "NOT_APPLICABLE": 4468,
+          "EVALUATED": 16941
+        },
+        "components": {
+          "v2": 4468,
+          "route_claim": 16941
+        },
+        "changes_by_component": {
+          "v2": 0,
+          "route_claim": 49
+        },
+        "first_changes": 49,
+        "rule_calls": 0,
+        "max_decision_seconds": 0.02335845900233835,
+        "total_decision_seconds": 8.884197701525409,
+        "runtime_counts": {
+          "timeouts": 0,
+          "illegal_choices": 0,
+          "fallbacks": 0,
+          "auto_actions": 0,
+          "audit_missing": 0
+        },
+        "has_fallback": false
+      },
+      "rank": 1,
+      "disposition": "ADVANCE_TO_B"
+    },
+    {
+      "config_id": "route_all",
+      "mode": "route_all",
+      "family": "PARENT_ROUTE_ALL",
+      "candidate_id": "offline-cross-specialist-v1:route_all:b753f5bb83860428",
+      "is_parent": true,
+      "is_crossover": false,
+      "fitness_mean_delta_low": 0.0,
+      "mean_delta": 0.0,
+      "mean_delta_high": 0.0,
+      "H": {
+        "n_roots": 4,
+        "mean_delta": 0.0,
+        "standard_error": 0.10206207261596575,
+        "interval_95": [
+          -0.2000379865148046,
+          0.2000379865148046
+        ]
+      },
+      "M": {
+        "n_roots": 4,
+        "mean_delta": 0.0,
+        "standard_error": 0.10206207261596575,
+        "interval_95": [
+          -0.2000379865148046,
+          0.2000379865148046
+        ]
+      },
+      "audit": {
+        "decisions": 21399,
+        "statuses": {
+          "EVALUATED": 21399
+        },
+        "components": {
+          "route_draw": 4444,
+          "route_claim": 16955
+        },
+        "changes_by_component": {
+          "route_draw": 73,
+          "route_claim": 43
+        },
+        "first_changes": 116,
+        "rule_calls": 0,
+        "max_decision_seconds": 0.16748575004749,
+        "total_decision_seconds": 18.42632852133829,
+        "runtime_counts": {
+          "timeouts": 0,
+          "illegal_choices": 0,
+          "fallbacks": 0,
+          "auto_actions": 0,
+          "audit_missing": 0
+        },
+        "has_fallback": false
+      },
+      "rank": 2,
+      "disposition": "ADVANCE_TO_B"
+    },
+    {
+      "config_id": "cross_followup_claim",
+      "mode": "cross_followup_claim",
+      "family": "CROSSOVER_FOLLOWUP_CLAIM",
+      "candidate_id": "offline-cross-specialist-v1:cross_followup_claim:b753f5bb83860428",
+      "is_parent": false,
+      "is_crossover": true,
+      "fitness_mean_delta_low": -0.0625,
+      "mean_delta": -0.0625,
+      "mean_delta_high": -0.0625,
+      "H": {
+        "n_roots": 4,
+        "mean_delta": -0.125,
+        "standard_error": 0.1613743060919757,
+        "interval_95": [
+          -0.441287827970415,
+          0.191287827970415
+        ]
+      },
+      "M": {
+        "n_roots": 4,
+        "mean_delta": 0.0,
+        "standard_error": 0.1767766952966369,
+        "interval_95": [
+          -0.3464759560874195,
+          0.3464759560874195
+        ]
+      },
+      "audit": {
+        "decisions": 21797,
+        "statuses": {
+          "EVALUATED": 18265,
+          "NOT_APPLICABLE": 3532
+        },
+        "components": {
+          "followup_discard": 4519,
+          "route_claim": 17278
+        },
+        "changes_by_component": {
+          "followup_discard": 423,
+          "route_claim": 38
+        },
+        "first_changes": 461,
+        "rule_calls": 69907,
+        "max_decision_seconds": 0.585520250024274,
+        "total_decision_seconds": 106.23806076293113,
+        "runtime_counts": {
+          "timeouts": 0,
+          "illegal_choices": 0,
+          "fallbacks": 0,
+          "auto_actions": 0,
+          "audit_missing": 0
+        },
+        "has_fallback": false
+      },
+      "rank": 3,
+      "disposition": "ADVANCE_TO_B"
+    },
+    {
+      "config_id": "route_draw_only",
+      "mode": "route_draw_only",
+      "family": "ABLATION_ROUTE_DRAW",
+      "candidate_id": "offline-cross-specialist-v1:route_draw_only:b753f5bb83860428",
+      "is_parent": false,
+      "is_crossover": false,
+      "fitness_mean_delta_low": -0.0625,
+      "mean_delta": -0.046875,
+      "mean_delta_high": -0.03125,
+      "H": {
+        "n_roots": 4,
+        "mean_delta": -0.03125,
+        "standard_error": 0.1288470508005519,
+        "interval_95": [
+          -0.28378557908328444,
+          0.22128557908328444
+        ]
+      },
+      "M": {
+        "n_roots": 4,
+        "mean_delta": -0.0625,
+        "standard_error": 0.11967838846954226,
+        "interval_95": [
+          -0.2970653311280965,
+          0.17206533112809652
+        ]
+      },
+      "audit": {
+        "decisions": 21600,
+        "statuses": {
+          "EVALUATED": 4475,
+          "NOT_APPLICABLE": 17125
+        },
+        "components": {
+          "route_draw": 4475,
+          "v2": 17125
+        },
+        "changes_by_component": {
+          "route_draw": 71,
+          "v2": 0
+        },
+        "first_changes": 71,
+        "rule_calls": 0,
+        "max_decision_seconds": 0.17375037499004975,
+        "total_decision_seconds": 13.392286272486672,
+        "runtime_counts": {
+          "timeouts": 0,
+          "illegal_choices": 0,
+          "fallbacks": 0,
+          "auto_actions": 0,
+          "audit_missing": 0
+        },
+        "has_fallback": false
+      },
+      "rank": 4,
+      "disposition": "NOT_SELECTED_WITHIN_BUDGET"
+    },
+    {
+      "config_id": "followup_discard",
+      "mode": "followup_discard",
+      "family": "PARENT_FOLLOWUP_DISCARD",
+      "candidate_id": "offline-cross-specialist-v1:followup_discard:b753f5bb83860428",
+      "is_parent": true,
+      "is_crossover": false,
+      "fitness_mean_delta_low": -0.09375,
+      "mean_delta": -0.09375,
+      "mean_delta_high": -0.09375,
+      "H": {
+        "n_roots": 4,
+        "mean_delta": -0.125,
+        "standard_error": 0.07216878364870322,
+        "interval_95": [
+          -0.26644821675952146,
+          0.01644821675952146
+        ]
+      },
+      "M": {
+        "n_roots": 4,
+        "mean_delta": -0.0625,
+        "standard_error": 0.0625,
+        "interval_95": [
+          -0.18499774903375338,
+          0.05999774903375338
+        ]
+      },
+      "audit": {
+        "decisions": 21495,
+        "statuses": {
+          "EVALUATED": 965,
+          "NOT_APPLICABLE": 20530
+        },
+        "components": {
+          "followup_discard": 4445,
+          "v2": 17050
+        },
+        "changes_by_component": {
+          "followup_discard": 405,
+          "v2": 0
+        },
+        "first_changes": 405,
+        "rule_calls": 67094,
+        "max_decision_seconds": 0.5044393750140443,
+        "total_decision_seconds": 99.77128557348624,
+        "runtime_counts": {
+          "timeouts": 0,
+          "illegal_choices": 0,
+          "fallbacks": 0,
+          "auto_actions": 0,
+          "audit_missing": 0
+        },
+        "has_fallback": false
+      },
+      "rank": 5,
+      "disposition": "ADVANCE_TO_B"
+    }
+  ],
+  "selected_for_b": [
+    "followup_discard",
+    "route_all",
+    "cross_followup_claim",
+    "route_claim_only"
+  ],
+  "cross_has_positive_support": true,
+  "cross_allowed": true,
+  "selection_rule": {
+    "fitness": "H/M 等权的根级保守差 d_low 均值",
+    "purpose": "组件归因和阶段B预算分配，不是强度检验",
+    "rule": "比较交叉体、两个原父代和两个单侧消融。只有交叉体至少满足：H/M 任一面板的95%区间上界大于0，且行为审计无事实/成本/执行回退，才允许保留到下一批；两个父代强制保留作因果对照。",
+    "no_parameter_tuning": true
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

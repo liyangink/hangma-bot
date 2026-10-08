@@ -1,0 +1,118 @@
+{
+  "alternate": {
+    "decision_count": 159,
+    "first_decision_action": "discard:6b",
+    "forced_once": 1,
+    "hand": {
+      "details": [
+        "平胡"
+      ],
+      "fan": 1,
+      "hand_id": "hand-c4e1a6a37e57679fc5f10210b846ea8fbfda6a96c0627594a47b23157e5f52b0",
+      "is_draw": false,
+      "round_no": 1,
+      "score_delta": [
+        -8,
+        -1,
+        -1,
+        10
+      ],
+      "scores_after": [
+        -8,
+        -1,
+        -1,
+        10
+      ],
+      "scores_before": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "winner_seat": 3
+    },
+    "runtime_counts": {
+      "audit_missing": 0,
+      "auto_actions": 0,
+      "fallbacks": 0,
+      "illegal_choices": 0,
+      "timeouts": 0
+    }
+  },
+  "alternate_action": "discard:6b",
+  "boundary": "同一个历史隐藏世界的单一窗口预检；实际策略不能读取世界，单次结算不代表牌墙分布、整桌收益或独立确认。",
+  "branch_observation_summary_sha256": "bd534d9a79ee140bdfc7b17d60cfbc0431735af7effd6ecce8b48351fa4b9986",
+  "experiment": "smoke_only_not_candidate_value",
+  "full_table_scores_match_g89": true,
+  "input_sha256": {
+    "contract": "1012c5d996f0bb913c4a29d36b493ebc5b81e959af496051ba9568ba7bcd08e4",
+    "g89_manifest": "0c93abfb0f0fc648c34931154e932994355a3917131255bd5b99a46fbe1a1735",
+    "prereg": "cae6ea442d9ad451e1bfb242c5b700d4e3c45813f2c66a65b47c897527ff9124",
+    "script": "09b1f70bd07cd419d19507448ab1a1842e566e666ef84b4efc112d4d806ea81a"
+  },
+  "parent": {
+    "decision_count": 31,
+    "first_decision_action": "discard:2w",
+    "forced_once": 0,
+    "hand": {
+      "details": [
+        "平胡"
+      ],
+      "fan": 1,
+      "hand_id": "hand-c4e1a6a37e57679fc5f10210b846ea8fbfda6a96c0627594a47b23157e5f52b0",
+      "is_draw": false,
+      "round_no": 1,
+      "score_delta": [
+        -8,
+        -1,
+        10,
+        -1
+      ],
+      "scores_after": [
+        -8,
+        -1,
+        10,
+        -1
+      ],
+      "scores_before": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "winner_seat": 2
+    },
+    "runtime_counts": {
+      "audit_missing": 0,
+      "auto_actions": 0,
+      "fallbacks": 0,
+      "illegal_choices": 0,
+      "timeouts": 0
+    }
+  },
+  "parent_action": "discard:2w",
+  "parent_hand_matches_full_run": true,
+  "schema": "g93-same-hand-branch-preflight/1",
+  "seed": 210363029253243,
+  "table_id": "np-H-2026110801-r01-s0-t1",
+  "target_window": {
+    "game_id": "sitin-stage:np-H-2026110801-r01-s0-t1",
+    "phase": "draw",
+    "round_no": 1,
+    "schema_version": 1,
+    "seat": 0,
+    "trigger_seq": 189
+  },
+  "visible_action_facts": {
+    "discard:2w": {
+      "ordinary_codes": 8,
+      "public_unseen_capacity": 25,
+      "standard_shanten_after": 1
+    },
+    "discard:6b": {
+      "ordinary_codes": 6,
+      "public_unseen_capacity": 19,
+      "standard_shanten_after": 1
+    }
+  }
+}

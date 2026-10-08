@@ -1,0 +1,53 @@
+{
+  "status": "COMPLETE_STRUCTURAL_PHASE_C_DEVELOPMENT_CHAMPION",
+  "configurations": 3,
+  "new_roots_per_configuration": 32,
+  "cumulative_roots_per_configuration": 64,
+  "candidate_tables": 768,
+  "baseline_tables": 256,
+  "full_tables": 1024,
+  "development_champion": {
+    "config_id": "s3-cfg-02",
+    "candidate_id": "action_value_v1:offline-structural-v1:984c2b2e52baa042bbd08ed63b4ff74865b2f310a2f71180b76cde945f909c41",
+    "kind": "action_value_source",
+    "family": "S3",
+    "is_zero_effect": false,
+    "is_author_default": false,
+    "fitness_mean_delta_low": 0.0234375,
+    "mean_delta": 0.03125,
+    "mean_delta_high": 0.0390625,
+    "H": {
+      "n_roots": 32,
+      "mean_delta": 0.0390625,
+      "standard_error": 0.028307817564804563,
+      "interval_95": [
+        -0.016419802907947284,
+        0.09454480290794728
+      ]
+    },
+    "M": {
+      "n_roots": 32,
+      "mean_delta": 0.0234375,
+      "standard_error": 0.03245533337241378,
+      "interval_95": [
+        -0.040173784516171915,
+        0.08704878451617191
+      ]
+    }
+  },
+  "positive_development_signal": true,
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 1024.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "冻结非默认正向冠军；用全新panel_seed和来源根执行独立复核"
+}

@@ -1,0 +1,2836 @@
+{
+  "note": "自由房连续对战账本。每场成绩=官方终局分（优先审计 game_finished.final_scores，缺失时用官方下载牌谱逐局求和，已交叉对拍）。累计从本账本起点起算，房间 a_ec93a12a1913（-108）已结清入档不计入。",
+  "updated_at": "2026-09-08T10:30:27+0800",
+  "stop_loss": {
+    "consecutive_negative_rooms": 3,
+    "cumulative_floor": -1500,
+    "definition": "连败按房计：连续 3 个房的本房结算小计为负分 → 止损；房内单场胜负与连败无关（用户 2026-09-07 22:35 修正）",
+    "enforcement": "比赛进行中绝对禁止动进程（中断会触发服务器代打大规模失分）；止损只在每房结算时判定，触发则不再续开",
+    "only_sigterm_allowed": "尚无任何一场开赛且等待超过 1 小时"
+  },
+  "cumulative_total": 4406,
+  "current_lose_streak": 2,
+  "rooms": [
+    {
+      "room_id": "a_85a614df4ed6",
+      "session_log": "runs/session-20260907-214650.log",
+      "audit_dir": "runs/runs/run-b1440854c6ac4720b89c7916a717031d",
+      "download_dir": "runs/auto-match-download-a_85a614df4ed6",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 279,
+      "games": [
+        {
+          "game_id": "a_85a614df4ed6_r1_b3_t0",
+          "seat": 3,
+          "final_score": 97,
+          "source": "official_download",
+          "rounds_in_record": 7
+        },
+        {
+          "game_id": "a_85a614df4ed6_r1_b2_t0",
+          "seat": 2,
+          "final_score": -13,
+          "source": "audit",
+          "rounds_in_record": 8
+        },
+        {
+          "game_id": "a_85a614df4ed6_r1_b0_t0",
+          "seat": 2,
+          "final_score": 188,
+          "source": "audit",
+          "rounds_in_record": 8
+        },
+        {
+          "game_id": "a_85a614df4ed6_r1_b9_t0",
+          "seat": 0,
+          "final_score": -7,
+          "source": "audit",
+          "rounds_in_record": 8
+        },
+        {
+          "game_id": "a_85a614df4ed6_r1_b5_t0",
+          "seat": 2,
+          "final_score": 17,
+          "source": "audit",
+          "rounds_in_record": 8
+        },
+        {
+          "game_id": "a_85a614df4ed6_r1_b8_t0",
+          "seat": 3,
+          "final_score": -20,
+          "source": "audit",
+          "rounds_in_record": 7
+        },
+        {
+          "game_id": "a_85a614df4ed6_r1_b7_t0",
+          "seat": 3,
+          "final_score": 23,
+          "source": "official_download",
+          "rounds_in_record": 8
+        },
+        {
+          "game_id": "a_85a614df4ed6_r1_b4_t0",
+          "seat": 1,
+          "final_score": 25,
+          "source": "official_download",
+          "rounds_in_record": 8
+        },
+        {
+          "game_id": "a_85a614df4ed6_r1_b1_t0",
+          "seat": 3,
+          "final_score": -40,
+          "source": "audit",
+          "rounds_in_record": 8
+        },
+        {
+          "game_id": "a_85a614df4ed6_r1_b6_t0",
+          "seat": 2,
+          "final_score": 9,
+          "source": "official_download",
+          "rounds_in_record": 8
+        }
+      ]
+    },
+    {
+      "room_id": "a_ca4a6b3329d1",
+      "session_log": "runs/session-20260907-221531.log",
+      "audit_dir": "runs/runs/run-b8e21cb66d4a4cdf9bb0ef7c6b44e92b",
+      "download_dir": "runs/auto-match-download-a_ca4a6b3329d1",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 93,
+      "games": [
+        {
+          "game_id": "a_ca4a6b3329d1_r1_b0_t0",
+          "seat": 1,
+          "final_score": 18,
+          "rounds_in_record": 8,
+          "source": "audit+official_crosschecked"
+        },
+        {
+          "game_id": "a_ca4a6b3329d1_r1_b1_t0",
+          "seat": 2,
+          "final_score": 9,
+          "rounds_in_record": 8,
+          "source": "audit+official_crosschecked"
+        },
+        {
+          "game_id": "a_ca4a6b3329d1_r1_b2_t0",
+          "seat": 1,
+          "final_score": -37,
+          "rounds_in_record": 8,
+          "source": "audit+official_crosschecked"
+        },
+        {
+          "game_id": "a_ca4a6b3329d1_r1_b3_t0",
+          "seat": 1,
+          "final_score": 53,
+          "rounds_in_record": 7,
+          "source": "audit+official_crosschecked"
+        },
+        {
+          "game_id": "a_ca4a6b3329d1_r1_b4_t0",
+          "seat": 1,
+          "final_score": -53,
+          "rounds_in_record": 8,
+          "source": "audit+official_crosschecked"
+        },
+        {
+          "game_id": "a_ca4a6b3329d1_r1_b5_t0",
+          "seat": 0,
+          "final_score": 26,
+          "rounds_in_record": 8,
+          "source": "audit+official_crosschecked"
+        },
+        {
+          "game_id": "a_ca4a6b3329d1_r1_b6_t0",
+          "seat": 3,
+          "final_score": -2,
+          "rounds_in_record": 8,
+          "source": "audit+official_crosschecked"
+        },
+        {
+          "game_id": "a_ca4a6b3329d1_r1_b7_t0",
+          "seat": 3,
+          "final_score": -11,
+          "rounds_in_record": 7,
+          "source": "audit+official_crosschecked"
+        },
+        {
+          "game_id": "a_ca4a6b3329d1_r1_b8_t0",
+          "seat": 3,
+          "final_score": 23,
+          "rounds_in_record": 7,
+          "source": "audit+official_crosschecked"
+        },
+        {
+          "game_id": "a_ca4a6b3329d1_r1_b9_t0",
+          "seat": 0,
+          "final_score": 67,
+          "rounds_in_record": 8,
+          "source": "audit+official_crosschecked"
+        }
+      ]
+    },
+    {
+      "room_id": "a_d3b34793b175",
+      "session_log": "runs/session-20260907-223356.log",
+      "audit_dir": "runs/runs/run-3a26d541223540d383ea1808d608158d",
+      "download_dir": "runs/auto-match-download-a_d3b34793b175",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 182,
+      "games": [
+        {
+          "game_id": "a_d3b34793b175_r1_b0_t0",
+          "seat": 2,
+          "final_score": -14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d3b34793b175_r1_b1_t0",
+          "seat": 0,
+          "final_score": -20,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d3b34793b175_r1_b2_t0",
+          "seat": 3,
+          "final_score": 7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d3b34793b175_r1_b3_t0",
+          "seat": 3,
+          "final_score": -19,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d3b34793b175_r1_b4_t0",
+          "seat": 3,
+          "final_score": 14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d3b34793b175_r1_b5_t0",
+          "seat": 3,
+          "final_score": 27,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d3b34793b175_r1_b6_t0",
+          "seat": 2,
+          "final_score": 32,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d3b34793b175_r1_b7_t0",
+          "seat": 1,
+          "final_score": -7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d3b34793b175_r1_b8_t0",
+          "seat": 2,
+          "final_score": 7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d3b34793b175_r1_b9_t0",
+          "seat": 0,
+          "final_score": 155,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_9d3d76a962c0",
+      "session_log": "runs/session-20260907-225259.log",
+      "audit_dir": "runs/runs/run-df8c3e37f41842fdad92ebb8c762dad8",
+      "download_dir": "runs/auto-match-download-a_9d3d76a962c0",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 304,
+      "games": [
+        {
+          "game_id": "a_9d3d76a962c0_r1_b0_t0",
+          "seat": 3,
+          "final_score": 86,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9d3d76a962c0_r1_b1_t0",
+          "seat": 0,
+          "final_score": 0,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9d3d76a962c0_r1_b2_t0",
+          "seat": 1,
+          "final_score": 68,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9d3d76a962c0_r1_b3_t0",
+          "seat": 3,
+          "final_score": -45,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9d3d76a962c0_r1_b4_t0",
+          "seat": 2,
+          "final_score": -32,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9d3d76a962c0_r1_b5_t0",
+          "seat": 3,
+          "final_score": 120,
+          "source": "official_download"
+        },
+        {
+          "game_id": "a_9d3d76a962c0_r1_b6_t0",
+          "seat": 1,
+          "final_score": 50,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9d3d76a962c0_r1_b7_t0",
+          "seat": 3,
+          "final_score": 7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9d3d76a962c0_r1_b8_t0",
+          "seat": 3,
+          "final_score": 36,
+          "source": "official_download"
+        },
+        {
+          "game_id": "a_9d3d76a962c0_r1_b9_t0",
+          "seat": 3,
+          "final_score": 14,
+          "source": "official_download"
+        }
+      ]
+    },
+    {
+      "room_id": "a_5f0f5a01d79c",
+      "session_log": "runs/session-20260907-231157.log",
+      "audit_dir": "runs/runs/run-9aa3aab789d947959e12f885dca53ee5",
+      "download_dir": "runs/auto-match-download-a_5f0f5a01d79c",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 342,
+      "games": [
+        {
+          "game_id": "a_5f0f5a01d79c_r1_b0_t0",
+          "seat": 1,
+          "final_score": 74,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5f0f5a01d79c_r1_b1_t0",
+          "seat": 1,
+          "final_score": -14,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_5f0f5a01d79c_r1_b2_t0",
+          "seat": 3,
+          "final_score": 11,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5f0f5a01d79c_r1_b3_t0",
+          "seat": 2,
+          "final_score": 82,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_5f0f5a01d79c_r1_b4_t0",
+          "seat": 0,
+          "final_score": 39,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5f0f5a01d79c_r1_b5_t0",
+          "seat": 0,
+          "final_score": 39,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_5f0f5a01d79c_r1_b6_t0",
+          "seat": 1,
+          "final_score": -19,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5f0f5a01d79c_r1_b7_t0",
+          "seat": 2,
+          "final_score": 13,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_5f0f5a01d79c_r1_b8_t0",
+          "seat": 2,
+          "final_score": 18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5f0f5a01d79c_r1_b9_t0",
+          "seat": 2,
+          "final_score": 99,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_0c8a9bd9e09e",
+      "session_log": "runs/session-20260907-234438.log",
+      "audit_dir": "runs/runs/run-b34f970abfcb48c3981d0fbf465d1f90",
+      "download_dir": "runs/auto-match-download-a_0c8a9bd9e09e",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 46,
+      "games": [
+        {
+          "game_id": "a_0c8a9bd9e09e_r1_b0_t0",
+          "seat": 1,
+          "final_score": -18,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_0c8a9bd9e09e_r1_b1_t0",
+          "seat": 1,
+          "final_score": 17,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_0c8a9bd9e09e_r1_b2_t0",
+          "seat": 0,
+          "final_score": 25,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_0c8a9bd9e09e_r1_b3_t0",
+          "seat": 2,
+          "final_score": 13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_0c8a9bd9e09e_r1_b4_t0",
+          "seat": 3,
+          "final_score": 22,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_0c8a9bd9e09e_r1_b5_t0",
+          "seat": 3,
+          "final_score": -55,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_0c8a9bd9e09e_r1_b6_t0",
+          "seat": 2,
+          "final_score": -2,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_0c8a9bd9e09e_r1_b7_t0",
+          "seat": 1,
+          "final_score": 35,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_0c8a9bd9e09e_r1_b8_t0",
+          "seat": 2,
+          "final_score": 13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_0c8a9bd9e09e_r1_b9_t0",
+          "seat": 2,
+          "final_score": -4,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_2a2325f65163",
+      "session_log": "runs/session-20260908-000745.log",
+      "audit_dir": "runs/runs/run-4ce68fa04eb344ae85750f43aa47c579",
+      "download_dir": "runs/auto-match-download-a_2a2325f65163",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 183,
+      "games": [
+        {
+          "game_id": "a_2a2325f65163_r1_b0_t0",
+          "seat": 2,
+          "final_score": 7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2a2325f65163_r1_b1_t0",
+          "seat": 1,
+          "final_score": 86,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2a2325f65163_r1_b2_t0",
+          "seat": 0,
+          "final_score": 33,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2a2325f65163_r1_b3_t0",
+          "seat": 2,
+          "final_score": -8,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2a2325f65163_r1_b4_t0",
+          "seat": 3,
+          "final_score": 43,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2a2325f65163_r1_b5_t0",
+          "seat": 2,
+          "final_score": 18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2a2325f65163_r1_b6_t0",
+          "seat": 3,
+          "final_score": -21,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2a2325f65163_r1_b7_t0",
+          "seat": 3,
+          "final_score": 2,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2a2325f65163_r1_b8_t0",
+          "seat": 2,
+          "final_score": -3,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2a2325f65163_r1_b9_t0",
+          "seat": 1,
+          "final_score": 26,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_54ecb8a94693",
+      "session_log": "runs/session-20260908-003816.log",
+      "audit_dir": "runs/runs/run-80748364c0924d4c86013e7557366233",
+      "download_dir": "runs/auto-match-download-a_54ecb8a94693",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 77,
+      "games": [
+        {
+          "game_id": "a_54ecb8a94693_r1_b0_t0",
+          "seat": 1,
+          "final_score": 24,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_54ecb8a94693_r1_b1_t0",
+          "seat": 0,
+          "final_score": 14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_54ecb8a94693_r1_b2_t0",
+          "seat": 2,
+          "final_score": 25,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_54ecb8a94693_r1_b3_t0",
+          "seat": 3,
+          "final_score": 7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_54ecb8a94693_r1_b4_t0",
+          "seat": 0,
+          "final_score": -22,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_54ecb8a94693_r1_b5_t0",
+          "seat": 1,
+          "final_score": -26,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_54ecb8a94693_r1_b6_t0",
+          "seat": 1,
+          "final_score": 14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_54ecb8a94693_r1_b7_t0",
+          "seat": 0,
+          "final_score": 69,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_54ecb8a94693_r1_b8_t0",
+          "seat": 3,
+          "final_score": -12,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_54ecb8a94693_r1_b9_t0",
+          "seat": 0,
+          "final_score": -16,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_65c74e043ed5",
+      "session_log": "runs/session-20260908-005204.log",
+      "audit_dir": "runs/runs/run-81f0d4ffabfa47609d0dac441281d83e",
+      "download_dir": "runs/auto-match-download-a_65c74e043ed5",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 242,
+      "games": [
+        {
+          "game_id": "a_65c74e043ed5_r1_b0_t0",
+          "seat": 1,
+          "final_score": 15,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_65c74e043ed5_r1_b1_t0",
+          "seat": 0,
+          "final_score": 58,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_65c74e043ed5_r1_b2_t0",
+          "seat": 3,
+          "final_score": 19,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_65c74e043ed5_r1_b3_t0",
+          "seat": 3,
+          "final_score": 39,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_65c74e043ed5_r1_b4_t0",
+          "seat": 2,
+          "final_score": 43,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_65c74e043ed5_r1_b5_t0",
+          "seat": 2,
+          "final_score": 25,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_65c74e043ed5_r1_b6_t0",
+          "seat": 0,
+          "final_score": 30,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_65c74e043ed5_r1_b7_t0",
+          "seat": 1,
+          "final_score": -9,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_65c74e043ed5_r1_b8_t0",
+          "seat": 3,
+          "final_score": 13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_65c74e043ed5_r1_b9_t0",
+          "seat": 1,
+          "final_score": 9,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_bc9a6cef4d89",
+      "session_log": "runs/session-20260908-010902.log",
+      "audit_dir": "runs/runs/run-cfd28c3b07fb4328ba1e3b72eb4ce9b7",
+      "download_dir": "runs/auto-match-download-a_bc9a6cef4d89",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 298,
+      "games": [
+        {
+          "game_id": "a_bc9a6cef4d89_r1_b0_t0",
+          "seat": 2,
+          "final_score": -15,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bc9a6cef4d89_r1_b1_t0",
+          "seat": 1,
+          "final_score": 54,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bc9a6cef4d89_r1_b2_t0",
+          "seat": 0,
+          "final_score": 10,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_bc9a6cef4d89_r1_b3_t0",
+          "seat": 2,
+          "final_score": 54,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bc9a6cef4d89_r1_b4_t0",
+          "seat": 0,
+          "final_score": 2,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bc9a6cef4d89_r1_b5_t0",
+          "seat": 3,
+          "final_score": 9,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_bc9a6cef4d89_r1_b6_t0",
+          "seat": 0,
+          "final_score": 57,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_bc9a6cef4d89_r1_b7_t0",
+          "seat": 1,
+          "final_score": 46,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_bc9a6cef4d89_r1_b8_t0",
+          "seat": 1,
+          "final_score": 27,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bc9a6cef4d89_r1_b9_t0",
+          "seat": 0,
+          "final_score": 54,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_df5de5962a32",
+      "session_log": "runs/session-20260908-013153.log",
+      "audit_dir": "runs/runs/run-f6f0a828bbad4a8696db248380ec62f4",
+      "download_dir": "runs/auto-match-download-a_df5de5962a32",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 105,
+      "games": [
+        {
+          "game_id": "a_df5de5962a32_r1_b0_t0",
+          "seat": 0,
+          "final_score": 52,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_df5de5962a32_r1_b1_t0",
+          "seat": 2,
+          "final_score": 7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_df5de5962a32_r1_b2_t0",
+          "seat": 1,
+          "final_score": -35,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_df5de5962a32_r1_b3_t0",
+          "seat": 0,
+          "final_score": 62,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_df5de5962a32_r1_b4_t0",
+          "seat": 1,
+          "final_score": 3,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_df5de5962a32_r1_b5_t0",
+          "seat": 2,
+          "final_score": -5,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_df5de5962a32_r1_b6_t0",
+          "seat": 0,
+          "final_score": 14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_df5de5962a32_r1_b7_t0",
+          "seat": 2,
+          "final_score": 11,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_df5de5962a32_r1_b8_t0",
+          "seat": 3,
+          "final_score": 2,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_df5de5962a32_r1_b9_t0",
+          "seat": 2,
+          "final_score": -6,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_b112c883ebfe",
+      "session_log": "runs/session-20260908-014612.log",
+      "audit_dir": "runs/runs/run-38113dfc5fe74299bdfe54d8899b128e",
+      "download_dir": "runs/auto-match-download-a_b112c883ebfe",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 86,
+      "games": [
+        {
+          "game_id": "a_b112c883ebfe_r1_b0_t0",
+          "seat": 1,
+          "final_score": 62,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b112c883ebfe_r1_b1_t0",
+          "seat": 3,
+          "final_score": -35,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b112c883ebfe_r1_b2_t0",
+          "seat": 3,
+          "final_score": -6,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_b112c883ebfe_r1_b3_t0",
+          "seat": 1,
+          "final_score": -10,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_b112c883ebfe_r1_b4_t0",
+          "seat": 1,
+          "final_score": -22,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b112c883ebfe_r1_b5_t0",
+          "seat": 0,
+          "final_score": -40,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b112c883ebfe_r1_b6_t0",
+          "seat": 3,
+          "final_score": 85,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_b112c883ebfe_r1_b7_t0",
+          "seat": 2,
+          "final_score": 3,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_b112c883ebfe_r1_b8_t0",
+          "seat": 2,
+          "final_score": 51,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b112c883ebfe_r1_b9_t0",
+          "seat": 3,
+          "final_score": -2,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_494bc23524c9",
+      "session_log": "runs/session-20260908-020239.log",
+      "audit_dir": "runs/runs/run-feb82ef9b18a49fcae214e48c15192cb",
+      "download_dir": "runs/auto-match-download-a_494bc23524c9",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 125,
+      "games": [
+        {
+          "game_id": "a_494bc23524c9_r1_b0_t0",
+          "seat": 0,
+          "final_score": 3,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_494bc23524c9_r1_b1_t0",
+          "seat": 2,
+          "final_score": 51,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_494bc23524c9_r1_b2_t0",
+          "seat": 2,
+          "final_score": 25,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_494bc23524c9_r1_b3_t0",
+          "seat": 1,
+          "final_score": -11,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_494bc23524c9_r1_b4_t0",
+          "seat": 0,
+          "final_score": -8,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_494bc23524c9_r1_b5_t0",
+          "seat": 0,
+          "final_score": 69,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_494bc23524c9_r1_b6_t0",
+          "seat": 2,
+          "final_score": -14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_494bc23524c9_r1_b7_t0",
+          "seat": 2,
+          "final_score": -13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_494bc23524c9_r1_b8_t0",
+          "seat": 2,
+          "final_score": -9,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_494bc23524c9_r1_b9_t0",
+          "seat": 0,
+          "final_score": 32,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_de1d194af10a",
+      "session_log": "runs/session-20260908-021925.log",
+      "audit_dir": "runs/runs/run-83b3d55e001140fead05f8383f5613fb",
+      "download_dir": "runs/auto-match-download-a_de1d194af10a",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 282,
+      "games": [
+        {
+          "game_id": "a_de1d194af10a_r1_b0_t0",
+          "seat": 1,
+          "final_score": -28,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_de1d194af10a_r1_b1_t0",
+          "seat": 3,
+          "final_score": 92,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_de1d194af10a_r1_b2_t0",
+          "seat": 2,
+          "final_score": 75,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_de1d194af10a_r1_b3_t0",
+          "seat": 3,
+          "final_score": 6,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_de1d194af10a_r1_b4_t0",
+          "seat": 3,
+          "final_score": -4,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_de1d194af10a_r1_b5_t0",
+          "seat": 0,
+          "final_score": -31,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_de1d194af10a_r1_b6_t0",
+          "seat": 1,
+          "final_score": -7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_de1d194af10a_r1_b7_t0",
+          "seat": 3,
+          "final_score": 74,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_de1d194af10a_r1_b8_t0",
+          "seat": 2,
+          "final_score": 123,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_de1d194af10a_r1_b9_t0",
+          "seat": 0,
+          "final_score": -18,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_bce3dcf1909a",
+      "session_log": "runs/session-20260908-024253.log",
+      "audit_dir": "runs/runs/run-30e9da2d16744353be8cc621d4a8532d",
+      "download_dir": "runs/auto-match-download-a_bce3dcf1909a",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 11,
+      "games": [
+        {
+          "game_id": "a_bce3dcf1909a_r1_b0_t0",
+          "seat": 2,
+          "final_score": -29,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bce3dcf1909a_r1_b1_t0",
+          "seat": 2,
+          "final_score": -6,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bce3dcf1909a_r1_b2_t0",
+          "seat": 1,
+          "final_score": 5,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bce3dcf1909a_r1_b3_t0",
+          "seat": 3,
+          "final_score": 54,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bce3dcf1909a_r1_b4_t0",
+          "seat": 2,
+          "final_score": -4,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bce3dcf1909a_r1_b5_t0",
+          "seat": 0,
+          "final_score": 11,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bce3dcf1909a_r1_b6_t0",
+          "seat": 2,
+          "final_score": 7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bce3dcf1909a_r1_b7_t0",
+          "seat": 2,
+          "final_score": -13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bce3dcf1909a_r1_b8_t0",
+          "seat": 2,
+          "final_score": 18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_bce3dcf1909a_r1_b9_t0",
+          "seat": 1,
+          "final_score": -32,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_b41d435b6d2f",
+      "session_log": "runs/session-20260908-030037.log",
+      "audit_dir": "runs/runs/run-aaaac079bfdd45b399c6b3d5f6e311c5",
+      "download_dir": "runs/auto-match-download-a_b41d435b6d2f",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 65,
+      "games": [
+        {
+          "game_id": "a_b41d435b6d2f_r1_b0_t0",
+          "seat": 0,
+          "final_score": -37,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b41d435b6d2f_r1_b1_t0",
+          "seat": 1,
+          "final_score": -21,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b41d435b6d2f_r1_b2_t0",
+          "seat": 2,
+          "final_score": -9,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b41d435b6d2f_r1_b3_t0",
+          "seat": 2,
+          "final_score": -11,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b41d435b6d2f_r1_b4_t0",
+          "seat": 2,
+          "final_score": -29,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b41d435b6d2f_r1_b5_t0",
+          "seat": 3,
+          "final_score": 14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b41d435b6d2f_r1_b6_t0",
+          "seat": 3,
+          "final_score": 13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b41d435b6d2f_r1_b7_t0",
+          "seat": 2,
+          "final_score": 77,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b41d435b6d2f_r1_b8_t0",
+          "seat": 3,
+          "final_score": 34,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_b41d435b6d2f_r1_b9_t0",
+          "seat": 0,
+          "final_score": 34,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_2495e0fda3b7",
+      "session_log": "runs/session-20260908-031551.log",
+      "audit_dir": "runs/runs/run-80c3a78431e44d4dabe842a129aed76a",
+      "download_dir": "runs/auto-match-download-a_2495e0fda3b7",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 57,
+      "games": [
+        {
+          "game_id": "a_2495e0fda3b7_r1_b0_t0",
+          "seat": 3,
+          "final_score": 3,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2495e0fda3b7_r1_b1_t0",
+          "seat": 3,
+          "final_score": 15,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2495e0fda3b7_r1_b2_t0",
+          "seat": 0,
+          "final_score": 99,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2495e0fda3b7_r1_b3_t0",
+          "seat": 1,
+          "final_score": 7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2495e0fda3b7_r1_b4_t0",
+          "seat": 2,
+          "final_score": -13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2495e0fda3b7_r1_b5_t0",
+          "seat": 1,
+          "final_score": -23,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2495e0fda3b7_r1_b6_t0",
+          "seat": 3,
+          "final_score": 23,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2495e0fda3b7_r1_b7_t0",
+          "seat": 1,
+          "final_score": 4,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2495e0fda3b7_r1_b8_t0",
+          "seat": 2,
+          "final_score": -53,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2495e0fda3b7_r1_b9_t0",
+          "seat": 3,
+          "final_score": -5,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_96a3410c5ee7",
+      "session_log": "runs/session-20260908-033655.log",
+      "audit_dir": "runs/runs/run-175cf4fa8f2145a7a5ca78f9db4ea43a",
+      "download_dir": "runs/auto-match-download-a_96a3410c5ee7",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 1,
+      "games": [
+        {
+          "game_id": "a_96a3410c5ee7_r1_b0_t0",
+          "seat": 0,
+          "final_score": -29,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_96a3410c5ee7_r1_b1_t0",
+          "seat": 0,
+          "final_score": -36,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_96a3410c5ee7_r1_b2_t0",
+          "seat": 2,
+          "final_score": 17,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_96a3410c5ee7_r1_b3_t0",
+          "seat": 1,
+          "final_score": -12,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_96a3410c5ee7_r1_b4_t0",
+          "seat": 0,
+          "final_score": 60,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_96a3410c5ee7_r1_b5_t0",
+          "seat": 3,
+          "final_score": 1,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_96a3410c5ee7_r1_b6_t0",
+          "seat": 2,
+          "final_score": -8,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_96a3410c5ee7_r1_b7_t0",
+          "seat": 3,
+          "final_score": -14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_96a3410c5ee7_r1_b8_t0",
+          "seat": 3,
+          "final_score": 29,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_96a3410c5ee7_r1_b9_t0",
+          "seat": 1,
+          "final_score": -7,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_3eb17fcc2773",
+      "session_log": "runs/session-20260908-035452.log",
+      "audit_dir": "runs/runs/run-4ca70587da1849d3bc24f1dd5942dfef",
+      "download_dir": "runs/auto-match-download-a_3eb17fcc2773",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 150,
+      "games": [
+        {
+          "game_id": "a_3eb17fcc2773_r1_b0_t0",
+          "seat": 0,
+          "final_score": -4,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3eb17fcc2773_r1_b1_t0",
+          "seat": 2,
+          "final_score": 60,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3eb17fcc2773_r1_b2_t0",
+          "seat": 1,
+          "final_score": 32,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3eb17fcc2773_r1_b3_t0",
+          "seat": 3,
+          "final_score": 77,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3eb17fcc2773_r1_b4_t0",
+          "seat": 1,
+          "final_score": -28,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3eb17fcc2773_r1_b5_t0",
+          "seat": 2,
+          "final_score": 0,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3eb17fcc2773_r1_b6_t0",
+          "seat": 1,
+          "final_score": -19,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3eb17fcc2773_r1_b7_t0",
+          "seat": 2,
+          "final_score": -23,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3eb17fcc2773_r1_b8_t0",
+          "seat": 3,
+          "final_score": 26,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3eb17fcc2773_r1_b9_t0",
+          "seat": 1,
+          "final_score": 29,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_5bcbe61fc99b",
+      "session_log": "runs/session-20260908-041241.log",
+      "audit_dir": "runs/runs/run-18d6f3fb4d7e400d99e7c1d3a3e4ca1f",
+      "download_dir": "runs/auto-match-download-a_5bcbe61fc99b",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 94,
+      "games": [
+        {
+          "game_id": "a_5bcbe61fc99b_r1_b0_t0",
+          "seat": 1,
+          "final_score": -7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5bcbe61fc99b_r1_b1_t0",
+          "seat": 2,
+          "final_score": 10,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5bcbe61fc99b_r1_b2_t0",
+          "seat": 0,
+          "final_score": -7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5bcbe61fc99b_r1_b3_t0",
+          "seat": 0,
+          "final_score": -38,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5bcbe61fc99b_r1_b4_t0",
+          "seat": 2,
+          "final_score": 70,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5bcbe61fc99b_r1_b5_t0",
+          "seat": 3,
+          "final_score": 6,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5bcbe61fc99b_r1_b6_t0",
+          "seat": 1,
+          "final_score": 13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5bcbe61fc99b_r1_b7_t0",
+          "seat": 1,
+          "final_score": -4,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5bcbe61fc99b_r1_b8_t0",
+          "seat": 2,
+          "final_score": 39,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5bcbe61fc99b_r1_b9_t0",
+          "seat": 1,
+          "final_score": 12,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_3152990a75b5",
+      "session_log": "runs/session-20260908-042903.log",
+      "audit_dir": "runs/runs/run-a848c0a6e30f499e84f0fc40fc27cb1f",
+      "download_dir": "runs/auto-match-download-a_3152990a75b5",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 4,
+      "games": [
+        {
+          "game_id": "a_3152990a75b5_r1_b0_t0",
+          "seat": 1,
+          "final_score": -22,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_3152990a75b5_r1_b1_t0",
+          "seat": 1,
+          "final_score": -37,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_3152990a75b5_r1_b2_t0",
+          "seat": 1,
+          "final_score": -26,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3152990a75b5_r1_b3_t0",
+          "seat": 0,
+          "final_score": -30,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_3152990a75b5_r1_b4_t0",
+          "seat": 2,
+          "final_score": 0,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3152990a75b5_r1_b5_t0",
+          "seat": 2,
+          "final_score": -34,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_3152990a75b5_r1_b6_t0",
+          "seat": 3,
+          "final_score": -40,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_3152990a75b5_r1_b7_t0",
+          "seat": 0,
+          "final_score": 44,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_3152990a75b5_r1_b8_t0",
+          "seat": 0,
+          "final_score": 110,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_3152990a75b5_r1_b9_t0",
+          "seat": 1,
+          "final_score": 39,
+          "source": "official_download补全"
+        }
+      ]
+    },
+    {
+      "room_id": "a_1515a95f670b",
+      "session_log": "runs/session-20260908-044900.log",
+      "audit_dir": "runs/runs/run-b7be7913e1d34cd8ae682343c4bb56d2",
+      "download_dir": "runs/auto-match-download-a_1515a95f670b",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 225,
+      "games": [
+        {
+          "game_id": "a_1515a95f670b_r1_b0_t0",
+          "seat": 2,
+          "final_score": 32,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_1515a95f670b_r1_b1_t0",
+          "seat": 1,
+          "final_score": -7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_1515a95f670b_r1_b2_t0",
+          "seat": 2,
+          "final_score": -15,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_1515a95f670b_r1_b3_t0",
+          "seat": 0,
+          "final_score": -42,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_1515a95f670b_r1_b4_t0",
+          "seat": 1,
+          "final_score": 60,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_1515a95f670b_r1_b5_t0",
+          "seat": 2,
+          "final_score": 1,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_1515a95f670b_r1_b6_t0",
+          "seat": 3,
+          "final_score": 67,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_1515a95f670b_r1_b7_t0",
+          "seat": 0,
+          "final_score": 19,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_1515a95f670b_r1_b8_t0",
+          "seat": 3,
+          "final_score": 60,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_1515a95f670b_r1_b9_t0",
+          "seat": 3,
+          "final_score": 50,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_5710ed69b1f2",
+      "session_log": "runs/session-20260908-050751.log",
+      "audit_dir": "runs/runs/run-9088ff07605c4cff82482880f55ceb4c",
+      "download_dir": "runs/auto-match-download-a_5710ed69b1f2",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 59,
+      "games": [
+        {
+          "game_id": "a_5710ed69b1f2_r1_b0_t0",
+          "seat": 2,
+          "final_score": 54,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5710ed69b1f2_r1_b1_t0",
+          "seat": 3,
+          "final_score": -26,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5710ed69b1f2_r1_b2_t0",
+          "seat": 3,
+          "final_score": -52,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5710ed69b1f2_r1_b3_t0",
+          "seat": 2,
+          "final_score": -38,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5710ed69b1f2_r1_b4_t0",
+          "seat": 3,
+          "final_score": -18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5710ed69b1f2_r1_b5_t0",
+          "seat": 1,
+          "final_score": 11,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5710ed69b1f2_r1_b6_t0",
+          "seat": 0,
+          "final_score": 51,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5710ed69b1f2_r1_b7_t0",
+          "seat": 1,
+          "final_score": -8,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5710ed69b1f2_r1_b8_t0",
+          "seat": 1,
+          "final_score": -11,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_5710ed69b1f2_r1_b9_t0",
+          "seat": 2,
+          "final_score": 96,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_6cf0cd6067ff",
+      "session_log": "runs/session-20260908-052506.log",
+      "audit_dir": "runs/runs/run-140434e9e9c340ac800707f05a5029dc",
+      "download_dir": "runs/auto-match-download-a_6cf0cd6067ff",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": -30,
+      "games": [
+        {
+          "game_id": "a_6cf0cd6067ff_r1_b0_t0",
+          "seat": 0,
+          "final_score": 0,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_6cf0cd6067ff_r1_b1_t0",
+          "seat": 3,
+          "final_score": -22,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_6cf0cd6067ff_r1_b2_t0",
+          "seat": 3,
+          "final_score": 44,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_6cf0cd6067ff_r1_b3_t0",
+          "seat": 0,
+          "final_score": -2,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_6cf0cd6067ff_r1_b4_t0",
+          "seat": 1,
+          "final_score": -36,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_6cf0cd6067ff_r1_b5_t0",
+          "seat": 0,
+          "final_score": -41,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_6cf0cd6067ff_r1_b6_t0",
+          "seat": 1,
+          "final_score": 56,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_6cf0cd6067ff_r1_b7_t0",
+          "seat": 1,
+          "final_score": -8,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_6cf0cd6067ff_r1_b8_t0",
+          "seat": 1,
+          "final_score": 26,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_6cf0cd6067ff_r1_b9_t0",
+          "seat": 3,
+          "final_score": -47,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_2e49c34ad2ba",
+      "session_log": "runs/session-20260908-054051.log",
+      "audit_dir": "runs/runs/run-6a2d319c9ace42818145f56e478e7e2e",
+      "download_dir": "runs/auto-match-download-a_2e49c34ad2ba",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 154,
+      "games": [
+        {
+          "game_id": "a_2e49c34ad2ba_r1_b0_t0",
+          "seat": 1,
+          "final_score": 49,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2e49c34ad2ba_r1_b1_t0",
+          "seat": 3,
+          "final_score": 18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2e49c34ad2ba_r1_b2_t0",
+          "seat": 3,
+          "final_score": -7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2e49c34ad2ba_r1_b3_t0",
+          "seat": 0,
+          "final_score": -13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2e49c34ad2ba_r1_b4_t0",
+          "seat": 2,
+          "final_score": 56,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2e49c34ad2ba_r1_b5_t0",
+          "seat": 2,
+          "final_score": -15,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2e49c34ad2ba_r1_b6_t0",
+          "seat": 2,
+          "final_score": -14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2e49c34ad2ba_r1_b7_t0",
+          "seat": 1,
+          "final_score": -1,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2e49c34ad2ba_r1_b8_t0",
+          "seat": 3,
+          "final_score": -7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2e49c34ad2ba_r1_b9_t0",
+          "seat": 1,
+          "final_score": 88,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_9321db900414",
+      "session_log": "runs/session-20260908-060242.log",
+      "audit_dir": "runs/runs/run-d2f5bf03543f45af99a4106914cd0783",
+      "download_dir": "runs/auto-match-download-a_9321db900414",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 32,
+      "games": [
+        {
+          "game_id": "a_9321db900414_r1_b0_t0",
+          "seat": 2,
+          "final_score": 9,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9321db900414_r1_b1_t0",
+          "seat": 0,
+          "final_score": 42,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9321db900414_r1_b2_t0",
+          "seat": 1,
+          "final_score": -18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9321db900414_r1_b3_t0",
+          "seat": 3,
+          "final_score": 21,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9321db900414_r1_b4_t0",
+          "seat": 2,
+          "final_score": -11,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9321db900414_r1_b5_t0",
+          "seat": 1,
+          "final_score": -11,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9321db900414_r1_b6_t0",
+          "seat": 1,
+          "final_score": -36,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9321db900414_r1_b7_t0",
+          "seat": 3,
+          "final_score": 32,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9321db900414_r1_b8_t0",
+          "seat": 0,
+          "final_score": -3,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9321db900414_r1_b9_t0",
+          "seat": 0,
+          "final_score": 7,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_301f448fd10a",
+      "session_log": "runs/session-20260908-061926.log",
+      "audit_dir": "runs/runs/run-952409d2f9844e589241b9f9329dd2b7",
+      "download_dir": "runs/auto-match-download-a_301f448fd10a",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 146,
+      "games": [
+        {
+          "game_id": "a_301f448fd10a_r1_b0_t0",
+          "seat": 3,
+          "final_score": -13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_301f448fd10a_r1_b1_t0",
+          "seat": 1,
+          "final_score": 20,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_301f448fd10a_r1_b2_t0",
+          "seat": 0,
+          "final_score": 57,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_301f448fd10a_r1_b3_t0",
+          "seat": 1,
+          "final_score": 71,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_301f448fd10a_r1_b4_t0",
+          "seat": 3,
+          "final_score": -3,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_301f448fd10a_r1_b5_t0",
+          "seat": 3,
+          "final_score": 14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_301f448fd10a_r1_b6_t0",
+          "seat": 3,
+          "final_score": -7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_301f448fd10a_r1_b7_t0",
+          "seat": 1,
+          "final_score": 14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_301f448fd10a_r1_b8_t0",
+          "seat": 2,
+          "final_score": 8,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_301f448fd10a_r1_b9_t0",
+          "seat": 2,
+          "final_score": -15,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_f5885115dbf0",
+      "session_log": "runs/session-20260908-063507.log",
+      "audit_dir": "runs/runs/run-64d1e14bae8d42689bc9b594835a9358",
+      "download_dir": "runs/auto-match-download-a_f5885115dbf0",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": -105,
+      "games": [
+        {
+          "game_id": "a_f5885115dbf0_r1_b0_t0",
+          "seat": 0,
+          "final_score": 40,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_f5885115dbf0_r1_b1_t0",
+          "seat": 2,
+          "final_score": 6,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_f5885115dbf0_r1_b2_t0",
+          "seat": 3,
+          "final_score": 3,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_f5885115dbf0_r1_b3_t0",
+          "seat": 2,
+          "final_score": -24,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_f5885115dbf0_r1_b4_t0",
+          "seat": 3,
+          "final_score": -29,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_f5885115dbf0_r1_b5_t0",
+          "seat": 0,
+          "final_score": 1,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_f5885115dbf0_r1_b6_t0",
+          "seat": 0,
+          "final_score": -14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_f5885115dbf0_r1_b7_t0",
+          "seat": 3,
+          "final_score": -44,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_f5885115dbf0_r1_b8_t0",
+          "seat": 3,
+          "final_score": -23,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_f5885115dbf0_r1_b9_t0",
+          "seat": 1,
+          "final_score": -21,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_efdcec8879f3",
+      "session_log": "runs/session-20260908-065504.log",
+      "audit_dir": "runs/runs/run-41c0bba1fce24a89a1134a8c86195812",
+      "download_dir": "runs/auto-match-download-a_efdcec8879f3",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 55,
+      "games": [
+        {
+          "game_id": "a_efdcec8879f3_r1_b0_t0",
+          "seat": 3,
+          "final_score": -38,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_efdcec8879f3_r1_b1_t0",
+          "seat": 0,
+          "final_score": -4,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_efdcec8879f3_r1_b2_t0",
+          "seat": 2,
+          "final_score": 5,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_efdcec8879f3_r1_b3_t0",
+          "seat": 3,
+          "final_score": 78,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_efdcec8879f3_r1_b4_t0",
+          "seat": 2,
+          "final_score": -17,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_efdcec8879f3_r1_b5_t0",
+          "seat": 2,
+          "final_score": -12,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_efdcec8879f3_r1_b6_t0",
+          "seat": 0,
+          "final_score": -47,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_efdcec8879f3_r1_b7_t0",
+          "seat": 3,
+          "final_score": 67,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_efdcec8879f3_r1_b8_t0",
+          "seat": 1,
+          "final_score": 49,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_efdcec8879f3_r1_b9_t0",
+          "seat": 2,
+          "final_score": -26,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_acf100981ba2",
+      "session_log": "runs/session-20260908-071012.log",
+      "audit_dir": "runs/runs/run-7dcac3d556b74dfea77e0cea31e4edde",
+      "download_dir": "runs/auto-match-download-a_acf100981ba2",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 85,
+      "games": [
+        {
+          "game_id": "a_acf100981ba2_r1_b0_t0",
+          "seat": 2,
+          "final_score": -21,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_acf100981ba2_r1_b1_t0",
+          "seat": 3,
+          "final_score": -18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_acf100981ba2_r1_b2_t0",
+          "seat": 2,
+          "final_score": 43,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_acf100981ba2_r1_b3_t0",
+          "seat": 0,
+          "final_score": -16,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_acf100981ba2_r1_b4_t0",
+          "seat": 2,
+          "final_score": 40,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_acf100981ba2_r1_b5_t0",
+          "seat": 2,
+          "final_score": 0,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_acf100981ba2_r1_b6_t0",
+          "seat": 3,
+          "final_score": 2,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_acf100981ba2_r1_b7_t0",
+          "seat": 2,
+          "final_score": -11,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_acf100981ba2_r1_b8_t0",
+          "seat": 2,
+          "final_score": 9,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_acf100981ba2_r1_b9_t0",
+          "seat": 0,
+          "final_score": 57,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_9ceaf4308aa8",
+      "session_log": "runs/session-20260908-072719.log",
+      "audit_dir": "runs/runs/run-26d005e2bb214d99903cd18bb0ec0dd3",
+      "download_dir": "runs/auto-match-download-a_9ceaf4308aa8",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 304,
+      "games": [
+        {
+          "game_id": "a_9ceaf4308aa8_r1_b0_t0",
+          "seat": 1,
+          "final_score": 18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9ceaf4308aa8_r1_b1_t0",
+          "seat": 3,
+          "final_score": 99,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9ceaf4308aa8_r1_b2_t0",
+          "seat": 0,
+          "final_score": -15,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_9ceaf4308aa8_r1_b3_t0",
+          "seat": 0,
+          "final_score": 97,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9ceaf4308aa8_r1_b4_t0",
+          "seat": 2,
+          "final_score": 26,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9ceaf4308aa8_r1_b5_t0",
+          "seat": 1,
+          "final_score": 130,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9ceaf4308aa8_r1_b6_t0",
+          "seat": 3,
+          "final_score": -21,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9ceaf4308aa8_r1_b7_t0",
+          "seat": 1,
+          "final_score": -18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9ceaf4308aa8_r1_b8_t0",
+          "seat": 0,
+          "final_score": -31,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_9ceaf4308aa8_r1_b9_t0",
+          "seat": 3,
+          "final_score": 19,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_890241a9a990",
+      "session_log": "runs/session-20260908-074546.log",
+      "audit_dir": "runs/runs/run-5ac663f8d3994be0bdec6851ee71161a",
+      "download_dir": "runs/auto-match-download-a_890241a9a990",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 284,
+      "games": [
+        {
+          "game_id": "a_890241a9a990_r1_b0_t0",
+          "seat": 1,
+          "final_score": 16,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_890241a9a990_r1_b1_t0",
+          "seat": 2,
+          "final_score": 20,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_890241a9a990_r1_b2_t0",
+          "seat": 3,
+          "final_score": 50,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_890241a9a990_r1_b3_t0",
+          "seat": 3,
+          "final_score": 13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_890241a9a990_r1_b4_t0",
+          "seat": 2,
+          "final_score": 54,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_890241a9a990_r1_b5_t0",
+          "seat": 1,
+          "final_score": 35,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_890241a9a990_r1_b6_t0",
+          "seat": 2,
+          "final_score": 42,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_890241a9a990_r1_b7_t0",
+          "seat": 0,
+          "final_score": 18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_890241a9a990_r1_b8_t0",
+          "seat": 1,
+          "final_score": 39,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_890241a9a990_r1_b9_t0",
+          "seat": 1,
+          "final_score": -3,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_06fcf39d8ef7",
+      "session_log": "runs/session-20260908-080144.log",
+      "audit_dir": "runs/runs/run-eb06b84046414cd39e426ce894b3e5b1",
+      "download_dir": "runs/auto-match-download-a_06fcf39d8ef7",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": -36,
+      "games": [
+        {
+          "game_id": "a_06fcf39d8ef7_r1_b0_t0",
+          "seat": 0,
+          "final_score": 105,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_06fcf39d8ef7_r1_b1_t0",
+          "seat": 3,
+          "final_score": -27,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_06fcf39d8ef7_r1_b2_t0",
+          "seat": 3,
+          "final_score": -18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_06fcf39d8ef7_r1_b3_t0",
+          "seat": 2,
+          "final_score": -51,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_06fcf39d8ef7_r1_b4_t0",
+          "seat": 1,
+          "final_score": 43,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_06fcf39d8ef7_r1_b5_t0",
+          "seat": 2,
+          "final_score": 0,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_06fcf39d8ef7_r1_b6_t0",
+          "seat": 3,
+          "final_score": -41,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_06fcf39d8ef7_r1_b7_t0",
+          "seat": 2,
+          "final_score": -8,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_06fcf39d8ef7_r1_b8_t0",
+          "seat": 3,
+          "final_score": -49,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_06fcf39d8ef7_r1_b9_t0",
+          "seat": 1,
+          "final_score": 10,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_2b57c14757df",
+      "session_log": "runs/session-20260908-081950.log",
+      "audit_dir": "runs/runs/run-a1b4a286056c4263a6e6cd93442f4d1b",
+      "download_dir": "runs/auto-match-download-a_2b57c14757df",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 116,
+      "games": [
+        {
+          "game_id": "a_2b57c14757df_r1_b0_t0",
+          "seat": 1,
+          "final_score": -27,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2b57c14757df_r1_b1_t0",
+          "seat": 0,
+          "final_score": -14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2b57c14757df_r1_b2_t0",
+          "seat": 2,
+          "final_score": 0,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2b57c14757df_r1_b3_t0",
+          "seat": 2,
+          "final_score": -4,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2b57c14757df_r1_b4_t0",
+          "seat": 0,
+          "final_score": 43,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2b57c14757df_r1_b5_t0",
+          "seat": 1,
+          "final_score": -17,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2b57c14757df_r1_b6_t0",
+          "seat": 1,
+          "final_score": 92,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2b57c14757df_r1_b7_t0",
+          "seat": 3,
+          "final_score": 22,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2b57c14757df_r1_b8_t0",
+          "seat": 0,
+          "final_score": 18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_2b57c14757df_r1_b9_t0",
+          "seat": 1,
+          "final_score": 3,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_014aab011c14",
+      "session_log": "runs/session-20260908-083517.log",
+      "audit_dir": "runs/runs/run-de52d339fe4a40d7add4236b60957e14",
+      "download_dir": "runs/auto-match-download-a_014aab011c14",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 31,
+      "games": [
+        {
+          "game_id": "a_014aab011c14_r1_b0_t0",
+          "seat": 0,
+          "final_score": 7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_014aab011c14_r1_b1_t0",
+          "seat": 1,
+          "final_score": -17,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_014aab011c14_r1_b2_t0",
+          "seat": 1,
+          "final_score": 49,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_014aab011c14_r1_b3_t0",
+          "seat": 0,
+          "final_score": 56,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_014aab011c14_r1_b4_t0",
+          "seat": 2,
+          "final_score": 24,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_014aab011c14_r1_b5_t0",
+          "seat": 2,
+          "final_score": -19,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_014aab011c14_r1_b6_t0",
+          "seat": 0,
+          "final_score": -31,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_014aab011c14_r1_b7_t0",
+          "seat": 3,
+          "final_score": 6,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_014aab011c14_r1_b8_t0",
+          "seat": 1,
+          "final_score": -36,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_014aab011c14_r1_b9_t0",
+          "seat": 3,
+          "final_score": -8,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_d2baa85f1612",
+      "session_log": "runs/session-20260908-084904.log",
+      "audit_dir": "runs/runs/run-28bfaaae2d0744e1b4da1d538ae255d4",
+      "download_dir": "runs/auto-match-download-a_d2baa85f1612",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 136,
+      "games": [
+        {
+          "game_id": "a_d2baa85f1612_r1_b0_t0",
+          "seat": 3,
+          "final_score": 34,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_d2baa85f1612_r1_b1_t0",
+          "seat": 1,
+          "final_score": 13,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_d2baa85f1612_r1_b2_t0",
+          "seat": 3,
+          "final_score": 13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d2baa85f1612_r1_b3_t0",
+          "seat": 1,
+          "final_score": -13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d2baa85f1612_r1_b4_t0",
+          "seat": 3,
+          "final_score": -7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d2baa85f1612_r1_b5_t0",
+          "seat": 0,
+          "final_score": 89,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_d2baa85f1612_r1_b6_t0",
+          "seat": 0,
+          "final_score": -23,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d2baa85f1612_r1_b7_t0",
+          "seat": 0,
+          "final_score": 42,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d2baa85f1612_r1_b8_t0",
+          "seat": 1,
+          "final_score": -7,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d2baa85f1612_r1_b9_t0",
+          "seat": 3,
+          "final_score": -5,
+          "source": "official_download补全"
+        }
+      ]
+    },
+    {
+      "room_id": "a_c6c7d691c61c",
+      "session_log": "runs/session-20260908-090522.log",
+      "audit_dir": "runs/runs/run-abd1f51e479b41fb82e01c3afe6d8c4c",
+      "download_dir": "runs/auto-match-download-a_c6c7d691c61c",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": -145,
+      "games": [
+        {
+          "game_id": "a_c6c7d691c61c_r1_b0_t0",
+          "seat": 1,
+          "final_score": -30,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_c6c7d691c61c_r1_b1_t0",
+          "seat": 2,
+          "final_score": -26,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_c6c7d691c61c_r1_b2_t0",
+          "seat": 3,
+          "final_score": 15,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_c6c7d691c61c_r1_b3_t0",
+          "seat": 1,
+          "final_score": -34,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_c6c7d691c61c_r1_b4_t0",
+          "seat": 2,
+          "final_score": -25,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_c6c7d691c61c_r1_b5_t0",
+          "seat": 3,
+          "final_score": -4,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_c6c7d691c61c_r1_b6_t0",
+          "seat": 1,
+          "final_score": -7,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_c6c7d691c61c_r1_b7_t0",
+          "seat": 3,
+          "final_score": -12,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_c6c7d691c61c_r1_b8_t0",
+          "seat": 3,
+          "final_score": -41,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_c6c7d691c61c_r1_b9_t0",
+          "seat": 1,
+          "final_score": 19,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_22fa52669b39",
+      "session_log": "runs/session-20260908-093223.log",
+      "audit_dir": "runs/runs/run-a9802613d8154e2f8a8ca472c20f80ce",
+      "download_dir": "runs/auto-match-download-a_22fa52669b39",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": 297,
+      "games": [
+        {
+          "game_id": "a_22fa52669b39_r1_b0_t0",
+          "seat": 3,
+          "final_score": -10,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_22fa52669b39_r1_b1_t0",
+          "seat": 2,
+          "final_score": -8,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_22fa52669b39_r1_b2_t0",
+          "seat": 3,
+          "final_score": 146,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_22fa52669b39_r1_b3_t0",
+          "seat": 3,
+          "final_score": 1,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_22fa52669b39_r1_b4_t0",
+          "seat": 3,
+          "final_score": -14,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_22fa52669b39_r1_b5_t0",
+          "seat": 3,
+          "final_score": 13,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_22fa52669b39_r1_b6_t0",
+          "seat": 3,
+          "final_score": 88,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_22fa52669b39_r1_b7_t0",
+          "seat": 2,
+          "final_score": 3,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_22fa52669b39_r1_b8_t0",
+          "seat": 2,
+          "final_score": 22,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_22fa52669b39_r1_b9_t0",
+          "seat": 0,
+          "final_score": 56,
+          "source": "official_download补全"
+        }
+      ]
+    },
+    {
+      "room_id": "a_506c1697c531",
+      "session_log": "runs/session-20260908-095426.log",
+      "audit_dir": "runs/runs/run-20d46d21ff964e158d17e8c10c5ea239",
+      "download_dir": "runs/auto-match-download-a_506c1697c531",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": -114,
+      "games": [
+        {
+          "game_id": "a_506c1697c531_r1_b0_t0",
+          "seat": 0,
+          "final_score": -27,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_506c1697c531_r1_b1_t0",
+          "seat": 0,
+          "final_score": -16,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_506c1697c531_r1_b2_t0",
+          "seat": 1,
+          "final_score": -46,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_506c1697c531_r1_b3_t0",
+          "seat": 0,
+          "final_score": -24,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_506c1697c531_r1_b4_t0",
+          "seat": 0,
+          "final_score": -21,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_506c1697c531_r1_b5_t0",
+          "seat": 3,
+          "final_score": -26,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_506c1697c531_r1_b6_t0",
+          "seat": 3,
+          "final_score": 3,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_506c1697c531_r1_b7_t0",
+          "seat": 0,
+          "final_score": 58,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_506c1697c531_r1_b8_t0",
+          "seat": 0,
+          "final_score": 0,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_506c1697c531_r1_b9_t0",
+          "seat": 2,
+          "final_score": -15,
+          "source": "audit"
+        }
+      ]
+    },
+    {
+      "room_id": "a_d0c721d96d48",
+      "session_log": "runs/session-20260908-101322.log",
+      "audit_dir": "runs/runs/run-b964fc066a5a4ab5a2a2d400b8660b04",
+      "download_dir": "runs/auto-match-download-a_d0c721d96d48",
+      "terminal_reason": "tournament_finished",
+      "room_subtotal": -114,
+      "games": [
+        {
+          "game_id": "a_d0c721d96d48_r1_b0_t0",
+          "seat": 1,
+          "final_score": -20,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_d0c721d96d48_r1_b1_t0",
+          "seat": 1,
+          "final_score": 4,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d0c721d96d48_r1_b2_t0",
+          "seat": 1,
+          "final_score": 18,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d0c721d96d48_r1_b3_t0",
+          "seat": 0,
+          "final_score": -29,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_d0c721d96d48_r1_b4_t0",
+          "seat": 2,
+          "final_score": 1,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d0c721d96d48_r1_b5_t0",
+          "seat": 3,
+          "final_score": -16,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_d0c721d96d48_r1_b6_t0",
+          "seat": 0,
+          "final_score": -6,
+          "source": "official_download补全"
+        },
+        {
+          "game_id": "a_d0c721d96d48_r1_b7_t0",
+          "seat": 1,
+          "final_score": -21,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d0c721d96d48_r1_b8_t0",
+          "seat": 2,
+          "final_score": -44,
+          "source": "audit"
+        },
+        {
+          "game_id": "a_d0c721d96d48_r1_b9_t0",
+          "seat": 0,
+          "final_score": -1,
+          "source": "audit"
+        }
+      ]
+    }
+  ],
+  "current_lose_streak_unit": "room"
+}

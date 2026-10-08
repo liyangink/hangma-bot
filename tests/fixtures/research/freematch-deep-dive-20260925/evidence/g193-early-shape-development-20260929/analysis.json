@@ -1,0 +1,110 @@
+{
+  "analysis_script_sha256": "f80966ff559d77b709955c09c5383987461a4308e1370cc0b3727cb7f15ab5f3",
+  "best_root": 5,
+  "bootstrap_replicates": 20000,
+  "bootstrap_seed": 20261229194,
+  "boundary": "开发根完整桌描述；过门仍需新根独立确认及官方门。",
+  "combined_after_best_root": -0.8004032258064516,
+  "complete_tables": 1024,
+  "component_delta_per_complete_table": {
+    "H": {
+      "draw_delta": 0.0,
+      "other_win_delta": 0.11328125,
+      "plain_self_win_delta": -0.359375,
+      "special_self_win_delta": -1.296875
+    },
+    "M": {
+      "draw_delta": 0.0,
+      "other_win_delta": -0.03125,
+      "plain_self_win_delta": 0.5546875,
+      "special_self_win_delta": 0.09375
+    }
+  },
+  "development_gate_pass": false,
+  "enough_behavior": true,
+  "execution_ok": true,
+  "independent_pool_root_clusters": 64,
+  "last_place_counts": {
+    "g193_early_three_shanten_v1": {
+      "last_including_tie": 140,
+      "strict_last": 112,
+      "tables": 512
+    },
+    "r18_v2": {
+      "last_including_tie": 138,
+      "strict_last": 111,
+      "tables": 512
+    }
+  },
+  "manifest_sha256": "d440839b89928be9172ffe54b0fc862cad5c4609acea5667234b1970a1d78fab",
+  "means_delta_per_complete_table": {
+    "H": -1.54296875,
+    "M": 0.6171875,
+    "combined": -0.462890625
+  },
+  "per_pool_after_own_best_root": {
+    "H": -1.971774193548387,
+    "M": 0.016129032258064516
+  },
+  "result_sha256": "00e4e2f243b3898be3f31a015890cb1bdae2674d479976535d5e0fa21db4ace3",
+  "root_bootstrap_95_percentile": {
+    "H": [
+      -3.79296875,
+      0.61328125
+    ],
+    "M": [
+      -1.85546875,
+      3.17578125
+    ],
+    "combined_stratified": [
+      -2.11328125,
+      1.19140625
+    ]
+  },
+  "root_signs": {
+    "H": {
+      "negative": 15,
+      "positive": 13,
+      "zero": 4
+    },
+    "M": {
+      "negative": 14,
+      "positive": 13,
+      "zero": 5
+    }
+  },
+  "runtime_counts": {
+    "g193_early_three_shanten_v1": {
+      "action_value_abstain": 0,
+      "action_value_failed": 0,
+      "action_value_operation_limit": 0,
+      "action_value_resource_or_numeric_limit": 0,
+      "action_value_scoring_error": 0,
+      "action_value_unclassified_failure": 0,
+      "audit_missing": 0,
+      "auto_actions": 0,
+      "fallbacks": 0,
+      "illegal_choices": 0,
+      "timeouts": 0
+    },
+    "r18_v2": {
+      "action_value_abstain": 0,
+      "action_value_failed": 0,
+      "action_value_operation_limit": 0,
+      "action_value_resource_or_numeric_limit": 0,
+      "action_value_scoring_error": 0,
+      "action_value_unclassified_failure": 0,
+      "audit_missing": 0,
+      "auto_actions": 0,
+      "fallbacks": 0,
+      "illegal_choices": 0,
+      "timeouts": 0
+    }
+  },
+  "schema": "g193-early-shape-development-analysis/1",
+  "selector_ok": true,
+  "selector_status_reason": {
+    "adopted/early_three_shanten_shape": 290,
+    "guarded_or_fallback/no_guarded_alternate": 96
+  }
+}

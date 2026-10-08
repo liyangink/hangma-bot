@@ -23,6 +23,23 @@
 
 from __future__ import annotations
 
+from pathlib import Path as _StoragePath
+import sys as _storage_sys
+_PROJECT_ROOT = next(p for p in _StoragePath(__file__).resolve().parents
+                     if (p / "src/hangma_bot/bootstrap.py").is_file())
+_storage_sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from hangma_bot.adapters.recording.project_storage import project_file as _resolve_project_file
+_PROJECT_STORAGE_ORIGIN = 'tests/unit/policy'
+
+def _project_file(root, source):
+    """共享脚本的相邻数据沿用原逻辑目录，相邻代码从共享目录读取。"""
+    source = _StoragePath(source)
+    here = _StoragePath(__file__).resolve().parent
+    if source.is_absolute() and source.is_relative_to(here):
+        if not source.is_dir() and not (source.suffix == ".py" and source.is_file()):
+            source = root / _PROJECT_STORAGE_ORIGIN / source.relative_to(here)
+    return _resolve_project_file(root, source)
+
 import hashlib
 from dataclasses import replace
 from pathlib import Path
@@ -59,11 +76,11 @@ REPO = Path(__file__).resolve().parents[3]
 ARTIFACT_SHA256 = "1ba12987535fba2edfbab1422ecac545444629328259233652a7e35fbf1622e2"
 
 #: 产物落盘路径（注册来源；用于把"注册 = 这份产物"变成可机器核验的断言）。
-ARTIFACT_PATH = (REPO / "review" / "llm-guided-heuristic-route-2026-09-15" / "evidence"
+ARTIFACT_PATH = (_project_file(_PROJECT_ROOT, REPO / "review" / "llm-guided-heuristic-route-2026-09-15" / "evidence"
                  / "3.1-generation" / "run-headless" / "attempts"
                  / "genloop__m1__contract-52568ba008de__prompt-a7254926a5c1__parent-76ce1c587fbb"
                    "__code-1ba12987535f__reply-e73f4912a819__origin-headless_capture"
-                   "__sampling-dd48a2ec__attempt-3-2dde5bab" / "candidate.py")
+                   "__sampling-dd48a2ec__attempt-3-2dde5bab" / "candidate.py"))
 
 #: 注册时声明的参数（`adj.` 去前缀后的键；值**逐字取自产物代码里的字面默认值**）。
 DECLARED_PARAMS = {

@@ -1,0 +1,138 @@
+{
+  "schema": "sitin-candidate-registrations/1",
+  "note": "G-3 准入记录：触发条件 / 改变的动作 / 预期方向 / 反例。缺少任一项的候选不进队列；不以『自报预期增分数』作准入（README §6.1 G-3）。",
+  "candidates": {
+    "meld_opportunity_cost": {
+      "candidate": "meld_opportunity_cost",
+      "trigger": "窗口内存在带完整等待事实的 Pass 候选（fact_kind=HAND_PROGRESS 且 completeness=COMPLETE 且满足可比等待基线），且被评分候选为吃或碰",
+      "changed_actions": "吃、碰的总分追加一个非正分项；不改弃牌、过、胡与杠的评分",
+      "expected_direction": "等待有效牌剩余估计越高 ⇒ 鸣牌越贵 ⇒ 更少鸣牌。**单向**：正 β 下结构上不可能产生『过→吃碰』",
+      "counterexample": "等待事实缺失/不完整/非 HAND_PROGRESS 的窗口必须『不加不减』退回基线；杠类候选必须完全不受影响（明杠也补牌、暗杠与补杠是自摸窗口无响应 Pass）",
+      "selected_config": {
+        "adj.beta": 20
+      },
+      "selection_provenance": "β 由 2.1a 的幅度扫描选定（等效有效牌系数 1.0→1.95）。**该选择属开发探索，不计作独立验证**（README §17.5）。"
+    },
+    "meld_waiting_conditional": {
+      "candidate": "meld_waiting_conditional",
+      "trigger": "与候选①相同：窗口内存在带完整等待事实的 Pass 候选，且被评分候选为吃或碰",
+      "changed_actions": "吃、碰的总分按『偏离参考点』作双向调整；不改其他动作族",
+      "expected_direction": "等待高于参考点 ⇒ 少鸣；低于参考点 ⇒ 多鸣。**双向**：同一批窗口上应同时出现两个方向的改选（用于检验族定义 P-3）",
+      "counterexample": "等待值恰等于参考点 ⇒ 调整量为 0；等待事实缺失 ⇒ 0；杠类候选必须完全不受影响",
+      "selected_config": {
+        "adj.gain": 60,
+        "adj.reference": 21
+      },
+      "selection_provenance": "该组合由 gain×reference 的**开发期扫描**选出（4×3 = 12 组，见 PHASE2-CLOSING.md §3）。**这是用历史语料挑参数，属开发探索，绝不能同时算独立验证**（README §17.5、§11.5）。确认前必须预登记并换用未消费的确认牌山。"
+    },
+    "chain_path_value": {
+      "candidate": "chain_path_value",
+      "trigger": "动作改变本人动作链次数：杠（任意种类）或爆头态打出财神使链 +1；链次数大于 0 时打出非飘非杠的牌（含非爆头态打白板）使链清零",
+      "changed_actions": "按**状态变化**生效：链 +1 的动作加分、链清零的动作按清零前层数扣分；吃/碰/过不改链，故不加不减",
+      "expected_direction": "更多保留与延长动作链（杠、飘）；更少在链非零时用普通弃牌或非爆头弃白断链。方向为增加链动作、减少链断",
+      "counterexample": "链本来就是 0 且动作为普通弃牌 ⇒ 必须为 0；吃/碰/过/胡恒为 0；非爆头态打白板不是飘，必须走断链分支而不是加分分支",
+      "family": "价值族（Value-Path Family）",
+      "value_path": "动作链（官方：飘与杠各 ×2，可连续可组合；打出非飘非杠的牌链断重新计数）",
+      "safety": "写成状态势之差 Φ(s')−Φ(s)；链次数由 hangma 的规则转移函数 （progression.chain_after_discard / chain_after_gang）给出，policy 不重算规则",
+      "selected_config": {
+        "scale": 40
+      },
+      "selection_provenance": "step_log2=1.0 来自官方规则（每个飘/杠动作 ×2），不是调参结果；scale 是唯一的整体尺度自由参数（单位：评分点 / log2 番），默认 40.0 锚定 V1 既有 gang_bonus=40.0，**属首个基线值、待门禁与完整桌赛评估**。"
+    },
+    "seven_pairs_path_value": {
+      "candidate": "seven_pairs_path_value",
+      "trigger": "窗口内存在过牌候选；该候选的七对路径存活（seven_pairs_shanten_after 非空）；被评候选会把该路径打掉",
+      "changed_actions": "按**状态变化**生效：任何使七对路径从存活变为关闭的动作扣分；路径未变的动作不加不减（含过牌与普通弃牌）",
+      "expected_direction": "更少做出会关闭七对路径的副露，尤其在七对本来更近时；方向为**减少**这类副露",
+      "counterexample": "七对路径本来就不存活（已有副露）时不得加不减任何分；已胡（WIN）不得被当成'打掉路径'；事实缺失/不完整必须返回 0.0 而不是猜测",
+      "family": "价值族（Value-Path Family）",
+      "value_path": "七对分支（官方 ×2；豪华七对 1/2/3 组 ×4/×8/×16）",
+      "safety": "写成状态势之差 Φ(s')−Φ(s)，不是动作标签加分",
+      "selected_config": {
+        "path_log2": 1,
+        "closer_bonus": 1
+      },
+      "selection_provenance": "path_log2=1.0 来自官方番型表（七对 ×2），**不是调参结果**；closer_bonus 是首个基线值，待门禁与完整桌赛评估。"
+    },
+    "four_component_path_value": {
+      "candidate": "four_component_path_value",
+      "trigger": "动作改变了官方番型公式四个乘子中的至少一个：弃牌（断链或飘使链次数变化、弃后暗牌使爆头进出、手留财神减少、弃掉手里恰好 4 张的**自然牌**一组而少一个豪华组）；杠（链 +1）；吃 / 碰 / 杠（副露永久关闭七对路径）；过牌不改变任何分量。门控 g_i(s) 只依赖单个状态：四白需要链内飘出可判定（观察落盘，或由「piao ≤ count ⇒ 链 0」与「手留 4 张 ⇒ 飘出 0」两条规则事实推导），分支与弃牌后爆头需要暗牌张数能反推副露数。分量在端点不可判定或端点越出声明域时，**该转移整段判为域外并返回 0**（域外规则见 domain_rules，逐条枚举、逐条测试）。胡为终局，本项返回 0。",
+      "changed_actions": "按**状态变化**生效，不按动作标签分档：四个分量各自进 Φ，增量取 Φ(s′) − Φ(s) 的完整差值（branch / chain / four_white / baotou，单位评分点 = scale × log2 番）。吃碰只通过「关闭七对路径」扣分支分，不吃碰本身不加不减；杠只通过「链 +1」加分；弃牌按链、爆头、四白、豪华组的实际变化计分。",
+      "expected_direction": "更倾向保留已经锁定的番型乘子：不在链非零时用普通弃牌断链、不在爆头态做会退出爆头的弃牌、不轻易打掉已锁定的四白（飘除外：飘不改变四白之和）与手中恰好 4 张的自然牌豪华组、不为了副露而永久关闭七对路径。方向是**减少**这类「打掉乘子」的动作，而不是无条件减少或增加某一动作族。",
+      "counterexample": "四个分量都不可判定或都没有变化时必须恒为 0：纯弃牌窗口里弃散牌（链 0、爆头不变、无 4 张组）必须为 0；过牌恒为 0；链内飘出真的未知（链非零且未落盘、手留 < 4）时四白分量不得按 False 计入；暗牌张数不是 13/14 − 3×副露 的合法形态时不得猜（D4）；链次数越出官方 0—6 域时该分量必须整段不计入（D1，不得算成「扣掉整条链」）；某分量在一端可判定、另一端不可判定的转移必须整段返回 0（D2）；胡必须返回 0（D3 终局例外）。另外：手里 4 张**财神**时打出其中一张，分支分量必须为 0 —— 豪华组只数自然牌的四张。",
+      "domain_rules": {
+        "D1": "任一端点有分量越出声明域（链次数 ∉ [0,6]；分支 ∉ [0,4]；指示量非 0/1）⇒ 该转移域外，返回 0 并记录原因（不夹取、不惩罚）",
+        "D2": "某分量在两端点的可判定性模式不同（一端 g=1、另一端 g=0）⇒ 该转移域外，返回 0 并记录原因；差值里若混进门控开关本身就不是价值变化",
+        "D3": "终局（胡）：声明的终局例外，path_term 直接返回 0（合法胡恒为 priority = 0，评分不参与其排序）",
+        "D4": "无法构造 s′（未知动作类型；副露数不能由暗牌张数反推）⇒ 返回 0（不猜）",
+        "scope": "可加性（F(A,B)+F(B,C)=F(A,C)）与环判据只在**两端点都在声明域内且可判定性模式恒定**的转移集上声明成立；域外转移是声明过的降级值 0，把它们混进加法会出现差额（最小反例见 evidence/3.0-baseline/four-component-structure.json 的 gated_counterexample，差额 = scale = 40）"
+      },
+      "family": "价值族（Value-Path Family）",
+      "value_path": "官方《1.3 番型倍率》的四个乘子：分支因子（平胡 ×1 / 七对 ×2 / 豪华 N 组 2×2^N）、动作链（飘与杠每个动作 ×2，0—6 次）、4 白板（手留 + 链内飘出正好 4 张 ⇒ ×2）、爆头（×2）。官方「最后统一加」即指数相加，故 log2 下是四个加数之和。",
+      "safety": "写成单态势差：Φ(s) = scale · Σ_i g_i(s) · φ_i(s)，门控 g_i(s) 只依赖**单个状态**（该分量在 s 可判定且落在声明域内），增量取 Φ(s′) − Φ(s) 的完整差值，**不是**动作标签加分。四个分量的事实全部来自 hangma：链与四白走 progression.chain_after_action / wealth_after_action，爆头走 progression.baotou_after_action，四白等值条件走 special_rules.four_white_indicator；policy 不复制规则。bound 由声明域推导（scale × (4 + 6 + 1 + 1) = 480），候选内部不做任何裁剪，唯一的强制点是适配器。**这不是单步启发式的最优策略不变保证**（PLAN-REVISION §1.2）：势差只是结构约定，效果须实测。",
+      "selected_config": {
+        "scale": 40,
+        "branch_cap": 4,
+        "chain_cap": 6,
+        "bound": 480
+      },
+      "selection_provenance": "结构基线；参数为工程初始选择，未做参数搜索。scale=40 沿用价值族② 的锚点（V1 权重 gang_bonus=40.0 已是「一次杠 = log2 +1」的分值），单位是评分点 / log2 番；branch_cap=4 与 chain_cap=6 来自官方声明域（七对 1 + 豪华最多 3 组；fan-calc chain.count 0—6），bound=480 由这四个上界推导，不是调参结果。消融变体（use_branch / use_chain / use_four_white / use_baotou 取 0）是**独立候选身份**，须各自重新准入。"
+    },
+    "multiplier_path_potential": {
+      "candidate": "multiplier_path_potential",
+      "trigger": "scope=chi/peng/gang 元组；仅当候选事实完整、动作种类为吃/碰/杠、窗口内存在完整事实的过牌参考时触发，否则返回 0.0（不加不减）。以下情况必须返回 0.0：(1) 候选 facts 为 None 或 completeness 非 COMPLETE（用 type(value).COMPLETE/.name/字符串判定，None 视为不完整）；(2) facts.fact_kind 为 WIN（路径已兑现，不得当作被打掉扣分）；(3) 纯弃牌窗口没有过牌参考可代表动作前状态，势差不适用；(4) replacement_draw_unknown=True 的杠后补牌未知状态，或参考状态本身补牌未知，不得假设具体未来摸牌；(5) 当前动作为 pass/discard/hu 等非吃碰杠动作；(6) 四白门控中 ctx.chain_piao 为 None 时不得当 0，视为门控不成立。",
+      "changed_actions": "**按状态势之差生效**：吃 / 碰 / 杠三类动作的总分追加 scale × (Φ(动作后候选) − Φ(同窗口过牌参考候选))，Φ(s) = w_step·1[链≥1]·1[动作为吃碰杠] + w_progress·1[链≥1]·φ_推进度(s) + w_baotou·1[爆头]·φ_向听(s) + w_branch·φ_分支(s) + w_four·1[链内飘出已知且手留白+飘出=4]·φ_白板占比(s)；过牌 / 弃牌 / 胡不在 scope 内，评分完全不变。",
+      "expected_direction": "同窗口内动作后势不低于过牌参考势时加分、低于时扣分 ⇒ 方向是**减少「让已积累的倍率路径或牌效推进变差」的吃碰杠**，而不是无条件减少或增加某个动作族。**该方向由实现结构推出（势差符号），未做效果实测**；按 README §17.3 的措辞纪律，构造触发集或开发面板上的改选不能外推为效果。",
+      "counterexample": "以下情形必须恒返回 0.0（不加不减），是本候选的反例清单（逐条来自候选 spec.trigger，登记时逐条核对）：① 候选 facts 缺失或 completeness 非 COMPLETE；② facts.fact_kind 为 WIN（路径已兑现，不得当被打掉扣分）；③ 纯弃牌窗口没有过牌候选可代表动作前状态（势差不适用）；④ replacement_draw_unknown=True 的杠、或参考态补牌未知（不得假设具体未来摸牌）；⑤ 当前动作为 pass / discard / hu；⑥ 四白门控中 ctx.chain_piao 为 None 时不得当 0，视为门控不成立。补充（登记人核对实现时新增的边界）：scope 之外的动作类别连 delta 都不会被调用（适配器按 scope 过滤）；scale=0 时整项恒为 0 但候选仍可装载（用于消融）。",
+      "family": "价值族（Value-Path Family）",
+      "value_path": "官方《1.3 番型倍率》的四个乘子（分支 / 动作链 / 四白 / 爆头）在 log2 尺度上的加权组合；本候选由生成端（3.1 生成闭环 headless 默认通道）产出，**不是**人工推导的价值族实例。",
+      "safety": "写成**同一状态势的两态差** Φ(s′) − Φ(s)，s′ 取当前候选事实、s 取同窗口过牌候选事实（过牌保持手牌，是唯一能代表动作前状态的候选）；门控 g_* 进 Φ 本身，两侧相同的门控自动相消，故不含动作标签加分。候选不重算规则、不判合法性、不改候选集合与排序；全部事实来自 RuleCandidate.facts 与 EvaluationContext。**已知边界（登记人核对，未改代码）**：动作链项与爆头项取自窗口内 ctx 的权威值，两侧相同 ⇒ 恒相消，该两项在本候选里实际上只在「动作本身改变了链/爆头」时才有分差；四白项在 chain_piao 未知时恒不成立。",
+      "selected_config": {
+        "adj.scale_points_per_log2_fan": 12.0,
+        "adj.w_chain_step_log2fan": 1.0,
+        "adj.w_chain_progress_log2fan": 0.5,
+        "adj.w_baotou_progress_log2fan": 0.5,
+        "adj.w_branch_quality_log2fan": 0.5,
+        "adj.w_four_white_ratio_log2fan": 0.5
+      },
+      "selection_provenance": "六项参数**全部取自产物代码里的字面默认值**（candidate.py 第 220—225 行，逐字转写），**不是**调参结果、也不是开发面板选出的值；因此本候选**没有**任何『用历史语料挑参数』的成分（README §17.5 意义上的开发探索为 0）。登记时把这六项显式写进声明（与代码默认值逐字相同），使**绑定身份**包含实际生效参数：adj(...) 段随后续调用方传入的 adj.* 字面量变化，避免『换了参数却沿用同一份门禁记录』。",
+      "provenance": {
+        "source_kind": "generated_candidate",
+        "generation_channel": "headless",
+        "generation_evidence_kind": "headless_model_reply",
+        "is_model_output": true,
+        "artifact_path": "review/llm-guided-heuristic-route-2026-09-15/evidence/3.1-generation/run-headless/attempts/genloop__m1__contract-52568ba008de__prompt-a7254926a5c1__parent-76ce1c587fbb__code-1ba12987535f__reply-e73f4912a819__origin-headless_capture__sampling-dd48a2ec__attempt-3-2dde5bab/candidate.py",
+        "artifact_sha256": "1ba12987535fba2edfbab1422ecac545444629328259233652a7e35fbf1622e2",
+        "registered_module_path": "src/hangma_bot/policy/heuristics/multiplier_path_potential.py",
+        "registered_module_sha256": "1ba12987535fba2edfbab1422ecac545444629328259233652a7e35fbf1622e2",
+        "byte_identical_to_artifact": true,
+        "generation_attempt_identity": "genloop|m1|contract=52568ba008de|prompt=a7254926a5c1|parent=76ce1c587fbb|code=1ba12987535f|reply=e73f4912a819|origin=headless_capture|sampling=dd48a2ec|attempt=3",
+        "spec_version": "multiplier_path_potential/1.2.0",
+        "spec_name": "multiplier_path_potential_v1",
+        "declared_bound": 36.000001,
+        "note": "注册 = 人工静态登记；**注册不等于准入**，是否可用以 3.4-registration 的三道门禁记录为准。"
+      },
+      "registration": {
+        "registered_by": "sitin-batch-v1 / 包 register（owner 角色，人工静态注册）",
+        "registered_at_utc": "2026-09-15T19:31:53Z",
+        "registry_key": "multiplier_path_potential",
+        "gate_records": "review/llm-guided-heuristic-route-2026-09-15/evidence/3.4-registration/gates-multiplier_path_potential.json",
+        "handoff": "review/llm-guided-heuristic-route-2026-09-15/evidence/3.4-registration/registered-candidate.json",
+        "registered_at_unix": 1789500713
+      }
+    },
+    "expected_score_path_value": {
+      "candidate": "expected_score_path_value",
+      "family": "价值族（Value-Path Family）",
+      "value_path": "官方《1.3 番型倍率》四个乘子（分支 / 2^动作链 / 4 白板 / 爆头）× 庄闲结算系数（hangma.settlement.settle_scores：本人庄 24 / 本人闲 10；付方庄家 ×8 / 闲家 ×1）",
+      "trigger": "本项按动作后的规则事实取值，不按动作标签分档：弃牌改变向听/有效牌/链/四白/爆头；吃碰永久关闭七对路径（规则已证）；杠使链 +1；过牌保持原状态（与等待基线同值）。取值要求牌效事实（HAND_PROGRESS）与牌墙余量齐备，期望总番不得越出声明的 fan_cap；任一条件不满足时该动作不评分（返回 0 并记录原因），不用 0 或 False 冒充未知。合法胡恒为 priority=0，本项不参与其排序。",
+      "changed_actions": "期望实际积分（评分点）= points_per_score × [P_self × Fan_lb × gain_per_fan(我的支付角色) − P_opp × opp_fan_proxy × pay_per_fan(对手支付角色)]；四个价值族改成乘性期望（E[2^I]=1+P），不做跨族相加。",
+      "expected_direction": "保留更高期望实际积分的路径：不在链非零时断链、不退出爆头、不轻易打掉已锁定的四白与豪华组；按支付角色区分喂牌代价（庄家 ×8、闲家 ×1）；离大牌更近的等待得到正分。方向是**减少**这类「打掉乘子/加价喂牌」的动作，不无条件增减某一动作族。",
+      "counterexample": "见 tests/unit/policy/test_expected_score_path_value.py：未知不填零（baotou 未成立进 unappraised；链内飘出不可归因时四白取保守下界并单独登记）；域外不惩罚（动作前或后链次数越出官方 0—6 域、期望总番越出 fan_cap、牌墙余量未知、牌效事实缺失 ⇒ 该动作不评分返回 0）；胡不参与（appraise 返回 None）；打掉一张财神必须使四白可达概率下降。",
+      "domain_rules": "声明域：Fan_lb ∈ [1, fan_cap]、P ∈ [0,1]、动作前后链次数都在官方 0—6 域内、HAND_PROGRESS 事实与牌墙余量齐备、动作在 scope 内；不满足即不评分，不夹取、不填零。",
+      "safety": "非势差：本候选不声明 Φ(s′)−Φ(s) 合同，也不引用四分量基线的可加性/环判据结论。合法胡恒为 priority=0，评分不参与其排序（回归 test_hu_priority_is_independent_of_weights_and_facts）；bound=3104 由声明域推导，只用于适配器越界审计。",
+      "source": "src/hangma_bot/policy/heuristics/expected_score_path_value.py",
+      "evidence": "review/llm-guided-heuristic-route-2026-09-15/evidence/3.6c-scorer/README.md"
+    }
+  }
+}

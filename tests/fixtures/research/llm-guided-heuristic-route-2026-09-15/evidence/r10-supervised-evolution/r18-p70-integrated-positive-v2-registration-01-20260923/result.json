@@ -1,0 +1,44 @@
+{
+  "active_research_parent": true,
+  "candidate_sha256": "a2d9b8af93beabdba75716fccae56b0668a6fd84f0bdce558d2ff3e569443618",
+  "checks": {
+    "p69_candidate_identity": true,
+    "p69_opened_registration": true,
+    "p69_passed": true,
+    "packaged_digest_matches_constant": true,
+    "packaged_source_exactly_matches_p65": true,
+    "strategy_absent_from_network_registry": true,
+    "strategy_in_research_registry": true
+  },
+  "choose_replay": {
+    "action_value_failures": 0,
+    "all_exact_plan_equal": true,
+    "latency_ms": {
+      "max": 6.570375,
+      "p50": 1.066417,
+      "p95": 2.590417,
+      "p99": 6.29625
+    },
+    "requests": 409
+  },
+  "next": "执行P71累计候选全链并发、截止、409重规划与紧急降级预检",
+  "release_eligible": false,
+  "schema": "r18-p70-integrated-positive-v2-registration-result/1",
+  "scoring_replay": {
+    "all_exact_batch_equal": true,
+    "calls": 1227,
+    "latency_ms": {
+      "max": 6.354125,
+      "p50": 0.975875,
+      "p95": 2.486958,
+      "p99": 6.117417
+    },
+    "maximum_operations": 54871,
+    "operation_limit": 100000,
+    "repeats": 3,
+    "views": 409
+  },
+  "selection_eligible": true,
+  "status": "PASS_P70_INTEGRATED_POSITIVE_V2_REGISTRATION",
+  "strategy": "action_value:r18_integrated_positive_v2"
+}

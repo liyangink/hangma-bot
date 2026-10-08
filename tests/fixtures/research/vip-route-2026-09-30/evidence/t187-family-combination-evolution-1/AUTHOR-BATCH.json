@@ -1,0 +1,50 @@
+{
+  "batch_id": "t187-two-author-family-combination-20261005",
+  "budgets": {
+    "input_tokens": 2097152,
+    "model_calls": 2,
+    "output_tokens": 131072,
+    "table_instances": 0,
+    "wall_clock_seconds": 1800
+  },
+  "input_bound": {
+    "evidence": {
+      "interpretation": "官方1M上下文、128K输出；整上下文按二进制上取整预留输入，实际输出上限65536，不把UTF8字节当精确token数",
+      "sources": [
+        "https://docs.z.ai/guides/llm/glm-5.3",
+        "https://docs.bigmodel.cn/cn/guide/models/text/glm-5.3"
+      ],
+      "verified_on": "2026-10-04"
+    },
+    "kind": "verified_model_input_limit",
+    "max_input_tokens": 1048576,
+    "model": "glm-5.3"
+  },
+  "max_operations": 4800000,
+  "per_call": {
+    "input_tokens": 1048576,
+    "max_tokens": 65536,
+    "timeout_seconds": 900
+  },
+  "projection_limits": {
+    "max_branches": 16384,
+    "max_nodes": 8192,
+    "max_replacement_depth": 1,
+    "max_waiting_draw_witnesses": 65536
+  },
+  "route_limits": {
+    "max_expansions": 8192,
+    "max_routes_per_candidate": 128
+  },
+  "rule_config": {
+    "base_score": 1,
+    "ruleset_version": "hangma-mvp-v10-public-counts",
+    "you_cai_bi_kao": false
+  },
+  "sampling": {
+    "seed": null,
+    "temperature": null,
+    "top_p": null
+  },
+  "schema": "vip-route-eoh-batch/1"
+}

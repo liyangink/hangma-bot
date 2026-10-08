@@ -1,0 +1,22 @@
+{
+  "budgets": {
+    "model_calls": 0,
+    "network_calls": 0,
+    "tables_full": 0
+  },
+  "created_at_utc": "2026-09-22T20:53:34Z",
+  "expected_requests": 377,
+  "frozen_inputs": {
+    "p47_parent_source": "0d3c094d9ee5f5fd0316d0c3db7563523ce1d8d2fafb0e64d3d9b93817909b2d",
+    "p47_result": "1e277e8567e6994ba0e0d60b769df175e435393bde8c5e2c8a9c2952306157ba",
+    "p60_result": "257c01f091f323843edff00f85bbec615a85cf8da722d540cf3d4470fa0ba15f",
+    "p61_result": "a96119cbdba6db08914b2958320dd83999408aca3782e138ee0a64da457dc610",
+    "r17_source": "fb9764faa2a01ded3f8cea94eeee27d59929f014f1dcc0ffbd56380e5b1384a2",
+    "script": "502715bfc4eb99a31045791751dc543c75df08e1686342365e4098cefab07c75"
+  },
+  "minimum_teacher_states": 24,
+  "predicate": "P47首选与挑战弃牌total_score严格相等，且挑战动作同时严格增加conditional_hu_capacity与conditional_hu_net_support，后继上下界均不退",
+  "purpose": "只判断严格平分破同是否有足够冻结请求支持进入共同隐藏世界教师；不得用P61结果调阈值",
+  "schema": "r18-p62-exact-tie-preflight-authorization/1",
+  "stop_rule": "少于24个窗口即关闭当前破同表示，不运行自然桌或隐藏世界教师；不得追加rank2、epsilon平分或分差变体"
+}

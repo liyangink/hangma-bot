@@ -1,0 +1,463 @@
+{
+  "schema": "r15-router-changes/1",
+  "rows": [
+    {
+      "window_id": "01954a3a77f3332727821097aabe18fae3c8d3ffe1450c3f05f22bb903ee6ad0",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/real-behavior-panel-v1/panel.json"
+      ],
+      "seat": 1,
+      "phase": "response_peng",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "peng:7b",
+      "transition": "pass->peng",
+      "non_tie_change": true,
+      "v2_before_score": -76.0,
+      "v2_after_score": -81.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "207309a043e12df1c36ebc4c665ee1118a614d3ba5539bcc44287095826fb2d8",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:2t,3t,4t",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": -145.0,
+      "v2_after_score": -155.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "270c9135f53fd3c01abc0f92f7238f729fe91a9c30788b45284a88b38ce885da",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:3w,4w,5w",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": 14.0,
+      "v2_after_score": 8.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "4c0f361fdaffd67104263c21e38014c89a88b6bee30748ddc6b9af3b83a86cf5",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route-decision-diagnostic-20260920/panel.json",
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:1w,2w,3w",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": -85.0,
+      "v2_after_score": -95.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "5361a2b19beaf8b25272dc629e5f8e22775d119b2a8f3365e2890b35f7fc2fb2",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:2w,3w,4w",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": 16.0,
+      "v2_after_score": 11.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "53e1e5c912e038be9f89c4c688767c2caafcc94ff9c47ab179af1e2ae7a9374c",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/real-behavior-panel-v1/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:3t,4t,5t",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": -70.0,
+      "v2_after_score": -73.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "5c31280e8ad69c8670364370e11fb7b438c578b03f6c1a31d3b89fde2f3f249b",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:7t,8t,9t",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": 6.0,
+      "v2_after_score": -4.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "679b42598afa2c660a0d03103da8d2615ab1aabba8ef79d48d62791c6f461475",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:7w,8w,9w",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": -145.0,
+      "v2_after_score": -150.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "6f66cdef1aa18b630d91ac7053d150e29d68de7d00f2eeb516f1a9cc5b6b4641",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route-decision-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:1t,2t,3t",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": -166.0,
+      "v2_after_score": -176.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "71f0dcb1e85aef2942f8b4a3df08dcf05078b733ddaeb5c8fd7574341b11f0c5",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:7b,8b,9b",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": -81.0,
+      "v2_after_score": -91.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "808e069669257eac14c4f2c9e78b4c3619d7d54b5e11dac597dadb1865918a0b",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:7t,8t,9t",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": 6.0,
+      "v2_after_score": -4.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "a0cd868a8621ce0b9c6b27325e65b99b6626495a84aa591826e95d64782bc322",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_peng",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "peng:3t",
+      "transition": "pass->peng",
+      "non_tie_change": false,
+      "v2_before_score": 25.0,
+      "v2_after_score": 25.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "a5e437cd8a95d2f69d806a0870591516a9d5d8e461f5f85952bb14832f233493",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route-decision-diagnostic-20260920/panel.json",
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:6b,7b,8b",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": -89.0,
+      "v2_after_score": -99.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "b368b4b59a5d9f1a325b9ca21931556e1b5945cb1167ea850ddedaa8baf1b46c",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:1w,2w,3w",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": -85.0,
+      "v2_after_score": -95.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "ca5aa75c35ec39d2d4cdc1023e424adf734a970da4f95445bf81d43ab012914f",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:2w,3w,4w",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": 18.0,
+      "v2_after_score": 11.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "ce0afff1928c6f3bdb63e4ae20af1ca8d8a30ceace9d3668223cf140ba691a36",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route-decision-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:2w,3w,4w",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": -78.0,
+      "v2_after_score": -88.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "d8a3676bb0dd3e7468d818e0fbc6bf4bd2b35b268f2171dc174db83f6991420e",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/selfdraw-tempo-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_peng",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "peng:8b",
+      "transition": "pass->peng",
+      "non_tie_change": true,
+      "v2_before_score": -92.0,
+      "v2_after_score": -96.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "eb4b84448f8cb947d8efee921eee786811d9b9a1d6ab000d6f10021673c9f827",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/batch03-known-root-diagnostic/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_peng",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "peng:东",
+      "transition": "pass->peng",
+      "non_tie_change": false,
+      "v2_before_score": 26.0,
+      "v2_after_score": 26.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    },
+    {
+      "window_id": "f252b6033181ce2455c8a1d55db1acde5ecf739c2f1fcf6d8cb80a244360b726",
+      "origins": [
+        "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/route-decision-diagnostic-20260920/panel.json"
+      ],
+      "seat": 0,
+      "phase": "response_chi",
+      "rule_state": "response_route_chain_projected",
+      "selected_parent": "specialist",
+      "unknown_fallback": false,
+      "baseline_action": "pass",
+      "candidate_action": "chi:4w,5w,6w",
+      "transition": "pass->chi",
+      "non_tie_change": true,
+      "v2_before_score": -330.0,
+      "v2_after_score": -332.0,
+      "exact_selected_parent": true,
+      "router_record": {
+        "selected_parent": "specialist",
+        "rule_state": "response_route_chain_projected",
+        "fallback_reason": null,
+        "unknown_fallback": false
+      }
+    }
+  ]
+}

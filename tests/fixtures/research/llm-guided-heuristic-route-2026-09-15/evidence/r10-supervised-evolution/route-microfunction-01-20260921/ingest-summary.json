@@ -1,0 +1,34 @@
+{
+  "schema": "r10-route-microfunction-ingest/1",
+  "tasks": [
+    {
+      "task": "M1",
+      "channel_ok": true,
+      "proposal_ok": true,
+      "arithmetic_ok": true,
+      "candidate_static_ok": true,
+      "accepted_for_behavior_preflight": true,
+      "proposal_sha256": "d3403d620af458db72a1fe2bc59b145df8f167647b52fcf26ea5c1ae55bc70e3",
+      "candidate_sha256": "ae24d8c0999499b0aa18a65dd14aed3f62cb8a298c46dbf01dcc340d10dc92ef",
+      "problems": []
+    },
+    {
+      "task": "M2",
+      "channel_ok": true,
+      "proposal_ok": true,
+      "arithmetic_ok": true,
+      "candidate_static_ok": true,
+      "accepted_for_behavior_preflight": true,
+      "proposal_sha256": "d8b72d1cace1d41ce33a0147eac9bf20e4963d12cc188de3088f56fdf6e91dbf",
+      "candidate_sha256": "b3d2bcebdd335b059cac4cc38bbd7716eff33250ab0e5d919b8f91e5ba302c7f",
+      "problems": []
+    }
+  ],
+  "accepted": [
+    "M1",
+    "M2"
+  ],
+  "repair_eligible": [],
+  "effect_evaluation_started": false,
+  "note": "只允许修复JSON/表达式/参数合同错误；效果不佳不修复。"
+}

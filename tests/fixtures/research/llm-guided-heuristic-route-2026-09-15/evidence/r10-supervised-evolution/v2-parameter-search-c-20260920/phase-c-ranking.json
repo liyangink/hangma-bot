@@ -1,0 +1,144 @@
+{
+  "schema": "v2-joint-parameter-phase-c-ranking/1",
+  "ranking": [
+    {
+      "config_id": "v2_joint_07",
+      "candidate_id": "offline-v2-joint-v1:470b4798c7813ca430dd5ab05cef0be240562a0c92baa5ff25f58cde5eba7033",
+      "policy_weights_sha256": "470b4798c7813ca430dd5ab05cef0be240562a0c92baa5ff25f58cde5eba7033",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.0,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 6.0,
+        "claim_risk_chi": 10.0,
+        "feed_risk": 6.0,
+        "safe_tile_bonus": 3.0,
+        "style_adjust": 0.0
+      },
+      "fitness_mean_delta_low": 0.015625,
+      "mean_delta": 0.017578125,
+      "mean_delta_high": 0.01953125,
+      "H": {
+        "n_roots": 32,
+        "mean_delta": 0.0,
+        "standard_error": 0.015875015875023813,
+        "interval_95": [
+          -0.031114459369048286,
+          0.031114459369048286
+        ]
+      },
+      "M": {
+        "n_roots": 32,
+        "mean_delta": 0.03515625,
+        "standard_error": 0.025863596496618936,
+        "interval_95": [
+          -0.015535467644049429,
+          0.08584796764404942
+        ]
+      },
+      "normalized_l1_from_default": 0.5,
+      "rank": 1,
+      "disposition": "DEVELOPMENT_CHAMPION"
+    },
+    {
+      "config_id": "v2_joint_14",
+      "candidate_id": "offline-v2-joint-v1:2f5fae72f9044531b10ebc4f325ef4b517d7a75840a34351faada760ee6e9aeb",
+      "policy_weights_sha256": "2f5fae72f9044531b10ebc4f325ef4b517d7a75840a34351faada760ee6e9aeb",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.356659,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 8.467749,
+        "claim_risk_chi": 11.207211,
+        "feed_risk": 7.807301,
+        "safe_tile_bonus": 2.863281,
+        "style_adjust": 0.565009
+      },
+      "fitness_mean_delta_low": 0.0078125,
+      "mean_delta": 0.013671875,
+      "mean_delta_high": 0.01953125,
+      "H": {
+        "n_roots": 32,
+        "mean_delta": 0.01953125,
+        "standard_error": 0.036421562438114424,
+        "interval_95": [
+          -0.051853700639381106,
+          0.0909162006393811
+        ]
+      },
+      "M": {
+        "n_roots": 32,
+        "mean_delta": 0.0078125,
+        "standard_error": 0.03845290472846559,
+        "interval_95": [
+          -0.0675538083687425,
+          0.0831788083687425
+        ]
+      },
+      "normalized_l1_from_default": 0.9638841583333332,
+      "rank": 2,
+      "disposition": "NOT_SELECTED_WITHIN_BUDGET"
+    },
+    {
+      "config_id": "v2_joint_17",
+      "candidate_id": "offline-v2-joint-v1:d47b2d1814e794d754ba6a1208b9a3804fa84c936c3de1931cd47b807e49fdd3",
+      "policy_weights_sha256": "d47b2d1814e794d754ba6a1208b9a3804fa84c936c3de1931cd47b807e49fdd3",
+      "weights": {
+        "win_now": 1000.0,
+        "gang_bonus": 40.0,
+        "wealth_god_keep": 60.0,
+        "shanten_step": 100.0,
+        "effective_tile": 1.455924,
+        "win_potential": 5.0,
+        "flexibility": 2.0,
+        "claim_risk_peng": 0.791055,
+        "claim_risk_chi": 7.335097,
+        "feed_risk": 7.349823,
+        "safe_tile_bonus": 4.087979,
+        "style_adjust": 1.533778
+      },
+      "fitness_mean_delta_low": 0.0,
+      "mean_delta": 0.001953125,
+      "mean_delta_high": 0.00390625,
+      "H": {
+        "n_roots": 32,
+        "mean_delta": -0.0078125,
+        "standard_error": 0.03966272721893375,
+        "interval_95": [
+          -0.08555001687774665,
+          0.06992501687774665
+        ]
+      },
+      "M": {
+        "n_roots": 32,
+        "mean_delta": 0.01171875,
+        "standard_error": 0.039829911417149595,
+        "interval_95": [
+          -0.06634644188503391,
+          0.08978394188503391
+        ]
+      },
+      "normalized_l1_from_default": 1.2909964666666667,
+      "rank": 3,
+      "disposition": "NOT_SELECTED_WITHIN_BUDGET"
+    }
+  ],
+  "development_champion": "v2_joint_07",
+  "selection_rule": {
+    "fitness": "阶段A+B+C累计H/M等权根级保守差d_low均值",
+    "keep": 1,
+    "tie_break": "相对默认权重六维归一化L1距离升序，再config_id升序",
+    "meaning": "冻结开发冠军，不是显著性检验；是否进入新来源复核由正向性和分层结果决定"
+  },
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

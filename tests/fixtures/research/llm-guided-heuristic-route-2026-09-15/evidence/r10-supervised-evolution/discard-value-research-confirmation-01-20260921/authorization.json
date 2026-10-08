@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r11-dv1-research-confirmation-v1-20260921",
+  "batch_label": "r11-dv1-research-confirmation-v1",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 8192.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 256.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T07:09:14Z",
+  "issuance_basis": "从11规格事后留存的GAM-16只允许一次全新来源独立动作确认；原四折失败不追认",
+  "scope": "四个全新panel_seed×H/M×16快照；同动作记零；改动作时V2与冻结候选使用16共同未来顺序成对续打",
+  "max_model_calls": 0,
+  "confirmation_roots": 128
+}

@@ -1,0 +1,67 @@
+{
+  "T93_outcomes_read": false,
+  "T93_terminal_records_read": false,
+  "campaign_plan_sha256": "d286a7bc32d30a0c470bcea7458e85167e704313bb73559c92085c8a2d495d22",
+  "close_tool_sha256": "bc8f1423445210287143edadcf61c05c96359d42877684921a02b94687cfd21c",
+  "created_at_utc": "2026-10-02T21:06:01.507281+00:00",
+  "current_closer_actual_input_counts_equal_T92": {
+    "actual_score_calls": 2374,
+    "all_seat_decisions": 18641,
+    "candidate_decisions": 2374,
+    "choose_with_capture_ms_by_phase": {
+      "draw": {
+        "max_ms": 245.88654190301895,
+        "n": 500,
+        "p50_ms": 7.0937080308794975,
+        "p95_ms": 14.325374970212579
+      },
+      "response_chi": {
+        "max_ms": 15.88745811022818,
+        "n": 450,
+        "p50_ms": 0.9724998380988836,
+        "p95_ms": 7.596792187541723
+      },
+      "response_peng": {
+        "max_ms": 193.35950003005564,
+        "n": 1424,
+        "p50_ms": 1.0100840590894222,
+        "p95_ms": 1.8723749089986086
+      }
+    },
+    "finite_legal_action_score_outputs": 6928,
+    "max_candidate_operations": 448755,
+    "selected_action_counts": {
+      "chi": 36,
+      "discard": 480,
+      "gang": 3,
+      "hu": 17,
+      "pass": 1815,
+      "peng": 23
+    },
+    "timing_scope": "offline choose plus capture; excludes rules/worker/network/SSE; not online deadline credit",
+    "unique_complete_views": 2374,
+    "white_counts_at_C_decisions": {
+      "0": 1179,
+      "1": 1135,
+      "2": 60
+    }
+  },
+  "empirical_percentile_indices_for20000_resamples": [
+    500,
+    19499
+  ],
+  "new_models_rules_scores_worlds_tables": 0,
+  "old_T77_bootstrap_interval_exact": [
+    -17.5625,
+    24.8125
+  ],
+  "schema": "t93-outcome-reader-preinspection-freeze/1",
+  "scope": "pure file readback and bootstrap only; no new admission",
+  "source_references": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t77-net-upgrade-fresh-qualifier-pilot-1/CAMPAIGN-CLOSURE.json": "dea57a2c5893e626a32c25f2f3f45b920c88ae71c478ed8a433559766340a189",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t77-net-upgrade-fresh-qualifier-pilot-1/CAMPAIGN-PLAN.json": "dfed57671c46963f863ac8cac5aafebe88878dcdcfca742a45a09eeea7098a3e",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t92-fixed-formula-natural-engineering-1/PLAN.json": "c31a8b5352be848b5ed456c2ca65d6ccad6b23fc5775d93b9063114a81d79b06",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t92-fixed-formula-natural-engineering-1/ROOT-READBACK.json": "fffbf45e007ac6780fddf33da94a3f2d24893fe361c00c89c4a70cfb1e05fff0",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t92-fixed-formula-natural-engineering-1/run-1/summary.json": "718a3584c9198c5cf56310cec5f236605b5d555802dbcc38f677332c68c4dc40"
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "scope": "closed_adaptive_public_panel_mechanism_diagnosis_not_fitness",
+  "input_sha256": {
+    "S02-public-probe/ROWS.jsonl": "89e0c1329d893de369842f23c20b1b36ebb9abe8736baba4376cb78b6046c43a",
+    "S02-public-probe/ROOT-READBACK.json": "d5122db344497a3f93534e963f7f554bfbbd25fd192a8e666fb49e385d2ce59a",
+    "S02-model-output/candidate.py": "a970adc5d5898810c53e1f8fd97c93b1eb7d816ec684553bfd96bcb2b511a0cd"
+  },
+  "reader_sha256": "1674028e37b9f2384067bcdd0830c04276b2904af33f56284623d72e4bc496a9",
+  "score_difference_tolerance_rank_points": 1e-12,
+  "window_count": 100,
+  "counts": {
+    "actual_child_calls": 94,
+    "actual_action_outputs": 814,
+    "changed_score_outputs": 99,
+    "changed_trace_outputs": 254,
+    "trace_changed_but_score_unchanged_outputs": 155,
+    "parent:reported_net_offer:conditional_net_upgrade": 208,
+    "parent:reported_offer_with_remote_option": 178,
+    "child:reported_net_offer:conditional_net_upgrade": 259,
+    "child:reported_offer_with_remote_option": 107,
+    "windows_with_any_score_change": 26,
+    "windows_with_trace_only_changes": 23,
+    "parent:reported_net_offer:completion_budget_gain": 13,
+    "child:reported_net_offer:completion_budget_gain": 8
+  },
+  "label_groups_not_independent_sources": {
+    "public": {
+      "windows": 22,
+      "score_changed_windows": 13,
+      "first_changed_windows": 0,
+      "trace_only_changed_windows": 0
+    },
+    "natural": {
+      "windows": 16,
+      "score_changed_windows": 4,
+      "first_changed_windows": 1,
+      "trace_only_changed_windows": 4
+    },
+    "t74": {
+      "windows": 18,
+      "score_changed_windows": 5,
+      "first_changed_windows": 0,
+      "trace_only_changed_windows": 12
+    },
+    "new": {
+      "windows": 44,
+      "score_changed_windows": 4,
+      "first_changed_windows": 0,
+      "trace_only_changed_windows": 7
+    }
+  },
+  "changed_first": [
+    {
+      "label": "old:natural:07",
+      "parent_first": "discard:5w",
+      "child_first": "discard:9w",
+      "score_changed_actions": [
+        "discard:5w",
+        "discard:7w",
+        "discard:9w"
+      ]
+    }
+  ],
+  "payment_transform_algebra_not_policy_calls": {
+    "normalized_amount_unit": "focal_net_score_divided_by_configured_base_score",
+    "formula": "PAYCAP * amount / (PAYREF + abs(amount))",
+    "PAYCAP": 50.0,
+    "PAYREF": 192.0,
+    "rows": [
+      {
+        "normalized_amount": 6,
+        "rank_point": 1.5151515151515151,
+        "doubling_rank_point_ratio": 1.9411764705882355
+      },
+      {
+        "normalized_amount": 12,
+        "rank_point": 2.9411764705882355,
+        "doubling_rank_point_ratio": 1.8888888888888886
+      },
+      {
+        "normalized_amount": 24,
+        "rank_point": 5.555555555555555,
+        "doubling_rank_point_ratio": 1.8
+      },
+      {
+        "normalized_amount": 48,
+        "rank_point": 10.0,
+        "doubling_rank_point_ratio": 1.6666666666666667
+      },
+      {
+        "normalized_amount": 96,
+        "rank_point": 16.666666666666668,
+        "doubling_rank_point_ratio": 1.5
+      },
+      {
+        "normalized_amount": 192,
+        "rank_point": 25.0,
+        "doubling_rank_point_ratio": 1.3333333333333335
+      },
+      {
+        "normalized_amount": 384,
+        "rank_point": 33.333333333333336,
+        "doubling_rank_point_ratio": 1.2
+      },
+      {
+        "normalized_amount": 768,
+        "rank_point": 40.0,
+        "doubling_rank_point_ratio": 1.1111111111111112
+      }
+    ],
+    "not_exact_expected_score_or_probability": true
+  },
+  "new_business": {
+    "model_calls": 0,
+    "score_calls": 0,
+    "rules_calls": 0,
+    "worlds": 0,
+    "tables": 0,
+    "confirmation_reads": 0
+  },
+  "boundaries": [
+    "已曝光面板仅诊断排序行为",
+    "解释变化不能授收入或强度",
+    "有界收益压缩是待验证机制假设，不是数学或规则错误",
+    "未读取运行中桌赛成绩"
+  ]
+}

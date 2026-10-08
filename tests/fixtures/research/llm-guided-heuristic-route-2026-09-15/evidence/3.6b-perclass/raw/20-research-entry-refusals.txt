@@ -1,0 +1,84 @@
+# 受控研究执行入口：拒绝路径回归（真实门禁记录 gates-four_component_path_value-perclass.json）
+
+候选 = four_component_path_value
+结论类（reliable）= ['branch.chiitoi_live', 'branch.luxury_locked', 'chain.gang_step', 'meld.claim_window']
+研究类（未达 reliable，正是研究要补的）= ['chain.open', 'chain.piao_discard', 'chain.break_discard', 'four_white.at_four', 'four_white.derivable_held4', 'four_white.unknown_piao', 'baotou.active', 'baotou.discard_recheck', 'baotou.meld_inherit', 'baotou.decline_win_for_piao', 'overlay.four_white_baotou', 'overlay.chiitoi_baotou', 'overlay.gang_piao_mix', 'overlay.plain_branch_max', 'overlay.global_max']
+
+## permitted.json ⇒ 退出码 0
+
+```
+研究执行许可（**非准入**）：候选 four_component_path_value；研究范围 3 类；结论范围 2 类
+```
+记录内 permitted = True；refusals = []
+
+## refused-admission-claim.json ⇒ 退出码 2
+
+```
+! 拒绝[admission_claim] 研究请求试图携带准入结论：研究执行资格**不是**发布准入
+      ! 拒绝[admission_claim] 声明范围里出现了 'admission'：研究记录不得承载准入/效果/晋级结论
+拒绝研究执行：2 条理由（记录已落盘，admitted 恒为 false）
+```
+记录内 permitted = False；refusals = ['admission_claim', 'admission_claim']
+
+## refused-claim-without-evidence.json ⇒ 退出码 2
+
+```
+! 拒绝[claim_without_evidence] 结论类 chain.open 的逐类判定是 'insufficient'，不是 'reliable'：结论不得落在未验证的类上
+拒绝研究执行：1 条理由（记录已落盘，admitted 恒为 false）
+```
+记录内 permitted = False；refusals = ['claim_without_evidence']
+
+## refused-identity-mismatch.json ⇒ 退出码 2
+
+```
+! 拒绝[candidate_identity_mismatch] 研究请求的 bound_identity 与门禁记录不一致（参数或代码已变）
+拒绝研究执行：1 条理由（记录已落盘，admitted 恒为 false）
+```
+记录内 permitted = False；refusals = ['candidate_identity_mismatch']
+
+## refused-sampler-not-frozen.json ⇒ 退出码 2
+
+```
+! 拒绝[sampler_not_frozen] 采样器必须**先冻结后运行**（frozen_before_run=true）
+拒绝研究执行：1 条理由（记录已落盘，admitted 恒为 false）
+```
+记录内 permitted = False；refusals = ['sampler_not_frozen']
+
+## refused-unbounded-research-scope.json ⇒ 退出码 2
+
+```
+! 拒绝[research_scope_unbounded] 研究范围为空：必须显式列出要采样/研究的场景类
+拒绝研究执行：1 条理由（记录已落盘，admitted 恒为 false）
+```
+记录内 permitted = False；refusals = ['research_scope_unbounded']
+
+## refused-panel-mismatch.json ⇒ 退出码 2
+
+```
+! 拒绝[panel_identity_mismatch] 面板 rows 与门禁记录不一致：请求 1 / 记录 16851
+拒绝研究执行：1 条理由（记录已落盘，admitted 恒为 false）
+```
+记录内 permitted = False；refusals = ['panel_identity_mismatch']
+
+## 校验器：许可记录 ⇒ 退出码 0
+
+```
+研究记录校验通过：sitin-gates-research/1；permitted=True（**不是**准入结论）
+```
+
+## 校验器：改写成准入的伪造记录 ⇒ 退出码 2
+
+```
+! admitted 必须是 False（研究记录不得携带准入结论）
+      ! gate_level_admitted 必须是 False
+      ! evidence_kind 必须是 research，得到 'admission'
+研究记录校验失败：3 项问题
+```
+
+## 退出码汇总
+
+{"permitted.json": 0, "refused-admission-claim.json": 2, "refused-claim-without-evidence.json": 2, "refused-identity-mismatch.json": 2, "refused-sampler-not-frozen.json": 2, "refused-unbounded-research-scope.json": 2, "refused-panel-mismatch.json": 2}
+
+**读法**：许可=0、被拒=2。被拒时记录仍然落盘（含全部拒绝理由），
+且任何研究记录的 admitted 恒为 false —— 触发集/研究执行资格**不是**准入。
+

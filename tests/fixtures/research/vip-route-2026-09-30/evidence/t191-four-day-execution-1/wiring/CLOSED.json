@@ -1,0 +1,1540 @@
+{
+  "schema": "t191-p0-formal-wiring-handoff/1",
+  "closed_at": "2026-10-05T12:53:27.921765+00:00",
+  "complete": true,
+  "completion_scope": "authorized isolated engineering wiring/reliability/candidate generation only; actual official venue remains pending",
+  "workspace": "/Users/liyang/hangma-bot/.private/t185-wiring/workspace",
+  "mainline_production_changed": false,
+  "mainline202_originals_unchanged": true,
+  "old_v8_v6_bytes_unchanged": true,
+  "source_manifest_count": 182,
+  "patch_files": 22,
+  "patch_dry_run_passed": true,
+  "required_final_pytest_passed": 56,
+  "public_launch_identity_assemblies_passed": 7,
+  "source_and_scope_cases_as_expected": 8,
+  "network_players_started": false,
+  "official_test_tournament_passed": false,
+  "formal_release": false,
+  "T148_strength_admission": false,
+  "actual_configuration_confirmed": false,
+  "actual_tournament_date_confirmed": false,
+  "default_or_watchdog_changed": false,
+  "commit_created_by_child": false,
+  "final_packages": [
+    {
+      "strategy": "vip_s02_bounded_d1_testroom_v9",
+      "mode": "test_room",
+      "id": "b828932754801388e362023b6e7b0dcdd7c463736691d949196ad478b8a0ae76"
+    },
+    {
+      "strategy": "vip_s02_bounded_d1_free_v7",
+      "mode": "auto_match",
+      "id": "3bc912f5e52a71c6978dff9dc06fdf26c9cac9f7bdd4f06b3c95e749382f267a"
+    },
+    {
+      "strategy": "vip_s02_bounded_d1_test_tournament_v1",
+      "mode": "test_tournament",
+      "id": "197d2f63dc7e2b0bcdff15703812768ea467a7f37a08626b89aeb3ffa8183f99"
+    },
+    {
+      "strategy": "vip_s02_bounded_d1_official_tournament_v1",
+      "mode": "official_tournament",
+      "id": "fbf3fdfbd3bef7f9020b1593b6948a74accd10a0986505c793795764a9ccfd35"
+    }
+  ],
+  "pressure": [
+    {
+      "case": "draw_3s",
+      "complete_scoring": 5,
+      "deadline_skips": 5,
+      "timely_legal_submissions": 10,
+      "rules_total_ms": 779.377
+    },
+    {
+      "case": "only_pass_response_1s",
+      "complete_scoring": 10,
+      "deadline_skips": 0,
+      "timely_legal_submissions": 10,
+      "rules_total_ms": 4.469
+    },
+    {
+      "case": "peng_response_1s",
+      "complete_scoring": 10,
+      "deadline_skips": 0,
+      "timely_legal_submissions": 10,
+      "rules_total_ms": 24.946
+    }
+  ],
+  "evidence_files": {
+    "CHANGESET.json": {
+      "bytes": 7091,
+      "sha256": "5208137ff6ffd0ab5b433cd33dd4d0e526e9171781011b55d8f0843051f94195"
+    },
+    "COPY-BASELINE.json": {
+      "bytes": 111954,
+      "sha256": "09a2179390404229089e3212a4f5819d18a0f9dc856305b2700b4a3f339e220a"
+    },
+    "ENGINEERING-CLOSED.json": {
+      "bytes": 27727,
+      "sha256": "e9fe0ab1f65c6f6568dd49f7cd37e07fbf962ef6fc805562a4225b58501a5915"
+    },
+    "ENGINEERING-PRE-LAUNCHER.json": {
+      "bytes": 27082,
+      "sha256": "7b6dd584d33d722bc3c8d2fe8829a6cf16d721687813506049c09984fef9d650"
+    },
+    "FINAL-CONFIG-CHECKS.json": {
+      "bytes": 3050,
+      "sha256": "5639ee4d298d6d90695d1891fc3d9c9bb17b92255f4dd5878ae37513d954141d"
+    },
+    "FINAL-CONFIG-FIRST-FAILURE.json": {
+      "bytes": 318,
+      "sha256": "8487965c3e8aeac060b79a9dd84b07ad0de8989f5a965b9c95f46ed7427a1ee9"
+    },
+    "FINAL-REJECTION-CHECKS.json": {
+      "bytes": 1696,
+      "sha256": "3216e742284870f7935506fca3623cf5e7b30b0c98201f1c44dc429726706c5e"
+    },
+    "FINAL-SOURCE-CHECKS.json": {
+      "bytes": 1313,
+      "sha256": "3704ee61b46b6d51794f116463e6b80325e91129fb8b83ba1d8f0d5c0ce85139"
+    },
+    "HEAVY-PRESSURE-READBACK.json": {
+      "bytes": 24500,
+      "sha256": "2b85f1a4bde1c27bb3cbd1e32aef37311407c52023f40e03255145e877e158b0"
+    },
+    "KEY-SOURCE-DIFF.patch": {
+      "bytes": 17665,
+      "sha256": "9837bba80125332ac6467db9edb725e07b50ee0afe0cb4e2ef1a763ac9d58857"
+    },
+    "P0-WIRING.patch": {
+      "bytes": 184030,
+      "sha256": "9ce446f0065fd151861d28f945d253aec997188c78d48d928bef623c1a4fc89b"
+    },
+    "PRESSURE-READOUT.json": {
+      "bytes": 35619,
+      "sha256": "3a622d0ba99d62c2be9e3abccc0a5b43202d3b0a0bd3538da76b8539bcc9027c"
+    },
+    "READOUT.md": {
+      "bytes": 1225,
+      "sha256": "3863924eabd4c0b83947032c98118cdf927e114a2d75f1a02cc3d029ac577d1b"
+    },
+    "REJECTION-CHECKS.json": {
+      "bytes": 1696,
+      "sha256": "3216e742284870f7935506fca3623cf5e7b30b0c98201f1c44dc429726706c5e"
+    },
+    "REPORT.md": {
+      "bytes": 12294,
+      "sha256": "3683bbc81c756e8f403b8e756d8e8c68b4b52619d5277b5eda6be5bcc3af9b4b"
+    },
+    "SCOPE.md": {
+      "bytes": 2003,
+      "sha256": "e434541a5f9bcbff8c2446f934a10d5e1a8035d614745972f6c8f37de584fc82"
+    },
+    "candidate-packages/vip-s02-bounded-d1-free-v7/manifest.json": {
+      "bytes": 26712,
+      "sha256": "8711bde3c4b6e972c361ef9e2f96f38904f8d36e5b95948c3765c5d9f55ea5e8"
+    },
+    "candidate-packages/vip-s02-bounded-d1-official-tournament-v1/manifest.json": {
+      "bytes": 26750,
+      "sha256": "d684cd65add89f63510b2fe40391c40ae62acea08b710914b5eeecf1c26604ee"
+    },
+    "candidate-packages/vip-s02-bounded-d1-test-tournament-v1/manifest.json": {
+      "bytes": 26738,
+      "sha256": "0988b4b31024e2c5ea8e800129637e698fed0d67f7ef448f64abf08f9d9c68fa"
+    },
+    "candidate-packages/vip-s02-bounded-d1-testroom-v9/manifest.json": {
+      "bytes": 26713,
+      "sha256": "92768809ee220204c26027e6134914b48870dd68cb88d3a8eb9e9d0d77798ff5"
+    },
+    "clock-corrected-tests.log": {
+      "bytes": 3155,
+      "sha256": "b33ca5bdda7499804191d185f54875e1806d380dbcd8556ab978ffbf5d9b7a9e"
+    },
+    "clock-corrected-tests.xml": {
+      "bytes": 3325,
+      "sha256": "3d49f1bcfe3d7b7a2dd3545dbe4c6b4771b27f98ab770baab44ae4daa3d4be3a"
+    },
+    "config-templates/vip-s02-bounded-d1-v7.free-match.example.json": {
+      "bytes": 831,
+      "sha256": "867a185ce8beb55840be93a55034e01f56e682ce94fb3226a044a19cf739c404"
+    },
+    "config-templates/vip-s02-bounded-d1-v9.test-room.example.json": {
+      "bytes": 1519,
+      "sha256": "999cb7f1e31a3c36f7fe57aa10f77b947b6e1c11e59755df68f027b3dafc88de"
+    },
+    "config-templates/vip-s02-bounded-d1.official-tournament.example.json": {
+      "bytes": 600,
+      "sha256": "7a93b2ed64ebbbf324627447a76e97fb67a66c5444f06e8bf1742a88c67ce555"
+    },
+    "config-templates/vip-s02-bounded-d1.test-tournament.example.json": {
+      "bytes": 576,
+      "sha256": "fe838bb7e237bc7dd2038525ea69c7c0d29d0d41f8b50e36832f7cf01c264993"
+    },
+    "extended-failure-audit/test_real_s02_rejection_keeps_0/runs/run-e3f017eebc7c4ee994c3757ad280bc34/lifecycle.jsonl": {
+      "bytes": 2919,
+      "sha256": "307e172be5915d1b4fa5ac846c20b7826b812e6f37da55f253b1d1faf8924afb"
+    },
+    "extended-failure-audit/test_real_s02_rejection_keeps_0/runs/run-e3f017eebc7c4ee994c3757ad280bc34/manifest.json": {
+      "bytes": 13058,
+      "sha256": "18db0e502d68158864094922f76fb2bd16f73bd401cc41bcf5e284d8c5e24850"
+    },
+    "extended-failure-audit/test_real_s02_rejection_keeps_0/runs/run-e3f017eebc7c4ee994c3757ad280bc34/participants/p1/decisions.jsonl": {
+      "bytes": 2218936,
+      "sha256": "f4352d729416d1efc1f99de270022e1aaca542ba1d395bdcab3d24552b138705"
+    },
+    "extended-failure-audit/test_real_s02_rejection_keeps_0/runs/run-e3f017eebc7c4ee994c3757ad280bc34/participants/p1/games/g1.jsonl": {
+      "bytes": 1715,
+      "sha256": "9de5653918a6790829da6bae231202aa0a2c6135cbdf55bab3955d167b55c5ab"
+    },
+    "extended-failure-audit/test_real_s02_rejection_keeps_0/runs/run-e3f017eebc7c4ee994c3757ad280bc34/participants/p1/summary.json": {
+      "bytes": 754,
+      "sha256": "e698ead977b53fcd08e40420180cd1b09880fc40c083ccee95bda90ff6a3a161"
+    },
+    "extended-failure-audit/test_real_s02_rejection_keeps_0/runs/run-e3f017eebc7c4ee994c3757ad280bc34/summary.json": {
+      "bytes": 804,
+      "sha256": "d9ffc64267a7060771bec9b6982bca14f9ae134dff79f11a71f108e7a6ef4b2c"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/lifecycle.jsonl": {
+      "bytes": 13611,
+      "sha256": "332abb5bda32775891687b8854bf467132f248a8825a9cb4688af71618197803"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/manifest.json": {
+      "bytes": 12985,
+      "sha256": "66f24b8b1a647b289de3d2e653b56f7ca0ff609151070764adfc70e681a22424"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/decisions.jsonl": {
+      "bytes": 585097,
+      "sha256": "7a2e737b8beda055d1520b6ff016b9527dbcbecdd1409453984b64bfb4e355e4"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/games/g0.jsonl": {
+      "bytes": 1145,
+      "sha256": "a3eeb3a3f5d6e0d218b9683466e07c4579bf25a63469865c3ac7c685ca140421"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/games/g1.jsonl": {
+      "bytes": 1145,
+      "sha256": "ac78075aa59958672f19f636e3e442a453867974ad5c12bd58c4e3c65c6b30ff"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/games/g2.jsonl": {
+      "bytes": 1145,
+      "sha256": "10f76138ee2bc31b342308add287b58ecd414a2bd08b798f16e86fa773bc9f66"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/games/g3.jsonl": {
+      "bytes": 1145,
+      "sha256": "879034b16c7e2a226eea65e6d389c8b5d8e503c3d8f07335dc2d29c17d55822e"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/games/g4.jsonl": {
+      "bytes": 1145,
+      "sha256": "20c576e6251b5b3414240fb742714a25306a5237c15dca283b5f16ff6edaa271"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/games/g5.jsonl": {
+      "bytes": 1145,
+      "sha256": "3a8ff8512e8f51e3c24918fbd1751d7584e8d12316da4f9d41b3a13e02373154"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/games/g6.jsonl": {
+      "bytes": 1145,
+      "sha256": "2fa4d9b277c1d326a4948fa230f4ebb7d99d74732ef9341a268f5f3392472f0e"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/games/g7.jsonl": {
+      "bytes": 1145,
+      "sha256": "5e24510a2af8972033c9c2d2a7d885f4aaa2b7e25eaf3256bb1f850b5b4c2e06"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/games/g8.jsonl": {
+      "bytes": 1145,
+      "sha256": "c7deec80677aa9444b04beaf8e3fb7b164345c5a433af05012f02aa63dcf7920"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/games/g9.jsonl": {
+      "bytes": 1145,
+      "sha256": "b763905a8bb25cca3d8138d60970b86a0528aee2ca39b0d853ee2ddc7b476c0d"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/participants/p1/summary.json": {
+      "bytes": 1133,
+      "sha256": "3807c973b96e14b060b2c1867019b87f1c8df7946c9d2dd6b23e5925c8e07236"
+    },
+    "extended-failure-audit/test_ten_simultaneous_games_us2/runs/run-3e74bf82383b4e7b80bf4fd90fb21968/summary.json": {
+      "bytes": 1184,
+      "sha256": "39276905ef661fcb1a877eda1866e5574f56c0647d254ae375bc05fe918a1010"
+    },
+    "extended-safety-tests.log": {
+      "bytes": 8233,
+      "sha256": "3d16a44af669d5ba2ab576c8f9ddab6e1e992eef73ac7d9f51822318f0692586"
+    },
+    "extended-safety-tests.xml": {
+      "bytes": 9713,
+      "sha256": "44768d393120e5e1b6f2dd4b588323f821683b13de495ee91c04a26a253811a5"
+    },
+    "final-config-checks.log": {
+      "bytes": 49,
+      "sha256": "c0be6a9c359bd511d9f639be43256d4f7eac95d5cd2c50ef554a55a3cd968bad"
+    },
+    "final-contract-tests.log": {
+      "bytes": 114,
+      "sha256": "44783166ebfb300f91ed963f63f35f49fb2a7678bf7075f00527aae149f5a9de"
+    },
+    "final-contract-tests.xml": {
+      "bytes": 9245,
+      "sha256": "812236d8a4627b15bd61441c0b730926789097d52e0d1de729efb35a5261c7b6"
+    },
+    "final-freeze.log": {
+      "bytes": 997,
+      "sha256": "15672036f280a87bcfe1027625dd4db5e7b2280f85f55a739e14a96bc51821c7"
+    },
+    "final-rejection-checks.log": {
+      "bytes": 38,
+      "sha256": "23fc40d226126d1d123d63a47811c1540f56a1e9e676a08d49d23764233c9d0b"
+    },
+    "initial-candidate-packages/prebuilt/vip-s02-bounded-d1-free-v7/manifest.json": {
+      "bytes": 25411,
+      "sha256": "93116662ca96914e61cc55dbf0c6bd846ce5ddceca6932159290dc850912d73e"
+    },
+    "initial-candidate-packages/prebuilt/vip-s02-bounded-d1-official-tournament-v1/manifest.json": {
+      "bytes": 25449,
+      "sha256": "197e3370d52aaa59f3c523184e30b56407fb6d2d17323d996c6494a43c877933"
+    },
+    "initial-candidate-packages/prebuilt/vip-s02-bounded-d1-test-tournament-v1/manifest.json": {
+      "bytes": 25437,
+      "sha256": "5a28b25b196523bb3d00c77f7eca0d48005fa81a6062f64271f0f2b668327c4a"
+    },
+    "initial-candidate-packages/prebuilt/vip-s02-bounded-d1-testroom-v9/manifest.json": {
+      "bytes": 25412,
+      "sha256": "9c380aea3dc77e5adcdc63e7b328672eb346585a25a856ea57b06907addf0a23"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle0/runs/run-94c568a4d6f04e0f8fd329bc63a8697c/lifecycle.jsonl": {
+      "bytes": 15678,
+      "sha256": "fe6d3fea86959fa68e910b0fa2574d76aabb47d65f938bebea0b64f9abf5f009"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle0/runs/run-94c568a4d6f04e0f8fd329bc63a8697c/manifest.json": {
+      "bytes": 13058,
+      "sha256": "b62d054388e2348222a7df24a78b0d3053b7fc8c195fbef4ab27d4f469b2ab08"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle0/runs/run-94c568a4d6f04e0f8fd329bc63a8697c/participants/p1/decisions.jsonl": {
+      "bytes": 4488077,
+      "sha256": "2e3c93c5ad2dd2b9bc09321161e212a9d6486ce757939487b646337f76e730a6"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle0/runs/run-94c568a4d6f04e0f8fd329bc63a8697c/participants/p1/games/g1.jsonl": {
+      "bytes": 453,
+      "sha256": "cf1542e3c40ead3603c24e5437f8689251ff96b39dc055271082361d2229368f"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle0/runs/run-94c568a4d6f04e0f8fd329bc63a8697c/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "18e5fdd7368dfa3e7a18b889af06c2ea65f509ede4f76eab43d377348f94b62e"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle0/runs/run-94c568a4d6f04e0f8fd329bc63a8697c/participants/p1/games/g4.jsonl": {
+      "bytes": 453,
+      "sha256": "2f8b7392fc5a8ce1a643419dd34ee78748554a3356f02b8e90b3c0be6eace737"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle0/runs/run-94c568a4d6f04e0f8fd329bc63a8697c/participants/p1/games/g5.jsonl": {
+      "bytes": 453,
+      "sha256": "e49b035e989272c8efd5b37a94cd538d906032e73c396668c74c9d6fd0ed778a"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle0/runs/run-94c568a4d6f04e0f8fd329bc63a8697c/participants/p1/summary.json": {
+      "bytes": 850,
+      "sha256": "6a0babc7f0c6aa049af6de3a715f90c40921dc683fea4924a8c223b677a0bd40"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle0/runs/run-94c568a4d6f04e0f8fd329bc63a8697c/summary.json": {
+      "bytes": 901,
+      "sha256": "b262d6fa8ad2c806f950b570b64f4b6d2b7e59fd0730f008a17f0d52f0d25dd4"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle1/runs/run-5e2e50c5a5554292995bb84a03549eb9/lifecycle.jsonl": {
+      "bytes": 15678,
+      "sha256": "c853d5ce31722b6360fe5779b81b20532af1f4d41229b54c6cb71071e12d94dd"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle1/runs/run-5e2e50c5a5554292995bb84a03549eb9/manifest.json": {
+      "bytes": 12984,
+      "sha256": "153df7e21812f9171ae0e81274aaff2a44ddfdb38a261efd570ae3df8032bdc7"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle1/runs/run-5e2e50c5a5554292995bb84a03549eb9/participants/p1/decisions.jsonl": {
+      "bytes": 4488058,
+      "sha256": "b95377c55c7967ee3bc58390efaff205d80f31f37617406ad686ab7899fbfc69"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle1/runs/run-5e2e50c5a5554292995bb84a03549eb9/participants/p1/games/g1.jsonl": {
+      "bytes": 453,
+      "sha256": "c296008f3f23a8a7d4aeb42062c83e495c6b31c7f529beaf28671586c33102da"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle1/runs/run-5e2e50c5a5554292995bb84a03549eb9/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "69a663583cd46c22b787e696f98e3db25c362783d793cbd0d68fbd5bb6fa5b53"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle1/runs/run-5e2e50c5a5554292995bb84a03549eb9/participants/p1/games/g4.jsonl": {
+      "bytes": 453,
+      "sha256": "036dc010de10c0c20ddb8aac09856fdb6a8192a5983b2f6f798fa45f792f447d"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle1/runs/run-5e2e50c5a5554292995bb84a03549eb9/participants/p1/games/g5.jsonl": {
+      "bytes": 453,
+      "sha256": "deafafdc1c88652d2bc86a67d2a25b4a53661a2d33a50b8758ea285a5ebae8f1"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle1/runs/run-5e2e50c5a5554292995bb84a03549eb9/participants/p1/summary.json": {
+      "bytes": 850,
+      "sha256": "f78729acc1e2b734026991c3f146a05d566c8fe753fb09828fca775043409ff1"
+    },
+    "initial-failure-audit/test_real_tournament_lifecycle1/runs/run-5e2e50c5a5554292995bb84a03549eb9/summary.json": {
+      "bytes": 901,
+      "sha256": "cb3360cc171c6e26d918da9679e90f075e1299dc4d3cbbe5a15a21f53b81ead8"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/lifecycle.jsonl": {
+      "bytes": 14913,
+      "sha256": "48b2ebbad0916cc981f1010b48c16ff05eb520d3e1d55e33174eb8f31cdce88f"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/manifest.json": {
+      "bytes": 12985,
+      "sha256": "32d81a1d62e248d4f78b6b98cb91e2a2ff826e969256fb401f262bc4c6f8fa14"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/decisions.jsonl": {
+      "bytes": 11121000,
+      "sha256": "32deb4a202bb25816025b4aec6e9cf11b0e5c7f1dadc39eae96c7df6ed0ec0b1"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/games/g0.jsonl": {
+      "bytes": 1138,
+      "sha256": "69743d15674e561c7ebccaa9b7e31292ebe6e0f5be24424638ab0e11ea5dae89"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/games/g1.jsonl": {
+      "bytes": 1138,
+      "sha256": "6e3e46232f998c9fcb9d7ca4a1885bdee08d45c1df7dca2664a9cad0348f8238"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/games/g2.jsonl": {
+      "bytes": 1138,
+      "sha256": "9e03e7c1be73cb7f6a7cd36d98ba279955aa1fcb56128a9fe5054f3017d5e887"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "4efab4151d42c529b536735370b43202b3aa0353ed6a4df79382bdbd455cc46d"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/games/g4.jsonl": {
+      "bytes": 453,
+      "sha256": "162f1003ca933ce0ce4688f3ae6480a178325a31b20e2b574172e4375ef7dafa"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/games/g5.jsonl": {
+      "bytes": 453,
+      "sha256": "d7b24b55b91da1c4b5154caaf4032328f0fd414f81d5e95ade9aeafa806f91b3"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/games/g6.jsonl": {
+      "bytes": 453,
+      "sha256": "2697b4bb0334dd38ba786f6fb678b742b1e0c87cfe6e81d1f681de7abdde8cc8"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/games/g7.jsonl": {
+      "bytes": 453,
+      "sha256": "5f689cddfaac50be3d0bd59391c79e586ffe16ed2d8e94f0049ad1489ad0cf5b"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/games/g8.jsonl": {
+      "bytes": 453,
+      "sha256": "42870f7be5780c9eb48a5e8fe83e078b47c940bbb3875dea3217dfcaa49201e0"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/games/g9.jsonl": {
+      "bytes": 1749,
+      "sha256": "95df91ff3e38097cb4be260aa2b9f999f5156b9f968f29218493d0022e452dc1"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/participants/p1/summary.json": {
+      "bytes": 1129,
+      "sha256": "57458869065082ee2cbd071b92cb36f11297186dd2034ecfbe5e48653464d5be"
+    },
+    "initial-failure-audit/test_ten_simultaneous_games_us0/runs/run-34d881a47b71466fa282f4d6ee793040/summary.json": {
+      "bytes": 1180,
+      "sha256": "6b0e59dcdf9ee849a8182d237b264f24dccc176982d365419711226c921748c3"
+    },
+    "initial-tests.log": {
+      "bytes": 17207,
+      "sha256": "a7aa5f97ceec2ba2ff2bec513ff38257e475d1fc4e3228e4c43459c175900f0c"
+    },
+    "initial-tests.xml": {
+      "bytes": 25229,
+      "sha256": "dec480001abbdcc44e289f39ebf1767cb49775e6f20c251257616f80a91c5deb"
+    },
+    "launcher-final-tests.log": {
+      "bytes": 114,
+      "sha256": "dcefa4951a5031e66ebeb881da0f80ec6f718ec0aafc3fe070e62b021cc8435a"
+    },
+    "launcher-final-tests.xml": {
+      "bytes": 9513,
+      "sha256": "4158603fbc82f08df00b3c88fdd873d4bb014ffa61b0690395ce1c78c5799426"
+    },
+    "lifecycle-regression-tests.log": {
+      "bytes": 195,
+      "sha256": "73b0e3ef37cec56f8729e7a47411a436dd409889c18ba659403f3113942dabbc"
+    },
+    "lifecycle-regression-tests.xml": {
+      "bytes": 20479,
+      "sha256": "52738e1081ca08e4a99a8874ec2cef4f88f2bf5ec6b40e973b5ae94a374e1cdb"
+    },
+    "originals/UBIQUITOUS_LANGUAGE.md": {
+      "bytes": 67542,
+      "sha256": "ef7dfe9719d22917fe8dd483479118ee085c35054a64d457a70e7a5bb53c760f"
+    },
+    "originals/doc/architecture.md": {
+      "bytes": 135671,
+      "sha256": "fcbb7b816eecd6c1fe673d8bdd9590b3bd308fcf7963835b20f64d481215da94"
+    },
+    "originals/doc/hangma-ai-bot-technical-plan.md": {
+      "bytes": 160552,
+      "sha256": "132c0b2076817f87fa75799f06d3a67141daa5f5b75a92df35151874066834a3"
+    },
+    "originals/doc/implementation/interface-contracts.md": {
+      "bytes": 189063,
+      "sha256": "f21d7759183ac7c8a4d9f75cff753357d66323730e4faaf1b67565f5840f827b"
+    },
+    "originals/doc/implementation/strategy-catalog.md": {
+      "bytes": 11275,
+      "sha256": "1c8accc2861799c0f64c8afb85733f6d99eb104eb874a4ff48dc2e29e11668c3"
+    },
+    "originals/scripts/run_test_room.py": {
+      "bytes": 37092,
+      "sha256": "19a23e096a4b59e1d2b93f516c65e803173258629c8064f3b96d25e12756f8ad"
+    },
+    "originals/src/hangma_bot/application/decision_loop.py": {
+      "bytes": 45258,
+      "sha256": "80337d662df5e1de4f460333b213630f9d7ecf2f56b157e400f4659ca408315d"
+    },
+    "originals/src/hangma_bot/bootstrap.py": {
+      "bytes": 89235,
+      "sha256": "d6ee4fb26c420f00c878873f18e5c3f836523ec320334a9496a8bcd8dd4b4d5c"
+    },
+    "originals/src/hangma_bot/policy/route_vip_heuristic.py": {
+      "bytes": 37065,
+      "sha256": "ec92ece74a2c44fa3cff31824bc51bca1abb4db63e98552a634cd9b739a26da0"
+    },
+    "patch-check.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "pre-launcher-freeze.log": {
+      "bytes": 997,
+      "sha256": "3a2fc35a031fe22cf5a62d21fd16344543b8610d4b80e432af3286d9a7b7b437"
+    },
+    "pressure-final-tests-002.log": {
+      "bytes": 114,
+      "sha256": "c13b8722e8e7657aa9e80c6b8ac9f19aa81122eaadaedfb7bcaf2071a9c8955e"
+    },
+    "pressure-final-tests-002.xml": {
+      "bytes": 1423,
+      "sha256": "4d89f8a9e15faf8f4f28ce9ea0ffc8026bda49b94f6a8a6889f4347dc9633cd1"
+    },
+    "pressure-final-tests.log": {
+      "bytes": 7829,
+      "sha256": "5dd6284b5b0e08f8650d2198d48654a884a2c8a41b5825437b2d6ea79c5fecf6"
+    },
+    "pressure-final-tests.xml": {
+      "bytes": 8328,
+      "sha256": "6e2c2ccda982a3026fc2fdbe858d665a919d3c6cbbf3da60426738391867db59"
+    },
+    "refreeze_candidates.py": {
+      "bytes": 2829,
+      "sha256": "abd461ef8e4fd0c132debf1729b1c76dff7f48bc99e1736c791e930885da115d"
+    },
+    "rejection-checks.log": {
+      "bytes": 38,
+      "sha256": "23fc40d226126d1d123d63a47811c1540f56a1e9e676a08d49d23764233c9d0b"
+    },
+    "retry-contract-tests-002.log": {
+      "bytes": 98,
+      "sha256": "7e99ad121c29e27018af2e231311a0ad6a29e9e32a6f9e02434023097dcdfd4f"
+    },
+    "retry-contract-tests-002.xml": {
+      "bytes": 1630,
+      "sha256": "721107db00e4cd4ee18cc44ecea43ebeca7b9ee8d6beb95a52257699c93f6a84"
+    },
+    "retry-contract-tests.log": {
+      "bytes": 599,
+      "sha256": "709c11f0bda2ae087db106cb1c8cb08fc65218cd862204a37851169bb4e2e552"
+    },
+    "retry-contract-tests.xml": {
+      "bytes": 555,
+      "sha256": "088a65ad34c9cd39514766e77023bf05144e1b927d531b426e3aca2f311eae55"
+    },
+    "retry-fix-tests-002.log": {
+      "bytes": 4141,
+      "sha256": "cbab0e5f7a3977cc3028b73701e2e3776be80c66632af66c1b349513f79925e0"
+    },
+    "retry-fix-tests-002.xml": {
+      "bytes": 4811,
+      "sha256": "3189f67e8bacd555532f2fb9731d450b9b6bc53f0a497e6d20d3f4b8ceddf6b3"
+    },
+    "retry-fix-tests.log": {
+      "bytes": 4141,
+      "sha256": "e962074b962d196a9093008f44e7f481baa6033efe8620adbc52da14e94e1192"
+    },
+    "retry-fix-tests.xml": {
+      "bytes": 4811,
+      "sha256": "5a7836de8f38f88e234ce377fe82b22190c98957e72507a53954b59d488bd455"
+    },
+    "safety-tests.log": {
+      "bytes": 180,
+      "sha256": "6d80881ce2cfdd3b8ecf7ce2cb6e598abc5e2837534c6c84460871d3731455a2"
+    },
+    "safety-tests.xml": {
+      "bytes": 15955,
+      "sha256": "32dd6c9771d1db4a30c003bc183afbf5713ea2e40698bae463974d65e002005c"
+    },
+    "synchronized-pressure-tests.log": {
+      "bytes": 6506,
+      "sha256": "5b50d0d2c40b62bced8b53c19ad49711dfd11dec23fa16c3fb3e0760d8d86d9d"
+    },
+    "synchronized-pressure-tests.xml": {
+      "bytes": 7088,
+      "sha256": "239bfa5b4791f666cff52f05a7652d5fcea1a7662a97e5c61cf83c988b759cad"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_0/runs/run-4fe7f07b771548c0a0df317eb255f915/lifecycle.jsonl": {
+      "bytes": 2919,
+      "sha256": "84b6c44030ad8a310348ac3cf359d63496f779d99bc90751c7895ab9ec5cc880"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_0/runs/run-4fe7f07b771548c0a0df317eb255f915/manifest.json": {
+      "bytes": 13167,
+      "sha256": "7632547b8cf531ecb174e90f62ced9ff0bbfa203e50c22d5544d0f4f8b8be522"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_0/runs/run-4fe7f07b771548c0a0df317eb255f915/participants/p1/decisions.jsonl": {
+      "bytes": 2239206,
+      "sha256": "5578933a7470162b5606fa19bbda4fe303cbccc002ccfaa5e8688da6a8ddcf2f"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_0/runs/run-4fe7f07b771548c0a0df317eb255f915/participants/p1/games/g1.jsonl": {
+      "bytes": 1092,
+      "sha256": "14a629a16db8239a62ac32140adddfc0832f73860a1f6f0b456db46d1f20eb82"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_0/runs/run-4fe7f07b771548c0a0df317eb255f915/participants/p1/summary.json": {
+      "bytes": 754,
+      "sha256": "92228c5da17f0a6d2212eadb749ec80cc0a73a0a9c1ca3d8326bc2b70d0e7442"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_0/runs/run-4fe7f07b771548c0a0df317eb255f915/summary.json": {
+      "bytes": 804,
+      "sha256": "068819c652324db2c8760530f78797eb7416d9060f8cc6070232296455005dae"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_1/runs/run-053891ee26554261926a20eb14d6ebe2/lifecycle.jsonl": {
+      "bytes": 2919,
+      "sha256": "6f8b6d1fd441125e7ab0d09722e659ba7e02bd103e391ba2b42c1a861fb36e63"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_1/runs/run-053891ee26554261926a20eb14d6ebe2/manifest.json": {
+      "bytes": 13167,
+      "sha256": "ba729a8f562b5bd46dd9b7a936dff464529c13e10801b0d5b75a3f1dc295409c"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_1/runs/run-053891ee26554261926a20eb14d6ebe2/participants/p1/decisions.jsonl": {
+      "bytes": 1121461,
+      "sha256": "7091b71c7e133ba5f81778eb8e8a223e9496c6a232906e062e548e3bb3e4bb4d"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_1/runs/run-053891ee26554261926a20eb14d6ebe2/participants/p1/games/g1.jsonl": {
+      "bytes": 1065,
+      "sha256": "d3d744469ac4ca9b03990036eda4224d57918b1984a339339d61717091861d8b"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_1/runs/run-053891ee26554261926a20eb14d6ebe2/participants/p1/summary.json": {
+      "bytes": 753,
+      "sha256": "5175028c030bc3f5fb0abca0b508bdaed9731431e1f0c93217aaaeb46ecf4670"
+    },
+    "test-runs/final-contract-001/test_real_s02_rejection_keeps_1/runs/run-053891ee26554261926a20eb14d6ebe2/summary.json": {
+      "bytes": 803,
+      "sha256": "9c79093ea0c5b0ff370fe697ec42882fc90d9f6c84725ef60ce7fe810fca2ac9"
+    },
+    "test-runs/launcher-final-001/test_public_factory_scores_equ0/runs/run-c50843a429bc4125a6cac8e528b49bc4/summary.json": {
+      "bytes": 324,
+      "sha256": "9b6f3839a790c513e6f852236b8488f845f0c4e3d2e0bcfd758a7d2fbfd8cf18"
+    },
+    "test-runs/launcher-final-001/test_public_factory_scores_equ1/runs/run-dd7da75d3e2644ffae92f0a3d5ba338f/summary.json": {
+      "bytes": 324,
+      "sha256": "d68a5fdb4ed7774d19b20a8c0576176e07593b7c195899ae245a7172d8590008"
+    },
+    "test-runs/launcher-final-001/test_public_factory_scores_equ2/runs/run-0a950b8b34ca400191f2e60a5b626506/summary.json": {
+      "bytes": 324,
+      "sha256": "9f109c09c1627814dced216aba55dc0b804090d9c0bdfefd65abef415fe58757"
+    },
+    "test-runs/launcher-final-001/test_public_factory_scores_equ3/runs/run-a1b9067bf2d4422db33702ba6b258f35/summary.json": {
+      "bytes": 324,
+      "sha256": "50d0b537cfb516c05bac6c5dfb7faedf60ae9257059a46e18065665fdc25dab1"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_0/runs/run-9602c5de724543a9a56b79236dcabf8e/lifecycle.jsonl": {
+      "bytes": 2919,
+      "sha256": "7b723ac4abe940ecec2c5d7c318ffed4e6fd99a38c46524c385d2e1fcabd9f5c"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_0/runs/run-9602c5de724543a9a56b79236dcabf8e/manifest.json": {
+      "bytes": 13167,
+      "sha256": "91732cf684c375af2539a46d8d70246df048af5f7815bd1b91ab01d61f1303b6"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_0/runs/run-9602c5de724543a9a56b79236dcabf8e/participants/p1/decisions.jsonl": {
+      "bytes": 2239209,
+      "sha256": "4643ab77d884ab94e5ea0cfa90a0670fba1252e0e5459e44d10101533c7fa681"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_0/runs/run-9602c5de724543a9a56b79236dcabf8e/participants/p1/games/g1.jsonl": {
+      "bytes": 1092,
+      "sha256": "bebe5cb18708f4fdf562aae24d3a4d6e8034441fe95834a6b2343bb680c4e5b5"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_0/runs/run-9602c5de724543a9a56b79236dcabf8e/participants/p1/summary.json": {
+      "bytes": 754,
+      "sha256": "7fa309d73271aabe478d49ef0acfce9b0a2092c62d36b6f836b16dde17cfde44"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_0/runs/run-9602c5de724543a9a56b79236dcabf8e/summary.json": {
+      "bytes": 804,
+      "sha256": "715ee1f4a8371f3e26ba6dee26df6ecabd3c12da62207cb157b46a39034c1543"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_1/runs/run-c432f8faf8f94021b48ab9a600461041/lifecycle.jsonl": {
+      "bytes": 2919,
+      "sha256": "2a77d60a30bef3d3a9348b3c017e06210bd939abbcb1ddc9b50cf2af5c6bf7e2"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_1/runs/run-c432f8faf8f94021b48ab9a600461041/manifest.json": {
+      "bytes": 13167,
+      "sha256": "62d472680563b0bba58649bd93b514868ee1c1695677496a5d391b81c35fe66d"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_1/runs/run-c432f8faf8f94021b48ab9a600461041/participants/p1/decisions.jsonl": {
+      "bytes": 1121468,
+      "sha256": "265f1b42ef98351974ea9684685ac13b4dfc1abeb196a821650b42516cb69122"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_1/runs/run-c432f8faf8f94021b48ab9a600461041/participants/p1/games/g1.jsonl": {
+      "bytes": 1065,
+      "sha256": "97ee38ef743fb3b5791945a40049b439d5bf49802dcb7e836aaae62651e14f53"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_1/runs/run-c432f8faf8f94021b48ab9a600461041/participants/p1/summary.json": {
+      "bytes": 753,
+      "sha256": "65259ba1b386253cc9d9a9afc36c71a8253cd27423b50e97982f98c4da66fcf3"
+    },
+    "test-runs/launcher-final-001/test_real_s02_rejection_keeps_1/runs/run-c432f8faf8f94021b48ab9a600461041/summary.json": {
+      "bytes": 803,
+      "sha256": "c81d22236a7b9021cfbbb1d2cff3c12bb3fca3965faea35d1510637fb743b653"
+    },
+    "test-runs/launcher-final-001/test_room_successor_launcher_r0/public-room.json": {
+      "bytes": 844,
+      "sha256": "ea66a672db6fd17b5bedadddd4bc558f0be739cf76a8f736a86e4ecdcbdbeb30"
+    },
+    "test-runs/launcher-final-001/test_room_successor_launcher_r1/public-room.json": {
+      "bytes": 1334,
+      "sha256": "c691cf21c5c7c355c6ead2f85c60d72ca0d599ae5742840819f3c930991d42d4"
+    },
+    "test-runs/launcher-final-001/test_room_successor_launcher_r2/public-room.json": {
+      "bytes": 1330,
+      "sha256": "81f1d2fa1a27d359022aee8f277e86224a18ac1362935edc62a3aa5ae502f723"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/lifecycle.jsonl": {
+      "bytes": 15347,
+      "sha256": "1dab2b9ff667cbd3b8b8434785e3f5d0c28dcb1db658b0340bfac2084a5b6b40"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/manifest.json": {
+      "bytes": 13094,
+      "sha256": "e965661f3c403a535d3b6b8c96a56cfe38da3e0636bb33178c77a59134b6483e"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/decisions.jsonl": {
+      "bytes": 5736087,
+      "sha256": "4704758a787665a06e4963aa877a0dbf6ce3f2feee94162eb226cac059fd4602"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/games/g0.jsonl": {
+      "bytes": 453,
+      "sha256": "95466495be8fa34908f8872e407a078a250cdd9d4d8cefa6f35236194d07e325"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/games/g1.jsonl": {
+      "bytes": 453,
+      "sha256": "408a87f3eb85f6c682fa0972392184eabda594837b36e99fd3490e189bbcdc15"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/games/g2.jsonl": {
+      "bytes": 453,
+      "sha256": "91a12e9e0c0de3bf644387556bab148753c41a511c4414c698117b033826e3d4"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "688c9b8dfcc42ac6f9b5f3edd02403110d6c255e2f469b6a9052413b4cd323ff"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/games/g4.jsonl": {
+      "bytes": 1194,
+      "sha256": "486e004ae8a25d585dd9108e47c4bad7527ca1f7f2818a4e82fc315770e87a4a"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/games/g5.jsonl": {
+      "bytes": 1194,
+      "sha256": "3b23173fa590865d31ecba02cb010840a44a7557f3e9ff362f8ca13d23d03250"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/games/g6.jsonl": {
+      "bytes": 1194,
+      "sha256": "ec8a11465baa7cb22a2d6bff93dc927632e247d3be1fdd5c325c9fb2f1da2583"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/games/g7.jsonl": {
+      "bytes": 1194,
+      "sha256": "c37dd1298d173a38d6b495226d710c4502692db8202c4ff1734fbe44cf16740b"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/games/g8.jsonl": {
+      "bytes": 1194,
+      "sha256": "d049747fe27d08ab71ff167b4a87e2f741fe61d11b308a17ced5e1e528924f6d"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/games/g9.jsonl": {
+      "bytes": 453,
+      "sha256": "1923349a09a3669867b32fc8fca08bfc1f3dcd26fa585999abddd012b9b17820"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/participants/p1/summary.json": {
+      "bytes": 1132,
+      "sha256": "94a9d12977a3305a4e645b0e236e103b44d44f5a6d528d3f24cc90b18e6c99f6"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us0/runs/run-cc3eb3ed92094f95b587e32177769413/summary.json": {
+      "bytes": 1183,
+      "sha256": "90c86bc09db244e48f46a86a741fb0b5f21f882895dbe895be5afb355d7b2e5e"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/lifecycle.jsonl": {
+      "bytes": 15346,
+      "sha256": "c61d3583e2f3a09f3353551df0538a7d63a1231d1691ade0a28e571ab088f73b"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/manifest.json": {
+      "bytes": 13094,
+      "sha256": "c67b6263e375cb8458cf3451ed6a81232f51f37a077e8a221e96e5135a0315b8"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/decisions.jsonl": {
+      "bytes": 1777,
+      "sha256": "e683fb43111137322f0536caa38cdf4285c354f2df372174a38a4de1234b793d"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/games/g0.jsonl": {
+      "bytes": 1104,
+      "sha256": "94e4717e7b474d0fdfab769d4e0bdc0ae4597749b01eab799cffc5023a5642eb"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/games/g1.jsonl": {
+      "bytes": 1104,
+      "sha256": "d02fdff207d3f6ac3a0e1a0c81c0e2cff215831949ea32b4e322579a4d0708e8"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/games/g2.jsonl": {
+      "bytes": 1104,
+      "sha256": "40005853784e7f808ff121f0c7cfffc673da53e404a70fcb4646b67351cc4193"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/games/g3.jsonl": {
+      "bytes": 1104,
+      "sha256": "d9567b30430e8513adfddd29395f299fc80f7c938a9ea9d51d8689fe038482da"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/games/g4.jsonl": {
+      "bytes": 1104,
+      "sha256": "ff849fa1824ddaa87cd59f6fc6884c82e472b4ecd8136cd3fe9d03b68317d7e1"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/games/g5.jsonl": {
+      "bytes": 1104,
+      "sha256": "581034bbb602c2c9b690a21d31f4f79fbd9cb33399b7653b00df3e10dfd24402"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/games/g6.jsonl": {
+      "bytes": 1104,
+      "sha256": "604d5cd63565b065df3465650ef3051d659b057cdb05c1ed94f8644d091e3e4d"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/games/g7.jsonl": {
+      "bytes": 1104,
+      "sha256": "a9eea6bc40ab75fb77466868be565272085dbebc81eeed56e16b252100191834"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/games/g8.jsonl": {
+      "bytes": 1104,
+      "sha256": "5fc858cc1cee2602475586da6822219811e92c2ed514e1d9a705731ac7edd583"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/games/g9.jsonl": {
+      "bytes": 1104,
+      "sha256": "b941638d75b35b7e2e72fdba556e551b977d6d276b9a5dff4666ea0d97bb2ad9"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/participants/p1/summary.json": {
+      "bytes": 961,
+      "sha256": "ace5f0499fa9567693cd5f5ed4b1fb832a266db9452d7afabb9f0aec383108ba"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us1/runs/run-6ea837eeaad54d0daa0d360ba32874c6/summary.json": {
+      "bytes": 1012,
+      "sha256": "6018372cf385a32b935748286ccd195a6f54337f81afb5144911e7e0c1ddcc9e"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/lifecycle.jsonl": {
+      "bytes": 15780,
+      "sha256": "9a53a16a7ac7bb9129e95f9ea0d1cecf0055b16c5a1b551bfaf6a17fb4fde2bc"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/manifest.json": {
+      "bytes": 13094,
+      "sha256": "040f026017a0c55a9d44fe7ee23557efaf7de63587ae5cbd141f3b74ce0ede2b"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/decisions.jsonl": {
+      "bytes": 1777,
+      "sha256": "564bdbf206883ff8ff874a134dde4c7dca06fd9144d5e5869173fde186ac05ec"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/games/g0.jsonl": {
+      "bytes": 1104,
+      "sha256": "7e1f2629dbe95d55ee13efd6e046e8ae18b09c15819668253aeeeeeb29f3ef7b"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/games/g1.jsonl": {
+      "bytes": 1104,
+      "sha256": "a08a5e2774ab87aede8a8cbb05d74ff2e9a58dbb04d97a5bb18ad90751ee0bde"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/games/g2.jsonl": {
+      "bytes": 1104,
+      "sha256": "41a56269f6c9e9abcf623e43b98830b75f8a9642117e0d17c2184ec1fb6a5dfe"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/games/g3.jsonl": {
+      "bytes": 1104,
+      "sha256": "667693e654a6f1f75c1b5db38e21b9f9e1cf1cd7dba333a83185646390f24b38"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/games/g4.jsonl": {
+      "bytes": 1104,
+      "sha256": "c359e8eb94591ead0990f2c25693beb9eda9872d2276c36fd0ba291673e82035"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/games/g5.jsonl": {
+      "bytes": 1104,
+      "sha256": "dc803456b109f215581060079415257dbc551b24c6a182c231a80c1eb6ea54d9"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/games/g6.jsonl": {
+      "bytes": 1104,
+      "sha256": "9c80c7f021503b906ab4d6411b578ef4b9a026b3453da4452c0dc66d1eca2503"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/games/g7.jsonl": {
+      "bytes": 1104,
+      "sha256": "1b377e8d4af272b55454d66185b4d4226bc4aa115e054567dc860ce20d992b58"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/games/g8.jsonl": {
+      "bytes": 1104,
+      "sha256": "5a265830e5d43124c08aadc47cf8c6a55e3939b590082ad1beec8f7c1a52c72c"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/games/g9.jsonl": {
+      "bytes": 1104,
+      "sha256": "69ea83a2298d4ae87c2cf408fc03b61000d95481e9d93f52c554f59d23fb35a2"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/participants/p1/summary.json": {
+      "bytes": 961,
+      "sha256": "3e04c4e24777e6f78a675a2808f0ae86a70dd8441468e844cb7e5072802bbaa3"
+    },
+    "test-runs/pressure-final-001/test_ten_simultaneous_games_us2/runs/run-d7ef044e507f46be9e5c6ee6b4bbb479/summary.json": {
+      "bytes": 1012,
+      "sha256": "7171b566c4306c4758251065c02337246cd54e7b46c4110c8b4685731d9195a1"
+    },
+    "test-runs/pressure-final-002/test_public_factory_scores_equ0/runs/run-f3e1914ec94545f5b706ebdf66c042e0/summary.json": {
+      "bytes": 324,
+      "sha256": "c208583ddd514b8bf9e5de3dfab69b81e3e2dbccb66ecb6d0e81d9591434ae6f"
+    },
+    "test-runs/pressure-final-002/test_public_factory_scores_equ1/runs/run-87f90ec7906e4b0cb4040ba0e73095c3/summary.json": {
+      "bytes": 324,
+      "sha256": "fd170c435f36f11fd73e243c2eb2ebca74b23651139c19c73ff483725b72789c"
+    },
+    "test-runs/pressure-final-002/test_public_factory_scores_equ2/runs/run-dc7256c447e3426db635747916719e97/summary.json": {
+      "bytes": 324,
+      "sha256": "bb438239f8346dd302ee26018bf906a1a6974f6a8d9a454208b87bf39b13a2b2"
+    },
+    "test-runs/pressure-final-002/test_public_factory_scores_equ3/runs/run-78b6ce57c6054b46aa5c969a5db121a7/summary.json": {
+      "bytes": 324,
+      "sha256": "db0bd6929bcde2276261addc43f0045e218309d515b9e98f29b711457855dab5"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/lifecycle.jsonl": {
+      "bytes": 14913,
+      "sha256": "329c59ccacfc1fa378996097864d77fc855989b99cc7278f1543c47167700855"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/manifest.json": {
+      "bytes": 13094,
+      "sha256": "8091da3d6b44004ad257ad11cdfe3b64ca336f8af0f1c45b7492d906f47da148"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/decisions.jsonl": {
+      "bytes": 5736100,
+      "sha256": "f418f295bf3c3d9233c5d330e47bdf6b92e155d951494fc0e228ecc396dd0d9c"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/games/g0.jsonl": {
+      "bytes": 453,
+      "sha256": "e11d3fdc22c1dd0535aad466f3c61e5fe72d5ee203eb252027c955a306853806"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/games/g1.jsonl": {
+      "bytes": 453,
+      "sha256": "754c3074dce76b7ce76e2b536d285cb0a724fe009371295b489d47aa1059072d"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/games/g2.jsonl": {
+      "bytes": 453,
+      "sha256": "a479c801b5a084483d7fa5e5aa012d453de24ce6cd734d83085a48d2ee22c243"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "8cb383daf4f36e43e1bee61b7a439c3ffd6b9ce088efcd676f7fdfb9e093fad4"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/games/g4.jsonl": {
+      "bytes": 1194,
+      "sha256": "4705b986f1e88cbe26ef1fbe5a0c9905d236501d1ea7ec453fa1718ebda67761"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/games/g5.jsonl": {
+      "bytes": 1194,
+      "sha256": "167a5186b71117cce31fcb47cdc47e5d6287b39a89901543120403ae440d575b"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/games/g6.jsonl": {
+      "bytes": 1194,
+      "sha256": "a2762c4b67e29ae2d61a67589bb0b9e92cbac6c2e0b527783b8501b581d36c01"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/games/g7.jsonl": {
+      "bytes": 1194,
+      "sha256": "be60a07528e53a41590bc7aa4bbda3aa188b0c36589206ad37900ac045634390"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/games/g8.jsonl": {
+      "bytes": 1194,
+      "sha256": "5f23c9ab2fba3892b17bd50501fbe3e36d52d55813c9481eb49cb3084baa38b0"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/games/g9.jsonl": {
+      "bytes": 453,
+      "sha256": "5afa80ec64ccab32b380b207fd290897101ac3474855211616c5d5642fd7792f"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/participants/p1/summary.json": {
+      "bytes": 1132,
+      "sha256": "ab387910f2db2c779ec99201f33db695a5fdd1c6f391f69cca45e841812cd18d"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us0/runs/run-0c183d216e3842bfa5c952497385681e/summary.json": {
+      "bytes": 1183,
+      "sha256": "682dd8ba65916b6d2f29e20f08efd5f701c7b84ca45075aeb73d584d2b59c1b1"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/lifecycle.jsonl": {
+      "bytes": 15347,
+      "sha256": "8e42a4116bc10e7898e14b9d9997ebd45f040a0e3a0f37de21757bf532bb4524"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/manifest.json": {
+      "bytes": 13094,
+      "sha256": "660732fd28cd959177b0bfe8c44c64a265a0431596814d48ffab56558313d806"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/decisions.jsonl": {
+      "bytes": 199316,
+      "sha256": "794e9a935e30f22fee7059c939c32404457970ebb7e0f4f1bd215c480be50617"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/games/g0.jsonl": {
+      "bytes": 453,
+      "sha256": "d190c8887ad801b2e7468180396318a90361bfa49afa4463883831dd885a9bf0"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/games/g1.jsonl": {
+      "bytes": 453,
+      "sha256": "2620e6c5eb0d05296616984940a0813609e3626a407eb92dde8d7697a90b464a"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/games/g2.jsonl": {
+      "bytes": 453,
+      "sha256": "e7466c048e1b627401f72fd7a70ddf28ed394331833f723ac957b946e4f679d5"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "ac8b35d3026b15aff371203c29f083901cf04a934a5b03dc064c76d7c5d79776"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/games/g4.jsonl": {
+      "bytes": 453,
+      "sha256": "12b2359fe9e406c643cfc4f1bd3603f2f00267e633308e7fc23b629db802a60e"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/games/g5.jsonl": {
+      "bytes": 453,
+      "sha256": "4f1b129f4f975b3ca181b88b0e24694a0e9cf384919c3e373be867978d1d3008"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/games/g6.jsonl": {
+      "bytes": 453,
+      "sha256": "6f7470133646e72b6edcf1a5104f97339955e69fe7ed7f94eac86a02ae239023"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/games/g7.jsonl": {
+      "bytes": 453,
+      "sha256": "54448bda2b9978e269628ad7b0f742ed6ddba4b04c8793d76f3b4295c1ee0e01"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/games/g8.jsonl": {
+      "bytes": 453,
+      "sha256": "4159b983f812880758ee1c196a7075261f705f07cb4fb17e1414e4db4b8d85c1"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/games/g9.jsonl": {
+      "bytes": 453,
+      "sha256": "014fa162843e1c3d5d6189ddf0bcd32b45bc237a74890d610afd35abfbebc62d"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/participants/p1/summary.json": {
+      "bytes": 1103,
+      "sha256": "76fa860dc601e14429f0e2f6dee2534b04839a564408ea4e9b1e7b134beb0b7a"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us1/runs/run-f9c71838278e447cb03a7e1df9be1da6/summary.json": {
+      "bytes": 1154,
+      "sha256": "a145e52c0644e5d53f5bdd9ca6b2c2f9252155e72bf425a17f280d1f119993c6"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/lifecycle.jsonl": {
+      "bytes": 15781,
+      "sha256": "69cea94bf731154c72f328917756df2fb6e47634a39a794b8764cb6e750811be"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/manifest.json": {
+      "bytes": 13094,
+      "sha256": "689bfe05e37c5cdb57f4483ffc94a521eccc4cd310cbcc469f5d84e44d3df656"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/decisions.jsonl": {
+      "bytes": 621381,
+      "sha256": "7fbbfcdbbbd403490d8f8451f4afa45a97cf48ca5bf16c4e7aa5b79b5028626d"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/games/g0.jsonl": {
+      "bytes": 453,
+      "sha256": "efd5008781dc728504e095d1a97e47a01c86069e31132aa4e92b42ec6df86ac7"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/games/g1.jsonl": {
+      "bytes": 453,
+      "sha256": "3cb19b143fb22a04c41e38dc6d3ebbea729d09331629fe08374e80805427ac50"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/games/g2.jsonl": {
+      "bytes": 453,
+      "sha256": "9de3ff0798217bc76495156a8204411813ba2da137adc69b2939ecfccd5a2ad2"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "fb4086eb3e26ea2de2936da28638bd5144cbf630cc1642ee62a55a10df36f41f"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/games/g4.jsonl": {
+      "bytes": 453,
+      "sha256": "bd72041f7449a6859183812b09962b12292849b6c4b130f6c9d14bf62eb74fd4"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/games/g5.jsonl": {
+      "bytes": 453,
+      "sha256": "d9b2d4f888805564e1be50097c1e3cb9a9a54774fe9b877a3e4e2e2bc37e89d2"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/games/g6.jsonl": {
+      "bytes": 453,
+      "sha256": "8e43620be8e814e5c4b50399c314a833f10e197e5ac7023a6044c3843cf5c12b"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/games/g7.jsonl": {
+      "bytes": 453,
+      "sha256": "c964b220d57a2b0ce970b0a54e19e7ab905dbd4d260d367d1275b07232afe810"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/games/g8.jsonl": {
+      "bytes": 453,
+      "sha256": "72a871cf827ec3625bbfda4ca1daa717d58e8b225ec9741324715ed17b3c74bd"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/games/g9.jsonl": {
+      "bytes": 453,
+      "sha256": "a6d9622c4d2c1ecba6e60023b5ba24f3b7e18aba5d456b3f28cab694347b7bdc"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/participants/p1/summary.json": {
+      "bytes": 1103,
+      "sha256": "25914fd52ba89d5bc78ec0ac96c6d78e018ea33ff2586bc9e3dbfde353a1289d"
+    },
+    "test-runs/pressure-final-002/test_ten_simultaneous_games_us2/runs/run-7a7bd7735bf84efd9e1e0057b166baae/summary.json": {
+      "bytes": 1154,
+      "sha256": "e108f9477281beccfe61bf50fb11abc131dde3ac1ac70121dec659c675c9189b"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_0/runs/run-676ee39a5eda4ef0b26fae442d465bf9/lifecycle.jsonl": {
+      "bytes": 2919,
+      "sha256": "64f4aa157d509d339b0f39d46f3fa7ce7584256cd3d3de626d63bd87684fb5e7"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_0/runs/run-676ee39a5eda4ef0b26fae442d465bf9/manifest.json": {
+      "bytes": 13167,
+      "sha256": "3430420076c007f267bb82cc96490fbdd252e1ececc1cabe7b206005d8c3a25c"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_0/runs/run-676ee39a5eda4ef0b26fae442d465bf9/participants/p1/decisions.jsonl": {
+      "bytes": 2239205,
+      "sha256": "365008054ac36b3172efc64ca0ea742645c161677c3a317b8a2c15191896c68c"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_0/runs/run-676ee39a5eda4ef0b26fae442d465bf9/participants/p1/games/g1.jsonl": {
+      "bytes": 1092,
+      "sha256": "23b8831b2228a222b8dbf9bfda185191c0cf1f6bce514d2c069db24f05614b8e"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_0/runs/run-676ee39a5eda4ef0b26fae442d465bf9/participants/p1/summary.json": {
+      "bytes": 754,
+      "sha256": "7d14050b9b28c8a446db311c77a3d914649ea4a32cc265681e7059ae53c2c4be"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_0/runs/run-676ee39a5eda4ef0b26fae442d465bf9/summary.json": {
+      "bytes": 804,
+      "sha256": "35a344202db2e1d504ac6b62a06cc84b9cb24a5a4a7ed9bd8bdedf27147aa954"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_1/runs/run-37532f15494146c7b484a23a58e87f83/lifecycle.jsonl": {
+      "bytes": 2919,
+      "sha256": "fe174e5a4cf8c069e95ab5c4d3fd890df87eb7fdce78808f6a80bfdf9bb1ff42"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_1/runs/run-37532f15494146c7b484a23a58e87f83/manifest.json": {
+      "bytes": 13167,
+      "sha256": "705b95f3f4349048df43b30d46c0551ddc54821d1f7dcf85bec3c9a45ecc2737"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_1/runs/run-37532f15494146c7b484a23a58e87f83/participants/p1/decisions.jsonl": {
+      "bytes": 1121468,
+      "sha256": "baf5a1fb97b7829284efaf826be968c2624f7aaf28c6590c2b41bacf79f1d54e"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_1/runs/run-37532f15494146c7b484a23a58e87f83/participants/p1/games/g1.jsonl": {
+      "bytes": 1065,
+      "sha256": "4661d1a19f04e9048229d8be024af0e472c3a8ec7dc25083657aad2bd5f840b8"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_1/runs/run-37532f15494146c7b484a23a58e87f83/participants/p1/summary.json": {
+      "bytes": 753,
+      "sha256": "4c7b8bdf22ffe9d6db351443461948c5ef83caa15db637b83bbaaa7e6df0e320"
+    },
+    "test-runs/retry-fix-001/test_real_s02_rejection_keeps_1/runs/run-37532f15494146c7b484a23a58e87f83/summary.json": {
+      "bytes": 803,
+      "sha256": "088a2b15a90fa820d8907f8651892ed49adf190453a268015a5aa69fea4b5ee5"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/lifecycle.jsonl": {
+      "bytes": 15347,
+      "sha256": "be5755d2ee7b6e0766e9cb7286f3ba4f1a073af751d9f57ce7890f7f484a092e"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/manifest.json": {
+      "bytes": 13094,
+      "sha256": "53a9a7fd3f81052bd7791f0679edc4abe3cf45f0cbc4b83e249e8c5a796d773f"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/decisions.jsonl": {
+      "bytes": 5736103,
+      "sha256": "ddb849c5ce3cab11b7aa6066b949b26bc8a842b777f31ae27362b15ef7718c49"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/games/g0.jsonl": {
+      "bytes": 453,
+      "sha256": "1db5e78f01624a06541ba4ebb56b92f87ad6b6c2cb5f63bb4e183ac04ea5dc58"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/games/g1.jsonl": {
+      "bytes": 453,
+      "sha256": "91962dbf72970197b56509a0206850508c483ac83cc8593a1aaac4b2977868bd"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/games/g2.jsonl": {
+      "bytes": 453,
+      "sha256": "262cc46126cdda176fa70ae39714e5e2739ba2670dd12ddf8b188487974effa4"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "dba0a1916aa671fda02fa6af92f4da81e6b965071d6239dfd9a8760fee515751"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/games/g4.jsonl": {
+      "bytes": 1194,
+      "sha256": "adb5f0b1ba70c90051799d8bda7cfcfb45c3893631f2018fb10cd004c9bdf039"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/games/g5.jsonl": {
+      "bytes": 1194,
+      "sha256": "013928c30112c7da44ebf4f5a69e25c015d38b5199852b662c3ae57aedc35c29"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/games/g6.jsonl": {
+      "bytes": 1194,
+      "sha256": "88fb46563f4d15be358bee2403b790bf0ae12a8f2727ed77e4cf3df0ac84ddb3"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/games/g7.jsonl": {
+      "bytes": 1194,
+      "sha256": "9e451b9f36479548a7c086cf01d57b8610d2aa6663cc4fdb3d7b30955c965702"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/games/g8.jsonl": {
+      "bytes": 1194,
+      "sha256": "7690566faf0ca49717f9b3c1e5e92010dbb23e398c8690d07455f4682ec0db39"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/games/g9.jsonl": {
+      "bytes": 453,
+      "sha256": "86961b290dbd964f6e769abeafa8787a572eeee0a057e2a4d279be5549958e0f"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/participants/p1/summary.json": {
+      "bytes": 1132,
+      "sha256": "af6427e710259f440b95b733feab9f16ccabb9add3af4cb6dcefdf2cdad4a581"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us0/runs/run-36e30a453ea14cb69f58067c9f301156/summary.json": {
+      "bytes": 1183,
+      "sha256": "33cf89df02c6669709d0f64afd8ae462461db3d711cae4e0a2223065d533375f"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/lifecycle.jsonl": {
+      "bytes": 15781,
+      "sha256": "f674f13e81df4c34107f416f1795ebbd35f014b1862df0469aed15309debb5e9"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/manifest.json": {
+      "bytes": 13094,
+      "sha256": "d4f6b3c9f2561ff75e272db9c29722a32556c8caa0c9970ebbb2f9b61f2e9d31"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/decisions.jsonl": {
+      "bytes": 197545,
+      "sha256": "5a0d81845f5c830767cce3c7ef18286db07ea80faf8eff24e4037ab82565aa87"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/games/g0.jsonl": {
+      "bytes": 453,
+      "sha256": "c1428a354f4ab13921e1cf89ca3596e42c58eb7d0f417dc352ad56ce7ac13414"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/games/g1.jsonl": {
+      "bytes": 453,
+      "sha256": "41d0ee74311557440097caf571ef3e17e9a74e63e0741d000285aa11adb20303"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/games/g2.jsonl": {
+      "bytes": 453,
+      "sha256": "b6c44cc20c02583c28099383f4cdd1834dcc6665a7bda7727f1b02df2df4c671"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "60dfc4570a066c133ab74f1d1f3a93105a9be1a4301185a2fadaf47156c85853"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/games/g4.jsonl": {
+      "bytes": 453,
+      "sha256": "6f7b324d9ba9ad8259da531018d16ea7b05b2e36b4859c22c8e097a9994f6541"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/games/g5.jsonl": {
+      "bytes": 453,
+      "sha256": "88e2e06cea60bb1e21ab801be7dbeee43ad5777c85d7adbbe56bfc5ca564ca71"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/games/g6.jsonl": {
+      "bytes": 453,
+      "sha256": "3c33b8ea515941b488dedaa579d599c4b8ff35ab7c71a343fc6d1843057aece9"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/games/g7.jsonl": {
+      "bytes": 453,
+      "sha256": "83b5ba4a7f7739cb828df21ac5406dafa1a903d6f1cbb766999003e423e7510f"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/games/g8.jsonl": {
+      "bytes": 453,
+      "sha256": "56c22c258b304297a6d55ba915c24b90c17fe3c372982bd9243a0bf03749c97f"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/games/g9.jsonl": {
+      "bytes": 453,
+      "sha256": "9991fe232eabe004d9b3bd66f616f4e2ca728fa2d1fc81b3065234a46aeaae13"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/participants/p1/summary.json": {
+      "bytes": 1103,
+      "sha256": "ef2a85157da7d253dff9e3e7ae3556784b22837ea9292e7d7b7445722a0ce1e8"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us1/runs/run-c9e565dec52e4a2e9c9faf38fcacbfec/summary.json": {
+      "bytes": 1154,
+      "sha256": "cdade1857aac070d9266a49433926f3c0e7c0e79eef99c0230ddb15c29592501"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/lifecycle.jsonl": {
+      "bytes": 14045,
+      "sha256": "bb09f93e728800c8979d9469db4ec3c9c9e5f1d1a48a9cf8987a3d4d85a6c04b"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/manifest.json": {
+      "bytes": 13094,
+      "sha256": "bac68bbb1300f56b8078094804622e784b0ded9a36c1c1ae00757ed9c5690380"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/decisions.jsonl": {
+      "bytes": 585239,
+      "sha256": "bb7dab8d355550720639717a8f8c01ac381f8081e2fd57c783687fcdd66be635"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/games/g0.jsonl": {
+      "bytes": 1145,
+      "sha256": "f483ee6f44906bb982e30d2f90cf23d388ddd10bf8bde795f838fd53b058a9f1"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/games/g1.jsonl": {
+      "bytes": 1145,
+      "sha256": "e743822202b9ab911614cae9213a7d50017206aacfae66790154c2998c6b8bc8"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/games/g2.jsonl": {
+      "bytes": 1145,
+      "sha256": "915d3b2f5a8765745a79eb9fe7ebaa7a2b7a680b955662f5c7e5e1793e49bf48"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/games/g3.jsonl": {
+      "bytes": 1145,
+      "sha256": "8a98e77fa3ca3bf336b7acd320889ca07f9bc845d3d6d64d99cdf76bf1672f38"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/games/g4.jsonl": {
+      "bytes": 1145,
+      "sha256": "39d0deb45f462cfe5a1686c79636d10d4e122bcc6a98d0627dc5ba7b79ce8d82"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/games/g5.jsonl": {
+      "bytes": 1145,
+      "sha256": "d7bd6e7afd3098d6557225b5d831a87f10a43bd3f27d748d4a24a40d823605b0"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/games/g6.jsonl": {
+      "bytes": 1145,
+      "sha256": "5ee076b64e91bfcbc6ca18e06040d9e87ac1b42df8336915be3a50e4e9aeaeea"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/games/g7.jsonl": {
+      "bytes": 1145,
+      "sha256": "6db640b23d916574ccc2aa2e8f48a1352cf4f407a0e3302ec7d36e7925a864be"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/games/g8.jsonl": {
+      "bytes": 1145,
+      "sha256": "977a90809da3e7b98dbbc277765e96970169ea41531616dcfa82e2a5b029dadd"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/games/g9.jsonl": {
+      "bytes": 1145,
+      "sha256": "e7df22948062bc931ad664be089527f42b030e2e1b6ed4716233dd5dad250cf4"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/participants/p1/summary.json": {
+      "bytes": 1133,
+      "sha256": "b9e2efdab27bb185ef55531bcf6872c78b4068c76732967ee5fae590db76f7d7"
+    },
+    "test-runs/retry-fix-001/test_ten_simultaneous_games_us2/runs/run-2e740e0a91674ea1b7804520f50fc256/summary.json": {
+      "bytes": 1184,
+      "sha256": "898742616fd4c8c2d04dea0a0a9fea890459d687004881418a74cae4ccbeed6c"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_0/runs/run-1190c8e2be4d47c98c4c01b902a01bb0/lifecycle.jsonl": {
+      "bytes": 2919,
+      "sha256": "b2b8bf25bdc2738c00c4c5b775397752eb2ebf05eebcd7a0ad3ba5b1cd23c8d5"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_0/runs/run-1190c8e2be4d47c98c4c01b902a01bb0/manifest.json": {
+      "bytes": 13167,
+      "sha256": "2eb20de6348c9eb89e03ec0e1eed6ab6dc99b9307e0e11cf16fcf4a2391157c4"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_0/runs/run-1190c8e2be4d47c98c4c01b902a01bb0/participants/p1/decisions.jsonl": {
+      "bytes": 2239205,
+      "sha256": "afc147dc4994b5ef5789eaf3a59127ab473a98b0d4ab2030b2cd0f6e5e85edac"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_0/runs/run-1190c8e2be4d47c98c4c01b902a01bb0/participants/p1/games/g1.jsonl": {
+      "bytes": 1092,
+      "sha256": "bced2a4dc627a52fffe2fc727854dd8147ab68493d9440cee9411184fec90d66"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_0/runs/run-1190c8e2be4d47c98c4c01b902a01bb0/participants/p1/summary.json": {
+      "bytes": 754,
+      "sha256": "d6d737ee14374e5eaf6ab5b3515d78d714fa02ce213ae38d46bb57c245da5fda"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_0/runs/run-1190c8e2be4d47c98c4c01b902a01bb0/summary.json": {
+      "bytes": 804,
+      "sha256": "ff9f05fffb9f5c1733a4819d2543a2da54e4bac2bfdc10123d8fb07602db8ef9"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_1/runs/run-1449980242ee43188c8700359e5257b7/lifecycle.jsonl": {
+      "bytes": 2919,
+      "sha256": "a18a0889911eaa2dd0b8c112529d60838c06050ddd5bd9340ea949361f5b7aac"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_1/runs/run-1449980242ee43188c8700359e5257b7/manifest.json": {
+      "bytes": 13167,
+      "sha256": "7cdfcc2a650ea908a026a6230007dd70a6eac10afb002b6341fb2bf929a99894"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_1/runs/run-1449980242ee43188c8700359e5257b7/participants/p1/decisions.jsonl": {
+      "bytes": 1121469,
+      "sha256": "1893a487305e5f972eeba3ca75e891ec40f55ad8162f7ea15a347ba05f99d8e7"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_1/runs/run-1449980242ee43188c8700359e5257b7/participants/p1/games/g1.jsonl": {
+      "bytes": 1065,
+      "sha256": "d90f06c2e16be797dd6d556d56445b7d106b553d43e176367a4c4e0b9ace440b"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_1/runs/run-1449980242ee43188c8700359e5257b7/participants/p1/summary.json": {
+      "bytes": 753,
+      "sha256": "5a42afe2b80f2c88154daee85910e1a7a7ab237cd0b28cf947c11ebc52c5cbe7"
+    },
+    "test-runs/retry-fix-002/test_real_s02_rejection_keeps_1/runs/run-1449980242ee43188c8700359e5257b7/summary.json": {
+      "bytes": 803,
+      "sha256": "643d1985ae54efb9e6535c61acca04b917ff7b14846252ae844984fcb2060116"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/lifecycle.jsonl": {
+      "bytes": 15347,
+      "sha256": "4c40404add48d869c6d7517c1af392950fbf69146d472559d8a49dcc12627128"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/manifest.json": {
+      "bytes": 13094,
+      "sha256": "a00eba593c82fc16bc94e795d0417b797a356a78dd0fd28816cfee59489455fc"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/decisions.jsonl": {
+      "bytes": 5736082,
+      "sha256": "9a27aed0e8c965948258830b23c36a5951a3b02964703c81e16dba8ad8f84208"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/games/g0.jsonl": {
+      "bytes": 453,
+      "sha256": "51950e4552dd1eaed2a8b5e01da58853201ee59a02874cc457aa8cc7f883a4db"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/games/g1.jsonl": {
+      "bytes": 453,
+      "sha256": "eb18e4f09159b77143d060afae484c6270b472cc46de423152c43d6920ce3fd3"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/games/g2.jsonl": {
+      "bytes": 453,
+      "sha256": "faf0aa6ef7e9e3f48bf618ba06a8c83b028553ecc9aa42b4abf7a688fbc4603e"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "d591da7c8100df0b04da1a200445fb01cf0295ce7745245c95205d065e1b31c4"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/games/g4.jsonl": {
+      "bytes": 1194,
+      "sha256": "ec9434967ca980a84df5bd3b40bd645248786d98413d0b29d2a4a911bc1221a8"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/games/g5.jsonl": {
+      "bytes": 1194,
+      "sha256": "1d8e4a98d9336bac196d42ee7861fecb465e801834710423de0f0ca603f8b3da"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/games/g6.jsonl": {
+      "bytes": 1194,
+      "sha256": "ff5f2a63033be9cff030ed57f700c300d053e1802e347563cb23ac0f7cd98f41"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/games/g7.jsonl": {
+      "bytes": 1194,
+      "sha256": "cf02fdf57c5b740159c719cf4b64d854755e952cb6391aeb90fe35dca3bed111"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/games/g8.jsonl": {
+      "bytes": 1194,
+      "sha256": "f08a82eb6ccb023f49c2079f247a17335dd400284e392f6743281a22c17d6ef7"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/games/g9.jsonl": {
+      "bytes": 453,
+      "sha256": "d505606f455adf0e5fc7ec5eb53028a6363ef30ad5ee5d0534a94b93a5a2ca54"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/participants/p1/summary.json": {
+      "bytes": 1132,
+      "sha256": "b76bc7527d4d83335626c04ef6eef8ed1253eb8db553fae09504f68f20a926f0"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us0/runs/run-493e9ba9009b46b7bcc32ff61299462e/summary.json": {
+      "bytes": 1183,
+      "sha256": "55da57dbc2db9724e32f2522c5aeadcbcc25ba8d2d201caecac11229e2dd0832"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/lifecycle.jsonl": {
+      "bytes": 14479,
+      "sha256": "62332a37b5ce97ed2f2117b5c13af68d11b7aac13bbf7ed9fc5a291d54fda111"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/manifest.json": {
+      "bytes": 13094,
+      "sha256": "4708cb9c5bbd8693e11d23052c1edb930a8755a02585665302dc4e729cb9a0d7"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/decisions.jsonl": {
+      "bytes": 197512,
+      "sha256": "d5970f110fd2014a89332e2fd25ae5ab6c1e866d5e6ecce207d49ce54bb9bd5e"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/games/g0.jsonl": {
+      "bytes": 453,
+      "sha256": "4c678655136f19d946324f034c85fcb8492b6afdbf964170d0842257ad01b775"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/games/g1.jsonl": {
+      "bytes": 453,
+      "sha256": "ebaf348782ac683b5e38e5b886003190b3b032d9b13691d47b0e371fc10a6ae4"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/games/g2.jsonl": {
+      "bytes": 453,
+      "sha256": "61adf68219869d5b9646ad282c30c947cf6acabfeba7f0d1aae80aa25f18c031"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/games/g3.jsonl": {
+      "bytes": 453,
+      "sha256": "479e4ab53ffefbf53c6e7e2ce2f0254639c5eef08942624bd1a73fede76f8607"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/games/g4.jsonl": {
+      "bytes": 453,
+      "sha256": "65ea3538bb2bbd85c41102f86a12ce2d751d269052793de6b48c0c3e3e2af3aa"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/games/g5.jsonl": {
+      "bytes": 453,
+      "sha256": "f98c9cb4739b1e319dc9716880ab881384cd065bafe345beedc150431047c479"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/games/g6.jsonl": {
+      "bytes": 453,
+      "sha256": "5fe83d6289ae16c3b6912a0feb6fc0ced00ed5cfe626c64856806a1e25973270"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/games/g7.jsonl": {
+      "bytes": 453,
+      "sha256": "caa9115b42bf3131c1c740bba0572580a497a2172423dec57d084773e8fef65a"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/games/g8.jsonl": {
+      "bytes": 453,
+      "sha256": "965fb979d802e885b283365ce59c1e01af1a46e2ea11da4058f17c92fccfc48c"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/games/g9.jsonl": {
+      "bytes": 453,
+      "sha256": "bc09821129074c1564d09e414b4d289aff64d1cf0979477f188927fb741d70c9"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/participants/p1/summary.json": {
+      "bytes": 1103,
+      "sha256": "0c516d3c7ea2e04e60ccc55c8d5443402ee2daecb21888611ceca2928107513c"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us1/runs/run-cc6edf0bde0c4e21bd48f1426ef4aaa2/summary.json": {
+      "bytes": 1154,
+      "sha256": "1b803ec069a7ea9bea6fccc279f1687b748dae00850c04ebce40cc687349ae94"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/lifecycle.jsonl": {
+      "bytes": 14045,
+      "sha256": "67051755f378ec55a9501a863c6c65dd1c2f66372e9a6bfd3b80f77beacac205"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/manifest.json": {
+      "bytes": 13094,
+      "sha256": "3fc6f910937e91e98e0df8524a47d45bba8abef3da3a1dfad99fc37701cef965"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/decisions.jsonl": {
+      "bytes": 585139,
+      "sha256": "11a55977a26620d88bb8471e935fdfa9224375c9f271174690cc8ff3cb0f89d5"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/games/g0.jsonl": {
+      "bytes": 1145,
+      "sha256": "dd1053eb31e011af2417ca291c4e614e8bc2273a03d501541746bb455f41d841"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/games/g1.jsonl": {
+      "bytes": 1145,
+      "sha256": "5dc58a712a9e285720ee8fa709a97f63e8f93396f6b21f744dc533a9a1093549"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/games/g2.jsonl": {
+      "bytes": 1145,
+      "sha256": "fa0ed40dca78e72cd57c1573ec259df4b0d36362a20a2ce8ee25298a06f71f22"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/games/g3.jsonl": {
+      "bytes": 1145,
+      "sha256": "e9f52c6236ea46ede84c70c34427aa6d592cdd88e41161d27f581263a3538f05"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/games/g4.jsonl": {
+      "bytes": 1145,
+      "sha256": "96a42745f27d09ccd0a0840cba9c50fe80a01fedb215df7023ba464fb0082ada"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/games/g5.jsonl": {
+      "bytes": 1145,
+      "sha256": "a6f5b098efa1fd082914c565b69b02791c681b194b404f176dfb8d7b7515b3d7"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/games/g6.jsonl": {
+      "bytes": 1145,
+      "sha256": "a73daf3f4cc91dd51fe10077dc4469cb3732c1d5a0aadfc44baab85ce8429091"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/games/g7.jsonl": {
+      "bytes": 1145,
+      "sha256": "8e2f2b785b8c356ebd7a30564b0e6e18e395334462ccb80bcc8e16146e19c78b"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/games/g8.jsonl": {
+      "bytes": 1145,
+      "sha256": "ecf8cd914eacc44cfbf107a80ee65bf932f2a7cd553b93febfeb00669760ad2e"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/games/g9.jsonl": {
+      "bytes": 1145,
+      "sha256": "928a9d633e80e598a09141175df8b61ba6931fdb4e3806e4b608a8444e69aa81"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/participants/p1/summary.json": {
+      "bytes": 1133,
+      "sha256": "6091cd2eca3945231bf7814abf56c3b2c2f566a966609a6ed2dcf0359459cb92"
+    },
+    "test-runs/retry-fix-002/test_ten_simultaneous_games_us2/runs/run-dcc8d349b97949e9a4d7f5c9f2b23e99/summary.json": {
+      "bytes": 1184,
+      "sha256": "ffbd9b1d92cf787bf6edf551d50122ea98de34bc8ec16cd671701af69ee1819b"
+    },
+    "verify_candidate_rejections.py": {
+      "bytes": 4790,
+      "sha256": "9a1bb3c3b7a5d80617151fba047ad8af108b565407e02d6f138ffdeeebd32499"
+    },
+    "verify_launch_configs.py": {
+      "bytes": 4205,
+      "sha256": "9ff687d8e049512e48f156772a67bc60115c30c52299bfc62423e961e9d398d7"
+    }
+  },
+  "known_missing_raw": "first clock-corrected pytest temporary pressure tree was cleaned; log/XML retained; final durable pressure audit complete"
+}

@@ -2,6 +2,23 @@
 
 from __future__ import annotations
 
+from pathlib import Path as _StoragePath
+import sys as _storage_sys
+_PROJECT_ROOT = next(p for p in _StoragePath(__file__).resolve().parents
+                     if (p / "src/hangma_bot/bootstrap.py").is_file())
+_storage_sys.path.insert(0, str(_PROJECT_ROOT / "src"))
+from hangma_bot.adapters.recording.project_storage import project_file as _resolve_project_file
+_PROJECT_STORAGE_ORIGIN = 'tests/review'
+
+def _project_file(root, source):
+    """共享脚本的相邻数据沿用原逻辑目录，相邻代码从共享目录读取。"""
+    source = _StoragePath(source)
+    here = _StoragePath(__file__).resolve().parent
+    if source.is_absolute() and source.is_relative_to(here):
+        if not source.is_dir() and not (source.suffix == ".py" and source.is_file()):
+            source = root / _PROJECT_STORAGE_ORIGIN / source.relative_to(here)
+    return _resolve_project_file(root, source)
+
 from copy import deepcopy
 import importlib.util
 import json
@@ -11,10 +28,10 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SCRIPT = (ROOT / "review/freematch-deep-dive-20260925/"
-          "g270_g266_branch_independent_audit.py")
-SMOKE = (ROOT / "review/freematch-deep-dive-20260925/evidence/"
-         "g266-plain-baotou-entry-smoke-r2-20260929")
+SCRIPT = (_project_file(_PROJECT_ROOT, ROOT / "review/freematch-deep-dive-20260925/"
+          "g270_g266_branch_independent_audit.py"))
+SMOKE = (_project_file(_PROJECT_ROOT, ROOT / "review/freematch-deep-dive-20260925/evidence/"
+         "g266-plain-baotou-entry-smoke-r2-20260929"))
 SPEC = importlib.util.spec_from_file_location("g270_g266_branch_independent_audit", SCRIPT)
 assert SPEC and SPEC.loader
 g270 = importlib.util.module_from_spec(SPEC)
@@ -23,14 +40,14 @@ SPEC.loader.exec_module(g270)
 
 def smoke():
     """构造只引用 r2 冒烟证据的单根入选清单视图。"""
-    branch = json.loads((SMOKE / "branch-smoke.json").read_text())
+    branch = json.loads((_project_file(_PROJECT_ROOT, SMOKE / "branch-smoke.json")).read_text())
     identity = branch["identity"]
-    stage = json.loads((SMOKE / "stages/p2026122966-H-r0001-s3.json").read_text())
+    stage = json.loads((_project_file(_PROJECT_ROOT, SMOKE / "stages/p2026122966-H-r0001-s3.json")).read_text())
     selected = {"panel_seed": identity["panel_seed"], "mix": identity["mix"],
                 "root_index": identity["root_index"],
                 "root_identity": identity["root_identity"], "half": identity["half"],
                 "priority_layer": identity["layer"], "priority_hit": identity["hit"]}
-    samples = json.loads((SMOKE / "manifest.json").read_text())["samples"]
+    samples = json.loads((_project_file(_PROJECT_ROOT, SMOKE / "manifest.json")).read_text())["samples"]
     return branch, stage, selected, samples
 
 

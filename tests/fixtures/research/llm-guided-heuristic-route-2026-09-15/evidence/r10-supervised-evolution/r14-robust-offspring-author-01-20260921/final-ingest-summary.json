@@ -1,0 +1,46 @@
+{
+  "schema": "r14-robust-offspring-final-ingest/1",
+  "initial": [
+    {
+      "task": "R1",
+      "parse_status": "ok",
+      "static_precheck": true,
+      "load_error": null,
+      "accepted_for_behavior_preflight": true,
+      "code_sha256": "5b260feec429e65af4bed88743f692905f27eae6c3afecf685b2a8b3f2c5c46b",
+      "problems": []
+    },
+    {
+      "task": "R2",
+      "parse_status": "missing_code",
+      "static_precheck": false,
+      "load_error": null,
+      "accepted_for_behavior_preflight": false,
+      "code_sha256": null,
+      "problems": [
+        "未找到代码块，也未找到入口函数定义",
+        "未找到 json 围栏的四字段说明块",
+        "没有可预检源码"
+      ]
+    }
+  ],
+  "repair": {
+    "task": "R2",
+    "repair": true,
+    "parse_status": "ok",
+    "static_precheck": false,
+    "load_error": null,
+    "accepted_for_behavior_preflight": false,
+    "code_sha256": "a2eaa73f4681c2388078f230fc3662f8626c87d2bbea98326617b870b5a36cf1",
+    "problems": [
+      "属性 .setdefault 不在只读方法白名单 ['add', 'append', 'count', 'get', 'index', 'items', 'keys', 'values']"
+    ]
+  },
+  "accepted_for_behavior_preflight": [
+    "R1"
+  ],
+  "closed_failed": [
+    "R2"
+  ],
+  "effect_evaluation_started": false
+}

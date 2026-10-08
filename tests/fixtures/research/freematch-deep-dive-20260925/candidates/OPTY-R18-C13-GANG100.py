@@ -1,0 +1,813 @@
+"""R18 多财神飘、补杠支配、庄家起手七对与双财神保包头覆盖；稳定 V2 是完整回退。"""
+
+def score_actions(view):
+    """按同一动作窗口的只读可见事实，为全部合法动作评分。"""
+    actions = view.get("actions")
+    visible = view.get("visible_state")
+    if actions is None or visible is None or len(actions) == 0:
+        return {"status": "ABSTAIN", "reason": "缺少动作表或公开可见状态"}
+    seat = visible.get("seat")
+    if seat is None or seat is True or seat is False or seat < 0 or seat > 3:
+        return {"status": "ABSTAIN", "reason": "我方座位不可用"}
+    hand = visible.get("my_hand")
+    discards = visible.get("discards")
+    melds = visible.get("melds")
+    scores = visible.get("table_scores")
+    rule_state = visible.get("rule_state")
+    if hand is None or discards is None or melds is None or scores is None or rule_state is None:
+        return {"status": "ABSTAIN", "reason": "基础公式所需公开状态缺失"}
+    if len(discards) != 4 or len(melds) != 4 or len(scores) != 4:
+        return {"status": "ABSTAIN", "reason": "四座公开状态长度不合法"}
+    wealth = rule_state.get("wealth_god")
+    if wealth is None:
+        return {"status": "ABSTAIN", "reason": "财神牌码缺失"}
+    own_meld_count = len(melds[seat])
+    wealth_count = hand.count(wealth)
+    drawn = visible.get("drawn_tile")
+    if drawn is not None and len(hand) != 14 - 3 * own_meld_count and drawn == wealth:
+        wealth_count += 1
+    own_table_score = scores[seat]
+    if own_table_score is None or own_table_score is True or own_table_score is False:
+        return {"status": "ABSTAIN", "reason": "我方桌内积分缺失"}
+    own_table_value = float(own_table_score)
+    if own_table_value - own_table_value != 0:
+        return {"status": "ABSTAIN", "reason": "我方桌内积分非有限"}
+    table_rank = 1
+    for item in scores:
+        if item is None or item is True or item is False:
+            return {"status": "ABSTAIN", "reason": "桌内积分缺失"}
+        value = float(item)
+        if value - value != 0:
+            return {"status": "ABSTAIN", "reason": "桌内积分非有限"}
+        if value > own_table_value:
+            table_rank += 1
+    dealer = visible.get("dealer_seat")
+    if dealer is None or dealer is True or dealer is False or dealer < 0 or dealer > 3:
+        return {"status": "ABSTAIN", "reason": "庄家座位不可用"}
+    pending = []
+    known = []
+    best_shanten = None
+    for action in actions:
+        key = action.get("action_key")
+        kind = action.get("action_type")
+        if key is None or kind is None or action.get("is_legal") is not True:
+            return {"status": "ABSTAIN", "reason": "动作合法身份或键缺失"}
+        direct = False
+        base = None
+        shanten = action.get("shanten_after")
+        useful = action.get("useful_tiles")
+        if kind == "hu":
+            direct = True
+            base = 1000.0
+            if best_shanten is None or -1 < best_shanten:
+                best_shanten = -1
+        elif action.get("fact_kind") == "hand_progress" and shanten is not None and shanten is not True and shanten is not False and shanten >= 0:
+            valid_useful = True
+            support = 0.0
+            for tile in useful:
+                remaining = tile.get("remaining_estimate")
+                if remaining is None or remaining is True or remaining is False:
+                    valid_useful = False
+                else:
+                    amount = float(remaining)
+                    if amount - amount != 0:
+                        valid_useful = False
+                    else:
+                        support += amount
+            if valid_useful:
+                direct = True
+                base = -100.0 * float(shanten) + round(support, 1)
+                if kind != "pass" and (best_shanten is None or shanten < best_shanten):
+                    best_shanten = shanten
+        if kind == "pass" and direct:
+            if action.get("best_followup_discard") is not None or action.get("replacement_draw_unknown") is not False:
+                direct = False
+                base = None
+        produced = action.get("immediate_settlement") is not None
+        routes = action.get("routes")
+        branches = action.get("followup_branches")
+        families = action.get("family_progress_entries")
+        if routes is not None and len(routes) > 0:
+            produced = True
+        if branches is not None:
+            produced = True
+        if families is not None and len(families) > 0:
+            produced = True
+        if direct:
+            pending.append({"action": action, "base": base, "basis": "direct_v2", "shanten": shanten})
+            known.append(base)
+        elif produced:
+            pending.append({"action": action, "base": 0.0, "basis": "produced_outside_v2", "shanten": None})
+            known.append(0.0)
+        else:
+            pending.append({"action": action, "base": None, "basis": "unknown", "shanten": None})
+    if len(known) == 0:
+        return {"status": "ABSTAIN", "reason": "全部动作均无已生产事实，未知不能取零分"}
+    base_floor = min(known)
+    entries = []
+    for item in pending:
+        action = item.get("action")
+        key = action.get("action_key")
+        kind = action.get("action_type")
+        base = item.get("base")
+        unknown = base is None
+        total = base_floor - 1.0 if unknown else base
+        retained_wealth = wealth_count
+        tile_code = None
+        if kind == "discard":
+            tile_code = key[8:]
+            if tile_code == wealth:
+                retained_wealth -= 1
+        wealth_part = 5.0 * retained_wealth
+        total += wealth_part
+        wealth_discard_part = 0.0
+        river_part = 0.0
+        risk_units = 0.0
+        style_part = 0.0
+        familiar = False
+        if kind == "discard":
+            if tile_code == wealth:
+                wealth_discard_part = -60.0
+                total += wealth_discard_part
+            for river_seat in range(4):
+                if river_seat != seat and discards[river_seat].count(tile_code) > 0:
+                    familiar = True
+            if familiar:
+                river_part = 3.0
+                total += river_part
+            elif len(tile_code) >= 2 and tile_code[0] in "123456789" and tile_code[-1] in "wbt":
+                suit = tile_code[-1]
+                rank = int(tile_code[0])
+                next_seat = (seat + 1) % 4
+                near_next = False
+                near_dealer = False
+                for meld in melds[next_seat]:
+                    for other in meld.get("tiles"):
+                        if len(other) >= 2 and other[0] in "123456789" and other[-1] == suit and abs(int(other[0]) - rank) <= 2:
+                            near_next = True
+                if dealer != seat:
+                    for meld in melds[dealer]:
+                        for other in meld.get("tiles"):
+                            if len(other) >= 2 and other[0] in "123456789" and other[-1] == suit and abs(int(other[0]) - rank) <= 2:
+                                near_dealer = True
+                if near_next:
+                    risk_units += 1.0
+                if near_dealer:
+                    risk_units += 0.5
+                total -= round(6.0 * risk_units, 1)
+            if table_rank == 1 and familiar:
+                style_part = 4.0
+            elif table_rank == 4 and item.get("shanten") is not None and item.get("shanten") == best_shanten:
+                style_part = 2.0
+            total = round(total, 6)
+            total += style_part
+            total = round(total, 6)
+        else:
+            fixed = 0.0
+            if kind == "peng":
+                fixed = -6.0
+            elif kind == "chi":
+                fixed = -10.0
+            elif kind == "gang":
+                fixed = 100.0
+            total += fixed
+            total = round(total, 6)
+        trace = {"basis": item.get("basis"), "base_score": base, "shanten_after": item.get("shanten"), "best_shanten_non_pass": best_shanten, "wealth_part": wealth_part, "wealth_discard_part": wealth_discard_part, "river_part": river_part, "risk_units": risk_units, "style_part": style_part, "unknown": unknown, "unknown_policy": "known_final_floor_minus_1" if unknown else None, "hu_sorting_layer": kind == "hu", "scope": "direct_v2_or_produced_outside_v2"}
+        entries.append({"action_key": key, "action_type": kind, "score": total, "trace": trace})
+    hu_level = None
+    for entry in entries:
+        if entry.get("trace").get("unknown") is not True and entry.get("action_type") != "hu":
+            score = entry.get("score")
+            if hu_level is None or score > hu_level:
+                hu_level = score
+    known_floor = None
+    for entry in entries:
+        if entry.get("trace").get("unknown") is not True:
+            score = entry.get("score")
+            if entry.get("action_type") == "hu" and hu_level is not None:
+                score = hu_level + 1.0
+            if known_floor is None or score < known_floor:
+                known_floor = score
+    if known_floor is None:
+        return {"status": "ABSTAIN", "reason": "没有可用已知最终评分，未知不能取零分"}
+    if wealth_count == 4:
+        overlay_name = "four_wealth_piao_proxy_boundary/v1"
+        overlay_required_ratio = 1.50
+    elif wealth_count == 3:
+        overlay_name = "three_wealth_piao_cf_supported/v1"
+        overlay_required_ratio = 1.75
+    else:
+        overlay_name = None
+        overlay_required_ratio = None
+    overlay_best_key = None
+    overlay_best_proxy = None
+    overlay_immediate_hu = None
+    overlay_actual_ratio = None
+    overlay_triggered = False
+    overlay_degrade_reason = "目标机会窗口不成立"
+    overlay_unknown_pool = None
+    if overlay_name is not None and rule_state.get("baotou") is True and hu_level is not None:
+        overlay_degrade_reason = "立即胡结算事实不完整"
+        for action in actions:
+            if action.get("is_legal") is True and action.get("action_type") == "hu":
+                settlement = action.get("immediate_settlement")
+                if settlement is not None:
+                    delta = settlement.get("score_delta")
+                    if delta is not None and len(delta) == 4:
+                        amount = delta[seat]
+                        if amount is not None and amount is not True and amount is not False:
+                            value = float(amount)
+                            if value - value == 0 and value > 0.0:
+                                overlay_immediate_hu = value
+        remaining_count = visible.get("remaining_tile_count")
+        hand_counts = visible.get("hand_counts")
+        if remaining_count is not None and remaining_count is not True and remaining_count is not False and hand_counts is not None and len(hand_counts) == 4:
+            pool = float(remaining_count)
+            pool_ok = pool - pool == 0 and pool >= 0.0
+            for other_seat in range(4):
+                if other_seat != seat:
+                    count = hand_counts[other_seat]
+                    if count is None or count is True or count is False:
+                        pool_ok = False
+                    else:
+                        count_value = float(count)
+                        if count_value - count_value != 0 or count_value < 0.0:
+                            pool_ok = False
+                        else:
+                            pool += count_value
+            if pool_ok and pool > 0.0:
+                overlay_unknown_pool = pool
+        if overlay_immediate_hu is not None and overlay_unknown_pool is not None:
+            overlay_degrade_reason = "没有完整且满足家族转移的目标弃牌"
+            for action in actions:
+                key = action.get("action_key")
+                kind = action.get("action_type")
+                if kind != "discard" or key is None:
+                    continue
+                tile_code = key[8:]
+                target_shape = tile_code == wealth
+                family_ok = False
+                families = action.get("family_progress_entries")
+                if families is not None:
+                    for family in families:
+                        if family.get("family") == "chain" and family.get("route_status") == "witnessed" and family.get("progress") == "advance":
+                            family_ok = True
+                facts_ok = target_shape and family_ok
+                if action.get("value_coverage") != "complete":
+                    facts_ok = False
+                issues = action.get("value_issues")
+                if issues is None or len(issues) != 0:
+                    facts_ok = False
+                routes = action.get("routes")
+                if routes is None or len(routes) == 0:
+                    facts_ok = False
+                numerator = 0.0
+                seen_codes = []
+                if facts_ok:
+                    for route in routes:
+                        route_ok = route.get("followup_discard") is None
+                        route_shanten = route.get("shanten")
+                        if route_shanten is None or route_shanten is True or route_shanten is False or route_shanten != 0:
+                            route_ok = False
+                        if route.get("support") != "conditional_witness":
+                            route_ok = False
+                        conditional = route.get("conditional_settlement")
+                        route_value = None
+                        if conditional is not None:
+                            route_delta = conditional.get("score_delta")
+                            if route_delta is not None and len(route_delta) == 4:
+                                route_amount = route_delta[seat]
+                                if route_amount is not None and route_amount is not True and route_amount is not False:
+                                    converted = float(route_amount)
+                                    if converted - converted == 0 and converted >= 0.0:
+                                        route_value = converted
+                        if route_value is None:
+                            route_ok = False
+                        useful_tiles = route.get("useful_tiles")
+                        if useful_tiles is None or len(useful_tiles) == 0:
+                            route_ok = False
+                        if route_ok:
+                            for useful in useful_tiles:
+                                code = useful.get("code")
+                                estimate = useful.get("remaining_estimate")
+                                if code is None or code in seen_codes or estimate is None or estimate is True or estimate is False:
+                                    route_ok = False
+                                else:
+                                    estimate_value = float(estimate)
+                                    if estimate_value - estimate_value != 0 or estimate_value < 0.0 or estimate_value > 4.0:
+                                        route_ok = False
+                                    else:
+                                        seen_codes.append(code)
+                                        numerator += route_value * estimate_value
+                        if not route_ok:
+                            facts_ok = False
+                            break
+                if facts_ok:
+                    proxy = numerator / overlay_unknown_pool
+                    if overlay_best_proxy is None or proxy > overlay_best_proxy or (proxy == overlay_best_proxy and key < overlay_best_key):
+                        overlay_best_proxy = proxy
+                        overlay_best_key = key
+            if overlay_best_proxy is not None:
+                overlay_actual_ratio = overlay_best_proxy / overlay_immediate_hu
+                overlay_degrade_reason = "条件代理优势未达到预登记风险缓冲"
+                if overlay_actual_ratio >= overlay_required_ratio:
+                    overlay_triggered = True
+                    overlay_degrade_reason = "触发"
+    canonical_codes = (
+        "1w", "2w", "3w", "4w", "5w", "6w", "7w", "8w", "9w",
+        "1b", "2b", "3b", "4b", "5b", "6b", "7b", "8b", "9b",
+        "1t", "2t", "3t", "4t", "5t", "6t", "7t", "8t", "9t",
+        "东", "南", "西", "北", "中", "发", "白",
+    )
+    dominance_hu_value = None
+    for action in actions:
+        if action.get("is_legal") is True and action.get("action_type") == "hu":
+            settlement = action.get("immediate_settlement")
+            if settlement is not None:
+                delta = settlement.get("score_delta")
+                if delta is not None and len(delta) == 4:
+                    amount = delta[seat]
+                    if amount is not None and amount is not True and amount is not False:
+                        value = float(amount)
+                        if value - value == 0:
+                            dominance_hu_value = value
+    dominance_best_key = None
+    dominance_best_value = None
+    dominance_checks = None
+    if dominance_hu_value is not None:
+        for action in actions:
+            key = action.get("action_key")
+            added_gang = action.get("action_type") == "gang" and key is not None and key[:11] == "gang:added:"
+            coverage_complete = action.get("value_coverage") == "complete"
+            no_value_issues = action.get("value_issues") is not None and len(action.get("value_issues")) == 0
+            replacement_unknown = action.get("replacement_draw_unknown") is True
+            standard_shanten_zero = action.get("standard_shanten_after") is not True and action.get("standard_shanten_after") is not False and action.get("standard_shanten_after") == 0
+            standard = action.get("standard_useful_tiles")
+            standard_seen = []
+            publicly_possible = []
+            standard_ok = standard is not None and len(standard) == len(canonical_codes)
+            if standard_ok:
+                for useful in standard:
+                    code = useful.get("code")
+                    estimate = useful.get("remaining_estimate")
+                    if code not in canonical_codes or code in standard_seen or estimate is None or estimate is True or estimate is False:
+                        standard_ok = False
+                    else:
+                        remaining = float(estimate)
+                        if remaining - remaining != 0 or remaining < 0.0 or remaining > 4.0:
+                            standard_ok = False
+                        else:
+                            standard_seen.append(code)
+                            if remaining > 0.0:
+                                publicly_possible.append(code)
+            standard_codes_all_34 = standard_ok and len(standard_seen) == len(canonical_codes)
+            routes = action.get("routes")
+            route = None
+            if routes is not None and len(routes) == 1:
+                route = routes[0]
+            unique_route = route is not None
+            conditions = None if route is None else route.get("conditions")
+            replacement_route = conditions is not None and conditions.get("draw_kind") == "replacement"
+            route_shanten = None if route is None else route.get("shanten")
+            route_shanten_zero = route_shanten is not True and route_shanten is not False and route_shanten == 0
+            route_no_followup_discard = route is not None and route.get("followup_discard") is None
+            route_seen = []
+            route_ok = route is not None and route.get("useful_tiles") is not None and len(route.get("useful_tiles")) > 0
+            if route_ok:
+                for useful in route.get("useful_tiles"):
+                    code = useful.get("code")
+                    estimate = useful.get("remaining_estimate")
+                    if code not in canonical_codes or code in route_seen or estimate is None or estimate is True or estimate is False:
+                        route_ok = False
+                    else:
+                        remaining = float(estimate)
+                        if remaining - remaining != 0 or remaining <= 0.0 or remaining > 4.0:
+                            route_ok = False
+                        else:
+                            route_seen.append(code)
+            route_covers_publicly_possible = route_ok and sorted(route_seen) == sorted(publicly_possible)
+            route_value = None
+            conditional = None if route is None else route.get("conditional_settlement")
+            if conditional is not None:
+                delta = conditional.get("score_delta")
+                if delta is not None and len(delta) == 4:
+                    amount = delta[seat]
+                    if amount is not None and amount is not True and amount is not False:
+                        value = float(amount)
+                        if value - value == 0:
+                            route_value = value
+            route_score_strictly_higher = route_value is not None and route_value > dominance_hu_value
+            checks = {
+                "added_gang": added_gang,
+                "coverage_complete": coverage_complete,
+                "no_value_issues": no_value_issues,
+                "replacement_unknown": replacement_unknown,
+                "standard_shanten_zero": standard_shanten_zero,
+                "standard_codes_all_34": standard_codes_all_34,
+                "unique_route": unique_route,
+                "replacement_route": replacement_route,
+                "route_shanten_zero": route_shanten_zero,
+                "route_no_followup_discard": route_no_followup_discard,
+                "route_covers_publicly_possible": route_covers_publicly_possible,
+                "route_score_strictly_higher": route_score_strictly_higher,
+            }
+            predicate = True
+            for passed in checks.values():
+                if passed is not True:
+                    predicate = False
+            if predicate and (dominance_best_value is None or route_value > dominance_best_value or (route_value == dominance_best_value and key < dominance_best_key)):
+                dominance_best_key = key
+                dominance_best_value = route_value
+                dominance_checks = checks
+    final_entries = []
+    for entry in entries:
+        score = entry.get("score")
+        if entry.get("action_type") == "hu" and hu_level is not None:
+            score = hu_level + 1.0
+        if entry.get("trace").get("unknown") is True:
+            score = known_floor - 1.0
+        v2_score = score
+        if overlay_triggered and entry.get("action_key") == overlay_best_key:
+            score = hu_level + 2.0
+        before_dominance_score = score
+        if dominance_best_key is not None and entry.get("action_key") == dominance_best_key:
+            score = hu_level + 1.5
+        trace = entry.get("trace")
+        if overlay_best_key is not None and entry.get("action_key") == overlay_best_key:
+            trace = {"basis": trace.get("basis"), "base_score": trace.get("base_score"), "shanten_after": trace.get("shanten_after"), "best_shanten_non_pass": trace.get("best_shanten_non_pass"), "wealth_part": trace.get("wealth_part"), "wealth_discard_part": trace.get("wealth_discard_part"), "river_part": trace.get("river_part"), "risk_units": trace.get("risk_units"), "style_part": trace.get("style_part"), "unknown": trace.get("unknown"), "unknown_policy": trace.get("unknown_policy"), "hu_sorting_layer": trace.get("hu_sorting_layer"), "scope": trace.get("scope"), "r18_opportunity_overlay": {"structure": overlay_name, "triggered": overlay_triggered, "wealth_count": wealth_count, "immediate_hu_value": overlay_immediate_hu, "continue_proxy": overlay_best_proxy, "proxy_unknown_pool": overlay_unknown_pool, "required_ratio": overlay_required_ratio, "actual_ratio": overlay_actual_ratio, "score_delta": score - v2_score, "degrade_reason": overlay_degrade_reason, "limitation": "仅下一次本人自摸立即胡的条件代理，不是完整牌局期望；未建模他家先胡、鸣牌和轮转生存"}}
+        if dominance_best_key is not None and entry.get("action_key") == dominance_best_key:
+            trace = {"basis": trace.get("basis"), "base_score": trace.get("base_score"), "shanten_after": trace.get("shanten_after"), "best_shanten_non_pass": trace.get("best_shanten_non_pass"), "wealth_part": trace.get("wealth_part"), "wealth_discard_part": trace.get("wealth_discard_part"), "river_part": trace.get("river_part"), "risk_units": trace.get("risk_units"), "style_part": trace.get("style_part"), "unknown": trace.get("unknown"), "unknown_policy": trace.get("unknown_policy"), "hu_sorting_layer": trace.get("hu_sorting_layer"), "scope": trace.get("scope"), "r18_gang_dominance_overlay": {"structure": "added_gang_all_draws_strictly_dominate_hu/v1", "triggered": True, "hu_focal_score": dominance_hu_value, "gang_route_focal_score": dominance_best_value, "local_gain": dominance_best_value - dominance_hu_value, "checks": dominance_checks, "score_delta": score - before_dominance_score, "fallback": "任一事实缺失或判据失败时逐点评分保持P3"}}
+        final_entries.append({"action_key": entry.get("action_key"), "score": score, "trace": trace})
+    seven_value_best_key = None
+    seven_value_parent_key = None
+    seven_value_best_numerator = None
+    seven_value_parent_numerator = None
+    seven_value_denominator = None
+    seven_value_triggered = False
+    seven_value_degrade_reason = "未进入已验证的庄家起手首次摸牌域"
+    initial_hand_counts = visible.get("hand_counts")
+    initial_remaining_count = visible.get("remaining_tile_count")
+    initial_rivers_empty = True
+    for river in discards:
+        if len(river) != 0:
+            initial_rivers_empty = False
+    initial_melds_empty = True
+    for public_melds in melds:
+        if len(public_melds) != 0:
+            initial_melds_empty = False
+    validated_initial_domain = (
+        seat == dealer
+        and drawn is not None
+        and len(hand) == 13
+        and initial_remaining_count == 83
+        and initial_hand_counts is not None
+        and len(initial_hand_counts) == 4
+        and initial_hand_counts[seat] == 14
+        and initial_rivers_empty
+        and initial_melds_empty
+    )
+    pure_closed_discard = (
+        validated_initial_domain and len(actions) >= 2 and own_meld_count == 0
+    )
+    if pure_closed_discard:
+        for action in actions:
+            if action.get("is_legal") is not True or action.get("action_type") != "discard":
+                pure_closed_discard = False
+    if pure_closed_discard:
+        seven_value_degrade_reason = "至少一个动作的完整一次自摸价值事实不可用"
+        route_rows = []
+        all_complete = True
+        for action in actions:
+            key = action.get("action_key")
+            routes = action.get("routes")
+            issues = action.get("value_issues")
+            valid = (
+                key is not None
+                and action.get("fact_kind") == "hand_progress"
+                and action.get("pattern_progress_note") is None
+                and action.get("seven_pairs_shanten_after") is not None
+                and action.get("value_coverage") == "complete"
+                and issues is not None
+                and len(issues) == 0
+                and routes is not None
+            )
+            numerator = 0.0
+            seen_codes = []
+            seven_route = False
+            if valid:
+                for route in routes:
+                    route_valid = (
+                        route.get("followup_discard") is None
+                        and route.get("shanten") is not None
+                        and route.get("shanten") is not True
+                        and route.get("shanten") is not False
+                        and route.get("shanten") == 0
+                        and route.get("support") == "conditional_witness"
+                    )
+                    conditions = route.get("conditions")
+                    if conditions is None or conditions.get("draw_kind") != "normal":
+                        route_valid = False
+                    settlement = route.get("conditional_settlement")
+                    route_value = None
+                    details = None
+                    if settlement is not None:
+                        delta = settlement.get("score_delta")
+                        details = settlement.get("details")
+                        if delta is not None and len(delta) == 4:
+                            amount = delta[seat]
+                            if amount is not None and amount is not True and amount is not False:
+                                converted = float(amount)
+                                if converted - converted == 0 and converted >= 0.0:
+                                    route_value = converted
+                    if route_value is None or details is None:
+                        route_valid = False
+                    elif "七对" in details:
+                        seven_route = True
+                    useful_tiles = route.get("useful_tiles")
+                    if useful_tiles is None or len(useful_tiles) == 0:
+                        route_valid = False
+                    if route_valid:
+                        for useful in useful_tiles:
+                            code = useful.get("code")
+                            remaining = useful.get("remaining_estimate")
+                            if code not in canonical_codes or code in seen_codes or remaining is None or remaining is True or remaining is False:
+                                route_valid = False
+                            else:
+                                amount = float(remaining)
+                                if amount - amount != 0 or amount < 0.0 or amount > 4.0:
+                                    route_valid = False
+                                else:
+                                    seen_codes.append(code)
+                                    numerator += route_value * amount
+                    if not route_valid:
+                        valid = False
+                        break
+            if not valid:
+                all_complete = False
+            route_rows.append({"action_key": key, "numerator": numerator, "seven_route": seven_route})
+        if all_complete:
+            seven_value_parent_score = None
+            for entry in final_entries:
+                key = entry.get("action_key")
+                score = entry.get("score")
+                if seven_value_parent_score is None or score > seven_value_parent_score or (score == seven_value_parent_score and key < seven_value_parent_key):
+                    seven_value_parent_key = key
+                    seven_value_parent_score = score
+            for row in route_rows:
+                key = row.get("action_key")
+                numerator = row.get("numerator")
+                if key == seven_value_parent_key:
+                    seven_value_parent_numerator = numerator
+                if seven_value_best_numerator is None or numerator > seven_value_best_numerator or (numerator == seven_value_best_numerator and key < seven_value_best_key):
+                    seven_value_best_key = key
+                    seven_value_best_numerator = numerator
+            best_is_seven = False
+            for row in route_rows:
+                if row.get("action_key") == seven_value_best_key and row.get("seven_route") is True:
+                    best_is_seven = True
+            remaining_count = visible.get("remaining_tile_count")
+            hand_counts = visible.get("hand_counts")
+            if remaining_count is not None and remaining_count is not True and remaining_count is not False and hand_counts is not None and len(hand_counts) == 4:
+                denominator = float(remaining_count)
+                denominator_ok = denominator - denominator == 0 and denominator >= 0.0
+                for other_seat in range(4):
+                    if other_seat != seat:
+                        count = hand_counts[other_seat]
+                        if count is None or count is True or count is False:
+                            denominator_ok = False
+                        else:
+                            converted = float(count)
+                            if converted - converted != 0 or converted < 0.0:
+                                denominator_ok = False
+                            else:
+                                denominator += converted
+                if denominator_ok and denominator > 0.0:
+                    seven_value_denominator = denominator
+            seven_value_degrade_reason = "七对路线未严格提高完整一次自摸条件期望"
+            if best_is_seven and seven_value_denominator is not None and seven_value_best_numerator > seven_value_parent_numerator:
+                seven_value_triggered = True
+                seven_value_degrade_reason = "触发"
+                replaced_entries = []
+                for entry in final_entries:
+                    if entry.get("action_key") != seven_value_best_key:
+                        replaced_entries.append(entry)
+                    else:
+                        trace = entry.get("trace")
+                        score = seven_value_parent_score + 0.25
+                        trace = {"basis": trace.get("basis"), "base_score": trace.get("base_score"), "shanten_after": trace.get("shanten_after"), "best_shanten_non_pass": trace.get("best_shanten_non_pass"), "wealth_part": trace.get("wealth_part"), "wealth_discard_part": trace.get("wealth_discard_part"), "river_part": trace.get("river_part"), "risk_units": trace.get("risk_units"), "style_part": trace.get("style_part"), "unknown": trace.get("unknown"), "unknown_policy": trace.get("unknown_policy"), "hu_sorting_layer": trace.get("hu_sorting_layer"), "scope": trace.get("scope"), "r18_seven_pairs_value_overlay": {"structure": "dealer_initial_complete_one_self_draw_seven_pairs_value/v1", "triggered": True, "validated_domain": "庄家起手首次摸牌；83张公开余量；四家空牌河且无副露", "parent_action": seven_value_parent_key, "parent_expected_value": seven_value_parent_numerator / seven_value_denominator, "dominant_expected_value": seven_value_best_numerator / seven_value_denominator, "unknown_pool": seven_value_denominator, "score_delta": score - entry.get("score"), "degrade_reason": seven_value_degrade_reason, "fallback": "任一域边界、动作价值覆盖、路线合法性或七对严格价值优势不成立时逐点评分保持P5", "limitation": "只比较下一次本人摸牌立即胡的条件期望；已由16种起手×32完整世界续打校准，不向牌局中后段外推"}}
+                        replaced_entries.append({"action_key": seven_value_best_key, "score": score, "trace": trace})
+                final_entries = replaced_entries
+    # 双财神保包tou飘反事实覆盖：父代最终 entries 之上最小新增。
+    piao2_degrade_reason = "父代首选动作不是hu"
+    piao2_triggered = False
+    piao2_target_key = None
+    piao2_parent_top_action = None
+    piao2_hu_score = None
+    piao2_score_delta = 0.0
+    parent_top_entry = None
+    for entry in final_entries:
+        if parent_top_entry is None or entry.get("score") > parent_top_entry.get("score") or (entry.get("score") == parent_top_entry.get("score") and entry.get("action_key") < parent_top_entry.get("action_key")):
+            parent_top_entry = entry
+    if parent_top_entry is not None:
+        piao2_parent_top_action = parent_top_entry.get("action_key")
+        parent_top_type = None
+        for entry in entries:
+            if entry.get("action_key") == parent_top_entry.get("action_key") and parent_top_type is None:
+                parent_top_type = entry.get("action_type")
+        if parent_top_type == "hu":
+            piao2_degrade_reason = "准确财神数不等于2"
+            if wealth_count == 2:
+                piao2_degrade_reason = "合法动作中hu数量不唯一"
+                legal_hu_keys = []
+                legal_wealth_discards = []
+                for action in actions:
+                    if action.get("is_legal") is not True:
+                        continue
+                    key = action.get("action_key")
+                    kind = action.get("action_type")
+                    if kind == "hu" and key is not None:
+                        legal_hu_keys.append(key)
+                    if kind == "discard" and key is not None and key[8:] == wealth:
+                        legal_wealth_discards.append(action)
+                if len(legal_hu_keys) == 1:
+                    piao2_degrade_reason = "财神弃牌目标不唯一"
+                    if len(legal_wealth_discards) == 1:
+                        piao2_degrade_reason = "目标财神弃牌baotou_after非显式True"
+                        target = legal_wealth_discards[0]
+                        if target.get("baotou_after") is True:
+                            piao2_triggered = True
+                            piao2_target_key = target.get("action_key")
+                            piao2_hu_score = parent_top_entry.get("score")
+                            piao2_degrade_reason = "触发"
+    output_entries = []
+    for entry in final_entries:
+        score = entry.get("score")
+        trace = entry.get("trace")
+        if piao2_triggered and entry.get("action_key") == piao2_target_key:
+            new_score = piao2_hu_score + 1.0
+            piao2_score_delta = new_score - score
+            score = new_score
+            trace = {"basis": trace.get("basis"), "base_score": trace.get("base_score"), "shanten_after": trace.get("shanten_after"), "best_shanten_non_pass": trace.get("best_shanten_non_pass"), "wealth_part": trace.get("wealth_part"), "wealth_discard_part": trace.get("wealth_discard_part"), "river_part": trace.get("river_part"), "risk_units": trace.get("risk_units"), "style_part": trace.get("style_part"), "unknown": trace.get("unknown"), "unknown_policy": trace.get("unknown_policy"), "hu_sorting_layer": trace.get("hu_sorting_layer"), "scope": trace.get("scope"), "two_wealth_piao_keeps_baotou_cf": {"version": "two_wealth_piao_keeps_baotou_cf/v1", "triggered": True, "wealth_count": wealth_count, "parent_top_action": piao2_parent_top_action, "hu_score": piao2_hu_score, "score_delta": piao2_score_delta, "degrade_reason": piao2_degrade_reason, "limitation": "仅双财神且唯一hu且唯一财神弃牌且baotou_after为True时的配对反事实改分；其余逐点保持父代"}}
+        output_entries.append({"action_key": entry.get("action_key"), "score": score, "trace": trace})
+    # 立即胡 vs 非财神建爆头覆盖：在父代最终 entries 之上最小新增；任一条件不成立整批回退。
+    cfb_degrade_reason = "父代首选动作不是hu"
+    cfb_triggered = False
+    cfb_target_key = None
+    cfb_parent_top_action = None
+    cfb_hu_fan = None
+    cfb_hu_final_score = None
+    cfb_score_capacity = None
+    cfb_support_remaining = None
+    cfb_min_route_fan = None
+    cfb_score_delta = 0.0
+    cfb_top_entry = None
+    for entry in output_entries:
+        if cfb_top_entry is None or entry.get("score") > cfb_top_entry.get("score") or (entry.get("score") == cfb_top_entry.get("score") and entry.get("action_key") < cfb_top_entry.get("action_key")):
+            cfb_top_entry = entry
+    cfb_top_type = None
+    for entry in entries:
+        if entry.get("action_key") == cfb_top_entry.get("action_key") and cfb_top_type is None:
+            cfb_top_type = entry.get("action_type")
+    if cfb_top_entry is not None and cfb_top_type == "hu":
+        cfb_parent_top_action = cfb_top_entry.get("action_key")
+        cfb_degrade_reason = "父代已有专项覆盖触发，本覆盖整批回退"
+        cfb_prior_conflict = False
+        for entry in output_entries:
+            trace = entry.get("trace")
+            if trace is not None:
+                for overlay_key in ("r18_opportunity_overlay", "r18_gang_dominance_overlay", "r18_seven_pairs_value_overlay", "two_wealth_piao_keeps_baotou_cf"):
+                    mapping = trace.get(overlay_key)
+                    if mapping is not None and mapping.get("triggered") is True:
+                        cfb_prior_conflict = True
+        if cfb_prior_conflict is False:
+            cfb_degrade_reason = "合法动作中hu数量不唯一或缺少完整immediate_settlement.fan"
+            legal_hu_actions = []
+            for action in actions:
+                if action.get("is_legal") is True and action.get("action_type") == "hu":
+                    legal_hu_actions.append(action)
+            if len(legal_hu_actions) == 1:
+                hu_action = legal_hu_actions[0]
+                hu_settlement = hu_action.get("immediate_settlement")
+                hu_fan_value = None
+                if hu_settlement is not None:
+                    hu_fan = hu_settlement.get("fan")
+                    if hu_fan is not None and hu_fan is not True and hu_fan is not False:
+                        converted = float(hu_fan)
+                        if converted - converted == 0:
+                            hu_fan_value = converted
+                if hu_fan_value is not None:
+                    cfb_hu_fan = hu_fan_value
+                    cfb_hu_final_score = cfb_top_entry.get("score")
+                    cfb_degrade_reason = "没有事实完全合格的非财神建爆头弃牌"
+                    candidates = []
+                    for action in actions:
+                        key = action.get("action_key")
+                        if action.get("is_legal") is not True or action.get("action_type") != "discard" or key is None:
+                            continue
+                        tile_code = key[8:]
+                        if tile_code == wealth:
+                            continue
+                        action_ok = (
+                            action.get("baotou_after") is True
+                            and action.get("shanten_after") == 0
+                            and action.get("value_coverage") == "complete"
+                        )
+                        routes = action.get("routes")
+                        if routes is None or len(routes) == 0:
+                            action_ok = False
+                        capacity = 0.0
+                        support = 0.0
+                        min_fan = None
+                        if action_ok:
+                            for route in routes:
+                                conditions = route.get("conditions")
+                                if conditions is None or conditions.get("baotou") is not True:
+                                    action_ok = False
+                                    break
+                                settlement = route.get("conditional_settlement")
+                                route_fan_value = None
+                                self_delta_value = None
+                                if settlement is not None:
+                                    route_fan = settlement.get("fan")
+                                    if route_fan is not None and route_fan is not True and route_fan is not False:
+                                        converted_fan = float(route_fan)
+                                        if converted_fan - converted_fan == 0:
+                                            route_fan_value = converted_fan
+                                    raw_delta = settlement.get("self_delta")
+                                    if raw_delta is not None and raw_delta is not True and raw_delta is not False:
+                                        converted_delta = float(raw_delta)
+                                        if converted_delta - converted_delta == 0:
+                                            self_delta_value = converted_delta
+                                if route_fan_value is None or self_delta_value is None or route_fan_value <= cfb_hu_fan:
+                                    action_ok = False
+                                    break
+                                useful_tiles = route.get("useful_tiles")
+                                if useful_tiles is None or len(useful_tiles) == 0:
+                                    action_ok = False
+                                    break
+                                for useful in useful_tiles:
+                                    remaining = useful.get("remaining_estimate")
+                                    if remaining is None or remaining is True or remaining is False:
+                                        action_ok = False
+                                        break
+                                    amount = float(remaining)
+                                    if amount - amount != 0 or amount < 0.0:
+                                        action_ok = False
+                                        break
+                                    capacity += amount * self_delta_value
+                                    support += amount
+                                if not action_ok:
+                                    break
+                                if min_fan is None or route_fan_value < min_fan:
+                                    min_fan = route_fan_value
+                        if action_ok:
+                            candidates.append({"action_key": key, "score_capacity": capacity, "support_remaining": support, "min_route_fan": min_fan})
+                    if len(candidates) > 0:
+                        chosen = None
+                        for cand in candidates:
+                            if chosen is None or cand.get("score_capacity") > chosen.get("score_capacity") or (cand.get("score_capacity") == chosen.get("score_capacity") and (cand.get("support_remaining") > chosen.get("support_remaining") or (cand.get("support_remaining") == chosen.get("support_remaining") and (cand.get("min_route_fan") > chosen.get("min_route_fan") or (cand.get("min_route_fan") == chosen.get("min_route_fan") and cand.get("action_key") < chosen.get("action_key")))))):
+                                chosen = cand
+                        cfb_target_key = chosen.get("action_key")
+                        cfb_score_capacity = chosen.get("score_capacity")
+                        cfb_support_remaining = chosen.get("support_remaining")
+                        cfb_min_route_fan = chosen.get("min_route_fan")
+                        cfb_triggered = True
+                        cfb_degrade_reason = "触发"
+    final_output_entries = []
+    for entry in output_entries:
+        score = entry.get("score")
+        trace = entry.get("trace")
+        if cfb_triggered and entry.get("action_key") == cfb_target_key:
+            new_score = cfb_hu_final_score + 1.0
+            cfb_score_delta = new_score - score
+            score = new_score
+        new_trace = dict(trace, hu_vs_nonwealth_baotou_cf={
+            "version": "hu_vs_nonwealth_baotou_cf/v1",
+            "triggered": cfb_triggered,
+            "parent_top_action": cfb_parent_top_action,
+            "hu_fan": cfb_hu_fan,
+            "target_action": cfb_target_key,
+            "score_capacity": cfb_score_capacity,
+            "support_remaining": cfb_support_remaining,
+            "min_route_fan": cfb_min_route_fan,
+            "score_delta": cfb_score_delta if (cfb_triggered and entry.get("action_key") == cfb_target_key) else 0.0,
+            "degrade_reason": cfb_degrade_reason,
+        })
+        final_output_entries.append({"action_key": entry.get("action_key"), "score": score, "trace": new_trace})
+    output_entries = final_output_entries
+    reason = "胡以动态排序层优先；未知动作严格锚定在已知最终分最低值以下"
+    if overlay_triggered:
+        reason = reason + "；机会边界触发，目标弃牌以胡层上方1分排序"
+    if dominance_best_key is not None:
+        reason = reason + "；补杠严格支配判据触发，目标补杠排在胡层上方、已准入飘机会层下方"
+    if seven_value_triggered:
+        reason = reason + "；已验证庄家起手域内完整一次自摸条件期望严格胜出时选择七对路线弃牌"
+    if piao2_triggered:
+        reason = reason + "；双财神保包头飘反事实触发，目标财神弃牌提到父代hu最终分上方1.0"
+    else:
+        reason = reason + "；双财神覆盖未触发（" + piao2_degrade_reason + "），最终entries与父代逐点相同"
+    if cfb_triggered:
+        reason = reason + "；立即胡vs非财神建爆头反事实触发，目标非财神弃牌提到父代hu最终分上方1.0"
+    else:
+        reason = reason + "；立即胡vs非财神建爆头覆盖未触发（" + cfb_degrade_reason + "），最终entries与父代逐点相同"
+    return {"status": "SCORED", "entries": output_entries, "reason": reason}

@@ -1,0 +1,165 @@
+{
+  "active_research_parent": false,
+  "by_mix": {
+    "H": {
+      "candidate_fourth_rate": 0.1953125,
+      "candidate_unresolved_rate": 0.0234375,
+      "parent_fourth_rate": 0.1640625,
+      "parent_unresolved_rate": 0.015625,
+      "source_units": 128,
+      "stage_score_delta_mean": -3.1796875,
+      "u_delta_high_mean": 0.0078125,
+      "u_delta_low_mean": -0.03125
+    },
+    "M": {
+      "candidate_fourth_rate": 0.2734375,
+      "candidate_unresolved_rate": 0.0078125,
+      "parent_fourth_rate": 0.1875,
+      "parent_unresolved_rate": 0.0,
+      "source_units": 128,
+      "stage_score_delta_mean": -4.359375,
+      "u_delta_high_mean": -0.03125,
+      "u_delta_low_mean": -0.0390625
+    }
+  },
+  "candidate_execution_review": {
+    "missing_tables": 0,
+    "recorded_counts": {
+      "action_value_failed": 0,
+      "action_value_scored": 0,
+      "ambiguous_diagnostics": 169419,
+      "decision_count": 677902,
+      "other_policy_decisions": 508483,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "abstain": 0,
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "recorded_tables": 512,
+    "schema": "sitin-policy-execution-review/1",
+    "status": "requires_review",
+    "tables": 512,
+    "zero_internal_failures_verified": false
+  },
+  "combination_identity": "414ede0f98327b0e8c888f78d939c5a0398001cfa673d59400efa2e8891a9083",
+  "execution_review": {
+    "missing_tables": 0,
+    "recorded_counts": {
+      "action_value_failed": 0,
+      "action_value_scored": 171316,
+      "ambiguous_diagnostics": 169419,
+      "decision_count": 1363606,
+      "other_policy_decisions": 1022871,
+      "unclassified_action_value": 0
+    },
+    "recorded_failure_kinds": {
+      "abstain": 0,
+      "operation_limit": 0,
+      "resource_or_numeric_limit": 0,
+      "scoring_error": 0,
+      "unclassified_failure": 0
+    },
+    "recorded_tables": 1024,
+    "schema": "sitin-policy-execution-review/1",
+    "status": "requires_review",
+    "tables": 1024,
+    "zero_internal_failures_verified": false
+  },
+  "gate_checks": {
+    "action_value_failures_zero": true,
+    "all_ordinary_eligible_reductions_complete": true,
+    "all_tables_complete": true,
+    "at_least_one_mix_u_delta_low_mean_positive": false,
+    "candidate_key_set_failures_zero": true,
+    "candidate_zero_internal_failures": false,
+    "each_mix_u_delta_low_mean_nonnegative": false,
+    "ordinary_changed_draws_positive": true,
+    "ordinary_order_mismatches_zero": true,
+    "overall_u_one_sided_95_lower_positive": false,
+    "positive_u_units_distinct_roots": true,
+    "positive_u_units_distinct_seats": true,
+    "protected_plan_mismatches_zero": true,
+    "request_audit_failures_zero": true,
+    "response_plan_mismatches_zero": true,
+    "zero_internal_failures": false
+  },
+  "next": "保留P47；关闭该组合强度晋级并按失败分面复盘",
+  "overall": {
+    "candidate_fourth_rate": 0.234375,
+    "candidate_unresolved_rate": 0.015625,
+    "negative_u_units": 49,
+    "parent_fourth_rate": 0.17578125,
+    "parent_unresolved_rate": 0.0078125,
+    "positive_u_units": 44,
+    "source_units": 256,
+    "stage_score_bootstrap_two_sided_95_interval": [
+      -10.1015625,
+      2.5
+    ],
+    "stage_score_delta_mean": -3.76953125,
+    "u_delta_high_mean": -0.01171875,
+    "u_delta_low_bootstrap_one_sided_95_lower": -0.09765625,
+    "u_delta_low_bootstrap_two_sided_95_interval": [
+      -0.109375,
+      0.0390625
+    ],
+    "u_delta_low_mean": -0.03515625
+  },
+  "positive_u_distinct_roots": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    24,
+    25,
+    26,
+    28,
+    29,
+    30,
+    31
+  ],
+  "positive_u_distinct_seats": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "release_eligible": false,
+  "request_audit_counts": {
+    "changed_ordinary_draws": 25091,
+    "complete_ordinary_draws": 35298,
+    "eligible_ordinary_draws": 35298,
+    "protected:r18_gang_dominance_overlay": 1,
+    "protected:r18_opportunity_overlay": 3,
+    "protected:two_wealth_piao_keeps_baotou_cf": 1,
+    "protected_plans": 5,
+    "requests": 169419,
+    "response_exact_plans": 134116
+  },
+  "request_audit_failure_sources": [],
+  "schema": "r18-p58-guarded-successor-confirmation-result/1",
+  "selection_eligible": false,
+  "source_units": 256,
+  "status": "FAIL_P58_GUARDED_SUCCESSOR_CONFIRMATION",
+  "strength_claim": false,
+  "tables": 1024
+}

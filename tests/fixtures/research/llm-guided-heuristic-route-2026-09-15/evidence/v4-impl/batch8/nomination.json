@@ -1,0 +1,53 @@
+{
+ "schema": "sitin-nomination/1",
+ "nominated": false,
+ "reason": "no_positive_candidate",
+ "pool": [
+  "1108e4bef6ca6f9d3cce3d85c3d955e050028f2863f0e7f598f44e9667df6be2",
+  "6d9c1d5914509a966bf79a349142d41b2625c05eac55c28fb4b573b2ba56674e",
+  "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce",
+  "ab9b409e26e66158fdf3bb3b5f229b3930500a85ee14ed294c644c2e00a1c0af"
+ ],
+ "best": {
+  "candidate_id": "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce",
+  "sort_value": -0.0625,
+  "unknown_ratio": 0.0,
+  "total_cost": 125041.52100000001
+ },
+ "v2_virtual_paired_value": 0.0,
+ "ranking_view_with_v2": [
+  {
+   "candidate_id": "weighted_heuristic_v2",
+   "sort_value": 0.0,
+   "virtual": true,
+   "note": "V2 固定基线虚拟配对值恒 0（§8.3），不在池内、不占席"
+  },
+  {
+   "candidate_id": "766712b65fafbaee16776eceaa288c3c1afa3f147a39fe70ab298d14eb3bb6ce",
+   "sort_value": -0.0625,
+   "unknown_ratio": 0.0,
+   "total_cost": 125041.52100000001
+  },
+  {
+   "candidate_id": "ab9b409e26e66158fdf3bb3b5f229b3930500a85ee14ed294c644c2e00a1c0af",
+   "sort_value": -0.0625,
+   "unknown_ratio": 0.0,
+   "total_cost": 132541.831
+  },
+  {
+   "candidate_id": "1108e4bef6ca6f9d3cce3d85c3d955e050028f2863f0e7f598f44e9667df6be2",
+   "sort_value": -0.125,
+   "unknown_ratio": 0.0,
+   "total_cost": 121281.378
+  },
+  {
+   "candidate_id": "6d9c1d5914509a966bf79a349142d41b2625c05eac55c28fb4b573b2ba56674e",
+   "sort_value": -0.375,
+   "unknown_ratio": 0.0,
+   "total_cost": 125867.55699999999
+  }
+ ],
+ "notes": [
+  "最高候选值≤0：不提名，保留档案并报告本次开发未选出整体优胜"
+ ]
+}

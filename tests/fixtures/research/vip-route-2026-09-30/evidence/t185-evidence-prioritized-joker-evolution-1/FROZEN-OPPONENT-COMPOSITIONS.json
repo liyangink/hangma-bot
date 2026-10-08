@@ -1,0 +1,3248 @@
+{
+  "counts": {
+    "confirmation": {
+      "actual_weak_fraction": 0.5755208333333334,
+      "opponent_slots": 384,
+      "types": {
+        "automatic_like": 115,
+        "normal_v0": 106,
+        "r18": 163
+      }
+    },
+    "development": {
+      "actual_weak_fraction": 0.6145833333333334,
+      "opponent_slots": 96,
+      "types": {
+        "automatic_like": 26,
+        "normal_v0": 33,
+        "r18": 37
+      }
+    },
+    "diagnostic_fresh": {
+      "actual_weak_fraction": 0.5,
+      "opponent_slots": 24,
+      "types": {
+        "automatic_like": 4,
+        "normal_v0": 8,
+        "r18": 12
+      }
+    }
+  },
+  "files": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/FRESH-ROOTS-BEFORE-AUTHOR.json": {
+      "bytes": 17641,
+      "sha256": "108a54e84fae94a2bfdc00edf36f97047f2a33c737ec9cf08626970918b098ac"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/PLAN.json": {
+      "bytes": 18749,
+      "sha256": "124ccc12e28289b070426d32570571f42d8434125912d386568bf9f0b16b1e99"
+    },
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/freeze_opponents.py": {
+      "bytes": 2337,
+      "sha256": "f40c406ad069c865a90791d3ea6e15b996dfa5c7e3a1f4ca3bcc1d3a138dabd2"
+    }
+  },
+  "main_pool_not_selected_by_outcome": true,
+  "opponent_source_manifest": {
+    "src/hangma_bot/application/contracts.py": {
+      "bytes": 16212,
+      "sha256": "cbece50eda81a376b5be923f5c894a96f67ea65f82b3e021fdbf592e242e53fa"
+    },
+    "src/hangma_bot/application/deadline.py": {
+      "bytes": 7527,
+      "sha256": "4d280f95ed8dd29a31fb485c6267ff553fd74fe2b2d8d60b3ca596bf0c9d8496"
+    },
+    "src/hangma_bot/hangma/__init__.py": {
+      "bytes": 145,
+      "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+    },
+    "src/hangma_bot/hangma/_public_tile_reuse.py": {
+      "bytes": 10595,
+      "sha256": "e22c0f3d7a4d38ef5f78fd7532ad963ae198b8e2914623c717af488139d8f934"
+    },
+    "src/hangma_bot/hangma/_standard.py": {
+      "bytes": 1542,
+      "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+    },
+    "src/hangma_bot/hangma/_standard_python.py": {
+      "bytes": 14730,
+      "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+    },
+    "src/hangma_bot/hangma/action_families.py": {
+      "bytes": 20884,
+      "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+    },
+    "src/hangma_bot/hangma/candidate_facts.py": {
+      "bytes": 19139,
+      "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+    },
+    "src/hangma_bot/hangma/catch_play.py": {
+      "bytes": 10173,
+      "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+    },
+    "src/hangma_bot/hangma/emergency.py": {
+      "bytes": 4153,
+      "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+    },
+    "src/hangma_bot/hangma/engine.py": {
+      "bytes": 32121,
+      "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+    },
+    "src/hangma_bot/hangma/hand_analysis.py": {
+      "bytes": 25772,
+      "sha256": "c11d0abbb6eebb9f724e230b42884b8dd1b0fa0a4560eda86104df1f6826f0fe"
+    },
+    "src/hangma_bot/hangma/interface.py": {
+      "bytes": 37378,
+      "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+    },
+    "src/hangma_bot/hangma/internal_types.py": {
+      "bytes": 9019,
+      "sha256": "3b959871ac740d27c43f6dec18df5e30bfef6a93080628d4b3e6f67cc45af5ea"
+    },
+    "src/hangma_bot/hangma/natural_preparation.py": {
+      "bytes": 5636,
+      "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+    },
+    "src/hangma_bot/hangma/observation_rules.py": {
+      "bytes": 24098,
+      "sha256": "25f4fa8bb66c881e8b7583f92aae110f099192c62cbcb8b6b5520cc33c7d0b03"
+    },
+    "src/hangma_bot/hangma/progression.py": {
+      "bytes": 44196,
+      "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+    },
+    "src/hangma_bot/hangma/progression_payload.py": {
+      "bytes": 15798,
+      "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+    },
+    "src/hangma_bot/hangma/public_successor.py": {
+      "bytes": 21173,
+      "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+    },
+    "src/hangma_bot/hangma/public_tile_counts.py": {
+      "bytes": 35715,
+      "sha256": "b86866d7aa43a985292ec99fd39e7378b7c259e2799c21741d5fea0dbc78eb27"
+    },
+    "src/hangma_bot/hangma/route_frontier.py": {
+      "bytes": 11581,
+      "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+    },
+    "src/hangma_bot/hangma/route_hu_witness.py": {
+      "bytes": 8183,
+      "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+    },
+    "src/hangma_bot/hangma/route_structure.py": {
+      "bytes": 10649,
+      "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+    },
+    "src/hangma_bot/hangma/route_transition.py": {
+      "bytes": 72647,
+      "sha256": "800b595e33381ed355d9182e31ae977904fc7969ac5592f4a692faf5b62eac4f"
+    },
+    "src/hangma_bot/hangma/settlement.py": {
+      "bytes": 10643,
+      "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+    },
+    "src/hangma_bot/hangma/special_rules.py": {
+      "bytes": 11609,
+      "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+    },
+    "src/hangma_bot/hangma/value_analysis.py": {
+      "bytes": 18251,
+      "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+    },
+    "src/hangma_bot/kernel/actions.py": {
+      "bytes": 10754,
+      "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+    },
+    "src/hangma_bot/kernel/config.py": {
+      "bytes": 3236,
+      "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+    },
+    "src/hangma_bot/kernel/identity.py": {
+      "bytes": 3520,
+      "sha256": "1e8a12c2394b9bd2370027d1d7e04c1b29e9bcad0764302f3047ac84aca06640"
+    },
+    "src/hangma_bot/kernel/observation.py": {
+      "bytes": 17784,
+      "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+    },
+    "src/hangma_bot/kernel/outcomes.py": {
+      "bytes": 8643,
+      "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+    },
+    "src/hangma_bot/kernel/serialization.py": {
+      "bytes": 27049,
+      "sha256": "85d4a98d9c735090670110376f7bba6066710909fd7f8dcf95fcd45dac3ce56e"
+    },
+    "src/hangma_bot/offline/evaluate.py": {
+      "bytes": 88427,
+      "sha256": "ba49be2eb653aac1edfc43e00d30f0eff24798b9b120d6d2b7aa39f9ff49a376"
+    },
+    "src/hangma_bot/offline/evaluation_results.py": {
+      "bytes": 32657,
+      "sha256": "2ea2d68f158f054f283f98a319143d52d61b57cfdf79bc532235645069c54da7"
+    },
+    "src/hangma_bot/offline/evaluation_statistics.py": {
+      "bytes": 22675,
+      "sha256": "8f357bac85774cff75eb3d9f8f669aee58398dae7fbb1e49c87be2b598ea4491"
+    },
+    "src/hangma_bot/offline/qualifier_opponents.py": {
+      "bytes": 8124,
+      "sha256": "4ba661c94bbb20fe03b110acf049724c36c958980233268278e5900cb6776d7d"
+    },
+    "src/hangma_bot/offline/scoring_input_capture.py": {
+      "bytes": 16172,
+      "sha256": "858c75e621ecf23913b8df0af58af197301e780b1f48c9d4304fe13ad0712e85"
+    },
+    "src/hangma_bot/offline/scoring_sources.py": {
+      "bytes": 9453,
+      "sha256": "da75c44b1919ccd9338ee0469391882be8aaaaeb079775223b5b43be5036d1e0"
+    },
+    "src/hangma_bot/offline/vip_eoh_generate.py": {
+      "bytes": 64915,
+      "sha256": "b0285471a99b9074a40acdc2ac90e8f12416f3aa906d60eae4ee9111d260fef9"
+    },
+    "src/hangma_bot/offline/vip_eoh_input_sources.py": {
+      "bytes": 32957,
+      "sha256": "4b85778bef99cd12f0b93bb53fe7c50513d653880b66725560e6c2dded5109c7"
+    },
+    "src/hangma_bot/offline/vip_eoh_probe.py": {
+      "bytes": 21103,
+      "sha256": "03c34f87aadac5a7a70f31d62206e633d7a9578404d0a033e3fcb1e63aac5488"
+    },
+    "src/hangma_bot/offline/vip_eoh_probe_v2.py": {
+      "bytes": 35624,
+      "sha256": "a7f506b487668bd34e3b2ed4979443a5486bcad2ac6a0d476bce5f6929f53033"
+    },
+    "src/hangma_bot/offline/vip_eoh_rebind.py": {
+      "bytes": 10083,
+      "sha256": "9745d98408420a910022dd2a234cda9f2f55a53e96bab3273e793bc622696d6b"
+    },
+    "src/hangma_bot/offline/vip_eoh_trace_repair.py": {
+      "bytes": 17236,
+      "sha256": "46c355392b8585b2845c018363dac791f356c6c5b4af56d9a62e963c91d7473c"
+    },
+    "src/hangma_bot/offline/vip_evaluation.py": {
+      "bytes": 14069,
+      "sha256": "4172d6f6aec859c6c71f04f42c0b4a3823510f04f136d85285cb93f40f99ae82"
+    },
+    "src/hangma_bot/offline/vip_heuristic_smoke.py": {
+      "bytes": 11065,
+      "sha256": "db07eca11efffba9e93129c24c07a66c9b849ef0675dbde4f55d020977bbc5a6"
+    },
+    "src/hangma_bot/offline/vip_route_development.py": {
+      "bytes": 56814,
+      "sha256": "43214d2051cf66194e27eb5c2ae60c9c0c7b8c5214a8812e72c07709fbeea4c9"
+    },
+    "src/hangma_bot/policy/action_value.py": {
+      "bytes": 45125,
+      "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+    },
+    "src/hangma_bot/policy/action_value_executor.py": {
+      "bytes": 106868,
+      "sha256": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb"
+    },
+    "src/hangma_bot/policy/action_value_policy.py": {
+      "bytes": 26047,
+      "sha256": "8bbcdeb3fc968736f45f831a4c516e5375ef8e5dfe879aa4f696cf2b48d8982b"
+    },
+    "src/hangma_bot/policy/action_value_seeds.py": {
+      "bytes": 26114,
+      "sha256": "dc50f4e2127936368aed0282cce505d68dabf628904daae537928c78e387578a"
+    },
+    "src/hangma_bot/policy/claim_if_legal.py": {
+      "bytes": 4405,
+      "sha256": "acd4c887d59cd5f84e9ea2a6ab6c698278110623af0e2bb26a2f1b992d6a8f43"
+    },
+    "src/hangma_bot/policy/errors.py": {
+      "bytes": 372,
+      "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+    },
+    "src/hangma_bot/policy/evaluation.py": {
+      "bytes": 16532,
+      "sha256": "92f68d0f0eb384cff1444bdc84937fb93d90f398c9ac7b803e00f23d800d86e1"
+    },
+    "src/hangma_bot/policy/evaluation_v1.py": {
+      "bytes": 24085,
+      "sha256": "b3198fcfc030a235873f67051bdf859f04a97b3290c4bd6783e870b7d7330fe0"
+    },
+    "src/hangma_bot/policy/evaluation_v2.py": {
+      "bytes": 4586,
+      "sha256": "8df42443369cc6fa1702934660301f65991df509fa3e8d48823a206c5f4da830"
+    },
+    "src/hangma_bot/policy/heuristic_adapter.py": {
+      "bytes": 9462,
+      "sha256": "f033610a9581842b9ee56e5008bb5feade95d31e7f1f80a0d4bc0f2a2501db45"
+    },
+    "src/hangma_bot/policy/heuristic_v2.py": {
+      "bytes": 8660,
+      "sha256": "49e6830c7cb8b2ea905822fd383f7428440e585b7fbfc94df87b4f4842d729af"
+    },
+    "src/hangma_bot/policy/hu_upgrade.py": {
+      "bytes": 15927,
+      "sha256": "52e65eb5aa6b74880059bccea4b11be05516df4dc9e7bb3ead6c0df526322290"
+    },
+    "src/hangma_bot/policy/hu_upgrade_calibration.py": {
+      "bytes": 2481,
+      "sha256": "20fc79df1050144bcae69236a5d34656fa1afbbb11d8c86d80d3a5319733a8a4"
+    },
+    "src/hangma_bot/policy/interface.py": {
+      "bytes": 3546,
+      "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+    },
+    "src/hangma_bot/policy/legacy_pass.py": {
+      "bytes": 3137,
+      "sha256": "0345d91ebc567b1d00b93fe91735f2bb3b7fed1dd99fa3470a182e76344657ba"
+    },
+    "src/hangma_bot/policy/r18_integrated_positive_v1.py": {
+      "bytes": 45369,
+      "sha256": "df6ab003754ecc275cb61ed1ffabc629c2270f1320d203486de4e86d196e4245"
+    },
+    "src/hangma_bot/policy/r18_integrated_positive_v2.py": {
+      "bytes": 55990,
+      "sha256": "e18eaecb63ced3501b71e23aafd336491c7b1fd08dc4bcc2ac4396650a86a8d0"
+    },
+    "src/hangma_bot/policy/research_candidates.py": {
+      "bytes": 33795,
+      "sha256": "a3002d22c027e2e96d92f24cce3a0581e2c81ca61f340919b9f28542e6f243eb"
+    },
+    "src/hangma_bot/policy/route_heuristic_view.py": {
+      "bytes": 28880,
+      "sha256": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1"
+    },
+    "src/hangma_bot/policy/route_vip_heuristic.py": {
+      "bytes": 37065,
+      "sha256": "ec92ece74a2c44fa3cff31824bc51bca1abb4db63e98552a634cd9b739a26da0"
+    },
+    "src/hangma_bot/policy/safe_fallback.py": {
+      "bytes": 2352,
+      "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+    },
+    "src/hangma_bot/policy/v2_hu_upgrade.py": {
+      "bytes": 1490,
+      "sha256": "5eb8bea746ea00e153f1191d2c7b5340621b6ee827e0769a8cda24dd830502f7"
+    },
+    "src/hangma_bot/policy/value_one_draw.py": {
+      "bytes": 11147,
+      "sha256": "dd22ec5dc27c8b16fdf539bff833a42c7fc9e08973337387011da4939126c612"
+    },
+    "src/hangma_bot/policy/weighted_heuristic.py": {
+      "bytes": 6432,
+      "sha256": "3228a68f544466d16bf5ab926fbb3a3ec7960509aed70bf56571f33d1af08bc5"
+    },
+    "src/hangma_bot/policy/weights.py": {
+      "bytes": 1648,
+      "sha256": "385ecefe548eea7c4490e4efa2aa54d0c7a49911a729edcd06d1a5438c804b3f"
+    },
+    "src/hangma_bot/policy/weights_v1.py": {
+      "bytes": 2987,
+      "sha256": "6dc4f4bf263ce055d0c450e914b556ab5323ecf3290cf104c06d9547aeed0f77"
+    },
+    "src/hangma_bot/simulation/__init__.py": {
+      "bytes": 1236,
+      "sha256": "9940e70b041e4729b56d825b8f85abec12594cf25a84b8672a927ce20b29e844"
+    },
+    "src/hangma_bot/simulation/artifacts.py": {
+      "bytes": 3264,
+      "sha256": "0176f939b276e9ee22c9e72e42939d1e04b2c35aa5c6273d43dab731324e4a32"
+    },
+    "src/hangma_bot/simulation/engine.py": {
+      "bytes": 44570,
+      "sha256": "c32e7d589765c7a973a72be534fdaadf21f8c4bd91c404d471189d49cbbf6b27"
+    },
+    "src/hangma_bot/simulation/identity.py": {
+      "bytes": 1371,
+      "sha256": "8087385814bdb604ea92fcd757e111f430c3d0a53a1bd08ddedfee35efe0e58e"
+    },
+    "src/hangma_bot/simulation/interface.py": {
+      "bytes": 5426,
+      "sha256": "7f1262c0cd75249627eaf8031a410fbff2262940ef7a9923f1b8c18721b76d6f"
+    },
+    "src/hangma_bot/simulation/projection.py": {
+      "bytes": 6026,
+      "sha256": "1d729c3e0be45ff8f137c85b906b4d7e2454dd6627cde5db9f5bf1915cf58490"
+    },
+    "src/hangma_bot/simulation/shuffle.py": {
+      "bytes": 7411,
+      "sha256": "5e8597e06dc7d94e8aa2825f066df5faef47c2298b1c1919bccbf2a7756f91f5"
+    },
+    "src/hangma_bot/simulation/state.py": {
+      "bytes": 3309,
+      "sha256": "c57f0a3f5ff42736d3b1514c44527c77382e79b1fe8feeef6c571fea4d154556"
+    }
+  },
+  "pairing": "同一母来源父子与四换座共享三逻辑对手组成；牌山洗牌独立命名空间",
+  "pools": {
+    "confirmation": [
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.6487640081342638,
+          0.393889671364812,
+          0.8058007814318041
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-001",
+        "seed": 9039165474919993375,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.11833539687124217,
+          0.08564456265497578,
+          0.4976399621994828
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-002",
+        "seed": 8506904066694446096,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8795909888038747,
+          0.5348247425651126,
+          0.8643727627263412
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-003",
+        "seed": 6070988946607527098,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.2463659078692083,
+          0.2162156733792513,
+          0.797052622438665
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-004",
+        "seed": 5659606093044751373,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.46688931272746004,
+          0.644695568771341,
+          0.2929601582678122
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-005",
+        "seed": 960705186773053743,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.5894751468118431,
+          0.27982698946421636,
+          0.7035635589408631
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-006",
+        "seed": 4132553399181142480,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.41261170950364134,
+          0.9113881745035248,
+          0.5520076023992836
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-007",
+        "seed": 5201693537629272603,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.16573817128421542,
+          0.46096645756186183,
+          0.6038580600790934
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-008",
+        "seed": 702210521516350337,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.4161942913785931,
+          0.9862078255067297,
+          0.2350315316501359
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-009",
+        "seed": 8154055163250414203,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.2547879948882523,
+          0.09049794108943998,
+          0.19801840928064585
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-010",
+        "seed": 3298962001747585867,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.8692353792290644,
+          0.09905354893019191,
+          0.37350329238219415
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-011",
+        "seed": 4155240151614790890,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.7001968233947262,
+          0.33016940347376833,
+          0.3337147358383822
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-012",
+        "seed": 6469928165932371774,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.5002822397912345,
+          0.08329731790790562,
+          0.9702736304117575
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-013",
+        "seed": 7012955838750823021,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8581799606557423,
+          0.03230151663283887,
+          0.6043120954949868
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-014",
+        "seed": 6585064440701377092,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.8999949579179026,
+          0.11820744273904393,
+          0.4280761180426774
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-015",
+        "seed": 7854534581338131381,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.37355113770485815,
+          0.47218910140461423,
+          0.14006752345395457
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-016",
+        "seed": 4788700912268833364,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.4888225807768134,
+          0.0008464899269275961,
+          0.21957930425006422
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "automatic_like",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-017",
+        "seed": 7429872729040211690,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8699247550187753,
+          0.8249516980619502,
+          0.43068682037876527
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-018",
+        "seed": 4851481797983584411,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.9174802694061308,
+          0.2951976113808167,
+          0.39774879924458395
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-019",
+        "seed": 8943613836962012239,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.2857858460566983,
+          0.6597739242088962,
+          0.45569257797392204
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-020",
+        "seed": 8584263451551535305,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.2289277139882745,
+          0.1937163849660547,
+          0.23253220294325472
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-021",
+        "seed": 1415112539670486588,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.37658194960112634,
+          0.5104205355837569,
+          0.37209453632567446
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-022",
+        "seed": 4876030105904260308,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.36753562840103293,
+          0.7395410154858766,
+          0.26506124704750544
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-023",
+        "seed": 7690928852831766348,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8353671930729127,
+          0.9146323848158631,
+          0.5232565909636443
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-024",
+        "seed": 5623656535290992975,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8897296086935526,
+          0.2550157307969869,
+          0.6013605899278
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-025",
+        "seed": 7968125815903013116,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.49106646442535606,
+          0.9311336833942473,
+          0.9330684760840837
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-026",
+        "seed": 1303464038029723463,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.7761508036413413,
+          0.4530279370608937,
+          0.34547362025371997
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-027",
+        "seed": 3234591829134343635,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.6394513827866937,
+          0.865549526907121,
+          0.4624470113966751
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-028",
+        "seed": 1393436894107040891,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.7655806873044145,
+          0.8367080808116939,
+          0.32029851182431535
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-029",
+        "seed": 6940723895646966947,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.04426613766478604,
+          0.6756257244128958,
+          0.04412707864275223
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-030",
+        "seed": 5156803167250016001,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.12307942132555905,
+          0.5610899694568425,
+          0.9618567413906686
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-031",
+        "seed": 1639654191349923378,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.2606802643936016,
+          0.9280745068430383,
+          0.012100246980474072
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-032",
+        "seed": 416936707602423221,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.08648362989712055,
+          0.854234048064635,
+          0.21032505923372347
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-033",
+        "seed": 6341503776824072169,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.7618757434206347,
+          0.5441640070002279,
+          0.5742606507192554
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-034",
+        "seed": 5043728223948323770,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.4044087829290255,
+          0.450616176943077,
+          0.23893951104456246
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-035",
+        "seed": 773761507434492328,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.3635986258028774,
+          0.551895123908358,
+          0.44168207890776356
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-036",
+        "seed": 4976095028021535864,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.276283883368326,
+          0.2820147007314737,
+          0.8503176636683706
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-037",
+        "seed": 6940934555476158546,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.6172974496920288,
+          0.4179109081232464,
+          0.03445679093158205
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-038",
+        "seed": 2186616912724065504,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.9100644940174059,
+          0.2848718936797664,
+          0.7632148462560935
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-039",
+        "seed": 8724461510121278254,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.26102363546524376,
+          0.09545196597625594,
+          0.7007354223812367
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-040",
+        "seed": 5053173399660497784,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.6908457112377925,
+          0.04902265012260565,
+          0.6594154391250683
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-041",
+        "seed": 2306820491167145672,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.5452744943678174,
+          0.9948740726232423,
+          0.1588008468953398
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-042",
+        "seed": 1372846304938282479,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8740203202564747,
+          0.6932846896274241,
+          0.06827976424841731
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-043",
+        "seed": 1970319409421383489,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 0,
+        "draw_uniforms": [
+          0.8832822885566317,
+          0.947865496300489,
+          0.6794458777989939
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-044",
+        "seed": 5737135739335469389,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.21874158624338913,
+          0.9081481422005172,
+          0.09151722038670917
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-045",
+        "seed": 940608309823348164,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.08160301100027223,
+          0.1239278490542639,
+          0.15482975427512247
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-046",
+        "seed": 2279407648454745142,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.5935347049620355,
+          0.9627037773121064,
+          0.9302525475910451
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-047",
+        "seed": 4693841382175867824,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.990623836413369,
+          0.9463412123083987,
+          0.5248074531287154
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-048",
+        "seed": 7879145690901279923,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.4452398439963914,
+          0.9676582802437076,
+          0.4063968849398012
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-049",
+        "seed": 6086315241763800508,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 0,
+        "draw_uniforms": [
+          0.6060513240899748,
+          0.9885884358290636,
+          0.9240712127608667
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-050",
+        "seed": 6662579059106042197,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8600384817084805,
+          0.09250644171278843,
+          0.7851511261255816
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-051",
+        "seed": 6921731652854530869,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.9354881900116475,
+          0.34026237646530033,
+          0.8545517873907412
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-052",
+        "seed": 6097384323488961076,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8710518401454646,
+          4.9705148763790064e-05,
+          0.855709414670353
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-053",
+        "seed": 2590056145183351959,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.3790625718227635,
+          0.6571558918590136,
+          0.8818984854531104
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-054",
+        "seed": 5505870399786782776,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 0,
+        "draw_uniforms": [
+          0.9909701868492633,
+          0.9522531516259505,
+          0.7487646663207446
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-055",
+        "seed": 8070821377212743094,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.820031172964893,
+          0.18206907465850586,
+          0.7582425908888798
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-056",
+        "seed": 2051513356584150645,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 0,
+        "draw_uniforms": [
+          0.78795133561227,
+          0.6026997702515245,
+          0.9637946514074144
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-057",
+        "seed": 995478115099824353,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8755763167321707,
+          0.011025399189266039,
+          0.6968145296384131
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-058",
+        "seed": 3351450150163376894,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.5313278706161465,
+          0.8377504278254764,
+          0.5913318354712614
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-059",
+        "seed": 5632888924466168655,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.5313965876022615,
+          0.364916973062942,
+          0.8473393323413652
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-060",
+        "seed": 70776746433310151,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.006395390060667916,
+          0.6010490535718863,
+          0.7168904376465596
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-061",
+        "seed": 8646992237677533692,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.12969264999490326,
+          0.7814193428979118,
+          0.7050092743242309
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-062",
+        "seed": 5652025771528931120,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.3206575911309383,
+          0.5461866611093585,
+          0.45346716065737624
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-063",
+        "seed": 4374025422666348207,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.427498341854762,
+          0.5930171705940268,
+          0.6511435307903536
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-064",
+        "seed": 8824459200670707969,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.29641460704968714,
+          0.5653657154699309,
+          0.02346241621275924
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-065",
+        "seed": 6773802423512265100,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.2772764071702045,
+          0.739049019627355,
+          0.6214941778983035
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-066",
+        "seed": 3277852260261611734,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.29365824206244995,
+          0.2020587002035943,
+          0.7783141347065264
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-067",
+        "seed": 6591789583882349117,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.269812432298714,
+          0.9363298657203163,
+          0.6315392283942408
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-068",
+        "seed": 8367400700777237594,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 0,
+        "draw_uniforms": [
+          0.6767948508089896,
+          0.6476259487016588,
+          0.9936765125052122
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-069",
+        "seed": 4362180496073375673,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 0,
+        "draw_uniforms": [
+          0.7517700657792368,
+          0.6937085755361573,
+          0.9565352654337396
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-070",
+        "seed": 6918208976194172018,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.9070465371177141,
+          0.2747556080865309,
+          0.9853082653394117
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-071",
+        "seed": 3001816748975472139,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.9918608969428159,
+          0.43113054446868215,
+          0.1489012551740081
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-072",
+        "seed": 3666766685380284554,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.5423535337064473,
+          0.3139916866459549,
+          0.45911587780542407
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-073",
+        "seed": 944534772299459573,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.4124699735285622,
+          0.6565820862854665,
+          0.710923330837358
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-074",
+        "seed": 8907697038596442424,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8895278183098215,
+          0.520647940775001,
+          0.9407186159160844
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-075",
+        "seed": 3316270998601129446,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.7932202271165352,
+          0.1662324053922224,
+          0.19657024627569286
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-076",
+        "seed": 7138236737043230604,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.9209878910261103,
+          0.2261428863323912,
+          0.503080938522561
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-077",
+        "seed": 9215143573496248847,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.5335238924529134,
+          0.7482457742422898,
+          0.8194209824904899
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-078",
+        "seed": 3562436960966721085,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.1608613976468405,
+          0.6729235529332493,
+          0.8210404243589127
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-079",
+        "seed": 9081247855933734410,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8493901962740609,
+          0.6778963295169135,
+          0.0422790761739642
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-080",
+        "seed": 6661890497295233730,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 0,
+        "draw_uniforms": [
+          0.9420012519173575,
+          0.7365384355739374,
+          0.7425724358446997
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-081",
+        "seed": 4773746755626792101,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.2686237640554464,
+          0.11577066838090766,
+          0.4501651745002192
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-082",
+        "seed": 6750587546010011463,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.33688489598510274,
+          0.2951961323858361,
+          0.15797947532748668
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "automatic_like",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-083",
+        "seed": 3411140704946518356,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.024248298537548174,
+          0.14067077982249498,
+          0.7093479423724967
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-084",
+        "seed": 913728514256299258,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.4477819037796167,
+          0.7985386426776203,
+          0.04390485866437932
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-085",
+        "seed": 6202151139996494730,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.23660448604049122,
+          0.9660837260004326,
+          0.9812147782784642
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-086",
+        "seed": 8491945125007491624,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.27126548219973634,
+          0.9149630281995126,
+          0.47031098438742047
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-087",
+        "seed": 5684284027068138831,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.5067451249401604,
+          0.7465755026546869,
+          0.2838849541799612
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-088",
+        "seed": 8568687183921942260,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.8265378001090923,
+          0.4755873703996095,
+          0.5896741717410148
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-089",
+        "seed": 7197631060877967060,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8635945871838097,
+          0.2881969253087525,
+          0.8518961915224286
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-090",
+        "seed": 9035942938403920306,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.8352721191236817,
+          0.0004691373501857221,
+          0.5299216089276746
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-091",
+        "seed": 2371635827143311016,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.9461971451584192,
+          0.6412568556651397,
+          0.46384148987032814
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-092",
+        "seed": 4306549017665956760,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.06359793021325266,
+          0.2696854256907455,
+          0.8318568685213591
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-093",
+        "seed": 36886395458002033,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.7249672581441187,
+          0.17904933455801075,
+          0.9578391108563946
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-094",
+        "seed": 9218748260705270776,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.026076774808339587,
+          0.49204335789700315,
+          0.5939859044716957
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-095",
+        "seed": 8676126727466652841,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.41170940870438477,
+          0.6532904553556906,
+          0.6292328025658246
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-096",
+        "seed": 7740230695175237683,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.6117792045706626,
+          0.3051036591731343,
+          0.7469940915894235
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-097",
+        "seed": 6067775227930024966,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.31344746353179176,
+          0.6671269557841993,
+          0.9112119320012594
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-098",
+        "seed": 51497389891599897,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.29558617087640293,
+          0.3469513019752931,
+          0.4955754370324271
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-099",
+        "seed": 2388182685077683637,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.06223716684428848,
+          0.4474771126059893,
+          0.6146102821906864
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-100",
+        "seed": 671190376843279027,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.6730854600066805,
+          0.23029112672472474,
+          0.7913731782217742
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-101",
+        "seed": 6842293388010201245,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.989053406629489,
+          0.4912776284765038,
+          0.06583127635955788
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-102",
+        "seed": 589908709558510070,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.19752757142136868,
+          0.014559756742274277,
+          0.9760277628327497
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-103",
+        "seed": 1405404272138304647,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.18982063161774132,
+          0.5022079974686535,
+          0.5639038680797549
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-104",
+        "seed": 6767262822666836985,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.18378801135917444,
+          0.00029598542105335746,
+          0.04737700913840537
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-105",
+        "seed": 5386384499332177144,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.16696883208012336,
+          0.5259664681281299,
+          0.743748479282039
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-106",
+        "seed": 1496270230218087308,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.4077487774554658,
+          0.566348234189908,
+          0.8267678404859845
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-107",
+        "seed": 5887269342679067907,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.3355729475870166,
+          0.9415452075695951,
+          0.07985814871406172
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-108",
+        "seed": 7726404596338846083,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8541595420247894,
+          0.14814311716285689,
+          0.6297090000320654
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-109",
+        "seed": 4078873408407459023,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.03499587274041116,
+          0.8968911445943947,
+          0.480408896604438
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-110",
+        "seed": 5348673406140268994,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.23251836910098023,
+          0.0014631097877244592,
+          0.5810983691035975
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-111",
+        "seed": 5318988254831596941,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.7129781144068331,
+          0.6854396776892792,
+          0.23249030439079688
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-112",
+        "seed": 1814481882836017374,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.5145199604546561,
+          0.0030654622172893164,
+          0.790941757783557
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-113",
+        "seed": 6065124216221609679,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.681447623058781,
+          0.014699908050649246,
+          0.5715771661549895
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-114",
+        "seed": 4741763554352964862,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.20217091357850048,
+          0.402624066025678,
+          0.46472787057876175
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-115",
+        "seed": 3544302542991586966,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.9471429124528181,
+          0.9539102400480806,
+          0.039698283320764194
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-116",
+        "seed": 7273602559473436334,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.226521456466663,
+          0.40181497933777477,
+          0.6409966238987312
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-117",
+        "seed": 1510838565321248874,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.27683869737562083,
+          0.44638067087784594,
+          0.7183367393329145
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-118",
+        "seed": 1662671673211749573,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.613335232516479,
+          0.974232215912576,
+          0.20272065047050958
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-119",
+        "seed": 413343596730588456,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.40013296346648863,
+          0.3438579471101174,
+          0.3549475937594413
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-120",
+        "seed": 8913296505978924015,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.31114219441729696,
+          0.09180639073708374,
+          0.2170841002416234
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "automatic_like",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-121",
+        "seed": 8847939264233773664,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8118821864709792,
+          0.03246924211659197,
+          0.737688968801488
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-122",
+        "seed": 8159245589737820208,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.4886788279492772,
+          0.8343293939276223,
+          0.008216593768556768
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-123",
+        "seed": 2436948498761681353,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.3719233913736767,
+          0.8423523786045748,
+          0.8607835644852713
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-124",
+        "seed": 1217060243689320709,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.45979520888000236,
+          0.9324683026139683,
+          0.1749741031407024
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-125",
+        "seed": 7029462856006394273,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.5115481824157848,
+          0.48383096382002044,
+          0.05141199196948498
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-126",
+        "seed": 5210738577852729515,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.14564055438011014,
+          0.19050636550033107,
+          0.5010164884516866
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-127",
+        "seed": 2049982825820952979,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8632032275766629,
+          0.2823165746006231,
+          0.8212108680981788
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-confirmation-128",
+        "seed": 1910181651482463454,
+        "weak_fraction_setting": 0.6
+      }
+    ],
+    "development": [
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.6881275877837436,
+          0.7595167036484513,
+          0.4261547141302744
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-001",
+        "seed": 5440287002654827664,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.0945723633470209,
+          0.30616886260512666,
+          0.3716590732015923
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-002",
+        "seed": 1565945357931012707,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.701740418918202,
+          0.18750422052068572,
+          0.8948505605178337
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-003",
+        "seed": 3533237039953541308,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.2357842504563451,
+          0.10854494634331435,
+          0.8854683717182622
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-004",
+        "seed": 916692198907160005,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.8150239329516019,
+          0.3521851780092671,
+          0.4598632814300876
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-005",
+        "seed": 6962301855493019245,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.2911861714387147,
+          0.06668605112599002,
+          0.19572058800454195
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "automatic_like",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-006",
+        "seed": 3465079505907686308,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.6960283785888474,
+          0.17579551066274335,
+          0.5343304573691262
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-007",
+        "seed": 7978881948648149633,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.5803188378261861,
+          0.24174961759228586,
+          0.6317739682886548
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "automatic_like",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-008",
+        "seed": 6966749631816322958,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8396845855470113,
+          0.8520509341668596,
+          0.28212507269225795
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-009",
+        "seed": 4718449603882288261,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.21646019589772902,
+          0.4446338636334072,
+          0.4322624476054434
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-010",
+        "seed": 6937257489329044934,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.5325061357964713,
+          0.9568806147895687,
+          0.6371986952254262
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-011",
+        "seed": 1967839673068054160,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.866944816173367,
+          0.614876400548717,
+          0.21533537313789686
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-012",
+        "seed": 9059119072655518461,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8089324010098721,
+          0.4823536190011687,
+          0.6590767972861064
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-013",
+        "seed": 2170822782461839806,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.5386409279488688,
+          0.3969575641447529,
+          0.28335988999599937
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-014",
+        "seed": 301365082590479378,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.6754863298814452,
+          0.3087260464686301,
+          0.13641729651160128
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-015",
+        "seed": 6703410594583523991,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.10260917001858483,
+          0.4663280650479059,
+          0.13627138695304164
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-016",
+        "seed": 5602474793558595435,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.7530588639734597,
+          0.5746502567465052,
+          0.8883726450389035
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-017",
+        "seed": 5465880581403168925,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.559370205464134,
+          0.46453373470023585,
+          0.11426252077150356
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-018",
+        "seed": 7646741393489998095,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.15179102722019455,
+          0.47637191912505017,
+          0.19262366651625307
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-019",
+        "seed": 5988543677447337479,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 0,
+        "draw_uniforms": [
+          0.8148989468400553,
+          0.7692433529988548,
+          0.9829119925586998
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-020",
+        "seed": 5045313020402761036,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.476661277880539,
+          0.7323738561237944,
+          0.9338479678428091
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-021",
+        "seed": 6465610476421381223,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.6608717820129366,
+          0.3292988721673106,
+          0.7977749541795808
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-022",
+        "seed": 4373169765222210739,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.2529251827109852,
+          0.40302029533085537,
+          0.5718560947945766
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-023",
+        "seed": 7372806301956291973,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.652952787115929,
+          0.5084994853801318,
+          0.5755891163806078
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-024",
+        "seed": 4486587774613005776,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.37848688640396644,
+          0.1634908974233542,
+          0.5335961191368283
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-025",
+        "seed": 6010536443983952824,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.6025878831393265,
+          0.44139290718519,
+          0.6376946355508392
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-026",
+        "seed": 5992382514284697484,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 0,
+        "draw_uniforms": [
+          0.6947089086594131,
+          0.8225766650396721,
+          0.6714986139328286
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-027",
+        "seed": 869194365327194173,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.21999429421385985,
+          0.5069257826302821,
+          0.06566452636362852
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-028",
+        "seed": 1082206329310287910,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.3491455521540018,
+          0.6193427347472003,
+          0.9546695299487357
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-029",
+        "seed": 5187697447341239357,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.6246206675225918,
+          0.8982664794666778,
+          0.29911504095116614
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-030",
+        "seed": 2422867740711126651,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.20560687794048493,
+          0.624182838843175,
+          0.06655053008837997
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-031",
+        "seed": 8511502526099627402,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.5930472021957164,
+          0.3716748259957545,
+          0.5486201299062686
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "normal_v0",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-development-032",
+        "seed": 988277199308525602,
+        "weak_fraction_setting": 0.6
+      }
+    ],
+    "diagnostic_fresh": [
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.5166528324682264,
+          0.6992113026140859,
+          0.8667357855559369
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-diagnostic_fresh-001",
+        "seed": 6628610265190155990,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.6018665066938632,
+          0.4394730143565746,
+          0.9284638046161717
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-diagnostic_fresh-002",
+        "seed": 4218300523515364657,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 1,
+        "draw_uniforms": [
+          0.8767418040911525,
+          0.45405248778692153,
+          0.7843983274117788
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-diagnostic_fresh-003",
+        "seed": 6620066366615890111,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.17494229003449868,
+          0.6476762771547586,
+          0.39683541358622076
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "r18",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-diagnostic_fresh-004",
+        "seed": 7447921872989380465,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.13072051877786028,
+          0.5391202815219988,
+          0.9960250504201401
+        ],
+        "opponent_types_logical_1_2_3": [
+          "automatic_like",
+          "normal_v0",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-diagnostic_fresh-005",
+        "seed": 5724404501965237179,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 0,
+        "draw_uniforms": [
+          0.9066699754704278,
+          0.9704398250035599,
+          0.854953994592667
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "r18",
+          "r18"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-diagnostic_fresh-006",
+        "seed": 6153883737353848146,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 3,
+        "draw_uniforms": [
+          0.5832777736941175,
+          0.07773472749904276,
+          0.32029028296099993
+        ],
+        "opponent_types_logical_1_2_3": [
+          "normal_v0",
+          "automatic_like",
+          "normal_v0"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-diagnostic_fresh-007",
+        "seed": 1152540197898424853,
+        "weak_fraction_setting": 0.6
+      },
+      {
+        "actual_weak_count": 2,
+        "draw_uniforms": [
+          0.7150081641520057,
+          0.4754754270425381,
+          0.18794231271278927
+        ],
+        "opponent_types_logical_1_2_3": [
+          "r18",
+          "normal_v0",
+          "automatic_like"
+        ],
+        "paired_A_C_same_composition": true,
+        "root_id": "t185-diagnostic_fresh-008",
+        "seed": 4182551551706504712,
+        "weak_fraction_setting": 0.6
+      }
+    ]
+  },
+  "schema": "t185-opponent-composition/1",
+  "scope": "正常V0/自动行为代理为弱席假设，R18为其余席；不是榜前选手实测复制",
+  "sensitivity_50_75_not_main_rescue": true,
+  "version": "qualifier-visible-opponents/1",
+  "walls_or_scores_read": false,
+  "weak_fraction_setting": 0.6,
+  "worlds_tables_or_model_calls": 0
+}

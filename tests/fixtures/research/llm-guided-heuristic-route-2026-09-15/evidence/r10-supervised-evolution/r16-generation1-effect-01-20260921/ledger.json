@@ -1,0 +1,46 @@
+{
+  "schema": "sitin-action-value-ledger/1",
+  "accounts": [
+    "tokens_input",
+    "tokens_output",
+    "tables_full",
+    "tables_partial",
+    "prefix_generation",
+    "confirm_reserved"
+  ],
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 256.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "confirm_authorized_budget": 0.0,
+  "authorized_budgets": {
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "tables_full": 256.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "confirm_policy": "confirm 硬禁继承现状：默认 0，无显式授权任何 confirm 记账拒绝",
+  "limit_policy": "Q3：正数记账须在授权总额内（扣已结算+在途预留）；未声明额度 fail-closed 拒绝；amount=0 纯登记不限额",
+  "reservations": [
+    {
+      "reservation_id": "r16-generation1:full-stages#1",
+      "step_id": "r16-generation1:full-stages",
+      "account": "tables_full",
+      "amount": 256.0,
+      "note": "R16代际1全新来源完整两桌；异常按未完成预留保守结算；中断保守结算；成功后按完整阶段文件复核实际桌数；按全部完整阶段文件结算；重跑跳过项仍纳入批次总额",
+      "at_utc": "2026-09-21T10:58:56Z",
+      "status": "settled",
+      "charged": 256.0,
+      "usage_unknown": true
+    }
+  ],
+  "workers_active": 0,
+  "worker_lease": "ledger.json.workers.json",
+  "worker_cap": 12
+}

@@ -1,0 +1,1625 @@
+{
+  "schema": "sitin-action-value-public-interface/1",
+  "appendix_id": "action-value-public-interface-v1",
+  "version": "1",
+  "applies_to": [
+    "generation",
+    "repair"
+  ],
+  "purpose": "公开接口附录：逐字段给出候选在 score_actions(view) 里真正读到的字段名、嵌套路径、容器形状、类型、单位、枚举与可空条件；同时给出输出侧（SCORED/ABSTAIN、reason 三态）的实际接受规则。用于替代「只渲染概述」：题目不再要求作者猜可见接口。",
+  "identity_note": "本文件与 contracts/action-value-v1.json 分开存放：合同的字节 sha256 是冻结评价身份的一部分，本附录不改变评分语义，因此不进合同字节身份；它作为**提示词 payload 身份**的一部分（路径 + sha256 一起记录），改一个字即改提示词身份，旧 attempt 不复用。",
+  "source_of_truth": {
+    "projection_module": "src/hangma_bot/policy/action_value.py",
+    "projection_call": "ScoringView.candidate_view()",
+    "schema_version_value": "sitin-scoring-view/4",
+    "projection_functions": [
+      "_observation_mapping",
+      "_action_mapping",
+      "_branch_mapping",
+      "_route_mapping",
+      "_settlement_mapping",
+      "_useful_tiles_mapping",
+      "_family_entries_mapping",
+      "_rule_issues_mapping"
+    ],
+    "producer_module": "src/hangma_bot/policy/action_value_policy.py（build_scoring_view：ActionView 字段的来源与缺省）",
+    "verification": "tools/test_sitin_generate_public_interface.py 用真实投影逐路径断言本附录；逐字段覆盖数与输入来源见 evidence/v4-impl/r9-admission/p25-pkgA/public-interface-verification.json"
+  },
+  "conventions": [
+    "`actions[]` 表示动作表逐项（元组），`[].` 表示对每一项的字段；`*` 表示该层键名由数据决定（透传）。",
+    "所有元组都是只读 tuple（候选只能读、不能改）；所有映射都是 dict。",
+    "`None` 与 Python 的 None 同义（JSON 里写 null）；「缺证据」一律是 None，**不是** 0、不是 ()、不是空字符串。",
+    "动作键 action_key 的稳定格式：`discard:<牌码>`、`chi:<牌码>,<牌码>,<牌码>`、`peng:<牌码>`、`gang:<concealed|added|exposed>:<牌码>`、`hu`、`pass`。",
+    "跳过分支的两个陷阱（复审 C5 的根因就是作者在猜字段）：① 没有 normal_progress / seven_pairs_progress 这种字段——动作相对进展只有 `actions[].family_progress`（全家族显著性摘要）与 `actions[].family_progress_entries[]`（逐家族明细）；普通型/七对只有**向听**与**推进牌**四件套（shanten/useful 各两套），没有「进展」字段。② `actions[].useful_tiles` 的元素是映射 {code, remaining_estimate}，而 `actions[].followup_branches[].useful_tiles` 的元素是**牌码字符串**——两处形状不同。"
+  ],
+  "paths": [
+    {
+      "path": "schema_version",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "结构版本字符串",
+      "note": "固定 sitin-scoring-view/4；结构面不兼容变更才升版本",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "visible_state",
+      "types": [
+        "dict"
+      ],
+      "shape": "映射",
+      "unit": "本人依法可见的牌局事实白名单（无他家手牌、无未来牌墙、无赛后结果）",
+      "note": "子字段见下；不含 game_id 等运行关联键",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "competition",
+      "types": [
+        "dict",
+        "NoneType"
+      ],
+      "shape": "映射 | None",
+      "unit": "可见赛事上下文（阶段账/本桌账/合计与掩码）",
+      "null_when": "无权获知赛事上下文（面板上恒为 None 的窗口很常见：competition=None）",
+      "note": "None 表示未知，不得用 visible_state.table_scores 顶替阶段账",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "actions",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射]",
+      "unit": "按 action_key 严格升序的合法动作表（逐项字段见下）",
+      "note": "本视图不重新判定合法性",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "analysis_profile",
+      "types": [
+        "dict"
+      ],
+      "shape": "映射",
+      "unit": "规则分析语义版本与固定工作量上限快照",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "reference_features",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射]",
+      "unit": "有版本的参考代理值（可为空元组）",
+      "note": "无校准证据时不得当概率或严格下界",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "visible_state.seat",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "本人座位，0—3",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.phase",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "官方阶段字符串原样透传（如 draw / response_draw）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.round_no",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "当前单局序号",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.snapshot_seq",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "官方快照事件序号（非负、单调）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.dealer_seat",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "庄家座位，0—3",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.turn_seat",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "当前行动座位，0—3",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.responding_seats",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "int"
+      ],
+      "shape": "元组[整数]",
+      "unit": "本响应窗口需要应答的座位（元素 0—3；可为空元组）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.my_hand",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "str"
+      ],
+      "shape": "元组[字符串]",
+      "unit": "本人手牌牌码，保留官方顺序（紧急「最右一张」依赖该顺序）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.drawn_tile",
+      "types": [
+        "str",
+        "NoneType"
+      ],
+      "shape": "字符串 | None",
+      "unit": "刚摸到的牌码",
+      "null_when": "非摸牌窗口",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.discards",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "tuple"
+      ],
+      "shape": "元组[元组[字符串]]",
+      "unit": "四家牌河牌码，外层固定按座位 0—3",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.discards[]",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "str"
+      ],
+      "shape": "元组[字符串]",
+      "unit": "该座位牌河牌码（外层已按座位 0—3 展开；空元组=该座位尚无弃牌）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.melds",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "tuple"
+      ],
+      "shape": "元组[元组[映射]]",
+      "unit": "四家公开副露，外层固定按座位 0—3",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.melds[]",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射]",
+      "unit": "该座位公开副露（空元组=该座位无副露）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.melds[][].seat",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "副露所有者座位，0—3",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.melds[][].kind",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "副露种类字符串（chi/peng/gang 等，官方映射后）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.melds[][].tiles",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "str"
+      ],
+      "shape": "元组[字符串]",
+      "unit": "组成副露的牌码（含被吃/碰/杠的那张）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.melds[][].from_seat",
+      "types": [
+        "int",
+        "NoneType"
+      ],
+      "shape": "整数 | None",
+      "unit": "供牌者座位，0—3",
+      "null_when": "暗杠等无供牌来源",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.hand_counts",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "int"
+      ],
+      "shape": "元组[整数]",
+      "unit": "四家剩余手牌张数，固定按座位 0—3",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.last_discard",
+      "types": [
+        "dict",
+        "NoneType"
+      ],
+      "shape": "映射 | None",
+      "unit": "触发本窗口的最近一次弃牌事实",
+      "null_when": "非响应窗口/无最近弃牌",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.last_discard.seat",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "弃牌者座位，0—3",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.last_discard.tile",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "弃牌牌码",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.last_discard.seq",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "该弃牌的官方事件序号",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.remaining_tile_count",
+      "types": [
+        "int",
+        "NoneType"
+      ],
+      "shape": "整数 | None",
+      "unit": "官方墙余量（张）",
+      "null_when": "官方未提供或无法可靠推出（不得补零）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.table_scores",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "int"
+      ],
+      "shape": "元组[整数]",
+      "unit": "当前桌内积分，固定按座位 0—3（单位：积分点）",
+      "note": "与 competition.table_scores 是同一事实的两个基准名；不得与本字段相加",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.rule_state",
+      "types": [
+        "dict"
+      ],
+      "shape": "映射",
+      "unit": "公开规则状态白名单",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.rule_state.wealth_god",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "财神牌码（当前规则为「白」）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.rule_state.baotou",
+      "types": [
+        "bool"
+      ],
+      "shape": "标量",
+      "unit": "本人是否处于爆头状态",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.rule_state.chain_count",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "本人飘/杠动作链次数（断链清零，非负）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.rule_state.catch_play",
+      "types": [
+        "bool"
+      ],
+      "shape": "标量",
+      "unit": "官方抓打圈活跃标记",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.rule_state.catch_play_owner_seat",
+      "types": [
+        "int",
+        "NoneType"
+      ],
+      "shape": "整数 | None",
+      "unit": "公开圈主座位，0—3",
+      "null_when": "旧报文未提供或无圈",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.chain_piao",
+      "types": [
+        "int",
+        "NoneType"
+      ],
+      "shape": "整数 | None",
+      "unit": "当前本人动作链内已飘出的白板张数",
+      "null_when": "依据不足（不等于 0）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "visible_state.gang_draw",
+      "types": [
+        "bool",
+        "NoneType"
+      ],
+      "shape": "布尔 | None",
+      "unit": "当前本人摸牌是否为杠补牌",
+      "null_when": "缺少可靠来源（不等于 False）",
+      "source": "_observation_mapping"
+    },
+    {
+      "path": "competition.stage_scores",
+      "types": [
+        "tuple",
+        "NoneType"
+      ],
+      "element_types": [
+        "int"
+      ],
+      "shape": "元组[整数]（长度 4）| None",
+      "unit": "本阶段【已完成各桌】积分和，按座位 0—3；单位：积分点（允许负分）",
+      "null_when": "无阶段账（ranking 为空）或不可映射",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "competition.table_scores",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "int"
+      ],
+      "shape": "元组[整数]（长度 4）",
+      "unit": "本桌进行中积分，按座位 0—3；单位：积分点",
+      "note": "对本人恒可见，故非 None；与 visible_state.table_scores 是同一事实",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "competition.current_stage_scores",
+      "types": [
+        "tuple",
+        "NoneType"
+      ],
+      "element_types": [
+        "int"
+      ],
+      "shape": "元组[整数]（长度 4）| None",
+      "unit": "当前阶段合计 = 已完成账 + 本桌账（逐座位相加）；单位：积分点",
+      "null_when": "与 stage_scores 同掩码（stage_scores 为 None 时它也为 None）",
+      "note": "算阶段名次与门线必须用它或两账相加；不得只加已完成账",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "competition.freshness_masks",
+      "types": [
+        "tuple",
+        "NoneType"
+      ],
+      "element_types": [
+        "str"
+      ],
+      "shape": "元组[字符串] | None",
+      "unit": "位置序固定 [stage_scores, table_scores] 的可用/陈旧说明",
+      "null_when": "未提供掩码",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "actions[].action_key",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "稳定动作键（格式见 conventions）",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].action_type",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "规则动作类型",
+      "enum": [
+        "discard",
+        "chi",
+        "peng",
+        "gang",
+        "hu",
+        "pass"
+      ],
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].is_legal",
+      "types": [
+        "bool"
+      ],
+      "shape": "标量",
+      "unit": "合法身份（来自 RuleAnalysis 的事实透传）",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].baotou_after",
+      "types": [
+        "bool",
+        "NoneType"
+      ],
+      "shape": "标量 | None",
+      "unit": "该合法动作完成后的爆头状态",
+      "null_when": "终局胡、规则转移未知、未运行分值/进展分析或动作事实缺失",
+      "note": "由 hangma.progression.baotou_after_action 经 CandidateFacts 同源产生；policy 只投影，不重新计算。弃牌按弃后暗牌重算；吃、碰、杠、过继承；胡为终局返回 None",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].family_progress",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "本动作相对进展的**全家族**显著性摘要（大写五态）",
+      "enum": [
+        "ADVANCE",
+        "SAME",
+        "RETREAT",
+        "CLOSE",
+        "UNKNOWN"
+      ],
+      "note": "这是家族进展 summary，**不是**普通型/七对进展；空家族明细时固定 UNKNOWN（未分析，不是中性）",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].immediate_settlement",
+      "types": [
+        "dict",
+        "NoneType"
+      ],
+      "shape": "映射 | None",
+      "unit": "立即结算的四家净变分（座位 0—3）",
+      "null_when": "非立即结算动作，或未做分值分析",
+      "source": "_settlement_mapping"
+    },
+    {
+      "path": "actions[].immediate_settlement.fan",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "番数（正整数）",
+      "source": "_settlement_mapping"
+    },
+    {
+      "path": "actions[].immediate_settlement.score_delta",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "int"
+      ],
+      "shape": "元组[整数]（长度 4）",
+      "unit": "四家积分净变分，固定座位序 0—3",
+      "source": "_settlement_mapping"
+    },
+    {
+      "path": "actions[].immediate_settlement.self_delta",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "本人座位那一项（= score_delta[seat]），积分点",
+      "source": "_settlement_mapping"
+    },
+    {
+      "path": "actions[].immediate_settlement.details",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "str"
+      ],
+      "shape": "元组[字符串]",
+      "unit": "计番明细（顺序不变）",
+      "source": "_settlement_mapping"
+    },
+    {
+      "path": "actions[].followup_branches",
+      "types": [
+        "tuple",
+        "NoneType"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射] | None",
+      "unit": "吃/碰后**全部**已分析合法后续弃牌分支",
+      "null_when": "未分析或不适用（None ≠ 已知空集合；已知空集合是空元组 ()）",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].followup_key",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "分支键，形如 `<action_key>#<后续弃牌牌码>`",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].followup_discard",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "该分支先弃的牌码（分支对象字段；字典分支可有可无）",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].combined_shanten",
+      "types": [
+        "int",
+        "bool",
+        "NoneType"
+      ],
+      "shape": "整数 | 布尔 | None",
+      "unit": "该分支等待态的综合向听（-1 表示已成胡）",
+      "null_when": "两分牌型都未知（未分析）",
+      "note": "布尔只可能出现在**字典分支**：生产 FollowupBranchFacts 在构造期就拒绝 bool；读到 True/False 一律按未知处理，不得当 1/0",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].standard_shanten_after",
+      "types": [
+        "int",
+        "NoneType"
+      ],
+      "shape": "整数 | None",
+      "unit": "同一等待手牌的普通型向听（-1 = 已成胡）",
+      "null_when": "未分析；对象分支在值为 None 时**整个键不出现**（不是 null）",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].seven_pairs_shanten_after",
+      "types": [
+        "int",
+        "NoneType"
+      ],
+      "shape": "整数 | None",
+      "unit": "同一等待手牌的七对向听（-1 = 已成胡）",
+      "null_when": "有副露或未分析；对象分支在值为 None 时整个键不出现",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].support_remaining",
+      "types": [
+        "int",
+        "NoneType"
+      ],
+      "shape": "整数 | None",
+      "unit": "一步推进有效牌的未见枚数总和（去重后求和，非负整数；不是概率）",
+      "null_when": "计数未知（不得写 0 冒充已知空缺）",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].useful_tiles",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "str"
+      ],
+      "shape": "元组[字符串]",
+      "unit": "该分支等待态的一步推进有效牌**牌码**（注意：这里的元素是字符串，不是映射）",
+      "note": "all-or-nothing：计数未知时为空元组且 support_remaining 为 None",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].progress",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "分支对象/字典显式携带的进展事实（规范别名键）",
+      "note": "**别名键只由分支载体携带的属性产生**：分支**对象**带 progress/family_progress/pattern_progress 之一 ⇒ 规范键 progress；带 route_state/route_status/evidence_state 之一 ⇒ 规范键 route_state。生产 FollowupBranchFacts 不带这些键；**字典分支原样透传、不重命名**（例如准入夹具写 route_status 就得到 route_status）；缺失即未知",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].route_state",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "分支载体显式携带的路线证据状态（规范别名键；取值随载体而定）",
+      "note": "**别名键只由分支载体携带的属性产生**：分支**对象**带 progress/family_progress/pattern_progress 之一 ⇒ 规范键 progress；带 route_state/route_status/evidence_state 之一 ⇒ 规范键 route_state。生产 FollowupBranchFacts 不带这些键；**字典分支原样透传、不重命名**（例如准入夹具写 route_status 就得到 route_status）；缺失即未知",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].fan",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "分支对象/字典显式携带的番数（规范别名键）",
+      "note": "**别名键只由分支载体携带的属性产生**：分支**对象**带 progress/family_progress/pattern_progress 之一 ⇒ 规范键 progress；带 route_state/route_status/evidence_state 之一 ⇒ 规范键 route_state。生产 FollowupBranchFacts 不带这些键；**字典分支原样透传、不重命名**（例如准入夹具写 route_status 就得到 route_status）；缺失即未知",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].followup_branches[].draw_kind",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "分支对象/字典显式携带的摸牌来源（normal/replacement）",
+      "source": "_branch_mapping",
+      "note": "**别名键只由分支载体携带的属性产生**：分支**对象**带 progress/family_progress/pattern_progress 之一 ⇒ 规范键 progress；带 route_state/route_status/evidence_state 之一 ⇒ 规范键 route_state。生产 FollowupBranchFacts 不带这些键；**字典分支原样透传、不重命名**（例如准入夹具写 route_status 就得到 route_status）；缺失即未知"
+    },
+    {
+      "path": "actions[].followup_branches[].hand_codes",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "str"
+      ],
+      "shape": "元组[字符串]",
+      "unit": "分支对象/字典显式携带的机械转移后可见手牌牌码",
+      "source": "_branch_mapping",
+      "note": "**别名键只由分支载体携带的属性产生**：分支**对象**带 progress/family_progress/pattern_progress 之一 ⇒ 规范键 progress；带 route_state/route_status/evidence_state 之一 ⇒ 规范键 route_state。生产 FollowupBranchFacts 不带这些键；**字典分支原样透传、不重命名**（例如准入夹具写 route_status 就得到 route_status）；缺失即未知"
+    },
+    {
+      "path": "actions[].followup_branches[].*",
+      "types": [
+        "str",
+        "int",
+        "float",
+        "bool",
+        "NoneType",
+        "tuple"
+      ],
+      "shape": "透传（键名由数据决定）",
+      "unit": "分支对象除规范别名外的其余字段（原始值化）或字典分支的全部键（浅拷贝原样）",
+      "note": "字典分支原样透传（可能带 null）；对象分支的 None 字段被省略。读到未知键按未知处理，不得猜语义",
+      "source": "_branch_mapping"
+    },
+    {
+      "path": "actions[].routes",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射]",
+      "unit": "条件见证路线摘要（空元组 = 无路线分析，不是「没有机会」）",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].followup_discard",
+      "types": [
+        "str",
+        "NoneType"
+      ],
+      "shape": "字符串 | None",
+      "unit": "该路线先弃的牌码",
+      "null_when": "路线不属于吃碰后分支",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].shanten",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "路线向听（首版只提供直接成胡见证，固定 0）",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].useful_tiles",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射]",
+      "unit": "互斥的下一摸牌有效牌（元素 {code, remaining_estimate}）",
+      "note": "remaining_estimate 是未见张数估计，不是概率；同一后续弃牌内不重复计数",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].useful_tiles[].code",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "牌码",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].useful_tiles[].remaining_estimate",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "未见枚数估计，取值 0—4",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditional_settlement",
+      "types": [
+        "dict"
+      ],
+      "shape": "映射",
+      "unit": "条件满足时的四家净变分（形状同 immediate_settlement）",
+      "source": "_route_mapping",
+      "note": "生产 ValueRoute 必须携带条件结算，故恒非 None；字典路线原样透传时可出现 null，读到 null 按未知处理"
+    },
+    {
+      "path": "actions[].routes[].conditional_settlement.fan",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "条件成胡番数（正数）",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditional_settlement.score_delta",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "int"
+      ],
+      "shape": "元组[整数]（长度 4）",
+      "unit": "四家条件净变分，固定座位序 0—3",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditional_settlement.self_delta",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "本人座位那一项，积分点",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditional_settlement.details",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "str"
+      ],
+      "shape": "元组[字符串]",
+      "unit": "计番明细",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditions",
+      "types": [
+        "dict"
+      ],
+      "shape": "映射",
+      "unit": "条件见证的前置事实（不是已发生的胡牌观察）",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditions.draw_kind",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "摸牌来源",
+      "enum": [
+        "normal",
+        "replacement"
+      ],
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditions.pre_draw_hand",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "str"
+      ],
+      "shape": "元组[字符串]",
+      "unit": "假定摸前暗牌牌码（规范牌序，不含未来摸牌）",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditions.meld_count",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "副露组数，0—4",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditions.chain_count",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "条件成立时连续飘/杠动作数（非未来预估）",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditions.chain_piao",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "同一链中已飘出的白板张数",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].conditions.baotou",
+      "types": [
+        "bool"
+      ],
+      "shape": "标量",
+      "unit": "条件摸牌后的爆头",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].routes[].support",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "路线的支持类型（首版固定 conditional_witness，不含未来生存概率）",
+      "source": "_route_mapping"
+    },
+    {
+      "path": "actions[].fact_kind",
+      "types": [
+        "str",
+        "NoneType"
+      ],
+      "shape": "字符串 | None",
+      "unit": "动作后牌效事实的类别",
+      "enum": [
+        "hand_progress",
+        "win",
+        "not_applicable",
+        "analysis_failed"
+      ],
+      "null_when": "未生产 facts",
+      "note": "analysis_failed 且无其他事实 = 缺证（不产生可用读数）",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].shanten_after",
+      "types": [
+        "int",
+        "NoneType"
+      ],
+      "shape": "整数 | None",
+      "unit": "动作后综合向听；-1 表示该动作即成胡",
+      "null_when": "未分析（不等于 0）",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].useful_tiles",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射]",
+      "unit": "动作后等待态的一步推进有效牌（元素 {code, remaining_estimate}）",
+      "note": "恒为元组（不会 None）；空元组 = 已知空集合或未生产，需结合 fact_kind 判断",
+      "source": "_useful_tiles_mapping"
+    },
+    {
+      "path": "actions[].useful_tiles[].code",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "牌码",
+      "source": "_useful_tiles_mapping"
+    },
+    {
+      "path": "actions[].useful_tiles[].remaining_estimate",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "未见枚数估计，取值 0—4（不是概率）",
+      "source": "_useful_tiles_mapping"
+    },
+    {
+      "path": "actions[].replacement_draw_unknown",
+      "types": [
+        "bool",
+        "NoneType"
+      ],
+      "shape": "布尔 | None",
+      "unit": "杠上补牌未知标记",
+      "null_when": "未携带该标记（≠ False）",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].best_followup_discard",
+      "types": [
+        "str",
+        "NoneType"
+      ],
+      "shape": "字符串 | None",
+      "unit": "吃/碰后的最佳后续弃牌牌码（旧语义保留）",
+      "null_when": "不适用或未分析",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].standard_shanten_after",
+      "types": [
+        "int",
+        "NoneType"
+      ],
+      "shape": "整数 | None",
+      "unit": "动作后**普通型**向听（-1 = 已成胡）",
+      "null_when": "未分析",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].seven_pairs_shanten_after",
+      "types": [
+        "int",
+        "NoneType"
+      ],
+      "shape": "整数 | None",
+      "unit": "动作后**七对**向听（-1 = 已成胡）",
+      "null_when": "有副露或未分析",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].standard_useful_tiles",
+      "types": [
+        "tuple",
+        "NoneType"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射] | None",
+      "unit": "普通型推进牌（元素 {code, remaining_estimate}）",
+      "null_when": "未分析；() = 已知空集合（与 None 不同）",
+      "source": "_useful_tiles_mapping"
+    },
+    {
+      "path": "actions[].standard_useful_tiles[].code",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "牌码",
+      "source": "_useful_tiles_mapping"
+    },
+    {
+      "path": "actions[].standard_useful_tiles[].remaining_estimate",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "未见枚数估计，0—4",
+      "source": "_useful_tiles_mapping"
+    },
+    {
+      "path": "actions[].seven_pairs_useful_tiles",
+      "types": [
+        "tuple",
+        "NoneType"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射] | None",
+      "unit": "七对推进牌（元素 {code, remaining_estimate}）",
+      "null_when": "未分析或不适用；() = 已知空集合",
+      "source": "_useful_tiles_mapping"
+    },
+    {
+      "path": "actions[].seven_pairs_useful_tiles[].code",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "牌码",
+      "source": "_useful_tiles_mapping"
+    },
+    {
+      "path": "actions[].seven_pairs_useful_tiles[].remaining_estimate",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "未见枚数估计，0—4",
+      "source": "_useful_tiles_mapping"
+    },
+    {
+      "path": "actions[].pattern_progress_note",
+      "types": [
+        "str",
+        "NoneType"
+      ],
+      "shape": "字符串 | None",
+      "unit": "分牌型计数的局部缺证据原因（人可读一句话）",
+      "null_when": "无局部缺证据",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].family_progress_entries",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射]",
+      "unit": "逐家族进展明细（空元组 = 未分析，不冒充「无进展」）",
+      "note": "这是**家族**（branch/chain/four_white/baotou）进度，不是普通型/七对进度",
+      "source": "_family_entries_mapping"
+    },
+    {
+      "path": "actions[].family_progress_entries[].family",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "家族标识（小写枚举值）",
+      "enum": [
+        "branch",
+        "chain",
+        "four_white",
+        "baotou"
+      ],
+      "source": "_family_entries_mapping"
+    },
+    {
+      "path": "actions[].family_progress_entries[].progress",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "该家族的动作相对进展（小写枚举值）",
+      "enum": [
+        "advance",
+        "same",
+        "retreat",
+        "close",
+        "unknown"
+      ],
+      "note": "小写；与 actions[].family_progress 的大写五态是同一概念的两个口径",
+      "source": "_family_entries_mapping"
+    },
+    {
+      "path": "actions[].family_progress_entries[].route_status",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "该家族路线的证据状态（小写枚举值）",
+      "enum": [
+        "witnessed",
+        "open_uncertain",
+        "closed_proven",
+        "unanalyzed"
+      ],
+      "note": "小写；合同 route_states 给的是大写同名枚举，取值语义一一对应",
+      "source": "_family_entries_mapping"
+    },
+    {
+      "path": "actions[].family_progress_entries[].basis",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "该家族进展的确定性依据一句话",
+      "source": "_family_entries_mapping"
+    },
+    {
+      "path": "actions[].value_coverage",
+      "types": [
+        "str",
+        "NoneType"
+      ],
+      "shape": "字符串 | None",
+      "unit": "分值分析覆盖状态（只描述一次未来摸牌直接胡的范围）",
+      "enum": [
+        "complete",
+        "partial",
+        "unavailable"
+      ],
+      "null_when": "未跑分值分析",
+      "source": "_action_mapping"
+    },
+    {
+      "path": "actions[].value_issues",
+      "types": [
+        "tuple"
+      ],
+      "element_types": [
+        "dict"
+      ],
+      "shape": "元组[映射]",
+      "unit": "缺证据/截断/失败的稳定分类（元素 {area, reason}）",
+      "source": "_rule_issues_mapping"
+    },
+    {
+      "path": "actions[].value_issues[].area",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "问题区域标识",
+      "source": "_rule_issues_mapping"
+    },
+    {
+      "path": "actions[].value_issues[].reason",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "可审计原因（人可读）",
+      "source": "_rule_issues_mapping"
+    },
+    {
+      "path": "analysis_profile.semantics_version",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "规则分析语义版本（变更即候选身份变化）",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "analysis_profile.max_expansions",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "整次请求规则分析扩展节点上限（正整数）",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "analysis_profile.max_routes_per_candidate",
+      "types": [
+        "int"
+      ],
+      "shape": "标量",
+      "unit": "每动作条件路线分组上限（正整数）",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "analysis_profile.truncation_note",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "截断范围说明（描述未覆盖的路线范围）",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "analysis_profile.ruleset_version",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "规则语义版本；未提供时为空字符串",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "reference_features[].name",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "代理名（稳定标识，非空）",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "reference_features[].value",
+      "types": [
+        "float",
+        "int"
+      ],
+      "shape": "浮点 | 整数",
+      "unit": "代理值；单位见 unit 字段（不是积分、不是概率）",
+      "note": "missing_reason 非空时它只是无信息占位",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "reference_features[].version",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "代理语义版本（非空）",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "reference_features[].unit",
+      "types": [
+        "str"
+      ],
+      "shape": "标量",
+      "unit": "代理单位说明（非空）",
+      "source": "ScoringView.candidate_view"
+    },
+    {
+      "path": "reference_features[].missing_reason",
+      "types": [
+        "str",
+        "NoneType"
+      ],
+      "shape": "字符串 | None",
+      "unit": "缺失原因（非空字符串或 None）",
+      "null_when": "该代理可用",
+      "source": "ScoringView.candidate_view"
+    }
+  ],
+  "view_api": [
+    {
+      "name": "hand_codes()",
+      "returns": "tuple[str]",
+      "note": "本人手牌牌码，保留官方顺序",
+      "source": "ScoringView.hand_codes"
+    },
+    {
+      "name": "drawn_tile_code()",
+      "returns": "str | None",
+      "note": "刚摸到的牌码；非摸牌窗口为 None",
+      "source": "ScoringView.drawn_tile_code"
+    },
+    {
+      "name": "discards_codes()",
+      "returns": "tuple[tuple[str]]",
+      "note": "四家牌河牌码，外层按座位 0—3",
+      "source": "ScoringView.discards_codes"
+    },
+    {
+      "name": "hand_counts()",
+      "returns": "tuple[int]",
+      "note": "四家剩余手牌张数，按座位 0—3",
+      "source": "ScoringView.hand_counts"
+    },
+    {
+      "name": "table_scores()",
+      "returns": "tuple[int]",
+      "note": "当前桌内积分，按座位 0—3",
+      "source": "ScoringView.table_scores"
+    },
+    {
+      "name": "wall_remaining()",
+      "returns": "int | None",
+      "note": "官方墙余量；官方未提供时为 None（不得补零）",
+      "source": "ScoringView.wall_remaining"
+    },
+    {
+      "name": "phase()",
+      "returns": "str",
+      "note": "官方阶段字符串原样透传",
+      "source": "ScoringView.phase"
+    },
+    {
+      "name": "seat_index()",
+      "returns": "int",
+      "note": "本人座位 0—3",
+      "source": "ScoringView.seat_index"
+    },
+    {
+      "name": "expected_action_keys()",
+      "returns": "tuple[str]",
+      "note": "输入动作表全部键，升序；完整性验证以此为基准",
+      "source": "ScoringView.expected_action_keys"
+    },
+    {
+      "name": "candidate_view()",
+      "returns": "dict",
+      "note": "受限候选可见的纯原始值映射（本附录 paths 的全部字段）",
+      "source": "ScoringView.candidate_view"
+    }
+  ],
+  "output_contract": {
+    "status_values": [
+      "SCORED",
+      "ABSTAIN"
+    ],
+    "scored": "SCORED 必须对输入全部动作恰好各一项（无遗漏/重复/越界键），全部 score 为有限数（布尔冒充数整批失败）；entries 元素必须恰好含 action_key/score/trace 三键。",
+    "abstain": "ABSTAIN 时 entries 必须为空（省略、None、() 或 [] 都接受），且必须给出**非空** reason 字符串；ABSTAIN 不得携带评分条目。",
+    "reason_three_forms": [
+      "SCORED 时 reason 可以**省略**（键不存在）",
+      "SCORED 时 reason 可以是 None",
+      "SCORED 时 reason 可以是**非空字符串**（用于说明降级/未知锚定）。"
+    ],
+    "reason_empty_string_rejected": "SCORED 的 reason = \"\"（空字符串）**不接受**：run_scoring_skeleton 抛 ValueError（整个窗口失效，降级到已备紧急计划）。这就是复审 C5 指出的输出侧细则：不是「ABSTAIN/降级原因字符串」一句话能覆盖的。",
+    "unknown_is_not_zero": "缺证据动作不得用 0.0 或任何不受下界约束的有限数参与评分；未知必须锚定在全部已知评分之下，或整批 ABSTAIN。",
+    "batch_failure": "抛异常、非有限数、布尔冒充数、漏键/重复键/越界键、超工作量限额、缺必需字段任一项即整窗口失效。"
+  },
+  "examples": {
+    "input_note": "最小合法输入：由真实投影 ScoringView.candidate_view() 产出（一个带事实的弃牌 + 一个无事实的 pass），逐字节断言见 tools/test_sitin_generate_public_interface.py。",
+    "input": {
+      "actions": [
+        {
+          "action_key": "discard:1w",
+          "action_type": "discard",
+          "best_followup_discard": null,
+          "fact_kind": "hand_progress",
+          "family_progress": "ADVANCE",
+          "family_progress_entries": [],
+          "followup_branches": null,
+          "immediate_settlement": null,
+          "is_legal": true,
+          "pattern_progress_note": null,
+          "replacement_draw_unknown": null,
+          "routes": [],
+          "seven_pairs_shanten_after": null,
+          "seven_pairs_useful_tiles": null,
+          "shanten_after": 1,
+          "standard_shanten_after": null,
+          "standard_useful_tiles": null,
+          "useful_tiles": [
+            {
+              "code": "3w",
+              "remaining_estimate": 4
+            }
+          ],
+          "value_coverage": null,
+          "value_issues": [],
+          "baotou_after": null
+        },
+        {
+          "action_key": "pass",
+          "action_type": "pass",
+          "best_followup_discard": null,
+          "fact_kind": null,
+          "family_progress": "UNKNOWN",
+          "family_progress_entries": [],
+          "followup_branches": null,
+          "immediate_settlement": null,
+          "is_legal": true,
+          "pattern_progress_note": null,
+          "replacement_draw_unknown": null,
+          "routes": [],
+          "seven_pairs_shanten_after": null,
+          "seven_pairs_useful_tiles": null,
+          "shanten_after": null,
+          "standard_shanten_after": null,
+          "standard_useful_tiles": null,
+          "useful_tiles": [],
+          "value_coverage": null,
+          "value_issues": [],
+          "baotou_after": null
+        }
+      ],
+      "analysis_profile": {
+        "max_expansions": 2048,
+        "max_routes_per_candidate": 128,
+        "ruleset_version": "pkg-a-public-interface",
+        "semantics_version": "hangma-value-analysis/1",
+        "truncation_note": "未显式提供分析配置，按 ValueAnalysisLimits 默认上限快照（max_expansions=2048, max_routes_per_candidate=128）；动作级覆盖见 value_coverage/value_issues"
+      },
+      "competition": null,
+      "reference_features": [],
+      "schema_version": "sitin-scoring-view/4",
+      "visible_state": {
+        "chain_piao": null,
+        "dealer_seat": 0,
+        "discards": [
+          [],
+          [],
+          [],
+          []
+        ],
+        "drawn_tile": "9b",
+        "gang_draw": null,
+        "hand_counts": [
+          14,
+          13,
+          13,
+          13
+        ],
+        "last_discard": null,
+        "melds": [
+          [],
+          [],
+          [],
+          []
+        ],
+        "my_hand": [
+          "1w",
+          "2w",
+          "3w",
+          "4w",
+          "5w",
+          "6w",
+          "7w",
+          "8w",
+          "9w",
+          "1b",
+          "2b",
+          "3b",
+          "4b"
+        ],
+        "phase": "draw",
+        "remaining_tile_count": 60,
+        "responding_seats": [],
+        "round_no": 1,
+        "rule_state": {
+          "baotou": false,
+          "catch_play": false,
+          "catch_play_owner_seat": null,
+          "chain_count": 0,
+          "wealth_god": "白"
+        },
+        "seat": 0,
+        "snapshot_seq": 10,
+        "table_scores": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "turn_seat": 0
+      }
+    },
+    "outputs": [
+      {
+        "label": "合法输出①：SCORED 带非空 reason（说明缺证据动作的锚定方式）",
+        "value": {
+          "status": "SCORED",
+          "reason": "缺分支事实的动作按已知最低分之下锚定（未知≠0）",
+          "entries": [
+            {
+              "action_key": "discard:1w",
+              "score": -2,
+              "trace": {
+                "basis": "combined_shanten",
+                "shanten_after": 1
+              }
+            },
+            {
+              "action_key": "pass",
+              "score": -3,
+              "trace": {
+                "basis": "unknown_below_known_floor",
+                "unknown": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "label": "合法输出②：SCORED 省略 reason（等价写法：reason 键存在且为 None 也合法）",
+        "value": {
+          "status": "SCORED",
+          "entries": [
+            {
+              "action_key": "discard:1w",
+              "score": -2,
+              "trace": {
+                "basis": "combined_shanten",
+                "shanten_after": 1
+              }
+            },
+            {
+              "action_key": "pass",
+              "score": -3,
+              "trace": {
+                "basis": "unknown_below_known_floor",
+                "unknown": true
+              }
+            }
+          ]
+        }
+      },
+      {
+        "label": "不合法输出（对照，必须整批失败）：SCORED 的 reason 是空字符串",
+        "value": {
+          "status": "SCORED",
+          "reason": "",
+          "entries": [
+            {
+              "action_key": "discard:1w",
+              "score": -2,
+              "trace": {}
+            },
+            {
+              "action_key": "pass",
+              "score": -3,
+              "trace": {}
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

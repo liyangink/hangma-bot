@@ -1,0 +1,28 @@
+{
+  "schema": "sitin-authorization/1",
+  "authorization_id": "r10-av1-action-value-dataset-20260921",
+  "batch_label": "r10-av1-action-value-dataset",
+  "trusted": true,
+  "allowed_operations": [
+    "natural_panel",
+    "conditional_prefix",
+    "family_fill",
+    "conditional_refill",
+    "evaluate",
+    "summarize"
+  ],
+  "allowed_accounts": {
+    "tables_full": 512.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 512.0,
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "confirm_reserved": 0.0
+  },
+  "issued_by": "lead",
+  "issued_at_utc": "2026-09-21T03:22:26Z",
+  "issuance_basis": "固定奖励与单特征门控均在全新来源失败；按文献复盘转入完整玩家可见状态的动作价值建模",
+  "scope": "两个全新panel_seed；每个seed×H/M按root_index升序最多128根，取前32个机械有效自然机会；不按标签补样",
+  "max_model_calls": 0,
+  "confirmation_roots": 0
+}

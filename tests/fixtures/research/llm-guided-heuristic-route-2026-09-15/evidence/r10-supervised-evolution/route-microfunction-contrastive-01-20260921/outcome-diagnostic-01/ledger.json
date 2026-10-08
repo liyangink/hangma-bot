@@ -1,0 +1,294 @@
+{
+  "schema": "sitin-action-value-ledger/1",
+  "accounts": [
+    "tokens_input",
+    "tokens_output",
+    "tables_full",
+    "tables_partial",
+    "prefix_generation",
+    "confirm_reserved"
+  ],
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 192.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "confirm_authorized_budget": 0.0,
+  "authorized_budgets": {
+    "tables_full": 192.0
+  },
+  "confirm_policy": "confirm 硬禁继承现状：默认 0，无显式授权任何 confirm 记账拒绝",
+  "limit_policy": "Q3：正数记账须在授权总额内（扣已结算+在途预留）；未声明额度 fail-closed 拒绝；amount=0 纯登记不限额",
+  "reservations": [
+    {
+      "reservation_id": "diag-2026092198-H-r04-parent#1",
+      "step_id": "diag-2026092198-H-r04-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:19Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-H-r04-child#2",
+      "step_id": "diag-2026092198-H-r04-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:19Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-H-r21-parent#3",
+      "step_id": "diag-2026092198-H-r21-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:19Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-H-r21-child#4",
+      "step_id": "diag-2026092198-H-r21-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:19Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-H-r01-parent#5",
+      "step_id": "diag-2026092198-H-r01-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:37Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-H-r01-child#6",
+      "step_id": "diag-2026092198-H-r01-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:37Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-H-r32-parent#7",
+      "step_id": "diag-2026092199-H-r32-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:38Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-H-r32-child#8",
+      "step_id": "diag-2026092199-H-r32-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:38Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-H-r09-parent#9",
+      "step_id": "diag-2026092199-H-r09-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:55Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-H-r09-child#10",
+      "step_id": "diag-2026092199-H-r09-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:55Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-H-r02-parent#11",
+      "step_id": "diag-2026092199-H-r02-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:55Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-H-r02-child#12",
+      "step_id": "diag-2026092199-H-r02-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:48:55Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-M-r16-parent#13",
+      "step_id": "diag-2026092198-M-r16-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:14Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-M-r16-child#14",
+      "step_id": "diag-2026092198-M-r16-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:14Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-M-r34-parent#15",
+      "step_id": "diag-2026092198-M-r34-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:14Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-M-r34-child#16",
+      "step_id": "diag-2026092198-M-r34-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:14Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-M-r01-parent#17",
+      "step_id": "diag-2026092198-M-r01-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:32Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092198-M-r01-child#18",
+      "step_id": "diag-2026092198-M-r01-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:32Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-M-r09-parent#19",
+      "step_id": "diag-2026092199-M-r09-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:34Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-M-r09-child#20",
+      "step_id": "diag-2026092199-M-r09-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:34Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-M-r02-parent#21",
+      "step_id": "diag-2026092199-M-r02-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:49Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-M-r02-child#22",
+      "step_id": "diag-2026092199-M-r02-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:51Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-M-r01-parent#23",
+      "step_id": "diag-2026092199-M-r01-parent",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:52Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "diag-2026092199-M-r01-child#24",
+      "step_id": "diag-2026092199-M-r01-child",
+      "account": "tables_full",
+      "amount": 8.0,
+      "note": "已消费根的父/子同观察分歧诊断；4座位×2桌",
+      "at_utc": "2026-09-20T23:49:53Z",
+      "status": "settled",
+      "charged": 8.0,
+      "usage_unknown": false
+    }
+  ],
+  "workers_active": 0,
+  "worker_lease": "ledger.json.workers.json",
+  "worker_cap": 12
+}

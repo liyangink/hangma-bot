@@ -1,0 +1,57 @@
+{
+  "schema": "sitin-action-value-ledger/1",
+  "accounts": [
+    "tokens_input",
+    "tokens_output",
+    "tables_full",
+    "tables_partial",
+    "prefix_generation",
+    "confirm_reserved"
+  ],
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 2048.0,
+    "tables_partial": 0,
+    "prefix_generation": 32.0,
+    "confirm_reserved": 0
+  },
+  "confirm_authorized_budget": 0.0,
+  "authorized_budgets": {
+    "tokens_input": 0.0,
+    "tokens_output": 0.0,
+    "tables_full": 2048.0,
+    "tables_partial": 0.0,
+    "prefix_generation": 32.0,
+    "confirm_reserved": 0.0
+  },
+  "confirm_policy": "confirm 硬禁继承现状：默认 0，无显式授权任何 confirm 记账拒绝",
+  "limit_policy": "Q3：正数记账须在授权总额内（扣已结算+在途预留）；未声明额度 fail-closed 拒绝；amount=0 纯登记不限额",
+  "reservations": [
+    {
+      "reservation_id": "r18:p17-catch-open:capture#1",
+      "step_id": "r18:p17-catch-open:capture",
+      "account": "prefix_generation",
+      "amount": 32.0,
+      "note": "32个开发状态的P5精确合法前缀捕获；隐藏不捕获；按成功捕获的合法前缀计",
+      "at_utc": "2026-09-22T05:26:12Z",
+      "status": "settled",
+      "charged": 32.0,
+      "usage_unknown": false
+    },
+    {
+      "reservation_id": "r18:p17-catch-open:run#2",
+      "step_id": "r18:p17-catch-open:run",
+      "account": "tables_full",
+      "amount": 2048.0,
+      "note": "32开发状态×32共同隐藏世界×P5非白弃牌/主动弃白；按成功两臂桌数结算",
+      "at_utc": "2026-09-22T05:26:35Z",
+      "status": "settled",
+      "charged": 2048.0,
+      "usage_unknown": false
+    }
+  ],
+  "workers_active": 0,
+  "worker_lease": "ledger.json.workers.json",
+  "worker_cap": 12
+}

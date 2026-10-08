@@ -1,0 +1,444 @@
+为杭麻VIP固定框架生成一套score_actions(view)联合启发式。根据开发反馈修改单父逻辑或聚合，说明触发和动作选择差异。
+不得读WorldState/他家暗牌/未来墙/赛事阶段排名积分压力，不重判合法性，不筛掉合法根。
+未裁决鸣牌仅条件评价，杠补不能挑最好未来牌，公开容量不能除墙当概率。
+思想和机制只是预期声明；生成/装载不等于准入、性能改进或发布。
+人工种子只是完赛起点，权重不是正确经验；保白k目标同常数奖励且缺口/待弃罚随k加重，可能偏向k1。可以联合改变这些取舍，须列反例；现有烟测不证明1秒在线可用。
+回复必须严格是：{一句中文思想}
+```json
+唯一机制JSON
+```
+```python
+完整唯一Python
+```
+JSON精确键为operator/trigger/changed_branches/expected_direction/counterexample/parent_differences/parameter_changes。
+四个机制说明字段是非空字符串。parent_differences按给定父代顺序列出candidate_id、expected_change、window_classes(字符串列表)、action_keys(字符串列表)、status='expected'；i1用[]。
+parameter_changes仅m2非空，每项精确键ast_path/before/after/unit/expected_change/overfit_risk，按继承数值常量的AST次序列出全部实际变化；其他算子用[]。不得添加输出或围栏。
+固定框架合同原文：
+# VIP 固定框架与联合启发式合同 v3：自然面子准备与共享条件图
+
+日期：2026-10-02。**本次扩充真实等待手牌的自然面子准备事实及共享条件图；规则、完整桌赛、独立确认与运行门继续有效。**实施基点 `7cc79af9b`。原[v2合同](./FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)及旧候选、失败、费用和成绩保持原字节。新版候选须绑定新版合同、视图、源码、依赖及实际容量重新评测。本文不是效果或发布证明。
+
+依据：[Astra 增补](./VIP-FIXED-FRAMEWORK-EOH-IMPLEMENTATION-REVISION-ASTRA.md)、[EoH 核对](./EOH-FIXED-FRAMEWORK-ALIGNMENT.md)、[原评测合同](./EVALUATION-CONTRACT.md)。原实验与冻结合同保持原身份，不追改成绩。
+
+## 1. 范围与分工
+
+**先独立持续完赛，再联合进化权衡。**目标配置 `BaseScore=1`、`YouCaiBiKao=false`；新增配置另验收。R18 v2 是外部对照，当前线上配置不变。
+
+| 固定框架 | 可进化候选 |
+| --- | --- |
+| 合法动作、真实向听、自然结构条件缺口、白板库存与用途、公开容量、规则资格和结算 | 速度、宽度、高番条件、普通出口与多路线转换的联合取舍 |
+| 全合法根与全部已分析合法续行，相同事实去重，未知和截断分列 | 条件分支聚合、胡与继续、鸣牌及杠择时、阈值、权重和非线性公式 |
+| 权限、身份、确定性、工作量、输出完整性、审计与评测分母 | 只修改受限评分代码，不修改规则、事实含义、测量或发布判定 |
+
+赛事阶段、排名、桌内与阶段积分仅在外层审计，不进入首版候选视图。庄家、座位、墙余和公开副露可读。完整模拟状态及未来牌墙只供离线评估，不进入策略。
+
+## 2. 结构事实
+
+**自然牌缺口（`NaturalTileNeed`，指定用途与目标下理想条件中至少还需补的自然牌张数）不是实际向听或摸牌概率。**唯一数学实现在 `hangma`；真实普通型／七对向听不改。
+
+入口 `analyze_route_structure(counts34, meld_set_count) -> RouteStructureFacts` 返回不可变事实，接受 `sum(natural_counts33)+whites_held=13-3*meld_set_count` 的等待手牌。杠折算一个面子，实体第四张仍在公开库存。多一张行动态先沿同源规则展开合法动作，不能虚构第十五张。此入口不读网络、文件、时钟或完整世界。
+
+| 事实 | 单位与边界 |
+| --- | --- |
+| 自然计数／对子／四张 | 33 维自然牌计数；四张算两对；保留规范牌码 |
+| 牌型、保白量 `k`、块内用白量 | `k=0..w`；块内恰用 `w-k`，独立枚举核验；不预先绑定某孤张 |
+| 目标阶段 | `complete_structure` 为剩余面子＋将或七对；`waiting_predecessor` 为剩余面子或六对＋一白，七对要求无副露 |
+| 自然缺口 `D` | 指定目标所需自然牌向量相对实持牌的最小正缺口和；前驱自然目标大小 `12-3m-(w-k)`，故 `D>=k-1` |
+| 条件动作数量 | 前驱补 `D` 自然、弃 `D-(k-1)` 自然和 `k-1` 白；完成目标自然弃下界 `D-1` |
+| 必需终点摸牌 | 前驱 `D=0` 仍需合法摸牌／补牌才可能胡，不与完成目标直接比较成胡速度 |
+| 条件缺口推进牌码 | 固定用途补一自然牌使缺口下降；不是合法续行或高番资格证明 |
+| 见证与范围 | 无分解见证明确 `distance_only`、见证为空，不填虚构结构 |
+
+补张下界仅对指定自然补张路径成立；新增白板、吃碰、杠另开转换，不作为所有胡路线的全局下界。精确用途求解必须核验物理每码四张与数量守恒。
+
+实际进张分别保存**结构推进集合**和**直接合法胡集合**。后者由给定摸牌后的同源规则判断，不强制再弃；前驱 `D=0` 不意味着胡宽度为零。并集按牌码去重并保留交集与用途。换目标本身不能伪装为同目标进展。
+
+公开容量从真实全手与公开事实计算，包含他家暗牌。精确零可证耗尽；保守下界零／未知不能删相容码，也不能除以墙余冒充概率。
+
+## 2.1 自然面子准备：不假借未来白板
+
+**自然面子准备（`NaturalSetPreparationFacts`，真实手牌不用白板百搭、只凑剩余自然面子的程度）单独表示“白板以后是否有机会留给大牌”。**入口 `analyze_natural_set_preparation(counts34, meld_set_count)` 复用唯一标准型目标距离求解器。输入仍为真实 `13-3m` 等待态。目标恰有 `4-m` 个自然面子，不含将，不借现有或未来白板；白库存原样保留。
+
+| 字段 | 含义与边界 |
+| --- | --- |
+| `natural_counts33`、`whites_held`、`meld_set_count` | 与同一等待态真实结构严格相同；规范牌序和实体库存不变 |
+| `sets_left`、`target_natural_size` | 剩余自然面子组数及实体张数，分别为 `4-m`、`3*(4-m)` |
+| `natural_draw_lower_bound` | 同目标缺张 `D=min sum(max(target-current,0))`，单位张，不是等候摸牌次数 |
+| `natural_discard_lower_bound` | 达到该目标所需自然弃牌下界 `sum(natural)+D-target_natural_size`，单位张 |
+| `natural_need_improvement_codes` | 补一张自然牌使同目标D下降的规范码，不证明牌山有该码 |
+| `target_distance_evaluation_count` | 该结果构造所需距离请求量；不是缓存命中时新增实际后端执行次数 |
+| 外层 `natural_preparation_code_width` | 改善码中与当前公开容量相容的码数；精确零关闭、保守或未知零保留 |
+
+`D=0`只说明已有所需自然面子，不说明有白、已爆头、已胡或将来必摸到白。该事实不能代替真实向听、七对目标、合法资格或条件支付。七对的自然准备继续沿原目标事实；本次不新增第二套七对数学。
+
+新事实挂在 `RouteWaitingView.natural_preparation`，覆盖所有已形成的真实等待态，包括未知补牌前态。视图及图均升为 `/3`；自然准备语义为 `vip-natural-set-preparation/1`，已有支付语义 `/1`不变，候选种类仍为 `vip_route_heuristic_v1`。附录提供全部真实字段，模型只进化联合权衡公式。
+
+## 3. 全动作与条件见证
+
+**全部当前合法动作参与排名；未来条件声明范围。**吃碰保留全部合法弃牌及未摸时合法暗／补杠，获裁决后重评真实观察。杠补按相容牌码展开，不挑最好补牌当必然，不因未知删杠。正常机械缺实现、必需输入缺证据、未来未知、深度外和工作量截断分开。
+
+`analyze_waiting_draw_witness` 为合法弃后等待态提供局部条件见证，显式指定墙余、抓打限制和下一本人摸牌，标记 `local_witness_only`。它不证明能活到该摸牌，不是完整公开事件链或 P2 门证据。未裁决结构分支须先给定完整裁决条件，不得直接提升为已发生状态。未知资格可作为未知事实交候选；当前动作或必需输入无法正确形成时研究桌未完成。
+
+仅查询胡资格时可用同源窄入口 `analyze_waiting_hu_witness`：只返回合法胡、即时结算、问题及被摸牌码的容量变化，不返回未计算的向听、进张或完整后态。内部 `HandWinEvidence` 由同一成胡数学产出；动作门禁、爆头及结算仍复用唯一规则实现。优化必须与完整见证逐项对照，不靠删除根或续行提速。
+
+他座终局内部字段 `other_draw_replacement: bool | None` 区分已给定普通摸（False）、补摸（True）、未摸／来源已消费（None）。`expected_discard_seat` 不能证明他座刚摸牌，吃碰未摸暂态不能接受自摸终局。该字段不扩展官方观察或事件。
+
+## 3.1 条件胡支付：保留已有规则结果
+
+**候选需要同时看到“现在胡能得多少”与“给定下一次本人普通摸牌后，立即胡能得多少”。**条件胡支付（`RouteConditionalHuPayment`）复用已有窄见证的结算，不新增成胡算法或见证查询，不评估途中存活率，不是长期精确期望积分。经典开发观察中当前胡为96分，合法弃牌后的条件支付为自然牌192分、白板384分；这说明存在值得权衡的条件优势，不证明继续必然更好。
+
+`RouteWaitingView.normal_draw_hu_payments` 保存以下冻结表；等待节点本身 `settlement` 仍为 `None`，当前合法胡节点仍保存即时 `Settlement`。
+
+| 字段 | 单位、来源与约束 |
+| --- | --- |
+| `draw_code`、`catch_restricted` | 下一本人普通摸牌的规范牌码与抓打限制假设；同码两假设互斥，不能当两次机会相加 |
+| `wall_remaining_before_draw`、`wall_remaining_after_draw` | 本局部条件摸前／摸后墙余，单位张；摸前须大于20，摸后仅扣本人这一张，不推进其他座位 |
+| `draw_capacity_before`、`draw_capacity_after` | 同码精确公开未见张数，摸前1—4，摸后减一；包含他家暗牌，不是墙内数量或摸牌概率 |
+| `baotou_after_draw` | 唯一规则源算出的给定普通摸牌后爆头资格 |
+| `chain_count`、`chain_piao` | 当前条件等待态已有链数、已飘白数；证据不足不能填0，也不预测途中新增飘／杠 |
+| `winner_seat`、`dealer_seat`、`ruleset_version` | 本家／庄家座位0—3及本地规则身份，须绑定外层视图 |
+| `settlement` | 条件成立且立即合法自摸时的同源结算：正整数番数、明细、座位0—3四维整数净积分，和为0；分数单位为积分 |
+| `draw_kind`、`local_witness_only`、`scope` | 固定为 `normal`、`True`、`local_given_normal_draw_hu_only`，不扩大见证范围 |
+
+表按规范牌码、`catch_restricted=False/True`排序，键不重复，最多68行。行对应的限制／自由抓打胡码分别严格等于旧两包络集合，牌码并集等于 `legal_hu_draw_codes`；容量须与等待态同码的精确正容量相同，不能产生实体第五张。每行链状态、墙余、座位和规则身份须一致。可审计的构造错误直接拒绝，不吞成未知或0分。
+
+未分析时表为 `None`，须与未分析胡资格及其原因一致；已分析无合法胡时为 `()`。部分资格未知时只保存已有精确合法支付行，未知码留在 `qualification_unknown_codes`；未知码不是0分或已排除。缺失必需链或计分证据继续按原严格失败处理。
+
+这是“给定本人下一次普通摸牌”的局部条件。它没有承诺其他三家会放过本动作、途中不会先胡、本人会再次摸牌、所需码位于牌墙或之后继续动作的链资格。墙余只是局部摸前条件；近保留区观察尤其不能把条件行理解为真实未来必达。杠补与更远成型路线仍按各自原节点范围处理。
+
+视图版本 `vip-route-scoring-view/3`、图版本 `vip-route-action-graph/3`、支付语义版本 `vip-normal-draw-hu-payment/1`。候选架构类型仍为 `vip_route_heuristic_v1`，自然结构数学语义不变，评分审计轨迹仍为 `/1`。新合同 SHA、版本、完整依赖闭包、规则／额度和源码形成新身份；旧 v1 成绩不得直接迁移，旧包不得作为当前兼容父代装载。旧源码可明示作历史参考，当前人工种子和模型提案必须重新建立、实际评测。
+
+## 4. 评分与严格执行
+
+**只开放一套联合排名代码。**候选类型 `vip_route_heuristic_v1`，视图 `vip-route-scoring-view/3`，入口 `score_actions(view) -> ScoreBatch`。旧 `/4` 输入合同不变。新冻结类型 `VipRouteScoringView` 以有界图描述根与续行，子节点先于父节点；根表与同次合法候选对应，各节点说明阶段、条件、用途与覆盖，不预选最小向听分支。
+
+每个输入动作键恰一条有限评分与有界解释。评分点越大越优，不是实际积分，不跨候选比较绝对量级。当前胡真实支付作为有单位的事实经候选变换参与取舍，框架不得直接混加任意代理分。
+
+执行器新增精确类型入口 `score_vip_route`，复用静态检查、工作量、完整输出及跨调用状态守卫；旧 `score(ScoringView)` 不改。严格研究包装对异常、弃权、超量、非法和漏项显式失败，不能复用生产内部紧急降级。完整评分首选恰与紧急候选同键不是回退，未获得完整评分而走保底才是研究失败。
+
+起始候选额度 100,000 计数操作、4,096 局部集合项、32 KiB 解释；规则建图另声明节点／分支／深度限额。全部计算计入实测决策耗时。逻辑时钟不能证明官方1秒／3秒可部署；有价值但慢的机制可另冻有界研究额度，最终部署版本仍须实机验收。
+
+## 4.1 共享图与实际执行容量
+
+**只复用整个冻结节点事实，合法根和所有边保持完整。**相同节点允许多个父引用；比较包含种类、全部有序子引用、条件牌码、等待事实、结算、未发生条件、未知说明、合法动作及跟打身份。边的顺序和重复引用不得去掉。`node_key`是引用名称，存储节点数不是独立机会数量。工作量统计以实际存储节点／边为准，资格查询和距离计数另列。
+
+新VIP执行器单集合容量由冻结 `projection_limits.max_nodes` 导出，并在身份参数及模型附录中显式保存。默认仍4096，可信配置最大16384；旧评分执行器默认不放宽。研究可另冻8192节点、16384边、65536资格见证及240万操作的配置；这不是默认值更改，也不是线上时限证明。共享及新事实会改变输入身份，任意旧公式仍须重新实测，不能自动继承旧成绩。
+
+**海选专用候选接受一定普通效率损失，重点检验长批次实际总净积分。**用户提供“过半弱Bot”作为主场景事实；具体弱对手比例和行为版本事前冻结，强对手诊断单列。提高联合公式的大牌保留权重，不人为放大官方结算。执行规模、失败分母和停止规则见[海选追大取舍](./QUALIFIER-HIGHFAN-TRADEOFF-2026-10-02.md)；旧冻结批次不回填新口径。
+
+## 5. 推进与审核门
+
+1. T0：同步合同、术语、架构与任务身份。
+2. T1：独立枚举核验结构数学，修复及认证机械风险组合，根代理审核。
+3. T2：新视图、严格失败故障注入，人工种子按运行时 `Rounds` 全窗口独立完成完整桌，零正常回退；关键代码交叉审核。
+4. T3：复用调用、身份、父代关系和记账，接通 `i1/e1/e2/m1/m2`，预算先冻、整套候选联合评测、按行为保留家族席位。
+5. T4：机会得失与自然完整桌双账、两个冻结对手池、同牌山四换座、根级区间、独立确认；随后部署与官方门。
+
+经典赢家牌谱是发现／诊断材料，不能承诺反事实未来。机会账必须包含普通出口损失、盲等、他家先胡和流局；自然账保留原合同的整根包含率、失败分母与缺根失效纪律。专长留档不等于整体晋升。
+
+每批先登记源码与规则身份、来源、预算、查看次数、最小有意义差、可容忍损失和停止／补样准则。无新行为或新根失效时停家族，复核框架／公式／测量，不机械重复迭代。阶段性提交与推送只纳入本目标文件，不覆盖既有数据库及其他研究产物。
+
+完整统一材料（JSON中的源码只是输入，不是要求你再输出多个程序）：
+{
+  "development_feedback": "海选主前提：人类用户明确裁定过半为弱Bot是大概率事实，可以提高支持充分的大牌价值；工程主场景60%，50%/75%敏感性。普通出口的损失允许由完整长批的实际高番净增益覆盖，官方最终积分不能再乘人为倍数。线上仍R18 v2，当前真实父T62 b3，无上线或大牌能力准入。\n\nT67固定真父128母根、1024实际桌全闭，候选对R18每桌+7.1484但区间[-0.03125,+14.30664]跨零；普通胡+4488、四番以上-864、他家支付+36。提高大牌价值确有方向需要，不能把普通胡改善当成大牌突破。T73库存/给定摸胡分离隔离原型修复第五张，32窗新增正下界可胡支持没有早段父代止胡更高支付，仅一末墙窗口；暂不修改接口，不将保守库存伪装精确未来牌山。\n\nT74按原行动前八层面板选全部14直接摸升级窗口+4无局部升级控制，18窗16母源，36实际配对续打。P全程真父，F只反转第一手然后同真父；每个P全座尾段精确复现原记录。胡H/等W是P/F别名，没有重复计数。125实际完整评分、107完整公开DTO、525合法动作分值核齐，正常回退0。来源已知，窗口样本不是自然概率、不是强度证明，也不是必须等待的动作金标。\n\n继续相对现在胡：7正/6平/5负，7正来自7母源；四个广面早段全部正，差+24/+24/+10/+10，总+68，其中前三真父已继续，只有第四真父胡；四窄早段0正/3平/1负，总-200，负例现成8番192，继续后他家胡支付-8。四末墙1正3负，+72/-10/-10/-24，总+28，不以墙<=24机械关闭所有等待。未知/缺口两窗+48/-11；无局部升级四窗+10/0/0/0，不能将空表当严格无未来价值。全部18合计-57仅样本描述，不能拿它代替完整桌主指标。正例多为2/4番，并非自然16番增强证明。\n\n具体目标：以完整联合公式重新研究当前可胡时的净升级信用、保听普通出口、进张码宽、可见库存证据、余墙和公开竞争成本之间的尺度。当前旧最终通道对joint作0.4*x/(4+x)强压缩，单独这个通道变化<0.4排序点；这不是完整公式变化上界。可以有理由地改支付映射、净升级表达或联合通道，但不要仅增加一个普遍保白奖励、不要把更远/更窄/较低条件支付抬过更近更高的支付，不要用八番损失例硬编码牌型，不要强迫所有已知正例改成等。维持未胡时的自然成型、普通牌效、多路线与高番联合框架；如改共享尺度，要解释对弃牌/吃碰/杠等的影响，避免重复记账。希望支持充分的广面保听升级更容易成为首选，现成大支付的机会成本和窄面等待代价仍明确。\n\n完整反馈PUBLIC-CAUSAL-FEEDBACK.json给出18目标的公开观察、原全评分/解释及实际端点。PUBLIC-TARGET-VIEWS.jsonl.gz只含18个实际公开DTO。任何来源ID、窗口ID、类别、动作标签、教师结果只可用于研发反馈，候选输入和分支不得读取或匹配它们。严禁读取SOURCE-MATERIALS、完整世界、未来牌码序列，以及新FRESH-ROOTS/COMPOSITIONS。公开未见容量包括他家暗牌，不能除墙余当精确摸牌概率；None/空/非空支付状态保持语义。\n\n本批第一份m1，真父b3；最多两作者提案，第二槽等待真实行为和终局反馈，不立即撒网。此提案只静态解析/构造，实际评分和续打由根安排。遵守冻结DTO/规则/限制，给全部合法根有限数与有限解释，不修改框架/线上，不调用评分、规则、模拟或模型，不创建代理。\n",
+  "feedback_scope": "仅开发反馈，不包含确认池或赛后隐藏信息",
+  "m2_inherited_numeric_constants": [],
+  "manual_seed_source": "\ndef waiting_score(waiting, context_adjustment):\n    structure = waiting[\"structure\"]\n    standard = structure[\"standard_shanten\"]\n    seven = structure[\"seven_pairs_shanten\"]\n    shanten = standard if seven is None else min(standard, seven)\n    ordinary_width = waiting[\"useful_code_width\"]\n    hu_width = waiting[\"legal_hu_code_width\"]\n    backup = 0.0\n    for target, width in zip(structure[\"targets\"], waiting[\"target_improvement_code_widths\"]):\n        if target[\"target_stage\"] == \"waiting_predecessor\":\n            proposal = 3.0 - 1.4 * target[\"natural_need\"]\n            proposal += 0.04 * width\n            proposal -= 0.7 * target[\"target_white_discard_lower_bound\"]\n            proposal -= 0.25 * target[\"target_natural_discard_lower_bound\"]\n            backup = max(backup, proposal)\n    # 两种牌型共有码只计并集；五自然对只是有界经验奖励，不过滤四对两白。\n    natural_pairs = 0.7 * min(2, max(0, structure[\"natural_pair_count\"] - 4))\n    chain = min(2.0, 0.5 * waiting[\"chain_count\"]) if waiting[\"baotou\"] else 0.0\n    return 20.0 - 4.0 * shanten + 0.10 * ordinary_width + 0.08 * hu_width + backup + natural_pairs + chain + context_adjustment\n\ndef score_actions(view):\n    context = view[\"visible_state\"]\n    wall = context[\"remaining_tile_count\"]\n    late = 0.0 if wall is None else 0.2 * max(0, 35 - wall)\n    opponents = sum([len(melds) for seat, melds in enumerate(context[\"melds\"]) if seat != context[\"seat\"]])\n    dealer = 0.25 if context[\"seat\"] == context[\"dealer_seat\"] else 0.0\n    context_adjustment = dealer - late - 0.10 * opponents\n    node_indexes = {node[\"node_key\"]: index for index, node in enumerate(view[\"nodes\"])}\n    values = []\n    chosen = []\n    for node in view[\"nodes\"]:\n        kind = node[\"kind\"]\n        key = node[\"node_key\"]\n        if kind == \"wait\":\n            value = waiting_score(node[\"waiting\"], context_adjustment)\n            selected = key\n        elif kind == \"unknown_draw\":\n            # 真正补牌前结构的保守代理；不声称已知补牌后最好合法动作。\n            value = waiting_score(node[\"waiting\"], context_adjustment) - 3.0\n            selected = key\n        elif kind == \"hu\":\n            normalized = node[\"settlement\"][\"score_delta\"][context[\"seat\"]] / view[\"binding\"][\"base_score\"]\n            value = 23.0 + 8.0 * normalized / (6.0 + abs(normalized))\n            selected = key\n        elif kind == \"choices\":\n            best = node[\"children\"][0]\n            for child in node[\"children\"]:\n                if values[node_indexes[child]] > values[node_indexes[best]]:\n                    best = child\n            value = values[node_indexes[best]]\n            selected = chosen[node_indexes[best]]\n        else:\n            # 全相容补牌码下端；码宽度仅是启发式，不是概率或积分下界。\n            lower = min([values[node_indexes[child]] for child in node[\"children\"]])\n            if kind == \"replacement\":\n                improvements = sum([1 for child in node[\"children\"] if values[node_indexes[child]] > lower + 1.0])\n                value = lower + 0.06 * improvements\n            else:\n                value = lower\n            selected = key\n        values.append(value)\n        chosen.append(selected)\n    entries = []\n    for action in view[\"actions\"]:\n        key = action[\"node_key\"]\n        entries.append({\"action_key\": action[\"action_key\"], \"score\": values[node_indexes[key]], \"trace\": {\n            \"unit\": \"heuristic_rank_points\", \"selected_conditional_node\": chosen[node_indexes[key]],\n            \"root_condition\": action[\"pending_condition\"], \"formula\": \"vip_balanced_seed/1\",\n        }})\n    return {\"status\": \"SCORED\", \"entries\": entries}\n",
+  "operator": "m1",
+  "parents": [
+    {
+      "identity": {
+        "candidate_id": "b3f133b8c6beb32d248a19d567808387d0af57d47f2c3f43103a04258034bef2",
+        "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+        "contract_sha256": "4ee18be7935430f53b84cd096767a88b88252260ecc4afd63130ccb26791efca",
+        "deps_digest": "0770a4b7af135332b67a4d5e71f690fcbb939e0fc210daf60b245fbd5da2c686",
+        "graph_schema_version": "vip-route-action-graph/3",
+        "math_backend": {
+          "fallback_reason": null,
+          "implementation": "c_grouped",
+          "native_binary": {
+            "bytes": 52552,
+            "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+          },
+          "semantics_version": "hangma-standard-grouped-v1"
+        },
+        "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+        "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+        "params": {
+          "max_local_collection_size": 8192,
+          "max_operations": 4800000,
+          "projection_limits": {
+            "max_branches": 16384,
+            "max_nodes": 8192,
+            "max_waiting_draw_witnesses": 65536
+          },
+          "route_limits": {
+            "max_expansions": 8192,
+            "max_routes_per_candidate": 128
+          },
+          "rule_config": {
+            "base_score": 1,
+            "ruleset_version": "hangma-mvp-v10-public-counts",
+            "you_cai_bi_kao": false
+          }
+        },
+        "source_manifest": {
+          "src/hangma_bot/hangma/__init__.py": {
+            "bytes": 145,
+            "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+          },
+          "src/hangma_bot/hangma/_grouped_native.c": {
+            "bytes": 19322,
+            "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+          },
+          "src/hangma_bot/hangma/_standard.py": {
+            "bytes": 1542,
+            "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+          },
+          "src/hangma_bot/hangma/_standard_python.py": {
+            "bytes": 14730,
+            "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+          },
+          "src/hangma_bot/hangma/action_families.py": {
+            "bytes": 20884,
+            "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+          },
+          "src/hangma_bot/hangma/candidate_facts.py": {
+            "bytes": 19139,
+            "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+          },
+          "src/hangma_bot/hangma/catch_play.py": {
+            "bytes": 10173,
+            "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+          },
+          "src/hangma_bot/hangma/emergency.py": {
+            "bytes": 4153,
+            "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+          },
+          "src/hangma_bot/hangma/engine.py": {
+            "bytes": 32121,
+            "sha256": "12a14fcf45b76467cff9dbc6e282252a06eae0bd42db46a44ab35746ae9f8aac"
+          },
+          "src/hangma_bot/hangma/hand_analysis.py": {
+            "bytes": 20852,
+            "sha256": "5fda1016122df9aaa894c62fccd8cbfa2f8600122d08cfb0ea208173f32bb763"
+          },
+          "src/hangma_bot/hangma/interface.py": {
+            "bytes": 37378,
+            "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+          },
+          "src/hangma_bot/hangma/internal_types.py": {
+            "bytes": 8611,
+            "sha256": "0404ace8a801c81d0c812a5b209e45e29a888b11f1bac341f5a13f3700568051"
+          },
+          "src/hangma_bot/hangma/natural_preparation.py": {
+            "bytes": 5636,
+            "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+          },
+          "src/hangma_bot/hangma/observation_rules.py": {
+            "bytes": 21637,
+            "sha256": "13347c92fb6f515c4365db042313ce51826be1df8a3960f9234141081bae2486"
+          },
+          "src/hangma_bot/hangma/progression.py": {
+            "bytes": 44196,
+            "sha256": "dac86f4675751954d57d63e2bfae362435e7f84bae609982f112d5c2b5240cc6"
+          },
+          "src/hangma_bot/hangma/progression_payload.py": {
+            "bytes": 15798,
+            "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+          },
+          "src/hangma_bot/hangma/public_successor.py": {
+            "bytes": 21173,
+            "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+          },
+          "src/hangma_bot/hangma/public_tile_counts.py": {
+            "bytes": 29608,
+            "sha256": "85db682cb4ddf4694c4f80c63ca0f2640c875d608468277227df4279023264d8"
+          },
+          "src/hangma_bot/hangma/route_frontier.py": {
+            "bytes": 11581,
+            "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+          },
+          "src/hangma_bot/hangma/route_hu_witness.py": {
+            "bytes": 8183,
+            "sha256": "56fa528132568eb7b56c94990508994228df19cfe75f5ce42fe3a501ade369e9"
+          },
+          "src/hangma_bot/hangma/route_structure.py": {
+            "bytes": 10649,
+            "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+          },
+          "src/hangma_bot/hangma/route_transition.py": {
+            "bytes": 72490,
+            "sha256": "42a3e6acd01bdadc138388e3b11d0f79d7f442f63c56f3de60d2d173a672fc17"
+          },
+          "src/hangma_bot/hangma/settlement.py": {
+            "bytes": 10643,
+            "sha256": "3e4497b8eedb344ddd974f693816adf520586c78efdd60593dfa49ed36c0e3d4"
+          },
+          "src/hangma_bot/hangma/special_rules.py": {
+            "bytes": 11609,
+            "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+          },
+          "src/hangma_bot/hangma/value_analysis.py": {
+            "bytes": 18251,
+            "sha256": "ec2a2416d654b4cec1dd4aa79b455d1cd5f12a2d6d46f6f11da91f722c50f0f8"
+          },
+          "src/hangma_bot/kernel/actions.py": {
+            "bytes": 10754,
+            "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+          },
+          "src/hangma_bot/kernel/config.py": {
+            "bytes": 3236,
+            "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+          },
+          "src/hangma_bot/kernel/observation.py": {
+            "bytes": 17784,
+            "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+          },
+          "src/hangma_bot/kernel/outcomes.py": {
+            "bytes": 8643,
+            "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+          },
+          "src/hangma_bot/policy/action_value.py": {
+            "bytes": 45125,
+            "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+          },
+          "src/hangma_bot/policy/action_value_executor.py": {
+            "bytes": 104284,
+            "sha256": "dbfab0d5b9c01748d355f3ecf5aaeb8148818575b1764a7d0e094a5fb14f5da6"
+          },
+          "src/hangma_bot/policy/errors.py": {
+            "bytes": 372,
+            "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+          },
+          "src/hangma_bot/policy/interface.py": {
+            "bytes": 3546,
+            "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+          },
+          "src/hangma_bot/policy/route_heuristic_view.py": {
+            "bytes": 27957,
+            "sha256": "82555e304073755ff9f2758de0c470e3595e96ceeb2497897a7b846d75f121d1"
+          },
+          "src/hangma_bot/policy/route_vip_heuristic.py": {
+            "bytes": 33891,
+            "sha256": "0c064e66d9e7c57d50fa53791d7a032a7c69be826926b2bf0f2140cdc49a4a83"
+          },
+          "src/hangma_bot/policy/safe_fallback.py": {
+            "bytes": 2352,
+            "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+          }
+        },
+        "source_sha256": "0a14bb5c96bb51bf090c95b834128234c27935fe55d66e3e8f8ecb046321644b",
+        "view_schema_version": "vip-route-scoring-view/3"
+      },
+      "mechanism": {
+        "changed_branches": "保持pay_points映射与OPTIONCAP=8不变。新增已见证支付信用K=max(父局部饱和项,0.45*支付映射点*已见证精确容量/(8+容量)*码覆盖饱和*墙余/公开副露折减)，因此大支付不再必经原6点的第二次饱和，小支付项有父下界。远信用C沿父目标质量与普通/七对真实出口，再乘目标自身相容推进容量的软折减和1/(1+0.18*effort)；普通型effort=max(条件尺度-1,真实自然面子准备缺张)，七对用自身自然缺张，取最大避免假加同一补弃。正缺张而无相容推进仍不给新增信用，容量未知保留软支持与原未知标签。无当前胡的联合值以原普通出口+K、最佳自然目标、普通出口+C共同竞争，普通出口及去重组合只算一次，不再把K与C叠加给多白远目标。当前有胡时仍用真实支付差和有弃胡价/出口费用的净C，价格改用同一effort，保留原严格更高支付保持听牌与gain=0联合准备小项；所有吃碰、杠补、七对与普通动作通过同一后序图完整评分。",
+        "counterexample": "已见证表只描述给定下一本人普通摸牌后的合法支付，并不保证本人能摸到该码或活到下一摸；0.45份额、库存/码覆盖及距离折减都是未校准的排序假设。窄高支付出口可能仍输给宽普通出口；强对手或临近保留区可能使大支付被高估。普通型自然面子准备不含将且不借白，额外成熟度折减可能过度惩罚实际可用白转换，七对则不假借普通准备。最小目标摘要不能排除较远替代路线，相关路线取最大也会丢失部分组合价值。gain=0参与评分不保证应该等，T60持平和T61局部吃响应损失不是通用动作金标。新增目标自身容量汇总及信用算术有运行成本，静态装载不能证明480万操作或官方1秒/3秒时限。",
+        "expected_direction": "预期让更近、更高且已有条件见证的大牌出口获得更多相对价值，减少远保白先验额外叠加后盖过该出口的情况。近自然成型、目标自身推进仍有支持、普通出口较宽的远目标仍可在gain=0时提供有界等待信用；墙短、远目标、窄/死推进、出口支付下降或即时胡较大可以压住等待。海选追大通过已见证支付与信用成熟度共同实现，不改官方终分。这里只静态交付；实际全动作、共同续策、完整桌和时限效果未验证，不授增强、准入或上线。",
+        "operator": "m1",
+        "parameter_changes": [],
+        "parent_differences": [
+          {
+            "action_keys": [
+              "全部输入合法action_key，包括hu、discard、chi、peng、gang、pass"
+            ],
+            "candidate_id": "c76e7dcacb578e5040b7794e837f4b34c7d0e2a6b1b852bdb1287180c1b30c73",
+            "expected_change": "相对唯一真父c76，新增信用仍上限8，但远目标不再继承普通宽出口后免受自身进张/自然完成距离折减；已见证较高支付可超过原局部第二次饱和；已见证与远结构共用信用槽取大，改变此前两者叠加的联合机制。当前胡的gain=0仍实际读取目标、准备和组合，弃胡价格同步消费成熟度尺度。预期更近、更高条件支付的鸣牌出口更有竞争力，未指定本例必须吃、所有旧题不变或任何实测增强。",
+            "status": "expected",
+            "window_classes": [
+              "较近较高条件支付与更多白远目标竞争的吃碰响应",
+              "当前可胡且下一摸支付升级差为零",
+              "当前可胡且已有更高局部条件支付",
+              "普通/七对、自然准备与多条保白前驱联合发展",
+              "杠补及未知补牌、短墙、相容推进窄/空或未知资格"
+            ]
+          }
+        ],
+        "trigger": "覆盖/3全图真实等待与未知补牌前态；已分析条件支付按同码互斥包络摘要进入共同信用槽，未兑现保白前驱按自然完成距离及自身公开相容进张争取有限信用。当前可胡的gain=0窗口仍完整使用联合事实，不以白数、来源或动作模板触发硬选择。"
+      },
+      "source": "\"\"\"冻结视图/3的海选联合启发式；已见证支付与有成本的远结构共用信用尺度。\"\"\"\n\nPAYCAP = 50.0\nPAYREF = 192.0\nHUBASE = 10.0\nWAITBASE = 12.0\nFORMCOST = 3.5\nSPEEDCAP = 4.8\nSPEEDREF = 12.0\nVARREF = 4.0\nWIDTHCAP = 3.6\nWIDTHREF = 5.0\nUNSEENSOFT = 0.75\nPURPOSES = (0.0, 3.4, 8.1, 13.0, 18.4)\nDEADPURPOSE = 0.25\nHORIZONCOST = 0.35\nRETENTION = 20\nWALLSOFT = 8.0\nUNKNOWNWALLSCALE = 0.70\nOPPDECAY = 0.05\nRISKBASE = 1.8\nOPPRISK = 0.12\nLATERISK = 3.4\nUNKNOWNWALLRISK = 0.7\nPREPBASE = 1.1\nPREPWHITE = 0.30\nPREPLINEAR = 0.65\nPREPSQUARE = 0.20\nPREPDISCARD = 0.15\nPREPWIDTHREF = 4.0\nPREPPORT = 0.45\nPORTCAP = 2.2\nPORTREF = 12.0\nPORTPURPOSE = 0.55\nORDINARYBRIDGE = 0.30\nENVELOPEBLEND = 0.25\nSINGLESCOPE = 0.75\nCOVREF = 3.0\nLOCALCAP = 6.0\nLOCALREF = 8.0\nQUALUNKNOWN = 0.7\nQUALUNANALYSED = 1.0\nUNKNOWNDRAW = 2.5\nSMALLREADY = 0.40\nANCHREADY = 0.18\nNATURALBIASCAP = 1.4\nGAINREF = 4.0\nUNANCHOREXPOSURE = 0.15\nREADYGAINCAP = 5.2\nREADYWAITFEE = 0.24\nREADYSUPPORTREF = 1.0\nCONDITIONBLEND = 0.20\nCONDITIONCAP = 1.0\nREPLACEMENTBLEND = 0.40\nREPLACEMENTCAP = 2.3\nCLAIMCOST = 0.25\nSKIPVALUE = 0.10\nGANGCOST = 0.12\nOPTIONCAP = 8.0\nOPTIONREF = 2.0\nOPTIONFLOOR = 2.0\nEXITMASSREF = 6.0\nEXITWIDTHREF = 3.0\nEXITSTEPDECAY = 0.25\nANCHOROPTIONBASE = 0.14\nANCHOROPTIONSTEP = 0.10\nANCHORFALLBACKCOST = 0.45\nANCHORUNKNOWNCOST = 0.35\nJOINTREADYREF = 4.0\nKNOWNPAYLINEAR = 0.45\nPAYMASSREF = 8.0\nEARNDISTANCE = 0.18\nTARGETMASSREF = 2.0\n\n\ndef pay_points(amount):\n    \"\"\"本家净积分除基础分后转排序点；保留较大支付的差别，不估计未来积分。\"\"\"\n    return PAYCAP * amount / (PAYREF + abs(amount))\n\n\ndef inventory_support(slot, waiting):\n    \"\"\"返回排序库存、精确张数和非精确标记；公开容量包含他家暗牌。\n\n    exact零关闭本码；保守正下界可支持排序，保守零及未知仍保留软支持。\n    软支持不写回容量、胡资格或支付，更不除以墙余当摸牌概率。\n    \"\"\"\n    capacity = waiting[\"unseen_capacities\"][slot]\n    evidence = waiting[\"unseen_evidence\"][slot]\n    if evidence == \"exact\" and capacity is not None:\n        return float(capacity), capacity, 0\n    if evidence == \"conservative\" and capacity is not None and capacity > 0:\n        return float(capacity), 0, 1\n    return UNSEENSOFT, 0, 1\n\n\ndef route_support(codes, waiting, codeindex, drawscale):\n    \"\"\"去重进张支持同时保留码宽与库存证据；仅返回有界排序摘要。\"\"\"\n    mass = 0.0\n    exact = 0\n    width = 0\n    uncertain = 0\n    seen = set()\n    for code in codes:\n        if code not in seen:\n            seen.add(code)\n            inventory, precise, unknown = inventory_support(codeindex[code], waiting)\n            if inventory > 0.0:\n                mass += inventory\n                exact += precise\n                width += 1\n                uncertain += unknown\n    credit = drawscale * SPEEDCAP * mass / (SPEEDREF + mass) * float(width) / (VARREF + float(width))\n    return credit, mass, width, exact, uncertain\n\n\ndef purpose_scale(length, room, drawscale, pressure):\n    \"\"\"墙余与公开副露只折减条件先验；length不是未来可保证的本人摸牌次数。\"\"\"\n    excess = 0.0 if room is None else max(0.0, float(length) - room)\n    return drawscale * pressure / (1.0 + HORIZONCOST * excess)\n\n\ndef preparation_value(waiting, room, drawscale, pressure):\n    \"\"\"自然面子准备（NaturalSetPreparationFacts，不借白、不含将的自然面子缺张）。\n\n    只赋予可转换结构的有界保留价值，D=0不增加白库存、不授爆头或胡资格。\n    零白仍保留结构价值；现持多白增加结构可让白用于其他用途的先验。\n    缺张、弃牌下界、公开相容改善码宽度共同折减，故不是一律不拆自然组。\n    返回向量：自然缺张、自然弃牌下界、相容改善码宽度、真实白库存、准备点。\n    \"\"\"\n    preparation = waiting[\"natural_preparation\"]\n    need = preparation[\"natural_draw_lower_bound\"]\n    discard = preparation[\"natural_discard_lower_bound\"]\n    width = waiting[\"natural_preparation_code_width\"]\n    whites = preparation[\"whites_held\"]\n    denominator = 1.0 + PREPLINEAR * float(need) + PREPSQUARE * float(need * need)\n    denominator += PREPDISCARD * float(max(0, discard - 1))\n    readiness = (PREPBASE + PREPWHITE * float(min(3, whites))) / denominator\n    if need > 0:\n        readiness *= 0.35 + 0.65 * float(width) / (PREPWIDTHREF + float(width))\n    # 这里只衡量准备的迟近；没有把自然目标完成当成终末合法摸牌。\n    scale = max(1, need + 1, discard)\n    credit = readiness * purpose_scale(scale, room, drawscale, pressure)\n    return need, discard, width, whites, credit\n\n\ndef actual_route(shanten, support, structural):\n    \"\"\"真实向听不改；L=max(0,向听)+1统一成型排序尺度，而非保证摸牌次数。\n\n    structural是有界结构偏好，不能改写L、合法胡集合或官方支付。\n    返回向量：真实向听、L、支持点、库存代理、相容码数、非精确码数、路线值。\n    \"\"\"\n    length = max(0, shanten) + 1\n    value = support[0] - FORMCOST * float(length - 1) + structural\n    return shanten, length, support[0], support[1], support[2], support[4], value\n\n\ndef payment_summary(waiting, seat, base):\n    \"\"\"条件胡支付（RouteConditionalHuPayment，给定下一本人普通摸牌立即合法胡的支付）。\n\n    同码两个抓打假设先合成下端加有界价差，单包络单独折减，库存只算一次。\n    容量加权仅在已见证码内产生排序摘要；没有墙内概率、存活率或未来必达。\n    None、空表、部分资格未知分别保留；财飘和杠链只消费规则已算好的结算。\n    返回向量：状态、支付点摘要、已见证码数、精确容量和、最小/最大支付点、\n    单包络码数、最小已见证番数；状态0未分析/1已知空/2有支付/3部分未知。\n    \"\"\"\n    payments = waiting[\"normal_draw_hu_payments\"]\n    if payments is None:\n        return 0, None, 0, 0.0, None, None, 0, None\n    partial = len(waiting[\"qualification_unknown_codes\"]) > 0\n    if not payments:\n        return 3 if partial else 1, 0.0, 0, 0.0, None, None, 0, None\n    groups = []\n    currentcode = None\n    lower = 0.0\n    upper = 0.0\n    capacity = 0.0\n    rows = 0\n    minimumfan = None\n    minimum = None\n    maximum = None\n    for payment in payments:\n        amount = float(payment[\"settlement\"][\"score_delta\"][seat]) / base\n        point = pay_points(amount)\n        fan = payment[\"settlement\"][\"fan\"]\n        minimum = point if minimum is None else min(minimum, point)\n        maximum = point if maximum is None else max(maximum, point)\n        minimumfan = fan if minimumfan is None else min(minimumfan, fan)\n        code = payment[\"draw_code\"]\n        if code != currentcode:\n            if currentcode is not None:\n                groups.append((capacity, lower, upper, rows))\n            currentcode = code\n            lower = point\n            upper = point\n            capacity = float(payment[\"draw_capacity_before\"])\n            rows = 1\n        else:\n            lower = min(lower, point)\n            upper = max(upper, point)\n            rows += 1\n    groups.append((capacity, lower, upper, rows))\n    total = 0.0\n    mass = 0.0\n    singles = 0\n    for capacity, lower, upper, rows in groups:\n        if rows == 1:\n            envelope = SINGLESCOPE * lower\n            singles += 1\n        else:\n            envelope = lower + ENVELOPEBLEND * (upper - lower)\n        total += capacity * envelope\n        mass += capacity\n    return 3 if partial else 2, total / mass, len(groups), mass, minimum, maximum, singles, minimumfan\n\n\ndef known_payment_credit(payment, coverage, drawscale, pressure):\n    \"\"\"已见证支付信用（KnownPaymentCredit，把同源条件支付保留为有界排序差）。\n\n    输入支付摘要已经合并同码互斥包络；容量只在已见证码内支持排序，不是墙内概率。\n    普通小支付保留父代饱和尺度；较大支付允许线性的映射点份额超过第二次饱和。\n    pay_points本身仍有50点上限，线性份额最大22.5点，未知和空表状态不改写。\n    返回父饱和信用、容量折减后的线性信用、实际信用，单位均为排序点。\n    \"\"\"\n    point = payment[1]\n    if point is None or point <= 0.0:\n        return 0.0, 0.0, 0.0\n    scale = coverage * drawscale * pressure\n    saturated = LOCALCAP * point / (LOCALREF + point) * scale\n    mass = payment[3]\n    inventory = mass / (PAYMASSREF + mass)\n    linear = KNOWNPAYLINEAR * point * inventory * scale\n    return saturated, linear, max(saturated, linear)\n\n\ndef joint_routes(waiting, standard, seven, preparation, codeindex, room, drawscale, pressure):\n    \"\"\"真实普通/七对出口、全部目标、自然准备和逐码组合共同生成有限远信用。\n\n    远结构信用（EarnedStructureCredit，尚未兑现的保白先验先接受自身进张和完成距离折减）\n    保留父代8点上限及同尺度目标质量；多保白本身不能绕过补弃和自然完成距离。\n    普通型同时消费真实自然面子准备，七对只用自身目标缺口，不假借普通面子准备。\n    相同补弃约束取最大来折减，不相加伪造额外必需动作，更不改规则向听或下界。\n    指定前驱正缺张而相容推进为零时不获新信用；每码库存含他家暗牌，不当摸牌概率。\n    返回最佳目标、去重组合、远信用见证；目标信用取最大，保留全部原图边与合法根。\n    \"\"\"\n    # 34码本调用局部库存表只复用同一冻结等待态，不跨节点或跨调用缓存。\n    stock = tuple([inventory_support(slot, waiting) for slot in range(len(waiting[\"unseen_capacities\"]))])\n    plans = []\n    steps = float(standard[1] - 1)\n    ordinaryweight = 1.0 / (1.0 + steps * steps)\n    for code in waiting[\"standard_useful_codes\"]:\n        plans.append((codeindex[code], ordinaryweight))\n    if seven is not None:\n        steps = float(seven[1] - 1)\n        pairweight = 1.0 / (1.0 + steps * steps)\n        for code in waiting[\"seven_pairs_useful_codes\"]:\n            plans.append((codeindex[code], pairweight))\n    exitroute = standard\n    if seven is not None and seven[6] > exitroute[6]:\n        exitroute = seven\n    exitmass = max(0.0, exitroute[3])\n    exitwidth = float(exitroute[4])\n    exitgate = exitmass / (EXITMASSREF + exitmass) * exitwidth / (EXITWIDTHREF + exitwidth)\n    exitgate /= 1.0 + EXITSTEPDECAY * float(exitroute[1] - 1)\n    best = None\n    option = None\n    whites = waiting[\"structure\"][\"whites_held\"]\n    for index, target in enumerate(waiting[\"structure\"][\"targets\"]):\n        route = standard if target[\"family\"] == \"standard\" else seven\n        terminal = 1 if target[\"requires_terminal_draw\"] else 0\n        need = target[\"natural_need\"]\n        naturaldrop = target[\"target_natural_discard_lower_bound\"]\n        whitedrop = target[\"target_white_discard_lower_bound\"]\n        retained = target[\"retained_whites\"]\n        scale = max(route[1], need + terminal, naturaldrop + whitedrop)\n        width = waiting[\"target_improvement_code_widths\"][index]\n        prior = 0.0\n        share = 0.0\n        predecessor = target[\"target_stage\"] == \"waiting_predecessor\"\n        if predecessor:\n            prior = PURPOSES[retained] * purpose_scale(scale, room, drawscale, pressure)\n            if need > 0 and width == 0:\n                prior *= DEADPURPOSE\n            if target[\"family\"] == \"standard\":\n                share = preparation[4] * float(retained) / float(1 + whites)\n        elif target[\"family\"] == \"standard\":\n            share = 0.25 * preparation[4]\n        support = drawscale * WIDTHCAP * float(width) / (WIDTHREF + float(width))\n        value = support + prior + share - FORMCOST * float(scale - 1)\n        if best is None or value > best[10]:\n            best = (index, target[\"family\"], retained, need, terminal, scale,\n                    naturaldrop, whitedrop, width, prior, value)\n        steps = float(scale - 1)\n        weight = (1.0 + PORTPURPOSE * prior / (PURPOSES[2] + prior)) / (1.0 + steps * steps)\n        targetmass = 0.0\n        for code in target[\"conditional_need_improvement_codes\"]:\n            slot = codeindex[code]\n            targetmass += stock[slot][0]\n            plans.append((slot, weight))\n        if predecessor and retained > 0 and retained <= whites and (need == 0 or width > 0):\n            quality = max(0.0, value - OPTIONFLOOR)\n            targetgate = 1.0\n            if need > 0:\n                if targetmass <= 0.0:\n                    targetgate = 0.0\n                else:\n                    targetgate = 0.50 + 0.50 * targetmass / (TARGETMASSREF + targetmass)\n            completion = preparation[0] if target[\"family\"] == \"standard\" else need\n            effort = float(max(scale - 1, completion))\n            earned = 1.0 / (1.0 + EARNDISTANCE * effort)\n            # 完成准备只约束信用成熟度，不把目标D=0或自然准备D=0当胡资格。\n            # 非精确容量沿inventory_support保留软支持，未写成已知墙内牌或规则资格。\n            credit = drawscale * OPTIONCAP * quality / (OPTIONREF + quality) * exitgate * targetgate * earned\n            if credit > 0.0 and (option is None or credit > option[8]):\n                option = (index, target[\"family\"], retained, need, scale, width, quality, exitgate,\n                          credit, targetmass, targetgate, effort, earned)\n    prepweight = PREPPORT * (1.0 + preparation[4] / (1.0 + preparation[4]))\n    prepweight /= 1.0 + float(preparation[0] * preparation[0])\n    for code in waiting[\"natural_preparation\"][\"natural_need_improvement_codes\"]:\n        plans.append((codeindex[code], prepweight))\n    knownhu = waiting[\"legal_hu_draw_codes\"]\n    if knownhu is not None:\n        for code in knownhu:\n            plans.append((codeindex[code], 1.0))\n    # 合并只在排序组合内进行，原图的有序边、重复引用和所有条件原样保留。\n    combined = []\n    currentslot = None\n    peak = 0.0\n    for slot, weight in sorted(plans):\n        if slot != currentslot:\n            if currentslot is not None:\n                combined.append((currentslot, peak))\n            currentslot = slot\n            peak = weight\n        else:\n            peak = max(peak, weight)\n    if currentslot is not None:\n        combined.append((currentslot, peak))\n    mass = 0.0\n    diversity = 0.0\n    exact = 0\n    codecount = 0\n    uncertain = 0\n    for slot, weight in combined:\n        inventory, precise, unknown = stock[slot]\n        if inventory > 0.0:\n            mass += weight * inventory\n            diversity += weight\n            exact += precise\n            codecount += 1\n            uncertain += unknown\n    credit = drawscale * PORTCAP * mass / (PORTREF + mass) * diversity / (VARREF + diversity)\n    return best, (mass, diversity, exact, codecount, uncertain, credit), option\n\n\ndef maintained_ready(waiting, anchor, anchorfan, discount, pressure, risk, payment):\n    \"\"\"保持听牌（MaintainedReadyOffer，用完整已见证更高支付与当前胡联合比较）。\n\n    要求真实听牌、已分析且无未知资格、每码双包络、最低支付点和番数均更高。\n    全相容码类覆盖及精确库存的饱和核只是保守排序折减，不表示再摸概率。\n    自然准备或多白先验不能单独买到放弃当前胡；一个最高支付码也不够。\n    返回相对当前胡净取舍点、折减、已见证码类覆盖；无支持时返回None。\n    \"\"\"\n    structure = waiting[\"structure\"]\n    if structure[\"standard_shanten\"] != 0 and structure[\"seven_pairs_shanten\"] != 0:\n        return None\n    if payment[0] != 2 or payment[6] != 0 or payment[4] is None:\n        return None\n    if payment[4] <= anchor or payment[7] is None or payment[7] <= anchorfan:\n        return None\n    possible = 0\n    for capacity, evidence in zip(waiting[\"unseen_capacities\"], waiting[\"unseen_evidence\"]):\n        if evidence != \"exact\" or capacity is None or capacity > 0:\n            possible += 1\n    if possible == 0 or payment[2] == 0 or payment[3] <= 0.0:\n        return None\n    coverage = min(1.0, float(payment[2]) / float(possible))\n    attenuation = discount * coverage * payment[3] / (READYSUPPORTREF + payment[3])\n    upgrade = min(READYGAINCAP, max(0.0, payment[1] - anchor))\n    fee = READYWAITFEE * risk / pressure\n    benefit = attenuation * upgrade - (1.0 - attenuation) * anchor - fee\n    return benefit, attenuation, coverage\n\n\ndef wait_value(waiting, codeindex, seat, base, room, drawscale, pressure, discount, risk,\n               anchor, anchorfan, readyenabled, unknowncost):\n    \"\"\"以共同信用槽联合评价普通出口、较高条件支付、远保白目标与当前胡。\n\n    未锚定等待的已见证支付信用与远结构信用取大，不能把两者叠加成免费保白奖励。\n    自然最佳目标仍在相同成型尺度竞争；逐码组合表示多路线支持，不估未来期望分。\n    已有当前胡时支付差与净远信用共同参与；gain=0仍完整计算目标、准备与组合。\n    远信用扣即时胡的放弃价格和出口下降/未知费用，再与原支付升级结构偏置取大。\n    所有未知资格、保留区、公开副露和未知补牌费用继续保留，没有白数或动作模板开关。\n    \"\"\"\n    structure = waiting[\"structure\"]\n    preparation = preparation_value(waiting, room, drawscale, pressure)\n    standard = actual_route(structure[\"standard_shanten\"],\n                            route_support(waiting[\"standard_useful_codes\"], waiting, codeindex, drawscale),\n                            preparation[4])\n    seven = None\n    main = standard\n    family = \"standard\"\n    if structure[\"seven_pairs_shanten\"] is not None:\n        length = max(0, structure[\"seven_pairs_shanten\"]) + 1\n        # 自然对子只给有界保留先验，不据实体四张自行授豪华七对或胡资格。\n        pairprior = 0.30 * float(min(2, max(0, structure[\"natural_pair_count\"] - 4))) / float(length)\n        seven = actual_route(structure[\"seven_pairs_shanten\"],\n                             route_support(waiting[\"seven_pairs_useful_codes\"], waiting, codeindex, drawscale),\n                             pairprior * drawscale * pressure)\n        if seven[6] > main[6]:\n            main = seven\n            family = \"seven_pairs\"\n    payment = payment_summary(waiting, seat, base)\n    known = payment[2]\n    unknown = len(waiting[\"qualification_unknown_codes\"])\n    coverage = float(known) / (COVREF + float(known))\n    qualcost = QUALUNANALYSED if payment[0] == 0 else QUALUNKNOWN * float(unknown) / float(1 + known + unknown)\n    paymentcredit = known_payment_credit(payment, coverage, drawscale, pressure)\n    local = paymentcredit[2]\n    ordinary = main[6] + local\n    natural, portfolio, option = joint_routes(waiting, standard, seven, preparation, codeindex, room, drawscale, pressure)\n    joint = ordinary\n    chosen = family\n    if natural is not None and natural[10] > joint:\n        joint = natural[10]\n        chosen = \"natural\"\n    bridge = ORDINARYBRIDGE * min(FORMCOST, max(0.0, joint - ordinary))\n    joint = joint - bridge + portfolio[5]\n    basejoint = joint\n    if option is not None:\n        # 同一普通出口与组合只记一次；条件支付与未兑现结构共用信用槽取大。\n        optionjoint = main[6] + portfolio[5] + option[8]\n        if optionjoint > joint:\n            joint = optionjoint\n            chosen = \"retained_option\"\n    gain = 0.0\n    bias = 0.0\n    ready = None\n    optionnet = 0.0\n    anchorprice = 0.0\n    fallbackcost = 0.0\n    if anchor is not None:\n        if payment[1] is not None and payment[1] > anchor:\n            gain = (payment[1] - anchor) * coverage\n        if gain > 0.0:\n            strength = preparation[4]\n            if natural is not None:\n                strength += max(0.0, natural[10])\n            bias = min(NATURALBIASCAP, strength) * gain / (GAINREF + gain)\n        if option is not None:\n            # effort是条件尺度/准备缺口的启发式最大值，不改目标的官方数学下界。\n            anchorprice = anchor * (ANCHOROPTIONBASE + ANCHOROPTIONSTEP * option[11])\n            if payment[1] is None:\n                fallbackcost = ANCHORUNKNOWNCOST * anchor\n            else:\n                fallbackcost = ANCHORFALLBACKCOST * max(0.0, anchor - max(0.0, payment[1]))\n            optionnet = max(0.0, discount * option[8] - anchorprice - fallbackcost)\n        bias = max(bias, optionnet)\n        value = HUBASE + anchor + discount * gain + bias - risk - qualcost - unknowncost\n        readiness = max(0.0, joint)\n        value += SMALLREADY * readiness / (JOINTREADYREF + readiness)\n        value -= ANCHREADY * max(0.0, -main[6])\n        if readyenabled and unknowncost == 0.0:\n            ready = maintained_ready(waiting, anchor, anchorfan, discount, pressure, risk, payment)\n            if ready is not None:\n                value = max(value, HUBASE + anchor + ready[0])\n    else:\n        value = WAITBASE + joint - qualcost - unknowncost - UNANCHOREXPOSURE * risk\n    # 14为遠信用见证；15—18为净信用、弃胡价、出口费用、加远信用前值；19为支付信用。\n    facts = (standard, seven, natural, preparation, portfolio, payment,\n             ordinary, joint, chosen, gain, bias, local, qualcost, ready,\n             option, optionnet, anchorprice, fallbackcost, basejoint, paymentcredit)\n    return value, facts\n\n\ndef score_actions(view):\n    \"\"\"对冻结后序图全部节点评分，再按原合法根表完整返回有限评分点。\n\n    choices才可择优合法续行；杠补及互斥条件使用全部边的下端与有界均值价差。\n    共享节点只计算一次，边顺序和重复引用仍参与其父摘要；不挑最好未来牌。\n    图机械缺口显式弃权，不用保底补成研究成功；无文件、网络、时钟或跨调用状态。\n    \"\"\"\n    context = view[\"visible_state\"]\n    seat = context[\"seat\"]\n    base = float(view[\"binding\"][\"base_score\"])\n    wall = context[\"remaining_tile_count\"]\n    opponents = sum([len(melds) for otherseat, melds in enumerate(context[\"melds\"]) if otherseat != seat])\n    pressure = 1.0 / (1.0 + OPPDECAY * float(opponents))\n    if wall is None:\n        room = None\n        drawscale = UNKNOWNWALLSCALE\n        discount = drawscale * pressure\n        risk = RISKBASE + OPPRISK * float(opponents) + UNKNOWNWALLRISK\n        readyenabled = False\n    else:\n        margin = max(0.0, float(wall) - float(RETENTION))\n        room = max(1.0, margin / 4.0)\n        drawscale = 1.0 if margin > 0.0 else 0.0\n        discount = drawscale * pressure * (0.30 + 0.70 * margin / (WALLSOFT + margin))\n        risk = RISKBASE + OPPRISK * float(opponents) + LATERISK * WALLSOFT / (WALLSOFT + margin)\n        readyenabled = margin > WALLSOFT\n    codeindex = {code: index for index, code in enumerate(view[\"tile_order\"])}\n    nodes = view[\"nodes\"]\n    indexes = {node[\"node_key\"]: index for index, node in enumerate(nodes)}\n    anchor = None\n    anchorfan = None\n    for action in view[\"actions\"]:\n        node = nodes[indexes[action[\"node_key\"]]]\n        if node[\"kind\"] == \"hu\":\n            amount = float(node[\"settlement\"][\"score_delta\"][seat]) / base\n            point = pay_points(amount)\n            if anchor is None or point > anchor:\n                anchor = point\n                anchorfan = node[\"settlement\"][\"fan\"]\n    values = []\n    references = []\n    factslist = []\n    aggregates = []\n    for index, node in enumerate(nodes):\n        if node[\"gap_kind\"] is not None:\n            return {\"status\": \"ABSTAIN\", \"reason\": \"graph_gap\"}\n        kind = node[\"kind\"]\n        children = node[\"children\"]\n        if kind == \"wait\" or kind == \"unknown_draw\":\n            unknowncost = UNKNOWNDRAW if kind == \"unknown_draw\" else 0.0\n            value, facts = wait_value(node[\"waiting\"], codeindex, seat, base, room, drawscale,\n                                      pressure, discount, risk, anchor, anchorfan, readyenabled, unknowncost)\n            reference = index\n            aggregate = (kind, round(value, 3))\n        elif kind == \"hu\":\n            amount = float(node[\"settlement\"][\"score_delta\"][seat]) / base\n            value = HUBASE + pay_points(amount)\n            facts = None\n            reference = index\n            aggregate = (\"hu\", amount)\n        elif kind == \"choices\":\n            if not children:\n                return {\"status\": \"ABSTAIN\", \"reason\": \"empty_choices\"}\n            bestindex = indexes[children[0]]\n            value = values[bestindex]\n            for child in children:\n                childindex = indexes[child]\n                if values[childindex] > value:\n                    bestindex = childindex\n                    value = values[childindex]\n            reference = references[bestindex]\n            facts = factslist[bestindex]\n            aggregate = (kind, len(children), bestindex)\n        else:\n            if not children:\n                return {\"status\": \"ABSTAIN\", \"reason\": \"empty_condition\"}\n            lowerindex = indexes[children[0]]\n            lower = values[lowerindex]\n            upper = lower\n            total = 0.0\n            for child in children:\n                childindex = indexes[child]\n                childvalue = values[childindex]\n                total += childvalue\n                if childvalue < lower:\n                    lowerindex = childindex\n                    lower = childvalue\n                upper = max(upper, childvalue)\n            mean = total / float(len(children))\n            # 均值是互斥条件的排序摘要，既非均匀摸牌假设也非期望积分。\n            blend = REPLACEMENTBLEND if kind == \"replacement\" else CONDITIONBLEND\n            cap = REPLACEMENTCAP if kind == \"replacement\" else CONDITIONCAP\n            value = lower + min(cap, blend * max(0.0, mean - lower))\n            reference = references[lowerindex]\n            facts = factslist[lowerindex]\n            aggregate = (kind, len(children), round(lower, 3), round(upper, 3), round(mean, 3))\n        values.append(value)\n        references.append(reference)\n        factslist.append(facts)\n        aggregates.append(aggregate)\n    entries = []\n    actioncount = len(view[\"actions\"])\n    for action in view[\"actions\"]:\n        index = indexes[action[\"node_key\"]]\n        kind = action[\"action_type\"]\n        adjustment = 0.0\n        if kind == \"chi\" or kind == \"peng\":\n            # 跳座价值仅在获裁决条件下；七对关闭和自然组改变已在各续行联合值体现。\n            adjustment = SKIPVALUE * float(action[\"skipped_seats\"]) * drawscale - CLAIMCOST\n        elif kind == \"gang\":\n            adjustment = -GANGCOST\n        value = float(values[index] + adjustment)\n        facts = factslist[index]\n        trace = {}\n        if actioncount <= 64:\n            trace = {\"ref\": references[index], \"agg\": aggregates[index],\n                     \"condition\": action[\"pending_condition\"], \"adjust\": round(adjustment, 3)}\n        if facts is not None and actioncount <= 16:\n            standard = facts[0]\n            seven = facts[1]\n            natural = facts[2]\n            preparation = facts[3]\n            portfolio = facts[4]\n            payment = facts[5]\n            option = facts[14]\n            trace = dict(list(trace.items()) + [\n                (\"std\", tuple([round(part, 3) for part in standard])),\n                (\"seven\", None if seven is None else tuple([round(part, 3) for part in seven])),\n                (\"natural\", None if natural is None else\n                 (natural[0], natural[1], natural[2], natural[3], natural[4], natural[5],\n                  natural[6], natural[7], natural[8], round(natural[9], 3), round(natural[10], 3))),\n                (\"prep\", (preparation[0], preparation[1], preparation[2], preparation[3], round(preparation[4], 3))),\n                (\"portfolio\", tuple([round(part, 3) for part in portfolio])),\n                (\"pay\", (payment[0], None if payment[1] is None else round(payment[1], 3),\n                         payment[2], payment[3], payment[4], payment[5], payment[6], payment[7])),\n                (\"joint\", (round(facts[6], 3), round(facts[7], 3), facts[8],\n                           round(facts[9], 3), round(facts[10], 3), round(facts[11], 3), round(facts[12], 3))),\n                (\"option\", None if option is None else\n                 (option[0], option[1], option[2], option[3], option[4], option[5],\n                  round(option[6], 3), round(option[7], 3), round(option[8], 3),\n                  round(option[9], 3), round(option[10], 3), round(option[11], 3), round(option[12], 3))),\n                (\"pay_credit\", tuple([round(part, 3) for part in facts[19]])),\n                (\"offer_cost\", (round(facts[15], 3), round(facts[16], 3),\n                                round(facts[17], 3), round(facts[18], 3))),\n                (\"ready\", None if facts[13] is None else tuple([round(part, 3) for part in facts[13]])),\n            ])\n        elif facts is not None and actioncount <= 40:\n            trace = dict(list(trace.items()) + [\n                (\"prep\", (facts[3][0], facts[3][2], round(facts[3][4], 3))),\n                (\"joint\", (round(facts[6], 3), round(facts[7], 3), facts[8])),\n                (\"pay\", (facts[5][0], facts[5][2], facts[5][6])),\n                (\"pay_credit\", round(facts[19][2], 3)),\n                (\"option\", None if facts[14] is None else\n                 (facts[14][2], facts[14][4], round(facts[14][8], 3), round(facts[15], 3))),\n            ])\n        if not entries:\n            trace = dict(list(trace.items()) + [\n                (\"unit\", \"heuristic_rank_points\"),\n                (\"formula\", \"vip_qualifier_earned_credit_m1/2\"),\n                (\"context\", (wall, opponents, round(discount, 3), round(risk, 3), anchor)),\n                (\"unknown\", \"opponent_hu_and_future_draw_reachability\"),\n                (\"scope\", \"conditional_facts_not_probability_or_guaranteed_highfan\"),\n            ])\n        entries.append({\"action_key\": action[\"action_key\"], \"score\": value, \"trace\": trace})\n    return {\"status\": \"SCORED\", \"entries\": entries}",
+      "thought": "让已见证大牌出口保留支付差别，再用自然完成距离与目标自身进张约束远保白信用，在同一尺度联合选择普通出口、合理等牌和鸣牌。"
+    }
+  ],
+  "profile": "vip-route-eoh/1",
+  "readonly_appendix": {
+    "candidate_kind": "vip_route_heuristic_v1",
+    "conditional_payment_scope": "normal_draw_hu_payments是逐牌码、逐catch_restricted假设的条件支付；settlement.score_delta按座位0—3，分数单位为积分。它不保证本人能再摸牌。相同牌码的两抓打假设不是两次机会，不能重复计数；draw_capacity_before包含他家暗牌，不可除以墙余冒充摸牌概率，draw_capacity_after是给定摸入后的容量。未分析None、已分析无胡()、未知资格码分别保留；等待节点settlement仍为空。",
+    "executor": {
+      "allowed_builtins": [
+        "abs",
+        "all",
+        "any",
+        "bool",
+        "dict",
+        "enumerate",
+        "filter",
+        "float",
+        "frozenset",
+        "int",
+        "len",
+        "list",
+        "map",
+        "max",
+        "min",
+        "range",
+        "reversed",
+        "round",
+        "set",
+        "sorted",
+        "sum",
+        "tuple",
+        "zip"
+      ],
+      "allowed_methods": [
+        "add",
+        "append",
+        "count",
+        "get",
+        "index",
+        "items",
+        "keys",
+        "values"
+      ],
+      "max_local_collection_size": 8192,
+      "max_operations": 4800000,
+      "max_source_bytes": 65536,
+      "max_trace_bytes": 32768,
+      "projection_limits": {
+        "max_branches": 16384,
+        "max_nodes": 8192,
+        "max_waiting_draw_witnesses": 65536
+      },
+      "route_limits": {
+        "max_expansions": 8192,
+        "max_routes_per_candidate": 128
+      },
+      "rule_config": {
+        "base_score": 1,
+        "ruleset_version": "hangma-mvp-v10-public-counts",
+        "you_cai_bi_kao": false
+      },
+      "version": "action-value-executor/6"
+    },
+    "fact_type_definitions": {
+      "ActionScore": "@dataclass(frozen=True)\nclass ActionScore:\n    \"\"\"单个动作的评分点与有界结构化解释。\n\n    score 是有限浮点评分点，越大越优先；不跨候选比较绝对量级，也不当\n    实际积分。trace 是有界结构化解释（深度 ≤3，整批序列化 ≤32KiB），\n    非线性机制明细放 trace，不拆成虚假可加贡献。\n    \"\"\"\n\n    action_key: str  # 动作键，必须属于输入动作表\n    score: float  # 有限浮点；布尔冒充数在构造期拒绝\n    trace: Dict[str, Any]  # 结构化解释：分支选择、所用事实键、分项与组合方式\n\n    def __post_init__(self) -> None:\n        if not isinstance(self.action_key, str) or not self.action_key:\n            raise ValueError(\"ActionScore.action_key 必须是非空字符串\")\n        if isinstance(self.score, bool) or not isinstance(self.score, (int, float)):\n            raise ValueError(\n                \"ActionScore.score 必须是数值，得到 {0!r}（布尔冒充数整批失败）\".format(\n                    self.score\n                )\n            )\n        score = float(self.score)\n        if score != score or score in (float(\"inf\"), float(\"-inf\")):\n            raise ValueError(\"ActionScore.score 必须是有限数\")\n        object.__setattr__(self, \"score\", score)\n        if not isinstance(self.trace, dict):\n            raise ValueError(\"ActionScore.trace 必须是 dict\")\n        # R9/S1b：先做有界体积预判，再进入递归校验（单条 trace 超过整批上限\n        # 即必然超限，故用同一上限即可判定，且不会放过原本合法的 trace）。\n        _guard_trace_serialized_size(self.trace, \"ActionScore.trace\")\n        _validate_trace_value(self.trace, MAX_TRACE_DEPTH, \"ActionScore.trace\")\n        object.__setattr__(self, \"trace\", dict(self.trace))\n",
+      "NaturalSetPreparationFacts": "@dataclass(frozen=True)\nclass NaturalSetPreparationFacts:\n    \"\"\"指定自然面子目标的不可变事实，数量字段单位均为张或组。\n\n    所有真实白板仍在库存中，只是不允许在这个目标内充当百搭。\n    补张下界按实体张数计，不是需要再摸几次；固定副露组数，不含\n    吃碰转换。缺张为零仅说明暗牌已包含所需自然面子，尚未证明有白板、已经\n    进入爆头或能通过合法动作达到该状态。改善码是同一目标的数学\n    推进，不证明牌山有该牌，更不表示当前直接胡牌集合。\n    \"\"\"\n\n    natural_counts33: tuple[int, ...]  # 规范牌序前33位的真实暗牌，每码0-4。\n    whites_held: int  # 真实白库存0-4；没有假设将来已摸到白板。\n    meld_set_count: int  # 吃、碰、杠各折算一组；不读副露内牌值。\n    sets_left: int  # 自然面子目标组数，恒为4-meld_set_count，不含将。\n    target_natural_size: int  # 目标自然实体数，恒为3*sets_left。\n    natural_draw_lower_bound: int  # D=min sum(max(目标计数-当前自然计数,0))。\n    natural_discard_lower_bound: int  # sum(natural)+D-target_natural_size。\n    natural_need_improvement_codes: tuple[str, ...]  # 自然补张使同目标D下降的规范码。\n    target_distance_evaluation_count: int  # 首次构造该结果的距离请求数；缓存命中不新增。\n",
+      "RouteConditionalHuPayment": "@dataclass(frozen=True)\nclass RouteConditionalHuPayment:\n    \"\"\"合法弃后给定一次普通摸牌的支付，不是当前结算或未来期望积分。\n\n    一行只对应一个牌码及一个抓打限制假设。两包络互斥，不能相加成\n    两次机会；公开未见容量含他家暗牌，不能据此推算墙内概率。见证\n    不保证响应全过、途中无人先胡、本人能再次摸牌或此码位于牌墙。\n    \"\"\"\n\n    draw_code: str  # 假定下一次本人普通摸牌的规范牌码，不读取未来牌墙\n    catch_restricted: bool  # 此行假设摸切限制；另一行可以假设自由抓打\n    wall_remaining_before_draw: int  # 给定局部摸前墙余，含20张保留区，单位张\n    wall_remaining_after_draw: int  # 仅扣本次给定普通摸牌的一张，不推进其他座位\n    draw_capacity_before: int  # 该码精确公开未见张数，1—4；不是墙内张数\n    draw_capacity_after: int  # 本次实体摸入后该码容量，恒为摸前减一\n    baotou_after_draw: bool  # 已由唯一规则源重算的普通摸牌后爆头\n    chain_count: int  # 本条件等待态的连续飘/杠数，不预测中途新增动作\n    chain_piao: int  # 同一链已飘白数；支付行只允许证据已知，未知不填0\n    winner_seat: int  # 假定自摸者，即本家座位0—3\n    dealer_seat: int  # 本单局庄家座位0—3，来自当前公开条件状态\n    ruleset_version: str  # 同源见证的本地规则身份，与外层视图严格匹配\n    settlement: Settlement  # 此行条件满足并立即胡时的支付；净积分按座位0—3\n    draw_kind: str = field(default=\"normal\", init=False)\n    local_witness_only: bool = field(default=True, init=False)\n    scope: str = field(default=\"local_given_normal_draw_hu_only\", init=False)\n\n    def __post_init__(self) -> None:\n        if type(self.draw_code) is not str or self.draw_code not in CANONICAL_TILE_ORDER:\n            raise ValueError(\"条件支付须使用规范牌码\")\n        if type(self.catch_restricted) is not bool or type(self.baotou_after_draw) is not bool:\n            raise ValueError(\"条件支付的抓打假设和爆头必须是布尔值\")\n        if any(type(value) is not int or value not in range(4)\n               for value in (self.winner_seat, self.dealer_seat)):\n            raise ValueError(\"条件支付本人和庄家座位须为0—3整数\")\n        if (type(self.wall_remaining_before_draw) is not int\n                or self.wall_remaining_before_draw <= 20\n                or type(self.wall_remaining_after_draw) is not int\n                or self.wall_remaining_after_draw != self.wall_remaining_before_draw - 1):\n            raise ValueError(\"条件支付只允许保留区外给定一次普通摸牌的墙余增量\")\n        if (type(self.draw_capacity_before) is not int or not 1 <= self.draw_capacity_before <= 4\n                or type(self.draw_capacity_after) is not int\n                or self.draw_capacity_after != self.draw_capacity_before - 1):\n            raise ValueError(\"条件支付须有精确正容量及一张实体增量\")\n        if (type(self.chain_count) is not int or self.chain_count < 0\n                or type(self.chain_piao) is not int or not 0 <= self.chain_piao <= self.chain_count):\n            raise ValueError(\"条件支付的链数和飘白证据须是非负整数且一致\")\n        if type(self.ruleset_version) is not str or not self.ruleset_version.strip():\n            raise ValueError(\"条件支付缺同源规则身份\")\n        if (not isinstance(self.settlement, Settlement)\n                or type(self.settlement.score_delta) is not tuple\n                or len(self.settlement.score_delta) != 4\n                or any(type(amount) is not int for amount in self.settlement.score_delta)\n                or sum(self.settlement.score_delta) != 0\n                or type(self.settlement.fan) is not int or self.settlement.fan <= 0\n                or type(self.settlement.details) is not tuple\n                or any(type(detail) is not str for detail in self.settlement.details)):\n            raise ValueError(\"条件支付须有同源正番结算及0—3四座整数净积分守恒\")\n",
+      "RouteHeuristicAction": "@dataclass(frozen=True)\nclass RouteHeuristicAction:\n    \"\"\"规则确认的一项合法根；actual action仅供最终计划适配。\"\"\"\n\n    action_key: str\n    action: Action  # 冻结规则值对象，受限候选映射不携带本对象\n    action_type: str\n    node_key: str\n    pending_condition: Optional[str] = None\n    skipped_seats: int = 0  # 鸣牌相对供牌者跳过的原行动座位数0/1/2\n\n    def __post_init__(self) -> None:\n        if self.action_key != action_key(self.action):\n            raise ValueError(\"VIP根动作键与规则值对象不一致\")\n        if self.action_type not in (\"discard\", \"hu\", \"pass\", \"chi\", \"peng\", \"gang\"):\n            raise ValueError(\"VIP根动作族未知\")\n        if self.skipped_seats not in (0, 1, 2):\n            raise ValueError(\"鸣牌跳过座位数必须为0/1/2\")\n",
+      "RouteHeuristicNode": "@dataclass(frozen=True)\nclass RouteHeuristicNode:\n    \"\"\"一个可审计的条件评分节点；所有 children 必须位于它之前。\n\n    wait 是合法等待态，hu 是已确认的本条件合法结算，choices 含全部同次\n    合法续行，replacement 含未知补牌的全部公开相容码，condition 是同一\n    根的互斥公开条件包络。后三者都不表示条件已在真实牌局发生。\n    \"\"\"\n\n    node_key: str\n    kind: str  # wait/hu/choices/replacement/condition/unknown_draw\n    children: Tuple[str, ...] = ()\n    condition_codes: Tuple[str, ...] = ()  # replacement每个子节点对应唯一摸牌码\n    waiting: Optional[RouteWaitingView] = None\n    settlement: Optional[Settlement] = None  # hu四座净积分，座位顺序0—3\n    pending_condition: Optional[str] = None  # 公开事件条件，不是已执行计划\n    expected_child_count: int = 0  # 应有全部子节点数；不是择优数量\n    completed_child_count: int = 0\n    gap_kind: Optional[str] = None  # 缺实现/缺输入/预算截断显式失败\n    gap_reason: Optional[str] = None\n    uncertainty_reason: Optional[str] = None  # 未来未知不是当前机械缺口\n    legal_action_key: Optional[str] = None  # 同次规则分析确认的续行动作键\n    followup_key: Optional[str] = None  # 吃碰原CandidateFacts的跟打身份，非择优结果\n\n    def __post_init__(self) -> None:\n        if not self.node_key or self.kind not in (\n            \"wait\", \"hu\", \"choices\", \"replacement\", \"condition\", \"unknown_draw\",\n        ):\n            raise ValueError(\"VIP图节点身份或种类不合法\")\n        if self.completed_child_count != len(self.children):\n            raise ValueError(\"完成子节点数与实际节点不一致\")\n        if self.expected_child_count < self.completed_child_count:\n            raise ValueError(\"完成子节点数超过应有数量\")\n        if self.gap_kind is None and self.expected_child_count != self.completed_child_count:\n            raise ValueError(\"缺子节点必须显式登记gap_kind\")\n        if (self.gap_kind is None) != (self.gap_reason is None):\n            raise ValueError(\"图缺口类别与原因须同时提供\")\n        if self.kind == \"wait\" and (self.waiting is None or self.settlement is not None):\n            raise ValueError(\"wait必须携带真实等待事实且不能混入结算\")\n        if self.kind == \"unknown_draw\" and (\n            self.waiting is None or not self.uncertainty_reason or self.children\n        ):\n            raise ValueError(\"未知补牌必须保留补牌前真实等待结构与未知原因\")\n        if self.kind == \"hu\" and (self.settlement is None or self.waiting is not None):\n            raise ValueError(\"hu必须携带同源结算\")\n        if self.kind in (\"wait\", \"hu\") and self.children:\n            raise ValueError(\"末端节点不能混入续行\")\n        if self.kind in (\"choices\", \"replacement\", \"condition\") and not self.children and self.gap_kind is None:\n            raise ValueError(\"完整条件聚合节点不能没有合法子节点\")\n        if self.kind == \"replacement\" and (\n            len(self.condition_codes) != len(self.children)\n            or len(set(self.condition_codes)) != len(self.condition_codes)\n        ):\n            raise ValueError(\"补牌条件码须与子节点一一对应且不重复\")\n",
+      "RouteStructureFacts": "@dataclass(frozen=True)\nclass RouteStructureFacts:\n    \"\"\"来自真实全手的不可变结构事实，不含隐藏牌、容量或赛事压力。\"\"\"\n\n    natural_counts33: tuple[int, ...]  # 规范 34 牌序前 33 位，每码 0-4 张。\n    whites_held: int  # 真实白库存 w，包含全部保留白。\n    meld_set_count: int  # 吃、碰、杠各折算一组；杠实体第四张不进此手牌。\n    standard_shanten: int  # 原权威普通型向听，未删白、未改语义。\n    seven_pairs_shanten: int | None  # 原七对向听；有副露时为 None（不适用）。\n    natural_pair_count: int  # 自然实体对子数；四张同码按两对计。\n    natural_quad_codes: tuple[str, ...]  # 自然四张的规范牌码；不推断豪华胡资格。\n    targets: tuple[RouteStructureTarget, ...]  # 逐牌型及 k=0..w，不合并不同目标。\n    target_distance_evaluation_count: int  # 本次目标距离请求次数；不等于后端节点数。\n",
+      "RouteStructureTarget": "@dataclass(frozen=True)\nclass RouteStructureTarget:\n    \"\"\"一个固定牌型、白用途与阶段下的自然缺口，单位均为张或动作次。\n\n    这些是理想自然补张到指定目标的条件下界，不包含新增白、鸣牌转换、\n    他家截断或规则资格。进张代码仅表示补张后同一目标距离降低，尚未\n    验证实际弃牌过程；空集合不代表当次合法胡集合为空。\n    \"\"\"\n\n    family: _Family  # 普通型或七对；普通与七对共有进张不可相加计宽度。\n    retained_whites: int  # k；前驱保留一白，其余 k-1 白待合法弃出。\n    white_used: int  # 块内恰用的实体白张数，恒为原库存 w-k。\n    target_stage: _Stage  # 完成结构或等待前驱；结构不等于合法胡。\n    target_natural_size: int  # 目标块中所需自然实体总张数，不含保留白。\n    natural_need: int  # D=min sum(max(目标自然计数-当前自然计数,0))。\n    target_natural_draw_lower_bound: int  # 达到该固定目标至少补 D 张自然牌。\n    target_natural_discard_lower_bound: int  # 达到目标的自然弃牌次数，未验资格。\n    target_white_discard_lower_bound: int  # 前驱待弃白次数 k-1，完成目标为 0。\n    requires_terminal_draw: bool  # 前驱成形后仍需下一合法摸牌/补牌才可能胡。\n    conditional_need_improvement_codes: tuple[str, ...]  # 规范顺序、去重且排白。\n    witness: tuple[str, ...] | None = None  # 本版本不生成分解见证，恒为 None。\n    witness_status: Literal[\"distance_only\"] = \"distance_only\"  # 距离已算，分解见证未生成。\n",
+      "RouteWaitingView": "@dataclass(frozen=True)\nclass RouteWaitingView:\n    \"\"\"合法弃后等待态的真实结构与公开容量，不含他家暗牌。\n\n    结构推进码只表示指定用途的自然缺口降低；``legal_hu_draw_codes`` 是\n    唯一规则源的局部条件胡见证，不承诺响应裁决、未来存活或摸牌概率。\n    未分析用 None 并给原因；已分析为空用 ()，两者不能混淆。\n    \"\"\"\n\n    structure: \"RouteStructureFacts\"  # 真正 13-3m 暗牌的结构事实\n    useful_codes: Tuple[str, ...]  # 真实普通/七对一步推进码并集，规范34牌序\n    unseen_capacities: Tuple[Optional[int], ...]  # 34牌序公开未见张数，不是墙内张数\n    unseen_evidence: Tuple[str, ...]  # 同序 exact/conservative/unknown\n    legal_hu_draw_codes: Optional[Tuple[str, ...]]  # 已分析的条件胡码；未分析为空值\n    qualification_scope: str  # conditional_witness 或 unanalysed，不授予高番必达资格\n    normal_draw_hu_payments: Optional[Tuple[RouteConditionalHuPayment, ...]]\n    # 逐码、逐抓打假设的条件支付；未分析None、已分析无胡()，不作概率分布\n    natural_preparation: \"NaturalSetPreparationFacts\"  # 同一真实手牌不借白、不含将的自然面子准备\n    natural_preparation_code_width: int = 0  # 准备改善码中仍与公开容量相容的码数；不是胡牌宽度\n    qualification_missing_reason: Optional[str] = None\n    qualification_unknown_codes: Tuple[str, ...] = ()  # 相容码未能精确判资格，不能当已排除\n    qualification_math_closed_codes: Tuple[str, ...] = ()  # 同源真实有效码并集以外，数学已证不能当次胡\n    restricted_hu_draw_codes: Tuple[str, ...] = ()  # 假设摸切包络下已见证合法胡码\n    unrestricted_hu_draw_codes: Tuple[str, ...] = ()  # 假设可自由抓打包络下已见证合法胡码\n    useful_code_width: int = 0  # 去重一步推进相容码数；保守/未知零容量仍相容\n    legal_hu_code_width: int = 0  # 已见证两包络合法胡并集的相容码数\n    target_improvement_code_widths: Tuple[int, ...] = ()  # targets同序的相容自然推进码数\n    standard_useful_codes: Tuple[str, ...] = ()  # 普通型独立一步推进码，保留路线标签\n    seven_pairs_useful_codes: Optional[Tuple[str, ...]] = None  # 有副露不适用时None，已分析为空()\n    combined_useful_codes: Tuple[str, ...] = ()  # 综合最优向听推进码；与逐牌型并集分开\n    baotou: bool = False  # 当前条件状态的规则生命周期事实\n    chain_count: int = 0  # 当前连续飘/杠动作次数；不是等待收益\n\n    def __post_init__(self) -> None:\n        from hangma_bot.hangma.natural_preparation import NaturalSetPreparationFacts\n        from hangma_bot.hangma.route_structure import RouteStructureFacts\n\n        if not isinstance(self.structure, RouteStructureFacts):\n            raise ValueError(\"RouteWaitingView.structure 必须是 RouteStructureFacts\")\n        preparation = self.natural_preparation\n        if (not isinstance(preparation, NaturalSetPreparationFacts)\n                or preparation.natural_counts33 != self.structure.natural_counts33\n                or preparation.whites_held != self.structure.whites_held\n                or preparation.meld_set_count != self.structure.meld_set_count):\n            raise ValueError(\"自然面子准备必须与真实结构的手牌、白库存和副露组数一致\")\n        if len(self.unseen_capacities) != 34 or len(self.unseen_evidence) != 34:\n            raise ValueError(\"公开容量和证据必须是规范34牌序\")\n        if any(type(count) is not int or not 0 <= count <= 4\n               for count in self.unseen_capacities if count is not None):\n            raise ValueError(\"公开容量只能是0—4张或None\")\n        if any(kind not in (\"exact\", \"conservative\", \"unknown\")\n               for kind in self.unseen_evidence):\n            raise ValueError(\"公开容量证据不合法\")\n        if self.qualification_scope not in (\"conditional_witness\", \"unanalysed\"):\n            raise ValueError(\"未知资格范围\")\n        if (self.legal_hu_draw_codes is None) != (self.qualification_scope == \"unanalysed\"):\n            raise ValueError(\"资格未分析必须使用None，已分析必须使用集合\")\n        if self.legal_hu_draw_codes is None and not self.qualification_missing_reason:\n            raise ValueError(\"资格未分析必须说明原因\")\n        if self.legal_hu_draw_codes is not None and self.qualification_missing_reason is not None:\n            raise ValueError(\"已分析资格不得携带缺口原因\")\n        if type(self.baotou) is not bool or type(self.chain_count) is not int or self.chain_count < 0:\n            raise ValueError(\"等待态爆头和链数的类型或值无效\")\n        code_sets = (self.legal_hu_draw_codes, self.restricted_hu_draw_codes,\n                     self.unrestricted_hu_draw_codes, self.qualification_unknown_codes,\n                     self.qualification_math_closed_codes)\n        for codes in code_sets:\n            if codes is not None and (type(codes) is not tuple\n                    or any(type(code) is not str or code not in CANONICAL_TILE_ORDER for code in codes)\n                    or codes != tuple(code for code in CANONICAL_TILE_ORDER if code in set(codes))):\n                raise ValueError(\"等待胡资格集合须按规范牌序去重\")\n        if (self.normal_draw_hu_payments is None) != (self.legal_hu_draw_codes is None):\n            raise ValueError(\"条件支付表的未分析状态须与胡资格一致\")\n        if self.normal_draw_hu_payments is None and (\n                self.restricted_hu_draw_codes or self.unrestricted_hu_draw_codes):\n            raise ValueError(\"未分析条件支付不能携带已知抓打包络胡码\")\n        if self.legal_hu_draw_codes is not None and set(self.legal_hu_draw_codes) & (\n                set(self.qualification_unknown_codes) | set(self.qualification_math_closed_codes)):\n            raise ValueError(\"已见证胡码不能同时标为未知或数学关闭\")\n        if self.normal_draw_hu_payments is not None:\n            payments = self.normal_draw_hu_payments\n            if (type(payments) is not tuple or len(payments) > 68\n                    or any(not isinstance(payment, RouteConditionalHuPayment) for payment in payments)):\n                raise ValueError(\"条件支付表须是至多两包络各34码的冻结元组\")\n            keys = tuple((payment.draw_code, payment.catch_restricted) for payment in payments)\n            if keys != tuple(sorted(set(keys), key=lambda key: (CANONICAL_TILE_ORDER.index(key[0]), key[1]))):\n                raise ValueError(\"条件支付表须按牌码和抓打假设排列且不重复\")\n            if (set(code for code, restricted in keys if restricted) != set(self.restricted_hu_draw_codes)\n                    or set(code for code, restricted in keys if not restricted) != set(self.unrestricted_hu_draw_codes)\n                    or set(code for code, _ in keys) != set(self.legal_hu_draw_codes)):\n                raise ValueError(\"条件支付表与两抓打包络胡码及其并集不匹配\")\n            conditions = set()\n            held = self.structure.natural_counts33 + (self.structure.whites_held,)\n            for payment in payments:\n                index = CANONICAL_TILE_ORDER.index(payment.draw_code)\n                if (self.unseen_evidence[index] != \"exact\"\n                        or self.unseen_capacities[index] != payment.draw_capacity_before\n                        or held[index] >= 4):\n                    raise ValueError(\"条件支付码须有同码精确正容量且不能摸入物理第五张\")\n                if payment.chain_count != self.chain_count or payment.chain_piao + self.structure.whites_held > 4:\n                    raise ValueError(\"条件支付的当前链或已飘白与等待态不一致\")\n                conditions.add((payment.wall_remaining_before_draw, payment.chain_piao,\n                                payment.winner_seat, payment.dealer_seat, payment.ruleset_version))\n            if len(conditions) > 1:\n                raise ValueError(\"同一等待态的条件支付须绑定相同墙余、链证据和规则座位\")\n        if (len(self.target_improvement_code_widths) != len(self.structure.targets)\n                or any(type(width) is not int or not 0 <= width <= 34 for width in (\n                    self.useful_code_width, self.legal_hu_code_width,\n                    self.natural_preparation_code_width, *self.target_improvement_code_widths))):\n            raise ValueError(\"集合宽度须逐目标同序且为0—34的整数码数\")\n",
+      "ScoreBatch": "@dataclass(frozen=True)\nclass ScoreBatch:\n    \"\"\"一个动作窗口的完整评分结果；不能部分成功后用 0 补齐。\n\n    status 只取 SCORED/ABSTAIN：SCORED 时 entries 对输入动作恰好各一项；\n    ABSTAIN 时 entries 为空且必须给出 reason。任何构造期校验失败都以\n    ValueError 使整批失效，由调用方降级到已备紧急计划。\n    \"\"\"\n\n    status: str  # SCORED 或 ABSTAIN\n    entries: Tuple[ActionScore, ...] = ()  # SCORED 时恰好每输入动作一项\n    reason: Optional[str] = None  # ABSTAIN/降级原因；SCORED 时可为空\n\n    def __post_init__(self) -> None:\n        if self.status not in STATUS_VALUES:\n            raise ValueError(\n                \"ScoreBatch.status 必须是 {0} 之一，得到 {1!r}\".format(STATUS_VALUES, self.status)\n            )\n        if not isinstance(self.entries, tuple):\n            raise ValueError(\"ScoreBatch.entries 必须是 tuple\")\n        for entry in self.entries:\n            if not isinstance(entry, ActionScore):\n                raise ValueError(\"ScoreBatch.entries 元素必须是 ActionScore\")\n        if self.reason is not None and (not isinstance(self.reason, str) or not self.reason):\n            raise ValueError(\"ScoreBatch.reason 必须是非空字符串或空\")\n        if self.status == STATUS_ABSTAIN:\n            if self.entries:\n                raise ValueError(\"ABSTAIN 批不得携带评分条目\")\n            if self.reason is None:\n                raise ValueError(\"ABSTAIN 批必须给出原因，不得用特殊数值表示未知\")\n            return\n        if not self.entries:\n            raise ValueError(\"SCORED 批必须至少包含一个评分条目\")\n        keys = [entry.action_key for entry in self.entries]\n        if len(set(keys)) != len(keys):\n            raise ValueError(\"SCORED 批存在重复动作键，整批失效\")\n        # R9/S1b：整批序列化前的有界预判（共享 trace 按出现次数展开），\n        # 避免先把超限 trace 序列化成几十/上百 MB 再比上限。\n        _guard_trace_serialized_size(\n            [\n                {\"action_key\": entry.action_key, \"score\": entry.score,\n                 \"trace\": entry.trace}\n                for entry in self.entries\n            ],\n            \"ScoreBatch.trace\",\n        )\n        trace_bytes = _serialized_trace_bytes(self.entries)\n        if trace_bytes > MAX_TRACE_BYTES:\n            raise ValueError(\n                \"整批 trace 序列化 {0} 字节，超过 {1} 字节上限\".format(\n                    trace_bytes, MAX_TRACE_BYTES\n                )\n            )\n",
+      "Settlement": "@dataclass(frozen=True)\nclass Settlement:\n    \"\"\"规则结算结果；``score_delta`` 固定按座位 0—3。\"\"\"\n\n    score_delta: ScoreVector\n    fan: int\n    details: Tuple[str, ...]\n"
+    },
+    "graph_schema_version": "vip-route-action-graph/3",
+    "natural_preparation_scope": "natural_preparation只计算同一真实手牌的自然面子目标，不含将且不借白；D=0不是已胡、爆头或将来必摸到白。准备改善码及公开相容码宽度不表示摸牌概率。图节点可被多个父引用，边的顺序、重复引用和条件码均保留；节点键是引用名称，节点数量是存储工作量，不是机会次数。",
+    "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+    "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+    "readonly_mapping_source": "    def candidate_view(self) -> dict[str, Any]:\n        \"\"\"返回全新原始值容器；不含积分、阶段、名次或隐藏未来。\"\"\"\n\n        observation = self.visible_state\n        return {\n            \"schema_version\": self.schema_version,\n            \"candidate_kind\": VIP_ROUTE_CANDIDATE_KIND,\n            \"graph_schema_version\": VIP_ROUTE_GRAPH_SCHEMA_VERSION,\n            \"tile_order\": CANONICAL_TILE_ORDER,\n            \"visible_state\": {\n                \"seat\": observation.seat,\n                \"dealer_seat\": observation.dealer_seat,\n                \"phase\": observation.phase,\n                \"my_hand\": tuple(tile.code for tile in observation.my_hand),\n                \"drawn_tile\": observation.drawn_tile.code if observation.drawn_tile else None,\n                \"remaining_tile_count\": observation.remaining_tile_count,\n                \"discards\": tuple(tuple(tile.code for tile in row) for row in observation.discards),\n                \"melds\": tuple(tuple({\n                    \"kind\": meld.kind,\n                    \"tiles\": tuple(tile.code for tile in meld.tiles),\n                    \"from_seat\": meld.from_seat,\n                } for meld in row) for row in observation.melds),\n                \"hand_counts\": observation.hand_counts,\n            },\n            \"binding\": {\n                \"ruleset_version\": self.ruleset_version,\n                \"base_score\": self.base_score,\n                \"you_cai_bi_kao\": self.you_cai_bi_kao,\n                \"structure_semantics_version\": self.structure_semantics_version,\n                \"normal_draw_hu_payment_semantics_version\": self.normal_draw_hu_payment_semantics_version,\n                \"natural_preparation_semantics_version\": self.natural_preparation_semantics_version,\n                \"executor_version\": self.executor_version,\n            },\n            \"limits\": {\"max_nodes\": self.max_nodes, \"max_branches\": self.max_branches,\n                       \"max_waiting_draw_witnesses\": self.max_waiting_draw_witnesses},\n            \"workload\": {\"expanded_node_count\": len(self.nodes),\n                         \"expanded_branch_count\": sum(len(node.children) for node in self.nodes),\n                         \"waiting_draw_witness_count\": self.waiting_draw_witness_count,\n                         \"target_distance_evaluation_count\": self.target_distance_evaluation_count},\n            \"actions\": tuple({\n                \"action_key\": item.action_key,\n                \"action_type\": item.action_type,\n                \"node_key\": item.node_key,\n                \"pending_condition\": item.pending_condition,\n                \"skipped_seats\": item.skipped_seats,\n            } for item in self.actions),\n            \"nodes\": tuple(_plain(node) for node in self.nodes),\n        }\n",
+    "result": "返回status=SCORED及entries，每个输入action_key恰一有限评分点和有界trace；评分点越大越优，不是积分或真实EV。ABSTAIN/漏项/异常/超量使研究未完成。",
+    "schema_version": "vip-route-scoring-view/3",
+    "subset": "禁止import/while/递归/try/注解/默认参数/下标赋值/下划线名字；仅纯函数、常量和受限局部容器；无文件、网络、时钟、随机或跨调用缓存。"
+  }
+}

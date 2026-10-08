@@ -1,0 +1,28 @@
+{
+  "schema": "r10-claim-gate-reflection/1",
+  "created_at_utc": "2026-09-21T03:08:13.038984+00:00",
+  "target_model": {
+    "provider": "zai-coding-cn",
+    "model": "glm-5.3",
+    "reasoningEffort": "high",
+    "maxTokens": 4096
+  },
+  "prompt_sha256": "c81b287f1e47a01b71c77b17c8356aa21b5448951b464dff85d385f8d9ae7b5c",
+  "inputs": {
+    "validation": {
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/claim-gate-new-source-03-20260921/result.json",
+      "sha256": "6477a23dd765c546d914ae05b7344e7d41388c376e260d0654de4a7a858972a1"
+    },
+    "stump": {
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/claim-gate-stump-01-20260921/result.json",
+      "sha256": "c6bc41238c3bac00669a1e66f48990dfa479158d2dfaf42bffcb0d11f447fde3"
+    },
+    "literature": {
+      "path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r10-supervised-evolution/LITERATURE-REAUDIT-2026-09-20.md",
+      "sha256": "b9db3c12f31861164f1137763f56433b2f83ae5b851f4965aad116edec53f53a"
+    }
+  },
+  "max_calls": 1,
+  "effect_tables": 0,
+  "strength_claim": false
+}

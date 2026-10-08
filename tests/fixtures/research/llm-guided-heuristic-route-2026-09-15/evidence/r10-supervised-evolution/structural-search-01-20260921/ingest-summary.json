@@ -1,0 +1,62 @@
+{
+  "schema": "r10-structural-ingest/1",
+  "tasks": [
+    {
+      "task": "S1",
+      "parse_status": "ok",
+      "static_precheck": false,
+      "structure_space": false,
+      "accepted_for_behavior_preflight": false,
+      "code_sha256": "83931185f4519c818d210618a01bee1f16a896a0d41f5d2f85d6f4b7ebe9ae10",
+      "problems": [
+        "模块级只允许 docstring、函数定义与常量赋值，得到 Expr",
+        "STRUCTURE_SPACE_JSON 注释必须恰好一行"
+      ]
+    },
+    {
+      "task": "S2",
+      "parse_status": "missing_code",
+      "static_precheck": false,
+      "structure_space": false,
+      "accepted_for_behavior_preflight": false,
+      "code_sha256": null,
+      "problems": [
+        "未找到代码块，也未找到入口函数定义",
+        "未找到 json 围栏的四字段说明块",
+        "没有可预检源码",
+        "没有可解析参数空间"
+      ]
+    },
+    {
+      "task": "S3",
+      "parse_status": "ok",
+      "static_precheck": false,
+      "structure_space": false,
+      "accepted_for_behavior_preflight": false,
+      "code_sha256": "1f5bf3cff3076983039f717dbf6972baa7e9470bb3c938a35cd47ef81c86f3b4",
+      "problems": [
+        "模块级只允许 docstring、函数定义与常量赋值，得到 Expr",
+        "STRUCTURE_SPACE_JSON 注释必须恰好一行"
+      ]
+    },
+    {
+      "task": "S4",
+      "parse_status": "ok",
+      "static_precheck": true,
+      "structure_space": true,
+      "accepted_for_behavior_preflight": true,
+      "code_sha256": "2a597c04f66f1452aea950d780613c5a7ed72aa43a1fd7d7f053aac15d78ceeb",
+      "problems": []
+    }
+  ],
+  "accepted": [
+    "S4"
+  ],
+  "repair_eligible": [
+    "S1",
+    "S2",
+    "S3"
+  ],
+  "effect_evaluation_started": false,
+  "note": "首答失败只进入一次合同/语法修复资格；尚未运行行为或效果评测。"
+}

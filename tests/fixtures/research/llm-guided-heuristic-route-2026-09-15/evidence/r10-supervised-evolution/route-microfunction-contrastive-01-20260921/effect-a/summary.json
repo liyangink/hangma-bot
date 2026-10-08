@@ -1,0 +1,94 @@
+{
+  "status": "COMPLETE_ROUTE_MICROFUNCTION_PHASE_A_DEVELOPMENT_RANKING",
+  "configurations": 5,
+  "families": 2,
+  "roots_per_mix": 4,
+  "candidate_tables": 320,
+  "baseline_tables": 64,
+  "full_tables": 384,
+  "selected_for_b": [
+    "r1-cfg-02",
+    "r2-cfg-02",
+    "r1-cfg-00"
+  ],
+  "leader": {
+    "config_id": "r1-cfg-02",
+    "candidate_id": "action_value_v1:offline-route-microfunction:26f61504e128450ab817b8f8b56c7a4074bcb379d22293c2839f2d23f1282eae",
+    "family": "R1_MIDRANGE",
+    "is_zero_effect": false,
+    "is_author_default": true,
+    "values": {
+      "RMF_SCALE": 8.0,
+      "RMF_SHAPE": 24.0,
+      "RMF_CAP": 8.0
+    },
+    "fitness_mean_delta_low": 0.125,
+    "mean_delta": 0.125,
+    "mean_delta_high": 0.125,
+    "H": {
+      "n_roots": 4,
+      "mean_delta": 0.1875,
+      "standard_error": 0.0625,
+      "interval_95": [
+        0.06500225096624662,
+        0.3099977490337534
+      ]
+    },
+    "M": {
+      "n_roots": 4,
+      "mean_delta": 0.0625,
+      "standard_error": 0.11967838846954226,
+      "interval_95": [
+        -0.17206533112809652,
+        0.2970653311280965
+      ]
+    }
+  },
+  "parent_control": {
+    "config_id": "r1-cfg-00",
+    "candidate_id": "action_value_v1:offline-route-microfunction:3f42a1e167632a0a95a9ade36e5a9b6b4866a844f77d6fd51a20e709bcc5e404",
+    "family": "R1_MIDRANGE",
+    "is_zero_effect": true,
+    "is_author_default": false,
+    "values": {
+      "RMF_SCALE": 0.0,
+      "RMF_SHAPE": 24.0,
+      "RMF_CAP": 8.0
+    },
+    "fitness_mean_delta_low": 0.0,
+    "mean_delta": 0.0,
+    "mean_delta_high": 0.0,
+    "H": {
+      "n_roots": 4,
+      "mean_delta": 0.0,
+      "standard_error": 0.0,
+      "interval_95": [
+        0.0,
+        0.0
+      ]
+    },
+    "M": {
+      "n_roots": 4,
+      "mean_delta": 0.0,
+      "standard_error": 0.0,
+      "interval_95": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "spent": {
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "tables_full": 384.0,
+    "tables_partial": 0,
+    "prefix_generation": 0,
+    "confirm_reserved": 0
+  },
+  "model_calls": 0,
+  "confirmation_roots": 0,
+  "strength_claim": false,
+  "confirmation_eligible": false,
+  "release_eligible": false,
+  "next": "按 phase-b-freeze 补 H/M 各8根；阶段A仅分配预算"
+}

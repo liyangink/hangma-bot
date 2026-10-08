@@ -26,7 +26,7 @@
 
 `OfficialGameSession.aclose`只对尚未取消的本场owned任务发cancel，shield等待HTTP／SSE finally完成后才返回；重入不二次打断，调用者取消完成收尾后传播。永久不协作关闭并未被证明可回收。无兴趣响应单步只在新鲜snapshot-first、同单局／phase／弃牌周期、非本人下家、无抓打圈／保留墙／未决动作时暂缓一次GET；不推进last_seq、不猜timeout，原1.2秒探针与核验失败关闭过滤保持。下一未知帧照常读取。
 
-正式／测试赛事只验基础接线、配置绑定和生命周期，按用户2026-10-06[现行口径](../../review/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)执行；官方现场不是候选上线门。上线与真实必要测试房由总筹按已有授权在旧房自然边界接入，副本不启动网络玩家、迁移watchdog或触碰Token。旧S03实测与效果证据复用，不冒称新工程包已联网；两次真实worker故障仍未知。当前核验与模板见[工程后继交付](../../review/vip-route-2026-09-30/evidence/t192-targeted-followup-1/wiring/REPORT.md)。
+正式／测试赛事只验基础接线、配置绑定和生命周期，按用户2026-10-06[现行口径](../research/materials/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)执行；官方现场不是候选上线门。上线与真实必要测试房由总筹按已有授权在旧房自然边界接入，副本不启动网络玩家、迁移watchdog或触碰Token。旧S03实测与效果证据复用，不冒称新工程包已联网；两次真实worker故障仍未知。当前核验与模板见[工程后继交付](../../review/vip-route-2026-09-30/evidence/t192-targeted-followup-1/wiring/REPORT.md)。
 
 ## 2026-10-06 T191：S03编译公式和模式包
 
@@ -81,7 +81,7 @@
 
 `AutoMatchRuntime.route_limits`复用原`RuntimeServices`和唯一`HangmaRules`；正常清单增加`route_analysis_limits`（工作量次数，不是毫秒）。默认None保持旧调用，额度冲突在任何会话操作前拒绝；原截止、409、规则复核及动作门不变。自由赛组合根拥有独立计算服务，预热先于包含匹配的initialize，正常/异常/启动取消关闭计算资源。脚本终态显示计算计数；LLM不在线。
 
-源码漂移、模式错配及非法URL端口在HTTP/审计线程创建前拒绝。自由赛策略不能从测试房或普通参赛入口启动。真实完整Fake链和131项集中回归通过，旧R18绑定一项显式排除；本地证据不替代完整联网门禁。[当前报告](../../review/vip-route-2026-09-30/T138-FREE-WIRING-AND-ENGINEERING-STATUS.md)。
+源码漂移、模式错配及非法URL端口在HTTP/审计线程创建前拒绝。自由赛策略不能从测试房或普通参赛入口启动。真实完整Fake链和131项集中回归通过，旧R18绑定一项显式排除；本地证据不替代完整联网门禁。[当前报告](../research/materials/vip-route-2026-09-30/T138-FREE-WIRING-AND-ENGINEERING-STATUS.md)。
 
 
 ## 2026-10-04 T133—T136 测试房专用候选接线
@@ -104,7 +104,7 @@ HTTP 提交端口签名不变；默认策略及 R18 仍保持原调用方式。
 
 正式自由赛、测试赛事和正式赛事仍需独立绑定包与相应门禁。限深版不得
 继承原完整展开 S02 的统计强度；T131 只对已有来源补齐保持性对照，不能
-计作新的独立样本。实现、实际工具终态和官方验证见[T133记录](../../review/vip-route-2026-09-30/T133-TESTROOM-WIRING-AND-ACCEPTANCE.md)。
+计作新的独立样本。实现、实际工具终态和官方验证见[T133记录](../research/materials/vip-route-2026-09-30/T133-TESTROOM-WIRING-AND-ACCEPTANCE.md)。
 
 
 ## 2026-10-04 T132主线计算服务接线准备
@@ -129,7 +129,7 @@ socket。新字段必须显式升版，完整审计消费方统一读取此codec
 
 同名字段进入`VipRouteScoringView`、候选输入`limits`及外层评分轨迹；投影参数、源码/依赖摘要改变候选身份。未来完成子图缓存必须把剩余深度放入键，不能混用不同展开预算。`choose`和官方提交接口不变，线上默认策略不自动切换。规则数学仍由唯一`hangma`提供，预估的后继动作不可盲执行。
 
-研究装配固定八选择首次满足原0.63／2.03秒返回预算，极端响应0.168秒；当前main普通Python装配也8／8通过，极端0.356秒，全分值/解释/操作一致；仍不授并发/SSE/官方门，新变体须另验证强度。完整证据见[成组优化及有限展开](../../review/vip-route-2026-09-30/T129-T130-GROUPED-OPTIMIZATION-AND-BOUNDED-CHAIN.md)。
+研究装配固定八选择首次满足原0.63／2.03秒返回预算，极端响应0.168秒；当前main普通Python装配也8／8通过，极端0.356秒，全分值/解释/操作一致；仍不授并发/SSE/官方门，新变体须另验证强度。完整证据见[成组优化及有限展开](../research/materials/vip-route-2026-09-30/T129-T130-GROUPED-OPTIMIZATION-AND-BOUNDED-CHAIN.md)。
 
 
 ## 2026-10-03 T86传输与退出补充（显式研究入口）
@@ -138,7 +138,7 @@ socket。新字段必须显式升版，完整审计消费方统一读取此codec
 
 `close()`并发调用共享受取消保护的资源回收任务。单槽回收失败仍继续其他槽及线程池shutdown；迟到spawn有每槽唯一自动清理线程，在真实启动终态后关闭socket并终止/join进程。迟到编码终态回调安全移除future，线程池已停止纳入。超时或无法回收抛`DecisionComputeError`，引用保留，不宣称物理资源已退出。`snapshot()`新增传输未结束数、线程存活数及迟到清理数；没有无限请求历史或Token。
 
-163项相关公开接口测试及18次实际请求读回已闭合。有限最终完成的迟到工作可自动回收；不能强推为永久卡死线程可强停、全局时延或线上准入。测试与细分分母见[T86](../../review/vip-route-2026-09-30/T86-BOUNDED-TRANSPORT-RESULT.md)。下方T85为历史快照，原预算JSON传输及同步缺口描述对应当时版本。
+163项相关公开接口测试及18次实际请求读回已闭合。有限最终完成的迟到工作可自动回收；不能强推为永久卡死线程可强停、全局时延或线上准入。测试与细分分母见[T86](../research/materials/vip-route-2026-09-30/T86-BOUNDED-TRANSPORT-RESULT.md)。下方T85为历史快照，原预算JSON传输及同步缺口描述对应当时版本。
 
 ## 历史快照：2026-10-03 有界计算服务生命周期（T85显式研究入口）
 
@@ -146,7 +146,7 @@ socket。新字段必须显式升版，完整审计消费方统一读取此codec
 
 `DecisionComputeSettings`规定工作进程、待处理数及消息字节上限，以及真实秒单位的启动、单任务和弃置宽限时间、每槽重启上限。排队使用原`fallback_deadline_monotonic`本机单调秒，不能重置。容量、期限、启动及计算失败抛`DecisionComputeError`交原应用紧急路径；外部取消仍传播取消，原计算资源继续回收。任务号、完整输入/预算摘要、执行身份及同场当前请求绑定结果；返回计划还验请求/窗口/权威序号和已拒候选。
 
-请求的内部pickle5只用于可信父/子进程私有socket，完整保留研究条件根；禁止外部pickle、模型原答、跨机器时基混用。结果仍经现有严格计划JSON解码；官方JSON及审计拒绝研究根规则不放宽。关闭失败显式报错且保留未回收资源引用。`snapshot()`仅固定诊断计数及当前资源量，没有历史请求表。当前同步传输编解码和spawn仍有阻塞风险，不授完整事件循环隔离；公开测试和真实请求证据见[T85](../../review/vip-route-2026-09-30/T85-BOUNDED-REAL-COMPUTE-RESULT.md)。
+请求的内部pickle5只用于可信父/子进程私有socket，完整保留研究条件根；禁止外部pickle、模型原答、跨机器时基混用。结果仍经现有严格计划JSON解码；官方JSON及审计拒绝研究根规则不放宽。关闭失败显式报错且保留未回收资源引用。`snapshot()`仅固定诊断计数及当前资源量，没有历史请求表。当前同步传输编解码和spawn仍有阻塞风险，不授完整事件循环隔离；公开测试和真实请求证据见[T85](../research/materials/vip-route-2026-09-30/T85-BOUNDED-REAL-COMPUTE-RESULT.md)。
 
 ## 2026-10-03 一摸成胡资格查询剪枝（隔离工程）
 
@@ -160,11 +160,11 @@ socket。新字段必须显式升版，完整审计消费方统一读取此codec
 
 本人未见容量每次仍读取同态暗牌、单列摸牌、座位与飘白补记；未知、保守与精确证据不可互换。每个作用域独占缓存并强持有历史原件；嵌套、异常和正常退出通过token恢复外层并清空。ContextVar的对象引用显式继承时由RLock保护；关闭后旧上下文仅原算。规范冻结值不能通过__dict__/object.__setattr__主动改写。作用域只包同步全图构造，不含await、HTTP、模型、文件或时间。
 
-`build_vip_route_scoring_view(request, config, *, limits=None)`公开参数、返回类型和完整事实不变；原函数体只移到内部实现。`HangmaRules.analyze`、`BotPolicy.choose`、执行器、视图／图v3及条件支付语义不升版。源码依赖摘要形成新工程身份；旧作者来源和历史效果只保留在原身份下，不凭等价性直接授新包发布。公共行为覆盖见[test_public_count_result_scope.py](../../tests/unit/hangma/test_public_count_result_scope.py)，完整输入与评分对账见[T54](../../review/vip-route-2026-09-30/T54-NATIVE-PUBLIC-COUNT-CACHE.md)。
+`build_vip_route_scoring_view(request, config, *, limits=None)`公开参数、返回类型和完整事实不变；原函数体只移到内部实现。`HangmaRules.analyze`、`BotPolicy.choose`、执行器、视图／图v3及条件支付语义不升版。源码依赖摘要形成新工程身份；旧作者来源和历史效果只保留在原身份下，不凭等价性直接授新包发布。公共行为覆盖见[test_public_count_result_scope.py](../../tests/unit/hangma/test_public_count_result_scope.py)，完整输入与评分对账见[T54](../research/materials/vip-route-2026-09-30/T54-NATIVE-PUBLIC-COUNT-CACHE.md)。
 
 ## 2026-10-02 自然面子准备与共享条件图 v3
 
-**当前研究候选使用[合同 v3](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md)，下面的 v2 为历史支付升版记录。**`RouteWaitingView.natural_preparation`必需且与同态`RouteStructureFacts`的真实自然手牌、白库存和副露组数一致。规则入口`analyze_natural_set_preparation(counts34, meld_set_count)`仅接收真实`13-3m`等待态，复用唯一标准型数学，返回不含将、不借白的自然面子缺张及弃牌下界、改善码；不授胡、爆头或未来白板资格。非法类型/数量显式抛错，无外部副作用。外层`natural_preparation_code_width`按同态公开容量保留相容码，非概率。新语义为`vip-natural-set-preparation/1`；视图和图为`/3`，原条件支付语义不变。
+**当前研究候选使用[合同 v3](../research/materials/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md)，下面的 v2 为历史支付升版记录。**`RouteWaitingView.natural_preparation`必需且与同态`RouteStructureFacts`的真实自然手牌、白库存和副露组数一致。规则入口`analyze_natural_set_preparation(counts34, meld_set_count)`仅接收真实`13-3m`等待态，复用唯一标准型数学，返回不含将、不借白的自然面子缺张及弃牌下界、改善码；不授胡、爆头或未来白板资格。非法类型/数量显式抛错，无外部副作用。外层`natural_preparation_code_width`按同态公开容量保留相容码，非概率。新语义为`vip-natural-set-preparation/1`；视图和图为`/3`，原条件支付语义不变。
 
 图可以共享完整冻结事实相同的节点；全合法根、边顺序、重复引用及条件码不删。节点键为引用身份，节点/边计数表示存储工作量。`ActionValueExecutor(..., max_local_collection_size=4096)`新增单实例容量参数，须为1—16384整数，布尔拒绝；默认仍4096，操作计费、源码和解释守卫不变。VIP由冻结`projection_limits.max_nodes`导出该参数，生成、装载、探针、修复、重绑定与完整策略一致；`freeze_vip_identity.params`及模型附录显式保存容量，源码/依赖/合同变化形成新身份。旧包不自动兼容或继承成绩。新增公开契约见[test_vip_natural_preparation_contract.py](../../tests/contracts/test_vip_natural_preparation_contract.py)与[test_vip_graph_capacity.py](../../tests/unit/policy/test_vip_graph_capacity.py)。
 
@@ -172,7 +172,7 @@ socket。新字段必须显式升版，完整审计消费方统一读取此codec
 
 **仅改变离线研究接缝，线上动作和规则来源不变。** `read_public_input_source` 核原件、来源声明及历史生产快照；`build_public_input_panel` 按行动前公开信息分层并限制每母根窗口数。`run_public_input_probe` 按显式共同参照计划逐包真实评分，完整只读输入先保存，失败与未调用保留分母。`validate_public_input_panel`、`validate_public_input_probe` 只读校验实际原件，不补评分或世界推进。自然行动前来源只取原 A 路径；条件来源只取依法可见起手，隐藏教师信息不进策略。
 
-开发批次 `vip-route-development-batch/2` 增加 `behavior_reference_policy`（真实生成父或显式本批参照）及 `behavior_exploration`。不改作者原父代；记录探索即使首选未变也最多 16 个完整桌实例，不授效果。真实 /2 批次拒绝旧 /1 探针冒充新来源，人工旧夹具只有明确假驱动才能豁免。捕获、费用、严格 C 零正常 R18 回退沿用当前合同；旧原件不迁移信用。实际任务与预算见[恢复计划](../../review/vip-route-2026-09-30/T10-RESUME-AND-CREDIT-DIAGNOSTIC-PLAN.md)。
+开发批次 `vip-route-development-batch/2` 增加 `behavior_reference_policy`（真实生成父或显式本批参照）及 `behavior_exploration`。不改作者原父代；记录探索即使首选未变也最多 16 个完整桌实例，不授效果。真实 /2 批次拒绝旧 /1 探针冒充新来源，人工旧夹具只有明确假驱动才能豁免。捕获、费用、严格 C 零正常 R18 回退沿用当前合同；旧原件不迁移信用。实际任务与预算见[恢复计划](../research/materials/vip-route-2026-09-30/T10-RESUME-AND-CREDIT-DIAGNOSTIC-PLAN.md)。
 
 
 ## 2026-10-01 离线实际输入捕获契约
@@ -185,7 +185,7 @@ socket。新字段必须显式升版，完整审计消费方统一读取此codec
 
 ## 2026-10-01 条件胡支付合同 v2
 
-**本节保存支付升版历史依据；当前新准备事实见顶部 v3，下方 v1 条款保存历史版本。**[完整合同 v2](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)将 `VipRouteScoringView` 与事实图升为 `/2`，新增支付语义 `vip-normal-draw-hu-payment/1`；候选类型仍为 `vip_route_heuristic_v1`，旧 `/4` 输入不变。
+**本节保存支付升版历史依据；当前新准备事实见顶部 v3，下方 v1 条款保存历史版本。**[完整合同 v2](../research/materials/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V2-CONDITIONAL-PAYMENT.md)将 `VipRouteScoringView` 与事实图升为 `/2`，新增支付语义 `vip-normal-draw-hu-payment/1`；候选类型仍为 `vip_route_heuristic_v1`，旧 `/4` 输入不变。
 
 `RouteWaitingView.normal_draw_hu_payments: Optional[Tuple[RouteConditionalHuPayment, ...]]`是逐牌码、逐抓打假设的普通摸牌条件支付。字段含摸前／摸后墙余和精确容量、摸后爆头、已有链／飘白、本人／庄家座位、规则身份及同源 `Settlement`。四家积分按座位0—3，单位积分；两假设不能重复计算机会，公开未见容量含他家暗牌。未分析为None并给原因，已分析无胡为空元组，部分未知只交已有精确行并保留未知码。等待节点即时 `settlement` 仍为空。
 
@@ -195,7 +195,7 @@ socket。新字段必须显式升版，完整审计消费方统一读取此codec
 
 ## 2026-09-30 VIP 固定框架新合同
 
-**本节登记新研究接缝，不改四个外部端口与旧评分视图。**详细[实施合同](../../review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md)是当前依据，旧 P1/P3 记录保留历史身份。
+**本节登记新研究接缝，不改四个外部端口与旧评分视图。**详细[实施合同](../research/materials/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT.md)是当前依据，旧 P1/P3 记录保留历史身份。
 
 候选类型 `vip_route_heuristic_v1`；只读输入 `VipRouteScoringView` 的 `schema_version=vip-route-scoring-view/1`；输出沿用 `ScoreBatch` 与有界 `ActionScore`，全部同次合法动作键各一项，有限评分点仅用于排序。`ActionValueExecutor.score_vip_route` 接收该精确类型并复用原安全计费与共享状态守卫；`score(ScoringView)` 与 `sitin-scoring-view/4` 不变。结构内部入口 `analyze_route_structure(counts34, meld_set_count)` 仅接 `13-3m` 等待手牌；自然缺口和合法胡集合分开，资格由原条件规则源生成。
 
@@ -358,7 +358,7 @@ flowchart LR
 
 #### 4.1.2 R17 单叶程序与固定归约（2026-09-21）
 
-叶程序只接收 `r17-public-successor-leaf/1` 的一个后继弃牌／条件杠映射，返回 [-1,1] 有限数。候选不接收终局胡叶，不能修改搜索图、合法集或归约。机器合同、字段白名单、操作预算和全量退路见 [叶程序合同](../../review/llm-guided-heuristic-route-2026-09-15/contracts/r17-public-successor-leaf-v1.json)。
+叶程序只接收 `r17-public-successor-leaf/1` 的一个后继弃牌／条件杠映射，返回 [-1,1] 有限数。候选不接收终局胡叶，不能修改搜索图、合法集或归约。机器合同、字段白名单、操作预算和全量退路见 [叶程序合同](../research/materials/llm-guided-heuristic-route-2026-09-15/contracts/r17-public-successor-leaf-v1.json)。
 
 固定归约把未来墙余能否杠及未来抓打圈双包络分别保留成上下界，再在全部容量承诺边上计算容量重数支撑分；容量不解释为概率。根按条件胡净分支撑量、下界、上界的 Pareto 层排序，同层保持 V2 次序；墙余 20 的完整空图为全零同层。任一不完整、版本不符、路线缺失、候选异常或超预算，整窗精确回退 V2。受限执行复用 `action-value-executor/6`，每叶最多 2,048 个计数操作、每窗 500,000 个。叶评分结构上限为 17,136（14 个弃牌根 × 34 个摸牌码 × 2 个包络 × 每包络最多 18 个下一动作叶），不再用早期窗口分布的 4,096 充当正确性门；真实运行成本继续由计费操作、延迟和发布门控制。重冻结原因与结果见 [首次开发批作废与重冻结](../../review/llm-guided-heuristic-route-2026-09-15/R17-GENERATION1-FIRST-RUN-ABORT-AND-REFREEZE-2026-09-21.md)。
 
@@ -578,7 +578,7 @@ P74 传输修复：当 `OfficialTransport` 的 `base_url` 主机命中配置的 
 
 条件代理需要未知牌容量时统一调用 `hangma.public_tile_counts.count_unseen_tiles`。该函数先复用当前平台牌河/副露去重，再兼容 `my_hand` 含或不含单列摸牌的两种实测形态；当前摸牌恰好扣一次。某牌码已知张数超过四张或公开计数矛盾时返回 `None`，题目生成器必须据此退出该动作或整题 oracle，不能截断成零。
 
-同一基础状态展开的财神数、链深、horizon、座位或赛事处境共享 `base_scenario_id` 和数据分割。聚合先在基础场景内取变体均值，再对基础场景等权，逐家族输出；不得按展开题数混成总命中率。该离线向量可供 Pareto/Lexicase 保留专长，但不能代替完整桌赛非劣、独立确认、时限和官方发布门禁。机器合同见 [r18-opportunity-capability-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/r18-opportunity-capability-v1.json)。
+同一基础状态展开的财神数、链深、horizon、座位或赛事处境共享 `base_scenario_id` 和数据分割。聚合先在基础场景内取变体均值，再对基础场景等权，逐家族输出；不得按展开题数混成总命中率。该离线向量可供 Pareto/Lexicase 保留专长，但不能代替完整桌赛非劣、独立确认、时限和官方发布门禁。机器合同见 [r18-opportunity-capability-v1.json](../research/materials/llm-guided-heuristic-route-2026-09-15/contracts/r18-opportunity-capability-v1.json)。
 
 ### 4.11 独立路线策略的 P1 研究接口（2026-09-30）
 
@@ -604,9 +604,9 @@ P74 传输修复：当 `OfficialTransport` 的 `base_url` 主机命中配置的 
 
 **给定未来弃牌只有座位和牌值，不得为调用生产合法动作族伪造官方事件序号。**`hangma.internal_types.WindowContext` 追加可空 `conditional_discard: tuple[int, Tile]`。它只在离线条件响应窗口使用：必须是 `response_peng` 或 `response_chi`，座位须等于当前 `turn_seat`，且不得同时填写官方 `last_discard: PublicDiscard`。两种来源经 `response_trigger()` 统一给出 `(seat, tile)`；无触发牌时继续保守降级并记录规则问题。`action_families` 的吃、碰、明杠与 `candidate_facts` 的吃后移牌共用此入口；官方观察经 `_build_context` 仍仅填写 `last_discard`，行为不变。
 
-该内部字段不是 `PlayerObservation`、官方 `PublicEvent` 或 `seq` 的扩展。条件根的合法性只在给定公开弃牌、本人暗牌和窗口事实齐备时成立；他家隐藏手牌的动作仍须作为明示条件或未知裁决处理。P2 仍按[机械矩阵](../../review/vip-route-2026-09-30/P2-MECHANICAL-MATRIX.md)逐格验收，不能因触发牌入口补齐而认定响应后的全部公开事件闭合。`tests/unit/hangma/test_conditional_response_trigger.py` 将条件与官方同牌触发的三类合法动作全集对拍，并验证两种身份不得混填。
+该内部字段不是 `PlayerObservation`、官方 `PublicEvent` 或 `seq` 的扩展。条件根的合法性只在给定公开弃牌、本人暗牌和窗口事实齐备时成立；他家隐藏手牌的动作仍须作为明示条件或未知裁决处理。P2 仍按[机械矩阵](../research/materials/vip-route-2026-09-30/P2-MECHANICAL-MATRIX.md)逐格验收，不能因触发牌入口补齐而认定响应后的全部公开事件闭合。`tests/unit/hangma/test_conditional_response_trigger.py` 将条件与官方同牌触发的三类合法动作全集对拍，并验证两种身份不得混填。
 
-**同次合法候选与条件根必须共享可见事实富集。**`HangmaRules.analyze` 会先调用纯函数 `enrich_observation`，从已见连续事件推导能证实的 `chain_piao` 和 `gang_draw`；`project_legal_roots` 在消费原始观察时也执行同一富集，再投影根。它不得修改原始 `PlayerObservation`、补未来事件或改变官方 `seq`。v35 明杠补摸胡反例显示：旧入口若仅富集合法候选、条件根却吃原始 `chain_piao=None`，会列出合法胡但漏掉可计算的 2 番四座结算。现由[自然轨迹对拍](../../review/vip-route-2026-09-30/P2-V35-CONDITIONAL-PARITY.md)验证原始与预富集两种入口结果相同；仍要求调用方传同一次规则分析的候选，不接受来自其他观察或规则配置的候选。
+**同次合法候选与条件根必须共享可见事实富集。**`HangmaRules.analyze` 会先调用纯函数 `enrich_observation`，从已见连续事件推导能证实的 `chain_piao` 和 `gang_draw`；`project_legal_roots` 在消费原始观察时也执行同一富集，再投影根。它不得修改原始 `PlayerObservation`、补未来事件或改变官方 `seq`。v35 明杠补摸胡反例显示：旧入口若仅富集合法候选、条件根却吃原始 `chain_piao=None`，会列出合法胡但漏掉可计算的 2 番四座结算。现由[自然轨迹对拍](../research/materials/vip-route-2026-09-30/P2-V35-CONDITIONAL-PARITY.md)验证原始与预富集两种入口结果相同；仍要求调用方传同一次规则分析的候选，不接受来自其他观察或规则配置的候选。
 
 **给定摸牌后的本人弃牌仍须属于同次合法动作全集。**内部 `apply_legal_draw_discard(GivenDrawAnalysis, action_key)` 只接收动作族列出的 `Discard`，与吃碰获裁决后的 `apply_legal_claim_discard` 共用暗牌移除、杠链清零/延续、爆头、抓打圈主、公开河、手牌数与未见容量转移。它不接收“胡”或杠动作，也不将条件路径步号写成官方 `seq`。v35 `1510` 补杠→给定补摸 `7t`→弃 `6t` 的同一路径已与 `1512/1514` 权威后态逐项对拍；该证据只覆盖这一给定轨迹，不表示所有未来摸牌与公开响应已经闭合。
 
@@ -1078,7 +1078,7 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 
 ## 坐隐完整动作评分与研究合同 v4（2026-09-16 立项，2026-09-17 实施完成）
 
-**新框架是独立策略接缝，不扩展旧 delta 的含义。** 规范细则与验收以[实施合同 §4—14](../../review/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)为准；本节登记跨模块变更责任，当前生产签名和产物版本不因文档自动改变。
+**新框架是独立策略接缝，不扩展旧 delta 的含义。** 规范细则与验收以[实施合同 §4—14](../research/materials/llm-guided-heuristic-route-2026-09-15/SEARCH-SPACE-REDESIGN-2026-09-16.md)为准；本节登记跨模块变更责任，当前生产签名和产物版本不因文档自动改变。
 
 | 接缝 | 拟实施合同 | 生产者/消费者及兼容责任 |
 | --- | --- | --- |
@@ -1101,7 +1101,7 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 
 **2026-09-28 吃碰后继分支事实补充**：`FollowupBranchFacts` 的每个合法后继弃牌分支增加可选的 `baotou_after`、`chain_count_after`、`chain_piao_after` 与 `four_white_qualified_after`。它们分别表示该次后继弃牌**完成后**的爆头、连续飘/杠次数、链内飘白数，以及当时手留白加链内飘白是否恰为四；最后一项只描述当前资格，不保证将来能胡。`hangma` 先依弃后暗牌重新判爆头，再以吃碰前状态和吃碰后的暂态爆头计算下一弃牌的链；`policy` 只能读取，不能自行推断。候选级 `baotou_after` 仍表示吃碰**刚完成**的暂态，不得代替各分支。旧审计记录没有这些键时解码为 `None`，新审计只写入已知值，不用 `False` 或零填未知；四个外部端口、候选评分源码和默认上线版本不变。依据为[官方指南 v34 §1.2/§1.3](../references/official-guide-v34-content.txt)及 2026-09-28 [G184 复盘对照](../../review/freematch-deep-dive-20260925/G184-CLASSIC-HIGHHAND-OPPORTUNITY-AUDIT-2026-09-28.md)。
 
-**2026-09-16 A 包合同冻结 → 2026-09-17 实施完成**：机器合同 [contracts/action-value-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json)（score_actions 接口、受限子集、限额与白名单、身份与门禁 schema）与 [contracts/group-dev-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json)（group_advance_v1 目标 + group_dev_v1 赛制，group-only 单组阶段合同）已冻结并实施：B1 进展载荷（FollowupBranchFacts/FamilyProgress）、B2 受限执行器与三种子、B3 codec 升级与 ActionValuePolicy 装配、C1 legal-prefix-v1 与中途续打、C2 根级统计与八席档案、D 生成门禁与七命令、E 最小真实闭环（I1/M1 血缘完整）全部落地。本节上表接缝行随之从拟实施转为已实施（审计 trace 与决策路径接线除外——决策记录仍按原 codec）。效果结论见 evidence/v4-impl/batch8/CLOSURE.md 四态报告：框架完成、开发候选完成、no_positive_candidate（未选出整体优胜，如实未进入确认）。
+**2026-09-16 A 包合同冻结 → 2026-09-17 实施完成**：机器合同 [contracts/action-value-v1.json](../research/materials/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json)（score_actions 接口、受限子集、限额与白名单、身份与门禁 schema）与 [contracts/group-dev-v1.json](../research/materials/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json)（group_advance_v1 目标 + group_dev_v1 赛制，group-only 单组阶段合同）已冻结并实施：B1 进展载荷（FollowupBranchFacts/FamilyProgress）、B2 受限执行器与三种子、B3 codec 升级与 ActionValuePolicy 装配、C1 legal-prefix-v1 与中途续打、C2 根级统计与八席档案、D 生成门禁与七命令、E 最小真实闭环（I1/M1 血缘完整）全部落地。本节上表接缝行随之从拟实施转为已实施（审计 trace 与决策路径接线除外——决策记录仍按原 codec）。效果结论见 evidence/v4-impl/batch8/CLOSURE.md 四态报告：框架完成、开发候选完成、no_positive_candidate（未选出整体优胜，如实未进入确认）。
 
 ### 显式离线执行配置（2026-09-20）
 
@@ -1129,20 +1129,20 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 
 ### 门线 / 位次势差语义（2026-09-17，R7 P10，对应复审 §5 M4）
 
-**结论：「门线」只有两个名字，名字必须与升序下标一致。** R6 试跑候选把「晋级门线（第 3 名分数线）」贴到升序 `sorted(scores)[2]`（实为**第 2 名**）：对四座 `(100, 80, 20, 0)`、焦点座位 2 得到 −60，而所称「第 3 名距离」应为 0。本节固定候选面向口径；作者提示词由 [`tools/sitin_generate.py`](../../review/llm-guided-heuristic-route-2026-09-15/tools/sitin_generate.py) 的 `gate_line_semantics_block()` 渲染（同源，不手抄第二套），口径块进合同身份——改口径即改提示词哈希。
+**结论：「门线」只有两个名字，名字必须与升序下标一致。** R6 试跑候选把「晋级门线（第 3 名分数线）」贴到升序 `sorted(scores)[2]`（实为**第 2 名**）：对四座 `(100, 80, 20, 0)`、焦点座位 2 得到 −60，而所称「第 3 名距离」应为 0。本节固定候选面向口径；作者提示词由 [`tools/sitin_generate.py`](../../tools/offline/sitin/sitin_generate.py) 的 `gate_line_semantics_block()` 渲染（同源，不手抄第二套），口径块进合同身份——改口径即改提示词哈希。
 
 | 名字 | 别名 | 公式 | 含义 |
 | --- | --- | --- | --- |
 | `inside_line` | 追第二名 | 升序下标 2 的分数（= 第 2 名分数）；`Φ_in = s[seat] − inside_line` | 与**晋级区末位**的分差；`Φ_in ≥ 0` 表示积分不低于第 2 名（并列计入） |
 | `outside_line` | 领先第三名 | 升序下标 1 的分数（= 第 3 名分数）；`Φ_out = s[seat] − outside_line` | 相对**区外头名**的领先量；`Φ_out > 0` 表示严格领先 |
 
-- **名次映射**：第 k 名分数 = 升序下标 4−k（下标 0/1/2/3 = 第 4/3/2/1 名）。晋级区大小取目标合同 [group-dev-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json) 的 `objective.advance_count`（当前为 2）。禁止把下标 2 叫「第 3 名门线」，也不得用未注明第几名的「门线」同时指代两者。
+- **名次映射**：第 k 名分数 = 升序下标 4−k（下标 0/1/2/3 = 第 4/3/2/1 名）。晋级区大小取目标合同 [group-dev-v1.json](../research/materials/llm-guided-heuristic-route-2026-09-15/contracts/group-dev-v1.json) 的 `objective.advance_count`（当前为 2）。禁止把下标 2 叫「第 3 名门线」，也不得用未注明第几名的「门线」同时指代两者。
 - **三份账、各自命名（2026-09-17 R8 E3/M1 修正）**：`competition.stage_scores` = **已完成账**（本阶段已完成各桌的积分和；不含当前桌、不含名次分、不含未来桌赛结果）；`competition.table_scores` = **当前桌账**（本桌进行中积分；与 `visible_state.table_scores` 是**同一事实的两个基准名**）；`competition.current_stage_scores` = **当前阶段合计** = 已完成账 + 当前桌账（逐座位相加 `stage_scores[i] + table_scores[i]`）。两项互不重叠（一项只含已完成桌、一项只含本桌进行中），因此相加是重建完整当前阶段分数，**不是**重复累计：算当前阶段名次与门线必须用合计（或经核验同座位、同单位、互不重叠的两账相加并显式命名来源）。只加已完成账会把当前领先者当落后者。**唯一被禁止的重复累计**是 `table_scores` 与同一份 `visible_state.table_scores` 相加；一个缺失不得用另一个顶替（`stage_scores` 为空时 `current_stage_scores` 同时为空）。
 - **动作后势差只有两种模式**：`recompute`（**完整结算向量重算**：动作后四座积分全部已知，如 `immediate_settlement.score_delta` 是四座齐全的增量向量；`ΔΦ = Φ(s′) − Φ(s)`，任一座未知即未知）；`frozen_line`（**近似启发式**：只把本人增量 δ 加到本座位、门线数值固定为动作前取值，`ΔΦ = δ` 对本座位**每一个**动作逐动作恒成立，适用域仅限同一窗口内比较本座位各合法动作；δ 逐动作取值，不是公共平移——不同动作的 δ 可以分别为 +5 与 +15，只有全部动作共享同一常数平移时排序才不变）。只加本人增量、固定他家门线的写法**不得**称重算，也不得据此声称门线会移动或晋级概率已计入——`recompute` 下 `ΔΦ` **一般不等于** δ（**有时**成立的反例：门线数值本动作后未变时 `ΔΦ` 恰等于本人增量，见金例本人增量 +60 的一行）。`Φ(s) = s[seat] − 门线分数` 是**连续**的分段线性函数：跨过名次门线时改变的是**斜率**（拐点），不是势值不连续；不连续只属于离散名次与晋级指示（2026-09-17 R8 E3/M2 修正）。
 - **未知与同分**：基准缺失/陈旧、长度不是 4、含 None/布尔/非有限数 → 势差为**未知**（不得当 0）；同分不改变门线数值，但改变「谁是第 k 名」，`Φ = 0` 时是否在晋级区内按**识别区间**给（`low = 严格更高者数 + 1`、`high = 严格更高者数 + 同块人数`；`high ≤ 晋级区 → IN`；`low > 晋级区 → OUT`；其余 `UNRESOLVED`），次级键（place_points/god_count）未知时保留区间。
 - **平移不变**：四座同加任意常数时两条势差不变；绝对积分水平不是门线势差。
 - **单调性适用域**：门线数值固定时 `Φ` 关于本座位积分单调不减；「向听更低更好」只对同一动作族、同一合法性集合、其余事实相同的比较成立（大牌路线可能牺牲向听换番），不得写成任何局面都成立。
-- **金例**：[`tools/test_sitin_generate_gate_line.py`](../../review/llm-guided-heuristic-route-2026-09-15/tools/test_sitin_generate_gate_line.py)（14 项，纯计算；每条期望值在测试注释里给出推导算式），覆盖领先 / 临界 / 落后 / 同分 / 四换座 / 结算后门线变动 / 平移不变性 / 未知不伪装零 / 单调性适用域；提示词里渲染的金例数字与该测试同源。本包只改口径与金例，不改统计、门禁与调度。
+- **金例**：[`tools/test_sitin_generate_gate_line.py`](../../tools/offline/sitin/test_sitin_generate_gate_line.py)（14 项，纯计算；每条期望值在测试注释里给出推导算式），覆盖领先 / 临界 / 落后 / 同分 / 四换座 / 结算后门线变动 / 平移不变性 / 未知不伪装零 / 单调性适用域；提示词里渲染的金例数字与该测试同源。本包只改口径与金例，不改统计、门禁与调度。
 
 ### ScoringView 赛事基准投影（2026-09-17，R7 P11/P11b，对应复审 §5 M1 的视图层缺口）
 
@@ -1150,7 +1150,7 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 
 **2026-09-30 语义勘误（不改变旧候选身份）：**历史冻结机器合同 `review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json` 的 `residual_gaps` 把 `CompetitionContext.stage_no/stage_total` 误写成「当前桌序/阶段总桌数」，并写出错误等式 `stage_total − stage_no = 剩余桌数`。真实官方字段分别是 `stage.no`（阶段号）与动态 `stage.total`（推断阶段总数），不是桌序与桌数。旧 JSON 保留原始字节和 SHA256 供历史候选复算；其这条说明不能作为新算法的赛程事实。若新候选要消费剩余完整桌赛数，须在独立合同中注明来源、单位、未知条件与版本，且重新验证候选，不得从这两个官方字段相减。旧离线证据中若 `CompetitionContext.stage_no/stage_total` 源自 `StageSituationProjection`，只按旧模拟格式解读；不能把它反向当成官方阶段身份。新离线产物使用 `offline-stage-situation/2` 并明确 `source_kind=offline_simulation`；原始桌序与阶段桌数保留在其 `stage_table_no/tables_in_stage`，不再挤入 `CompetitionContext`。
 
-**结论：候选评分器读到的 `ScoringView.competition` 不再是恒空视图。** R6 冻结版 `_competition_view()` 直接 `return CompetitionView()`，面板侧（P2）已注入到公开策略输入 `DecisionRequest.competition` 的阶段账对**真实候选臂不可见**——门线/追分逻辑只能退回桌内积分。本节固定投影契约（实现见 [`src/hangma_bot/policy/action_value_policy.py`](../../src/hangma_bot/policy/action_value_policy.py) 的 `_stage_account_vector` / `_competition_view`，机器合同见 [action-value-v1.json](../../review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json) 的 `scoring_view.competition_bases`）。
+**结论：候选评分器读到的 `ScoringView.competition` 不再是恒空视图。** R6 冻结版 `_competition_view()` 直接 `return CompetitionView()`，面板侧（P2）已注入到公开策略输入 `DecisionRequest.competition` 的阶段账对**真实候选臂不可见**——门线/追分逻辑只能退回桌内积分。本节固定投影契约（实现见 [`src/hangma_bot/policy/action_value_policy.py`](../../src/hangma_bot/policy/action_value_policy.py) 的 `_stage_account_vector` / `_competition_view`，机器合同见 [action-value-v1.json](../research/materials/llm-guided-heuristic-route-2026-09-15/contracts/action-value-v1.json) 的 `scoring_view.competition_bases`）。
 
 - **三份账、各自命名**：`competition.stage_scores` = 本阶段**已完成各完整桌赛**的积分和（单位：积分点，整数、允许负分；不含当前桌进行中积分、不含名次分、不含未来桌赛结果）；`competition.table_scores` = 本桌**进行中**积分，与 `visible_state.scores`（候选可见名 `visible_state.table_scores`）是同一事实的另一个基准名；`competition.current_stage_scores` = **当前阶段合计** = 前者 + 后者（逐座位），两项互不重叠故可相加，`stage_scores` 为空时它同时为空（未知不得当 0）。一致性是机器不变量：`CompetitionView` 构造期校验 `current_stage_scores == stage_scores + table_scores`；唯一被禁止的重复累计是 `table_scores` 与同一份 `visible_state.table_scores` 相加。门线一节「三份账」口径与本条同源。
 - **顺序语义 = 物理座位 0—3**，与本桌可见观察同序；下标 `i` 是**坐在 i 号位的身份**的账，**不是名次序**。投影只承认这一种口径（「桌内座位序账」）：`ranking[i]` 由离线驱动 `StageSituationProjection.competition_context()` 逐位置构造，位置 `i` 与 `participant_ids_by_seat[i]` 一一对应；面板侧映射由 `plan.seats()` 生成，换座后身份随座位搬移。
@@ -1197,3 +1197,8 @@ observation 里**没有** `chain_piao` 键，于是 `hangma/engine.py` 对唯一
 - **核心矩阵与建立条件**：`AV_FAMILY_CORE_ROOTS_PER_CELL = 2`（每（子场景侧 × 对手情景）格 2 根，合计 8，对应 SEARCH-SPACE-REDESIGN §7.3）。建立顺序为：冲突声明与历史身份 → 未物化声明 → 逐格配额 → 入席候选对全部核心根的合格评价与非空席位 → 原子提交 epoch 与实际席位；缺格保持 pending，新增停因 `family_refresh_identity_conflict_old_seats_kept`。
 - **旧数据策略（显式，不含自动迁移）**：v1 根身份（`av-eval-{谓词}:{谓词}:rootNNN`，不含情景与实际种子）与旧 schema 台账/epoch 表一律**拒绝继承**；带 `seed_derivation=prefix-v1` 与记录的真实执行种子的历史行按**原生成器**式子 `derive_seed(panel_seed, "prefix", 旧身份)` 还原并逐字核对，缺真实种子或版本即停止并说明原因（不静默赋新种子）。
 - **验收与证据**：`tools/test_sitin_search_r9_root_matrix_identity.py`（16 项：对角两格/少一根/单格不合格/冲突声明不得建立、补齐后恰好建立一次且恢复不重复、8 根 H/M 各半、新种子同索引新增、同根恢复零新增、三处种子逐字一致、历史根拒绝与还原）；控制流探针 `evidence/v4-impl/r9-fixes/P2-root/probes/p2_root_probe.py` 与 6 个定向变异；报告见 [P2 ROOT FIX-REPORT](../../review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-fixes/P2-root/FIX-REPORT.md)。
+
+
+## 研究原件定位
+
+`adapters.recording.project_storage.project_file(root, source)` 只定位共享合同、工具或本机研究原件，不下载、不修改记录、不调用官方平台。共享迁移索引优先定位代码与合同；正常进化读取本机数据，缺失保持显式错误。测试可明确启用精选夹具。此整理不改变策略、赛事端口或动作提交接口。

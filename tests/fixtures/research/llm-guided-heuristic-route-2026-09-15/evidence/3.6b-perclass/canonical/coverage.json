@@ -1,0 +1,3268 @@
+{
+  "schema": "sitin-scenario-classes-coverage/1",
+  "input": {
+    "path": "/Users/liyang/Projects/Opensource/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/3.6b-perclass/corpus-manifest-canonical.json",
+    "sha256": "c1d3155b6e981b921cd9a1d50a3f4d90ba5b80e5df20fdf2f731f4485224c5db",
+    "rows": 359262,
+    "constructed": false,
+    "evidence_kind": "admission",
+    "record_layer": "filled",
+    "manifest": {
+      "schema": "sitin-corpus-manifest/1",
+      "panel_id": "panel-canonical-20260910",
+      "panel_role": null,
+      "record_layer": "filled",
+      "record_layer_filled": true,
+      "record_layer_source": "src/hangma_bot/adapters/recording/chain_piao.py:normalize_decision_input_payload（单一来源；本清单不复制推导）",
+      "fingerprint": "c1d3155b6e981b921cd9a1d50a3f4d90ba5b80e5df20fdf2f731f4485224c5db",
+      "row_cap": null,
+      "rows": 359262,
+      "excluded_rows": 6775,
+      "excluded_ratio": 0.0185,
+      "family_rows": 366037,
+      "family_files": 112,
+      "selection_rule": "glob artifacts/sessions/*/postgame/*/derived/*/decisions.jsonl（路径字典序）；纳入判据 = 该文件每一行的 request.observation 都带 chain_piao 键；不抽样、不截断，纳入文件全部行进入统计；判据只看记录形态。与 3.6d 冻结清单逐份交叉核对（不一致即报错退出）。",
+      "frozen_before_run": true,
+      "generator": "review/llm-guided-heuristic-route-2026-09-15/evidence/3.6b-perclass/build_canonical_manifest.py",
+      "cross_package": {
+        "peer_manifest": "evidence/3.6d-corpus/raw/newbaseline-files.txt",
+        "peer_excluded_rows": 6775,
+        "peer_excluded_ratio": 0.0185,
+        "agree_on_excluded_rows": true,
+        "note": "排除账由本脚本按**整文件行数**重算；与 3.6d 的 excluded_rows 对拍一致，不一致时本脚本会打印差异而不是静默通过。"
+      },
+      "note": "canonical 面板（记录层归一化口径）。引用时必须同时给出 panel_id + 指纹 + 行数 + record_layer_filled=true；与诊断子集 subset-perclass-frozen 的数字**不得相加或混用**。"
+    },
+    "panel_identity": {
+      "panel_id": "panel-canonical-20260910",
+      "fingerprint": "c1d3155b6e981b921cd9a1d50a3f4d90ba5b80e5df20fdf2f731f4485224c5db",
+      "fingerprint_basis": "清单内 105 份文件的 sha256 组合（内容口径，不含清单元数据）",
+      "manifest_sha256": "30332d18fb8db20c49cb718957c69bc52be44401c37f96f9c5e8051026abce11",
+      "rows": 359262,
+      "record_layer_filled": true,
+      "record_layer": "filled",
+      "excluded_rows": 6775,
+      "excluded_ratio": 0.0185,
+      "family_rows": 366037,
+      "family_files": 112
+    },
+    "raw_coverage": {
+      "raw_windows": 359262,
+      "undecodable": 0,
+      "raw_catch_play_true": 820,
+      "raw_catch_play_owner_known": 592,
+      "raw_chain_count_nonzero": 568,
+      "raw_chain_piao_known": 359257,
+      "raw_chain_piao_undecidable": 5,
+      "raw_baotou_true": 1766,
+      "raw_hand_holds_wealth": 146226,
+      "note": "**只统计原始观察（未过滤）**：回答「这份语料到底有没有该类的位点」。只报过滤后的可用窗口，会把「被规则层降级排除」误读成「数据里不存在」（§F.4 的教训）。可用窗口数见同一份产物的 panel 段。"
+    }
+  },
+  "panel": {
+    "rows_seen": 359262,
+    "rows_total": 359262,
+    "record_layer": "filled",
+    "excluded_decode": 0,
+    "excluded_degraded": 21244,
+    "baseline_failed": 0,
+    "candidate_failed": 0,
+    "scored": 338018,
+    "accounting_sum": 359262,
+    "baseline_failure_samples": [],
+    "candidate_failure_samples": [],
+    "reconciles": true,
+    "legal_reconciliation": {
+      "match": 337946,
+      "mismatch": 72,
+      "recorded_absent": 0,
+      "note": "本地规则重算的合法候选与记录落盘合法候选相同的窗口数。match 高 ⇒ 面板的规则配置（ruleset / base_score / you_cai_bi_kao）与产生记录时一致；mismatch 高 ⇒ 结论必须降级读（先解释差异，别把差异算进候选行为）。"
+    },
+    "raw_coverage": {
+      "raw_windows": 359262,
+      "undecodable": 0,
+      "raw_catch_play_true": 820,
+      "raw_catch_play_owner_known": 592,
+      "raw_chain_count_nonzero": 568,
+      "raw_chain_piao_known": 359257,
+      "raw_chain_piao_undecidable": 5,
+      "raw_baotou_true": 1766,
+      "raw_hand_holds_wealth": 146226,
+      "note": "**只统计原始观察（未过滤）**：回答「这份语料到底有没有该类的位点」。只报过滤后的可用窗口，会把「被规则层降级排除」误读成「数据里不存在」（§F.4 的教训）。可用窗口数见同一份产物的 panel 段。"
+    }
+  },
+  "panel_facts": {
+    "ruleset_version": "hangma-mvp-v10-public-counts",
+    "base_score": 1,
+    "record_layer": "filled",
+    "you_cai_bi_kao": false,
+    "you_cai_bi_kao_source": "面板声明参数（CLI/调用方可覆盖）；记录里不含该开关 ⇒ 只能声明，不能从记录反推。一致性由 legal_reconciliation 旁证。",
+    "note": "工具侧面板事实；you_cai_bi_kao 已接线（其余两项由观察填充）。两者都不是效果证据。"
+  },
+  "min_class_windows": 8,
+  "gate_wiring": {
+    "classes": [
+      {
+        "class_id": "gate.you_cai_bi_kao",
+        "field": "you_cai_bi_kao",
+        "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+        "kind": "bool",
+        "wired_to_context": true,
+        "wired_by": "3.6d（corpus 包）",
+        "note": "有财必拷响开关；打开 ⇒ 胡牌成为爆头的必要条件（该类成立 = 开关打开）"
+      },
+      {
+        "class_id": "gate.wall_end_gang_ban",
+        "field": "remaining_tile_count",
+        "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+        "kind": "Optional[int]",
+        "wired_to_context": true,
+        "wired_by": "3.6d（corpus 包）",
+        "note": "含保留区的剩余牌墙张数；<= WALL_RESERVE_TILES 时禁杠生效"
+      },
+      {
+        "class_id": "gate.catch_play_owner",
+        "field": "catch_play_owner_seat",
+        "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+        "kind": "Optional[int]",
+        "wired_to_context": true,
+        "wired_by": "3.6d（corpus 包）",
+        "note": "抓打圈主席位；== my_seat ⇒ 本人是圈主（不受吃碰限制）"
+      }
+    ],
+    "all_wired": true,
+    "note": "未接线的门控类在面板上**不可判定（None）**：未知不填零；check_gate_wiring() 会以 gate_wiring_missing 报出（跨包时序依赖，属预期红）。**不得**把未接线读成机制稀有，也不得为了变绿而把类改回不可判定。"
+  },
+  "classes": [
+    {
+      "id": "branch.chiitoi_live",
+      "name": "七对路径存活（本人无副露）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 197541,
+      "windows_undecided": 0,
+      "windows_out_of_class": 140477,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 456,
+          "changed_windows": 49,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "meld_count_of"
+          ],
+          "fired_windows": 10636,
+          "changed_windows": 997,
+          "status": "changed"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 10212,
+          "changed_windows": 1224,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 9936,
+          "changed_windows": 3996,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "seven_pairs_shanten_after",
+            "seven_pairs_useful_tiles"
+          ],
+          "fired_windows": 10212,
+          "changed_windows": 171,
+          "status": "changed"
+        },
+        "seven_pairs_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "seven_pairs_shanten_after"
+          ],
+          "fired_windows": 10212,
+          "changed_windows": 66,
+          "status": "changed"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "branch.luxury_locked",
+      "name": "已锁定豪华组（暗牌含恰好 4 张自然牌码）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 859,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337159,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [],
+          "fired_windows": 215,
+          "changed_windows": 36,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "locked_luxury_groups",
+            "WEALTH_TOTAL"
+          ],
+          "fired_windows": 248,
+          "changed_windows": 30,
+          "status": "changed"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 33,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 33,
+          "changed_windows": 14,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 33,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [],
+          "fired_windows": 33,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "branch.closer_seven_pairs",
+      "name": "七对是更近路径",
+      "kind": "rule_scenario",
+      "level": "【当前观察·实现】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 25665,
+      "windows_undecided": 41083,
+      "windows_out_of_class": 271270,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 7,
+          "changed_windows": 3,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 1617,
+          "changed_windows": 316,
+          "status": "undeclared"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 1617,
+          "changed_windows": 105,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 1534,
+          "changed_windows": 281,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "standard_shanten_after",
+            "seven_pairs_shanten_after"
+          ],
+          "fired_windows": 1617,
+          "changed_windows": 24,
+          "status": "changed"
+        },
+        "seven_pairs_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "standard_shanten_after",
+            "seven_pairs_shanten_after",
+            "closer_bonus"
+          ],
+          "fired_windows": 1617,
+          "changed_windows": 20,
+          "status": "changed"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "chain.open",
+      "name": "链已开启（本人链次数 >= 1）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 492,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337526,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard",
+            "gang"
+          ],
+          "token_hit": [
+            "chain_count"
+          ],
+          "fired_windows": 478,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard",
+            "gang"
+          ],
+          "token_hit": [
+            "chain_count"
+          ],
+          "fired_windows": 478,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 1,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 1,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [
+            "chain_count"
+          ],
+          "fired_windows": 1,
+          "changed_windows": 1,
+          "status": "changed"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard",
+            "gang"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "chain.gang_step",
+      "name": "杠推进链（窗口存在杠候选）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 929,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337089,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [
+            "chain_after_gang",
+            "Gang"
+          ],
+          "fired_windows": 929,
+          "changed_windows": 81,
+          "status": "changed"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [
+            "chain_after_action",
+            "Gang"
+          ],
+          "fired_windows": 929,
+          "changed_windows": 66,
+          "status": "changed"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 315,
+          "changed_windows": 19,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 312,
+          "changed_windows": 28,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [],
+          "fired_windows": 182,
+          "changed_windows": 1,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [],
+          "fired_windows": 182,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "chain.gang_draw_open",
+      "name": "杠前已听（杠开位点）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 273,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337745,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [],
+          "fired_windows": 273,
+          "changed_windows": 7,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [],
+          "fired_windows": 273,
+          "changed_windows": 9,
+          "status": "undeclared"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 119,
+          "changed_windows": 3,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 119,
+          "changed_windows": 3,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [
+            "replacement_draw_unknown",
+            "shanten_after"
+          ],
+          "fired_windows": 44,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "seven_pairs_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [
+            "shanten_after"
+          ],
+          "fired_windows": 44,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "chain.piao_discard",
+      "name": "飘（爆头态打出财神）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 248,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337770,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "baotou"
+          ],
+          "fired_windows": 248,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "baotou",
+            "wealth_code"
+          ],
+          "fired_windows": 244,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [
+            "baotou",
+            "wealth_code"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "chain.break_discard",
+      "name": "断链位点（链非零时打出非飘非杠的牌）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 478,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337540,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "chain_after_discard",
+            "baotou"
+          ],
+          "fired_windows": 478,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "chain_after_action",
+            "baotou"
+          ],
+          "fired_windows": 478,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [
+            "baotou"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "chain.claim_repiao_circle",
+      "name": "抓打圈内吃碰后再打财神（财飘链 +1 位点）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "not_applicable",
+      "verdict_note": "本面板没有可判定窗口属于该类 —— 这是**面板覆盖**的陈述，不是规则上不存在，也不是机制稀有。",
+      "windows_in_class": 0,
+      "windows_undecided": 0,
+      "windows_out_of_class": 338018,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "four_white.at_four",
+      "name": "四白等值条件成立（手留白 + 链内飘出 == 4）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "insufficient",
+      "verdict_note": "本面板该类有窗口但少于下限：**证据不足**，不是「无影响」。",
+      "windows_in_class": 1,
+      "windows_undecided": 0,
+      "windows_out_of_class": 338017,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "four_white_indicator",
+            "four_white_state",
+            "wealth_count"
+          ],
+          "fired_windows": 1,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [
+            "wealth_count"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "four_white.derivable_held4",
+      "name": "手留 4 张 ⇒ 链内飘出必为 0（可推导）",
+      "kind": "rule_scenario",
+      "level": "【推导·未一手核实】",
+      "verdict": "not_applicable",
+      "verdict_note": "本面板没有可判定窗口属于该类 —— 这是**面板覆盖**的陈述，不是规则上不存在，也不是机制稀有。",
+      "windows_in_class": 0,
+      "windows_undecided": 0,
+      "windows_out_of_class": 338018,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "known_piao"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "four_white.unknown_piao",
+      "name": "链内飘出不可判定（未知态）",
+      "kind": "evidence_state",
+      "level": "【当前观察·实现】",
+      "verdict": "not_applicable",
+      "verdict_note": "本面板没有可判定窗口属于该类 —— 这是**面板覆盖**的陈述，不是规则上不存在，也不是机制稀有。",
+      "windows_in_class": 0,
+      "windows_undecided": 0,
+      "windows_out_of_class": 338018,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "chain_piao"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "known_piao",
+            "chain_piao"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "chain_piao"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "baotou.active",
+      "name": "当前爆头",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 1198,
+      "windows_undecided": 0,
+      "windows_out_of_class": 336820,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [
+            "baotou"
+          ],
+          "fired_windows": 249,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [
+            "baotou"
+          ],
+          "fired_windows": 264,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 47,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 47,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "baotou"
+          ],
+          "fired_windows": 20,
+          "changed_windows": 1,
+          "status": "changed"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "baotou.discard_recheck",
+      "name": "弃牌后重判爆头",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 248,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337770,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [],
+          "fired_windows": 248,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "baotou_after_action"
+          ],
+          "fired_windows": 244,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "baotou.meld_inherit",
+      "name": "吃碰杠继承爆头",
+      "kind": "rule_scenario",
+      "level": "【当前观察·实现】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 55,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337963,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 9,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "baotou_after_action"
+          ],
+          "fired_windows": 28,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 47,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 47,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 20,
+          "changed_windows": 1,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "baotou.decline_win_for_piao",
+      "name": "弃胡续飘位点（可胡而选择不胡）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 246,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337772,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard",
+            "hu"
+          ],
+          "token_hit": [
+            "Hu"
+          ],
+          "fired_windows": 246,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard",
+            "hu"
+          ],
+          "token_hit": [
+            "Hu"
+          ],
+          "fired_windows": 242,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard",
+            "hu"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "overlay.four_white_baotou",
+      "name": "四白 × 爆头 叠加",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "not_applicable",
+      "verdict_note": "本面板没有可判定窗口属于该类 —— 这是**面板覆盖**的陈述，不是规则上不存在，也不是机制稀有。",
+      "windows_in_class": 0,
+      "windows_undecided": 0,
+      "windows_out_of_class": 338018,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "baotou"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [
+            "four_white_indicator",
+            "four_white_state",
+            "baotou"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [
+            "baotou"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "overlay.chiitoi_baotou",
+      "name": "七对 × 爆头（七客 / 豪华七客）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 281,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337737,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "baotou"
+          ],
+          "fired_windows": 60,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "meld_count_of",
+            "baotou"
+          ],
+          "fired_windows": 79,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "seven_pairs_shanten_after",
+            "baotou"
+          ],
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        },
+        "seven_pairs_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [
+            "seven_pairs_shanten_after"
+          ],
+          "fired_windows": 19,
+          "changed_windows": 0,
+          "status": "fired_no_change"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "overlay.gang_piao_mix",
+      "name": "杠飘混合链",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "not_applicable",
+      "verdict_note": "本面板没有可判定窗口属于该类 —— 这是**面板覆盖**的陈述，不是规则上不存在，也不是机制稀有。",
+      "windows_in_class": 0,
+      "windows_undecided": 0,
+      "windows_out_of_class": 338018,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard",
+            "gang"
+          ],
+          "token_hit": [
+            "chain_piao",
+            "chain_count"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "discard",
+            "gang"
+          ],
+          "token_hit": [
+            "chain_piao",
+            "chain_count"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [
+            "chain_piao",
+            "chain_count"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard",
+            "gang"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "overlay.plain_branch_max",
+      "name": "平胡分支上界组合（3 连杠 + 三财飘 + 爆头 + 四白板）",
+      "kind": "official_bound",
+      "level": "【官方已确认】",
+      "verdict": "not_applicable",
+      "verdict_note": "本面板没有可判定窗口属于该类 —— 这是**面板覆盖**的陈述，不是规则上不存在，也不是机制稀有。",
+      "windows_in_class": 0,
+      "windows_undecided": 0,
+      "windows_out_of_class": 338018,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "chain_count",
+            "chain_piao",
+            "baotou"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "chain_count",
+            "chain_piao",
+            "baotou",
+            "meld_count_of"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "chain_count",
+            "chain_piao",
+            "baotou"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "overlay.global_max",
+      "name": "全局上界组合（三豪华七对 + 三财飘 + 四白 + 爆头）",
+      "kind": "official_bound",
+      "level": "【官方已确认】",
+      "verdict": "not_applicable",
+      "verdict_note": "本面板没有可判定窗口属于该类 —— 这是**面板覆盖**的陈述，不是规则上不存在，也不是机制稀有。",
+      "windows_in_class": 0,
+      "windows_undecided": 0,
+      "windows_out_of_class": 338018,
+      "candidates": {
+        "chain_path_value": {
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "chain_piao",
+            "baotou"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "locked_luxury_groups",
+            "chain_piao",
+            "baotou"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [],
+          "token_hit": [
+            "chain_piao",
+            "baotou"
+          ],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "no_window"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "payrole.self_dealer",
+      "name": "本人坐庄（付方恒为 ×8）",
+      "kind": "settlement_outcome",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 100446,
+      "windows_undecided": 0,
+      "windows_out_of_class": 237572,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 505,
+          "changed_windows": 22,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 3636,
+          "changed_windows": 280,
+          "status": "undeclared"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 4646,
+          "changed_windows": 465,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 4530,
+          "changed_windows": 2027,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 3051,
+          "changed_windows": 42,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 3051,
+          "changed_windows": 17,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "payrole.self_nondealer",
+      "name": "本人闲家（本人胡 +10；庄家胡付 8；闲家胡付 1）",
+      "kind": "settlement_outcome",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 237572,
+      "windows_undecided": 0,
+      "windows_out_of_class": 100446,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 1136,
+          "changed_windows": 59,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 8525,
+          "changed_windows": 745,
+          "status": "undeclared"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 11148,
+          "changed_windows": 1213,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 10875,
+          "changed_windows": 4765,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 7162,
+          "changed_windows": 130,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "hu",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 7161,
+          "changed_windows": 49,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "meld.claim_window",
+      "name": "鸣牌窗口（存在吃/碰候选）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 15794,
+      "windows_undecided": 0,
+      "windows_out_of_class": 322224,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 315,
+          "changed_windows": 18,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [
+            "Chi",
+            "Peng"
+          ],
+          "fired_windows": 10345,
+          "changed_windows": 976,
+          "status": "changed"
+        },
+        "meld_opportunity_cost": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [
+            "Chi",
+            "Peng"
+          ],
+          "fired_windows": 15794,
+          "changed_windows": 1678,
+          "status": "changed"
+        },
+        "meld_waiting_conditional": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [
+            "Chi",
+            "Peng"
+          ],
+          "fired_windows": 15405,
+          "changed_windows": 6792,
+          "status": "changed"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 10213,
+          "changed_windows": 172,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 10212,
+          "changed_windows": 66,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "meld.waiting_facts_available",
+      "name": "等待事实可用（窗口内有带完整等待事实的 Pass 候选）",
+      "kind": "evidence_state",
+      "level": "【当前观察·实现】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 265154,
+      "windows_undecided": 0,
+      "windows_out_of_class": 72864,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 315,
+          "changed_windows": 18,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 10345,
+          "changed_windows": 976,
+          "status": "undeclared"
+        },
+        "meld_opportunity_cost": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [
+            "natural_draw_value",
+            "useful_tiles"
+          ],
+          "fired_windows": 15794,
+          "changed_windows": 1678,
+          "status": "changed"
+        },
+        "meld_waiting_conditional": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [
+            "natural_draw_value"
+          ],
+          "fired_windows": 15405,
+          "changed_windows": 6792,
+          "status": "changed"
+        },
+        "multiplier_path_potential": {
+          "declared": true,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [
+            "useful_tiles"
+          ],
+          "fired_windows": 10213,
+          "changed_windows": 172,
+          "status": "changed"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 10212,
+          "changed_windows": 66,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": []
+    },
+    {
+      "id": "gate.you_cai_bi_kao",
+      "name": "有财必拷响（手上有财神时不允许平胡）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "not_applicable",
+      "verdict_note": "本面板没有可判定窗口属于该类 —— 这是**面板覆盖**的陈述，不是规则上不存在，也不是机制稀有。",
+      "windows_in_class": 0,
+      "windows_undecided": 0,
+      "windows_out_of_class": 338018,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard",
+            "hu"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard",
+            "hu"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "discard",
+            "hu"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": [
+        {
+          "symbol": "hangma_bot.hangma.engine:HangmaRules",
+          "note": "engine 按开关过滤 hu 候选，规则层生效"
+        }
+      ]
+    },
+    {
+      "id": "gate.wall_end_gang_ban",
+      "name": "末局禁杠（牌墙最后 10 墩内禁止杠）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 258,
+      "windows_undecided": 0,
+      "windows_out_of_class": 337760,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [],
+          "fired_windows": 0,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [],
+          "fired_windows": 3,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 10,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [],
+          "token_hit": [],
+          "fired_windows": 10,
+          "changed_windows": 10,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [],
+          "fired_windows": 3,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "gang"
+          ],
+          "token_hit": [],
+          "fired_windows": 3,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": [
+        {
+          "symbol": "hangma_bot.hangma.action_families:gang_candidates",
+          "note": "remaining_tile_count <= WALL_RESERVE_TILES 时不产出杠候选"
+        },
+        {
+          "symbol": "hangma_bot.hangma.action_families:WALL_RESERVE_TILES",
+          "note": "门限常量本身（本文件直接 import，不抄数字）"
+        }
+      ]
+    },
+    {
+      "id": "gate.catch_play_owner",
+      "name": "抓打圈主身份（圈内本人是否为新打财神者）",
+      "kind": "rule_scenario",
+      "level": "【官方已确认】",
+      "verdict": "sufficient",
+      "verdict_note": "本面板该类的覆盖达到下限；结论只针对本面板，不是效果结论。",
+      "windows_in_class": 238,
+      "windows_undecided": 209,
+      "windows_out_of_class": 337571,
+      "candidates": {
+        "chain_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 3,
+          "changed_windows": 0,
+          "status": "undeclared"
+        },
+        "four_component_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 12,
+          "changed_windows": 1,
+          "status": "undeclared"
+        },
+        "meld_opportunity_cost": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 13,
+          "changed_windows": 3,
+          "status": "undeclared"
+        },
+        "meld_waiting_conditional": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 13,
+          "changed_windows": 10,
+          "status": "undeclared"
+        },
+        "multiplier_path_potential": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 10,
+          "changed_windows": 1,
+          "status": "undeclared"
+        },
+        "seven_pairs_path_value": {
+          "declared": false,
+          "scope_hit": [
+            "chi",
+            "discard",
+            "gang",
+            "peng"
+          ],
+          "token_hit": [],
+          "fired_windows": 9,
+          "changed_windows": 0,
+          "status": "undeclared"
+        }
+      },
+      "undecidable": null,
+      "rule_enforcement": [
+        {
+          "symbol": "hangma_bot.hangma.special_rules:catch_play_restriction",
+          "note": "规则层按圈主身份限制其余玩家的动作"
+        }
+      ]
+    }
+  ],
+  "out_of_class_increment": {
+    "chain_path_value": {
+      "declared_classes": [
+        "chain.open",
+        "chain.gang_step",
+        "chain.piao_discard",
+        "chain.break_discard",
+        "four_white.unknown_piao",
+        "baotou.active",
+        "baotou.decline_win_for_piao",
+        "overlay.four_white_baotou",
+        "overlay.chiitoi_baotou",
+        "overlay.gang_piao_mix",
+        "overlay.plain_branch_max",
+        "overlay.global_max"
+      ],
+      "changed_windows": 81,
+      "violations": [],
+      "violation_total": 0,
+      "undecided_changes": [],
+      "undecided_change_total": 0
+    },
+    "four_component_path_value": {
+      "declared_classes": [
+        "branch.chiitoi_live",
+        "branch.luxury_locked",
+        "chain.open",
+        "chain.gang_step",
+        "chain.piao_discard",
+        "chain.break_discard",
+        "four_white.at_four",
+        "four_white.derivable_held4",
+        "four_white.unknown_piao",
+        "baotou.active",
+        "baotou.discard_recheck",
+        "baotou.meld_inherit",
+        "baotou.decline_win_for_piao",
+        "overlay.four_white_baotou",
+        "overlay.chiitoi_baotou",
+        "overlay.gang_piao_mix",
+        "overlay.plain_branch_max",
+        "overlay.global_max",
+        "meld.claim_window"
+      ],
+      "changed_windows": 1025,
+      "violations": [],
+      "violation_total": 0,
+      "undecided_changes": [],
+      "undecided_change_total": 0
+    },
+    "meld_opportunity_cost": {
+      "declared_classes": [
+        "meld.claim_window",
+        "meld.waiting_facts_available"
+      ],
+      "changed_windows": 1678,
+      "violations": [],
+      "violation_total": 0,
+      "undecided_changes": [],
+      "undecided_change_total": 0
+    },
+    "meld_waiting_conditional": {
+      "declared_classes": [
+        "meld.claim_window",
+        "meld.waiting_facts_available"
+      ],
+      "changed_windows": 6792,
+      "violations": [],
+      "violation_total": 0,
+      "undecided_changes": [],
+      "undecided_change_total": 0
+    },
+    "multiplier_path_potential": {
+      "declared_classes": [
+        "branch.chiitoi_live",
+        "branch.closer_seven_pairs",
+        "chain.open",
+        "chain.gang_draw_open",
+        "four_white.unknown_piao",
+        "baotou.active",
+        "overlay.chiitoi_baotou",
+        "overlay.gang_piao_mix",
+        "overlay.plain_branch_max",
+        "overlay.global_max",
+        "meld.waiting_facts_available"
+      ],
+      "changed_windows": 172,
+      "violations": [],
+      "violation_total": 0,
+      "undecided_changes": [],
+      "undecided_change_total": 0
+    },
+    "seven_pairs_path_value": {
+      "declared_classes": [
+        "branch.chiitoi_live",
+        "branch.closer_seven_pairs",
+        "chain.gang_draw_open",
+        "overlay.chiitoi_baotou"
+      ],
+      "changed_windows": 66,
+      "violations": [],
+      "violation_total": 0,
+      "undecided_changes": [],
+      "undecided_change_total": 0
+    }
+  },
+  "gaps": [
+    {
+      "kind": "class_gap",
+      "class_id": "chain.claim_repiao_circle",
+      "class_name": "抓打圈内吃碰后再打财神（财飘链 +1 位点）",
+      "reasons": [
+        "undeclared_by_all"
+      ],
+      "declared_by": [],
+      "observed_fired_on_panel": [],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 7,
+          "marker": "财飘链 +1",
+          "note": "圈内吃碰后再打财神 = 财飘链 +1；圈以本人为新打财神者重启"
+        },
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 5,
+          "marker": "白板 = 财神",
+          "note": "财神可主动打出；打出即开圈"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "catch_play",
+            "note": "本人是否处于抓打圈"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "baotou",
+            "note": "财飘要求爆头"
+          }
+        ]
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "four_white.derivable_held4",
+      "class_name": "手留 4 张 ⇒ 链内飘出必为 0（可推导）",
+      "reasons": [
+        "declared_but_no_fire_on_panel"
+      ],
+      "declared_by": [
+        "four_component_path_value"
+      ],
+      "observed_fired_on_panel": [],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 106,
+          "marker": "手留白 + piao ≤ 4",
+          "note": "白板共 4 张：手留已占满时飘出必为 0"
+        },
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 5,
+          "marker": "白板 = 财神",
+          "note": "财神不可被吃碰杠胡，飘出的白板不会回到手上"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "wealth_count",
+            "note": "手留财神张数"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "chain_piao",
+            "note": "为空才需要推导"
+          }
+        ]
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "four_white.unknown_piao",
+      "class_name": "链内飘出不可判定（未知态）",
+      "reasons": [
+        "declared_but_no_fire_on_panel"
+      ],
+      "declared_by": [
+        "chain_path_value",
+        "four_component_path_value",
+        "multiplier_path_potential"
+      ],
+      "observed_fired_on_panel": [],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 106,
+          "marker": "piao ≤ count",
+          "note": "链内飘出是独立字段，缺它不能反推"
+        },
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 53,
+          "marker": "正好 4 张",
+          "note": "等值条件：任一侧未知就不能判成立/不成立"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "chain_piao",
+            "note": "为空 ⇒ 依据不足"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "chain_count",
+            "note": "链为 0 时可推导为 0"
+          }
+        ]
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "overlay.four_white_baotou",
+      "class_name": "四白 × 爆头 叠加",
+      "reasons": [
+        "declared_but_no_fire_on_panel"
+      ],
+      "declared_by": [
+        "chain_path_value",
+        "four_component_path_value"
+      ],
+      "observed_fired_on_panel": [],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 23,
+          "marker": "4 白听任意即胡时计爆头并与「4 个白板 ×2」叠加",
+          "note": "官方明文：正好 4 张白板亦按爆头判定，且与四白倍率叠加"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "baotou",
+            "note": "爆头分量"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "wealth_count",
+            "note": "四白分量的一侧"
+          }
+        ]
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "overlay.gang_piao_mix",
+      "class_name": "杠飘混合链",
+      "reasons": [
+        "declared_but_no_fire_on_panel"
+      ],
+      "declared_by": [
+        "chain_path_value",
+        "four_component_path_value",
+        "multiplier_path_potential"
+      ],
+      "observed_fired_on_panel": [],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 57,
+          "marker": "杠飘组合叠加计算",
+          "note": "飘与杠可连续、可组合"
+        },
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 45,
+          "marker": "杠爆",
+          "note": "爆头状态下杠补牌胡 = 爆头 × 杠开"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "chain_count",
+            "note": "链次数"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "chain_piao",
+            "note": "链内飘出；为空 ⇒ None"
+          }
+        ]
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "overlay.plain_branch_max",
+      "class_name": "平胡分支上界组合（3 连杠 + 三财飘 + 爆头 + 四白板）",
+      "reasons": [
+        "declared_but_no_fire_on_panel"
+      ],
+      "declared_by": [
+        "chain_path_value",
+        "four_component_path_value",
+        "multiplier_path_potential"
+      ],
+      "observed_fired_on_panel": [],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 63,
+          "marker": "3 连杠 + 三财飘 + 爆头 + 4 白板 = 2⁶ × 2 × 2 = ×256",
+          "note": "官方给出的平胡分支最大牌型"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "chain_count",
+            "note": "链次数上界由官方给出"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "chain_piao",
+            "note": "三财飘 = 3"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "baotou",
+            "note": "爆头"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "wealth_count",
+            "note": "四白一侧"
+          }
+        ]
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "overlay.global_max",
+      "class_name": "全局上界组合（三豪华七对 + 三财飘 + 四白 + 爆头）",
+      "reasons": [
+        "declared_but_no_fire_on_panel"
+      ],
+      "declared_by": [
+        "chain_path_value",
+        "four_component_path_value",
+        "multiplier_path_potential"
+      ],
+      "observed_fired_on_panel": [],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 65,
+          "marker": "三豪华七对 + 三财飘 + 4 白板 + 爆头 = ×16 × 2³ × 2 × 2 = ×512",
+          "note": "官方给出的全局最大组合"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "chain_count",
+            "note": "三财飘 = 链 3"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "chain_piao",
+            "note": "三财飘 = 飘 3"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "baotou",
+            "note": "爆头"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "combined_codes",
+            "note": "豪华组代理的输入"
+          }
+        ]
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "payrole.self_dealer",
+      "class_name": "本人坐庄（付方恒为 ×8）",
+      "reasons": [
+        "undeclared_by_all"
+      ],
+      "declared_by": [],
+      "observed_fired_on_panel": [
+        "chain_path_value",
+        "four_component_path_value",
+        "meld_opportunity_cost",
+        "meld_waiting_conditional",
+        "multiplier_path_potential",
+        "seven_pairs_path_value"
+      ],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 71,
+          "marker": "庄家胡：三家闲家各付",
+          "note": "本人坐庄：三家各付 ×8；他人胡时本人付 ×8"
+        },
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 69,
+          "marker": "庄家 ×8",
+          "note": "庄家倍率恒 ×8（直上三连庄，无递增）"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "my_seat",
+            "note": "本人座位"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "dealer_seat",
+            "note": "庄家座位"
+          }
+        ]
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "payrole.self_nondealer",
+      "class_name": "本人闲家（本人胡 +10；庄家胡付 8；闲家胡付 1）",
+      "reasons": [
+        "undeclared_by_all"
+      ],
+      "declared_by": [],
+      "observed_fired_on_panel": [
+        "chain_path_value",
+        "four_component_path_value",
+        "meld_opportunity_cost",
+        "meld_waiting_conditional",
+        "multiplier_path_potential",
+        "seven_pairs_path_value"
+      ],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 73,
+          "marker": "闲家胡：庄家付 底分 × 倍率 × 8",
+          "note": "闲家胡：庄家付 ×8、另两闲家各付 ×1"
+        },
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 69,
+          "marker": "闲家 ×1",
+          "note": "闲家倍率为 ×1"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "my_seat",
+            "note": "本人座位"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "dealer_seat",
+            "note": "庄家座位"
+          }
+        ]
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "gate.you_cai_bi_kao",
+      "class_name": "有财必拷响（手上有财神时不允许平胡）",
+      "reasons": [
+        "undeclared_by_all"
+      ],
+      "declared_by": [],
+      "observed_fired_on_panel": [],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 152,
+          "marker": "有财必拷响",
+          "note": "手上有财神时不允许平胡，必须爆头/杠开才能胡"
+        },
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 123,
+          "marker": "有财必拷响",
+          "note": "由创建者配置，每场可能不同，必须以 API 返回为准"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "you_cai_bi_kao",
+            "note": "有财必拷响开关；打开 ⇒ 胡牌成为爆头的必要条件（该类成立 = 开关打开）"
+          }
+        ],
+        "rule_enforcement": [
+          {
+            "symbol": "hangma_bot.hangma.engine:HangmaRules",
+            "note": "engine 按开关过滤 hu 候选，规则层生效"
+          }
+        ],
+        "wired_to_context": true,
+        "field": "you_cai_bi_kao",
+        "wired_by": "3.6d（corpus 包）"
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "gate.wall_end_gang_ban",
+      "class_name": "末局禁杠（牌墙最后 10 墩内禁止杠）",
+      "reasons": [
+        "undeclared_by_all"
+      ],
+      "declared_by": [],
+      "observed_fired_on_panel": [
+        "four_component_path_value",
+        "meld_opportunity_cost",
+        "meld_waiting_conditional",
+        "multiplier_path_potential",
+        "seven_pairs_path_value"
+      ],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 13,
+          "marker": "最后 10 墩之内禁止杠牌",
+          "note": "牌墙最后 20 张保留不摸，且禁杠"
+        },
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 13,
+          "marker": "最后 10 墩（20 张）保留不摸",
+          "note": "保留区的定义"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "remaining_tile_count",
+            "note": "含保留区的剩余牌墙张数；<= WALL_RESERVE_TILES 时禁杠生效"
+          }
+        ],
+        "rule_enforcement": [
+          {
+            "symbol": "hangma_bot.hangma.action_families:gang_candidates",
+            "note": "remaining_tile_count <= WALL_RESERVE_TILES 时不产出杠候选"
+          },
+          {
+            "symbol": "hangma_bot.hangma.action_families:WALL_RESERVE_TILES",
+            "note": "门限常量本身（本文件直接 import，不抄数字）"
+          }
+        ],
+        "wired_to_context": true,
+        "field": "remaining_tile_count",
+        "wired_by": "3.6d（corpus 包）"
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "class_gap",
+      "class_id": "gate.catch_play_owner",
+      "class_name": "抓打圈主身份（圈内本人是否为新打财神者）",
+      "reasons": [
+        "undeclared_by_all"
+      ],
+      "declared_by": [],
+      "observed_fired_on_panel": [
+        "chain_path_value",
+        "four_component_path_value",
+        "meld_opportunity_cost",
+        "meld_waiting_conditional",
+        "multiplier_path_potential",
+        "seven_pairs_path_value"
+      ],
+      "official": [
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 7,
+          "marker": "打财神者本人不受此限",
+          "note": "圈主可吃碰明杠、可任意出牌；其余玩家受限"
+        },
+        {
+          "file": "doc/references/official-guide-v34-content.txt",
+          "line": 7,
+          "marker": "圈以本人为新打财神者重启",
+          "note": "圈主身份随打财神者切换"
+        }
+      ],
+      "required_fact": {
+        "wired": true,
+        "fields": [
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "catch_play",
+            "note": "只有「是否在圈内」：不在圈内时该类**可判定为不成立**"
+          },
+          {
+            "symbol": "hangma_bot.policy.evaluation_v1:EvaluationContext",
+            "field": "catch_play_owner_seat",
+            "note": "抓打圈主席位；== my_seat ⇒ 本人是圈主（不受吃碰限制）"
+          }
+        ],
+        "rule_enforcement": [
+          {
+            "symbol": "hangma_bot.hangma.special_rules:catch_play_restriction",
+            "note": "规则层按圈主身份限制其余玩家的动作"
+          }
+        ],
+        "wired_to_context": true,
+        "field": "catch_play_owner_seat",
+        "wired_by": "3.6d（corpus 包）"
+      },
+      "note": "记录缺口 **≠** 机制稀有：语料/面板没有位点不构成对机制稀缺性的判断，也不得据此做预算规划。"
+    },
+    {
+      "kind": "known_gap",
+      "gap_id": "gap.payrole_absent_in_scoring_layer",
+      "title": "庄闲在评分层缺席（且已有一次被判定为结构性空操作的尝试）",
+      "class_ids": [
+        "payrole.self_dealer",
+        "payrole.self_nondealer"
+      ],
+      "level": "【当前观察·实现】",
+      "citations": [
+        {
+          "file": "src/hangma_bot/policy/weights_v1.py",
+          "line": 13,
+          "marker": "class HeuristicWeightsV1",
+          "note": "V1/V2 基线权重共 11 项，**没有庄闲字段**"
+        },
+        {
+          "file": "src/hangma_bot/policy/hu_upgrade.py",
+          "line": 42,
+          "marker": "真实支付结构不对称",
+          "note": "全仓唯一有庄闲建模的地方：风险表 (wall_band, threat, dealer) 三元分组"
+        },
+        {
+          "file": "src/hangma_bot/policy/hu_upgrade_calibration.py",
+          "line": 22,
+          "marker": "不改变任何决策",
+          "note": "庄闲分离定价**已试过**：方向 B 风险表 v3 相对 v2 表差分 0 / 10,769 窗口"
+        },
+        {
+          "file": "src/hangma_bot/policy/hu_upgrade_calibration.py",
+          "line": 23,
+          "marker": "仍然为 0",
+          "note": "把 loss_absolute 归零（比 v2 更宽松）后差异仍为 0 ⇒ 不是数值标定问题"
+        },
+        {
+          "file": "src/hangma_bot/policy/hu_upgrade_calibration.py",
+          "line": 27,
+          "marker": "恒松弛",
+          "note": "根因：上游先要求「可证明任意下一摸必翻倍」，风险表恒松弛 ⇒ 结构性空操作"
+        },
+        {
+          "file": "src/hangma_bot/policy/hu_upgrade_calibration.py",
+          "line": 32,
+          "marker": "顺序反过来的话",
+          "note": "顺序是硬约束：先解锁可证明性，再给庄闲定价"
+        },
+        {
+          "file": "src/hangma_bot/policy/hu_upgrade_calibration.py",
+          "line": 37,
+          "marker": "10.75 / 4.78",
+          "note": "实测（真实平台两池 27,824 个「我方弃牌后摸牌」样本，墙余 40—63）：失败均付 庄 10.75 / 闲 4.78"
+        },
+        {
+          "file": "src/hangma_bot/policy/hu_upgrade_calibration.py",
+          "line": 38,
+          "marker": "9.59 / 4.62",
+          "note": "实测（墙余 >=64）：庄 9.59 / 闲 4.62 ⇒ 约 2.2—2.25 倍，与官方 ×8/×1 支付结构一致"
+        }
+      ],
+      "fact_wiring": {
+        "wired": true,
+        "note": "dealer_seat 已在 EvaluationContext；缺的不是接线，是定价的前置层"
+      },
+      "precondition": "**硬前置条件**：兑现概率层（非终局价值）先能表达「不保证但很可能」的概率路径，庄闲定价才不是空操作；顺序反过来永远是空操作（hu_upgrade_calibration.py:29—32）。",
+      "note": "**不是「待研究」**：本条有实测记录与被淘汰的尝试，按引用可逐条复核。",
+      "measured_facts": {
+        "samples": 27824,
+        "dealer_vs_nondealer_loss_ratio": "约 2.2—2.25 倍（两池一致）",
+        "official_structure": "庄家侧 ×8、闲家对闲家 ×1（指南第 69—73 行）"
+      },
+      "why_not_a_parameter_problem": "差分 0 与 loss_absolute 归零后仍为 0 说明：不是参数没调对，而是上游的**可证明性门槛**（要求「任意下一摸必翻倍」）让风险项恒松弛。",
+      "current_state": "UpgradeRiskCell.dealer / loss_absolute 只是**保留的扩展点**（类型安全 + 回归），冻结表 RISK_CELLS 的两条 cell 都是 dealer=None（庄闲通用价），v3 表与其两个实验臂已移出可用策略清单。",
+      "source": [
+        {
+          "symbol": "hangma_bot.policy.weights_v1:HeuristicWeightsV1",
+          "note": "基线权重无庄闲字段的核对点"
+        },
+        {
+          "symbol": "hangma_bot.policy.hu_upgrade:UpgradeRiskCell",
+          "note": "dealer 扩展点（保留，未定价）"
+        }
+      ]
+    },
+    {
+      "kind": "known_gap",
+      "gap_id": "gap.risk_not_scaled_by_fan_or_pay_multiplier",
+      "title": "风险项不随番值 / 支付倍率缩放（固定常数）",
+      "class_ids": [
+        "payrole.self_dealer",
+        "payrole.self_nondealer",
+        "meld.claim_window"
+      ],
+      "level": "【当前观察·实现】",
+      "citations": [
+        {
+          "file": "src/hangma_bot/policy/weights_v1.py",
+          "line": 23,
+          "marker": "claim_risk_peng",
+          "note": "碰牌固定风险分 6.0（与 ×8/×1 支付倍率、对手番型无关）"
+        },
+        {
+          "file": "src/hangma_bot/policy/weights_v1.py",
+          "line": 24,
+          "marker": "claim_risk_chi",
+          "note": "吃牌固定风险分 10.0（同上）"
+        },
+        {
+          "file": "src/hangma_bot/policy/weights_v1.py",
+          "line": 25,
+          "marker": "feed_risk",
+          "note": "弃牌喂牌风险 6.0/单位（同上）"
+        },
+        {
+          "file": "src/hangma_bot/policy/weights_v1.py",
+          "line": 26,
+          "marker": "safe_tile_bonus",
+          "note": "熟张安全加分 3.0（同上）"
+        }
+      ],
+      "fact_wiring": {
+        "wired": true,
+        "note": "风险项是纯常数，不需要新事实；缺的是与支付量级挂钩的形式"
+      },
+      "precondition": "与上一条同源：风险要与支付量级挂钩，必须先有能表达概率与量级的兑现层；否则调大常数只是把同一个空操作换成另一种标定。",
+      "note": "**不是「待研究」**：本条有实测记录与被淘汰的尝试，按引用可逐条复核。",
+      "why_it_matters": "支付结构是 ×8/×1 且随番型倍率放大（官方第 69—73 行）：庄位大番场景下，固定常数风险项与实际支付量级脱钩。",
+      "source": [
+        {
+          "symbol": "hangma_bot.policy.weights_v1:HeuristicWeightsV1",
+          "note": "四个固定风险常数的唯一来源"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "verdict_counts": {
+      "sufficient": 19,
+      "insufficient": 1,
+      "not_applicable": 8,
+      "unknown": 0
+    },
+    "candidate_class_status_counts": {
+      "chain_path_value": {
+        "undeclared": 16,
+        "fired_no_change": 6,
+        "changed": 1,
+        "no_window": 5
+      },
+      "four_component_path_value": {
+        "changed": 4,
+        "undeclared": 9,
+        "fired_no_change": 9,
+        "no_window": 6
+      },
+      "meld_opportunity_cost": {
+        "undeclared": 26,
+        "changed": 2
+      },
+      "meld_waiting_conditional": {
+        "undeclared": 26,
+        "changed": 2
+      },
+      "multiplier_path_potential": {
+        "changed": 5,
+        "undeclared": 17,
+        "fired_no_change": 2,
+        "no_window": 4
+      },
+      "seven_pairs_path_value": {
+        "changed": 2,
+        "undeclared": 24,
+        "fired_no_change": 2
+      }
+    },
+    "not_admission_basis": true,
+    "note": "汇总只用于阅读：**逐类 verdict 才是账**。本文件不含分数、加权或排序，**不得作为准入依据**（触发集是构造集，见 §边界）。"
+  },
+  "boundaries": [
+    "触发集是构造集：只证明接线与提供可触发作用面；不得用于效应估计、排序、淘汰或晋级声明。",
+    "unknown 表示「该类一个窗口都没判定出来且有窗口不可判定」，**不是**「无影响」，也不得填零。",
+    "记录缺口 ≠ 机制稀有：不得用语料频率给机制下稀缺性判断，不得据此做预算规划。",
+    "逐类账不得合并成单一总分；汇总字段只供阅读，不得作为准入依据。",
+    "庄闲/支付倍率是一等场景维度，但不是番型分量：它不改变同一手内的番型排序。"
+  ]
+}

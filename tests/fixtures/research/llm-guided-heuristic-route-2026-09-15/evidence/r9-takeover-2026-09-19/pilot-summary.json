@@ -1,0 +1,227 @@
+{
+  "schema": "sitin-supervised-pilot-summary/1",
+  "states": [
+    {
+      "attempt": "iter-01",
+      "run_id": "74393202d2eca7dad09f2a79",
+      "status": "BUDGET_EXHAUSTED",
+      "operator": "i1",
+      "candidate_id": "8f8a3820c7b480336c0e0a331270fd4498095a6ffc573799951c2bf795d614d9",
+      "reused_capture": false,
+      "admission": {
+        "candidate_id": "8f8a3820c7b480336c0e0a331270fd4498095a6ffc573799951c2bf795d614d9",
+        "execution_safety_pass": true,
+        "coverage": "PASS",
+        "record_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r9-takeover-2026-09-19/pilot/run/iterations/iter-01/admission/admission.json"
+      },
+      "rejection": null,
+      "stop_reason": "budget_exhausted_conditional"
+    },
+    {
+      "attempt": "iter-02",
+      "run_id": "34371e101ec75f0b7db3ae2b",
+      "status": "ITERATION_COMPLETE",
+      "operator": "i1",
+      "candidate_id": "8f8a3820c7b480336c0e0a331270fd4498095a6ffc573799951c2bf795d614d9",
+      "reused_capture": true,
+      "admission": {
+        "candidate_id": "8f8a3820c7b480336c0e0a331270fd4498095a6ffc573799951c2bf795d614d9",
+        "execution_safety_pass": true,
+        "coverage": "PASS",
+        "record_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r9-takeover-2026-09-19/pilot/run/iterations/iter-02/admission/admission.json"
+      },
+      "rejection": null,
+      "stop_reason": "completed_proposal_budget",
+      "panels": {
+        "branch_open": {
+          "mix": {
+            "weights": {
+              "H": 0.5,
+              "M": 0.5
+            },
+            "mean_delta": null,
+            "mean_delta_low": null,
+            "mean_delta_high": null,
+            "status": "missing_mix",
+            "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例"
+          },
+          "by_opponent": {
+            "H": {
+              "n_roots": 1,
+              "mean_delta": 0.0,
+              "interval_95": null,
+              "status": "ok"
+            }
+          }
+        },
+        "normal": {
+          "mix": {
+            "weights": {
+              "H": 0.5,
+              "M": 0.5
+            },
+            "mean_delta": 0.0,
+            "mean_delta_low": 0.0,
+            "mean_delta_high": 0.0,
+            "status": "ok",
+            "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例"
+          },
+          "by_opponent": {
+            "H": {
+              "n_roots": 1,
+              "mean_delta": 0.0,
+              "interval_95": null,
+              "status": "ok"
+            },
+            "M": {
+              "n_roots": 1,
+              "mean_delta": 0.0,
+              "interval_95": null,
+              "status": "ok"
+            }
+          }
+        }
+      }
+    },
+    {
+      "attempt": "iter-03",
+      "run_id": "4b162a268e85a6da9dcb9878",
+      "status": "ITERATION_COMPLETE",
+      "operator": "m1",
+      "candidate_id": "b6d87201f9c7f4f4573ef8c8a23c00b3ea27ba5b31b2e529fce67008717e3781",
+      "reused_capture": false,
+      "admission": {
+        "candidate_id": "b6d87201f9c7f4f4573ef8c8a23c00b3ea27ba5b31b2e529fce67008717e3781",
+        "execution_safety_pass": true,
+        "coverage": "PASS",
+        "record_path": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r9-takeover-2026-09-19/pilot/run/iterations/iter-03/admission/admission.json"
+      },
+      "rejection": null,
+      "stop_reason": "completed_proposal_budget",
+      "panels": {
+        "branch_open": {
+          "mix": {
+            "weights": {
+              "H": 0.5,
+              "M": 0.5
+            },
+            "mean_delta": null,
+            "mean_delta_low": null,
+            "mean_delta_high": null,
+            "status": "missing_mix",
+            "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例"
+          },
+          "by_opponent": {
+            "H": {
+              "n_roots": 1,
+              "mean_delta": 0.0,
+              "interval_95": null,
+              "status": "ok"
+            }
+          }
+        },
+        "normal": {
+          "mix": {
+            "weights": {
+              "H": 0.5,
+              "M": 0.5
+            },
+            "mean_delta": -0.5,
+            "mean_delta_low": -0.5,
+            "mean_delta_high": -0.5,
+            "status": "ok",
+            "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例"
+          },
+          "by_opponent": {
+            "H": {
+              "n_roots": 1,
+              "mean_delta": -0.75,
+              "interval_95": null,
+              "status": "ok"
+            },
+            "M": {
+              "n_roots": 1,
+              "mean_delta": -0.25,
+              "interval_95": null,
+              "status": "ok"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "calls": [
+    {
+      "run_id": "session-2ac6b8dd-3e71-483c-88d2-54fe9bdbc93f",
+      "exit_code": 1,
+      "elapsed_s": 16.7,
+      "answer_chars": 0,
+      "request_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "max",
+        "maxTokens": 32768
+      },
+      "protocol_ok": true,
+      "operator": "i1",
+      "usage": {
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "totalTokens": 0
+      },
+      "evidence": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r9-takeover-2026-09-19/pilot/run/iterations/iter-01/author-call"
+    },
+    {
+      "run_id": "session-16945578-5896-4c30-9c4c-fe33a9d1378f",
+      "exit_code": 0,
+      "elapsed_s": 324.35,
+      "answer_chars": 12025,
+      "request_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "max",
+        "maxTokens": 32768
+      },
+      "protocol_ok": true,
+      "operator": "i1",
+      "usage": {
+        "inputTokens": 19839,
+        "outputTokens": 26130,
+        "totalTokens": 45969
+      },
+      "evidence": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r9-takeover-2026-09-19/pilot/run/iterations/iter-01/author-call-02"
+    },
+    {
+      "run_id": "session-ad6733d5-4b75-4293-ac03-4264dca2332b",
+      "exit_code": 0,
+      "elapsed_s": 252.06,
+      "answer_chars": 12747,
+      "request_config": {
+        "provider": "zai-coding-cn",
+        "model": "glm-5.3",
+        "reasoningEffort": "max",
+        "maxTokens": 32768
+      },
+      "protocol_ok": true,
+      "operator": "m1",
+      "usage": {
+        "inputTokens": 31107,
+        "outputTokens": 19458,
+        "totalTokens": 50565
+      },
+      "evidence": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/r9-takeover-2026-09-19/pilot/run/iterations/iter-03/author-call"
+    }
+  ],
+  "calls_attempted": 3,
+  "successful_author_calls": 2,
+  "spent_including_active_reservations": {
+    "tokens_input": 50946.0,
+    "tokens_output": 45588.0,
+    "tables_full": 72.0,
+    "tables_partial": 2.0,
+    "prefix_generation": 2.0,
+    "confirm_reserved": 0
+  },
+  "pending_reservations": [],
+  "claim": "有监督研发试运行；非模型自主准入；非独立确认；复用答卷不计新增独立提案"
+}

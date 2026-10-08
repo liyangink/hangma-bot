@@ -1,0 +1,32 @@
+{
+  "scope": "nine previously exposed S01 first-case DTOs and unchanged S02 source only",
+  "input_sha256": {
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t110-compact-target-cost-joint-evolution-1/S02-model-output/candidate.py": "2a59cbb18aefa3d24aadf0b3df70f5a4359c204b96a3f0dc208f77d53c196f30",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t110-compact-target-cost-joint-evolution-1/S01-PUBLIC-FIRST-CASE-VIEWS.jsonl.gz": "ba790c2720617671764358fddc225410028e80d4efe50d0d23bb591029518eb4",
+    "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t110-compact-target-cost-joint-evolution-1/S01-PUBLIC-FIRST-CASES.json": "1515bdde8be489c626bcdc85b5fc33d2cdd290d5ec6581743483dfce0242a88f"
+  },
+  "candidate_id": "54d4029ba095572490c41406a481d73d27e350e385438b177013ce72f274b710",
+  "full_DTOs": 9,
+  "waiting_nodes": 75,
+  "baotou_true_nodes": 4,
+  "chain_count_node_distribution": {
+    "0": 71,
+    "1": 4
+  },
+  "source_string_literal_occurrences": {
+    "baotou": 0,
+    "chain_count": 0,
+    "baotou_after_draw": 0,
+    "normal_draw_hu_payments": 1,
+    "score_delta": 3,
+    "retained_whites": 2
+  },
+  "finding": "existing condition baotou and chain_count facts are already serialized; S02 has no explicit literal read of these lifecycle fields",
+  "important_limit": "S02 consumes authoritative score_delta, so earned baotou/chain score can be reflected implicitly; unused flags do not prove double credit, a wrong wait, or a rule bug",
+  "next_action_if_needed": "first test formulas using existing lifecycle facts; expand only a separately evidenced additional-white action chain, not current-state fields",
+  "current_confirmation_outcomes_read": false,
+  "formula_or_runtime_changed": false,
+  "new_rules_scores_models_worlds_tables": 0,
+  "admitted": false,
+  "published": false
+}

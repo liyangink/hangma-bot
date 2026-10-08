@@ -1,0 +1,53 @@
+{
+ "schema": "sitin-headless-repair-prompts/2",
+ "generated_from": "冻结诊断渲染 + 卡面入口（逐卡 focus）",
+ "diagnostics_available_tasks": [
+  "TD04",
+  "TD06"
+ ],
+ "source_report": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/glm/reports/criterion-first.grade.json",
+ "replies": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/glm/replies/first",
+ "out": "/Users/liyang/hangma-bot/review/llm-guided-heuristic-route-2026-09-15/evidence/v4-impl/r9-admission/p25-dev-cards/glm/repair-prompts",
+ "tasks": [
+  {
+   "task_id": "TD04",
+   "chars": 23121,
+   "materials_chars": 9065,
+   "identity": "build_action_value_repair_card_prompt",
+   "diagnostics_available": true,
+   "diagnostic_source": "structured",
+   "diagnostic_stats": {
+    "entries": 1,
+    "codes": [
+     "STATIC_SUBSET_VIOLATION"
+    ],
+    "dropped_private_fields": [],
+    "package_skipped": 0,
+    "redactions": [],
+    "source": "structured",
+    "diagnostics_available": true
+   },
+   "leak_tokens": []
+  },
+  {
+   "task_id": "TD06",
+   "chars": 1007,
+   "materials_chars": 845,
+   "identity": "keyword_head",
+   "diagnostics_available": true,
+   "diagnostic_source": "structured",
+   "diagnostic_stats": {
+    "entries": 1,
+    "codes": [
+     "STOP_STRUCTURE_MISSING"
+    ],
+    "dropped_private_fields": [],
+    "package_skipped": 0,
+    "redactions": [],
+    "source": "structured",
+    "diagnostics_available": true
+   },
+   "leak_tokens": []
+  }
+ ]
+}

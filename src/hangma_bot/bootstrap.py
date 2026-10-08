@@ -192,10 +192,10 @@ VIP_S03_COMPILED_DIRECTORY = "prebuilt/vip-s03-rulefix-p0-compiled-v1"
 VIP_S03_RULEFIX_P0_EVIDENCE_DIRECTORY = "prebuilt/vip-s03-rulefix-p0-release-evidence-v1"
 VIP_S03_RULEFIX_P0_EVIDENCE_SOURCE = "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0"
 VIP_S03_RULEFIX_P0_PACKAGE_SCOPES = {
-    "vip_s03_rulefix_p0_testroom_v1": ("test_room", "correctness_fix_testroom_only", "prebuilt/vip-s03-rulefix-p0-testroom-approved-v4/manifest.json"),
-    "vip_s03_rulefix_p0_free_v1": ("auto_match", "correctness_fix_free_only", "prebuilt/vip-s03-rulefix-p0-free-approved-v4/manifest.json"),
-    "vip_s03_rulefix_p0_test_tournament_v1": ("test_tournament", "correctness_fix_test_tournament_only", "prebuilt/vip-s03-rulefix-p0-test-tournament-approved-v4/manifest.json"),
-    "vip_s03_rulefix_p0_official_tournament_v1": ("official_tournament", "correctness_fix_official_tournament_only", "prebuilt/vip-s03-rulefix-p0-official-tournament-approved-v4/manifest.json"),
+    "vip_s03_rulefix_p0_testroom_v1": ("test_room", "correctness_fix_testroom_only", "prebuilt/vip-s03-rulefix-p0-testroom-approved-v5/manifest.json"),
+    "vip_s03_rulefix_p0_free_v1": ("auto_match", "correctness_fix_free_only", "prebuilt/vip-s03-rulefix-p0-free-approved-v5/manifest.json"),
+    "vip_s03_rulefix_p0_test_tournament_v1": ("test_tournament", "correctness_fix_test_tournament_only", "prebuilt/vip-s03-rulefix-p0-test-tournament-approved-v5/manifest.json"),
+    "vip_s03_rulefix_p0_official_tournament_v1": ("official_tournament", "correctness_fix_official_tournament_only", "prebuilt/vip-s03-rulefix-p0-official-tournament-approved-v5/manifest.json"),
 }
 VIP_S03_PACKAGE_SCOPES.update(VIP_S03_RULEFIX_P0_PACKAGE_SCOPES)
 _VIP_S03_NATIVE_CACHE = None

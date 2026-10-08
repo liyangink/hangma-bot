@@ -1,0 +1,297 @@
+
+【本次目标与修改点（先读这一节）】
+  - 本次目标：修复「读取合同外/越权字段」这一个缺陷（硬约束·信息权限）
+  - 本次修改点：score_actions 读了不存在的越权字段，改为只读合同允许的可见事实（墙余量用可空的 wall_remaining，None 即未知，不得补 0）。
+  - 材料在下一节逐字给出（缺陷源码 + 合同条款 + 缺陷定位 + 任务）。
+
+【输入合同（公开接口附录的本题相关字段组；schema=sitin-action-value-public-interface/1）】
+  - 完整附录（全部 119 条路径 + 示例）：review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-public-interface-v1.json；本卡只渲染下表列出的字段组。
+  - 本题字段组（共 5 组）：schema_version、visible_state、actions、actions[]、actions[].followup_branches
+  - 本题未列出（机制不读；需要时按完整附录回查）：competition（5 条）、analysis_profile（6 条）、reference_features（6 条）、visible_state.rule_state（6 条）、actions[].immediate_settlement（5 条）、actions[].routes（4 条）、actions[].routes[].useful_tiles（3 条）、actions[].routes[].conditional_settlement（5 条）、actions[].routes[].conditions（7 条）、actions[].useful_tiles（3 条）、actions[].standard_useful_tiles（3 条）、actions[].seven_pairs_useful_tiles（3 条）、actions[].family_progress_entries（5 条）、actions[].value_issues（3 条）。
+  - 来源：src/hangma_bot/policy/action_value.py 的 ScoringView.candidate_view()（schema=sitin-scoring-view/3）；与 contracts/action-value-v1.json 分开存放，不进合同字节身份。
+  - 投影函数：_observation_mapping、_action_mapping、_branch_mapping、_route_mapping、_settlement_mapping、_useful_tiles_mapping、_family_entries_mapping、_rule_issues_mapping
+  - 记法 1：`actions[]` 表示动作表逐项（元组），`[].` 表示对每一项的字段；`*` 表示该层键名由数据决定（透传）。
+  - 记法 2：所有元组都是只读 tuple（候选只能读、不能改）；所有映射都是 dict。
+  - 记法 3：`None` 与 Python 的 None 同义（JSON 里写 null）；「缺证据」一律是 None，**不是** 0、不是 ()、不是空字符串。
+  - 记法 4：动作键 action_key 的稳定格式：`discard:<牌码>`、`chi:<牌码>,<牌码>,<牌码>`、`peng:<牌码>`、`gang:<concealed|added|exposed>:<牌码>`、`hu`、`pass`。
+  - 记法 5：跳过分支的两个陷阱（复审 C5 的根因就是作者在猜字段）：① 没有 normal_progress / seven_pairs_progress 这种字段——动作相对进展只有 `actions[].family_progress`（全家族显著性摘要）与 `actions[].family_progress_entries[]`（逐家族明细）；普通型/七对只有**向听**与**推进牌**四件套（shanten/useful 各两套），没有「进展」字段。② `actions[].useful_tiles` 的元素是映射 {code, remaining_estimate}，而 `actions[].followup_branches[].useful_tiles` 的元素是**牌码字符串**——两处形状不同。
+  - 字段组 schema_version（1 条）：
+  - schema_version：标量；结构版本字符串；固定 sitin-scoring-view/3；结构面不兼容变更才升版本
+  - 字段组 visible_state（27 条）：
+  - visible_state：映射；本人依法可见的牌局事实白名单（无他家手牌、无未来牌墙、无赛后结果）；子字段见下；不含 game_id 等运行关联键
+  - visible_state.seat：标量；本人座位，0—3
+  - visible_state.phase：标量；官方阶段字符串原样透传（如 draw / response_draw）
+  - visible_state.round_no：标量；当前单局序号
+  - visible_state.snapshot_seq：标量；官方快照事件序号（非负、单调）
+  - visible_state.dealer_seat：标量；庄家座位，0—3
+  - visible_state.turn_seat：标量；当前行动座位，0—3
+  - visible_state.responding_seats：元组[整数]；本响应窗口需要应答的座位（元素 0—3；可为空元组）
+  - visible_state.my_hand：元组[字符串]；本人手牌牌码，保留官方顺序（紧急「最右一张」依赖该顺序）
+  - visible_state.drawn_tile：字符串 | None；刚摸到的牌码；None=非摸牌窗口
+  - visible_state.discards：元组[元组[字符串]]；四家牌河牌码，外层固定按座位 0—3
+  - visible_state.discards[]：元组[字符串]；该座位牌河牌码（外层已按座位 0—3 展开；空元组=该座位尚无弃牌）
+  - visible_state.melds：元组[元组[映射]]；四家公开副露，外层固定按座位 0—3
+  - visible_state.melds[]：元组[映射]；该座位公开副露（空元组=该座位无副露）
+  - visible_state.melds[][].seat：标量；副露所有者座位，0—3
+  - visible_state.melds[][].kind：标量；副露种类字符串（chi/peng/gang 等，官方映射后）
+  - visible_state.melds[][].tiles：元组[字符串]；组成副露的牌码（含被吃/碰/杠的那张）
+  - visible_state.melds[][].from_seat：整数 | None；供牌者座位，0—3；None=暗杠等无供牌来源
+  - visible_state.hand_counts：元组[整数]；四家剩余手牌张数，固定按座位 0—3
+  - visible_state.last_discard：映射 | None；触发本窗口的最近一次弃牌事实；None=非响应窗口/无最近弃牌
+  - visible_state.last_discard.seat：标量；弃牌者座位，0—3
+  - visible_state.last_discard.tile：标量；弃牌牌码
+  - visible_state.last_discard.seq：标量；该弃牌的官方事件序号
+  - visible_state.remaining_tile_count：整数 | None；官方墙余量（张）；None=官方未提供或无法可靠推出（不得补零）
+  - visible_state.table_scores：元组[整数]；当前桌内积分，固定按座位 0—3（单位：积分点）；与 competition.table_scores 是同一事实的两个基准名；不得与本字段相加
+  - visible_state.chain_piao：整数 | None；当前本人动作链内已飘出的白板张数；None=依据不足（不等于 0）
+  - visible_state.gang_draw：布尔 | None；当前本人摸牌是否为杠补牌；None=缺少可靠来源（不等于 False）
+  - 字段组 actions（1 条）：
+  - actions：元组[映射]；按 action_key 严格升序的合法动作表（逐项字段见下）；本视图不重新判定合法性
+  - 字段组 actions[]（12 条）：
+  - actions[].action_key：标量；稳定动作键（格式见 conventions）
+  - actions[].action_type：标量；规则动作类型；枚举 discard/chi/peng/gang/hu/pass
+  - actions[].is_legal：标量；合法身份（来自 RuleAnalysis 的事实透传）
+  - actions[].family_progress：标量；本动作相对进展的**全家族**显著性摘要（大写五态）；枚举 ADVANCE/SAME/RETREAT/CLOSE/UNKNOWN；这是家族进展 summary，**不是**普通型/七对进展；空家族明细时固定 UNKNOWN（未分析，不是中性）
+  - actions[].fact_kind：字符串 | None；动作后牌效事实的类别；枚举 hand_progress/win/not_applicable/analysis_failed；None=未生产 facts；analysis_failed 且无其他事实 = 缺证（不产生可用读数）
+  - actions[].shanten_after：整数 | None；动作后综合向听；-1 表示该动作即成胡；None=未分析（不等于 0）
+  - actions[].replacement_draw_unknown：布尔 | None；杠上补牌未知标记；None=未携带该标记（≠ False）
+  - actions[].best_followup_discard：字符串 | None；吃/碰后的最佳后续弃牌牌码（旧语义保留）；None=不适用或未分析
+  - actions[].standard_shanten_after：整数 | None；动作后**普通型**向听（-1 = 已成胡）；None=未分析
+  - actions[].seven_pairs_shanten_after：整数 | None；动作后**七对**向听（-1 = 已成胡）；None=有副露或未分析
+  - actions[].pattern_progress_note：字符串 | None；分牌型计数的局部缺证据原因（人可读一句话）；None=无局部缺证据
+  - actions[].value_coverage：字符串 | None；分值分析覆盖状态（只描述一次未来摸牌直接胡的范围）；枚举 complete/partial/unavailable；None=未跑分值分析
+  - 字段组 actions[].followup_branches（14 条）：
+      * 本组公共 note（逐字，适用于组内多条路径）：**别名键只由分支载体携带的属性产生**：分支**对象**带 progress/family_progress/pattern_progress 之一 ⇒ 规范键 progress；带 route_state/route_status/evidence_state 之一 ⇒ 规范键 route_state。生产 FollowupBranchFacts 不带这些键；**字典分支原样透传、不重命名**（例如准入夹具写 route_status 就得到 route_status）；缺失即未知
+  - actions[].followup_branches：元组[映射] | None；吃/碰后**全部**已分析合法后续弃牌分支；None=未分析或不适用（None ≠ 已知空集合；已知空集合是空元组 ()）
+  - actions[].followup_branches[].followup_key：标量；分支键，形如 `<action_key>#<后续弃牌牌码>`
+  - actions[].followup_branches[].followup_discard：标量；该分支先弃的牌码（分支对象字段；字典分支可有可无）
+  - actions[].followup_branches[].combined_shanten：整数 | 布尔 | None；该分支等待态的综合向听（-1 表示已成胡）；None=两分牌型都未知（未分析）；布尔只可能出现在**字典分支**：生产 FollowupBranchFacts 在构造期就拒绝 bool；读到 True/False 一律按未知处理，不得当 1/0
+  - actions[].followup_branches[].standard_shanten_after：整数 | None；同一等待手牌的普通型向听（-1 = 已成胡）；None=未分析；对象分支在值为 None 时**整个键不出现**（不是 null）
+  - actions[].followup_branches[].seven_pairs_shanten_after：整数 | None；同一等待手牌的七对向听（-1 = 已成胡）；None=有副露或未分析；对象分支在值为 None 时整个键不出现
+  - actions[].followup_branches[].support_remaining：整数 | None；一步推进有效牌的未见枚数总和（去重后求和，非负整数；不是概率）；None=计数未知（不得写 0 冒充已知空缺）
+  - actions[].followup_branches[].useful_tiles：元组[字符串]；该分支等待态的一步推进有效牌**牌码**（注意：这里的元素是字符串，不是映射）；all-or-nothing：计数未知时为空元组且 support_remaining 为 None
+  - actions[].followup_branches[].progress：标量；分支对象/字典显式携带的进展事实（规范别名键）
+  - actions[].followup_branches[].route_state：标量；分支载体显式携带的路线证据状态（规范别名键；取值随载体而定）
+  - actions[].followup_branches[].fan：标量；分支对象/字典显式携带的番数（规范别名键）
+  - actions[].followup_branches[].draw_kind：标量；分支对象/字典显式携带的摸牌来源（normal/replacement）
+  - actions[].followup_branches[].hand_codes：元组[字符串]；分支对象/字典显式携带的机械转移后可见手牌牌码
+  - actions[].followup_branches[].*：透传（键名由数据决定）；分支对象除规范别名外的其余字段（原始值化）或字典分支的全部键（浅拷贝原样）；字典分支原样透传（可能带 null）；对象分支的 None 字段被省略。读到未知键按未知处理，不得猜语义
+  - ScoringView 只读访问器实际形状：
+  - hand_codes() → tuple[str]：本人手牌牌码，保留官方顺序
+  - drawn_tile_code() → str | None：刚摸到的牌码；非摸牌窗口为 None
+  - discards_codes() → tuple[tuple[str]]：四家牌河牌码，外层按座位 0—3
+  - hand_counts() → tuple[int]：四家剩余手牌张数，按座位 0—3
+  - table_scores() → tuple[int]：当前桌内积分，按座位 0—3
+  - wall_remaining() → int | None：官方墙余量；官方未提供时为 None（不得补零）
+  - phase() → str：官方阶段字符串原样透传
+  - seat_index() → int：本人座位 0—3
+  - expected_action_keys() → tuple[str]：输入动作表全部键，升序；完整性验证以此为基准
+  - candidate_view() → dict：受限候选可见的纯原始值映射（本附录 paths 的全部字段）
+  - 输出：status 只能是 SCORED/ABSTAIN
+  - SCORED：SCORED 必须对输入全部动作恰好各一项（无遗漏/重复/越界键），全部 score 为有限数（布尔冒充数整批失败）；entries 元素必须恰好含 action_key/score/trace 三键。
+  - ABSTAIN：ABSTAIN 时 entries 必须为空（省略、None、() 或 [] 都接受），且必须给出**非空** reason 字符串；ABSTAIN 不得携带评分条目。
+  - reason 的三种合法形态：SCORED 时 reason 可以**省略**（键不存在）；SCORED 时 reason 可以是 None；SCORED 时 reason 可以是**非空字符串**（用于说明降级/未知锚定）。
+  - reason 空字符串：SCORED 的 reason = ""（空字符串）**不接受**：run_scoring_skeleton 抛 ValueError（整个窗口失效，降级到已备紧急计划）。这就是复审 C5 指出的输出侧细则：不是「ABSTAIN/降级原因字符串」一句话能覆盖的。
+  - 未知 ≠ 0：缺证据动作不得用 0.0 或任何不受下界约束的有限数参与评分；未知必须锚定在全部已知评分之下，或整批 ABSTAIN。
+  - 整批失败：抛异常、非有限数、布尔冒充数、漏键/重复键/越界键、超工作量限额、缺必需字段任一项即整窗口失效。
+  - 合法/不合法输出范例（前两条合法；第三条必须整批失败）：
+    1) 合法输出①：SCORED 带非空 reason（说明缺证据动作的锚定方式）
+       {"entries": [{"action_key": "discard:1w", "score": -2, "trace": {"basis": "combined_shanten", "shanten_after": 1}}, {"action_key": "pass", "score": -3, "trace": {"basis": "unknown_below_known_floor", "unknown": true}}], "reason": "缺分支事实的动作按已知最低分之下锚定（未知≠0）", "status": "SCORED"}
+    2) 合法输出②：SCORED 省略 reason（等价写法：reason 键存在且为 None 也合法）
+       {"entries": [{"action_key": "discard:1w", "score": -2, "trace": {"basis": "combined_shanten", "shanten_after": 1}}, {"action_key": "pass", "score": -3, "trace": {"basis": "unknown_below_known_floor", "unknown": true}}], "status": "SCORED"}
+    3) 不合法输出（对照，必须整批失败）：SCORED 的 reason 是空字符串
+       {"entries": [{"action_key": "discard:1w", "score": -2, "trace": {}}, {"action_key": "pass", "score": -3, "trace": {}}], "reason": "", "status": "SCORED"}
+
+【受限子集静态规则（AV-SUB；60 条全部保留；违反即拒绝装载）】
+  - 与执行器静态检查同源；预检失败给出命中的编号，按编号回查本节；这里逐条只删了不引入新字面量的解释从句，原文见 review/llm-guided-heuristic-route-2026-09-15/contracts/action-value-restricted-rules-v1.json。
+  - AV-SUB-001：整数常量（含带负号的字面量）绝对值不得超过 2^63−1（9223372036854775807）。
+  - AV-SUB-002：浮点常量必须有限：不得写 1e400、inf、nan 之类的字面量。
+  - AV-SUB-003：常量只允许 None／字符串／布尔／整数／浮点数；复数、bytes、省略号一律拒绝。
+  - AV-SUB-004：模块级赋值右侧若带 +/- 号，只能作用于数值常量（如 X = -2.0）；不得写成 -"a"。
+  - AV-SUB-005：模块级不得出现 list／set／dict 字面量（跨调用可变状态）。
+  - AV-SUB-006：模块级赋值右侧只能是不可变常量（常量、数值一元、元组常量）。
+  - AV-SUB-007：标识符不得以下划线开头：函数名、参数名、局部变量名、模块常量名、推导式目标名、lambda 参数名都适用（_x 与 __x__ 都不行）。
+  - AV-SUB-008：赋值目标、for 目标、推导式目标只能是简单名字或名字元组；不得写 a[0] = ...、a.b = ...、a, *rest = ...。
+  - AV-SUB-009：只能调用 23 项内置白名单里的名字：len、min、max、abs、sum、sorted、reversed、enumerate、zip、range、round、int、float、bool、all、any、tuple、list、dict、set、frozenset、map、filter；不在表内的名字（含 isinstance、str、getattr、eval 等）一律拒绝。
+  - AV-SUB-010：不得写入或删除对象属性（view.x = 1、del view.x）：受限子集没有可变属性通道。
+  - AV-SUB-011：属性读取只允许白名单只读方法 .get／.items／.keys／.values／.count／.index／.append／.add；其它属性名（含 view.visible_state 这类字段名）一律拒绝——字段请用下标读，例如 view["visible_state"]。
+  - AV-SUB-012：调用实参不得用 * 解包（f(*xs)）。
+  - AV-SUB-013：调用关键字不得用 ** 解包（f(**d)）。
+  - AV-SUB-014：不得写入或删除下标（a[0] = 1、del a[0]）：输入与局部集合都不得经下标变更。
+  - AV-SUB-015：字典字面量不得用 ** 解包（{**d}）。
+  - AV-SUB-016：二元运算只允许 + - * / // % ** << >> & | ^；矩阵乘 @ 等其它运算符一律拒绝。
+  - AV-SUB-017：幂运算 ** 的指数必须是 0—4 的整数常量：2 ** 4 可以，2 ** n、2 ** 5、2 ** True 都不行。
+  - AV-SUB-018：一元运算只允许 -、+、not、~。
+  - AV-SUB-019：lambda 不得有默认参数、*args 或 **kwargs。
+  - AV-SUB-020：lambda 参数不得写注解。
+  - AV-SUB-021：不得使用生成器表达式（sum(x for x in xs)）。
+  - AV-SUB-022：表达式里不得用 * 解包（[*a]、(*a,)）。
+  - AV-SUB-023：不得使用海象表达式 :=。
+  - AV-SUB-024：不得使用 await／yield／yield from（异步与生成器不在受限子集内）。
+  - AV-SUB-025：只允许本清单列举的表达式形态，不得发明其它表达式。
+  - AV-SUB-026：不得使用异步推导式（[x async for x in y]）。
+  - AV-SUB-027：不得定义 async 函数。
+  - AV-SUB-028：增量赋值 += 等的左值只能是简单名字；不得写 a[0] += 1、a.b += 1。
+  - AV-SUB-029：增量赋值只允许 + - * / // % ** << >> & | ^；@= 等一律拒绝。
+  - AV-SUB-030：不得使用 while 循环；只能对有长度上限的输入或局部集合做 for 迭代。
+  - AV-SUB-031：不得 import 任何模块（math 与第三方库默认关闭）。
+  - AV-SUB-032：不得使用 global／nonlocal。
+  - AV-SUB-033：不得使用 try／except／finally（bare except 与 except BaseException 同样拒绝）：工作量耗尽异常必须整批上抛，候选不得捕获后继续执行。
+  - AV-SUB-034：不得使用 with 语句。
+  - AV-SUB-035：候选不得主动 raise 异常；无法评分时返回 ABSTAIN 并给出明确 reason。
+  - AV-SUB-036：不得使用 assert。
+  - AV-SUB-037：不得使用 del。
+  - AV-SUB-038：不得写带注解的赋值（x: int = 1）：注解在装载期不插桩求值。
+  - AV-SUB-039：不得定义类。
+  - AV-SUB-040：只允许受限子集列举的语句（赋值、for、if、return、表达式语句、函数定义等）；match 等其它语句一律拒绝。
+  - AV-SUB-041：函数不得使用 *args 或 **kwargs。
+  - AV-SUB-042：函数不得有默认参数（默认值在装载期不插桩求值）。
+  - AV-SUB-043：函数参数不得写注解。
+  - AV-SUB-044：函数不得写返回注解（合同签名里的 -> ScoreBatch 是合同写法，候选代码不要照抄）。
+  - AV-SUB-045：函数不得使用装饰器。
+  - AV-SUB-046：必须导出 score_actions(view)：恰好一个名为 view 的位置参数，不得改名、不得增删参数。
+  - AV-SUB-047：score_actions 不得有关键字专属参数（局部辅助函数可以有）。
+  - AV-SUB-048：不得递归（含自递归与互递归）：辅助函数调用图必须无环。
+  - AV-SUB-049：候选源码必须是合法 Python（语法错误即拒绝装载）。
+  - AV-SUB-050：候选必须是模块级源码。
+  - AV-SUB-051：不得重复定义同名顶层函数。
+  - AV-SUB-052：模块级赋值目标必须是简单名字；不得写 X, Y = 1, 2 这类解包。
+  - AV-SUB-053：模块常量不得重复绑定，也不得与已定义函数重名。
+  - AV-SUB-054：模块级只允许 docstring、函数定义与常量赋值；if／for／while／import／class／async def／表达式语句等一律拒绝。
+  - AV-SUB-055：模块里必须存在顶层函数 score_actions。
+  - AV-SUB-056：不得用 ** 解包构造字典字面量。
+  - AV-SUB-057：候选源码必须是字符串（装载接口冗余复核）。
+  - AV-SUB-058：候选源码 UTF-8 字节数不得超过 65536。
+  - AV-SUB-059：模块顶层必须存在可调用的 score_actions 函数（装载接口冗余复核）。
+  - AV-SUB-060：模块级绑定只能是函数或不可变常量（str／int／float／bool／None／元组／冻结集合）。
+
+【输出合同（判分器逐条核对）】
+  - status 只能是 SCORED/ABSTAIN
+  - SCORED 时对输入全部动作恰好一项；ABSTAIN 时为空；不能部分成功后用 0 补齐
+  - 条目字段：{"action_key": "动作键", "score": "有限浮点评分点；不跨候选比较绝对量级，不当实际积分", "trace": "有界结构化解释：分支选择、所用事实键、代理/分项、组合方式；非线性项不强求相加等于总分"}
+  - reason：ABSTAIN/降级原因字符串；不得用特殊数值表示未知
+  - 整批失败条件：抛出异常；非有限数（NaN/Inf）；布尔冒充数；遗漏/重复/越界动作键；超工作量限额；缺必需字段（候选清单声明）
+  - 失败处置：整窗口失效，降级到已备合法紧急计划；不悄悄拼 V2 分数；未知不得自动排在已知负分之前
+
+【预算说明】
+  - 预算以最新授权与台账为准；失败与重试同样计费。
+
+【材料一：候选源码（评审夹具·带已知缺陷，派生自 batch7 真实种子 efficiency_seed.py）】
+
+```python
+"""[夹具·带已知缺陷] 派生自 batch7/seeds/efficiency_seed.py。
+
+已知缺陷：score_actions 里读取合同外字段——visible_state.wall_true_remaining
+（墙内真值，官方未提供）与 visible_state.opponent_hands（他家手牌，越权）。
+这些键在受限候选视图里不存在：运行期抛 KeyError，整批失效；即使存在也
+违反信息权限（ScoringView 白名单不含墙内真值与他家手牌）。
+"""
+
+SHANTEN_WEIGHT = 3.0
+SUPPORT_WEIGHT = 0.5
+UNKNOWN_FIELD = "combined_shanten"
+
+
+def branch_number(branch, key):
+    value = branch.get(key)
+    if value is None:
+        return None
+    if value is True or value is False:
+        return None
+    if value < 0:
+        return None
+    return value
+
+
+def best_branch(branches):
+    best_shanten = None
+    best_support = 0.0
+    best_key = None
+    for branch in branches:
+        shanten = branch_number(branch, "combined_shanten")
+        if shanten is None:
+            continue
+        support = branch_number(branch, "support_remaining")
+        if support is None:
+            support = 0.0
+        if best_shanten is None or shanten < best_shanten:
+            best_shanten = shanten
+            best_support = support
+            best_key = branch.get("followup_key")
+    if best_shanten is None:
+        return None
+    return (best_shanten, best_support, best_key)
+
+
+def known_entries(actions):
+    entries = []
+    for action in actions:
+        branches = action.get("followup_branches")
+        if branches is None:
+            continue
+        best = best_branch(branches)
+        if best is None:
+            continue
+        shanten = best[0]
+        support = best[1]
+        key = best[2]
+        score = 0.0 - SHANTEN_WEIGHT * shanten + SUPPORT_WEIGHT * support
+        entries.append({"action_key": action["action_key"], "score": score,
+                        "trace": {"basis": "efficiency", "combined_shanten": shanten,
+                                  "support_remaining": support}})
+    return entries
+
+
+def has_entry(entries, key):
+    for entry in entries:
+        if entry["action_key"] == key:
+            return True
+    return False
+
+
+def min_score(entries):
+    lowest = None
+    for entry in entries:
+        value = entry["score"]
+        if lowest is None or value < lowest:
+            lowest = value
+    return lowest
+
+
+def score_actions(view):
+    visible = view["visible_state"]
+    wall_true = visible["wall_true_remaining"]      # 缺陷：合同外字段（墙内真值）
+    threat = len(visible["opponent_hands"])          # 缺陷：越权字段（他家手牌）
+    actions = view["actions"]
+    entries = known_entries(actions)
+    if len(entries) == 0:
+        results = []
+        for action in actions:
+            trace = {"basis": "unknown_field_basis", "field": UNKNOWN_FIELD,
+                     "wall_true": wall_true, "threat": threat}
+            results.append({"action_key": action["action_key"], "score": 0.0,
+                            "trace": trace})
+        return {"status": "SCORED", "entries": results, "reason": None}
+    anchor = min_score(entries) - 1.0
+    for action in actions:
+        key = action["action_key"]
+        if has_entry(entries, key):
+            continue
+        trace = {"basis": "unknown_field_basis", "field": UNKNOWN_FIELD,
+                 "anchor": anchor, "wall_true": wall_true, "threat": threat}
+        entries.append({"action_key": key, "score": anchor, "trace": trace})
+    return {"status": "SCORED", "entries": entries, "reason": None}
+
+```
+
+【材料二：合同相关条款（逐字）】
+- visible_state：白名单只读观察（自己牌、公开副露与牌河、当前窗口、庄闲、公开规则状态、墙余量）；不含 WorldState、研究标签、种子、结果、token、评估分组身份；不直接给完整 DecisionRequest
+- 抛出异常
+
+【缺陷定位提示】score_actions 读取 visible_state.wall_true_remaining（墙内真值，官方未提供）与 visible_state.opponent_hands（他家手牌，越权）；这些键不存在，运行期抛 KeyError 整批失效，即使存在也违反信息权限。
+
+【任务】修复该缺陷：删除全部合同外/越权字段读取，只使用合同允许的可见事实；墙余量只能用可空的 wall_remaining（None=未知，不得补 0）。不得改变函数合同与受限子集合规性。
+
+【输出格式（必须严格遵守）】只输出**一个** ```python 围栏，内含修复后的完整候选源码（保留模块 docstring，函数名与签名不得改动）；围栏之前可以用几句话说明改了什么。不要输出多个代码块。
+
+（本卡按本次机制相关性过滤；附录 sha256=128f62629162，规则目录 sha256=56091e8305e6）

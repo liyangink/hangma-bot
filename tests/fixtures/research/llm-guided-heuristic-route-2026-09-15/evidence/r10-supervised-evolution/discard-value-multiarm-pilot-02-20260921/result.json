@@ -1,0 +1,59 @@
+{
+  "schema": "r11-dv1-multiarm-pilot-result/1",
+  "status": "PASS_DV1_1_FOR_SCALED_MULTIARM_TEACHER",
+  "manifest_sha256": "3bf1499d842d24642c5e1e1cf58097516218d8198ef8c43c1044cc2064ad27ee",
+  "dataset_sha256": "233f8d8b9d8676708050135481153a8f414bbcd8b767b0c353da7b007cf62080",
+  "shards": [
+    {
+      "panel_seed": 2026092330,
+      "mix": "H",
+      "attempts": 4,
+      "valid_snapshots": 4,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092330,
+      "mix": "M",
+      "attempts": 4,
+      "valid_snapshots": 4,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092331,
+      "mix": "H",
+      "attempts": 4,
+      "valid_snapshots": 4,
+      "complete": true,
+      "mechanical_failure": null
+    },
+    {
+      "panel_seed": 2026092331,
+      "mix": "M",
+      "attempts": 4,
+      "valid_snapshots": 4,
+      "complete": true,
+      "mechanical_failure": null
+    }
+  ],
+  "summary": {
+    "snapshots": 16,
+    "action_counts": {
+      "min": 10,
+      "max": 13,
+      "mean": 11.9375
+    },
+    "paired_action_rollouts": 764,
+    "full_or_partial_tables": 1528,
+    "positive_alternative_snapshots": 14,
+    "ranking_stable_snapshots": 9,
+    "ranking_unstable_snapshots": 7,
+    "all_mechanical": true,
+    "complete": true,
+    "strength_claim": false
+  },
+  "next": "按试点方差冻结规模化轨迹数，采集至少128个全新快照并按快照分组成对排序",
+  "confirmation_eligible": false,
+  "release_eligible": false
+}

@@ -1,0 +1,2690 @@
+{
+  "config": {
+    "focal_policy": {
+      "baseline": "weighted_heuristic_v2",
+      "candidate": "ActionValuePolicy(av-candidate)"
+    },
+    "min_roots": 2,
+    "opponent_policies": [
+      "weighted_heuristic_v2",
+      "weighted_heuristic_v2_white_guard",
+      "weighted_heuristic_v1"
+    ],
+    "roots": 2,
+    "seats_per_root": 4,
+    "step_limit": 100000,
+    "tables_per_group": 2,
+    "value_limits": {
+      "max_expansions": 2048,
+      "max_routes_per_candidate": 128
+    }
+  },
+  "cost": {
+    "cpu_sec": 67.026,
+    "note": "tables_full 按每臂每座位每阶段 2 桌计；无 LLM 调用",
+    "tables_full_executed": 32,
+    "tables_full_planned": 32,
+    "tokens_input": 0,
+    "tokens_output": 0,
+    "wall_sec": 72.244
+  },
+  "generator": "natural-opening-panel-v2",
+  "identity": {
+    "av_contract_sha256": "3c0b4d3a2fdd1f438e2e5d295e4269f578485032aeddad0eb558fdcce981d4a9",
+    "baseline_id": "v2-baseline-frozen",
+    "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+    "candidate_source_sha256": "bb15cfcab706f472afd0f6a7f1352222758b98ef8106bb29a093383ba340029e",
+    "contract_id": "group-dev-v1",
+    "contract_sha256": "98c1e0a387550799b0985695a3846aeb1862ad85a4cfb71f22dbb433e63d7f6e",
+    "opponent_mix": "M",
+    "panel_epoch": "natural-opening-panel-v2@M",
+    "panel_seed": 2026091911,
+    "stage_projection": "per_table_completed_account_v1"
+  },
+  "red_lines": {
+    "candidate_failure_policy": "T16：候选臂任一座位失败 ⇒ 整根 invalid，费用照记",
+    "non_focal_policies_identical_across_arms": true,
+    "same_seed_both_arms": "table_id/seed 不含臂标识（同根同牌山）",
+    "stage_account_injection": "每桌开始前按「参赛者身份 → 物理座位」注入已完成桌阶段账（不含当前桌；口径 per_table_completed_account_v1）",
+    "world_state_access": "仅经 drive_match 公开 PlayerObservation"
+  },
+  "samples": [
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 5258.98,
+          "error": null,
+          "focal_stage_score": 6,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": 6,
+            "opp-1": 41,
+            "opp-2": -9,
+            "opp-3": -38
+          },
+          "status": "complete",
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+          "elapsed_ms": 4514.928,
+          "error": null,
+          "focal_stage_score": -21,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -21,
+            "opp-1": -33,
+            "opp-2": -2,
+            "opp-3": 56
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 9773.908
+      },
+      "focal_anchor_seat": 0,
+      "invalid_reasons": [],
+      "opponent_mix": "M",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 5258.98,
+          "error": null,
+          "focal_stage_score": 6,
+          "stage_place_points_by_participant": {
+            "focal": 2,
+            "opp-1": 4,
+            "opp-2": 0,
+            "opp-3": -6
+          },
+          "stage_totals_by_participant": {
+            "focal": 6,
+            "opp-1": 41,
+            "opp-2": -9,
+            "opp-3": -38
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                18,
+                0,
+                -7,
+                -11
+              ],
+              "seed": 136134716415782,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-1",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r01-s0-t1",
+              "wall_ms": 2328.187
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -27,
+                -12,
+                41,
+                -2
+              ],
+              "seed": 267507554206526,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "focal",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  -3,
+                  3,
+                  1,
+                  -1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -11,
+                  18,
+                  0,
+                  -7
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r01-s0-t2",
+              "wall_ms": 2925.862
+            }
+          ],
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_interval": {
+            "a": 2,
+            "b": 2,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 4514.928,
+          "error": null,
+          "focal_stage_score": -21,
+          "stage_place_points_by_participant": {
+            "focal": 0,
+            "opp-1": -2,
+            "opp-2": -2,
+            "opp-3": 4
+          },
+          "stage_totals_by_participant": {
+            "focal": -21,
+            "opp-1": -33,
+            "opp-2": -2,
+            "opp-3": 56
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                10,
+                -3,
+                -11,
+                4
+              ],
+              "seed": 136134716415782,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-1",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r01-s0-t1",
+              "wall_ms": 1999.148
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                52,
+                -31,
+                -30,
+                9
+              ],
+              "seed": 267507554206526,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "focal",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  1,
+                  3,
+                  -1,
+                  -3
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  4,
+                  10,
+                  -3,
+                  -11
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r01-s0-t2",
+              "wall_ms": 2510.565
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 3,
+            "b": 3,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "a494430542f6f9a0eae1404e1412700dce3d8fa1ebe6cc6d7fdd839dc5bec92e",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 20324803319086,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "focal",
+          "opp-1",
+          "opp-2",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "focal",
+          "opp-1",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-M-2026091911-root01",
+      "table_ids": [
+        "np-M-2026091911-r01-s0-t1",
+        "np-M-2026091911-r01-s0-t2"
+      ],
+      "table_seeds": [
+        136134716415782,
+        267507554206526
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 4206.569,
+          "error": null,
+          "focal_stage_score": 26,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": 26,
+            "opp-0": 39,
+            "opp-2": 0,
+            "opp-3": -65
+          },
+          "status": "complete",
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+          "elapsed_ms": 4881.02,
+          "error": null,
+          "focal_stage_score": -38,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -38,
+            "opp-0": 102,
+            "opp-2": -34,
+            "opp-3": -30
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 9087.589
+      },
+      "focal_anchor_seat": 1,
+      "invalid_reasons": [],
+      "opponent_mix": "M",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 4206.569,
+          "error": null,
+          "focal_stage_score": 26,
+          "stage_place_points_by_participant": {
+            "focal": 4,
+            "opp-0": 2,
+            "opp-2": 0,
+            "opp-3": -6
+          },
+          "stage_totals_by_participant": {
+            "focal": 26,
+            "opp-0": 39,
+            "opp-2": 0,
+            "opp-3": -65
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                44,
+                6,
+                -5,
+                -45
+              ],
+              "seed": 227910962429408,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "focal",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r01-s1-t1",
+              "wall_ms": 2041.183
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -20,
+                -5,
+                20,
+                5
+              ],
+              "seed": 80932198744213,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "focal",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  -3,
+                  3,
+                  1,
+                  -1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -45,
+                  44,
+                  6,
+                  -5
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r01-s1-t2",
+              "wall_ms": 2159.961
+            }
+          ],
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_interval": {
+            "a": 2,
+            "b": 2,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 4881.02,
+          "error": null,
+          "focal_stage_score": -38,
+          "stage_place_points_by_participant": {
+            "focal": -2,
+            "opp-0": 6,
+            "opp-2": -2,
+            "opp-3": -2
+          },
+          "stage_totals_by_participant": {
+            "focal": -38,
+            "opp-0": 102,
+            "opp-2": -34,
+            "opp-3": -30
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                84,
+                -34,
+                -45,
+                -5
+              ],
+              "seed": 227910962429408,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "focal",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r01-s1-t1",
+              "wall_ms": 2273.309
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -25,
+                18,
+                -4,
+                11
+              ],
+              "seed": 80932198744213,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "focal",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  1,
+                  3,
+                  -1,
+                  -3
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -5,
+                  84,
+                  -34,
+                  -45
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r01-s1-t2",
+              "wall_ms": 2602.153
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "a494430542f6f9a0eae1404e1412700dce3d8fa1ebe6cc6d7fdd839dc5bec92e",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 20324803319086,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "focal",
+          "opp-2",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "opp-0",
+          "focal",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-M-2026091911-root01",
+      "table_ids": [
+        "np-M-2026091911-r01-s1-t1",
+        "np-M-2026091911-r01-s1-t2"
+      ],
+      "table_seeds": [
+        227910962429408,
+        80932198744213
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 3945.616,
+          "error": null,
+          "focal_stage_score": -10,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": -10,
+            "opp-0": 36,
+            "opp-1": 29,
+            "opp-3": -55
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+          "elapsed_ms": 4664.09,
+          "error": null,
+          "focal_stage_score": -54,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -54,
+            "opp-0": 27,
+            "opp-1": 59,
+            "opp-3": -32
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 8609.706
+      },
+      "focal_anchor_seat": 2,
+      "invalid_reasons": [],
+      "opponent_mix": "M",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 3945.616,
+          "error": null,
+          "focal_stage_score": -10,
+          "stage_place_points_by_participant": {
+            "focal": 2,
+            "opp-0": 0,
+            "opp-1": 2,
+            "opp-3": -4
+          },
+          "stage_totals_by_participant": {
+            "focal": -10,
+            "opp-0": 36,
+            "opp-1": 29,
+            "opp-3": -55
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -15,
+                10,
+                14,
+                -9
+              ],
+              "seed": 55977515600696,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "focal",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r01-s2-t1",
+              "wall_ms": 1871.851
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -46,
+                51,
+                19,
+                -24
+              ],
+              "seed": 50479849177544,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "opp-1",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  -1,
+                  -3,
+                  1,
+                  3
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -9,
+                  -15,
+                  10,
+                  14
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r01-s2-t2",
+              "wall_ms": 2069.031
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 3,
+            "b": 3,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 4664.09,
+          "error": null,
+          "focal_stage_score": -54,
+          "stage_place_points_by_participant": {
+            "focal": -2,
+            "opp-0": 0,
+            "opp-1": 4,
+            "opp-3": -2
+          },
+          "stage_totals_by_participant": {
+            "focal": -54,
+            "opp-0": 27,
+            "opp-1": 59,
+            "opp-3": -32
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -37,
+                49,
+                -24,
+                12
+              ],
+              "seed": 55977515600696,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "focal",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r01-s2-t1",
+              "wall_ms": 2335.428
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -44,
+                64,
+                10,
+                -30
+              ],
+              "seed": 50479849177544,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "opp-1",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  1,
+                  -3,
+                  3,
+                  -1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  12,
+                  -37,
+                  49,
+                  -24
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r01-s2-t2",
+              "wall_ms": 2323.922
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "a494430542f6f9a0eae1404e1412700dce3d8fa1ebe6cc6d7fdd839dc5bec92e",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 20324803319086,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "opp-1",
+          "focal",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "opp-0",
+          "opp-1",
+          "focal"
+        ]
+      ],
+      "source_root_id": "np-M-2026091911-root01",
+      "table_ids": [
+        "np-M-2026091911-r01-s2-t1",
+        "np-M-2026091911-r01-s2-t2"
+      ],
+      "table_seeds": [
+        55977515600696,
+        50479849177544
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 4100.777,
+          "error": null,
+          "focal_stage_score": 29,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": 29,
+            "opp-0": -24,
+            "opp-1": 12,
+            "opp-2": -17
+          },
+          "status": "complete",
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+          "elapsed_ms": 4723.578,
+          "error": null,
+          "focal_stage_score": -10,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -10,
+            "opp-0": -31,
+            "opp-1": -49,
+            "opp-2": 90
+          },
+          "status": "complete",
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 8824.355
+      },
+      "focal_anchor_seat": 3,
+      "invalid_reasons": [],
+      "opponent_mix": "M",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 4100.777,
+          "error": null,
+          "focal_stage_score": 29,
+          "stage_place_points_by_participant": {
+            "focal": 1,
+            "opp-0": -2,
+            "opp-1": 4,
+            "opp-2": -3
+          },
+          "stage_totals_by_participant": {
+            "focal": 29,
+            "opp-0": -24,
+            "opp-1": 12,
+            "opp-2": -17
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                3,
+                7,
+                -5,
+                -5
+              ],
+              "seed": 108773543994534,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "opp-2",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r01-s3-t1",
+              "wall_ms": 2604.46
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                34,
+                -27,
+                5,
+                -12
+              ],
+              "seed": 274843241703683,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-0",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  -2,
+                  1,
+                  3,
+                  -2
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -5,
+                  3,
+                  7,
+                  -5
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r01-s3-t2",
+              "wall_ms": 1491.419
+            }
+          ],
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_interval": {
+            "a": 1,
+            "b": 1,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 4723.578,
+          "error": null,
+          "focal_stage_score": -10,
+          "stage_place_points_by_participant": {
+            "focal": -2,
+            "opp-0": 0,
+            "opp-1": -4,
+            "opp-2": 6
+          },
+          "stage_totals_by_participant": {
+            "focal": -10,
+            "opp-0": -31,
+            "opp-1": -49,
+            "opp-2": 90
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                3,
+                -8,
+                38,
+                -33
+              ],
+              "seed": 108773543994534,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "opp-2",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r01-s3-t1",
+              "wall_ms": 2348.694
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                23,
+                -34,
+                -41,
+                52
+              ],
+              "seed": 274843241703683,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-0",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  -3,
+                  1,
+                  -1,
+                  3
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -33,
+                  3,
+                  -8,
+                  38
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r01-s3-t2",
+              "wall_ms": 2370.019
+            }
+          ],
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_interval": {
+            "a": 2,
+            "b": 2,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "a494430542f6f9a0eae1404e1412700dce3d8fa1ebe6cc6d7fdd839dc5bec92e",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 1,
+      "root_seed": 20324803319086,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "opp-1",
+          "opp-2",
+          "focal"
+        ],
+        [
+          "focal",
+          "opp-0",
+          "opp-1",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-M-2026091911-root01",
+      "table_ids": [
+        "np-M-2026091911-r01-s3-t1",
+        "np-M-2026091911-r01-s3-t2"
+      ],
+      "table_seeds": [
+        108773543994534,
+        274843241703683
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 4991.514,
+          "error": null,
+          "focal_stage_score": 84,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": 84,
+            "opp-1": -70,
+            "opp-2": -34,
+            "opp-3": 20
+          },
+          "status": "complete",
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+          "elapsed_ms": 4632.703,
+          "error": null,
+          "focal_stage_score": -63,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -63,
+            "opp-1": -56,
+            "opp-2": 63,
+            "opp-3": 56
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 9624.217
+      },
+      "focal_anchor_seat": 0,
+      "invalid_reasons": [],
+      "opponent_mix": "M",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 4991.514,
+          "error": null,
+          "focal_stage_score": 84,
+          "stage_place_points_by_participant": {
+            "focal": 2,
+            "opp-1": -4,
+            "opp-2": -2,
+            "opp-3": 4
+          },
+          "stage_totals_by_participant": {
+            "focal": 84,
+            "opp-1": -70,
+            "opp-2": -34,
+            "opp-3": 20
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                82,
+                -32,
+                -43,
+                -7
+              ],
+              "seed": 177803573483050,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-1",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r02-s0-t1",
+              "wall_ms": 2515.921
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                27,
+                2,
+                -38,
+                9
+              ],
+              "seed": 118749795703725,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "focal",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  1,
+                  3,
+                  -1,
+                  -3
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -7,
+                  82,
+                  -32,
+                  -43
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r02-s0-t2",
+              "wall_ms": 2470.898
+            }
+          ],
+          "u": 1.0,
+          "u_high": 1.0,
+          "u_interval": {
+            "a": 1,
+            "b": 1,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 1.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 4632.703,
+          "error": null,
+          "focal_stage_score": -63,
+          "stage_place_points_by_participant": {
+            "focal": -4,
+            "opp-1": -4,
+            "opp-2": 4,
+            "opp-3": 4
+          },
+          "stage_totals_by_participant": {
+            "focal": -63,
+            "opp-1": -56,
+            "opp-2": 63,
+            "opp-3": 56
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -44,
+                -26,
+                49,
+                21
+              ],
+              "seed": 177803573483050,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-1",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r02-s0-t1",
+              "wall_ms": 2175.278
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                35,
+                -19,
+                -30,
+                14
+              ],
+              "seed": 118749795703725,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "focal",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  1,
+                  -3,
+                  -1,
+                  3
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  21,
+                  -44,
+                  -26,
+                  49
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r02-s0-t2",
+              "wall_ms": 2452.078
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "4fddbb34a307361094d94de949cd9367c3baabad3a1693b4f05c02126cc56e8c",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 2,
+      "root_seed": 126735604130175,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "focal",
+          "opp-1",
+          "opp-2",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "focal",
+          "opp-1",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-M-2026091911-root02",
+      "table_ids": [
+        "np-M-2026091911-r02-s0-t1",
+        "np-M-2026091911-r02-s0-t2"
+      ],
+      "table_seeds": [
+        177803573483050,
+        118749795703725
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 4085.364,
+          "error": null,
+          "focal_stage_score": 7,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": 7,
+            "opp-0": 11,
+            "opp-2": -25,
+            "opp-3": 7
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+          "elapsed_ms": 3771.21,
+          "error": null,
+          "focal_stage_score": -48,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -48,
+            "opp-0": 54,
+            "opp-2": 56,
+            "opp-3": -62
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 7856.5740000000005
+      },
+      "focal_anchor_seat": 1,
+      "invalid_reasons": [],
+      "opponent_mix": "M",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 4085.364,
+          "error": null,
+          "focal_stage_score": 7,
+          "stage_place_points_by_participant": {
+            "focal": 0,
+            "opp-0": 0,
+            "opp-2": -2,
+            "opp-3": 2
+          },
+          "stage_totals_by_participant": {
+            "focal": 7,
+            "opp-0": 11,
+            "opp-2": -25,
+            "opp-3": 7
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -14,
+                -11,
+                -3,
+                28
+              ],
+              "seed": 143621155179391,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "focal",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r02-s1-t1",
+              "wall_ms": 2085.121
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -21,
+                25,
+                18,
+                -22
+              ],
+              "seed": 10015040201547,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "focal",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  3,
+                  -3,
+                  -1,
+                  1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  28,
+                  -14,
+                  -11,
+                  -3
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r02-s1-t2",
+              "wall_ms": 1995.728
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 3,
+            "b": 3,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 3771.21,
+          "error": null,
+          "focal_stage_score": -48,
+          "stage_place_points_by_participant": {
+            "focal": -2,
+            "opp-0": 4,
+            "opp-2": 4,
+            "opp-3": -6
+          },
+          "stage_totals_by_participant": {
+            "focal": -48,
+            "opp-0": 54,
+            "opp-2": 56,
+            "opp-3": -62
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                22,
+                -18,
+                18,
+                -22
+              ],
+              "seed": 143621155179391,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "focal",
+                  "opp-2",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r02-s1-t1",
+              "wall_ms": 2264.711
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -40,
+                32,
+                -30,
+                38
+              ],
+              "seed": 10015040201547,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "focal",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  -3,
+                  3,
+                  -1,
+                  1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -22,
+                  22,
+                  -18,
+                  18
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r02-s1-t2",
+              "wall_ms": 1500.491
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 3,
+            "b": 3,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "4fddbb34a307361094d94de949cd9367c3baabad3a1693b4f05c02126cc56e8c",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 2,
+      "root_seed": 126735604130175,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "focal",
+          "opp-2",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "opp-0",
+          "focal",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-M-2026091911-root02",
+      "table_ids": [
+        "np-M-2026091911-r02-s1-t1",
+        "np-M-2026091911-r02-s1-t2"
+      ],
+      "table_seeds": [
+        143621155179391,
+        10015040201547
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 4965.327,
+          "error": null,
+          "focal_stage_score": -36,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": -36,
+            "opp-0": -25,
+            "opp-1": 61,
+            "opp-3": 0
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+          "elapsed_ms": 5457.163,
+          "error": null,
+          "focal_stage_score": -54,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -54,
+            "opp-0": 40,
+            "opp-1": -29,
+            "opp-3": 43
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 10422.49
+      },
+      "focal_anchor_seat": 2,
+      "invalid_reasons": [],
+      "opponent_mix": "M",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 4965.327,
+          "error": null,
+          "focal_stage_score": -36,
+          "stage_place_points_by_participant": {
+            "focal": -4,
+            "opp-0": 0,
+            "opp-1": 0,
+            "opp-3": 4
+          },
+          "stage_totals_by_participant": {
+            "focal": -36,
+            "opp-0": -25,
+            "opp-1": 61,
+            "opp-3": 0
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -4,
+                -8,
+                -5,
+                17
+              ],
+              "seed": 77026408139528,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "focal",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r02-s2-t1",
+              "wall_ms": 2201.503
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -17,
+                -21,
+                69,
+                -31
+              ],
+              "seed": 255800029176546,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "opp-1",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  3,
+                  1,
+                  -3,
+                  -1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  17,
+                  -4,
+                  -8,
+                  -5
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r02-s2-t2",
+              "wall_ms": 2758.982
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 5457.163,
+          "error": null,
+          "focal_stage_score": -54,
+          "stage_place_points_by_participant": {
+            "focal": -6,
+            "opp-0": 4,
+            "opp-1": 0,
+            "opp-3": 2
+          },
+          "stage_totals_by_participant": {
+            "focal": -54,
+            "opp-0": 40,
+            "opp-1": -29,
+            "opp-3": 43
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                56,
+                -9,
+                -27,
+                -20
+              ],
+              "seed": 77026408139528,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "focal",
+                  "opp-3"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r02-s2-t1",
+              "wall_ms": 3132.335
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                63,
+                -16,
+                -20,
+                -27
+              ],
+              "seed": 255800029176546,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-3",
+                  "opp-0",
+                  "opp-1",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  -1,
+                  3,
+                  1,
+                  -3
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -20,
+                  56,
+                  -9,
+                  -27
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r02-s2-t2",
+              "wall_ms": 2319.351
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "4fddbb34a307361094d94de949cd9367c3baabad3a1693b4f05c02126cc56e8c",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 2,
+      "root_seed": 126735604130175,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "opp-1",
+          "focal",
+          "opp-3"
+        ],
+        [
+          "opp-3",
+          "opp-0",
+          "opp-1",
+          "focal"
+        ]
+      ],
+      "source_root_id": "np-M-2026091911-root02",
+      "table_ids": [
+        "np-M-2026091911-r02-s2-t1",
+        "np-M-2026091911-r02-s2-t2"
+      ],
+      "table_seeds": [
+        77026408139528,
+        255800029176546
+      ]
+    },
+    {
+      "arms": {
+        "baseline": {
+          "candidate_id": "v2-baseline-frozen",
+          "elapsed_ms": 4100.171,
+          "error": null,
+          "focal_stage_score": -22,
+          "policy_id": "weighted_heuristic_v2",
+          "stage_totals_by_participant": {
+            "focal": -22,
+            "opp-0": -76,
+            "opp-1": 120,
+            "opp-2": -22
+          },
+          "status": "complete",
+          "u": null,
+          "u_high": 1.0,
+          "u_low": 0.0,
+          "unresolved": true,
+          "usable": true
+        },
+        "candidate": {
+          "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+          "elapsed_ms": 3944.34,
+          "error": null,
+          "focal_stage_score": -75,
+          "policy_id": "action_value",
+          "stage_totals_by_participant": {
+            "focal": -75,
+            "opp-0": 4,
+            "opp-1": 103,
+            "opp-2": -32
+          },
+          "status": "complete",
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "candidate_id": "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03",
+      "completeness": "complete",
+      "cost": {
+        "elapsed_ms": 8044.511
+      },
+      "focal_anchor_seat": 3,
+      "invalid_reasons": [],
+      "opponent_mix": "M",
+      "raw_arms": {
+        "baseline": {
+          "arm": "baseline",
+          "elapsed_ms": 4100.171,
+          "error": null,
+          "focal_stage_score": -22,
+          "stage_place_points_by_participant": {
+            "focal": 0,
+            "opp-0": -6,
+            "opp-1": 6,
+            "opp-2": 0
+          },
+          "stage_totals_by_participant": {
+            "focal": -22,
+            "opp-0": -76,
+            "opp-1": 120,
+            "opp-2": -22
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -43,
+                96,
+                -32,
+                -21
+              ],
+              "seed": 53207028198035,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "opp-2",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r02-s3-t1",
+              "wall_ms": 2055.507
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -1,
+                -33,
+                24,
+                10
+              ],
+              "seed": 42540881963627,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-0",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  1,
+                  -3,
+                  3,
+                  -1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -21,
+                  -43,
+                  96,
+                  -32
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r02-s3-t2",
+              "wall_ms": 2039.526
+            }
+          ],
+          "u": null,
+          "u_high": 1.0,
+          "u_interval": {
+            "a": 2,
+            "b": 3,
+            "tie_block": [
+              "focal",
+              "opp-2"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": true,
+          "usable": true
+        },
+        "candidate": {
+          "arm": "candidate",
+          "elapsed_ms": 3944.34,
+          "error": null,
+          "focal_stage_score": -75,
+          "stage_place_points_by_participant": {
+            "focal": -5,
+            "opp-0": 4,
+            "opp-1": 1,
+            "opp-2": 0
+          },
+          "stage_totals_by_participant": {
+            "focal": -75,
+            "opp-0": 4,
+            "opp-1": 103,
+            "opp-2": -32
+          },
+          "status": "complete",
+          "tables": [
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                44,
+                -28,
+                12,
+                -28
+              ],
+              "seed": 53207028198035,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "opp-0",
+                  "opp-1",
+                  "opp-2",
+                  "focal"
+                ],
+                "place_points_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "stage_table_no": 1,
+                "tables_completed": 0,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 1
+              },
+              "table_id": "np-M-2026091911-r02-s3-t1",
+              "wall_ms": 1644.161
+            },
+            {
+              "match_status": "complete",
+              "scores_by_seat": [
+                -47,
+                -40,
+                131,
+                -44
+              ],
+              "seed": 42540881963627,
+              "stage_situation": {
+                "god_count_modeling": "offline_unavailable_modeled_zero_not_used_for_u",
+                "participant_ids_by_seat": [
+                  "focal",
+                  "opp-0",
+                  "opp-1",
+                  "opp-2"
+                ],
+                "place_points_by_seat": [
+                  -2,
+                  3,
+                  -2,
+                  1
+                ],
+                "rounds_per_game": 8,
+                "stage_role": "qualify",
+                "stage_scores_by_seat": [
+                  -28,
+                  44,
+                  -28,
+                  12
+                ],
+                "stage_table_no": 2,
+                "tables_completed": 1,
+                "tables_in_stage": 2,
+                "tables_remaining_after_current": 0
+              },
+              "table_id": "np-M-2026091911-r02-s3-t2",
+              "wall_ms": 2295.228
+            }
+          ],
+          "u": 0.0,
+          "u_high": 0.0,
+          "u_interval": {
+            "a": 4,
+            "b": 4,
+            "tie_block": [
+              "focal"
+            ]
+          },
+          "u_low": 0.0,
+          "unresolved": false,
+          "usable": true
+        }
+      },
+      "root_content_digest": "4fddbb34a307361094d94de949cd9367c3baabad3a1693b4f05c02126cc56e8c",
+      "root_expected": {
+        "arms": [
+          "baseline",
+          "candidate"
+        ],
+        "seats": 4,
+        "tables_per_arm": 2
+      },
+      "root_index": 2,
+      "root_seed": 126735604130175,
+      "scenario": "normal",
+      "schema": "sitin-action-value-sample/1",
+      "seat_participants_by_table": [
+        [
+          "opp-0",
+          "opp-1",
+          "opp-2",
+          "focal"
+        ],
+        [
+          "focal",
+          "opp-0",
+          "opp-1",
+          "opp-2"
+        ]
+      ],
+      "source_root_id": "np-M-2026091911-root02",
+      "table_ids": [
+        "np-M-2026091911-r02-s3-t1",
+        "np-M-2026091911-r02-s3-t2"
+      ],
+      "table_seeds": [
+        53207028198035,
+        42540881963627
+      ]
+    }
+  ],
+  "schema": "sitin-natural-panel/1",
+  "statistics": {
+    "by_candidate": {
+      "d3d89b9bf340e8f2dbc4447d1851b030f3da2dbefa4097c860d001d95963fc03": {
+        "family_development_values": {
+          "baotou": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          },
+          "branch": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          },
+          "chain": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          },
+          "four_white": {
+            "complete": false,
+            "cost": {
+              "declared_mix_value": null
+            },
+            "note": "机会家族开发值=机会/代价两子场景均值各 1/2（冻结条件混合，group-dev-v1）；两子场景原值同时输出，不能只报有利部分",
+            "open": {
+              "declared_mix_value": null
+            },
+            "value": null
+          }
+        },
+        "panels": {
+          "normal": {
+            "declared_mix": {
+              "mean_delta": null,
+              "mean_delta_high": null,
+              "mean_delta_low": null,
+              "note": "声明的工程混合目标（group-dev-v1 development_mix）；H/M 分层原值同时保留，不以外推官方对手比例",
+              "status": "missing_mix",
+              "weights": {
+                "H": 0.5,
+                "M": 0.5
+              }
+            },
+            "panels": {
+              "M": {
+                "delta_bounds": {
+                  "interval_95_high": [
+                    -0.6199954980675068,
+                    -0.13000450193249324
+                  ],
+                  "interval_95_low": [
+                    -0.5,
+                    -0.5
+                  ],
+                  "mean_delta_high": -0.375,
+                  "mean_delta_low": -0.5,
+                  "note": "识别区间（缺 god_count 等事实造成）：d_low=候选U下界−基线U上界、d_high=候选U上界−基线U下界（§2 保守配对）；与 interval_95 分开报告",
+                  "standard_error_high": 0.125,
+                  "standard_error_low": 0.0,
+                  "unresolved_roots": 1
+                },
+                "interval_95": [
+                  -0.5599977490337533,
+                  -0.3150022509662466
+                ],
+                "interval_kind": "sampling_uncertainty_normal_approx",
+                "interval_note": "95% 正态近似抽样不确定性区间，非识别区间，不作为已证明提升的证据",
+                "invalid_records": [],
+                "invalid_roots": [],
+                "manifest_complete": true,
+                "mean_delta": -0.4375,
+                "n_invalid_roots": 0,
+                "n_invalid_samples": 0,
+                "n_refresh_roots": 0,
+                "n_roots": 2,
+                "n_samples": 8,
+                "n_uncomputable_samples": 0,
+                "root_rows": [
+                  {
+                    "cost": 16.0,
+                    "d_high": -0.5,
+                    "d_low": -0.5,
+                    "d_point": -0.5,
+                    "n_windows": 4,
+                    "opponent_mix": "M",
+                    "recorded_cost": 36295.558000000005,
+                    "role": "core",
+                    "root_content_digest": "a494430542f6f9a0eae1404e1412700dce3d8fa1ebe6cc6d7fdd839dc5bec92e",
+                    "root_id": "np-M-2026091911-root01",
+                    "self": false,
+                    "unresolved": false,
+                    "usage": "development_core"
+                  },
+                  {
+                    "cost": 16.0,
+                    "d_high": -0.25,
+                    "d_low": -0.5,
+                    "d_point": -0.375,
+                    "n_windows": 4,
+                    "opponent_mix": "M",
+                    "recorded_cost": 35947.792,
+                    "role": "core",
+                    "root_content_digest": "4fddbb34a307361094d94de949cd9367c3baabad3a1693b4f05c02126cc56e8c",
+                    "root_id": "np-M-2026091911-root02",
+                    "self": false,
+                    "unresolved": true,
+                    "usage": "development_core"
+                  }
+                ],
+                "roots": [
+                  "np-M-2026091911-root01",
+                  "np-M-2026091911-root02"
+                ],
+                "self_comparison": false,
+                "standard_error": 0.0625,
+                "status": "ok",
+                "uncomputable_records": []
+              }
+            }
+          }
+        }
+      }
+    },
+    "invalid_count": 0,
+    "invalid_records": [],
+    "min_roots": 2,
+    "n_samples": 8,
+    "notes": [
+      "抽样单位=来源根（source_root_id）：同根多窗口/换座先根内平均，不放大 n（T10）",
+      "interval_95 为抽样不确定性（正态近似），与 delta_bounds 识别区间分开",
+      "无效样本不补零：原始记录保留于 invalid_records/uncomputable_records"
+    ],
+    "schema": "sitin-stage-statistics/1",
+    "uncomputable_count": 0,
+    "uncomputable_records": []
+  }
+}

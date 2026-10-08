@@ -1,0 +1,540 @@
+在无当前胡且当前与等待叶均持白的普通摸牌开放窗口，按码去重把正保守未见容量下界补入原支持曲线，同时保留未知身份及父代其他取舍。
+```json
+{
+  "operator": "m1",
+  "trigger": "每次读取冻结View/2全合法根与全部后序节点，先沿真父原逻辑找当前合法胡锚并生成父drawscale；用tile_order最后一项定位规范白码，按visible_state.my_hand中存在白或drawn_tile等于白的存在性判断当前白库存，不猜字段、不重复加张数。全图allowlower仅在anchor is None、当前可见有白及drawscale>0时为真，wait_value新增该必传参数；每个wait/unknown_draw叶再要求structure.whites_held>0，才把lowerenabled传给普通型和适用七对的route_support。未知墙余继续沿父drawscale=0.75身份，已知墙余不大于20时父代理为0；当前胡、当前零白（包括假设杠补白）及父普通摸牌代理关闭的全部节点不启用补足。",
+  "changed_branches": "唯一评分机制是route_support使用现有conservative正下界。设父库存代理I0=exact+0.8*uncertain，补足Delta为按输入顺序去重的码中、evidence为conservative且cap非None并大于0时max(0,cap-0.8)之和；激活时I=I0+Delta，逐码等价于以max(0.8,cap)代替原0.8，不把整个cap再叠加一次。exact、variety、uncertain的证据身份保留，保守正下界仍属于非精确码；conservative零、unknown及None继续只享父0.8排序代理，精确零仍按父事实关闭该码，不改资格或支付。形状excess仍仅从父精确正容量模板计算，七对不加形状；新支持沿父drawscale*SPEEDCAP*(I+excess)/(SPEEDREF+I+excess)*variety/(VARREF+variety)，曲线、常数和几何模板全部保留。关闭护栏时逐式执行父库存/支持计算；激活分支显式按码去重。actual_route只在原八项后追加补足量和原父支持点，wait_value只在原十三项后附叶护栏；O、N、J=max(O,N)、自然用途、成型费用、局部支付、风险、未知罚、全部hu/choices/condition/replacement及根调整不改，不继承T13代理或T15混合。无新增评分参数，UNSEENSOFT=0.8保持原值与排序单位，parameter_changes按正式m1合同为[]。trace的lower平铺向量说明叶护栏、普通/七对补足权重与原支持点，std/seven原支持位置为新支持；沿用24/64根压缩界，新增仅说明压缩界256根，超过64根只保留逐根叶引用及首根共用公式，超过256根仅首根共用说明、其他空trace；这些阈值和追加字段索引不参与评分，全部根和子图仍完整计算。",
+  "expected_direction": "仅为expected声明，无候选业务执行：当精确支持相同而现有conservative下界不同，较大的正下界能在同一饱和曲线上得到较大或相等支持，避免把可靠3张下界与保守零统一压成0.8。对固定码集、其他证据、形状与drawscale，Delta随正下界非减；SPEEDREF>0使W/(SPEEDREF+W)非减，故支持非减，同码不重复补足。普通型与七对分别评估后仍择优，交集不跨路线相加；自然N自身不变，N占优时改动可能被原max掩盖，不承诺首选必变。当前胡、当前零白、父摸牌代理关闭和叶零白应逐动作保留真父值，需ROOT实际逐键核验，AST同式不能替代动态验收。开发同手观察只提示已有下界被忽略的机制缺口；续打整段11分损失未隔离给该弃牌，不把某动作、牌码或seq做金标。生成、编译、装载、首选变化均不授稳定专长、增强、完整桌赛改进或1秒/3秒上线资格。",
+  "counterexample": "正公开未见下界包含他家暗牌，即使下界3张也可能全部不在牌墙，支持提升仍可能追逐不可获得的码并失去更好的自然用途或更安全出口；0.8未知排序代理保留，不是实体补全、概率或对零容量的排除。将正下界按原支持单位纳入而不给不确定额外折扣，是未校准选择；饱和与多样性可能偏宽，资格未知罚仍保留且可能压过补足，局部已见证支付未因新支持增加一分。补足也改变同一饱和曲线内精确形状的边际增量，但没有新增形状模板或乘数。普通路线稍变可改变choices和条件聚合选择，仍需共同续策隔离行动因果；开发样本不足以证明实际积分改善，当前胡等受保护分值也尚未动态核验。解释仅用原事实与节点引用、层级有界，具体整批序列化字节、密集图操作额和实机时限均未实测，超额必须保留失败，不删根或暗改原答。",
+  "parent_differences": [
+    {
+      "candidate_id": "68670293e3616e7958e37ea195aa870271e1baa960e28232dc889b6436e84f3e",
+      "expected_change": "相对真正T9同源码240万研究父，仅在无当前胡、当前及叶有白且父普通摸牌代理开放时，把按码去重的conservative正容量下界超过原0.8的部分补到原普通型/七对支持曲线；精确计数、非精确身份、资格、支付、全部自然目标和J=max(O,N)保留，受保护窗口全动作分值预期逐项不变。较大下界预期增加支持，实际首选差异和桌赛效果未知；新增参数只是显式布尔护栏传递，未增评分常数。",
+      "window_classes": [
+        "无当前胡且当前及叶持白的普通型/七对conservative正下界窗",
+        "保守零、unknown/None与精确零身份对照窗",
+        "当前胡全图全部合法根保护窗",
+        "当前零白及条件杠补白全图保护窗",
+        "父普通摸牌代理关闭及叶零白保护窗",
+        "未裁决吃碰、全相容杠补、未知补牌与合法续行窗"
+      ],
+      "action_keys": [
+        "discard:*",
+        "pass",
+        "chi:*",
+        "peng:*",
+        "gang:*",
+        "hu"
+      ],
+      "status": "expected"
+    }
+  ],
+  "parameter_changes": []
+}
+```
+```python
+"""联合排名只使用冻结 View/2；评分点不是概率、番数或未来积分。"""
+
+PAYCAP = 48.0
+PAYREF = 192.0
+HUBASE = 10.0
+WAITBASE = 12.0
+FORMCOST = 3.4
+SPEEDCAP = 4.5
+SPEEDREF = 14.0
+VARREF = 4.0
+UNSEENSOFT = 0.8
+SHAPEGAIN = 0.5
+WIDTHCAP = 3.5
+WIDTHREF = 5.0
+PURPOSES = (0.0, 3.4, 7.4, 11.5, 15.7)
+DEADPURPOSE = 0.25
+HORIZONCOST = 0.30
+RETENTION = 20
+WALLSOFT = 8.0
+UNKNOWNWALLSCALE = 0.75
+OPPDECAY = 0.055
+RISKBASE = 1.9
+OPPRISK = 0.13
+LATERISK = 3.2
+UNKNOWNWALLRISK = 0.6
+ENVELOPEBLEND = 0.35
+SINGLESCOPE = 0.75
+COVREF = 3.0
+LOCALCAP = 6.0
+LOCALREF = 8.0
+QUALUNKNOWN = 0.8
+QUALUNANALYSED = 0.9
+UNKNOWNDRAW = 2.6
+SMALLREADY = 0.45
+NATURALBIASCAP = 1.1
+GAINREF = 4.0
+ANCHREADY = 0.20
+UNANCHOREXPOSURE = 0.15
+CONDITIONBLEND = 0.18
+CONDITIONCAP = 1.0
+REPLACEMENTBLEND = 0.35
+REPLACEMENTCAP = 2.0
+CLAIMCOST = 0.25
+SKIPVALUE = 0.10
+GANGCOST = 0.15
+
+
+def pay_points(amount):
+    """本家净积分除基础分后转排序点；晚饱和保留高支付差，非未来积分估计。"""
+    return PAYCAP * amount / (PAYREF + abs(amount))
+
+
+def route_support(codes, waiting, codeindex, drawscale, shaped, lowerenabled):
+    """相容码支持（RouteSupport，只用于排序的进张支持）按码保留证据身份。
+
+    返回向量为新支持点、精确公开张数、相容码数、非精确码数、形状增量、
+    保守下界补足量、原父支持点；补足量是支持权重，不是新增精确实体。
+    lowerenabled 为调用方给定的全图及等待叶护栏，关闭时沿父代原算式。
+    开启时按输入顺序去重，仅对 conservative 正下界补足超过0.8代理的部分。
+    conservative 零、unknown 和 None 保留原代理及非精确身份，不排除牌码。
+    公开未见张数包含他家暗牌，不是墙内张数、摸牌概率或未来可达性。
+    形状仍只作用于精确容量，不把保守下界赋予顺子模板或合法胡资格。
+    """
+    capacities = waiting["unseen_capacities"]
+    evidence = waiting["unseen_evidence"]
+    counts = waiting["structure"]["natural_counts33"]
+    exact = 0
+    variety = 0
+    uncertain = 0
+    excess = 0.0
+    lowerextra = 0.0
+    supportcodes = codes
+    if lowerenabled:
+        # 激活分支显式去重；关闭分支保持父代对规范去重事实的原计算。
+        supportcodes = []
+        seen = set()
+        for code in codes:
+            if code not in seen:
+                supportcodes.append(code)
+                seen.add(code)
+    for code in supportcodes:
+        slot = codeindex[code]
+        cap = capacities[slot]
+        if evidence[slot] == "exact" and cap is not None:
+            if cap > 0:
+                exact += cap
+                variety += 1
+                if shaped and slot < 27 and counts[slot] == 0:
+                    pos = slot % 9
+                    templates = 0
+                    if pos >= 2 and counts[slot - 2] > 0 and counts[slot - 1] > 0:
+                        templates += 1
+                    if pos >= 1 and pos <= 7 and counts[slot - 1] > 0 and counts[slot + 1] > 0:
+                        templates += 1
+                    if pos <= 6 and counts[slot + 1] > 0 and counts[slot + 2] > 0:
+                        templates += 1
+                    excess += SHAPEGAIN * float(cap) * float(min(templates, 2)) / 2.0
+        else:
+            variety += 1
+            uncertain += 1
+            if lowerenabled and evidence[slot] == "conservative" and cap is not None and cap > 0:
+                # 只补足已有下界，仍计入非精确码；零和 None 不代表不存在。
+                lowerextra += max(0.0, float(cap) - UNSEENSOFT)
+    inventory = float(exact) + UNSEENSOFT * float(uncertain)
+    weighted = inventory + excess
+    diversity = float(variety) / (VARREF + float(variety))
+    credit = drawscale * SPEEDCAP * weighted / (SPEEDREF + weighted) * diversity
+    plain = drawscale * SPEEDCAP * inventory / (SPEEDREF + inventory) * diversity
+    parentsupport = credit
+    if lowerenabled and lowerextra > 0.0:
+        # 同一饱和式接纳下界补足；原0.8代理已计入，不能再叠加整个cap。
+        inventory = inventory + lowerextra
+        weighted = inventory + excess
+        credit = drawscale * SPEEDCAP * weighted / (SPEEDREF + weighted) * diversity
+        plain = drawscale * SPEEDCAP * inventory / (SPEEDREF + inventory) * diversity
+    return credit, exact, variety, uncertain, credit - plain, lowerextra, parentsupport
+
+
+def actual_route(shanten, support, costs):
+    """真实向听不改；L=max(0,向听)+1 只是共同成型排序尺度。
+
+    返回向量：原向听、L、精确公开张数、相容码数、非精确码数、
+    支持点、形状增量、普通路线值、保守下界补足量、原父支持点。
+    后两项只供说明，不回灌其他费用或目标。L 不保证本人还能摸这么多次。
+    """
+    length = max(0, shanten) + 1
+    value = support[0] - costs[length]
+    return shanten, length, support[1], support[2], support[3], support[0], support[4], value, support[5], support[6]
+
+
+def natural_offer(waiting, standard, seven, costs, widths, purposes):
+    """全部固定自然目标各有完整基值，再择优；同库存用途不相加。
+
+    自然牌缺口 D 保留在 r=max(L,D+t,自然弃下界+白弃下界)，t 为必需终末摸。
+    补与弃可在本人一次行动中衔接，所以使用共同尺度，不把同一 D 再扣一次。
+    前驱的递增保白先验只是排序点，既非已确认番数，也不把保 k 白解释为
+    已完成 k 次飘白；公开压力与墙余只能折减先验，不能创造规则见证。
+    返回最佳目标向量：目标号、家族、阶段、k、D、t、r、自然弃下界、
+    白弃下界、相容推进码宽度、用途先验、成型成本、支持点、目标值。
+    """
+    best = None
+    for index, target in enumerate(waiting["structure"]["targets"]):
+        family = target["family"]
+        length = standard[1] if family == "standard" else seven[1]
+        need = target["natural_need"]
+        terminal = 1 if target["requires_terminal_draw"] else 0
+        naturaldrop = target["target_natural_discard_lower_bound"]
+        whitedrop = target["target_white_discard_lower_bound"]
+        retained = target["retained_whites"]
+        scale = max(length, need + terminal, naturaldrop + whitedrop)
+        width = waiting["target_improvement_code_widths"][index]
+        quality = 0.0
+        if target["target_stage"] == "waiting_predecessor":
+            quality = PURPOSES[retained] * purposes[scale]
+            if need > 0 and width == 0:
+                # 精确耗尽固定自然推进码时降低此用途先验；其他转换和全部根仍保留。
+                quality = quality * DEADPURPOSE
+        credit = widths[width]
+        value = credit + quality - costs[scale]
+        if best is None or value > best[13]:
+            best = (index, family, target["target_stage"], retained, need, terminal,
+                    scale, naturaldrop, whitedrop, width, quality, costs[scale], credit, value)
+    return best
+
+
+def payment_summary(waiting, seat, base):
+    """把同码互斥抓打包络合成一次条件支付摘要，不推算摸牌或存活概率。
+
+    返回向量：状态0未分析/1已知空/2已知有支付/3部分资格未知、支付摘要、
+    已见证码数、这些码的精确公开容量和、原支付点最小/最大、单包络码数。
+    None 支付摘要保持未知；空表的0只表示已见证支付子集为空。
+    两行同码先取下端加有界价差，单包络单独折减，容量仅计一次。
+    最后容量加权是相容码内部的排序摘要，容量不除墙余，不是期望积分。
+    """
+    payments = waiting["normal_draw_hu_payments"]
+    if payments is None:
+        return 0, None, 0, 0.0, None, None, 0
+    unknown = len(waiting["qualification_unknown_codes"])
+    flag = 3 if unknown > 0 else 1
+    if not payments:
+        return flag, 0.0, 0, 0.0, None, None, 0
+    flag = 3 if unknown > 0 else 2
+    currentcode = None
+    lower = 0.0
+    upper = 0.0
+    capacity = 0.0
+    rows = 0
+    total = 0.0
+    mass = 0.0
+    codecount = 0
+    singlecount = 0
+    minimum = None
+    maximum = None
+    for payment in payments:
+        code = payment["draw_code"]
+        amount = float(payment["settlement"]["score_delta"][seat]) / base
+        point = pay_points(amount)
+        if minimum is None or point < minimum:
+            minimum = point
+        if maximum is None or point > maximum:
+            maximum = point
+        if code != currentcode:
+            if currentcode is not None:
+                if rows == 1:
+                    envelope = SINGLESCOPE * lower
+                    singlecount += 1
+                else:
+                    envelope = lower + ENVELOPEBLEND * (upper - lower)
+                total += capacity * envelope
+                mass += capacity
+                codecount += 1
+            currentcode = code
+            lower = point
+            upper = point
+            capacity = float(payment["draw_capacity_before"])
+            rows = 1
+        else:
+            lower = min(lower, point)
+            upper = max(upper, point)
+            rows += 1
+    if rows == 1:
+        envelope = SINGLESCOPE * lower
+        singlecount += 1
+    else:
+        envelope = lower + ENVELOPEBLEND * (upper - lower)
+    total += capacity * envelope
+    mass += capacity
+    codecount += 1
+    return flag, total / mass, codecount, mass, minimum, maximum, singlecount
+
+
+def wait_value(waiting, codeindex, seat, base, costs, widths, purposes,
+               drawscale, pressure, discount, risk, anchor, unknowncost, allowlower):
+    """普通出口、全部自然用途和当前胡取舍共同评分；未知资格不填虚构支付。
+
+    当前胡模式按已知局部条件支付差减暴露代价比较，并让真实保留路线给出
+    小幅有界取舍。自然先验不能单独买到放弃当前胡，升级见证也不保证继续。
+    暴露折减与代价来自公开副露、墙余，是未校准排序代理，不是他家先胡率。
+    allowlower 由当前可见库存、当前胡及父普通摸牌代理共同控制；叶内再要求
+    whites_held 正库存，条件杠补白不能绕过当前零白护栏。末项仅说明本叶护栏。
+    返回的事实元组只供根解释引用；规则、动作集合和条件节点均不变。
+    """
+    structure = waiting["structure"]
+    lowerenabled = allowlower and structure["whites_held"] > 0
+    shaped = drawscale > 0.0 and structure["whites_held"] > 0
+    standard = actual_route(
+        structure["standard_shanten"],
+        route_support(waiting["standard_useful_codes"], waiting, codeindex, drawscale, shaped, lowerenabled),
+        costs,
+    )
+    seven = None
+    main = standard
+    family = "standard"
+    if structure["seven_pairs_shanten"] is not None:
+        seven = actual_route(
+            structure["seven_pairs_shanten"],
+            route_support(waiting["seven_pairs_useful_codes"], waiting, codeindex, drawscale, False, lowerenabled),
+            costs,
+        )
+        if seven[7] > main[7]:
+            main = seven
+            family = "seven_pairs"
+    natural = natural_offer(waiting, standard, seven, costs, widths, purposes)
+    payment = payment_summary(waiting, seat, base)
+    unknown = len(waiting["qualification_unknown_codes"])
+    knowncodes = payment[2]
+    coverage = float(knowncodes) / (COVREF + float(knowncodes))
+    qualcost = QUALUNANALYSED if payment[0] == 0 else QUALUNKNOWN * float(unknown) / float(1 + knowncodes + unknown)
+    local = 0.0
+    if payment[1] is not None and payment[1] > 0.0:
+        local = LOCALCAP * payment[1] / (LOCALREF + payment[1])
+        local = local * coverage * drawscale * pressure
+    ordinary = main[7] + local
+    joint = ordinary
+    route = family
+    if natural is not None and natural[13] > joint:
+        joint = natural[13]
+        route = "natural"
+    gain = 0.0
+    bias = 0.0
+    if anchor is not None:
+        if payment[1] is not None and payment[1] > anchor:
+            gain = (payment[1] - anchor) * coverage
+        if gain > 0.0 and natural is not None:
+            # 只按目标自身绝对值给有界取舍；主路变窄不能释放差集或差值奖励。
+            strength = max(0.0, natural[13])
+            bias = min(NATURALBIASCAP, strength) * gain / (GAINREF + gain)
+        value = HUBASE + anchor + discount * gain + bias
+        # 普通路线值降低时此项不增加；保留共同成型成本，避免选择基准错位。
+        readiness = main[7]
+        value = value + min(SMALLREADY, max(0.0, readiness)) - risk
+        value = value - ANCHREADY * max(0.0, -readiness) - qualcost - unknowncost
+    else:
+        value = WAITBASE + joint - qualcost - unknowncost - UNANCHOREXPOSURE * risk
+    # 向量：普通型、七对、最佳自然目标、O、J、选中路线、条件支付摘要、
+    # 未知资格码数、局部升级差、自然取舍点、资格未知罚、未知补牌罚、局部支付点、
+    # 本叶下界补足护栏；原十三项位置保留，不能把补足量塞入精确张数或支付字段。
+    facts = (standard, seven, natural, ordinary, joint, route, payment,
+             unknown, gain, bias, qualcost, unknowncost, local, lowerenabled)
+    return value, facts
+
+
+def score_actions(view):
+    """对冻结后序图全部节点评分，再按原根表给每个 action_key 恰一项。
+
+    全部分析过的合法续行参与，choices 才能选最优合法操作；condition 和
+    replacement 仅聚合互斥条件，补牌码不能由策略挑选。缺口整批 ABSTAIN，
+    不用保底补研究成功。没有文件、网络、时钟、模型、世界状态或跨调用缓存。
+    """
+    context = view["visible_state"]
+    seat = context["seat"]
+    base = float(view["binding"]["base_score"])
+    wall = context["remaining_tile_count"]
+    opponents = 0
+    for otherseat, melds in enumerate(context["melds"]):
+        if otherseat != seat:
+            opponents += len(melds)
+    pressure = 1.0 / (1.0 + OPPDECAY * float(opponents))
+    if wall is None:
+        drawmode = 2
+        drawscale = UNKNOWNWALLSCALE
+        room = None
+        discount = drawscale * pressure
+        risk = RISKBASE + OPPRISK * float(opponents) + UNKNOWNWALLRISK
+    else:
+        margin = max(0.0, float(wall) - float(RETENTION))
+        drawmode = 1 if margin > 0.0 else 0
+        drawscale = 1.0 if drawmode == 1 else 0.0
+        # 四座无人截断时的本人摸牌节奏只作先验折减尺度，不承诺真实再摸次数。
+        room = max(1.0, margin / 4.0)
+        discount = drawscale * pressure * (0.30 + 0.70 * margin / (WALLSOFT + margin))
+        risk = RISKBASE + OPPRISK * float(opponents) + LATERISK * WALLSOFT / (WALLSOFT + margin)
+    # 合法13-3m等待态的固定自然目标 D+t 与弃牌下界均小于16；不缩小真实D。
+    costs = tuple([FORMCOST * float(max(0, length - 1)) for length in range(16)])
+    widths = tuple([drawscale * WIDTHCAP * float(width) / (WIDTHREF + float(width)) for width in range(35)])
+    if room is None:
+        purposes = tuple([drawscale * pressure for length in range(16)])
+    else:
+        purposes = tuple([drawscale * pressure / (1.0 + HORIZONCOST * max(0.0, float(length) - room))
+                          for length in range(16)])
+    codeindex = {code: index for index, code in enumerate(view["tile_order"])}
+    nodes = view["nodes"]
+    indexes = {node["node_key"]: index for index, node in enumerate(nodes)}
+    anchor = None
+    anchoramount = None
+    for action in view["actions"]:
+        node = nodes[indexes[action["node_key"]]]
+        if node["kind"] == "hu":
+            amount = float(node["settlement"]["score_delta"][seat]) / base
+            point = pay_points(amount)
+            if anchor is None or point > anchor:
+                anchor = point
+                anchoramount = amount
+    # 当前库存只读View真实字段；摸牌可能与手牌重合，存在性OR无需猜重叠。
+    whitecode = view["tile_order"][-1]
+    currentwhite = whitecode in context["my_hand"] or context["drawn_tile"] == whitecode
+    allowlower = anchor is None and currentwhite and drawscale > 0.0
+    values = []
+    references = []
+    factslist = []
+    aggregates = []
+    for index, node in enumerate(nodes):
+        if node["gap_kind"] is not None:
+            return {"status": "ABSTAIN", "reason": "graph_gap"}
+        kind = node["kind"]
+        children = node["children"]
+        if kind == "wait" or kind == "unknown_draw":
+            unknowncost = UNKNOWNDRAW if kind == "unknown_draw" else 0.0
+            value, facts = wait_value(
+                node["waiting"], codeindex, seat, base, costs, widths, purposes,
+                drawscale, pressure, discount, risk, anchor, unknowncost, allowlower,
+            )
+            reference = index
+            aggregate = (kind, 0, round(value, 3))
+        elif kind == "hu":
+            amount = float(node["settlement"]["score_delta"][seat]) / base
+            value = HUBASE + pay_points(amount)
+            facts = None
+            reference = index
+            aggregate = ("hu", amount, round(value, 3))
+        elif kind == "choices":
+            if not children:
+                return {"status": "ABSTAIN", "reason": "empty_choices"}
+            bestindex = indexes[children[0]]
+            value = values[bestindex]
+            for child in children:
+                childindex = indexes[child]
+                childvalue = values[childindex]
+                if childvalue > value:
+                    bestindex = childindex
+                    value = childvalue
+            facts = factslist[bestindex]
+            reference = references[bestindex]
+            aggregate = ("choices", len(children), bestindex, round(value, 3))
+        else:
+            if not children:
+                return {"status": "ABSTAIN", "reason": "empty_condition"}
+            lowerindex = indexes[children[0]]
+            lower = values[lowerindex]
+            upper = lower
+            total = 0.0
+            for child in children:
+                childindex = indexes[child]
+                childvalue = values[childindex]
+                total += childvalue
+                if childvalue < lower:
+                    lowerindex = childindex
+                    lower = childvalue
+                if childvalue > upper:
+                    upper = childvalue
+            mean = total / float(len(children))
+            # 相容码/公开条件的均值仅是排名摘要，不是假定均匀摸牌的期望积分。
+            # 全码下端保留，全部码参与价差；绝不把最大值作为必然补牌。
+            if kind == "replacement":
+                value = lower + min(REPLACEMENTCAP, REPLACEMENTBLEND * max(0.0, mean - lower))
+            else:
+                value = lower + min(CONDITIONCAP, CONDITIONBLEND * max(0.0, mean - lower))
+            facts = factslist[lowerindex]
+            reference = references[lowerindex]
+            aggregate = (kind, len(children), round(lower, 3), round(upper, 3),
+                         round(mean, 3), round(value, 3))
+        values.append(value)
+        references.append(reference)
+        factslist.append(facts)
+        aggregates.append(aggregate)
+    entries = []
+    actioncount = len(view["actions"])
+    ctx = (drawmode, opponents, round(risk, 3), round(discount, 3),
+           anchoramount, None if anchor is None else round(anchor, 3))
+    for action in view["actions"]:
+        index = indexes[action["node_key"]]
+        kind = action["action_type"]
+        adjustment = 0.0
+        if kind == "chi" or kind == "peng":
+            # 跳座仅在获裁决的前提下发生；条件图已保留全部跟打，不保证抢到鸣牌。
+            adjustment = SKIPVALUE * float(action["skipped_seats"]) * drawscale - CLAIMCOST
+        elif kind == "gang":
+            adjustment = -GANGCOST
+        value = float(values[index] + adjustment)
+        facts = factslist[index]
+        trace = {"u": "heuristic_rank_points", "f": "vip_conservative_lower_support_m1/1",
+                 "ref": references[index], "agg": aggregates[index],
+                 "a": (kind, action["pending_condition"] is not None,
+                       action["skipped_seats"], round(adjustment, 3)),
+                 "ctx": ctx}
+        if facts is not None:
+            standard = facts[0]
+            seven = facts[1]
+            natural = facts[2]
+            payment = facts[6]
+            if actioncount <= 24:
+                # 所有向量都平铺；ref 绑定原输入叶，未把最低叶解释成整个聚合。
+                trace = dict(list(trace.items()) + [
+                    ("std", (standard[0], standard[1], standard[2], standard[3], standard[4],
+                             round(standard[5], 3), round(standard[6], 3), round(standard[7], 3))),
+                    ("seven", None if seven is None else
+                     (seven[0], seven[1], seven[2], seven[3], seven[4],
+                      round(seven[5], 3), round(seven[7], 3))),
+                    ("nat", None if natural is None else
+                     (natural[0], natural[1], natural[2], natural[3], natural[4], natural[5],
+                      natural[6], natural[7], natural[8], natural[9],
+                      round(natural[10], 3), round(natural[11], 3),
+                      round(natural[12], 3), round(natural[13], 3))),
+                    ("oj", (round(facts[3], 3), round(facts[4], 3), facts[5])),
+                    ("pay", (payment[0], payment[2], payment[3],
+                             None if payment[1] is None else round(payment[1], 3),
+                             None if payment[4] is None else round(payment[4], 3),
+                             None if payment[5] is None else round(payment[5], 3), payment[6])),
+                    ("trade", (facts[7], round(facts[8], 3), round(facts[9], 3),
+                               round(facts[10], 3), round(facts[11], 3), round(facts[12], 3))),
+                    # 向量：叶护栏、普通补足权重/原支持点、七对补足权重/原支持点。
+                    # 新支持点仍在std/seven原支持位，精确库存与非精确码数保持身份。
+                    ("lower", (facts[13], round(standard[8], 3), round(standard[9], 3),
+                               None if seven is None else round(seven[8], 3),
+                               None if seven is None else round(seven[9], 3))),
+                ])
+            elif actioncount <= 64:
+                trace = dict(list(trace.items()) + [
+                    ("take", (facts[5], None if natural is None else natural[0])),
+                    ("pay", (payment[0], payment[2], facts[7])),
+                    ("oj", (round(facts[3], 3), round(facts[4], 3))),
+                    ("lower", (facts[13], round(standard[8], 3), round(standard[9], 3),
+                               round(standard[5], 3),
+                               None if seven is None else round(seven[8], 3),
+                               None if seven is None else round(seven[9], 3),
+                               None if seven is None else round(seven[5], 3))),
+                ])
+        if actioncount > 64:
+            # 全图值已完整计算；大根表只保留叶引用，共用单位与公式说明写一次。
+            trace = {"ref": references[index]}
+            if not entries:
+                trace = dict(list(trace.items()) + [
+                    ("u", "heuristic_rank_points"),
+                    ("f", "vip_conservative_lower_support_m1/1"),
+                    ("lower_enabled", allowlower), ("n", len(nodes)), ("roots", actioncount),
+                ])
+        if actioncount > 256:
+            # 超大根表仅首根保存共用说明；其余空trace不改变分值、根或子图。
+            trace = {}
+            if not entries:
+                trace = {"u": "heuristic_rank_points", "f": "vip_conservative_lower_support_m1/1",
+                         "lower_enabled": allowlower, "n": len(nodes), "roots": actioncount}
+        entries.append({"action_key": action["action_key"], "score": value, "trace": trace})
+    return {"status": "SCORED", "entries": entries}
+```

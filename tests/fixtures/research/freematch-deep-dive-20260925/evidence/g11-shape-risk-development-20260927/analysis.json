@@ -1,0 +1,90 @@
+{
+  "bootstrap_replicates": 20000,
+  "bootstrap_seed": 2026110602,
+  "candidate_sha256": "8db5c6ff1d69367646134d063d380b383649b3d5e9aa5bfc35588524bb1e4129",
+  "complete_tables": 768,
+  "execution_ok": true,
+  "independent_roots": 48,
+  "last_place_counts": {
+    "candidate@review/freematch-deep-dive-20260925/candidates/G11-SHAPE-RISK-PARETO-V1.py": {
+      "bottom_including_tie": 102,
+      "strict_last": 84,
+      "tables": 384
+    },
+    "r18_v2": {
+      "bottom_including_tie": 102,
+      "strict_last": 79,
+      "tables": 384
+    }
+  },
+  "limits": "阶段 JSON 未保存逐局胡牌番种和在线动作 p99；不能把阶段耗时或本汇总当正式时限/特殊胡审核。",
+  "manifest_sha256": "c2322de1c5580fa1d589a8fd4f9f6065d8e789340d7200bcc398885d8c501b09",
+  "means_delta_per_complete_table": {
+    "H": -0.7604166666666666,
+    "M": -0.375,
+    "combined": -0.5677083333333334
+  },
+  "numeric_development_gate": false,
+  "result_sha256": "7f95fc1e48091c9f627e15390fb74ebc00133e396a94e42d428c70f0421b55ab",
+  "root_bootstrap_95_percentile": {
+    "H": [
+      -4.067708333333333,
+      2.609375
+    ],
+    "M": [
+      -2.9270833333333335,
+      2.1979166666666665
+    ],
+    "combined_stratified": [
+      -2.6171875,
+      1.5859375
+    ]
+  },
+  "root_signs": {
+    "H": {
+      "negative": 14,
+      "positive": 9,
+      "zero": 1
+    },
+    "M": {
+      "negative": 10,
+      "positive": 13,
+      "zero": 1
+    }
+  },
+  "runtime_counts": {
+    "candidate@review/freematch-deep-dive-20260925/candidates/G11-SHAPE-RISK-PARETO-V1.py": {
+      "action_value_abstain": 0,
+      "action_value_failed": 0,
+      "action_value_operation_limit": 0,
+      "action_value_resource_or_numeric_limit": 0,
+      "action_value_scored": 127947,
+      "action_value_scoring_error": 0,
+      "action_value_unclassified_failure": 0,
+      "audit_missing": 0,
+      "auto_actions": 0,
+      "fallbacks": 0,
+      "illegal_choices": 0,
+      "timeouts": 0
+    },
+    "r18_v2": {
+      "action_value_abstain": 0,
+      "action_value_failed": 0,
+      "action_value_operation_limit": 0,
+      "action_value_resource_or_numeric_limit": 0,
+      "action_value_scored": 127788,
+      "action_value_scoring_error": 0,
+      "action_value_unclassified_failure": 0,
+      "audit_missing": 0,
+      "auto_actions": 0,
+      "fallbacks": 0,
+      "illegal_choices": 0,
+      "timeouts": 0
+    }
+  },
+  "schema": "g11-shape-risk-development-summary/1",
+  "stage_elapsed_mean_ms": {
+    "candidate@review/freematch-deep-dive-20260925/candidates/G11-SHAPE-RISK-PARETO-V1.py": 3977.522276041666,
+    "r18_v2": 3957.1039114583346
+  }
+}

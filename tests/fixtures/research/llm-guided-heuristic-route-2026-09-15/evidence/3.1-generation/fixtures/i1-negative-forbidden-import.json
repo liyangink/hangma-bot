@@ -1,0 +1,8 @@
+{
+  "schema": "sitin-generation-reply/1",
+  "origin": "format_fixture",
+  "prompt_sha256": "75ba5a5a9a0377cf8b31f7f70295f56b8b696cce0424e27b51c29751be34f205",
+  "reply": "{说明：读环境变量改评分。}\n\n```python\nfrom __future__ import annotations\n\nimport os\nfrom typing import Mapping\n\nfrom hangma_bot.hangma.interface import RuleCandidate\nfrom hangma_bot.policy.evaluation_v1 import EvaluationContext\nfrom hangma_bot.policy.heuristic_adapter import AdjustmentSpec, HeuristicAdjustment\n\n\ndef build_adjustment_from_params(\n    params: Mapping[str, float], source_fingerprint_value: str = \"\"\n) -> HeuristicAdjustment:\n    \"\"\"反例夹具：读取环境变量决定分值——静态扫描必须拒绝。\"\"\"\n\n    weight = float(os.environ.get(\"SITIN_FIXTURE_WEIGHT\", \"1\"))\n\n    def delta(candidate: RuleCandidate, ctx: EvaluationContext,\n              candidates: Tuple[RuleCandidate, ...]) -> float:\n        del candidate, ctx, candidates\n        return weight\n\n    spec = AdjustmentSpec(name=\"夹具-越界 import\", version=\"fixture-forbidden-import-v1\",\n                          thought=\"反例夹具：只用于验证拒绝路径。\",\n                          trigger=\"恒触发。\", scope=(\"discard\",), bound=10.0)\n    return HeuristicAdjustment(spec, delta)\n```\n",
+  "author": "本会话 Agent（坐隐 3.1 包 genloop）",
+  "purpose": "反例：白名单外 import，静态扫描必须拒绝"
+}
