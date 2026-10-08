@@ -188,11 +188,13 @@ VIP_S03_PARENT_IDENTITY = VIP_S03_IDENTITY
 from hangma_bot.policy.vip_s03_rulefix_p0_identity import VIP_S03_RULEFIX_P0_IDENTITY
 VIP_S03_IDENTITY = VIP_S03_RULEFIX_P0_IDENTITY
 VIP_S03_COMPILED_DIRECTORY = "prebuilt/vip-s03-rulefix-p0-compiled-v1"
+VIP_S03_RULEFIX_P0_EVIDENCE_DIRECTORY = "prebuilt/vip-s03-rulefix-p0-release-evidence-v1"
+VIP_S03_RULEFIX_P0_EVIDENCE_SOURCE = "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0"
 VIP_S03_RULEFIX_P0_PACKAGE_SCOPES = {
-    "vip_s03_rulefix_p0_testroom_v1": ("test_room", "correctness_fix_testroom_only", "prebuilt/vip-s03-rulefix-p0-testroom-approved-v1/manifest.json"),
-    "vip_s03_rulefix_p0_free_v1": ("auto_match", "correctness_fix_free_only", "prebuilt/vip-s03-rulefix-p0-free-approved-v1/manifest.json"),
-    "vip_s03_rulefix_p0_test_tournament_v1": ("test_tournament", "correctness_fix_test_tournament_only", "prebuilt/vip-s03-rulefix-p0-test-tournament-approved-v1/manifest.json"),
-    "vip_s03_rulefix_p0_official_tournament_v1": ("official_tournament", "correctness_fix_official_tournament_only", "prebuilt/vip-s03-rulefix-p0-official-tournament-approved-v1/manifest.json"),
+    "vip_s03_rulefix_p0_testroom_v1": ("test_room", "correctness_fix_testroom_only", "prebuilt/vip-s03-rulefix-p0-testroom-approved-v3/manifest.json"),
+    "vip_s03_rulefix_p0_free_v1": ("auto_match", "correctness_fix_free_only", "prebuilt/vip-s03-rulefix-p0-free-approved-v3/manifest.json"),
+    "vip_s03_rulefix_p0_test_tournament_v1": ("test_tournament", "correctness_fix_test_tournament_only", "prebuilt/vip-s03-rulefix-p0-test-tournament-approved-v3/manifest.json"),
+    "vip_s03_rulefix_p0_official_tournament_v1": ("official_tournament", "correctness_fix_official_tournament_only", "prebuilt/vip-s03-rulefix-p0-official-tournament-approved-v3/manifest.json"),
 }
 VIP_S03_PACKAGE_SCOPES.update(VIP_S03_RULEFIX_P0_PACKAGE_SCOPES)
 _VIP_S03_NATIVE_CACHE = None
@@ -473,9 +475,26 @@ def _load_vip_s03_manifest(strategy: str, expected_id: str | None = None) -> dic
 
 
 
+def _vip_s03_rulefix_p0_evidence_path(name: str) -> Path:
+    """只读取随发布包交付的原件；历史路径仅用于保留批准收据的来源身份。"""
+    source = Path(name)
+    prefix = Path(VIP_S03_RULEFIX_P0_EVIDENCE_SOURCE)
+    if name == "doc/P0-RULE-CONTRACT-DRAFT.md":
+        relative = Path("P0-RULE-CONTRACT-DRAFT.md")
+    elif source.is_relative_to(prefix):
+        relative = source.relative_to(prefix)
+    else:
+        raise ValueError("P0发布证明不在冻结来源范围内")
+    directory = (_REPO_ROOT / VIP_S03_RULEFIX_P0_EVIDENCE_DIRECTORY).resolve()
+    actual = (directory / relative).resolve()
+    if not actual.is_relative_to(directory):
+        raise ValueError("P0发布证明不能越出发布目录")
+    return actual
+
+
 def _verify_vip_s03_rulefix_p0_qualification() -> tuple[bool, dict]:
-    """核当前正确规则世界的真实离线收据；缺最终批准仍只能离线验装。"""
-    directory = _REPO_ROOT / "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/release"
+    """核发布目录中的批准原件；资格、摘要及来源身份均保持原批准内容。"""
+    directory = _REPO_ROOT / VIP_S03_RULEFIX_P0_EVIDENCE_DIRECTORY / "release"
     rules = json.loads((directory / "RULES-QUALIFICATION-CLOSED.json").read_text())
     runtime = json.loads((directory / "ENGINEERING-CLOSED.json").read_text())
     impact = json.loads((directory / "IMPACT-CLOSED.json").read_text())
@@ -503,7 +522,8 @@ def _verify_vip_s03_rulefix_p0_qualification() -> tuple[bool, dict]:
     for key, name in required.items():
         path = directory / name
         raw = path.read_bytes()
-        receipts[key] = {"path": str(path.relative_to(_REPO_ROOT)),
+        # 收据里的path是批准时的来源身份；实际读取始终使用prebuilt副本。
+        receipts[key] = {"path": VIP_S03_RULEFIX_P0_EVIDENCE_SOURCE + "/release/" + name,
             "pin": {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()}}
     if (approval.get("schema") != "t199-p0-publish-approval/1" or type(approval.get("complete")) is not bool
             or approval.get("candidate_identity") != VIP_S03_IDENTITY or approval.get("compiled_runtime") != compiled
@@ -536,8 +556,9 @@ def build_vip_s03_rulefix_p0_manifest(strategy: str, evidence_sha256: Mapping[st
     }
     if set(evidence_sha256) != needed:
         raise ValueError("P0缺冻结规则、实际编译机械核验、当前官方原件或契约")
-    _verify_vip_evidence(evidence_sha256)
-    proof = json.loads((_REPO_ROOT / "review/vip-route-2026-09-30/evidence/t199-four-step-execution-1/p0/NATIVE-MECHANICAL-CLOSED.json").read_text())
+    _verify_vip_evidence(evidence_sha256, path_resolver=_vip_s03_rulefix_p0_evidence_path)
+    proof = json.loads(_vip_s03_rulefix_p0_evidence_path(
+        VIP_S03_RULEFIX_P0_EVIDENCE_SOURCE + "/NATIVE-MECHANICAL-CLOSED.json").read_text())
     if (proof.get("complete") is not True or proof.get("candidate_identity") != VIP_S03_IDENTITY
             or proof.get("native_reference_outputs_equal") is not True
             or proof.get("new_tables") != 0 or proof.get("HTTP_calls") != 0
@@ -700,13 +721,14 @@ def _build_vip_manifest(strategy: str, evidence_sha256: Mapping[str, str]) -> di
     return payload
 
 
-def _verify_vip_evidence(evidence_sha256: Mapping[str, str]) -> None:
-    """证据必须是仓库内公开文件，按实际字节核验；不读取私有凭证目录。"""
+def _verify_vip_evidence(evidence_sha256: Mapping[str, str], *,
+        path_resolver: Callable[[str], Path] | None = None) -> None:
+    """按批准的来源摘要核实际原件；P0由固定解析器读取发布副本。"""
     for name, expected in evidence_sha256.items():
         path = Path(name)
         if path.is_absolute() or ".." in path.parts or not path.parts or path.parts[0] not in ("review", "doc"):
             raise ValueError("VIP证据只接受仓库内review/doc相对文件路径")
-        actual = (_REPO_ROOT / path).resolve()
+        actual = (path_resolver(name) if path_resolver is not None else _REPO_ROOT / path).resolve()
         if not actual.is_relative_to(_REPO_ROOT.resolve()) or hashlib.sha256(actual.read_bytes()).hexdigest() != expected:
             raise RuntimeError("VIP工程证据摘要漂移: " + name)
 

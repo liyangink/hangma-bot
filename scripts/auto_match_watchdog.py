@@ -40,8 +40,10 @@ def _repo_root():
 ROOT = _repo_root()
 # 运行态家目录：账本、会话日志、文件锁。放 runs/（gitignored、可随时清理），
 # 与 artifacts/ 的取证语义分开——运行态数据不进制品区。
-STATE = os.path.join(ROOT, "runs", "auto-match-watchdog")
-RUNTIME_CONFIG = os.path.join(ROOT, "configs", "auto-match.local.json")
+# 单房验收可独立配置、账本与解释器；默认仍使用原连续战役路径。
+STATE = os.path.abspath(os.environ.get("WATCHDOG_STATE_DIR", os.path.join(ROOT, "runs", "auto-match-watchdog")))
+RUNTIME_CONFIG = os.path.abspath(os.environ.get("WATCHDOG_CONFIG", os.path.join(ROOT, "configs", "auto-match.local.json")))
+PYTHON = os.environ.get("WATCHDOG_PYTHON", os.path.join(ROOT, ".venv", "bin", "python3"))
 LEDGER = os.path.join(STATE, "auto-match-watchdog-state.json")
 ME = "u_13495c3d79c8"
 PGREP = "run_auto_match.py --config"
@@ -173,7 +175,7 @@ def download(room_id, session_dir, *, max_attempts=2, max_elapsed_sec=None):
                 return None
             if batch in _downloaded_batches(session_dir, room_id):
                 continue
-            args = [".venv/bin/python3", "scripts/audit_tool.py", "collect-test-room",
+            args = [PYTHON, "scripts/audit_tool.py", "collect-test-room",
                     "--runtime-config", RUNTIME_CONFIG, "--room", room_id,
                     "--batch", str(batch), "--out", session_dir]
             r = sh(" ".join(shlex.quote(arg) for arg in args), cwd=ROOT)
@@ -325,7 +327,7 @@ def load_ledger():
         legacy = os.path.join(ROOT, "artifacts", "sessions", "auto-match-campaign-20260908",
                               "runtime", "auto-match-watchdog-state.json")
         os.makedirs(STATE, exist_ok=True)
-        if os.path.isfile(legacy):
+        if "WATCHDOG_STATE_DIR" not in os.environ and os.path.isfile(legacy):
             import shutil
             shutil.copyfile(legacy, LEDGER)
         else:
@@ -415,8 +417,8 @@ def restart():
     ts = time.strftime("%Y%m%d-%H%M%S")
     log = os.path.join(STATE, "session-%s.log" % ts)
     subprocess.Popen(
-        ["nohup", ".venv/bin/python3", "scripts/run_auto_match.py",
-         "--config", "configs/auto-match.local.json",
+        ["nohup", PYTHON, "scripts/run_auto_match.py",
+         "--config", RUNTIME_CONFIG,
          "--token-file", "token/global/全局自由赛token"],
         cwd=ROOT, stdout=open(log, "w"), stderr=subprocess.STDOUT,
         start_new_session=True)
@@ -437,6 +439,9 @@ def maybe_restart():
 
     注意：stopped 只拦截"续开"，不拦截"结算"——已打完的房间仍会正常入账。
     """
+    if os.environ.get("WATCHDOG_ONE_ROOM") == "1" and latest_session_log() is not None:
+        print("WATCHDOG_ONE_ROOM=1：本次会话结束后不再开房")
+        return None
     if os.environ.get("WATCHDOG_NO_RESTART") == "1":
         print("WATCHDOG_NO_RESTART=1：按指示本房结算后不再续开，托管收工")
         return None

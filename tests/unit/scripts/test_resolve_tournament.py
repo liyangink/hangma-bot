@@ -102,7 +102,7 @@ def test_generated_config_loads_in_frozen_entry(setup, mode, kind, capsys):
 @pytest.mark.parametrize("kind", ["official", "test"])
 def test_documented_p0_templates_keep_release_binding(setup, kind):
     template, token_file, output, _, _, _, args = setup
-    name = "vip-s03-rulefix-p0-approved-v1.{0}-tournament.example.json".format(kind)
+    name = "vip-s03-rulefix-p0-approved-v3.{0}-tournament.example.json".format(kind)
     original = json.loads((ROOT / "configs" / name).read_text())
     template.write_text(json.dumps(original))
     assert resolver.main(args) == 0

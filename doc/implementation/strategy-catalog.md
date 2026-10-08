@@ -1,5 +1,9 @@
 # 主线可用策略枚举
 
+## 2026-10-08：P0参赛发布包装v2
+
+**当前参赛模板为 `configs/vip-s03-rulefix-p0-approved-v3.*.example.json`，对应四个 `prebuilt/vip-s03-rulefix-p0-*-approved-v3/` 清单。** 策略枚举仍为 `vip_s03_rulefix_p0_*_v1`；v2迁移启动依赖，v3重新冻结主线更新后的源码，原公式、核心、二进制、资格及参数保持。9件批准原件随 `prebuilt/vip-s03-rulefix-p0-release-evidence-v1/` 交付，运行无需 `review/` 或 `datasets/`。旧包装保留，测试赛v2快照不重写，旧摘要不自动升级。目录和验签边界见[架构](../architecture.md#参赛发布依赖独立交付2026-10-08)。
+
 ## 2026-10-06 T194：T110-S03-E2审计工程后继
 
 **E2只减少审计同步重复编码，不改变S03公式、38核心、D1、原截止、QPS或十桌专属计算。** S03四scope v3；S02备用testroom_v12/free_v10/两赛事v4。八包绑定同183完整来源，全部旧包逐字保留并在新来源下明确拒装。正式／测试赛事只验基础接线及生命周期，实际工程房和自然切换由总筹执行；未授strict/OPERABILITY通过。

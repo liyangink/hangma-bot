@@ -1,0 +1,122 @@
+{
+  "PYTHONPATH": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-workspace/src",
+  "core_module_paths": {
+    "engine": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-workspace/src/hangma_bot/hangma/engine.py",
+    "hand_analysis": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-workspace/src/hangma_bot/hangma/hand_analysis.py",
+    "offline.replay_check": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-workspace/src/hangma_bot/offline/replay_check.py",
+    "progression": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-workspace/src/hangma_bot/hangma/progression.py",
+    "route_hu_witness": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-workspace/src/hangma_bot/hangma/route_hu_witness.py",
+    "route_transition": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-workspace/src/hangma_bot/hangma/route_transition.py",
+    "settlement": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-workspace/src/hangma_bot/hangma/settlement.py",
+    "value_analysis": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-workspace/src/hangma_bot/hangma/value_analysis.py"
+  },
+  "frozen_at_utc": "2026-10-06T16:08:53.349770+00:00",
+  "hangma_source_manifest_sha256": "4f4706b38c5c7620af651ff4729e013c0f18437d65ab19ad9a8a14fefde625e6",
+  "known_unverified_oracle_cases": [],
+  "new_tests": [
+    "tests/unit/hangma/test_v35_branch_baotou.py"
+  ],
+  "official_gold_case_count": 13,
+  "official_gold_manifest_sha256": "ddaf27bba9666613f6c245870219347d970545f979268e48248a7d837d4b506b",
+  "old_raw_changed": [],
+  "parent_formula_unchanged": true,
+  "production_changed": false,
+  "production_source_before_hash_mismatches": [],
+  "publication_remaining": [
+    "父agent审核契约/摘要并绑定新规则身份",
+    "独立源码审查",
+    "编译与包验签",
+    "正确规则世界的完整桌可靠性与影响审计"
+  ],
+  "python_path": "/Users/liyang/hangma-bot/.venv/bin/python",
+  "release_approved": false,
+  "rule_config": {
+    "base_score": 1,
+    "ruleset_version": "parent_to_bind_fixed_rule_identity",
+    "you_cai_bi_kao": false
+  },
+  "schema": "t199-p0-rule-source-freeze/1",
+  "source_changes": [
+    "src/hangma_bot/hangma/engine.py",
+    "src/hangma_bot/hangma/hand_analysis.py",
+    "src/hangma_bot/hangma/internal_types.py",
+    "src/hangma_bot/hangma/progression.py",
+    "src/hangma_bot/hangma/route_hu_witness.py",
+    "src/hangma_bot/hangma/route_transition.py",
+    "src/hangma_bot/hangma/settlement.py",
+    "src/hangma_bot/hangma/value_analysis.py",
+    "src/hangma_bot/offline/replay_check.py"
+  ],
+  "source_frozen": true,
+  "source_manifest": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/SOURCE-MANIFEST.json",
+  "source_manifest_sha256": "5654de86f962d735c162dc428c833584178576810f0a5cc3163f3c3e6a1a6e9a",
+  "test_changes": [
+    "tests/unit/hangma/official_fan_tools.py",
+    "tests/unit/hangma/test_engine.py",
+    "tests/unit/hangma/test_official_fan_matrix.py",
+    "tests/unit/hangma/test_settlement.py",
+    "tests/unit/hangma/test_value_analysis.py",
+    "tests/unit/hangma/test_value_official_oracle.py"
+  ],
+  "test_receipts": [
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/RED-V35.log",
+      "sha256": "74394c93e8488461a38a91f505d02fb999641928cca125d4f7e441f016f12b96"
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/GREEN-V35.log",
+      "sha256": "ebede7b77a386fb9dd1040b29ff676ebbda2296c22c48cd5a7056a833c57b073"
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/GREEN-T197.log",
+      "sha256": "463e8b331afbb99bc4e30e26c581b928404e86bcdd7874fc93e49b3929821996"
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/FOCUSED-WITH-OLD-ORACLE.log",
+      "sha256": "5544ffe4eca53e7d81efd599674665da21e4db6cf72a0e8bbcf491f2fffc5866"
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/REGRESSION-1.log",
+      "sha256": "3ccefcd59b44bc230efec14a1b4bc2f3970a946feed602ace959da539410edd1"
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/REGRESSION-2.log",
+      "sha256": "8ccc0aed9cec5add957063e2add59fa487670de078a7aa5d182e8ad5afc4d94a"
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/REGRESSION-3.log",
+      "sha256": "ccaf0a4509bad3059ba146ca78be91b2a723e52064bffeb4a2946dea142b06bf"
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/REGRESSION-ORACLE-REPAIR.log",
+      "sha256": "a8871e423b098a26869e0a5cebd92d590bdbb542e3d0059a99ab3dc989862bcd"
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/GREEN-V35-EXPANDED-1.log",
+      "sha256": "73fadb6642f7918e800fc41ba57b8a0f36c1e0f250919a1cc89c9adedc3855e2"
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-evidence/GREEN-V35-EXPANDED-2.log",
+      "sha256": "f739f753b4cd67d9145c6402dbfa013d64d416a4e863335becf8614bf67030f2"
+    }
+  ],
+  "verification": {
+    "T197_repro": "exit0 local2 vs official2",
+    "candidate_effect_evaluation_calls": 0,
+    "final_union": "2946 passed, 2 proven_preexisting failures, 1 skipped, 5 subtests passed; union of retained receipts, not a new whole-suite run",
+    "full_regression_original_result": "2907 passed, 41 failed, 1 skipped, 5 subtests passed in 44.23s",
+    "mechanical_candidate_score_calls": 4,
+    "new_current_oracle_tests": "97 passed in 2.34s",
+    "new_real_or_evaluation_tables": 0,
+    "official_HTTP_calls_by_subagent": 0,
+    "preexisting_failures": [
+      "test_live_event_facts.py::test_current_draw_explicit_source_does_not_require_previous_gang_event[True]",
+      "test_live_event_facts.py::test_old_or_other_seat_source_is_not_applied_to_current_draw"
+    ],
+    "preexisting_main_baseline": "root confirmed same2 failures/6passes on unmodifiedmain",
+    "repaired_test_fixture_lookup": "39 KeyError failures repaired; complete affected file140 passed in0.37s",
+    "skip": "T129 fixed frozen worktree absent; not a P0 rule assertion skip",
+    "synthetic_single_hand_rule_checks": 11
+  },
+  "workspace_path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/p0-workspace"
+}

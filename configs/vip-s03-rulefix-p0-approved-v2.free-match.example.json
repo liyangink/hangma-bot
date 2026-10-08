@@ -1,0 +1,27 @@
+{
+  "audit_raw_gzip": true,
+  "audit_root": "artifacts/sessions/T110-S03-P0/vip_s03_rulefix_p0_free_v1/audit",
+  "auto_match": {
+    "declared_max_games": 10,
+    "declared_rounds": 8,
+    "drain_grace_seconds": 45,
+    "match_busy_wait_cap_sec": 60,
+    "match_max_attempts": 5,
+    "match_min_interval_sec": 6.5,
+    "room_poll_interval_sec": 2
+  },
+  "base_url": "https://10.240.169.190:18080",
+  "discard_pacing_enabled": false,
+  "expected_policy_release_id": "0d9ebfff8a3236b147305d8f61e89be51a2f20d80e89a43318df2acce2fd04fa",
+  "expected_tournament_id": null,
+  "insecure_hosts": [
+    "10.240.169.190"
+  ],
+  "known_guide_version": 35,
+  "mode": "auto_match",
+  "source_namespace": "hangma-official",
+  "sse_enabled": true,
+  "strategy": "vip_s03_rulefix_p0_free_v1",
+  "token_env": "HM_AUTO_MATCH_TOKEN",
+  "token_kind": "official"
+}

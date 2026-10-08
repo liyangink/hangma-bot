@@ -5,9 +5,11 @@ from __future__ import annotations
 import importlib.util
 import hashlib
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 import sys
+import subprocess
 
 import pytest
 
@@ -150,6 +152,46 @@ def _terminal_session(
     )
     _audit_game(audit, f"{room}_r1_b1_t0", seat=2, scores=[-20, -10, 40, -10])
     return log, audit
+
+
+def test_one_room_accounted_session_does_not_start_another_player(monkeypatch, tmp_path, capsys):
+    """通过巡检入口确认单房验收结算后不会再次匹配。"""
+    log, audit = _terminal_session(tmp_path, "single", "a_fixture", reason="tournament_finished")
+    state = log.parent
+    ledger = state / "auto-match-watchdog-state.json"
+    ledger.write_text(json.dumps({"cumulative_total": 40, "current_lose_streak": 0,
+        "rooms": [{"room_id": "a_fixture", "session_log": str(log.relative_to(tmp_path)),
+            "audit_dir": str(audit.relative_to(tmp_path)), "room_subtotal": 40,
+            "games": [{"game_id": "a_fixture_r1_b1_t0", "seat": 2, "final_score": 40}],
+            "terminal_reason": "tournament_finished"}]}))
+    monkeypatch.setattr(watchdog, "ROOT", str(tmp_path))
+    monkeypatch.setattr(watchdog, "STATE", str(state))
+    monkeypatch.setattr(watchdog, "LEDGER", str(ledger))
+    monkeypatch.setenv("WATCHDOG_ONE_ROOM", "1")
+    monkeypatch.setattr(watchdog, "sh", lambda *_args, **_kwargs: SimpleNamespace(returncode=1))
+
+    def forbidden_player(*_args, **_kwargs):
+        raise AssertionError("单房验收不允许再启动玩家")
+
+    monkeypatch.setattr(watchdog.subprocess, "Popen", forbidden_player)
+    assert watchdog.main() == 0
+    assert "不再开房" in capsys.readouterr().out
+
+
+def test_watch_shell_uses_isolated_state_and_requested_interpreter(tmp_path):
+    """停止态通过真实壳入口读取独立账本，不触碰默认战役或启动网络玩家。"""
+    state = tmp_path / "state"
+    state.mkdir()
+    ledger = state / "auto-match-watchdog-state.json"
+    ledger.write_text(json.dumps({"cumulative_total": 17, "current_lose_streak": 0,
+                                "rooms": [], "stopped": True}))
+    before = ledger.read_bytes()
+    env = dict(os.environ, WATCHDOG_STATE_DIR=str(state), WATCHDOG_PYTHON=sys.executable,
+               WATCHDOG_ONE_ROOM="1")
+    result = subprocess.run(["bash", str(SCRIPT.with_name("auto_match_watch.sh"))],
+                            env=env, capture_output=True, text=True, timeout=10)
+    assert result.returncode == 0 and "累计 17" in result.stdout
+    assert ledger.read_bytes() == before
 
 
 def _official_game(session: Path, room: str, batch: int, *, status="finished",

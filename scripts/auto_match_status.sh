@@ -4,4 +4,4 @@
 set -u
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
-exec .venv/bin/python3 scripts/auto_match_status.py "$@"
+exec "${WATCHDOG_PYTHON:-.venv/bin/python3}" scripts/auto_match_status.py "$@"

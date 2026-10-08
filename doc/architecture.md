@@ -1,5 +1,19 @@
 # 杭麻 AI Bot 架构与运行流程
 
+## 参赛发布依赖独立交付（2026-10-08）
+
+**当前 P0 四模式的启动校验只读取程序源码和 `prebuilt/` 发布原件，可以在稀疏检出（`sparse-checkout`，仅下载并检出所选路径）下参赛。** `review/`、`datasets/`、`datamart/` 和 `game-records/` 不属于当前 P0 运行依赖。
+
+9 件资格证明、官方金例及规则契约逐字复制到 `prebuilt/vip-s03-rulefix-p0-release-evidence-v1/`，总计 215670 字节；来源为主线 `8f916b44c75403e73de97dfc420236686dd867e4`，取回日期为 2026-10-08。原件摘要和原批准内容继续复核；收据中的 `review/` 路径仅保留来源身份，不用于读取。缺失、篡改、源码漂移或范围错配仍在联网前拒绝。
+
+四模式当前使用 `prebuilt/vip-s03-rulefix-p0-*-approved-v3/` 和 `configs/vip-s03-rulefix-p0-approved-v3.*.example.json`。v2独立交付发布证明，v3重新冻结主线更新后的源码；策略枚举仍为原 P0 v1。旧 v1/v2 清单与模板保留，测试赛v2快照不重写。公式、规则核心、二进制、参数、资格和截止保持原批准身份。`participate.py` 选择 v3 模板；旧私有配置若绑定旧包，仍明确拒绝，不自动换策略。
+
+当前源码清单冻结整个`src/hangma_bot`，包括离线模块。2026-10-08快进主线后，离线`vip_eoh_generate.py`变化使v2清单拒绝启动；v3按原批准资格生成新的源码绑定。后续源码变化仍须重新核验/冻结，不能放宽摘要校验绕过旧配置错配。
+
+当前 P0 使用 `prebuilt/vip-s03-rulefix-p0-compiled-v1/` 和 S02 编译助手；可选序列模型默认使用 `prebuilt/sequence-policy-models/`。历史 VIP/S03 候选仍保留原研究证据校验，不视为当前 P0 发布包。检查及运行预热的测试使用假凭证和假 HTTP，不产生报名、到位或动作提交。
+
+实际单房验收仍由 `auto_match_watch.sh` 启动与结算。`WATCHDOG_PYTHON` 选择与发布二进制一致的 CPython 3.11，`WATCHDOG_CONFIG` 和 `WATCHDOG_STATE_DIR` 分别指定独立配置与账本；自定义账本不迁入旧战役成绩。`WATCHDOG_ONE_ROOM=1` 允许首房匹配，在会话自然结束及结算后禁止续开。默认连续战役入口保持原路径；赛事进程进行中不因巡检退出而停止。此验收覆盖共享运行链，不替代赛事阶段编排的生命周期验证。
+
 ## 参赛准备入口（2026-10-07）
 
 **正式赛与测试赛事共用 `participate.sh check` 和 `participate.sh start` 两个入口。** Mac 启动包装在 `.private/participant-runtime/` 自动准备 CPython 3.11 和依赖，复用已验证预编译件，安装指纹一致时跳过安装。它不依赖当前终端的 Python 版本；首次准备需要网络，Windows／Linux 缺完整正式包时在安装前拒绝。

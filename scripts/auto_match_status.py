@@ -18,7 +18,6 @@ import sys
 
 ME = "u_13495c3d79c8"
 PGREP = "run_auto_match.py --config"
-LEDGER = os.path.join("runs", "auto-match-watchdog", "auto-match-watchdog-state.json")
 
 
 def _repo_root():
@@ -32,6 +31,8 @@ def _repo_root():
 
 ROOT = _repo_root()
 os.chdir(ROOT)
+STATE = os.path.abspath(os.environ.get("WATCHDOG_STATE_DIR", os.path.join(ROOT, "runs", "auto-match-watchdog")))
+LEDGER = os.path.join(STATE, "auto-match-watchdog-state.json")
 
 
 def sh(cmd):
@@ -43,7 +44,7 @@ def alive():
 
 
 def latest_log():
-    logs = sorted(glob.glob(os.path.join(ROOT, "runs", "auto-match-watchdog", "session-*.log")),
+    logs = sorted(glob.glob(os.path.join(STATE, "session-*.log")),
                   key=os.path.getmtime)
     return logs[-1] if logs else None
 

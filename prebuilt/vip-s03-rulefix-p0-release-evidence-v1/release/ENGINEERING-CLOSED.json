@@ -1,0 +1,1211 @@
+{
+  "schema": "t199-P0-performance-engineering-close/1",
+  "complete": true,
+  "runtime_passed_for_covered_legal_deadline_and_fault_recovery": true,
+  "corrected_fallback_passed_for_covered_faults": true,
+  "candidate_identity": {
+    "candidate_id": "a589a37c4fa1898253bd027d626eca72cbbf22ae5a794debed2de7ae5bbfb7ae",
+    "contract_path": "review/vip-route-2026-09-30/FIXED-FRAMEWORK-CONTRACT-V3-NATURAL-PREPARATION.md",
+    "contract_sha256": "4ee18be7935430f53b84cd096767a88b88252260ecc4afd63130ccb26791efca",
+    "deps_digest": "58426462e7c91cd7b520bf5b71a7be9ae36589cf0545b6eb11d60a270335fc64",
+    "graph_schema_version": "vip-route-action-graph/3",
+    "math_backend": {
+      "fallback_reason": null,
+      "implementation": "c_grouped",
+      "native_binary": {
+        "bytes": 52552,
+        "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+      },
+      "semantics_version": "hangma-standard-grouped-v1"
+    },
+    "natural_preparation_semantics_version": "vip-natural-set-preparation/1",
+    "normal_draw_hu_payment_semantics_version": "vip-normal-draw-hu-payment/1",
+    "params": {
+      "max_local_collection_size": 8192,
+      "max_operations": 4800000,
+      "projection_limits": {
+        "max_branches": 16384,
+        "max_nodes": 8192,
+        "max_replacement_depth": 1,
+        "max_waiting_draw_witnesses": 65536
+      },
+      "route_limits": {
+        "max_expansions": 8192,
+        "max_routes_per_candidate": 128
+      },
+      "rule_config": {
+        "base_score": 1,
+        "ruleset_version": "hangma-mvp-v10-public-counts",
+        "you_cai_bi_kao": false
+      }
+    },
+    "source_manifest": {
+      "src/hangma_bot/hangma/__init__.py": {
+        "bytes": 145,
+        "sha256": "d296ef41b84366aaa7c0bc449063655f174405a28d0a74138b61f9da8e4d5b4c"
+      },
+      "src/hangma_bot/hangma/_grouped_native.c": {
+        "bytes": 19322,
+        "sha256": "778dd36debdb7d22768f937830237a11c3c23113c75b70736be3921f93d5c95b"
+      },
+      "src/hangma_bot/hangma/_public_tile_reuse.py": {
+        "bytes": 10595,
+        "sha256": "e22c0f3d7a4d38ef5f78fd7532ad963ae198b8e2914623c717af488139d8f934"
+      },
+      "src/hangma_bot/hangma/_standard.py": {
+        "bytes": 1542,
+        "sha256": "f42b4cc20b1a53bb1fa1f6157db971c6341e075d6330fcdd5da444d11b456e98"
+      },
+      "src/hangma_bot/hangma/_standard_python.py": {
+        "bytes": 14730,
+        "sha256": "6995a928be5b19405998393419f6aa50c2e65bcd3bf9a579d162e4243422a1e7"
+      },
+      "src/hangma_bot/hangma/action_families.py": {
+        "bytes": 20884,
+        "sha256": "7de1f94141de192e07addf27f0d2c62284fd9cd0f3399f4c094912d8e34b7900"
+      },
+      "src/hangma_bot/hangma/candidate_facts.py": {
+        "bytes": 19139,
+        "sha256": "2933603ac2ba342fffacb7fb486da4611536676ffb8e8e2e524acc4fe93ea1e2"
+      },
+      "src/hangma_bot/hangma/catch_play.py": {
+        "bytes": 10173,
+        "sha256": "dad2a7c6a4d83642b0a985f67d0294e60ff408e6140459138a2a211249dba693"
+      },
+      "src/hangma_bot/hangma/emergency.py": {
+        "bytes": 4153,
+        "sha256": "e8c8ab4686c29020b86490987fd9df7e1843957d40d19648288f6af4152772b7"
+      },
+      "src/hangma_bot/hangma/engine.py": {
+        "bytes": 32225,
+        "sha256": "9f39fc2e6f45eacf64ee2df7b1368782ddc8ef095e86c470a8e9a1e7ebdd19bc"
+      },
+      "src/hangma_bot/hangma/hand_analysis.py": {
+        "bytes": 27261,
+        "sha256": "1612051204f1b960989650da979ddb674d49c18606228f0fc90607e0909409ea"
+      },
+      "src/hangma_bot/hangma/interface.py": {
+        "bytes": 37378,
+        "sha256": "be6f553faf2ed5b718cc2d040fea21f9792e7758a0cd244014a793baf20a7ffc"
+      },
+      "src/hangma_bot/hangma/internal_types.py": {
+        "bytes": 9201,
+        "sha256": "7e8e6bf22778ec537fbd275179015adc513e8dd32a0ea71de50915391efdb81e"
+      },
+      "src/hangma_bot/hangma/natural_preparation.py": {
+        "bytes": 5636,
+        "sha256": "c44fa2c317fc6cd95c4805cde70116e8f9d05449f30cf2bd55e5e451eb9e570b"
+      },
+      "src/hangma_bot/hangma/observation_rules.py": {
+        "bytes": 24098,
+        "sha256": "25f4fa8bb66c881e8b7583f92aae110f099192c62cbcb8b6b5520cc33c7d0b03"
+      },
+      "src/hangma_bot/hangma/progression.py": {
+        "bytes": 44215,
+        "sha256": "edfcaf6eb41df277cd9b8b363534c3d26653964dbe989df06533f8d167c9d8bc"
+      },
+      "src/hangma_bot/hangma/progression_payload.py": {
+        "bytes": 15798,
+        "sha256": "6c7d5576360c35ed09c2ae3b4b4a9c7d05eb848d68ed8ff9058226adccca8c9a"
+      },
+      "src/hangma_bot/hangma/public_successor.py": {
+        "bytes": 21173,
+        "sha256": "75cb7032ff350a126048ce7808344d63310e8ae8561f227b37585b3beecfec8f"
+      },
+      "src/hangma_bot/hangma/public_tile_counts.py": {
+        "bytes": 35715,
+        "sha256": "b86866d7aa43a985292ec99fd39e7378b7c259e2799c21741d5fea0dbc78eb27"
+      },
+      "src/hangma_bot/hangma/route_frontier.py": {
+        "bytes": 11581,
+        "sha256": "710b8e54605c652ae6554fa0699062aed37f3a2fd2660289bcbb5e9df741745a"
+      },
+      "src/hangma_bot/hangma/route_hu_witness.py": {
+        "bytes": 8267,
+        "sha256": "438f0e524e87f54d735fc682a76e05ce9babaf9af26028612430c4ecb3e9bb8e"
+      },
+      "src/hangma_bot/hangma/route_structure.py": {
+        "bytes": 10649,
+        "sha256": "9ad86564884466001dd9321aeb1842273129d62b64ad8f7b78a683d5b08f90cb"
+      },
+      "src/hangma_bot/hangma/route_transition.py": {
+        "bytes": 72726,
+        "sha256": "fa7a1b186208bd4845fdae85a9a137fb7d590ee01b7618d3902d68dfe716f200"
+      },
+      "src/hangma_bot/hangma/settlement.py": {
+        "bytes": 11839,
+        "sha256": "c2aaf247a05cbff02e42c70f4d8f664ce6b12f42f2a4063dfd9ac428c60ced72"
+      },
+      "src/hangma_bot/hangma/special_rules.py": {
+        "bytes": 11609,
+        "sha256": "16cc575f5b73dfdebfe3729fb4147256fa457e906323fbd0c5719a591a4cdf70"
+      },
+      "src/hangma_bot/hangma/value_analysis.py": {
+        "bytes": 18400,
+        "sha256": "cb320dc8651cfb2415a3cf4770c9db7f2f339549129118c3ace7a9d7fc67553d"
+      },
+      "src/hangma_bot/kernel/actions.py": {
+        "bytes": 10754,
+        "sha256": "f598f7d5ad582858d0b9601b445ee53fef88f85c060eb26bb3aac3e2811781b9"
+      },
+      "src/hangma_bot/kernel/config.py": {
+        "bytes": 3236,
+        "sha256": "d1e68457a187d05f609ae7b9681820d5dc9c4fe39d0b90eec119f9426f1efc97"
+      },
+      "src/hangma_bot/kernel/observation.py": {
+        "bytes": 17784,
+        "sha256": "03974493d930bc22adf47d4955d47cce1dc25ba2fea9be89919b8bd46e1b94b6"
+      },
+      "src/hangma_bot/kernel/outcomes.py": {
+        "bytes": 8643,
+        "sha256": "b19fccb3a8587ad27ae27dcc96b682688895fb215c7023c8e3d637d7f03d8bc6"
+      },
+      "src/hangma_bot/policy/action_value.py": {
+        "bytes": 45125,
+        "sha256": "28229c2f18e0b72eea6d7119891b27754414382b951a1f2c1ef0bc3ada17395c"
+      },
+      "src/hangma_bot/policy/action_value_executor.py": {
+        "bytes": 106868,
+        "sha256": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb"
+      },
+      "src/hangma_bot/policy/errors.py": {
+        "bytes": 372,
+        "sha256": "98701b3af228f088eeff0b13fc5cdae3a50564b49e29410fdba565c57f8044d9"
+      },
+      "src/hangma_bot/policy/interface.py": {
+        "bytes": 3546,
+        "sha256": "430fec41eb81b5cd72e3f4c884dd8cbe7820e36252545298cf89627a0304d0fa"
+      },
+      "src/hangma_bot/policy/retry_backup.py": {
+        "bytes": 1111,
+        "sha256": "71078b5ccd2cf3fb1295a8f6f0c563778bd046b11921824dbf007fc42da2360b"
+      },
+      "src/hangma_bot/policy/route_heuristic_view.py": {
+        "bytes": 28880,
+        "sha256": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1"
+      },
+      "src/hangma_bot/policy/route_vip_heuristic.py": {
+        "bytes": 37369,
+        "sha256": "c70b469d0aa2a4871e78436434f5ef5c49c9625492690b164a8f7f93fd6b299f"
+      },
+      "src/hangma_bot/policy/safe_fallback.py": {
+        "bytes": 2352,
+        "sha256": "e6bc86c0a79f780f44c716f52a52eb980b2926bb9249861f1a3b07b58603d281"
+      }
+    },
+    "source_sha256": "bdd7d29736f1b2a00240648cbb8a837e29fbfb2b10434471272b8d8a84b190dd",
+    "view_schema_version": "vip-route-scoring-view/3"
+  },
+  "core_id": "a589a37c4fa1898253bd027d626eca72cbbf22ae5a794debed2de7ae5bbfb7ae",
+  "params": {
+    "max_local_collection_size": 8192,
+    "max_operations": 4800000,
+    "projection_limits": {
+      "max_branches": 16384,
+      "max_nodes": 8192,
+      "max_replacement_depth": 1,
+      "max_waiting_draw_witnesses": 65536
+    },
+    "route_limits": {
+      "max_expansions": 8192,
+      "max_routes_per_candidate": 128
+    },
+    "rule_config": {
+      "base_score": 1,
+      "ruleset_version": "hangma-mvp-v10-public-counts",
+      "you_cai_bi_kao": false
+    }
+  },
+  "rules_source_hash": "8be50281eeabd6c4d81090bae0aa0e1187ec947b770e2fa548e50a17486a1e58",
+  "source_sha256": "bdd7d29736f1b2a00240648cbb8a837e29fbfb2b10434471272b8d8a84b190dd",
+  "native": {
+    "execution_id": "1903f84e5dbe6c9e559e2c2d7eda64569d8be7dd5ef73455ac6404ed262c3832",
+    "compiled_manifest_sha256": "efb61f84c45c3aaffbb3fe358c0c5fe946db4cbc4a081a9e56f613228a5a3da4",
+    "compiled_manifest_pin": {
+      "bytes": 11683,
+      "sha256": "efb61f84c45c3aaffbb3fe358c0c5fe946db4cbc4a081a9e56f613228a5a3da4"
+    },
+    "actual_binary": {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/runtime-root-p0/prebuilt/vip-s03-rulefix-p0-compiled-v1/_t199_p0_candidate_a589a37c4fa1.cpython-311-darwin.so",
+      "pin": {
+        "bytes": 891128,
+        "sha256": "ef1d627e79521d4f8d78844bd20bcd174b6c526dbec4b998e28d65f0837f2e34"
+      }
+    },
+    "shared_original_helpers": {
+      "directory": "prebuilt/vip-s02-compiled-runtime-v1",
+      "manifest": {
+        "binaries": {
+          "_s02_candidate": {
+            "bytes": 869224,
+            "filename": "_s02_candidate.cpython-311-darwin.so",
+            "sha256": "f9f5ebb1716c47021e97a128eecd362c85d38cd138f55066f6cceb743d92ab8d"
+          },
+          "_s02_facts": {
+            "bytes": 112672,
+            "filename": "_s02_facts.cpython-311-darwin.so",
+            "sha256": "6814daf642eb6c50fafdfccc7a170ac113623db6c282a1bb8a7b512e1530d034"
+          },
+          "_s02_meter": {
+            "bytes": 116736,
+            "filename": "_s02_meter.cpython-311-darwin.so",
+            "sha256": "b68a4e57468ce18248a198db6d7254d9c6287497e50f4b08dd1c6171dfd46476"
+          },
+          "_s02_runtime": {
+            "bytes": 441680,
+            "filename": "_s02_runtime.cpython-311-darwin.so",
+            "sha256": "11530be92d113e0abb2ecf67b7567c150292df76e7a278a88f43e03e19014a5d"
+          }
+        },
+        "build_plan_sha256": "bba1a71b449f72c939a08d68334e8ea1044baff62b498211b6a5b9674893308f",
+        "candidate_source_sha256": "2a59cbb18aefa3d24aadf0b3df70f5a4359c204b96a3f0dc208f77d53c196f30",
+        "ext_suffix": ".cpython-311-darwin.so",
+        "generated_source_sha256": {
+          "_s02_candidate.pyx": "2c598dc3a7e2d47025bea7dcd3fad57df54291169292245c45e35da7dfb3f4b3",
+          "_s02_facts.pyx": "eafba6b90e5fa6c46fcbdf470ad632cc162f537bdf2e5ea76e6d4434e185d12a",
+          "_s02_meter.pxd": "a8afb4db5906b72c7417fc2d736efd3b11d4cef43323be09e4ae270395fd7e3c",
+          "_s02_meter.pyx": "bd5553838ade158493a471030102c57ad98d2c4654c646961e0df9e85dfb58d2",
+          "_s02_runtime.pyx": "6fa426ec83bd3beddd38be6fcadc3d15007286bd56b616edb0704e73e9d0eb17"
+        },
+        "machine": "arm64",
+        "platform": "darwin",
+        "python_cache_tag": "cpython-311",
+        "python_implementation": "cpython",
+        "schema": "vip-s02-compiled-original-runtime/1",
+        "source_sha256": {
+          "src/hangma_bot/policy/action_value_executor.py": "49cfd1a18bb8c392b2955e39cf338916c014b9523fc7fde303c450a287da5ceb",
+          "src/hangma_bot/policy/route_heuristic_view.py": "c653f24b8a2266307f58480cc61a611564a98b5ad086c2ace67b3abef8d24fc1"
+        }
+      },
+      "manifest_sha256": "56b352961e97c76f02602ece34b640557c7c90b207879455303079a2bc961119"
+    },
+    "math_backend": {
+      "fallback_reason": null,
+      "implementation": "c_grouped",
+      "native_binary": {
+        "bytes": 52552,
+        "sha256": "c475cfd69a86317a2b42bde8085e9e14aa2a0c456a8dae656935c6ba45a18dd6"
+      },
+      "semantics_version": "hangma-standard-grouped-v1"
+    }
+  },
+  "draft_package_id": "8a7fae152cbb533bc68f7a34a6592c69b4737eb51ee38f6d6316968237bea2d5",
+  "draft_offline_validation_only": true,
+  "receipts": {
+    "inputs": {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/INPUTS.json",
+      "pin": {
+        "bytes": 77668569,
+        "sha256": "e203bb24d62ea03f69b9d2158ff300b73f80446ebda1f3ced897bcc576b6993c"
+      }
+    },
+    "full_plan_equivalence": {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/reference-002/CLOSED.json",
+      "pin": {
+        "bytes": 86127,
+        "sha256": "aff24aef8d528a2c9b85f57b216f0ef3f3837629a6af77330a4715d0474c5b8a"
+      }
+    },
+    "serial_original_and_ten_full_scoring_failure": {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/deadlines-002/CLOSED.json",
+      "pin": {
+        "bytes": 50835,
+        "sha256": "d7d9539be25b8c3d71522cb09d290da63c662a3bcc646fb1d366ee374af1cc67"
+      }
+    },
+    "production_timely_legal": {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/timely-legal-002/CLOSED.json",
+      "pin": {
+        "bytes": 86612,
+        "sha256": "aca8c81f61c0808e42e93b734baf94c2bd49c8233414b6054024620f815806ea"
+      }
+    },
+    "corrected_fallback_logic": {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/corrected-fallback-003/CLOSED.json",
+      "pin": {
+        "bytes": 20803,
+        "sha256": "fbf3260b47dffd30dbe44bcab716c036dffea05f3ac6791fb031a6af3ddee61a"
+      }
+    },
+    "fake_session_first_attempt_failure": {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/timely-legal-001/CLOSED.json",
+      "pin": {
+        "bytes": 45142,
+        "sha256": "df02b0fe8c6471b916e53ac42ab6e9829f4b1c3e11784bd3dc235688f5e12e27"
+      }
+    }
+  },
+  "original_requests": 39,
+  "original_input_pins": [
+    {
+      "label": "original:dec-20fcda636b794351a6dba6d4c311a99c",
+      "decision_id": "dec-20fcda636b794351a6dba6d4c311a99c",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t169-closed-state-pressure-1/dec-20fcda636b794351a6dba6d4c311a99c.json",
+      "origin_position": 0,
+      "record_sha256": "0eebc9c18f9d8e665243a80d5904d5f33e4aac05dc4769704db5a15615df4700",
+      "original_monotonic_ns": 1600924439273708,
+      "original_remaining_seconds": [
+        0.20119308354333043,
+        0.2913446668535471,
+        0.4265720418188721
+      ],
+      "origin_pin": {
+        "bytes": 256851,
+        "sha256": "41401a8cf8c8034bb9519b2ddad4ef0882297ee858c854290215d4b6152ffcb3"
+      }
+    },
+    {
+      "label": "original:dec-2fe50f01fb074207a532ff19b1aebc33",
+      "decision_id": "dec-2fe50f01fb074207a532ff19b1aebc33",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t169-closed-state-pressure-1/dec-2fe50f01fb074207a532ff19b1aebc33.json",
+      "origin_position": 0,
+      "record_sha256": "66d7b717ccb61836e626f81da10156d577aaec2a0df1c11930847578e583d8ad",
+      "original_monotonic_ns": 1600672412457291,
+      "original_remaining_seconds": [
+        0.14208764606155455,
+        0.2004769544582814,
+        0.288060916820541
+      ],
+      "origin_pin": {
+        "bytes": 49261,
+        "sha256": "b4761b0b6e5cef9d5dc526427ad7bdd87880ea68ca10f9007db79d32cc991933"
+      }
+    },
+    {
+      "label": "original:dec-8a3a6d565cf9448e9acdcc164b721c39",
+      "decision_id": "dec-8a3a6d565cf9448e9acdcc164b721c39",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t169-closed-state-pressure-1/dec-8a3a6d565cf9448e9acdcc164b721c39.json",
+      "origin_position": 0,
+      "record_sha256": "c027aae33651f347cd08ed46cdaa3a4c2cba48dd5d017bf874195e848405b1af",
+      "original_monotonic_ns": 1600939640500333,
+      "original_remaining_seconds": [
+        0.2629809663631022,
+        0.37141586979851127,
+        0.5340682247187942
+      ],
+      "origin_pin": {
+        "bytes": 552691,
+        "sha256": "2e9a56214f4e7027225a0b140d7db8570b61a6eeffa17b08c99a0fb3c9980875"
+      }
+    },
+    {
+      "label": "original:dec-91d47edbbe914e0e9129f1ac6273bb82",
+      "decision_id": "dec-91d47edbbe914e0e9129f1ac6273bb82",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t169-closed-state-pressure-1/dec-91d47edbbe914e0e9129f1ac6273bb82.json",
+      "origin_position": 0,
+      "record_sha256": "6ac9ec08764b0f728a454bffcc57c7911e4868a3771a0917453c1fdb53a38fc3",
+      "original_monotonic_ns": 1600672415591333,
+      "original_remaining_seconds": [
+        0.10597170842811465,
+        0.15076284180395305,
+        0.21794954198412597
+      ],
+      "origin_pin": {
+        "bytes": 50058,
+        "sha256": "fef25cd5c95ea8d8084094485b1a280004be6a7fa362c24114cc355922973583"
+      }
+    },
+    {
+      "label": "original:dec-b95e44ad398c4dc0a6e8e9a4cc4b794e",
+      "decision_id": "dec-b95e44ad398c4dc0a6e8e9a4cc4b794e",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t169-closed-state-pressure-1/dec-b95e44ad398c4dc0a6e8e9a4cc4b794e.json",
+      "origin_position": 0,
+      "record_sha256": "f46434a52798fb6042eccaeb2356fef0c0825f22efe143708c2d404c8fa222e8",
+      "original_monotonic_ns": 1600930617651291,
+      "original_remaining_seconds": [
+        0.09922153642401099,
+        0.14230911736376584,
+        0.20694048865698278
+      ],
+      "origin_pin": {
+        "bytes": 594465,
+        "sha256": "bfcf6bf73cfce9cc50682315369946ed669855b8361e4267cf31e72b30ede8cb"
+      }
+    },
+    {
+      "label": "original:dec-bbb3743075a04d5a9fb4756866aed31d",
+      "decision_id": "dec-bbb3743075a04d5a9fb4756866aed31d",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t169-closed-state-pressure-1/dec-bbb3743075a04d5a9fb4756866aed31d.json",
+      "origin_position": 0,
+      "record_sha256": "05c2dff8a5161d143254dffd88a005cfcde35d54a3f76ed85a6ef44d6644d2ff",
+      "original_monotonic_ns": 1601181005223916,
+      "original_remaining_seconds": [
+        0.08132635126821697,
+        0.1170464581809938,
+        0.17062661843374372
+      ],
+      "origin_pin": {
+        "bytes": 533389,
+        "sha256": "855e5388086abe16fc50d4615cfe489dbb327d04fd55437fedb867f9ad4595a2"
+      }
+    },
+    {
+      "label": "original:dec-be70526e7e1843be99aafa6c281a253c",
+      "decision_id": "dec-be70526e7e1843be99aafa6c281a253c",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t169-closed-state-pressure-1/dec-be70526e7e1843be99aafa6c281a253c.json",
+      "origin_position": 0,
+      "record_sha256": "f5ca43126b674bbbe4ecfcddb850fb1740d096c941e2c3b09de044c60ede78ae",
+      "original_monotonic_ns": 1601056854223583,
+      "original_remaining_seconds": [
+        0.015866922680288553,
+        0.0253393417224288,
+        0.03954797005280852
+      ],
+      "origin_pin": {
+        "bytes": 228018,
+        "sha256": "161b64c1cd8eb7b1c6212a9658286bb89fbc00bf70eb14e9a4f4d150715ce04a"
+      }
+    },
+    {
+      "label": "original:dec-b09e4f15e01d4a79917736fb94ccc7bc",
+      "decision_id": "dec-b09e4f15e01d4a79917736fb94ccc7bc",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 0,
+      "record_sha256": "5f87f3eede12f563f8af2bda1037bec19a17894df67417fd5b632ea9427adf89",
+      "original_monotonic_ns": 1645231710971166,
+      "original_remaining_seconds": [
+        0.22024945123121142,
+        0.30907679814845324,
+        0.4423178182914853
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-4d15b66cc2c04cb0af542cf7e2b0acfd",
+      "decision_id": "dec-4d15b66cc2c04cb0af542cf7e2b0acfd",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 8,
+      "record_sha256": "454ddb07283f274c19a7824a8494af3f4226be4db6944cc4f994a08fdccb6fba",
+      "original_monotonic_ns": 1645232608824500,
+      "original_remaining_seconds": [
+        1.3926702705211937,
+        1.9726309122052044,
+        2.8425718748476356
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-377e3617e64c440998f7ccacef5c6df1",
+      "decision_id": "dec-377e3617e64c440998f7ccacef5c6df1",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 16,
+      "record_sha256": "48325335dc64a486cca66de9ec86f11677b24e8f39d17bbff48e7c56ff2b5e2a",
+      "original_monotonic_ns": 1645235459191666,
+      "original_remaining_seconds": [
+        0.17626894148997962,
+        0.2475010345224291,
+        0.35434917407110333
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-19a46e28bc4d476f933ff5f595bf9309",
+      "decision_id": "dec-19a46e28bc4d476f933ff5f595bf9309",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 23,
+      "record_sha256": "367e9fc7bd67ff77ac49b11091b0bb63e0e11ab08ef4c0eebb98359d1eab7364",
+      "original_monotonic_ns": 1645238043740916,
+      "original_remaining_seconds": [
+        0.14033410791307688,
+        0.19908855110406876,
+        0.2872202158905566
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-ca292c564adf4e5aa37d604b6b3df79a",
+      "decision_id": "dec-ca292c564adf4e5aa37d604b6b3df79a",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 31,
+      "record_sha256": "0148785490a675f0389bdfc1712fdd21103fb1ed57db1e96348ac6eac5799e52",
+      "original_monotonic_ns": 1645238809296250,
+      "original_remaining_seconds": [
+        1.4169008743483573,
+        1.99685995769687,
+        2.866798582719639
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-7d28f1f82deb458dad38fce53ed9c447",
+      "decision_id": "dec-7d28f1f82deb458dad38fce53ed9c447",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 39,
+      "record_sha256": "f35259f0fa3423add785d208d6faec89ca3180bf0f05d93fe744a213355e1b31",
+      "original_monotonic_ns": 1645241242435041,
+      "original_remaining_seconds": [
+        0.4118860769085586,
+        0.5774639574810863,
+        0.8258307785727084
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-8b1e970b01304926bfbbb968a21b70ad",
+      "decision_id": "dec-8b1e970b01304926bfbbb968a21b70ad",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 46,
+      "record_sha256": "76173f6f25620c16fcff591f8f91ed1a4255af0f1ee558e9c76ed7db3b65d6dd",
+      "original_monotonic_ns": 1645243910823750,
+      "original_remaining_seconds": [
+        0.38835796946659684,
+        0.5445241907145828,
+        0.7787735227029771
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-2b21b94385a4468fafbc1f6feab4dd70",
+      "decision_id": "dec-2b21b94385a4468fafbc1f6feab4dd70",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 53,
+      "record_sha256": "c812a2347e77f38bccc2aba32b8c427d4b30281883e476c6081a07f58a00cbf6",
+      "original_monotonic_ns": 1645246320232875,
+      "original_remaining_seconds": [
+        0.23343671904876828,
+        0.327644006581977,
+        0.4689549377653748
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-ad7112265a87491ea584fead4c36d3c2",
+      "decision_id": "dec-ad7112265a87491ea584fead4c36d3c2",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 60,
+      "record_sha256": "7a5cdb3735e2a5e90b32b131819f974538e992bf7793500635346703a439dbc0",
+      "original_monotonic_ns": 1645247115591916,
+      "original_remaining_seconds": [
+        0.33535499568097293,
+        0.4703332104254514,
+        0.6728005323093385
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-17ced7ab1c1148699df7f1df83179a1b",
+      "decision_id": "dec-17ced7ab1c1148699df7f1df83179a1b",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 68,
+      "record_sha256": "dffb77064e616040530dd2e23b168d8d3942f109ae35e7a2d0152478073db7d2",
+      "original_monotonic_ns": 1645248217165333,
+      "original_remaining_seconds": [
+        1.4171885624527931,
+        1.9971501042600721,
+        2.8670924168545753
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-89a6a9f5b71f41268aec43e144d0ed18",
+      "decision_id": "dec-89a6a9f5b71f41268aec43e144d0ed18",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t183-baotou-wait-case-a40864715552-1/WINDOW-AUDIT.jsonl",
+      "origin_position": 76,
+      "record_sha256": "36e578ce5d54d38a9b3734df4a524e54db6de366fabac249e49843dee54ce74d",
+      "original_monotonic_ns": 1645250525559041,
+      "original_remaining_seconds": [
+        0.4277276578359306,
+        0.5996604873798788,
+        0.8575597314629704
+      ],
+      "origin_pin": {
+        "bytes": 1516923,
+        "sha256": "6ba3c6a20beec5a700d95810983b63b3b693402bcdcd3c48d9ba01a08abe6b3b"
+      }
+    },
+    {
+      "label": "original:dec-6a3765b826b04c8cbee4b615ccacd3a2",
+      "decision_id": "dec-6a3765b826b04c8cbee4b615ccacd3a2",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t184-white-strata-and-strong-gap-1/OPENING-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 0,
+      "record_sha256": "1a0bbf9a2484ce1eebe1c036c5da41638ab067943f6db27bd484fd8bd9750a4e",
+      "original_monotonic_ns": 1624191139498250,
+      "original_remaining_seconds": [
+        0.9736421455163509,
+        1.5536318372469395,
+        2.4236163748428226
+      ],
+      "origin_pin": {
+        "bytes": 1050663,
+        "sha256": "5df0368c00f4c45d8c9bd80f1a768acca1988a72c647ba0375afbacf862f3b3a"
+      }
+    },
+    {
+      "label": "original:dec-701312df378a4c0d976e563a663a1a2a",
+      "decision_id": "dec-701312df378a4c0d976e563a663a1a2a",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 0,
+      "record_sha256": "ad9c1b085cf2c82819a0e815c542e858263546d55e9adc09431432059f795c1e",
+      "original_monotonic_ns": 1645837883155291,
+      "original_remaining_seconds": [
+        1.272474646102637,
+        1.8524385043419898,
+        2.7223842919338495
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-f630a5efef1f4aea97c60519ad35e17f",
+      "decision_id": "dec-f630a5efef1f4aea97c60519ad35e17f",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 2,
+      "record_sha256": "1c3faa5ffd35ae6926f2ebfba231b5056aea212621b6306be9839ba85324de3f",
+      "original_monotonic_ns": 1645835926342875,
+      "original_remaining_seconds": [
+        1.1946445410139859,
+        1.774582191137597,
+        2.6444886659737676
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-219ca16bccf848daa61c3042ab6341a1",
+      "decision_id": "dec-219ca16bccf848daa61c3042ab6341a1",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 4,
+      "record_sha256": "28510d36a00728ed7bf1a7b186314895c38fd81a2d87ad05c11202c0fd4e628b",
+      "original_monotonic_ns": 1645838649930833,
+      "original_remaining_seconds": [
+        1.2694439375773072,
+        1.8494000958744437,
+        2.7193343329709023
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-dae446bd202549b1abd0e28a77ad7107",
+      "decision_id": "dec-dae446bd202549b1abd0e28a77ad7107",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 6,
+      "record_sha256": "90b407ece87a937b369fd6ca2189bd786617cbcccb727c278fa2efe5aadc9377",
+      "original_monotonic_ns": 1645833184788333,
+      "original_remaining_seconds": [
+        1.2617133329622447,
+        1.841703383019194,
+        2.7116884579882026
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-6045fe76288c42f38f1a791560844440",
+      "decision_id": "dec-6045fe76288c42f38f1a791560844440",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 8,
+      "record_sha256": "62b3503690e8dc33a9add5fc72380fda3abdca2186b229d15a4ab3dfc5ee25d1",
+      "original_monotonic_ns": 1645839103600833,
+      "original_remaining_seconds": [
+        1.257331999950111,
+        1.8372953832149506,
+        2.7072404578793794
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-3c59f3adec8c4eb2af820247ca0c04ae",
+      "decision_id": "dec-3c59f3adec8c4eb2af820247ca0c04ae",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 10,
+      "record_sha256": "3501bc4f030c182b1a69ae9cd77ea597fb284798000b981799a835c6ab2c9de8",
+      "original_monotonic_ns": 1645833504958875,
+      "original_remaining_seconds": [
+        1.2920848533976823,
+        1.8720757784321904,
+        2.7420621658675373
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-334a2285d94b4af4b0feaf2cefac9b12",
+      "decision_id": "dec-334a2285d94b4af4b0feaf2cefac9b12",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 12,
+      "record_sha256": "932e95d8041538ca5da2d1fcef65d58e9913f65450b5c99758ab96b7d1a1b820",
+      "original_monotonic_ns": 1645836553177541,
+      "original_remaining_seconds": [
+        1.3011052710935473,
+        1.8810692795086652,
+        2.7510152920149267
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-d5a894295f6b4c6faceceaee2392b0db",
+      "decision_id": "dec-d5a894295f6b4c6faceceaee2392b0db",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 14,
+      "record_sha256": "5d7ab302b0400dca0bb8443513e270b00bfdfb8ba6587c1603394bc191e71f16",
+      "original_monotonic_ns": 1645842671681416,
+      "original_remaining_seconds": [
+        1.2316755214706063,
+        1.8116353964433074,
+        2.681575208902359
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-13e3df8678414039bb86f28265af2210",
+      "decision_id": "dec-13e3df8678414039bb86f28265af2210",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 16,
+      "record_sha256": "33c5ebc9b7a4d968eca4246814577aad84d10ebdd2dab1ec3b2f68a40bfc5005",
+      "original_monotonic_ns": 1645838237581291,
+      "original_remaining_seconds": [
+        1.286002000560984,
+        1.865950217237696,
+        2.7358725420199335
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-5a1403d9a4164a77bc6831ce9fc3d18c",
+      "decision_id": "dec-5a1403d9a4164a77bc6831ce9fc3d18c",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 18,
+      "record_sha256": "0903661dd0e8e3121f8181e16f1e96864a50f24a5675c76992330f8b4e7bea39",
+      "original_monotonic_ns": 1645833849759708,
+      "original_remaining_seconds": [
+        1.2808357081376016,
+        1.8608256080187857,
+        2.7308104580733925
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-f29fc9106bf344e4bb0ae7fb1e1cd1bb",
+      "decision_id": "dec-f29fc9106bf344e4bb0ae7fb1e1cd1bb",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 20,
+      "record_sha256": "3515f77caecd7bf3e501c5b163bf0de4ef3d7b1276f875cf3cab7c1bf8210795",
+      "original_monotonic_ns": 1646676324313666,
+      "original_remaining_seconds": [
+        1.2513629170134664,
+        1.8313489169813693,
+        2.7013279169332236
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-f85634d94f844a45abee6fcac653b8dd",
+      "decision_id": "dec-f85634d94f844a45abee6fcac653b8dd",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 22,
+      "record_sha256": "953ceb18c45ef53cce6ddfdcfabbf9a34925e3aebe28c0dbbd87ec0509fc8ae4",
+      "original_monotonic_ns": 1646682920625208,
+      "original_remaining_seconds": [
+        1.2806346041616052,
+        1.8605983625166118,
+        2.7305439999327064
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-2f2db014f99d45fb9a3bcfc0484305da",
+      "decision_id": "dec-2f2db014f99d45fb9a3bcfc0484305da",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 24,
+      "record_sha256": "8ff439de82aa03457817ffcf9809ac503eb45f627037e2fde8586cc7cbc47963",
+      "original_monotonic_ns": 1646679598773541,
+      "original_remaining_seconds": [
+        1.2898142714984715,
+        1.869752746541053,
+        2.7396604588720948
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-71394f03934c482190bf33105d7075cf",
+      "decision_id": "dec-71394f03934c482190bf33105d7075cf",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 26,
+      "record_sha256": "fc6927fc83bb99a388438062b68ec64b659d2759d5f0825f627c0f9f01d854b4",
+      "original_monotonic_ns": 1646680374856666,
+      "original_remaining_seconds": [
+        1.2100932921748608,
+        1.790041025262326,
+        2.659962625009939
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-8c46685034e44c8b8e55156bb310d43e",
+      "decision_id": "dec-8c46685034e44c8b8e55156bb310d43e",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 28,
+      "record_sha256": "1d6833aceaf731f8b8c1e7a8abe4dbaa8cac56658c8c5d9738f6bbc14133c006",
+      "original_monotonic_ns": 1646676679467625,
+      "original_remaining_seconds": [
+        1.2583620410878211,
+        1.8383525910321623,
+        2.708338415948674
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-ac7c5144aa654121be36828f53158a99",
+      "decision_id": "dec-ac7c5144aa654121be36828f53158a99",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 30,
+      "record_sha256": "03f9b66cfee3d2f52ebe1d80f9eef80e79aba9f0c93949323699bbcde3d08b94",
+      "original_monotonic_ns": 1646677044179375,
+      "original_remaining_seconds": [
+        0.8946797915268689,
+        1.4746707249432802,
+        2.344657124951482
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-9dd6a5e02594465e8b9de04ba76ff9dd",
+      "decision_id": "dec-9dd6a5e02594465e8b9de04ba76ff9dd",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 32,
+      "record_sha256": "0bd69f77236a6fa359c5fd506b6a9a3813d549a3434372ff759d8d7d1805a89d",
+      "original_monotonic_ns": 1646682534144958,
+      "original_remaining_seconds": [
+        1.257384083000943,
+        1.8373478329740465,
+        2.7072934578172863
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-9662353ccf1a4390b0d7a4c6973d4625",
+      "decision_id": "dec-9662353ccf1a4390b0d7a4c6973d4625",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 34,
+      "record_sha256": "b549a876fe4479e43ec40ec16f3382ab811cd6a24ab644aa192ce1f6e34477eb",
+      "original_monotonic_ns": 1646679043044041,
+      "original_remaining_seconds": [
+        1.2713095005601645,
+        1.8512720172293484,
+        2.7212157920002937
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-3c871dbb534241f9b2e2e225b7328c82",
+      "decision_id": "dec-3c871dbb534241f9b2e2e225b7328c82",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 36,
+      "record_sha256": "1667e422dd049a4c5389e222b847ffa2814b63099e2e1befa830fd52f0864e3d",
+      "original_monotonic_ns": 1646677463830875,
+      "original_remaining_seconds": [
+        1.2503020626027137,
+        1.8302931876387447,
+        2.7002798749599606
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    },
+    {
+      "label": "original:dec-429e6460551e46c7b8e08b9476aef5da",
+      "decision_id": "dec-429e6460551e46c7b8e08b9476aef5da",
+      "origin": "/Users/liyang/hangma-bot/review/vip-route-2026-09-30/evidence/t185-evidence-prioritized-joker-evolution-1/SUPPLEMENT-ORIGINAL-AUDIT.jsonl",
+      "origin_position": 38,
+      "record_sha256": "b37b74f79661bb693074da0ece275d8a31cb725fe8c45058d3a32c7937826eed",
+      "original_monotonic_ns": 1646681323881500,
+      "original_remaining_seconds": [
+        1.2524184370413423,
+        1.8323804454412311,
+        2.702323457924649
+      ],
+      "origin_pin": {
+        "bytes": 21920979,
+        "sha256": "114ab02399aed412366b6d8773c77b4e982f8f0580831b66ea8cb0117fad94a8"
+      }
+    }
+  ],
+  "serial_original": {
+    "full_plans_exact": 39,
+    "before_original_fallback": 39,
+    "max_rules_and_IPC_ms": 258.33637500181794,
+    "minimum_fallback_margin_ms": 1.5591252595186234,
+    "minimum_latest_send_margin_ms": 27.98434509895742
+  },
+  "original_two_ten_bursts": {
+    "actual_local_actions": 20,
+    "timely_legal_actions": 20,
+    "full_scoring": 14,
+    "explicit_budget_fallback": 6,
+    "minimum_latest_send_margin_ms": 1166.479374980554
+  },
+  "nominal": {
+    "public_heavy": 18,
+    "P0_gold": 13,
+    "full_scoring": 31,
+    "timely_legal_actions": 31,
+    "minimum_latest_send_margin_ms": 434.5894588623196,
+    "historical_remaining_budget_not_available": true
+  },
+  "corrected_faults": {
+    "logic_cases": 9,
+    "logic_local_attempts": 10,
+    "gold_real_SystemClock_rule_failures": 2,
+    "gold_tags": [
+      "SYN03-six-natural-pairs-white",
+      "SYN11-chain-four-white-formula"
+    ],
+    "explicit_rejection_excludes_attempted_action": true,
+    "ambiguous_no_repeat": true,
+    "original_deadline_not_extended": true,
+    "fallback_003_positive_case_label_correction": "其SYN06实际也是负分支；真阳性由timely-legal-002的SYN03补齐，原件未改"
+  },
+  "three_degradation_kinds": {
+    "isolated_choose_original_ten_deadline": "原deadlines-002完整评分请求10个DEADLINE，0dispatch；原失败保留，不授全评分",
+    "production_budget_skip": "生产动作循环两个十桌组各3窗按原增强截止跳过条件事实并及时合法保底",
+    "intentional_enhancement_fault": "编译评分/增强规则故障注入独立合法保底；额外真时钟2例policy_failures=2为预期负例"
+  },
+  "actual_local_actions_in_final_real_clock_probe": 53,
+  "real_clock_full_scoring_completed": 45,
+  "resource_terminal": {
+    "submitted": 47,
+    "dispatched": 47,
+    "completed": 45,
+    "discarded": 0,
+    "rejected": 0,
+    "faults": 0,
+    "policy_failures": 2,
+    "process_starts": 10,
+    "restarts": 0,
+    "peak_owned": 7,
+    "peak_pending": 0,
+    "peak_transport": 10,
+    "transport_inflight": 0,
+    "late_reap_inflight": 0,
+    "late_reap_threads_alive": 0,
+    "transport_threads_alive": 0,
+    "owned": 0,
+    "pending": 0,
+    "active": 0,
+    "ready": 0,
+    "live_processes": 0,
+    "current": 0,
+    "bound_games": 0,
+    "releasing_games": 0,
+    "closed": true
+  },
+  "resources_released": true,
+  "worker_pids": [
+    {
+      "pid": 50187,
+      "cpu_nice": 0
+    },
+    {
+      "pid": 50193,
+      "cpu_nice": 0
+    },
+    {
+      "pid": 50185,
+      "cpu_nice": 0
+    },
+    {
+      "pid": 50184,
+      "cpu_nice": 0
+    },
+    {
+      "pid": 50183,
+      "cpu_nice": 0
+    },
+    {
+      "pid": 50192,
+      "cpu_nice": 0
+    },
+    {
+      "pid": 50188,
+      "cpu_nice": 0
+    },
+    {
+      "pid": 50186,
+      "cpu_nice": 0
+    },
+    {
+      "pid": 50190,
+      "cpu_nice": 0
+    },
+    {
+      "pid": 50191,
+      "cpu_nice": 0
+    }
+  ],
+  "all_workers_cpu_nice": 0,
+  "root_after": {
+    "manifest_pin": {
+      "bytes": 64313,
+      "sha256": "5f68f80874e32fd179ef8599141992b52fb0bd630ab633f5fd02836c83920a34"
+    },
+    "verified_files": 304,
+    "changed": []
+  },
+  "all_attempt_costs": [
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/corrected-fallback-001/CLOSED.json",
+      "pin": {
+        "bytes": 10344,
+        "sha256": "f2b84bab44deaa64219886a44064eead459bf0e2462877128f32e1626f70f845"
+      },
+      "complete": false,
+      "actual_injected_native_score_calls": 1,
+      "local_attempts": 1
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/corrected-fallback-002/CLOSED.json",
+      "pin": {
+        "bytes": 13117,
+        "sha256": "2d13811d1bf825a7f984bf9f1c632875fd7712edc4b2956c97b3b6944959e29e"
+      },
+      "complete": false,
+      "actual_injected_native_score_calls": 2,
+      "local_attempts": 3
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/corrected-fallback-003/CLOSED.json",
+      "pin": {
+        "bytes": 20803,
+        "sha256": "fbf3260b47dffd30dbe44bcab716c036dffea05f3ac6791fb031a6af3ddee61a"
+      },
+      "complete": true,
+      "actual_injected_native_score_calls": 5,
+      "local_attempts": 10
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/deadlines-002/CLOSED.json",
+      "pin": {
+        "bytes": 50835,
+        "sha256": "d7d9539be25b8c3d71522cb09d290da63c662a3bcc646fb1d366ee374af1cc67"
+      },
+      "complete": false,
+      "actual_service_choose": 49,
+      "actual_dispatched": 39,
+      "actual_full_scoring_completed": 39
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/reference-002/CLOSED.json",
+      "pin": {
+        "bytes": 86127,
+        "sha256": "aff24aef8d528a2c9b85f57b216f0ef3f3837629a6af77330a4715d0474c5b8a"
+      },
+      "complete": true,
+      "actual_choose_attempts": 140,
+      "actual_candidate_score_calls": 140
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/timely-legal-001/CLOSED.json",
+      "pin": {
+        "bytes": 45142,
+        "sha256": "df02b0fe8c6471b916e53ac42ab6e9829f4b1c3e11784bd3dc235688f5e12e27"
+      },
+      "complete": false,
+      "audited_full_scoring_count": 45,
+      "actual_dispatched": 47,
+      "actual_full_scoring_completed": 45
+    },
+    {
+      "path": "/Users/liyang/hangma-bot/.private/t199-four-step-execution/runtime-workspace/performance-p0/timely-legal-002/CLOSED.json",
+      "pin": {
+        "bytes": 86612,
+        "sha256": "aca8c81f61c0808e42e93b734baf94c2bd49c8233414b6054024620f815806ea"
+      },
+      "complete": true,
+      "audited_full_scoring_count": 45,
+      "actual_dispatched": 47,
+      "actual_full_scoring_completed": 45
+    }
+  ],
+  "full_ten_scoring_admitted": false,
+  "real_HTTP_submissions_verified": false,
+  "first_real_room_confirmation_pending": true,
+  "scope_lifecycle_SSE_409_evidence_reused_same_code": true,
+  "all_rule_trajectories_covered": false,
+  "HTTP_Token_tests_rooms": 0,
+  "qualification_package_changed": false,
+  "source_tool_pin": {
+    "bytes": 8050,
+    "sha256": "0f72e5221201dbab41ecb5148950edb97dcee7110052c2e73671696347f435b2"
+  }
+}

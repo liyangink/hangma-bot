@@ -13,6 +13,7 @@ import urllib.error
 import urllib.request
 
 import pytest
+from hangma_bot.bootstrap import build_runtime, runtime_config_from_mapping
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -28,7 +29,7 @@ def setup(tmp_path, monkeypatch):
         pytest.skip("现有正式预编译包只覆盖 macOS arm64 CPython 3.11")
     (tmp_path / "configs").mkdir()
     for kind in ("official", "test"):
-        name = f"vip-s03-rulefix-p0-approved-v1.{kind}-tournament.example.json"
+        name = f"vip-s03-rulefix-p0-approved-v3.{kind}-tournament.example.json"
         shutil.copyfile(ROOT / "configs" / name, tmp_path / "configs" / name)
         monkeypatch.delenv(f"HM_{kind.upper()}_TOURNAMENT_TOKEN", raising=False)
     token_file = tmp_path / "input.token"
@@ -153,6 +154,69 @@ def test_held_identity_lock_rejects_a_second_process_before_reading_token(setup)
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         assert participate.main(["check"], root=root) == 2
     assert not requests
+
+
+@pytest.mark.parametrize("kind", ["official", "test"])
+def test_check_does_not_read_offline_evidence_directories(setup, monkeypatch, kind):
+    """真实参赛配置必须在离线目录不可读时完成发布校验和赛事查询。"""
+    root, token_file, _, requests = setup
+    original_open = Path.open
+
+    def runtime_open(path, *args, **kwargs):
+        if path.is_relative_to(ROOT):
+            relative = path.relative_to(ROOT)
+            assert relative.parts[0] not in {"review", "datasets", "datamart", "game-records"}, (
+                "参赛入口读取了离线目录: " + str(relative)
+            )
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", runtime_open)
+    suffix = ["--test"] if kind == "test" else []
+    assert participate.main(["check", "--token-file", str(token_file), *suffix], root=root) == 0
+    assert [request.selector for request in requests] == ["/api/me", "/api/tournaments/me/rules"]
+
+
+@pytest.mark.parametrize("failure", ["missing", "modified"])
+def test_check_rejects_missing_or_modified_published_evidence_before_network(setup, monkeypatch, failure):
+    """离线目录退出运行依赖后，发布原件缺失或篡改仍必须在联网前拒绝。"""
+    root, token_file, _, requests = setup
+    evidence = ROOT / "prebuilt/vip-s03-rulefix-p0-release-evidence-v1/NATIVE-MECHANICAL-CLOSED.json"
+    original_open = Path.open
+
+    def evidence_open(path, *args, **kwargs):
+        if path == evidence:
+            if failure == "missing":
+                raise FileNotFoundError("发布原件缺失")
+            with original_open(path, "rb") as handle:
+                return io.BytesIO(handle.read() + b" ")
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", evidence_open)
+    assert participate.main(["check", "--token-file", str(token_file)], root=root) == 2
+    assert not requests
+    assert not (root / ".private/participate/official/participant.json").exists()
+
+
+@pytest.mark.asyncio
+async def test_published_test_tournament_package_preheats_actual_policy_workers(setup):
+    """稀疏源码树装配真实编译策略，预热十个专属计算进程；不运行赛事。"""
+    root, _, _, _ = setup
+    data = json.loads((root / "configs/vip-s03-rulefix-p0-approved-v3.test-tournament.example.json").read_text())
+    data.pop("token_env", None)
+    data.update(token=SECRET, base_url="https://platform.invalid", insecure_hosts=[],
+                expected_tournament_id="t_fixture", audit_root=str(root / "audit"))
+    unit = build_runtime(runtime_config_from_mapping(data))
+    try:
+        assert unit.compute is not None
+        await unit.compute.start()
+        resources = unit.compute.snapshot()
+        assert resources["ready"] == resources["live_processes"] == 10
+        assert resources["faults"] == 0
+    finally:
+        await unit.compute.close()
+        await unit.session.aclose()
+        await unit.sink.aclose(timeout_seconds=2.0)
+    assert unit.compute.snapshot()["live_processes"] == 0
 
 
 def test_shell_rejects_unsupported_platform_before_installing_anything(tmp_path):
