@@ -638,7 +638,8 @@ def build_vip_eoh_prompt(batch: VipEohBatch, operator: str, parents: Sequence[Ma
         "回复必须严格是：{一句中文思想}\n```json\n唯一机制JSON\n```\n```python\n完整唯一Python\n```\n"
         "JSON精确键为operator/trigger/changed_branches/expected_direction/counterexample/parent_differences/parameter_changes。\n"
         "四个机制说明字段是非空字符串。parent_differences按给定父代顺序列出candidate_id、"
-        "expected_change、window_classes(字符串列表)、action_keys(字符串列表)、status='expected'；i1用[]。\n"
+        "expected_change、window_classes(非空字符串列表)、action_keys(字符串列表，可空表示尚无具体动作预测)、"
+        "status='expected'；不得为全局机制编造首选动作，i1用[]。\n"
         "parameter_changes仅m2非空，每项精确键ast_path/before/after/unit/expected_change/overfit_risk，"
         "按继承数值常量的AST次序列出全部实际变化；其他算子用[]。不得添加输出或围栏。\n"
         "固定框架合同原文：\n" + contract_path.read_text(encoding="utf-8") + "\n"
@@ -662,7 +663,7 @@ def _unique_json_object(pairs):
 def parse_vip_eoh_reply(text: str, operator: str, parents: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
     """接受唯一单行思想（有/无花括号）、唯一JSON及Python；不改原源码。
 
-    vip-eoh-reply-format/2兼容模型省略思想句花括号，拒绝多行解释、
+    vip-eoh-reply-format/3兼容单行思想及未预测具体动作的空action_keys，拒绝多行解释、
     重复围栏或机制缺失。仅给旧思想解析器补内存封套；原回复/摘要与
     source_raw保持原字节，既有失败记录不追改，不放宽执行器输出门。
     """
@@ -692,9 +693,9 @@ def parse_vip_eoh_reply(text: str, operator: str, parents: Sequence[Mapping[str,
                 or not isinstance(difference["expected_change"], str) or not difference["expected_change"].strip()):
             raise VipEohError("逐父差异身份、顺序或预期标签不符")
         for name in ("window_classes", "action_keys"):
-            if not isinstance(difference[name], list) or not difference[name] or any(
+            if not isinstance(difference[name], list) or (name == "window_classes" and not difference[name]) or any(
                 not isinstance(value, str) or not value for value in difference[name]):
-                raise VipEohError("预期窗口/动作键须为非空字符串列表")
+                raise VipEohError("预期窗口须为非空字符串列表，动作键须为字符串列表且元素非空")
     thought_line = match.group(1).strip()
     thought_envelope = "braced" if thought_line.startswith("{") else "plain_single_line"
     thought_content = thought_line[1:-1].strip() if thought_envelope == "braced" else thought_line
@@ -728,7 +729,7 @@ def parse_vip_eoh_reply(text: str, operator: str, parents: Sequence[Mapping[str,
     return {"thought": parsed.thought, "mechanism": mechanism,
             "source": source, "source_raw": match.group(3),
             "numeric_literal_changes": actual_changes if operator == "m2" else [],
-            "reply_format_version": "vip-eoh-reply-format/2", "thought_envelope": thought_envelope}
+            "reply_format_version": "vip-eoh-reply-format/3", "thought_envelope": thought_envelope}
 
 
 def _usage(reply, backend: str) -> dict[str, Any]:

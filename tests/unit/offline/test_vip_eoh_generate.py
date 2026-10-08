@@ -634,7 +634,7 @@ def test_plain_single_thought_line_preserves_source_and_mechanism():
     assert compatible["source"] == old["source"]
     assert compatible["source_raw"] == old["source_raw"]
     assert compatible["thought_envelope"] == "plain_single_line"
-    assert compatible["reply_format_version"] == "vip-eoh-reply-format/2"
+    assert compatible["reply_format_version"] == "vip-eoh-reply-format/3"
     assert old["thought_envelope"] == "braced"
 
 
@@ -686,3 +686,40 @@ def test_plain_thought_keeps_raw_source_spacing_and_comments():
     a, b = parse_vip_eoh_reply(braced, "i1", []), parse_vip_eoh_reply(plain, "i1", [])
     assert a["source_raw"] == b["source_raw"] == raw
     assert a["source"] == b["source"]
+
+
+@pytest.mark.parametrize("operator,count", [("m1", 1), ("e1", 2), ("e2", 2)])
+def test_global_mechanism_may_leave_specific_action_predictions_unknown(operator, count):
+    """机制没有实测首选时允许空动作预测，不改源码或伪造变化信用。"""
+    parents = [{"identity": {"candidate_id": f"synthetic-parent-{i}"}} for i in range(count)]
+    text = reply_text(operator, parents=parents).replace('"action_keys": ["discard:1w"]', '"action_keys": []')
+    parsed = parse_vip_eoh_reply(text, operator, parents)
+    assert parsed["source"] == VIP_ROUTE_HEURISTIC_SEED_SOURCE.strip()
+    assert parsed["source_raw"] == VIP_ROUTE_HEURISTIC_SEED_SOURCE
+    assert all(item["action_keys"] == [] for item in parsed["mechanism"]["parent_differences"])
+    assert all(item["status"] == "expected" for item in parsed["mechanism"]["parent_differences"])
+
+
+@pytest.mark.parametrize("field,value", [
+    ("window_classes", []), ("window_classes", None), ("window_classes", [""]),
+    ("action_keys", None), ("action_keys", "discard:1w"), ("action_keys", [""]),
+    ("action_keys", [None]), ("action_keys", [True]),
+])
+def test_optional_action_predictions_do_not_relax_declared_type_or_window_scope(field, value):
+    """只放宽具体动作未知，窗口范围和每个已声明动作的类型仍须有效。"""
+    parents = [{"identity": {"candidate_id": "synthetic-parent"}}]
+    text = reply_text("m1", parents=parents)
+    start, remainder = text.split("```json\n", 1)
+    mechanism, source = remainder.split("\n```", 1)
+    data = json.loads(mechanism)
+    data["parent_differences"][0][field] = value
+    with pytest.raises(VipEohError, match="预期窗口"):
+        parse_vip_eoh_reply(start + "```json\n" + json.dumps(data) + "\n```" + source, "m1", parents)
+
+
+def test_empty_action_predictions_still_require_actual_parent_identity_and_order():
+    """空动作列表不能绕过多父身份绑定。"""
+    parents = [{"identity": {"candidate_id": f"synthetic-parent-{i}"}} for i in range(2)]
+    text = reply_text("e1", parents=parents).replace('"action_keys": ["discard:1w"]', '"action_keys": []')
+    with pytest.raises(VipEohError, match="身份、顺序"):
+        parse_vip_eoh_reply(text, "e1", list(reversed(parents)))

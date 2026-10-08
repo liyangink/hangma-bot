@@ -1,5 +1,11 @@
 # 第一阶段接口协议
 
+## 2026-10-08 T218：离线候选的动作预测可未知
+
+**只澄清离线作者回复元数据；规则、观察、策略入口及线上包不变。** `vip-eoh-reply-format/3` 保留完整思想、机制、源码及有序父身份验证。`parent_differences.window_classes` 仍须非空；`action_keys` 可为 `[]`，表示作者尚未预测具体动作键。全局评分机制不需要编造某个首选。已声明元素仍须非空字符串，`status` 仍只能是 `expected`，不授实测行为信用。
+
+规则、只读输入、全合法根有限评分、确定性、时限与效果门保持。G37原HTTP回复因空动作预测被旧解析器误拒；原回复、失败及费用保留，修订后只重放校验，未改候选源码或重发模型。相关生成、谱系重绑定及trace恢复163项回归通过；实际装载与后续评估见[本轮报告](../../review/vip-route-2026-09-30/evidence/t218-global-mechanism-format-1/REPORT.md)。
+
 ## 2026-10-07 T199：七对分支支付资格，已发布
 
 **外部端口和`HangmaRules`公共签名不变；以下P0内部契约已在main和冻结自由赛根生效。** `WinSplit.seven_pairs_baotou: Optional[bool]`区分已核可付、已核不可付、缺摸前上下文。它不代替`RulePublicState.baotou`、合法胡门或静态任意听事实；最终14张缓存保留None。
