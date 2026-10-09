@@ -11,6 +11,7 @@
 - [正式／测试赛事现行验收口径](materials/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)
 - [问题修复验收口径](materials/vip-route-2026-09-30/evidence/t224-G38-four-source-effect-1/REPAIR-ACCEPTANCE.md)
 - [白板与支付复核](materials/white-count-audit-2026-10-09/REPORT.md)
+- [单白/无白缺口定位与调优方向](materials/white-count-audit-2026-10-09/SINGLEWHITE-160-GAP-AND-DIRECTION.md)（[交叉审查三](materials/white-count-audit-2026-10-09/cross-review-3/REPORT.md)：方向成立、第0/1步可推进、可达目标待数值声明）
 
 ## 进化、迭代与历史原件
 
