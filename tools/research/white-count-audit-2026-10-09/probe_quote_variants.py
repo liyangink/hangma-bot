@@ -57,6 +57,28 @@ M3_TEMPLATE = {
     ],
 }
 
+# M2 紧迫度×阶梯变体：他家副露组数达到阈值时，凸阶梯价整体乘紧迫度因子。
+# 实现为三处文本插入（常数、ladder 缩放、score_actions 内按窗口设置全局 _URGENCY）。
+# 方向=对手推进时偏好更近路线（与历史证伪的"宽度换距离"相反）。
+M2_TEMPLATE = {}
+for _boost, _melds, _label in ((1.25, 2, "m2_u1.25_melds2"), (1.5, 2, "m2_u1.5_melds2"), (1.25, 3, "m2_u1.25_melds3")):
+    M2_TEMPLATE[_label] = [
+        ("OPPRISK = 0.12",
+         "OPPRISK = 0.12\nURGENCY_BOOST = " + repr(_boost) + "\nURGENCY_MELDS = " + repr(_melds) + "\n_URGENCY = 1.0"),
+        ("""    linear = FORMCOST * steps
+    tail = steps - TAILOFF
+    if tail > 0:
+        return linear + TAILQUAD * tail * tail""",
+         """    linear = FORMCOST * _URGENCY * steps
+    tail = steps - TAILOFF
+    if tail > 0:
+        return linear + TAILQUAD * _URGENCY * tail * tail"""),
+        ("""    pressure = 1.0 / (1.0 + OPPDECAY * float(opponents))""",
+         """    global _URGENCY
+    _URGENCY = URGENCY_BOOST if opponents >= URGENCY_MELDS else 1.0
+    pressure = 1.0 / (1.0 + OPPDECAY * float(opponents))"""),
+    ]
+
 GATE = '''
 
 def _probe_eligible(view):
@@ -138,11 +160,11 @@ def main() -> None:
 
     variants = {name: load_module(build_variant(base, repl))["score_actions"]
                 for name, repl in VARIANTS.items()}
-    for name, repl in M3_TEMPLATE.items():
+    for name, repl in list(M3_TEMPLATE.items()) + list(M2_TEMPLATE.items()):
         text = base
         for old, new in repl:
             if text.count(old) != 1:
-                raise ValueError("M3 替换位置不唯一: " + old[:60])
+                raise ValueError("模板替换位置不唯一: " + name + " " + old[:60])
             text = text.replace(old, new, 1)
         gated = (text.replace("def score_actions(view):", "def _probe_score_actions(view):", 1)
                  + GATE + "\n\n"
