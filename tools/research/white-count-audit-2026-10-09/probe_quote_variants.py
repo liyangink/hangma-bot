@@ -102,6 +102,38 @@ def score_actions(view):
     return _parent_score_actions(view)
 '''
 
+# 响应窗资格门：实持≤1白、动作集为 {pass,chi,peng} 的真选择窗、墙余>20。
+GATE_RESPONSE = '''
+
+def _probe_eligible(view):
+    state = view.get("visible_state") or {}
+    hand = state.get("my_hand") or []
+    whites = sum(1 for code in hand if code == "白")
+    if state.get("drawn_tile") == "白":
+        whites += 1
+    if whites >= 2:
+        return False
+    kinds = {a.get("action_type") for a in (view.get("actions") or [])}
+    if len(kinds) < 2 or not kinds <= {"pass", "chi", "peng"}:
+        return False
+    wall = state.get("remaining_tile_count")
+    return wall is not None and wall > 20
+
+
+def score_actions(view):
+    if _probe_eligible(view):
+        return _probe_score_actions(view)
+    return _parent_score_actions(view)
+'''
+
+# 响应窗单自由度变体：SKIPVALUE（跳席价值·drawscale）与 CLAIMCOST（吃碰固定费）。
+RESPONSE_VARIANTS = {
+    "skipvalue_0.05": [("SKIPVALUE = 0.10", "SKIPVALUE = 0.05")],
+    "skipvalue_0.20": [("SKIPVALUE = 0.10", "SKIPVALUE = 0.20")],
+    "claimcost_0.10": [("CLAIMCOST = 0.25", "CLAIMCOST = 0.10")],
+    "claimcost_0.40": [("CLAIMCOST = 0.25", "CLAIMCOST = 0.40")],
+}
+
 
 def build_variant(base: str, replacements: list) -> str:
     text = base
@@ -137,6 +169,17 @@ def eligible(view: dict) -> bool:
     return wall is not None and wall > 20
 
 
+def response_eligible(view: dict) -> bool:
+    state = view["visible_state"]
+    if window_whites(view) >= 2:
+        return False
+    kinds = {a.get("action_type") for a in (view.get("actions") or [])}
+    if len(kinds) < 2 or not kinds <= {"pass", "chi", "peng"}:
+        return False
+    wall = state.get("remaining_tile_count")
+    return wall is not None and wall > 20
+
+
 def chosen(result: dict):
     ordered = sorted(result["entries"], key=lambda e: (-e["score"], e["action_key"]))
     return ordered[0]["action_key"], ordered
@@ -147,6 +190,7 @@ def main() -> None:
     parser.add_argument("--panel", required=True, help="views.jsonl.gz 面板路径")
     parser.add_argument("--out", required=True, help="输出 JSON 路径")
     parser.add_argument("--ineligible-sample", type=int, default=200)
+    parser.add_argument("--mode", choices=("discard", "response"), default="discard")
     args = parser.parse_args()
 
     base = RF1_SOURCE.read_text(encoding="utf-8")
@@ -154,13 +198,31 @@ def main() -> None:
     parent_score = parent_ns["score_actions"]
 
     views = [json.loads(line)["view"] for line in gzip.open(args.panel, "rt")]
+    mode = getattr(args, "mode", "discard")
+    eligible_fn = response_eligible if mode == "response" else eligible
     eligible_rows, ineligible_rows = [], []
     for view in views:
-        (eligible_rows if eligible(view) else ineligible_rows).append(view)
+        (eligible_rows if eligible_fn(view) else ineligible_rows).append(view)
 
     variants = {name: load_module(build_variant(base, repl))["score_actions"]
                 for name, repl in VARIANTS.items()}
-    for name, repl in list(M3_TEMPLATE.items()) + list(M2_TEMPLATE.items()):
+    if mode == "response":
+        gate_text = GATE_RESPONSE
+        variants = {"equivalence_gate_only": load_module(
+            base.replace("def score_actions(view):", "def _probe_score_actions(view):", 1)
+            + gate_text + "\n\n"
+            + base.replace("def score_actions(view):", "def _parent_score_actions(view):", 1))["score_actions"]}
+        for name, repl in RESPONSE_VARIANTS.items():
+            text = base
+            for old, new in repl:
+                if text.count(old) != 1:
+                    raise ValueError("响应变体替换位置不唯一: " + old)
+                text = text.replace(old, new, 1)
+            gated = (text.replace("def score_actions(view):", "def _probe_score_actions(view):", 1)
+                     + gate_text + "\n\n"
+                     + base.replace("def score_actions(view):", "def _parent_score_actions(view):", 1))
+            variants[name] = load_module(gated)["score_actions"]
+    for name, repl in ([] if mode == "response" else list(M3_TEMPLATE.items()) + list(M2_TEMPLATE.items())):
         text = base
         for old, new in repl:
             if text.count(old) != 1:
@@ -180,18 +242,19 @@ def main() -> None:
               "ineligible_windows": len(ineligible_rows),
               "variants": {}, "asserts": {}}
 
-    # 等价性：kappa_1.0 与父版在全部已评分窗口输出逐字段一致。
+    # 等价性：门控包装且常数不变的变体与父版在全部已评分窗口输出逐字段一致。
+    equivalence_key = "equivalence_gate_only" if mode == "response" else "kappa_1.0"
     mismatches = 0
     for view in eligible_rows + ineligible_rows[:args.ineligible_sample]:
         a = json.dumps(parent_results[id(view)], sort_keys=True)
-        b = json.dumps(variants["kappa_1.0"](view), sort_keys=True)
+        b = json.dumps(variants[equivalence_key](view), sort_keys=True)
         if a != b:
             mismatches += 1
-    report["asserts"]["kappa_1.0_identical_to_parent"] = mismatches == 0
-    report["asserts"]["kappa_1.0_mismatches"] = mismatches
+    report["asserts"]["gate_only_identical_to_parent"] = mismatches == 0
+    report["asserts"]["gate_only_mismatches"] = mismatches
 
     for name, score in variants.items():
-        if name == "kappa_1.0":
+        if name == equivalence_key:
             continue
         flips = {"total": 0, "0w": 0, "1w": 0}
         examples = []
