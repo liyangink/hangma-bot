@@ -40,6 +40,23 @@ VARIANTS = {
                        "PURPOSES = (0.0, 5.0, 6.0, 13.0, 26.0)")],
 }
 
+# M3 白容量折扣变体：白码支持容量乘折扣（他家暗白不确定性的粗代理）。
+# 两处文本插入：新增常数 + routewait 的 stock 构造处对白码槽位缩放。
+M3_TEMPLATE = {
+    "whitecap_0.5": [
+        ("RETENTION = 20", "RETENTION = 20\nWHITECAPDISCOUNT = 0.5"),
+        ("""    stock = []
+    for slot in range(len(waiting["unseen_capacities"])):
+        stock.append(stockof(slot, waiting))""",
+         """    stock = []
+    for slot in range(len(waiting["unseen_capacities"])):
+        cell = stockof(slot, waiting)
+        if codeindex.get("白") == slot:
+            cell = (cell[0] * WHITECAPDISCOUNT, cell[1], cell[2])
+        stock.append(cell)"""),
+    ],
+}
+
 GATE = '''
 
 def _probe_eligible(view):
@@ -121,6 +138,16 @@ def main() -> None:
 
     variants = {name: load_module(build_variant(base, repl))["score_actions"]
                 for name, repl in VARIANTS.items()}
+    for name, repl in M3_TEMPLATE.items():
+        text = base
+        for old, new in repl:
+            if text.count(old) != 1:
+                raise ValueError("M3 替换位置不唯一: " + old[:60])
+            text = text.replace(old, new, 1)
+        gated = (text.replace("def score_actions(view):", "def _probe_score_actions(view):", 1)
+                 + GATE + "\n\n"
+                 + base.replace("def score_actions(view):", "def _parent_score_actions(view):", 1))
+        variants[name] = load_module(gated)["score_actions"]
 
     parent_results = {}
     for view in eligible_rows + ineligible_rows[:args.ineligible_sample]:
