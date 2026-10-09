@@ -43,6 +43,26 @@ SPEED_PATCHES = [
     ("ANCHOROPTIONSTEP = 0.10", "ANCHOROPTIONSTEP = 0.0"),
 ]
 
+_OLD_ADJ = '''        if kind == "chi" or kind == "peng":
+            adjustment = SKIPVALUE * float(action["skipped_seats"]) * drawscale - CLAIMCOST'''
+
+
+def flexcost_source(flexcost: float = 1.0) -> str:
+    """门清期权价变体：早段(墙>60)吃碰按我方副露组数付期权价，其余不动。"""
+    new = ('''        if kind == "chi" or kind == "peng":
+            flex = 0.0
+            my_melds = len(context["melds"][seat])
+            if wall is not None and wall > 60 and my_melds == 0:
+                flex = FC
+            elif wall is not None and wall > 60 and my_melds == 1:
+                flex = 0.5 * FC
+            adjustment = SKIPVALUE * float(action["skipped_seats"]) * drawscale - CLAIMCOST - flex'''
+           .replace("FC", repr(flexcost)))
+    text = BASE_SOURCE
+    if text.count(_OLD_ADJ) != 1:
+        raise SystemExit("flexcost 补丁位置不唯一")
+    return text.replace(_OLD_ADJ, new, 1)
+
 
 def speeder_source() -> str:
     text = BASE_SOURCE
@@ -59,6 +79,10 @@ def run_match(seed, arm, rules_config, config, rules, engine, fast_src):
     if arm == "baseline":
         opponents = tuple(ComparableHeuristicPolicyV2(weights=DEFAULT_WEIGHTS_V1, monotonic=clock)
                           for _ in range(3))
+    elif arm == "flexcost":
+        opponents = tuple(ComparableHeuristicPolicyV2(weights=DEFAULT_WEIGHTS_V1, monotonic=clock)
+                          for _ in range(3))
+        rf1 = RouteVipHeuristicPolicy(rules_config, source=fast_src, max_operations=2_000_000)
     else:
         opponents = tuple(RouteVipHeuristicPolicy(rules_config, source=fast_src,
                                                   max_operations=2_000_000) for _ in range(3))
@@ -80,14 +104,14 @@ def run_match(seed, arm, rules_config, config, rules, engine, fast_src):
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--seeds", type=int, nargs="+", required=True)
-    parser.add_argument("--arm", choices=("baseline", "speeder"), required=True)
+    parser.add_argument("--arm", choices=("baseline", "speeder", "flexcost"), required=True)
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
     rules_config = RuleConfig("hangma-mvp-v10-public-counts", 1, False)
     config = TournamentConfig(1, 16, rules_config, TimingConfig(1, 1, 3))
     rules = HangmaRules(rules_config)
     engine = SimulationEngine(rules, rules_hash=compute_rules_hash(_ROOT))
-    fast = speeder_source()
+    fast = flexcost_source(1.0) if args.arm == "flexcost" else speeder_source()
     rows = []
     started = time.perf_counter()
     for seed in args.seeds:
