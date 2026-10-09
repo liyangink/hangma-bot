@@ -81,7 +81,15 @@ def main() -> None:
     targets = {"core_selling": [], "control": []}
     counts = {"eligible": 0, "core_selling": 0, "control_pool": 0, "skipped_no_view": 0}
     per_seed = {}
-    for occurrence, row in enumerate(rows):
+    # 发生序号=同一场（同 match_id）内的行序；重放驱动的计数器按场内 choose 计数。
+    seed_bounds = {}
+    for row in rows:
+        seed_bounds.setdefault(row["match_id"], []).append(row)
+    indexed = []
+    for match_id, match_rows in seed_bounds.items():
+        for occurrence, row in enumerate(match_rows):
+            indexed.append((match_id, occurrence, row))
+    for match_id, occurrence, row in indexed:
         legal = row.get("legal_action_keys") or []
         if (row.get("phase") != "draw" or row.get("white_count", 9) > 1
                 or not legal or any(not k.startswith("discard:") for k in legal)):

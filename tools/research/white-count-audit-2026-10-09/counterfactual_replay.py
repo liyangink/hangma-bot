@@ -108,8 +108,10 @@ def main() -> None:
     parser.add_argument("--panel", default="artifacts/white-gap-step0/panel-rf1-001")
     parser.add_argument("--targets", required=True)
     parser.add_argument("--out", required=True, help="输出目录（须不存在）")
-    parser.add_argument("--kind", choices=("core_selling", "control", "verify"), required=True)
+    parser.add_argument("--kind", choices=("core_selling", "control", "verify", "merge"), required=True)
     parser.add_argument("--limit", type=int, default=0, help="最多重放多少分叉，0=全部")
+    parser.add_argument("--shard", type=int, default=0)
+    parser.add_argument("--shards", type=int, default=1)
     args = parser.parse_args()
 
     summary = json.loads((Path(args.panel) / "PANEL-SUMMARY.json").read_text())
@@ -117,7 +119,35 @@ def main() -> None:
     targets_doc = json.loads(Path(args.targets).read_text())
 
     out = Path(args.out)
-    out.mkdir(parents=True, exist_ok=False)
+    if args.kind == "merge":
+        results = []
+        for path in sorted(out.glob("forks-*.jsonl")):
+            for line in path.read_text().splitlines():
+                if line.strip():
+                    results.append(json.loads(line))
+        by_kind = {}
+        for r in results:
+            by_kind.setdefault(r.get("kind"), []).append(r)
+        merged = {}
+        for kind, rows in by_kind.items():
+            deltas = [r["delta_seat0"] for r in rows
+                      if r.get("decision_aligned") and r["delta_seat0"] is not None]
+            entry = {"kind": kind, "forks": len(rows),
+                     "completed": sum(1 for r in rows if r["status"] == "complete"),
+                     "aligned": sum(1 for r in rows if r.get("decision_aligned"))}
+            if deltas:
+                ordered = sorted(deltas)
+                entry.update({"delta_mean": round(sum(deltas) / len(deltas), 3),
+                              "delta_median": round(ordered[len(ordered) // 2], 3),
+                              "delta_pos": sum(1 for d in deltas if d > 0),
+                              "delta_neg": sum(1 for d in deltas if d < 0),
+                              "delta_zero": sum(1 for d in deltas if d == 0),
+                              "delta_min": ordered[0], "delta_max": ordered[-1]})
+            merged[kind] = entry
+        (out / "MERGE-SUMMARY.json").write_text(json.dumps(merged, ensure_ascii=False, indent=1))
+        print(json.dumps(merged, ensure_ascii=False, indent=1))
+        return
+    out.mkdir(parents=True, exist_ok=True)
     rules_config, config, rules, engine = build()
 
     if args.kind == "verify":
@@ -135,10 +165,12 @@ def main() -> None:
     forks = targets_doc["targets"][args.kind]
     if args.limit:
         forks = forks[:args.limit]
+    forks = [f for i, f in enumerate(forks) if i % args.shards == args.shard]
     by_seed = {}
     for fork in forks:
         by_seed.setdefault(fork["seed"], []).append(fork)
 
+    shard_path = out / f"forks-{args.kind}-{args.shard}.jsonl"
     results = []
     started = time.perf_counter()
     for seed, seed_forks in sorted(by_seed.items()):
@@ -156,8 +188,8 @@ def main() -> None:
                             "final_scores": final, "baseline": base, "delta_seat0": delta})
             print(json.dumps({"occ": fork["occurrence"], "seed": seed, "status": outcome.status,
                               "aligned": aligned, "delta": delta}, ensure_ascii=False), flush=True)
-        (out / "forks.jsonl").write_text(
-            "\n".join(json.dumps(r, ensure_ascii=False) for r in results))
+            with shard_path.open("a", encoding="utf-8") as stream:
+                stream.write(json.dumps(results[-1], ensure_ascii=False) + "\n")
     summary_out = {"kind": args.kind, "forks": len(results),
                    "completed": sum(1 for r in results if r["status"] == "complete"),
                    "aligned": sum(1 for r in results if r.get("decision_aligned")),
