@@ -108,7 +108,8 @@ def main() -> None:
     parser.add_argument("--panel", default="artifacts/white-gap-step0/panel-rf1-001")
     parser.add_argument("--targets", required=True)
     parser.add_argument("--out", required=True, help="输出目录（须不存在）")
-    parser.add_argument("--kind", choices=("core_selling", "control", "verify", "merge"), required=True)
+    parser.add_argument("--kind", choices=("core_selling", "control", "claim_to_pass",
+                                             "pass_to_claim", "verify", "merge"), required=True)
     parser.add_argument("--limit", type=int, default=0, help="最多重放多少分叉，0=全部")
     parser.add_argument("--shard", type=int, default=0)
     parser.add_argument("--shards", type=int, default=1)
