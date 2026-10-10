@@ -17,6 +17,7 @@
 - [Astra后续方向与停止条件](astra-evolution-20261010/DIRECTIONS.md)（八新来源22完整桌零分歧；[同支付早胡诊断](astra-evolution-20261010/TT-TIMING.md)32输入闭合，仅四旧控制进入模型且无提前TT，停止本批，不授新候选）
 - [公开实体约束自然缺张与用途信用](astra-evolution-20261010/PUBLIC-SUPPLY.md)（28窗全根复验闭合，17个非首选目标距离／形状变化，首键及首分全不变；新排序讨论门未过，停止本版，不买160预算）
 - [剩余桌赛庄权估值核验](astra-evolution-20261010/DEALER-VALUE.md)（640桌10240条父代收支闭合；8个独立验证种子的预测均差于常数，停止条件均值模型，不给当前胡牌加奖励）
+- [对手胡形状与慢准备信用的端点诊断](astra-evolution-20261010/READY-ENDPOINT.md)（64窗628根闭合，2次受保护严格改选来自同一单局；4窗／3房门未过，不买教师或效果评估）
 - [当前自由赛接手与候选验证](lowwhite-160-20261009/FREE-MATCH-TAKEOVER.md)（实际私有运行根保留已批准RF1 v1算法包，仅补监督器取证分支）
 - [RF1 压力测试与初始自由赛操作](materials/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)
 - [正式／测试赛事现行验收口径](materials/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)
