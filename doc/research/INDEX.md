@@ -14,7 +14,7 @@
 - [Astra 持续进化目标](astra-evolution-20261010/PLAN.md)（[原版独立确认](astra-evolution-20261010/CONFIRMATION-V1.md)：十六根全部闭合，平均净差−18.05／160，区间跨零且保护／名次／尾部门未过；[固定损失定位与新方向](astra-evolution-20261010/LOSS-MECHANISM.md)指向领取改变摸序，未授增强或发布；[自由赛第19房只读取证修复](astra-evolution-20261010/FREE-READINESS.md)未激活新根）
 - [独立快速版与新160单局预算](astra-evolution-20261010/FAST-V2.md)（研究身份原件保留、未派发；[最终集成候选](astra-evolution-20261010/INTEGRATED.md)八根开发净均值+37.5／160但高番保护门未过，停止，不购买条件确认）
 - [Astra单样本稳定性候选](astra-evolution-20261010/STABLE.md)（最终786a／cef8八根640实例完整闭合；净均值−2.625／160且高番／多白保护未过，停止，不运行确认或自由赛）
-- [Astra后续方向与停止条件](astra-evolution-20261010/DIRECTIONS.md)（已听窄入口未过；通用及关系两批八余桌均闭合；真实领取／摸序差异不能直接奖励，后续独立来源仅准备，不训练）
+- [Astra后续方向与停止条件](astra-evolution-20261010/DIRECTIONS.md)（八新来源并行22完整桌已闭合，七对事件／现金零差异，停止此版且不训练；下一方向先核同支付终局胡牌时机信号）
 - [当前自由赛接手与候选验证](lowwhite-160-20261009/FREE-MATCH-TAKEOVER.md)（实际私有运行根保留已批准RF1 v1算法包，仅补监督器取证分支）
 - [RF1 压力测试与初始自由赛操作](materials/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)
 - [正式／测试赛事现行验收口径](materials/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)
