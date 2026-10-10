@@ -25,6 +25,7 @@
 - [强手教师谱系与短期预测边界](astra-evolution-20261010/EXPERT-BOUNDARY.md)（纠正G66／G242预测门曾通过，G244动作筛选仍负；旧专家监督已做但账号谱系未知，不重买同命题或从开圈负批筛子集）
 - [单白主目标与备用信用完整归因诊断](astra-evolution-20261010/JOINT-ALLOCATION.md)（32窗321原根精确复现；21窗173保白数牌根／520归因全保greedy，变分及改选零，停止本范围，不买160预算）
 - [单白七对对子先验独立消融](astra-evolution-20261010/PAIRPRIOR.md)（六窗51原根精确，45保白根中18真降分但全排序未变；停止本参数范围，未授160预算或候选）
+- [单白用途先验5.0独立移植](astra-evolution-20261010/PURPOSE-FIVE.md)（32窗328原根精确，296保白根全部真增分、4窗非首换位，首选零变化；停止本范围，下一先审公开信息直接学习的覆盖与成本）
 - [当前自由赛接手与候选验证](lowwhite-160-20261009/FREE-MATCH-TAKEOVER.md)（实际私有运行根保留已批准RF1 v1算法包，仅补监督器取证分支）
 - [RF1 压力测试与初始自由赛操作](materials/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)
 - [正式／测试赛事现行验收口径](materials/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)
