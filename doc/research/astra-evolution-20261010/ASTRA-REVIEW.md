@@ -665,3 +665,9 @@ exec55804自然exit0，RECEIPT SHA `7bd5d1e3d8bcbef80fb884c52ac6a286add4b45b7ce0
 八原父桌先封闭公开选窗，五入口、三缺额；固定唯一白对原P0，各续真实R16，十尾段完整。源峰8、尾峰5，全部13工作进程自然回收，273pins不变，总126.09753秒，exec16198自然exit0。准备DELIVERY `d1c62c1f…6833b`、PLAN `ecb3550a…a17c`、RECEIPT `34a9a0b5…26de`，[root完整复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-COMPLETE-ROOT-REVIEW.json) `47e6c297…1e05`；完整摘要见[公开报告](WHITE-CIRCLE.md)。
 
 root独立复算25105决策、152尾段收支、十份补前缀R16现金／庄权链、五父后缀动作与原结尾；全16单局完整导出由已审阅冻结运行代码校验，不冒称root独立重跑世界。五实际他家响应差；整尾净差+14／0／+42／+51／+143，当前单局−7／0／0／+12／+7。H2开圈后他家先胡，M3本家吃牌提前关圈，多数正差在后续单局；不能归为纯短圈收益。有限讨论门通过，只准备统一受保护单白候选，仍须新8／16完整阶段和运行门。正式P0、自由赛状态及持续目标保持。
+
+## 60. root完成开圈候选实际装配与原预算机械核验
+
+最终DELIVERY SHA `0ba91fcb1d4f8fd1128577a9dc6f933b936dade006489138c51bc811415983a1`，实际候选470b／执行613e与声明一致。仅新隔离组合根与三策略模块变化，P0／规则／native不变；40标准库假依赖检查在独立副本通过。root修复机械验证器保父负控，允许既定首trace审计增量，但动作、排名、分数、评分组成及其他候选全等，候选源码／身份不改。
+
+exec59663自然exit0，10真实choose，四draft作用域拒绝真实启动，五原3秒点全改白、五同点1秒负控全保父值。原点在读输入前，至记录max0.23585秒、辅助max0.00187秒，整进程至收据5.65939秒；2537pins前后相同，0新世界／效果／网络／子进程。RECEIPT SHA `e83e98fe30b4cc4a981b4457f198f44a396337eeeb2f8d760925c6db8f4ab481`，[root复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-CANDIDATE-MECHANICAL-ROOT-REVIEW.json)SHA `e035eb109b186359abea052f618b263ab8a9d0fdb6972a3872b9ff73849c578f`。特殊窗、十桌应用链与发布资格未授；新阶段只按固定8／16根与原数值门继续，见[公开报告](WHITE-CIRCLE.md)。
