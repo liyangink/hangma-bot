@@ -38,7 +38,9 @@ root复算25105条决策、152条尾段结算，以及补回共同前缀后的�
 
 独立候选静态交付已完成，root副本40项假依赖检查通过。实际装配复算候选摘要（`candidate_id`，绑定源码和参数）`470b0646db7fdf0982a2b65a20caf8cf32e7c96bf2b240a2772befc3ae881b47`，执行摘要（`execution_id`，绑定实际运行组件）`613ee5972763812b012ab6933b8eb6f3ba0ad502899f2f44bcb97bf03ba5420a`，与冻结声明一致；四作用域均拒绝真实启动。
 
-有限机械检查十次真实选择自然exit0：五个固定点原3秒预算均改为弃白，同点五次1秒负控均保持完整父计划值；输入读取、规则分析、装配验签、父选择、辅助和记录均计入各原预算。至单例记录最大0.23585秒，辅助最大0.00187秒，全部原保底截止内完成；整进程至收据5.65939秒，2537pins不变，无新世界或效果评估。这仍不覆盖当前胡／杠／多白的真实特殊窗、十桌并发、网络或生命周期。root只修复验证器的负控比较：允许审计封装追加受控首候选解释，动作、分数、排名、评分组成及其他候选必须全等；候选源码与标识未改变。[机械复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-CANDIDATE-MECHANICAL-ROOT-REVIEW.json)SHA为`e035eb109b186359abea052f618b263ab8a9d0fdb6972a3872b9ff73849c578f`，机械RECEIPT SHA为`e83e98fe30b4cc4a981b4457f198f44a396337eeeb2f8d760925c6db8f4ab481`。
+有限机械检查十次真实选择自然exit0：五个固定点原3秒预算均改为弃白，同点五次1秒负控均保持父计划动作、分数、排名及评分组成；输入读取、规则分析、装配验签、父选择、辅助和记录均计入各原预算。至单例记录最大0.23585秒，辅助最大0.00187秒，全部原保底截止内完成；整进程至收据5.65939秒，2537pins不变，无新世界或效果评估。这仍不覆盖当前胡／杠／多白的真实特殊窗、十桌并发、网络或生命周期。root另调整验证器以允许受控首候选解释增量，候选源码与标识未改变。[机械复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-CANDIDATE-MECHANICAL-ROOT-REVIEW.json)SHA为`e035eb109b186359abea052f618b263ab8a9d0fdb6972a3872b9ff73849c578f`，机械RECEIPT SHA为`e83e98fe30b4cc4a981b4457f198f44a396337eeeb2f8d760925c6db8f4ab481`。
+
+补充源码复核纠正了此前验证器归因：生产`RankedCandidate.score_trace`为`compare=False`，计划相等不检查审计载荷；此前临时假类型没有复现这个语义，不能据此断言原验证器会因新增trace失败，也不能以真实计划相等断言审计缺失。十次检查没有直接保存全部首trace或核真实日志；该范围仍待单独验证。静态载荷深度满足合同，不构成停止效果评估的理由。[口径修正](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-MECHANICAL-TRACE-SCOPE-CORRECTION.json)保留旧收据原字节；动作、核心评分与时限结论不变。
 
 本机原件在`.private/astra-evolution-20261010/white-circle-control-run-001/`，完整数据不入Git。准备DELIVERY SHA为`d1c62c1f06b160c165c91c3cffd464f6c3fd2743dc33a69a31f8988e0496833b`，PLAN SHA为`ecb3550ab58cac2b58472ee9a35f974d8e24556c4eef9a93e6eabda9f932a17c`，运行RECEIPT SHA为`34a9a0b5a1551b6340d81c298a8a130b4a9d9d0bcc39796d96778c46533726de`，[root复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-COMPLETE-ROOT-REVIEW.json)SHA为`47e6c297cbb373c8d91c7fed0c066f0605ddf1d3c650fe8dc2924c4888316e05`。
 

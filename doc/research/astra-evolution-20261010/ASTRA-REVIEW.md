@@ -668,7 +668,7 @@ root独立复算25105决策、152尾段收支、十份补前缀R16现金／庄�
 
 ## 60. root完成开圈候选实际装配与原预算机械核验
 
-最终DELIVERY SHA `0ba91fcb1d4f8fd1128577a9dc6f933b936dade006489138c51bc811415983a1`，实际候选470b／执行613e与声明一致。仅新隔离组合根与三策略模块变化，P0／规则／native不变；40标准库假依赖检查在独立副本通过。root修复机械验证器保父负控，允许既定首trace审计增量，但动作、排名、分数、评分组成及其他候选全等，候选源码／身份不改。
+最终DELIVERY SHA `0ba91fcb1d4f8fd1128577a9dc6f933b936dade006489138c51bc811415983a1`，实际候选470b／执行613e与声明一致。仅新隔离组合根与三策略模块变化，P0／规则／native不变；40标准库假依赖检查在独立副本通过。root另调整机械负控比较以允许既定首trace审计增量，动作、排名、分数及评分组成全等，候选源码／身份不改。随后发现生产score_trace不参与相等比较；临时假类型不能证明原验证器有错，真实plan相等也不能证明审计存在或缺失，详见§62。
 
 exec59663自然exit0，10真实choose，四draft作用域拒绝真实启动，五原3秒点全改白、五同点1秒负控全保父值。原点在读输入前，至记录max0.23585秒、辅助max0.00187秒，整进程至收据5.65939秒；2537pins前后相同，0新世界／效果／网络／子进程。RECEIPT SHA `e83e98fe30b4cc4a981b4457f198f44a396337eeeb2f8d760925c6db8f4ab481`，[root复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-CANDIDATE-MECHANICAL-ROOT-REVIEW.json)SHA `e035eb109b186359abea052f618b263ab8a9d0fdb6972a3872b9ff73849c578f`。特殊窗、十桌应用链与发布资格未授；新阶段只按固定8／16根与原数值门继续，见[公开报告](WHITE-CIRCLE.md)。
 
@@ -679,3 +679,7 @@ exec59663自然exit0，10真实choose，四draft作用域拒绝真实启动，�
 最终控制器DELIVERY SHA `f076984c1715fd52f315188f1071291740d47c22eb46c6562ddd7073436ffdbb`，root14检查及假stage独占输出／解除闹钟屏蔽接线通过。exec2727自然exit0；真实正常4进程、故障后原在途2进程、忽略TERM硬停2进程三组串行，均join／close且owned／live零；硬停两进程exit−9，保留强制回收标记。[监督复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-CONTROLLER-ROOT-REVIEW.json)SHA `c97514b036bb7346a24024ebc801a225a3c324a23564570946a1be0ed04a10c3`。
 
 首沙箱launch十任务均原os.nice权限失败，无START／HANDS／完成桌；全部自然回收，保留001原件。隔离调用复现相同权限错误后获执行环境审核，以完全同声明在H002启动session96000，已确认十工作进程进入牌局。只授权首四根H开发320实例，前池自然完整／资源闭合后再派四根M；确认仍条件于完整开发门。每池7200秒含15秒清理，同一绝对截止，不授线上时限。详见[执行报告](WHITE-CIRCLE.md)。
+
+## 62. 计划相等与审计载荷的验证范围修正
+
+冻结interface.py的RankedCandidate.score_trace明确compare=False，临时假依赖采用比较trace的默认dataclass语义，不能据其差异认定原机械脚本必失败。实际十次plan相等只证明核心决策字段，不覆盖首trace或日志。原机械核心选择／合法／原截止证据仍有效；新增口径记录保留已冻结原件，不修改470b／613e或阶段声明。后续直接核bounded_runtime_audit、policy_release实际CID／EID、脱敏写出与缺失计数，不能仅靠plan相等或静态深度。见[修正原件](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-MECHANICAL-TRACE-SCOPE-CORRECTION.json)及[公开报告](WHITE-CIRCLE.md)。
