@@ -112,3 +112,13 @@ M池随后自然exit0，320完整R16实例，总2298.92595秒，所有工作进�
 M[完整规则复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-DEV-M-CANONICAL-ROOT-REVIEW.json) SHA `0ba0fdac2b79a7fd89f797517b74a1a0da2ec00f964f586151a230c55439ce49`；两池[完整开发复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-DEV-COMPLETE-ROOT-REVIEW.json) SHA `ee76641464e32ac21e69119790f61897c24f195d4258eac678c39ed7e6042da9`。原门报告SHA `a5b7ce8c122e9a54e8e1bfac8563573d1774887d51c6fbe2370aeb7776621aab`，庄闲报告SHA `22153a638a19d4419122eb39f42a31e625302ed57ac06f71000f4b2196219eee`，尾部报告SHA `d2aac4bf07fa0161546f084ca4672c145170ca20ae29feb46ed4d9f82eb810c6`；均在本机忽略目录。
 
 [归因静态复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-ATTRIBUTION-STATIC-ROOT-REVIEW.json) SHA `1ff4763d97c161d2a7497cb068523bb93f38f378098ae323cdcf3624d4b887d7`，其来源和墙余修正早于读取完整效果后的归因执行。完整评估失败停止该版，持续目标没有完成；16:00未有新候选通过全部门时仍冻结P0。
+
+## 固定八点的结构损失与取证偏差
+
+root独立核372项来源摘要和八个固定首分歧：全部为v0／t00、共同全座合法前缀、相同本家初牌和庄位，父自然弃牌改为白后结构向听均增加一档。首白实际事件与记录相符，目标手差和后续手差闭合；八桌整尾2正6负，不能将后续多次改白的尾差归因于首次动作。
+
+全量改白中1917次墙余53+、19次墙余29–52；普通摸1783次、吃碰后153次。所有实际白弃后的普通胡等待事实为已知空；只有固定八个共同前缀支持父子向听比较，不能声称全1936次都退一档。七点观察到本家随后非白弃牌关闭圈态，另一点先发生他家弃白；至本人下一摸的宽域响应差异仍不等于严格圈内因果。
+
+旧FOCAL序列化对吃碰后跟打的当前／累计白记录为未知，153条保持`None`；details自报(1,1)单列，不能补作独立白数事实。首次分析器误断言后另起第二顺序PID，未继承原绝对180秒截止；首次完整读取字节账也缺失。两进程实际均结束，但**原受控归因执行合同不授合格**。已有材料只作探索性损失线索，root另独立核对原记录，不以它替代八根效果门或全根资格复核。
+
+[探索性归因复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-ATTRIBUTION-EXPLORATORY-ROOT-REVIEW.json) SHA `c704f61adb0cbe1e67bb5c36d0a5bb3286e03acdb077edcb5a45855dc7458509`，收据SHA `ff4fa85b57ca3d7a1117baea5e5dd51bf0aeb37b5eb55958994e9e8a55c58013`。八根主评估的完整账本、独立反证和停止结论不依赖这次后验执行合同。
