@@ -22,6 +22,7 @@
 - [补摸叶墙余评分传递静态复核](astra-evolution-20261010/REPLACEMENT-WALL.md)（找到子叶墙余信息缺口；既冻4864行没有符合入口，停止本范围，不授收益或新效果预算）
 - [当前单白完整桌赛标签有限试验](astra-evolution-20261010/CURRENT-LABEL.md)（八源七入口、十四完整后继闭合，2正2零3负；旧数学摘要相同的唯一非零差只在后续单局，现有隐藏采样不保持历史一致，未授时序预测、训练或新候选）
 - [杠补子窗口的合法胡支付基准诊断](astra-evolution-20261010/LOCAL-HU-ANCHOR.md)（十自然窗及一构造闭合，112原根评分精确复现；目标组合不足或复杂／未知，实际重报零，停止本范围，不授候选）
+- [强手教师谱系与短期预测边界](astra-evolution-20261010/EXPERT-BOUNDARY.md)（纠正G66／G242预测门曾通过，G244动作筛选仍负；旧专家监督已做但账号谱系未知，不重买同命题或从开圈负批筛子集）
 - [当前自由赛接手与候选验证](lowwhite-160-20261009/FREE-MATCH-TAKEOVER.md)（实际私有运行根保留已批准RF1 v1算法包，仅补监督器取证分支）
 - [RF1 压力测试与初始自由赛操作](materials/vip-route-2026-09-30/evidence/t227-rf1-default-and-live-1/README.md)
 - [正式／测试赛事现行验收口径](materials/vip-route-2026-09-30/evidence/t192-targeted-followup-1/ACCEPTANCE-POLICY.md)
