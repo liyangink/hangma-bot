@@ -50,6 +50,8 @@ root独立副本十项字段检查通过。补充与原2534文件／3祖先摘�
 
 exec95288自然exit0，内层RECEIPT SHA为`c93ef73f9b700decae912caeccdad2b746050c38285ddcf0ef4fe1304625d07d`，[root完整复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-TRACE-SUPPLEMENT-COMPLETE-ROOT-REVIEW.json)SHA为`89970d1f58e0e0451260fa5ef91bf2e0f2aca92a70795c321d039d0c9dc480c8`。该补充是固定模拟公开请求的单进程证据；未覆盖特殊规则自然窗、真实十桌应用链、网络或完整赛事生命周期，不授强度及上线资格。
 
+必要[直接字段检查与回归](../../../tools/research/astra-evolution-2026-10-10/trace_stage160/README.md)已共享，两份源码逐字节等于实际核验所用版本，十项公共标准库回归通过。源码检查要求生产codec和实际组合根身份，不用plan相等推断trace，不改变正在运行的冻结来源。
+
 本机原件在`.private/astra-evolution-20261010/white-circle-control-run-001/`，完整数据不入Git。准备DELIVERY SHA为`d1c62c1f06b160c165c91c3cffd464f6c3fd2743dc33a69a31f8988e0496833b`，PLAN SHA为`ecb3550ab58cac2b58472ee9a35f974d8e24556c4eef9a93e6eabda9f932a17c`，运行RECEIPT SHA为`34a9a0b5a1551b6340d81c298a8a130b4a9d9d0bcc39796d96778c46533726de`，[root复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-COMPLETE-ROOT-REVIEW.json)SHA为`47e6c297cbb373c8d91c7fed0c066f0605ddf1d3c650fe8dc2924c4888316e05`。
 
 ## 新160单局开发执行
