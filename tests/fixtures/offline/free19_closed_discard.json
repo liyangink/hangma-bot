@@ -1,0 +1,572 @@
+{
+  "schema": "redacted-free19-complete-discard-chain/1",
+  "source_cases_sha256": "fd69b404c80fc6ddb26071b7e052874f6b12857c86060f02fc84f99bae2b519f",
+  "source_phase_sha256": "501d62bfed009371e2efd2dfe8d18ff78d809360500fc2815cfebca20de62e18",
+  "rejection": {
+    "kind": "raw_protocol_state",
+    "payload": {
+      "raw": "{\"code\":\"INVALID_ACTION\",\"message\":\"cannot discard in phase 2\"}\n",
+      "http_status": 409,
+      "request_timing": {
+        "queued_at_monotonic": 2048506.473714,
+        "granted_at_monotonic": 2048506.473731708,
+        "transport_started_at_monotonic": 2048506.473752791,
+        "request_id": "c6d0cc25d44a49f4a85a84f57fb48045",
+        "started_wall_unix_ms": 1791533862324,
+        "started_clock_sample_end_monotonic": 2048506.473753291,
+        "completed_at_monotonic": 2048506.484729666,
+        "response_headers": {
+          "date": "Fri, 09 Oct 2026 08:17:42 GMT",
+          "content-type": "application/json"
+        },
+        "outcome": "error",
+        "error_type": "ConflictError",
+        "completed_wall_unix_ms": 1791533862335,
+        "completed_clock_sample_end_monotonic": 2048506.484585333
+      }
+    },
+    "monotonic_ns": 2048506484734875,
+    "context": {
+      "game_id": "fixture-game",
+      "round_no": 4,
+      "trigger_seq": 710,
+      "decision_id": "fixture-decision-1",
+      "attempt_no": 1
+    }
+  },
+  "records": [
+    {
+      "kind": "decision_input",
+      "monotonic_ns": 2048505522343708,
+      "original_line_sha256": "62f3442f87b77f1c664aee972401a2935180bb8115926d85ddbe5d8cb5103373",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 710,
+        "decision_id": "fixture-decision-1",
+        "attempt_no": null
+      },
+      "payload": {
+        "window": {
+          "schema_version": 1,
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 710,
+          "phase": "draw",
+          "seat": 3
+        },
+        "rule_completeness": "complete",
+        "legal_keys": [
+          "discard:6w",
+          "discard:7w",
+          "discard:4b",
+          "discard:5b",
+          "discard:3t",
+          "discard:4t",
+          "discard:5t",
+          "discard:7t",
+          "discard:8t",
+          "discard:9t"
+        ],
+        "budget": {
+          "codec_version": 1,
+          "enhancement_deadline_monotonic": 2048506.846388562,
+          "fallback_deadline_monotonic": 2048507.4262426703,
+          "latest_send_at_monotonic": 2048508.2960238329
+        },
+        "snapshot_seq": 710,
+        "consumed_seq": 710,
+        "rejected_attempts": []
+      }
+    },
+    {
+      "kind": "candidate_validated",
+      "monotonic_ns": 2048506473297375,
+      "original_line_sha256": "c6496a8a6bd1cb836e1dab485bf131714198e39453922b1760374b469c1b40a9",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 710,
+        "decision_id": "fixture-decision-1",
+        "attempt_no": null
+      },
+      "payload": {
+        "plan_revision": 1,
+        "action_key": "discard:7w",
+        "action": {
+          "kind": "discard",
+          "tile": "7w",
+          "schema_version": 1
+        },
+        "legal": true,
+        "window": {
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 710,
+          "phase": "draw",
+          "seat": 3
+        }
+      }
+    },
+    {
+      "kind": "submission_intent",
+      "monotonic_ns": 2048506473412833,
+      "original_line_sha256": "9842e8b642e67366312c9d28e3eb0bd87488c727713908cb7aec85b6a68b2b54",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 710,
+        "decision_id": "fixture-decision-1",
+        "attempt_no": 1
+      },
+      "payload": {
+        "action_key": "discard:7w",
+        "based_on_authoritative_seq": 710,
+        "plan_revision": 1,
+        "latest_send_at_monotonic": 2048508.2960238329,
+        "window": {
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 710,
+          "phase": "draw",
+          "seat": 3
+        }
+      }
+    },
+    {
+      "kind": "submission_intent",
+      "monotonic_ns": 2048506473623833,
+      "original_line_sha256": "4a5d5b2f5b7a8cfdc35fb3a243fef2cd2e1697dee738166929ff79f9438c1a1e",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 710,
+        "decision_id": "fixture-decision-1",
+        "attempt_no": 1
+      },
+      "payload": {
+        "decision_id": "fixture-decision-1",
+        "attempt_no": 1,
+        "plan_revision": 1,
+        "action_key": "discard:7w",
+        "based_on_authoritative_seq": 710,
+        "window": {
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 710,
+          "phase": "draw",
+          "seat": 3
+        },
+        "body": {
+          "action": "discard",
+          "tile": "7w"
+        }
+      }
+    },
+    {
+      "kind": "submission_outcome",
+      "monotonic_ns": 2048506536765500,
+      "original_line_sha256": "48320df66eb8f2b8c77234ef9bcead7eb9c467107e3a34276f24d63f72e36df0",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 710,
+        "decision_id": "fixture-decision-1",
+        "attempt_no": 1
+      },
+      "payload": {
+        "decision_id": "fixture-decision-1",
+        "attempt_no": 1,
+        "plan_revision": 1,
+        "action_key": "discard:7w",
+        "outcome_type": "SubmitRejectedClosed",
+        "official_code": "INVALID_ACTION",
+        "latest_authoritative_seq": 713
+      }
+    },
+    {
+      "kind": "submission_outcome",
+      "monotonic_ns": 2048506536861750,
+      "original_line_sha256": "42bf56f1ee9c700b5a2ed27bc671819aaf9bf1e6c581c352a6155a8c30b0169c",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 710,
+        "decision_id": "fixture-decision-1",
+        "attempt_no": 1
+      },
+      "payload": {
+        "outcome": "SubmitRejectedClosed",
+        "window": {
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 710,
+          "phase": "draw",
+          "seat": 3
+        },
+        "official_code": "INVALID_ACTION",
+        "latest_authoritative_seq": "713"
+      }
+    },
+    {
+      "kind": "decision_ended",
+      "monotonic_ns": 2048506536967750,
+      "original_line_sha256": "aed664e0ced5e798300e2aa8ee1ed5d6afc696312227102e09003aeb672c4f97",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 710,
+        "decision_id": "fixture-decision-1",
+        "attempt_no": null
+      },
+      "payload": {
+        "plan_revision": 1,
+        "end_reason": "submitted",
+        "attempt_count": 1,
+        "sent_attempts": 1,
+        "window": {
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 710,
+          "phase": "draw",
+          "seat": 3
+        }
+      }
+    },
+    {
+      "kind": "decision_input",
+      "monotonic_ns": 2048514648290125,
+      "original_line_sha256": "066d545d4a3a500b65dfce3590dea2a57579a4b9fc6c949b0388c14dd80a5004",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 731,
+        "decision_id": "fixture-decision-2",
+        "attempt_no": null
+      },
+      "payload": {
+        "window": {
+          "schema_version": 1,
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 731,
+          "phase": "draw",
+          "seat": 3
+        },
+        "rule_completeness": "complete",
+        "legal_keys": [
+          "discard:6w",
+          "discard:7w",
+          "discard:8w",
+          "discard:4b",
+          "discard:5b",
+          "discard:3t",
+          "discard:4t",
+          "discard:5t",
+          "discard:7t",
+          "discard:8t"
+        ],
+        "budget": {
+          "codec_version": 1,
+          "enhancement_deadline_monotonic": 2048515.9847815204,
+          "fallback_deadline_monotonic": 2048516.5646910288,
+          "latest_send_at_monotonic": 2048517.434555291
+        },
+        "snapshot_seq": 731,
+        "consumed_seq": 731,
+        "rejected_attempts": []
+      }
+    },
+    {
+      "kind": "candidate_validated",
+      "monotonic_ns": 2048514739779166,
+      "original_line_sha256": "235caadfdf4686fa2a6e361460482039d26a51ead6a7e38ff6d791319cfce304",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 731,
+        "decision_id": "fixture-decision-2",
+        "attempt_no": null
+      },
+      "payload": {
+        "plan_revision": 1,
+        "action_key": "discard:6w",
+        "action": {
+          "kind": "discard",
+          "tile": "6w",
+          "schema_version": 1
+        },
+        "legal": true,
+        "window": {
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 731,
+          "phase": "draw",
+          "seat": 3
+        }
+      }
+    },
+    {
+      "kind": "submission_intent",
+      "monotonic_ns": 2048514739872208,
+      "original_line_sha256": "dfdff3f31029d8286a7036ed57ba26b95fe9af764b73b05726fe5a60b0ecad40",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 731,
+        "decision_id": "fixture-decision-2",
+        "attempt_no": 1
+      },
+      "payload": {
+        "action_key": "discard:6w",
+        "based_on_authoritative_seq": 731,
+        "plan_revision": 1,
+        "latest_send_at_monotonic": 2048517.434555291,
+        "window": {
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 731,
+          "phase": "draw",
+          "seat": 3
+        }
+      }
+    },
+    {
+      "kind": "submission_intent",
+      "monotonic_ns": 2048514740044375,
+      "original_line_sha256": "d375138646b84e834ad41a56e6a4b5689aa27d38d1290ba520e5ebd97877d5db",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 731,
+        "decision_id": "fixture-decision-2",
+        "attempt_no": 1
+      },
+      "payload": {
+        "decision_id": "fixture-decision-2",
+        "attempt_no": 1,
+        "plan_revision": 1,
+        "action_key": "discard:6w",
+        "based_on_authoritative_seq": 731,
+        "window": {
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 731,
+          "phase": "draw",
+          "seat": 3
+        },
+        "body": {
+          "action": "discard",
+          "tile": "6w"
+        }
+      }
+    },
+    {
+      "kind": "submission_outcome",
+      "monotonic_ns": 2048514749834625,
+      "original_line_sha256": "d1374ec5d4d7410744818b89d7915a22cc001a9abd2d069cc7a147e1c17bada7",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 731,
+        "decision_id": "fixture-decision-2",
+        "attempt_no": 1
+      },
+      "payload": {
+        "decision_id": "fixture-decision-2",
+        "attempt_no": 1,
+        "plan_revision": 1,
+        "action_key": "discard:6w",
+        "outcome_type": "SubmitAccepted"
+      }
+    },
+    {
+      "kind": "submission_outcome",
+      "monotonic_ns": 2048514749907791,
+      "original_line_sha256": "49c0c68f876b60d5d8f11872cf0c37782d2b6de9e98e3c6de4d9efa0e978128b",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 731,
+        "decision_id": "fixture-decision-2",
+        "attempt_no": 1
+      },
+      "payload": {
+        "outcome": "SubmitAccepted",
+        "window": {
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 731,
+          "phase": "draw",
+          "seat": 3
+        }
+      }
+    },
+    {
+      "kind": "decision_ended",
+      "monotonic_ns": 2048514749982750,
+      "original_line_sha256": "636a20eb1dc0347fec288b6e58a36e8558d74caac342091c3f490ca8d991e440",
+      "context": {
+        "game_id": "fixture-game",
+        "round_no": 4,
+        "trigger_seq": 731,
+        "decision_id": "fixture-decision-2",
+        "attempt_no": null
+      },
+      "payload": {
+        "plan_revision": 1,
+        "end_reason": "submitted",
+        "attempt_count": 1,
+        "sent_attempts": 1,
+        "window": {
+          "game_id": "fixture-game",
+          "round_no": 4,
+          "trigger_seq": 731,
+          "phase": "draw",
+          "seat": 3
+        }
+      }
+    }
+  ],
+  "snapshots": [
+    {
+      "gid": "fixture-game",
+      "stamp": 2048505394211500,
+      "seq_requested": 0,
+      "applied": true,
+      "applied_at_monotonic_ns": 2048505396395083,
+      "body": {
+        "gap": false,
+        "seq": 710,
+        "snapshot": {
+          "game_id": "fixture-game",
+          "phase": "draw",
+          "round_no": 4,
+          "turn": 3,
+          "my_hand": [
+            "4t",
+            "6w",
+            "5t",
+            "7w",
+            "8t",
+            "4b",
+            "7t",
+            "5b",
+            "3t",
+            "6w",
+            "9t"
+          ],
+          "seat": 3,
+          "last_discard": "中"
+        }
+      }
+    },
+    {
+      "gid": "fixture-game",
+      "stamp": 2048506536083666,
+      "seq_requested": 0,
+      "applied": true,
+      "applied_at_monotonic_ns": 2048506536568583,
+      "body": {
+        "gap": false,
+        "seq": 713,
+        "snapshot": {
+          "game_id": "fixture-game",
+          "phase": "draw",
+          "round_no": 4,
+          "turn": 0,
+          "my_hand": [
+            "4t",
+            "6w",
+            "5t",
+            "7w",
+            "8t",
+            "4b",
+            "7t",
+            "5b",
+            "3t",
+            "6w"
+          ],
+          "seat": 3,
+          "last_discard": "9t"
+        }
+      }
+    },
+    {
+      "gid": "fixture-game",
+      "stamp": 2048514533598916,
+      "seq_requested": 0,
+      "applied": true,
+      "applied_at_monotonic_ns": 2048514534773583,
+      "body": {
+        "gap": false,
+        "seq": 731,
+        "snapshot": {
+          "game_id": "fixture-game",
+          "phase": "draw",
+          "round_no": 4,
+          "turn": 3,
+          "my_hand": [
+            "4t",
+            "6w",
+            "5t",
+            "7w",
+            "8t",
+            "4b",
+            "7t",
+            "5b",
+            "3t",
+            "6w",
+            "8w"
+          ],
+          "seat": 3,
+          "last_discard": "1w"
+        }
+      }
+    }
+  ],
+  "post_counts": [
+    [
+      [
+        "fixture-game",
+        4,
+        710,
+        "draw",
+        3
+      ],
+      1
+    ],
+    [
+      [
+        "fixture-game",
+        4,
+        731,
+        "draw",
+        3
+      ],
+      1
+    ]
+  ],
+  "adapter_counts": [
+    [
+      [
+        "fixture-game",
+        4,
+        710,
+        "draw",
+        3
+      ],
+      1
+    ],
+    [
+      [
+        "fixture-game",
+        4,
+        731,
+        "draw",
+        3
+      ],
+      1
+    ]
+  ]
+}
