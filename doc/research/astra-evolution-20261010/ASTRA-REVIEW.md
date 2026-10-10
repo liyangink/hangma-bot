@@ -683,3 +683,11 @@ exec59663自然exit0，10真实choose，四draft作用域拒绝真实启动，�
 ## 62. 计划相等与审计载荷的验证范围修正
 
 冻结interface.py的RankedCandidate.score_trace明确compare=False，临时假依赖采用比较trace的默认dataclass语义，不能据其差异认定原机械脚本必失败。实际十次plan相等只证明核心决策字段，不覆盖首trace或日志。原机械核心选择／合法／原截止证据仍有效；新增口径记录保留已冻结原件，不修改470b／613e或阶段声明。后续直接核bounded_runtime_audit、policy_release实际CID／EID、脱敏写出与缺失计数，不能仅靠plan相等或静态深度。见[修正原件](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-MECHANICAL-TRACE-SCOPE-CORRECTION.json)及[公开报告](WHITE-CIRCLE.md)。
+
+## 63. H四根自然闭合、实际首trace与日志通过、衔接M池
+
+exec96000自然exit0，H002四根320完整R16实例、2256.38521秒、2561pins不变、0运行故障；320进程全自然join／close，owned／live零。root独立核5120单局积分链与终点，并用冻结唯一settle_scores／next_dealer原AST复算全部收支及4800非末局庄权一致；[闭合复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-DEV-H-COMPLETE-ROOT-REVIEW.json)SHA `228092ba1fa827d15a0911d787ba95d3da12845e2e73d850347e3a2b9de97fa4`，[规则复算](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-DEV-H-CANONICAL-ROOT-REVIEW.json)SHA `c6113245d14312c6ae219efc838a9e88bb2deee67753daa1761c851acd106a9d`。该单池不单独授开发收益门。
+
+原五点×3秒／1秒十次首trace补充DELIVERY SHA `c904a2a6d0cc512bf95e8c54c5502743f2a19d36d8c4527dcfad1f8c5545955c`，root十项直接字段假回归通过。外监督经Astra交叉修正保留hard180至最终写盘／退出，源码SHA `05d99cb96a358aa8e26deb891403f81ea1a5d1dd3296921a49df966a9d99c4c5`，不改原候选或预算。H回收后exec95288自然exit0，实际10首trace／codec／生产JSONL全一致，候选／执行SHA脱敏后保留；0缺失／降级／剩余写线程，max至记录0.22504秒，监督至收据2.29719秒含子进程自然退出和回收。RECEIPT SHA `c93ef73f9b700decae912caeccdad2b746050c38285ddcf0ef4fe1304625d07d`，[root复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-TRACE-SUPPLEMENT-COMPLETE-ROOT-REVIEW.json)SHA `89970d1f58e0e0451260fa5ef91bf2e0f2aca92a70795c321d039d0c9dc480c8`；不授十桌／网络／特殊规则或整体生命周期。
+
+全部前置重进程自然终态后，按原M声明启动15661、M001四根320实例，十worker＋一控制。原候选／参数／种子／门全不变，确认未授权；待完整8开发统一summary／tempo／roles／distribution／gate，见[公开执行报告](WHITE-CIRCLE.md)。

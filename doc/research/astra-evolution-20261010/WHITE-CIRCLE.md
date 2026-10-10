@@ -40,7 +40,15 @@ root复算25105条决策、152条尾段结算，以及补回共同前缀后的�
 
 有限机械检查十次真实选择自然exit0：五个固定点原3秒预算均改为弃白，同点五次1秒负控均保持父计划动作、分数、排名及评分组成；输入读取、规则分析、装配验签、父选择、辅助和记录均计入各原预算。至单例记录最大0.23585秒，辅助最大0.00187秒，全部原保底截止内完成；整进程至收据5.65939秒，2537pins不变，无新世界或效果评估。这仍不覆盖当前胡／杠／多白的真实特殊窗、十桌并发、网络或生命周期。root另调整验证器以允许受控首候选解释增量，候选源码与标识未改变。[机械复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-CANDIDATE-MECHANICAL-ROOT-REVIEW.json)SHA为`e035eb109b186359abea052f618b263ab8a9d0fdb6972a3872b9ff73849c578f`，机械RECEIPT SHA为`e83e98fe30b4cc4a981b4457f198f44a396337eeeb2f8d760925c6db8f4ab481`。
 
-补充源码复核纠正了此前验证器归因：生产`RankedCandidate.score_trace`为`compare=False`，计划相等不检查审计载荷；此前临时假类型没有复现这个语义，不能据此断言原验证器会因新增trace失败，也不能以真实计划相等断言审计缺失。十次检查没有直接保存全部首trace或核真实日志；该范围仍待单独验证。静态载荷深度满足合同，不构成停止效果评估的理由。[口径修正](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-MECHANICAL-TRACE-SCOPE-CORRECTION.json)保留旧收据原字节；动作、核心评分与时限结论不变。
+补充源码复核纠正了此前验证器归因：生产`RankedCandidate.score_trace`为`compare=False`，计划相等不检查审计载荷；此前临时假类型没有复现这个语义，不能据此断言原验证器会因新增trace失败，也不能以真实计划相等断言审计缺失。原十次检查未直接保存全部首trace或核真实日志；后续独立补充已完成该范围，见下一节。[口径修正](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-MECHANICAL-TRACE-SCOPE-CORRECTION.json)保留旧收据原字节；动作、核心评分与时限结论不变。
+
+## 实际首选解释与生产日志补充
+
+五个原固定公开点分别用原3秒和1秒预算，共十次真实选择，实际首trace和生产日志均通过直接核验。外层只追加受控`bounded_runtime_audit`及`policy_release`，同次内层计划的全部核心字段、其余trace和既有发布字段保留；实际470b／613e身份经生产编码／解码、脱敏与`JsonlAuditSink`写出后仍精确相同。五个1秒负控的内层返回原父对象，五个3秒点仍按预期弃白。零缺失、零降级、零剩余审计写线程。
+
+root独立副本十项字段检查通过。补充与原2534文件／3祖先摘要前后不变；同次读取、规则、装配、父／辅助选择、编码、日志关闭和记录均计入各原预算，至单例记录最大0.22504秒，全部增强／保底及窗口截止通过。外部监督复用已验证进程所有权，175秒工作加5秒清理，原hard180保留至最终写盘与退出；实际单工作进程自然exit0并已等待／关闭，监督至收据2.29719秒，包含该工作进程启动及退出。
+
+exec95288自然exit0，内层RECEIPT SHA为`c93ef73f9b700decae912caeccdad2b746050c38285ddcf0ef4fe1304625d07d`，[root完整复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-TRACE-SUPPLEMENT-COMPLETE-ROOT-REVIEW.json)SHA为`89970d1f58e0e0451260fa5ef91bf2e0f2aca92a70795c321d039d0c9dc480c8`。该补充是固定模拟公开请求的单进程证据；未覆盖特殊规则自然窗、真实十桌应用链、网络或完整赛事生命周期，不授强度及上线资格。
 
 本机原件在`.private/astra-evolution-20261010/white-circle-control-run-001/`，完整数据不入Git。准备DELIVERY SHA为`d1c62c1f06b160c165c91c3cffd464f6c3fd2743dc33a69a31f8988e0496833b`，PLAN SHA为`ecb3550ab58cac2b58472ee9a35f974d8e24556c4eef9a93e6eabda9f932a17c`，运行RECEIPT SHA为`34a9a0b5a1551b6340d81c298a8a130b4a9d9d0bcc39796d96778c46533726de`，[root复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-COMPLETE-ROOT-REVIEW.json)SHA为`47e6c297cbb373c8d91c7fed0c066f0605ddf1d3c650fe8dc2924c4888316e05`。
 
@@ -52,4 +60,8 @@ root复算25105条决策、152条尾段结算，以及补回共同前缀后的�
 
 必要[监督源码与回归](../../../tools/research/astra-evolution-2026-10-10/owned_stage160/README.md)已纳入共享工具；五份源码逐字节等于已核私有冻结版本，公共内存回归14项通过。共享源码不替换当前入口，不携带完整离线数据、包或授权；本轮十工作进程仍使用原冻结字节。
 
-首沙箱启动在原驱动`os.nice(15)`处失败，十任务均未进入牌局，零选择／新世界／完成桌；停止新派发后十进程自然回收。原失败目录`white-circle-dev-homogeneous-001/`保留，独立隔离调用同样复现该权限错误。执行环境审核通过后，完全同候选、种子和声明在新`white-circle-dev-homogeneous-002/`启动；已确认十工作进程真实进入牌局。此时开发仍在运行，没有净收益或门通过结论。前池完整自然终态及资源闭合后才可启动下一池。
+首沙箱启动在原驱动`os.nice(15)`处失败，十任务均未进入牌局，零选择／新世界／完成桌；停止新派发后十进程自然回收。原失败目录`white-circle-dev-homogeneous-001/`保留，独立隔离调用同样复现该权限错误。执行环境审核通过后，完全同候选、种子和声明在新`white-circle-dev-homogeneous-002/`启动。
+
+H池四根320个完整R16实例已自然闭合，exec96000真实exit0，总2256.38521秒。root独立核5120份四家结算／积分前后链、4800次非末局自然庄权、全部终点与实际座位；使用冻结唯一规则的原函数AST复算，未实现第二套结算。所有运行故障为零，2561pins未变，320工作进程均自然等待退出并关闭。[闭合复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-DEV-H-COMPLETE-ROOT-REVIEW.json)SHA为`228092ba1fa827d15a0911d787ba95d3da12845e2e73d850347e3a2b9de97fa4`，[唯一规则复算](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-DEV-H-CANONICAL-ROOT-REVIEW.json)SHA为`c6113245d14312c6ae219efc838a9e88bb2deee67753daa1761c851acd106a9d`。
+
+H池及单工作进程审计补充完全回收后，按原先冻结的四根、320实例启动M池`white-circle-dev-mixed-001/`，exec15661、十工作进程加一控制器。候选、种子、门和每窗预算未调整；完整开发效果仍须两池全部闭合及统一报告，尚无收益或门通过结论。十六根确认仍未授权。
