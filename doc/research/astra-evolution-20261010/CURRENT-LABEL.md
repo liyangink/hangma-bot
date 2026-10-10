@@ -37,4 +37,6 @@
 
 root独立验证304项来源摘要不变、七点首入口及固定备选、学生编码维度与身份边界，复算224条单局现金、210次自然庄权，以及18206个父后缀动作。完整16单局导出相等由已审阅冻结worker核验；root没有另续打世界。第二运行[收据](../../../.private/astra-evolution-20261010/singlewhite-current-label-run-002/RECEIPT.json)SHA `1a643cb811658970ca8360f45daa96ae60313d281437b5444059e6b275bb8286`，[完整root复核](../../../.private/astra-evolution-20261010/CURRENT-LABEL-COMPLETE-ROOT-REVIEW.json)SHA `bc3457d53faa2e8928d58232a9e29207f1abf6efe0c65d61ef664253c353c105`。
 
-下一步先静态核相容采样器能否保留完整已发生公开历史及合法前缀。仅满足公开实体容量不能冒充完整历史后验；未证明采样约束之前，不扩大教师数据。更强候选持续目标仍活动。
+现有采样器的静态审查已闭合。`SimulationEngine.resample_public_consistent_hidden_world`将三家当前暗手、尚未消费可摸区和保留区共同洗牌，只保证焦点当前观察逐值相等；返回值明确`history_consistent=False`。它没有重放原合法前缀、逆向约束历史弃牌／领取时的持牌，也没有P0/RF1动作似然加权。保存相同历史文本不能证明新暗牌能产生该历史。因此停止曾建议的H1/M1完整历史条件隐藏配置噪声试验，不追加采样或教师数据。[静态root复核](../../../.private/astra-evolution-20261010/CURRENT-LABEL-HISTORY-SAMPLER-ROOT-REVIEW.json)SHA `ab28487cb84e04cba96e39d51a573685aaa898c7ed4c9e5715f41143ec9af7c9`，冻结引擎SHA `c32e7d589765c7a973a72be534fdaadf21f8c4bd91c404d471189d49cbbf6b27`。
+
+另一个`resample_future_drawable_wall`保留当前四家暗手、已消费前后端和公开前缀，只重排未来可摸区；它能检验原世界条件下未来顺序敏感性，不能估隐藏手后验或替代上述历史约束。本批不为它改名扩大预算。更强候选持续目标仍活动，后续机制先核新增信息与可落地性。
