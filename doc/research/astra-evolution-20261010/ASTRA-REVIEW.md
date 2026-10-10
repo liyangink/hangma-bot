@@ -691,3 +691,11 @@ exec96000自然exit0，H002四根320完整R16实例、2256.38521秒、2561pins�
 原五点×3秒／1秒十次首trace补充DELIVERY SHA `c904a2a6d0cc512bf95e8c54c5502743f2a19d36d8c4527dcfad1f8c5545955c`，root十项直接字段假回归通过。外监督经Astra交叉修正保留hard180至最终写盘／退出，源码SHA `05d99cb96a358aa8e26deb891403f81ea1a5d1dd3296921a49df966a9d99c4c5`，不改原候选或预算。H回收后exec95288自然exit0，实际10首trace／codec／生产JSONL全一致，候选／执行SHA脱敏后保留；0缺失／降级／剩余写线程，max至记录0.22504秒，监督至收据2.29719秒含子进程自然退出和回收。RECEIPT SHA `c93ef73f9b700decae912caeccdad2b746050c38285ddcf0ef4fe1304625d07d`，[root复核](../../../.private/astra-evolution-20261010/PC-WHITE-CIRCLE-TRACE-SUPPLEMENT-COMPLETE-ROOT-REVIEW.json)SHA `89970d1f58e0e0451260fa5ef91bf2e0f2aca92a70795c321d039d0c9dc480c8`；不授十桌／网络／特殊规则或整体生命周期。
 
 全部前置重进程自然终态后，按原M声明启动15661、M001四根320实例，十worker＋一控制。原候选／参数／种子／门全不变，确认未授权；待完整8开发统一summary／tempo／roles／distribution／gate，见[公开执行报告](WHITE-CIRCLE.md)。
+
+## 64. 补摸叶墙余传递的静态边界
+
+Astra提交六源静态报告，root逐读唯一给定摸牌、等待投影／视图和冻结P0评分，六项摘要保持。确认补摸子叶墙余参与资格复核却没有传入评分；只把摸牌系数置零仍残留等待基值／向听差，不能冒充终止现金修正。即时合法胡、未知补摸和开放响应须保留，流局留庄不直接记额外收入。原报告SHA `d4db375365ed147ba29171f5d1216f850fb46ebddd8473158154060363ad83d7`，root静态复核SHA `252cf4215a4ea928c0d9c4765bfdbb73c6ed159af198ad6f1ed4a190840f096a`。
+
+目前0选择／native／世界，无自然入口或首选分歧证明；只授既冻19房／每房256行前缀的元数据覆盖核查，不授动态归因或新160阶段。两池开发继续原实现，不读部分效果调参。见[公开静态报告](REPLACEMENT-WALL.md)。
+
+限定元数据核查随后闭合：4864行，原请求合法Gang窗10、墙余21–23窗17、交集0，选点0／缺8，字段未知0。19原前缀摘要／字节／行数及全文件size与注册一致；root核脚本与四交付摘要、原注册和逐房收据，不重复扫描961MB。DELIVERY SHA `a06956aac81337d2a37a8a7804fdae67e071dbd8f3ba86e21132f0bf8d0ed201`、最终收据SHA `9d7d47de99107b761b0c48fbbb98a1840b99b540801d6fc541f16367d5184d8e`。0项目导入／选择／native／世界；停止本范围，不扩前缀或买归因，不外推全域无边界。
